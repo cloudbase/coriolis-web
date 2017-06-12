@@ -142,7 +142,7 @@ class WizardSummary extends Component {
                   </span>
                 </div>
                 <div className={s.row}>
-                  <span>Flavour:</span>
+                  <span>Flavor:</span>
                   <span>{this.props.summary.sourceCloud.autoFlavors ?
                     "Automatic Flavor Selection" : "Manual Flavor Selection"}</span>
                 </div>

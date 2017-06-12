@@ -62,7 +62,7 @@ class FilteredTable extends Component {
     let queryResult = []
     if (this.props.items.length) {
       this.props.items.forEach((item) => {
-        if (this.props.filterFn(item, this.props.queryText, this.props.filterType)) {
+        if (this.props.filterFn(item, this.props.queryText, this.props.filterType, this.props.filterStatus)) {
           queryResult.push(item)
         }
       }, this)

@@ -59,6 +59,7 @@ class MigrationList extends Reflux.Component {
       title: props.type == "migrations" ? "Migrations" : "Replicas",
       queryText: '',
       filterType: props.type == "migrations" ? "migration" : "replica",
+      filterStatus: "all",
       currentProject: "My Project",
       searchMin: true,
       filteredData: [],
@@ -176,10 +177,17 @@ class MigrationList extends Reflux.Component {
     })
   }
 
-  filterFn(item, queryText, filterType) {
+  filterStatus(e, status) {
+    this.setState({ filterStatus: status }, () => {
+      this.searchItem({ target: { value: this.state.queryText } })
+    })
+  }
+
+  filterFn(item, queryText, filterType, filterStatus) {
     return (
       item.name.toLowerCase().indexOf(queryText.toLowerCase()) != -1 &&
-      (filterType == "all" || filterType == item.type)
+      (filterType == "all" || filterType == item.type) &&
+      (filterStatus == "all" || filterStatus == item.status)
     )
   }
 
@@ -338,9 +346,9 @@ class MigrationList extends Reflux.Component {
     let _this = this
     let itemStates = statusTypes.map((state, index) => (
         <a
-          className={_this.state.filterType == state.type || (_this.state.filterType == null && state.type == "all") ?
+          className={_this.state.filterStatus == state.type || (_this.state.filterStatus == null && state.type == "all") ?
             "selected" : ""}
-          onClick={(e) => _this.filterType(e, state.type)} key={"status_" + index}
+          onClick={(e) => _this.filterStatus(e, state.type)} key={"status_" + index}
         >{state.label}</a>
       )
     )
@@ -397,6 +405,7 @@ class MigrationList extends Reflux.Component {
               filterFn={this.filterFn}
               queryText={this.state.queryText}
               filterType={this.state.filterType}
+              filterStatus={this.state.filterStatus}
               renderSearch={(e) => this.renderSearch(e)}
             ></FilteredTable>
           </div>
