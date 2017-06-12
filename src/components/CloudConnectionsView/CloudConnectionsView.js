@@ -97,6 +97,7 @@ class CloudConnectionsView extends Component {
         onConfirm: () => {
           this.setState({ confirmationDialog: { visible: false }})
           ConnectionsActions.deleteConnection(this.state.connection)
+          Location.push('/cloud-endpoints')
         },
         onCancel: () => {
           this.setState({ confirmationDialog: { visible: false }})
@@ -108,6 +109,10 @@ class CloudConnectionsView extends Component {
 
   closeModal() {
     this.setState({ showModal: false })
+  }
+
+  goBack() {
+    Location.push("/cloud-endpoints")
   }
 
   render() {
@@ -133,29 +138,26 @@ class CloudConnectionsView extends Component {
           <Header title={title} linkUrl="/cloud-endpoints"/>
           <div className={s.connectionHead}>
             <div className={s.container}>
-              <div className={s.connectionTypeImg + " icon small-cloud " + (item && item.type)}></div>
+              <div className="backBtn" onClick={(e) => this.goBack(e)}></div>
+              <div className={s.connectionTypeImg + " icon endpoint-white "}></div>
               <div className={s.connectionInfo}>
                 <h2>{item.name}</h2>
-              </div>
-              <div className={s.connectionActions}>
-                <button onClick={(e) => this.showEditConnectionModal(e)}>Edit</button>
-                <button onClick={(e) => this.deleteConnection(e)} className="gray">Delete</button>
               </div>
             </div>
           </div>
           <div className={s.container}>
             <div className={s.sidebar}>
-              <Link
-                to={"/cloud-endpoints/" + item.id + "/"}
-                className={this.props.type == 'detail' ? "active" : ""}
-              >Overview</Link>
-              <Link
-                to={"/cloud-endpoints/auth/" + item.id + "/"}
-                className={this.props.type == 'auth' ? "active" : ""}
-              >Authentication</Link>
+
             </div>
             <div className={s.content}>
+              <div className={s.connectionTypeImg + " icon large-cloud " + (item && item.type)}></div>
+              <br />
+
               {React.cloneElement(this.props.children, { connection: item })}
+
+              <button onClick={(e) => this.showEditConnectionModal(e)} className="gray">Edit Connection</button>
+              <br /><br />
+              <button onClick={(e) => this.deleteConnection(e)} className="wire">Delete</button>
             </div>
           </div>
           <Modal

@@ -26,9 +26,11 @@ $connectionHeaderBg: #D9DCE3;
   background-color: $connectionHeaderBg;
   margin-top: 64px;
   padding: 16px;
+  h2 {
+    margin-top: 8px;
+  }
   .connectionTypeImg {
     margin-right: 64px;
-    margin-top: 8px;
     float: left;
   }
   .connectionInfo {
@@ -65,7 +67,7 @@ $connectionHeaderBg: #D9DCE3;
   }
   .connectionActions {
     float: right;
-    margin-top: 8px;
+    margin-top: 16px;
     button {
       margin-left: 16px;
       max-width: 96px;
@@ -108,7 +110,7 @@ $connectionHeaderBg: #D9DCE3;
   }
 }
 .content {
-  padding-top: 32px;
+  padding-top: 8px;
   float: left;
   width: 800px;
 }
