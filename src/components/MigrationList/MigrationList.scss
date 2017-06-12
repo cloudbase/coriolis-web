@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     :global(.name-filter) {
       float: left;
-      padding-left: 24px;
+      padding-left: 0px;
       margin-top: 2px;
     }
     &:after {
@@ -89,6 +89,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     line-height: 32px;
     margin-right: 16px;
   }
+}
+.refreshBtn {
+  float: left;
+  padding: 5px 5px;
+  margin-top: 6px;
+  margin-left: 11px;
+  cursor: pointer;
 }
 .container {
   margin: 0 auto;

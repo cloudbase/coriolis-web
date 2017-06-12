@@ -38,6 +38,12 @@ const migrationTypes = [
   { label: "Migrations", type: "migration" },
   { label: "All", type: "all" }
 ]
+const statusTypes = [
+  { label: "Running", type: "RUNNING" },
+  { label: "Error", type: "ERROR" },
+  { label: "Completed", type: "COMPLETED" },
+  { label: "All", type: "all" }
+]
 const migrationActions = [
   { label: "Execute", value: "execute" },
   { label: "Cancel", value: "cancel" },
@@ -324,9 +330,13 @@ class MigrationList extends Reflux.Component {
     return instance
   }
 
+  refreshList() {
+    MigrationActions.loadMigrations()
+  }
+
   render() {
     let _this = this
-    let itemStates = migrationTypes.map((state, index) => (
+    let itemStates = statusTypes.map((state, index) => (
         <a
           className={_this.state.filterType == state.type || (_this.state.filterType == null && state.type == "all") ?
             "selected" : ""}
@@ -355,6 +365,9 @@ class MigrationList extends Reflux.Component {
             <div className="filters">
               <div className="category-filter">
                 {itemStates}
+              </div>
+              <div className={s.refreshBtn}>
+                <div className="icon refresh" onClick={this.refreshList}></div>
               </div>
               <div className="name-filter">
                 <SearchBox

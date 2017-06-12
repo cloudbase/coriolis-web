@@ -197,7 +197,7 @@ class AddCloudConnection extends Reflux.Component {
 
   renderCloudList() {
     let clouds = this.state.allClouds.map((cloud, index) => {
-      let colorType = "dimmer"
+      let colorType = ""
       if (cloud.credentials != null && cloud.credentials.length != 0) {
         colorType = ""
       }
