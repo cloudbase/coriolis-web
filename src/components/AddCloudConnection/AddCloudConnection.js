@@ -137,6 +137,16 @@ class AddCloudConnection extends Reflux.Component {
     }, this.setDefaultValues)
   }
 
+  handleBack() {
+    this.setState({
+      currentCloudData: null,
+      currentCloud: null,
+      requiredFields: null,
+      connectionName: null,
+      description: null
+    })
+  }
+
   setDefaultValues() {
     this.state.currentCloud.endpoint.fields.forEach(field => {
       let currentCloudData = this.state.currentCloudData
@@ -183,10 +193,6 @@ class AddCloudConnection extends Reflux.Component {
 
   handleCancel() {
     this.props.closeHandle();
-  }
-
-  handleBack() {
-    this.setState({ connected: false })
   }
 
   renderCloudList() {
@@ -352,7 +358,7 @@ class AddCloudConnection extends Reflux.Component {
             {fields}
           </div>
           <div className={s.buttons}>
-            <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
+            <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
             <button className={s.rightBtn} onClick={(e) => this.handleAdd(e)}>Save</button>
           </div>
         </div>
