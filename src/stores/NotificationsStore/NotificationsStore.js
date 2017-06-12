@@ -74,9 +74,12 @@ class NotificationsStore extends Reflux.Store
     this.setState({notifications: notifications})
   }
 
-  onAddMigration(response) {
+  onAddMigrationCompleted(response) {
+    let notifications = null
+
     if (response.data.migration) {
-      let notifications = [{
+      notifications = [{
+        title: "New Migration",
         message: "Migration created successfully",
         type: 'success',
         keep: true,
@@ -88,14 +91,15 @@ class NotificationsStore extends Reflux.Store
         }
       }]
     } else {
-      let notifications = [{
+      notifications = [{
+        title: "New Replica",
         message: "Replica created successfully",
         type: 'success',
         keep: true,
         action: {
           label: "View Replica Status",
           callback: () => {
-            Location.push("/replica/tasks/" + response.data.replica.id + "/")
+            Location.push("/replica/executions/" + response.data.replica.id + "/")
           }
         }
       }]

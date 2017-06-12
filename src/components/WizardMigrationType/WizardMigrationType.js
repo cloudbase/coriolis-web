@@ -111,9 +111,7 @@ class WizardMigrationType extends Component {
           </label>
           <div className={s.containerLeft + " " + (this.state.migrationType != 'replica' ? s.selected : "")}>
             <h3>Coriolis Migration</h3>
-            <p>A Coriolis Migration is a one time move one ore more virtual machine.
-              Whatever Blue Bottle Neutra irony 8-bit. Kogi ethnic ugh fashion axe bicycle rights. Gluten-free Odd
-              Future American </p>
+            <p>A Coriolis® Migration is a full instance migration between two cloud endpoints.</p>
           </div>
           <div className={s.containerRight + " " + (this.state.migrationType == 'replica' ? s.selected : "")}>
             <h3>Coriolis Replica</h3>
