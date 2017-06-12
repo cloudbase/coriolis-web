@@ -1,0 +1,6 @@
+{
+  "name": "EndpointLink",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./EndpointLink.js"
+}

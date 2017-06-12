@@ -1,0 +1,6 @@
+{
+  "name": "MigrationDetail",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MigrationDetail.js"
+}

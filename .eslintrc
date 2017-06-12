@@ -1,0 +1,26 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "globals": {
+    "__DEV__": true
+  },
+  "rules": {
+    "no-confusing-arrow": 0,
+    "react/jsx-quotes": 0,
+    "jsx-quotes": [2, "prefer-double"],
+    "comma-dangle": 0,
+    "semi": 0,
+    "quotes": 0,
+    "eqeqeq": 0,
+    "prefer-const": 0,
+    "max-len": ["error", 120],
+    "react/jsx-no-bind": 0,
+    "prefer-template": 0,
+    "object-shorthand": 0,
+    "no-param-reassign": 0,
+    "no-else-return": 0,
+    "guard-for-in": 0,
+    "no-nested-ternary": 0,
+    "no-case-declarations": 0
+  }
+}

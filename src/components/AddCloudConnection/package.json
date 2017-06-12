@@ -1,0 +1,6 @@
+{
+  "name": "AddCloudConnection",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./AddCloudConnection.js"
+}

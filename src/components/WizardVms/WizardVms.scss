@@ -1,0 +1,75 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+.root {
+  :global(.searchBox) {
+    float: right;
+    margin-top: -5px;
+    width: 116px;
+  }
+}
+
+.container {
+  margin: 0 auto;
+  padding: 10px 0 40px;
+  max-width: $max-content-width;
+  :global(.items-list) {
+    :global(.item) {
+      position: relative;
+      cursor: pointer;
+      span:nth-child(2) {
+        flex: 2;
+      }
+      span:nth-child(3) {
+        justify-content: center;
+      }
+      span:nth-child(4) {
+        flex: 2;
+      }
+      :global(.checkbox-container) {
+        position: absolute;
+        left: -32px;
+        top: 24px;
+      }
+    }
+  }
+}
+
+.selectionCount {
+  font-size: 14px;
+  color: $gray-dark;
+  letter-spacing: -0.41px;
+  float: right;
+  margin-top: 8px;
+}
+.pagination {
+  font-size: 14px;
+  color: $gray-dark;
+  letter-spacing: -0.41px;
+  float: left;
+  margin-top: 8px;
+  span {
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  .currentPage {
+    font-weight: 500;
+    cursor: default;
+  }
+}

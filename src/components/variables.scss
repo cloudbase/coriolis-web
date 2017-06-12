@@ -1,0 +1,57 @@
+/*
+ * Colors
+ * ========================================================================== */
+
+$white-base:            hsl(255, 255, 255);
+$gray-darker:           #1B2733;
+$gray-dark:             #616770;
+$gray:                  #A4AAB5;
+$gray-light:            #ECEDF1;
+$gray-lighter:          #D8DBE2;
+$blue:                  #0056B8;
+$blue-light:            #0068DD;
+$black:                 #202134;
+$red:                   #F70062;
+$green:                 #34C555;
+
+$color-replica:         #E62565;
+$color-migration:       $blue;
+/*
+ * Typography
+ * ========================================================================== */
+
+$font-family-base:      'Rubik', sans-serif;
+
+$weight-lightest: 100;
+$weight-light: 300;
+$weight-regular: 400;
+$weight-semibold: 500;
+$weight-medium: 600;
+
+
+$header-text-color: $blue;
+/*
+ * Layout
+ * ========================================================================== */
+
+$max-content-width:     100%;
+$narrow-content-width: 928px;
+$wizard-content-width: 768px;
+
+$border-radius: 4px;
+
+/*
+ * Media queries breakpoints
+ * ========================================================================== */
+
+$screen-xs-min:         480px;  /* Extra small screen / phone */
+$screen-sm-min:         768px;  /* Small screen / tablet */
+$screen-md-min:         992px;  /* Medium screen / desktop */
+$screen-lg-min:         1200px; /* Large screen / wide desktop */
+
+/*
+ * Animations
+ * ========================================================================== */
+
+$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;
+

@@ -1,0 +1,120 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+$connectionHeaderBg: $gray-light;
+
+.root {
+  h2 {
+    line-height: 64px;
+    padding-left: 64px;
+  }
+}
+.userIcon {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzNHB4IiB2aWV3Qm94PSIwIDAgMzIgMzQiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PGRlZnM+PHBhdGggZD0iTTE2LDMyIEMyNC44MzY1NTYsMzIgMzIsMjQuODM2NTU2IDMyLDE2IEMzMiw3LjE2MzQ0NCAyNC44MzY1NTYsMCAxNiwwIEM3LjE2MzQ0NCwwIDAsNy4xNjM0NDQgMCwxNiBDMCwyNC44MzY1NTYgNy4xNjM0NDQsMzIgMTYsMzIgWiIgaWQ9InBhdGgtMSI+PC9wYXRoPjxtYXNrIGlkPSJtYXNrLTIiIG1hc2tDb250ZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBtYXNrVW5pdHM9Im9iamVjdEJvdW5kaW5nQm94IiB4PSIwIiB5PSIwIiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IndoaXRlIj48dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPjwvbWFzaz48bWFzayBpZD0ibWFzay00IiBtYXNrQ29udGVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgbWFza1VuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeD0iMCIgeT0iMCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSJ3aGl0ZSI+PHVzZSB4bGluazpocmVmPSIjcGF0aC0xIj48L3VzZT48L21hc2s+PC9kZWZzPjxtYXNrIGlkPSJtYXNrLTMiIGZpbGw9IndoaXRlIj48dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPjwvbWFzaz48ZyBpZD0iUGF0LUJlbmV0YXIiIHN0cm9rZT0iI0E0QUFCNSIgbWFzaz0idXJsKCNtYXNrLTIpIiBzdHJva2Utd2lkdGg9IjEuNzc3Nzc3NzgiIGZpbGw9IiNGRkZGRkYiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHVzZSBtYXNrPSJ1cmwoI21hc2stNCkiIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPjwvZz48cGF0aCBkPSJNMjEuNjEwMTUwOCwyNC45NjA2NDgxIEMyMC40OTQ0MSwyNC4yODI0MDc0IDE5Ljc0MjA5NTIsMjMuMTQwMDQ2MyAxOS41NTkyMjQ5LDIxLjg0ODM3OTYgTDE5LjQ1NTA1ODIsMjEuMTExMTExMSBDMTkuMzMzNTMwNCwyMC42MDMwMDkzIDE5LjUxODcxNTYsMjAuMDg5MTIwNCAxOS44OTgzNDUyLDE5LjczMDMyNDEgQzIxLjAwMzY2OTMsMTguNjgyODcwNCAyMi4zNjM2MjMsMTUuODcxNTI3OCAyMi4zNjM2MjMsMTIuMDQzOTgxNSBDMjIuMzYzNjIzLDYuNjk2NzU5MjYgMTkuMjE4OTQ3MSw0LjQ0NDQ0NDQ0IDE1LjkxNDU0ODksNC40NDQ0NDQ0NCBDMTIuNjExMzA4Miw0LjQ0NDQ0NDQ0IDkuNDY1NDc0ODUsNi43MjU2OTQ0NCA5LjQ2NTQ3NDg1LDEyLjA0Mzk4MTUgQzkuNDY1NDc0ODUsMTUuODU2NDgxNSAxMC44MzEyMTU2LDE4LjY3NzA4MzMgMTEuOTM0MjI0OSwxOS43MzAzMjQxIEMxMi4zMTE1Mzk3LDIwLjA5MDI3NzggMTIuNDk1NTY3NCwyMC42MDMwMDkzIDEyLjM3NDAzOTcsMjEuMTExMTExMSBMMTIuMjY5ODczLDIxLjg0NzIyMjIgQzEyLjA4ODE2LDIzLjE0MDA0NjMgMTEuMzM0Njg3OCwyNC4yODI0MDc0IDEwLjIxODk0NzEsMjQuOTYwNjQ4MSBMNS40NTUwNTgxOCwyNy44NTUzMjQxIEM0LjI2MjkyODU2LDI4LjU3ODcwMzcgMy41NDE4NjM3NCwyOS44NzYxNTc0IDMuNTU1NzUyNjMsMzEuMjcwODMzMyBDMy41NjI2OTcwNywzMS45NTI1NDYzIDQuMDY3MzI2NywzMi41MjA4MzMzIDQuNzQ0NDEwMDQsMzIuNjAxODUxOSBDNi44MzkzMTc0NCwzMi44NTQxNjY3IDExLjQxODAyMTEsMzMuMzMzMzMzMyAxNS45MTQ1NDg5LDMzLjMzMzMzMzMgQzIwLjQxMTA3NjcsMzMuMzMzMzMzMyAyNC45OTA5Mzc4LDMyLjg1NDE2NjcgMjcuMDg1ODQ1MiwzMi42MDE4NTE5IEMyNy43NjE3NzExLDMyLjUyMDgzMzMgMjguMjY3NTU4MiwzMS45NTI1NDYzIDI4LjI3NDUwMjYsMzEuMjcwODMzMyBDMjguMjg4MzkxNSwyOS44NzYxNTc0IDI3LjU2NjE2OTMsMjguNTc4NzAzNyAyNi4zNzQwMzk3LDI3Ljg1NTMyNDEgTDIxLjYxMDE1MDgsMjQuOTYwNjQ4MSBaIiBpZD0iTWFzayIgc3Ryb2tlPSJub25lIiBmaWxsPSIjQTRBQUI1IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIG1hc2s9InVybCgjbWFzay0zKSI+PC9wYXRoPjwvc3ZnPg==');
+  width: 64px;
+  height: 64px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  float: left;
+}
+.connectionHead {
+  background-color: $connectionHeaderBg;
+  margin-top: 64px;
+  padding: 16px;
+  .connectionTypeImg {
+    margin-right: 64px;
+    margin-top: 8px;
+    float: left;
+  }
+  .connectionInfo {
+    float: left;
+    .connectionStatus {
+      width: 80px;
+      border-radius: 4px;
+      color: #FFF;
+      line-height: 16px;
+      display: inline-block;
+      font-size: 10px;
+      text-align: center;
+      &:global(.PAUSED) {
+        background-color: $gray;
+      }
+    }
+    .connectionType {
+      width: 80px;
+      background-color: #FFF;
+      border-radius: 4px;
+      line-height: 14px;
+      font-size: 10px;
+      text-align: center;
+      display: inline-block;
+      text-transform: uppercase;
+      border: 1px solid $blue;
+      color: $blue;
+      margin-right: 16px;
+      &:global(.replica) {
+        border: 1px solid $color-replica;
+        color: $color-replica;
+      }
+    }
+  }
+  .connectionActions {
+    float: right;
+    margin-top: 16px;
+    :global(.Dropdown-root) {
+      width: 160px;
+      float: left;
+      margin-right: 16px;
+    }
+  }
+  &:after {
+    clear: both;
+    content: " ";
+    display: block;
+    height: 0;
+  }
+}
+.container {
+  margin: 0 auto;
+  padding: 0;
+  max-width: $narrow-content-width;
+}
+.sidebar {
+  padding-top: 32px;
+  width: 128px;
+  float: left;
+  a {
+    display: block;
+    /* Tasks: */
+    font-weight: $weight-regular;
+    font-size: 16px;
+    color: $gray;
+    letter-spacing: -0.46px;
+    text-decoration: none;
+    margin-bottom: 16px;
+    &:global(.active) {
+      color: $blue;
+    }
+  }
+}
+.content {
+  padding-top: 32px;
+  float: left;
+  width: 800px;
+}

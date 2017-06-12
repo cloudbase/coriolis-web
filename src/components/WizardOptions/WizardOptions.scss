@@ -1,0 +1,88 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+.root {
+  color: $gray-darker;
+  h3 {
+    font-weight: $weight-light;
+    font-size: 16px;
+    letter-spacing: -0.61px;
+    margin-bottom: 10px;
+  }
+  input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  :global(.Dropdown-root) {
+    width: 100%;
+  }
+}
+.formGroup {
+  margin-bottom: 40px;
+  min-height: 72px;
+}
+.container {
+  margin: 0 auto;
+  padding: 0 0 40px;
+  max-width: $max-content-width;
+}
+.flavorSwitch {
+  & > div {
+    float: left;
+  }
+  span {
+    float: left;
+    margin-left: 16px;
+  }
+}
+.containerLeft {
+  width: 272px;
+  float: left;
+}
+.containerCenter {
+  width: 800px;
+  margin: 0 auto;
+}
+.containerRight {
+  width: 272px;
+  float: right;
+  :global(.Dropdown-root) {
+    width: 100%;
+  }
+}
+.containerRight, .containerLeft {
+  &:after {
+    display: block;
+    height: 0;
+    clear: both;
+    content: " ";
+  }
+}
+
+.optionsFieldsContainer {
+  :global {
+    .form-group {
+      float: left;
+      width: 40%;
+      &:nth-child(2n) {
+        float: right
+      }
+    }
+  }
+}

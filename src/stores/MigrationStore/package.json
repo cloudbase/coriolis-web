@@ -1,0 +1,6 @@
+{
+  "name": "MigrationStore",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MigrationStore.js"
+}

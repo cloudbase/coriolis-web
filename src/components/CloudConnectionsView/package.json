@@ -1,0 +1,6 @@
+{
+  "name": "CloudConnectionsView",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./CloudConnectionsView.js"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "WizardOptions",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./WizardOptions.js"
+}

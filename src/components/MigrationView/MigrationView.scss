@@ -1,0 +1,113 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+$migrationHeaderBg: #D9DCE3;
+
+.root {
+  .loadingWrapper {
+    padding-top: 10%;
+  }
+}
+.migrationHead {
+  background-color: $migrationHeaderBg;
+  margin-top: 64px;
+  padding: 16px;
+  .migrationTypeImg {
+    margin-right: 64px;
+    float: left;
+  }
+  .migrationInfo {
+    float: left;
+    width: 425px;
+    .migrationStatus {
+      width: 80px;
+      border-radius: 4px;
+      color: #FFF;
+      line-height: 16px;
+      display: inline-block;
+      font-size: 10px;
+      text-align: center;
+      &:global(.PAUSED) {
+        background-color: $gray;
+      }
+    }
+    .migrationType {
+      width: 80px;
+      background-color: #FFF;
+      border-radius: 4px;
+      line-height: 14px;
+      font-size: 10px;
+      text-align: center;
+      display: inline-block;
+      text-transform: uppercase;
+      border: 1px solid $blue;
+      color: $blue;
+      margin-right: 16px;
+      &:global(.replica) {
+        border: 1px solid $color-replica;
+        color: $color-replica;
+      }
+    }
+  }
+  .migrationActions {
+    float: right;
+    margin-top: 16px;
+    :global(.Dropdown-root) {
+      width: 160px;
+      float: left;
+    }
+    button {
+      margin-left: 16px;
+    }
+  }
+  &:after {
+    clear: both;
+    content: " ";
+    display: block;
+    height: 0;
+  }
+}
+.container {
+  margin: 0 auto;
+  padding: 0;
+  max-width: $narrow-content-width;
+}
+.sidebar {
+  padding-top: 32px;
+  width: 128px;
+  float: left;
+  a {
+    display: block;
+    /* Tasks: */
+    font-weight: $weight-regular;
+    font-size: 16px;
+    color: $gray;
+    letter-spacing: -0.46px;
+    text-decoration: none;
+    margin-bottom: 16px;
+    &:global(.active) {
+      color: $blue;
+    }
+  }
+}
+.content {
+  padding-top: 32px;
+  float: left;
+  width: 800px;
+}

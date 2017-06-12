@@ -1,0 +1,6 @@
+{
+  "name": "ConnectionsList",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ConnectionsList.js"
+}

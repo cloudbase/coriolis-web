@@ -1,0 +1,6 @@
+{
+  "name": "WizardTarget",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./WizardTarget.js"
+}

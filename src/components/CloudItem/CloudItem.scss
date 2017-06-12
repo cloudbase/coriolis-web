@@ -1,0 +1,63 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+.root {
+  width: 255px;
+  float: left;
+  margin-bottom: 48px;
+  height: 200px;
+  &:nth-child(3n+1) {
+
+  }
+  &:nth-child(3n+2) {
+    text-align: center;
+  }
+  &:nth-child(3n) {
+    text-align: right;
+  }
+  &.selected {
+    :global(.Dropdown-control) {
+      background-color: $blue;
+      color: #FFF;
+      :global(.Dropdown-arrow) {
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgaGVpZ2h0PSI3cHgiIHZpZXdCb3g9IjEgNSAxNCA3IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwb2x5Z29uIGlkPSJDb21iaW5lZC1TaGFwZSIgc3Ryb2tlPSJub25lIiBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHBvaW50cz0iOCAxMC4zODIzMzc2IDIuNTAyNjA3MDIgNSAxLjgxNTQzMjg5IDUuNjcyNzkyMjEgOCAxMS43Mjc5MjIxIDE0LjE4NDU2NzEgNS42NzI3OTIyMSAxMy40OTczOTMgNSA4IDEwLjM4MjMzNzYiPjwvcG9seWdvbj48L3N2Zz4=');
+      }
+    }
+  }
+}
+
+.cloudImage {
+  margin-bottom: 32px;
+}
+
+.addBtn {
+
+}
+
+.container {
+  min-height: 200px;
+  margin: 0 auto;
+  display: inline-block;
+  text-align: left;
+  width: 192px;
+}
+
+.hidden {
+  display: none;
+}

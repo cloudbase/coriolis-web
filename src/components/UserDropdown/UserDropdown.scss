@@ -1,0 +1,92 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+.root {
+
+}
+
+.container {
+
+}
+.userIcon {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4IiB2aWV3Qm94PSIwIDAgMzIgMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+DQogICAgPGRlZnM+DQogICAgICAgIDxwYXRoIGQ9Ik0xNiwzMiBDMjQuODM2NTU2LDMyIDMyLDI0LjgzNjU1NiAzMiwxNiBDMzIsNy4xNjM0NDQgMjQuODM2NTU2LDAgMTYsMCBDNy4xNjM0NDQsMCAwLDcuMTYzNDQ0IDAsMTYgQzAsMjQuODM2NTU2IDcuMTYzNDQ0LDMyIDE2LDMyIFoiIGlkPSJVc2VyLUljb24tR3JleS0tcGF0aC0xIj48L3BhdGg+DQogICAgPC9kZWZzPg0KICAgIDxnIGlkPSJVc2VyLUljb24tR3JleS0tU3ltYm9scyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+DQogICAgICAgIDxnIGlkPSJVc2VyLUljb24tR3JleS0tVXNlci1JY29uLUdyZXkiPg0KICAgICAgICAgICAgPG1hc2sgaWQ9IlVzZXItSWNvbi1HcmV5LS1tYXNrLTIiIGZpbGw9IndoaXRlIj4NCiAgICAgICAgICAgICAgICA8dXNlIHhsaW5rOmhyZWY9IiNVc2VyLUljb24tR3JleS0tcGF0aC0xIj48L3VzZT4NCiAgICAgICAgICAgIDwvbWFzaz4NCiAgICAgICAgICAgIDxnIGlkPSJVc2VyLUljb24tR3JleS0tUGF0LUJlbmV0YXIiPg0KICAgICAgICAgICAgICAgIDx1c2UgZmlsbD0iI0ZGRkZGRiIgZmlsbC1ydWxlPSJldmVub2RkIiB4bGluazpocmVmPSIjVXNlci1JY29uLUdyZXktLXBhdGgtMSI+PC91c2U+DQogICAgICAgICAgICAgICAgPHBhdGggc3Ryb2tlPSIjQTRBQUI1IiBzdHJva2Utd2lkdGg9IjEiIGQ9Ik0xNiwzMS41IEMyNC41NjA0MTM2LDMxLjUgMzEuNSwyNC41NjA0MTM2IDMxLjUsMTYgQzMxLjUsNy40Mzk1ODYzOCAyNC41NjA0MTM2LDAuNSAxNiwwLjUgQzcuNDM5NTg2MzgsMC41IDAuNSw3LjQzOTU4NjM4IDAuNSwxNiBDMC41LDI0LjU2MDQxMzYgNy40Mzk1ODYzOCwzMS41IDE2LDMxLjUgWiI+PC9wYXRoPg0KICAgICAgICAgICAgPC9nPg0KICAgICAgICAgICAgPGcgaWQ9IlVzZXItSWNvbi1HcmV5LS1QYWdlLTEiIG1hc2s9InVybCgjVXNlci1JY29uLUdyZXktLW1hc2stMikiIHN0cm9rZT0iI0E0QUFCNSI+DQogICAgICAgICAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMy4wMDAwMDAsIDUuMDAwMDAwKSIgaWQ9IlVzZXItSWNvbi1HcmV5LS1GaWxsLTEiPg0KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTkuMzcsMTkuMzM5NTM0OSBDMTguMjY1LDE4LjkgMTYuOSwxOC4zMzQyNTU4IDE2LjksMTcuODk1MzQ4OCBMMTYuOSwxNS4wNjk3Njc0IEMxOC41MjUsMTMuODc2NzQ0MiAxOS41LDExLjk5MzAyMzMgMTkuNSwxMC4wNDY1MTE2IEwxOS41LDYuMjc5MDY5NzcgQzE5LjUsMi44MjU1ODE0IDE2LjU3NSwwIDEzLDAgQzkuNDI1LDAgNi41LDIuODI1NTgxNCA2LjUsNi4yNzkwNjk3NyBMNi41LDEwLjA0NjUxMTYgQzYuNSwxMS45OTMwMjMzIDcuNDc1LDEzLjkzOTUzNDkgOS4xLDE1LjA2OTc2NzQgTDkuMSwxNy44OTUzNDg4IEM5LjEsMTguMjcyMDkzIDcuNzM1LDE4LjgzNzIwOTMgNi42MywxOS4zMzk1MzQ5IEMzLjk2NSwyMC40MDY5NzY3IDAsMjIuMDM5NTM0OSAwLDI2LjM3MjA5MyBMMCwyNyBMMjYsMjcgTDI2LDI2LjM3MjA5MyBDMjYsMjIuMDM5NTM0OSAyMi4wMzU2NSwyMC40MDY5NzY3IDE5LjM3LDE5LjMzOTUzNDkiPjwvcGF0aD4NCiAgICAgICAgICAgICAgICA8L2c+DQogICAgICAgICAgICA8L2c+DQogICAgICAgIDwvZz4NCiAgICA8L2c+DQo8L3N2Zz4=');
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: all $animation-swift-out;
+  &:hover {
+    opacity: 0.8;
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+  &:global(.dark) {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4IiB2aWV3Qm94PSIwIDAgMzIgMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+DQogICAgPGRlZnM+DQogICAgICAgIDxwYXRoIGQ9Ik0xNiwzMiBDMjQuODM2NTU2LDMyIDMyLDI0LjgzNjU1NiAzMiwxNiBDMzIsNy4xNjM0NDQgMjQuODM2NTU2LDAgMTYsMCBDNy4xNjM0NDQsMCAwLDcuMTYzNDQ0IDAsMTYgQzAsMjQuODM2NTU2IDcuMTYzNDQ0LDMyIDE2LDMyIFoiIGlkPSJVc2VyLUljb24tV2hpdGUtLXBhdGgtMSI+PC9wYXRoPg0KICAgIDwvZGVmcz4NCiAgICA8ZyBpZD0iVXNlci1JY29uLVdoaXRlLS1TeW1ib2xzIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4NCiAgICAgICAgPGcgaWQ9IlVzZXItSWNvbi1XaGl0ZS0tVXNlci1JY29uLVdoaXRlIj4NCiAgICAgICAgICAgIDxtYXNrIGlkPSJVc2VyLUljb24tV2hpdGUtLW1hc2stMiIgZmlsbD0id2hpdGUiPg0KICAgICAgICAgICAgICAgIDx1c2UgeGxpbms6aHJlZj0iI1VzZXItSWNvbi1XaGl0ZS0tcGF0aC0xIj48L3VzZT4NCiAgICAgICAgICAgIDwvbWFzaz4NCiAgICAgICAgICAgIDxwYXRoIHN0cm9rZT0iI0ZGRkZGRiIgZD0iTTE2LDMxLjUgQzI0LjU2MDQxMzYsMzEuNSAzMS41LDI0LjU2MDQxMzYgMzEuNSwxNiBDMzEuNSw3LjQzOTU4NjM4IDI0LjU2MDQxMzYsMC41IDE2LDAuNSBDNy40Mzk1ODYzOCwwLjUgMC41LDcuNDM5NTg2MzggMC41LDE2IEMwLjUsMjQuNTYwNDEzNiA3LjQzOTU4NjM4LDMxLjUgMTYsMzEuNSBaIj48L3BhdGg+DQogICAgICAgICAgICA8ZyBpZD0iVXNlci1JY29uLVdoaXRlLS1QYWdlLTEiIG1hc2s9InVybCgjVXNlci1JY29uLVdoaXRlLS1tYXNrLTIpIiBzdHJva2U9IiNGRkZGRkYiPg0KICAgICAgICAgICAgICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMuMDAwMDAwLCA1LjAwMDAwMCkiIGlkPSJVc2VyLUljb24tV2hpdGUtLUZpbGwtMSI+DQogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xOS4zNywxOS4zMzk1MzQ5IEMxOC4yNjUsMTguOSAxNi45LDE4LjMzNDI1NTggMTYuOSwxNy44OTUzNDg4IEwxNi45LDE1LjA2OTc2NzQgQzE4LjUyNSwxMy44NzY3NDQyIDE5LjUsMTEuOTkzMDIzMyAxOS41LDEwLjA0NjUxMTYgTDE5LjUsNi4yNzkwNjk3NyBDMTkuNSwyLjgyNTU4MTQgMTYuNTc1LDAgMTMsMCBDOS40MjUsMCA2LjUsMi44MjU1ODE0IDYuNSw2LjI3OTA2OTc3IEw2LjUsMTAuMDQ2NTExNiBDNi41LDExLjk5MzAyMzMgNy40NzUsMTMuOTM5NTM0OSA5LjEsMTUuMDY5NzY3NCBMOS4xLDE3Ljg5NTM0ODggQzkuMSwxOC4yNzIwOTMgNy43MzUsMTguODM3MjA5MyA2LjYzLDE5LjMzOTUzNDkgQzMuOTY1LDIwLjQwNjk3NjcgMCwyMi4wMzk1MzQ5IDAsMjYuMzcyMDkzIEwwLDI3IEwyNiwyNyBMMjYsMjYuMzcyMDkzIEMyNiwyMi4wMzk1MzQ5IDIyLjAzNTY1LDIwLjQwNjk3NjcgMTkuMzcsMTkuMzM5NTM0OSI+PC9wYXRoPg0KICAgICAgICAgICAgICAgIDwvZz4NCiAgICAgICAgICAgIDwvZz4NCiAgICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg==');
+  }
+}
+:global(.UserDropdown-root) {
+  position: relative;
+  display: inline-block;
+  :global(.UserDropdown-menu) {
+    /* Combined Shape: */
+    box-shadow: 2px 2px 4px 0 #D9DCE3;
+    position: absolute;
+    z-index: 9999;
+    right: 0;
+    padding: 8px 16px;
+    background-color: $gray-light;
+    border-radius: 4px;
+    margin-top: 12px;
+    &:after {
+      content: " ";
+      display: block;
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      right: 11px;
+      top: -5px;
+      transform: rotate(135deg);
+      border-color: transparent transparent $gray $gray;
+      background-color: $gray-light;
+      z-index: 1001;
+    }
+  }
+  :global(.UserDropdown-option) {
+    cursor: pointer;
+    line-height: 29px;
+    &:hover {
+      color: $blue;
+    }
+  }
+  .userData {
+    padding-bottom: 5px;
+    margin-bottom: 3px;
+    border-bottom: 1px solid $gray;
+    .userName {
+      font-size: 16px;
+      letter-spacing: -0.41px;
+    }
+    .userEmail {
+      font-size: 10px;
+      line-height: 16px;
+      letter-spacing: -0.41px;
+      color: $gray-dark;
+    }
+  }
+}

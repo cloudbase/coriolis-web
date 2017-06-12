@@ -1,0 +1,170 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+.root {
+  height: 100%;
+}
+.pageHeader {
+  padding: 44px 64px 0;
+  flex: 1;
+
+  h1 {
+    float: left;
+    margin: 0;
+  }
+  .top {
+    &:after {
+      content: " ";
+      clear: both;
+      display: block;
+      height: 0;
+    }
+    margin-bottom: 48px;
+  }
+  .topActions {
+    float: right;
+    margin-top: 3px;
+    :global(.Dropdown-root) {
+      margin-right: 16px;
+      float: left;
+      width: 160px;
+      :global(.Dropdown-control) {
+        text-align: left;
+      }
+    }
+
+  }
+  :global(.filters) {
+    :global(.category-filter) {
+      float: left;
+      padding: 2px 8px 2px 0;
+      margin-top: 7px;
+      border-right: 1px solid $gray-dark;
+
+    }
+    :global(.name-filter) {
+      float: left;
+      padding-left: 24px;
+      margin-top: 2px;
+    }
+    &:after {
+      clear: both;
+      content: ' ';
+      display: block;
+      height: 0;
+    }
+  }
+}
+.pageContent {
+  flex: 10;
+  overflow-y: auto;
+  padding: 0 64px;
+}
+.bulkActions {
+  float: right;
+  padding-top: 2px;
+  transition: opacity $animation-swift-out;
+  :global(.Dropdown-root) {
+    width: 160px;
+    float: left;
+  }
+  .migrationsCount {
+    float: left;
+    line-height: 32px;
+    margin-right: 16px;
+  }
+}
+.container {
+  margin: 0 auto;
+  padding: 0;
+  max-width: $max-content-width;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  :global(.items-list) {
+    :global(.item) {
+      position: relative;
+      cursor: pointer;
+      span:global(.cell):nth-child(2) {
+        flex: 3;
+      }
+      span:global(.cell):nth-child(3) {
+        flex: 1;
+        padding-left: 2%;
+        padding-right: 2%;
+      }
+      span:global(.cell):nth-child(4) {
+        flex: 1;
+        padding-right: 8px;
+        min-width: 156px;
+      }
+      span:global(.cell):nth-child(5) {
+        flex: 1;
+        min-width: 126px;
+      }
+      span:global(.cell):nth-child(6) {
+
+      }
+      :global(.checkbox-container) {
+        position: absolute;
+        left: -32px;
+        top: 21px;
+        opacity: 0;
+        transition: opacity $animation-swift-out;
+      }
+      &:hover, &:global(.selected) {
+        :global(.checkbox-container) {
+          opacity: 1;
+        }
+      }
+    }
+    .composite {
+      flex-direction: column;
+      align-items: flex-start;
+      .label {
+        display: block;
+        color: $gray-dark;
+        margin-top: 4px;
+      }
+      .value {
+        color: $blue;
+      }
+    }
+  }
+  .migrationStatus {
+    width: 96px;
+    border-radius: 4px;
+    color: #FFF;
+    line-height: 16px;
+    display: block;
+    font-size: 10px;
+    text-align: center;
+    &:global(.PAUSED) {
+      background-color: $gray;
+    }
+  }
+  .chevronRight {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOHB4IiBoZWlnaHQ9IjEzcHgiIHZpZXdCb3g9IjQgMiA4IDEzIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwb2x5Z29uIGlkPSJDb21iaW5lZC1TaGFwZSIgc3Ryb2tlPSJub25lIiBmaWxsPSIjNjE2NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDguMDAwMDAwLCA4LjM2Mzk2MSkgcm90YXRlKC05MC4wMDAwMDApIHRyYW5zbGF0ZSgtOC4wMDAwMDAsIC04LjM2Mzk2MSkgIiBwb2ludHM9IjggMTAuMzgyMzM3NiAyLjUwMjYwNzAyIDUgMS44MTU0MzI4OSA1LjY3Mjc5MjIxIDggMTEuNzI3OTIyMSAxNC4xODQ1NjcxIDUuNjcyNzkyMjEgMTMuNDk3MzkzIDUgOCAxMC4zODIzMzc2Ij48L3BvbHlnb24+PC9zdmc+');
+    width: 8px;
+    height: 13px;
+    display: inline-block;
+    margin: 0 16px;
+  }
+
+}
