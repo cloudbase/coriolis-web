@@ -27,6 +27,7 @@ import MigrationActions from '../../actions/MigrationActions';
 import LoadingIcon from '../LoadingIcon';
 import TextTruncate from 'react-text-truncate';
 import Location from '../../core/Location';
+import ConfirmationDialog from '../ConfirmationDialog'
 
 const migrationActions = [
   { label: "Cancel", value: "cancel" },
@@ -55,7 +56,13 @@ class MigrationView extends Reflux.Component {
 
     this.state = {
       migration: null,
-      title: 'Coriolis: View Migration'
+      title: 'Coriolis: View Migration',
+      confirmationDialog: {
+        visible: false,
+        message: "Are you sure?",
+        onConfirm: null,
+        onCancel: null
+      }
     }
   }
 
@@ -69,9 +76,21 @@ class MigrationView extends Reflux.Component {
   }
 
   deleteMigration() {
-    let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
-    MigrationActions.deleteMigration(item)
-    Location.push('/cloud-endpoints')
+    this.setState({
+      confirmationDialog: {
+        visible: true,
+        onConfirm: () => {
+          this.setState({ confirmationDialog: { visible: false }})
+          let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
+          MigrationActions.deleteMigration(item)
+          Location.push('/cloud-endpoints')
+        },
+        onCancel: () => {
+          this.setState({ confirmationDialog: { visible: false }})
+        }
+      }
+    })
+
   }
 
   cancelMigration() {
@@ -156,7 +175,7 @@ class MigrationView extends Reflux.Component {
         if (item.status == "RUNNING") {
           buttons = <button className="gray" onClick={(e) => (this.cancelMigration(e))}>Cancel</button>
         } else {
-          buttons = <button className="gray">Delete</button>
+          buttons = <button className="gray" onClick={(e) => this.deleteMigration(e)}>Delete</button>
         }
       }
 
@@ -164,8 +183,6 @@ class MigrationView extends Reflux.Component {
       if (item.type === 'replica' && item.executions.length) {
         itemStatus = item.executions[item.executions.length - 1].status
       }
-
-
 
       return (
         <div className={s.root}>
@@ -215,6 +232,12 @@ class MigrationView extends Reflux.Component {
               {React.cloneElement(this.props.children, { migration: item })}
             </div>
           </div>
+          <ConfirmationDialog
+            visible={this.state.confirmationDialog.visible}
+            message={this.state.confirmationDialog.message}
+            onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
+            onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
+          />
         </div>
       )
     } else {
