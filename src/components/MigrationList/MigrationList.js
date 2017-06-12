@@ -365,7 +365,7 @@ class MigrationList extends Reflux.Component {
                   placeholder="Select"
                   value={this.state.currentProject}
                 />*/}
-                <button onClick={this.newMigration}>New Migration</button>
+                <button onClick={this.newMigration}>New</button>
                 <UserIcon />
                 <NotificationIcon />
               </div>

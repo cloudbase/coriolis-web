@@ -32,6 +32,7 @@ import UserIcon from '../UserIcon';
 import FilteredTable from '../FilteredTable';
 import EndpointUsage from '../EndpointUsage';
 import NotificationIcon from '../NotificationIcon';
+import ConfirmationDialog from '../ConfirmationDialog'
 
 
 const title = 'Cloud Endpoints';
@@ -57,7 +58,13 @@ class ConnectionsList extends Reflux.Component {
       queryText: '',
       filterType: 'all',
       searchMin: true,
-      connections: null
+      connections: null,
+      confirmationDialog: {
+        visible: false,
+        message: "Are you sure?",
+        onConfirm: null,
+        onCancel: null
+      }
     }
   }
 
@@ -130,10 +137,22 @@ class ConnectionsList extends Reflux.Component {
   bulkActions(action) {
     switch (action.value) {
       case "delete":
-        let selectedConnections = this.state.connections.filter((connection) => connection.selected)
-        selectedConnections.forEach(connection => {
-          ConnectionsActions.deleteConnection(connection)
+        this.setState({
+          confirmationDialog: {
+            visible: true,
+            onConfirm: () => {
+              this.setState({ confirmationDialog: { visible: false }})
+              let selectedConnections = this.state.connections.filter((connection) => connection.selected)
+              selectedConnections.forEach(connection => {
+                ConnectionsActions.deleteConnection(connection)
+              })
+            },
+            onCancel: () => {
+              this.setState({ confirmationDialog: { visible: false }})
+            }
+          }
         })
+
         break;
     }
   }
@@ -283,6 +302,12 @@ class ConnectionsList extends Reflux.Component {
             addHandle={(e) => this.closeModal(e)}
           />
         </Modal>
+        <ConfirmationDialog
+          visible={this.state.confirmationDialog.visible}
+          message={this.state.confirmationDialog.message}
+          onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
+          onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
+        />
       </div>
     );
   }

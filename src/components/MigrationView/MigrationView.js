@@ -26,6 +26,7 @@ import MigrationStore from '../../stores/MigrationStore';
 import MigrationActions from '../../actions/MigrationActions';
 import LoadingIcon from '../LoadingIcon';
 import TextTruncate from 'react-text-truncate';
+import Location from '../../core/Location';
 
 const migrationActions = [
   { label: "Cancel", value: "cancel" },
@@ -83,6 +84,15 @@ class MigrationView extends Reflux.Component {
     MigrationActions.executeReplica(item)
   }
 
+  goBack() {
+    let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
+    if (item.type == "migration") {
+      Location.push('/migrations')
+    } else {
+      Location.push('/replicas')
+    }
+
+  }
 
   onMigrationActionsChange(option) {
     let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
@@ -162,6 +172,7 @@ class MigrationView extends Reflux.Component {
           <Header title={title} linkUrl={item.type == "migration" ? "/migrations" : "/replicas"}/>
           <div className={s.migrationHead}>
             <div className={s.container}>
+              <div className="backBtn" onClick={(e) => this.goBack(e)}></div>
               <div className={s.migrationTypeImg + ' icon ' + item.type + "-large"}></div>
               <div className={s.migrationInfo}>
                 <h2>
