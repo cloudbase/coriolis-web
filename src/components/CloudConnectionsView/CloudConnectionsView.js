@@ -136,12 +136,13 @@ class CloudConnectionsView extends Component {
       return (
         <div className={s.root}>
           <Header title={title} linkUrl="/cloud-endpoints"/>
-          <div className={s.connectionHead}>
+          <div className={s.connectionHead + " detailViewHead"}>
             <div className={s.container}>
               <div className="backBtn" onClick={(e) => this.goBack(e)}></div>
               <div className={s.connectionTypeImg + " icon endpoint-white "}></div>
               <div className={s.connectionInfo}>
                 <h2>{item.name}</h2>
+                <p>{item.description}</p>
               </div>
             </div>
           </div>
