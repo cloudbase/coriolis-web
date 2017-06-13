@@ -81,7 +81,7 @@ class Header extends Component {
             <div className="logo coriolis-white"></div>
           </Link>
           <div className={s.banner}>
-            <h1 className={s.bannerTitle}>{this.props.title}</h1>
+            {/*<h1 className={s.bannerTitle}>{this.props.title}</h1>*/}
           </div>
           <div className={s.userIcon}>
             <UserIcon dark={true} />

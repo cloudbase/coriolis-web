@@ -55,21 +55,62 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   font-size: 14px;
   color: $gray-dark;
   letter-spacing: -0.41px;
-  float: right;
-  margin-top: 8px;
+  float: left;
+  margin-top: 22px;
 }
 .pagination {
   font-size: 14px;
   color: $gray-dark;
   letter-spacing: -0.41px;
-  float: left;
-  margin-top: 8px;
+  border: 1px solid $gray;
+  border-radius: $border-radius;
+  width: 98px;
+  margin: 16px auto 0;
+  .prev {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iN3B4IiBoZWlnaHQ9IjEycHgiIHZpZXdCb3g9IjAgMCA3IDEyIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPg0KICAgIDxnIGlkPSJTeW1ib2xzIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPg0KICAgICAgICA8ZyBpZD0iUGFnaW5hdGlvbiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTEyLjAwMDAwMCwgLTEwLjAwMDAwMCkiIHN0cm9rZT0iIzdGODc5NSI+DQogICAgICAgICAgICA8ZyBpZD0iQ2hldnJvbi1HcmV5IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNi4wMDAwMDAsIDE2LjAwMDAwMCkgcm90YXRlKC0yNzAuMDAwMDAwKSB0cmFuc2xhdGUoLTE2LjAwMDAwMCwgLTE2LjAwMDAwMCkgdHJhbnNsYXRlKDguMDAwMDAwLCA4LjAwMDAwMCkiPg0KICAgICAgICAgICAgICAgIDxwb2x5bGluZSBpZD0iUmVjdGFuZ2xlLUNvcHkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDguMDAwMDAwLCA1LjUwMDAwMCkgcm90YXRlKC0zMTUuMDAwMDAwKSB0cmFuc2xhdGUoLTguMDAwMDAwLCAtNS41MDAwMDApICIgcG9pbnRzPSIxMS44ODkwODczIDEuNjEwOTEyNyAxMS44ODkwODczIDkuMzg5MDg3MyA0LjExMDkxMjcgOS4zODkwODczIj48L3BvbHlsaW5lPg0KICAgICAgICAgICAgPC9nPg0KICAgICAgICA8L2c+DQogICAgPC9nPg0KPC9zdmc+');
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    float: left;
+    &:global(.disabled) {
+      opacity: 0.3;
+      cursor: default;
+    }
+  }
+  .next {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iN3B4IiBoZWlnaHQ9IjEycHgiIHZpZXdCb3g9IjAgMCA3IDEyIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPg0KICAgIDxnIGlkPSJTeW1ib2xzIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPg0KICAgICAgICA8ZyBpZD0iUGFnaW5hdGlvbiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3NC4wMDAwMDAsIC0xMC4wMDAwMDApIiBzdHJva2U9IiM3Rjg3OTUiPg0KICAgICAgICAgICAgPGcgaWQ9IkNoZXZyb24tR3JleSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTc3LjAwMDAwMCwgMTYuMDAwMDAwKSByb3RhdGUoLTkwLjAwMDAwMCkgdHJhbnNsYXRlKC0xNzcuMDAwMDAwLCAtMTYuMDAwMDAwKSB0cmFuc2xhdGUoMTY5LjAwMDAwMCwgOC4wMDAwMDApIj4NCiAgICAgICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlJlY3RhbmdsZS1Db3B5IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4LjAwMDAwMCwgNS41MDAwMDApIHJvdGF0ZSgtMzE1LjAwMDAwMCkgdHJhbnNsYXRlKC04LjAwMDAwMCwgLTUuNTAwMDAwKSAiIHBvaW50cz0iMTEuODg5MDg3MyAxLjYxMDkxMjcgMTEuODg5MDg3MyA5LjM4OTA4NzMgNC4xMTA5MTI3IDkuMzg5MDg3MyI+PC9wb2x5bGluZT4NCiAgICAgICAgICAgIDwvZz4NCiAgICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg==');
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    float: left;
+    &:global(.disabled) {
+      opacity: 0.3;
+      cursor: default;
+    }
+  }
   span {
-    margin-right: 5px;
     cursor: pointer;
   }
   .currentPage {
     font-weight: 500;
     cursor: default;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    float: left;
+    text-align: center;
+    line-height: 32px;
+    border-left: 1px solid $gray;
+    border-right: 1px solid $gray;
+  }
+  &:after {
+    display: block;
+    clear: both;
+    height: 0;
+    content: " ";
   }
 }

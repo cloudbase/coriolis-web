@@ -261,9 +261,15 @@ class WizardVms extends Component {
             {this.instancesSelected()} VMs selected
           </div>
           <div className={s.pagination}>
-            {this.state.page > 0 && (<span onClick={(e) => this.previousPage(e)}>Back</span>)}
-            <span className={s.currentPage}>Page: {this.state.page + 1}</span>
-            {this.state.filteredData && (itemsPerPage == this.state.filteredData.length && (<span onClick={(e) => this.nextPage(e)}>Next</span>))}
+            <span
+              className={(this.state.page == 0 ? "disabled " : "")+ s.prev}
+              onClick={(e) => this.previousPage(e)}
+            ></span>
+            <span className={s.currentPage}>{this.state.page + 1}</span>
+            <span
+              className={(this.state.filteredData && this.state.filteredData.length ? "disabled " : "") + s.next}
+              onClick={(e) => this.nextPage(e)}
+            ></span>
           </div>
         </div>
       </div>

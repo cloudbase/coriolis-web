@@ -142,7 +142,7 @@ class CloudItem extends Component {
         width: "576px",
         height: "auto",
         left: "50%",
-        top: "20%",
+        top: "70px",
         marginLeft: "-288px"
       }
     }

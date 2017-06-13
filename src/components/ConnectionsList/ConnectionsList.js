@@ -236,7 +236,7 @@ class ConnectionsList extends Reflux.Component {
         width: "576px",
         height: "auto",
         left: "50%",
-        top: "3%",
+        top: "70px",
         marginLeft: "-288px"
       }
     }
