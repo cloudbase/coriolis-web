@@ -141,10 +141,10 @@ button {
   }
 
   &:global(.gray) {
-    background-color: $gray;
-    border-color: $gray;
+    background-color: $task-gray-light;
+    border-color: $task-gray-light;
     &:hover {
-      background-color: $gray-dark;
+      background-color: $gray;
     }
     &:disabled:hover {
       background-color: $gray;
@@ -159,6 +159,14 @@ button {
     background-color: #FFF;
     &:hover {
       opacity: 0.75;
+    }
+    &:global(.grey) {
+      border-color: $gray;
+      color: $black;
+    }
+    &:global(.red) {
+      border-color: $red;
+      color: $red;
     }
   }
 }

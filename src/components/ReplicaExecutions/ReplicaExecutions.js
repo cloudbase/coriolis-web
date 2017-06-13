@@ -41,6 +41,7 @@ class ReplicaExecutions extends Component {
 
     this.state = {
       currentExecution: null,
+      executionRef: null,
       tasks: null
     }
   }
@@ -67,6 +68,7 @@ class ReplicaExecutions extends Component {
           label: `${execution.number} - ${moment(execution.created_at).format("MMM Do YYYY HH:mm")} - ${execution.status}`,
           value: execution.id
         },
+        executionRef: execution,
         tasks: execution.tasks
       })
     }
@@ -76,6 +78,7 @@ class ReplicaExecutions extends Component {
     let execution = this.props.migration.executions.filter(execution => execution.id == option.value)[0]
     this.setState({
       currentExecution: option,
+      executionRef: execution,
       tasks: execution.tasks
     })
   }
@@ -118,10 +121,10 @@ class ReplicaExecutions extends Component {
 
   render() {
     if (this.props.migration) {
-      let executionBtn = <button onClick={(e) => this.executeNow(e)}>Execute Now</button>
+      let executionBtn = <button className="red wire" onClick={(e) => this.executeNow(e)}>Delete execution</button>
       if (this.props.migration.executions &&
         this.props.migration.executions[this.props.migration.executions.length - 1].status == "RUNNING") {
-        executionBtn = <button className="gray" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>
+        executionBtn = <button className="gray wire" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>
       }
 
       let executionsSorted = this.props.migration.executions
@@ -137,16 +140,24 @@ class ReplicaExecutions extends Component {
       return (
         <div className={s.root}>
           <div className={s.container}>
+            <Dropdown
+              options={executions}
+              onChange={(e) => this.changeExecution(e)}
+              placeholder="Select execution"
+              value={this.state ? this.state.currentExecution : null}
+              className={s.changeExecutionBtn}
+            />
             <div className={s.executionsWrapper}>
-
-              <Dropdown
-                options={executions}
-                onChange={(e) => this.changeExecution(e)}
-                placeholder="Select execution"
-                value={this.state ? this.state.currentExecution : null}
-                className={s.changeExecutionBtn}
-              />
-              {executionBtn}
+              <div className={s.leftSide}>
+                <h4>Execution #{this.state.executionRef && this.state.executionRef.number}</h4>
+                <span className={s.date}>
+                  {this.state.executionRef && moment(this.state.executionRef.created_at).format("MMM Do YYYY HH:mm")}
+                </span>
+                <span className={"status-pill " + this.props.migration.status}>{this.props.migration.status}</span>
+              </div>
+              <div className={s.rightSide}>
+                {executionBtn}
+              </div>
             </div>
             <Tasks tasks={this.state.tasks}/>
           </div>

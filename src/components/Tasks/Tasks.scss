@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   margin: 0 auto;
   padding: 0 0 40px;
   max-width: $max-content-width;
+
   :global(.row), :global(.headerItems) {
     :global(.cell) {
       &:nth-child(1) {
@@ -36,10 +37,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     transition: background $animation-swift-out;
   }
+  .table {
+    background-color: $gray-light;
+    :global(.headerItems) {
+      border-bottom: 1px solid $task-gray-light;
+      padding: 0 0 0 8px;
+      :global(.cell) {
+        height: 32px;
+        line-height: 32px;
+        color: $task-gray-light;
+      }
+    }
+  }
   :global(.row) {
     cursor: pointer;
+    border-bottom: 1px solid #FFF !important;
     &:hover {
-      background-color: $gray-light;
+      background-color: $task-gray;
     }
   }
   :global(.taskIcon) {
@@ -49,7 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     float: left;
     margin: 1px 8px 0 8px;
     &:global(.COMPLETED) {
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PGRlZnM+PGNpcmNsZSBpZD0icGF0aC0xIiBjeD0iOCIgY3k9IjgiIHI9IjgiPjwvY2lyY2xlPjxtYXNrIGlkPSJtYXNrLTIiIG1hc2tDb250ZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBtYXNrVW5pdHM9Im9iamVjdEJvdW5kaW5nQm94IiB4PSIwIiB5PSIwIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IndoaXRlIj48dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPjwvbWFzaz48L2RlZnM+PGcgaWQ9Ikdyb3VwLTMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGlkPSJHcm91cC0yIj48dXNlIGlkPSJPdmFsLTIiIHN0cm9rZT0iIzAwNTZCOCIgbWFzaz0idXJsKCNtYXNrLTIpIiBzdHJva2Utd2lkdGg9IjMuMDQ3NjE5MDUiIGZpbGw9IiMwMDU2QjgiIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPjxwb2x5bGluZSBpZD0iU3Ryb2tlLTMiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHBvaW50cz0iMTIgNiA3LjA4MzA3NDE5IDExIDQgOC4wMDM5NzU0MiI+PC9wb2x5bGluZT48L2c+PC9nPjwvc3ZnPg==');
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+DQogICAgPGcgaWQ9IlN5bWJvbHMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPg0KICAgICAgICA8ZyBpZD0iSWNvbi1PayI+DQogICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTIiIGZpbGw9IiM0Q0Q5NjQiIGN4PSI4IiBjeT0iOCIgcj0iOCI+PC9jaXJjbGU+DQogICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlN0cm9rZS0zIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgcG9pbnRzPSIxMiA2IDcuMDgzMDc0MTkgMTEgNCA4LjAwMzk3NTQyIj48L3BvbHlsaW5lPg0KICAgICAgICA8L2c+DQogICAgPC9nPg0KPC9zdmc+');
     }
     &:global(.RUNNING) {
       background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PGcgaWQ9Ikdyb3VwLTciIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgaWQ9Ik92YWwtMi1Db3B5IiBmaWxsPSIjQTRBQUI1IiBjeD0iOCIgY3k9IjgiIHI9IjgiPjwvY2lyY2xlPjxwYXRoIGQ9Ik0xNiw4IEMxNiwzLjU4MTcyMiAxMi40MTgyNzgsMCA4LDAgTDgsOCBMMTYsOCBaIiBpZD0iQ29tYmluZWQtU2hhcGUiIGZpbGw9IiMwMDU2QjgiPjwvcGF0aD48Y2lyY2xlIGlkPSJPdmFsLTItQ29weSIgZmlsbD0iI0ZGRkZGRiIgY3g9IjgiIGN5PSI4IiByPSI2Ij48L2NpcmNsZT48L2c+PC9zdmc+');
@@ -70,8 +84,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
   }
   :global(.row.isOpen) {
-    background-color: $gray-light;
-
+    background-color: $task-gray;
   }
   .taskDetails {
     padding: 20px 32px 4px;

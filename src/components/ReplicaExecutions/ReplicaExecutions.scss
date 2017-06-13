@@ -33,21 +33,59 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       &:nth-child(4) {width: 20%;}
     }
   }
+  :global(.Dropdown-root) {
+    margin-bottom: 16px;
+  }
   .executionsWrapper {
-    margin-bottom: 24px;
-    :global(.Dropdown-root) {
-      float: left;
-      width: 40%;
+    background-color: $gray-light;
+    padding: 16px;
+
+    &:after {
+      clear: both;
+      display: block;
+      height: 0;
+      content: " ";
     }
-    button{
+    .rightSide {
       float: right;
-      margin-left: 16px;
+    }
+    .leftSide {
+      float: left;
+      h4 {
+        margin: 0;
+        font-weight: 300;
+        font-size: 18px;
+        color: $black;
+        float: left;
+      }
+      .date {
+        font-size: 14px;
+        color: $gray-dark;
+        float: left;
+        letter-spacing: 0;
+        margin-left: 16px;
+        margin-top: 4px;
+      }
+      :global(.status-pill) {
+        float: left;
+        margin-left: 24px;
+        margin-top: 3px;
+      }
+      &:after {
+        clear: both;
+        display: block;
+        height: 0;
+        content: " ";
+      }
     }
     &:after {
       clear: both;
       display: block;
       height: 0;
       content: " ";
+    }
+    button {
+
     }
   }
 }
