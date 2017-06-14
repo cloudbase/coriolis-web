@@ -61,88 +61,90 @@ class Tasks extends Component {
 
   componentWillReceiveProps(newProps, oldProps) {
     let listItems = []
-    newProps.tasks.forEach((item) => {
-      let latestMessage
-      if (item.progress_updates.length && item.progress_updates[item.progress_updates.length - 1]) {
-        latestMessage = item.progress_updates[item.progress_updates.length - 1].message
-      } else {
-        latestMessage = "-"
-      }
-
-      let progressUpdates = []
-      if (item.progress_updates.length) {
-        let first = true
-
-        if (item.progress_updates[0] !== null) {
-          item.progress_updates.sort((a, b) => moment(a.created_at).isAfter(moment(b.created_at)))
+    if (newProps.tasks) {
+      newProps.tasks.forEach((item) => {
+        let latestMessage
+        if (item.progress_updates.length && item.progress_updates[item.progress_updates.length - 1]) {
+          latestMessage = item.progress_updates[item.progress_updates.length - 1].message
+        } else {
+          latestMessage = "-"
         }
-        for (let i = item.progress_updates.length - 1; i >= 0; i--) {
-          let date = "-"
-          if (item.progress_updates[i]) {
-            date = moment(item.progress_updates[i].created_at).format("YYYY-MM-DD HH:mm:ss")
 
-            progressUpdates.push(
-              <div key={"progress_" + i} className={first ? " first" : ""}>
-                <span>{date}</span>
-                <span>
-                  {item.progress_updates[i] && item.progress_updates[i].message}
-                  {hasProgress(item.progress_updates[i].message) &&
-                    <ProgressBar progress={hasProgress(item.progress_updates[i].message)}/>
-                  }
-                </span>
-              </div>)
-            first = false
+        let progressUpdates = []
+        if (item.progress_updates.length) {
+          let first = true
+
+          if (item.progress_updates[0] !== null) {
+            item.progress_updates.sort((a, b) => moment(a.created_at).isAfter(moment(b.created_at)))
           }
-        }
-        if (progressUpdates.length == 0) {
+          for (let i = item.progress_updates.length - 1; i >= 0; i--) {
+            let date = "-"
+            if (item.progress_updates[i]) {
+              date = moment(item.progress_updates[i].created_at).format("YYYY-MM-DD HH:mm:ss")
+
+              progressUpdates.push(
+                <div key={"progress_" + i} className={first ? " first" : ""}>
+                  <span>{date}</span>
+                  <span>
+                    {item.progress_updates[i] && item.progress_updates[i].message}
+                    {hasProgress(item.progress_updates[i].message) &&
+                    <ProgressBar progress={hasProgress(item.progress_updates[i].message)}/>
+                    }
+                  </span>
+                </div>)
+              first = false
+            }
+          }
+          if (progressUpdates.length == 0) {
+            progressUpdates = "N/A"
+          }
+        } else {
           progressUpdates = "N/A"
         }
-      } else {
-        progressUpdates = "N/A"
-      }
 
-      let taskDetails = (<div className={s.taskDetails}>
-        <div className={s.group}>
-          <div className={s.detailTitle}>Status</div>
-          <div className={s.detailValue}><span className={"status-pill " + item.status}>{item.status}</span></div>
-        </div>
-        <div className={s.group}>
-          <div className={s.detailTitle}>ID</div>
-          <div className={s.detailValue}>{item.id}</div>
-        </div>
-        <div className={s.group}>
-          <div className={s.detailTitle}>Exception details</div>
-          <div className={s.detailValue}>
-            {item.exception_details && item.exception_details.length ?
-              (<TextTruncate line={10} text={item.exception_details} truncateText="..." />) : "N/A"}
+        let taskDetails = (<div className={s.taskDetails}>
+          <div className={s.group}>
+            <div className={s.detailTitle}>Status</div>
+            <div className={s.detailValue}><span className={"status-pill " + item.status}>{item.status}</span></div>
           </div>
-        </div>
-        <div className={s.group}>
-          <div className={s.detailTitle}>Depends on</div>
-          <div className={s.detailValue}>{item.depends_on && item.depends_on[0] ? item.depends_on[0] : "N/A"}</div>
-        </div>
-        <div className={s.group + " " + s.progressUpdates}>
-          <div className={s.detailTitle}>Progress Updates</div>
-          <div className={s.detailValue}>{progressUpdates}</div>
-        </div>
-      </div>)
+          <div className={s.group}>
+            <div className={s.detailTitle}>ID</div>
+            <div className={s.detailValue}>{item.id}</div>
+          </div>
+          <div className={s.group}>
+            <div className={s.detailTitle}>Exception details</div>
+            <div className={s.detailValue}>
+              {item.exception_details && item.exception_details.length ?
+                (<TextTruncate line={10} text={item.exception_details} truncateText="..."/>) : "N/A"}
+            </div>
+          </div>
+          <div className={s.group}>
+            <div className={s.detailTitle}>Depends on</div>
+            <div className={s.detailValue}>{item.depends_on && item.depends_on[0] ? item.depends_on[0] : "N/A"}</div>
+          </div>
+          <div className={s.group + " " + s.progressUpdates}>
+            <div className={s.detailTitle}>Progress Updates</div>
+            <div className={s.detailValue}>{progressUpdates}</div>
+          </div>
+        </div>)
 
-      let taskType = item.task_type.replace(/_/g, " ").toLowerCase()
-      taskType = taskType.charAt(0).toUpperCase() + taskType.slice(1)
+        let taskType = item.task_type.replace(/_/g, " ").toLowerCase()
+        taskType = taskType.charAt(0).toUpperCase() + taskType.slice(1)
 
-      let newItem = {
-        task_type: (<span>
-          <span className={"taskIcon " + item.status} />
-          <TextTruncate line={1} truncateText="..." text={taskType} />
-        </span>),
-        instance: <TextTruncate line={1} text={item.instance} truncateText="..." />,
-        latest_message: <TextTruncate line={1} truncateText="..." text={latestMessage} />,
-        timestamp: item.updated_at ? moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss") : "-",
-        detailView: taskDetails,
-        openState: item.status === 'RUNNING'
-      }
-      listItems.push(newItem)
-    }, this)
+        let newItem = {
+          task_type: (<span>
+            <span className={"taskIcon " + item.status}/>
+            <TextTruncate line={1} truncateText="..." text={taskType}/>
+          </span>),
+          instance: <TextTruncate line={1} text={item.instance} truncateText="..."/>,
+          latest_message: <TextTruncate line={1} truncateText="..." text={latestMessage}/>,
+          timestamp: item.updated_at ? moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss") : "-",
+          detailView: taskDetails,
+          openState: item.status === 'RUNNING'
+        }
+        listItems.push(newItem)
+      }, this)
+    }
     this.setState({ listItems: listItems })
   }
 
@@ -150,15 +152,15 @@ class Tasks extends Component {
   render() {
     return (
       <div className={s.root}>
-        { this.state &&
-          <div className={s.container}>
+        { this.state ?
+          (<div className={s.container}>
             <Table
               headerItems={this.headers}
               listItems={this.state ? this.state.listItems : null}
               customClassName={s.table}
               show={this.state !== null}
             />
-          </div>
+          </div>) : <LoadingIcon/>
         }
       </div>
     );

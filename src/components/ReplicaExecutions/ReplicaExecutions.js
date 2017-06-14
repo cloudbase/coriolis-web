@@ -23,7 +23,9 @@ import LoadingIcon from '../LoadingIcon';
 import moment from 'moment';
 import MigrationActions from '../../actions/MigrationActions';
 import Tasks from '../Tasks';
+import ExecutionsTimeline from '../ExecutionsTimeline';
 import {tasksPollTimeout} from '../../config'
+
 
 const title = 'Replica Executions';
 
@@ -147,6 +149,7 @@ class ReplicaExecutions extends Component {
               value={this.state ? this.state.currentExecution : null}
               className={s.changeExecutionBtn}
             />
+            <ExecutionsTimeline executions={this.props.migration.executions} currentExecution={this.state.executionRef}/>
             <div className={s.executionsWrapper}>
               <div className={s.leftSide}>
                 <h4>Execution #{this.state.executionRef && this.state.executionRef.number}</h4>
