@@ -153,7 +153,7 @@ class ReplicaExecutions extends Component {
                 <span className={s.date}>
                   {this.state.executionRef && moment(this.state.executionRef.created_at).format("MMM Do YYYY HH:mm")}
                 </span>
-                <span className={"status-pill " + this.props.migration.status}>{this.props.migration.status}</span>
+                <span className={"status-pill " + this.state.executionRef.status}>{this.state.executionRef.status}</span>
               </div>
               <div className={s.rightSide}>
                 {executionBtn}

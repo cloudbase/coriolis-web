@@ -176,25 +176,29 @@ class WizardVms extends Component {
   }
 
   nextPage() {
-    this.setState({page: this.state.page + 1}, () => {
-      ConnectionsActions.loadInstances(
-        {id: this.props.data.sourceCloud.credential.id},
-        this.state.page,
-        this.state.queryText
-      )
-      this.processProps({ data: { instances: this.props.data.instances }})
-    })
+    if (this.state.filteredData && this.state.filteredData.length == itemsPerPage) {
+      this.setState({page: this.state.page + 1}, () => {
+        ConnectionsActions.loadInstances(
+          {id: this.props.data.sourceCloud.credential.id},
+          this.state.page,
+          this.state.queryText
+        )
+        this.processProps({data: {instances: this.props.data.instances}})
+      })
+    }
   }
 
   previousPage() {
-    this.setState({page: this.state.page + -1}, () => {
-      ConnectionsActions.loadInstances(
-        {id: this.props.data.sourceCloud.credential.id},
-        this.state.page,
-        this.state.queryText
-      )
-      this.processProps({ data: { instances: this.props.data.instances }})
-    })
+    if (this.state.page > 0) {
+      this.setState({page: this.state.page + -1}, () => {
+        ConnectionsActions.loadInstances(
+          {id: this.props.data.sourceCloud.credential.id},
+          this.state.page,
+          this.state.queryText
+        )
+        this.processProps({data: {instances: this.props.data.instances}})
+      })
+    }
   }
 
   renderSearch() {
@@ -267,7 +271,7 @@ class WizardVms extends Component {
             ></span>
             <span className={s.currentPage}>{this.state.page + 1}</span>
             <span
-              className={(this.state.filteredData && this.state.filteredData.length ? "disabled " : "") + s.next}
+              className={(this.state.filteredData && this.state.filteredData.length == itemsPerPage ? " " : "disabled ") + s.next}
               onClick={(e) => this.nextPage(e)}
             ></span>
           </div>

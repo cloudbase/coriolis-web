@@ -160,7 +160,7 @@ button {
     &:hover {
       opacity: 0.75;
     }
-    &:global(.grey) {
+    &:global(.gray) {
       border-color: $gray;
       color: $black;
     }

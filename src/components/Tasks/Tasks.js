@@ -119,7 +119,7 @@ class Tasks extends Component {
         </div>
         <div className={s.group}>
           <div className={s.detailTitle}>Depends on</div>
-          <div className={s.detailValue}>{item.depends_on ? item.depends_on[0] : "N/A"}</div>
+          <div className={s.detailValue}>{item.depends_on && item.depends_on[0] ? item.depends_on[0] : "N/A"}</div>
         </div>
         <div className={s.group + " " + s.progressUpdates}>
           <div className={s.detailTitle}>Progress Updates</div>
