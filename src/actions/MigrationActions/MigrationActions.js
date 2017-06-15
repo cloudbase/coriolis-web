@@ -30,7 +30,7 @@ let MigrationActions = Reflux.createActions({
   'getReplicaExecutions': { children: ['completed', 'failed'] },
   'getReplicaExecutionDetail': { children: ['completed', 'failed'] },
   'createMigrationFromReplica': { children: ['completed', 'failed'] },
-  'reloadReplicaExecution': { children: ['completed', 'failed'] },
+  'deleteReplicaExecution': { children: ['completed', 'failed'] },
   'getMigration': {},
   'setMigration': {},
   'setMigrationProperty': {}
@@ -180,6 +180,21 @@ MigrationActions.getReplicaExecutionDetail.listen((replica, executionId, callbac
       }
     }, MigrationActions.getReplicaExecutionDetail.failed)
     .catch(MigrationActions.getReplicaExecutionDetail.failed);
+})
+
+MigrationActions.deleteReplicaExecution.listen((replica, executionId, callback = null) => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  Api.sendAjaxRequest({
+    url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}/executions/${executionId}`,
+    method: "DELETE"
+  })
+    .then((response) => {
+      MigrationActions.deleteReplicaExecution.completed(replica, executionId, response)
+      if (callback) {
+        callback(replica, executionId, response)
+      }
+    }, MigrationActions.deleteReplicaExecution.failed)
+    .catch(MigrationActions.deleteReplicaExecution.failed);
 })
 
 MigrationActions.addMigration.listen((migration) => {

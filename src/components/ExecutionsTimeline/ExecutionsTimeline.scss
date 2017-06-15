@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 .root {
   position: relative;
-  padding-bottom: 16px;
+  padding: 8px 0 40px;
   .line {
     background-color: $execution-line-color;
     height: 2px;
@@ -37,12 +37,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin-left: -44px;
     margin-top: -8px;
     text-align: center;
+    transition: all $animation-swift-out;
+    cursor: pointer;
     :global(.taskIcon) {
       float: none;
       margin: 0 auto;
     }
     &.current {
       font-weight: 500;
+      :global(.taskIcon) {
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+      }
+    }
+  }
+  .caretLeft {
+    position: absolute;
+    cursor: pointer;
+    top: -12px;
+    left: -24px;
+    opacity: 0;
+    transition: opacity $animation-swift-out;
+    padding: 8px;
+  }
+  .caretRight {
+    position: absolute;
+    cursor: pointer;
+    top: -12px;
+    right: -24px;
+    opacity: 0;
+    transition: all $animation-swift-out;
+    padding: 8px;
+    transform: rotate(180deg);
+  }
+  &:hover {
+    .caretLeft {
+      opacity: 1;
+    }
+    .caretRight {
+      opacity: 1;
     }
   }
 }

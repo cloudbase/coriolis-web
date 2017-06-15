@@ -41,8 +41,9 @@ class ReplicaExecutions extends Component {
   constructor(props) {
     super(props)
 
+    this.changeExecution = this.changeExecution.bind(this)
+
     this.state = {
-      currentExecution: null,
       executionRef: null,
       tasks: null
     }
@@ -65,24 +66,11 @@ class ReplicaExecutions extends Component {
   componentWillReceiveProps(newProps, oldProps) {
     if (newProps.migration && newProps.migration.executions.length) {
       let execution = newProps.migration.executions[newProps.migration.executions.length - 1]
-      this.setState( {
-        currentExecution: {
-          label: `${execution.number} - ${moment(execution.created_at).format("MMM Do YYYY HH:mm")} - ${execution.status}`,
-          value: execution.id
-        },
+      this.setState({
         executionRef: execution,
         tasks: execution.tasks
       })
     }
-  }
-
-  changeExecution(option) {
-    let execution = this.props.migration.executions.filter(execution => execution.id == option.value)[0]
-    this.setState({
-      currentExecution: option,
-      executionRef: execution,
-      tasks: execution.tasks
-    })
   }
 
   executeNow() {
@@ -97,8 +85,14 @@ class ReplicaExecutions extends Component {
     })
   }
 
+  deleteExecution() {
+    MigrationActions.cancelMigration(this.props.migration, (replica, response) => {
+      this.refreshExecution()
+    })
+  }
+
   refreshExecution() {
-    MigrationActions.getReplicaExecutionDetail(this.props.migration, this.state.currentExecution.value,
+    MigrationActions.getReplicaExecutionDetail(this.props.migration, this.state.executionRef.id,
       (replica, executionId, response) => {
         let props = this.props
         props.migration.tasks = response.data.execution.tasks
@@ -111,7 +105,7 @@ class ReplicaExecutions extends Component {
   pollTasks() {
     if (this.props && this.props.migration) {
       if (this.props.migration.executions[this.props.migration.executions.length - 1].status == "RUNNING") {
-        MigrationActions.getReplicaExecutionDetail(this.props.migration, this.state.currentExecution.value,
+        MigrationActions.getReplicaExecutionDetail(this.props.migration, this.state.executionRef.id,
           (replica, executionId, response) => {
             this.setState({
               tasks: response.data.execution.tasks
@@ -121,9 +115,16 @@ class ReplicaExecutions extends Component {
     }
   }
 
+  changeExecution(execution) {
+    this.setState({
+      executionRef: execution,
+      tasks: execution.tasks
+    })
+  }
+
   render() {
     if (this.props.migration) {
-      let executionBtn = <button className="red wire" onClick={(e) => this.executeNow(e)}>Delete execution</button>
+      let executionBtn = null //<button className="red wire" onClick={(e) => this.deleteExecution(e)}>Delete execution</button>
       if (this.props.migration.executions &&
         this.props.migration.executions[this.props.migration.executions.length - 1].status == "RUNNING") {
         executionBtn = <button className="gray wire" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>
@@ -132,24 +133,14 @@ class ReplicaExecutions extends Component {
       let executionsSorted = this.props.migration.executions
       executionsSorted.sort((a, b) => a.number - b.number)
 
-      let executions = executionsSorted.map(execution => {
-        return {
-          label: `${execution.number} - ${moment(execution.created_at).format("MMM Do YYYY HH:mm")} - ${execution.status}`,
-          value: execution.id
-        }
-      })
-
       return (
         <div className={s.root}>
           <div className={s.container}>
-            <Dropdown
-              options={executions}
-              onChange={(e) => this.changeExecution(e)}
-              placeholder="Select execution"
-              value={this.state ? this.state.currentExecution : null}
-              className={s.changeExecutionBtn}
+            <ExecutionsTimeline
+              executions={this.props.migration.executions}
+              currentExecution={this.state.executionRef}
+              handleChangeExecution={this.changeExecution}
             />
-            <ExecutionsTimeline executions={this.props.migration.executions} currentExecution={this.state.executionRef}/>
             <div className={s.executionsWrapper}>
               <div className={s.leftSide}>
                 <h4>Execution #{this.state.executionRef && this.state.executionRef.number}</h4>

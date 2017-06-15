@@ -27,12 +27,13 @@ class ExecutionsTimeline extends Component {
 
   static propTypes = {
     executions: PropTypes.array,
-    currentExecution: PropTypes.object
+    currentExecution: PropTypes.object,
+    handleChangeExecution: PropTypes.func,
   }
 
   static defaultProps = {
     executions: null,
-    currentExecution: null
+    currentExecution: null,
   }
 
   constructor(props) {
@@ -47,14 +48,11 @@ class ExecutionsTimeline extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    let executions = this.props.executions
-    executions.sort((a, b) => {
-      return a.number - b.number;
-    })
+    let executions = this._getExecutions()
     let number = newProps.currentExecution.number - 1
     let visibleExecutions = []
     let count = 0
-    for (let i = number - ((numberOfExecutions - 1) / 2); i<= number + ((numberOfExecutions - 1) / 2); i++) {
+    for (let i = number - ((numberOfExecutions - 1) / 2); i <= number + ((numberOfExecutions - 1) / 2); i++) {
       visibleExecutions[count] = executions[i]
       count++
     }
@@ -63,13 +61,54 @@ class ExecutionsTimeline extends Component {
     })
   }
 
+  _getExecutions() {
+    let executions = this.props.executions
+    executions.sort((a, b) => {
+      return a.number - b.number;
+    })
+    return executions
+  }
+
+  isNext() {
+    let executions = this._getExecutions()
+    let number = this.props.currentExecution.number - 1
+    return executions[number + 1]
+  }
+
+  isPrev() {
+    let executions = this._getExecutions()
+    let number = this.props.currentExecution.number - 1
+    return executions[number - 1]
+  }
+
+  handleNext() {
+    let executions = this._getExecutions()
+    let number = this.props.currentExecution.number - 1
+    if (executions[number + 1]) {
+      this.props.handleChangeExecution(executions[number + 1])
+    }
+  }
+
+  handlePrev() {
+    let executions = this._getExecutions()
+    let number = this.props.currentExecution.number - 1
+    if (executions[number - 1]) {
+      this.props.handleChangeExecution(executions[number - 1])
+    }
+  }
+
   render() {
     let dotDistance = 100 / (numberOfExecutions + 1)
     let executions = this.state.visibleExecutions.map((execution, index) => {
       if (execution) {
         let style = { left: dotDistance * (index + 1) + "%"}
         return (
-          <div className={s.executionDot + (index == (numberOfExecutions - 1) / 2 ? (" " + s.current) : "")} style={style}>
+          <div
+            className={s.executionDot + (index == (numberOfExecutions - 1) / 2 ? (" " + s.current) : "")}
+            style={style}
+            onClick={(e) => this.props.handleChangeExecution(execution)}
+            key={"execution_" + index}
+          >
             <div className={"taskIcon " + execution.status}></div>
             <Moment format="D MMM YYYY" date={execution.created_at} />
           </div>
@@ -77,17 +116,17 @@ class ExecutionsTimeline extends Component {
       } else {
         return null;
       }
-
     })
-    return <div className={s.root}>
+    return (
       <div className={s.root}>
         <div className={s.line}>
+          { this.isPrev() && <div className={s.caretLeft + " icon chevron"} onClick={(e) => this.handlePrev()}></div>}
           <div className={s.progress}></div>
-
+          { this.isNext() && <div className={s.caretRight + " icon chevron"} onClick={(e) => this.handleNext()}></div>}
         </div>
         {executions}
       </div>
-    </div>
+    )
   }
 
 }
