@@ -49,7 +49,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: $weight-semibold;
     font-size: 10px;
     color: $gray-dark;
-    letter-spacing: -0.34px;
     text-transform: uppercase;
     margin-bottom: 8px;
   }
@@ -57,13 +56,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: $weight-semibold;
     font-size: 14px;
     color: $gray;
-    letter-spacing: -0.41px;
   }
   .value {
     font-weight: $weight-regular;
     font-size: 14px;
     color: $black;
-    letter-spacing: -0.41px;
     a {
       color: $blue;
     }

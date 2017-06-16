@@ -33,7 +33,6 @@ $brand-color: #FFF;
     font-size: 32px;
     line-height: 32px;
     color: #FFFFFF;
-    letter-spacing: -0.81px;
     min-width: $wizard-content-width;
     padding: 16px 32px;
   }
@@ -128,7 +127,6 @@ $brand-color: #FFF;
       a {
         font-size: 18px;
         color: #FFFFFF;
-        letter-spacing: -0.27px;
         cursor: pointer;
         &:hover {
           color :$blue;

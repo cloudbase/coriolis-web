@@ -78,7 +78,7 @@ class Header extends Component {
             <span></span>
           </div>
           <Link className={s.brand} to={this.props.linkUrl}>
-            <div className="logo coriolis-white"></div>
+            <div className="logo coriolis-white-topbar"></div>
           </Link>
           <div className={s.banner}>
             {/*<h1 className={s.bannerTitle}>{this.props.title}</h1>*/}

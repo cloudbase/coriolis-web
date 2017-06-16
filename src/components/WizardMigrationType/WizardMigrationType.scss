@@ -50,7 +50,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: $weight-regular;
     font-size: 14px;
     color: $gray;
-    letter-spacing: -0.41px;
     transition: color $animation-swift-out;
   }
   textarea {
@@ -104,7 +103,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: $weight-light;
     color: $gray;
     margin-top: 0;
-    letter-spacing: -0.61px;
     transition: color $animation-swift-out;
   }
 }
@@ -133,4 +131,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 
 }
-

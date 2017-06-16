@@ -68,7 +68,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         font-weight: $weight-semibold;
         font-size: 10px;
         color: $black;
-        letter-spacing: -0.34px;
         text-transform: uppercase;
         margin-bottom: 5px;
       }
@@ -76,7 +75,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         font-weight: $weight-regular;
         font-size: 14px;
         color: $gray-dark;
-        letter-spacing: -0.41px;
       }
       &:nth-child(2n) {
         width: 500px;
@@ -119,4 +117,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 
 }
-

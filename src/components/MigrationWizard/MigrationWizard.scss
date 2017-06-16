@@ -28,7 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: $weight-light;
     font-size: 32px;
     color: #0056B8;
-    letter-spacing: -0.81px;
     text-align: center;
     background-color: #FFF;
     width: $wizard-content-width;
@@ -61,7 +60,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     span {
       display: inline-block;
       margin-right: 7px;
-      letter-spacing: -0.4px;
       color: $gray;
       &:after {
         content: " ";
