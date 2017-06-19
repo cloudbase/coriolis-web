@@ -25,6 +25,7 @@ import MigrationActions from '../../actions/MigrationActions';
 import Tasks from '../Tasks';
 import ExecutionsTimeline from '../ExecutionsTimeline';
 import {tasksPollTimeout} from '../../config'
+import ConfirmationDialog from '../ConfirmationDialog'
 
 
 const title = 'Replica Executions';
@@ -45,7 +46,13 @@ class ReplicaExecutions extends Component {
 
     this.state = {
       executionRef: null,
-      tasks: null
+      tasks: null,
+      confirmationDialog: {
+        visible: false,
+        message: "Are you sure?",
+        onConfirm: null,
+        onCancel: null
+      }
     }
   }
 
@@ -86,8 +93,17 @@ class ReplicaExecutions extends Component {
   }
 
   deleteExecution() {
-    MigrationActions.cancelMigration(this.props.migration, (replica, response) => {
-      this.refreshExecution()
+    this.setState({
+      confirmationDialog: {
+        visible: true,
+        onConfirm: () => {
+          this.setState({ confirmationDialog: { visible: false }})
+          MigrationActions.deleteReplicaExecution(this.props.migration, this.state.executionRef.id)
+        },
+        onCancel: () => {
+          this.setState({ confirmationDialog: { visible: false }})
+        }
+      }
     })
   }
 
@@ -124,7 +140,7 @@ class ReplicaExecutions extends Component {
 
   render() {
     if (this.props.migration) {
-      let executionBtn = null //<button className="red wire" onClick={(e) => this.deleteExecution(e)}>Delete execution</button>
+      let executionBtn = <button className="red wire" onClick={(e) => this.deleteExecution(e)}>Delete execution</button>
       if (this.props.migration.executions &&
         this.props.migration.executions[this.props.migration.executions.length - 1].status == "RUNNING") {
         executionBtn = <button className="gray wire" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>
@@ -155,6 +171,12 @@ class ReplicaExecutions extends Component {
             </div>
             <Tasks tasks={this.state.tasks}/>
           </div>
+          <ConfirmationDialog
+            visible={this.state.confirmationDialog.visible}
+            message={this.state.confirmationDialog.message}
+            onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
+            onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
+          />
         </div>
       );
     } else {
