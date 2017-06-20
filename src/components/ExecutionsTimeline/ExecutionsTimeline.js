@@ -43,47 +43,21 @@ class ExecutionsTimeline extends Component {
     }
   }
 
-  componentWillMount() {
-    this.componentWillReceiveProps(this.props)
-  }
-
-  componentWillReceiveProps(newProps) {
-    let executions = this._getExecutions()
-    let number = newProps.currentExecution.number - 1
-    let visibleExecutions = []
-    let count = 0
-    for (let i = number - ((numberOfExecutions - 1) / 2); i <= number + ((numberOfExecutions - 1) / 2); i++) {
-      visibleExecutions[count] = executions[i]
-      count++
-    }
-    this.setState({
-      visibleExecutions: visibleExecutions
-    })
-  }
-
-  _getExecutions() {
-    let executions = this.props.executions
-    executions.sort((a, b) => {
-      return a.number - b.number;
-    })
-    return executions
-  }
-
   isNext() {
     let executions = this._getExecutions()
-    let number = this.props.currentExecution.number - 1
+    let number = this._currentExecutionPosition()
     return executions[number + 1]
   }
 
   isPrev() {
     let executions = this._getExecutions()
-    let number = this.props.currentExecution.number - 1
+    let number = this._currentExecutionPosition()
     return executions[number - 1]
   }
 
   handleNext() {
     let executions = this._getExecutions()
-    let number = this.props.currentExecution.number - 1
+    let number = this._currentExecutionPosition()
     if (executions[number + 1]) {
       this.props.handleChangeExecution(executions[number + 1])
     }
@@ -91,31 +65,67 @@ class ExecutionsTimeline extends Component {
 
   handlePrev() {
     let executions = this._getExecutions()
-    let number = this.props.currentExecution.number - 1
+    let number = this._currentExecutionPosition()
     if (executions[number - 1]) {
       this.props.handleChangeExecution(executions[number - 1])
     }
   }
 
+  _getExecutions(newProps = null) {
+    let props = this.props
+    if (newProps !== null) {
+      props = newProps
+    }
+    let executions = props.executions
+    executions.sort((a, b) => {
+      return a.number - b.number;
+    })
+    return executions
+  }
+
+  _currentExecutionPosition(newProps = null) {
+    let props = this.props
+    if (newProps !== null) {
+      props = newProps
+    }
+    let number = 0
+    let executions = this._getExecutions()
+
+    for (let i in executions) {
+      if (props.currentExecution.id === executions[i].id) {
+        number = i
+      }
+    }
+    return parseInt(number)
+  }
+
   render() {
     let dotDistance = 100 / (numberOfExecutions + 1)
-    let executions = this.state.visibleExecutions.map((execution, index) => {
-      if (execution) {
-        let style = { left: dotDistance * (index + 1) + "%"}
-        return (
-          <div
-            className={s.executionDot + (index == (numberOfExecutions - 1) / 2 ? (" " + s.current) : "")}
-            style={style}
-            onClick={(e) => this.props.handleChangeExecution(execution)}
-            key={"execution_" + index}
-          >
-            <div className={"taskIcon " + execution.status}></div>
-            <Moment format="D MMM YYYY" date={execution.created_at} />
-          </div>
-        )
-      } else {
-        return null;
+    let number = this._currentExecutionPosition()
+
+    let executionList = this._getExecutions()
+
+    let executions = executionList.map((execution, index) => {
+      let offset = (numberOfExecutions - 1) / 2
+      let style
+      if (index < (number - offset)) { // if before
+        style = { left: "0%", transform: "scale(0)"}
+      } else if (index > (number + offset)) { // if after
+        style = { left: "100%", transform: "scale(0)"}
+      } else { // in between
+        style = { left: (dotDistance * (index - number + offset + 1)) + "%", transform: "scale(1)"}
       }
+      return (
+        <div
+          className={s.executionDot + (index == number ? (" " + s.current) : "")}
+          style={style}
+          onClick={(e) => this.props.handleChangeExecution(execution)}
+          key={"execution_" + index}
+        >
+          <div className={"taskIcon " + execution.status}></div>
+          <Moment format="D MMM YYYY" date={execution.created_at} />
+        </div>
+      )
     })
     return (
       <div className={s.root}>
