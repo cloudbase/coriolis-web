@@ -42,6 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     :global(.taskIcon) {
       float: none;
       margin: 0 auto;
+      transition: transform $animation-swift-out;
     }
     &.current {
       font-weight: 500;
@@ -49,6 +50,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         width: 20px;
         height: 20px;
         background-size: cover;
+      }
+    }
+    &:hover {
+      :global(.taskIcon) {
+        transform: scale(1.2);
+      }
+      &.current {
+        :global(.taskIcon) {
+          transform: scale(1);
+        }
       }
     }
   }

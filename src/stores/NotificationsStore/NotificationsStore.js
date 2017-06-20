@@ -153,6 +153,14 @@ class NotificationsStore extends Reflux.Store
     this.setState({notifications: notifications})
   }
 
+  onDeleteReplicaExecutionCompleted() {
+    let notifications = [{
+      message: "Execution deleted",
+      type: 'info'
+    }]
+    this.setState({notifications: notifications})
+  }
+
   onCancelMigrationCompleted(migration) {
     let message = "Canceled"
     if (migration.type == "migration") {
@@ -209,6 +217,8 @@ class NotificationsStore extends Reflux.Store
   onRemoveNotification() {
     this.setState({notifications: []})
   }
+
+
 }
 
 export default NotificationsStore;
