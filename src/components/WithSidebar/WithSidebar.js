@@ -31,12 +31,12 @@ class WithSidebar extends Component {
     this.state = {
       menuItems: [
         {
-          label: "Migrations",
-          route: "/migrations"
-        },
-        {
           label: "Replicas",
           route: "/replicas"
+        },
+        {
+          label: "Migrations",
+          route: "/migrations"
         },
         {
           label: "Cloud Endpoints",

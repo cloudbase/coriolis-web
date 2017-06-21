@@ -35,6 +35,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     display: block;
     content: ' ';
   }
+  &.buttons {
+    margin-top: 16px;
+    button:first-child {
+      float: left;
+    }
+    button:nth-child(2) {
+      float: right;
+    }
+  }
 }
 .columnLeft, .columnRight {
   width: 50%;

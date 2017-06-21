@@ -140,7 +140,7 @@ class ReplicaExecutions extends Component {
 
   render() {
     if (this.props.migration) {
-      let executionBtn = <button className="red wire" onClick={(e) => this.deleteExecution(e)}>Delete execution</button>
+      let executionBtn = <button className="wire" onClick={(e) => this.deleteExecution(e)}>Delete</button>
       if (this.props.migration.executions &&
         this.props.migration.executions[this.props.migration.executions.length - 1].status == "RUNNING") {
         executionBtn = <button className="gray wire" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>

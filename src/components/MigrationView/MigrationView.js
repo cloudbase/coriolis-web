@@ -75,24 +75,6 @@ class MigrationView extends Reflux.Component {
     this.context.onSetTitle(this.state.title);
   }
 
-  deleteMigration() {
-    this.setState({
-      confirmationDialog: {
-        visible: true,
-        onConfirm: () => {
-          this.setState({ confirmationDialog: { visible: false }})
-          let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
-          MigrationActions.deleteMigration(item)
-          Location.push('/cloud-endpoints')
-        },
-        onCancel: () => {
-          this.setState({ confirmationDialog: { visible: false }})
-        }
-      }
-    })
-
-  }
-
   cancelMigration() {
     let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
     MigrationActions.cancelMigration(item)
@@ -131,10 +113,6 @@ class MigrationView extends Reflux.Component {
     }
   }
 
-  createMigrationFromReplica(e, replica) {
-    MigrationActions.createMigrationFromReplica(replica)
-  }
-
   currentMigration(migrationId) {
     if (this.state.migrations) {
       return this.state.migrations.filter(migration => migration.id == migrationId)[0]
@@ -164,11 +142,6 @@ class MigrationView extends Reflux.Component {
               disabled={item.status === "RUNNING"}
               onClick={(e) => this.executeReplica(e)}>
               Execute Now
-            </button>
-            <button
-            onClick={(e) => this.createMigrationFromReplica(e, item)}
-            disabled={disabled} className={disabled ? "disabled": ""}>
-            Migrate Now
             </button>
           </div>)
       } else {

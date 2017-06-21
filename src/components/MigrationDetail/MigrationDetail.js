@@ -21,6 +21,8 @@ import s from './MigrationDetail.scss';
 import Moment from 'react-moment';
 import LoadingIcon from "../LoadingIcon";
 import EndpointLink from '../EndpointLink';
+import ConfirmationDialog from '../ConfirmationDialog'
+import MigrationActions from '../../actions/MigrationActions';
 
 const title = 'Migration details';
 
@@ -33,14 +35,51 @@ class MigrationDetail extends Component {
     migration: PropTypes.object
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      confirmationDialog: {
+        visible: false,
+        message: "Are you sure?",
+        onConfirm: null,
+        onCancel: null
+      }
+    }
+  }
+
   componentWillMount() {
     this.context.onSetTitle(title);
+  }
+
+  createMigrationFromReplica(e, replica) {
+    MigrationActions.createMigrationFromReplica(replica)
+  }
+
+  deleteMigration() {
+    this.setState({
+      confirmationDialog: {
+        visible: true,
+        onConfirm: () => {
+          this.setState({ confirmationDialog: { visible: false }})
+          let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
+          MigrationActions.deleteMigration(item)
+          Location.push('/cloud-endpoints')
+        },
+        onCancel: () => {
+          this.setState({ confirmationDialog: { visible: false }})
+        }
+      }
+    })
   }
 
   render() {
     let item = this.props.migration
     let output = null
     if (item) {
+      let disabled = item.executions.length && item.executions[item.executions.length - 1].status != "COMPLETED"
+      if (item.executions.length == 0) {
+        disabled = true
+      }
       output = (
         <div className={s.root}>
           <div className={s.container}>
@@ -116,6 +155,20 @@ class MigrationDetail extends Component {
                </div>*/}
             </div>
           </div>
+          <div className={s.container + " " + s.buttons}>
+            <button
+              onClick={(e) => this.createMigrationFromReplica(e, item)}
+              disabled={disabled} className={disabled ? "disabled": ""}>
+              Create Migration
+            </button>
+            <button className="wire" onClick={(e) => this.deleteMigration(e)}>Delete</button>
+          </div>
+          <ConfirmationDialog
+            visible={this.state.confirmationDialog.visible}
+            message={this.state.confirmationDialog.message}
+            onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
+            onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
+          />
         </div>
       )
     }

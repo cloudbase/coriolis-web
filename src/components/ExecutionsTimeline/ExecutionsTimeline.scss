@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin-left: -44px;
     margin-top: -8px;
     text-align: center;
-    transition: all $animation-swift-out;
+    transition: all 0.3s ease-out;
     cursor: pointer;
     :global(.taskIcon) {
       float: none;
