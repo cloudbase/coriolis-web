@@ -4,7 +4,8 @@
 - [node](https://nodejs.org/en/download/package-manager/) >=6.x and [yarn](https://yarnpkg.com/lang/en/docs/install/) are required
 - clone repo
 - run `yarn install` to install packages and dependencies
-- change in src/config.js the coriolisUrl variable to match the coriolis server path
+- rename `config.sample.js` to `config.js` in `src` directory
+- change the `coriolisUrl` variable to match the coriolis server path
 
 
 ### Build instructions

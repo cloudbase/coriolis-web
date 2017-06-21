@@ -33,19 +33,11 @@ export const itemsPerPage = 6;
  selected - true
 */
 export const networkMock = [
-  {id: "net1", name: "VM Network", migrateNetwork: "coriolis-twenty", selected: true},
-  /*{id: "net2", name: "external_network", migrateNetwork: "external_network", selected: true},
-  {id: "net3", name: "privee", migrateNetwork: null, selected: true}*/
+  {id: "net1", name: "VM Network", migrateNetwork: "management", selected: true},
 ]
 // Target networks to show in dropdown
-export const targetNetworkMock = ["internal-coriolis-2", "coriolis-twenty", "privee"]
+export const targetNetworkMock = ["internal-coriolis-2", "coriolis-twenty", "management"]
 export const securityGroups = ["testgroup"]
-
-export const analytics = {
-  // https://analytics.google.com/
-  google: { trackingId: process.env.GOOGLE_TRACKING_ID || 'UA-XXXXX-X' },
-
-};
 
 export const servicesUrl = {
   identity: coriolisUrl + "identity/auth/tokens",
@@ -65,7 +57,7 @@ export const providerType = {
 
 export const useSecret = false; // flag to use secret_ref for endpoints
 
-export const tasksPollTimeout = 4000 // milliseconds
+export const tasksPollTimeout = 5000 // milliseconds
 
 export const migrationSteps = [
   {
@@ -156,5 +148,5 @@ export const defaultLabels = {
   "migr_image_name": "Migration Image Name",
   "migr_image_name_map": "Migration Image Name Map",
   "delete_disks_on_vm_termination": "Delete disks on VM termination",
-  "set_dhcp": "Set DHCP"
+  "set_dhcp": "Set DHCP",
 }
