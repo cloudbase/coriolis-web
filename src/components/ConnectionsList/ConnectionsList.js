@@ -248,7 +248,7 @@ class ConnectionsList extends Reflux.Component {
             <div className={s.top}>
               <h1>{title}</h1>
               <div className={s.topActions}>
-                <button onClick={(e) => this.showNewConnectionModal(e)}>New Connection</button>
+                <button onClick={(e) => this.showNewConnectionModal(e)}>New</button>
                 <UserIcon />
                 <NotificationIcon />
               </div>

@@ -21,12 +21,11 @@ import s from './CloudConnectionsView.scss';
 import Header from '../Header';
 import ConnectionsActions from '../../actions/ConnectionsActions';
 import Location from '../../core/Location';
-import Link from '../Link';
-import Dropdown from '../NewDropdown';
 import LoadingIcon from '../LoadingIcon';
 import Modal from 'react-modal';
 import AddCloudConnection from '../AddCloudConnection';
 import ConfirmationDialog from '../ConfirmationDialog'
+import ValidateEndpoint from '../ValidateEndpoint';
 
 
 class CloudConnectionsView extends Component {
@@ -59,7 +58,8 @@ class CloudConnectionsView extends Component {
         onConfirm: null,
         onCancel: null
       },
-      showModal: false
+      showModal: false,
+      showValidationModal: false
     }
   }
 
@@ -104,7 +104,14 @@ class CloudConnectionsView extends Component {
         }
       }
     })
+  }
 
+  validateConnection() {
+    this.setState({ showValidationModal: true })
+  }
+
+  closeValidationModal() {
+    this.setState({ showValidationModal: false })
   }
 
   closeModal() {
@@ -132,6 +139,20 @@ class CloudConnectionsView extends Component {
       }
     }
 
+    let validationModalStyle = {
+      content: {
+        padding: "0px",
+        borderRadius: "4px",
+        bottom: "auto",
+        width: "370px",
+        height: "250px",
+        left: "50%",
+        top: "50%",
+        marginTop: "-185px",
+        marginLeft: "-125px"
+      }
+    }
+
     if (item) {
       return (
         <div className={s.root}>
@@ -155,10 +176,16 @@ class CloudConnectionsView extends Component {
               <br />
 
               {React.cloneElement(this.props.children, { connection: item })}
-
-              <button onClick={(e) => this.showEditConnectionModal(e)} className="gray">Edit Connection</button>
-              <br /><br />
-              <button onClick={(e) => this.deleteConnection(e)} className="wire">Delete</button>
+              <div className={s.buttons}>
+                <div className={s.leftSide}>
+                  <button onClick={(e) => this.showEditConnectionModal(e)} className="gray">Edit Endpoint</button>
+                  <br />
+                  <button onClick={(e) => this.validateConnection(e)}>Validate Endpoint</button>
+                </div>
+                <div className={s.rightSide}>
+                  <button onClick={(e) => this.deleteConnection(e)} className="wire" style={{float: "right"}}>Delete</button>
+                </div>
+              </div>
             </div>
           </div>
           <Modal
@@ -170,6 +197,16 @@ class CloudConnectionsView extends Component {
               closeHandle={(e) => this.closeModal(e)}
               addHandle={(e) => this.closeModal(e)}
               connection={item}
+            />
+          </Modal>
+          <Modal
+            isOpen={this.state.showValidationModal}
+            contentLabel="Validate Endpoint"
+            style={validationModalStyle}
+          >
+            <ValidateEndpoint
+              closeHandle={(e) => this.closeValidationModal(e)}
+              endpoint={item}
             />
           </Modal>
           <ConfirmationDialog

@@ -139,6 +139,9 @@ ConnectionsActions.validateConnection.listen((endpoint, callback) => {
     method: "POST",
     data: { "validate-connection": null }
   }).then(response => {
+      if (callback) {
+        callback(response)
+      }
       ConnectionsActions.validateConnection.completed(response)
     }, ConnectionsActions.validateConnection.failed)
     .catch(ConnectionsActions.validateConnection.failed);

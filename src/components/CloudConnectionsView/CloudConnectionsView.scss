@@ -110,4 +110,19 @@ $connectionHeaderBg: #D9DCE3;
   float: left;
   width: 800px;
   padding-bottom: 32px;
+  .connectionTypeImg {
+    margin-bottom: 16px;
+  }
+}
+
+.buttons {
+  button {
+    margin-bottom: 16px;
+  }
+  .leftSide {
+    float: left;
+  }
+  .rightSide {
+    float: right;
+  }
 }
