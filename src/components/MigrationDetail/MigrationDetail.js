@@ -23,6 +23,7 @@ import LoadingIcon from "../LoadingIcon";
 import EndpointLink from '../EndpointLink';
 import ConfirmationDialog from '../ConfirmationDialog'
 import MigrationActions from '../../actions/MigrationActions';
+import MigrationNetworks from '../MigrationNetworks';
 
 const title = 'Migration details';
 
@@ -160,6 +161,7 @@ class MigrationDetail extends Component {
                </div>*/}
             </div>
           </div>
+          <MigrationNetworks migration={item}/>
           <div className={s.container + " " + s.buttons}>
             { item.type == "replica" && <button
               onClick={(e) => this.createMigrationFromReplica(e, item)}

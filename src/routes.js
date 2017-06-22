@@ -65,10 +65,6 @@ const router = new Router(on => {
     <MigrationView migrationId={params.params.migrationId} type="tasks"><MigrationTasks /></MigrationView>
   )
 
-  on('/migration/networks/:migrationId/', async (params) =>
-    <MigrationView migrationId={params.params.migrationId} type="networks"><MigrationNetworks /></MigrationView>
-  )
-
   on('/migration/schedule/:migrationId/', async (params) =>
     <MigrationView migrationId={params.params.migrationId} type="schedule"><MigrationSchedule /></MigrationView>
   )
@@ -83,10 +79,6 @@ const router = new Router(on => {
 
   on('/replica/executions/:migrationId/', async (params) =>
     <MigrationView migrationId={params.params.migrationId} type="tasks"><ReplicaExecutions /></MigrationView>
-  )
-
-  on('/replica/networks/:migrationId/', async (params) =>
-    <MigrationView migrationId={params.params.migrationId} type="networks"><MigrationNetworks /></MigrationView>
   )
 
   on('/replica/schedule/:migrationId/', async (params) =>

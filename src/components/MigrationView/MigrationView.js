@@ -190,14 +190,10 @@ class MigrationView extends Reflux.Component {
                   to={"/" + item.type + "/" + (item.type == 'migration' ? 'tasks' : 'executions') + "/" + item.id + "/"}
                   className={this.props.type == 'tasks' ? "active" : ""}
                 >{item.type == 'replica' ? "Executions" : "Tasks"}</Link>
-                <Link
-                  to={"/" + item.type + "/networks/" + item.id + "/"}
-                  className={this.props.type == 'networks' ? "active" : ""}
-                >Networks</Link>
-                <Link
+                { item.type == "replica" && <Link
                   to={"/" + item.type + "/schedule/" + item.id + "/"}
                   className={this.props.type == 'schedule' ? "active" : ""}
-                >Schedule</Link>
+                >Schedule</Link>}
               </div>
             ) : ""}
 
