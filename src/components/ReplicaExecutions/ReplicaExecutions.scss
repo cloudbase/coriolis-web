@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .container {
   margin: 0 auto;
   padding: 0 0 40px;
+
   max-width: $max-content-width;
   :global(.row), :global(.headerItems) {
     :global(.cell) {
@@ -39,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   .executionsWrapper {
     background-color: $gray-light;
     padding: 16px;
-
+    position: relative;
     &:after {
       clear: both;
       display: block;
@@ -68,9 +69,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         margin-top: 4px;
       }
       :global(.status-pill) {
-        float: left;
-        margin-left: 24px;
-        margin-top: 3px;
+        position: absolute;
+        top: 24px;
+        left: 38%;
       }
       &:after {
         clear: both;
