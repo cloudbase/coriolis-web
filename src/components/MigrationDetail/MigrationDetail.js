@@ -76,10 +76,15 @@ class MigrationDetail extends Component {
     let item = this.props.migration
     let output = null
     if (item) {
-      let disabled = item.executions.length && item.executions[item.executions.length - 1].status != "COMPLETED"
-      if (item.executions.length == 0) {
-        disabled = true
+      let disabled = false
+      if (item.type == "replica") {
+        disabled = item.executions && item.executions.length &&
+          item.executions[item.executions.length - 1].status != "COMPLETED"
+        if (item.executions.length == 0) {
+          disabled = true
+        }
       }
+
       output = (
         <div className={s.root}>
           <div className={s.container}>
@@ -156,11 +161,11 @@ class MigrationDetail extends Component {
             </div>
           </div>
           <div className={s.container + " " + s.buttons}>
-            <button
+            { item.type == "replica" && <button
               onClick={(e) => this.createMigrationFromReplica(e, item)}
               disabled={disabled} className={disabled ? "disabled": ""}>
               Create Migration
-            </button>
+            </button>}
             <button className="wire" onClick={(e) => this.deleteMigration(e)}>Delete</button>
           </div>
           <ConfirmationDialog
