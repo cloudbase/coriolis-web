@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .container {
   margin: 0 auto;
-  padding: 0 0 40px;
+  padding: 0;
   max-width: $max-content-width;
 }
 .flavorSwitch {
@@ -74,14 +74,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 }
 
+.toggleAdvancedBtn {
+  clear: both;
+  width: 240px;
+  margin: 24px auto 0;
+  display: block;
+}
+
 .optionsFieldsContainer {
   :global {
     .form-group {
       float: left;
       width: 40%;
+      display: none;
       &:nth-child(2n) {
         float: right
       }
+      &.required, &.showAdvanced {
+        display: block;
+      }
     }
+  }
+  &:after {
+    content: " ";
+    display: block;
+    clear: both;
   }
 }

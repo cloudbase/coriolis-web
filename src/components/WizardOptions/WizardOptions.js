@@ -50,10 +50,9 @@ class WizardOptions extends Reflux.Component {
       fipPool: "public",
       valid: true,
       nextStep: "WizardSchedule",
-      formSubmitted: false
+      formSubmitted: false,
+      showAdvancedOptions: false
     }
-
-
   }
 
   componentWillMount() {
@@ -101,6 +100,10 @@ class WizardOptions extends Reflux.Component {
     }
   }
 
+  toggleAdvancedOptions() {
+    this.setState({ showAdvancedOptions: !this.state.showAdvancedOptions })
+  }
+
   handleOptionsFieldChange(e, field) {
     let destination_environment = this.state.destination_environment
     if (field.type == 'dropdown') {
@@ -113,10 +116,23 @@ class WizardOptions extends Reflux.Component {
 
   renderField(field) {
     let returnValue
+    let extraClasses = ""
+    if (field.required) {
+      extraClasses += "required"
+    }
+    if (this.state.showAdvancedOptions) {
+      extraClasses += " showAdvanced"
+    }
+    if (!this.isValid(field)) {
+      extraClasses += " error"
+    }
     switch (field.type) {
       case "text":
         returnValue = (
-          <div className={"form-group " + (this.isValid(field) ? "" : "error")} key={"cloudField_" + field.name}>
+          <div
+            className={"form-group " + extraClasses}
+            key={"cloudField_" + field.name}
+          >
             <h3>{field.label + (field.required ? " *" : "")}</h3>
             <input
               type="text"
@@ -129,7 +145,10 @@ class WizardOptions extends Reflux.Component {
         break;
       case "password":
         returnValue = (
-          <div className={"form-group " + (this.isValid(field) ? "" : "error")} key={"cloudField_" + field.name}>
+          <div
+            className={"form-group " + extraClasses}
+            key={"cloudField_" + field.name}
+          >
             <h3>{field.label + (field.required ? " *" : "")}</h3>
             <input
               type="password"
@@ -142,7 +161,10 @@ class WizardOptions extends Reflux.Component {
         break;
       case "dropdown":
         returnValue = (
-          <div className={"form-group " + (this.isValid(field) ? "" : "error")}  key={"cloudField_" + field.name}>
+          <div
+            className={"form-group " + extraClasses}
+            key={"cloudField_" + field.name}
+          >
             <h3>{field.label + (field.required ? " *" : "")}</h3>
             <Dropdown
               options={field.options}
@@ -209,49 +231,20 @@ class WizardOptions extends Reflux.Component {
   }
 
   render() {
+    let toggleAdvancedBtn = <button
+      onClick={(e) => this.toggleAdvancedOptions(e)}
+      className={s.toggleAdvancedBtn + " wire"}
+    >
+      {this.state.showAdvancedOptions ? "Hide" : "Show"} Advanced Options
+    </button>
+
     return (
       <div className={s.root}>
         <div className={s.container}>
           <div className={s.containerCenter}>
             {this.renderOptionsFields(this.state.targetCloud.cloudRef["import_" + this.state.migrationType].fields)}
-            {/*<div className={s.formGroup}>
-              <h3>Flavors
-                <InfoIcon text="Let Coriolis <br />automatically choose <br />the best flavour <br />for every VM" />
-              </h3>
-              <label className={s.flavorSwitch}>
-                <input
-                  type="checkbox"
-                  checked={this.state.autoFlavors}
-                  className="ios-switch green tinyswitch"
-                  onChange={(e) => this.handleChangeAutoFlavor(e)}
-                />
-                <div><div></div></div>
-                <span className="label">Automatic flavour selection</span>
-              </label>
-            </div>
-            <div className={s.formGroup}>
-              <h3>Disk Format
-                <InfoIcon text="Disk Format Helptext" />
-              </h3>
-              <Dropdown
-                options={this.diskFormats}
-                onChange={(e) => this.handleChangeDiskFormat(e)}
-                placeholder="Select"
-                value={this.state.diskFormat}
-              />
-            </div>
-            <div className={s.formGroup}>
-              <h3>Floating IP Pool
-                <InfoIcon text="Floating Ip Helptext" />
-              </h3>
-              <Dropdown
-                options={this.fipPools}
-                onChange={(e) => this.handleChangeFipPool(e)}
-                placeholder="Select"
-                value={this.state.fipPool}
-              />
-            </div>*/}
           </div>
+          {toggleAdvancedBtn}
         </div>
       </div>
     );
