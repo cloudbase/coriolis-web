@@ -21,6 +21,7 @@ import s from './WizardSummary.scss';
 import moment from 'moment';
 import TextTruncate from 'react-text-truncate';
 import InfoIcon from '../InfoIcon';
+import {defaultLabels} from '../../config';
 
 
 const title = 'Summary';
@@ -49,6 +50,23 @@ class WizardSummary extends Component {
   componentWillMount() {
     this.props.setWizardState(this.state)
     this.context.onSetTitle(title);
+  }
+
+  renderOptionsFields() {
+    let fields = []
+    for (var i in this.props.summary.destination_environment) {
+      fields.push({
+        label: defaultLabels[i] ? defaultLabels[i] : i,
+        value: this.props.summary.destination_environment[i]
+      })
+    }
+
+    return fields.map(field => {
+      return <div className={s.row} key={"destination_environment_" + field.label}>
+        <span>{field.label}</span>
+        <span>{field.value}</span>
+      </div>
+    })
   }
 
   render() {
@@ -141,12 +159,7 @@ class WizardSummary extends Component {
                     {this.props.summary.migrationType == "replica" ? "Coriolis Replica" : "Coriolis Migration"}
                   </span>
                 </div>
-                <div className={s.row}>
-                  <span>Flavor:</span>
-                  <span>{this.props.summary.sourceCloud.autoFlavors ?
-                    "Automatic Flavor Selection" : "Manual Flavor Selection"}</span>
-                </div>
-                <div className={s.row}><span>FIP Pool:</span><span>{this.props.summary.fipPool}</span></div>
+                {this.renderOptionsFields()}
               </div>
             </div>
             <div className={s.group}>

@@ -38,13 +38,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     & > span {
       display: inline-block;
       &:first-child {
-        width: 80px;
+        width: 96px;
         float: left
       }
       &:nth-child(2) {
         color: $blue;
         float: left;
-        width: 256px;
+        width: 240px;
         box-sizing: border-box;
       }
     }
