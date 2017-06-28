@@ -20,20 +20,19 @@ import React from 'react';
 import Router from 'react-routing/src/Router';
 import fetch from './core/fetch';
 import App from './components/App';
-import ContentPage from './components/ContentPage';
 import MigrationWizard from './components/MigrationWizard';
 import WithSidebar from './components/WithSidebar';
 import MigrationList from './components/MigrationList';
 import MigrationView from './components/MigrationView';
 import MigrationDetail from './components/MigrationDetail';
 import MigrationTasks from './components/MigrationTasks';
-import MigrationNetworks from './components/MigrationNetworks';
 import MigrationSchedule from './components/MigrationSchedule';
 import CloudConnection from './components/CloudConnection';
 import CloudConnectionsView from './components/CloudConnectionsView';
 import CloudConnectionDetail from './components/CloudConnectionDetail';
 import CloudConnectionAuth from './components/CloudConnectionAuth';
 import ConnectionsList from './components/ConnectionsList';
+import ProjectList from './components/ProjectList';
 import ReplicaExecutions from './components/ReplicaExecutions';
 import UserView from './components/UserView';
 import UserOverview from './components/UserOverview';
@@ -103,6 +102,10 @@ const router = new Router(on => {
         <CloudConnectionAuth />
       </CloudConnectionsView>
     </CloudConnection>
+  )
+
+  on('/projects', async () =>
+    <WithSidebar route="/projects"><ProjectList /></WithSidebar>
   )
 
   on('/user/profile/', async () => <UserView type="profile"><UserOverview /></UserView>)

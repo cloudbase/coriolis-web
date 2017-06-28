@@ -20,16 +20,12 @@ import Api from '../../components/ApiCaller';
 import {servicesUrl, defaultDomain} from '../../config';
 import Location from '../../core/Location';
 
-let UserAction = Reflux.createActions({
-  'login': { children: ["success", "failed"] },
-  'logout': {},
-  'tokenLogin': { children: ["failed"] },
-  'setCurrentUser': {},
-  'switchProject': {},
-  'getScopedProjects': { children: ["completed", "failed"] }
+let ProjectActions = Reflux.createActions({
+  'loadProjects': { children: ["completed", "failed"] },
+  'setCurrentProject': {}
 })
-
-UserAction.login.listen((userData => {
+/*
+ProjectActions.login.listen((userData => {
   let auth = {
     "auth": {
       "identity": {
@@ -46,7 +42,6 @@ UserAction.login.listen((userData => {
           }
         }
       },
-      /*scope: "unscoped"*/
       scope: {
         project: {
           domain: {
@@ -70,34 +65,18 @@ UserAction.login.listen((userData => {
       Location.push('/migrations')
     }, UserAction.login.failed)
     .catch(UserAction.login.failed)
-}))
+}))*/
 
-UserAction.tokenLogin.listen((token) => {
+ProjectActions.loadProjects.listen(() => {
   Api.sendAjaxRequest({
-      url: servicesUrl.identity,
-      method: "GET",
-      headers: { 'X-Subject-Token': token }
+      url: servicesUrl.projects,
+      method: "GET"
     })
-    .then(UserAction.login.success, UserAction.tokenLogin.failed)
+    .then((response) => {
+      ProjectActions.loadProjects.completed(response)
+    }, ProjectActions.loadProjects.failed)
     .catch((response) => {
-      UserAction.tokenLogin.failed(response)
+      ProjectActions.loadProjects.failed(response)
     });
 })
-
-UserAction.getScopedProjects.listen((callback) => {
-  Api.sendAjaxRequest({
-    url: servicesUrl.projects,
-    method: "GET"
-  })
-    .then(
-      (response) => {
-        if (callback) {
-          callback(response)
-        }
-        UserAction.getScopedProjects.completed(response)
-      }, UserAction.getScopedProjects.failed)
-    .catch((response) => {
-      UserAction.getScopedProjects.failed(response)
-    });
-})
-export default UserAction;
+export default ProjectActions;

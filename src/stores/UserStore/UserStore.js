@@ -85,6 +85,8 @@ class UserStore extends Reflux.Store
     if (window.location.pathname == "/" || window.location.pathname == "/login") {
       Location.push('/migrations');
     }
+
+    UserActions.getScopedProjects()
   }
 
   onLoginFailed(response) {
@@ -130,6 +132,19 @@ class UserStore extends Reflux.Store
         this.setState({ currentUser: user })
       }
     }, this)
+  }
+
+  onSwitchProject(project) {
+    let currentUser = this.state.currentUser
+    currentUser.project = project
+    this.setState({
+      currentUser: currentUser
+    })
+    ConnectionsActions.loadConnections()
+  }
+
+  onGetScopedProjectsCompleted(response) {
+    console.log("onGetScopedProjectsCompleted", response)
   }
 }
 

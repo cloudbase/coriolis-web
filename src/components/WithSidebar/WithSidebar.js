@@ -41,6 +41,10 @@ class WithSidebar extends Component {
         {
           label: "Cloud Endpoints",
           route: "/cloud-endpoints"
+        },
+        {
+          label: "Projects",
+          route: "/projects"
         }
       ]
     }

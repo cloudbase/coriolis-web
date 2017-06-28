@@ -21,45 +21,39 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Location from '../../core/Location';
 import Dropdown from '../NewDropdown';
 import SearchBox from '../SearchBox';
-import Moment from 'react-moment';
-import s from './ConnectionsList.scss';
+import s from './ProjectList.scss';
 import AddCloudConnection from '../AddCloudConnection';
 import Modal from 'react-modal';
-import ConnectionsStore from '../../stores/ConnectionsStore';
-import ConnectionsActions from '../../actions/ConnectionsActions';
+import ProjectStore from '../../stores/ProjectStore';
+import ProjectActions from '../../actions/ProjectActions';
 import TextTruncate from 'react-text-truncate';
 import UserIcon from '../UserIcon';
 import FilteredTable from '../FilteredTable';
-import EndpointUsage from '../EndpointUsage';
 import NotificationIcon from '../NotificationIcon';
 import ConfirmationDialog from '../ConfirmationDialog'
 import ProjectsDropdown from '../ProjectsDropdown';
 
 
-const title = 'Cloud Endpoints';
+const title = 'Projects';
 const connectionTypes = [
-  { label: "All", type: "all" },
-  { label: "Oracle Cloud", type: "opc" },
-  { label: "Oracle VM Server", type: "oracle_vm" },
-  { label: "Openstack", type: "openstack" },
-  { label: "VMware", type: "vmware_vsphere" }
+  { label: "All", type: "all" }
 ]
+
 const connectionActions = [
   { label: "Delete", value: "delete" }
 ]
 
-
-class ConnectionsList extends Reflux.Component {
+class ProjectList extends Reflux.Component {
   constructor(props) {
     super(props)
-    this.store = ConnectionsStore
+    this.store = ProjectStore
 
     this.state = {
       showModal: false,
       queryText: '',
       filterType: 'all',
       searchMin: true,
-      connections: null,
+      projects: null,
       confirmationDialog: {
         visible: false,
         message: "Are you sure?",
@@ -77,43 +71,43 @@ class ConnectionsList extends Reflux.Component {
     super.componentWillMount.call(this)
 
     this.context.onSetTitle(title);
-    if (this.state.connections == null) {
-      ConnectionsActions.loadConnections()
+    if (this.state.projects == null) {
+      ProjectActions.loadProjects()
     }
   }
 
-  connectionsSelected() {
-    let count = this.connectionsSelectedCount(),
+  projectsSelected() {
+    let count = this.projectsSelectedCount(),
         total = 0
-    if (this.state.connections) {
-      total = this.state.connections.length
+    if (this.state.projects) {
+      total = this.state.projects.length
     }
 
-    return `${count} of ${total} connection(s) selected`;
+    return `${count} of ${total} project(s) selected`;
   }
 
-  connectionsSelectedCount() {
+  projectsSelectedCount() {
     let count = 0
-    if (this.state.connections) {
-      this.state.connections.forEach((item) => {
+    if (this.state.projects) {
+      this.state.projects.forEach((item) => {
         if (item.selected) count++
       })
     }
     return count
   }
 
-  connectionDetail(e, item) {
-    Location.push('/cloud-endpoints/' + item.id + "/")
+  projectDetail(e, item) {
+    //Location.push('/project/' + item.id + "/")
   }
 
   checkItem(e, itemRef) {
-    let items = this.state.connections
+    let items = this.state.projects
     items.forEach((item) => {
       if (item == itemRef) {
         item.selected = !item.selected
       }
     })
-    this.setState({ connections: items })
+    this.setState({ projects: items })
   }
 
   filterFn(item, queryText, filterType) {
@@ -143,9 +137,9 @@ class ConnectionsList extends Reflux.Component {
             visible: true,
             onConfirm: () => {
               this.setState({ confirmationDialog: { visible: false }})
-              let selectedConnections = this.state.connections.filter((connection) => connection.selected)
-              selectedConnections.forEach(connection => {
-                ConnectionsActions.deleteConnection(connection)
+              let selectedProjects = this.state.projects.filter((connection) => connection.selected)
+              selectedProjects.forEach(project => {
+                // TODO: Delete project action here
               })
             },
             onCancel: () => {
@@ -173,8 +167,8 @@ class ConnectionsList extends Reflux.Component {
             />
             <label htmlFor={"vm_check_" + index}></label>
           </div>
-          <span className="cell cell-icon" onClick={(e) => this.connectionDetail(e, item)}>
-            <div className={"icon endpoint"}></div>
+          <span className="cell cell-icon" onClick={(e) => this.projectDetail(e, item)}>
+            <div className={"icon project"}></div>
             <span className="details">
               {/*{item.name ? item.name : "N/A"}*/}
               <TextTruncate line={1} truncateText="..." text={item.name} />
@@ -185,15 +179,15 @@ class ConnectionsList extends Reflux.Component {
               <div className={s.cloudImage + " icon small-cloud " + item.type}></div>
             </span>
           <span className={"cell " + s.composite}>
-              <span className={s.label}>Created</span>
+              <span className={s.label}>Is Domain</span>
               <span className={s.value}>
-                <Moment fromNow ago date={item.created_at}/> ago
+                {item.is_domain ? "Yes" : "No"}
               </span>
             </span>
           <span className={"cell " + s.composite}>
-              <span className={s.label}>Usage</span>
+              <span className={s.label}>Enabled</span>
               <span className={s.value}>
-                <EndpointUsage connectionId={item.id} />
+                {item.enabled ? "Yes" : "No"}
               </span>
             </span>
         </div>
@@ -246,7 +240,7 @@ class ConnectionsList extends Reflux.Component {
               <h1>{title}</h1>
               <div className={s.topActions}>
                 <ProjectsDropdown />
-                <button onClick={(e) => this.showNewConnectionModal(e)}>New</button>
+                <button disabled onClick={(e) => this.showNewConnectionModal(e)}>New</button>
                 <UserIcon />
                 <NotificationIcon />
               </div>
@@ -265,9 +259,9 @@ class ConnectionsList extends Reflux.Component {
                   className={"searchBox " + (this.state.searchMin ? "minimize" : "")}
                 />
               </div>
-              <div className={s.bulkActions + (this.connectionsSelectedCount() === 0 ? " invisible": "")}>
-                <div className={s.connectionsCount}>
-                  {this.connectionsSelected()}
+              <div className={s.bulkActions + (this.projectsSelectedCount() === 0 ? " invisible": "")}>
+                <div className={s.projectsCount}>
+                  {this.projectsSelected()}
                 </div>
                 <Dropdown
                   options={connectionActions}
@@ -279,7 +273,7 @@ class ConnectionsList extends Reflux.Component {
           </div>
           <div className={s.pageContent}>
             <FilteredTable
-              items={this.state.connections}
+              items={this.state.projects}
               filterFn={this.filterFn}
               queryText={this.state.queryText}
               filterType={this.state.filterType}
@@ -312,4 +306,4 @@ class ConnectionsList extends Reflux.Component {
 
 }
 
-export default withStyles(ConnectionsList, s);
+export default withStyles(ProjectList, s);

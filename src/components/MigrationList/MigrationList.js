@@ -26,11 +26,13 @@ import SearchBox from '../SearchBox';
 import Moment from 'react-moment';
 import s from './MigrationList.scss';
 import MigrationStore from '../../stores/MigrationStore';
+import ProjectStore from '../../stores/MigrationStore';
 import MigrationActions from '../../actions/MigrationActions';
 import FilteredTable from '../FilteredTable';
 import TextTruncate from 'react-text-truncate';
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import ConfirmationDialog from '../ConfirmationDialog'
+import ProjectsDropdown from '../ProjectsDropdown';
 
 const title = 'Migrations';
 const migrationTypes = [
@@ -365,6 +367,7 @@ class MigrationList extends Reflux.Component {
                   placeholder="Select"
                   value={this.state.currentProject}
                 />*/}
+                <ProjectsDropdown />
                 <button onClick={this.newMigration}>New</button>
                 <UserIcon />
                 <NotificationIcon />

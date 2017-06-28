@@ -96,6 +96,7 @@ class Header extends Component {
             <li><a onClick={(e) => this.goToMenu("/replicas")}>Replicas</a></li>
             <li><a onClick={(e) => this.goToMenu("/migrations")}>Migrations</a></li>
             <li><a onClick={(e) => this.goToMenu("/cloud-endpoints")}>Cloud Endpoints</a></li>
+            <li><a onClick={(e) => this.goToMenu("/projects")}>Projects</a></li>
           </ul>
         </div>
       </div>
