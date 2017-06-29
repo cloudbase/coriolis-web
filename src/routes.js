@@ -108,6 +108,14 @@ const router = new Router(on => {
     <WithSidebar route="/projects"><ProjectList /></WithSidebar>
   )
 
+  on('/project/details/:projectId/', async (params) =>
+    <CloudConnection connectionId={params.params.projectId}>
+      <CloudConnectionsView type="auth">
+        <CloudConnectionAuth />
+      </CloudConnectionsView>
+    </CloudConnection>
+  )
+
   on('/user/profile/', async () => <UserView type="profile"><UserOverview /></UserView>)
 
   on('/user/billing/', async () =>

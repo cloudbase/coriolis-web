@@ -22,14 +22,16 @@ import Location from '../../core/Location';
 
 let UserAction = Reflux.createActions({
   'login': { children: ["success", "failed"] },
+  'loginScope': { children: ["success", "failed"] },
   'logout': {},
   'tokenLogin': { children: ["failed"] },
   'setCurrentUser': {},
   'switchProject': {},
-  'getScopedProjects': { children: ["completed", "failed"] }
+  'getScopedProjects': { children: ["completed", "failed"] },
+  'loadProjects': { children: ["completed", "failed"] },
 })
 
-UserAction.login.listen((userData => {
+UserAction.login.listen(userData => {
   let auth = {
     "auth": {
       "identity": {
@@ -46,13 +48,38 @@ UserAction.login.listen((userData => {
           }
         }
       },
-      /*scope: "unscoped"*/
+      scope: "unscoped"
+    }
+  }
+
+  Api.setDefaultHeader({ "X-Auth-Token": null })
+
+  Api.sendAjaxRequest({
+    url: servicesUrl.identity,
+    method: "POST",
+    data: auth
+  })
+    .then((response) => {
+      UserAction.login.success(response)
+      Location.push('/replicas')
+    }, UserAction.login.failed)
+
+})
+
+UserAction.loginScope.listen((token, projectId) => {
+  let auth = {
+    "auth": {
+      "identity": {
+        "methods": [
+          "token"
+        ],
+        "token": {
+          id: token
+        }
+      },
       scope: {
         project: {
-          domain: {
-            name: userData.domain ? userData.domain : defaultDomain
-          },
-          name: userData.name
+          id: projectId
         }
       }
     }
@@ -66,11 +93,10 @@ UserAction.login.listen((userData => {
     data: auth
   })
     .then((response) => {
-      UserAction.login.success(response)
-      Location.push('/migrations')
+      UserAction.loginScope.success(response)
     }, UserAction.login.failed)
-    .catch(UserAction.login.failed)
-}))
+
+})
 
 UserAction.tokenLogin.listen((token) => {
   Api.sendAjaxRequest({
@@ -100,4 +126,5 @@ UserAction.getScopedProjects.listen((callback) => {
       UserAction.getScopedProjects.failed(response)
     });
 })
+
 export default UserAction;

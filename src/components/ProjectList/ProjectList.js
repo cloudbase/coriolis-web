@@ -24,8 +24,8 @@ import SearchBox from '../SearchBox';
 import s from './ProjectList.scss';
 import AddCloudConnection from '../AddCloudConnection';
 import Modal from 'react-modal';
-import ProjectStore from '../../stores/ProjectStore';
-import ProjectActions from '../../actions/ProjectActions';
+import UserStore from '../../stores/UserStore';
+import UserActions from '../../actions/UserActions';
 import TextTruncate from 'react-text-truncate';
 import UserIcon from '../UserIcon';
 import FilteredTable from '../FilteredTable';
@@ -46,7 +46,8 @@ const connectionActions = [
 class ProjectList extends Reflux.Component {
   constructor(props) {
     super(props)
-    this.store = ProjectStore
+
+    this.store = UserStore
 
     this.state = {
       showModal: false,
@@ -71,16 +72,14 @@ class ProjectList extends Reflux.Component {
     super.componentWillMount.call(this)
 
     this.context.onSetTitle(title);
-    if (this.state.projects == null) {
-      ProjectActions.loadProjects()
-    }
+    UserActions.getScopedProjects()
   }
 
   projectsSelected() {
     let count = this.projectsSelectedCount(),
         total = 0
-    if (this.state.projects) {
-      total = this.state.projects.length
+    if (this.state.currentUser.projects) {
+      total = this.state.currentUser.projects.length
     }
 
     return `${count} of ${total} project(s) selected`;
@@ -88,8 +87,8 @@ class ProjectList extends Reflux.Component {
 
   projectsSelectedCount() {
     let count = 0
-    if (this.state.projects) {
-      this.state.projects.forEach((item) => {
+    if (this.state.currentUser.projects) {
+      this.state.currentUser.projects.forEach((item) => {
         if (item.selected) count++
       })
     }
@@ -101,7 +100,7 @@ class ProjectList extends Reflux.Component {
   }
 
   checkItem(e, itemRef) {
-    let items = this.state.projects
+    let items = this.state.currentUser.projects
     items.forEach((item) => {
       if (item == itemRef) {
         item.selected = !item.selected
@@ -137,7 +136,7 @@ class ProjectList extends Reflux.Component {
             visible: true,
             onConfirm: () => {
               this.setState({ confirmationDialog: { visible: false }})
-              let selectedProjects = this.state.projects.filter((connection) => connection.selected)
+              let selectedProjects = this.state.currentUser.projects.filter((connection) => connection.selected)
               selectedProjects.forEach(project => {
                 // TODO: Delete project action here
               })
@@ -273,7 +272,7 @@ class ProjectList extends Reflux.Component {
           </div>
           <div className={s.pageContent}>
             <FilteredTable
-              items={this.state.projects}
+              items={this.state.currentUser.projects}
               filterFn={this.filterFn}
               queryText={this.state.queryText}
               filterType={this.state.filterType}

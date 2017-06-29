@@ -19,8 +19,6 @@
 import Reflux from 'reflux';
 import UserActions from '../../actions/UserActions';
 import ConnectionsActions from '../../actions/ConnectionsActions'
-import MigrationActions from '../../actions/MigrationActions'
-import ConnectionsStore from '../../stores/ConnectionsStore'
 import Location from '../../core/Location';
 import Api from '../../components/ApiCaller';
 import cookie from 'react-cookie';
@@ -65,6 +63,19 @@ class UserStore extends Reflux.Store
   }
 
   onLoginSuccess(response) {
+    let token = response.headers['X-Subject-Token']
+    Api.setDefaultHeader('X-Auth-Token', token)
+    cookie.save('unscopedToken', token, { path: "/" })
+    UserActions.getScopedProjects(response => {
+      if (response.data.projects) {
+        UserActions.loginScope(token, response.data.projects[0].id)
+      } else {
+        // TODO: Error case no scoped projects
+      }
+    })
+  }
+
+  onLoginScopeSuccess(response) {
     this.setState({ loadingState: false })
 
     let currentUser = this.state.currentUser
@@ -83,7 +94,7 @@ class UserStore extends Reflux.Store
     ConnectionsActions.loadConnections()
 
     if (window.location.pathname == "/" || window.location.pathname == "/login") {
-      Location.push('/migrations');
+      Location.push('/replicas');
     }
 
     UserActions.getScopedProjects()
@@ -112,7 +123,6 @@ class UserStore extends Reflux.Store
     Api.resetHeaders()
   }
 
-
   onTokenLoginFailed() {
     cookie.remove('token');
     cookie.remove('projectId');
@@ -135,16 +145,16 @@ class UserStore extends Reflux.Store
   }
 
   onSwitchProject(project) {
-    let currentUser = this.state.currentUser
-    currentUser.project = project
-    this.setState({
-      currentUser: currentUser
-    })
-    ConnectionsActions.loadConnections()
+    let token = cookie.load('unscopedToken')
+    Api.setDefaultHeader('X-Auth-Token', null)
+    UserActions.loginScope(token, project.id)
   }
 
   onGetScopedProjectsCompleted(response) {
-    console.log("onGetScopedProjectsCompleted", response)
+    let currentUser = this.state.currentUser
+    currentUser.projects = response.data.projects
+
+    this.setState({ currentUser: currentUser })
   }
 }
 

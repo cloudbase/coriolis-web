@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component, PropTypes } from 'react';
 import Reflux from 'reflux';
-import ProjectStore from '../../stores/ProjectStore';
+import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
 import Dropdown from '../NewDropdown';
 import s from './ProjectsDropdown.scss';
@@ -28,7 +28,7 @@ class ProjectsDropdown extends Reflux.Component {
   constructor(props) {
     super(props)
 
-    this.store = ProjectStore
+    this.store = UserStore
   }
 
   componentWillMount() {
@@ -37,7 +37,7 @@ class ProjectsDropdown extends Reflux.Component {
 
   switchProject(value) {
     let project = null
-    this.state.projects.forEach(item => {
+    this.state.currentUser.projects.forEach(item => {
       if (item.id == value.value) {
         project = item
       }
@@ -46,7 +46,7 @@ class ProjectsDropdown extends Reflux.Component {
   }
 
   render() {
-    let projects = this.state.projects.map(project => {
+    let projects = this.state.currentUser.projects.map(project => {
       return { label: project.name, value: project.id }
     })
 
