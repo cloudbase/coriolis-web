@@ -32,6 +32,8 @@ import CloudConnectionsView from './components/CloudConnectionsView';
 import CloudConnectionDetail from './components/CloudConnectionDetail';
 import CloudConnectionAuth from './components/CloudConnectionAuth';
 import ConnectionsList from './components/ConnectionsList';
+import Project from './components/Project';
+import ProjectDetail from './components/ProjectDetail';
 import ProjectList from './components/ProjectList';
 import ReplicaExecutions from './components/ReplicaExecutions';
 import UserView from './components/UserView';
@@ -109,11 +111,9 @@ const router = new Router(on => {
   )
 
   on('/project/details/:projectId/', async (params) =>
-    <CloudConnection connectionId={params.params.projectId}>
-      <CloudConnectionsView type="auth">
-        <CloudConnectionAuth />
-      </CloudConnectionsView>
-    </CloudConnection>
+    <Project projectId={params.params.projectId}>
+      <ProjectDetail />
+    </Project>
   )
 
   on('/user/profile/', async () => <UserView type="profile"><UserOverview /></UserView>)

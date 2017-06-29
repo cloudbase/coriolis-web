@@ -96,7 +96,7 @@ class ProjectList extends Reflux.Component {
   }
 
   projectDetail(e, item) {
-    //Location.push('/project/' + item.id + "/")
+    Location.push('/project/details/' + item.id + "/")
   }
 
   checkItem(e, itemRef) {

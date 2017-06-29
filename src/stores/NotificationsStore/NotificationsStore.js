@@ -36,7 +36,7 @@ class NotificationsStore extends Reflux.Store
     }
   }
 
-  onLoginSuccess(response) {
+  onLoginScopeSuccess(response) {
     let notifications = [{
       message: "Signed in",
       type: 'success'
@@ -218,6 +218,13 @@ class NotificationsStore extends Reflux.Store
     this.setState({notifications: []})
   }
 
+  onSwitchProject() {
+    let notifications = [{
+      message: "Switching project",
+      type: 'info'
+    }]
+    this.setState({notifications: notifications})
+  }
 
 }
 
