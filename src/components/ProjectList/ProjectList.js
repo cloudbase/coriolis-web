@@ -128,6 +128,11 @@ class ProjectList extends Reflux.Component {
     this.setState({ showModal: false })
   }
 
+  switchProject(project) {
+    console.log(project)
+    UserActions.switchProject(project.id)
+  }
+
   bulkActions(action) {
     switch (action.value) {
       case "delete":
@@ -153,6 +158,8 @@ class ProjectList extends Reflux.Component {
 
   renderSearch(items) {
     let output = null
+    let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+
     if (items && items.length) {
       output = items.map((item, index) => (
         <div className={"item " + (item.selected ? " selected" : "")} key={"vm_" + index}>
@@ -175,20 +182,27 @@ class ProjectList extends Reflux.Component {
             </span>
           </span>
           <span className="cell">
-              <div className={s.cloudImage + " icon small-cloud " + item.type}></div>
-            </span>
+            <div className={s.cloudImage + " icon small-cloud " + item.type}></div>
+          </span>
           <span className={"cell " + s.composite}>
-              <span className={s.label}>Is Domain</span>
-              <span className={s.value}>
-                {item.is_domain ? "Yes" : "No"}
-              </span>
+            <span className={s.label}>Is Domain</span>
+            <span className={s.value}>
+              {item.is_domain ? "Yes" : "No"}
             </span>
+          </span>
           <span className={"cell " + s.composite}>
-              <span className={s.label}>Enabled</span>
-              <span className={s.value}>
-                {item.enabled ? "Yes" : "No"}
-              </span>
+            <span className={s.label}>Enabled</span>
+            <span className={s.value}>
+              {item.enabled ? "Yes" : "No"}
             </span>
+          </span>
+          <span className={"cell "}>
+            <button
+              className="wire gray"
+              disabled={item.id == projectId}
+              onClick={(e) => this.switchProject(item)}
+            >{item.id == projectId ? "Current" : "Switch"}</button>
+          </span>
         </div>
       ), this)
     }

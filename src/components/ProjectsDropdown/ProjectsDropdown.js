@@ -36,13 +36,7 @@ class ProjectsDropdown extends Reflux.Component {
   }
 
   switchProject(value) {
-    let project = null
-    this.state.currentUser.projects.forEach(item => {
-      if (item.id == value.value) {
-        project = item
-      }
-    })
-    UserActions.switchProject(project)
+    UserActions.switchProject(value.value)
   }
 
   render() {
