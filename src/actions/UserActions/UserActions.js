@@ -21,14 +21,16 @@ import {servicesUrl, defaultDomain} from '../../config';
 import Location from '../../core/Location';
 
 let UserAction = Reflux.createActions({
-  'login': { children: ["success", "failed"] },
-  'loginScope': { children: ["success", "failed"] },
-  'logout': {},
-  'tokenLogin': { children: ["failed"] },
-  'setCurrentUser': {},
-  'switchProject': {},
-  'getScopedProjects': { children: ["completed", "failed"] },
-  'loadProjects': { children: ["completed", "failed"] },
+  login: { children: ["success", "failed"] },
+  loginGoogle: { children: ["success", "failed"] },
+  loginScope: { children: ["success", "failed"] },
+  logout: {},
+  tokenLogin: { children: ["failed"] },
+  setCurrentUser: {},
+  switchProject: {},
+  getScopedProjects: { children: ["completed", "failed"] },
+  loadProjects: { children: ["completed", "failed"] },
+  federateToken: { }
 })
 
 UserAction.login.listen(userData => {
@@ -68,12 +70,12 @@ UserAction.login.listen(userData => {
 
 UserAction.loginScope.listen((token, projectId) => {
   let auth = {
-    "auth": {
-      "identity": {
-        "methods": [
+    auth: {
+      identity: {
+        methods: [
           "token"
         ],
-        "token": {
+        token: {
           id: token
         }
       },
@@ -100,14 +102,14 @@ UserAction.loginScope.listen((token, projectId) => {
 
 UserAction.tokenLogin.listen((token) => {
   Api.sendAjaxRequest({
-      url: servicesUrl.identity,
-      method: "GET",
-      headers: { 'X-Subject-Token': token }
-    })
-    .then(UserAction.login.success, UserAction.tokenLogin.failed)
-    .catch((response) => {
-      UserAction.tokenLogin.failed(response)
-    });
+    url: servicesUrl.identity,
+    method: "GET",
+    headers: { 'X-Subject-Token': token }
+  })
+  .then(UserAction.login.success, UserAction.tokenLogin.failed)
+  .catch((response) => {
+    UserAction.tokenLogin.failed(response)
+  });
 })
 
 UserAction.getScopedProjects.listen((callback) => {

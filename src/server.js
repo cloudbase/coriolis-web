@@ -72,6 +72,15 @@ server.get('/login/facebook/return',
   }
 );
 
+server.post('/federation', async (req, res, next) => {
+  let token = req.body.token
+  if (token) {
+    res.redirect('/federate/' + token);
+  } else {
+    res.redirect('/login');
+  }
+});
+
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------

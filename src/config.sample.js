@@ -105,7 +105,7 @@ export const migrationSteps = [
 
 export const auth = {
 
-  jwt: { secret: process.env.JWT_SECRET || 'React Starter Kit' },
+  jwt: { secret: process.env.JWT_SECRET || 'Coriolis' },
 
   // https://developers.facebook.com/
   facebook: {

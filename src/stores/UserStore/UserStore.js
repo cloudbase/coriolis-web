@@ -22,7 +22,7 @@ import ConnectionsActions from '../../actions/ConnectionsActions'
 import Location from '../../core/Location';
 import Api from '../../components/ApiCaller';
 import cookie from 'react-cookie';
-import {servicesUrl} from '../../config'
+import { servicesUrl } from '../../config'
 
 class UserStore extends Reflux.Store
 {
@@ -106,19 +106,19 @@ class UserStore extends Reflux.Store
 
   onLogout() {
     Api.sendAjaxRequest({
-        url: servicesUrl.identity,
-        method: "DELETE",
-        headers: { 'X-Subject-Token': this.state.currentUser.token }
-      })
-      .then(() => {
-        cookie.remove('token');
-        window.location.href = "/"
+      url: servicesUrl.identity,
+      method: "DELETE",
+      headers: { 'X-Subject-Token': this.state.currentUser.token }
+    })
+    .then(() => {
+      cookie.remove('token');
+      window.location.href = "/"
 
-      })
-      .catch(() => {
-        cookie.remove('token');
-        window.location.href = "/"
-      })
+    })
+    .catch(() => {
+      cookie.remove('token');
+      window.location.href = "/"
+    })
 
     Api.resetHeaders()
   }
@@ -158,6 +158,18 @@ class UserStore extends Reflux.Store
     currentUser.projects = response.data.projects
 
     this.setState({ currentUser: currentUser })
+  }
+
+  onFederateToken(token) {
+    Api.setDefaultHeader('X-Auth-Token', token)
+    cookie.save('unscopedToken', token, { path: "/" })
+    UserActions.getScopedProjects(response => {
+      if (response.data.projects) {
+        UserActions.loginScope(token, response.data.projects[0].id)
+      } else {
+        // TODO: Error case no scoped projects
+      }
+    })
   }
 }
 
