@@ -124,3 +124,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
   }
 }
+
+@media (max-height: 800px) {
+  .root {
+    padding-top: 88px;
+    padding-bottom: 112px;
+    .stepTitle {
+      margin-bottom: 32px;
+    }
+  }
+  .wizardControls {
+    bottom: 16px;
+    .buttons {
+      margin-bottom: 32px;
+    }
+  }
+}

@@ -122,6 +122,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .container {
   margin: 0 auto;
   padding: 0px;
+  position: relative;
   max-width: $max-content-width;
   &:after {
     content: " ";

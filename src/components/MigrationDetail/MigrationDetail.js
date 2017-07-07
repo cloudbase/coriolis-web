@@ -161,12 +161,12 @@ class MigrationDetail extends Component {
                </div>*/}
             </div>
           </div>
-          <MigrationNetworks migration={item}/>
+          <MigrationNetworks migration={item} />
           <div className={s.container + " " + s.buttons}>
             { item.type == "replica" && <button
               onClick={(e) => this.createMigrationFromReplica(e, item)}
-              disabled={disabled} className={disabled ? "disabled": ""}>
-              Create Migration
+              disabled={disabled} className={disabled ? "disabled": ""} >
+              Migrate Replica
             </button>}
             <button className="wire" onClick={(e) => this.deleteMigration(e)}>Delete</button>
           </div>

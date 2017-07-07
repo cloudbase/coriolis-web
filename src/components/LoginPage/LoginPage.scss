@@ -165,6 +165,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 
-@media (min-width: 700px) {
-
+@media (max-height: 800px) {
+  .container {
+    padding-top: 2vh;
+  }
+  .loginContainer {
+    margin-top: 16px;
+  }
+  .root .footerLogo {
+    bottom: 4px;
+  }
 }
