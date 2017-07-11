@@ -48,7 +48,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 }
 .loginContainer {
-  width: 464px;
   margin: 64px auto 0;
   padding: 32px 32px 16px;
   background-color: rgba(221, 224, 229, 0.5);
@@ -62,7 +61,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   input, button {
     width: 100%;
   }
-
 }
 .loginSocialButtons, .loginUsername {
   &:after {
@@ -138,6 +136,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   padding: 8vh 0 40px;
   width: 464px;
   text-align: center;
+  .logo {
+    .large {
+      display: block;
+    }
+    .small {
+      display: none;
+    }
+  }
   :global {
     .form-group {
       margin-bottom: 16px;
@@ -161,11 +167,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
     }
   }
-
+  &.oneColumn {
+    width: 256px;
+    :global {
+      .form-group {
+        width: 100%;
+        padding: 0 !important;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .loginSeparator {
+      margin: 8px 0 8px;
+      .line {
+        width: 16px;
+      }
+    }
+  }
 }
 
 
-@media (max-height: 800px) {
+@media screen and (max-height: 860px) and (min-height: 760px) {
   .container {
     padding-top: 2vh;
   }
@@ -173,6 +196,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin-top: 16px;
   }
   .root .footerLogo {
-    bottom: 4px;
+    bottom: 16px;
+  }
+  .loginSeparator {
+    margin: 8px 0 8px;
+  }
+}
+@media (max-height: 760px) {
+  .container {
+    padding-top: 10vh;
+    .logo {
+      .large {
+        display: none;
+      }
+      .small {
+        display: block;
+        :global(.logo) {
+          width: 245px;
+          height: 48px;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}
+@media (max-height: 620px) {
+  .root .footerLogo {
+    bottom: 16px;
+  }
+  .loginContainer {
+    margin-top: 16px;
   }
 }
