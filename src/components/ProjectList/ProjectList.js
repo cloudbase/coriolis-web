@@ -53,6 +53,7 @@ class ProjectList extends Reflux.Component {
       showModal: false,
       queryText: '',
       filterType: 'all',
+      selectedAll: false,
       searchMin: true,
       projects: null,
       confirmationDialog: {
@@ -106,7 +107,18 @@ class ProjectList extends Reflux.Component {
         item.selected = !item.selected
       }
     })
-    this.setState({ projects: items })
+    this.setState({ projects: items, selectedAll: false })
+  }
+
+  checkAll() {
+    let items = this.state.currentUser.projects
+    let selectedAll = this.state.selectedAll
+
+    items.forEach((item) => {
+      item.selected = !selectedAll
+    })
+
+    this.setState({ projects: items, selectedAll: !selectedAll })
   }
 
   filterFn(item, queryText, filterType) {
@@ -259,6 +271,16 @@ class ProjectList extends Reflux.Component {
               </div>
             </div>
             <div className="filters">
+              <div className="checkbox-container">
+                <input
+                  id={"vm_check_all"}
+                  type="checkbox"
+                  checked={this.state.selectedAll}
+                  onChange={(e) => this.checkAll()}
+                  className="checkbox-normal"
+                />
+                <label htmlFor={"vm_check_all"}></label>
+              </div>
               <div className="category-filter">
                 {itemStates}
               </div>

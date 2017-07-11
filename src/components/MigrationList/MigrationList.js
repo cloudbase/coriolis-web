@@ -65,6 +65,10 @@ class MigrationList extends Reflux.Component {
       currentProject: "My Project",
       searchMin: true,
       filteredData: [],
+      selectedAll: {
+        migration: false,
+        replica: false
+      },
       confirmationDialog: {
         visible: false,
         message: "Are you sure?",
@@ -162,7 +166,22 @@ class MigrationList extends Reflux.Component {
         item.selected = !item.selected
       }
     })
-    this.setState({ migrations: items })
+    let selectedAll = this.state.selectedAll
+    selectedAll[this.state.filterType] = false
+    this.setState({ migrations: items, selectedAll: selectedAll })
+  }
+
+  checkAll(e) {
+    let items = this.state.migrations
+    let selectedAll = this.state.selectedAll
+
+    items.forEach((item) => {
+      if (item.type == this.state.filterType) {
+        item.selected = !selectedAll[this.state.filterType]
+      }
+    })
+    selectedAll[this.state.filterType] = !selectedAll[this.state.filterType]
+    this.setState({ migrations: items, selectedAll: selectedAll })
   }
 
   searchItem(queryText) {
@@ -374,6 +393,16 @@ class MigrationList extends Reflux.Component {
               </div>
             </div>
             <div className="filters">
+              <div className="checkbox-container">
+                <input
+                  id={"vm_check_all"}
+                  type="checkbox"
+                  checked={this.state.selectedAll[this.state.filterType]}
+                  onChange={(e) => this.checkAll()}
+                  className="checkbox-normal"
+                />
+                <label htmlFor={"vm_check_all"}></label>
+              </div>
               <div className="category-filter">
                 {itemStates}
               </div>

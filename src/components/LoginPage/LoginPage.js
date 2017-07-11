@@ -23,7 +23,7 @@ import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
 import NotificationActions from '../../actions/NotificationActions';
 import LoadingIcon from '../LoadingIcon';
-import Location from '../../core/Location';
+import withViewport from '../withViewport.js';
 
 const title = 'Log In';
 const coriolisTextSvg = `
@@ -192,4 +192,4 @@ class LoginPage extends Reflux.Component {
 
 }
 
-export default withStyles(LoginPage, s);
+export default withViewport(withStyles(LoginPage, s));

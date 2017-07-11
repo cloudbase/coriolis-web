@@ -56,6 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       padding: 2px 8px 2px 0;
       margin-top: 7px;
       border-right: 1px solid $gray-dark;
+      display: none;
     }
     :global(.name-filter) {
       float: left;
