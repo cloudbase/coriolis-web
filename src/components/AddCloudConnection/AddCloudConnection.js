@@ -35,7 +35,8 @@ class AddCloudConnection extends Reflux.Component {
 
   static defaultProps = {
     cloud: null,
-    connection: null
+    connection: null,
+    type: "new"
   }
 
   constructor(props) {
@@ -90,21 +91,29 @@ class AddCloudConnection extends Reflux.Component {
     this.setState({ description: e.target.value })
   }
 
-  handleAdd() {
+  handleSave() {
     let credentials = Object.assign({}, this.state.currentCloudData)
-    for (var key in credentials) {
+    for (let key in credentials) {
       if (credentials[key].label) {
         credentials[key] = credentials[key].value
       }
     }
-
-    ConnectionsActions.newConnection({
-      name: this.state.connectionName,
-      description: this.state.description,
-      type: this.state.currentCloud.name,
-      connection_info: credentials
-    })
-    this.props.addHandle(this.state.connectionName);
+    if (this.props.type == "new") {
+      ConnectionsActions.newConnection({
+        name: this.state.connectionName,
+        description: this.state.description,
+        type: this.state.currentCloud.name,
+        connection_info: credentials
+      })
+      this.props.addHandle(this.state.connectionName);
+    } else {
+      ConnectionsActions.saveEndpoint(this.props.connection, {
+        name: this.state.connectionName,
+        description: this.state.description,
+        type: this.state.currentCloud.name,
+        connection_info: credentials
+      })
+    }
   }
 
   chooseCloud(cloud) {
@@ -358,8 +367,12 @@ class AddCloudConnection extends Reflux.Component {
             {fields}
           </div>
           <div className={s.buttons}>
-            <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
-            <button className={s.rightBtn} onClick={(e) => this.handleAdd(e)}>Save</button>
+            {this.props.type == "new" ? (
+              <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
+            ) : (
+              <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
+            )}
+            <button className={s.rightBtn} onClick={(e) => this.handleSave(e)}>Save</button>
           </div>
         </div>
       )
@@ -391,7 +404,7 @@ class AddCloudConnection extends Reflux.Component {
         </div>
         <div className={s.buttons}>
           <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
-          <button className={s.rightBtn} onClick={(e) => this.handleAdd(e)}>Add</button>
+          <button className={s.rightBtn} onClick={(e) => this.handleSave(e)}>Add</button>
         </div>
       </div>
     )

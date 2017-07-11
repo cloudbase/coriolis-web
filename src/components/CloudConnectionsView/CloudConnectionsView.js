@@ -197,6 +197,7 @@ class CloudConnectionsView extends Component {
               closeHandle={(e) => this.closeModal(e)}
               addHandle={(e) => this.closeModal(e)}
               connection={item}
+              type="edit"
             />
           </Modal>
           <Modal
