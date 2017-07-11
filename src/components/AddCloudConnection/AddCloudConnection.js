@@ -25,7 +25,7 @@ import NotificationActions from '../../actions/NotificationActions';
 import Dropdown from '../NewDropdown';
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
-const title = 'Add Cloud Connection';
+const title = 'Add Cloud Endpoint';
 
 class AddCloudConnection extends Reflux.Component {
 
