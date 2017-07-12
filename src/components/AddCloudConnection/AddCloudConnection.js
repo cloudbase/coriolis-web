@@ -107,7 +107,7 @@ class AddCloudConnection extends Reflux.Component {
       })
       this.props.addHandle(this.state.connectionName);
     } else {
-      ConnectionsActions.saveEndpoint(this.props.connection, {
+      ConnectionsActions.editEndpoint(this.props.connection, {
         name: this.state.connectionName,
         description: this.state.description,
         type: this.state.currentCloud.name,

@@ -216,6 +216,7 @@ class ConnectionsStore extends Reflux.Store
     if (this.state.connections) {
       let connection = this.state.connections.filter((connection => connection.id == connectionId))[0]
       if (connection.connection_info && connection.connection_info.secret_ref) {
+        console.log("secret_ref", connection.connection_info.secret_ref)
         let index = connection.connection_info.secret_ref.lastIndexOf("/")
         let uuid = connection.connection_info.secret_ref.substr(index + 1)
 
@@ -257,10 +258,14 @@ class ConnectionsStore extends Reflux.Store
   }
 
   onDeleteConnectionCompleted(connection) {
+    console.log("DELETED", connection)
     let connections = this.state.connections
+    console.log(connections.length)
     let index = connections.indexOf(connection)
     connections.splice(index, 1)
+    console.log(connections.length)
     this.setState({ connections: connections })
+
     ConnectionsActions.assignConnectionProvider()
   }
 
