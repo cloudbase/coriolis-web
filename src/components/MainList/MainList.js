@@ -45,7 +45,7 @@ class MainList extends Component {
     itemName: "items",
     items: [],
     filters: [],
-    actions: [],
+    actions: null,
     refresh: false
   }
 
@@ -55,8 +55,7 @@ class MainList extends Component {
     this.state = {
       queryText: '',
       items: this.props.items,
-      filterType: "all",
-      filterStatus: "all",
+      filters: [],
       searchMin: true,
       selectedAll: false,
       confirmationDialog: {
@@ -70,25 +69,22 @@ class MainList extends Component {
     for (let i in this.props.actions) {
       this.listActions.push({ label: props.actions[i].label, value: i })
     }
+
+    this.filter = this.filter.bind(this)
   }
 
   componentWillMount() {
-    this.setState({ items: this.props.items }) // eslint-disable-line react/no-did-mount-set-state
+    this.componentWillReceiveProps(this.props)
   }
 
-  componentWillReceiveProps(newProps, oldProps) {
-    this.setState({ items: newProps.items })
-  }
-
-  itemsSelected() {
-    let count = 0
-    let total = 0
-    if (this.state.items) {
-      count = this.selectedCount()
-      total = this.state.items.length
-    }
-
-    return `${count} of ${total} ${this.props.itemName}(s) selected`;
+  componentWillReceiveProps(newProps) {
+    let stateFilters = this.state.filters
+    this.props.filters.forEach(filter => {
+      if (!stateFilters[filter.field]) {
+        stateFilters[filter.field] = null
+      }
+    })
+    this.setState({ items: newProps.items, filters: stateFilters })
   }
 
   selectedCount() {
@@ -103,8 +99,18 @@ class MainList extends Component {
     return count
   }
 
+  itemsSelected() {
+    let count = 0
+    let total = 0
+    if (this.state.items) {
+      count = this.selectedCount()
+      total = this.state.items.length
+    }
+
+    return `${count} of ${total} ${this.props.itemName}(s) selected`;
+  }
+
   itemDetail(e, item) {
-    console.log(this.props.detailAction, typeof this.props.detailAction)
     if (typeof this.props.detailAction == "function") {
       this.props.detailAction(item)
     }
@@ -139,32 +145,33 @@ class MainList extends Component {
     }
   }
 
-  filterType(e, type) {
-    this.setState({ filterType: type }, () => {
-      this.searchItem({ target: { value: this.state.queryText } })
-    })
+  filter(filter, option) {
+    let stateFilters = this.state.filters
+    stateFilters[filter.field] = option.value
+    this.setState({ filters: stateFilters })
+    this.searchItem(this.state.queryText)
   }
 
-  filterStatus(e, status) {
-    this.setState({ filterStatus: status }, () => {
-      this.searchItem({ target: { value: this.state.queryText } })
-    })
-  }
+  filterFn(item, queryText, filters) {
+    let valid = true
+    if (item.name.toLowerCase().indexOf(queryText.toLowerCase()) == -1) {
+      valid = false
+    }
+    for (let field in filters) {
+      if (item[field] != filters[field] && filters[field] != null) {
+        valid = false
+      }
+    }
 
-  filterFn(item, queryText, filterType, filterStatus) {
-    return (
-      item.name.toLowerCase().indexOf(queryText.toLowerCase()) != -1 &&
-      (filterType == "all" || filterType == item.type) &&
-      (filterStatus == "all" || filterStatus == item.status)
-    )
+    return valid
   }
 
   renderSearch(items) {
     if (items) {
       let output = items.map((item) => {
         return (
-          <div className={s.row + " " + (item.selected ? "selected" : "")}>
-            <div className="checkbox-container">
+          <div className={s.row + " " + (item.selected ? "selected" : "")} key={"row_" + item.id}>
+            <div className={"checkbox-container " + (this.props.actions == null ? "hidden" : "")}>
               <input
                 id={"vm_check_" + item.id}
                 type="checkbox"
@@ -188,6 +195,8 @@ class MainList extends Component {
     let items = this.state.items.forEach((item) => {
       if (item.selected) {
         return item
+      } else {
+        return null
       }
     })
     if (this.props.actions[option.value].action) {
@@ -202,25 +211,22 @@ class MainList extends Component {
   }
 
   render() {
-    let _this = this
     let tableFilters = this.props.filters.map(filter => {
-      let filterTemplate = filter.options.map((state, index) => (
-          <a
-            className={_this.state.filterStatus == state.type || (_this.state.filterStatus == null && state.type == "all") ?
-              "selected" : ""}
-            onClick={(e) => _this.filterStatus(e, state.type)} key={"status_" + index}
-          >{state.label}</a>
-        )
-      )
-      return <div className="category-filter">{filterTemplate}</div>
-    })
+      let filterTemplate = filter.options.map((option) => (
+        <a
+          className={this.state.filters[filter.field] == option.value ? "selected" : ""}
+          onClick={() => this.filter(filter, option)} key={filter.field + "_" + option.value}
+        >{option.label}</a>
+      ), this)
+      return <div className="category-filter" key={"filter_" + filter.field}>{filterTemplate}</div>
+    }, this)
 
     return (
       <div className={s.root}>
         <div className={s.container}>
           <div className={s.listHeader}>
             <div className="filters">
-              <div className="checkbox-container">
+              <div className={"checkbox-container " + (this.props.actions == null ? "hidden" : "")}>
                 <input
                   id={"vm_check_all"}
                   type="checkbox"
@@ -246,7 +252,9 @@ class MainList extends Component {
                   className={"searchBox " + (this.state.searchMin ? "minimize" : "")}
                 />
               </div>
-              <div className={s.bulkActions + (this.selectedCount() === 0 ? " invisible" : "")}>
+              <div className={s.bulkActions + (this.selectedCount() === 0 ? " invisible " : " ") +
+                (this.props.actions == null ? "hidden" : "")}
+              >
                 <div className={s.itemsCount}>
                   {this.itemsSelected()}
                 </div>
@@ -262,9 +270,8 @@ class MainList extends Component {
             <FilteredTable
               items={this.state.items}
               filterFn={this.filterFn}
+              filters={this.state.filters}
               queryText={this.state.queryText}
-              filterType={this.state.filterType}
-              filterStatus={this.state.filterStatus}
               renderSearch={(e) => this.renderSearch(e)}
               customClassName={s.mainTable}
             ></FilteredTable>

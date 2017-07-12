@@ -34,7 +34,7 @@ class FilteredTable extends Component {
     items: PropTypes.array,
     filterFn: PropTypes.func,
     queryText: PropTypes.string,
-    filterType: PropTypes.string,
+    filters: PropTypes.array,
     renderSearch: PropTypes.func,
     customClassName: PropTypes.string
   }
@@ -54,7 +54,7 @@ class FilteredTable extends Component {
 
   componentWillReceiveProps(newProps, oldProps) {
     if (newProps.items) {
-      this.setState({filteredData: newProps.items}, () => {
+      this.setState({ filteredData: newProps.items }, () => {
         this.searchItem()
       })
     }
@@ -64,7 +64,7 @@ class FilteredTable extends Component {
     let queryResult = []
     if (this.props.items.length) {
       this.props.items.forEach((item) => {
-        if (this.props.filterFn(item, this.props.queryText, this.props.filterType, this.props.filterStatus)) {
+        if (this.props.filterFn(item, this.props.queryText, this.props.filters)) {
           queryResult.push(item)
         }
       }, this)
@@ -76,7 +76,7 @@ class FilteredTable extends Component {
   }
 
   render() {
-    let output = <LoadingIcon/>
+    let output = <LoadingIcon />
     if (this.state.filteredData) {
       if (this.state.filteredData.length) {
         output = (<div className="items-list">{this.props.renderSearch(this.state.filteredData)}</div>)
