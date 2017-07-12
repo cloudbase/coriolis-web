@@ -30,7 +30,8 @@ import MainList from '../MainList';
 
 const title = 'Projects';
 
-const connectionActions = {
+const projectActions = null
+/* {
   delete_action: {
     label: "Delete",
     action: (item) => {
@@ -39,8 +40,27 @@ const connectionActions = {
     confirm: true
   }
 }
-
+*/
 class ProjectList extends Reflux.Component {
+  filters = [
+    {
+      field: "enabled",
+      options: [
+        { value: null, label: "All"},
+        { value: true, label: "Enabled"},
+        { value: false, label: "Disabled"}
+      ]
+    },
+    {
+      field: "is_domain",
+      options: [
+        { value: null, label: "All"},
+        { value: true, label: "Is Domain"},
+        { value: false, label: "Is Not Domain"}
+      ]
+    }
+  ]
+
   constructor(props) {
     super(props)
 
@@ -123,9 +143,10 @@ class ProjectList extends Reflux.Component {
           </div>
           <MainList
             items={this.state.currentUser.projects}
-            actions={connectionActions}
+            actions={projectActions}
             itemName="project"
             renderItem={this.renderItem}
+            filters={this.filters}
           />
         </div>
       </div>

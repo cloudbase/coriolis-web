@@ -112,7 +112,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   flex-direction: column;
   :global(.items-list) {
     :global(.item) {
-      position: relative;
       padding-right: 16px;
       span:global(.cell):nth-child(2) {
         flex: 3;
@@ -126,18 +125,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
       span:global(.cell):nth-child(5) {
         flex: 3;
-      }
-      :global(.checkbox-container) {
-        position: absolute;
-        left: -32px;
-        top: 21px;
-        opacity: 0;
-        transition: opacity $animation-swift-out;
-      }
-      &:hover, &:global(.selected) {
-        :global(.checkbox-container) {
-          opacity: 1;
-        }
       }
       .description {
         display: block;
@@ -163,13 +150,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         display: inline-block;
       }
     }
-  }
-  .chevronRight {
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOHB4IiBoZWlnaHQ9IjEzcHgiIHZpZXdCb3g9IjQgMiA4IDEzIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwb2x5Z29uIGlkPSJDb21iaW5lZC1TaGFwZSIgc3Ryb2tlPSJub25lIiBmaWxsPSIjNjE2NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDguMDAwMDAwLCA4LjM2Mzk2MSkgcm90YXRlKC05MC4wMDAwMDApIHRyYW5zbGF0ZSgtOC4wMDAwMDAsIC04LjM2Mzk2MSkgIiBwb2ludHM9IjggMTAuMzgyMzM3NiAyLjUwMjYwNzAyIDUgMS44MTU0MzI4OSA1LjY3Mjc5MjIxIDggMTEuNzI3OTIyMSAxNC4xODQ1NjcxIDUuNjcyNzkyMjEgMTMuNDk3MzkzIDUgOCAxMC4zODIzMzc2Ij48L3BvbHlnb24+PC9zdmc+');
-    width: 8px;
-    height: 13px;
-    display: inline-block;
-    margin: 0 16px;
   }
 
 }

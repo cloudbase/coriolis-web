@@ -106,7 +106,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }
       }
     }
-
     :global(.item) {
       position: relative;
       span:global(.cell):nth-child(1) {
@@ -167,4 +166,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin: 0 16px;
   }
 
+}
+.refreshBtn {
+  float: left;
+  padding: 5px 5px;
+  margin-top: 6px;
+  margin-left: 11px;
+  cursor: pointer;
 }
