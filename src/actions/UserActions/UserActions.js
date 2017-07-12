@@ -35,18 +35,18 @@ let UserAction = Reflux.createActions({
 
 UserAction.login.listen(userData => {
   let auth = {
-    "auth": {
-      "identity": {
-        "methods": [
+    auth: {
+      identity: {
+        methods: [
           "password"
         ],
-        "password": {
-          "user": {
-            "name": userData.name,
-            "domain": {
-              "name": userData.domain ? userData.domain : defaultDomain
+        password: {
+          user: {
+            name: userData.name,
+            domain: {
+              name: userData.domain ? userData.domain : defaultDomain
             },
-            "password": userData.password
+            password: userData.password
           }
         }
       },
@@ -68,7 +68,7 @@ UserAction.login.listen(userData => {
 
 })
 
-UserAction.loginScope.listen((token, projectId) => {
+UserAction.loginScope.listen((token, projectId, fallback = true) => {
   let auth = {
     auth: {
       identity: {
@@ -96,8 +96,11 @@ UserAction.loginScope.listen((token, projectId) => {
   })
     .then((response) => {
       UserAction.loginScope.success(response)
-    }, UserAction.login.failed)
-
+    }, () => {
+      if (fallback) {
+        UserAction.loginScope.failed(token)
+      }
+    })
 })
 
 UserAction.tokenLogin.listen((token) => {

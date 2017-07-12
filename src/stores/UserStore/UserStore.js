@@ -66,9 +66,14 @@ class UserStore extends Reflux.Store
     let token = response.headers['X-Subject-Token']
     Api.setDefaultHeader('X-Auth-Token', token)
     cookie.save('unscopedToken', token, { path: "/" })
+
     UserActions.getScopedProjects(response => {
       if (response.data.projects) {
-        UserActions.loginScope(token, response.data.projects[0].id)
+        let projectId = cookie.load('projectId')
+        if (!projectId) {
+          projectId = response.data.projects[0].id
+        }
+        UserActions.loginScope(token, projectId)
       } else {
         // TODO: Error case no scoped projects
       }
@@ -98,6 +103,11 @@ class UserStore extends Reflux.Store
     }
 
     UserActions.getScopedProjects()
+  }
+
+  onLoginScopeFailed(token) {
+    // In case the scoping the project id from cookie didn't work, fallback to first project in list
+    UserActions.loginScope(token, this.state.currentUser.projects[0].id, false)
   }
 
   onLoginFailed(response) {
