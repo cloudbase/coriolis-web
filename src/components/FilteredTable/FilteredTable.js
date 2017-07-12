@@ -26,7 +26,8 @@ class FilteredTable extends Component {
   static defaultProps = {
     items: [],
     filterFn: null,
-    renderSearchItem: null
+    renderSearchItem: null,
+    customClassName: null
   }
 
   static propTypes = {
@@ -34,7 +35,8 @@ class FilteredTable extends Component {
     filterFn: PropTypes.func,
     queryText: PropTypes.string,
     filterType: PropTypes.string,
-    renderSearch: PropTypes.func
+    renderSearch: PropTypes.func,
+    customClassName: PropTypes.string
   }
 
   constructor(props) {
