@@ -67,7 +67,9 @@ class ProjectList extends Reflux.Component {
     this.store = UserStore
 
     this.state = {
-      projects: null
+      currentUser: {
+        projects: null
+      }
     }
 
     this.renderItem = this.renderItem.bind(this)

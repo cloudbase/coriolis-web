@@ -24,7 +24,7 @@ import LoadingIcon from "../LoadingIcon/LoadingIcon";
 class FilteredTable extends Component {
 
   static defaultProps = {
-    items: [],
+    items: null,
     filterFn: null,
     renderSearchItem: null,
     customClassName: null

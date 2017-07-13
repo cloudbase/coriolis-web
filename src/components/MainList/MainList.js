@@ -43,7 +43,7 @@ class MainList extends Component {
 
   static defaultProps = {
     itemName: "items",
-    items: [],
+    items: null,
     filters: [],
     actions: null,
     refresh: false
@@ -192,17 +192,30 @@ class MainList extends Component {
   }
 
   onActionChange(option) {
-    let items = this.state.items.forEach((item) => {
-      if (item.selected) {
-        return item
-      } else {
-        return null
-      }
-    })
-    if (this.props.actions[option.value].action) {
-      items.forEach((item) => {
-        this.props.actions[option.value].action(item)
+    let items = this.state.items.filter(item => item.selected)
+    if (this.props.actions[option.value].confirm) {
+      this.setState({
+        confirmationDialog: {
+          visible: true,
+          onConfirm: () => {
+            this.setState({ confirmationDialog: { visible: false }})
+            if (this.props.actions[option.value].action) {
+              items.forEach((item) => {
+                this.props.actions[option.value].action(item)
+              })
+            }
+          },
+          onCancel: () => {
+            this.setState({ confirmationDialog: { visible: false }})
+          }
+        }
       })
+    } else {
+      if (this.props.actions[option.value].action) {
+        items.forEach((item) => {
+          this.props.actions[option.value].action(item)
+        })
+      }
     }
   }
 
