@@ -41,6 +41,14 @@ import WizardActions from '../../actions/WizardActions';
 const title = 'New Migration';
 class MigrationWizard extends Reflux.Component {
 
+  static propTypes = {
+    wizard_type: PropTypes.string
+  }
+
+  static defaultProps = {
+    wizard_type: "migration"
+  }
+
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired
   }
@@ -49,11 +57,17 @@ class MigrationWizard extends Reflux.Component {
     super(props)
     this.stores = [MigrationStore, ConnectionStore, WizardStore]
     WizardActions.newState()
+
   }
 
   componentWillMount() {
     super.componentWillMount.call(this)
     this.context.onSetTitle(title);
+    if (this.props.wizard_type == "replica") {
+      WizardActions.updateWizardState({
+        migrationType: "replica"
+      })
+    }
   }
 
 
@@ -64,7 +78,11 @@ class MigrationWizard extends Reflux.Component {
       if (this.state.currentStep != "WizardMigrationType") {
         this.initBackStep()
       } else {
-        Location.push("/migrations")
+        if (this.props.wizard_type == "replica") {
+          Location.push("/replicas")
+        } else {
+          Location.push("/migrations")
+        }
       }
     }
   }

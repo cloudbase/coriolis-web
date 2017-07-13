@@ -258,7 +258,7 @@ class WizardVms extends Component {
           <div className="category-filter">
             {vmStates}
           </div>
-          <div className="items-list">
+          <div className="items-list instances">
             {this.renderSearch()}
           </div>
           <div className={s.selectionCount}>

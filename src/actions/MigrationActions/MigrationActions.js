@@ -21,35 +21,31 @@ import NotificationActions from '../NotificationActions'
 import {servicesUrl, securityGroups} from '../../config';
 
 let MigrationActions = Reflux.createActions({
-  'loadMigrations': { children: ['completed', 'failed'], shouldEmit: () => {} },
-  'loadMigration': { children: ['completed', 'failed'] }, // TODO: Reload migration action
-  'addMigration': { children: ['completed', 'failed'] },
-  'deleteMigration': { children: ['completed', 'failed'] },
-  'executeReplica': { children: ['completed', 'failed'] },
-  'cancelMigration': { children: ['completed', 'failed'] },
-  'getReplicaExecutions': { children: ['completed', 'failed'] },
-  'getReplicaExecutionDetail': { children: ['completed', 'failed'] },
-  'createMigrationFromReplica': { children: ['completed', 'failed'] },
-  'deleteReplicaExecution': { children: ['completed', 'failed'] },
-  'getMigration': {},
-  'setMigration': {},
-  'setMigrationProperty': {}
+  loadMigrations: { children: ['completed', 'failed'], shouldEmit: () => {} },
+  loadReplicas: { children: ['completed', 'failed'], shouldEmit: () => {} },
+  loadMigration: { children: ['completed', 'failed'] }, // TODO: Reload migration action
+  addMigration: { children: ['completed', 'failed'] },
+  deleteMigration: { children: ['completed', 'failed'] },
+  deleteReplica: { children: ['completed', 'failed'] },
+  executeReplica: { children: ['completed', 'failed'] },
+  cancelMigration: { children: ['completed', 'failed'] },
+  getReplicaExecutions: { children: ['completed', 'failed'] },
+  getReplicaExecutionDetail: { children: ['completed', 'failed'] },
+  createMigrationFromReplica: { children: ['completed', 'failed'] },
+  deleteReplicaExecution: { children: ['completed', 'failed'] },
+  getMigration: {},
+  setMigration: {},
+  setReplica: {},
+  setMigrationProperty: {}
 })
 
 MigrationActions.loadMigrations.listen(() => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
   Api.sendAjaxRequest({
-      url: `${servicesUrl.coriolis}/${projectId}/migrations/detail`,
-      method: "GET"
-    })
-    .then(MigrationActions.loadMigrations.completed, MigrationActions.loadMigrations.failed)
-    .catch(MigrationActions.loadMigrations.failed);
-
-  Api.sendAjaxRequest({
-      url: `${servicesUrl.coriolis}/${projectId}/replicas/detail`,
-      method: "GET"
-    })
+    url: `${servicesUrl.coriolis}/${projectId}/migrations/detail`,
+    method: "GET"
+  })
     .then(MigrationActions.loadMigrations.completed, MigrationActions.loadMigrations.failed)
     .catch(MigrationActions.loadMigrations.failed);
 })
@@ -59,9 +55,25 @@ MigrationActions.loadMigrations.shouldEmit = () => {
   if (typeof projectId === "undefined") {
     return false
   }
-  if (Reflux.GlobalState.migrationStore.queryInProgress) {
+  return true
+}
+
+MigrationActions.loadReplicas.listen(() => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  Api.sendAjaxRequest({
+    url: `${servicesUrl.coriolis}/${projectId}/replicas/detail`,
+    method: "GET"
+  })
+    .then(MigrationActions.loadReplicas.completed, MigrationActions.loadReplicas.failed)
+    .catch(MigrationActions.loadReplicas.failed);
+})
+
+MigrationActions.loadReplicas.shouldEmit = () => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  if (typeof projectId === "undefined") {
     return false
   }
+
   return true
 }
 
@@ -82,14 +94,23 @@ MigrationActions.loadMigration.shouldEmit = () => {
 }
 
 MigrationActions.deleteMigration.listen((migration) => {
-  let migrationType = migration.type === 'replica' ? 'replicas' : 'migrations'
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
   Api.sendAjaxRequest({
-      url: `${servicesUrl.coriolis}/${projectId}/${migrationType}/${migration.id}`,
-      method: "DELETE"
-    })
-    .then(MigrationActions.deleteMigration.completed(migration), MigrationActions.deleteMigration.failed)
-    .catch(MigrationActions.deleteMigration.failed);
+    url: `${servicesUrl.coriolis}/${projectId}/migrations/${migration.id}`,
+    method: "DELETE"
+  })
+  .then(MigrationActions.deleteMigration.completed(migration), MigrationActions.deleteMigration.failed)
+  .catch(MigrationActions.deleteMigration.failed);
+})
+
+MigrationActions.deleteReplica.listen((replica) => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  Api.sendAjaxRequest({
+    url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}`,
+    method: "DELETE"
+  })
+    .then(MigrationActions.deleteReplica.completed(replica), MigrationActions.deleteReplica.failed)
+    .catch(MigrationActions.deleteReplica.failed);
 })
 
 MigrationActions.executeReplica.listen((replica, callback = null) => {
@@ -103,10 +124,10 @@ MigrationActions.executeReplica.listen((replica, callback = null) => {
     }
 
     Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}/executions`,
-        method: "POST",
-        data: payload
-      })
+      url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}/executions`,
+      method: "POST",
+      data: payload
+    })
       .then((response) => {
         MigrationActions.executeReplica.completed(replica, response)
         if (callback) {
@@ -189,7 +210,7 @@ MigrationActions.deleteReplicaExecution.listen((replica, executionId, callback =
     method: "DELETE"
   })
     .then((response) => {
-      MigrationActions.deleteReplicaExecution.completed(replica, executionId, response)
+      MigrationActions.deleteReplicaExecution.completed(replica, executionId)
       if (callback) {
         callback(replica, executionId, response)
       }
@@ -225,12 +246,12 @@ MigrationActions.addMigration.listen((migration) => {
   destinationEnv["network_map"] = network_map
 
   payload[migration.migrationType] = {
-    "origin_endpoint_id": migration.sourceCloud.credential.id,
-    "destination_endpoint_id": migration.targetCloud.credential.id,
-    "destination_environment": destinationEnv,
-    "instances": instances,
-    "notes": migration.notes,
-    "security_groups": securityGroups
+    origin_endpoint_id: migration.sourceCloud.credential.id,
+    destination_endpoint_id: migration.targetCloud.credential.id,
+    destination_environment: destinationEnv,
+    instances: instances,
+    notes: migration.notes,
+    security_groups: securityGroups
   }
 
   let migrationType = migration.migrationType === 'replica' ? 'replicas' : 'migrations'

@@ -33,7 +33,7 @@ class UserStore extends Reflux.Store
     created: new Date(),
     project: {},
     roles: [],
-    projects: [],
+    projects: null,
     token: null,
     settings: {
       notifications: true

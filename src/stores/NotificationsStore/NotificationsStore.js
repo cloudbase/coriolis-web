@@ -41,7 +41,7 @@ class NotificationsStore extends Reflux.Store
       message: "Signed in",
       type: 'success'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onTokenLoginFailed(response) {
@@ -51,7 +51,7 @@ class NotificationsStore extends Reflux.Store
         type: 'error'
       }
     ]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onLogout(response) {
@@ -61,7 +61,7 @@ class NotificationsStore extends Reflux.Store
         type: 'info'
       }
     ]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onSaveEndpoint(response) {
@@ -71,7 +71,7 @@ class NotificationsStore extends Reflux.Store
       type: 'success',
       keep: true
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onAddMigrationCompleted(response) {
@@ -105,7 +105,7 @@ class NotificationsStore extends Reflux.Store
       }]
     }
 
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onDeleteConnection() {
@@ -113,15 +113,39 @@ class NotificationsStore extends Reflux.Store
       message: "Connection deleted successfully",
       type: 'success'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onDeleteMigrationCompleted() {
     let notifications = [{
-      message: "Item deleted successfully",
+      message: "Migration deleted successfully",
       type: 'success'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
+  }
+
+  onDeleteMigrationFailed() {
+    let notifications = [{
+      message: "Could not delete migration",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onDeleteReplicaCompleted() {
+    let notifications = [{
+      message: "Replica deleted successfully",
+      type: 'success'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onDeleteReplicaFailed() {
+    let notifications = [{
+      message: "Could not delete replica",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
   }
 
   onLoginFailed(response) {
@@ -129,28 +153,15 @@ class NotificationsStore extends Reflux.Store
       message: "Login failed",
       type: 'error'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
-
-  /*onLoadMigrationCompleted(response) {
-    let notifications = [{
-      message: "sadaf",
-      type: 'success',
-      hideDelay: 10000,
-      callback: () => {
-        console.log(response.data.migration.id)
-      }
-    }]
-    this.setState({notifications: notifications})
-  }*/
-
 
   onExecuteReplicaCompleted() {
     let notifications = [{
       message: "Executing replica",
       type: 'info'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onDeleteReplicaExecutionCompleted() {
@@ -158,7 +169,7 @@ class NotificationsStore extends Reflux.Store
       message: "Execution deleted",
       type: 'info'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onCancelMigrationCompleted(migration) {
@@ -170,7 +181,7 @@ class NotificationsStore extends Reflux.Store
       message: message,
       type: 'success'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onCreateMigrationFromReplicaCompleted(response) {
@@ -187,7 +198,7 @@ class NotificationsStore extends Reflux.Store
         }
       }
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
   onNotify(message, type = "info", title = null, callback = null) {
@@ -223,7 +234,7 @@ class NotificationsStore extends Reflux.Store
       message: "Switching project",
       type: 'info'
     }]
-    this.setState({notifications: notifications})
+    this.setState({ notifications: notifications })
   }
 
 }

@@ -1,6 +1,0 @@
-{
-  "name": "MigrationSchedule",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./MigrationSchedule.js"
-}

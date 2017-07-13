@@ -20,18 +20,18 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import MigrationStore from '../../stores/MigrationStore';
 import MigrationActions from '../../actions/MigrationActions';
 import ScheduleItem from '../ScheduleItem';
-import s from './MigrationSchedule.scss';
+import s from './ReplicaSchedule.scss';
 
 const title = 'Migration Schedule';
 
-class MigrationSchedule extends Component {
+class ReplicaSchedule extends Component {
 
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
   };
 
   static propTypes = {
-    migration: PropTypes.object,
+    replica: PropTypes.object,
     schedules: PropTypes.array
   }
 
@@ -48,7 +48,7 @@ class MigrationSchedule extends Component {
     }
 
     this.state = {
-      schedules: this.props.migration.schedules
+      schedules: this.props.replica.schedules
     }
   }
 
@@ -79,7 +79,7 @@ class MigrationSchedule extends Component {
 
   updateSchedule(schedules) {
     this.setState({ schedules: schedules })
-    MigrationActions.setMigrationProperty(this.props.migration.id, 'schedules', schedules)
+    MigrationActions.setMigrationProperty(this.props.replica.id, 'schedules', schedules)
   }
 
   render() {
@@ -102,7 +102,7 @@ class MigrationSchedule extends Component {
     }
 
     let newScheduleBtn = null
-    if (this.props.migration.migrationType == 'replica') {
+    if (this.props.replica.migrationType == 'replica') {
       newScheduleBtn = <button className={s.addScheduleBtn} onClick={(e) => this.addSchedule(e)}>Add schedule</button>
     }
 
@@ -121,4 +121,4 @@ class MigrationSchedule extends Component {
 
 }
 
-export default withStyles(MigrationSchedule, s);
+export default withStyles(ReplicaSchedule, s);

@@ -32,62 +32,75 @@ class MigrationStore extends Reflux.Store
 
     this.state = {
       migrations: null,
+      replicas: null,
       migration: null,
-      migrationsLoaded: false,
-      replicasLoaded: false,
-      queryInProgress: false
+      replica: null
     }
   }
 
   onLoadMigrations() {
-    this.setState({ migrationsLoaded: false, replicasLoaded: false, queryInProgress: true })
+    //this.setState({ migrations: null })
   }
 
   onLoadMigrationsCompleted(response) {
     let connections = Reflux.GlobalState.connectionStore.connections
-    // if none are loaded yet, clear the collection
-    if (!this.state.replicasLoaded && !this.state.migrationsLoaded) {
-      this.setState({ migrations: [] })
-    }
+    this.setState({ migrations: [] })
 
-    if (typeof response.data.replicas !== "undefined") {
-      this.setState({ replicasLoaded: response.data.replicas})
-    }
-    if (typeof response.data.migrations !== "undefined") {
-      this.setState({ migrationsLoaded: response.data.migrations})
-    }
-    if (this.state.migrationsLoaded && this.state.replicasLoaded) {
-      let allMigrations = this.state.migrationsLoaded.concat(this.state.replicasLoaded)
-      allMigrations.forEach(migration => {
-        let connection = connections.filter(connection => connection.id == migration.destination_endpoint_id)[0]
-        if (connection) {
-          migration.destination_endpoint_type = connection.type
-        }
-        connection = connections.filter(connection => connection.id == migration.origin_endpoint_id)[0]
-        if (connection) {
-          migration.origin_endpoint_type = connection.type
-        }
+    let migrations = response.data.migrations
+    migrations.forEach(migration => {
+      let connection = connections.filter(connection => connection.id == migration.destination_endpoint_id)[0]
+      if (connection) {
+        migration.destination_endpoint_type = connection.type
+      }
+      connection = connections.filter(connection => connection.id == migration.origin_endpoint_id)[0]
+      if (connection) {
+        migration.origin_endpoint_type = connection.type
+      }
 
-        migration.name = migration.instances.join(", ");
+      migration.name = migration.instances.join(", ");
+    })
 
-        if (migration.type == 'replica') {
-          if (migration.executions.length) {
-            MigrationActions.getReplicaExecutions(migration)
-          }
-        }
-      })
+    migrations.sort((a, b) => {
+      return moment(b.created_at).isAfter(moment(a.created_at))
+    })
 
-      allMigrations.sort((a, b) => {
-        return moment(b.created_at).isAfter(moment(a.created_at))
-      })
+    this.setState({
+      migrations: migrations
+    })
+  }
 
-      this.setState({
-        migrations: allMigrations,
-        migrationsLoaded: false,
-        replicasLoaded: false,
-        queryInProgress: false
-      })
-    }
+  onLoadReplicas() {
+    //this.setState({ replicas: null })
+  }
+
+  onLoadReplicasCompleted(response) {
+    let connections = Reflux.GlobalState.connectionStore.connections
+
+    let replicas = response.data.replicas
+    replicas.forEach(replica => {
+      let connection = connections.filter(connection => connection.id == replica.destination_endpoint_id)[0]
+      if (connection) {
+        replica.destination_endpoint_type = connection.type
+      }
+      connection = connections.filter(connection => connection.id == replica.origin_endpoint_id)[0]
+      if (connection) {
+        replica.origin_endpoint_type = connection.type
+      }
+
+      replica.name = replica.instances.join(", ");
+
+      if (replica.executions.length) {
+        MigrationActions.getReplicaExecutions(replica)
+      }
+    })
+
+    replicas.sort((a, b) => {
+      return moment(b.created_at).isAfter(moment(a.created_at))
+    })
+
+    this.setState({
+      replicas: replicas,
+    })
   }
 
   onLoadMigrationCompleted(response) {
@@ -114,31 +127,56 @@ class MigrationStore extends Reflux.Store
   }
 
   onGetReplicaExecutionsCompleted(replica, response) {
-    let migrations = this.state.migrations
-    migrations.forEach((migration, index) => {
-      if (migration.id == replica.id) {
-        migration.executions = response.data.executions.sort((a, b) => a.number - b.number)
-        migration.tasks = migration.executions[migration.executions.length - 1].tasks
-        migration.status = migration.executions[migration.executions.length - 1].status
-        migration.executions.forEach(execution => {
+    let replicas = this.state.replicas
+    replicas.forEach((item) => {
+      if (item.id == replica.id) {
+        item.executions = response.data.executions.sort((a, b) => a.number - b.number)
+        item.tasks = item.executions[item.executions.length - 1].tasks
+        item.status = item.executions[item.executions.length - 1].status
+        item.executions.forEach(execution => {
           //MigrationActions.getReplicaExecutionDetail(replica, execution.id)
         })
       }
     })
-    this.setState({ migrations: migrations })
+    this.setState({ replicas: replicas })
   }
 
   onGetReplicaExecutionDetailCompleted(replica, executionId, response) {
-    let replicas = this.state.migrations
+    let replicas = this.state.replicas
     let index = replicas.indexOf(replica)
     replicas[index].executions.forEach((execution, execIndex) => {
       if (execution.id == executionId) {
         replicas[index].executions[execIndex] = response.data.execution
       }
       replicas[index].tasks = replica.executions[replica.executions.length - 1].tasks
+      replicas[index].status = replica.executions[replica.executions.length - 1].status
     })
-    this.setState({ migrations: replicas })
+    this.setState({ replicas: replicas })
 
+  }
+
+  onDeleteReplicaExecutionCompleted(replica, executionId) {
+    let replicas = this.state.replicas
+    let index = replicas.indexOf(replica)
+    let execIndex = -1
+    replicas[index].executions.forEach((execution, i) => {
+      if (execution.id == executionId) {
+        execIndex = i
+      }
+    })
+    console.log(replicas[index].executions)
+    replicas[index].executions.splice(execIndex, 1)
+    console.log(replicas[index].executions)
+    if (replicas[index].executions[replicas[index].executions]) {
+      replicas[index].tasks = replicas[index].executions[replicas[index].executions.length - 1].tasks
+      replicas[index].status = replicas[index].executions[replicas[index].executions.length - 1].status
+    } else {
+      replicas[index].tasks = []
+      replicas[index].status = null
+    }
+    console.log(replicas[index])
+
+    this.setState({ replicas: replicas })
   }
 
   onGetReplicaExecutionDetailFailed(response) {
@@ -184,16 +222,16 @@ class MigrationStore extends Reflux.Store
   }
 
   onExecuteReplicaCompleted(replica, response) {
-    let migrations = this.state.migrations
-    migrations.forEach((migration, index) => {
-      if (migration.id == replica.id) {
-        migrations[index].executions.push(response.data.execution)
-        migrations[index].tasks = migration.executions[migration.executions.length - 1].tasks
-        migrations[index].status = migration.executions[migration.executions.length - 1].status
+    let replicas = this.state.replicas
+    replicas.forEach((item, index) => {
+      if (item.id == replica.id) {
+        replicas[index].executions.push(response.data.execution)
+        replicas[index].tasks = item.executions[item.executions.length - 1].tasks
+        replicas[index].status = item.executions[item.executions.length - 1].status
       }
     })
 
-    this.setState({ migrations: migrations })
+    this.setState({ migrations: replicas })
 
   }
 
@@ -211,6 +249,20 @@ class MigrationStore extends Reflux.Store
     }
   }
 
+  onSetReplica(replicaId) {
+    let replica = null
+    if (this.state.replicas) {
+      this.state.replicas.forEach(function(item) {
+        if (item.id == replicaId) {
+          replica = item
+        }
+      })
+    }
+    if (replica) {
+      this.setState({replica: replica})
+    }
+  }
+
   onGetMigration(migrationId)
   {
     let migration = null
@@ -224,7 +276,7 @@ class MigrationStore extends Reflux.Store
     return migration
   }
 
-  onSetMigrationProperty(migrationId, property, value) {migara
+  onSetMigrationProperty(migrationId, property, value) {
     this.state.migrations.forEach(function(item) {
       if (item.id == migrationId) {
         item[property] = value

@@ -22,14 +22,14 @@ import Location from '../../core/Location';
 import UserIcon from '../UserIcon';
 import NotificationIcon from '../NotificationIcon';
 import Moment from 'react-moment';
-import s from './MigrationList.scss';
+import s from './ReplicaList.scss';
 import MigrationStore from '../../stores/MigrationStore';
 import MigrationActions from '../../actions/MigrationActions';
 import TextTruncate from 'react-text-truncate';
 import ProjectsDropdown from '../ProjectsDropdown';
 import MainList from '../MainList';
 
-const title = 'Coriolis Migrations';
+const title = 'Coriolis Replicas';
 
 const filters = [
   {
@@ -43,31 +43,30 @@ const filters = [
   }
 ]
 
-const migrationActions = {
+const replicaActions = {
+  execute_action: {
+    label: "Execute",
+    action: (item) => {
+      MigrationActions.executeReplica(item)
+    },
+    confirm: false
+  },
   delete_action: {
     label: "Delete",
     action: (item) => {
-      MigrationActions.deleteMigration(item)
-    },
-    confirm: true
-  },
-  cancel_action: {
-    label: "Cancel",
-    action: (item) => {
-      MigrationActions.cancelMigration(item)
+      MigrationActions.deleteReplica(item)
     },
     confirm: true
   }
 }
 
-class MigrationList extends Reflux.Component {
-
+class ReplicaList extends Reflux.Component {
   constructor(props) {
     super(props)
     this.store = MigrationStore;
 
     this.state = {
-      migrations: null,
+      replicas: null
     }
 
     this.renderItem = this.renderItem.bind(this)
@@ -82,20 +81,23 @@ class MigrationList extends Reflux.Component {
 
     this.context.onSetTitle(title);
 
-    MigrationActions.loadMigrations()
+    MigrationActions.loadReplicas()
   }
 
   newMigration() {
-    Location.push('/migrations/new')
+    Location.push('/replicas/new')
   }
 
-  migrationDetail(e, item) {
-    Location.push('/migration/' + item.id + "/")
+  replicaDetail(e, item) {
+    Location.push('/replica/' + item.id + "/")
   }
 
   renderItem(item) {
     let count = 0
 
+    if (item.executions.length) {
+      item.tasks = item.executions[item.executions.length - 1].tasks
+    }
     if (!item.tasks) {
       item.tasks = []
     }
@@ -110,30 +112,26 @@ class MigrationList extends Reflux.Component {
     }
 
     return (
-      <div className={"item " + (item.selected ? "selected" : "")} key={"migration_" + item.id}>
-        <span className="cell cell-icon" onClick={(e) => this.migrationDetail(e, item)}>
+      <div className={"item " + (item.selected ? "selected" : "")} key={"replica_" + item.id}>
+        <span className="cell cell-icon" onClick={(e) => this.replicaDetail(e, item)}>
           <div className={"icon " + item.type}></div>
           <span className="details">
             <TextTruncate line={1} truncateText="..." text={item.name} />
             <span className={s.migrationStatus + " status-pill " + item.status}>{item.status}</span>
           </span>
         </span>
-        <span className="cell" onClick={(e) => this.migrationDetail(e, item)}>
+        <span className="cell" onClick={(e) => this.replicaDetail(e, item)}>
           <div className={s.cloudImage + " icon small-cloud " + item.origin_endpoint_type}></div>
           <span className={s.chevronRight}></span>
           <div className={s.cloudImage + " icon small-cloud " + item.destination_endpoint_type}></div>
         </span>
-        <span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
+        <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
           <span className={s.label}>Created</span>
           <span className={s.value}>
             <Moment format="MMM Do YYYY HH:ss" date={item.created_at} />
           </span>
         </span>
-        {/*<span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
-         <span className={s.label}>Notes</span>
-         <TextTruncate line={2} truncateText="..." text={item.notes} />
-         </span>*/}
-        <span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
+        <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
           <span className={s.label}>Tasks remaining</span>
           <span className={s.value}>{tasksRemaining}</span>
         </span>
@@ -147,16 +145,16 @@ class MigrationList extends Reflux.Component {
 
   currentInstance(migration) {
     let instance = "N/A"
-    /* migration.vms.forEach((item) => {
+    /*migration.vms.forEach((item) => {
       if (item.selected) {
         instance = item.name
       }
-    }) */
+    })*/
     return instance
   }
 
   refreshList() {
-    MigrationActions.loadMigrations()
+    MigrationActions.loadReplicas()
   }
 
   render() {
@@ -175,9 +173,9 @@ class MigrationList extends Reflux.Component {
             </div>
           </div>
           <MainList
-            items={this.state.migrations}
-            actions={migrationActions}
-            itemName="migration"
+            items={this.state.replicas}
+            actions={replicaActions}
+            itemName="replica"
             renderItem={this.renderItem}
             filters={filters}
             refresh={this.refreshList}
@@ -189,4 +187,4 @@ class MigrationList extends Reflux.Component {
 
 }
 
-export default withStyles(MigrationList, s);
+export default withStyles(ReplicaList, s);
