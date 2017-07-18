@@ -34,6 +34,7 @@ let ConnectionsActions = Reflux.createActions({
   resetSelections: {},
   newConnection: { children: ['success', 'failed'] },
   saveEndpoint: { children: ['success', 'failed'] },
+  editEndpoint: { children: ['success', 'failed'] },
   setConnection: {},
   validateConnection: { children: ['success', 'failed'] }
 })
@@ -75,6 +76,7 @@ ConnectionsActions.saveEndpoint.listen((data, secretRef) => {
   }).then(ConnectionsActions.saveEndpoint.success, ConnectionsActions.saveEndpoint.failed)
     .catch(ConnectionsActions.saveEndpoint.failed);
 })
+
 ConnectionsActions.newConnection.listen((data) => {
   if (useSecret) {
     let barbicanPayload = {
@@ -109,6 +111,11 @@ ConnectionsActions.loadConnections.listen(() => {
   }
 })
 
+ConnectionsActions.loadConnections.shouldEmit = () => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  return typeof projectId !== "undefined"
+}
+
 ConnectionsActions.deleteConnection.listen((connection) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
@@ -124,11 +131,43 @@ ConnectionsActions.deleteConnection.listen((connection) => {
         method: "DELETE"
       }).then(ConnectionsActions.deleteConnection.completed(connection), ConnectionsActions.deleteConnection.failed)
     } else {
+      console.log("ASDAJBHADFHBDAF")
       ConnectionsActions.deleteConnection.completed(connection)
     }
-
   }, ConnectionsActions.deleteConnection.failed)
   .catch(ConnectionsActions.deleteConnection.failed);
+})
+
+ConnectionsActions.editEndpoint.listen((connection, data) => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  let payload = null
+  if (connection.connection_info && connection.connection_info.secret_ref) {
+    let uuidIndex = connection.connection_info.secret_ref.lastIndexOf("/")
+    let uuid = connection.connection_info.secret_ref.substr(uuidIndex + 1)
+    Api.sendAjaxRequest({
+      url: servicesUrl.barbican + "/v1/secrets/" + uuid,
+      method: "POST"
+    })
+    payload = {
+      endpoint: {
+        name: data.name,
+        description: data.description,
+        type: data.type,
+        connection_info: {
+          secret_ref: connection.connection_info.secret_ref
+        }
+      }
+    }
+  } else {
+    payload = { endpoint: data }
+  }
+
+  Api.sendAjaxRequest({
+    url: `${servicesUrl.coriolis}/${projectId}/endpoints/${connection.id}`,
+    method: "POST",
+    data: payload
+  }).then(ConnectionsActions.editEndpoint.success, ConnectionsActions.editEndpoint.failed)
+    .catch(ConnectionsActions.editEndpoint.failed);
 })
 
 
@@ -139,11 +178,11 @@ ConnectionsActions.validateConnection.listen((endpoint, callback) => {
     method: "POST",
     data: { "validate-connection": null }
   }).then(response => {
-      if (callback) {
-        callback(response)
-      }
-      ConnectionsActions.validateConnection.completed(response)
-    }, ConnectionsActions.validateConnection.failed)
+    if (callback) {
+      callback(response)
+    }
+    ConnectionsActions.validateConnection.completed(response)
+  }, ConnectionsActions.validateConnection.failed)
     .catch(ConnectionsActions.validateConnection.failed);
 })
 

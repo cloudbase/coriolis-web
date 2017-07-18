@@ -1,19 +1,19 @@
 /*
-Copyright (C) 2017  Cloudbase Solutions SRL
+ Copyright (C) 2017  Cloudbase Solutions SRL
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 import React, { PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
@@ -45,7 +45,7 @@ class AddCloudConnection extends Reflux.Component {
     this.store = ConnectionsStore
 
     this.state = {
-      connectionName: null,
+      connectionName: "",
       description: null,
       currentCloud: this.props.cloud,
       currentCloudData: null,
@@ -92,27 +92,43 @@ class AddCloudConnection extends Reflux.Component {
   }
 
   handleSave() {
-    let credentials = Object.assign({}, this.state.currentCloudData)
-    for (let key in credentials) {
-      if (credentials[key].label) {
-        credentials[key] = credentials[key].value
+    let valid = true
+
+    for (let i in this.state.currentCloudData) {
+      if (this.state.requiredFields.indexOf(i) > -1 && !this.state.currentCloudData[i]) {
+        valid = false
       }
     }
-    if (this.props.type == "new") {
-      ConnectionsActions.newConnection({
-        name: this.state.connectionName,
-        description: this.state.description,
-        type: this.state.currentCloud.name,
-        connection_info: credentials
-      })
-      this.props.addHandle(this.state.connectionName);
+    if (this.state.connectionName.trim().length == 0) {
+      valid = false
+    }
+    if (!valid) {
+      NotificationActions.notify("Please fill all required fields", "error")
+      this.setState({ cloudFormsSubmitted: true })
     } else {
-      ConnectionsActions.saveEndpoint(this.props.connection, {
-        name: this.state.connectionName,
-        description: this.state.description,
-        type: this.state.currentCloud.name,
-        connection_info: credentials
-      })
+      let credentials = Object.assign({}, this.state.currentCloudData)
+      for (let key in credentials) {
+        if (credentials[key].label) {
+          credentials[key] = credentials[key].value
+        }
+      }
+      if (this.props.type == "new") {
+        ConnectionsActions.newConnection({
+          name: this.state.connectionName,
+          description: this.state.description,
+          type: this.state.currentCloud.name,
+          connection_info: credentials
+        })
+        this.props.addHandle(this.state.connectionName);
+      } else {
+        ConnectionsActions.editEndpoint(this.props.connection, {
+          name: this.state.connectionName,
+          description: this.state.description,
+          type: this.state.currentCloud.name,
+          connection_info: credentials
+        })
+        this.props.closeHandle()
+      }
     }
   }
 
@@ -151,7 +167,7 @@ class AddCloudConnection extends Reflux.Component {
       currentCloudData: null,
       currentCloud: null,
       requiredFields: null,
-      connectionName: null,
+      connectionName: "",
       description: null
     })
   }
@@ -307,26 +323,6 @@ class AddCloudConnection extends Reflux.Component {
     return returnValue
   }
 
-  connectToCloud() {
-    // TODO: Validation here
-    let valid = true
-
-    for (var i in this.state.currentCloudData) {
-      if (this.state.requiredFields.indexOf(i) > -1 && !this.state.currentCloudData[i]) {
-        valid = false
-      }
-    }
-    if (!valid) {
-      NotificationActions.notify("Please fill all required fields", "error")
-      this.setState({ cloudFormsSubmitted: true })
-    } else {
-      this.setState({ isConnecting: true })
-      setTimeout(() => {
-        this.setState({ isConnecting: false, connected: true })
-      }, 1000)
-    }
-  }
-
   handleCloudFieldChange(e, field) {
     let currentCloudData = this.state.currentCloudData
     if (field.type == 'dropdown') {
@@ -348,10 +344,12 @@ class AddCloudConnection extends Reflux.Component {
           <div className={s.cloudImage}>
             <div className={" icon large-cloud " + this.state.currentCloud.name}></div>
           </div>
-          <div className="form-group">
+          <div className={"form-group " + (this.state.cloudFormsSubmitted &&
+            this.state.connectionName.trim().length == 0 ? s.error : "")}
+          >
             <input
               type="text"
-              placeholder="Endpoint Name"
+              placeholder="Endpoint Name *"
               onChange={(e) => this.handleChangeName(e)}
               value={this.state.connectionName}
             />
@@ -417,7 +415,7 @@ class AddCloudConnection extends Reflux.Component {
       if (this.state.allClouds) {
         modalBody = this.renderCloudList()
       } else {
-        modalBody = <LoadingIcon/>
+        modalBody = <LoadingIcon />
       }
     } else {
       modalBody = this.renderCloudFields(this.state.currentCloud)
