@@ -31,6 +31,7 @@ import EndpointUsage from '../EndpointUsage';
 import NotificationIcon from '../NotificationIcon';
 import ProjectsDropdown from '../ProjectsDropdown';
 import MainList from '../MainList';
+import Helper from '../Helper';
 
 
 const title = 'Cloud Endpoints';
@@ -48,18 +49,16 @@ const filters = [
   {
     field: "type",
     options: [
-      { value: null, label: "All"},
-      { value: "opc", label: "Oracle Cloud"},
-      { value: "oracle_vm", label: "Oracle VM Server"},
-      { value: "openstack", label: "Openstack"},
-      { value: "vmware_vsphere", label: "VMware"}
+      { value: null, label: "All" },
+      { value: "opc", label: "Oracle Cloud" },
+      { value: "oracle_vm", label: "Oracle VM Server" },
+      { value: "openstack", label: "Openstack" },
+      { value: "vmware_vsphere", label: "VMware" }
     ]
   }
 ]
 
 class EndpointList extends Reflux.Component {
-
-
 
   constructor(props) {
     super(props)
@@ -103,6 +102,7 @@ class EndpointList extends Reflux.Component {
   }
 
   renderItem(item) {
+    let createdAt = Helper.getTimeObject(item.created_at)
     return (
       <div className={"item " + (item.selected ? " selected" : "")} key={"vm_" + item.id}>
         <span className="cell cell-icon" onClick={(e) => this.connectionDetail(e, item)}>
@@ -118,7 +118,7 @@ class EndpointList extends Reflux.Component {
         <span className={"cell " + s.composite}>
           <span className={s.label}>Created</span>
           <span className={s.value}>
-            <Moment fromNow ago date={item.created_at}/> ago
+            <Moment fromNow ago date={createdAt} /> ago
           </span>
         </span>
         <span className={"cell " + s.composite}>

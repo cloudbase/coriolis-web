@@ -25,6 +25,11 @@ class Helper extends Component {
   static generateMigrationName(type) {
     return type + "_" + moment().format("MMDDYY-HHmmss")
   }
+  static getTimeObject(rawDate) {
+    let offset = (new Date().getTimezoneOffset()) / 60 * -1;
+
+    return moment(rawDate).add(offset, 'hours')
+  }
 }
 
 export default Helper;

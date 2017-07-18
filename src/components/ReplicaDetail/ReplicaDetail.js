@@ -19,7 +19,7 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaDetail.scss';
 import Moment from 'react-moment';
-import LoadingIcon from "../LoadingIcon";
+import Helper from "../Helper";
 import EndpointLink from '../EndpointLink';
 import ConfirmationDialog from '../ConfirmationDialog'
 import MigrationActions from '../../actions/MigrationActions';
@@ -86,6 +86,8 @@ class MigrationDetail extends Component {
         }
       }
 
+      let createdAt = Helper.getTimeObject(item.created_at)
+
       output = (
         <div className={s.root}>
           <div className={s.container}>
@@ -132,7 +134,7 @@ class MigrationDetail extends Component {
                   Created
                 </div>
                 <div className={s.value}>
-                  <Moment format="MM/DD/YYYY HH:MM" date={item.created} />
+                  <Moment format="MM/DD/YYYY HH:mm" date={createdAt} />
                 </div>
               </div>
               <div className={s.formGroup}>

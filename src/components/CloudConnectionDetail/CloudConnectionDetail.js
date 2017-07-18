@@ -89,6 +89,7 @@ class CloudConnectionDetail extends Component {
 
   render() {
     let item = this.props.connection
+    let createdAt = Helper.getTimeObject(item.created_at)
     if (item) {
       return (
         <div className={s.root}>
@@ -122,7 +123,7 @@ class CloudConnectionDetail extends Component {
                 Created
               </div>
               <div className={s.value}>
-                <Moment format="MM/DD/YYYY HH:MM" date={item.created} />
+                <Moment format="MM/DD/YYYY HH:mm" date={createdAt} />
               </div>
             </div>
           </div>

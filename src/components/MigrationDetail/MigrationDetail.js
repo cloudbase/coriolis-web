@@ -132,7 +132,7 @@ class MigrationDetail extends Component {
                   Created
                 </div>
                 <div className={s.value}>
-                  <Moment format="MM/DD/YYYY HH:MM" date={item.created} />
+                  <Moment format="MM/DD/YYYY HH:mm" date={item.created_at} />
                 </div>
               </div>
               <div className={s.formGroup}>

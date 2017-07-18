@@ -28,6 +28,7 @@ import MigrationActions from '../../actions/MigrationActions';
 import TextTruncate from 'react-text-truncate';
 import ProjectsDropdown from '../ProjectsDropdown';
 import MainList from '../MainList';
+import Helper from '../Helper';
 
 const title = 'Coriolis Migrations';
 
@@ -109,6 +110,8 @@ class MigrationList extends Reflux.Component {
       tasksRemaining = "-"
     }
 
+    let createdAt = Helper.getTimeObject(item.created_at)
+
     return (
       <div className={"item " + (item.selected ? "selected" : "")} key={"migration_" + item.id}>
         <span className="cell cell-icon" onClick={(e) => this.migrationDetail(e, item)}>
@@ -126,7 +129,7 @@ class MigrationList extends Reflux.Component {
         <span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
           <span className={s.label}>Created</span>
           <span className={s.value}>
-            <Moment format="MMM Do YYYY HH:ss" date={item.created_at} />
+            <Moment format="MMM Do YYYY HH:mm" date={createdAt} />
           </span>
         </span>
         {/*<span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
