@@ -258,12 +258,9 @@ class ConnectionsStore extends Reflux.Store
   }
 
   onDeleteConnectionCompleted(connection) {
-    console.log("DELETED", connection)
     let connections = this.state.connections
-    console.log(connections.length)
     let index = connections.indexOf(connection)
     connections.splice(index, 1)
-    console.log(connections.length)
     this.setState({ connections: connections })
 
     ConnectionsActions.assignConnectionProvider()

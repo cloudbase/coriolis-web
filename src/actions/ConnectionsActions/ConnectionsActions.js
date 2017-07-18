@@ -131,12 +131,34 @@ ConnectionsActions.deleteConnection.listen((connection) => {
         method: "DELETE"
       }).then(ConnectionsActions.deleteConnection.completed(connection), ConnectionsActions.deleteConnection.failed)
     } else {
-      console.log("ASDAJBHADFHBDAF")
       ConnectionsActions.deleteConnection.completed(connection)
     }
   }, ConnectionsActions.deleteConnection.failed)
   .catch(ConnectionsActions.deleteConnection.failed);
 })
+
+ConnectionsActions.editEndpointSecret.listen((data) => {
+  if (useSecret) {
+    let barbicanPayload = {
+      payload: JSON.stringify(data.connection_info),
+      payload_content_type: "text/plain",
+      content_types: {
+        default: "text/plain"
+      }
+    }
+
+    Api.sendAjaxRequest({
+      url: servicesUrl.barbican + "/v1/secrets",
+      method: "POST",
+      data: barbicanPayload
+    }).then((response) => {
+      ConnectionsActions.newConnection.success(response, data)
+    }, ConnectionsActions.newConnection.failed)
+      .catch(ConnectionsActions.newConnection.failed);
+  } else {
+    ConnectionsActions.saveEndpoint(data)
+  }
+});
 
 ConnectionsActions.editEndpoint.listen((connection, data) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
@@ -144,6 +166,7 @@ ConnectionsActions.editEndpoint.listen((connection, data) => {
   if (connection.connection_info && connection.connection_info.secret_ref) {
     let uuidIndex = connection.connection_info.secret_ref.lastIndexOf("/")
     let uuid = connection.connection_info.secret_ref.substr(uuidIndex + 1)
+
     Api.sendAjaxRequest({
       url: servicesUrl.barbican + "/v1/secrets/" + uuid,
       method: "POST"
@@ -152,7 +175,6 @@ ConnectionsActions.editEndpoint.listen((connection, data) => {
       endpoint: {
         name: data.name,
         description: data.description,
-        type: data.type,
         connection_info: {
           secret_ref: connection.connection_info.secret_ref
         }
@@ -164,7 +186,39 @@ ConnectionsActions.editEndpoint.listen((connection, data) => {
 
   Api.sendAjaxRequest({
     url: `${servicesUrl.coriolis}/${projectId}/endpoints/${connection.id}`,
-    method: "POST",
+    method: "PUT",
+    data: payload
+  }).then(ConnectionsActions.editEndpoint.success, ConnectionsActions.editEndpoint.failed)
+    .catch(ConnectionsActions.editEndpoint.failed);
+})
+
+ConnectionsActions.editEndpoint.listen((connection, data) => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  let payload = null
+  if (connection.connection_info && connection.connection_info.secret_ref) {
+    let uuidIndex = connection.connection_info.secret_ref.lastIndexOf("/")
+    let uuid = connection.connection_info.secret_ref.substr(uuidIndex + 1)
+
+    Api.sendAjaxRequest({
+      url: servicesUrl.barbican + "/v1/secrets/" + uuid,
+      method: "POST"
+    })
+    payload = {
+      endpoint: {
+        name: data.name,
+        description: data.description,
+        connection_info: {
+          secret_ref: connection.connection_info.secret_ref
+        }
+      }
+    }
+  } else {
+    payload = { endpoint: data }
+  }
+
+  Api.sendAjaxRequest({
+    url: `${servicesUrl.coriolis}/${projectId}/endpoints/${connection.id}`,
+    method: "PUT",
     data: payload
   }).then(ConnectionsActions.editEndpoint.success, ConnectionsActions.editEndpoint.failed)
     .catch(ConnectionsActions.editEndpoint.failed);
