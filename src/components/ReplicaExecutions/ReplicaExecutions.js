@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaExecutions.scss';
-import Dropdown from '../NewDropdown';
+import Helper from '../Helper';
 import LoadingIcon from '../LoadingIcon';
 import moment from 'moment';
 import MigrationActions from '../../actions/MigrationActions';
@@ -171,7 +171,9 @@ class ReplicaExecutions extends Component {
         }
 
         let executionsSorted = this.props.replica.executions
+
         executionsSorted.sort((a, b) => a.number - b.number)
+        let executionTime = Helper.getTimeObject(this.state.executionRef.created_at)
 
         return (
           <div className={s.root}>
@@ -185,10 +187,11 @@ class ReplicaExecutions extends Component {
                 <div className={s.leftSide}>
                   <h4>Execution #{this.state.executionRef && this.state.executionRef.number}</h4>
                   <span className={s.date}>
-                    {this.state.executionRef && moment(this.state.executionRef.created_at).format("MMM Do YYYY HH:mm")}
+                    {this.state.executionRef && moment(executionTime).format("MMM Do YYYY HH:mm")}
                   </span>
                   <span
-                    className={"status-pill " + this.state.executionRef.status}>{this.state.executionRef.status}</span>
+                    className={"status-pill " + this.state.executionRef.status}
+                  >{this.state.executionRef.status}</span>
                 </div>
                 <div className={s.rightSide}>
                   {executionBtn}

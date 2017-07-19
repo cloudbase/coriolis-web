@@ -112,7 +112,10 @@ class ReplicaList extends Reflux.Component {
       tasksRemaining = "-"
     }
 
-    let createdAt = Helper.getTimeObject(item.created_at)
+    let lastExecution = null
+    if (item.executions.length) {
+      lastExecution = Helper.getTimeObject(item.executions[item.executions.length - 1].created_at)
+    }
 
     return (
       <div className={"item " + (item.selected ? "selected" : "")} key={"replica_" + item.id}>
@@ -129,9 +132,9 @@ class ReplicaList extends Reflux.Component {
           <div className={s.cloudImage + " icon small-cloud " + item.destination_endpoint_type}></div>
         </span>
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
-          <span className={s.label}>Created</span>
+          <span className={s.label}>Last execution</span>
           <span className={s.value}>
-            <Moment format="MMM Do YYYY HH:mm" date={createdAt} />
+            {lastExecution ? <Moment format="MMM Do YYYY HH:mm" date={lastExecution} /> : "-"}
           </span>
         </span>
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
