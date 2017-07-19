@@ -59,7 +59,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   .breadcrumbs {
     span {
       display: inline-block;
-      margin-right: 7px;
+      margin-right: 4px;
       color: $gray;
       &:after {
         content: " ";
@@ -67,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         width: 7px;
         height: 13px;
         display: inline-block;
-        margin-left: 5px;
+        margin-left: 3px;
         margin-top: 3px;
         float:right;
       }

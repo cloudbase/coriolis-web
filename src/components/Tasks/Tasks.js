@@ -140,7 +140,8 @@ class Tasks extends Component {
           </span>),
           instance: <TextTruncate line={1} text={item.instance} truncateText="..." />,
           latest_message: <TextTruncate line={1} truncateText="..." text={latestMessage} />,
-          timestamp: item.updated_at ? Helper.getTimeObject(moment(item.updated_at)).format("YYYY-MM-DD HH:mm:ss") : "-",
+          timestamp: item.updated_at ? Helper.getTimeObject(moment(item.updated_at)).format("YYYY-MM-DD HH:mm:ss") :
+            "-",
           detailView: taskDetails,
           openState: item.status === 'RUNNING'
         }
@@ -162,7 +163,7 @@ class Tasks extends Component {
               customClassName={s.table}
               show={this.state !== null}
             />
-          </div>) : <LoadingIcon/>
+          </div>) : <LoadingIcon />
         }
       </div>
     );

@@ -77,8 +77,8 @@ export const migrationSteps = [
     component: "WizardTarget"
   },
   {
-    name: "Migrate VMs",
-    title: "Select VMs",
+    name: "Migrate instances",
+    title: "Select instances",
     component: "WizardVms"
   },
   {

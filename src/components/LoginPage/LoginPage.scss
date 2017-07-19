@@ -189,12 +189,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 
-@media screen and (max-height: 860px) and (min-height: 760px) {
+@media screen and (max-height: 880px) and (min-height: 760px) {
   .container {
     padding-top: 2vh;
   }
   .loginContainer {
-    margin-top: 16px;
+    margin-top: 32px;
   }
   .root .footerLogo {
     bottom: 16px;

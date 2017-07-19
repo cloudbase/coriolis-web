@@ -201,6 +201,14 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
+  onLoadInstancesFailed() {
+    let notifications = [{
+      message: "Could not load instances.",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
   onNotify(message, type = "info", title = null, callback = null) {
     this.setState({notifications: [
       {

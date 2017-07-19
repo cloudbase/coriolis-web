@@ -104,6 +104,10 @@ class UsersStore extends Reflux.Store
     this.setState({ instances: instances })
   }
 
+  onLoadInstancesFailed() {
+    this.setState({ instances: [] })
+  }
+
   onNewState() {
     this.setState(this.blankState)
   }

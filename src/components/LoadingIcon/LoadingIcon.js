@@ -46,28 +46,39 @@ class LoadingIcon extends Component {
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
-    animate: PropTypes.bool
+    animate: PropTypes.bool,
+    padding: PropTypes.number,
+    text: PropTypes.string
   }
 
   static defaultProps = {
     width: 137,
     height: 122,
-    animate: true
+    animate: true,
+    padding: 32,
+    text: "Loading..."
   }
 
   render() {
-    let wrapperStyle = {
+    let loaderStyle = {
       width: this.props.width,
       height: this.props.height,
-      margin: "0 auto"
+      margin: "0 auto",
     }
-    return <div className={s.root}>
+    let wrapperStyle = {
+      paddingTop: this.props.padding,
+      paddingBottom: this.props.padding
+    }
+
+    return (<div className={s.root} style={wrapperStyle}>
       <div
         className={!this.props.animate && "noAnimation"}
-        style={wrapperStyle}
+        style={loaderStyle}
         dangerouslySetInnerHTML={{__html: svgIcon}}
-      ></div>
-    </div>
+      >
+      </div>
+      {this.props.text && (<div className={s.text}>{this.props.text}</div>)}
+    </div>)
   }
 
 }
