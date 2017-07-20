@@ -125,7 +125,11 @@ const clientConfig = extend(true, {}, config, {
   devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
   plugins: [
     ...config.plugins,
-    new webpack.DefinePlugin({ ...GLOBALS, 'process.env.BROWSER': true }),
+    new webpack.DefinePlugin({
+      ...GLOBALS,
+      'process.env.BROWSER': true,
+      CORIOLIS_URL: JSON.stringify(process.env.CORIOLIS_URL)
+    }),
     new AssetsPlugin({
       path: path.join(__dirname, '../build'),
       filename: 'assets.js',
@@ -180,7 +184,8 @@ const serverConfig = extend(true, {}, config, {
   devtool: 'source-map',
   plugins: [
     ...config.plugins,
-    new webpack.DefinePlugin({ ...GLOBALS, 'process.env.BROWSER': false }),
+    new webpack.DefinePlugin({ ...GLOBALS, 'process.env.BROWSER': false,
+      CORIOLIS_URL: JSON.stringify(process.env.CORIOLIS_URL) }),
     new webpack.BannerPlugin('require("source-map-support").install();',
       { raw: true, entryOnly: false }),
   ],
