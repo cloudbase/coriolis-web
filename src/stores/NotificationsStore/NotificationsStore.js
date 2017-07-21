@@ -36,7 +36,7 @@ class NotificationsStore extends Reflux.Store
     }
   }
 
-  onLoginScopeSuccess(response) {
+  onLoginScopeSuccess() {
     let notifications = [{
       message: "Signed in",
       type: 'success'
@@ -44,7 +44,7 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
-  onTokenLoginFailed(response) {
+  onTokenLoginFailed() {
     let notifications = [
       {
         message: "Session expired, please sign in",
@@ -54,7 +54,7 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
-  onLogout(response) {
+  onLogout() {
     let notifications = [
       {
         message: "You have been signed out",
@@ -64,7 +64,7 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
-  onSaveEndpoint(response) {
+  onSaveEndpoint() {
     let notifications = [{
       title: "New Connection",
       message: "Connection added successfully",
@@ -148,7 +148,7 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
-  onLoginFailed(response) {
+  onLoginFailed() {
     let notifications = [{
       message: "Login failed",
       type: 'error'
@@ -209,14 +209,56 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
-  onNotify(message, type = "info", title = null, callback = null) {
-    this.setState({notifications: [
-      {
-        message: message,
-        type: type,
-        title: title
-      }
-    ]})
+  onNewEndpoint() {
+    let notifications = [{
+      message: "Saving endpoint...",
+      type: 'info'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onEditEndpoint() {
+    let notifications = [{
+      message: "Saving endpoint...",
+      type: 'info'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onEditEndpointFailed() {
+    let notifications = [{
+      message: "Could not save endpoint",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onSaveEditEndpointSuccess() {
+    let notifications = [{
+      message: "Endpoint saved!",
+      type: 'success'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onSaveEditEndpointFailed() {
+    let notifications = [{
+      message: "Could not save endpoint",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onNotify(message, type = "info", title = null) {
+    this.setState({
+      notifications: [
+        {
+          message: message,
+          type: type,
+          title: title
+        }
+      ]
+    })
   }
 
   onMarkAsRead() {
@@ -234,7 +276,7 @@ class NotificationsStore extends Reflux.Store
   }
 
   onRemoveNotification() {
-    this.setState({notifications: []})
+    this.setState({ notifications: [] })
   }
 
   onSwitchProject() {

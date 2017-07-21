@@ -19,9 +19,9 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './CloudConnectionDetail.scss';
 import Moment from 'react-moment';
-import TextTruncate from 'react-text-truncate';
-import LoadingIcon from '../LoadingIcon'
-import {defaultLabels} from '../../config'
+import LoadingIcon from '../LoadingIcon';
+import { defaultLabels } from '../../config';
+import Helper from '../Helper';
 
 const title = 'connection details';
 
@@ -34,15 +34,15 @@ class CloudConnectionDetail extends Component {
     onSetTitle: PropTypes.func.isRequired,
   };
 
-  componentWillMount() {
-    this.context.onSetTitle(title);
-  }
-
   constructor(props) {
     super(props)
     this.state = {
       fields: this.processProps(props)
     }
+  }
+
+  componentWillMount() {
+    this.context.onSetTitle(title);
   }
 
   componentWillReceiveProps(newProps) {
@@ -52,7 +52,7 @@ class CloudConnectionDetail extends Component {
   processProps(props) {
     let fields = []
     if (props.connection.credentials) {
-      for (var fieldName in props.connection.credentials) {
+      for (let fieldName in props.connection.credentials) {
         let value = props.connection.credentials[fieldName]
         if (value.value) { // if dropdown
           value = value.value
@@ -83,7 +83,7 @@ class CloudConnectionDetail extends Component {
         )
       )
     } else {
-      return <LoadingIcon/>
+      return <LoadingIcon />
     }
   }
 

@@ -66,7 +66,7 @@ class AddCloudConnection extends Reflux.Component {
       this.state.allClouds.forEach(item => {
         if (item.name === this.props.connection.type) {
           let credentials = this.props.connection.credentials
-          for (var i in credentials) {
+          for (let i in credentials) {
             credentials[i] = credentials[i] + ""
           }
           this.setState({
@@ -113,7 +113,7 @@ class AddCloudConnection extends Reflux.Component {
         }
       }
       if (this.props.type == "new") {
-        ConnectionsActions.newConnection({
+        ConnectionsActions.newEndpoint({
           name: this.state.connectionName,
           description: this.state.description,
           type: this.state.currentCloud.name,
@@ -124,8 +124,12 @@ class AddCloudConnection extends Reflux.Component {
         ConnectionsActions.editEndpoint(this.props.connection, {
           name: this.state.connectionName,
           description: this.state.description,
-          type: this.state.currentCloud.name,
           connection_info: credentials
+        }, () => {
+          this.props.updateHandle({
+            name: this.state.connectionName,
+            description: this.state.description
+          })
         })
         this.props.closeHandle()
       }
@@ -146,13 +150,10 @@ class AddCloudConnection extends Reflux.Component {
         } else {
           currentCloudData[field.name] = ""
         }
-      } else {
-
       }
       if (field.required) {
         requiredFields.push(field.name)
       }
-
     })
 
     this.setState({
@@ -377,7 +378,7 @@ class AddCloudConnection extends Reflux.Component {
     } else {
       return (
         <div className={s.connecting}>
-          <LoadingIcon/>
+          <LoadingIcon />
           <div className={s.text}>Connecting ...</div>
         </div>)
     }

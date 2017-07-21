@@ -116,6 +116,17 @@ class CloudConnectionsView extends Component {
 
   closeModal() {
     this.setState({ showModal: false })
+    let connection = this.props.connections.filter((item => item.id === this.props.connectionId))[0]
+
+    this.setState({ connection: connection })
+  }
+
+  updateItem(itemAttrs) {
+    let endpoint = this.state.connection
+    for (let i in itemAttrs) {
+      endpoint[i] = itemAttrs[i]
+    }
+    this.setState({ connection: endpoint })
   }
 
   goBack() {
@@ -198,6 +209,7 @@ class CloudConnectionsView extends Component {
             <AddCloudConnection
               closeHandle={(e) => this.closeModal(e)}
               addHandle={(e) => this.closeModal(e)}
+              updateHandle={(e) => this.updateItem(e)}
               connection={item}
               type="edit"
             />
