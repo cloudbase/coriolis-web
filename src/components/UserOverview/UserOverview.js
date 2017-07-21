@@ -21,6 +21,8 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './UserOverview.scss';
 import Moment from 'react-moment';
 import UserStore from '../../stores/UserStore';
+import Modal from 'react-modal';
+import EditProfile from '../EditProfile';
 
 const title = 'User Overview';
 
@@ -28,6 +30,10 @@ class UserOverview extends Reflux.Component {
   constructor(props) {
     super(props)
     this.store = UserStore
+
+    this.state = {
+      showModal: false
+    }
   }
 
   static contextTypes = {
@@ -38,11 +44,33 @@ class UserOverview extends Reflux.Component {
     super.componentWillMount.call(this)
     this.context.onSetTitle(title);
   }
+
   handleChangeNotifications() {
 
   }
 
+  closeModal() {
+    this.setState({ showModal: false })
+  }
+
+  openModal() {
+    this.setState({ showModal: true })
+  }
+
   render() {
+    let modalStyle = {
+      content: {
+        padding: "0px",
+        borderRadius: "4px",
+        bottom: "auto",
+        width: "576px",
+        height: "auto",
+        left: "50%",
+        top: "20%",
+        marginLeft: "-288px"
+      }
+    }
+
     let item = this.state.currentUser
     return (
       <div className={s.root}>
@@ -65,7 +93,7 @@ class UserOverview extends Reflux.Component {
               </div>
             </div>
             <div className={s.formGroup}>
-              <button className="gray">Edit Profile</button>
+              <button className="gray" onClick={(e) => this.openModal(e)}>Edit Profile</button>
             </div>
             <div className={s.formGroup}>
               <div className={s.title}>
@@ -108,6 +136,16 @@ class UserOverview extends Reflux.Component {
             </div>
           </div>
         </div>
+        <Modal
+          isOpen={this.state.showModal}
+          contentLabel="Edit Profile"
+          style={modalStyle}
+        >
+          <EditProfile
+            closeHandle={(e) => this.closeModal(e)}
+            user={this.state.currentUser}
+          />
+        </Modal>
       </div>
     );
   }
