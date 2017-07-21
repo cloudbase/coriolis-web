@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './LoginPage.scss';
 import Reflux from 'reflux';
@@ -137,7 +137,7 @@ class LoginPage extends Reflux.Component {
         <div className={s.container + " " + (loginButtons.length <= 2 ? s.oneColumn : "")}>
           <div className={s.logo}>
             <div className={s.large}>
-              <LoadingIcon width={224} height={200} animate={this.state.loadingState} padding={16} text=""/>
+              <LoadingIcon width={224} height={200} animate={this.state.loadingState} padding={16} text="" />
               <div className={s.coriolisText} dangerouslySetInnerHTML={{ __html: coriolisTextSvg }}></div>
             </div>
             <div className={s.small}>

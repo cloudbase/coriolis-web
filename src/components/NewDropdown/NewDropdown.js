@@ -58,14 +58,11 @@ class NewDropdown extends Dropdown {
     let newChildProps = Object.assign({}, children[0].props)
     newChildProps.onFocus = () => {
       this.setState({
-        isOpen: true,
-        //hovered: this.state.selected.value == '' ? null : this.state.selected
+        isOpen: true
       })
     }
     newChildProps.onBlur = () => {this.setState({ isOpen: false })}
-    newChildProps.onKeyPress = (e) => {
-      console.log(e) // eslint-disable-line no-console
-    }
+    // newChildProps.onKeyPress = () => {}
     newChildProps.tabIndex = 0
 
     children[0] = React.cloneElement(children[0], newChildProps)

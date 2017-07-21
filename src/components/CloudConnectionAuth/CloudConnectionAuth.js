@@ -18,8 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './CloudConnectionAuth.scss';
-import ConnectionsStore from '../../stores/ConnectionsStore';
-import {defaultLabels} from '../../config'
+import { defaultLabels } from '../../config'
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
 
@@ -41,10 +40,14 @@ class CloudConnectionAuth extends Component {
     this.state = { fields: fields }
   }
 
+  componentWillMount() {
+    this.context.onSetTitle(title);
+  }
+
   processProps(props) {
     let fields = []
     if (props.connection.credentials) {
-      for (var fieldName in props.connection.credentials) {
+      for (let fieldName in props.connection.credentials) {
         let value = props.connection.credentials[fieldName]
         if (value.value) { // if dropdown
           value = value.value
@@ -61,14 +64,6 @@ class CloudConnectionAuth extends Component {
     return fields
   }
 
-  componentWillReceiveProps(newProps, oldProps) {
-
-  }
-
-  componentWillMount() {
-    this.context.onSetTitle(title);
-  }
-
   renderFields() {
     if (this.state.fields.length) {
       return this.state.fields.map((field, index) => (
@@ -83,7 +78,7 @@ class CloudConnectionAuth extends Component {
         )
       )
     } else {
-      return <LoadingIcon/>
+      return <LoadingIcon />
     }
   }
 

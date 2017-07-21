@@ -132,23 +132,23 @@ class MigrationList extends Reflux.Component {
             <Moment format="MMM Do YYYY HH:mm" date={createdAt} />
           </span>
         </span>
-        {/*<span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
+        {/* <span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
          <span className={s.label}>Notes</span>
          <TextTruncate line={2} truncateText="..." text={item.notes} />
-         </span>*/}
+         </span> */}
         <span className={"cell " + s.composite} onClick={(e) => this.migrationDetail(e, item)}>
           <span className={s.label}>Tasks remaining</span>
           <span className={s.value}>{tasksRemaining}</span>
         </span>
-        {/*<span className={"cell " + s.composite}>
+        {/* <span className={"cell " + s.composite}>
          <span className={s.label}>Current instance</span>
          <span className={s.value}>{this.currentInstance(item)}</span>
-         </span>*/}
+         </span> */}
       </div>
     )
   }
 
-  currentInstance(migration) {
+  currentInstance() {
     let instance = "N/A"
     /* migration.vms.forEach((item) => {
       if (item.selected) {

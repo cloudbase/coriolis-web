@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './CloudItem.scss';
-import sApp from '../App/App.scss';
 import Dropdown from '../NewDropdown';
 import AddCloudConnection from '../AddCloudConnection';
 import Modal from 'react-modal';
@@ -27,8 +26,10 @@ class CloudItem extends Component {
   static propTypes = {
     cloud: PropTypes.object,
     addCredentialsCallback: PropTypes.func,
+    credentialSelected: PropTypes.array,
     callback: PropTypes.func,
-    exclude: PropTypes.string
+    exclude: PropTypes.string,
+    selected: PropTypes.bool
   }
 
   constructor(props) {
@@ -67,7 +68,7 @@ class CloudItem extends Component {
   componentWillReceiveProps(nextProps) {
     this.updateCredentialOptions(nextProps)
     if (nextProps.selected === false && this.props.selected === true) {
-      this.setState( {credentialSelected: null })
+      this.setState({ credentialSelected: null })
     }
   }
 
@@ -109,7 +110,7 @@ class CloudItem extends Component {
     if (props.cloud.credentials) {
       props.cloud.credentials.forEach((credential) => {
         if (credential.id != this.props.exclude) {
-          credentialsOptions.push({value: credential.id, label: credential.name})
+          credentialsOptions.push({ value: credential.id, label: credential.name })
         }
       })
       credentialsOptions.push({ value: "new", label: "Add New ..." })

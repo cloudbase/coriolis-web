@@ -119,7 +119,7 @@ class EditProfile extends Component {
     if (this.props.user) {
       projectOptions = this.props.user.projects.map(project => ({ label: project.name, id: project.id }))
     }
-    console.log(projectOptions)
+
     return (
       <div className={s.root}>
         <div className={s.header}>

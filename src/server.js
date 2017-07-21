@@ -72,7 +72,7 @@ server.get('/login/facebook/return',
   }
 );
 
-server.post('/federation', async (req, res, next) => {
+server.post('/federation', async (req, res) => {
   let token = req.body.token
   if (token) {
     res.redirect('/federate/' + token);

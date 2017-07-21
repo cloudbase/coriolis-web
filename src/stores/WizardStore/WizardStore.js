@@ -19,7 +19,7 @@
 import Reflux from 'reflux';
 import WizardActions from '../../actions/WizardActions';
 import ConnectionsActions from '../../actions/ConnectionsActions';
-import {servicesUrl, itemsPerPage, networkMock, targetNetworkMock} from '../../config';
+import { servicesUrl, itemsPerPage, networkMock, targetNetworkMock } from '../../config';
 import Api from '../../components/ApiCaller';
 
 class UsersStore extends Reflux.Store
@@ -86,8 +86,8 @@ class UsersStore extends Reflux.Store
       url: url,
       method: "GET"
     }).then(response => {
-        ConnectionsActions.loadInstances.completed(response, page)
-      }, ConnectionsActions.loadInstances.failed)
+      ConnectionsActions.loadInstances.completed(response, page)
+    }, ConnectionsActions.loadInstances.failed)
       .catch(ConnectionsActions.loadInstances.failed);
   }
 

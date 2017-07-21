@@ -20,8 +20,7 @@ import Reflux from 'reflux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import WizardSource from '../WizardSource';
 import WizardTarget from '../WizardTarget';
-import Helper from '../Helper';
-import {migrationSteps} from '../../config';
+import { migrationSteps } from '../../config';
 import WizardVms from '../WizardVms';
 import WizardNetworks from '../WizardNetworks';
 import WizardOptions from '../WizardOptions';
@@ -57,7 +56,6 @@ class MigrationWizard extends Reflux.Component {
     super(props)
     this.stores = [MigrationStore, ConnectionStore, WizardStore]
     WizardActions.newState()
-
   }
 
   componentWillMount() {
@@ -182,7 +180,7 @@ class MigrationWizard extends Reflux.Component {
         />)
         break
       case "WizardOptions":
-        step = <WizardOptions setWizardState={(e) => this.setWizardState(e)} data={this.state}/>
+        step = <WizardOptions setWizardState={(e) => this.setWizardState(e)} data={this.state} />
         break
       case "WizardSchedule":
         step = (<WizardSchedule

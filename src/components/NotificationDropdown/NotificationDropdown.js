@@ -19,7 +19,6 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './NotificationDropdown.scss';
 import Dropdown from 'react-dropdown';
-import Location from '../../core/Location';
 import UserStore from '../../stores/UserStore';
 import NotificationActions from '../../actions/NotificationActions';
 
@@ -35,12 +34,10 @@ class NotificationDropdown extends Dropdown {
   }
 
   buildMenu() {
-    let buildMenuResult = super.buildMenu.call(this)
     let notifications = <p className={s.noNotifications}>You have no notifications</p>
 
     if (this.props.notifications.length) {
-      notifications = this.props.notifications.map((notification, index) => {
-        return (
+      notifications = this.props.notifications.map((notification, index) => (
           <div
             className="notifications-wrapper"
             key={index}
@@ -51,8 +48,7 @@ class NotificationDropdown extends Dropdown {
               <div className="notification-message">{notification.message}</div>
             </div>
           </div>
-        )
-      }, this)
+        ), this)
     }
     return (
       <div>
@@ -84,7 +80,9 @@ class NotificationDropdown extends Dropdown {
     let children = Object.assign({}, result.props.children)
     children = [
       <div className={s.userIcon + (this.props.dark ? " dark" : "")} onMouseDown={(e) => this.handleMouseDown(e)}>
-        <span className={s.notificationCount + " count-" + this.unreadNotifications()}>{this.unreadNotifications()}</span>
+        <span className={s.notificationCount + " count-" + this.unreadNotifications()}>
+          {this.unreadNotifications()}
+        </span>
       </div>,
       children[1]
     ]

@@ -77,9 +77,7 @@ class ExecutionsTimeline extends Component {
       props = newProps
     }
     let executions = props.executions
-    executions.sort((a, b) => {
-      return a.number - b.number;
-    })
+    executions.sort((a, b) => a.number - b.number)
     return executions
   }
 
@@ -96,7 +94,7 @@ class ExecutionsTimeline extends Component {
         number = i
       }
     }
-    return parseInt(number)
+    return parseInt(number, 10)
   }
 
   render() {
@@ -109,17 +107,17 @@ class ExecutionsTimeline extends Component {
       let offset = (numberOfExecutions - 1) / 2
       let style
       if (index < (number - offset)) { // if before
-        style = { left: "0%", transform: "scale(0)"}
+        style = { left: "0%", transform: "scale(0)" }
       } else if (index > (number + offset)) { // if after
-        style = { left: "100%", transform: "scale(0)"}
+        style = { left: "100%", transform: "scale(0)" }
       } else { // in between
-        style = { left: (dotDistance * (index - number + offset + 1)) + "%", transform: "scale(1)"}
+        style = { left: (dotDistance * (index - number + offset + 1)) + "%", transform: "scale(1)" }
       }
       return (
         <div
           className={s.executionDot + (index == number ? (" " + s.current) : "")}
           style={style}
-          onClick={(e) => this.props.handleChangeExecution(execution)}
+          onClick={() => this.props.handleChangeExecution(execution)}
           key={"execution_" + index}
         >
           <div className={"taskIcon " + execution.status}></div>
@@ -130,9 +128,9 @@ class ExecutionsTimeline extends Component {
     return (
       <div className={s.root}>
         <div className={s.line}>
-          { this.isPrev() && <div className={s.caretLeft + " icon chevron"} onClick={(e) => this.handlePrev()}></div>}
+          { this.isPrev() && <div className={s.caretLeft + " icon chevron"} onClick={() => this.handlePrev()}></div>}
           <div className={s.progress}></div>
-          { this.isNext() && <div className={s.caretRight + " icon chevron"} onClick={(e) => this.handleNext()}></div>}
+          { this.isNext() && <div className={s.caretRight + " icon chevron"} onClick={() => this.handleNext()}></div>}
         </div>
         {executions}
       </div>

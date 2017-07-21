@@ -19,7 +19,7 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardNetworks.scss';
 import Dropdown from '../NewDropdown';
-import {targetNetworkMock} from '../../config';
+import { targetNetworkMock } from '../../config';
 
 const title = 'Network mapping';
 
@@ -36,10 +36,9 @@ class WizardNetworks extends Component {
 
   constructor(props) {
     super(props)
-    console.log("PROPS", props)
     let networks = this.props.data.networks
     networks.forEach(network => {network.selected = false})
-    /*this.props.data.vms.forEach((vm) => {
+    /* this.props.data.vms.forEach((vm) => {
       if (vm.selected) {
         networks.forEach((network) => {
           if (vm.networks.indexOf(network.id) != -1) {
@@ -50,7 +49,7 @@ class WizardNetworks extends Component {
           }
         })
       }
-    })*/
+    }) */
 
     this.state = {
       networks: networks,
@@ -59,7 +58,7 @@ class WizardNetworks extends Component {
     }
 
     this.networkOptions = ["Create new"]
-    //this.props.data.targetNetworks.forEach((network) => {
+    // this.props.data.targetNetworks.forEach((network) => {
     targetNetworkMock.forEach((network) => {
       this.networkOptions.push(network)
     }, this)

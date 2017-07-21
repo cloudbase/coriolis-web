@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ProjectDetail.scss';
-import Moment from 'react-moment';
-import TextTruncate from 'react-text-truncate';
 import LoadingIcon from '../LoadingIcon';
 
 const title = 'connection details';
@@ -41,6 +39,11 @@ class CloudConnectionDetail extends Component {
     }
   }
 
+  componentWillMount() {
+    this.context.onSetTitle(title);
+    this.componentWillReceiveProps(this.props)
+  }
+
   componentWillReceiveProps(props) {
     let project = null
     if (props.projects) {
@@ -52,11 +55,6 @@ class CloudConnectionDetail extends Component {
     }
 
     this.setState({ project: project })
-  }
-
-  componentWillMount() {
-    this.context.onSetTitle(title);
-    this.componentWillReceiveProps(this.props)
   }
 
   render() {

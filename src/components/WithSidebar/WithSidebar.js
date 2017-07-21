@@ -59,7 +59,7 @@ class WithSidebar extends Component {
       (
         <li
           key={"menu_" + index} className={item.route == this.props.route ? s.active : ""}
-          onClick={(e) => this.goToMenu(item)}
+          onClick={() => this.goToMenu(item)}
         >
           {item.label}
         </li>
@@ -68,7 +68,10 @@ class WithSidebar extends Component {
     return (
       <div className={s.root}>
         <div className={s.sidebar}>
-          <div className={s.logo + " logo coriolis-white"} onClick={(e) => this.goToMenu({ route: "/migrations" })}></div>
+          <div
+            className={s.logo + " logo coriolis-white"}
+            onClick={() => this.goToMenu({ route: "/migrations" })}
+          ></div>
           <ul>
             {menuItems}
           </ul>

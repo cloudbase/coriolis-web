@@ -42,7 +42,7 @@ class Table extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps, oldProps) {
+  componentWillReceiveProps(newProps) {
     let openState = []
     for (let i in newProps.listItems) {
       openState.push(newProps.listItems[i].openState)

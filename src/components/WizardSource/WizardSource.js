@@ -68,20 +68,19 @@ class WizardSource extends Reflux.Component {
     if (cloudData) {
       let newCloudsState = this.state.clouds
       let vms
-      let networks
       let selected = false
       newCloudsState.forEach((item) => {
         if (item.name == cloudData.name) {
           selected = cloudData.credentials
 
           vms = []
-          /*item.vms.forEach((vm) => {
+          /* item.vms.forEach((vm) => {
             vms.push(Object.assign({}, vm))
           }, this)*/
 
-          /*item.networks.forEach((network) => {
+          /* item.networks.forEach((network) => {
             networks.push(Object.assign({}, network))
-          }, this)*/
+          }, this) */
         }
       })
 
@@ -101,7 +100,8 @@ class WizardSource extends Reflux.Component {
   nextCallback(callback) {
     let connection = this.props.cloud.credential
     // TODO: change this, shitty callback, go through stores
-    if (this.props.cloud.credential && this.props.cloud.credential.id === this.props.cloud.credential.name) { // new connection, does not have an ID yet, search it
+    // new connection, does not have an ID yet, search it
+    if (this.props.cloud.credential && this.props.cloud.credential.id === this.props.cloud.credential.name) {
       connection = this.state.connections.filter(item => item.name === connection.name)[0]
     }
 

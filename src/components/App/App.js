@@ -15,7 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
 import emptyFunction from 'fbjs/lib/emptyFunction';
 import s from './App.scss';
@@ -90,13 +90,13 @@ class App extends Reflux.Component {
   }
 
   componentWillUnmount() {
-    this.removeCss();
+    this.removeCss()
   }
 
   render() {
     return !this.props.error ? (
       <div className={s.root}>
-        <Notifications notifications={this.state.notifications}/>
+        <Notifications notifications={this.state.notifications} />
         {this.props.children}
       </div>
     ) : (<div className={s.root}>

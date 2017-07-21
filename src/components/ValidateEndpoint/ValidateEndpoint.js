@@ -37,6 +37,10 @@ class ValidateEndpoint extends Component {
     }
   }
 
+  componentDidMount() {
+    this.validate()
+  }
+
   close() {
     this.props.closeHandle()
   }
@@ -55,35 +59,31 @@ class ValidateEndpoint extends Component {
     })
   }
 
-  componentDidMount() {
-    this.validate()
-  }
-
   render() {
-    let message, buttons
+    let buttons
     switch (this.state.status) {
       case -1:
-        buttons = <div className={s.dualBtn}>
+        buttons = (<div className={s.dualBtn}>
           <button className="gray" onClick={(e) => this.close(e)}>Cancel</button>
           <button onClick={(e) => this.validate(e)}>Retry</button>
-        </div>
+        </div>)
         break;
       case 1:
-        buttons = <div className={s.singleBtn}>
+        buttons = (<div className={s.singleBtn}>
           <button onClick={(e) => this.close(e)}>Dismiss</button>
-        </div>
+        </div>)
         break;
       default:
-        buttons = <div className={s.singleBtn}>
+        buttons = (<div className={s.singleBtn}>
           <button className="gray" onClick={(e) => this.close(e)}>Cancel</button>
-        </div>
+        </div>)
     }
-    return <div className={s.root}>
+    return (<div className={s.root}>
       <div className={s.container + (this.state.status != 0 ? s.hidden : "")}>
         { this.state.status == 0 ? <LoadingIcon /> : <div className={s.message}>{this.state.message}</div> }
       </div>
       {buttons}
-    </div>
+    </div>)
   }
 
 }

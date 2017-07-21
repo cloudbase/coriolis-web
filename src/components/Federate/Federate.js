@@ -15,11 +15,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { Component, PropTypes } from 'react';
+import { PropTypes } from 'react';
 import Location from '../../core/Location';
 import Reflux from 'reflux';
 import UserActions from '../../actions/UserActions';
-import ConnectionStore from '../../stores/ConnectionsStore';
 
 
 class Federate extends Reflux.Component {

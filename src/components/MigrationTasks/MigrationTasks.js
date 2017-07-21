@@ -18,20 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import moment from 'moment';
-import Table from '../Table';
 import s from './MigrationTasks.scss';
-import TextTruncate from 'react-text-truncate';
-import LoadingIcon from "../LoadingIcon/LoadingIcon";
-import Dropdown from '../NewDropdown';
 import MigrationActions from '../../actions/MigrationActions';
-import {tasksPollTimeout} from '../../config'
+import { tasksPollTimeout } from '../../config'
 import Tasks from '../Tasks';
 
 const title = 'Migration Tasks';
 
 class MigrationTasks extends Component {
-
-  timeout = null
 
   static propTypes = {
     migration: PropTypes.object
@@ -59,17 +53,11 @@ class MigrationTasks extends Component {
     this.context.onSetTitle(title);
     this.pollTasks()
   }
-
-  componentWillUnmount() {
-    clearInterval(this.timeout)
-  }
-
   componentWillReceiveProps(props) {
     if (props.migration && props.migration.tasks) {
       let loadMigration = false
       props.migration.tasks.forEach((item) => {
         if (item.progress_updates.length) {
-          let first = true
           if (item.progress_updates[0] != null) {
             item.progress_updates.sort((a, b) => moment(a.created_at).isAfter(moment(b.created_at)))
           } else {
@@ -83,6 +71,11 @@ class MigrationTasks extends Component {
     }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timeout)
+  }
+
+  timeout = null
 
   pollTasks() {
     if (this.props && this.props.migration &&
@@ -96,7 +89,7 @@ class MigrationTasks extends Component {
       <div className={s.root}>
         { this.props.migration &&
           <div className={s.container}>
-            <Tasks tasks={this.props.migration.tasks}/>
+            <Tasks tasks={this.props.migration.tasks} />
           </div>
         }
       </div>

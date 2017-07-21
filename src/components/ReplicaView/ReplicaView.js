@@ -101,11 +101,6 @@ class ReplicaView extends Reflux.Component {
     if (item) {
       title = "Edit Replica"
 
-      let disabled = item.executions.length && item.executions[item.executions.length - 1].status != "COMPLETED"
-      if (item.executions.length == 0) {
-        disabled = true
-      }
-
       let itemStatus = item.status
       if (item.executions.length) {
         itemStatus = item.executions[item.executions.length - 1].status
@@ -132,7 +127,8 @@ class ReplicaView extends Reflux.Component {
                   <button
                     className="gray"
                     disabled={item.status === "RUNNING"}
-                    onClick={(e) => this.executeReplica(e)}>
+                    onClick={(e) => this.executeReplica(e)}
+                  >
                     Execute Now
                   </button>
                 </div>
@@ -176,9 +172,7 @@ class ReplicaView extends Reflux.Component {
         </div>
       </div>)
     }
-
   }
-
 }
 
 export default withStyles(ReplicaView, s);

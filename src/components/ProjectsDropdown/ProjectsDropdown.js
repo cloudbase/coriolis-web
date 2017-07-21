@@ -15,7 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import Reflux from 'reflux';
 import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
@@ -43,8 +43,8 @@ class ProjectsDropdown extends Reflux.Component {
     let projects = []
     let currentProject = null
     if (this.state.currentUser.projects) {
-      projects = this.state.currentUser.projects.map(project => {
-        return {label: project.name, value: project.id}
+      projects = this.state.currentUser.projects.map(project => { //eslint-disable-line
+        return { label: project.name, value: project.id }
       })
 
       if (Reflux.GlobalState.userStore.currentUser.project) {
@@ -54,14 +54,14 @@ class ProjectsDropdown extends Reflux.Component {
         }
       }
     }
-    return <div className={s.root}>
+    return (<div className={s.root}>
       <Dropdown
         options={projects}
         placeholder="Switch Project"
         onChange={(e) => this.switchProject(e)}
         value={currentProject}
       />
-    </div>
+    </div>)
   }
 
 }

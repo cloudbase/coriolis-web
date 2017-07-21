@@ -81,11 +81,11 @@ class Header extends Component {
             <div className="logo coriolis-white-topbar"></div>
           </Link>
           <div className={s.banner}>
-            {/*<h1 className={s.bannerTitle}>{this.props.title}</h1>*/}
+            {/* <h1 className={s.bannerTitle}>{this.props.title}</h1> */}
           </div>
           <div className={s.userIcon}>
-            <UserIcon dark={true} />
-            <NotificationIcon dark={true} />
+            <UserIcon dark />
+            <NotificationIcon dark />
           </div>
         </div>
         <div
@@ -93,10 +93,10 @@ class Header extends Component {
           style={{ height: this.state.height }}
         >
           <ul>
-            <li><a onClick={(e) => this.goToMenu("/replicas")}>Replicas</a></li>
-            <li><a onClick={(e) => this.goToMenu("/migrations")}>Migrations</a></li>
-            <li><a onClick={(e) => this.goToMenu("/cloud-endpoints")}>Cloud Endpoints</a></li>
-            <li><a onClick={(e) => this.goToMenu("/projects")}>Projects</a></li>
+            <li><a onClick={() => this.goToMenu("/replicas")}>Replicas</a></li>
+            <li><a onClick={() => this.goToMenu("/migrations")}>Migrations</a></li>
+            <li><a onClick={() => this.goToMenu("/cloud-endpoints")}>Cloud Endpoints</a></li>
+            <li><a onClick={() => this.goToMenu("/projects")}>Projects</a></li>
           </ul>
         </div>
       </div>

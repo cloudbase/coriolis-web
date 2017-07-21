@@ -40,7 +40,7 @@ class UserIcon extends Reflux.Component {
   render() {
     return (
       <div className={s.root}>
-        <UserDropdown userData={this.state.currentUser} dark={this.props.dark}/>
+        <UserDropdown userData={this.state.currentUser} dark={this.props.dark} />
       </div>
     );
   }

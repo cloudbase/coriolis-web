@@ -34,11 +34,11 @@ class ProgressBar extends Component {
     let progressBarStyle = {
       width: this.props.progress + "%"
     }
-    return <div className={s.root}>
+    return (<div className={s.root}>
       <div className={s.outer}>
         <div className={s.inner + " " + (this.props.progress == 100 ? s.completed : "")} style={progressBarStyle} />
       </div>
-    </div>
+    </div>)
   }
 
 }

@@ -44,33 +44,6 @@ class MigrationNetworks extends Component {
     this.processProps(props)
   }
 
-  processProps(props) {
-    if (props.migration && props.migration.destination_environment) {
-      for (var i in props.migration.destination_environment.network_map) {
-        let connectedVms = "-"
-        let newItem = {
-          source_network: i,
-          connected_vms: "-",
-          destination_network: props.migration.destination_environment.network_map[i],
-          destination_type: "Existing network"
-        }
-        this.listItems.push(newItem)
-      }
-      /*
-      props.migration.destination_environment.network_map.forEach((item) => {
-          //let connectedVms = this.getConnectedVms(item.id).join(", ")
-        let connectedVms = "-"
-          let newItem = {
-            source_network: item.name,
-            connected_vms: connectedVms,
-            destination_network: item.migrateNetwork,
-            destination_type: item.migrateNetwork == "Create new" ? "New network" : "Existing network"
-          }
-          this.listItems.push(newItem)
-        }*/
-    }
-  }
-
   componentWillMount() {
     this.context.onSetTitle(title);
   }
@@ -85,6 +58,32 @@ class MigrationNetworks extends Component {
     return vms
   }
 
+  processProps(props) {
+    if (props.migration && props.migration.destination_environment) {
+      for (let i in props.migration.destination_environment.network_map) {
+        let newItem = {
+          source_network: i,
+          connected_vms: "-",
+          destination_network: props.migration.destination_environment.network_map[i],
+          destination_type: "Existing network"
+        }
+        this.listItems.push(newItem)
+      }
+      /*
+       props.migration.destination_environment.network_map.forEach((item) => {
+       //let connectedVms = this.getConnectedVms(item.id).join(", ")
+       let connectedVms = "-"
+       let newItem = {
+       source_network: item.name,
+       connected_vms: connectedVms,
+       destination_network: item.migrateNetwork,
+       destination_type: item.migrateNetwork == "Create new" ? "New network" : "Existing network"
+       }
+       this.listItems.push(newItem)
+       }*/
+    }
+  }
+
   render() {
     if (this.listItems.length) {
       return (
@@ -97,9 +96,7 @@ class MigrationNetworks extends Component {
     } else {
       return (<div className="no-results">No networks mapped</div>)
     }
-
   }
-
 }
 
 export default withStyles(MigrationNetworks, s);

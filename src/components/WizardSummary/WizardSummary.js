@@ -21,7 +21,7 @@ import s from './WizardSummary.scss';
 import moment from 'moment';
 import TextTruncate from 'react-text-truncate';
 import InfoIcon from '../InfoIcon';
-import {defaultLabels} from '../../config';
+import { defaultLabels } from '../../config';
 
 
 const title = 'Summary';
@@ -54,19 +54,19 @@ class WizardSummary extends Component {
 
   renderOptionsFields() {
     let fields = []
-    for (var i in this.props.summary.destination_environment) {
+    for (let i in this.props.summary.destination_environment) {
       fields.push({
         label: defaultLabels[i] ? defaultLabels[i] : i,
         value: this.props.summary.destination_environment[i]
       })
     }
 
-    return fields.map(field => {
-      return <div className={s.row} key={"destination_environment_" + field.label}>
+    return fields.map(field => (
+      <div className={s.row} key={"destination_environment_" + field.label}>
         <span>{field.label}</span>
         <span>{field.value}</span>
       </div>
-    })
+    ))
   }
 
   render() {
@@ -81,22 +81,20 @@ class WizardSummary extends Component {
         </div>
       ), this)
 
-    let instances = this.props.summary.selectedInstances.map((vm, index) => {
-      return (
-        <div className="item" key={"VM_" + index}>
-          <span className="cell">
-            <TextTruncate line={1} text={vm.name} truncateText="..." />
-          </span>
-          <span className="cell">
-            {vm.num_cpu} vCPU | {vm.memory_mb} MB RAM
-          </span>
-          {/*            <span className="cell">
-           {vm.status}
-           </span>*/}
-        </div>
-      )
+    let instances = this.props.summary.selectedInstances.map((vm, index) => (
+      <div className="item" key={"VM_" + index}>
+        <span className="cell">
+          <TextTruncate line={1} text={vm.name} truncateText="..." />
+        </span>
+        <span className="cell">
+          {vm.num_cpu} vCPU | {vm.memory_mb} MB RAM
+        </span>
+        {/*            <span className="cell">
+         {vm.status}
+         </span>*/}
+      </div>
+    ))
 
-    })
     let networks = this.props.summary.networks.map((network, index) => {
       if (network.selected || true) {
         return (
@@ -130,7 +128,6 @@ class WizardSummary extends Component {
                 <InfoIcon text="Helptext" />
               </h3>
               <div className={s.values}>
-                {/*<div className={s.row}><span>Name:</span><span>{this.props.summary.migrationName}</span></div>*/}
                 <div className={s.row}>
                   <span>Source: <br /> </span>
                   <span>

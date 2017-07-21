@@ -75,7 +75,10 @@ class UserDropdown extends Dropdown {
   render() {
     let result = super.render.call(this)
     let children = Object.assign({}, result.props.children)
-    children = [<div className={s.userIcon + (this.props.dark ? " dark" : "")} onMouseDown={(e) => this.handleMouseDown(e)}></div>, children[1]]
+    children = [(<div
+      className={s.userIcon + (this.props.dark ? " dark" : "")}
+      onMouseDown={(e) => this.handleMouseDown(e)}
+    />), children[1]]
     let newResult = React.cloneElement(result, { children: children })
     return newResult
   }

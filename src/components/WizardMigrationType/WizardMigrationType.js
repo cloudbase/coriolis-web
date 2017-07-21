@@ -17,15 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import Helper from '../Helper';
 import s from './WizardMigrationType.scss';
 
 
 const title = 'Migration Type';
 
 class WizardMigrationType extends Component {
-  canMigrate = false
-  canReplicate = false
 
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
@@ -39,29 +36,12 @@ class WizardMigrationType extends Component {
 
   constructor(props) {
     super(props)
-    /*
-    if (props.data.sourceCloud.cloudRef.replica.export && props.data.targetCloud.cloudRef.replica.import) {
-      this.canReplicate = true
-    }
-    if (props.data.sourceCloud.cloudRef.migration.export && props.data.targetCloud.cloudRef.migration.import) {
-      this.canMigrate = true
-    }*/
 
     this.state = {
       migrationType: this.props.migrationType,
       valid: true,
       nextStep: "WizardSource"
     }
-    /*
-    // set default to migration
-    if (props.migrationType == null) {
-      if (!this.canMigrate) {
-        this.state.migrationType = "replica"
-        this.state.migrationName = Helper.generateMigrationName("replica")
-      } else {
-        this.state.migrationType = "migration"
-      }
-    }*/
   }
 
 
@@ -121,10 +101,6 @@ class WizardMigrationType extends Component {
               environment (migration phase).</p>
           </div>
         </div>
-        {/*<div className={s.migrationName}>
-          <h3>Notes</h3>
-          <textarea value={this.state.notes} onChange={(e) => this.handleChangeMigrationNotes(e)}></textarea>
-        </div>*/}
       </div>
     );
   }

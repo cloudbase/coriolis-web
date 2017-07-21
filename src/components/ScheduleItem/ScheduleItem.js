@@ -35,7 +35,7 @@ class ScheduleItem extends Component {
     super(props)
     this.state = this.props.data
     this.state.date = moment()
-    this.types = ["Execute Now"] //, "One time", "Every Day", "Once a week", "Once a month"]
+    this.types = ["Execute Now"] // "One time", "Every Day", "Once a week", "Once a month"]
     this.dateTypes = ["One time"]
     this.tods = ["AM", "PM"]
     this.timezones = ["EET", "EST", "GMT"]

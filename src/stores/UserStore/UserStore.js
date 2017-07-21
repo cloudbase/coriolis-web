@@ -68,11 +68,11 @@ class UserStore extends Reflux.Store
     Api.setDefaultHeader('X-Auth-Token', token)
     cookie.save('unscopedToken', token, { path: "/", expires: moment().add(1, 'hour').toDate() })
 
-    UserActions.getScopedProjects(response => {
-      if (response.data.projects) {
+    UserActions.getScopedProjects(res => {
+      if (res.data.projects) {
         let projectId = cookie.load('projectId')
         if (!projectId) {
-          projectId = response.data.projects[0].id
+          projectId = res.data.projects[0].id
         }
         UserActions.loginScope(token, projectId)
       } else {
@@ -94,7 +94,7 @@ class UserStore extends Reflux.Store
     cookie.save('projectId', currentUser.project.id, { path: "/", expires: moment().add(1, 'months').toDate() })
     Api.setDefaultHeader('X-Auth-Token', currentUser.token)
 
-    this.setState({currentUser: currentUser})
+    this.setState({ currentUser: currentUser })
 
     ConnectionsActions.loadProviders()
     ConnectionsActions.loadConnections()
@@ -111,7 +111,7 @@ class UserStore extends Reflux.Store
     UserActions.loginScope(token, this.state.currentUser.projects[0].id, false)
   }
 
-  onLoginFailed(response) {
+  onLoginFailed() {
     this.setState({ loadingState: false })
   }
 
@@ -124,7 +124,6 @@ class UserStore extends Reflux.Store
     .then(() => {
       cookie.remove('token');
       window.location.href = "/"
-
     })
     .catch(() => {
       cookie.remove('token');
@@ -141,7 +140,7 @@ class UserStore extends Reflux.Store
     Location.push('/login');
   }
 
-  onLogoutSuccess(response) {
+  onLogoutSuccess() {
     cookie.remove('token');
     cookie.remove('projectId');
     Location.push('/login');
@@ -156,7 +155,6 @@ class UserStore extends Reflux.Store
   }
 
   onSwitchProject(projectId) {
-    console.log("onSwitchProject", projectId)
     if (projectId) {
       let token = cookie.load('unscopedToken')
       Api.setDefaultHeader('X-Auth-Token', null)

@@ -52,7 +52,7 @@ class FilteredTable extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps, oldProps) {
+  componentWillReceiveProps(newProps) {
     if (newProps.items) {
       this.setState({ filteredData: newProps.items }, () => {
         this.searchItem()

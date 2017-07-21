@@ -15,7 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Location from '../../core/Location';
 import Reflux from 'reflux';
 import ConnectionStore from '../../stores/ConnectionsStore';
@@ -94,17 +94,15 @@ class EndpointLink extends Reflux.Component {
   render() {
     const { to, ...props } = this.props; // eslint-disable-line no-use-before-define
     if (this.state && this.state.connection) {
-      return <a
+      return (<a
         href={Location.createHref(`/cloud-endpoints/${this.state.connection.id}`)}
         {...props}
         onClick={this.handleClick}
-      >{this.state.connection.name}</a>;
+      >{this.state.connection.name}</a>)
     } else {
       return null
     }
-
   }
-
 }
 
 export default EndpointLink;

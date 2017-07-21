@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Reflux from 'reflux';
 import Api from '../../components/ApiCaller';
 import NotificationActions from '../NotificationActions'
-import {servicesUrl, securityGroups} from '../../config';
+import { servicesUrl, securityGroups } from '../../config';
 
 let MigrationActions = Reflux.createActions({
   loadMigrations: { children: ['completed', 'failed'], shouldEmit: () => {} },
@@ -81,9 +81,9 @@ MigrationActions.loadMigration.listen((migration) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
   Api.sendAjaxRequest({
-      url: `${servicesUrl.coriolis}/${projectId}/migrations/${migration.id}`,
-      method: "GET"
-    })
+    url: `${servicesUrl.coriolis}/${projectId}/migrations/${migration.id}`,
+    method: "GET"
+  })
     .then(MigrationActions.loadMigration.completed, MigrationActions.loadMigration.failed)
     .catch(MigrationActions.loadMigration.failed);
 })
@@ -159,27 +159,25 @@ MigrationActions.cancelMigration.listen((migration, callback = null) => {
   }
 
   Api.sendAjaxRequest({
-      url: url,
-      method: "POST",
-      data: payload
-    })
+    url: url,
+    method: "POST",
+    data: payload
+  })
     .then((response) => {
       if (callback) {
         callback(migration, response)
       }
-        MigrationActions.cancelMigration.completed(migration, response)
-      }, MigrationActions.cancelMigration.failed
-    )
+      MigrationActions.cancelMigration.completed(migration, response)
+    }, MigrationActions.cancelMigration.failed)
     .catch(MigrationActions.cancelMigration.failed);
-
 })
 
 MigrationActions.getReplicaExecutions.listen((replica, callback) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
   Api.sendAjaxRequest({
-      url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}/executions/detail`,
-      method: "GET"
-    })
+    url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}/executions/detail`,
+    method: "GET"
+  })
     .then((response) => {
       MigrationActions.getReplicaExecutions.completed(replica, response)
       if (callback) callback()
@@ -191,9 +189,9 @@ MigrationActions.getReplicaExecutions.listen((replica, callback) => {
 MigrationActions.getReplicaExecutionDetail.listen((replica, executionId, callback = null) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
   Api.sendAjaxRequest({
-      url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}/executions/${executionId}`,
-      method: "GET"
-    })
+    url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}/executions/${executionId}`,
+    method: "GET"
+  })
     .then((response) => {
       MigrationActions.getReplicaExecutionDetail.completed(replica, executionId, response)
       if (callback) {
@@ -228,14 +226,14 @@ MigrationActions.addMigration.listen((migration) => {
     }
   })
 
-  let network_map = {}
+  let networkMap = {}
   migration.networks.forEach(network => {
-    network_map[network.name] = network.migrateNetwork
+    networkMap[network.name] = network.migrateNetwork
   })
 
   let destinationEnv = {}
 
-  for (var i in migration.destination_environment) {
+  for (let i in migration.destination_environment) {
     if (migration.destination_environment[i].label) { // removing label from dropdown if present
       destinationEnv[i] = migration.destination_environment[i].value
     } else {
@@ -243,7 +241,7 @@ MigrationActions.addMigration.listen((migration) => {
     }
   }
 
-  destinationEnv["network_map"] = network_map
+  destinationEnv["network_map"] = networkMap // eslint-disable-line dot-notation
 
   payload[migration.migrationType] = {
     origin_endpoint_id: migration.sourceCloud.credential.id,
@@ -263,7 +261,6 @@ MigrationActions.addMigration.listen((migration) => {
   })
     .then(MigrationActions.addMigration.completed, MigrationActions.addMigration.failed)
     .catch(MigrationActions.addMigration.failed);
-
 })
 
 MigrationActions.createMigrationFromReplica.listen((replica) => {
@@ -278,13 +275,12 @@ MigrationActions.createMigrationFromReplica.listen((replica) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
   Api.sendAjaxRequest({
-      url: `${servicesUrl.coriolis}/${projectId}/migrations`,
-      method: "POST",
-      data: payload
-    })
+    url: `${servicesUrl.coriolis}/${projectId}/migrations`,
+    method: "POST",
+    data: payload
+  })
     .then(MigrationActions.createMigrationFromReplica.completed, MigrationActions.createMigrationFromReplica.failed)
     .catch(MigrationActions.createMigrationFromReplica.failed);
-
 })
 
 

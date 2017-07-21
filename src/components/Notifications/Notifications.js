@@ -15,7 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import NotificationActions from '../../actions/NotificationActions';
 import s from './Notifications.scss';
@@ -23,22 +23,8 @@ import NotificationSystem from 'react-notification-system';
 
 class Notifications extends Component {
 
-  _notificationSystem = null
-
-  _addNotification(event) {
-    event.preventDefault();
-    this._notificationSystem.addNotification({
-      message: 'Notification message',
-      level: 'success'
-    });
-  }
-
   static propTypes = {
     notifications: PropTypes.array
-  }
-
-  constructor(props) {
-    super(props)
   }
 
   componentDidMount() {
@@ -47,9 +33,6 @@ class Notifications extends Component {
 
   componentWillReceiveProps(newProps, oldProps) {
     if (newProps != oldProps && newProps.notifications.length) {
-      if (newProps.notifications[0].objectId) {
-
-      }
       this.send(
         newProps.notifications[0].message,
         newProps.notifications[0].type,
@@ -65,6 +48,16 @@ class Notifications extends Component {
     }
   }
 
+  _addNotification(event) {
+    event.preventDefault();
+    this._notificationSystem.addNotification({
+      message: 'Notification message',
+      level: 'success'
+    });
+  }
+
+  _notificationSystem = null
+
   send(message, type = 'info', title = null, hideDelay = 5000, action = null) {
     if (title === null) {
       title = message
@@ -78,12 +71,12 @@ class Notifications extends Component {
       autoDismiss: 10,
       action: action
     })
-  };
+  }
 
   render() {
     return (
       <div>
-        <NotificationSystem ref="notificationSystem"/>
+        <NotificationSystem ref="notificationSystem" />
       </div>
     );
   }

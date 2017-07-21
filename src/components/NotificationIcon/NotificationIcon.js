@@ -40,7 +40,7 @@ class NotificationIcon extends Reflux.Component {
   render() {
     return (
       <div className={s.root}>
-        <NotificationDropdown notifications={this.state.allNotifications} dark={this.props.dark}/>
+        <NotificationDropdown notifications={this.state.allNotifications} dark={this.props.dark} />
       </div>
     );
   }

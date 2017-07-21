@@ -21,7 +21,6 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Project.scss';
 import UserStore from '../../stores/UserStore';
 import Header from '../Header';
-import ConfirmationDialog from '../ConfirmationDialog';
 import LoadingIcon from '../LoadingIcon';
 import Location from '../../core/Location';
 
@@ -77,7 +76,7 @@ class Project extends Reflux.Component {
     if (item) {
       return (
         <div className={s.root}>
-          <Header linkUrl="/projects"/>
+          <Header linkUrl="/projects" />
           <div className={s.projectHead + " detailViewHead"}>
             <div className={s.container}>
               <div className="backBtn" onClick={(e) => this.goBack(e)}></div>
@@ -89,21 +88,13 @@ class Project extends Reflux.Component {
             </div>
           </div>
           <div className={s.container}>
-            <div className={s.sidebar}>
-
-            </div>
+            <div className={s.sidebar}></div>
             <div className={s.content}>
               {React.cloneElement(this.props.children, {
                 projects: this.state.currentUser ? this.state.currentUser.projects : null,
                 projectId: this.props.projectId })}
             </div>
           </div>
-          {/*<ConfirmationDialog
-            visible={this.state.confirmationDialog.visible}
-            message={this.state.confirmationDialog.message}
-            onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
-            onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
-          />*/}
         </div>
       );
     } else {
@@ -113,9 +104,7 @@ class Project extends Reflux.Component {
         </div>
       );
     }
-
   }
-
 }
 
 export default withStyles(Project, s);

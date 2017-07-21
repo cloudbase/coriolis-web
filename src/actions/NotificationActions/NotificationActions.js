@@ -18,10 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Reflux from 'reflux';
 
 let NotificationActions = Reflux.createActions({
-  'removeNotification': {},
-  'keepNotification': {},
-  'markAsRead': {},
-  'notify': {}
+  removeNotification: {},
+  keepNotification: {},
+  markAsRead: {},
+  notify: {}
 })
 
 export default NotificationActions;

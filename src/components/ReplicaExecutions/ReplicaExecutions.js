@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+/* eslint-disable no-trailing-spaces */
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaExecutions.scss';
@@ -24,7 +24,7 @@ import moment from 'moment';
 import MigrationActions from '../../actions/MigrationActions';
 import Tasks from '../Tasks';
 import ExecutionsTimeline from '../ExecutionsTimeline';
-import {tasksPollTimeout} from '../../config'
+import { tasksPollTimeout } from '../../config'
 import ConfirmationDialog from '../ConfirmationDialog'
 
 
@@ -66,10 +66,6 @@ class ReplicaExecutions extends Component {
     this.pollTasks()
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timeout)
-  }
-
   componentWillReceiveProps(newProps) {
     if (newProps.replica && newProps.replica.executions.length) {
       let execution = newProps.replica.executions[newProps.replica.executions.length - 1]
@@ -85,16 +81,20 @@ class ReplicaExecutions extends Component {
     }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timeout)
+  }
+
+  cancelExecution() {
+    MigrationActions.cancelMigration(this.props.replica, () => {
+      this.refreshExecution()
+    })
+  }
+
   executeNow() {
     MigrationActions.executeReplica(this.props.replica)
     clearInterval(this.timeout)
     this.timeout = setInterval((e) => this.pollTasks(e), tasksPollTimeout)
-  }
-
-  cancelExecution() {
-    MigrationActions.cancelMigration(this.props.replica, (replica, response) => {
-      this.refreshExecution()
-    })
   }
 
   deleteExecution() {
@@ -102,7 +102,7 @@ class ReplicaExecutions extends Component {
       confirmationDialog: {
         visible: true,
         onConfirm: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
           let index = this.props.replica.executions.indexOf(this.state.executionRef)
 
           MigrationActions.deleteReplicaExecution(this.props.replica, this.state.executionRef.id, () => {
@@ -116,7 +116,7 @@ class ReplicaExecutions extends Component {
           })
         },
         onCancel: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
         }
       }
     })
@@ -128,7 +128,7 @@ class ReplicaExecutions extends Component {
         let props = this.props
         props.migration.tasks = response.data.execution.tasks
         MigrationActions.getReplicaExecutions(replica)
-        let state = this.processProps({ migration: {tasks: response.data.execution.tasks } }, null)
+        let state = this.processProps({ migration: { tasks: response.data.execution.tasks } }, null)
         this.setState(state)
       })
   }
@@ -197,7 +197,7 @@ class ReplicaExecutions extends Component {
                   {executionBtn}
                 </div>
               </div>
-              <Tasks tasks={this.state.tasks}/>
+              <Tasks tasks={this.state.tasks} />
             </div>
             <ConfirmationDialog
               visible={this.state.confirmationDialog.visible}
@@ -227,9 +227,7 @@ class ReplicaExecutions extends Component {
         </div>
       )
     }
-
   }
-
 }
 
 export default withStyles(ReplicaExecutions, s);

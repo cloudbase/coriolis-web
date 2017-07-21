@@ -66,9 +66,7 @@ class EndpointUsage extends Reflux.Component {
     } else {
       return null
     }
-
   }
-
 }
 
 export default EndpointUsage;

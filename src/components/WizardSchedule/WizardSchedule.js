@@ -102,10 +102,10 @@ class WizardSchedule extends Component {
         />
       )
     )
-    let newScheduleBtn = null
+    /* let newScheduleBtn = null
     if (this.props.migrationType == 'replica') {
       newScheduleBtn = <button className={s.addScheduleBtn} onClick={(e) => this.addSchedule(e)}>Add schedule</button>
-    }
+    } */
 
 
     return (
@@ -114,7 +114,7 @@ class WizardSchedule extends Component {
           <div className="items-list">
             {schedules}
           </div>
-          {/*{newScheduleBtn}*/}
+          {/* {newScheduleBtn} */}
         </div>
       </div>
     );

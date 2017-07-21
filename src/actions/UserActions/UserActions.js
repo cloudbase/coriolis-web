@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Reflux from 'reflux';
 import Api from '../../components/ApiCaller';
-import {servicesUrl, defaultDomain} from '../../config';
+import { servicesUrl, defaultDomain } from '../../config';
 import Location from '../../core/Location';
 
 let UserAction = Reflux.createActions({
@@ -65,7 +65,6 @@ UserAction.login.listen(userData => {
       UserAction.login.success(response)
       Location.push('/replicas')
     }, UserAction.login.failed)
-
 })
 
 UserAction.loginScope.listen((token, projectId, fallback = true) => {

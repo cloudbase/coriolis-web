@@ -21,7 +21,7 @@ import s from './WizardTarget.scss';
 import CloudItem from '../CloudItem';
 import ConnectionsActions from '../../actions/ConnectionsActions';
 import ConnectionStore from '../../stores/ConnectionsStore';
-import {networkMock} from '../../config';
+import { networkMock } from '../../config';
 
 const title = 'Select your target cloud';
 
@@ -35,7 +35,8 @@ class WizardTarget extends Component {
     clouds: PropTypes.array,
     cloud: PropTypes.object,
     setWizardState: PropTypes.func,
-    exclude: PropTypes.string
+    exclude: PropTypes.string,
+    type: PropTypes.string
   }
 
   constructor(props) {
@@ -77,7 +78,6 @@ class WizardTarget extends Component {
       let selected = false
       newCloudsState.forEach((item) => {
         if (item.name == cloudData.name) {
-          //item.selected = cloudData.credentials
           selected = cloudData.credentials
 
           // load import endpoints if missing

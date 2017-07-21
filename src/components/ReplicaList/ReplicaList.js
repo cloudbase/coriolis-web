@@ -141,22 +141,12 @@ class ReplicaList extends Reflux.Component {
           <span className={s.label}>Tasks remaining</span>
           <span className={s.value}>{tasksRemaining}</span>
         </span>
-        {/*<span className={"cell " + s.composite}>
-         <span className={s.label}>Current instance</span>
-         <span className={s.value}>{this.currentInstance(item)}</span>
-         </span>*/}
       </div>
     )
   }
 
-  currentInstance(migration) {
-    let instance = "N/A"
-    /*migration.vms.forEach((item) => {
-      if (item.selected) {
-        instance = item.name
-      }
-    })*/
-    return instance
+  currentInstance() {
+    return "N/A"
   }
 
   refreshList() {

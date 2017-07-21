@@ -15,14 +15,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardOptions.scss';
 import Dropdown from '../NewDropdown';
 import WizardActions from '../../actions/WizardActions';
 import WizardStore from '../../stores/WizardStore';
-import InfoIcon from '../InfoIcon';
 
 
 const title = 'Migration Options';
@@ -39,10 +38,6 @@ class WizardOptions extends Reflux.Component {
   constructor(props) {
     super(props)
     this.store = WizardStore
-
-    this.diskFormats = ["VHD", "VHD2"]
-    this.fipPools = ["public", "private_01", "private_02"]
-
 
     this.state = {
       autoFlavors: true,
@@ -62,14 +57,14 @@ class WizardOptions extends Reflux.Component {
   }
 
   componentDidMount() {
-    let destination_environment = this.state.destination_environment
+    let destinationEnvironment = this.state.destination_environment
     this.state.targetCloud.cloudRef["import_" + this.state.migrationType].fields.forEach(field => {
-      if (typeof field.default !== "undefined" && typeof destination_environment[field.name] === "undefined") {
-        destination_environment[field.name] = field.default
+      if (typeof field.default !== "undefined" && typeof destinationEnvironment[field.name] === "undefined") {
+        destinationEnvironment[field.name] = field.default
       }
     }, this)
 
-    WizardActions.updateWizardState({ destination_environment: destination_environment })
+    WizardActions.updateWizardState({ destination_environment: destinationEnvironment })
   }
 
   handleChangeAutoFlavor() {
@@ -105,13 +100,13 @@ class WizardOptions extends Reflux.Component {
   }
 
   handleOptionsFieldChange(e, field) {
-    let destination_environment = this.state.destination_environment
+    let destinationEnvironment = this.state.destination_environment
     if (field.type == 'dropdown') {
-      destination_environment[field.name] = e
+      destinationEnvironment[field.name] = e
     } else {
-      destination_environment[field.name] = e.target.value
+      destinationEnvironment[field.name] = e.target.value
     }
-    WizardActions.updateWizardState({ destination_environment: destination_environment })
+    WizardActions.updateWizardState({ destination_environment: destinationEnvironment })
   }
 
   renderField(field) {
@@ -231,12 +226,12 @@ class WizardOptions extends Reflux.Component {
   }
 
   render() {
-    let toggleAdvancedBtn = <button
+    let toggleAdvancedBtn = (<button
       onClick={(e) => this.toggleAdvancedOptions(e)}
       className={s.toggleAdvancedBtn + " wire"}
     >
       {this.state.showAdvancedOptions ? "Hide" : "Show"} Advanced Options
-    </button>
+    </button>)
 
     return (
       <div className={s.root}>

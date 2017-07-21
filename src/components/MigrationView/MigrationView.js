@@ -21,7 +21,6 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './MigrationView.scss';
 import Header from '../Header';
 import Link from '../Link';
-import Dropdown from '../NewDropdown';
 import MigrationStore from '../../stores/MigrationStore';
 import MigrationActions from '../../actions/MigrationActions';
 import LoadingIcon from '../LoadingIcon';
@@ -76,12 +75,12 @@ class MigrationView extends Reflux.Component {
       confirmationDialog: {
         visible: true,
         onConfirm: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
           MigrationActions.deleteMigration(item)
           Location.push('/migrations')
         },
         onCancel: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
         }
       }
     })
@@ -118,14 +117,13 @@ class MigrationView extends Reflux.Component {
 
       return (
         <div className={s.root}>
-          <Header title={title} linkUrl={item.type == "migration" ? "/migrations" : "/replicas"}/>
+          <Header title={title} linkUrl={item.type == "migration" ? "/migrations" : "/replicas"} />
           <div className={s.migrationHead}>
             <div className={s.container}>
               <div className="backBtn" onClick={(e) => this.goBack(e)}></div>
               <div className={s.migrationTypeImg + ' icon ' + item.type + "-large"}></div>
               <div className={s.migrationInfo}>
                 <h2>
-                  {/*{item.name ? item.name : "N/A"}*/}
                   <TextTruncate line={1} truncateText="..." text={item.name} />
                 </h2>
                 <div className={s.migrationStats}>
@@ -175,9 +173,7 @@ class MigrationView extends Reflux.Component {
         </div>
       </div>)
     }
-
   }
-
 }
 
 export default withStyles(MigrationView, s);

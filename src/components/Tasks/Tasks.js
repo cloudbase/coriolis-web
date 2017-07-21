@@ -60,7 +60,7 @@ class Tasks extends Component {
     this.componentWillReceiveProps(this.props)
   }
 
-  componentWillReceiveProps(newProps, oldProps) {
+  componentWillReceiveProps(newProps) {
     let listItems = []
     if (newProps.tasks) {
       newProps.tasks.forEach((item) => {
@@ -90,7 +90,7 @@ class Tasks extends Component {
                   <span>
                     {item.progress_updates[i] && item.progress_updates[i].message}
                     {hasProgress(item.progress_updates[i].message) &&
-                    <ProgressBar progress={hasProgress(item.progress_updates[i].message)}/>
+                    <ProgressBar progress={hasProgress(item.progress_updates[i].message)} />
                     }
                   </span>
                 </div>)
@@ -117,7 +117,7 @@ class Tasks extends Component {
             <div className={s.detailTitle}>Exception details</div>
             <div className={s.detailValue}>
               {item.exception_details && item.exception_details.length ?
-                (<TextTruncate line={10} text={item.exception_details} truncateText="..."/>) : "N/A"}
+                (<TextTruncate line={10} text={item.exception_details} truncateText="..." />) : "N/A"}
             </div>
           </div>
           <div className={s.group}>
@@ -135,7 +135,7 @@ class Tasks extends Component {
 
         let newItem = {
           task_type: (<span>
-            <span className={"taskIcon " + item.status}/>
+            <span className={"taskIcon " + item.status} />
             <TextTruncate line={1} truncateText="..." text={taskType} />
           </span>),
           instance: <TextTruncate line={1} text={item.instance} truncateText="..." />,

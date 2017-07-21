@@ -34,10 +34,6 @@ class ConfirmationDialog extends Component {
     place: "right"
   }
 
-  constructor(props) {
-    super(props)
-  }
-
   onCancel() {
     if (this.props.onCancel) {
       this.props.onCancel()

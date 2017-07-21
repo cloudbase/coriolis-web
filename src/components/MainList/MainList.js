@@ -14,15 +14,14 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* eslint-disable react/sort-comp */
 
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Dropdown from '../NewDropdown';
 import SearchBox from '../SearchBox';
-import Moment from 'react-moment';
 import s from './MainList.scss';
 import FilteredTable from '../FilteredTable';
-import TextTruncate from 'react-text-truncate';
 import ConfirmationDialog from '../ConfirmationDialog'
 
 
@@ -87,6 +86,51 @@ class MainList extends Component {
     this.setState({ items: newProps.items, filters: stateFilters })
   }
 
+  renderSearch(items) {
+    if (items) {
+      let output = items.map((item) => (
+          <div className={s.row + " " + (item.selected ? "selected" : "")} key={"row_" + item.id}>
+            <div className={"checkbox-container " + (this.props.actions == null ? "hidden" : "")}>
+              <input
+                id={"vm_check_" + item.id}
+                type="checkbox"
+                checked={item.selected}
+                onChange={(e) => this.checkItem(e, item)}
+                className="checkbox-normal"
+              />
+              <label htmlFor={"vm_check_" + item.id}></label>
+            </div>
+            {this.props.renderItem(item)}
+          </div>
+        ))
+      return output
+    } else {
+      return (<div className="no-results">Your search returned no results</div>)
+    }
+  }
+
+  filter(filter, option) {
+    let stateFilters = this.state.filters
+    stateFilters[filter.field] = option.value
+    this.setState({ filters: stateFilters })
+    this.searchItem(this.state.queryText)
+  }
+
+  filterFn(item, queryText, filters) {
+    let valid = true
+    if (item.name.toLowerCase().indexOf(queryText.toLowerCase()) == -1) {
+      valid = false
+    }
+    for (let field in filters) {
+      if (item[field] != filters[field] && filters[field] != null) {
+        valid = false
+      }
+    }
+
+    return valid
+  }
+
+
   selectedCount() {
     let count = 0
     if (this.state.items) {
@@ -137,60 +181,6 @@ class MainList extends Component {
     this.setState({ items: items, selectedAll: !selectedAll })
   }
 
-  searchItem(queryText) {
-    if (queryText.target) {
-      this.setState({ queryText: queryText.target.value })
-    } else {
-      this.setState({ queryText: queryText })
-    }
-  }
-
-  filter(filter, option) {
-    let stateFilters = this.state.filters
-    stateFilters[filter.field] = option.value
-    this.setState({ filters: stateFilters })
-    this.searchItem(this.state.queryText)
-  }
-
-  filterFn(item, queryText, filters) {
-    let valid = true
-    if (item.name.toLowerCase().indexOf(queryText.toLowerCase()) == -1) {
-      valid = false
-    }
-    for (let field in filters) {
-      if (item[field] != filters[field] && filters[field] != null) {
-        valid = false
-      }
-    }
-
-    return valid
-  }
-
-  renderSearch(items) {
-    if (items) {
-      let output = items.map((item) => {
-        return (
-          <div className={s.row + " " + (item.selected ? "selected" : "")} key={"row_" + item.id}>
-            <div className={"checkbox-container " + (this.props.actions == null ? "hidden" : "")}>
-              <input
-                id={"vm_check_" + item.id}
-                type="checkbox"
-                checked={item.selected}
-                onChange={(e) => this.checkItem(e, item)}
-                className="checkbox-normal"
-              />
-              <label htmlFor={"vm_check_" + item.id}></label>
-            </div>
-            {this.props.renderItem(item)}
-          </div>
-        )
-      })
-      return output
-    } else {
-      return (<div className="no-results">Your search returned no results</div>)
-    }
-  }
-
   onActionChange(option) {
     let items = this.state.items.filter(item => item.selected)
     if (this.props.actions[option.value].confirm) {
@@ -198,7 +188,7 @@ class MainList extends Component {
         confirmationDialog: {
           visible: true,
           onConfirm: () => {
-            this.setState({ confirmationDialog: { visible: false }})
+            this.setState({ confirmationDialog: { visible: false } })
             if (this.props.actions[option.value].action) {
               items.forEach((item) => {
                 this.props.actions[option.value].action(item)
@@ -206,7 +196,7 @@ class MainList extends Component {
             }
           },
           onCancel: () => {
-            this.setState({ confirmationDialog: { visible: false }})
+            this.setState({ confirmationDialog: { visible: false } })
           }
         }
       })
@@ -219,6 +209,13 @@ class MainList extends Component {
     }
   }
 
+  searchItem(queryText) {
+    if (queryText.target) {
+      this.setState({ queryText: queryText.target.value })
+    } else {
+      this.setState({ queryText: queryText })
+    }
+  }
   refreshList() {
     this.props.refresh()
   }
@@ -244,7 +241,7 @@ class MainList extends Component {
                   id={"vm_check_all"}
                   type="checkbox"
                   checked={this.state.selectedAll[this.state.filterType]}
-                  onChange={(e) => this.checkAll()}
+                  onChange={() => this.checkAll()}
                   className="checkbox-normal"
                 />
                 <label htmlFor={"vm_check_all"}></label>
@@ -287,7 +284,7 @@ class MainList extends Component {
               queryText={this.state.queryText}
               renderSearch={(e) => this.renderSearch(e)}
               customClassName={s.mainTable}
-            ></FilteredTable>
+            />
           </div>
         </div>
         <ConfirmationDialog

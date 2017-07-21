@@ -31,32 +31,23 @@ import MainList from '../MainList';
 const title = 'Projects';
 
 const projectActions = null
-/* {
-  delete_action: {
-    label: "Delete",
-    action: (item) => {
-      console.log("Delete project action needed here")
-    },
-    confirm: true
-  }
-}
-*/
+
 class ProjectList extends Reflux.Component {
   filters = [
     {
       field: "enabled",
       options: [
-        { value: null, label: "All"},
-        { value: true, label: "Enabled"},
-        { value: false, label: "Disabled"}
+        { value: null, label: "All" },
+        { value: true, label: "Enabled" },
+        { value: false, label: "Disabled" }
       ]
     },
     {
       field: "is_domain",
       options: [
-        { value: null, label: "All"},
-        { value: true, label: "Is Domain"},
-        { value: false, label: "Is Not Domain"}
+        { value: null, label: "All" },
+        { value: true, label: "Is Domain" },
+        { value: false, label: "Is Not Domain" }
       ]
     }
   ]
@@ -121,7 +112,7 @@ class ProjectList extends Reflux.Component {
           <button
             className="wire gray"
             disabled={item.id == projectId}
-            onClick={(e) => this.switchProject(item)}
+            onClick={() => this.switchProject(item)}
           >{item.id == projectId ? "Current" : "Switch"}</button>
         </span>
       </div>

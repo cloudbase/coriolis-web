@@ -15,7 +15,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable max-len */
+/* eslint-disable */
 /* jscs:disable maximumLineLength */
 
 export const port = process.env.PORT || 3000;
@@ -33,7 +33,7 @@ export const itemsPerPage = 6;
  selected - true
 */
 export const networkMock = [
-  {id: "net1", name: "VM Network", migrateNetwork: "management", selected: true},
+  { id: "net1", name: "VM Network", migrateNetwork: "management", selected: true} ,
 ]
 // Target networks to show in dropdown
 export const targetNetworkMock = ["internal-coriolis-2", "coriolis-twenty", "management"]

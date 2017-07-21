@@ -33,7 +33,8 @@ class MigrationDetail extends Component {
   };
 
   static propTypes = {
-    replica: PropTypes.object
+    replica: PropTypes.object,
+    replicaId: PropTypes.string
   }
 
   constructor(props) {
@@ -61,13 +62,13 @@ class MigrationDetail extends Component {
       confirmationDialog: {
         visible: true,
         onConfirm: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
           let item = this.state.migrations.filter(migration => migration.id == this.props.replicaId)[0]
           MigrationActions.deleteMigration(item)
           Location.push('/cloud-endpoints')
         },
         onCancel: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
         }
       }
     })
@@ -145,29 +146,14 @@ class MigrationDetail extends Component {
                   <a>{item.id}</a>
                 </div>
               </div>
-              {/*<div className={s.formGroup}>
-               <div className={s.title}>
-               Flavours
-               </div>
-               <div className={s.value}>
-               {item.autoFlavors ? "Automatic flavour selection" : "Manual flavour selection"}
-               </div>
-               </div>*/}
-              {/*<div className={s.formGroup}>
-               <div className={s.title}>
-               Disk Format
-               </div>
-               <div className={s.value}>
-               {item.diskFormat}
-               </div>
-               </div>*/}
             </div>
           </div>
           <MigrationNetworks migration={item} />
           <div className={s.container + " " + s.buttons}>
             { item.type == "replica" && <button
               onClick={(e) => this.createMigrationFromReplica(e, item)}
-              disabled={disabled} className={disabled ? "disabled": ""} >
+              disabled={disabled} className={disabled ? "disabled" : ""}
+            >
               Migrate Replica
             </button>}
             <button className="wire" onClick={(e) => this.deleteMigration(e)}>Delete</button>
@@ -183,7 +169,6 @@ class MigrationDetail extends Component {
     }
     return output
   }
-
 }
 
 export default withStyles(MigrationDetail, s);

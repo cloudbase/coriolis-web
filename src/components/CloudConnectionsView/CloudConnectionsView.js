@@ -29,10 +29,11 @@ import ValidateEndpoint from '../ValidateEndpoint';
 
 
 class CloudConnectionsView extends Component {
-  title = ""
 
   static propTypes = {
     connection: PropTypes.object,
+    connections: PropTypes.array,
+    children: PropTypes.array,
     connectionId: PropTypes.string
   }
 
@@ -69,7 +70,7 @@ class CloudConnectionsView extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.connections) {
-      let connection = newProps.connections.filter((item => item.id === this.props.connectionId))[0]
+      let connection = newProps.connections.filter(item => item.id === this.props.connectionId)[0]
 
       this.setState({ connection: connection })
     }
@@ -86,6 +87,8 @@ class CloudConnectionsView extends Component {
     }
   }
 
+  title = ""
+
   showEditConnectionModal() {
     this.setState({ showModal: true })
   }
@@ -95,12 +98,12 @@ class CloudConnectionsView extends Component {
       confirmationDialog: {
         visible: true,
         onConfirm: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
           ConnectionsActions.deleteConnection(this.state.connection)
           Location.push('/cloud-endpoints')
         },
         onCancel: () => {
-          this.setState({ confirmationDialog: { visible: false }})
+          this.setState({ confirmationDialog: { visible: false } })
         }
       }
     })
@@ -116,7 +119,7 @@ class CloudConnectionsView extends Component {
 
   closeModal() {
     this.setState({ showModal: false })
-    let connection = this.props.connections.filter((item => item.id === this.props.connectionId))[0]
+    let connection = this.props.connections.filter(item => item.id === this.props.connectionId)[0]
 
     this.setState({ connection: connection })
   }
@@ -167,7 +170,7 @@ class CloudConnectionsView extends Component {
     if (item) {
       return (
         <div className={s.root}>
-          <Header title={title} linkUrl="/cloud-endpoints"/>
+          <Header title={title} linkUrl="/cloud-endpoints" />
           <div className={s.connectionHead + " detailViewHead"}>
             <div className={s.container}>
               <div className="backBtn" onClick={(e) => this.goBack(e)}></div>
@@ -241,9 +244,7 @@ class CloudConnectionsView extends Component {
           </div>
         </div>)
     }
-
   }
-
 }
 
 export default withStyles(CloudConnectionsView, s);
