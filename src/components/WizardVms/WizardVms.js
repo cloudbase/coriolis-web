@@ -19,11 +19,11 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import SearchBox from '../SearchBox';
 import s from './WizardVms.scss';
-import {itemsPerPage} from '../../config';
+import { itemsPerPage } from '../../config';
 import ConnectionsActions from '../../actions/ConnectionsActions';
 import LoadingIcon from '../LoadingIcon';
 
-const title = 'Select VMs to migrate';
+const title = 'Select instances to migrate';
 const vmStatesConst = ["All", "RUNNING", "PAUSED", "STOPPED"]
 const searchTimeout = 1000;
 
@@ -41,7 +41,6 @@ class WizardVms extends Component {
   constructor(props) {
     super(props)
     let valid = false
-    let timeout = null
 
     if (this.props.data.instances) {
       this.props.data.instances.forEach((vm) => {
@@ -60,13 +59,6 @@ class WizardVms extends Component {
     }
   }
 
-  processProps(props) {
-    if (props.data.instances) {
-      this.setState({filteredData: props.data.instances.slice(
-        this.state.page * itemsPerPage, this.state.page * itemsPerPage + itemsPerPage)})
-    }
-  }
-
   componentWillMount() {
     this.context.onSetTitle(title);
     this.props.setWizardState(this.state)
@@ -75,10 +67,17 @@ class WizardVms extends Component {
   componentWillReceiveProps(newProps) {
     this.processProps(newProps)
     if (newProps.data.selectedInstances) {
-      let valid =  newProps.data.selectedInstances.length > 0
+      let valid = newProps.data.selectedInstances.length > 0
       if (this.props.data.valid != valid) {
-        this.props.setWizardState({valid: valid})
+        this.props.setWizardState({ valid: valid })
       }
+    }
+  }
+
+  processProps(props) {
+    if (props.data.instances) {
+      this.setState({ filteredData: props.data.instances.slice(
+        this.state.page * itemsPerPage, this.state.page * itemsPerPage + itemsPerPage) })
     }
   }
 
@@ -101,7 +100,7 @@ class WizardVms extends Component {
         } else {
           selectedInstances.splice(index, 1)
         }
-        this.props.setWizardState({selectedInstances: selectedInstances})
+        this.props.setWizardState({ selectedInstances: selectedInstances })
       }
     })
 
@@ -114,8 +113,7 @@ class WizardVms extends Component {
     if (this.props.data.instances) {
       this.props.data.instances.forEach((vm) => {
         if (
-          //vm.name.toLowerCase().indexOf(queryText.target.value.toLowerCase()) != -1 &&
-          (this.state.filterStatus == "All" || this.state.filterStatus == vm.status)
+          (this.state.filterStatus === "All" || this.state.filterStatus === vm.status)
         ) {
           queryResult.push(vm)
         }
@@ -127,10 +125,10 @@ class WizardVms extends Component {
         clearTimeout(this.timeout)
       }
       this.timeout = setTimeout(() => {
-        this.setState({page: 0, filteredData: null, queryText: queryText}, () => {
-          this.props.setWizardState({instances: null})
+        this.setState({ page: 0, filteredData: null, queryText: queryText }, () => {
+          this.props.setWizardState({ instances: null })
           ConnectionsActions.loadInstances(
-            {id: this.props.data.sourceCloud.credential.id},
+            { id: this.props.data.sourceCloud.credential.id },
             this.state.page,
             queryText,
             false
@@ -142,7 +140,6 @@ class WizardVms extends Component {
         filteredData: queryResult
       })
     }
-
   }
 
 
@@ -177,26 +174,26 @@ class WizardVms extends Component {
 
   nextPage() {
     if (this.state.filteredData && this.state.filteredData.length == itemsPerPage) {
-      this.setState({page: this.state.page + 1}, () => {
+      this.setState({ page: this.state.page + 1 }, () => {
         ConnectionsActions.loadInstances(
-          {id: this.props.data.sourceCloud.credential.id},
+          { id: this.props.data.sourceCloud.credential.id },
           this.state.page,
           this.state.queryText
         )
-        this.processProps({data: {instances: this.props.data.instances}})
+        this.processProps({ data: { instances: this.props.data.instances } })
       })
     }
   }
 
   previousPage() {
     if (this.state.page > 0) {
-      this.setState({page: this.state.page + -1}, () => {
+      this.setState({ page: this.state.page + -1 }, () => {
         ConnectionsActions.loadInstances(
-          {id: this.props.data.sourceCloud.credential.id},
+          { id: this.props.data.sourceCloud.credential.id },
           this.state.page,
           this.state.queryText
         )
-        this.processProps({data: {instances: this.props.data.instances}})
+        this.processProps({ data: { instances: this.props.data.instances } })
       })
     }
   }
@@ -222,9 +219,6 @@ class WizardVms extends Component {
               {item.instance_name}
             </span>
           </span>
-          {/*<span className="cell">
-            <span className={ item.status + " status-pill" }>{ item.status }</span>
-          </span>*/}
           <span className="cell">{item.num_cpu} vCPU | {item.memory_mb} MB RAM | {item.flavor_name}</span>
         </div>
        )
@@ -232,7 +226,7 @@ class WizardVms extends Component {
     } else if (this.props.data.instances && this.props.data.instances.length == 0) {
       return <div className="no-results">Your search returned no results</div>
     } else {
-      return <LoadingIcon/>
+      return <LoadingIcon padding={64} text="Loading instances.." />
     }
   }
 
@@ -253,25 +247,26 @@ class WizardVms extends Component {
             placeholder="Search VMs"
             value={this.state.queryText}
             onChange={(e) => this.searchVm(e)}
-            className="searchBox"
+            className={"searchBox" + (this.state.filteredData.length == 0 ? " hidden" : " ")}
           />
-          <div className="category-filter">
+          <div className={"category-filter" + (this.state.filteredData.length == 0 ? " hidden" : " ")}>
             {vmStates}
           </div>
-          <div className="items-list">
+          <div className="items-list instances">
             {this.renderSearch()}
           </div>
-          <div className={s.selectionCount}>
-            {this.instancesSelected()} VMs selected
+          <div className={s.selectionCount + (this.state.filteredData.length == 0 ? " hidden" : " ")}>
+            {this.instancesSelected()} instances selected
           </div>
-          <div className={s.pagination}>
+          <div className={s.pagination + (this.state.filteredData.length == 0 ? " hidden" : " ")}>
             <span
-              className={(this.state.page == 0 ? "disabled " : "")+ s.prev}
+              className={(this.state.page == 0 ? "disabled " : "") + s.prev}
               onClick={(e) => this.previousPage(e)}
             ></span>
             <span className={s.currentPage}>{this.state.page + 1}</span>
             <span
-              className={(this.state.filteredData && this.state.filteredData.length == itemsPerPage ? " " : "disabled ") + s.next}
+              className={(this.state.filteredData && this.state.filteredData.length == itemsPerPage ?
+                " " : "disabled ") + s.next}
               onClick={(e) => this.nextPage(e)}
             ></span>
           </div>
@@ -279,7 +274,6 @@ class WizardVms extends Component {
       </div>
     );
   }
-
 }
 
 export default withStyles(WizardVms, s);

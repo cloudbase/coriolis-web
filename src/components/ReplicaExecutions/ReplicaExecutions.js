@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaExecutions.scss';
-import Dropdown from '../NewDropdown';
+import Helper from '../Helper';
 import LoadingIcon from '../LoadingIcon';
 import moment from 'moment';
 import MigrationActions from '../../actions/MigrationActions';
@@ -36,7 +36,7 @@ class ReplicaExecutions extends Component {
   };
 
   static propTypes = {
-    migration: PropTypes.object
+    replica: PropTypes.object
   }
 
   constructor(props) {
@@ -70,24 +70,29 @@ class ReplicaExecutions extends Component {
     clearInterval(this.timeout)
   }
 
-  componentWillReceiveProps(newProps, oldProps) {
-    if (newProps.migration && newProps.migration.executions.length) {
-      let execution = newProps.migration.executions[newProps.migration.executions.length - 1]
+  componentWillReceiveProps(newProps) {
+    if (newProps.replica && newProps.replica.executions.length) {
+      let execution = newProps.replica.executions[newProps.replica.executions.length - 1]
       this.setState({
         executionRef: execution,
         tasks: execution.tasks
+      })
+    } else if (newProps.replica.executions.length == 0) {
+      this.setState({
+        executionRef: null,
+        tasks: null
       })
     }
   }
 
   executeNow() {
-    MigrationActions.executeReplica(this.props.migration)
+    MigrationActions.executeReplica(this.props.replica)
     clearInterval(this.timeout)
     this.timeout = setInterval((e) => this.pollTasks(e), tasksPollTimeout)
   }
 
   cancelExecution() {
-    MigrationActions.cancelMigration(this.props.migration, (replica, response) => {
+    MigrationActions.cancelMigration(this.props.replica, (replica, response) => {
       this.refreshExecution()
     })
   }
@@ -98,7 +103,17 @@ class ReplicaExecutions extends Component {
         visible: true,
         onConfirm: () => {
           this.setState({ confirmationDialog: { visible: false }})
-          MigrationActions.deleteReplicaExecution(this.props.migration, this.state.executionRef.id)
+          let index = this.props.replica.executions.indexOf(this.state.executionRef)
+
+          MigrationActions.deleteReplicaExecution(this.props.replica, this.state.executionRef.id, () => {
+            if (this.props.replica.executions[index - 1]) {
+              this.changeExecution(this.props.replica.executions[index - 1])
+            } else if (this.props.replica.executions[index + 1]) {
+              this.changeExecution(this.props.replica.executions[index + 1])
+            } else {
+              this.changeExecution(null)
+            }
+          })
         },
         onCancel: () => {
           this.setState({ confirmationDialog: { visible: false }})
@@ -108,7 +123,7 @@ class ReplicaExecutions extends Component {
   }
 
   refreshExecution() {
-    MigrationActions.getReplicaExecutionDetail(this.props.migration, this.state.executionRef.id,
+    MigrationActions.getReplicaExecutionDetail(this.props.replica, this.state.executionRef.id,
       (replica, executionId, response) => {
         let props = this.props
         props.migration.tasks = response.data.execution.tasks
@@ -119,9 +134,9 @@ class ReplicaExecutions extends Component {
   }
 
   pollTasks() {
-    if (this.props && this.props.migration) {
-      if (this.props.migration.executions[this.props.migration.executions.length - 1].status == "RUNNING") {
-        MigrationActions.getReplicaExecutionDetail(this.props.migration, this.state.executionRef.id,
+    if (this.props && this.props.replica && this.props.replica.executions.length) {
+      if (this.props.replica.executions[this.props.replica.executions.length - 1].status == "RUNNING") {
+        MigrationActions.getReplicaExecutionDetail(this.props.replica, this.state.executionRef.id,
           (replica, executionId, response) => {
             this.setState({
               tasks: response.data.execution.tasks
@@ -132,58 +147,82 @@ class ReplicaExecutions extends Component {
   }
 
   changeExecution(execution) {
-    this.setState({
-      executionRef: execution,
-      tasks: execution.tasks
-    })
+    if (execution == null) {
+      this.setState({
+        executionRef: null,
+        tasks: null
+      })
+    } else {
+      this.setState({
+        executionRef: execution,
+        tasks: execution.tasks
+      })
+    }
   }
 
   render() {
-    if (this.props.migration) {
-      let executionBtn = <button className="wire" onClick={(e) => this.deleteExecution(e)}>Delete</button>
-      if (this.props.migration.executions &&
-        this.props.migration.executions[this.props.migration.executions.length - 1].status == "RUNNING") {
-        executionBtn = <button className="gray wire" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>
-      }
+    if (this.props.replica) {
+      if (this.props.replica.executions.length && this.state.executionRef) {
+        let executionBtn = <button className="wire" onClick={(e) => this.deleteExecution(e)}>Delete</button>
+        if (this.props.replica.executions && this.props.replica.executions[this.props.replica.executions.length - 1] &&
+          this.props.replica.executions[this.props.replica.executions.length - 1].status == "RUNNING") {
+          executionBtn =
+            <button className="gray wire" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>
+        }
 
-      let executionsSorted = this.props.migration.executions
-      executionsSorted.sort((a, b) => a.number - b.number)
+        let executionsSorted = this.props.replica.executions
 
-      return (
-        <div className={s.root}>
-          <div className={s.container}>
-            <ExecutionsTimeline
-              executions={this.props.migration.executions}
-              currentExecution={this.state.executionRef}
-              handleChangeExecution={this.changeExecution}
-            />
-            <div className={s.executionsWrapper}>
-              <div className={s.leftSide}>
-                <h4>Execution #{this.state.executionRef && this.state.executionRef.number}</h4>
-                <span className={s.date}>
-                  {this.state.executionRef && moment(this.state.executionRef.created_at).format("MMM Do YYYY HH:mm")}
-                </span>
-                <span className={"status-pill " + this.state.executionRef.status}>{this.state.executionRef.status}</span>
+        executionsSorted.sort((a, b) => a.number - b.number)
+        let executionTime = Helper.getTimeObject(this.state.executionRef.created_at)
+
+        return (
+          <div className={s.root}>
+            <div className={s.container}>
+              <ExecutionsTimeline
+                executions={this.props.replica.executions}
+                currentExecution={this.state.executionRef}
+                handleChangeExecution={this.changeExecution}
+              />
+              <div className={s.executionsWrapper}>
+                <div className={s.leftSide}>
+                  <h4>Execution #{this.state.executionRef && this.state.executionRef.number}</h4>
+                  <span className={s.date}>
+                    {this.state.executionRef && moment(executionTime).format("MMM Do YYYY HH:mm")}
+                  </span>
+                  <span
+                    className={"status-pill " + this.state.executionRef.status}
+                  >{this.state.executionRef.status}</span>
+                </div>
+                <div className={s.rightSide}>
+                  {executionBtn}
+                </div>
               </div>
-              <div className={s.rightSide}>
-                {executionBtn}
+              <Tasks tasks={this.state.tasks}/>
+            </div>
+            <ConfirmationDialog
+              visible={this.state.confirmationDialog.visible}
+              message={this.state.confirmationDialog.message}
+              onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
+              onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
+            />
+          </div>
+        );
+      } else {
+        return (
+          <div className={s.root}>
+            <div className={s.container}>
+              <div className="no-results">No executions for this replica <br /> <br />
+                <button onClick={(e) => this.executeNow(e)}>Execute Now</button>
               </div>
             </div>
-            <Tasks tasks={this.state.tasks}/>
           </div>
-          <ConfirmationDialog
-            visible={this.state.confirmationDialog.visible}
-            message={this.state.confirmationDialog.message}
-            onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
-            onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
-          />
-        </div>
-      );
+        )
+      }
     } else {
       return (
         <div className={s.root}>
           <div className={s.container}>
-            <LoadingIcon/>
+            <LoadingIcon />
           </div>
         </div>
       )

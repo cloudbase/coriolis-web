@@ -25,7 +25,8 @@ class SearchBox extends Component {
     maxLines: PropTypes.number,
     minimize: PropTypes.bool,
     placeholder: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    className: PropTypes.string
   };
 
   static defaultProps = {
@@ -71,7 +72,7 @@ class SearchBox extends Component {
           onChange={(e) => this.onChange(e)}
           onClick={(e) => this.toggleSearch(e)}
           onBlur={(e) => this.onBlurAction(e)}
-          className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox"}
+          className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox " + this.props.className}
         />
       </div>
     );

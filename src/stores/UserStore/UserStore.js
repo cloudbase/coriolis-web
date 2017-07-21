@@ -22,6 +22,7 @@ import ConnectionsActions from '../../actions/ConnectionsActions'
 import Location from '../../core/Location';
 import Api from '../../components/ApiCaller';
 import cookie from 'react-cookie';
+import moment from 'moment';
 import { servicesUrl } from '../../config'
 
 class UserStore extends Reflux.Store
@@ -33,7 +34,7 @@ class UserStore extends Reflux.Store
     created: new Date(),
     project: {},
     roles: [],
-    projects: [],
+    projects: null,
     token: null,
     settings: {
       notifications: true
@@ -65,7 +66,7 @@ class UserStore extends Reflux.Store
   onLoginSuccess(response) {
     let token = response.headers['X-Subject-Token']
     Api.setDefaultHeader('X-Auth-Token', token)
-    cookie.save('unscopedToken', token, { path: "/" })
+    cookie.save('unscopedToken', token, { path: "/", expires: moment().add(1, 'hour').toDate() })
 
     UserActions.getScopedProjects(response => {
       if (response.data.projects) {
@@ -89,8 +90,8 @@ class UserStore extends Reflux.Store
     currentUser.token = response.headers['X-Subject-Token']
     currentUser.project = response.data.token.project
 
-    cookie.save('token', currentUser.token, { path: "/" })
-    cookie.save('projectId', currentUser.project.id, { path: "/" })
+    cookie.save('token', currentUser.token, { path: "/", expires: moment().add(1, 'hour').toDate() })
+    cookie.save('projectId', currentUser.project.id, { path: "/", expires: moment().add(1, 'months').toDate() })
     Api.setDefaultHeader('X-Auth-Token', currentUser.token)
 
     this.setState({currentUser: currentUser})
@@ -172,7 +173,7 @@ class UserStore extends Reflux.Store
 
   onFederateToken(token) {
     Api.setDefaultHeader('X-Auth-Token', token)
-    cookie.save('unscopedToken', token, { path: "/" })
+    cookie.save('unscopedToken', token, { path: "/", expires: moment().add(1, 'hour').toDate() })
     UserActions.getScopedProjects(response => {
       if (response.data.projects) {
         UserActions.loginScope(token, response.data.projects[0].id)

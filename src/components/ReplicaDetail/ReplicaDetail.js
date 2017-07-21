@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './MigrationDetail.scss';
+import s from './ReplicaDetail.scss';
 import Moment from 'react-moment';
-import LoadingIcon from "../LoadingIcon";
+import Helper from "../Helper";
 import EndpointLink from '../EndpointLink';
 import ConfirmationDialog from '../ConfirmationDialog'
 import MigrationActions from '../../actions/MigrationActions';
@@ -33,7 +33,7 @@ class MigrationDetail extends Component {
   };
 
   static propTypes = {
-    migration: PropTypes.object
+    replica: PropTypes.object
   }
 
   constructor(props) {
@@ -62,7 +62,7 @@ class MigrationDetail extends Component {
         visible: true,
         onConfirm: () => {
           this.setState({ confirmationDialog: { visible: false }})
-          let item = this.state.migrations.filter(migration => migration.id == this.props.migrationId)[0]
+          let item = this.state.migrations.filter(migration => migration.id == this.props.replicaId)[0]
           MigrationActions.deleteMigration(item)
           Location.push('/cloud-endpoints')
         },
@@ -74,7 +74,7 @@ class MigrationDetail extends Component {
   }
 
   render() {
-    let item = this.props.migration
+    let item = this.props.replica
     let output = null
     if (item) {
       let disabled = false
@@ -85,6 +85,8 @@ class MigrationDetail extends Component {
           disabled = true
         }
       }
+
+      let createdAt = Helper.getTimeObject(item.created_at)
 
       output = (
         <div className={s.root}>
@@ -132,7 +134,7 @@ class MigrationDetail extends Component {
                   Created
                 </div>
                 <div className={s.value}>
-                  <Moment format="MM/DD/YYYY HH:mm" date={item.created_at} />
+                  <Moment format="MM/DD/YYYY HH:mm" date={createdAt} />
                 </div>
               </div>
               <div className={s.formGroup}>

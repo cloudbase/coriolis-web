@@ -1,0 +1,6 @@
+{
+  "name": "EditProfile",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./EditProfile.js"
+}

@@ -20,35 +20,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .root {
   height: 100%;
 }
-.pageHeader {
-  padding: 44px 64px 0;
+.listHeader {
+  padding: 0px 64px 0;
   flex: 1;
 
   h1 {
     float: left;
     margin: 0;
-  }
-  .top {
-    &:after {
-      content: " ";
-      clear: both;
-      display: block;
-      height: 0;
-    }
-    margin-bottom: 48px;
-  }
-  .topActions {
-    float: right;
-    margin-top: 3px;
-    :global(.Dropdown-root) {
-      margin-right: 16px;
-      float: left;
-      width: 160px;
-      :global(.Dropdown-control) {
-        text-align: left;
-      }
-    }
-
   }
   :global(.filters) {
     :global(.category-filter) {
@@ -59,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     :global(.name-filter) {
       float: left;
-      padding-left: 24px;
+      padding-left: 8px;
       margin-top: 2px;
     }
     &:after {
@@ -70,10 +48,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
   }
 }
-.pageContent {
+.listContent {
   flex: 10;
   overflow-y: auto;
   padding: 0 64px;
+
+}
+.mainTable {
+  border-top: 1px solid $gray-light;
 }
 .pageFooter {
   flex: 1;
@@ -95,7 +77,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     width: 160px;
     float: left;
   }
-  .connectionsCount {
+  .itemsCount {
     float: left;
     line-height: 32px;
     margin-right: 16px;
@@ -109,25 +91,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   display: flex;
   flex-direction: column;
   :global(.items-list) {
+    .row {
+      position: relative;
+      :global(.checkbox-container) {
+        position: absolute;
+        left: -32px;
+        top: 21px;
+        opacity: 0;
+        transition: opacity $animation-swift-out;
+      }
+      &:hover, &:global(.selected) {
+        :global(.checkbox-container) {
+          opacity: 1;
+        }
+      }
+    }
     :global(.item) {
       position: relative;
-      span:global(.cell):nth-child(2) {
+      span:global(.cell):nth-child(1) {
         flex: 3;
+      }
+      span:global(.cell):nth-child(2) {
+        flex: 2;
       }
       span:global(.cell):nth-child(3) {
         flex: 2;
       }
       span:global(.cell):nth-child(4) {
-        flex: 2;
-      }
-      span:global(.cell):nth-child(5) {
         flex: 3;
       }
-      :global(.checkbox-container) {
-        position: absolute;
-        left: -32px;
-        top: 21px;
-      }
+
       .description {
         display: block;
         color: $gray-dark;
@@ -173,4 +166,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin: 0 16px;
   }
 
+}
+.refreshBtn {
+  float: left;
+  padding: 5px 5px;
+  margin-top: 6px;
+  margin-left: 11px;
+  cursor: pointer;
 }

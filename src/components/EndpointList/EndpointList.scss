@@ -112,17 +112,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   :global(.items-list) {
     :global(.item) {
       position: relative;
-      span:global(.cell):nth-child(2) {
+      span:global(.cell):nth-child(1) {
         flex: 3;
         cursor: pointer;
+      }
+      span:global(.cell):nth-child(2) {
+        flex: 2;
       }
       span:global(.cell):nth-child(3) {
         flex: 2;
       }
       span:global(.cell):nth-child(4) {
-        flex: 2;
-      }
-      span:global(.cell):nth-child(5) {
         flex: 3;
       }
       :global(.checkbox-container) {

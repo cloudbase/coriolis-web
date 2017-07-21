@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /*
 Copyright (C) 2017  Cloudbase Solutions SRL
 
@@ -123,21 +124,21 @@ class LoginPage extends Reflux.Component {
   }
 
   render() {
-    let loginButtonsTemplate = loginButtons.map(btn => {
-      return (<div className="form-group" key={"loginbtn_" + btn.id}>
+    let loginButtonsTemplate = loginButtons.map(btn => (
+      <div className="form-group" key={"loginbtn_" + btn.id}>
         <a className={s.loginBtn + " " + btn.id} href={btn.url}>
           <span className={s.icon}></span> Sign in with {btn.name}
         </a>
-      </div>)
-    })
+      </div>
+    ))
 
     return (
       <div className={s.root}>
         <div className={s.container + " " + (loginButtons.length <= 2 ? s.oneColumn : "")}>
           <div className={s.logo}>
             <div className={s.large}>
-              <LoadingIcon width={224} height={200} animate={this.state.loadingState} />
-              <div className={s.coriolisText} dangerouslySetInnerHTML={{__html: coriolisTextSvg}}></div>
+              <LoadingIcon width={224} height={200} animate={this.state.loadingState} padding={16} text=""/>
+              <div className={s.coriolisText} dangerouslySetInnerHTML={{ __html: coriolisTextSvg }}></div>
             </div>
             <div className={s.small}>
               <div className={"logo coriolis-white"}></div>
@@ -184,7 +185,7 @@ class LoginPage extends Reflux.Component {
         </div>
         <div className={s.footerLogo}>
           <div className={s.text}>Coriolis® is a service offered by</div>
-          <div className={s.coriolisLogo} dangerouslySetInnerHTML={{__html: footerLogoSvg}}></div>
+          <div className={s.coriolisLogo} dangerouslySetInnerHTML={{ __html: footerLogoSvg }}></div>
         </div>
       </div>
     );

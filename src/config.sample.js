@@ -20,7 +20,7 @@
 
 export const port = process.env.PORT || 3000;
 export const host = process.env.WEBSITE_HOSTNAME || `localhost:${port}`;
-export const coriolisUrl = "/"
+export const coriolisUrl = CORIOLIS_URL || "/"
 export const defaultDomain = "default";
 
 // Number of instances in wizard Migrate VMs step
@@ -45,18 +45,19 @@ export const servicesUrl = {
   endpoints: coriolisUrl + "coriolis/endpoints",
   coriolis: coriolisUrl + "coriolis",
   migrations: coriolisUrl + "coriolis/migrations",
-  barbican: coriolisUrl + "barbican"
+  barbican: coriolisUrl + "barbican",
+  openId: coriolisUrl + "identity/OS-FEDERATION/identity_providers/google/protocols/openid/auth"
 }
 
 export const providerType = {
-  "import_migration": 1,
-  "export_migration": 2,
-  "import_replica": 4,
-  "export_replica": 8,
-  "endpoint": 16
+  import_migration: 1,
+  export_migration: 2,
+  import_replica: 4,
+  export_replica: 8,
+  endpoint: 16
 }
 
-export const useSecret = false; // flag to use secret_ref for endpoints
+export const useSecret = true; // flag to use secret_ref for endpoints
 
 export const tasksPollTimeout = 5000 // milliseconds
 
@@ -77,8 +78,8 @@ export const migrationSteps = [
     component: "WizardTarget"
   },
   {
-    name: "Migrate VMs",
-    title: "Select VMs",
+    name: "Migrate instances",
+    title: "Select instances",
     component: "WizardVms"
   },
   {
@@ -127,27 +128,27 @@ export const auth = {
 };
 
 export const defaultLabels = {
-  "username": "Username",
-  "password": "Password",
-  "host": "Host",
-  "port": "Port",
-  "allow_untrusted": "Allow untrusted",
-  "identity_api_version": "Identity Version",
-  "auth_url": "Auth URL",
-  "user_domain_name": "User Domain Name",
-  "project_name": "Project Name",
-  "project_domain_name": "Project Domain Name",
-  "flavor_name": "Flavor Name",
-  "hypervisor_type": "Hypervisor Type",
-  "container_format": "Container Format",
-  "disk_format": "Disk Format",
-  "glance_upload": "Glance Upload",
-  "keypair_name": "Keypair name",
-  "fip_pool_name": "Floating IP Pool",
-  "migr_fip_pool_name": "Migration Floating IP Pool",
-  "migr_flavor_name": "Migration Flavor Name",
-  "migr_image_name": "Migration Image Name",
-  "migr_image_name_map": "Migration Image Name Map",
-  "delete_disks_on_vm_termination": "Delete disks on VM termination",
-  "set_dhcp": "Set DHCP",
+  username: "Username",
+  password: "Password",
+  host: "Host",
+  port: "Port",
+  allow_untrusted: "Allow untrusted",
+  identity_api_version: "Identity Version",
+  auth_url: "Auth URL",
+  user_domain_name: "User Domain Name",
+  project_name: "Project Name",
+  project_domain_name: "Project Domain Name",
+  flavor_name: "Flavor Name",
+  hypervisor_type: "Hypervisor Type",
+  container_format: "Container Format",
+  disk_format: "Disk Format",
+  glance_upload: "Glance Upload",
+  keypair_name: "Keypair name",
+  fip_pool_name: "Floating IP Pool",
+  migr_fip_pool_name: "Migration Floating IP Pool",
+  migr_flavor_name: "Migration Flavor Name",
+  migr_image_name: "Migration Image Name",
+  migr_image_name_map: "Migration Image Name Map",
+  delete_disks_on_vm_termination: "Delete disks on VM termination",
+  set_dhcp: "Set DHCP",
 }

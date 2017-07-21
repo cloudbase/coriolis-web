@@ -210,6 +210,7 @@ class ConnectionsStore extends Reflux.Store
     this.setState({connections: connections})
     ConnectionsActions.assignConnectionProvider()
     MigrationActions.loadMigrations()
+    MigrationActions.loadReplicas()
   }
 
   onLoadConnectionDetail(connectionId) {

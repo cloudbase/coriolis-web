@@ -63,16 +63,16 @@ class CloudConnectionsView extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps, oldProps) {
+  componentDidMount() {
+    this.context.onSetTitle(this.title);
+  }
+
+  componentWillReceiveProps(newProps) {
     if (newProps.connections) {
-      let connection = newProps.connections.filter((connection => connection.id == this.props.connectionId))[0]
+      let connection = newProps.connections.filter((item => item.id === this.props.connectionId))[0]
 
       this.setState({ connection: connection })
     }
-  }
-
-  componentDidMount() {
-    this.context.onSetTitle(this.title);
   }
 
   onConnectionsActionsChange(option) {
@@ -183,7 +183,9 @@ class CloudConnectionsView extends Component {
                   <button onClick={(e) => this.validateConnection(e)}>Validate Endpoint</button>
                 </div>
                 <div className={s.rightSide}>
-                  <button onClick={(e) => this.deleteConnection(e)} className="wire" style={{float: "right"}}>Delete</button>
+                  <button onClick={(e) => this.deleteConnection(e)} className="wire" style={{ float: "right" }}>
+                    Delete
+                  </button>
                 </div>
               </div>
             </div>
@@ -221,7 +223,7 @@ class CloudConnectionsView extends Component {
     } else {
       return (
         <div className={s.root}>
-          <Header title={title} linkUrl="/cloud-endpoints"/>
+          <Header title={title} linkUrl="/cloud-endpoints" />
           <div className={s.container}>
             <LoadingIcon />
           </div>

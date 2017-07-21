@@ -1,0 +1,6 @@
+{
+  "name": "ReplicaDetail",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ReplicaDetail.js"
+}

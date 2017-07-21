@@ -40,18 +40,20 @@ class ProjectsDropdown extends Reflux.Component {
   }
 
   render() {
-    let projects = this.state.currentUser.projects.map(project => {
-      return { label: project.name, value: project.id }
-    })
-
+    let projects = []
     let currentProject = null
-    if (Reflux.GlobalState.userStore.currentUser.project) {
-      currentProject = {
-        label: Reflux.GlobalState.userStore.currentUser.project.name,
-        value: Reflux.GlobalState.userStore.currentUser.project.id
+    if (this.state.currentUser.projects) {
+      projects = this.state.currentUser.projects.map(project => {
+        return {label: project.name, value: project.id}
+      })
+
+      if (Reflux.GlobalState.userStore.currentUser.project) {
+        currentProject = {
+          label: Reflux.GlobalState.userStore.currentUser.project.name,
+          value: Reflux.GlobalState.userStore.currentUser.project.id
+        }
       }
     }
-
     return <div className={s.root}>
       <Dropdown
         options={projects}

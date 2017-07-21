@@ -23,6 +23,7 @@ import s from './Tasks.scss';
 import TextTruncate from 'react-text-truncate';
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import ProgressBar from '../ProgressBar';
+import Helper from '../Helper';
 
 function hasProgress(msg) {
   if (msg.indexOf('progress:') > -1) {
@@ -80,7 +81,8 @@ class Tasks extends Component {
           for (let i = item.progress_updates.length - 1; i >= 0; i--) {
             let date = "-"
             if (item.progress_updates[i]) {
-              date = moment(item.progress_updates[i].created_at).format("YYYY-MM-DD HH:mm:ss")
+              let createdAt = Helper.getTimeObject(item.progress_updates[i].created_at)
+              date = moment(createdAt).format("YYYY-MM-DD HH:mm:ss")
 
               progressUpdates.push(
                 <div key={"progress_" + i} className={first ? " first" : ""}>
@@ -134,11 +136,12 @@ class Tasks extends Component {
         let newItem = {
           task_type: (<span>
             <span className={"taskIcon " + item.status}/>
-            <TextTruncate line={1} truncateText="..." text={taskType}/>
+            <TextTruncate line={1} truncateText="..." text={taskType} />
           </span>),
-          instance: <TextTruncate line={1} text={item.instance} truncateText="..."/>,
-          latest_message: <TextTruncate line={1} truncateText="..." text={latestMessage}/>,
-          timestamp: item.updated_at ? moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss") : "-",
+          instance: <TextTruncate line={1} text={item.instance} truncateText="..." />,
+          latest_message: <TextTruncate line={1} truncateText="..." text={latestMessage} />,
+          timestamp: item.updated_at ? Helper.getTimeObject(moment(item.updated_at)).format("YYYY-MM-DD HH:mm:ss") :
+            "-",
           detailView: taskDetails,
           openState: item.status === 'RUNNING'
         }
@@ -160,7 +163,7 @@ class Tasks extends Component {
               customClassName={s.table}
               show={this.state !== null}
             />
-          </div>) : <LoadingIcon/>
+          </div>) : <LoadingIcon />
         }
       </div>
     );
