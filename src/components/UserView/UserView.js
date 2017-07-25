@@ -45,6 +45,10 @@ class UserView extends Reflux.Component {
     this.context.onSetTitle(this.title);
   }
 
+  goBack() {
+    window.history.back();
+  }
+
   render() {
     let item = this.state.currentUser
     return (
@@ -52,6 +56,7 @@ class UserView extends Reflux.Component {
         <Header title="" />
         <div className={s.connectionHead}>
           <div className={s.container}>
+            <div className="backBtn" onClick={(e) => this.goBack(e)}></div>
             <div className={s.userIcon}></div>
             <div className={s.connectionInfo}>
               <h2>{item.name}</h2>

@@ -53,6 +53,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     background-color: $gray-light;
     border-radius: 4px;
     margin-top: 12px;
+    min-width: 96px;
     &:after {
       content: " ";
       display: block;

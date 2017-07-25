@@ -95,7 +95,7 @@ class UserOverview extends Reflux.Component {
             <div className={s.formGroup}>
               <button className="gray" onClick={(e) => this.openModal(e)}>Edit Profile</button>
             </div>
-            <div className={s.formGroup}>
+            {/* <div className={s.formGroup}>
               <div className={s.title}>
                 Project Membership (4)
               </div>
@@ -104,7 +104,7 @@ class UserOverview extends Reflux.Component {
                 <br /> <br />
                 <button className="gray">Edit Project Membership</button>
               </div>
-            </div>
+            </div>*/}
           </div>
           <div className={s.columnRight}>
             <div className={s.formGroup}>
@@ -115,7 +115,7 @@ class UserOverview extends Reflux.Component {
                 {item.email}
               </div>
             </div>
-            <div className={s.formGroup}>
+           {/* <div className={s.formGroup}>
               <div className={s.title}>
                 Email Notifications
               </div>
@@ -130,10 +130,10 @@ class UserOverview extends Reflux.Component {
                   <div><div></div></div>
                 </label> Receive notifications
               </div>
-            </div>
-            <div className={s.formGroup}>
+            </div>*/}
+            {/* <div className={s.formGroup}>
               <button className="wire">Edit Login Methods</button>
-            </div>
+            </div>*/}
           </div>
         </div>
         <Modal
