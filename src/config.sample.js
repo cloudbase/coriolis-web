@@ -42,6 +42,7 @@ export const securityGroups = ["testgroup"]
 export const servicesUrl = {
   identity: coriolisUrl + "identity/auth/tokens",
   projects: coriolisUrl + "identity/auth/projects",
+  users: coriolisUrl + "identity/users",
   endpoints: coriolisUrl + "coriolis/endpoints",
   coriolis: coriolisUrl + "coriolis",
   migrations: coriolisUrl + "coriolis/migrations",

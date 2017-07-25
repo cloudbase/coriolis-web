@@ -30,7 +30,9 @@ let UserAction = Reflux.createActions({
   switchProject: {},
   getScopedProjects: { children: ["completed", "failed"] },
   loadProjects: { children: ["completed", "failed"] },
-  federateToken: { }
+  federateToken: { },
+  getUserInfo: { children: ["completed", "failed"] },
+  setUserInfo: { children: ["success", "failed"] }
 })
 
 UserAction.login.listen(userData => {
@@ -128,6 +130,37 @@ UserAction.getScopedProjects.listen((callback) => {
       }, UserAction.getScopedProjects.failed)
     .catch((response) => {
       UserAction.getScopedProjects.failed(response)
+    });
+})
+
+UserAction.getUserInfo.listen((userId) => {
+  Api.sendAjaxRequest({
+    url: servicesUrl.users + "/" + userId,
+    method: "GET"
+  })
+    .then(
+      (response) => {
+        UserAction.getUserInfo.completed(response)
+      }, UserAction.getUserInfo.failed)
+    .catch((response) => {
+      UserAction.getUserInfo.failed(response)
+    });
+})
+
+UserAction.setUserInfo.listen((userId, userObject) => {
+  Api.sendAjaxRequest({
+    url: servicesUrl.users + "/" + userId,
+    method: "PATCH",
+    data: {
+      user: userObject
+    }
+  })
+    .then(
+      (response) => {
+        UserAction.setUserInfo.completed(response)
+      }, UserAction.setUserInfo.failed)
+    .catch((response) => {
+      UserAction.setUserInfo.failed(response)
     });
 })
 

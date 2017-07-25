@@ -29,8 +29,8 @@ class UserStore extends Reflux.Store
 {
   user = {
     id: null,
-    name: "Pat Bentar",
-    email: "pat.bentar@coriolis.ui",
+    name: "-",
+    email: "-",
     created: new Date(),
     project: {},
     roles: [],
@@ -67,7 +67,6 @@ class UserStore extends Reflux.Store
     let token = response.headers['X-Subject-Token']
     Api.setDefaultHeader('X-Auth-Token', token)
     cookie.save('unscopedToken', token, { path: "/", expires: moment().add(1, 'hour').toDate() })
-
     UserActions.getScopedProjects(res => {
       if (res.data.projects) {
         let projectId = cookie.load('projectId')
@@ -98,12 +97,12 @@ class UserStore extends Reflux.Store
 
     ConnectionsActions.loadProviders()
     ConnectionsActions.loadConnections()
+    UserActions.getScopedProjects()
+    UserActions.getUserInfo(currentUser.id)
 
     if (window.location.pathname == "/" || window.location.pathname == "/login") {
       Location.push('/replicas');
     }
-
-    UserActions.getScopedProjects()
   }
 
   onLoginScopeFailed(token) {
@@ -131,6 +130,17 @@ class UserStore extends Reflux.Store
     })
 
     Api.resetHeaders()
+  }
+
+  onGetUserInfoCompleted(response) {
+    let currentUser = this.state.currentUser
+    currentUser.email = response.data.user.email
+    this.setState({ currentUser: currentUser })
+    console.log("onGetUserInfo", response)
+  }
+
+  onSetUserInfoSuccess() {
+
   }
 
   onTokenLoginFailed() {
