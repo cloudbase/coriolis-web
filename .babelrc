@@ -2,7 +2,8 @@
   "presets": [
     "es2015",
     "stage-0",
-    "react"
+    "react",
+    "babel-preset-jest"
   ],
   "plugins": [
     "transform-runtime"

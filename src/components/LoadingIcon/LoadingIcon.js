@@ -41,7 +41,7 @@ const svgIcon = `
     </g>
 </svg>`
 
-class LoadingIcon extends Component {
+export class LoadingIcon extends Component {
 
   static propTypes = {
     width: PropTypes.number,

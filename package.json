@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "babel-polyfill": "6.6.1",
+    "babel-preset-jest": "^20.0.3",
     "babel-runtime": "6.6.1",
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
@@ -22,6 +23,7 @@
     "immutability-helper": "2.1.2",
     "isomorphic-style-loader": "0.0.10",
     "jade": "1.11.0",
+    "jest": "^20.0.4",
     "jsonwebtoken": "5.7.0",
     "markdown-it": "6.0.0",
     "moment": "2.17.1",
@@ -59,6 +61,7 @@
     "autoprefixer": "6.3.3",
     "babel-cli": "6.6.0",
     "babel-eslint": "5.0.0",
+    "babel-jest": "^20.0.3",
     "babel-loader": "6.2.4",
     "babel-plugin-react-transform": "2.0.0",
     "babel-plugin-transform-runtime": "6.6.0",
@@ -70,6 +73,7 @@
     "css-loader": "0.23.1",
     "csscomb": "3.1.8",
     "del": "2.2.0",
+    "enzyme": "^2.9.1",
     "eslint": "2.3.0",
     "eslint-config-airbnb": "6.0.2",
     "eslint-loader": "1.3.0",
@@ -80,7 +84,7 @@
     "git-repository": "0.1.1",
     "glob": "7.0.0",
     "jade-loader": "0.8.0",
-    "jest-cli": "0.8.2",
+    "jest-cli": "next",
     "jscs": "2.10.1",
     "json-loader": "0.5.4",
     "mkdirp": "0.5.1",
@@ -91,8 +95,10 @@
     "postcss-scss": "0.1.6",
     "precss": "1.4.0",
     "raw-loader": "0.5.1",
+    "react-addons-test-utils": "^15.6.0",
     "react-modal": "1.6.5",
     "react-svg": "2.1.16",
+    "react-test-renderer": "15.4.2",
     "react-transform-catch-errors": "1.0.2",
     "react-transform-hmr": "1.0.2",
     "redbox-react": "1.2.2",
@@ -108,7 +114,9 @@
     "scriptPreprocessor": "../preprocessor.js",
     "unmockedModulePathPatterns": [
       "fbjs",
-      "react"
+      "react",
+      "parse-sdk",
+      "parse"
     ]
   },
   "scripts": {
