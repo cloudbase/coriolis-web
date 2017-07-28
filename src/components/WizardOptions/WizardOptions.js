@@ -22,7 +22,7 @@ import s from './WizardOptions.scss';
 import Dropdown from '../NewDropdown';
 import WizardActions from '../../actions/WizardActions';
 import WizardStore from '../../stores/WizardStore';
-import InfoIcon from '../InfoIcon';
+import NotificationActions from '../../actions/NotificationActions';
 
 
 const title = 'Migration Options';
@@ -40,10 +40,6 @@ class WizardOptions extends Reflux.Component {
     super(props)
     this.store = WizardStore
 
-    this.diskFormats = ["VHD", "VHD2"]
-    this.fipPools = ["public", "private_01", "private_02"]
-
-
     this.state = {
       autoFlavors: true,
       diskFormat: "VHD",
@@ -51,13 +47,14 @@ class WizardOptions extends Reflux.Component {
       valid: true,
       nextStep: "WizardSchedule",
       formSubmitted: false,
-      showAdvancedOptions: false
+      nextCallback: (e) => this.nextCallback(e),
+      showAdvancedOptions: props.data.showAdvancedOptions
     }
   }
 
   componentWillMount() {
     super.componentWillMount.call(this)
-    this.props.setWizardState(this.state)
+    WizardActions.updateWizardState(this.state)
     this.context.onSetTitle(title)
   }
 
@@ -85,23 +82,46 @@ class WizardOptions extends Reflux.Component {
   }
 
   updateWizard() {
-    this.props.setWizardState(this.state)
+    WizardActions.updateWizardState(this.state)
   }
 
   isValid(field) {
-    if (field.required && this.state.formSubmitted) {
-      if (this.state.currentCloudData[field.name].length == 0) {
+    if (field.required && this.state.formSubmitted && field.name != "network_map") {
+      if (!this.state.destination_environment[field.name]) {
         return false
       } else {
-        return true
+        if (this.state.destination_environment[field.name].trim().length == 0) {
+          return false
+        } else {
+          return true
+        }
       }
     } else {
       return true
     }
   }
 
+  nextCallback(callback) {
+    let valid = true
+    this.setState({ formSubmitted: true }, () => {
+      this.state.targetCloud.cloudRef["import_" + this.state.migrationType].fields.forEach(field => {
+        if (!this.isValid(field)) {
+          valid = false
+        }
+      })
+      if (callback && valid) {
+        callback()
+      }
+      if (!valid) {
+        NotificationActions.notify("Please fill all required fields", "error")
+      }
+    })
+  }
+
   toggleAdvancedOptions() {
-    this.setState({ showAdvancedOptions: !this.state.showAdvancedOptions })
+    let showAdvancedOptions = !this.state.showAdvancedOptions
+    this.setState({ showAdvancedOptions: showAdvancedOptions })
+    WizardActions.updateWizardState({ showAdvancedOptions: showAdvancedOptions })
   }
 
   handleOptionsFieldChange(e, field) {

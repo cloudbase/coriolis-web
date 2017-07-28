@@ -42,9 +42,10 @@ class UsersStore extends Reflux.Store
     instances: null,
     selectedInstances: [],
     vms: null,
+    showAdvancedOptions: false,
     destination_environment: {},
-    networks: networkMock, // TODO: Change mock here
-    targetNetworks: null, // TODO: Change mock here
+    networks: null,
+    targetNetworks: null,
     selected: false,
     wizardStarted: false
   }

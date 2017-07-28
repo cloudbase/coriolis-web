@@ -19,9 +19,9 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardNetworks.scss';
 import Dropdown from '../NewDropdown';
+import WizardActions from '../../actions/WizardActions';
 import LoadingIcon from '../LoadingIcon';
 import ConnectionsActions from '../../actions/ConnectionsActions';
-import { targetNetworkMock } from '../../config';
 
 
 const title = 'Network mapping';
@@ -48,28 +48,33 @@ class WizardNetworks extends Component {
           value: network.name
         })
       }, this)
-    } else {
-      targetNetworkMock.forEach(network => {
-        this.networkOptions.push({
-          label: network,
-          value: network
-        })
+    }
+
+    props.data.selectedInstances.forEach((vm) => {
+      ConnectionsActions.loadInstanceDetail({ id: this.props.data.sourceCloud.credential.id }, vm)
+    })
+
+    let valid = true
+    if (props.data.networks) {
+      props.data.networks.forEach(item => {
+        if (item.migrateNetwork === null) {
+          valid = false
+        }
       })
+    } else {
+      valid = false
     }
 
     this.state = {
-      networks: null,
+      networks: props.data.networks || null,
       nextStep: "WizardOptions",
-      valid: false
+      valid: valid
     }
   }
 
   componentWillMount() {
-    this.props.setWizardState(this.state)
+    WizardActions.updateWizardState(this.state)
     this.context.onSetTitle(title);
-    this.props.data.selectedInstances.forEach((vm) => {
-      ConnectionsActions.loadInstanceDetail({ id: this.props.data.sourceCloud.credential.id }, vm)
-    })
   }
 
   componentWillReceiveProps(props) {
@@ -114,12 +119,12 @@ class WizardNetworks extends Component {
         valid = false
       }
     })
-    
+
     this.setState({
       networks: networks,
       valid: valid
     }, () => {
-      this.props.setWizardState(this.state)
+      WizardActions.updateWizardState(this.state)
     })
   }
 
