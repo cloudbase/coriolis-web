@@ -20,7 +20,7 @@ import s from './ProgressBar.scss';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 
-class ProgressBar extends Component {
+export class ProgressBar extends Component {
 
   static propTypes = {
     progress: PropTypes.number
