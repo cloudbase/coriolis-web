@@ -111,7 +111,7 @@
   },
   "jest": {
     "rootDir": "./src",
-    "scriptPreprocessor": "../preprocessor.js",
+    "transform": {".*": "../preprocessor.js"},
     "unmockedModulePathPatterns": [
       "fbjs",
       "react",
