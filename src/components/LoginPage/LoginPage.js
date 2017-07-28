@@ -82,7 +82,7 @@ const loginButtons = [
   }
 ]
 
-class LoginPage extends Reflux.Component {
+export class LoginPage extends Reflux.Component {
 
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired
