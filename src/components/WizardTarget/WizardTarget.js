@@ -96,10 +96,24 @@ class WizardTarget extends Component {
           targetCloud: Object.assign({}, cloudData),
           selected: selected,
           valid: true,
+          nextCallback: (e) => this.nextCallback(e),
           nextStep: "WizardVms",
           networks: networkMock // TODO: Change mock here
         })
       })
+    }
+  }
+
+  nextCallback(callback) {
+    let connection = this.props.cloud.credential
+    // TODO: change this, shitty callback, go through stores
+    if (this.props.cloud.credential && this.props.cloud.credential.id === this.props.cloud.credential.name) {
+      connection = this.state.connections.filter(item => item.name === connection.name)[0]
+    }
+
+    ConnectionsActions.loadNetworks(connection)
+    if (callback) {
+      callback()
     }
   }
 

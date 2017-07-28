@@ -44,7 +44,7 @@ class UsersStore extends Reflux.Store
     vms: null,
     destination_environment: {},
     networks: networkMock, // TODO: Change mock here
-    targetNetworks: targetNetworkMock, // TODO: Change mock here
+    targetNetworks: null, // TODO: Change mock here
     selected: false,
     wizardStarted: false
   }
@@ -106,6 +106,55 @@ class UsersStore extends Reflux.Store
 
   onLoadInstancesFailed() {
     this.setState({ instances: [] })
+  }
+
+  onLoadInstanceDetail(endpoint, instance) {
+    let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+    let instanceNameBase64 = btoa(instance.name)
+    let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/instances/${instanceNameBase64}`
+
+    Api.sendAjaxRequest({
+      url: url,
+      method: "GET"
+    }).then(response => {
+      ConnectionsActions.loadInstanceDetail.completed(response)
+    }, ConnectionsActions.loadInstanceDetail.failed)
+      .catch(ConnectionsActions.loadInstanceDetail.failed);
+  }
+
+  onLoadInstanceDetailCompleted(response) {
+    let selectedInstances = this.state.selectedInstances
+    selectedInstances.forEach((item, index) => {
+      if (item.id === response.data.instance.id) {
+        selectedInstances[index] = response.data.instance
+      }
+    })
+    console.log("selectedInstances", selectedInstances)
+    this.setState({ selectedInstances: selectedInstances })
+  }
+
+  onLoadNetworks(endpoint) {
+    this.setState({
+      targetNetworks: null
+    })
+    let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+
+    let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/networks`
+
+    Api.sendAjaxRequest({
+      url: url,
+      method: "GET"
+    }).then(ConnectionsActions.loadNetworks.completed, ConnectionsActions.loadNetworks.failed)
+      .catch(ConnectionsActions.loadNetworks.failed);
+  }
+
+  onLoadNetworksCompleted(response) {
+    console.log(response.data.networks)
+    if (response.data.networks) {
+      this.setState({
+        targetNetworks: response.data.networks
+      })
+    }
   }
 
   onNewState() {

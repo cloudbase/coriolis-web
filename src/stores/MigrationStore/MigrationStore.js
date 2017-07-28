@@ -164,9 +164,9 @@ class MigrationStore extends Reflux.Store
         execIndex = i
       }
     })
-    console.log(replicas[index].executions)
+
     replicas[index].executions.splice(execIndex, 1)
-    console.log(replicas[index].executions)
+
     if (replicas[index].executions[replicas[index].executions]) {
       replicas[index].tasks = replicas[index].executions[replicas[index].executions.length - 1].tasks
       replicas[index].status = replicas[index].executions[replicas[index].executions.length - 1].status
@@ -174,7 +174,7 @@ class MigrationStore extends Reflux.Store
       replicas[index].tasks = []
       replicas[index].status = null
     }
-    console.log(replicas[index])
+
 
     this.setState({ replicas: replicas })
   }
@@ -219,6 +219,13 @@ class MigrationStore extends Reflux.Store
     let index = migrations.indexOf(migration)
     migrations.splice(index, 1)
     this.setState({migrations: migrations})
+  }
+
+  onDeleteReplicaCompleted(migration) {
+    let replicas = this.state.replicas
+    let index = replicas.indexOf(migration)
+    replicas.splice(index, 1)
+    this.setState({replicas: replicas})
   }
 
   onExecuteReplicaCompleted(replica, response) {

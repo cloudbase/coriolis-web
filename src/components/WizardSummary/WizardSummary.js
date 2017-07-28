@@ -102,7 +102,7 @@ class WizardSummary extends Component {
         return (
           <div className="item" key={"Network_" + index}>
             <span className="cell">
-              <TextTruncate line={1} text={network.name} truncateText="..." />
+              <TextTruncate line={1} text={network.network_name} truncateText="..." />
             </span>
             <span className="cell">
               <div className="arrow"></div>

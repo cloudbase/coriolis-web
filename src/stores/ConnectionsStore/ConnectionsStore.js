@@ -136,13 +136,13 @@ class ConnectionsStore extends Reflux.Store
   }
 
   onUpdateProvider(provider) {
-    let allCLouds = this.state.allClouds
+    let allClouds = this.state.allClouds
     for (var i in allClouds) {
       if (allClouds[i].name == provider.name) {
         allClouds[i] = provider
       }
     }
-    this.setState({ allClouds: allCLouds })
+    this.setState({ allClouds: allClouds })
   }
 
   onAssignConnectionProvider() {
