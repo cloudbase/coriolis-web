@@ -139,8 +139,8 @@ class UsersStore extends Reflux.Store
       targetNetworks: null
     })
     let projectId = Reflux.GlobalState.userStore.currentUser.project.id
-
-    let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/networks`
+    let targetEnv = btoa(JSON.stringify(this.state.destination_environment))
+    let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/networks?env=${targetEnv}`
 
     Api.sendAjaxRequest({
       url: url,
@@ -150,7 +150,6 @@ class UsersStore extends Reflux.Store
   }
 
   onLoadNetworksCompleted(response) {
-    console.log(response.data.networks)
     if (response.data.networks) {
       this.setState({
         targetNetworks: response.data.networks

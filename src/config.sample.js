@@ -84,14 +84,14 @@ export const migrationSteps = [
     component: "WizardVms"
   },
   {
-    name: "Network Mapping",
-    title: "Network Mapping",
-    component: "WizardNetworks"
-  },
-  {
     name: "Options",
     title: "Options",
     component: "WizardOptions"
+  },
+  {
+    name: "Network Mapping",
+    title: "Network Mapping",
+    component: "WizardNetworks"
   },
   {
     name: "Schedule",

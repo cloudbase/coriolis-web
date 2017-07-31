@@ -48,6 +48,7 @@ class WizardNetworks extends Component {
         })
       }, this)
     }
+    ConnectionsActions.loadNetworks(this.props.data.targetCloud.credential)
 
     props.data.selectedInstances.forEach((vm) => {
       ConnectionsActions.loadInstanceDetail({ id: this.props.data.sourceCloud.credential.id }, vm)
@@ -66,7 +67,7 @@ class WizardNetworks extends Component {
 
     this.state = {
       networks: props.data.networks || null,
-      nextStep: "WizardOptions",
+      nextStep: "WizardSchedule",
       valid: valid
     }
   }

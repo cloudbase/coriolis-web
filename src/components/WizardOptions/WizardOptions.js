@@ -45,7 +45,7 @@ class WizardOptions extends Reflux.Component {
       diskFormat: "VHD",
       fipPool: "public",
       valid: true,
-      nextStep: "WizardSchedule",
+      nextStep: "WizardNetworks",
       formSubmitted: false,
       nextCallback: (e) => this.nextCallback(e),
       showAdvancedOptions: props.data.showAdvancedOptions

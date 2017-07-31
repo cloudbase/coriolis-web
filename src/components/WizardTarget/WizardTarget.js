@@ -108,7 +108,6 @@ class WizardTarget extends Component {
       connection = this.state.connections.filter(item => item.name === connection.name)[0]
     }
 
-    ConnectionsActions.loadNetworks(connection)
     if (callback) {
       callback()
     }

@@ -55,7 +55,7 @@ class WizardVms extends Component {
       page: 0,
       filterStatus: 'All',
       filteredData: this.props.data.instances ? this.props.data.instances.slice(0, itemsPerPage) : [],
-      nextStep: "WizardNetworks"
+      nextStep: "WizardOptions"
     }
   }
 
