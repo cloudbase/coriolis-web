@@ -136,7 +136,6 @@ class UserStore extends Reflux.Store
     let currentUser = this.state.currentUser
     currentUser.email = response.data.user.email
     this.setState({ currentUser: currentUser })
-    console.log("onGetUserInfo", response)
   }
 
   onSetUserInfoSuccess() {

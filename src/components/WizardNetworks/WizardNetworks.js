@@ -40,14 +40,6 @@ class WizardNetworks extends Component {
     super(props)
 
     this.networkOptions = [] // [{ label: "Create new", value: null }]
-    if (this.props.data.targetNetworks && this.props.data.targetNetworks.length) {
-      this.props.data.targetNetworks.forEach((network) => {
-        this.networkOptions.push({
-          label: network.name,
-          value: network.name
-        })
-      }, this)
-    }
     ConnectionsActions.loadNetworks(this.props.data.targetCloud.credential)
 
     props.data.selectedInstances.forEach((vm) => {
@@ -105,6 +97,15 @@ class WizardNetworks extends Component {
 
     if (networks.length == 0) {
       networks = null
+    }
+    if (props.data.targetNetworks && props.data.targetNetworks.length) {
+      this.networkOptions = []
+      props.data.targetNetworks.forEach((network) => {
+        this.networkOptions.push({
+          label: network.name,
+          value: network.name
+        })
+      }, this)
     }
     this.setState({ networks: networks })
   }

@@ -141,13 +141,13 @@ class CloudConnectionsView extends Component {
     let title = "Edit Connection"
 
     let modalStyle = {
-      overlay : {
+      overlay: {
         position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor:"rgba(164, 170, 181, 0.69)"
+        backgroundColor: "rgba(164, 170, 181, 0.69)"
       },
       content: {
         padding: "0px",
@@ -163,14 +163,14 @@ class CloudConnectionsView extends Component {
     }
 
     let validationModalStyle = {
-      overlay : {
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor:"rgba(164, 170, 181, 0.69)"
-        },
+      overlay: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(164, 170, 181, 0.69)"
+      },
       content: {
         padding: "0px",
         borderRadius: "4px",

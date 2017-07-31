@@ -19,7 +19,7 @@
 import Reflux from 'reflux';
 import WizardActions from '../../actions/WizardActions';
 import ConnectionsActions from '../../actions/ConnectionsActions';
-import { servicesUrl, itemsPerPage, networkMock, targetNetworkMock } from '../../config';
+import { servicesUrl, itemsPerPage } from '../../config';
 import Api from '../../components/ApiCaller';
 
 class UsersStore extends Reflux.Store
@@ -130,7 +130,6 @@ class UsersStore extends Reflux.Store
         selectedInstances[index] = response.data.instance
       }
     })
-    console.log("selectedInstances", selectedInstances)
     this.setState({ selectedInstances: selectedInstances })
   }
 
