@@ -100,7 +100,7 @@ class WizardSummary extends Component {
         return (
           <div className="item" key={"Network_" + index}>
             <span className="cell">
-              <TextTruncate line={1} text={network.name} truncateText="..." />
+              <TextTruncate line={1} text={network.network_name} truncateText="..." />
             </span>
             <span className="cell">
               <div className="arrow"></div>
@@ -124,21 +124,21 @@ class WizardSummary extends Component {
           <div className={s.columnLeft}>
             <div className={s.group}>
               <h3>
-                Migration
-                <InfoIcon text="Helptext" />
+                Overview
+
               </h3>
               <div className={s.values}>
                 <div className={s.row}>
                   <span>Source: <br /> </span>
                   <span>
-                    <span className={s.cloudBox}>{this.props.summary.sourceCloud.name}</span> <br />
+                    <span className={s.cloudBox}>{this.props.summary.sourceCloud.name}</span>
                     {this.props.summary.sourceCloud.credential.name}
                   </span>
                 </div>
                 <div className={s.row}>
                   <span>Target:</span>
                   <span>
-                    <span className={s.cloudBox}>{this.props.summary.targetCloud.name}</span> <br />
+                    <span className={s.cloudBox}>{this.props.summary.targetCloud.name}</span>
                     {this.props.summary.targetCloud.credential.name}
                   </span>
                 </div>
@@ -147,7 +147,6 @@ class WizardSummary extends Component {
             <div className={s.group}>
               <h3>
                 Options
-                <InfoIcon text="Helptext" />
               </h3>
               <div className={s.values}>
                 <div className={s.row + " " + s.migrationType + " " + this.props.summary.migrationType}>
@@ -162,7 +161,6 @@ class WizardSummary extends Component {
             <div className={s.group}>
               <h3>
                 Schedule
-                <InfoIcon text="Helptext" />
               </h3>
               <div className={s.instances + " items-list"}>
                 {schedules}
@@ -173,7 +171,6 @@ class WizardSummary extends Component {
             <div className={s.group}>
               <h3>
                 Instances
-                <InfoIcon text="Helptext" />
               </h3>
               <div className={s.instances + " items-list"}>
                 {instances}
@@ -182,7 +179,6 @@ class WizardSummary extends Component {
             <div className={s.group}>
               <h3>
                 Networks
-                <InfoIcon text="Helptext" />
               </h3>
               <div className={s.networks + " items-list"}>
                 {networks}

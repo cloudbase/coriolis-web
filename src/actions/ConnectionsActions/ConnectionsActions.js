@@ -25,6 +25,8 @@ let ConnectionsActions = Reflux.createActions({
   loadConnectionDetail: { children: ['completed', 'failed'] },
   loadProviders: { children: ['completed', 'failed'] },
   loadInstances: { children: ['completed', 'failed'] },
+  loadInstanceDetail: { children: ['completed', 'failed'] },
+  loadNetworks: { children: ['completed', 'failed'] },
   newEndpoint: { children: ['success', 'failed'] },
   saveEndpoint: { children: ['success', 'failed'] },
   editEndpoint: { children: ['success', 'failed'] },

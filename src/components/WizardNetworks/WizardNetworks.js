@@ -19,7 +19,9 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardNetworks.scss';
 import Dropdown from '../NewDropdown';
-import { targetNetworkMock } from '../../config';
+import WizardActions from '../../actions/WizardActions';
+import LoadingIcon from '../LoadingIcon';
+import ConnectionsActions from '../../actions/ConnectionsActions';
 
 const title = 'Network mapping';
 
@@ -36,86 +38,144 @@ class WizardNetworks extends Component {
 
   constructor(props) {
     super(props)
-    let networks = this.props.data.networks
-    networks.forEach(network => {network.selected = false})
-    /* this.props.data.vms.forEach((vm) => {
-      if (vm.selected) {
-        networks.forEach((network) => {
-          if (vm.networks.indexOf(network.id) != -1) {
-            network.selected = true
-            if (network.migrateNetwork == null) {
-              network.migrateNetwork = "Create new"
-            }
-          }
-        })
-      }
-    }) */
 
-    this.state = {
-      networks: networks,
-      nextStep: "WizardOptions",
-      valid: true
+    this.networkOptions = [] // [{ label: "Create new", value: null }]
+    if (this.props.data.targetNetworks && this.props.data.targetNetworks.length) {
+      this.props.data.targetNetworks.forEach((network) => {
+        this.networkOptions.push({
+          label: network.name,
+          value: network.name
+        })
+      }, this)
     }
 
-    this.networkOptions = ["Create new"]
-    // this.props.data.targetNetworks.forEach((network) => {
-    targetNetworkMock.forEach((network) => {
-      this.networkOptions.push(network)
-    }, this)
+    props.data.selectedInstances.forEach((vm) => {
+      ConnectionsActions.loadInstanceDetail({ id: this.props.data.sourceCloud.credential.id }, vm)
+    })
+
+    let valid = true
+    if (props.data.networks) {
+      props.data.networks.forEach(item => {
+        if (item.migrateNetwork === null) {
+          valid = false
+        }
+      })
+    } else {
+      valid = false
+    }
+
+    this.state = {
+      networks: props.data.networks || null,
+      nextStep: "WizardOptions",
+      valid: valid
+    }
   }
 
   componentWillMount() {
-    this.props.setWizardState(this.state)
+    WizardActions.updateWizardState(this.state)
     this.context.onSetTitle(title);
+  }
+
+  componentWillReceiveProps(props) {
+    this.processProps(props)
+  }
+
+  processProps(props) {
+    let networks = []
+
+    props.data.selectedInstances.forEach((vm) => {
+      if (vm.devices && vm.devices.nics) {
+        vm.devices.nics.forEach((item) => {
+          let exists = false
+          networks.forEach(network => {
+            if (network.network_name == item.network_name) {
+              exists = true
+            }
+          })
+          if (!exists) {
+            if (!item.migrateNetwork) {
+              item.migrateNetwork = null
+            }
+            networks.push(item)
+          }
+        })
+      }
+    })
+
+    if (networks.length == 0) {
+      networks = null
+    }
+    this.setState({ networks: networks })
   }
 
   handleChangeNetwork(event, network) {
     let index = this.state.networks.indexOf(network)
+    let valid = true
     let networks = this.state.networks
     networks[index].migrateNetwork = event.value
-    this.setState({ networks: networks }, () => {
-      this.props.setWizardState(this.state)
+    networks.forEach(item => {
+      if (item.migrateNetwork === null) {
+        valid = false
+      }
+    })
+
+    this.setState({
+      networks: networks,
+      valid: valid
+    }, () => {
+      WizardActions.updateWizardState(this.state)
     })
   }
 
   render() {
-    let _this = this
-    let networks = this.state.networks.map((network, index) => {
-      if (network.selected || true) {
-        return (
-          <div className="item" key={"networks_" + index}>
-            <div className="cell cell-icon">
-              <div className="icon network"></div>
-              <span className="details">
-                {network.name}
-              </span>
+    if (this.state.networks != null) {
+      let networks = this.state.networks.map((network, index) => {
+        if (network.selected || true) {
+          return (
+            <div className="item" key={"networks_" + index}>
+              <div className="cell cell-icon">
+                <div className="icon network"></div>
+                <span className="details">
+                  {network.network_name}
+                </span>
+              </div>
+              <div className="cell">
+                <div className="arrow"></div>
+              </div>
+              <div className="cell">
+                <Dropdown
+                  options={this.networkOptions}
+                  onChange={(e) => this.handleChangeNetwork(e, network)}
+                  value={network.migrateNetwork}
+                />
+              </div>
             </div>
-            <div className="cell">
-              <div className="arrow"></div>
-            </div>
-            <div className="cell">
-              <Dropdown
-                options={_this.networkOptions}
-                onChange={(e) => _this.handleChangeNetwork(e, network)}
-                value={network.migrateNetwork}
-              />
-            </div>
-          </div>
-        )
-      } else {
-        return null
-      }
-    })
+          )
+        } else {
+          return null
+        }
+      }, this)
 
-    return (
-      <div className={s.root}>
-        <div className={s.container}>
-          <div className="items-list">
-            {networks}
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className="items-list">
+              {networks}
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className="items-list">
+              <LoadingIcon text="Loading networks..." />
+            </div>
+          </div>
+        </div>
+      );
+    }
   }
 
 }

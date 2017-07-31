@@ -93,6 +93,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       &.required, &.showAdvanced {
         display: block;
       }
+      &.error {
+        input {
+          border-color: $red;
+        }
+        :global(.Dropdown-control) {
+          border-color: $red;
+        }
+      }
     }
   }
   &:after {

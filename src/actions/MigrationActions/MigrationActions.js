@@ -228,7 +228,7 @@ MigrationActions.addMigration.listen((migration) => {
 
   let networkMap = {}
   migration.networks.forEach(network => {
-    networkMap[network.name] = network.migrateNetwork
+    networkMap[network.network_name] = network.migrateNetwork
   })
 
   let destinationEnv = {}
