@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   height: 100%;
   box-sizing: border-box;
   padding: 40px 32px;
+  position: fixed;
   ul {
     padding-left: 64px;
     list-style: none;
@@ -55,4 +56,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .container {
   margin: 0 auto;
   flex: 1;
+  padding-left: 320px;
 }
