@@ -94,11 +94,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   border: 1px solid $gray-dark;
   border-radius: 4px;
   color: $black;
-  line-height: 16px;
+  line-height: 18px;
   text-align: center;
   margin-right: 8px;
   text-transform: uppercase;
-  padding: 0 2px;
+  padding: 0 4px;
+  font-size: 9px;
+  font-weight: $weight-semibold;
+
 }
 .instances {
   :global(.item) {

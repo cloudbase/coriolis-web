@@ -20,7 +20,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardTarget.scss';
 import CloudItem from '../CloudItem';
 import ConnectionsActions from '../../actions/ConnectionsActions';
-import ConnectionStore from '../../stores/ConnectionsStore';
+import WizardActions from '../../actions/WizardActions';
 import {networkMock} from '../../config';
 
 const title = 'Select your target cloud';
@@ -41,8 +41,6 @@ class WizardTarget extends Component {
   constructor(props) {
     super(props)
 
-    this.store = ConnectionStore
-
     this.state = {
       valid: false,
       clouds: this.props.clouds,
@@ -59,7 +57,7 @@ class WizardTarget extends Component {
         if (item.name == this.props.cloud.name) {
           item.selected = true
           item.credentialSelected = this.props.cloud.credentials
-          this.props.setWizardState({ valid: true, nextStep: "WizardVms" })
+          WizardActions.updateWizardState({ valid: true, nextStep: "WizardVms" })
         }
       }, this)
     }
@@ -92,14 +90,28 @@ class WizardTarget extends Component {
 
       this.setState({ clouds: newCloudsState }, () => {
         // we're all good, next step
-        this.props.setWizardState({
+        WizardActions.updateWizardState({
           targetCloud: Object.assign({}, cloudData),
           selected: selected,
           valid: true,
+          nextCallback: (e) => this.nextCallback(e),
           nextStep: "WizardVms",
-          networks: networkMock // TODO: Change mock here
+          networks: null
         })
       })
+    }
+  }
+
+  nextCallback(callback) {
+    let connection = this.props.cloud.credential
+    // TODO: change this, shitty callback, go through stores
+    if (this.props.cloud.credential && this.props.cloud.credential.id === this.props.cloud.credential.name) {
+      connection = this.state.connections.filter(item => item.name === connection.name)[0]
+    }
+
+    ConnectionsActions.loadNetworks(connection)
+    if (callback) {
+      callback()
     }
   }
 
