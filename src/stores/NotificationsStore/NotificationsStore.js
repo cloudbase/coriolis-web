@@ -209,6 +209,30 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
+  onLoadProvidersFailed() {
+    let notifications = [{
+      message: "Could not load providers.",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onLoadNetworksFailed() {
+    let notifications = [{
+      message: "Could not load networks for target destination.",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onLoadInstanceDetailFailed() {
+    let notifications = [{
+      message: "Failed to load instance details.",
+      type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
   onNewEndpoint() {
     let notifications = [{
       message: "Saving endpoint...",
@@ -245,6 +269,14 @@ class NotificationsStore extends Reflux.Store
     let notifications = [{
       message: "Could not save endpoint",
       type: 'error'
+    }]
+    this.setState({ notifications: notifications })
+  }
+
+  onValidateConnection() {
+    let notifications = [{
+      message: "Validating endpoint..",
+      type: 'info'
     }]
     this.setState({ notifications: notifications })
   }

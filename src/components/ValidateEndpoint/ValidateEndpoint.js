@@ -26,7 +26,8 @@ class ValidateEndpoint extends Component {
 
   static propTypes = {
     endpoint: PropTypes.object,
-    closeHandle: PropTypes.func
+    closeHandle: PropTypes.func,
+    backHandle: PropTypes.func
   }
 
   constructor(props) {
@@ -65,7 +66,9 @@ class ValidateEndpoint extends Component {
       case -1:
         buttons = (<div className={s.dualBtn}>
           <button className="gray" onClick={(e) => this.close(e)}>Cancel</button>
-          <button onClick={(e) => this.validate(e)}>Retry</button>
+          { this.props.backHandle ?
+            (<button onClick={(e) => this.props.backHandle(e)}>Edit</button>) :
+            (<button onClick={(e) => this.validate(e)}>Retry</button>)}
         </div>)
         break;
       case 1:
@@ -80,7 +83,7 @@ class ValidateEndpoint extends Component {
     }
     return (<div className={s.root}>
       <div className={s.container + (this.state.status != 0 ? s.hidden : "")}>
-        { this.state.status == 0 ? <LoadingIcon /> : <div className={s.message}>{this.state.message}</div> }
+        { this.state.status == 0 ? <LoadingIcon text="Validating endpoint.." /> : <div className={s.message}>{this.state.message}</div> }
       </div>
       {buttons}
     </div>)

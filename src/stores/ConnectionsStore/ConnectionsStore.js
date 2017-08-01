@@ -176,9 +176,9 @@ class ConnectionsStore extends Reflux.Store
     }, this)
   }
 
-  onNewEndpointSuccess(response, data)
+  onNewEndpointSuccess(response, data, callback = null)
   {
-    ConnectionsActions.saveEndpoint(data, response.data.secret_ref)
+    ConnectionsActions.saveEndpoint(data, response.data.secret_ref, callback)
   }
 
   onEditEndpointSuccess(response, connection, data, callback)
@@ -187,11 +187,16 @@ class ConnectionsStore extends Reflux.Store
     ConnectionsActions.saveEditEndpoint(connection, data, callback)
   }
 
-  onSaveEndpointSuccess(response) {
+  onSaveEndpointSuccess(response, callback = null) {
     let connections = this.state.connections
     connections.push(response.data.endpoint)
+
     this.setState({connections: connections})
     ConnectionsActions.assignConnectionProvider()
+
+    if (typeof callback === "function") {
+      callback(response)
+    }
   }
 
   onSaveEditEndpointSuccess(response) {

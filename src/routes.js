@@ -74,7 +74,7 @@ const router = new Router(on => {
   on('/migration/schedule/:migrationId/', async (params) =>
     <MigrationView migrationId={params.params.migrationId} type="schedule"><ReplicaSchedule /></MigrationView>
   )
-  // TODO: IMPORTANT Separate views migration/replica
+
   on('/replicas', async () => <WithSidebar route="/replicas"><ReplicaList /></WithSidebar>)
 
   on('/replicas/new', async () => <MigrationWizard wizard_type="replica" />)

@@ -124,12 +124,22 @@ class CloudConnectionsView extends Component {
     this.setState({ connection: connection })
   }
 
+  addItem() {
+    this.validateConnection()
+
+    this.setState({ showModal: false })
+    let connection = this.props.connections.filter(item => item.id === this.props.connectionId)[0]
+
+    this.setState({ connection: connection })
+  }
+
   updateItem(itemAttrs) {
     let endpoint = this.state.connection
     for (let i in itemAttrs) {
       endpoint[i] = itemAttrs[i]
     }
     this.setState({ connection: endpoint })
+    this.validateConnection()
   }
 
   goBack() {
@@ -176,12 +186,12 @@ class CloudConnectionsView extends Component {
         borderRadius: "4px",
         border: "none",
         bottom: "auto",
-        width: "370px",
-        height: "250px",
+        width: "400px",
+        height: "300px",
         left: "50%",
         top: "50%",
-        marginTop: "-185px",
-        marginLeft: "-125px"
+        marginTop: "-200px",
+        marginLeft: "-150px"
       }
     }
 
@@ -229,7 +239,7 @@ class CloudConnectionsView extends Component {
           >
             <AddCloudConnection
               closeHandle={(e) => this.closeModal(e)}
-              addHandle={(e) => this.closeModal(e)}
+              addHandle={(e) => this.addItem(e)}
               updateHandle={(e) => this.updateItem(e)}
               connection={item}
               type="edit"

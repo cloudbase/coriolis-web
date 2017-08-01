@@ -70,7 +70,7 @@ ConnectionsActions.loadProviders.listen(() => {
     .catch(ConnectionsActions.loadProviders.failed);
 })
 
-ConnectionsActions.newEndpoint.listen((data) => {
+ConnectionsActions.newEndpoint.listen((data, callback = null) => {
   if (useSecret) {
     let barbicanPayload = {
       payload: JSON.stringify(data.connection_info),
@@ -85,7 +85,7 @@ ConnectionsActions.newEndpoint.listen((data) => {
       method: "POST",
       data: barbicanPayload
     }).then((response) => {
-      ConnectionsActions.newEndpoint.success(response, data)
+      ConnectionsActions.newEndpoint.success(response, data, callback)
     }, ConnectionsActions.newEndpoint.failed)
       .catch(ConnectionsActions.newEndpoint.failed);
   } else {
@@ -93,7 +93,7 @@ ConnectionsActions.newEndpoint.listen((data) => {
   }
 });
 
-ConnectionsActions.saveEndpoint.listen((data, secretRef) => {
+ConnectionsActions.saveEndpoint.listen((data, secretRef, callback) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
   let payload = null
   if (useSecret) {
@@ -115,7 +115,9 @@ ConnectionsActions.saveEndpoint.listen((data, secretRef) => {
     url: `${servicesUrl.coriolis}/${projectId}/endpoints`,
     method: "POST",
     data: payload
-  }).then(ConnectionsActions.saveEndpoint.success, ConnectionsActions.saveEndpoint.failed)
+  }).then((response) => {
+    ConnectionsActions.saveEndpoint.success(response, callback)
+  }, ConnectionsActions.saveEndpoint.failed)
     .catch(ConnectionsActions.saveEndpoint.failed);
 })
 

@@ -24,6 +24,7 @@ import ConnectionsActions from '../../actions/ConnectionsActions';
 import NotificationActions from '../../actions/NotificationActions';
 import Dropdown from '../NewDropdown';
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
+import ValidateEndpoint from '../ValidateEndpoint';
 
 const title = 'Add Cloud Endpoint';
 
@@ -45,11 +46,13 @@ class AddCloudConnection extends Reflux.Component {
     this.store = ConnectionsStore
 
     this.state = {
+      type: props.type,
+      connection: props.connection,
       connectionName: "",
       description: null,
       currentCloud: this.props.cloud,
       currentCloudData: null,
-      connected: false,
+      validateEndpoint: false,
       isConnecting: false,
       requiredFields: [],
       cloudFormsSubmitted: false
@@ -62,17 +65,17 @@ class AddCloudConnection extends Reflux.Component {
   }
 
   componentDidMount() {
-    if (this.props.connection) {
+    if (this.state.connection) {
       this.state.allClouds.forEach(item => {
-        if (item.name === this.props.connection.type) {
-          let credentials = this.props.connection.credentials
+        if (item.name === this.state.connection.type) {
+          let credentials = this.state.connection.credentials
           for (let i in credentials) {
             credentials[i] = credentials[i] + ""
           }
           this.setState({
             currentCloudData: credentials,
-            connectionName: this.props.connection.name,
-            description: this.props.connection.description
+            connectionName: this.state.connection.name,
+            description: this.state.connection.description
           }, () => {
             this.chooseCloud(item)
           })
@@ -112,16 +115,22 @@ class AddCloudConnection extends Reflux.Component {
           credentials[key] = credentials[key].value
         }
       }
-      if (this.props.type == "new") {
+      if (this.state.type == "new") {
         ConnectionsActions.newEndpoint({
           name: this.state.connectionName,
           description: this.state.description,
           type: this.state.currentCloud.name,
           connection_info: credentials
+        }, (response) => {
+          this.setState({
+            validateEndpoint: response.data.endpoint,
+            type: "edit",
+            connection: response.data.endpoint
+          })
         })
         this.props.addHandle(this.state.connectionName);
       } else {
-        ConnectionsActions.editEndpoint(this.props.connection, {
+        ConnectionsActions.editEndpoint(this.state.connection, {
           name: this.state.connectionName,
           description: this.state.description,
           connection_info: credentials
@@ -161,6 +170,10 @@ class AddCloudConnection extends Reflux.Component {
       currentCloudData: currentCloudData,
       requiredFields: requiredFields
     }, this.setDefaultValues)
+  }
+
+  backToEdit() {
+    this.setState({ validateEndpoint: null })
   }
 
   handleBack() {
@@ -366,7 +379,7 @@ class AddCloudConnection extends Reflux.Component {
             {fields}
           </div>
           <div className={s.buttons}>
-            {this.props.type == "new" ? (
+            {this.state.type == "new" ? (
               <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
             ) : (
               <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
@@ -411,8 +424,15 @@ class AddCloudConnection extends Reflux.Component {
 
   render() {
     let modalBody
-
-    if (this.state.currentCloud == null) {
+    if (this.state.validateEndpoint) {
+      modalBody = (
+        <ValidateEndpoint
+          closeHandle={this.props.closeHandle}
+          endpoint={this.state.validateEndpoint}
+          backHandle={(e) => this.backToEdit(e)}
+        />
+      )
+    } else if (this.state.currentCloud == null) {
       if (this.state.allClouds) {
         modalBody = this.renderCloudList()
       } else {
