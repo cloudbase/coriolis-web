@@ -71,16 +71,46 @@ class CloudConnectionDetail extends Component {
 
   renderAuthFields() {
     if (this.state.fields.length) {
-      return this.state.fields.map((field, index) => (
-          <div className={s.formGroup} key={"formGroup_" + index}>
-            <div className={s.title}>
-              {field.fieldName}
-            </div>
-            <div className={s.value}>
-              {field.fieldValue ? field.fieldValue : "-"}
-            </div>
-          </div>
-        )
+      return this.state.fields.map((field, index) => {
+        console.log(typeof field.fieldValue)
+        if (typeof field.fieldValue === "object") {
+          let extraFields = []
+          for (let i in field.fieldValue) {
+            let fieldValue = field.fieldValue[i] ? field.fieldValue[i] : "-"
+            if (i == "password") {
+              continue
+            }
+            extraFields.push((
+              <div className={s.formGroup} key={"formGroup_" + i}>
+                <div className={s.title}>
+                  {i}
+                </div>
+                <div className={s.value}>
+                  {fieldValue}
+                </div>
+              </div>
+            ))
+          }
+          console.log(extraFields)
+          return extraFields
+        } else {
+          let fieldValue = field.fieldValue ? field.fieldValue : "-"
+          if (field.fieldName != "password") {
+            return (
+              <div className={s.formGroup} key={"formGroup_" + index}>
+                <div className={s.title}>
+                  {field.fieldName}
+                </div>
+                <div className={s.value}>
+                  {fieldValue}
+                </div>
+              </div>
+            )
+          } else {
+            return null
+          }
+        }
+      }
       )
     } else {
       return <LoadingIcon />

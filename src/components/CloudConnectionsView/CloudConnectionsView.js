@@ -33,7 +33,7 @@ class CloudConnectionsView extends Component {
   static propTypes = {
     connection: PropTypes.object,
     connections: PropTypes.array,
-    children: PropTypes.array,
+    children: PropTypes.object,
     connectionId: PropTypes.string
   }
 

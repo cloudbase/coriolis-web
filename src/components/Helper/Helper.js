@@ -30,6 +30,16 @@ class Helper extends Component {
 
     return moment(rawDate).add(offset, 'hours')
   }
+  static toAsterisk(password) {
+    console.log(password, password.length)
+    let hiddenPass = ""
+    for (let i = 0; i++; i < password.length) {
+      console.log(i)
+      hiddenPass = hiddenPass + "*"
+    }
+    console.log(hiddenPass)
+    return hiddenPass
+  }
 }
 
 export default Helper;
