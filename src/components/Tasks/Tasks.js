@@ -76,7 +76,7 @@ class Tasks extends Component {
           let first = true
 
           if (item.progress_updates[0] !== null) {
-            item.progress_updates.sort((a, b) => moment(a.updated_at).isAfter(moment(b.updated_at)))
+            item.progress_updates.sort((a, b) => moment(a.created_at).isAfter(moment(b.created_at)))
           }
           for (let i = item.progress_updates.length - 1; i >= 0; i--) {
             let date = "-"
@@ -140,7 +140,7 @@ class Tasks extends Component {
           </span>),
           instance: <TextTruncate line={1} text={item.instance} truncateText="..." />,
           latest_message: <TextTruncate line={1} truncateText="..." text={latestMessage} />,
-          timestamp: item.updated_at ? Helper.getTimeObject(moment(item.updated_at)).format("YYYY-MM-DD HH:mm:ss") :
+          timestamp: item.created_at ? Helper.getTimeObject(moment(item.created_at)).format("YYYY-MM-DD HH:mm:ss") :
             "-",
           detailView: taskDetails,
           openState: item.status === 'RUNNING'
