@@ -69,7 +69,14 @@ class AddCloudConnection extends Reflux.Component {
         if (item.name === this.state.connection.type) {
           let credentials = this.state.connection.credentials
           for (let i in credentials) {
-            credentials[i] = credentials[i] + ""
+            if (typeof credentials[i] == "object") {
+              credentials['login_type'] = i
+              for (let j in credentials[i]) {
+                credentials[j] = credentials[i][j]
+              }
+            } else {
+              credentials[i] = credentials[i] + ""
+            }
           }
           this.setState({
             currentCloudData: credentials,
@@ -125,6 +132,25 @@ class AddCloudConnection extends Reflux.Component {
           credentials[key] = credentials[key].value
         }
       }
+
+      // If Azure, explicitly setting the fields right
+      if (this.state.currentCloud.name == "azure") {
+        credentials = {}
+        credentials["subscription_id"] = this.state.currentCloudData["subscription_id"]
+        if (this.state.currentCloudData["login_type"] == "user_credentials") {
+          credentials["user_credentials"] = {
+            username: this.state.currentCloudData["username"],
+            password: this.state.currentCloudData["password"]
+          }
+        } else {
+          credentials["service_principal_credentials"] = {
+            tenant_id: this.state.currentCloudData["tenant_id"],
+            client_id: this.state.currentCloudData["client_id"],
+            client_secret: this.state.currentCloudData["client_secret"]
+          }
+        }
+      }
+
       // If endpoint is new
       if (this.state.type == "new") {
         ConnectionsActions.newEndpoint({
@@ -146,7 +172,6 @@ class AddCloudConnection extends Reflux.Component {
           description: this.state.description,
           connection_info: credentials
         }, (response) => {
-          console.log(response)
           this.setState({
             validateEndpoint: response.data.endpoint,
             type: "edit",
@@ -322,7 +347,7 @@ class AddCloudConnection extends Reflux.Component {
   /**
    * Renders individual cloud fields
    * @param field
-   * @returns {*}
+   * @returns {XML}
    */
   renderField(field) {
     let returnValue

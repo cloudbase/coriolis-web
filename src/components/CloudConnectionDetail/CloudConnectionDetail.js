@@ -72,7 +72,6 @@ class CloudConnectionDetail extends Component {
   renderAuthFields() {
     if (this.state.fields.length) {
       return this.state.fields.map((field, index) => {
-        console.log(typeof field.fieldValue)
         if (typeof field.fieldValue === "object") {
           let extraFields = []
           for (let i in field.fieldValue) {
@@ -91,7 +90,6 @@ class CloudConnectionDetail extends Component {
               </div>
             ))
           }
-          console.log(extraFields)
           return extraFields
         } else {
           let fieldValue = field.fieldValue ? field.fieldValue : "-"
