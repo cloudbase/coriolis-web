@@ -76,7 +76,7 @@ class Tasks extends Component {
           let first = true
 
           if (item.progress_updates[0] !== null) {
-            item.progress_updates.sort((a, b) => moment(a.created_at).isAfter(moment(b.created_at)))
+            item.progress_updates.sort((a, b) => moment(a.updated_at).isAfter(moment(b.updated_at)))
           }
           for (let i = item.progress_updates.length - 1; i >= 0; i--) {
             let date = "-"
