@@ -93,13 +93,18 @@ export class LoginPage extends Reflux.Component {
     this.store = UserStore
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      loaded: false
     }
   }
 
   componentWillMount() {
     super.componentWillMount.call(this)
     this.context.onSetTitle(title);
+  }
+
+  componentDidMount() {
+    this.setState({ loaded: true })
   }
 
   login(e) {
@@ -174,11 +179,11 @@ export class LoginPage extends Reflux.Component {
                   />
                 </div>
                 <div className="form-group">
-                  <button onClick={(e) => this.login(e)}>Login</button>
+                  <button onClick={(e) => this.login(e)} disabled={!this.state.loaded}>Login</button>
                 </div>
-                <div className="form-group">
+                {/* <div className="form-group">
                   <a href="/forgot-password" className={s.forgotPassText}>Forgot your Password?</a>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>
