@@ -138,7 +138,10 @@ class CloudConnectionsView extends Component {
     for (let i in itemAttrs) {
       endpoint[i] = itemAttrs[i]
     }
-    this.setState({ connection: endpoint })
+    this.setState({
+      connection: endpoint,
+      showModal: false
+    })
     this.validateConnection()
   }
 

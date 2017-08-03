@@ -70,9 +70,9 @@ class AddCloudConnection extends Reflux.Component {
           let credentials = this.state.connection.credentials
           for (let i in credentials) {
             if (typeof credentials[i] == "object") {
-              credentials['login_type'] = i
+              // credentials['login_type'] = i
               for (let j in credentials[i]) {
-                credentials[j] = credentials[i][j]
+                credentials['user_credentials'][j] = credentials[i][j]
               }
             } else {
               credentials[i] = credentials[i] + ""

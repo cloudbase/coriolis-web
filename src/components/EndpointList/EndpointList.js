@@ -102,7 +102,7 @@ class EndpointList extends Reflux.Component {
   }
 
   addHandle() {
-
+    this.setState({ showModal: false })
   }
 
   renderItem(item) {
