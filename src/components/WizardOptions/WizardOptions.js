@@ -86,7 +86,8 @@ class WizardOptions extends Reflux.Component {
   }
 
   isValid(field) {
-    if (field.required && this.state.formSubmitted && field.name != "network_map") {
+    if (field.required && this.state.formSubmitted && field.name != "network_map"
+      && field.name != "destination_network") {
       if (!this.state.destination_environment[field.name]) {
         return false
       } else {

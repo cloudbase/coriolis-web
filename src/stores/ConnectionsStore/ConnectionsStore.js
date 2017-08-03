@@ -23,7 +23,7 @@ import Reflux from 'reflux';
 import ConnectionsActions from '../../actions/ConnectionsActions';
 import WizardActions from '../../actions/WizardActions';
 import MigrationActions from '../../actions/MigrationActions';
-import {defaultLabels} from '../../config'
+import { defaultLabels } from '../../constants/CloudLabels';
 import Api from '../../components/ApiCaller'
 import {servicesUrl, providerType} from '../../config';
 
@@ -123,16 +123,18 @@ class ConnectionsStore extends Reflux.Store
       let provider = this.state.allClouds.filter(cloud => cloud.name == providerName)[0]
       if (response.data.schemas.connection_info_schema) {
         provider[type] = {}
-        provider[type].fields = ConnectionsStore.processCloud(response.data.schemas.connection_info_schema.oneOf[0])
+        provider[type].fields = ConnectionsStore.processCloud(
+          response.data.schemas.connection_info_schema, providerName)
       }
 
       if (response.data.schemas.destination_environment_schema) {
         provider[type] = {}
-        provider[type].fields = ConnectionsStore.processCloud(response.data.schemas.destination_environment_schema.oneOf[0])
+        provider[type].fields = ConnectionsStore.processCloud(
+          response.data.schemas.destination_environment_schema.oneOf[0], providerName, 'destination_env')
       }
       ConnectionsActions.updateProvider(provider)
-    }, ConnectionsActions.loadProviders.failed)
-      .catch(ConnectionsActions.loadProviders.failed);
+    }, ConnectionsActions.updateProvider.failed)
+      .catch(ConnectionsActions.updateProvider.failed);
   }
 
   onUpdateProvider(provider) {
@@ -288,69 +290,117 @@ class ConnectionsStore extends Reflux.Store
     ConnectionsActions.assignConnectionProvider()
   }
 
-  static processCloud(cloudData) {
-    let fields = []
-    let sortedFields = [{}, {}]
-    for (var propName in cloudData.properties) {
-      let field = {
-        name: propName,
-        label: defaultLabels[propName] ? defaultLabels[propName] : propName
+  static processCloud(cloudData, providerName = null, type = 'connection') {
+    if (providerName != "azure" && providerName != null) {
+      cloudData = cloudData.oneOf[0]
+    }
+
+    if (providerName == "azure" && type == "connection") {
+      let subscriptionId = {
+        subscription_id: cloudData.properties.subscription_id
+      }
+      let userCredentialFields = {
+        properties: { subscription_id: cloudData.properties.subscription_id },
+        required: cloudData.properties.user_credentials.required
       }
 
-      if (cloudData.properties[propName].default) {
-        field.default = cloudData.properties[propName].default
+      for (var i in cloudData.properties.user_credentials.properties) {
+        userCredentialFields.properties[i] = cloudData.properties.user_credentials.properties[i]
       }
-      switch (cloudData.properties[propName].type) {
-        case "boolean":
-          field.type = "dropdown"
-          field.options = [
-            {label: field.label + ": Yes", value: "true", default: cloudData.properties[propName].default == "true"},
-            {label: field.label + ": No", value: "false", default: cloudData.properties[propName].default == "false"}
-          ]
 
-          break
+      let servicePrincipalCredentialFields = {
+        properties: { subscription_id: cloudData.properties.subscription_id },
+        required: cloudData.properties.service_principal_credentials.required
+      }
+      for (var i in cloudData.properties.service_principal_credentials.properties) {
+        servicePrincipalCredentialFields.properties[i] = cloudData.properties.service_principal_credentials.properties[i]
+      }
 
-        case "string":
-          field.type = "text"
-          break
-
-        case "integer":
-          if (cloudData.properties[propName].minimum && cloudData.properties[propName].maximum) {
-            field.type = "dropdown"
-            field.options = []
-            for (let i = cloudData.properties[propName].minimum; i<= cloudData.properties[propName].maximum; i++) {
-              field.options.push({
-                label: field.label + ": " + i,
-                value: i,
-                default: cloudData.properties[propName].default === i},
-              )
-            }
-          } else {
-            field.type = "text"
+      let newCloudData = {
+        type: "switch-radio",
+        name: "login_type",
+        options: [
+          {
+            label: "User Credentials",
+            value: "user_credentials",
+            fields: this.processCloud(userCredentialFields)
+          },
+          {
+            label: "Service Principal Credentials",
+            value: "service_principal_credentials",
+            fields: this.processCloud(servicePrincipalCredentialFields)
           }
-          break
+        ]
       }
 
-      if (field.name == 'username') {
-        field.required = true
-        sortedFields[0] = field
-      } else if (field.name == 'password') {
-        field.type = "password"
-        field.required = true
-        sortedFields[1] = field
-      } else if (cloudData.required.indexOf(field.name) > -1) {
-        field.required = true
-        sortedFields.push(field)
-      } else {
-        fields.push(field)
+      return [newCloudData]
+    } else {
+      let fields = []
+      let sortedFields = [{}, {}]
+      for (var propName in cloudData.properties) {
+        let field = {
+          name: propName,
+          label: defaultLabels[propName] ? defaultLabels[propName] : propName
+        }
+
+        if (cloudData.properties[propName].default) {
+          field.default = cloudData.properties[propName].default
+        }
+        switch (cloudData.properties[propName].type) {
+          case "boolean":
+            field.type = "dropdown"
+            field.options = [
+              {label: field.label + ": Yes", value: "true", default: cloudData.properties[propName].default == "true"},
+              {label: field.label + ": No", value: "false", default: cloudData.properties[propName].default == "false"}
+            ]
+
+            break
+
+          case "string":
+            field.type = "text"
+            break
+
+          case "integer":
+            if (cloudData.properties[propName].minimum && cloudData.properties[propName].maximum) {
+              field.type = "dropdown"
+              field.options = []
+              for (let i = cloudData.properties[propName].minimum; i <= cloudData.properties[propName].maximum; i++) {
+                field.options.push({
+                    label: field.label + ": " + i,
+                    value: i,
+                    default: cloudData.properties[propName].default === i
+                  },
+                )
+              }
+            } else {
+              field.type = "text"
+            }
+            break
+        }
+
+        if (field.name == 'username') {
+          field.required = true
+          sortedFields[0] = field
+        } else if (field.name == 'password') {
+          field.type = "password"
+          field.required = true
+          sortedFields[1] = field
+        } else if (cloudData.required.indexOf(field.name) > -1) {
+          field.required = true
+          sortedFields.push(field)
+        } else {
+          fields.push(field)
+        }
       }
+      //in case we don't have username and password
+      if (Object.keys(sortedFields[0]).length === 0 && Object.keys(sortedFields[0]).length === 0) {
+        sortedFields.shift()
+        sortedFields.shift()
+      }
+      console.log("sortedFields.concat(fields)", sortedFields.concat(fields))
+
+      return sortedFields.concat(fields)
     }
-    //in case we don't have username and password
-    if (Object.keys(sortedFields[0]).length === 0 && Object.keys(sortedFields[0]).length === 0) {
-      sortedFields.shift()
-      sortedFields.shift()
-    }
-    return sortedFields.concat(fields)
   }
 }
 

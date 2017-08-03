@@ -39,7 +39,7 @@ class WizardNetworks extends Component {
   constructor(props) {
     super(props)
 
-    this.networkOptions = [] // [{ label: "Create new", value: null }]
+    this.networkOptions = null // [{ label: "Create new", value: null }]
     ConnectionsActions.loadNetworks(this.props.data.targetCloud.credential)
 
     props.data.selectedInstances.forEach((vm) => {
@@ -132,30 +132,34 @@ class WizardNetworks extends Component {
   render() {
     if (this.state.networks != null) {
       let networks = this.state.networks.map((network, index) => {
-        if (network.selected || true) {
-          return (
-            <div className="item" key={"networks_" + index}>
-              <div className="cell cell-icon">
-                <div className="icon network"></div>
-                <span className="details">
-                  {network.network_name}
-                </span>
-              </div>
-              <div className="cell">
-                <div className="arrow"></div>
-              </div>
-              <div className="cell">
-                <Dropdown
-                  options={this.networkOptions}
-                  onChange={(e) => this.handleChangeNetwork(e, network)}
-                  value={network.migrateNetwork}
-                />
-              </div>
-            </div>
-          )
+        let networkDropdown
+        if (this.networkOptions == null) {
+          networkDropdown = "Searching for networks ..."
+        } else if (this.networkOptions.length) {
+          networkDropdown = (<Dropdown
+            options={this.networkOptions}
+            onChange={(e) => this.handleChangeNetwork(e, network)}
+            value={network.migrateNetwork}
+          />)
         } else {
-          return null
+          networkDropdown = "Could not find networks"
         }
+        return (
+          <div className="item" key={"networks_" + index}>
+            <div className="cell cell-icon">
+              <div className="icon network"></div>
+              <span className="details">
+                {network.network_name}
+              </span>
+            </div>
+            <div className="cell">
+              <div className="arrow"></div>
+            </div>
+            <div className="cell">
+              {networkDropdown}
+            </div>
+          </div>
+        )
       }, this)
 
       return (

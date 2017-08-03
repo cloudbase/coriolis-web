@@ -20,7 +20,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './CloudConnectionDetail.scss';
 import Moment from 'react-moment';
 import LoadingIcon from '../LoadingIcon';
-import { defaultLabels } from '../../config';
+import { defaultLabels } from '../../constants/CloudLabels';
 import Helper from '../Helper';
 
 const title = 'connection details';

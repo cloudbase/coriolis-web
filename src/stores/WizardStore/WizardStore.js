@@ -22,7 +22,7 @@ import ConnectionsActions from '../../actions/ConnectionsActions';
 import { servicesUrl, itemsPerPage } from '../../config';
 import Api from '../../components/ApiCaller';
 
-class UsersStore extends Reflux.Store
+class WizardStore extends Reflux.Store
 {
   blankState = {
     sourceCloud: null,
@@ -133,19 +133,10 @@ class UsersStore extends Reflux.Store
     this.setState({ selectedInstances: selectedInstances })
   }
 
-  onLoadNetworks(endpoint) {
+  onLoadNetworks() {
     this.setState({
       targetNetworks: null
     })
-    let projectId = Reflux.GlobalState.userStore.currentUser.project.id
-    let targetEnv = btoa(JSON.stringify(this.state.destination_environment))
-    let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/networks?env=${targetEnv}`
-
-    Api.sendAjaxRequest({
-      url: url,
-      method: "GET"
-    }).then(ConnectionsActions.loadNetworks.completed, ConnectionsActions.loadNetworks.failed)
-      .catch(ConnectionsActions.loadNetworks.failed);
   }
 
   onLoadNetworksCompleted(response) {
@@ -167,4 +158,6 @@ class UsersStore extends Reflux.Store
 
 }
 
-export default UsersStore;
+WizardStore.id = "wizardStore"
+
+export default WizardStore;

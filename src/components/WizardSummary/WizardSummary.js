@@ -20,7 +20,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardSummary.scss';
 import moment from 'moment';
 import TextTruncate from 'react-text-truncate';
-import { defaultLabels } from '../../config';
+import { defaultLabels } from '../../constants/CloudLabels';
 
 
 const title = 'Summary';

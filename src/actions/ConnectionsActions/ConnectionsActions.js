@@ -70,6 +70,18 @@ ConnectionsActions.loadProviders.listen(() => {
     .catch(ConnectionsActions.loadProviders.failed);
 })
 
+ConnectionsActions.loadNetworks.listen((endpoint) => {
+  let projectId = Reflux.GlobalState.userStore.currentUser.project.id
+  let targetEnv = btoa(JSON.stringify(Reflux.GlobalState.wizardStore.destination_environment))
+  let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/networks?env=${targetEnv}`
+
+  Api.sendAjaxRequest({
+    url: url,
+    method: "GET"
+  }).then(ConnectionsActions.loadNetworks.completed, ConnectionsActions.loadNetworks.failed)
+    .catch(ConnectionsActions.loadNetworks.failed);
+})
+
 ConnectionsActions.newEndpoint.listen((data, callback = null) => {
   if (useSecret) {
     let barbicanPayload = {
@@ -165,12 +177,11 @@ ConnectionsActions.saveEditEndpoint.listen((connection, data, callback = null) =
     method: "PUT",
     data: payload
   }).then((response) => {
-    ConnectionsActions.saveEditEndpoint.success(response)
-    if (callback) {
+    if (typeof callback === "function") {
       callback()
     }
+    ConnectionsActions.saveEditEndpoint.success(response)
   }, ConnectionsActions.saveEditEndpoint.failed)
-    .catch(ConnectionsActions.saveEditEndpoint.failed);
 })
 
 ConnectionsActions.validateConnection.listen((endpoint, callback) => {

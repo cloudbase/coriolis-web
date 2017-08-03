@@ -46,16 +46,15 @@ class AddCloudConnection extends Reflux.Component {
     this.store = ConnectionsStore
 
     this.state = {
-      type: props.type,
-      connection: props.connection,
-      connectionName: "",
-      description: null,
-      currentCloud: this.props.cloud,
-      currentCloudData: null,
-      validateEndpoint: false,
-      isConnecting: false,
-      requiredFields: [],
-      cloudFormsSubmitted: false
+      type: props.type, // type of operation: new/edit
+      connection: props.connection, // connection object (on edit)
+      connectionName: "", // connection name field
+      description: null, // connection description field
+      currentCloud: this.props.cloud, // chosen cloud - if adding a new endpoint
+      currentCloudData: null, // endpoint field data
+      validateEndpoint: false, // holds the endpoint object when validation
+      requiredFields: [], // array that holds all the endpoint required fields - used for field validation
+      cloudFormsSubmitted: false // flag that indicates if the form has been submitte - used for field validation
     }
   }
 
@@ -86,14 +85,25 @@ class AddCloudConnection extends Reflux.Component {
     }
   }
 
+  /**
+   * Handles change `name` property
+   * @param e
+   */
   handleChangeName(e) {
     this.setState({ connectionName: e.target.value })
   }
 
+  /**
+   * Handles change `description` property
+   * @param e
+   */
   handleChangeDescription(e) {
     this.setState({ description: e.target.value })
   }
 
+  /**
+   * Function called upon saving an endpoint - handles both new and edit operations
+   */
   handleSave() {
     let valid = true
 
@@ -115,6 +125,7 @@ class AddCloudConnection extends Reflux.Component {
           credentials[key] = credentials[key].value
         }
       }
+      // If endpoint is new
       if (this.state.type == "new") {
         ConnectionsActions.newEndpoint({
           name: this.state.connectionName,
@@ -129,22 +140,31 @@ class AddCloudConnection extends Reflux.Component {
           })
         })
         this.props.addHandle(this.state.connectionName);
-      } else {
+      } else { // If editing an endpoint
         ConnectionsActions.editEndpoint(this.state.connection, {
           name: this.state.connectionName,
           description: this.state.description,
           connection_info: credentials
-        }, () => {
+        }, (response) => {
+          console.log(response)
+          this.setState({
+            validateEndpoint: response.data.endpoint,
+            type: "edit",
+            connection: response.data.endpoint
+          })
           this.props.updateHandle({
             name: this.state.connectionName,
             description: this.state.description
           })
         })
-        this.props.closeHandle()
       }
     }
   }
 
+  /**
+   * Handler to choose the cloud which the endpoint will be assigned to
+   * @param cloud
+   */
   chooseCloud(cloud) {
     let currentCloudData = {}
     if (this.state.currentCloudData !== null) {
@@ -172,10 +192,16 @@ class AddCloudConnection extends Reflux.Component {
     }, this.setDefaultValues)
   }
 
+  /**
+   * Function that goes back from endpoint validation to edit mode
+   */
   backToEdit() {
     this.setState({ validateEndpoint: null })
   }
 
+  /**
+   * Handles back operation when adding a new endpoint and want to switch cloud. Resets all previous cloud data.
+   */
   handleBack() {
     this.setState({
       currentCloudData: null,
@@ -186,6 +212,9 @@ class AddCloudConnection extends Reflux.Component {
     })
   }
 
+  /**
+   * Sets default values for cloud fields
+   */
   setDefaultValues() {
     this.state.currentCloud.endpoint.fields.forEach(field => {
       let currentCloudData = this.state.currentCloudData
@@ -218,6 +247,11 @@ class AddCloudConnection extends Reflux.Component {
     }, this)
   }
 
+  /**
+   * Checks wether the field is valid. Only goes through validation if field is required
+   * @param field
+   * @returns {boolean}
+   */
   isValid(field) {
     if (field.required && this.state.cloudFormsSubmitted) {
       if (this.state.currentCloudData[field.name].length == 0) {
@@ -230,10 +264,32 @@ class AddCloudConnection extends Reflux.Component {
     }
   }
 
+  /**
+   * Handles cancel edit/add endpoint
+   */
   handleCancel() {
     this.props.closeHandle();
   }
 
+  /**
+   * Handler to change the endpoint field
+   * @param e
+   * @param field
+   */
+  handleCloudFieldChange(e, field) {
+    let currentCloudData = this.state.currentCloudData
+    if (field.type == 'dropdown') {
+      currentCloudData[field.name] = e
+    } else {
+      currentCloudData[field.name] = e.target.value
+    }
+    this.setState({ currentCloudData: currentCloudData })
+  }
+
+  /**
+   * Renders the cloud list
+   * @returns {XML}
+   */
   renderCloudList() {
     let clouds = this.state.allClouds.map((cloud, index) => {
       let colorType = ""
@@ -263,6 +319,11 @@ class AddCloudConnection extends Reflux.Component {
     )
   }
 
+  /**
+   * Renders individual cloud fields
+   * @param field
+   * @returns {*}
+   */
   renderField(field) {
     let returnValue
     switch (field.type) {
@@ -337,86 +398,49 @@ class AddCloudConnection extends Reflux.Component {
     return returnValue
   }
 
-  handleCloudFieldChange(e, field) {
-    let currentCloudData = this.state.currentCloudData
-    if (field.type == 'dropdown') {
-      currentCloudData[field.name] = e
-    } else {
-      currentCloudData[field.name] = e.target.value
-    }
-    this.setState({ currentCloudData: currentCloudData })
-  }
-
+  /**
+   * Renders the new/edit endpoint form
+   * @param cloud
+   * @returns {XML}
+   */
   renderCloudFields(cloud) {
     if (this.state.currentCloudData == null) {
       this.setState({ currentCloudData: {} })
     }
-    if (!this.state.isConnecting) {
-      let fields = cloud.endpoint.fields.map(field => this.renderField(field), this)
-      return (
-        <div className={s.container}>
-          <div className={s.cloudImage}>
-            <div className={" icon large-cloud " + this.state.currentCloud.name}></div>
-          </div>
-          <div className={"form-group " + (this.state.cloudFormsSubmitted &&
-            this.state.connectionName.trim().length == 0 ? s.error : "")}
-          >
-            <input
-              type="text"
-              placeholder="Endpoint Name *"
-              onChange={(e) => this.handleChangeName(e)}
-              value={this.state.connectionName}
-            />
-          </div>
-          <div className="form-group">
-            <textarea
-              placeholder="Endpoint Description"
-              onChange={(e) => this.handleChangeDescription(e)}
-              value={this.state.description}
-            ></textarea>
-          </div>
-          <div className={s.cloudFields + (cloud.endpoint.fields.length > 6 ? " " + s.larger : "")}>
-            {fields}
-          </div>
-          <div className={s.buttons}>
-            {this.state.type == "new" ? (
-              <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
-            ) : (
-              <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
-            )}
-            <button className={s.rightBtn} onClick={(e) => this.handleSave(e)}>Save</button>
-          </div>
-        </div>
-      )
-    } else {
-      return (
-        <div className={s.connecting}>
-          <LoadingIcon />
-          <div className={s.text}>Connecting ...</div>
-        </div>)
-    }
-  }
+    let fields = cloud.endpoint.fields.map(field => this.renderField(field), this)
 
-  renderSaveConnection() {
     return (
       <div className={s.container}>
         <div className={s.cloudImage}>
           <div className={" icon large-cloud " + this.state.currentCloud.name}></div>
         </div>
-        <div className="form-group">
+        <div className={"form-group " + (this.state.cloudFormsSubmitted &&
+          this.state.connectionName.trim().length == 0 ? s.error : "")}
+        >
           <input
             type="text"
-            placeholder="Connection name"
+            placeholder="Endpoint Name *"
             onChange={(e) => this.handleChangeName(e)}
             value={this.state.connectionName}
           />
         </div>
         <div className="form-group">
-          <textarea onChange={(e) => this.handleChangeDescription(e)} value={this.state.description}></textarea>
+          <textarea
+            placeholder="Endpoint Description"
+            onChange={(e) => this.handleChangeDescription(e)}
+            value={this.state.description}
+          ></textarea>
+        </div>
+        <div className={s.cloudFields + (cloud.endpoint.fields.length > 6 ? " " + s.larger : "")}>
+          {fields}
         </div>
         <div className={s.buttons}>
-          <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
-          <button className={s.rightBtn} onClick={(e) => this.handleSave(e)}>Add</button>
+          {this.state.type == "new" ? (
+            <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
+          ) : (
+            <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
+          )}
+          <button className={s.rightBtn} onClick={(e) => this.handleSave(e)}>Save</button>
         </div>
       </div>
     )

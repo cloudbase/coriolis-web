@@ -46,6 +46,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         float: right;
       }
     }
+    &:after {
+      display: block;
+      content: " ";
+      clear: both;
+      height: 0;
+    }
   }
   .hidden {
     opacity: 0;
