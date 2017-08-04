@@ -128,6 +128,7 @@ ConnectionsActions.saveEndpoint.listen((data, secretRef, callback) => {
     method: "POST",
     data: payload
   }).then((response) => {
+    console.log("XXXXXXXX")
     ConnectionsActions.saveEndpoint.success(response, callback)
   }, ConnectionsActions.saveEndpoint.failed)
     .catch(ConnectionsActions.saveEndpoint.failed);
@@ -177,8 +178,9 @@ ConnectionsActions.saveEditEndpoint.listen((connection, data, callback = null) =
     method: "PUT",
     data: payload
   }).then((response) => {
+    console.log("CALLBACK", callback)
     if (typeof callback === "function") {
-      callback()
+      callback(response)
     }
     ConnectionsActions.saveEditEndpoint.success(response)
   }, ConnectionsActions.saveEditEndpoint.failed)

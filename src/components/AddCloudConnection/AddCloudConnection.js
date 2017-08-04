@@ -68,19 +68,21 @@ class AddCloudConnection extends Reflux.Component {
       this.state.allClouds.forEach(item => {
         if (item.name === this.state.connection.type) {
           let credentials = this.state.connection.credentials
+          let newCredentials = {}
           for (let i in credentials) {
             if (typeof credentials[i] == "object") {
-              // credentials['login_type'] = i
-              credentials['user_credentials'] = {}
+              newCredentials['login_type'] = i
+              // credentials['user_credentials'] = {}
               for (let j in credentials[i]) {
-                credentials['user_credentials'][j] = credentials[i][j]
+                // credentials['user_credentials'][j] = credentials[i][j]
+                newCredentials[j] = credentials[i][j]
               }
             } else {
-              credentials[i] = credentials[i] + ""
+              newCredentials[i] = credentials[i] + ""
             }
           }
           this.setState({
-            currentCloudData: credentials,
+            currentCloudData: newCredentials,
             connectionName: this.state.connection.name,
             description: this.state.connection.description
           }, () => {
@@ -94,35 +96,21 @@ class AddCloudConnection extends Reflux.Component {
   }
 
   /**
-   * Handles change `name` property
-   * @param e
-   */
-  handleChangeName(e) {
-    this.setState({ connectionName: e.target.value })
-  }
-
-  /**
-   * Handles change `description` property
-   * @param e
-   */
-  handleChangeDescription(e) {
-    this.setState({ description: e.target.value })
-  }
-
-  /**
    * Function called upon saving an endpoint - handles both new and edit operations
    */
   handleSave() {
     let valid = true
+    let requiredFields = this.state.requiredFields
 
     for (let i in this.state.currentCloudData) {
-      if (this.state.requiredFields.indexOf(i) > -1 && !this.state.currentCloudData[i]) {
+      if (requiredFields.indexOf(i) > -1 && !this.state.currentCloudData[i]) {
         valid = false
       }
     }
     if (this.state.connectionName.trim().length == 0) {
       valid = false
     }
+
     if (!valid) {
       NotificationActions.notify("Please fill all required fields", "error")
       this.setState({ cloudFormsSubmitted: true })
@@ -150,6 +138,11 @@ class AddCloudConnection extends Reflux.Component {
             client_secret: this.state.currentCloudData["client_secret"]
           }
         }
+      }
+
+      // Remove the login_type since it is not needed
+      if (this.state.currentCloud.name == "azure") {
+        delete credentials.login_type
       }
 
       // If endpoint is new
@@ -185,6 +178,22 @@ class AddCloudConnection extends Reflux.Component {
         })
       }
     }
+  }
+
+  /**
+   * Handles change `name` property
+   * @param e
+   */
+  handleChangeName(e) {
+    this.setState({ connectionName: e.target.value })
+  }
+
+  /**
+   * Handles change `description` property
+   * @param e
+   */
+  handleChangeDescription(e) {
+    this.setState({ description: e.target.value })
   }
 
   /**
@@ -356,6 +365,7 @@ class AddCloudConnection extends Reflux.Component {
       case "text":
         returnValue = (
           <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
+            <label>{field.label + (field.required ? " *" : "")}</label>
             <input
               type="text"
               placeholder={field.label + (field.required ? " *" : "")}
@@ -368,6 +378,7 @@ class AddCloudConnection extends Reflux.Component {
       case "password":
         returnValue = (
           <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
+            <label>{field.label + (field.required ? " *" : "")}</label>
             <input
               type="password"
               placeholder={field.label + (field.required ? " *" : "")}
@@ -380,6 +391,7 @@ class AddCloudConnection extends Reflux.Component {
       case "dropdown":
         returnValue = (
           <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
+            <label>{field.label + (field.required ? " *" : "")}</label>
             <Dropdown
               options={field.options}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
@@ -443,6 +455,7 @@ class AddCloudConnection extends Reflux.Component {
         <div className={"form-group " + (this.state.cloudFormsSubmitted &&
           this.state.connectionName.trim().length == 0 ? s.error : "")}
         >
+          <label>Endpoint Name</label>
           <input
             type="text"
             placeholder="Endpoint Name *"
@@ -451,6 +464,7 @@ class AddCloudConnection extends Reflux.Component {
           />
         </div>
         <div className="form-group">
+          <label>Endpoint Description</label>
           <textarea
             placeholder="Endpoint Description"
             onChange={(e) => this.handleChangeDescription(e)}

@@ -42,5 +42,9 @@ export const defaultLabels = {
   vm_size: "Vm size",
   location: "Location",
   resource_group: "Resource Group",
-  worker_size: "Worker Size"
+  worker_size: "Worker Size",
+  subscription_id: "Subscription ID",
+  tenant_id: "Tenant ID",
+  client_id: "Client ID",
+  client_secret: "Client Secret"
 }

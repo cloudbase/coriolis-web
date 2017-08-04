@@ -49,11 +49,13 @@ class EndpointUsage extends Reflux.Component {
       this.state.migrations.forEach(migration => {
         if (migration.destination_endpoint_id === this.state.connectionId ||
           migration.origin_endpoint_id === this.state.connectionId) {
-          if (migration.type == "migration") {
-            migrationCount++
-          } else {
-            replicaCount++
-          }
+          migrationCount++
+        }
+      })
+      this.state.replicas.forEach(replica => {
+        if (replica.destination_endpoint_id === this.state.connectionId ||
+          replica.origin_endpoint_id === this.state.connectionId) {
+          replicaCount++
         }
       })
       this.setState({ migrationCount: migrationCount, replicaCount: replicaCount })

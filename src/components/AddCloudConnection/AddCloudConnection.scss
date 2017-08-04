@@ -40,6 +40,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   padding: 48px 32px 32px;
   position: relative;
   :global(.form-group) {
+    &> label {
+      font-weight: 500;
+      font-size: 10px;
+      color: $task-gray-light;
+      letter-spacing: -0.33px;
+      text-transform: uppercase;
+    }
     margin-bottom: 16px;
     &:global(.switch-radio) {
       width: 100%;

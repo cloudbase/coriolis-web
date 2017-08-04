@@ -66,6 +66,7 @@ class EndpointList extends Reflux.Component {
 
     this.state = {
       showModal: false,
+      showValidationModal: false,
       connections: null
     }
 
@@ -101,8 +102,15 @@ class EndpointList extends Reflux.Component {
     this.setState({ showModal: false })
   }
 
+  validateConnection() {
+    this.setState({ showValidationModal: true })
+  }
+
+  closeValidationModal() {
+    this.setState({ showValidationModal: false })
+  }
+
   addHandle() {
-    this.setState({ showModal: false })
   }
 
   renderItem(item) {
