@@ -304,6 +304,8 @@ class ConnectionsStore extends Reflux.Store
         required: cloudData.properties.user_credentials.required
       }
 
+      userCredentialFields.required.push("subscription_id")
+
       for (var i in cloudData.properties.user_credentials.properties) {
         userCredentialFields.properties[i] = cloudData.properties.user_credentials.properties[i]
       }
@@ -315,6 +317,7 @@ class ConnectionsStore extends Reflux.Store
       for (var i in cloudData.properties.service_principal_credentials.properties) {
         servicePrincipalCredentialFields.properties[i] = cloudData.properties.service_principal_credentials.properties[i]
       }
+      servicePrincipalCredentialFields.required.push("subscription_id")
 
       let newCloudData = {
         type: "switch-radio",

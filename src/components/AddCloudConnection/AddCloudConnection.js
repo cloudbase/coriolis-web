@@ -49,12 +49,12 @@ class AddCloudConnection extends Reflux.Component {
       type: props.type, // type of operation: new/edit
       connection: props.connection, // connection object (on edit)
       connectionName: "", // connection name field
-      description: null, // connection description field
+      description: "", // connection description field
       currentCloud: this.props.cloud, // chosen cloud - if adding a new endpoint
       currentCloudData: null, // endpoint field data
       validateEndpoint: false, // holds the endpoint object when validation
       requiredFields: [], // array that holds all the endpoint required fields - used for field validation
-      cloudFormsSubmitted: false // flag that indicates if the form has been submitte - used for field validation
+      cloudFormsSubmitted: false // flag that indicates if the form has been submitted - used for field validation
     }
   }
 
@@ -101,12 +101,30 @@ class AddCloudConnection extends Reflux.Component {
   handleSave() {
     let valid = true
     let requiredFields = this.state.requiredFields
+    // If Azure, validate fields manually
+    if (this.state.currentCloud.name == "azure") {
+      if (this.state.currentCloudData.login_type == "user_credentials") {
+        requiredFields = ["subscription_id", "username", "password"]
+      } else if (this.state.currentCloudData.login_type == "service_principal_credentials") {
+        requiredFields = ["subscription_id", "tenant_id", "client_id", "client_secret"]
+      } else {
+        valid = false
+        NotificationActions.notify("Please choose the login type", "error")
+      }
+      this.setState({ requiredFields: requiredFields })
+    }
 
     for (let i in this.state.currentCloudData) {
       if (requiredFields.indexOf(i) > -1 && !this.state.currentCloudData[i]) {
         valid = false
       }
     }
+    requiredFields.forEach((field) => {
+      if (!this.state.currentCloudData[field]) {
+        valid = false
+      }
+    })
+
     if (this.state.connectionName.trim().length == 0) {
       valid = false
     }
@@ -289,10 +307,14 @@ class AddCloudConnection extends Reflux.Component {
    */
   isValid(field) {
     if (field.required && this.state.cloudFormsSubmitted) {
-      if (this.state.currentCloudData[field.name].length == 0) {
-        return false
+      if (this.state.currentCloudData[field.name]) {
+        if (this.state.currentCloudData[field.name] && this.state.currentCloudData[field.name].length == 0) {
+          return false
+        } else {
+          return true
+        }
       } else {
-        return true
+        return false
       }
     } else {
       return true
