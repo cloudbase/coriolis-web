@@ -163,20 +163,11 @@ exports[`Login Page renders correctly 1`] = `
               className="form-group"
             >
               <button
+                disabled={false}
                 onClick={[Function]}
               >
                 Login
               </button>
-            </div>
-            <div
-              className="form-group"
-            >
-              <a
-                className={undefined}
-                href="/forgot-password"
-              >
-                Forgot your Password?
-              </a>
             </div>
           </form>
         </div>

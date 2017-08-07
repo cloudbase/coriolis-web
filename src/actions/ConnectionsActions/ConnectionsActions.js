@@ -128,7 +128,6 @@ ConnectionsActions.saveEndpoint.listen((data, secretRef, callback) => {
     method: "POST",
     data: payload
   }).then((response) => {
-    console.log("XXXXXXXX")
     ConnectionsActions.saveEndpoint.success(response, callback)
   }, ConnectionsActions.saveEndpoint.failed)
     .catch(ConnectionsActions.saveEndpoint.failed);
@@ -200,7 +199,6 @@ ConnectionsActions.validateConnection.listen((endpoint, callback) => {
   }, ConnectionsActions.validateConnection.failed)
     .catch(ConnectionsActions.validateConnection.failed);
 })
-
 
 ConnectionsActions.deleteConnection.listen((connection) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
