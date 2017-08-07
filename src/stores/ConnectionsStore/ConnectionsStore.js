@@ -291,7 +291,7 @@ class ConnectionsStore extends Reflux.Store
   }
 
   static processCloud(cloudData, providerName = null, type = 'connection') {
-    if (providerName != "azure" && providerName != null) {
+    if (providerName != "azure" && providerName != null && cloudData.oneOf) {
       cloudData = cloudData.oneOf[0]
     }
 
