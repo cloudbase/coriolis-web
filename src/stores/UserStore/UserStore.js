@@ -64,7 +64,7 @@ class UserStore extends Reflux.Store
   }
 
   onLoginSuccess(response) {
-    let token = response.headers['X-Subject-Token']
+    let token = response.headers['X-Subject-Token'] || response.headers['x-subject-token']
     Api.setDefaultHeader('X-Auth-Token', token)
     cookie.save('unscopedToken', token, { path: "/", expires: moment().add(1, 'hour').toDate() })
     UserActions.getScopedProjects(res => {
@@ -86,7 +86,7 @@ class UserStore extends Reflux.Store
     let currentUser = this.state.currentUser
     currentUser.id = response.data.token.user.id
     currentUser.name = response.data.token.user.name
-    currentUser.token = response.headers['X-Subject-Token']
+    currentUser.token = response.headers['X-Subject-Token'] || response.headers['x-subject-token']
     currentUser.project = response.data.token.project
 
     cookie.save('token', currentUser.token, { path: "/", expires: moment().add(1, 'hour').toDate() })
