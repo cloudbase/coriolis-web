@@ -20,6 +20,7 @@ import s from './ValidateEndpoint.scss';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import LoadingIcon from '../LoadingIcon';
 import ConnectionsActions from '../../actions/ConnectionsActions';
+import TextTruncate from 'react-text-truncate';
 
 
 class ValidateEndpoint extends Component {
@@ -83,7 +84,10 @@ class ValidateEndpoint extends Component {
     }
     return (<div className={s.root}>
       <div className={s.container + (this.state.status != 0 ? s.hidden : "")}>
-        { this.state.status == 0 ? <LoadingIcon text="Validating endpoint.." /> : <div className={s.message}>{this.state.message}</div> }
+        { this.state.status == 0 ?
+          <LoadingIcon text="Validating endpoint.." /> :
+          <div className={s.message}><TextTruncate line={3} text={this.state.message} truncateText="..." /></div>
+        }
       </div>
       {buttons}
     </div>)
