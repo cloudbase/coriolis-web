@@ -50,11 +50,16 @@ class MigrationNetworks extends Component {
 
   getConnectedVms(networkId) {
     let vms = []
-    this.props.migration.instances.forEach((item) => {
-      if (item.networks.indexOf(networkId) != -1) {
-        vms.push(item.name)
+    for (let instanceName in this.props.migration.info) {
+      let instance = this.props.migration.info[instanceName]
+      if (instance.export_info.devices.nics.length) {
+        instance.export_info.devices.nics.forEach(nic => {
+          if (nic.network_name == networkId) {
+            vms.push(instanceName)
+          }
+        })
       }
-    })
+    }
     return vms
   }
 
@@ -63,24 +68,12 @@ class MigrationNetworks extends Component {
       for (let i in props.migration.destination_environment.network_map) {
         let newItem = {
           source_network: i,
-          connected_vms: "-",
+          connected_vms: this.getConnectedVms(i),
           destination_network: props.migration.destination_environment.network_map[i],
           destination_type: "Existing network"
         }
         this.listItems.push(newItem)
       }
-      /*
-       props.migration.destination_environment.network_map.forEach((item) => {
-       //let connectedVms = this.getConnectedVms(item.id).join(", ")
-       let connectedVms = "-"
-       let newItem = {
-       source_network: item.name,
-       connected_vms: connectedVms,
-       destination_network: item.migrateNetwork,
-       destination_type: item.migrateNetwork == "Create new" ? "New network" : "Existing network"
-       }
-       this.listItems.push(newItem)
-       }*/
     }
   }
 
