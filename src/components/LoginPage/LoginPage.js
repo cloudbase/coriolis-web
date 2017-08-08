@@ -94,17 +94,14 @@ export class LoginPage extends Reflux.Component {
     this.state = {
       username: "",
       password: "",
-      loaded: false
+      disableLogin: true
     }
   }
 
   componentWillMount() {
     super.componentWillMount.call(this)
     this.context.onSetTitle(title);
-  }
-
-  componentDidMount() {
-    this.setState({ loaded: true })
+    this.setState({ disableLogin: false })
   }
 
   login(e) {
@@ -113,9 +110,12 @@ export class LoginPage extends Reflux.Component {
     if (this.state.username.length == 0 || this.state.password.length == 0) {
       NotificationActions.notify("Please fill in all fields")
     } else {
+      this.setState({ disableLogin: true })
       UserActions.login({
         name: this.state.username,
         password: this.state.password
+      }, () => {
+        this.setState({ disableLogin: false })
       })
     }
   }
@@ -179,7 +179,7 @@ export class LoginPage extends Reflux.Component {
                   />
                 </div>
                 <div className="form-group">
-                  <button onClick={(e) => this.login(e)} disabled={!this.state.loaded}>Login</button>
+                  <button onClick={(e) => this.login(e)} disabled={this.state.disableLogin}>Login</button>
                 </div>
                 {/* <div className="form-group">
                   <a href="/forgot-password" className={s.forgotPassText}>Forgot your Password?</a>

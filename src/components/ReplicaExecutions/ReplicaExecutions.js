@@ -163,7 +163,7 @@ class ReplicaExecutions extends Component {
   render() {
     if (this.props.replica) {
       if (this.props.replica.executions.length && this.state.executionRef) {
-        let executionBtn = <button className="wire" onClick={(e) => this.deleteExecution(e)}>Delete</button>
+        let executionBtn = <button className="wire red" onClick={(e) => this.deleteExecution(e)}>Delete</button>
         if (this.props.replica.executions && this.props.replica.executions[this.props.replica.executions.length - 1] &&
           this.props.replica.executions[this.props.replica.executions.length - 1].status == "RUNNING") {
           executionBtn =

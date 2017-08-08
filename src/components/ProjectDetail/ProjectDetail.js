@@ -101,7 +101,7 @@ class CloudConnectionDetail extends Component {
               <button onClick={(e) => this.showEditConnectionModal(e)} className="gray" disabled>Edit Project</button>
             </div>
             <div className={s.rightSide}>
-              <button onClick={(e) => this.deleteProject(e)} className="wire">Delete</button>
+              <button onClick={(e) => this.deleteProject(e)} className="wire red">Delete</button>
             </div>
           </div>
         </div>

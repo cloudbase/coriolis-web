@@ -107,7 +107,7 @@ class MigrationView extends Reflux.Component {
       if (item.status == "RUNNING") {
         buttons = <button className="gray" onClick={(e) => (this.cancelMigration(e))}>Cancel</button>
       } else {
-        buttons = <button className="gray" onClick={(e) => this.deleteMigration(e)}>Delete</button>
+        buttons = <button className="wire red" onClick={(e) => this.deleteMigration(e)}>Delete</button>
       }
 
       let itemStatus = item.status

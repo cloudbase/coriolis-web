@@ -35,7 +35,7 @@ let UserAction = Reflux.createActions({
   setUserInfo: { children: ["success", "failed"] }
 })
 
-UserAction.login.listen(userData => {
+UserAction.login.listen((userData, callback = null) => {
   let auth = {
     auth: {
       identity: {
@@ -66,7 +66,12 @@ UserAction.login.listen(userData => {
     .then((response) => {
       UserAction.login.success(response)
       Location.push('/replicas')
-    }, UserAction.login.failed)
+    }, () => {
+      UserAction.login.failed()
+      if (typeof callback == "function") {
+        callback()
+      }
+    })
 })
 
 UserAction.loginScope.listen((token, projectId, fallback = true) => {

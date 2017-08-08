@@ -153,7 +153,7 @@ class MigrationDetail extends Component {
             >
               Migrate Replica
             </button>}
-            <button className="wire" onClick={(e) => this.deleteMigration(e)}>Delete</button>
+            <button className="wire red" onClick={(e) => this.deleteMigration(e)}>Delete</button>
           </div>
           <ConfirmationDialog
             visible={this.state.confirmationDialog.visible}
