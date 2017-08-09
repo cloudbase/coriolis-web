@@ -163,31 +163,59 @@ class MigrationList extends Reflux.Component {
   }
 
   render() {
-    return (
-      <div className={s.root}>
-        <div className={s.container}>
-          <div className={s.pageHeader}>
-            <div className={s.top}>
-              <h1>{title}</h1>
-              <div className={s.topActions}>
-                <ProjectsDropdown />
-                <button onClick={this.newMigration}>New</button>
-                <UserIcon />
-                <NotificationIcon />
+    if ((this.state.migrations && this.state.migrations.length) || this.state.migrations == null) {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className={s.pageHeader}>
+              <div className={s.top}>
+                <h1>{title}</h1>
+                <div className={s.topActions}>
+                  <ProjectsDropdown />
+                  <button onClick={this.newMigration}>New</button>
+                  <UserIcon />
+                  <NotificationIcon />
+                </div>
+              </div>
+            </div>
+            <MainList
+              items={this.state.migrations}
+              actions={migrationActions}
+              itemName="migration"
+              renderItem={this.renderItem}
+              filters={filters}
+              refresh={this.refreshList}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className={s.pageHeader}>
+              <div className={s.top}>
+                <h1>{title}</h1>
+                <div className={s.topActions}>
+                  <ProjectsDropdown />
+                  <button onClick={this.newMigration}>New</button>
+                  <UserIcon />
+                  <NotificationIcon />
+                </div>
+              </div>
+
+              <div className="noResultsLarge">
+                <span className="icon"></span>
+                <h3>It seems that you don't have any Migrations in this project</h3>
+                <p>A Coriolis Migration is a full virtual machine migration <br /> between two cloud endpoints</p>
+                <button onClick={(e) => this.newMigration(e)}>Create a Migration</button>
               </div>
             </div>
           </div>
-          <MainList
-            items={this.state.migrations}
-            actions={migrationActions}
-            itemName="migration"
-            renderItem={this.renderItem}
-            filters={filters}
-            refresh={this.refreshList}
-          />
         </div>
-      </div>
-    );
+      );
+    }
+
   }
 
 }

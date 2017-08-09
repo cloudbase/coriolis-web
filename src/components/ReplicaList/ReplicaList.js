@@ -1,21 +1,21 @@
 /*
-Copyright (C) 2017  Cloudbase Solutions SRL
+ Copyright (C) 2017  Cloudbase Solutions SRL
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import React, { PropTypes } from 'react';
+import React, {PropTypes} from 'react';
 import Reflux from 'reflux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Location from '../../core/Location';
@@ -36,10 +36,10 @@ const filters = [
   {
     field: "status",
     options: [
-      { value: null, label: "All" },
-      { value: "RUNNING", label: "Running" },
-      { value: "ERROR", label: "Error" },
-      { value: "COMPLETED", label: "Completed" }
+      {value: null, label: "All"},
+      {value: "RUNNING", label: "Running"},
+      {value: "ERROR", label: "Error"},
+      {value: "COMPLETED", label: "Completed"}
     ]
   }
 ]
@@ -122,7 +122,7 @@ class ReplicaList extends Reflux.Component {
         <span className="cell cell-icon" onClick={(e) => this.replicaDetail(e, item)}>
           <div className={"icon " + item.type}></div>
           <span className="details">
-            <TextTruncate line={1} truncateText="..." text={item.name} />
+            <TextTruncate line={1} truncateText="..." text={item.name}/>
             <span className={s.migrationStatus + " status-pill " + item.status}>{item.status}</span>
           </span>
         </span>
@@ -134,7 +134,7 @@ class ReplicaList extends Reflux.Component {
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
           <span className={s.label}>Last execution</span>
           <span className={s.value}>
-            {lastExecution ? <Moment format="MMM Do YYYY HH:mm" date={lastExecution} /> : "-"}
+            {lastExecution ? <Moment format="MMM Do YYYY HH:mm" date={lastExecution}/> : "-"}
           </span>
         </span>
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
@@ -154,31 +154,60 @@ class ReplicaList extends Reflux.Component {
   }
 
   render() {
-    return (
-      <div className={s.root}>
-        <div className={s.container}>
-          <div className={s.pageHeader}>
-            <div className={s.top}>
-              <h1>{title}</h1>
-              <div className={s.topActions}>
-                <ProjectsDropdown />
-                <button onClick={this.newMigration}>New</button>
-                <UserIcon />
-                <NotificationIcon />
+    if ((this.state.replicas && this.state.replicas.length) || this.state.replicas == null) {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className={s.pageHeader}>
+              <div className={s.top}>
+                <h1>{title}</h1>
+                <div className={s.topActions}>
+                  <ProjectsDropdown />
+                  <button onClick={this.newMigration}>New</button>
+                  <UserIcon />
+                  <NotificationIcon />
+                </div>
+              </div>
+            </div>
+            <MainList
+              items={this.state.replicas}
+              actions={replicaActions}
+              itemName="replica"
+              renderItem={this.renderItem}
+              filters={filters}
+              refresh={this.refreshList}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className={s.pageHeader}>
+              <div className={s.top}>
+                <h1>{title}</h1>
+                <div className={s.topActions}>
+                  <ProjectsDropdown />
+                  <button onClick={this.newMigration}>New</button>
+                  <UserIcon />
+                  <NotificationIcon />
+                </div>
+              </div>
+
+              <div className="noResultsLarge">
+                <span className="icon"></span>
+                <h3>It seems that you don't have any Replica's in this project</h3>
+                <p>The Coriolis Replica is obtained by replicating incrementally the<br />
+                  virtual machines data from the source cloud endpoint to the target.
+                </p>
+                <button onClick={(e) => this.newMigration(e)}>Create a Replica</button>
               </div>
             </div>
           </div>
-          <MainList
-            items={this.state.replicas}
-            actions={replicaActions}
-            itemName="replica"
-            renderItem={this.renderItem}
-            filters={filters}
-            refresh={this.refreshList}
-          />
         </div>
-      </div>
-    );
+      );
+    }
   }
 
 }

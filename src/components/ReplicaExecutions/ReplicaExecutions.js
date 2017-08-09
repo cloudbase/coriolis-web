@@ -211,7 +211,10 @@ class ReplicaExecutions extends Component {
         return (
           <div className={s.root}>
             <div className={s.container}>
-              <div className="no-results">No executions for this replica <br /> <br />
+              <div className="noResultsLarge">
+                <span className="icon"></span>
+                <h3>It looks like there are no executions in this replica</h3>
+                <p>This replica has not been executed yet</p>
                 <button onClick={(e) => this.executeNow(e)}>Execute Now</button>
               </div>
             </div>

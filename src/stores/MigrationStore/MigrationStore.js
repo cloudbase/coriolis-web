@@ -348,7 +348,7 @@ class MigrationStore extends Reflux.Store
     }
     currentTask["progress_updates"] = progressUpdates
     tasks.push(currentTask)
-    console.log(tasks)
+    
     return tasks
   }
 }
