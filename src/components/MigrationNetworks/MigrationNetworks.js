@@ -52,7 +52,7 @@ class MigrationNetworks extends Component {
     let vms = []
     for (let instanceName in this.props.migration.info) {
       let instance = this.props.migration.info[instanceName]
-      if (instance.export_info.devices.nics.length) {
+      if (instance.export_info && instance.export_info.devices.nics.length) {
         instance.export_info.devices.nics.forEach(nic => {
           if (nic.network_name == networkId) {
             vms.push(instanceName)
@@ -60,17 +60,31 @@ class MigrationNetworks extends Component {
         })
       }
     }
-    return vms
+    if (vms.length == 0) {
+      return "-"
+    } else {
+      return vms
+    }
   }
 
   processProps(props) {
     if (props.migration && props.migration.destination_environment) {
       for (let i in props.migration.destination_environment.network_map) {
-        let newItem = {
-          source_network: i,
-          connected_vms: this.getConnectedVms(i),
-          destination_network: props.migration.destination_environment.network_map[i],
-          destination_type: "Existing network"
+        let newItem
+        if (typeof props.migration.destination_environment.network_map[i] == "object") {
+          newItem = {
+            source_network: props.migration.destination_environment.network_map[i].source_network,
+            connected_vms: this.getConnectedVms(i),
+            destination_network: props.migration.destination_environment.network_map[i].destination_network,
+            destination_type: "Existing network"
+          }
+        } else {
+          newItem = {
+            source_network: i,
+            connected_vms: this.getConnectedVms(i),
+            destination_network: props.migration.destination_environment.network_map[i],
+            destination_type: "Existing network"
+          }
         }
         this.listItems.push(newItem)
       }

@@ -55,6 +55,7 @@ class ReplicaView extends Reflux.Component {
 
   componentWillMount() {
     super.componentWillMount.call(this)
+
     MigrationActions.setReplica(this.props.replicaId)
   }
 
