@@ -474,30 +474,32 @@ class AddCloudConnection extends Reflux.Component {
         <div className={s.cloudImage}>
           <div className={" icon large-cloud " + this.state.currentCloud.name}></div>
         </div>
-        <div className={"form-group " + (this.state.cloudFormsSubmitted &&
-          this.state.connectionName.trim().length == 0 ? s.error : "")}
-        >
-          <label>Endpoint Name</label>
-          <input
-            type="text"
-            placeholder="Endpoint Name *"
-            onChange={(e) => this.handleChangeName(e)}
-            value={this.state.connectionName}
-          />
-        </div>
-        <div className="form-group">
-          <label>Endpoint Description</label>
-          <textarea
-            placeholder="Endpoint Description"
-            onChange={(e) => this.handleChangeDescription(e)}
-            value={this.state.description}
-          ></textarea>
-        </div>
         <div className={s.cloudFields + (cloud.endpoint.fields.length > 6 ? " " + s.larger : "")}>
+          <div className={"form-group " + (this.state.cloudFormsSubmitted &&
+            this.state.connectionName.trim().length == 0 ? s.error : "")}
+          >
+            <label>Endpoint Name *</label>
+            <input
+              type="text"
+              placeholder="Endpoint Name *"
+              onChange={(e) => this.handleChangeName(e)}
+              value={this.state.connectionName}
+            />
+          </div>
+          <div className="form-group">
+            <label>Endpoint Description</label>
+            <input
+              type="text"
+              placeholder="Endpoint Description"
+              onChange={(e) => this.handleChangeDescription(e)}
+              value={this.state.description}
+            ></input>
+          </div>
+
           {fields}
         </div>
         <div className={s.buttons}>
-          {this.state.type == "new" ? (
+          {(this.state.type == "new" && this.props.cloud == null) ? (
             <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
           ) : (
             <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
