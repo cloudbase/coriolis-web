@@ -165,42 +165,80 @@ class EndpointList extends Reflux.Component {
         marginLeft: "-288px"
       }
     }
+    if ((this.state.connections && this.state.connections.length) || this.state.connections == null) {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className={s.pageHeader}>
+              <div className={s.top}>
+                <h1>{title}</h1>
+                <div className={s.topActions}>
+                  <ProjectsDropdown />
+                  <button onClick={(e) => this.showNewConnectionModal(e)}>New</button>
+                  <UserIcon />
+                  <NotificationIcon />
+                </div>
+              </div>
+            </div>
+            <MainList
+              items={this.state.connections}
+              actions={connectionActions}
+              itemName="connection"
+              renderItem={this.renderItem}
+              filters={filters}
+              refresh={this.refresh}
+            />
+          </div>
+          <Modal
+            isOpen={this.state.showModal}
+            contentLabel="Add new cloud connection"
+            style={modalStyle}
+          >
+            <AddCloudConnection
+              closeHandle={(e) => this.closeModal(e)}
+              addHandle={(e) => this.addHandle(e)}
+            />
+          </Modal>
+        </div>
+      );
+    } else {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className={s.pageHeader}>
+              <div className={s.top}>
+                <h1>{title}</h1>
+                <div className={s.topActions}>
+                  <ProjectsDropdown />
+                  <button onClick={(e) => this.showNewConnectionModal(e)}>New</button>
+                  <UserIcon />
+                  <NotificationIcon />
+                </div>
+              </div>
 
-    return (
-      <div className={s.root}>
-        <div className={s.container}>
-          <div className={s.pageHeader}>
-            <div className={s.top}>
-              <h1>{title}</h1>
-              <div className={s.topActions}>
-                <ProjectsDropdown />
-                <button onClick={(e) => this.showNewConnectionModal(e)}>New</button>
-                <UserIcon />
-                <NotificationIcon />
+              <div className="noResultsLarge">
+                <span className="icon"></span>
+                <h3>You don't have any Cloud Endpoints in this project</h3>
+                <p>A Cloud Endpoint is used for the source<br />
+                  or target of a Replica/Migration
+                </p>
+                <button onClick={(e) => this.showNewConnectionModal(e)}>Create an Endpoint</button>
               </div>
             </div>
           </div>
-          <MainList
-            items={this.state.connections}
-            actions={connectionActions}
-            itemName="connection"
-            renderItem={this.renderItem}
-            filters={filters}
-            refresh={this.refresh}
-          />
+          <Modal
+            isOpen={this.state.showModal}
+            contentLabel="Add new cloud connection"
+            style={modalStyle}
+          >
+            <AddCloudConnection
+              closeHandle={(e) => this.closeModal(e)}
+              addHandle={(e) => this.addHandle(e)}
+            />
+          </Modal>
         </div>
-        <Modal
-          isOpen={this.state.showModal}
-          contentLabel="Add new cloud connection"
-          style={modalStyle}
-        >
-          <AddCloudConnection
-            closeHandle={(e) => this.closeModal(e)}
-            addHandle={(e) => this.addHandle(e)}
-          />
-        </Modal>
-      </div>
-    );
+      )
+    }
   }
 
 }
