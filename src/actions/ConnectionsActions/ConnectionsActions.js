@@ -185,7 +185,7 @@ ConnectionsActions.saveEditEndpoint.listen((connection, data, callback = null) =
   }, ConnectionsActions.saveEditEndpoint.failed)
 })
 
-ConnectionsActions.validateConnection.listen((endpoint, callback) => {
+ConnectionsActions.validateConnection.listen((endpoint, callback, failCallback) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
   Api.sendAjaxRequest({
     url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/actions`,
@@ -196,8 +196,18 @@ ConnectionsActions.validateConnection.listen((endpoint, callback) => {
       callback(response)
     }
     ConnectionsActions.validateConnection.completed(response)
-  }, ConnectionsActions.validateConnection.failed)
-    .catch(ConnectionsActions.validateConnection.failed);
+  }, (response) => {
+    if (typeof failCallback == "function") {
+      failCallback(response)
+    }
+    ConnectionsActions.validateConnection.failed()
+  })
+    .catch((response) => {
+      if (typeof failCallback == "function") {
+        failCallback(response)
+      }
+      ConnectionsActions.validateConnection.failed()
+    });
 })
 
 ConnectionsActions.deleteConnection.listen((connection) => {

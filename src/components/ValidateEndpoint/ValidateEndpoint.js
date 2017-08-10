@@ -58,6 +58,11 @@ class ValidateEndpoint extends Component {
         message: response.data["validate-connection"].valid ?
           "Endpoint is valid" : response.data["validate-connection"].message
       })
+    }, () => {
+      this.setState({
+        status: -1,
+        message: "An unexpected error occurred."
+      })
     })
   }
 
