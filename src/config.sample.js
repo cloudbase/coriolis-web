@@ -20,7 +20,7 @@
 
 export const port = process.env.PORT || 3000;
 export const host = process.env.WEBSITE_HOSTNAME || `localhost:${port}`;
-export const coriolisUrl = CORIOLIS_URL || "/"
+export const coriolisUrl = process.env.CORIOLIS_URL || "/"
 export const defaultDomain = "default";
 
 // Number of instances in wizard Migrate VMs step
