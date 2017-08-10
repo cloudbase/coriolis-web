@@ -52,6 +52,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       }
     }
   }
+  .topFilters {
+    &:after {
+      clear: both;
+      display: block;
+      content: " ";
+      height: 0;
+    }
+  }
 }
 
 .selectionCount {

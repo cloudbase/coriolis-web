@@ -243,14 +243,16 @@ class WizardVms extends Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <SearchBox
-            placeholder="Search VMs"
-            value={this.state.queryText}
-            onChange={(e) => this.searchVm(e)}
-            className={"searchBox" + (this.state.filteredData.length == 0 ? " hidden" : " ")}
-          />
-          <div className={"category-filter" + (this.state.filteredData.length == 0 ? " hidden" : " ")}>
-            {vmStates}
+          <div className={s.topFilters}>
+            <SearchBox
+              placeholder="Search VMs"
+              value={this.state.queryText}
+              onChange={(e) => this.searchVm(e)}
+              className={"searchBox" + (this.state.filteredData.length == 0 ? " hidden" : " ")}
+            />
+            <div className="category-filter hidden">
+              {vmStates}
+            </div>
           </div>
           <div className="items-list instances">
             {this.renderSearch()}
