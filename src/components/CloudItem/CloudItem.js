@@ -89,9 +89,7 @@ class CloudItem extends Component {
   addConnection(connection) {
     let newCredentials = { cloudName: this.props.cloud.name, connection: connection }
     this.props.addCredentialsCallback(newCredentials)
-    this.setState({ showModal: false }, () => {
-      this.onCredentialsChange({ label: connection, value: connection })
-    })
+    this.onCredentialsChange({ label: connection, value: connection })
   }
 
   closeModal() {
