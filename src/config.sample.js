@@ -25,18 +25,6 @@ export const defaultDomain = "default";
 
 // Number of instances in wizard Migrate VMs step
 export const itemsPerPage = 6;
-/*
--- Network mocked data
- id - random
- name - source network
- migrateNetwork - target network, null if new network
- selected - true
-*/
-export const networkMock = [
-  { id: "net1", name: "VM Network", migrateNetwork: "management", selected: true} ,
-]
-// Target networks to show in dropdown
-export const targetNetworkMock = ["internal-coriolis-2", "coriolis-twenty", "management"]
 export const securityGroups = ["testgroup"]
 
 export const servicesUrl = {
@@ -104,26 +92,3 @@ export const migrationSteps = [
     component: "WizardSummary"
   }
 ]
-
-export const auth = {
-
-  jwt: { secret: process.env.JWT_SECRET || 'Coriolis' },
-
-  // https://developers.facebook.com/
-  facebook: {
-    id: process.env.FACEBOOK_APP_ID || '186244551745631',
-    secret: process.env.FACEBOOK_APP_SECRET || 'a970ae3240ab4b9b8aae0f9f0661c6fc',
-  },
-
-  // https://cloud.google.com/console/project
-  google: {
-    id: process.env.GOOGLE_CLIENT_ID || '251410730550-ahcg0ou5mgfhl8hlui1urru7jn5s12km.apps.googleusercontent.com',
-    secret: process.env.GOOGLE_CLIENT_SECRET || 'Y8yR9yZAhm9jQ8FKAL8QIEcd',
-  },
-
-  // https://apps.twitter.com/
-  twitter: {
-    key: process.env.TWITTER_CONSUMER_KEY || 'Ie20AZvLJI2lQD5Dsgxgjauns',
-    secret: process.env.TWITTER_CONSUMER_SECRET || 'KTZ6cxoKnEakQCeSpZlaUCJWGAlTEBJj0y2EMkUBujA7zWSvaQ',
-  },
-};

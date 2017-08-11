@@ -20,7 +20,6 @@
 
 import Reflux from 'reflux';
 import MigrationActions from '../../actions/MigrationActions';
-import {networkMock, targetNetworkMock} from '../../config';
 import moment from 'moment';
 
 class MigrationStore extends Reflux.Store
