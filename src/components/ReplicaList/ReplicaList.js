@@ -15,7 +15,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Location from '../../core/Location';
@@ -36,10 +36,10 @@ const filters = [
   {
     field: "status",
     options: [
-      {value: null, label: "All"},
-      {value: "RUNNING", label: "Running"},
-      {value: "ERROR", label: "Error"},
-      {value: "COMPLETED", label: "Completed"}
+      { value: null, label: "All" },
+      { value: "RUNNING", label: "Running" },
+      { value: "ERROR", label: "Error" },
+      { value: "COMPLETED", label: "Completed" }
     ]
   }
 ]
