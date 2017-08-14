@@ -31,7 +31,7 @@ let ConnectionsActions = Reflux.createActions({
   saveEndpoint: { children: ['success', 'failed'] },
   editEndpoint: { children: ['success', 'failed'] },
   saveEditEndpoint: { children: ['success', 'failed'] },
-  validateConnection: { children: ['success', 'failed'] },
+  validateConnection: { children: ['completed', 'failed'] },
   deleteConnection: { children: ['completed', 'failed'] },
   loadProviderType: {},
   assignConnectionProvider: {},
