@@ -248,7 +248,7 @@ class WizardVms extends Component {
               placeholder="Search VMs"
               value={this.state.queryText}
               onChange={(e) => this.searchVm(e)}
-              className={"searchBox" + (this.state.filteredData.length == 0 ? " hidden" : " ")}
+              className={"searchBox" + (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
             />
             <div className="category-filter hidden">
               {vmStates}
@@ -257,10 +257,10 @@ class WizardVms extends Component {
           <div className="items-list instances">
             {this.renderSearch()}
           </div>
-          <div className={s.selectionCount + (this.state.filteredData.length == 0 ? " hidden" : " ")}>
+          <div className={s.selectionCount + (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}>
             {this.instancesSelected()} instances selected
           </div>
-          <div className={s.pagination + (this.state.filteredData.length == 0 ? " hidden" : " ")}>
+          <div className={s.pagination + (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}>
             <span
               className={(this.state.page == 0 ? "disabled " : "") + s.prev}
               onClick={(e) => this.previousPage(e)}
