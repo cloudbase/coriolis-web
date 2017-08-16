@@ -138,6 +138,31 @@ class AddCloudConnection extends Reflux.Component {
         if (credentials[key].label) {
           credentials[key] = credentials[key].value
         }
+
+        let field = this.state.currentCloud.endpoint.fields.find(function findByName(f) { return f.name == this }, key);
+        // Convert datatype
+        switch (field.dataType) {
+          case 'boolean':
+            credentials[key] = (credentials[key] === true ||
+              ((typeof credentials[key] === 'string' || credentials[key] instanceof String) &&
+               credentials[key].toLowerCase() == "true"));
+            break;
+          case 'integer':
+            let value = parseInt(credentials[key], 10);
+            if (value.toString() != credentials[key]) {
+              valid = false;
+              NotificationActions.notify('"' + key + '" needs to be an integer', 'error');
+            }
+            credentials[key] = value;
+            break;
+          default:
+            // retain original value
+            break;
+        }
+      }
+
+      if (!valid) {
+        return;
       }
 
       // If Azure, explicitly setting the fields right
@@ -227,10 +252,10 @@ class AddCloudConnection extends Reflux.Component {
 
     cloud.endpoint.fields.forEach(field => {
       if (typeof currentCloudData[field.name] == "undefined") {
-        if (field.type == "dropdown") {
-          currentCloudData[field.name] = field.options[0]
+        if (typeof field.defaultValue === 'undefined') {
+          currentCloudData[field.name] = "";
         } else {
-          currentCloudData[field.name] = ""
+          currentCloudData[field.name] = field.defaultValue.toString();
         }
       }
       if (field.required) {
@@ -275,7 +300,7 @@ class AddCloudConnection extends Reflux.Component {
         case 'dropdown':
           field.options.forEach(option => {
             if (option.default === true && typeof currentCloudData[field.name] == "undefined") {
-              currentCloudData[field.name] = option
+              currentCloudData[field.name] = option.value
               this.setState({ currentCloudData: currentCloudData })
             }
           }, this)
@@ -336,7 +361,7 @@ class AddCloudConnection extends Reflux.Component {
   handleCloudFieldChange(e, field) {
     let currentCloudData = this.state.currentCloudData
     if (field.type == 'dropdown') {
-      currentCloudData[field.name] = e
+      currentCloudData[field.name] = e.value
     } else {
       currentCloudData[field.name] = e.target.value
     }
@@ -417,8 +442,9 @@ class AddCloudConnection extends Reflux.Component {
             <Dropdown
               options={field.options}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
-              placeholder={field.label + (field.required ? " *" : "")}
-              value={this.state.currentCloudData[field.name]}
+              placeholder="Choose a value"
+              value={field.options.find(function findOption(option) { return option.value == this},
+                     this.state.currentCloudData[field.name])}
             />
           </div>
         )
