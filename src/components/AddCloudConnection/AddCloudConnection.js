@@ -252,15 +252,10 @@ class AddCloudConnection extends Reflux.Component {
 
     cloud.endpoint.fields.forEach(field => {
       if (typeof currentCloudData[field.name] == "undefined") {
-        if (field.type == "dropdown") {
-          let defaultOption = field.options.find(function isDefaultOption(option) { return option.default; })
-          if (defaultOption) {
-            currentCloudData[field.name] = defaultOption.value;
-          } else {
-            currentCloudData[field.name] = null;
-          }
+        if (typeof field.defaultValue === 'undefined') {
+          currentCloudData[field.name] = "";
         } else {
-          currentCloudData[field.name] = ""
+          currentCloudData[field.name] = field.defaultValue.toString();
         }
       }
       if (field.required) {

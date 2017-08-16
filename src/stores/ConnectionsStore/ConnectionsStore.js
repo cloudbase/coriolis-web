@@ -354,8 +354,8 @@ class ConnectionsStore extends Reflux.Store
             field.type = "dropdown"
             field.options = [
               // Values need to be strings, due to a limitation in react-dropdown
-              {label: "Yes", value: "true", default: cloudData.properties[propName].default == true},
-              {label: "No", value: "false", default: cloudData.properties[propName].default == false}
+              {label: "Yes", value: "true"},
+              {label: "No", value: "false"}
             ]
 
             break
@@ -372,8 +372,7 @@ class ConnectionsStore extends Reflux.Store
                 // Values need to be strings, due to a limitation in react-dropdown
                 field.options.push({
                     label: i.toString(),
-                    value: i.toString(),
-                    default: cloudData.properties[propName].default === i
+                    value: i.toString()
                   },
                 )
               }
@@ -383,6 +382,7 @@ class ConnectionsStore extends Reflux.Store
             break
         }
 
+        field.defaultValue = cloudData.properties[propName].default;
         field.dataType = cloudData.properties[propName].type;
 
         if (field.name == 'username') {
