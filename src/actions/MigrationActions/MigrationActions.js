@@ -226,7 +226,7 @@ MigrationActions.deleteReplicaExecution.listen((replica, executionId, callback =
     .catch(MigrationActions.deleteReplicaExecution.failed);
 })
 
-MigrationActions.addMigration.listen((migration) => {
+MigrationActions.addMigration.listen((migration, callback = null) => {
   let payload = {}
   let instances = []
 
@@ -269,7 +269,12 @@ MigrationActions.addMigration.listen((migration) => {
     method: "POST",
     data: payload
   })
-    .then(MigrationActions.addMigration.completed, MigrationActions.addMigration.failed)
+    .then((response) => {
+      MigrationActions.addMigration.completed(response);
+      if (callback) {
+        callback(migration);
+      }
+    }, MigrationActions.addMigration.failed)
     .catch(MigrationActions.addMigration.failed);
 })
 

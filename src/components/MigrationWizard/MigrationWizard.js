@@ -136,14 +136,15 @@ class MigrationWizard extends Reflux.Component {
     newMigration.status = "PAUSED"
     newMigration.created = new Date()
 
-    MigrationActions.addMigration(newMigration)
-    ConnectionsActions.resetSelections()
-    WizardActions.newState()
-    if (newMigration.migrationType == "replica") {
-      Location.push('/replicas')
-    } else {
-      Location.push('/migrations')
-    }
+    MigrationActions.addMigration(newMigration, () => {
+      ConnectionsActions.resetSelections()
+      WizardActions.newState()
+      if (newMigration.migrationType == "replica") {
+        Location.push('/replicas')
+      } else {
+        Location.push('/migrations')
+      }
+    });
   }
 
   render() {
