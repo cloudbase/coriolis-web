@@ -103,13 +103,18 @@ MigrationActions.deleteMigration.listen((migration) => {
   .catch(MigrationActions.deleteMigration.failed);
 })
 
-MigrationActions.deleteReplica.listen((replica) => {
+MigrationActions.deleteReplica.listen((replica, callback = null) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
   Api.sendAjaxRequest({
     url: `${servicesUrl.coriolis}/${projectId}/replicas/${replica.id}`,
     method: "DELETE"
   })
-    .then(MigrationActions.deleteReplica.completed(replica), MigrationActions.deleteReplica.failed)
+    .then(() => {
+      MigrationActions.deleteReplica.completed(replica)
+      if (callback) {
+        callback(replica)
+      }
+    }, MigrationActions.deleteReplica.failed)
     .catch(MigrationActions.deleteReplica.failed);
 })
 

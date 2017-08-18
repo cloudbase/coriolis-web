@@ -20,6 +20,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaDetail.scss';
 import Moment from 'react-moment';
 import Helper from "../Helper";
+import Location from '../../core/Location';
 import EndpointLink from '../EndpointLink';
 import ConfirmationDialog from '../ConfirmationDialog'
 import MigrationActions from '../../actions/MigrationActions';
@@ -57,15 +58,13 @@ class MigrationDetail extends Component {
     MigrationActions.createMigrationFromReplica(replica)
   }
 
-  deleteMigration() {
+  deleteReplica(e, replica) {
     this.setState({
       confirmationDialog: {
         visible: true,
         onConfirm: () => {
           this.setState({ confirmationDialog: { visible: false } })
-          let item = this.state.migrations.filter(migration => migration.id == this.props.replicaId)[0]
-          MigrationActions.deleteMigration(item)
-          Location.push('/cloud-endpoints')
+          MigrationActions.deleteReplica(replica, () => { Location.push('/replicas') })
         },
         onCancel: () => {
           this.setState({ confirmationDialog: { visible: false } })
@@ -156,7 +155,7 @@ class MigrationDetail extends Component {
             >
               Migrate Replica
             </button>}
-            <button className="wire red" onClick={(e) => this.deleteMigration(e)}>Delete</button>
+            <button className="wire red" onClick={(e) => this.deleteReplica(e, item)}>Delete</button>
           </div>
           <ConfirmationDialog
             visible={this.state.confirmationDialog.visible}
