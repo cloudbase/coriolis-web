@@ -139,7 +139,7 @@ class MigrationWizard extends Reflux.Component {
     MigrationActions.addMigration(newMigration)
     ConnectionsActions.resetSelections()
     WizardActions.newState()
-    if (newMigration.type == "replica") {
+    if (newMigration.migrationType == "replica") {
       Location.push('/replicas')
     } else {
       Location.push('/migrations')
