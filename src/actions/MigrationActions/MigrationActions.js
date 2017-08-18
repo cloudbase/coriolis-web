@@ -93,13 +93,18 @@ MigrationActions.loadMigration.shouldEmit = () => {
   return typeof projectId !== "undefined"
 }
 
-MigrationActions.deleteMigration.listen((migration) => {
+MigrationActions.deleteMigration.listen((migration, callback = null) => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
   Api.sendAjaxRequest({
     url: `${servicesUrl.coriolis}/${projectId}/migrations/${migration.id}`,
     method: "DELETE"
   })
-  .then(MigrationActions.deleteMigration.completed(migration), MigrationActions.deleteMigration.failed)
+  .then(() => {
+    MigrationActions.deleteMigration.completed(migration)
+    if (callback) {
+      callback(migration)
+    }
+  }, MigrationActions.deleteMigration.failed)
   .catch(MigrationActions.deleteMigration.failed);
 })
 
