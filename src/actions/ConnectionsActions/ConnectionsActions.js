@@ -223,7 +223,8 @@ ConnectionsActions.deleteConnection.listen((connection) => {
       Api.sendAjaxRequest({
         url: servicesUrl.barbican + "/v1/secrets/" + uuid,
         method: "DELETE"
-      }).then(ConnectionsActions.deleteConnection.completed(connection), ConnectionsActions.deleteConnection.failed)
+      }).then(() => { ConnectionsActions.deleteConnection.completed(connection) },
+        ConnectionsActions.deleteConnection.failed)
     } else {
       ConnectionsActions.deleteConnection.completed(connection)
     }
