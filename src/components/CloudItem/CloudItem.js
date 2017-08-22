@@ -26,7 +26,7 @@ class CloudItem extends Component {
   static propTypes = {
     cloud: PropTypes.object,
     addCredentialsCallback: PropTypes.func,
-    credentialSelected: PropTypes.array,
+    credentialSelected: PropTypes.object,
     callback: PropTypes.func,
     exclude: PropTypes.string,
     selected: PropTypes.bool
