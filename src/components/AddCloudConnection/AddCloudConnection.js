@@ -61,6 +61,9 @@ class AddCloudConnection extends Reflux.Component {
   componentWillMount() {
     super.componentWillMount.call(this)
     this.context.onSetTitle(title);
+    if (this.state.currentCloudData == null) {
+      this.setState({ currentCloudData: {} })
+    }
   }
 
   componentDidMount() {
@@ -326,7 +329,7 @@ class AddCloudConnection extends Reflux.Component {
   }
 
   /**
-   * Checks wether the field is valid. Only goes through validation if field is required
+   * Checks whether the field is valid. Only goes through validation if field is required
    * @param field
    * @returns {boolean}
    */
@@ -490,9 +493,6 @@ class AddCloudConnection extends Reflux.Component {
    * @returns {XML}
    */
   renderCloudFields(cloud) {
-    if (this.state.currentCloudData == null) {
-      this.setState({ currentCloudData: {} })
-    }
     let fields = cloud.endpoint.fields.map(field => this.renderField(field), this)
 
     return (
