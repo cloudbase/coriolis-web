@@ -49,6 +49,9 @@ class WizardVms extends Component {
         }
       })
     }
+
+    this.retryLoadingInstances = this.retryLoadingInstances.bind(this)
+
     this.state = {
       valid,
       queryText: '',
@@ -198,35 +201,54 @@ class WizardVms extends Component {
     }
   }
 
+  retryLoadingInstances() {
+    ConnectionsActions.loadInstances(
+      { id: this.props.data.sourceCloud.credential.id },
+      this.state.page,
+      this.state.queryText,
+      false
+    )
+  }
+
   renderSearch() {
     let _this = this
-    if (this.state.filteredData && this.state.filteredData.length) {
-      let instances = this.state.filteredData.map((item, index) =>
-        <div className="item" key={ "vm_" + index } onClick={ (e) => _this.checkVm(e, item) }>
-          <div className="checkbox-container">
-            <input
-              id={"vm_check_" + index}
-              type="checkbox"
-              checked={this.isSelected(item)}
-              onChange={(e) => _this.checkVm(e, item)}
-              className="checkbox-normal"
-            />
-            <label htmlFor={ "vm_check_" + index }></label>
-          </div>
-          <span className="cell cell-icon">
-            <div className="icon vm"></div>
-            <span className="details">
-              {item.instance_name}
-            </span>
-          </span>
-          <span className="cell">{item.num_cpu} vCPU | {item.memory_mb} MB RAM | {item.flavor_name}</span>
-        </div>
-       )
-      return instances
-    } else if (this.props.data.instances && this.props.data.instances.length == 0) {
-      return <div className="no-results">Your search returned no results</div>
-    } else {
-      return <LoadingIcon padding={64} text="Loading instances.." />
+    switch (this.props.data.instancesLoadState) {
+      case "success":
+        if (this.state.filteredData && this.state.filteredData.length) {
+          let instances = this.state.filteredData.map((item, index) =>
+            <div className="item" key={ "vm_" + index } onClick={ (e) => _this.checkVm(e, item) }>
+              <div className="checkbox-container">
+                <input
+                  id={"vm_check_" + index}
+                  type="checkbox"
+                  checked={this.isSelected(item)}
+                  onChange={(e) => _this.checkVm(e, item)}
+                  className="checkbox-normal"
+                />
+                <label htmlFor={ "vm_check_" + index }></label>
+              </div>
+              <span className="cell cell-icon">
+                <div className="icon vm"></div>
+                <span className="details">
+                  {item.instance_name}
+                </span>
+              </span>
+              <span className="cell">{item.num_cpu} vCPU | {item.memory_mb} MB RAM | {item.flavor_name}</span>
+            </div>
+          )
+          return instances
+        } else {
+          return <div className="no-results">Your search returned no results</div>
+        }
+      case "error":
+        return (<div className="no-results">
+          An error occurred while searching for instances <br />
+          <button onClick={this.retryLoadingInstances}>Retry</button>
+        </div>)
+      case "loading":
+        return <LoadingIcon padding={64} text="Loading instances.." />
+      default:
+        return <LoadingIcon padding={64} text="Loading instances.." />
     }
   }
 
