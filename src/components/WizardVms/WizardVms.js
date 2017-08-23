@@ -233,7 +233,8 @@ class WizardVms extends Component {
                   {item.instance_name}
                 </span>
               </span>
-              <span className="cell">{item.num_cpu} vCPU | {item.memory_mb} MB RAM | {item.flavor_name}</span>
+              <span className="cell">{item.num_cpu} vCPU | {item.memory_mb} MB RAM
+                {item.flavor_name && (" | " + item.flavor_name)}</span>
             </div>
           )
           return instances
