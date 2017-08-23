@@ -131,14 +131,14 @@ class WizardSummary extends Component {
                   <span>Source: <br /> </span>
                   <span>
                     <span className={s.cloudBox}>{this.props.summary.sourceCloud.name}</span>
-                    {this.props.summary.sourceCloud.credential.name}
+                    <TextTruncate line={1} text={this.props.summary.sourceCloud.credential.name} truncateText="..." />
                   </span>
                 </div>
                 <div className={s.row}>
                   <span>Target:</span>
                   <span>
                     <span className={s.cloudBox}>{this.props.summary.targetCloud.name}</span>
-                    {this.props.summary.targetCloud.credential.name}
+                    <TextTruncate line={1} text={this.props.summary.targetCloud.credential.name} truncateText="..." />
                   </span>
                 </div>
               </div>
