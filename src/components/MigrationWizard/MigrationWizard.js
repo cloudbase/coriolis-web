@@ -70,7 +70,7 @@ class MigrationWizard extends Reflux.Component {
 
 
   back() {
-    if (this.state.backCallback != null) {
+    if (typeof this.state.backCallback == "function") {
       this.state.backCallback((e) => this.initBackStep(e))
     } else {
       if (this.state.currentStep != "WizardMigrationType") {
@@ -101,7 +101,7 @@ class MigrationWizard extends Reflux.Component {
       this.finish()
     } else if (this.state.valid) {
       // Callback to run before next step
-      if (this.state.nextCallback != null) {
+      if (typeof this.state.nextCallback == "function") {
         this.state.nextCallback((e) => this.initNextStep(e))
       } else {
         this.initNextStep()

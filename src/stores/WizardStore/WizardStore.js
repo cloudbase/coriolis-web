@@ -41,6 +41,7 @@ class WizardStore extends Reflux.Store
     schedules: [],
     instances: null,
     selectedInstances: [],
+    instancesLoadState: null,
     vms: null,
     showAdvancedOptions: false,
     destination_environment: {},
@@ -53,11 +54,11 @@ class WizardStore extends Reflux.Store
   constructor() {
     super()
     this.listenables = [WizardActions, ConnectionsActions]
-
-    this.state = Object.assign({}, this.blankState)
+    this.state = this._assignNewState()
   }
 
   onLoadInstances(endpoint, page = 0, queryText = "", cache = true, clearSelection = false) {
+    this.setState({ instancesLoadState: 'loading' })
     if (cache && (this.state.instances && this.state.instances[page * itemsPerPage])) {
       return;
     }
@@ -102,11 +103,11 @@ class WizardStore extends Reflux.Store
       instances[(page * itemsPerPage) + index] = instance
     })
 
-    this.setState({ instances: instances })
+    this.setState({ instances: instances, instancesLoadState: 'success' })
   }
 
   onLoadInstancesFailed() {
-    this.setState({ instances: [] })
+    this.setState({ instances: [], instancesLoadState: 'error' })
   }
 
   onLoadInstanceDetail(endpoint, instance) {
@@ -148,12 +149,25 @@ class WizardStore extends Reflux.Store
   }
 
   onNewState() {
-    this.setState(this.blankState)
+    this.setState(this._assignNewState())
   }
 
   onUpdateWizardState(state, callback = null) {
     this.setState(state)
     if (callback) callback()
+  }
+
+  _assignNewState() {
+    let newState = {}
+    for (let i in this.blankState) {
+      if (typeof this.blankState[i] == "object" && this.blankState[i] != null &&
+        this.blankState[i].constructor !== Array) {
+        newState[i] = Object.assign({}, this.blankState[i])
+      } else {
+        newState[i] = this.blankState[i]
+      }
+    }
+    return newState
   }
 
 }

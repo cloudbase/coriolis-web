@@ -70,6 +70,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .networks {
   :global(.item) {
     color: $black;
+    padding: 8px 0;
     :global(.cell) {
       &:nth-child(1) {
         flex: 10;
@@ -84,6 +85,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         padding-left: 8px;
         display: block;
       }
+    }
+    &:hover {
+      background: transparent;
     }
   }
 }
@@ -105,25 +109,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .instances {
   :global(.item) {
+    flex-direction: column;
+    padding: 0px 0px 16px;
+    border: 0 !important;
     :global(.cell){
       &:nth-child(1) {
         color: $black;
-        width:50%;
-        margin-right: 4px;
+        width:100%;
         display: block;
       }
       &:nth-child(2) {
-        width:50%;
+        width:100%;
+        font-size: 80%;
+        padding-top: 4px;
       }
       &:nth-child(3) {
         color: $blue;
         flex: 1;
       }
     }
+    &:hover {
+      background: transparent;
+    }
   }
 }
 .schedules {
-
+  :global(.item) {
+    padding: 8px 0;
+    &:hover {
+      background: transparent;
+    }
+  }
 }
 .migrationType {
   line-height: 20px;
