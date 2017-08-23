@@ -440,9 +440,8 @@ button {
 :global(.items-list) {
   :global(.item) {
     display: flex;
-    padding: 8px 0;
+    padding: 8px;
     border-bottom: 1px solid $gray-light;
-    padding-left: 16px;
     &:first-child {
       border-top: 1px solid $gray-light;
     }
