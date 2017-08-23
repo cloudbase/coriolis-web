@@ -34,7 +34,6 @@ class WizardSummary extends Component {
   static propTypes = {
     setWizardState: PropTypes.func,
     summary: PropTypes.object,
-
   }
 
   constructor(props) {
@@ -75,7 +74,8 @@ class WizardSummary extends Component {
             {this.dateTypes.indexOf(item.type) == -1 ? item.type : moment(item.date).format("MMM Do YYYY")}
           </span>
           <span className="cell">
-            {item.hour.label + ":" + item.minute.label + " " + item.tod + " " + item.timezone}
+            {item.type != "Execute Now" &&
+              (item.hour.label + ":" + item.minute.label + " " + item.tod + " " + item.timezone)}
           </span>
         </div>
       ), this)
@@ -86,11 +86,8 @@ class WizardSummary extends Component {
           <TextTruncate line={1} text={vm.name} truncateText="..." />
         </span>
         <span className="cell">
-          {vm.num_cpu} vCPU | {vm.memory_mb} MB RAM
+          {vm.num_cpu} vCPU | {vm.memory_mb} MB RAM {vm.flavor_name && ("| " + vm.flavor_name)}
         </span>
-        {/*            <span className="cell">
-         {vm.status}
-         </span>*/}
       </div>
     ))
 
@@ -130,15 +127,15 @@ class WizardSummary extends Component {
                 <div className={s.row}>
                   <span>Source: <br /> </span>
                   <span>
-                    <span className={s.cloudBox}>{this.props.summary.sourceCloud.name}</span>
                     <TextTruncate line={1} text={this.props.summary.sourceCloud.credential.name} truncateText="..." />
+                    <span className={s.cloudBox}>{this.props.summary.sourceCloud.name}</span>
                   </span>
                 </div>
                 <div className={s.row}>
                   <span>Target:</span>
                   <span>
-                    <span className={s.cloudBox}>{this.props.summary.targetCloud.name}</span>
                     <TextTruncate line={1} text={this.props.summary.targetCloud.credential.name} truncateText="..." />
+                    <span className={s.cloudBox}>{this.props.summary.targetCloud.name}</span>
                   </span>
                 </div>
               </div>
@@ -161,7 +158,7 @@ class WizardSummary extends Component {
               <h3>
                 Schedule
               </h3>
-              <div className={s.instances + " items-list"}>
+              <div className={s.schedules + " items-list"}>
                 {schedules}
               </div>
             </div>

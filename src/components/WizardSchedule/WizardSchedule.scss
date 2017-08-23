@@ -18,7 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @import '../variables.scss';
 
 .root {
-
+  :global(.items-list) {
+    :global(.item) {
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
 }
 .addScheduleBtn {
   display: block;
