@@ -56,5 +56,6 @@ export const defaultLabels = {
   shape_name: "Shape Name",
   migr_shape_name: "Migration Shape Name",
   use_colocated_snapshots: "Use Collocated Snapshots",
-  allow_untrusted_swift: "Allow Untrusted Swift"
+  allow_untrusted_swift: "Allow Untrusted Swift",
+  glance_api_version: "Glance API Version"
 }
