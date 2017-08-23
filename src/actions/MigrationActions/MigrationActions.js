@@ -226,7 +226,7 @@ MigrationActions.deleteReplicaExecution.listen((replica, executionId, callback =
     .catch(MigrationActions.deleteReplicaExecution.failed);
 })
 
-MigrationActions.addMigration.listen((migration, callback = null) => {
+MigrationActions.addMigration.listen((migration, callback = null, errorCallback = null) => {
   let payload = {}
   let instances = []
 
@@ -274,7 +274,12 @@ MigrationActions.addMigration.listen((migration, callback = null) => {
       if (callback) {
         callback(migration);
       }
-    }, MigrationActions.addMigration.failed)
+    }, (response) => {
+      MigrationActions.addMigration.failed(response)
+      if (errorCallback) {
+        errorCallback(migration);
+      }
+    })
     .catch(MigrationActions.addMigration.failed);
 })
 
