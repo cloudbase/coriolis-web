@@ -128,12 +128,7 @@ class MigrationWizard extends Reflux.Component {
 
   finish() {
     let newMigration = this.state
-    // TODO: Integrate tasks
-    newMigration.tasks = {
-      completed: 1,
-      remaining: 12
-    }
-    newMigration.status = "PAUSED"
+    this.setState({ valid: false }) // disables finish button
     newMigration.created = new Date()
 
     MigrationActions.addMigration(newMigration, () => {
@@ -144,6 +139,8 @@ class MigrationWizard extends Reflux.Component {
       } else {
         Location.push('/migrations')
       }
+    }, () => {
+      this.setState({ valid: true }) // re-enable button in case of error
     });
   }
 
