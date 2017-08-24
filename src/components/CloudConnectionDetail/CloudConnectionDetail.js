@@ -20,7 +20,6 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './CloudConnectionDetail.scss';
 import Moment from 'react-moment';
 import LoadingIcon from '../LoadingIcon';
-import { defaultLabels } from '../../constants/CloudLabels';
 import Helper from '../Helper';
 
 const title = 'connection details';
@@ -61,7 +60,7 @@ class CloudConnectionDetail extends Component {
         if (value === false) value = "No"
 
         fields.push({
-          fieldName: defaultLabels[fieldName] ? defaultLabels[fieldName] : fieldName,
+          fieldName: Helper.convertCloudFieldLabel(fieldName),
           fieldValue: value
         })
       }
@@ -135,7 +134,7 @@ class CloudConnectionDetail extends Component {
                 Type
               </div>
               <div className={s.value}>
-                {item.type}
+                {Helper.convertCloudLabel(item.type)}
               </div>
             </div>
             <div className={s.formGroup}>

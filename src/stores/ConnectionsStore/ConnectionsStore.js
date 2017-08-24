@@ -21,9 +21,8 @@
 import React, { Component, PropTypes } from 'react';
 import Reflux from 'reflux';
 import ConnectionsActions from '../../actions/ConnectionsActions';
-import WizardActions from '../../actions/WizardActions';
 import MigrationActions from '../../actions/MigrationActions';
-import { defaultLabels } from '../../constants/CloudLabels';
+import Helper from '../../components/Helper';
 import Api from '../../components/ApiCaller'
 import {servicesUrl, providerType} from '../../config';
 
@@ -343,7 +342,7 @@ class ConnectionsStore extends Reflux.Store
       for (var propName in cloudData.properties) {
         let field = {
           name: propName,
-          label: defaultLabels[propName] ? defaultLabels[propName] : propName
+          label: Helper.convertCloudFieldLabel(propName)
         }
 
         if (cloudData.properties[propName].default) {
