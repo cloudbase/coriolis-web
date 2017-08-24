@@ -280,10 +280,14 @@ class WizardVms extends Component {
           <div className="items-list instances">
             {this.renderSearch()}
           </div>
-          <div className={s.selectionCount + (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}>
+          <div className={s.selectionCount +
+            (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
+          >
             {this.instancesSelected()} instances selected
           </div>
-          <div className={s.pagination + (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}>
+          <div className={s.pagination +
+            (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
+          >
             <span
               className={(this.state.page == 0 ? "disabled " : "") + s.prev}
               onClick={(e) => this.previousPage(e)}

@@ -122,7 +122,7 @@ class ReplicaList extends Reflux.Component {
         <span className="cell cell-icon" onClick={(e) => this.replicaDetail(e, item)}>
           <div className={"icon " + item.type}></div>
           <span className="details">
-            <TextTruncate line={1} truncateText="..." text={item.name}/>
+            <TextTruncate line={1} truncateText="..." text={item.name} />
             <span className={s.migrationStatus + " status-pill " + item.status}>{item.status}</span>
           </span>
         </span>
@@ -134,7 +134,7 @@ class ReplicaList extends Reflux.Component {
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
           <span className={s.label}>Last execution</span>
           <span className={s.value}>
-            {lastExecution ? <Moment format="MMM Do YYYY HH:mm" date={lastExecution}/> : "-"}
+            {lastExecution ? <Moment format="MMM Do YYYY HH:mm" date={lastExecution} /> : "-"}
           </span>
         </span>
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
@@ -209,7 +209,6 @@ class ReplicaList extends Reflux.Component {
       );
     }
   }
-
 }
 
 export default withStyles(ReplicaList, s);

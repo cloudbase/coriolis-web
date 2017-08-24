@@ -215,9 +215,7 @@ class MigrationList extends Reflux.Component {
         </div>
       );
     }
-
   }
-
 }
 
 export default withStyles(MigrationList, s);
