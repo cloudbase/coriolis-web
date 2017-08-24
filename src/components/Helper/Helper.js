@@ -22,22 +22,22 @@ class Helper extends Component {
   static getRandomArbitrary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
   }
+
   static generateMigrationName(type) {
     return type + "_" + moment().format("MMDDYY-HHmmss")
   }
+
   static getTimeObject(rawDate) {
     let offset = (new Date().getTimezoneOffset()) / 60 * -1;
 
     return moment(rawDate).add(offset, 'hours')
   }
+
   static toAsterisk(password) {
-    console.log(password, password.length)
     let hiddenPass = ""
     for (let i = 0; i++; i < password.length) {
-      console.log(i)
       hiddenPass = hiddenPass + "*"
     }
-    console.log(hiddenPass)
     return hiddenPass
   }
 }
