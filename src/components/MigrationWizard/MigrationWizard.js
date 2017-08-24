@@ -61,7 +61,7 @@ class MigrationWizard extends Reflux.Component {
   componentWillMount() {
     super.componentWillMount.call(this)
     this.context.onSetTitle(title);
-    if (this.props.wizard_type == "replica") {
+    if (this.props.wizard_type === "replica") {
       WizardActions.updateWizardState({
         migrationType: "replica"
       })
@@ -70,13 +70,13 @@ class MigrationWizard extends Reflux.Component {
 
 
   back() {
-    if (this.state.backCallback != null) {
+    if (typeof this.state.backCallback === "function") {
       this.state.backCallback((e) => this.initBackStep(e))
     } else {
       if (this.state.currentStep != "WizardMigrationType") {
         this.initBackStep()
       } else {
-        if (this.props.wizard_type == "replica") {
+        if (this.props.wizard_type === "replica") {
           Location.push("/replicas")
         } else {
           Location.push("/migrations")
@@ -97,11 +97,11 @@ class MigrationWizard extends Reflux.Component {
   }
 
   next() {
-    if (this.state.currentStep == "WizardSummary") {
+    if (this.state.currentStep === "WizardSummary") {
       this.finish()
     } else if (this.state.valid) {
       // Callback to run before next step
-      if (this.state.nextCallback != null) {
+      if (typeof this.state.nextCallback === "function") {
         this.state.nextCallback((e) => this.initNextStep(e))
       } else {
         this.initNextStep()
@@ -134,7 +134,7 @@ class MigrationWizard extends Reflux.Component {
     MigrationActions.addMigration(newMigration, () => {
       ConnectionsActions.resetSelections()
       WizardActions.newState()
-      if (newMigration.migrationType == "replica") {
+      if (newMigration.migrationType === "replica") {
         Location.push('/replicas')
       } else {
         Location.push('/migrations')
