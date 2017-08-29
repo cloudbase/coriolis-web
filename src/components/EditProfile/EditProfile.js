@@ -100,11 +100,7 @@ class EditProfile extends Component {
 
   isValid(field) {
     if (field.required && this.state.formSubmitted) {
-      if (this.state.currentCloudData[field.name].length == 0) {
-        return false
-      } else {
-        return true
-      }
+      return this.state.currentCloudData[field.name].length != 0;
     } else {
       return true
     }

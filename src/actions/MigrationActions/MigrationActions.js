@@ -52,10 +52,7 @@ MigrationActions.loadMigrations.listen(() => {
 
 MigrationActions.loadMigrations.shouldEmit = () => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
-  if (typeof projectId === "undefined") {
-    return false
-  }
-  return true
+  return typeof projectId !== "undefined";
 }
 
 MigrationActions.loadReplicas.listen(() => {
@@ -70,11 +67,7 @@ MigrationActions.loadReplicas.listen(() => {
 
 MigrationActions.loadReplicas.shouldEmit = () => {
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
-  if (typeof projectId === "undefined") {
-    return false
-  }
-
-  return true
+  return typeof projectId !== "undefined";
 }
 
 MigrationActions.loadMigration.listen((migration) => {
