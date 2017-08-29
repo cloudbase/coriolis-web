@@ -44,6 +44,7 @@ class ReplicaView extends Reflux.Component {
 
     this.state = {
       title: 'Coriolis: View Replica',
+      isBeingExecuted: false,
       confirmationDialog: {
         visible: false,
         message: "Are you sure?",
@@ -64,8 +65,13 @@ class ReplicaView extends Reflux.Component {
   }
 
   executeReplica() {
+    this.setState({ isBeingExecuted: true })
     let item = this.state.replicas.filter(replica => replica.id == this.props.replicaId)[0]
-    MigrationActions.executeReplica(item)
+    MigrationActions.executeReplica(item, () => {
+      this.setState({ isBeingExecuted: false })
+    }, () => {
+      this.setState({ isBeingExecuted: false })
+    })
   }
 
   goBack() {
@@ -127,7 +133,7 @@ class ReplicaView extends Reflux.Component {
                 <div>
                   <button
                     className="gray"
-                    disabled={item.status === "RUNNING"}
+                    disabled={item.status === "RUNNING" || this.state.isBeingExecuted}
                     onClick={(e) => this.executeReplica(e)}
                   >
                     Execute Now
