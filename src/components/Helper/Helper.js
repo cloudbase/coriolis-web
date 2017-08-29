@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Component } from 'react';
 import moment from 'moment';
+import { cloudLabels, defaultLabels } from '../../constants/CloudLabels';
 
 class Helper extends Component {
   static getRandomArbitrary(min, max) {
@@ -39,6 +40,14 @@ class Helper extends Component {
       hiddenPass = hiddenPass + "*"
     }
     return hiddenPass
+  }
+
+  static convertCloudFieldLabel(label) {
+    return defaultLabels[label] || label
+  }
+
+  static convertCloudLabel(label) {
+    return cloudLabels[label] || label
   }
 }
 

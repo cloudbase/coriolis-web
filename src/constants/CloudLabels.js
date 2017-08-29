@@ -59,3 +59,7 @@ export const defaultLabels = {
   allow_untrusted_swift: "Allow Untrusted Swift",
   glance_api_version: "Glance API Version"
 }
+
+export const cloudLabels = {
+  vmware_vsphere: 'vmware'
+}
