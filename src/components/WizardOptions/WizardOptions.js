@@ -91,11 +91,7 @@ class WizardOptions extends Reflux.Component {
       if (!this.state.destination_environment[field.name]) {
         return false
       } else {
-        if (this.state.destination_environment[field.name].trim().length == 0) {
-          return false
-        } else {
-          return true
-        }
+        return this.state.destination_environment[field.name].trim().length != 0;
       }
     } else {
       return true

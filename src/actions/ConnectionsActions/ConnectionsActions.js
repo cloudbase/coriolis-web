@@ -177,7 +177,6 @@ ConnectionsActions.saveEditEndpoint.listen((connection, data, callback = null) =
     method: "PUT",
     data: payload
   }).then((response) => {
-    console.log("CALLBACK", callback)
     if (typeof callback === "function") {
       callback(response)
     }

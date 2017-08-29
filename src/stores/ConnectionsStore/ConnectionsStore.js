@@ -18,10 +18,9 @@
  */
 
 
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import Reflux from 'reflux';
 import ConnectionsActions from '../../actions/ConnectionsActions';
-import WizardActions from '../../actions/WizardActions';
 import MigrationActions from '../../actions/MigrationActions';
 import { defaultLabels } from '../../constants/CloudLabels';
 import Api from '../../components/ApiCaller'
@@ -29,41 +28,6 @@ import {servicesUrl, providerType} from '../../config';
 
 class ConnectionsStore extends Reflux.Store
 {
-  connections = [
-    {
-      id: "vSphere-Cluster",
-      name: "vSphere-Cluster",
-      description: "",
-      created: new Date(),
-      cloudName: "vmware",
-      secretUrl: null,
-      credentials: {
-
-      }
-    },
-    {
-      id: "vSphere-Cluster2",
-      name: "vSphere-Cluster2",
-      description: "",
-      created: new Date(),
-      cloudName: "vmware",
-      secretUrl: null,
-      credentials: {
-
-      }
-    },
-    {
-      id: "azure-Cluster",
-      name: "Azure-Cluster",
-      description: "",
-      created: new Date(),
-      cloudName: "azure",
-      secretUrl: null,
-      credentials: {
-
-      }
-    }
-  ]
 
   constructor()
   {
@@ -84,7 +48,7 @@ class ConnectionsStore extends Reflux.Store
     let clouds = []
     if (response.data.providers) {
       let providers = response.data.providers
-      for (var provider in providers) {
+      for (let provider in providers) {
         let cloud = {
           name: provider,
           credentialSelected: null,
@@ -139,7 +103,7 @@ class ConnectionsStore extends Reflux.Store
 
   onUpdateProvider(provider) {
     let allClouds = this.state.allClouds
-    for (var i in allClouds) {
+    for (let i in allClouds) {
       if (allClouds[i].name == provider.name) {
         allClouds[i] = provider
       }
@@ -152,7 +116,7 @@ class ConnectionsStore extends Reflux.Store
       return false
     } else {
       let allClouds = this.state.allClouds
-      for (var i in allClouds) {
+      for (let i in allClouds) {
         allClouds[i].credentials = []
         this.state.connections.forEach(connection => {
           if (connection.type == allClouds[i].name) {
@@ -296,9 +260,6 @@ class ConnectionsStore extends Reflux.Store
     }
 
     if (providerName == "azure" && type == "connection") {
-      let subscriptionId = {
-        subscription_id: cloudData.properties.subscription_id
-      }
       let userCredentialFields = {
         properties: { subscription_id: cloudData.properties.subscription_id },
         required: cloudData.properties.user_credentials.required
@@ -340,7 +301,7 @@ class ConnectionsStore extends Reflux.Store
     } else {
       let fields = []
       let sortedFields = [{}, {}]
-      for (var propName in cloudData.properties) {
+      for (let propName in cloudData.properties) {
         let field = {
           name: propName,
           label: defaultLabels[propName] ? defaultLabels[propName] : propName
