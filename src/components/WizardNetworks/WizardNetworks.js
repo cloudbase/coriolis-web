@@ -57,8 +57,13 @@ class WizardNetworks extends Component {
       valid = false
     }
 
+    let networks = props.data.networks
+    if (networks && networks.length) {
+      networks.sort((a, b) => a.network_name > b.network_name)
+    }
+
     this.state = {
-      networks: props.data.networks || null,
+      networks: networks || null,
       nextStep: "WizardSchedule",
       valid: valid
     }
@@ -100,7 +105,11 @@ class WizardNetworks extends Component {
     }
     if (props.data.targetNetworks && props.data.targetNetworks.length) {
       this.networkOptions = []
-      props.data.targetNetworks.forEach((network) => {
+      
+      let targetNetworks = props.data.targetNetworks
+      targetNetworks.sort((a, b) => a.name > b.name)
+
+      targetNetworks.forEach((network) => {
         this.networkOptions.push({
           label: network.name,
           value: network.name
