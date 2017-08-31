@@ -82,20 +82,25 @@ ConnectionsActions.loadNetworks.listen((endpoint) => {
     .catch(ConnectionsActions.loadNetworks.failed);
 })
 
+function getBarbicanPayload(data) {
+  return {
+    payload: JSON.stringify(data),
+    payload_content_type: "text/plain",
+    algorithm: "aes",
+    bit_length: 256,
+    mode: "cbc",
+    content_types: {
+      default: "text/plain"
+    }
+  }
+}
+
 ConnectionsActions.newEndpoint.listen((data, callback = null) => {
   if (useSecret) {
-    let barbicanPayload = {
-      payload: JSON.stringify(data.connection_info),
-      payload_content_type: "text/plain",
-      content_types: {
-        default: "text/plain"
-      }
-    }
-
     Api.sendAjaxRequest({
       url: servicesUrl.barbican + "/v1/secrets",
       method: "POST",
-      data: barbicanPayload
+      data: getBarbicanPayload(data.connection_info)
     }).then((response) => {
       ConnectionsActions.newEndpoint.success(response, data, callback)
     }, ConnectionsActions.newEndpoint.failed)
@@ -141,18 +146,11 @@ ConnectionsActions.editEndpoint.listen((connection, data, callback = null) => {
       url: servicesUrl.barbican + "/v1/secrets/" + uuid,
       method: "DELETE"
     })
-    let barbicanPayload = {
-      payload: JSON.stringify(data.connection_info),
-      payload_content_type: "text/plain",
-      content_types: {
-        default: "text/plain"
-      }
-    }
 
     Api.sendAjaxRequest({
       url: servicesUrl.barbican + "/v1/secrets",
       method: "POST",
-      data: barbicanPayload
+      data: getBarbicanPayload(data.connection_info)
     }).then((response) => {
       ConnectionsActions.editEndpoint.success(response, connection, data, callback)
     }, ConnectionsActions.editEndpoint.failed)
@@ -177,7 +175,6 @@ ConnectionsActions.saveEditEndpoint.listen((connection, data, callback = null) =
     method: "PUT",
     data: payload
   }).then((response) => {
-    console.log("CALLBACK", callback)
     if (typeof callback === "function") {
       callback(response)
     }

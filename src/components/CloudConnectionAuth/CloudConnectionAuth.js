@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './CloudConnectionAuth.scss';
-import { defaultLabels } from '../../constants/CloudLabels';
+import Helper from '../Helper';
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
 
@@ -56,7 +56,7 @@ class CloudConnectionAuth extends Component {
         if (value === false) value = "No"
 
         fields.push({
-          fieldName: defaultLabels[fieldName] ? defaultLabels[fieldName] : fieldName,
+          fieldName: Helper.convertCloudFieldLabel(fieldName),
           fieldValue: value
         })
       }

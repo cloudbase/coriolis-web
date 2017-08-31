@@ -20,8 +20,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardSummary.scss';
 import moment from 'moment';
 import TextTruncate from 'react-text-truncate';
-import { defaultLabels } from '../../constants/CloudLabels';
-
+import Helper from '../Helper';
 
 const title = 'Summary';
 
@@ -54,7 +53,7 @@ class WizardSummary extends Component {
     let fields = []
     for (let i in this.props.summary.destination_environment) {
       fields.push({
-        label: defaultLabels[i] ? defaultLabels[i] : i,
+        label: Helper.convertCloudFieldLabel(i),
         value: this.props.summary.destination_environment[i]
       })
     }
@@ -128,14 +127,14 @@ class WizardSummary extends Component {
                   <span>Source: <br /> </span>
                   <span>
                     <TextTruncate line={1} text={this.props.summary.sourceCloud.credential.name} truncateText="..." />
-                    <span className={s.cloudBox}>{this.props.summary.sourceCloud.name}</span>
+                    <span className={s.cloudBox}>{Helper.convertCloudLabel(this.props.summary.sourceCloud.name)}</span>
                   </span>
                 </div>
                 <div className={s.row}>
                   <span>Target:</span>
                   <span>
                     <TextTruncate line={1} text={this.props.summary.targetCloud.credential.name} truncateText="..." />
-                    <span className={s.cloudBox}>{this.props.summary.targetCloud.name}</span>
+                    <span className={s.cloudBox}>{Helper.convertCloudLabel(this.props.summary.targetCloud.name)}</span>
                   </span>
                 </div>
               </div>

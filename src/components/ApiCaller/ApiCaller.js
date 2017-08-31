@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /* eslint-disable */
 
-import React, { Component } from 'react';
+import React from 'react';
 import NotificationActions from '../../actions/NotificationActions';
 import Location from '../../core/Location';
 
@@ -45,12 +45,12 @@ class ApiCaller {
       let headers = Object.assign({}, this.defaultHeaders)
 
       if (options.headers) {
-        for (var key in options.headers) {
+        for (let key in options.headers) {
           headers[key] = options.headers[key]
         }
       }
 
-      for (name in headers) {
+      for (let name in headers) {
         request.setRequestHeader(name, headers[name])
       }
 
