@@ -100,7 +100,7 @@ class EndpointLink extends Reflux.Component {
         onClick={this.handleClick}
       >{this.state.connection.name}</a>)
     } else {
-      return <div><span className="taskIcon ERROR" />Endpoint not found</div>
+      return <div><span className="taskIcon ERROR" />Endpoint missing</div>
     }
   }
 }

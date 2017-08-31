@@ -118,6 +118,28 @@ MigrationActions.deleteReplica.listen((replica, callback = null) => {
 
 MigrationActions.executeReplica.listen((replica, callback = null) => {
   if (replica.type == 'replica') {
+    // check if endpoints exists
+    let connections = Reflux.GlobalState.connectionStore.connections
+    let originEndpoint = false
+    let destinationEndpoint = false
+
+    connections.forEach(connection => {
+      if (replica.origin_endpoint_id === connection.id) {
+        originEndpoint = true
+      }
+      if (replica.destination_endpoint_id === connection.id) {
+        destinationEndpoint = true
+      }
+    })
+
+    if (!originEndpoint) {
+      NotificationActions.notify("Origin endpoint is missing. Cannot execute this replica.", "error")
+      return
+    }
+    if (!destinationEndpoint) {
+      NotificationActions.notify("Destination endpoint is missing. Cannot execute this replica.", "error")
+      return
+    }
     let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
     let payload = {
