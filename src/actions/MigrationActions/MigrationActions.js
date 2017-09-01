@@ -116,7 +116,7 @@ MigrationActions.deleteReplica.listen((replica, callback = null) => {
     .catch(MigrationActions.deleteReplica.failed);
 })
 
-MigrationActions.executeReplica.listen((replica, callback = null) => {
+MigrationActions.executeReplica.listen((replica, callback = null, errorCallback = null) => {
   if (replica.type == 'replica') {
     // check if endpoints exists
     let connections = Reflux.GlobalState.connectionStore.connections
@@ -158,8 +158,18 @@ MigrationActions.executeReplica.listen((replica, callback = null) => {
         if (callback) {
           callback(replica, response)
         }
-      }, MigrationActions.executeReplica.failed)
-      .catch(MigrationActions.executeReplica.failed);
+      }, (err) => {
+        MigrationActions.executeReplica.failed(err)
+        if (errorCallback) {
+          errorCallback(replica, err)
+        }
+      })
+      .catch((err) => {
+        MigrationActions.executeReplica.failed(err)
+        if (errorCallback) {
+          errorCallback(replica, err)
+        }
+      });
   } else {
     NotificationActions.notify("You cannot execute a migration.", "warning")
   }
