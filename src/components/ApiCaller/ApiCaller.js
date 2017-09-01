@@ -94,7 +94,7 @@ class ApiCaller {
       };
 
       request.onerror = (result) => {
-        NotificationActions.notify("Request failed, there is a problem with the connection.", "error")
+        NotificationActions.notify("Request failed, there might be a problem with the connection to the server.", "error")
 
         console.log('Error Response: ', result.data);
         reject({ status: 500, data: 'Connection error' });
