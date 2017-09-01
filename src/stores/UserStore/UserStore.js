@@ -29,6 +29,7 @@ class UserStore extends Reflux.Store
 {
   user = {
     id: null,
+    scoped: false,
     name: "-",
     email: "-",
     created: new Date(),
@@ -80,6 +81,12 @@ class UserStore extends Reflux.Store
     })
   }
 
+  onLoginScope() {
+    let currentUser = this.state.currentUser
+    currentUser.scoped = false
+    this.setState({ currentUser: currentUser })
+  }
+
   onLoginScopeSuccess(response) {
     this.setState({ loadingState: false })
 
@@ -88,6 +95,7 @@ class UserStore extends Reflux.Store
     currentUser.name = response.data.token.user.name
     currentUser.token = response.headers['X-Subject-Token'] || response.headers['x-subject-token']
     currentUser.project = response.data.token.project
+    currentUser.scoped = true
 
     cookie.save('token', currentUser.token, { path: "/", expires: moment().add(1, 'hour').toDate() })
     cookie.save('projectId', currentUser.project.id, { path: "/", expires: moment().add(1, 'months').toDate() })

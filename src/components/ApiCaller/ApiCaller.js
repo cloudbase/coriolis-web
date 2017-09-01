@@ -87,7 +87,7 @@ class ApiCaller {
           }
           if (result.status == 401) {
             this.resetHeaders()
-            Location.push("/login")
+            window.location.href = "/"
           }
           reject({ status: request.status });
         }
