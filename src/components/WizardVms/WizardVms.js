@@ -93,7 +93,7 @@ class WizardVms extends Component {
         let selectedInstances = this.props.data.selectedInstances
         let index = -1
         selectedInstances.forEach((instance, key) => {
-          if (instance.name == item.name) {
+          if (instance.id === item.id) {
             index = key
           }
         })
@@ -168,7 +168,7 @@ class WizardVms extends Component {
   isSelected(item) {
     let selected = false;
     this.props.data.selectedInstances.forEach(instance => {
-      if (instance.name == item.name) {
+      if (instance.id === item.id) {
         selected = true
       }
     })
