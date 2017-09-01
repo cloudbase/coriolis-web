@@ -47,7 +47,13 @@ class ReplicaExecutions extends Component {
     this.state = {
       executionRef: null,
       tasks: null,
-      confirmationDialog: {
+      deleteConfirmationDialog: {
+        visible: false,
+        message: "Are you sure?",
+        onConfirm: null,
+        onCancel: null
+      },
+      cancelExecutionConfirmationDialog: {
         visible: false,
         message: "Are you sure?",
         onConfirm: null,
@@ -86,8 +92,19 @@ class ReplicaExecutions extends Component {
   }
 
   cancelExecution() {
-    MigrationActions.cancelMigration(this.props.replica, () => {
-      this.refreshExecution()
+    this.setState({
+      cancelExecutionConfirmationDialog: {
+        visible: true,
+        onConfirm: () => {
+          MigrationActions.cancelMigration(this.props.replica, () => {
+            this.refreshExecution()
+          })
+          this.setState({ cancelExecutionConfirmationDialog: { visible: false } })
+        },
+        onCancel: () => {
+          this.setState({ cancelExecutionConfirmationDialog: { visible: false } })
+        }
+      }
     })
   }
 
@@ -99,10 +116,10 @@ class ReplicaExecutions extends Component {
 
   deleteExecution() {
     this.setState({
-      confirmationDialog: {
+      deleteConfirmationDialog: {
         visible: true,
         onConfirm: () => {
-          this.setState({ confirmationDialog: { visible: false } })
+          this.setState({ deleteConfirmationDialog: { visible: false } })
           let index = this.props.replica.executions.indexOf(this.state.executionRef)
 
           MigrationActions.deleteReplicaExecution(this.props.replica, this.state.executionRef.id, () => {
@@ -116,7 +133,7 @@ class ReplicaExecutions extends Component {
           })
         },
         onCancel: () => {
-          this.setState({ confirmationDialog: { visible: false } })
+          this.setState({ deleteConfirmationDialog: { visible: false } })
         }
       }
     })
@@ -200,10 +217,16 @@ class ReplicaExecutions extends Component {
               <Tasks tasks={this.state.tasks} />
             </div>
             <ConfirmationDialog
-              visible={this.state.confirmationDialog.visible}
-              message={this.state.confirmationDialog.message}
-              onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
-              onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
+              visible={this.state.deleteConfirmationDialog.visible}
+              message={this.state.deleteConfirmationDialog.message}
+              onConfirm={(e) => this.state.deleteConfirmationDialog.onConfirm(e)}
+              onCancel={(e) => this.state.deleteConfirmationDialog.onCancel(e)}
+            />
+            <ConfirmationDialog
+              visible={this.state.cancelExecutionConfirmationDialog.visible}
+              message={this.state.cancelExecutionConfirmationDialog.message}
+              onConfirm={(e) => this.state.cancelExecutionConfirmationDialog.onConfirm(e)}
+              onCancel={(e) => this.state.cancelExecutionConfirmationDialog.onCancel(e)}
             />
           </div>
         );
