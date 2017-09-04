@@ -25,6 +25,7 @@ import MigrationActions from '../../actions/MigrationActions';
 import Helper from '../../components/Helper';
 import Api from '../../components/ApiCaller'
 import {servicesUrl, providerType} from '../../config';
+import Location from '../../core/Location';
 
 class ConnectionsStore extends Reflux.Store
 {
@@ -194,7 +195,16 @@ class ConnectionsStore extends Reflux.Store
         })*/
       })
     }
+
     this.setState({connections: connections})
+
+    if (window.location.pathname === "/" || window.location.pathname === "/login") {
+      if (connections.length === 0) {
+        Location.push('/cloud-endpoints')
+      } else {
+        Location.push('/replicas')
+      }
+    }
     ConnectionsActions.assignConnectionProvider()
     MigrationActions.loadMigrations()
     MigrationActions.loadReplicas()

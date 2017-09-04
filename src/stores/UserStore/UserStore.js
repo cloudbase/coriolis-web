@@ -107,10 +107,6 @@ class UserStore extends Reflux.Store
     ConnectionsActions.loadConnections()
     UserActions.getScopedProjects()
     UserActions.getUserInfo(currentUser.id)
-
-    if (window.location.pathname == "/" || window.location.pathname == "/login") {
-      Location.push('/replicas');
-    }
   }
 
   onLoginScopeFailed(token) {
