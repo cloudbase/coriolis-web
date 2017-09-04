@@ -174,8 +174,12 @@ class UserStore extends Reflux.Store
   onSwitchProject(projectId) {
     if (projectId) {
       let token = cookie.load('unscopedToken')
-      Api.setDefaultHeader('X-Auth-Token', null)
-      UserActions.loginScope(token, projectId)
+      if (token) {
+        Api.setDefaultHeader('X-Auth-Token', null)
+        UserActions.loginScope(token, projectId)
+      } else {
+        UserActions.logout()
+      }
     }
   }
 
