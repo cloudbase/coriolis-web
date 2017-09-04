@@ -73,12 +73,12 @@ const footerLogoSvg = `
         </g>
     </g>
 </svg>`
-const origin = "http://10.7.1.44/federation"
+const origin = ""
 const loginButtons = [
   {
     name: "Google",
     id: "google",
-    url: `http://coriolis.samfira.com:5000/v3/auth/OS-FEDERATION/websso/openid?origin=${origin}`
+    url: ``
   }
 ]
 
