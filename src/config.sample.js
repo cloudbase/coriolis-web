@@ -46,6 +46,14 @@ export const providerType = {
   endpoint: 16
 }
 
+export const loginButtons = [
+  {
+    name: "Microsoft",
+    id: "microsoft",
+    url: ``
+  }
+]
+
 export const useSecret = true; // flag to use secret_ref for endpoints
 
 export const tasksPollTimeout = 5000 // milliseconds
