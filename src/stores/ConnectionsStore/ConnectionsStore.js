@@ -297,7 +297,8 @@ class ConnectionsStore extends Reflux.Store
           {
             label: "User Credentials",
             value: "user_credentials",
-            fields: this.processCloud(userCredentialFields)
+            fields: this.processCloud(userCredentialFields),
+            default: true
           },
           {
             label: "Service Principal Credentials",
