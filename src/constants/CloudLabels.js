@@ -50,6 +50,8 @@ export const defaultLabels = {
   resource_group: "Resource Group",
   worker_size: "Worker Size",
   subscription_id: "Subscription ID",
+  user_credentials: "User Credentials",
+  service_principal_credentials: "Service Principal Credentials",
   tenant_id: "Tenant ID",
   client_id: "Client ID",
   client_secret: "Client Secret",
