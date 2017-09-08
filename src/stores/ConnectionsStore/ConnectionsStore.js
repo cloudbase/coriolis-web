@@ -265,123 +265,103 @@ class ConnectionsStore extends Reflux.Store
   }
 
   static processCloud(cloudData, providerName = null, type = 'connection') {
-    if (providerName != "azure" && providerName != null && cloudData.oneOf) {
+    if (!cloudData.hasOwnProperty('type')) {
       cloudData = cloudData.oneOf[0]
     }
 
-    if (providerName == "azure" && type == "connection") {
-      let userCredentialFields = {
-        properties: { subscription_id: cloudData.properties.subscription_id },
-        required: cloudData.properties.user_credentials.required
+    let fields = []
+    let sortedFields = [{}, {}]
+    for (let propName in cloudData.properties) {
+      let field = {
+        name: propName,
+        label: Helper.convertCloudFieldLabel(propName)
       }
 
-      userCredentialFields.required.push("subscription_id")
-
-      for (var i in cloudData.properties.user_credentials.properties) {
-        userCredentialFields.properties[i] = cloudData.properties.user_credentials.properties[i]
+      if (cloudData.properties[propName].default) {
+        field.default = cloudData.properties[propName].default
       }
+      switch (cloudData.properties[propName].type) {
+        case "boolean":
+          // Values need to be strings, due to a limitation in react-dropdown
+          field.options = [
+            {label: 'Yes', value: 'true'}, 
+            {label: 'No', value: 'false'}
+          ]
 
-      let servicePrincipalCredentialFields = {
-        properties: { subscription_id: cloudData.properties.subscription_id },
-        required: cloudData.properties.service_principal_credentials.required
-      }
-      for (var i in cloudData.properties.service_principal_credentials.properties) {
-        servicePrincipalCredentialFields.properties[i] = cloudData.properties.service_principal_credentials.properties[i]
-      }
-      servicePrincipalCredentialFields.required.push("subscription_id")
+          field.default = (field.default === 'true' || field.default === true) ? 'true' : 'false'
+          break
 
-      let newCloudData = {
+        case "string":
+          field.type = "text"
+          break
+
+        case "integer":
+          if (cloudData.properties[propName].minimum && cloudData.properties[propName].maximum) {
+            field.type = "dropdown"
+            field.options = []
+            for (let i = cloudData.properties[propName].minimum; i <= cloudData.properties[propName].maximum; i++) {
+              // Values need to be strings, due to a limitation in react-dropdown
+              field.options.push({
+                  label: i.toString(),
+                  value: i.toString()
+                },
+              )
+            }
+          } else {
+            field.type = "text"
+          }
+          break
+          case "object":
+            field.value = field.name
+            field.default = true
+            field.fields = this.processCloud(cloudData.properties[propName])
+            break
+        }
+
+      field.defaultValue = cloudData.properties[propName].default;
+      field.dataType = cloudData.properties[propName].type;
+
+      if (field.name == 'username') {
+        field.required = true
+        sortedFields[0] = field
+      } else if (field.name == 'password') {
+        field.type = "password"
+        field.required = true
+        sortedFields[1] = field
+      } else if (cloudData.required && cloudData.required.indexOf(field.name) > -1) {
+        field.required = true
+        sortedFields.push(field)
+      } else {
+        fields.push(field)
+      }
+    }
+    //in case we don't have username and password
+    if (Object.keys(sortedFields[0]).length === 0 && Object.keys(sortedFields[0]).length === 0) {
+      sortedFields.shift()
+      sortedFields.shift()
+    }
+
+    // If a hierarchical structure has been generated, 
+    // group all top level nodes (fields of type object) in a 'login_type' switch (basically multpiple login types are now supported),
+    // put all non-nodes (fields not of type object) as children of top level nodes
+    let objectFields = fields.filter(field => field.dataType === 'object')
+    if (objectFields.length > 1) {
+      let otherFields = fields.filter(field => field.dataType !== 'object' && field.name !== 'secret_ref')
+      let loginRadioField = {
         type: "switch-radio",
         name: "login_type",
-        options: [
-          {
-            label: "User Credentials",
-            value: "user_credentials",
-            fields: this.processCloud(userCredentialFields),
-            default: true
-          },
-          {
-            label: "Service Principal Credentials",
-            value: "service_principal_credentials",
-            fields: this.processCloud(servicePrincipalCredentialFields)
-          }
-        ]
+        options: objectFields
       }
+      
+      loginRadioField.options.forEach(option => {
+        option.fields = option.fields.concat(otherFields)
+      })
 
-      return [newCloudData]
+      return [loginRadioField]
     } else {
-      let fields = []
-      let sortedFields = [{}, {}]
-      for (let propName in cloudData.properties) {
-        let field = {
-          name: propName,
-          label: Helper.convertCloudFieldLabel(propName)
-        }
-
-        if (cloudData.properties[propName].default) {
-          field.default = cloudData.properties[propName].default
-        }
-        switch (cloudData.properties[propName].type) {
-          case "boolean":
-            field.type = "dropdown"
-
-            // Values need to be strings, due to a limitation in react-dropdown
-            field.options = [
-              {label: 'Yes', value: 'true'}, 
-              {label: 'No', value: 'false'}
-            ]
-
-            field.default = (field.default === 'true' || field.default === true) ? 'true' : 'false'
-            break
-
-          case "string":
-            field.type = "text"
-            break
-
-          case "integer":
-            if (cloudData.properties[propName].minimum && cloudData.properties[propName].maximum) {
-              field.type = "dropdown"
-              field.options = []
-              for (let i = cloudData.properties[propName].minimum; i <= cloudData.properties[propName].maximum; i++) {
-                // Values need to be strings, due to a limitation in react-dropdown
-                field.options.push({
-                    label: i.toString(),
-                    value: i.toString()
-                  },
-                )
-              }
-            } else {
-              field.type = "text"
-            }
-            break
-        }
-
-        field.defaultValue = cloudData.properties[propName].default;
-        field.dataType = cloudData.properties[propName].type;
-
-        if (field.name == 'username') {
-          field.required = true
-          sortedFields[0] = field
-        } else if (field.name == 'password') {
-          field.type = "password"
-          field.required = true
-          sortedFields[1] = field
-        } else if (cloudData.required.indexOf(field.name) > -1) {
-          field.required = true
-          sortedFields.push(field)
-        } else {
-          fields.push(field)
-        }
-      }
-      //in case we don't have username and password
-      if (Object.keys(sortedFields[0]).length === 0 && Object.keys(sortedFields[0]).length === 0) {
-        sortedFields.shift()
-        sortedFields.shift()
-      }
-      console.log("sortedFields.concat(fields)", sortedFields.concat(fields))
-
       return sortedFields.concat(fields)
     }
+    
   }
 }
 
