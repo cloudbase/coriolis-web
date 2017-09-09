@@ -33,6 +33,8 @@ export const defaultLabels = {
   glance_upload: "Glance Upload",
   keypair_name: "Keypair Name",
   fip_pool_name: "Floating IP Pool",
+  migr_worker_use_fip: "Use Floating IPs for Migration Workers",
+  migr_worker_use_config_drive: "Use Config Drive for Migration Workers",
   migr_fip_pool_name: "Migration Floating IP Pool",
   migr_flavor_name: "Migration Flavor Name",
   migr_image_name: "Migration Image Name",
