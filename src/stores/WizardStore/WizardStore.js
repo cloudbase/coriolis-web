@@ -112,7 +112,7 @@ class WizardStore extends Reflux.Store
 
   onLoadInstanceDetail(endpoint, instance) {
     let projectId = Reflux.GlobalState.userStore.currentUser.project.id
-    let instanceNameBase64 = btoa(instance.name)
+    let instanceNameBase64 = btoa(instance.instance_name)
     let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/instances/${instanceNameBase64}`
 
     Api.sendAjaxRequest({
