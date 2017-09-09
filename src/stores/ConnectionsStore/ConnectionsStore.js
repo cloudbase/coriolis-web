@@ -320,6 +320,7 @@ class ConnectionsStore extends Reflux.Store
         if (cloudData.properties[propName].default) {
           field.default = cloudData.properties[propName].default
         }
+        field.defaultValue = cloudData.properties[propName].default;
         switch (cloudData.properties[propName].type) {
           case "boolean":
             field.type = "dropdown"
@@ -328,7 +329,14 @@ class ConnectionsStore extends Reflux.Store
               {label: "Yes", value: "true"},
               {label: "No", value: "false"}
             ]
-            field.default = field.default && "true"
+            // NOTE: for the dropdown we want our defaults to be "Yes"/"No":
+            if (typeof field.default === "boolean" && field.default) {
+              field.default = {label: "Yes", value: "true"}
+              field.defaultValue = true
+            } else {
+              field.default = {label: "No", value: "false"}
+              field.defaultValue = false
+            }
             break
 
           case "string":
@@ -353,7 +361,6 @@ class ConnectionsStore extends Reflux.Store
             break
         }
 
-        field.defaultValue = cloudData.properties[propName].default;
         field.dataType = cloudData.properties[propName].type;
 
         if (field.name == 'username') {
