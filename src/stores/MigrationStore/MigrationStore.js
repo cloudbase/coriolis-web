@@ -96,7 +96,9 @@ class MigrationStore extends Reflux.Store
     })
 
     replicas.sort((a, b) => {
-      return moment(b.lastExecution || b.created_at).isAfter(moment(a.lastExecution || a.created_at))
+      let aTime = a.lastExecution || a.updated_at || a.created_at
+      let bTime = b.lastExecution || b.updated_at || b.created_at
+      return moment(bTime).diff(moment(aTime))
     })
 
     this.setState({
