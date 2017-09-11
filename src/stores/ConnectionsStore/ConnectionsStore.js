@@ -328,7 +328,7 @@ class ConnectionsStore extends Reflux.Store
               {label: "Yes", value: "true"},
               {label: "No", value: "false"}
             ]
-
+            field.default = field.default && "true"
             break
 
           case "string":
