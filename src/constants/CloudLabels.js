@@ -38,6 +38,8 @@ export const defaultLabels = {
   migr_image_name: "Migration Image Name",
   migr_image_name_map: "Migration Image Name Map",
   migr_image_id: "Migration Image ID",
+  migr_worker_use_config_drive: "Migration Worker use ConfigDrive",
+  migr_worker_use_fip: "Migration Worker use FIP",
   delete_disks_on_vm_termination: "Delete Disks on VM termination",
   set_dhcp: "Set DHCP",
   vm_size: "VM Size",
