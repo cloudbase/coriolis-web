@@ -63,12 +63,12 @@ class Table extends Component {
   }
 
   rowMouseDown(e) {
-    this.dragStartPosition = {x: e.screenX, y: e.screenY};
+    this.dragStartPosition = { x: e.screenX, y: e.screenY };
   }
 
   rowMouseUp(e, index) {
-    this.dragStartPosition = this.dragStartPosition || {x: e.screenX, y: e.screenY};
-   
+    this.dragStartPosition = this.dragStartPosition || { x: e.screenX, y: e.screenY };
+
     // If a drag operation has been initiated (i.e. text selection), don't call toggleDrawer
     if (Math.abs(this.dragStartPosition.x - e.screenX) < 3 && Math.abs(this.dragStartPosition.y - e.screenY) < 3) {
       this.toggleDrawer(index);

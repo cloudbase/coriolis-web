@@ -323,12 +323,14 @@ class ConnectionsStore extends Reflux.Store
         switch (cloudData.properties[propName].type) {
           case "boolean":
             field.type = "dropdown"
+
+            // Values need to be strings, due to a limitation in react-dropdown
             field.options = [
-              // Values need to be strings, due to a limitation in react-dropdown
-              {label: "Yes", value: "true"},
-              {label: "No", value: "false"}
+              {label: 'Yes', value: 'true'}, 
+              {label: 'No', value: 'false'}
             ]
-            field.default = field.default && "true"
+
+            field.default = (field.default === 'true' || field.default === true) ? 'true' : 'false'
             break
 
           case "string":

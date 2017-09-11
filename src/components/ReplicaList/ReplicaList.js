@@ -111,7 +111,7 @@ class ReplicaList extends Reflux.Component {
     if (count == 0) {
       tasksRemaining = "-"
     }
-    
+
     return (
       <div className={"item " + (item.selected ? "selected" : "")} key={"replica_" + item.id}>
         <span className="cell cell-icon" onClick={(e) => this.replicaDetail(e, item)}>
@@ -129,7 +129,10 @@ class ReplicaList extends Reflux.Component {
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>
           <span className={s.label}>Last execution</span>
           <span className={s.value}>
-            {item.lastExecution ? <Moment format="MMM Do YYYY HH:mm" date={Helper.getTimeObject(item.lastExecution)} /> : "-"}
+            {
+              item.lastExecution ?
+                <Moment format="MMM Do YYYY HH:mm" date={Helper.getTimeObject(item.lastExecution)} /> : "-"
+            }
           </span>
         </span>
         <span className={"cell " + s.composite} onClick={(e) => this.replicaDetail(e, item)}>

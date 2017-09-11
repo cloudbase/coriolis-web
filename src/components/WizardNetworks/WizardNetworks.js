@@ -105,7 +105,7 @@ class WizardNetworks extends Component {
     }
     if (props.data.targetNetworks && props.data.targetNetworks.length) {
       this.networkOptions = []
-      
+
       let targetNetworks = props.data.targetNetworks
       targetNetworks.sort((a, b) => a.name > b.name)
 

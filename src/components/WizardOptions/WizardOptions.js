@@ -124,7 +124,7 @@ class WizardOptions extends Reflux.Component {
   handleOptionsFieldChange(e, field) {
     let destinationEnvironment = this.state.destination_environment
     if (field.type == 'dropdown') {
-      destinationEnvironment[field.name] = e
+      destinationEnvironment[field.name] = e.value
     } else {
       destinationEnvironment[field.name] = e.target.value
     }
@@ -177,6 +177,12 @@ class WizardOptions extends Reflux.Component {
         )
         break;
       case "dropdown":
+        let value = this.state.destination_environment[field.name]
+
+        if (value) {
+          value = field.options && field.options.length && field.options.find(o => o.value === value).label
+        }
+
         returnValue = (
           <div
             className={"form-group " + extraClasses}
@@ -187,7 +193,7 @@ class WizardOptions extends Reflux.Component {
               options={field.options}
               onChange={(e) => this.handleOptionsFieldChange(e, field)}
               placeholder={field.label + (field.required ? " *" : "")}
-              value={this.state.destination_environment[field.name]}
+              value={value}
             />
           </div>
         )
