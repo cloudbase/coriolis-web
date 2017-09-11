@@ -90,11 +90,13 @@ class MigrationStore extends Reflux.Store
 
       if (replica.executions.length) {
         MigrationActions.getReplicaExecutions(replica)
+        
+        replica.lastExecution = replica.executions[replica.executions.length - 1].created_at
       }
     })
 
     replicas.sort((a, b) => {
-      return moment(b.created_at).isAfter(moment(a.created_at))
+      return moment(b.lastExecution || b.created_at).isAfter(moment(a.lastExecution || a.created_at))
     })
 
     this.setState({
