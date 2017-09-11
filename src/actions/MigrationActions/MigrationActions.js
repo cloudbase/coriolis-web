@@ -271,11 +271,31 @@ MigrationActions.addMigration.listen((migration, callback = null, errorCallback 
 
   let destinationEnv = {}
 
+  let getValueInOriginalDataType = (fieldName, value) => {
+    let fields = migration.targetCloud.cloudRef['import_' + migration.migrationType].fields
+    let field = fields.find(f => f.name === fieldName)
+
+    if (!field) {
+      return value
+    }
+
+    switch (field.dataType) {
+      case 'boolean':
+        return value === 'true' || value === true
+      case 'integer':
+        return parseInt(value, 10)
+      default:
+        return value
+    }
+  }
+
   for (let i in migration.destination_environment) {
-    if (migration.destination_environment[i].label) { // removing label from dropdown if present
-      destinationEnv[i] = migration.destination_environment[i].value
+    let destField = migration.destination_environment[i]
+
+    if (destField.label) { // removing label from dropdown if present
+      destinationEnv[i] = getValueInOriginalDataType(i, destField.value)
     } else {
-      destinationEnv[i] = migration.destination_environment[i]
+      destinationEnv[i] = getValueInOriginalDataType(i, destField)
     }
   }
 
