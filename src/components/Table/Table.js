@@ -51,7 +51,7 @@ class Table extends Component {
   }
 
 
-  toggleDrawer(e, index) {
+  toggleDrawer(index) {
     let newOpenState = this.state.openState
     let toggled = !newOpenState[index]
     for (let i in newOpenState) {
@@ -60,6 +60,21 @@ class Table extends Component {
     newOpenState[index] = toggled
 
     this.setState({ openState: newOpenState })
+  }
+
+  rowMouseDown(e) {
+    this.dragStartPosition = {x: e.screenX, y: e.screenY};
+  }
+
+  rowMouseUp(e, index) {
+    this.dragStartPosition = this.dragStartPosition || {x: e.screenX, y: e.screenY};
+   
+    // If a drag operation has been initiated (i.e. text selection), don't call toggleDrawer
+    if (Math.abs(this.dragStartPosition.x - e.screenX) < 3 && Math.abs(this.dragStartPosition.y - e.screenY) < 3) {
+      this.toggleDrawer(index);
+    }
+
+    this.dragStartPosition = null;
   }
 
   render() {
@@ -96,7 +111,8 @@ class Table extends Component {
           <div
             className={s.row + " row " + (this.state.openState[index] ? "isOpen" : "")}
             key={"row_" + index}
-            onClick={(e) => this.toggleDrawer(e, index)}
+            onMouseDown={e => this.rowMouseDown(e)}
+            onMouseUp={e => this.rowMouseUp(e, index)}
           >
             {row} {detailView}
           </div>)
