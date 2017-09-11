@@ -25,7 +25,7 @@ import UserStore from '../../stores/UserStore';
 import NotificationActions from '../../actions/NotificationActions';
 import LoadingIcon from '../LoadingIcon';
 import withViewport from '../withViewport.js';
-import {loginButtons} from '../../config.js';
+import { loginButtons } from '../../config.js';
 
 const title = 'Log In';
 const coriolisTextSvg = `
@@ -74,7 +74,6 @@ const footerLogoSvg = `
         </g>
     </g>
 </svg>`
-const origin = ""
 
 export class LoginPage extends Reflux.Component {
 
