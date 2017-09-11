@@ -186,7 +186,6 @@ class WizardOptions extends Reflux.Component {
             <Dropdown
               options={field.options}
               onChange={(e) => this.handleOptionsFieldChange(e, field)}
-              placeholder={field.label + (field.required ? " *" : "")}
               value={this.state.destination_environment[field.name]}
             />
           </div>
