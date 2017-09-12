@@ -50,6 +50,17 @@ class CloudConnectionDetail extends Component {
 
   processProps(props) {
     let fields = []
+
+    let addField = (name, value) => {
+      name = Helper.convertCloudFieldLabel(name)
+      if (!fields.find(f => f.fieldName === name)) {
+        fields.push({
+          fieldName: name,
+          fieldValue: value
+        })
+      }
+    }
+
     if (props.connection.credentials) {
       for (let fieldName in props.connection.credentials) {
         let value = props.connection.credentials[fieldName]
@@ -59,56 +70,51 @@ class CloudConnectionDetail extends Component {
         if (value === true) value = "Yes"
         if (value === false) value = "No"
 
-        fields.push({
-          fieldName: Helper.convertCloudFieldLabel(fieldName),
-          fieldValue: value
-        })
+        if (typeof value === 'object') {
+          for (let extraField in value) {
+            addField(extraField, value[extraField])
+          }
+        } else {
+          addField(fieldName, value)
+        }
       }
     }
+
+    // Sort username and password to the front
+    let sortExceptions = { Username: 1, Password: 2 };
+    fields.sort((a, b) => {
+      if (sortExceptions[a.fieldName] && sortExceptions[b.fieldName]) {
+        return sortExceptions[a.fieldName] - sortExceptions[b.fieldName];
+      } else if (sortExceptions[a.fieldName]) {
+        return -1;
+      } else if (sortExceptions[b.fieldName]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    })
+
     return fields
   }
 
   renderAuthFields() {
     if (this.state.fields.length) {
       return this.state.fields.map((field, index) => {
-        if (typeof field.fieldValue === "object") {
-          let extraFields = []
-          for (let i in field.fieldValue) {
-            let fieldValue = field.fieldValue[i] ? field.fieldValue[i] : "-"
-            if (i == "password") {
-              continue
-            }
-            extraFields.push((
-              <div className={s.formGroup} key={"formGroup_" + i}>
-                <div className={s.title}>
-                  {i}
-                </div>
-                <div className={s.value}>
-                  {fieldValue}
-                </div>
+        if (field.fieldName !== 'login_type') {
+          return (
+            <div className={s.formGroup} key={"formGroup_" + index}>
+              <div className={s.title}>
+                {field.fieldName}
               </div>
-            ))
-          }
-          return extraFields
+              <div className={s.value}>
+                {field.fieldValue || '-'}
+              </div>
+            </div>
+          )
         } else {
-          let fieldValue = field.fieldValue ? field.fieldValue : "-"
-          if (field.fieldName != "password") {
-            return (
-              <div className={s.formGroup} key={"formGroup_" + index}>
-                <div className={s.title}>
-                  {field.fieldName}
-                </div>
-                <div className={s.value}>
-                  {fieldValue}
-                </div>
-              </div>
-            )
-          } else {
-            return null
-          }
+          return null
         }
-      }
-      )
+      })
     } else {
       return <LoadingIcon />
     }
