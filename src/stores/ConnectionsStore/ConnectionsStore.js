@@ -311,6 +311,9 @@ class ConnectionsStore extends Reflux.Store
           }
           break
           case "object":
+            if (type !== 'connection') {
+              break
+            }
             field.value = field.name
             field.default = true
             field.fields = this.processCloud(cloudData.properties[propName])
@@ -333,23 +336,24 @@ class ConnectionsStore extends Reflux.Store
     }
 
     let sortPriority = {username: 1, password: 2}
-    fields.sort(function(a, b) {
+    fields.sort((a, b) => {
       if (sortPriority[a.name] && sortPriority[b.name]) {
         return sortPriority[a.name] - sortPriority[b.name];
-      } else if (sortPriority[a.name]) {
-        return -1
-      } else if (sortPriority[b.name]) {
-        return 1
-      } else {
-        return 0
       }
-    });
+      if (sortPriority[a.name] || (a.required && !b.required)) {
+        return -1
+      }
+      if (sortPriority[b.name] || (!a.required && b.required)) {
+        return 1
+      }
+      return 0
+    })
 
     // If a hierarchical structure has been generated, 
     // group all top level nodes (fields of type object) in a 'login_type' switch (basically multpiple login types are now supported),
     // put all non-nodes (fields not of type object) as children of top level nodes
     let objectFields = fields.filter(field => field.dataType === 'object')
-    if (objectFields.length > 1) {
+    if (type === 'connection' && objectFields.length > 1) {
       let otherFields = fields.filter(field => field.dataType !== 'object' && field.name !== 'secret_ref')
       let loginRadioField = {
         type: "switch-radio",
@@ -366,10 +370,9 @@ class ConnectionsStore extends Reflux.Store
       })
 
       return [loginRadioField]
-    } else {
-      return fields
     }
-    
+
+    return fields
   }
 }
 
