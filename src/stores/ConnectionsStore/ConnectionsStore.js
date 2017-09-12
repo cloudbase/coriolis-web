@@ -270,7 +270,6 @@ class ConnectionsStore extends Reflux.Store
     }
 
     let fields = []
-    let sortedFields = [{}, {}]
     for (let propName in cloudData.properties) {
       let field = {
         name: propName,
@@ -321,25 +320,30 @@ class ConnectionsStore extends Reflux.Store
       field.defaultValue = cloudData.properties[propName].default;
       field.dataType = cloudData.properties[propName].type;
 
-      if (field.name == 'username') {
+      if (field.name == 'username' || (cloudData.required && cloudData.required.indexOf(field.name) > -1)) {
         field.required = true
-        sortedFields[0] = field
-      } else if (field.name == 'password') {
-        field.type = "password"
+      } 
+      
+      if (field.name == 'password') {
+        field.type = 'password'
         field.required = true
-        sortedFields[1] = field
-      } else if (cloudData.required && cloudData.required.indexOf(field.name) > -1) {
-        field.required = true
-        sortedFields.push(field)
-      } else {
-        fields.push(field)
       }
+
+      fields.push(field)
     }
-    //in case we don't have username and password
-    if (Object.keys(sortedFields[0]).length === 0 && Object.keys(sortedFields[0]).length === 0) {
-      sortedFields.shift()
-      sortedFields.shift()
-    }
+
+    let sortPriority = {username: 1, password: 2}
+    fields.sort(function(a, b) {
+      if (sortPriority[a.name] && sortPriority[b.name]) {
+        return sortPriority[a.name] - sortPriority[b.name];
+      } else if (sortPriority[a.name]) {
+        return -1
+      } else if (sortPriority[b.name]) {
+        return 1
+      } else {
+        return 0
+      }
+    });
 
     // If a hierarchical structure has been generated, 
     // group all top level nodes (fields of type object) in a 'login_type' switch (basically multpiple login types are now supported),
@@ -353,13 +357,17 @@ class ConnectionsStore extends Reflux.Store
         options: objectFields
       }
       
+      let isFirstOption = true
       loginRadioField.options.forEach(option => {
+        // set the first option in the radio group as the default
+        option.default = isFirstOption || null
+        isFirstOption = false
         option.fields = option.fields.concat(otherFields)
       })
 
       return [loginRadioField]
     } else {
-      return sortedFields.concat(fields)
+      return fields
     }
     
   }
