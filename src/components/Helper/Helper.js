@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Component } from 'react';
 import moment from 'moment';
-import { cloudLabels, defaultLabels } from '../../constants/CloudLabels';
+import { cloudLabels, explicitLabelDefs } from '../../constants/CloudLabels';
 
 class Helper extends Component {
   static getRandomArbitrary(min, max) {
@@ -43,7 +43,17 @@ class Helper extends Component {
   }
 
   static convertCloudFieldLabel(label) {
-    return defaultLabels[label] || label
+    explicitLabelDefs.forEach(def => {
+      let key = Object.keys(def)[0]
+      let regEx = new RegExp(`(?:^|_)${key}(?:$|_)`)
+      if (label.match(regEx)) {
+        label = label.replace(regEx, `_${def[key]}_`)
+      }
+    })
+
+    label = label.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ').trim()
+
+    return label
   }
 
   static convertCloudLabel(label) {
