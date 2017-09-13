@@ -91,7 +91,11 @@ class MigrationList extends Reflux.Component {
   }
 
   migrationDetail(e, item) {
-    Location.push('/migration/' + item.id + "/")
+    if (item.status === 'RUNNING') {
+      Location.push('/migration/tasks/' + item.id + "/")
+    } else {
+      Location.push('/migration/' + item.id + "/")
+    }
   }
 
   renderItem(item) {
