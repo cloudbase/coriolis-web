@@ -75,21 +75,18 @@ class ReplicaExecutions extends Component {
   componentWillReceiveProps(newProps) {
     if (newProps.replica && newProps.replica.executions.length) {
       let isNewExecution = newProps.replica.executions.length > (this.state.executionsCount || 0)
-      let execution = newProps.replica.executions[newProps.replica.executions.length - 1]
-      this.setState(prevState => {
-        // Don't update the component every time the last execution is updated
-        // Update the component if the last execution is the currently selected one
-        // Update the component if a new execution was just added
-        if (prevState.executionRef && prevState.executionRef.id !== execution.id && !isNewExecution) {
-          execution = prevState.executionRef
-        }
+      let lastExecution = newProps.replica.executions[newProps.replica.executions.length - 1]
 
-        return {
+      // Don't update the component every time the last execution is updated
+      // Update the component if the last execution is the currently selected one
+      // Update the component if a new execution was just added
+      if (!this.state.executionRef || this.state.executionRef.id === lastExecution.id || isNewExecution) {
+        this.setState({
           executionsCount: newProps.replica.executions.length,
-          executionRef: execution,
-          tasks: execution.tasks
-        }
-      })
+          executionRef: lastExecution,
+          tasks: lastExecution.tasks
+        })
+      }
     } else if (newProps.replica.executions.length == 0) {
       this.setState({
         executionRef: null,
@@ -219,7 +216,7 @@ class ReplicaExecutions extends Component {
                   {executionBtn}
                 </div>
               </div>
-              <Tasks tasks={this.state.tasks} />
+              <Tasks tasks={this.state.tasks} execution={this.state.executionRef} />
             </div>
             <ConfirmationDialog
               visible={this.state.deleteConfirmationDialog.visible}

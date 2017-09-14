@@ -38,7 +38,8 @@ function hasProgress(msg) {
 class Tasks extends Component {
 
   static propTypes = {
-    tasks: PropTypes.array
+    tasks: PropTypes.array,
+    execution: PropTypes.object
   }
 
 
@@ -52,7 +53,8 @@ class Tasks extends Component {
     ]
 
     this.state = {
-      listItems: []
+      listItems: [],
+      execution: null
     }
   }
 
@@ -63,7 +65,7 @@ class Tasks extends Component {
   componentWillReceiveProps(newProps) {
     let listItems = []
     if (newProps.tasks) {
-      newProps.tasks.forEach((item) => {
+      newProps.tasks.forEach(item => {
         let latestMessage
         if (item.progress_updates.length && item.progress_updates[item.progress_updates.length - 1]) {
           latestMessage = item.progress_updates[item.progress_updates.length - 1].message
@@ -148,9 +150,8 @@ class Tasks extends Component {
         listItems.push(newItem)
       }, this)
     }
-    this.setState({ listItems: listItems })
+    this.setState({ listItems: listItems, execution: newProps.execution })
   }
-
 
   render() {
     return (
@@ -159,6 +160,7 @@ class Tasks extends Component {
           (<div className={s.container}>
             <Table
               headerItems={this.headers}
+              parentId={this.state.execution && this.state.execution.id}
               listItems={this.state ? this.state.listItems : null}
               customClassName={s.table}
               show={this.state !== null}
