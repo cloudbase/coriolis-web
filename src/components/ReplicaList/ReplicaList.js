@@ -90,7 +90,11 @@ class ReplicaList extends Reflux.Component {
   }
 
   replicaDetail(e, item) {
-    Location.push('/replica/' + item.id + "/")
+    if (item.status === 'RUNNING') {
+      Location.push('/replica/executions/' + item.id + "/")
+    } else {
+      Location.push('/replica/' + item.id + "/")
+    }
   }
 
   renderItem(item) {
