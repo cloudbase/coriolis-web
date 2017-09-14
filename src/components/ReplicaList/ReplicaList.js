@@ -111,7 +111,6 @@ class ReplicaList extends Reflux.Component {
     if (count == 0) {
       tasksRemaining = "-"
     }
-
     return (
       <div className={"item " + (item.selected ? "selected" : "")} key={"replica_" + item.id}>
         <span className="cell cell-icon" onClick={(e) => this.replicaDetail(e, item)}>

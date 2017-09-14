@@ -105,18 +105,6 @@ class AddCloudConnection extends Reflux.Component {
   handleSave() {
     let valid = true
     let requiredFields = this.state.requiredFields
-    // If Azure, validate fields manually
-    if (this.state.currentCloud.name == "azure") {
-      if (this.state.currentCloudData.login_type == "user_credentials") {
-        requiredFields = ["subscription_id", "username", "password"]
-      } else if (this.state.currentCloudData.login_type == "service_principal_credentials") {
-        requiredFields = ["subscription_id", "tenant_id", "client_id", "client_secret"]
-      } else {
-        valid = false
-        NotificationActions.notify("Please choose the login type", "error")
-      }
-      this.setState({ requiredFields: requiredFields })
-    }
 
     for (let i in this.state.currentCloudData) {
       if (requiredFields.indexOf(i) > -1 && !this.state.currentCloudData[i]) {
@@ -144,6 +132,11 @@ class AddCloudConnection extends Reflux.Component {
         }
 
         let field = this.state.currentCloud.endpoint.fields.find(function findByName(f) { return f.name == this }, key);
+
+        if (!field || !field.dataType) {
+          continue;
+        }
+
         // Convert datatype
         switch (field.dataType) {
           case 'boolean':
@@ -169,28 +162,20 @@ class AddCloudConnection extends Reflux.Component {
         return;
       }
 
-      // If Azure, explicitly setting the fields right
-      if (this.state.currentCloud.name == "azure") {
-        credentials = {}
-        credentials["subscription_id"] = this.state.currentCloudData["subscription_id"]
-        if (this.state.currentCloudData["login_type"] == "user_credentials") {
-          credentials["user_credentials"] = {
-            username: this.state.currentCloudData["username"],
-            password: this.state.currentCloudData["password"]
-          }
-        } else {
-          credentials["service_principal_credentials"] = {
-            tenant_id: this.state.currentCloudData["tenant_id"],
-            client_id: this.state.currentCloudData["client_id"],
-            client_secret: this.state.currentCloudData["client_secret"]
-          }
-        }
-      }
+      // If there's a switch radio, create a hierarchical structure with the selected radio as the root.
+      this.state.currentCloud.endpoint.fields.forEach(field => {
+        if (field.type === 'switch-radio') {
+          credentials[credentials[field.name]] = {}
 
-      // Remove the login_type since it is not needed
-      if (this.state.currentCloud.name == "azure") {
-        delete credentials.login_type
-      }
+          field.options.forEach(fieldOptions => {
+            if (fieldOptions.value === credentials[field.name]) {
+              fieldOptions.fields.forEach(fieldOptionField => {
+                credentials[credentials[field.name]][fieldOptionField.name] = credentials[fieldOptionField.name]
+              })
+            }
+          })
+        }
+      })
 
       // If endpoint is new
       if (this.state.type == "new") {
@@ -311,8 +296,9 @@ class AddCloudConnection extends Reflux.Component {
           break
         case 'switch-radio':
           field.options.forEach(option => {
-            if (option.default && typeof currentCloudData[field.name] == "undefined") {
+            if (option.default && !currentCloudData[field.name]) {
               currentCloudData[field.name] = option.value
+              this.setRadioRequiredFields(field, option.value)
               this.setState({ currentCloudData: currentCloudData })
             }
           }, this)
@@ -347,6 +333,34 @@ class AddCloudConnection extends Reflux.Component {
   }
 
   /**
+   * Dinamically change the required fields affected by the current radio selection
+   * @param field
+   * @param currentValue
+   */
+  setRadioRequiredFields(field, currentValue) {
+    let requiredFields = this.state.requiredFields || [];
+
+    // Remove fields set by previous radio change
+    field.options.forEach(option => {
+      option.fields.forEach(f => {
+        requiredFields = requiredFields.filter(rf => rf !== f.name)
+      })
+    })
+
+    field.options.forEach(option => {
+      if (option.value === currentValue) {
+        option.fields.forEach(optionField => {
+          if (optionField.required) {
+            requiredFields.push(optionField.name);
+          }
+        })
+      }
+    })
+
+    this.setState({ requiredFields: requiredFields });
+  }
+
+  /**
    * Handles cancel edit/add endpoint
    */
   handleCancel() {
@@ -365,6 +379,11 @@ class AddCloudConnection extends Reflux.Component {
     } else {
       currentCloudData[field.name] = e.target.value
     }
+
+    if (field.type === 'switch-radio') {
+      this.setRadioRequiredFields(field, e.target.value)
+    }
+
     this.setState({ currentCloudData: currentCloudData })
   }
 
