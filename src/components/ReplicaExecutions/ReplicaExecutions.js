@@ -123,10 +123,12 @@ class ReplicaExecutions extends Component {
           let index = this.props.replica.executions.indexOf(this.state.executionRef)
 
           MigrationActions.deleteReplicaExecution(this.props.replica, this.state.executionRef.id, () => {
-            if (this.props.replica.executions[index - 1]) {
-              this.changeExecution(this.props.replica.executions[index - 1])
-            } else if (this.props.replica.executions[index + 1]) {
-              this.changeExecution(this.props.replica.executions[index + 1])
+            let executions = this.props.replica.executions
+
+            if (executions[index]) {
+              this.changeExecution(executions[index])
+            } else if (executions[index - 1]) {
+              this.changeExecution(executions[index - 1])
             } else {
               this.changeExecution(null)
             }
