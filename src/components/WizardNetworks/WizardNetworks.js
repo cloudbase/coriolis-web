@@ -64,7 +64,7 @@ class WizardNetworks extends Component {
 
     this.state = {
       networks: networks || null,
-      nextStep: "WizardSchedule",
+      nextStep: "WizardSummary",
       valid: valid
     }
   }
