@@ -25,6 +25,7 @@ class Table extends Component {
   static defaultProps = {
     headerItems: [],
     listItems: [],
+    parentId: null,
     show: true
   }
 
@@ -32,24 +33,28 @@ class Table extends Component {
     headerItems: PropTypes.array,
     listItems: PropTypes.array,
     customClassName: PropTypes.string,
-    show: PropTypes.bool
+    show: PropTypes.bool,
+    parentId: PropTypes.string
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      openState: []
+      openState: [],
+      parentId: null
     }
   }
 
   componentWillReceiveProps(newProps) {
     let openState = []
     for (let i in newProps.listItems) {
-      openState.push(newProps.listItems[i].openState)
+      // Use the previous open state if the table's parent ID is the same
+      // i.e. don't close the collapser if new props arrive
+      let prevOpenState = newProps.parentId === this.state.parentId && this.state.openState[i]
+      openState.push(newProps.listItems[i].openState || prevOpenState)
     }
-    this.setState({ openState: openState })
+    this.setState({ openState: openState, parentId: newProps.parentId })
   }
-
 
   toggleDrawer(index) {
     let newOpenState = this.state.openState

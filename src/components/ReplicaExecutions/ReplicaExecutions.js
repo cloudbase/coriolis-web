@@ -74,11 +74,19 @@ class ReplicaExecutions extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.replica && newProps.replica.executions.length) {
-      let execution = newProps.replica.executions[newProps.replica.executions.length - 1]
-      this.setState({
-        executionRef: execution,
-        tasks: execution.tasks
-      })
+      let isNewExecution = newProps.replica.executions.length > (this.state.executionsCount || 0)
+      let lastExecution = newProps.replica.executions[newProps.replica.executions.length - 1]
+
+      // Don't update the component every time the last execution is updated
+      // Update the component if the last execution is the currently selected one
+      // Update the component if a new execution was just added
+      if (!this.state.executionRef || this.state.executionRef.id === lastExecution.id || isNewExecution) {
+        this.setState({
+          executionsCount: newProps.replica.executions.length,
+          executionRef: lastExecution,
+          tasks: lastExecution.tasks
+        })
+      }
     } else if (newProps.replica.executions.length == 0) {
       this.setState({
         executionRef: null,
@@ -153,15 +161,10 @@ class ReplicaExecutions extends Component {
   }
 
   pollTasks() {
-    if (this.props && this.props.replica && this.props.replica.executions.length) {
-      if (this.props.replica.executions[this.props.replica.executions.length - 1].status == "RUNNING") {
-        MigrationActions.getReplicaExecutionDetail(this.props.replica, this.state.executionRef.id,
-          (replica, executionId, response) => {
-            this.setState({
-              tasks: response.data.execution.tasks
-            })
-          })
-      }
+    let executions = this.props && this.props.replica && this.props.replica.executions
+    let lastExecution = executions && executions.length && executions[executions.length - 1]
+    if (lastExecution.status === 'RUNNING') {
+      MigrationActions.getReplicaExecutionDetail(this.props.replica, lastExecution.id)
     }
   }
 
@@ -183,14 +186,13 @@ class ReplicaExecutions extends Component {
     if (this.props.replica) {
       if (this.props.replica.executions.length && this.state.executionRef) {
         let executionBtn = <button className="wire red" onClick={(e) => this.deleteExecution(e)}>Delete</button>
-        if (this.props.replica.executions && this.props.replica.executions[this.props.replica.executions.length - 1] &&
-          this.props.replica.executions[this.props.replica.executions.length - 1].status == "RUNNING") {
-          executionBtn =
+
+        if (this.state.executionRef.status === 'RUNNING') {
+          executionBtn = 
             <button className="gray wire" onClick={(e) => this.cancelExecution(e)}>Cancel execution</button>
         }
 
         let executionsSorted = this.props.replica.executions
-
         executionsSorted.sort((a, b) => a.number - b.number)
         let executionTime = Helper.getTimeObject(this.state.executionRef.created_at)
 
@@ -216,7 +218,7 @@ class ReplicaExecutions extends Component {
                   {executionBtn}
                 </div>
               </div>
-              <Tasks tasks={this.state.tasks} />
+              <Tasks tasks={this.state.tasks} execution={this.state.executionRef} />
             </div>
             <ConfirmationDialog
               visible={this.state.deleteConfirmationDialog.visible}
