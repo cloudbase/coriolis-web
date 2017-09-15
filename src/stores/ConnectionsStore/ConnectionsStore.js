@@ -355,17 +355,25 @@ class ConnectionsStore extends Reflux.Store
     let objectFields = fields.filter(field => field.dataType === 'object')
     if (type === 'connection' && objectFields.length > 1) {
       let otherFields = fields.filter(field => field.dataType !== 'object' && field.name !== 'secret_ref')
+      // Sort it so that if there's an option with username or password, it has priority
+      objectFields.sort((a, b) => {
+        let testFunc = f => f.name === 'username' || f.name === 'password'
+        if (a.fields.find(testFunc)) {
+          return -1
+        }
+        if (b.fields.find(testFunc)) {
+          return 1
+        }
+        return 0
+      })
       let loginRadioField = {
         type: "switch-radio",
         name: "login_type",
         options: objectFields
       }
       
-      let isFirstOption = true
-      loginRadioField.options.forEach(option => {
-        // set the first option in the radio group as the default
-        option.default = isFirstOption || null
-        isFirstOption = false
+      loginRadioField.options.forEach((option, index) => {
+        option.default = index === 0
         option.fields = option.fields.concat(otherFields)
       })
 
