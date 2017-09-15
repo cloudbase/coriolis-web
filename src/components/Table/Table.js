@@ -50,7 +50,8 @@ class Table extends Component {
     for (let i in newProps.listItems) {
       // Use the previous open state if the table's parent ID is the same
       // i.e. don't close the collapser if new props arrive
-      let prevOpenState = newProps.parentId === this.state.parentId && this.state.openState[i]
+      let isSameParent = this.state.parentId === null || newProps.parentId === this.state.parentId
+      let prevOpenState = isSameParent && this.state.openState[i]
       openState.push(newProps.listItems[i].openState || prevOpenState)
     }
     this.setState({ openState: openState, parentId: newProps.parentId })

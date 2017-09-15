@@ -161,15 +161,10 @@ class Tasks extends Component {
   }
 
   copyIdClick(e, item) {
-    e.preventDefault()
-    e.nativeEvent.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
-
     let succesful = Helper.copyTextToClipboard(item.id)
 
     if (succesful) {
-      NotificationActions.notify('The ID was copied to clipboard.')
+      NotificationActions.notify('The ID has been copied to clipboard.')
     } else {
       NotificationActions.notify('The ID couldn\'t be copied', 'error')
     }
