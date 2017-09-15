@@ -140,6 +140,7 @@ class UserOverview extends Reflux.Component {
           isOpen={this.state.showModal}
           contentLabel="Edit Profile"
           style={modalStyle}
+          onRequestClose={this.closeModal.bind(this)}
         >
           <EditProfile
             closeHandle={(e) => this.closeModal(e)}
