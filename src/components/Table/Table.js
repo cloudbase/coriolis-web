@@ -26,7 +26,8 @@ class Table extends Component {
     headerItems: [],
     listItems: [],
     parentId: null,
-    show: true
+    show: true,
+    resetOpenState: false
   }
 
   static propTypes = {
@@ -34,7 +35,8 @@ class Table extends Component {
     listItems: PropTypes.array,
     customClassName: PropTypes.string,
     show: PropTypes.bool,
-    parentId: PropTypes.string
+    parentId: PropTypes.string,
+    resetOpenState: PropTypes.bool
   }
 
   constructor(props) {
@@ -52,6 +54,7 @@ class Table extends Component {
       // i.e. don't close the collapser if new props arrive
       let isSameParent = this.state.parentId === null || newProps.parentId === this.state.parentId
       let prevOpenState = isSameParent && this.state.openState[i]
+      prevOpenState = newProps.resetOpenState ? false : prevOpenState
       openState.push(newProps.listItems[i].openState || prevOpenState)
     }
     this.setState({ openState: openState, parentId: newProps.parentId })

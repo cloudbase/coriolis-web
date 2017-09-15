@@ -177,6 +177,7 @@ class Tasks extends Component {
           (<div className={s.container}>
             <Table
               headerItems={this.headers}
+              resetOpenState={this.state.execution && this.state.execution.status === 'RUNNING'}
               parentId={this.state.execution && this.state.execution.id}
               listItems={this.state ? this.state.listItems : null}
               customClassName={s.table}

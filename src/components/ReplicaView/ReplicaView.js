@@ -27,6 +27,7 @@ import LoadingIcon from '../LoadingIcon';
 import TextTruncate from 'react-text-truncate';
 import Location from '../../core/Location';
 import ConfirmationDialog from '../ConfirmationDialog'
+import { tasksPollTimeout } from '../../config'
 
 class ReplicaView extends Reflux.Component {
 
@@ -62,14 +63,35 @@ class ReplicaView extends Reflux.Component {
 
   componentDidMount() {
     this.context.onSetTitle(this.state.title);
+    this.pollReplicaExecution()
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount.call(this)
+    clearInterval(this.interval)
+  }
+
+  pollReplicaExecution() {
+    clearInterval(this.interval)
+    this.interval = setInterval(this.pollReplicaExecution.bind(this), tasksPollTimeout)
+
+    MigrationActions.getReplicaExecutions(this.state.replicas.find(replica => replica.id == this.props.replicaId),
+      () => {
+        let execs = this.state.replicas.find(r => r.id == this.props.replicaId).executions
+        if (execs && execs.length && execs[execs.length - 1].status !== 'RUNNING') {
+          clearInterval(this.interval)
+        }
+      })
   }
 
   executeReplica() {
     this.setState({ isBeingExecuted: true })
     let item = this.state.replicas.filter(replica => replica.id == this.props.replicaId)[0]
     MigrationActions.executeReplica(item, () => {
+      this.pollReplicaExecution()
       this.setState({ isBeingExecuted: false })
     }, () => {
+      this.pollReplicaExecution()
       this.setState({ isBeingExecuted: false })
     })
   }
