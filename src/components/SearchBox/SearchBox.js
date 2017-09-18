@@ -25,8 +25,10 @@ class SearchBox extends Component {
     maxLines: PropTypes.number,
     minimize: PropTypes.bool,
     placeholder: PropTypes.string,
+    show: PropTypes.bool,
     onChange: PropTypes.func,
-    className: PropTypes.string
+    className: PropTypes.string,
+    isLoading: PropTypes.bool
   };
 
   static defaultProps = {
@@ -63,8 +65,12 @@ class SearchBox extends Component {
   }
 
   render() {
+    let renderLoading = () => this.props.isLoading ? <div className="taskIcon RUNNING"></div> : null
+    let hidden = this.props.show ? ' ' : ' hidden'
+
     return (
-      <div className={s.root}>
+      <div className={s.root + hidden}>
+        {renderLoading()}
         <input
           type="text"
           placeholder={this.props.placeholder}
@@ -72,7 +78,8 @@ class SearchBox extends Component {
           onChange={(e) => this.onChange(e)}
           onClick={(e) => this.toggleSearch(e)}
           onBlur={(e) => this.onBlurAction(e)}
-          className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox " + this.props.className}
+          className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox " +
+            this.props.className}
         />
       </div>
     );
