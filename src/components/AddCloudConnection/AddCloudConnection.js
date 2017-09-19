@@ -97,6 +97,10 @@ class AddCloudConnection extends Reflux.Component {
     } else if (this.props.cloud) {
       this.chooseCloud(this.props.cloud)
     }
+
+    // Fixes an issue with focus when multiple modals are rendered and escape key is not captured.
+    // Test with adding cloud connection from wizard.
+    setTimeout(() => { this.rootDiv.focus() }, 100)
   }
 
   /**
@@ -572,7 +576,7 @@ class AddCloudConnection extends Reflux.Component {
       modalBody = this.renderCloudFields(this.state.currentCloud)
     }
     return (
-      <div className={s.root}>
+      <div tabIndex="0" className={s.root} ref={rootDiv => { this.rootDiv = rootDiv }}>
         <div className={s.header}>
           <h3>{title}</h3>
         </div>
