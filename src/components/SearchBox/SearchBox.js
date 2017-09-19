@@ -65,7 +65,7 @@ class SearchBox extends Component {
   }
 
   render() {
-    let renderLoading = () => this.props.isLoading ? <div className="taskIcon RUNNING"></div> : null
+    let renderLoading = () => this.props.isLoading ? <div className="spinner"></div> : null
     let hidden = this.props.show ? ' ' : ' hidden'
 
     return (

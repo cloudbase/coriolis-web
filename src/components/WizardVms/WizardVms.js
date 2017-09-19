@@ -25,6 +25,7 @@ import LoadingIcon from '../LoadingIcon';
 
 const title = 'Select instances to migrate';
 const vmStatesConst = ["All", "RUNNING", "PAUSED", "STOPPED"]
+const loadingStates = { IDLE: 0, QUERY: 1, PAGINATION: 2 }
 const searchTimeout = 1000;
 
 class WizardVms extends Component {
@@ -55,7 +56,7 @@ class WizardVms extends Component {
     this.state = {
       valid,
       queryText: '',
-      searching: false,
+      loadingState: loadingStates.IDLE,
       page: 0,
       filterStatus: 'All',
       filteredData: this.props.data.instances ? this.props.data.instances.slice(0, itemsPerPage) : [],
@@ -79,16 +80,16 @@ class WizardVms extends Component {
   }
 
   processProps(props) {
-    let isSearching = typeof props.data.searching === undefined ? this.state.searching : props.data.searching
-    if (props.data.instances && !isSearching) {
+    let loadingState = typeof props.data.loadingState === undefined ? this.state.loadingState : props.data.loadingState
+    if (props.data.instances && !loadingState) {
       this.setState({
         filteredData: props.data.instances.slice(
           this.state.page * itemsPerPage, this.state.page * itemsPerPage + itemsPerPage),
-        searching: isSearching
+        loadingState: loadingState.IDLE
       })
     } else {
       this.setState({
-        searching: isSearching
+        loadingState: loadingState
       })
     }
   }
@@ -131,13 +132,13 @@ class WizardVms extends Component {
     }
 
     if (this.state.queryText != queryText) {
-      this.props.setWizardState({ searching: true })
+      this.props.setWizardState({ loadingState: loadingStates.QUERY })
 
       if (this.timeout != null) {
         clearTimeout(this.timeout)
       }
       this.timeout = setTimeout(() => {
-        this.setState({ queryText: queryText }, () => {
+        this.setState({ queryText: queryText, page: 0 }, () => {
           ConnectionsActions.loadInstances(
             { id: this.props.data.sourceCloud.credential.id },
             this.state.page,
@@ -183,7 +184,7 @@ class WizardVms extends Component {
 
   nextPage() {
     if (this.state.filteredData && this.state.filteredData.length == itemsPerPage) {
-      this.props.setWizardState({ searching: true })
+      this.props.setWizardState({ loadingState: loadingStates.PAGINATION })
       this.setState({ page: this.state.page + 1 }, () => {
         ConnectionsActions.loadInstances(
           { id: this.props.data.sourceCloud.credential.id },
@@ -196,7 +197,7 @@ class WizardVms extends Component {
 
   previousPage() {
     if (this.state.page > 0) {
-      this.props.setWizardState({ searching: true })
+      this.props.setWizardState({ loadingState: loadingStates.PAGINATION })
       this.setState({ page: this.state.page - 1 }, () => {
         ConnectionsActions.loadInstances(
           { id: this.props.data.sourceCloud.credential.id },
@@ -248,7 +249,7 @@ class WizardVms extends Component {
   }
 
   renderSearch() {
-    if (this.props.data.instancesLoadState === 'success' || this.state.searching) {
+    if (this.props.data.instancesLoadState === 'success' || this.state.loadingState) {
       return this.renderFilteredItems()
     }
 
@@ -280,10 +281,11 @@ class WizardVms extends Component {
           <div className={s.topFilters}>
             <SearchBox
               placeholder="Search VMs"
-              isLoading={this.state.searching}
+              isLoading={this.state.loadingState === loadingStates.QUERY}
               value={this.state.queryText}
               onChange={(e) => this.searchVm(e)}
-              show={(!this.state.filteredData || !!this.state.filteredData.length) || !!this.state.queryText}
+              show={(!this.state.filteredData || !!this.state.filteredData.length)
+                || this.state.loadingState > 0 || !!this.state.queryText}
             />
             <div className="category-filter hidden">
               {vmStates}
@@ -301,13 +303,16 @@ class WizardVms extends Component {
             (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
           >
             <span
-              className={(this.state.page === 0 || this.state.searching ? "disabled " : "") + s.prev}
+              className={(this.state.page === 0 || this.state.loadingState ? "disabled " : "") + s.prev}
               onClick={(e) => this.previousPage(e)}
             ></span>
-            <span className={s.currentPage}>{this.state.page + 1}</span>
+            <span className={s.currentPage}>{
+              this.state.loadingState === loadingStates.PAGINATION ?
+                <div className="spinner"></div> : this.state.page + 1
+            }</span>
             <span
               className={((this.state.filteredData && this.state.filteredData.length == itemsPerPage)
-                && !this.state.searching ? " " : "disabled ") + s.next}
+                && !this.state.loadingState ? " " : "disabled ") + s.next}
               onClick={(e) => this.nextPage(e)}
             ></span>
           </div>

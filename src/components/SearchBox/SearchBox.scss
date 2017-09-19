@@ -22,10 +22,10 @@ $searchStrokeColor: $gray-dark;
 
 .root {
   position: relative;
-  :global(.taskIcon) {
+  :global(.spinner) {
     position: absolute;
-    top: 2px;
-    right: 0px;
+    top: 3px;
+    right: 8px;
   }
 }
 

@@ -469,6 +469,21 @@ button {
   }
 }
 :global {
+  .spinner,
+  .spinner:after {
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+  }
+  .spinner {
+    position: relative;
+    border-top: 2px solid $gray;
+    border-right: 2px solid $gray;
+    border-bottom: 2px solid $gray;
+    border-left: 2px solid $blue;
+    transform: translateZ(0);
+    animation: rotate 2s infinite linear;
+  }
   .taskIcon {
     width: 16px;
     height: 16px;

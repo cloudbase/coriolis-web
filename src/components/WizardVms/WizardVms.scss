@@ -109,12 +109,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     cursor: default;
     width: 32px;
     height: 32px;
-    display: inline-block;
     float: left;
     text-align: center;
     line-height: 32px;
     border-left: 1px solid $gray;
     border-right: 1px solid $gray;
+    :global(.spinner) {
+      top: 8px;
+      left: 8px;
+      border-top-color: $gray;
+      border-right-color: $gray;
+      border-bottom-color: $gray;
+      border-left-color: $gray-lighter;
+    }
   }
   &:after {
     display: block;

@@ -60,7 +60,7 @@ class WizardStore extends Reflux.Store
   onLoadInstances(endpoint, page = 0, queryText = "", cache = true, clearSelection = false) {
     this.setState({ instancesLoadState: 'loading' })
     if (cache && (this.state.instances && this.state.instances[page * itemsPerPage])) {
-      this.setState({ searching: false, instancesLoadState: 'success' })
+      this.setState({ loadingState: 0, instancesLoadState: 'success' })
       return;
     }
 
@@ -105,11 +105,11 @@ class WizardStore extends Reflux.Store
       instances[(page * itemsPerPage) + index] = instance
     })
 
-    this.setState({ instances: instances, instancesLoadState: 'success', searching: false })
+    this.setState({ instances: instances, instancesLoadState: 'success', loadingState: 0 })
   }
 
   onLoadInstancesFailed() {
-    this.setState({ instances: [], instancesLoadState: 'error', searching: false })
+    this.setState({ instances: [], instancesLoadState: 'error', loadingState: 0 })
   }
 
   onLoadInstanceDetail(endpoint, instance) {
