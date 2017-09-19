@@ -217,6 +217,11 @@ class WizardVms extends Component {
     )
   }
 
+  refreshButtonClick() {
+    this.props.setWizardState({ loadingState: loadingStates.PAGINATION })
+    this.setState({ page: 0 }, this.reloadInstances)
+  }
+
   renderFilteredItems() {
     if (this.state.filteredData && this.state.filteredData.length) {
       let instances = this.state.filteredData.map((item, index) =>
@@ -277,7 +282,7 @@ class WizardVms extends Component {
             {this.instancesSelected()} instances selected
                 </div>
           <div className={s.refreshButton}
-            onClick={this.reloadInstances}
+            onClick={this.refreshButtonClick.bind(this)}
           >
             <div className="refresh icon"></div>
           </div>
