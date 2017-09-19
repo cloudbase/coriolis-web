@@ -34,13 +34,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     :global(.item) {
       position: relative;
       cursor: pointer;
-      padding-left: 0;
+      padding-left: 16px;
+      padding-right: 0;
       width: 100%;
       span:nth-child(2) {
         flex: 2;
       }
       span:nth-child(3) {
-        justify-content: center;
+        justify-content: flex-end;
+        padding-right: 8px;
       }
       span:nth-child(4) {
         flex: 2;
@@ -49,6 +51,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         position: absolute;
         left: -32px;
         top: 24px;
+        opacity: 0;
+        transition: opacity $animation-swift-out;
+      }
+      &:hover, &:global(.selected) {
+        :global(.checkbox-container) {
+          opacity: 1;
+        }
       }
     }
   }
@@ -59,6 +68,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       content: " ";
       height: 0;
     }
+    :global(.category-filter) {
+      position: relative;
+      left: 10px;
+      top: 5px;
+    }
   }
 }
 
@@ -66,7 +80,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   font-size: 14px;
   color: $gray-dark;
   float: left;
-  margin-top: 22px;
+  position: relative;
+  top: 6px;
 }
 .pagination {
   font-size: 14px;

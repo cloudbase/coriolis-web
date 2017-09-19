@@ -221,7 +221,9 @@ class WizardVms extends Component {
   renderFilteredItems() {
     if (this.state.filteredData && this.state.filteredData.length) {
       let instances = this.state.filteredData.map((item, index) =>
-        <div className="item" key={"vm_" + index} onClick={(e) => this.checkVm(e, item)}>
+        <div className={'item ' + (this.isSelected(item) ? 'selected' : '')}
+          key={"vm_" + index} onClick={(e) => this.checkVm(e, item)}
+        >
           <div className="checkbox-container">
             <input
               id={"vm_check_" + index}
@@ -279,6 +281,11 @@ class WizardVms extends Component {
       <div className={s.root}>
         <div className={s.container}>
           <div className={s.topFilters}>
+            <div className={s.selectionCount +
+              (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
+            >
+              {this.instancesSelected()} instances selected
+            </div>
             <SearchBox
               placeholder="Search VMs"
               isLoading={this.state.loadingState === loadingStates.QUERY}
@@ -293,11 +300,6 @@ class WizardVms extends Component {
           </div>
           <div className="items-list instances">
             {this.renderSearch()}
-          </div>
-          <div className={s.selectionCount +
-            (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
-          >
-            {this.instancesSelected()} instances selected
           </div>
           <div className={s.pagination +
             (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}

@@ -22,6 +22,7 @@ $searchStrokeColor: $gray-dark;
 
 .root {
   position: relative;
+  left: 16px;
   :global(.spinner) {
     position: absolute;
     top: 3px;
@@ -37,7 +38,7 @@ input[type="text"].searchBox {
   padding-left: 36px;
   padding-right: 30px;
   cursor: pointer;
-  width: 152px;
+  width: 192px;
   &:focus, &:hover {
     background-image: url('data:image/svg+xml;utf8,<svg width="14px" height="14px" viewBox="2 2 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><circle id="path-1" cx="8" cy="8" r="6"></circle><mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="12" height="12" fill="white"><use xlink:href="%23path-1"></use></mask></defs><use id="Oval-32" stroke="%230056B8" mask="url(%23mask-2)" stroke-width="2" fill="%23FFFFFF" fill-rule="evenodd" xlink:href="%23path-1"></use><path d="M12,12 L15.5,15.5" id="Line" stroke="%230056B8" stroke-width="1" stroke-linecap="round" fill="none"></path></svg>');
   }
