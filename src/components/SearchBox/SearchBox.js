@@ -25,8 +25,10 @@ class SearchBox extends Component {
     maxLines: PropTypes.number,
     minimize: PropTypes.bool,
     placeholder: PropTypes.string,
+    show: PropTypes.bool,
     onChange: PropTypes.func,
-    className: PropTypes.string
+    className: PropTypes.string,
+    isLoading: PropTypes.bool
   };
 
   static defaultProps = {
@@ -63,17 +65,27 @@ class SearchBox extends Component {
   }
 
   render() {
+    let renderLoading = () => this.props.isLoading ? <div className="spinner"></div> : null
+
+    if (this.props.show === false) {
+      return null
+    }
+
     return (
-      <div className={s.root}>
-        <input
-          type="text"
-          placeholder={this.props.placeholder}
-          value={this.state.queryText}
-          onChange={(e) => this.onChange(e)}
-          onClick={(e) => this.toggleSearch(e)}
-          onBlur={(e) => this.onBlurAction(e)}
-          className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox " + this.props.className}
-        />
+      <div className={s.root + ' ' + (this.props.className || '')}>
+        <div className={s.content}>
+          {renderLoading()}
+          <input
+            type="text"
+            placeholder={this.props.placeholder}
+            value={this.state.queryText}
+            onChange={(e) => this.onChange(e)}
+            onClick={(e) => this.toggleSearch(e)}
+            onBlur={(e) => this.onBlurAction(e)}
+            className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox " +
+              this.props.className}
+          />
+        </div>
       </div>
     );
   }

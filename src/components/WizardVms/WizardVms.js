@@ -24,7 +24,7 @@ import ConnectionsActions from '../../actions/ConnectionsActions';
 import LoadingIcon from '../LoadingIcon';
 
 const title = 'Select instances to migrate';
-const vmStatesConst = ["All", "RUNNING", "PAUSED", "STOPPED"]
+const loadingStates = { IDLE: 0, QUERY: 1, PAGINATION: 2 }
 const searchTimeout = 1000;
 
 class WizardVms extends Component {
@@ -50,11 +50,12 @@ class WizardVms extends Component {
       })
     }
 
-    this.retryLoadingInstances = this.retryLoadingInstances.bind(this)
+    this.reloadInstances = this.reloadInstances.bind(this)
 
     this.state = {
       valid,
       queryText: '',
+      loadingState: loadingStates.IDLE,
       page: 0,
       filterStatus: 'All',
       filteredData: this.props.data.instances ? this.props.data.instances.slice(0, itemsPerPage) : [],
@@ -78,9 +79,17 @@ class WizardVms extends Component {
   }
 
   processProps(props) {
-    if (props.data.instances) {
-      this.setState({ filteredData: props.data.instances.slice(
-        this.state.page * itemsPerPage, this.state.page * itemsPerPage + itemsPerPage) })
+    let loadingState = typeof props.data.loadingState === undefined ? this.state.loadingState : props.data.loadingState
+    if (props.data.instances && !loadingState) {
+      this.setState({
+        filteredData: props.data.instances.slice(
+          this.state.page * itemsPerPage, this.state.page * itemsPerPage + itemsPerPage),
+        loadingState: loadingState.IDLE
+      })
+    } else {
+      this.setState({
+        loadingState: loadingState
+      })
     }
   }
 
@@ -115,21 +124,20 @@ class WizardVms extends Component {
 
     if (this.props.data.instances) {
       this.props.data.instances.forEach((vm) => {
-        if (
-          (this.state.filterStatus === "All" || this.state.filterStatus === vm.status)
-        ) {
+        if (this.state.filterStatus === "All" || this.state.filterStatus === vm.status) {
           queryResult.push(vm)
         }
       }, this)
     }
 
     if (this.state.queryText != queryText) {
+      this.props.setWizardState({ loadingState: loadingStates.QUERY })
+
       if (this.timeout != null) {
         clearTimeout(this.timeout)
       }
       this.timeout = setTimeout(() => {
-        this.setState({ page: 0, filteredData: null, queryText: queryText }, () => {
-          this.props.setWizardState({ instances: null })
+        this.setState({ queryText: queryText, page: 0 }, () => {
           ConnectionsActions.loadInstances(
             { id: this.props.data.sourceCloud.credential.id },
             this.state.page,
@@ -160,9 +168,7 @@ class WizardVms extends Component {
   }
 
   toTitleCase(str) {
-    return str.replace(/\w\S*/g, (txt) => { // eslint-disable-line arrow-body-style
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
+    return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
   }
 
   isSelected(item) {
@@ -177,20 +183,21 @@ class WizardVms extends Component {
 
   nextPage() {
     if (this.state.filteredData && this.state.filteredData.length == itemsPerPage) {
+      this.props.setWizardState({ loadingState: loadingStates.PAGINATION })
       this.setState({ page: this.state.page + 1 }, () => {
         ConnectionsActions.loadInstances(
           { id: this.props.data.sourceCloud.credential.id },
           this.state.page,
           this.state.queryText
         )
-        this.processProps({ data: { instances: this.props.data.instances } })
       })
     }
   }
 
   previousPage() {
     if (this.state.page > 0) {
-      this.setState({ page: this.state.page + -1 }, () => {
+      this.props.setWizardState({ loadingState: loadingStates.PAGINATION })
+      this.setState({ page: this.state.page - 1 }, () => {
         ConnectionsActions.loadInstances(
           { id: this.props.data.sourceCloud.credential.id },
           this.state.page,
@@ -201,7 +208,7 @@ class WizardVms extends Component {
     }
   }
 
-  retryLoadingInstances() {
+  reloadInstances() {
     ConnectionsActions.loadInstances(
       { id: this.props.data.sourceCloud.credential.id },
       this.state.page,
@@ -210,41 +217,53 @@ class WizardVms extends Component {
     )
   }
 
-  renderSearch() {
-    let _this = this
-    switch (this.props.data.instancesLoadState) {
-      case "success":
-        if (this.state.filteredData && this.state.filteredData.length) {
-          let instances = this.state.filteredData.map((item, index) =>
-            <div className="item" key={ "vm_" + index } onClick={ (e) => _this.checkVm(e, item) }>
-              <div className="checkbox-container">
-                <input
-                  id={"vm_check_" + index}
-                  type="checkbox"
-                  checked={this.isSelected(item)}
-                  onChange={(e) => _this.checkVm(e, item)}
-                  className="checkbox-normal"
-                />
-                <label htmlFor={ "vm_check_" + index }></label>
-              </div>
-              <span className="cell cell-icon">
-                <div className="icon vm"></div>
-                <span className="details">
-                  {item.instance_name}
-                </span>
-              </span>
-              <span className="cell">{item.num_cpu} vCPU | {item.memory_mb} MB RAM
+  refreshButtonClick() {
+    this.props.setWizardState({ loadingState: loadingStates.PAGINATION })
+    this.setState({ page: 0 }, this.reloadInstances)
+  }
+
+  renderFilteredItems() {
+    if (this.state.filteredData && this.state.filteredData.length) {
+      let instances = this.state.filteredData.map((item, index) =>
+        <div className={'item ' + (this.isSelected(item) ? 'selected' : '')}
+          key={"vm_" + index} onClick={(e) => this.checkVm(e, item)}
+        >
+          <div className="checkbox-container">
+            <input
+              id={"vm_check_" + index}
+              type="checkbox"
+              checked={this.isSelected(item)}
+              onChange={(e) => this.checkVm(e, item)}
+              className="checkbox-normal"
+            />
+            <label htmlFor={"vm_check_" + index}></label>
+          </div>
+          <span className="cell cell-icon">
+            <div className="icon vm"></div>
+            <span className="details">
+              {item.instance_name}
+            </span>
+          </span>
+          <span className="cell">{item.num_cpu} vCPU | {item.memory_mb} MB RAM
                 {item.flavor_name && (" | " + item.flavor_name)}</span>
-            </div>
-          )
-          return instances
-        } else {
-          return <div className="no-results">Your search returned no results</div>
-        }
+        </div>
+      )
+      return instances
+    } else {
+      return <div className="no-results">Your search returned no results</div>
+    }
+  }
+
+  renderSearch() {
+    if (this.props.data.instancesLoadState === 'success' || this.state.loadingState) {
+      return this.renderFilteredItems()
+    }
+
+    switch (this.props.data.instancesLoadState) {
       case "error":
         return (<div className="no-results">
           An error occurred while searching for instances <br />
-          <button onClick={this.retryLoadingInstances}>Retry</button>
+          <button onClick={this.reloadInstances}>Retry</button>
         </div>)
       case "loading":
         return <LoadingIcon padding={64} text="Loading instances.." />
@@ -253,49 +272,60 @@ class WizardVms extends Component {
     }
   }
 
+  renderSelectionInfo() {
+    if (this.state.filteredData && this.state.filteredData.length) {
+      return (
+        <div className={s.selectionInfo}>
+          <div className={s.selectionCount +
+            (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
+          >
+            {this.instancesSelected()} instances selected
+                </div>
+          <div className={s.refreshButton}
+            onClick={this.refreshButtonClick.bind(this)}
+          >
+            <div className="refresh icon"></div>
+          </div>
+        </div>
+      )
+    }
+
+    return null
+  }
+
   render() {
-    let _this = this
-    let vmStates = vmStatesConst.map(
-      (state, index) =>
-        <a
-          className={_this.state.filterStatus == state || (_this.state.filterStatus == null && state == "All") ?
-            "selected" : ""}
-          onClick={(e) => _this.filterStatus(e, state)} key={"status_" + index}
-        >{_this.toTitleCase(state)}</a>
-    )
     return (
       <div className={s.root}>
         <div className={s.container}>
           <div className={s.topFilters}>
             <SearchBox
               placeholder="Search VMs"
+              isLoading={this.state.loadingState === loadingStates.QUERY}
               value={this.state.queryText}
               onChange={(e) => this.searchVm(e)}
-              className={"searchBox" + (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
+              className={s.searchBox}
+              show={(!this.state.filteredData || !!this.state.filteredData.length)
+                || this.state.loadingState > 0 || !!this.state.queryText}
             />
-            <div className="category-filter hidden">
-              {vmStates}
-            </div>
+            {this.renderSelectionInfo()}
           </div>
           <div className="items-list instances">
             {this.renderSearch()}
-          </div>
-          <div className={s.selectionCount +
-            (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
-          >
-            {this.instancesSelected()} instances selected
           </div>
           <div className={s.pagination +
             (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
           >
             <span
-              className={(this.state.page == 0 ? "disabled " : "") + s.prev}
+              className={(this.state.page === 0 || this.state.loadingState ? "disabled " : "") + s.prev}
               onClick={(e) => this.previousPage(e)}
             ></span>
-            <span className={s.currentPage}>{this.state.page + 1}</span>
+            <span className={s.currentPage}>{
+              this.state.loadingState === loadingStates.PAGINATION ?
+                <div className="spinner"></div> : this.state.page + 1
+            }</span>
             <span
-              className={(this.state.filteredData && this.state.filteredData.length == itemsPerPage ?
-                " " : "disabled ") + s.next}
+              className={((this.state.filteredData && this.state.filteredData.length == itemsPerPage)
+                && !this.state.loadingState ? " " : "disabled ") + s.next}
               onClick={(e) => this.nextPage(e)}
             ></span>
           </div>

@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .container {
   flex: 1;
   margin: 0 auto;
-  padding: 0px 32px 70px;
+  padding: 0px 0px 70px 32px;
   overflow-y: auto;
   width: $wizard-content-width;
 
@@ -66,7 +66,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iN3B4IiBoZWlnaHQ9IjEzcHgiIHZpZXdCb3g9Ii0xIC0xIDcgMTMiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PHBvbHlsaW5lIGlkPSJQYWdlLTEtQ29weSIgc3Ryb2tlPSIjNjE2NzcwIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIuNTAwMDAwLCA1LjUwMDAwMCkgcm90YXRlKC0yNzAuMDAwMDAwKSB0cmFuc2xhdGUoLTIuNTAwMDAwLCAtNS41MDAwMDApICIgcG9pbnRzPSItMyA4IDIuNSAzIDggOCI+PC9wb2x5bGluZT48L3N2Zz4=');
         width: 7px;
         height: 13px;
-        display: inline-block;
         margin-left: 3px;
         margin-top: 3px;
         float:right;

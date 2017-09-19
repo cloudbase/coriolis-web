@@ -60,11 +60,10 @@ class WizardStore extends Reflux.Store
   onLoadInstances(endpoint, page = 0, queryText = "", cache = true, clearSelection = false) {
     this.setState({ instancesLoadState: 'loading' })
     if (cache && (this.state.instances && this.state.instances[page * itemsPerPage])) {
+      this.setState({ loadingState: 0, instancesLoadState: 'success' })
       return;
     }
-    if (!cache) {
-      this.setState({ instances: null })
-    }
+
     let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
     if (clearSelection) {
@@ -74,6 +73,10 @@ class WizardStore extends Reflux.Store
     let markerId = null
     if (page > 0 && this.state.instances[(page - 1) * itemsPerPage + itemsPerPage - 1]) {
       markerId = this.state.instances[(page - 1) * itemsPerPage + itemsPerPage - 1].id
+    }
+
+    if (!cache) {
+      this.setState({ instances: null })
     }
 
     let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/instances?limit=${itemsPerPage}`
@@ -87,10 +90,9 @@ class WizardStore extends Reflux.Store
     Api.sendAjaxRequest({
       url: url,
       method: "GET"
-    }).then(response => {
-      ConnectionsActions.loadInstances.completed(response, page)
-    }, ConnectionsActions.loadInstances.failed)
-      .catch(ConnectionsActions.loadInstances.failed);
+    }).then(response => ConnectionsActions.loadInstances.completed(response, page),
+      ConnectionsActions.loadInstances.failed
+      ).catch(ConnectionsActions.loadInstances.failed);
   }
 
   onLoadInstancesCompleted(response, page) {
@@ -103,11 +105,11 @@ class WizardStore extends Reflux.Store
       instances[(page * itemsPerPage) + index] = instance
     })
 
-    this.setState({ instances: instances, instancesLoadState: 'success' })
+    this.setState({ instances: instances, instancesLoadState: 'success', loadingState: 0 })
   }
 
   onLoadInstancesFailed() {
-    this.setState({ instances: [], instancesLoadState: 'error' })
+    this.setState({ instances: [], instancesLoadState: 'error', loadingState: 0 })
   }
 
   onLoadInstanceDetail(endpoint, instance) {

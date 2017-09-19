@@ -17,14 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @import '../variables.scss';
 
-.root {
-  :global(.searchBox) {
-    float: right;
-    margin-top: -5px;
-    width: 116px;
-  }
-}
-
 .container {
   margin: 0 auto;
   padding: 10px 0 40px;
@@ -34,13 +26,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     :global(.item) {
       position: relative;
       cursor: pointer;
-      padding-left: 0;
-      width: 100%;
+      padding-left: 16px;
+      padding-right: 0;
       span:nth-child(2) {
         flex: 2;
       }
       span:nth-child(3) {
-        justify-content: center;
+        justify-content: flex-end;
+        padding-right: 16px;
       }
       span:nth-child(4) {
         flex: 2;
@@ -49,25 +42,45 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         position: absolute;
         left: -32px;
         top: 24px;
+        opacity: 0;
+        transition: opacity $animation-swift-out;
+      }
+      &:hover, &:global(.selected) {
+        :global(.checkbox-container) {
+          opacity: 1;
+        }
       }
     }
   }
   .topFilters {
-    &:after {
-      clear: both;
-      display: block;
-      content: " ";
-      height: 0;
+    display: flex;
+
+    .searchBox {
+      flex-grow: 1;
+    }
+
+    .refreshButton {
+      cursor: pointer;
+      padding: 8px 0 0 7px;
+      margin-top: 4px;
+      height: 19px;
+    }
+
+    .selectionInfo {
+      display: flex;
+    }
+    
+    .selectionCount {
+      height: 16px;
+      font-size: 14px;
+      margin-top: 12px;
+      color: $gray-dark;
+      border-right: 1px solid $gray-dark;
+      padding-right: 8px;
     }
   }
 }
 
-.selectionCount {
-  font-size: 14px;
-  color: $gray-dark;
-  float: left;
-  margin-top: 22px;
-}
 .pagination {
   font-size: 14px;
   color: $gray-dark;
@@ -81,7 +94,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     background-repeat: no-repeat;
     width: 32px;
     height: 32px;
-    display: inline-block;
     float: left;
     &:global(.disabled) {
       opacity: 0.3;
@@ -94,7 +106,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     background-repeat: no-repeat;
     width: 32px;
     height: 32px;
-    display: inline-block;
     float: left;
     &:global(.disabled) {
       opacity: 0.3;
@@ -109,12 +120,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     cursor: default;
     width: 32px;
     height: 32px;
-    display: inline-block;
     float: left;
     text-align: center;
     line-height: 32px;
     border-left: 1px solid $gray;
     border-right: 1px solid $gray;
+    :global(.spinner) {
+      top: 8px;
+      left: 8px;
+      border-top-color: $gray;
+      border-right-color: $gray;
+      border-bottom-color: $gray;
+      border-left-color: $gray-lighter;
+    }
   }
   &:after {
     display: block;
