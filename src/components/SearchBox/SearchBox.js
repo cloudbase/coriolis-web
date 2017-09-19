@@ -66,21 +66,26 @@ class SearchBox extends Component {
 
   render() {
     let renderLoading = () => this.props.isLoading ? <div className="spinner"></div> : null
-    let hidden = this.props.show ? ' ' : ' hidden'
+
+    if (this.props.show === false) {
+      return null
+    }
 
     return (
-      <div className={s.root + hidden}>
-        {renderLoading()}
-        <input
-          type="text"
-          placeholder={this.props.placeholder}
-          value={this.state.queryText}
-          onChange={(e) => this.onChange(e)}
-          onClick={(e) => this.toggleSearch(e)}
-          onBlur={(e) => this.onBlurAction(e)}
-          className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox " +
-            this.props.className}
-        />
+      <div className={s.root + ' ' + (this.props.className || '')}>
+        <div className={s.content}>
+          {renderLoading()}
+          <input
+            type="text"
+            placeholder={this.props.placeholder}
+            value={this.state.queryText}
+            onChange={(e) => this.onChange(e)}
+            onClick={(e) => this.toggleSearch(e)}
+            onBlur={(e) => this.onBlurAction(e)}
+            className={s.searchBox + " " + (this.state.isMin ? s.minimize : "") + " searchBox " +
+              this.props.className}
+          />
+        </div>
       </div>
     );
   }

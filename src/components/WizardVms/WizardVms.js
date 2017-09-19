@@ -24,7 +24,6 @@ import ConnectionsActions from '../../actions/ConnectionsActions';
 import LoadingIcon from '../LoadingIcon';
 
 const title = 'Select instances to migrate';
-const vmStatesConst = ["All", "RUNNING", "PAUSED", "STOPPED"]
 const loadingStates = { IDLE: 0, QUERY: 1, PAGINATION: 2 }
 const searchTimeout = 1000;
 
@@ -51,7 +50,7 @@ class WizardVms extends Component {
       })
     }
 
-    this.retryLoadingInstances = this.retryLoadingInstances.bind(this)
+    this.reloadInstances = this.reloadInstances.bind(this)
 
     this.state = {
       valid,
@@ -209,7 +208,7 @@ class WizardVms extends Component {
     }
   }
 
-  retryLoadingInstances() {
+  reloadInstances() {
     ConnectionsActions.loadInstances(
       { id: this.props.data.sourceCloud.credential.id },
       this.state.page,
@@ -259,7 +258,7 @@ class WizardVms extends Component {
       case "error":
         return (<div className="no-results">
           An error occurred while searching for instances <br />
-          <button onClick={this.retryLoadingInstances}>Retry</button>
+          <button onClick={this.reloadInstances}>Retry</button>
         </div>)
       case "loading":
         return <LoadingIcon padding={64} text="Loading instances.." />
@@ -268,35 +267,42 @@ class WizardVms extends Component {
     }
   }
 
+  renderSelectionInfo() {
+    if (this.state.filteredData && this.state.filteredData.length) {
+      return (
+        <div className={s.selectionInfo}>
+          <div className={s.selectionCount +
+            (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
+          >
+            {this.instancesSelected()} instances selected
+                </div>
+          <div className={s.refreshButton}
+            onClick={this.reloadInstances}
+          >
+            <div className="refresh icon"></div>
+          </div>
+        </div>
+      )
+    }
+
+    return null
+  }
+
   render() {
-    let vmStates = vmStatesConst.map(
-      (state, index) =>
-        <a
-          className={this.state.filterStatus == state || (this.state.filterStatus == null && state == "All") ?
-            "selected" : ""}
-          onClick={(e) => this.filterStatus(e, state)} key={"status_" + index}
-        >{this.toTitleCase(state)}</a>
-    )
     return (
       <div className={s.root}>
         <div className={s.container}>
           <div className={s.topFilters}>
-            <div className={s.selectionCount +
-              (!(this.state.filteredData && this.state.filteredData.length) ? " hidden" : " ")}
-            >
-              {this.instancesSelected()} instances selected
-            </div>
             <SearchBox
               placeholder="Search VMs"
               isLoading={this.state.loadingState === loadingStates.QUERY}
               value={this.state.queryText}
               onChange={(e) => this.searchVm(e)}
+              className={s.searchBox}
               show={(!this.state.filteredData || !!this.state.filteredData.length)
                 || this.state.loadingState > 0 || !!this.state.queryText}
             />
-            <div className="category-filter hidden">
-              {vmStates}
-            </div>
+            {this.renderSelectionInfo()}
           </div>
           <div className="items-list instances">
             {this.renderSearch()}

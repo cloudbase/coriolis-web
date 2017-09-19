@@ -21,12 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $searchStrokeColor: $gray-dark;
 
 .root {
-  position: relative;
-  left: 16px;
   :global(.spinner) {
     position: absolute;
-    top: 3px;
+    top: 8px;
     right: 8px;
+  }
+
+  .content {
+    position: relative;
+    display: inline-block;
   }
 }
 
