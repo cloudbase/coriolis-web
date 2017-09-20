@@ -67,6 +67,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: $weight-regular;
     font-size: 14px;
     color: $black;
+    &.idValue {
+      cursor: pointer;
+      display: inline-block;
+    }
+    &:hover :global(.copyButton) {
+      opacity: 1;
+    }
     a {
       color: $blue;
     }

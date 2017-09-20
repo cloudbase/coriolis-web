@@ -21,6 +21,7 @@ import moment from 'moment';
 import Table from '../Table';
 import s from './Tasks.scss';
 import TextTruncate from 'react-text-truncate';
+import NotificationActions from '../../actions/NotificationActions'
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import ProgressBar from '../ProgressBar';
 import Helper from '../Helper';
@@ -113,7 +114,13 @@ class Tasks extends Component {
           </div>
           <div className={s.group}>
             <div className={s.detailTitle}>ID</div>
-            <div className={s.detailValue}>{item.id}</div>
+            <div className={s.detailValue + ' ' + s.detailIdValue}
+              onClick={() => this.copyIdClick(item)}
+              onMouseDown={e => e.stopPropagation()}
+              onMouseUp={e => e.stopPropagation()}
+            >{item.id}
+               <span className="copyButton"></span>
+            </div>
           </div>
           <div className={s.group}>
             <div className={s.detailTitle}>Exception details</div>
@@ -151,6 +158,16 @@ class Tasks extends Component {
       }, this)
     }
     this.setState({ listItems: listItems, execution: newProps.execution })
+  }
+
+  copyIdClick(item) {
+    let succesful = Helper.copyTextToClipboard(item.id)
+
+    if (succesful) {
+      NotificationActions.notify('The ID has been copied to clipboard.')
+    } else {
+      NotificationActions.notify('The ID couldn\'t be copied', 'error')
+    }
   }
 
   render() {

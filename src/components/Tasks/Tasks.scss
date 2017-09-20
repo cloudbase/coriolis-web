@@ -17,10 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @import '../variables.scss';
 
-.root {
-
-}
-
 .container {
   margin: 0 auto;
   padding: 0 0 40px;
@@ -75,6 +71,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         font-weight: $weight-regular;
         font-size: 14px;
         color: $gray-dark;
+        &.detailIdValue {
+          display: inline-block;
+        }
+        &:hover :global(.copyButton) {
+          opacity: 1;
+        }
       }
       &:nth-child(2n) {
         width: 500px;
