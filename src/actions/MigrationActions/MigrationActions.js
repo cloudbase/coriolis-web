@@ -331,14 +331,15 @@ MigrationActions.addMigration.listen((migration, callback = null, errorCallback 
     .catch(MigrationActions.addMigration.failed);
 })
 
-MigrationActions.createMigrationFromReplica.listen((replica) => {
+MigrationActions.createMigrationFromReplica.listen((replica, options) => {
   let payload = {
     migration: {
-      replica_id: replica.id,
-      force: false,
-      clone_disks: true
+      replica_id: replica.id
     }
   }
+  options.forEach(o => {
+    payload.migration[o.field] = o.value || false
+  })
 
   let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
