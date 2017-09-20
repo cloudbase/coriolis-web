@@ -50,14 +50,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .loginContainer {
   margin: 64px auto 0;
-  padding: 32px 32px 16px;
+  padding: 32px;
   background-color: rgba(221, 224, 229, 0.5);
   box-sizing: border-box;
   border-radius: 8px;
+  &.noSeparator {
+    padding-top: 16px;
+  }
   &:after {
     content: "";
     display: table;
     clear: both;
+  }
+  button {
+    margin-top: 16px;
   }
   input, button {
     width: 100%;
