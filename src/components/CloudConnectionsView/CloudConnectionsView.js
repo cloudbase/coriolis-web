@@ -239,6 +239,7 @@ class CloudConnectionsView extends Component {
             isOpen={this.state.showModal}
             contentLabel="Add new cloud connection"
             style={modalStyle}
+            onRequestClose={this.closeModal.bind(this)}
           >
             <AddCloudConnection
               closeHandle={(e) => this.closeModal(e)}
@@ -252,6 +253,7 @@ class CloudConnectionsView extends Component {
             isOpen={this.state.showValidationModal}
             contentLabel="Validate Endpoint"
             style={validationModalStyle}
+            onRequestClose={this.closeValidationModal.bind(this)}
           >
             <ValidateEndpoint
               closeHandle={(e) => this.closeValidationModal(e)}

@@ -193,6 +193,7 @@ class EndpointList extends Reflux.Component {
             isOpen={this.state.showModal}
             contentLabel="Add new cloud connection"
             style={modalStyle}
+            onRequestClose={this.closeModal.bind(this)}
           >
             <AddCloudConnection
               closeHandle={(e) => this.closeModal(e)}
@@ -230,6 +231,7 @@ class EndpointList extends Reflux.Component {
             isOpen={this.state.showModal}
             contentLabel="Add new cloud connection"
             style={modalStyle}
+            onRequestClose={this.closeModal.bind(this)}
           >
             <AddCloudConnection
               closeHandle={(e) => this.closeModal(e)}

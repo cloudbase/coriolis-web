@@ -75,6 +75,7 @@ class ConfirmationDialog extends Component {
             isOpen={this.props.visible}
             contentLabel="Add new cloud connection"
             style={modalStyle}
+            onRequestClose={this.onCancel.bind(this)}
           >
             <p className={s.message}>{this.props.message}</p>
             <div className={s.buttons}>

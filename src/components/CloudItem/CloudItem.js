@@ -165,6 +165,7 @@ class CloudItem extends Component {
           isOpen={this.state.showModal}
           contentLabel="Add new cloud connection"
           style={modalStyle}
+          onRequestClose={this.closeModal.bind(this)}
         >
           <AddCloudConnection
             closeHandle={(e) => this.closeModal(e)}
