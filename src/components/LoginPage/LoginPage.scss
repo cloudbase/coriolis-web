@@ -54,6 +54,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   background-color: rgba(221, 224, 229, 0.5);
   box-sizing: border-box;
   border-radius: 8px;
+  &.noSeparator {
+    padding-top: 16px;
+  }
   &:after {
     content: "";
     display: table;

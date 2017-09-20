@@ -130,6 +130,14 @@ export class LoginPage extends Reflux.Component {
       </div>
     ))
 
+    let loginSeparator = loginButtons.length ? (
+      <div className={s.loginSeparator}>
+        <div className={s.line}></div>
+        <span className={s.text}>or sign in with username</span>
+        <div className={s.line}></div>
+      </div>
+    ) : null
+
     return (
       <div className={s.root}>
         <div className={s.container + " " + (loginButtons.length <= 2 ? s.oneColumn : "")}>
@@ -142,15 +150,11 @@ export class LoginPage extends Reflux.Component {
               <div className={"logo coriolis-white"}></div>
             </div>
           </div>
-          <div className={s.loginContainer}>
+          <div className={s.loginContainer + ' ' + (!loginSeparator ? s.noSeparator : '')}>
             <div className={s.loginSocialButtons}>
               {loginButtonsTemplate}
             </div>
-            <div className={s.loginSeparator}>
-              <div className={s.line}></div>
-              <span className={s.text}>or sign in with username</span>
-              <div className={s.line}></div>
-            </div>
+            {loginSeparator}
             <div className={s.loginUsername}>
               <form onSubmit={(e) => this.login(e)}>
                 <div className="form-group">
