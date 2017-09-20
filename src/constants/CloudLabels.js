@@ -71,7 +71,10 @@ export const defaultLabels = {
   region: "Region",
   access_key_id: "Access Key ID",
   secret_access_key: "Secret Access Key",
-  session_token: "Session Token"
+  session_token: "Session Token",
+  clone_disks: "Clone Disks",
+  force: "Force",
+  skip_os_morphing: "Skip OS Morphing"
 }
 
 export const cloudLabels = {

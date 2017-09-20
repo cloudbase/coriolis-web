@@ -19,6 +19,7 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaDetail.scss';
 import Moment from 'react-moment';
+import Modal from 'react-modal';
 import Helper from "../Helper";
 import NotificationActions from '../../actions/NotificationActions'
 import Location from '../../core/Location';
@@ -26,6 +27,7 @@ import EndpointLink from '../EndpointLink';
 import ConfirmationDialog from '../ConfirmationDialog'
 import MigrationActions from '../../actions/MigrationActions';
 import MigrationNetworks from '../MigrationNetworks';
+import MigrationFromReplicaOptions from '../MigrationFromReplicaOptions'
 
 const title = 'Migration details';
 
@@ -42,6 +44,7 @@ class MigrationDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      showModal: false,
       confirmationDialog: {
         visible: false,
         message: "Are you sure?",
@@ -55,8 +58,17 @@ class MigrationDetail extends Component {
     this.context.onSetTitle(title);
   }
 
-  createMigrationFromReplica(e, replica) {
-    MigrationActions.createMigrationFromReplica(replica)
+  showModal() {
+    this.setState({ showModal: true })
+  }
+
+  closeModal() {
+    this.setState({ showModal: false })
+  }
+
+  migrate(options) {
+    this.closeModal()
+    MigrationActions.createMigrationFromReplica(this.props.replica, options)
   }
 
   deleteReplica(e, replica) {
@@ -85,6 +97,28 @@ class MigrationDetail extends Component {
   }
 
   render() {
+    let modalStyle = {
+      overlay: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(164, 170, 181, 0.69)"
+      },
+      content: {
+        padding: "0px",
+        borderRadius: "4px",
+        border: "none",
+        bottom: "auto",
+        width: "576px",
+        height: "auto",
+        left: "50%",
+        top: "120px",
+        marginLeft: "-288px"
+      }
+    }
+
     let item = this.props.replica
     let output = null
     if (item) {
@@ -164,7 +198,7 @@ class MigrationDetail extends Component {
           <MigrationNetworks className={s.migrationNetworks} migration={item} />
           <div className={s.container + " " + s.buttons}>
             { item.type == "replica" && <button
-              onClick={(e) => this.createMigrationFromReplica(e, item)}
+              onClick={() => this.showModal()}
               disabled={disabled} className={disabled ? "disabled" : ""}
             >
               Create Migration
@@ -177,6 +211,16 @@ class MigrationDetail extends Component {
             onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
             onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
           />
+          <Modal
+            isOpen={this.state.showModal}
+            style={modalStyle}
+            onRequestClose={this.closeModal.bind(this)}
+          >
+            <MigrationFromReplicaOptions
+              onCancel={this.closeModal.bind(this)}
+              onMigrate={this.migrate.bind(this)}
+            />
+          </Modal>
         </div>
       )
     }
