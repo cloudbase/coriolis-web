@@ -114,12 +114,12 @@ class Tasks extends Component {
           </div>
           <div className={s.group}>
             <div className={s.detailTitle}>ID</div>
-            <div className={s.detailValue}>{item.id}
-               <span className={s.copyButton}
-                 onMouseDown={e => e.stopPropagation()}
-                 onMouseUp={e => e.stopPropagation()}
-                 onClick={e => this.copyIdClick(e, item)}
-               ></span>
+            <div className={s.detailValue + ' ' + s.detailIdValue}
+              onClick={() => this.copyIdClick(item)}
+              onMouseDown={e => e.stopPropagation()}
+              onMouseUp={e => e.stopPropagation()}
+            >{item.id}
+               <span className="copyButton"></span>
             </div>
           </div>
           <div className={s.group}>
@@ -160,7 +160,7 @@ class Tasks extends Component {
     this.setState({ listItems: listItems, execution: newProps.execution })
   }
 
-  copyIdClick(e, item) {
+  copyIdClick(item) {
     let succesful = Helper.copyTextToClipboard(item.id)
 
     if (succesful) {

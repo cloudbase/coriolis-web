@@ -20,6 +20,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaDetail.scss';
 import Moment from 'react-moment';
 import Helper from "../Helper";
+import NotificationActions from '../../actions/NotificationActions'
 import Location from '../../core/Location';
 import EndpointLink from '../EndpointLink';
 import ConfirmationDialog from '../ConfirmationDialog'
@@ -71,6 +72,16 @@ class MigrationDetail extends Component {
         }
       }
     })
+  }
+
+  copyIdClick(item) {
+    let succesful = Helper.copyTextToClipboard(item.id)
+
+    if (succesful) {
+      NotificationActions.notify('The ID has been copied to clipboard.')
+    } else {
+      NotificationActions.notify('The ID couldn\'t be copied', 'error')
+    }
   }
 
   render() {
@@ -141,8 +152,13 @@ class MigrationDetail extends Component {
                 <div className={s.titleIp}>
                   Id
                 </div>
-                <div className={s.value}>
+                <div className={s.value + ' ' + s.idValue}
+                  onClick={() => this.copyIdClick(item)}
+                  onMouseDown={e => e.stopPropagation()}
+                  onMouseUp={e => e.stopPropagation()}
+                >
                   <a>{item.id}</a>
+                  <span className="copyButton"></span>
                 </div>
               </div>
             </div>
