@@ -62,13 +62,26 @@ class DropdownButton extends React.Component {
 
     this.closeMenu()
     this.setState({
-      value: option
+      value: option,
+      firstItemHover: false
     })
   }
 
   onLabelClick() {
     if (this.props.onButtonClick && !this.isDisabled()) {
       this.props.onButtonClick()
+    }
+  }
+
+  onMenuItemMouseEnter(index) {
+    if (index === 0) {
+      this.setState({ firstItemHover: true })
+    }
+  }
+
+  onMenuItemMouseLeave(index) {
+    if (index === 0) {
+      this.setState({ firstItemHover: false })
     }
   }
 
@@ -92,10 +105,12 @@ class DropdownButton extends React.Component {
     }
 
     return (
-      <div className={s.menu}>
-        {this.state.options.map(o => (
+      <div className={s.menu + (this.state.firstItemHover ? ' ' + s.firstItemHover : '')}>
+        {this.state.options.map((o, i) => (
           <div key={o.value}
             className={s.menuItem + (o.value === this.state.value.value ? ' ' + s.selected : '')}
+            onMouseEnter={() => { this.onMenuItemMouseEnter(i) }}
+            onMouseLeave={() => { this.onMenuItemMouseLeave(i) }}
             onMouseDown={() => { this.itemMouseDown = true }}
             onMouseUp={() => { this.itemMouseDown = false }}
             onClick={() => { this.onMenuItemClick(o) }}

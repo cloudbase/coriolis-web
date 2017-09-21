@@ -63,6 +63,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     box-sizing: border-box;
     margin-top: 8px;
     border-radius: $border-radius;
+    overflow: visible;
+
+    &:after {
+      content: " ";
+      display: block;
+      position: absolute;
+      border: 1px solid $gray;
+      width: 10px;
+      height: 10px;
+      right: 9px;
+      top: -6px;
+      transform: rotate(135deg);
+      border-color: transparent transparent $gray $gray;
+      background-color: white;
+    }
+
+    &.firstItemHover:after {
+      background-color: $blue;
+    }
+
+    :first-child {
+      border-top-left-radius: $border-radius;
+      border-top-right-radius: $border-radius;
+    }
+
+    :last-child {
+      border-bottom-left-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
 
     .menuItem {
       box-sizing: border-box;
