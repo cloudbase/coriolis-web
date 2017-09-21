@@ -25,10 +25,15 @@ import ConnectionsActions from '../../actions/ConnectionsActions';
 import NotificationActions from '../../actions/NotificationActions';
 import Dropdown from '../NewDropdown';
 import Switch from '../Switch'
+import DropdownButton from '../DropdownButton'
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
-import ValidateEndpoint from '../ValidateEndpoint';
 
 const title = 'Add Cloud Endpoint';
+const saveOptions = [
+  { label: 'Validate and Save', value: 'saveWithValidation' },
+  { label: 'Save', value: 'saveWithoutValidation' }
+]
+const endpointStatuses = { IDLE: 0, VALIDATING: 1, ERROR: 2, SUCCESS: 3 }
 
 class AddCloudConnection extends Reflux.Component {
 
@@ -49,13 +54,14 @@ class AddCloudConnection extends Reflux.Component {
     this.store = ConnectionsStore
 
     this.state = {
+      endpointStatus: endpointStatuses.IDLE,
+      saveOption: saveOptions[0].value,
       type: props.type, // type of operation: new/edit
       connection: props.connection, // connection object (on edit)
       connectionName: "", // connection name field
       description: "", // connection description field
       currentCloud: this.props.cloud, // chosen cloud - if adding a new endpoint
       currentCloudData: null, // endpoint field data
-      validateEndpoint: false, // holds the endpoint object when validation
       requiredFields: [], // array that holds all the endpoint required fields - used for field validation
       cloudFormsSubmitted: false // flag that indicates if the form has been submitted - used for field validation
     }
@@ -193,31 +199,65 @@ class AddCloudConnection extends Reflux.Component {
           type: this.state.currentCloud.name,
           connection_info: credentials
         }, (response) => {
-          this.setState({
-            validateEndpoint: response.data.endpoint,
-            type: "edit",
-            connection: response.data.endpoint
-          })
+          this.validateEndpoint(response.data.endpoint)
         })
         this.props.addHandle(this.state.connectionName);
+        if (this.state.saveOption === saveOptions[0].value) {
+          this.setState({ endpointStatus: endpointStatuses.VALIDATING })
+        } else {
+          this.props.closeHandle()
+        }
       } else { // If editing an endpoint
         ConnectionsActions.editEndpoint(this.state.connection, {
           name: this.state.connectionName,
           description: this.state.description,
           connection_info: credentials
         }, (response) => {
-          this.setState({
-            validateEndpoint: response.data.endpoint,
-            type: "edit",
-            connection: response.data.endpoint
-          })
+          this.validateEndpoint(response.data.endpoint)
           this.props.updateHandle({
             name: this.state.connectionName,
             description: this.state.description
           })
         })
+        if (this.state.saveOption === saveOptions[0].value) {
+          this.setState({ endpointStatus: endpointStatuses.VALIDATING })
+        } else {
+          this.props.closeHandle()
+        }
       }
     }
+  }
+
+  validateEndpoint(endpoint) {
+    if (this.state.saveOption === saveOptions[1].value) {
+      return;
+    }
+
+    ConnectionsActions.validateConnection(endpoint, response => {
+      let validation = response.data["validate-connection"]
+      this.setState({
+        endpointStatus: validation.valid ? endpointStatuses.SUCCESS : endpointStatuses.ERROR,
+      })
+
+      if (validation.valid) {
+        this.setState({
+          connection: endpoint,
+          endpointStatus: endpointStatuses.SUCCESS
+        })
+      } else {
+        this.setState({
+          connection: endpoint,
+          endpointStatus: endpointStatuses.ERROR,
+          type: 'edit'
+        })
+      }
+    }, () => {
+      this.setState({
+        connection: endpoint,
+        endpointStatus: endpointStatuses.ERROR,
+        type: 'edit'
+      })
+    })
   }
 
   /**
@@ -369,6 +409,11 @@ class AddCloudConnection extends Reflux.Component {
     this.setState({ requiredFields: requiredFields });
   }
 
+  areFieldsDisabled() {
+    return (this.state.endpointStatus === endpointStatuses.VALIDATING
+      || this.state.endpointStatus === endpointStatuses.SUCCESS)
+  }
+
   /**
    * Handles cancel edit/add endpoint
    */
@@ -396,6 +441,12 @@ class AddCloudConnection extends Reflux.Component {
     }
 
     this.setState({ currentCloudData: currentCloudData })
+  }
+
+  handleSaveOptionChange(e) {
+    this.setState({
+      saveOption: e.value
+    })
   }
 
   /**
@@ -448,6 +499,7 @@ class AddCloudConnection extends Reflux.Component {
             <input
               type="text"
               placeholder={field.label}
+              disabled={this.areFieldsDisabled()}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
               value={this.state.currentCloudData[field.name]}
             />
@@ -463,6 +515,7 @@ class AddCloudConnection extends Reflux.Component {
             <input
               type="password"
               placeholder={field.label}
+              disabled={this.areFieldsDisabled()}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
               value={this.state.currentCloudData[field.name]}
             />
@@ -496,6 +549,7 @@ class AddCloudConnection extends Reflux.Component {
               {field.label + (field.required ? " *" : "")}
             </div>
             <Dropdown
+              disabled={this.areFieldsDisabled()}
               options={field.options}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
               placeholder="Choose a value"
@@ -514,13 +568,14 @@ class AddCloudConnection extends Reflux.Component {
         })
         let radioOptions = field.options.map((option, key) => (
             <div key={"radio_option_" + key} className={s.radioOption}>
-              <input
-                type="radio"
-                value={option.value}
-                id={option.name}
-                checked={option.value == this.state.currentCloudData[field.name]}
-                onChange={(e) => this.handleCloudFieldChange(e, field)}
-              /> <label htmlFor={option.name}>{option.label}</label>
+            <input
+              disabled={this.areFieldsDisabled()}
+              type="radio"
+              value={option.value}
+              id={option.name}
+              checked={option.value == this.state.currentCloudData[field.name]}
+              onChange={(e) => this.handleCloudFieldChange(e, field)}
+            /> <label htmlFor={option.name}>{option.label}</label>
             </div>
           )
         )
@@ -542,6 +597,63 @@ class AddCloudConnection extends Reflux.Component {
     return returnValue
   }
 
+  renderEndpointStatus() {
+    let label = ''
+    let icon = ''
+
+    switch (this.state.endpointStatus) {
+      case endpointStatuses.VALIDATING:
+        label = 'Validating Endpoint...'
+        icon = 'spinner'
+        break
+      case endpointStatuses.ERROR:
+        label = 'Validation Failed'
+        icon = 'errorIcon'
+        break
+      case endpointStatuses.SUCCESS:
+        label = 'Endpoint is Valid'
+        icon = 'successIcon'
+        break
+      default:
+    }
+
+    return (
+      <div className={s.endpointStatus}>
+        <div className={s.endpointStatusIcon + ' ' + icon}></div>
+        <div className={s.endpointStatusLabel}>{label}</div>
+      </div>
+    )
+  }
+
+  renderButtons() {
+    let cancelButton = (this.state.type == "new" && this.props.cloud == null) ?
+      <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button> :
+      <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
+
+    let saveButton = this.state.endpointStatus === endpointStatuses.IDLE ||
+      this.state.endpointStatus === endpointStatuses.ERROR ?
+      <DropdownButton
+        disabled={this.areFieldsDisabled()}
+        className={s.rightBtn}
+        options={saveOptions}
+        onChange={this.handleSaveOptionChange.bind(this)}
+        onButtonClick={this.handleSave.bind(this)}
+        value={saveOptions.find(o => o.value === this.state.saveOption)}
+      /> :
+      <button
+        className={s.rightBtn + (this.state.endpointStatus === endpointStatuses.VALIDATING ? ' gray' : '')}
+        onClick={this.handleCancel.bind(this)}
+        disabled={this.state.endpointStatus === endpointStatuses.VALIDATING}
+      >{this.state.endpointStatus === endpointStatuses.VALIDATING ? 'Validating...' : 'Save'}</button>
+
+    return (
+      <div className={s.buttons}>
+        {cancelButton}
+        {saveButton}
+      </div>
+    )
+  }
+
   /**
    * Renders the new/edit endpoint form
    * @param cloud
@@ -555,6 +667,7 @@ class AddCloudConnection extends Reflux.Component {
         <div className={s.cloudImage}>
           <div className={" icon large-cloud " + this.state.currentCloud.name}></div>
         </div>
+        {this.renderEndpointStatus()}
         <div className={s.cloudFields + (cloud.endpoint.fields.length > 6 ? " " + s.larger : "")}>
           <div className={"form-group " + (this.state.cloudFormsSubmitted &&
             this.state.connectionName.trim().length == 0 ? s.error : "") + ' required'}
@@ -565,6 +678,7 @@ class AddCloudConnection extends Reflux.Component {
             <input
               type="text"
               placeholder="Endpoint Name"
+              disabled={this.areFieldsDisabled()}
               onChange={(e) => this.handleChangeName(e)}
               value={this.state.connectionName}
             />
@@ -575,6 +689,7 @@ class AddCloudConnection extends Reflux.Component {
             </div>
             <input
               type="text"
+              disabled={this.areFieldsDisabled()}
               placeholder="Endpoint Description"
               onChange={(e) => this.handleChangeDescription(e)}
               value={this.state.description}
@@ -583,29 +698,14 @@ class AddCloudConnection extends Reflux.Component {
 
           {fields}
         </div>
-        <div className={s.buttons}>
-          {(this.state.type == "new" && this.props.cloud == null) ? (
-            <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button>
-          ) : (
-            <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
-          )}
-          <button className={s.rightBtn} onClick={(e) => this.handleSave(e)}>Save</button>
-        </div>
+        {this.renderButtons()}
       </div>
     )
   }
 
   render() {
     let modalBody
-    if (this.state.validateEndpoint) {
-      modalBody = (
-        <ValidateEndpoint
-          closeHandle={this.props.closeHandle}
-          endpoint={this.state.validateEndpoint}
-          backHandle={(e) => this.backToEdit(e)}
-        />
-      )
-    } else if (this.state.currentCloud == null) {
+    if (this.state.currentCloud == null) {
       if (this.state.allClouds) {
         modalBody = this.renderCloudList()
       } else {

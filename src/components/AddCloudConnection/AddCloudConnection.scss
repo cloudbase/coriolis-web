@@ -42,6 +42,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   margin: 0 auto;
   padding: 48px 32px 32px;
   position: relative;
+  .endpointStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+    height: 20px;
+    .endpointStatusIcon {
+      margin-right: 8px;
+    }
+  }
   :global(.form-group) {
     margin-bottom: 16px;
     margin-left: 64px;
@@ -83,6 +93,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
   .buttons {
     padding-top: 16px;
+    > * {
+      width: 242px;
+    }
     .leftBtn {
       float: left;
     }
@@ -179,7 +192,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .cloudImage {
   text-align: center;
-  height: 164px;
+  height: 142px;
 }
 .connecting {
   margin: 160px auto;
