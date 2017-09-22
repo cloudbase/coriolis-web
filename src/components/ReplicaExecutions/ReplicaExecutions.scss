@@ -53,25 +53,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     .leftSide {
       float: left;
       margin-top: 5px;
+      display: flex;
+      align-items: center;
       h4 {
         margin: 0;
         font-weight: 300;
         font-size: 18px;
         color: $black;
-        float: left;
       }
       .date {
         font-size: 14px;
         color: $gray-dark;
-        float: left;
         letter-spacing: 0;
         margin-left: 16px;
-        margin-top: 4px;
       }
       :global(.status-pill) {
-        position: absolute;
-        top: 24px;
-        left: 38%;
+        margin-left: 16px;
+      }
+      .id {
+        margin-left: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        .idLabel {
+          max-width: 133px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: $gray-dark;
+        }
+        :global(.copyButton) { 
+          margin-top: -7px;
+        }
+        &:hover :global(.copyButton) {
+          opacity: 1;
+        }
       }
       &:after {
         clear: both;
