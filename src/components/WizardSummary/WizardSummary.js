@@ -153,14 +153,6 @@ class WizardSummary extends Component {
                 {this.renderOptionsFields()}
               </div>
             </div>
-            <div className={s.group}>
-              <h3>
-                Schedule
-              </h3>
-              <div className={s.schedules + " items-list"}>
-                {schedules}
-              </div>
-            </div>
           </div>
           <div className={s.columnRight}>
             <div className={s.group}>

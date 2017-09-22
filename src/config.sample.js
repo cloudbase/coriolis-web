@@ -90,11 +90,6 @@ export const migrationSteps = [
     component: "WizardNetworks"
   },
   {
-    name: "Schedule",
-    title: "Schedule",
-    component: "WizardSchedule"
-  },
-  {
     name: "Summary",
     title: "Summary",
     component: "WizardSummary"
