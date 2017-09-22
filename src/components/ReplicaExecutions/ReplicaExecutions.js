@@ -21,6 +21,7 @@ import s from './ReplicaExecutions.scss';
 import Helper from '../Helper';
 import LoadingIcon from '../LoadingIcon';
 import moment from 'moment';
+import NotificationActions from '../../actions/NotificationActions'
 import MigrationActions from '../../actions/MigrationActions';
 import Tasks from '../Tasks';
 import ExecutionsTimeline from '../ExecutionsTimeline';
@@ -182,6 +183,16 @@ class ReplicaExecutions extends Component {
     }
   }
 
+  handleExecutionIdCopy() {
+    let succesful = Helper.copyTextToClipboard(this.state.executionRef.id)
+
+    if (succesful) {
+      NotificationActions.notify('The ID has been copied to clipboard.')
+    } else {
+      NotificationActions.notify('The ID couldn\'t be copied', 'error')
+    }
+  }
+
   render() {
     if (this.props.replica) {
       if (this.props.replica.executions.length && this.state.executionRef) {
@@ -207,12 +218,18 @@ class ReplicaExecutions extends Component {
               <div className={s.executionsWrapper}>
                 <div className={s.leftSide}>
                   <h4>Execution #{this.state.executionRef && this.state.executionRef.number}</h4>
+                  <span className={"status-pill " + this.state.executionRef.status}>
+                    {this.state.executionRef.status}
+                  </span>
                   <span className={s.date}>
                     {this.state.executionRef && moment(executionTime).format("MMM Do YYYY HH:mm")}
                   </span>
-                  <span
-                    className={"status-pill " + this.state.executionRef.status}
-                  >{this.state.executionRef.status}</span>
+                  <div className={s.id} onClick={this.handleExecutionIdCopy.bind(this)}>
+                    <div className={s.idLabel}>
+                      {this.state.executionRef && this.state.executionRef.id ? 'ID: ' + this.state.executionRef.id : ''}
+                    </div>
+                    <div className="copyButton"></div>
+                  </div>
                 </div>
                 <div className={s.rightSide}>
                   {executionBtn}
