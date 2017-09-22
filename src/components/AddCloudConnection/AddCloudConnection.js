@@ -34,6 +34,7 @@ const saveOptions = [
   { label: 'Save', value: 'saveWithoutValidation' }
 ]
 const endpointStatuses = { IDLE: 0, VALIDATING: 1, ERROR: 2, SUCCESS: 3 }
+const submissionTypes = { ADD: 0, EDIT: 1 }
 
 class AddCloudConnection extends Reflux.Component {
 
@@ -54,6 +55,7 @@ class AddCloudConnection extends Reflux.Component {
     this.store = ConnectionsStore
 
     this.state = {
+      submissionType: submissionTypes.ADD,
       endpointStatus: endpointStatuses.IDLE,
       saveOption: saveOptions[0].value,
       type: props.type, // type of operation: new/edit
@@ -69,10 +71,18 @@ class AddCloudConnection extends Reflux.Component {
 
   componentWillMount() {
     super.componentWillMount.call(this)
+    this.componentWillUnmount = false
     this.context.onSetTitle(title);
     if (this.state.currentCloudData == null) {
       this.setState({ currentCloudData: {} })
     }
+
+    this.setState({ submissionType: this.props.type === 'new' ? submissionTypes.ADD : submissionTypes.EDIT })
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount.call(this)
+    this.componentWillUnmount = true
   }
 
   componentDidMount() {
@@ -192,7 +202,9 @@ class AddCloudConnection extends Reflux.Component {
       })
 
       // If endpoint is new
-      if (this.state.type == "new") {
+      if (this.state.type === 'new') {
+        this.setState({ type: 'edit' })
+
         ConnectionsActions.newEndpoint({
           name: this.state.connectionName,
           description: this.state.description,
@@ -200,12 +212,16 @@ class AddCloudConnection extends Reflux.Component {
           connection_info: credentials
         }, (response) => {
           this.validateEndpoint(response.data.endpoint)
+
+          if (this.props.onConnectionAdded) {
+            this.props.onConnectionAdded(response.data.endpoint)
+          }
         })
-        this.props.addHandle(this.state.connectionName);
+
         if (this.state.saveOption === saveOptions[0].value) {
           this.setState({ endpointStatus: endpointStatuses.VALIDATING })
         } else {
-          this.props.closeHandle()
+          this.handleSaveAndClose()
         }
       } else { // If editing an endpoint
         ConnectionsActions.editEndpoint(this.state.connection, {
@@ -214,15 +230,15 @@ class AddCloudConnection extends Reflux.Component {
           connection_info: credentials
         }, (response) => {
           this.validateEndpoint(response.data.endpoint)
-          this.props.updateHandle({
-            name: this.state.connectionName,
-            description: this.state.description
-          })
+
+          if (this.props.onConnectionAdded && this.submissionType === submissionTypes.ADD) {
+            this.props.onConnectionAdded(response.data.endpoint)
+          }
         })
         if (this.state.saveOption === saveOptions[0].value) {
           this.setState({ endpointStatus: endpointStatuses.VALIDATING })
         } else {
-          this.props.closeHandle()
+          this.handleSaveAndClose()
         }
       }
     }
@@ -230,8 +246,15 @@ class AddCloudConnection extends Reflux.Component {
 
   validateEndpoint(endpoint) {
     if (this.state.saveOption === saveOptions[1].value) {
-      return;
+      return
     }
+
+    if (this.componentWillUnmount && this.state.submissionType === submissionTypes.ADD) {
+      ConnectionsActions.deleteConnection(endpoint)
+      return
+    }
+
+    this.setState({ connection: endpoint })
 
     ConnectionsActions.validateConnection(endpoint, response => {
       let validation = response.data["validate-connection"]
@@ -240,23 +263,12 @@ class AddCloudConnection extends Reflux.Component {
       })
 
       if (validation.valid) {
-        this.setState({
-          connection: endpoint,
-          endpointStatus: endpointStatuses.SUCCESS
-        })
+        this.setState({ endpointStatus: endpointStatuses.SUCCESS })
       } else {
-        this.setState({
-          connection: endpoint,
-          endpointStatus: endpointStatuses.ERROR,
-          type: 'edit'
-        })
+        this.setState({ endpointStatus: endpointStatuses.ERROR })
       }
     }, () => {
-      this.setState({
-        connection: endpoint,
-        endpointStatus: endpointStatuses.ERROR,
-        type: 'edit'
-      })
+      this.setState({ endpointStatus: endpointStatuses.ERROR })
     })
   }
 
@@ -328,6 +340,21 @@ class AddCloudConnection extends Reflux.Component {
       connectionName: "",
       description: null
     })
+  }
+
+  /**
+   * Handles cancel edit/add endpoint
+   */
+  handleCancel() {
+    if (this.state.submissionType === submissionTypes.ADD && this.state.connection && this.state.connection.id) {
+      ConnectionsActions.deleteConnection(this.state.connection)
+    }
+
+    this.props.closeHandle();
+  }
+
+  handleSaveAndClose() {
+    this.props.closeHandle();
   }
 
   /**
@@ -415,13 +442,6 @@ class AddCloudConnection extends Reflux.Component {
   }
 
   /**
-   * Handles cancel edit/add endpoint
-   */
-  handleCancel() {
-    this.props.closeHandle();
-  }
-
-  /**
    * Handler to change the endpoint field
    * @param e
    * @param field
@@ -501,7 +521,7 @@ class AddCloudConnection extends Reflux.Component {
               placeholder={field.label}
               disabled={this.areFieldsDisabled()}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
-              value={this.state.currentCloudData[field.name]}
+              value={this.state.currentCloudData[field.name] || ''}
             />
           </div>
         )
@@ -642,7 +662,7 @@ class AddCloudConnection extends Reflux.Component {
       /> :
       <button
         className={s.rightBtn + (this.state.endpointStatus === endpointStatuses.VALIDATING ? ' gray' : '')}
-        onClick={this.handleCancel.bind(this)}
+        onClick={this.handleSaveAndClose.bind(this)}
         disabled={this.state.endpointStatus === endpointStatuses.VALIDATING}
       >{this.state.endpointStatus === endpointStatuses.VALIDATING ? 'Validating...' : 'Save'}</button>
 

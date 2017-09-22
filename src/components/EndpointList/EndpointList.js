@@ -110,9 +110,6 @@ class EndpointList extends Reflux.Component {
     this.setState({ showValidationModal: false })
   }
 
-  addHandle() {
-  }
-
   renderItem(item) {
     let createdAt = Helper.getTimeObject(item.created_at)
     return (
@@ -173,10 +170,7 @@ class EndpointList extends Reflux.Component {
             contentLabel="Add new cloud connection"
             onRequestClose={this.closeModal.bind(this)}
           >
-            <AddCloudConnection
-              closeHandle={(e) => this.closeModal(e)}
-              addHandle={(e) => this.addHandle(e)}
-            />
+            <AddCloudConnection closeHandle={(e) => this.closeModal(e)} />
           </Modal>
         </div>
       );
@@ -210,10 +204,7 @@ class EndpointList extends Reflux.Component {
             contentLabel="Add new cloud connection"
             onRequestClose={this.closeModal.bind(this)}
           >
-            <AddCloudConnection
-              closeHandle={(e) => this.closeModal(e)}
-              addHandle={(e) => this.addHandle(e)}
-            />
+            <AddCloudConnection closeHandle={(e) => this.closeModal(e)} />
           </Modal>
         </div>
       )

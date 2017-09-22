@@ -169,10 +169,11 @@ class ConnectionsStore extends Reflux.Store
 
   onSaveEditEndpointSuccess(response) {
     let connections = this.state.connections
-    connections.forEach(connection => {
+    connections = connections.map(connection => {
       if (connection.id == response.data.endpoint.id) {
         connection = response.data.endpoint
       }
+      return connection
     })
     this.setState({connections: connections})
   }
