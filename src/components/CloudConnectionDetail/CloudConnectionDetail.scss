@@ -60,8 +60,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: $weight-regular;
     font-size: 14px;
     color: $black;
+    &.passwordValue {
+      cursor: pointer;
+      display: inline-block;
+    }
     a {
       color: $blue;
+    }
+    .eyeIcon {
+      width: 16px;
+      height: 10px;
+      display: inline-block;
+      margin-left: 8px;
+      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjEwcHgiIHZpZXdCb3g9IjAgMCAxNiAxMCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5Db3B5IENvcHk8L3RpdGxlPiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4gICAgPGRlZnM+PC9kZWZzPiAgICA8ZyBpZD0iQ29yaW9saXMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPiAgICAgICAgPGcgaWQ9IjMxMC1DbG91ZC1FbmRwb2ludC1PdmVydmlldyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTkyMC4wMDAwMDAsIC00MzUuMDAwMDAwKSIgc3Ryb2tlPSIjMDA0NENBIiBzdHJva2Utd2lkdGg9IjEuMiIgZmlsbC1ydWxlPSJub256ZXJvIj4gICAgICAgICAgICA8ZyBpZD0iaWNvbi1yZXZlYWwiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkyMC4wMDAwMDAsIDQzMi4wMDAwMDApIj4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTgsMTIuNCBDMTAuMDAyMDQ3NCwxMi40IDEyLjExMzgwMTEsMTEuMjcyMTczNiAxNC4zMzI3Mzc2LDguOTcwNzMzMTMgQzE0Ljg1NTM5NTEsOC40Mjg2NDIyNiAxNC44NTU2MzQ5LDcuNTcwMjM3OTEgMTQuMzMzMjc4OSw3LjAyNzg1NjA0IEMxMi4xMTc3Mzk2LDQuNzI3MzYxMjkgMTAuMDA1OTMxOCwzLjYgOCwzLjYgQzUuOTk3OTUyNjQsMy42IDMuODg2MTk4OTksNC43Mjc4MjYzMiAxLjY2NzI2MjU1LDcuMDI5MjY2NzMgQzEuMTQ0NjA0OTgsNy41NzEzNTc2NCAxLjE0NDM2NTIxLDguNDI5NzYyMDcgMS42NjY3MjEzNSw4Ljk3MjE0MzkzIEMzLjg4MjI2MTAzLDExLjI3MjYzODcgNS45OTQwNjg3NCwxMi40IDgsMTIuNCBaIiBpZD0iU2hhcGUiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTEwLDggQzEwLDkuMTA1NDY5IDkuMTA1NDY5LDEwIDgsMTAgQzYuODk0NTMxNSwxMCA2LDkuMTA1NDY5IDYsOCBDNiw2Ljg5NDUzMTUgNi44OTQ1MzE1LDYgOCw2IEM5LjEwNTQ2OSw2IDEwLDYuODk0NTMxNSAxMCw4IFoiIGlkPSJTaGFwZSI+PC9wYXRoPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
     }
   }
 }
