@@ -20,6 +20,7 @@
 
 import React from 'react';
 import Reflux from 'reflux';
+import moment from 'moment'
 import ConnectionsActions from '../../actions/ConnectionsActions';
 import MigrationActions from '../../actions/MigrationActions';
 import Helper from '../../components/Helper';
@@ -181,21 +182,10 @@ class ConnectionsStore extends Reflux.Store
     if (data.data.endpoints.length) {
       data.data.endpoints.forEach(endpoint => {
         connections.push(endpoint)
-        /*let cloudType = endpoint.name.substr(0, endpoint.name.indexOf("::"))
-        let secretName = endpoint.name.substr(endpoint.name.indexOf("::") + 2)
-        let secretId = secret.secret_ref.substr(secret.secret_ref.lastIndexOf("/") + 1)
-        connections.push({
-          id: secretId,
-          name: secretName,
-          description: "",
-          created: new Date(secret.created),
-          cloudName: cloudType,
-          secretUrl: secret.secret_ref,
-          credentials: {}
-        })*/
       })
     }
-
+    
+    connections.sort((c1, c2) => moment(c2.created_at).isAfter(c1.created_at))
     this.setState({connections: connections})
 
     if (window.location.pathname === "/" || window.location.pathname === "/login") {
