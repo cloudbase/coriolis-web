@@ -36,7 +36,8 @@ class CloudConnectionDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      fields: this.processProps(props)
+      fields: this.processProps(props),
+      showPassword: false
     }
   }
 
@@ -97,7 +98,27 @@ class CloudConnectionDetail extends Component {
     return fields
   }
 
+  handleShowPassword() {
+    this.setState({ showPassword: true })
+  }
+
   renderAuthFields() {
+    let renderPasswordField = field => {
+      if (field.fieldName !== 'Password' || this.state.showPassword) {
+        return (
+          <div className={s.value}>
+            {field.fieldValue || '-'}
+          </div>
+        )
+      }
+
+      return (
+        <div className={s.value + ' ' + s.passwordValue} onClick={this.handleShowPassword.bind(this)}>
+          •••••••••<span className={s.eyeIcon}></span>
+        </div>
+      )
+    }
+
     if (this.state.fields.length) {
       return this.state.fields.map((field, index) => {
         if (field.fieldName !== 'login_type') {
@@ -106,9 +127,7 @@ class CloudConnectionDetail extends Component {
               <div className={s.title}>
                 {field.fieldName}
               </div>
-              <div className={s.value}>
-                {field.fieldValue || '-'}
-              </div>
+              {renderPasswordField(field)}
             </div>
           )
         } else {
