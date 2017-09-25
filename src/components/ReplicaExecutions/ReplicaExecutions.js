@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /* eslint-disable no-trailing-spaces */
 import React, { Component, PropTypes } from 'react';
+import Modal from 'react-modal'
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaExecutions.scss';
 import Helper from '../Helper';
@@ -27,6 +28,7 @@ import Tasks from '../Tasks';
 import ExecutionsTimeline from '../ExecutionsTimeline';
 import { tasksPollTimeout } from '../../config'
 import ConfirmationDialog from '../ConfirmationDialog'
+import ReplicaExecutionOptions from '../ReplicaExecutionOptions'
 
 
 const title = 'Replica Executions';
@@ -48,6 +50,7 @@ class ReplicaExecutions extends Component {
     this.state = {
       executionRef: null,
       tasks: null,
+      showExecutionModal: false,
       deleteConfirmationDialog: {
         visible: false,
         message: "Are you sure?",
@@ -117,8 +120,17 @@ class ReplicaExecutions extends Component {
     })
   }
 
-  executeNow() {
-    MigrationActions.executeReplica(this.props.replica)
+  showExecutionModal() {
+    this.setState({ showExecutionModal: true })
+  }
+
+  closeExecutionModal() {
+    this.setState({ showExecutionModal: false })
+  }
+
+  executeNow(options) {
+    this.closeExecutionModal()
+    MigrationActions.executeReplica(this.props.replica, null, null, options)
     clearInterval(this.timeout)
     this.timeout = setInterval((e) => this.pollTasks(e), tasksPollTimeout)
   }
@@ -194,6 +206,28 @@ class ReplicaExecutions extends Component {
   }
 
   render() {
+    let modalStyle = {
+      overlay: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(164, 170, 181, 0.69)"
+      },
+      content: {
+        padding: "0px",
+        borderRadius: "4px",
+        border: "none",
+        bottom: "auto",
+        width: "576px",
+        height: "auto",
+        left: "50%",
+        top: "120px",
+        marginLeft: "-288px"
+      }
+    }
+
     if (this.props.replica) {
       if (this.props.replica.executions.length && this.state.executionRef) {
         let executionBtn = <button className="wire red" onClick={(e) => this.deleteExecution(e)}>Delete</button>
@@ -259,9 +293,20 @@ class ReplicaExecutions extends Component {
                 <span className="icon"></span>
                 <h3>It looks like there are no executions in this replica</h3>
                 <p>This replica has not been executed yet</p>
-                <button onClick={(e) => this.executeNow(e)}>Execute Now</button>
+                <button onClick={this.showExecutionModal.bind(this)}>Execute Now</button>
               </div>
             </div>
+            <Modal
+              isOpen={this.state.showExecutionModal}
+              style={modalStyle}
+              onRequestClose={this.closeExecutionModal.bind(this)}
+              contentLabel="Replica Execution Options"
+            >
+              <ReplicaExecutionOptions
+                onCancel={this.closeExecutionModal.bind(this)}
+                onExecute={this.executeNow.bind(this)}
+              />
+            </Modal>
           </div>
         )
       }

@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { PropTypes } from 'react';
 import Reflux from 'reflux';
+import Modal from 'react-modal'
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ReplicaView.scss';
 import Header from '../Header';
@@ -28,6 +29,7 @@ import TextTruncate from 'react-text-truncate';
 import Location from '../../core/Location';
 import ConfirmationDialog from '../ConfirmationDialog'
 import { tasksPollTimeout } from '../../config'
+import ReplicaExecutionOptions from '../ReplicaExecutionOptions'
 
 class ReplicaView extends Reflux.Component {
 
@@ -46,6 +48,7 @@ class ReplicaView extends Reflux.Component {
     this.state = {
       title: 'Coriolis: View Replica',
       isBeingExecuted: false,
+      showExecutionModal: false,
       confirmationDialog: {
         visible: false,
         message: "Are you sure?",
@@ -84,8 +87,16 @@ class ReplicaView extends Reflux.Component {
       })
   }
 
-  executeReplica() {
-    this.setState({ isBeingExecuted: true })
+  showExecutionModal() {
+    this.setState({ showExecutionModal: true })
+  }
+
+  closeExecutionModal() {
+    this.setState({ showExecutionModal: false })
+  }
+
+  executeReplica(options) {
+    this.setState({ isBeingExecuted: true, showExecutionModal: false })
     let item = this.state.replicas.filter(replica => replica.id == this.props.replicaId)[0]
     MigrationActions.executeReplica(item, () => {
       this.pollReplicaExecution()
@@ -93,7 +104,7 @@ class ReplicaView extends Reflux.Component {
     }, () => {
       this.pollReplicaExecution()
       this.setState({ isBeingExecuted: false })
-    })
+    }, options)
   }
 
   goBack() {
@@ -108,7 +119,7 @@ class ReplicaView extends Reflux.Component {
         Location.push('/cloud-endpoints')
         break
       case "start":
-        MigrationActions.executeReplica(item)
+        this.showExecutionModal()
         break
       default:
         break
@@ -124,6 +135,27 @@ class ReplicaView extends Reflux.Component {
   }
 
   render() {
+    let modalStyle = {
+      overlay: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(164, 170, 181, 0.69)"
+      },
+      content: {
+        padding: "0px",
+        borderRadius: "4px",
+        border: "none",
+        bottom: "auto",
+        width: "576px",
+        height: "auto",
+        left: "50%",
+        top: "120px",
+        marginLeft: "-288px"
+      }
+    }
     let item = this.currentReplica(this.props.replicaId)
     let title = "Edit"
 
@@ -156,7 +188,7 @@ class ReplicaView extends Reflux.Component {
                   <button
                     className="gray"
                     disabled={item.status === "RUNNING" || this.state.isBeingExecuted}
-                    onClick={(e) => this.executeReplica(e)}
+                    onClick={this.showExecutionModal.bind(this)}
                   >
                     Execute Now
                   </button>
@@ -192,6 +224,17 @@ class ReplicaView extends Reflux.Component {
             onConfirm={(e) => this.state.confirmationDialog.onConfirm(e)}
             onCancel={(e) => this.state.confirmationDialog.onCancel(e)}
           />
+          <Modal
+            isOpen={this.state.showExecutionModal}
+            style={modalStyle}
+            onRequestClose={this.closeExecutionModal.bind(this)}
+            contentLabel="Replica Execution Options"
+          >
+            <ReplicaExecutionOptions
+              onCancel={this.closeExecutionModal.bind(this)}
+              onExecute={this.executeReplica.bind(this)}
+            />
+          </Modal>
         </div>
       )
     } else {

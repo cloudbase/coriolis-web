@@ -74,7 +74,8 @@ export const defaultLabels = {
   session_token: "Session Token",
   clone_disks: "Clone Disks",
   force: "Force",
-  skip_os_morphing: "Skip OS Morphing"
+  skip_os_morphing: "Skip OS Morphing",
+  shutdown_instances: "Shutdown Instances"
 }
 
 export const cloudLabels = {

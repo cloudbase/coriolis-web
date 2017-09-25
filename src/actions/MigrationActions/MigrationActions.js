@@ -119,7 +119,7 @@ MigrationActions.deleteReplica.listen((replica, callback = null) => {
     .catch(MigrationActions.deleteReplica.failed);
 })
 
-MigrationActions.executeReplica.listen((replica, callback = null, errorCallback = null) => {
+MigrationActions.executeReplica.listen((replica, callback = null, errorCallback = null, options = null) => {
   if (replica.type == 'replica') {
     // check if endpoints exists
     let connections = Reflux.GlobalState.connectionStore.connections
@@ -145,10 +145,11 @@ MigrationActions.executeReplica.listen((replica, callback = null, errorCallback 
     }
     let projectId = Reflux.GlobalState.userStore.currentUser.project.id
 
-    let payload = {
-      execution: {
-        shutdown_instances: false
-      }
+    let payload = { execution: { shutdown_instances: false } }
+    if (options) {
+      options.forEach(o => {
+        payload.execution[o.field] = o.value || false
+      })
     }
 
     Api.sendAjaxRequest({
