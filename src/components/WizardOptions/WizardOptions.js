@@ -16,14 +16,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React, { PropTypes } from 'react';
+import ReactTooltip from 'react-tooltip'
 import Reflux from 'reflux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './WizardOptions.scss';
 import Dropdown from '../NewDropdown';
+import Helper from '../Helper'
 import WizardActions from '../../actions/WizardActions';
 import WizardStore from '../../stores/WizardStore';
 import NotificationActions from '../../actions/NotificationActions';
-
+import Switch from '../Switch'
+import InfoIcon from '../InfoIcon'
 
 const title = 'Migration Options';
 
@@ -121,10 +124,17 @@ class WizardOptions extends Reflux.Component {
     WizardActions.updateWizardState({ showAdvancedOptions: showAdvancedOptions })
   }
 
+  handleAdvancedOptionsSwitch(e) {
+    this.setState({ showAdvancedOptions: e.target.checked })
+    WizardActions.updateWizardState({ showAdvancedOptions: e.target.checked })
+  }
+
   handleOptionsFieldChange(e, field) {
     let destinationEnvironment = this.state.destination_environment
-    if (field.type == 'dropdown') {
+    if (field.type === 'dropdown') {
       destinationEnvironment[field.name] = e.value
+    } else if (field.type === 'switch') {
+      destinationEnvironment[field.name] = e.target.checked
     } else {
       destinationEnvironment[field.name] = e.target.value
     }
@@ -150,7 +160,10 @@ class WizardOptions extends Reflux.Component {
             className={"form-group " + extraClasses}
             key={"cloudField_" + field.name}
           >
-            <h3>{field.label + (field.required ? " *" : "")}</h3>
+            <div className="input-label">
+              {field.label + (field.required ? " *" : "")}
+              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
+            </div>
             <input
               type="text"
               placeholder={field.label + (field.required ? " *" : "")}
@@ -166,7 +179,10 @@ class WizardOptions extends Reflux.Component {
             className={"form-group " + extraClasses}
             key={"cloudField_" + field.name}
           >
-            <h3>{field.label + (field.required ? " *" : "")}</h3>
+            <div className="input-label">{
+              field.label + (field.required ? " *" : "")}
+              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
+            </div>
             <input
               type="password"
               placeholder={field.label + (field.required ? " *" : "")}
@@ -176,6 +192,25 @@ class WizardOptions extends Reflux.Component {
           </div>
         )
         break;
+      case 'switch':
+        returnValue = (
+          <div
+            className={"form-group " + extraClasses}
+            key={"cloudField_" + field.name}
+          >
+            <div className="input-label">
+              {field.label + (field.required ? " *" : "")}
+              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
+            </div>
+            <Switch
+              checked={this.state.destination_environment[field.name] === true}
+              onChange={(e) => this.handleOptionsFieldChange(e, field)}
+              checkedLabel="Yes"
+              uncheckedLabel="No"
+            />
+          </div>
+        )
+        break
       case "dropdown":
         let value = this.state.destination_environment[field.name]
 
@@ -188,7 +223,10 @@ class WizardOptions extends Reflux.Component {
             className={"form-group " + extraClasses}
             key={"cloudField_" + field.name}
           >
-            <h3>{field.label + (field.required ? " *" : "")}</h3>
+            <div className="input-label">
+              {field.label + (field.required ? " *" : "")}
+              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
+            </div>
             <Dropdown
               options={field.options}
               onChange={(e) => this.handleOptionsFieldChange(e, field)}
@@ -254,21 +292,26 @@ class WizardOptions extends Reflux.Component {
   }
 
   render() {
-    let toggleAdvancedBtn = (<button
-      onClick={(e) => this.toggleAdvancedOptions(e)}
-      className={s.toggleAdvancedBtn + " wire"}
-    >
-      {this.state.showAdvancedOptions ? "Hide" : "Show"} Advanced Options
-    </button>)
+    let toggleAdvancedSwitch = (
+      <div className={s.toggleAdvancedSwitch}>
+        <div className={s.toggleAdvancedLabel}>Simple</div>
+        <Switch
+          checked={this.state.showAdvancedOptions}
+          onChange={this.handleAdvancedOptionsSwitch.bind(this)}
+        />
+        <div className={s.toggleAdvancedLabel}>Advanced</div>
+      </div>
+    )
 
     return (
       <div className={s.root}>
         <div className={s.container}>
+          {toggleAdvancedSwitch}
           <div className={s.containerCenter}>
             {this.renderOptionsFields(this.state.targetCloud.cloudRef["import_" + this.state.migrationType].fields)}
           </div>
-          {toggleAdvancedBtn}
         </div>
+        <ReactTooltip place="right" effect="solid" className="reactTooltip" />
       </div>
     );
   }

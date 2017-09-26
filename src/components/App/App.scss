@@ -416,6 +416,25 @@ button {
 :global(.Dropdown-option.is-selected) {
   font-weight: 500;
 }
+
+:global(.reactTooltip) {
+  color: $gray-dark !important;
+  background: $gray-light !important;
+  width: 128px;
+  padding: 8px !important;
+  box-shadow: 0 6px 9px 1px rgba(32, 34, 52, 0.25);
+  margin-left: 12px !important;
+  margin-top: 10px !important;
+  &:after {
+    border-right-color: $gray-light !important;
+    border-right-width: 8px !important;
+    left: -8px !important;
+    border-top-width: 8px !important;
+    border-bottom-width: 8px !important;
+    margin-top: -18px !important;
+  }
+}
+
 :global(.detailViewHead) {
   p {
     margin: 0;
@@ -795,6 +814,14 @@ button {
   }
 }
 
+:global(.input-label) {
+  font-size: 14px;
+  color: $black;
+  height: 40px;
+  width: 248px;
+  display: flex;
+}
+
 input[type="text"], input[type="password"] {
   height: 32px;
   border-radius: 4px;
@@ -803,7 +830,7 @@ input[type="text"], input[type="password"] {
   font-size: 14px;
   color: $gray-dark;
   padding: 0 8px 0 16px;
-  font-weight: $weight-regular;
+  font-weight: $weight-light;
   transition: all $animation-swift-out;
   box-sizing: border-box;
   &:hover {

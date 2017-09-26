@@ -50,46 +50,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin-left: 16px;
   }
 }
-.containerLeft {
-  width: 272px;
-  float: left;
-}
 .containerCenter {
-  width: 800px;
+  width: $wizard-content-width;
   margin: 0 auto;
 }
-.containerRight {
-  width: 272px;
-  float: right;
-  :global(.Dropdown-root) {
-    width: 100%;
-  }
-}
-.containerRight, .containerLeft {
-  &:after {
-    display: block;
-    height: 0;
-    clear: both;
-    content: " ";
-  }
-}
 
-.toggleAdvancedBtn {
-  clear: both;
-  width: 240px;
-  margin: 24px auto 0;
-  display: block;
+.toggleAdvancedSwitch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 47px;
+
+  .toggleAdvancedLabel {
+    font-weight: $weight-light;
+    color: $gray-dark;
+    margin: 0 16px;
+  }
 }
 
 .optionsFieldsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -304px;
+
   :global {
     .form-group {
-      float: left;
-      width: 40%;
       display: none;
-      &:nth-child(2n) {
-        float: right
-      }
+      min-width: 208px;
+      max-width: 208px;
+      flex-grow: 1;
+      margin-left: 304px;
+      margin-bottom: 32px;
       &.required, &.showAdvanced {
         display: block;
       }
@@ -102,10 +93,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }
       }
     }
-  }
-  &:after {
-    content: " ";
-    display: block;
-    clear: both;
   }
 }

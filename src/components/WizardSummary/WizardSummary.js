@@ -61,24 +61,12 @@ class WizardSummary extends Component {
     return fields.map(field => (
       <div className={s.row} key={"destination_environment_" + field.label}>
         <span>{field.label}</span>
-        <span>{field.value}</span>
+        <span>{field.value.toString()}</span>
       </div>
     ))
   }
 
   render() {
-    let schedules = this.props.summary.schedules.map((item, index) => (
-        <div className="item" key={"schedule_" + index}>
-          <span className="cell">
-            {this.dateTypes.indexOf(item.type) == -1 ? item.type : moment(item.date).format("MMM Do YYYY")}
-          </span>
-          <span className="cell">
-            {item.type != "Execute Now" &&
-              (item.hour.label + ":" + item.minute.label + " " + item.tod + " " + item.timezone)}
-          </span>
-        </div>
-      ), this)
-
     let instances = this.props.summary.selectedInstances.map((vm, index) => (
       <div className="item" key={"VM_" + index}>
         <span className="cell">
