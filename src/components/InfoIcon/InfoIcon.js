@@ -21,7 +21,7 @@ import s from './InfoIcon.scss';
 
 class InfoIcon extends Component {
   static propTypes = {
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
     className: PropTypes.string
   }
 
