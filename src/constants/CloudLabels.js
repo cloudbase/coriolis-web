@@ -65,7 +65,11 @@ export const defaultLabels = {
   shape_name: "Shape Name",
   migr_shape_name: "Migration Shape Name",
   allow_untrusted_swift: "Allow Untrusted Swift",
-  glance_api_version: "Glance API Version"
+  glance_api_version: "Glance API Version",
+  region: "Region",
+  access_key_id: "Access Key ID",
+  secret_access_key: "Secret Access Key",
+  session_token: "Session Token"
 }
 
 export const cloudLabels = {
