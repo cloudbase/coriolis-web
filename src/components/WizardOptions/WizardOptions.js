@@ -277,8 +277,12 @@ class WizardOptions extends Reflux.Component {
     }
     if (!this.state.isConnecting) {
       let optionFields = fields.map(field => this.renderField(field), this)
+      let totalFields = optionFields.filter(f => f !== undefined).length
+      let requiredFields = fields.filter(f => f.required).length
+      let visibleFields = this.state.showAdvancedOptions ? totalFields : requiredFields
+
       return (
-        <div className={s.optionsFieldsContainer}>
+        <div className={s.optionsFieldsContainer + ' ' + (visibleFields <= 4 ? s.oneColumn : '')}>
           {optionFields}
         </div>
       )

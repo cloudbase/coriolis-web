@@ -73,6 +73,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   flex-wrap: wrap;
   margin-left: -304px;
 
+  &.oneColumn {
+    align-items: center;
+    flex-direction: column;
+  }
+
   :global {
     .form-group {
       display: none;
