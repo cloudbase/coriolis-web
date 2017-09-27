@@ -161,6 +161,7 @@ export class LoginPage extends Reflux.Component {
                   <label>Username</label>
                   <input
                     type="text"
+                    autoFocus="true"
                     placeholder="Username"
                     onChange={(e) => this.handleChangeUsername(e)}
                     value={this.state.username}
