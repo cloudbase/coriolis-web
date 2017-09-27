@@ -94,8 +94,6 @@ class ReplicaExecutionOptions extends Reflux.Component {
           <h3>Replica Execution Options</h3>
         </div>
         <div className={s.images}>
-          <div className={s.replicaImage} />
-          <div className={s.arrowImage} />
           <div className={s.executionImage} />
         </div>
         {modalBody}
