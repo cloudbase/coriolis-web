@@ -156,7 +156,7 @@ class WizardNetworks extends Component {
         return (
           <div className="item" key={"networks_" + index}>
             <div className="cell cell-icon">
-              <div className="icon network"></div>
+              <div className={s.networkIcon}></div>
               <span className="details">
                 {network.network_name}
               </span>
