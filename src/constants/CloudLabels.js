@@ -26,7 +26,7 @@ export const defaultLabels = {
   user_domain_name: "User Domain Name",
   project_name: "Project Name",
   project_domain_name: "Project Domain Name",
-  flavor_name: "Flavor Name",
+  flavor_name: { label: "Flavor Name", description: "Let Coriolis store a flavor name" },
   hypervisor_type: "Hypervisor Type",
   container_format: "Container Format",
   disk_format: "Disk Format",

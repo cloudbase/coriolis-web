@@ -18,38 +18,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './InfoIcon.scss';
-import ReactTooltip from 'react-tooltip'
 
 class InfoIcon extends Component {
   static propTypes = {
     text: PropTypes.string,
-    place: PropTypes.string
-  }
-
-  static defaultProps = {
-    text: "Missing 'text' property",
-    place: "right"
-  }
-
-  componentWillMount() {
-
+    className: PropTypes.string
   }
 
   render() {
-    return (
-      <div data-tip={this.props.text} className={s.root}>
-        <ReactTooltip
-          className={s.infoIcon}
-          multiline={true} // eslint-disable-line react/jsx-boolean-value
-          type="light"
-          place={this.props.place}
-          effect="solid"
-          border={true} // eslint-disable-line react/jsx-boolean-value
-        />
-      </div>
-    );
-  }
+    let className = s.root + ' ' + (this.props.className || '')
+    let icon = this.props.text ? <div className={s.icon} data-tip={this.props.text} /> : null
 
+    return (
+      <div className={className}>
+        {icon}
+      </div>
+    )
+  }
 }
 
 export default withStyles(InfoIcon, s);

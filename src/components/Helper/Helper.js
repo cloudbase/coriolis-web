@@ -42,8 +42,12 @@ class Helper extends Component {
     return hiddenPass
   }
 
-  static convertCloudFieldLabel(label) {
-    return defaultLabels[label] || label
+  static convertCloudFieldLabel(field) {
+    return (defaultLabels[field] && defaultLabels[field].label) || defaultLabels[field] || field
+  }
+
+  static getCloudFieldDescription(field) {
+    return defaultLabels[field] && defaultLabels[field].description
   }
 
   static convertCloudLabel(label) {

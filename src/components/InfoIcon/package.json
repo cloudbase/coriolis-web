@@ -1,6 +1,6 @@
 {
-  "name": "InfoIcon",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./InfoIcon.js"
+    "name": "InfoIcon",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./InfoIcon.js"
 }
