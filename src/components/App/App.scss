@@ -155,13 +155,22 @@ button {
     background-color: #FFF;
     border: 1px solid $blue;
     &:hover {
-      opacity: 0.75;
+      color: white;
+      background: $blue;
     }
     &:global(.gray) {
+      &:hover {
+        color: white;
+        background: $gray;
+      }
       border-color: $gray;
       color: $black;
     }
     &:global(.red) {
+      &:hover {
+        color: white;
+        background: $red;
+      }
       border-color: $red;
       color: $red;
     }

@@ -228,7 +228,7 @@ class CloudConnectionsView extends Component {
                   <button onClick={(e) => this.validateConnection(e)}>Validate Endpoint</button>
                 </div>
                 <div className={s.rightSide}>
-                  <button onClick={(e) => this.deleteConnection(e)} className="wire" style={{ float: "right" }}>
+                  <button onClick={(e) => this.deleteConnection(e)} className="wire red" style={{ float: "right" }}>
                     Delete
                   </button>
                 </div>
