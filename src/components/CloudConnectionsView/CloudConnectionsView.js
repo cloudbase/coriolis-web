@@ -217,9 +217,7 @@ class CloudConnectionsView extends Component {
 
             </div>
             <div className={s.content}>
-              <div className={s.connectionTypeImg + " icon large-cloud " + (item && item.type)}></div>
-              <br />
-
+              <div className={`${s.connectionTypeImg} ${(item && item.type) || ''}`}></div>
               {React.cloneElement(this.props.children, { connection: item })}
               <div className={s.buttons}>
                 <div className={s.leftSide}>
