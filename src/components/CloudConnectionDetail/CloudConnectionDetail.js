@@ -178,8 +178,6 @@ class CloudConnectionDetail extends Component {
                 <Moment format="MM/DD/YYYY HH:mm" date={createdAt} />
               </div>
             </div>
-          </div>
-          <div className={s.container}>
             {this.renderAuthFields()}
           </div>
         </div>

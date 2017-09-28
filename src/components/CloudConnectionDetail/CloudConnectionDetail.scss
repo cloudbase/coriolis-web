@@ -29,6 +29,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 .container {
   margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   &:after {
     clear: both;
     height: 0;
@@ -36,20 +39,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     content: ' ';
   }
 }
-.columnLeft, .columnRight {
-  width: 50%;
-  float: left;
-}
 .formGroup {
   margin-bottom: 32px;
+  flex-grow: 1;
   width: 50%;
-  float: left;
   .title {
-    font-weight: $weight-semibold;
+    font-weight: $weight-regular;
     font-size: 10px;
-    color: $gray-dark;
+    color: $gray;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
   }
   .titleIp {
     font-weight: $weight-semibold;
