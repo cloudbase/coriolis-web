@@ -24,7 +24,9 @@ class Switch extends Component {
     onChange: PropTypes.func,
     checked: PropTypes.bool,
     checkedLabel: PropTypes.string,
-    uncheckedLabel: PropTypes.string
+    uncheckedLabel: PropTypes.string,
+    className: PropTypes.string,
+    labelClassName: PropTypes.string
   }
 
   constructor(props) {
@@ -47,7 +49,7 @@ class Switch extends Component {
     let renderLabel = () => {
       if ((this.state.checked && this.props.checkedLabel) || (!this.state.checked && this.props.uncheckedLabel)) {
         return (
-          <div className={s.label}>
+          <div className={s.label + ' ' + (this.props.labelClassName || '')}>
             {this.state.checked ? this.props.checkedLabel : this.props.uncheckedLabel}
           </div>
         )
@@ -56,7 +58,7 @@ class Switch extends Component {
     }
 
     return (
-      <div className={s.root}>
+      <div className={s.root + ' ' + (this.props.className || '')}>
         <input
           type="checkbox"
           className={s.input}
