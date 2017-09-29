@@ -32,6 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       width: 32px;
       height: 16px;
       cursor: pointer;
+      top: 1px;
     }
 
     input[type="checkbox"]:global(.tinyswitch.ios-switch) + div {
