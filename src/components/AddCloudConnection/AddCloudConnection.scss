@@ -51,9 +51,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       text-transform: uppercase;
       margin-bottom: 2px;
     }
-    &:global(.switch-radio) {
-      width: 100%;
-    }
   }
   input[type="text"], input[type="password"] {
     width: 100%;
