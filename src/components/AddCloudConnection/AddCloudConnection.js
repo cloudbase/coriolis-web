@@ -25,10 +25,8 @@ import ConnectionsActions from '../../actions/ConnectionsActions';
 import NotificationActions from '../../actions/NotificationActions';
 import Dropdown from '../NewDropdown';
 import Switch from '../Switch'
-import Helper from '../Helper'
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import ValidateEndpoint from '../ValidateEndpoint';
-import InfoIcon from '../InfoIcon'
 
 const title = 'Add Cloud Endpoint';
 
@@ -440,7 +438,6 @@ class AddCloudConnection extends Reflux.Component {
           <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
             <div className="input-label">
               {field.label + (field.required ? " *" : "")}
-              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
             </div>
             <input
               type="text"
@@ -456,7 +453,6 @@ class AddCloudConnection extends Reflux.Component {
           <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
             <div className="input-label">
               {field.label + (field.required ? " *" : "")}
-              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
             </div>
             <input
               type="password"
@@ -475,9 +471,10 @@ class AddCloudConnection extends Reflux.Component {
           >
             <div className="input-label">
               {field.label + (field.required ? " *" : "")}
-              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
             </div>
             <Switch
+              className={s.switchButton}
+              labelClassName={s.switchLabel}
               checked={this.state.currentCloudData[field.name] === true}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
               checkedLabel="Yes"
@@ -491,7 +488,6 @@ class AddCloudConnection extends Reflux.Component {
           <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
             <div className="input-label">
               {field.label + (field.required ? " *" : "")}
-              <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
             </div>
             <Dropdown
               options={field.options}
@@ -528,7 +524,9 @@ class AddCloudConnection extends Reflux.Component {
               { radioOptions }
             </div>
             <div></div>
-            {fields}
+            <div className={s.cloudFields + ' ' + s.radioFields}>
+              {fields}
+            </div>
           </div>
         )
         break;
