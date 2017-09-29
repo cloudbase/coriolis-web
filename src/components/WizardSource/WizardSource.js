@@ -147,7 +147,7 @@ class WizardSource extends Reflux.Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <div className={s.cloudList + " cloudCount_" + cloudCount}>
+          <div className={s.cloudList + (cloudCount < 3 ? ' ' + s.centered : '')}>
             {cloudList}
           </div>
         </div>

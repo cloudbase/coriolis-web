@@ -128,7 +128,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .cloudList {
   height: 324px;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 8px;
   .cloudImage {
     width: 128px;

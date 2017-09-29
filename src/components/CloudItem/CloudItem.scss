@@ -18,19 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @import '../variables.scss';
 
 .root {
-  width: 255px;
-  float: left;
-  margin-bottom: 48px;
   height: 200px;
-  &:nth-child(3n+1) {
-
-  }
-  &:nth-child(3n+2) {
-    text-align: center;
-  }
-  &:nth-child(3n) {
-    text-align: right;
-  }
+  margin-left: 96px;
+  margin-top: 96px;
   &.selected {
     :global(.Dropdown-control) {
       background-color: $blue;
