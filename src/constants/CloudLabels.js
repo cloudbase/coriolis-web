@@ -25,6 +25,8 @@ export const defaultLabels = {
   identity_api_version: "Identity Version",
   identity_domain: "Identity Domain",
   auth_url: "Auth URL",
+  storage_api_endpoint: "Storage Api Endpoint",
+  storage_auth_endpoint: "Storage Authentication Endpoint",
   user_domain_name: "User Domain Name",
   project_name: "Project Name",
   project_domain_name: "Project Domain Name",
