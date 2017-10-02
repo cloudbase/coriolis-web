@@ -952,8 +952,7 @@ input[type="checkbox"]:global(.bigswitch.ios-switch) + div > div {
 
 /* Checked Big Knob (Blue Style) */
 input[type="checkbox"]:global(.bigswitch.ios-switch):checked + div > div {
-  -webkit-transform: translate3d(25px, 0, 0);
-  -moz-transform: translate3d(16px, 0, 0);
+  transform: translate3d(25px, 0, 0);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), 0px 0px 0 1px rgba(8, 80, 172,1);
 }
 
