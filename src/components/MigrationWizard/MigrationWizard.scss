@@ -33,24 +33,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     width: $wizard-content-width;
     margin: 0 auto 60px;
   }
-  :global {
-    .cloudCount_1 {
-      margin: 0 auto;
-      width: 33.3%;
-      padding-left: 64px;
-    }
-    .cloudCount_2 {
-      margin: 0 auto;
-      width: 66.6%;
-      padding-left: 32px;
-    }
-  }
 }
 .container {
   flex: 1;
   margin: 0 auto;
   padding: 0px 0px 70px 32px;
   overflow-y: auto;
+  overflow-x: hidden;
   width: $wizard-content-width;
 
 }

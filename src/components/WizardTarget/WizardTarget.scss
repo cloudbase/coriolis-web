@@ -26,9 +26,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   padding: 0 0 40px;
   max-width: $max-content-width;
   width: $max-content-width;
-
+  
 }
 .cloudList {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -96px;
+  margin-top: -96px;
+
+  &.centered {
+    justify-content: center;
+  }
 
   &:after {
     content: " ";
