@@ -82,6 +82,8 @@ class AddCloudConnection extends Reflux.Component {
                 // credentials['user_credentials'][j] = credentials[i][j]
                 newCredentials[j] = credentials[i][j]
               }
+            } else if (typeof credentials[i] === 'boolean') {
+              newCredentials[i] = credentials[i]
             } else {
               newCredentials[i] = credentials[i] + ""
             }
