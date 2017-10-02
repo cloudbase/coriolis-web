@@ -21,65 +21,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   :global(.arrow) {
     width: 64px;
     height: 32px;
-    margin-top: 60px;
-    margin-left: 70px;
-    position: absolute;
   }
 }
 
 .container {
-  margin: 0 auto;
-  &:after {
-    clear: both;
-    height: 0;
-    display: block;
-    content: ' ';
-  }
+  display: flex;
+  flex-wrap: wrap;
   &.buttons {
-    margin-top: 16px;
-    button:first-child {
-      float: left;
-    }
-    button:nth-child(2) {
-      float: right;
-    }
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 32px;
   }
-}
-.columnLeft, .columnRight {
-  width: 50%;
-  float: left;
 }
 .formGroup {
   margin-bottom: 32px;
-  .title {
-    font-weight: $weight-semibold;
-    font-size: 10px;
-    color: $gray-dark;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+  width: 50%;
+  &.logos {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    & > div {
+      width: 50%;
+      &:global(.arrow) {
+        position: absolute;
+        top: 16px;
+        left: 277px;
+      }
+    }
   }
-  .titleIp {
-    font-weight: $weight-semibold;
-    font-size: 14px;
+  .title {
+    font-weight: $weight-regular;
+    font-size: 10px;
     color: $gray;
+    text-transform: uppercase;
+    margin-bottom: 2px;
   }
   .value {
     font-weight: $weight-regular;
     font-size: 14px;
     color: $black;
-    a {
-      color: $blue;
-    }
-     &.idValue {
+    &.idValue {
       cursor: pointer;
-      display: inline-block;
+      display: flex;
     }
     &:hover :global(.copyButton) {
       opacity: 1;
+    }
+    a {
+      color: $blue;
+      text-decoration: none;
+    }
+    .idLabel {
+      width: 189px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
 .cloudImg {
   width: 96px;
   margin-top: 16px;
+}
+
+.migrationNetworks {
+  margin-top: 56px;
 }

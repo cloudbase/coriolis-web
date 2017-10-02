@@ -100,68 +100,66 @@ class MigrationDetail extends Component {
       output = (
         <div className={s.root}>
           <div className={s.container}>
-            <div className={s.columnLeft}>
-              <div className={s.formGroup}>
-                <div className={s.title}>
-                  Source
-                </div>
-                <div className={s.value}>
-                  <EndpointLink connectionId={item.origin_endpoint_id} />
-                </div>
-                <div className={s.cloudImg + " icon large-cloud " + item.origin_endpoint_type + " dim"}></div>
-                <div className="arrow large"></div>
+            <div className={s.formGroup}>
+              <div className={s.title}>
+                Source
               </div>
-              <div className={s.formGroup}>
-                <div className={s.title}>
-                  Type
-                </div>
-                <div className={s.value}>
-                  {item.migrationType == "replica" ? "Coriolis Replica" : "Coriolis Migration"}
-                </div>
-              </div>
-              <div className={s.formGroup}>
-                <div className={s.title}>
-                  Notes
-                </div>
-                <div className={s.value}>
-                  {item.notes}
-                </div>
+              <div className={s.value}>
+                <EndpointLink connectionId={item.origin_endpoint_id} />
               </div>
             </div>
-            <div className={s.columnRight}>
-              <div className={s.formGroup}>
-                <div className={s.title}>
-                  Target
-                </div>
-                <div className={s.value}>
-                  <EndpointLink connectionId={item.destination_endpoint_id} />
-                </div>
-                <div className={s.cloudImg + " icon large-cloud " + item.destination_endpoint_type + " dim"}></div>
+            <div className={s.formGroup}>
+              <div className={s.title}>
+                Target
               </div>
-              <div className={s.formGroup}>
-                <div className={s.title}>
-                  Created
-                </div>
-                <div className={s.value}>
-                  <Moment format="MM/DD/YYYY HH:mm" date={item.created_at} />
-                </div>
+              <div className={s.value}>
+                <EndpointLink connectionId={item.destination_endpoint_id} />
               </div>
-              <div className={s.formGroup}>
-                <div className={s.titleIp}>
-                  Id
-                </div>
-                <div className={s.value + ' ' + s.idValue}
-                  onClick={() => this.copyIdClick(item)}
-                  onMouseDown={e => e.stopPropagation()}
-                  onMouseUp={e => e.stopPropagation()}
-                >
-                  <a>{item.id}</a>
-                  <span className="copyButton"></span>
-                </div>
+            </div>
+            <div className={s.formGroup + ' ' + s.logos}>
+              <div className={`horizontal-provider-logo ${item.origin_endpoint_type}`}></div>
+              <div className="arrow"></div>
+              <div className={`horizontal-provider-logo ${item.destination_endpoint_type}`}></div>
+            </div>
+            <div className={s.formGroup}>
+              <div className={s.title}>
+                Id
+              </div>
+              <div className={s.value + ' ' + s.idValue}
+                onClick={() => this.copyIdClick(item)}
+                onMouseDown={e => e.stopPropagation()}
+                onMouseUp={e => e.stopPropagation()}
+              >
+                <span className={s.idLabel}>{item.id}</span>
+                <span className="copyButton"></span>
+              </div>
+            </div>
+            <div className={s.formGroup}>
+              <div className={s.title}>
+                Type
+              </div>
+              <div className={s.value}>
+                {item.migrationType == "replica" ? "Coriolis Replica" : "Coriolis Migration"}
+              </div>
+            </div>
+            <div className={s.formGroup}>
+              <div className={s.title}>
+                Created
+              </div>
+              <div className={s.value}>
+                <Moment format="MM/DD/YYYY HH:mm" date={item.created_at} />
+              </div>
+            </div>
+            <div className={s.formGroup}>
+              <div className={s.title}>
+                Notes
+              </div>
+              <div className={s.value}>
+                {item.notes}
               </div>
             </div>
           </div>
-          <MigrationNetworks migration={item} />
+          <MigrationNetworks className={s.migrationNetworks} migration={item} />
           <div className={s.container + " " + s.buttons}>
             { item.type == "replica" && <button
               onClick={(e) => this.createMigrationFromReplica(e, item)}
@@ -169,7 +167,7 @@ class MigrationDetail extends Component {
             >
               Migrate Replica
             </button>}
-            <button className="wire red" onClick={(e) => this.deleteMigration(e, item)}>Delete</button>
+            <button className="wire red" onClick={(e) => this.deleteMigration(e, item)}>Delete Migration</button>
           </div>
           <ConfirmationDialog
             visible={this.state.confirmationDialog.visible}
