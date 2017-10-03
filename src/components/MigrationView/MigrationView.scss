@@ -37,22 +37,26 @@ $migrationHeaderBg: #D9DCE3;
     width: 425px;
     .migrationStatus {
       width: 80px;
+      height: 16px;
+      font-weight: 500;
+      font-size: 9px;
       border-radius: 4px;
       color: #FFF;
-      line-height: 16px;
       display: inline-block;
-      font-size: 10px;
       text-align: center;
+      margin-top: 1px;
       &:global(.PAUSED) {
         background-color: $gray;
       }
     }
     .migrationType {
       width: 80px;
+      height: 13px;
+      padding-top: 1px;
+      font-weight: 500;
+      font-size: 9px;
       background-color: #FFF;
       border-radius: 4px;
-      line-height: 14px;
-      font-size: 10px;
       text-align: center;
       display: inline-block;
       text-transform: uppercase;

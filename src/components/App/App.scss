@@ -181,11 +181,11 @@ button {
   .backBtn {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTlweCIgaGVpZ2h0PSIzNXB4IiB2aWV3Qm94PSIwIDAgMTkgMzUiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+DQogIDxnIGlkPSJTeW1ib2xzIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPg0KICA8ZyBpZD0iU3ViTWVudS1Db25uZWN0aW9uXCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE5MS4wMDAwMDAsIC0zMS4wMDAwMDApIiBzdHJva2U9IiM2MTY3NzAiIHN0cm9rZS13aWR0aD0iMiI+DQogICAgICAgICAgICA8ZyBpZD0iUmV0dXJuIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxOTIuMDAwMDAwLCAzMi4wMDAwMDApIj4NCiAgICAgICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlJlY3RhbmdsZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTYuMjYzNDU2LCAxNi4yNjM0NTYpIHJvdGF0ZSgtMjI1LjAwMDAwMCkgdHJhbnNsYXRlKC0xNi4yNjM0NTYsIC0xNi4yNjM0NTYpICIgcG9pbnRzPSIyNy43NjM0NTYgNC43NjM0NTU5NyAyNy43NjM0NTYgMjcuNzYzNDU2IDQuNzYzNDU1OTcgMjcuNzYzNDU2Ij48L3BvbHlsaW5lPg0KICAgICAgICAgICAgPC9nPg0KICAgICAgICA8L2c+DQogICAgPC9nPg0KPC9zdmc+');
     width: 33px;
-    height: 33px;
+    height: 36px;
     position: absolute;
     background-repeat: no-repeat;
     margin-left: -50px;
-    margin-top: 16px;
+    margin-top: 13px;
     cursor: pointer;
   }
   .copyButton {
@@ -797,7 +797,8 @@ button {
   text-align: center;
   display: inline-block;
   line-height: 16px;
-  font-size: 10px;
+  font-size: 9px;
+  font-weight: 500;
   padding: 0 5px;
   color: #FFF;
   min-width: 64px;

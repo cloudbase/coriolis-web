@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   .cell {
     float: left;
     box-sizing: border-box;
-    font-weight: $weight-regular;
+    font-weight: 500;
     padding-left: 8px;
     color: $gray;
     &:first-child {
@@ -54,7 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       padding-left: 8px;
       overflow: hidden;
       color: $gray-dark;
-      font-weight: $weight-light;
+      font-weight: 400;
       &:first-child {
         color: $black;
         padding-left: 0;
