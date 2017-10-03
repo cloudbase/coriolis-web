@@ -845,7 +845,8 @@ input[type="text"], input[type="password"] {
     outline: none;
   }
   &:disabled {
-    border-color: $gray-dark;
+    color: $gray;
+    border-color: $gray-lighter;
     background-color: $gray-lighter;
   }
 }

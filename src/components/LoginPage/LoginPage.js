@@ -92,9 +92,17 @@ export class LoginPage extends Reflux.Component {
   }
 
   componentWillMount() {
+    if (process.env.BROWSER) {
+      window.addEventListener('load', this.handleWindowLoad.bind(this));
+    }
+
     super.componentWillMount.call(this)
     this.context.onSetTitle(title);
+  }
+
+  handleWindowLoad() {
     this.setState({ disableLogin: false })
+    this.userNameInput.focus()
   }
 
   login(e) {
@@ -160,8 +168,9 @@ export class LoginPage extends Reflux.Component {
                 <div className="form-group">
                   <label>Username</label>
                   <input
+                    ref={input => { this.userNameInput = input }}
+                    disabled={this.state.disableLogin}
                     type="text"
-                    autoFocus="true"
                     placeholder="Username"
                     onChange={(e) => this.handleChangeUsername(e)}
                     value={this.state.username}
@@ -170,6 +179,7 @@ export class LoginPage extends Reflux.Component {
                 <div className="form-group">
                   <label>Password</label>
                   <input
+                    disabled={this.state.disableLogin}
                     type="password"
                     placeholder="Password"
                     onChange={(e) => this.handleChangePassword(e)}
