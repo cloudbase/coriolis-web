@@ -21,7 +21,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './UserOverview.scss';
 import Moment from 'react-moment';
 import UserStore from '../../stores/UserStore';
-import Modal from 'react-modal';
+import Modal from '../NewModal';
 import EditProfile from '../EditProfile';
 
 const title = 'User Overview';
@@ -58,19 +58,6 @@ class UserOverview extends Reflux.Component {
   }
 
   render() {
-    let modalStyle = {
-      content: {
-        padding: "0px",
-        borderRadius: "4px",
-        bottom: "auto",
-        width: "576px",
-        height: "auto",
-        left: "50%",
-        top: "20%",
-        marginLeft: "-288px"
-      }
-    }
-
     let item = this.state.currentUser
     return (
       <div className={s.root}>
@@ -139,7 +126,7 @@ class UserOverview extends Reflux.Component {
         <Modal
           isOpen={this.state.showModal}
           contentLabel="Edit Profile"
-          style={modalStyle}
+          contentStyle={{ width: '576px' }}
           onRequestClose={this.closeModal.bind(this)}
         >
           <EditProfile
