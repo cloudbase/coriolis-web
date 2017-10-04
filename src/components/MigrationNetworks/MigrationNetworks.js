@@ -28,7 +28,8 @@ class MigrationNetworks extends Component {
   };
 
   static propTypes = {
-    migration: PropTypes.object
+    migration: PropTypes.object,
+    className: PropTypes.string
   }
 
   constructor(props) {
@@ -94,7 +95,7 @@ class MigrationNetworks extends Component {
   render() {
     if (this.listItems.length) {
       return (
-        <div className={s.root}>
+        <div className={s.root + ' ' + (this.props.className || '')}>
           <div className={s.container}>
             <Table headerItems={this.headers} listItems={this.listItems} />
           </div>

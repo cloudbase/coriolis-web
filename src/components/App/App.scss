@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /*! React Starter Kit | MIT License | https://www.reactstarterkit.com/ */
 
 @import '../variables.scss';
+@import '../images.scss';
 
 @import '../../public/fonts/fonts.scss';
 
@@ -178,11 +179,11 @@ button {
   .backBtn {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTlweCIgaGVpZ2h0PSIzNXB4IiB2aWV3Qm94PSIwIDAgMTkgMzUiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+DQogIDxnIGlkPSJTeW1ib2xzIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPg0KICA8ZyBpZD0iU3ViTWVudS1Db25uZWN0aW9uXCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE5MS4wMDAwMDAsIC0zMS4wMDAwMDApIiBzdHJva2U9IiM2MTY3NzAiIHN0cm9rZS13aWR0aD0iMiI+DQogICAgICAgICAgICA8ZyBpZD0iUmV0dXJuIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxOTIuMDAwMDAwLCAzMi4wMDAwMDApIj4NCiAgICAgICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlJlY3RhbmdsZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTYuMjYzNDU2LCAxNi4yNjM0NTYpIHJvdGF0ZSgtMjI1LjAwMDAwMCkgdHJhbnNsYXRlKC0xNi4yNjM0NTYsIC0xNi4yNjM0NTYpICIgcG9pbnRzPSIyNy43NjM0NTYgNC43NjM0NTU5NyAyNy43NjM0NTYgMjcuNzYzNDU2IDQuNzYzNDU1OTcgMjcuNzYzNDU2Ij48L3BvbHlsaW5lPg0KICAgICAgICAgICAgPC9nPg0KICAgICAgICA8L2c+DQogICAgPC9nPg0KPC9zdmc+');
     width: 33px;
-    height: 33px;
+    height: 36px;
     position: absolute;
     background-repeat: no-repeat;
     margin-left: -50px;
-    margin-top: 16px;
+    margin-top: 13px;
     cursor: pointer;
   }
   .copyButton {
@@ -783,7 +784,7 @@ button {
   cursor: pointer;
 }
 :global(.arrow) {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjFweCIgaGVpZ2h0PSIxMnB4IiB2aWV3Qm94PSI2IDIgMjEgMTIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PHBvbHlsaW5lIGlkPSJQYXRoLTE4MS1Db3B5LTQiIHN0cm9rZT0iI0E0QUFCNSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBwb2ludHM9IjIxIDIuNSAyNiA4IDIxIDEzLjUiPjwvcG9seWxpbmU+PHBhdGggZD0iTTcsOCBMMjYsOCIgaWQ9IkxpbmUiIHN0cm9rZT0iI0E0QUFCNSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNi41MDAwMDAsIDguMDAwMDAwKSByb3RhdGUoLTE4MC4wMDAwMDApIHRyYW5zbGF0ZSgtMTYuNTAwMDAwLCAtOC4wMDAwMDApICI+PC9wYXRoPjwvc3ZnPg==');
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIzNHB4IiBoZWlnaHQ9IjI0cHgiIHZpZXdCb3g9IjAgMCAzNCAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5BcnJvdy1CaWc8L3RpdGxlPiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4gICAgPGRlZnM+PC9kZWZzPiAgICA8ZyBpZD0iQ29yaW9saXMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+ICAgICAgICA8ZyBpZD0iMjAxLVJlcGxpY2EtT3ZlcnZpZXciIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03MDMuMDAwMDAwLCAtMjYwLjAwMDAwMCkiIHN0cm9rZT0iIzYxNjg3MCIgc3Ryb2tlLXdpZHRoPSIyIj4gICAgICAgICAgICA8ZyBpZD0iQXJyb3ctQmlnIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3MDQuMDAwMDAwLCAyNjEuMDAwMDAwKSI+ICAgICAgICAgICAgICAgIDxwb2x5bGluZSBpZD0iUGF0aC0xODEtQ29weS00IiBwb2ludHM9IjIyIDAgMzIgMTEgMjIgMjIiPjwvcG9seWxpbmU+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0wLDEwIEwzMiwxMCIgaWQ9IkxpbmUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE2LjAwMDAwMCwgMTAuNTAwMDAwKSByb3RhdGUoLTE4MC4wMDAwMDApIHRyYW5zbGF0ZSgtMTYuMDAwMDAwLCAtMTAuNTAwMDAwKSAiPjwvcGF0aD4gICAgICAgICAgICA8L2c+ICAgICAgICA8L2c+ICAgIDwvZz48L3N2Zz4=);
   background-size: contain;
   background-repeat: no-repeat;
   width: 21px;
@@ -794,7 +795,8 @@ button {
   text-align: center;
   display: inline-block;
   line-height: 16px;
-  font-size: 10px;
+  font-size: 9px;
+  font-weight: 500;
   padding: 0 5px;
   color: #FFF;
   min-width: 64px;
