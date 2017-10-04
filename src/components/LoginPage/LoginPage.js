@@ -146,12 +146,15 @@ export class LoginPage extends Reflux.Component {
       </div>
     ) : null
 
+    let buttonContent = this.state.disableLogin ?
+      <span>Please wait ... <div className="spinner"></div></span> : 'Login'
+
     return (
       <div className={s.root}>
         <div className={s.container + " " + (loginButtons.length <= 2 ? s.oneColumn : "")}>
           <div className={s.logo}>
             <div className={s.large}>
-              <LoadingIcon width={224} height={200} animate={this.state.loadingState} padding={16} text="" />
+              <LoadingIcon width={224} height={200} animate={false} padding={16} text="" />
               <div className={s.coriolisText} dangerouslySetInnerHTML={{ __html: coriolisTextSvg }}></div>
             </div>
             <div className={s.small}>
@@ -187,7 +190,9 @@ export class LoginPage extends Reflux.Component {
                   />
                 </div>
                 <div className="form-group">
-                  <button onClick={(e) => this.login(e)} disabled={this.state.disableLogin}>Login</button>
+                  <button onClick={(e) => this.login(e)} disabled={this.state.disableLogin}>
+                    {buttonContent}
+                  </button>
                 </div>
                 {/* <div className="form-group">
                   <a href="/forgot-password" className={s.forgotPassText}>Forgot your Password?</a>
