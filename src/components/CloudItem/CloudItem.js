@@ -20,7 +20,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './CloudItem.scss';
 import Dropdown from '../NewDropdown';
 import AddCloudConnection from '../AddCloudConnection';
-import Modal from 'react-modal';
+import Modal from '../NewModal';
 
 class CloudItem extends Component {
   static propTypes = {
@@ -133,28 +133,6 @@ class CloudItem extends Component {
       />)
     }
 
-    let modalStyle = {
-      overlay: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(164, 170, 181, 0.69)"
-      },
-      content: {
-        padding: "0px",
-        borderRadius: "4px",
-        border: "none",
-        bottom: "auto",
-        width: "576px",
-        height: "auto",
-        left: "50%",
-        top: "120px",
-        marginLeft: "-288px"
-      }
-    }
-
     return (
       <div className={s.root + " " + (this.props.selected ? s.selected : "")}>
         <div className={s.container}>
@@ -164,7 +142,6 @@ class CloudItem extends Component {
         <Modal
           isOpen={this.state.showModal}
           contentLabel="Add new cloud connection"
-          style={modalStyle}
           onRequestClose={this.closeModal.bind(this)}
         >
           <AddCloudConnection

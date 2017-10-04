@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @import '../variables.scss';
 
 .root {
+  width: 576px;
+  outline: none;
+
   :global(.Dropdown-control) {
     text-align: left;
   }

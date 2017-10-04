@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './ConfirmationDialog.scss';
-import Modal from 'react-modal';
+import Modal from '../NewModal';
 
 class ConfirmationDialog extends Component {
   static propTypes = {
@@ -47,34 +47,13 @@ class ConfirmationDialog extends Component {
   }
 
   render() {
-    let modalStyle = {
-      overlay: {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(164, 170, 181, 0.69)"
-      },
-      content: {
-        padding: "16px",
-        borderRadius: "4px",
-        bottom: "auto",
-        border: "none",
-        width: "250px",
-        height: "auto",
-        left: "50%",
-        top: "40%",
-        marginLeft: "-75px"
-      }
-    }
     if (this.props.visible) {
       return (
         <div className={s.root}>
           <Modal
             isOpen={this.props.visible}
-            contentLabel="Add new cloud connection"
-            style={modalStyle}
+            contentLabel="Confirmation"
+            contentStyle={{ width: '250px', padding: '16px' }}
             onRequestClose={this.onCancel.bind(this)}
           >
             <p className={s.message}>{this.props.message}</p>

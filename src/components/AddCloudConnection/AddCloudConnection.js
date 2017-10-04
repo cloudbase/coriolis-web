@@ -39,7 +39,8 @@ class AddCloudConnection extends Reflux.Component {
   static defaultProps = {
     cloud: null,
     connection: null,
-    type: "new"
+    type: "new",
+    onResizeUpdate: () => {}
   }
 
   constructor(props) {
@@ -259,6 +260,7 @@ class AddCloudConnection extends Reflux.Component {
       }
     })
 
+    this.props.onResizeUpdate()
     this.setState({
       currentCloud: cloud,
       currentCloudData: currentCloudData,
@@ -270,6 +272,7 @@ class AddCloudConnection extends Reflux.Component {
    * Function that goes back from endpoint validation to edit mode
    */
   backToEdit() {
+    this.props.onResizeUpdate()
     this.setState({ validateEndpoint: null })
   }
 
@@ -277,6 +280,7 @@ class AddCloudConnection extends Reflux.Component {
    * Handles back operation when adding a new endpoint and want to switch cloud. Resets all previous cloud data.
    */
   handleBack() {
+    this.props.onResizeUpdate()
     this.setState({
       currentCloudData: null,
       currentCloud: null,
