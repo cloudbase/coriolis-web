@@ -524,7 +524,7 @@ button {
     animation: rotate 2s infinite linear;
   }
   .errorIcon {
-    width: 16px;
+    min-width: 16px;
     height: 16px;
     background-image: $error-icon;
   }

@@ -45,9 +45,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   .endpointStatus {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 32px;
-    height: 20px;
+    width: 336px;
+    margin: 0 auto 32px auto;
     .endpointStatusIcon {
       margin-right: 8px;
     }
@@ -94,7 +93,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   .buttons {
     padding-top: 16px;
     > * {
-      width: 242px;
+      width: 224px;
+      position: relative;
     }
     .leftBtn {
       float: left;
@@ -104,6 +104,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     &:after {
 
+    }
+    :global(.spinner) {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border-top-color: white;
+      border-right-color: white;
+      border-bottom-color: white;
+      border-left-color: #7190CD;
     }
     .centerBtn {
       margin: 0 auto;
@@ -115,6 +124,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     display: flex;
     flex-wrap: wrap;
     margin-left: -64px;
+    margin-top: 48px;
     &.radioFields {
       margin-left: 0;
     }
@@ -136,9 +146,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         margin-left: 16px;
       }
 
-    }
-    &.larger {
-      margin-top: 0px;
     }
   }
   &:after {

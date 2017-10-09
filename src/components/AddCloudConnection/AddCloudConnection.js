@@ -258,14 +258,14 @@ class AddCloudConnection extends Reflux.Component {
 
     ConnectionsActions.validateConnection(endpoint, response => {
       let validation = response.data["validate-connection"]
-      this.setState({
-        endpointStatus: validation.valid ? endpointStatuses.SUCCESS : endpointStatuses.ERROR,
-      })
-
       if (validation.valid) {
         this.setState({ endpointStatus: endpointStatuses.SUCCESS })
+        this.handleSaveAndClose()
       } else {
-        this.setState({ endpointStatus: endpointStatuses.ERROR })
+        this.setState({
+          endpointStatus: endpointStatuses.ERROR,
+          errorMessage: validation.message,
+        })
       }
     }, () => {
       this.setState({ endpointStatus: endpointStatuses.ERROR })
@@ -618,37 +618,27 @@ class AddCloudConnection extends Reflux.Component {
   }
 
   renderEndpointStatus() {
-    let label = ''
-    let icon = ''
-
-    switch (this.state.endpointStatus) {
-      case endpointStatuses.VALIDATING:
-        label = 'Validating Endpoint...'
-        icon = 'spinner'
-        break
-      case endpointStatuses.ERROR:
-        label = 'Validation Failed'
-        icon = 'errorIcon'
-        break
-      case endpointStatuses.SUCCESS:
-        label = 'Endpoint is Valid'
-        icon = 'successIcon'
-        break
-      default:
+    if (this.state.endpointStatus === endpointStatuses.ERROR) {
+      return (
+        <div className={s.endpointStatus}>
+          <div className={s.endpointStatusIcon + ' errorIcon'}></div>
+          <div className={s.endpointStatusLabel}>
+            Validation Failed{this.state.errorMessage ? ': ' + this.state.errorMessage : ''}
+          </div>
+        </div>
+      )
     }
 
-    return (
-      <div className={s.endpointStatus}>
-        <div className={s.endpointStatusIcon + ' ' + icon}></div>
-        <div className={s.endpointStatusLabel}>{label}</div>
-      </div>
-    )
+    return null
   }
 
   renderButtons() {
     let cancelButton = (this.state.type == "new" && this.props.cloud == null) ?
       <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button> :
       <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
+
+    let saveButtonContent = this.state.endpointStatus === endpointStatuses.VALIDATING ?
+      <span>Validating ... <div className="spinner"></div></span> : 'Save'
 
     let saveButton = this.state.endpointStatus === endpointStatuses.IDLE ||
       this.state.endpointStatus === endpointStatuses.ERROR ?
@@ -661,10 +651,12 @@ class AddCloudConnection extends Reflux.Component {
         value={saveOptions.find(o => o.value === this.state.saveOption)}
       /> :
       <button
-        className={s.rightBtn + (this.state.endpointStatus === endpointStatuses.VALIDATING ? ' gray' : '')}
+        className={s.rightBtn}
         onClick={this.handleSaveAndClose.bind(this)}
         disabled={this.state.endpointStatus === endpointStatuses.VALIDATING}
-      >{this.state.endpointStatus === endpointStatuses.VALIDATING ? 'Validating...' : 'Save'}</button>
+      >
+        {saveButtonContent}
+      </button>
 
     return (
       <div className={s.buttons}>
