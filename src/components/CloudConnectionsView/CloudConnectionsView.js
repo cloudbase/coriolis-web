@@ -71,6 +71,9 @@ class CloudConnectionsView extends Component {
   componentWillReceiveProps(newProps) {
     if (newProps.connections) {
       let connection = newProps.connections.filter(item => item.id === this.props.connectionId)[0]
+      if (!connection.credentials) {
+        ConnectionsActions.loadConnectionDetail(connection.id)
+      }
 
       this.setState({ connection: connection })
     }
