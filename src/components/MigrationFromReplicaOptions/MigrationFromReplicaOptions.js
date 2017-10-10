@@ -36,7 +36,8 @@ class MigrationFromReplicaOptions extends Reflux.Component {
       fields: [
         {
           field: 'clone_disks',
-          type: 'boolean'
+          type: 'boolean',
+          value: true
         },
         {
           field: 'force',
