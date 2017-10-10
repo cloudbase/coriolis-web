@@ -42,7 +42,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   padding: 0 32px;
   position: relative;
   justify-content: center;
-  min-height: 208px;
   
   :global(.form-group) {
     min-width: 224px;
@@ -61,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .buttons {
   display: flex;
   justify-content: space-between;
-  margin: 16px 32px 32px 32px;
+  margin: 129px 32px 32px 32px;
 
   button {
     width: 224px;
