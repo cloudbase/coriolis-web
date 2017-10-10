@@ -37,6 +37,10 @@ class Switch extends Component {
     }
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setState({ checked: newProps.checked })
+  }
+
   handleChange(e) {
     if (this.props.onChange) {
       this.props.onChange(e)

@@ -203,7 +203,8 @@ class WizardOptions extends Reflux.Component {
               <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
             </div>
             <Switch
-              checked={this.state.destination_environment[field.name] === true}
+              checked={this.state.destination_environment[field.name] === true ||
+                this.state.destination_environment[field.name] === 'true'}
               onChange={(e) => this.handleOptionsFieldChange(e, field)}
               checkedLabel="Yes"
               uncheckedLabel="No"
