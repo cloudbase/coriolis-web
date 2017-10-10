@@ -79,7 +79,7 @@ class NewModal extends React.Component {
     let modalStyle = {
       overlay: {
         position: 'fixed',
-        zIndex: 10000,
+        zIndex: 1000,
         top: 0,
         left: 0,
         right: 0,

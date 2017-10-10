@@ -20,19 +20,15 @@ import React, { PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './AddCloudConnection.scss';
 import Reflux from 'reflux';
+import Helper from "../Helper"
 import ConnectionsStore from '../../stores/ConnectionsStore';
 import ConnectionsActions from '../../actions/ConnectionsActions';
 import NotificationActions from '../../actions/NotificationActions';
 import Dropdown from '../NewDropdown';
 import Switch from '../Switch'
-import DropdownButton from '../DropdownButton'
 import LoadingIcon from "../LoadingIcon/LoadingIcon";
 
-const title = 'Add Cloud Endpoint';
-const saveOptions = [
-  { label: 'Validate and Save', value: 'saveWithValidation' },
-  { label: 'Save', value: 'saveWithoutValidation' }
-]
+const title = 'Add Cloud Connection';
 const endpointStatuses = { IDLE: 0, VALIDATING: 1, ERROR: 2, SUCCESS: 3 }
 const submissionTypes = { ADD: 0, EDIT: 1 }
 
@@ -57,7 +53,7 @@ class AddCloudConnection extends Reflux.Component {
     this.state = {
       submissionType: submissionTypes.ADD,
       endpointStatus: endpointStatuses.IDLE,
-      saveOption: saveOptions[0].value,
+      showErrorMessage: false,
       type: props.type, // type of operation: new/edit
       connection: props.connection, // connection object (on edit)
       connectionName: "", // connection name field
@@ -83,6 +79,7 @@ class AddCloudConnection extends Reflux.Component {
   componentWillUnmount() {
     super.componentWillUnmount.call(this)
     this.componentWillUnmount = true
+    clearTimeout(this.closeTimeout)
   }
 
   componentDidMount() {
@@ -218,11 +215,7 @@ class AddCloudConnection extends Reflux.Component {
           }
         })
 
-        if (this.state.saveOption === saveOptions[0].value) {
-          this.setState({ endpointStatus: endpointStatuses.VALIDATING })
-        } else {
-          this.handleSaveAndClose()
-        }
+        this.setState({ endpointStatus: endpointStatuses.VALIDATING })
       } else { // If editing an endpoint
         ConnectionsActions.editEndpoint(this.state.connection, {
           name: this.state.connectionName,
@@ -235,20 +228,13 @@ class AddCloudConnection extends Reflux.Component {
             this.props.onConnectionAdded(response.data.endpoint)
           }
         })
-        if (this.state.saveOption === saveOptions[0].value) {
-          this.setState({ endpointStatus: endpointStatuses.VALIDATING })
-        } else {
-          this.handleSaveAndClose()
-        }
+
+        this.setState({ endpointStatus: endpointStatuses.VALIDATING })
       }
     }
   }
 
   validateEndpoint(endpoint) {
-    if (this.state.saveOption === saveOptions[1].value) {
-      return
-    }
-
     if (this.componentWillUnmount && this.state.submissionType === submissionTypes.ADD) {
       ConnectionsActions.deleteConnection(endpoint)
       return
@@ -260,7 +246,6 @@ class AddCloudConnection extends Reflux.Component {
       let validation = response.data["validate-connection"]
       if (validation.valid) {
         this.setState({ endpointStatus: endpointStatuses.SUCCESS })
-        this.handleSaveAndClose()
       } else {
         this.setState({
           endpointStatus: endpointStatuses.ERROR,
@@ -353,7 +338,7 @@ class AddCloudConnection extends Reflux.Component {
     this.props.closeHandle();
   }
 
-  handleSaveAndClose() {
+  handleClose() {
     this.props.closeHandle();
   }
 
@@ -463,9 +448,19 @@ class AddCloudConnection extends Reflux.Component {
     this.setState({ currentCloudData: currentCloudData })
   }
 
-  handleSaveOptionChange(e) {
+  handleCopyErrorClick() {
+    let succesful = Helper.copyTextToClipboard(this.state.errorMessage)
+
+    if (succesful) {
+      NotificationActions.notify('The error message has been copied to clipboard.')
+    } else {
+      NotificationActions.notify('The error message couldn\'t be copied', 'error')
+    }
+  }
+
+  handleShowErrorClick() {
     this.setState({
-      saveOption: e.value
+      showErrorMessage: !this.state.showErrorMessage
     })
   }
 
@@ -617,19 +612,67 @@ class AddCloudConnection extends Reflux.Component {
     return returnValue
   }
 
+  renderEndpointErrorMessage() {
+    if (this.state.endpointStatus !== endpointStatuses.ERROR || !this.state.showErrorMessage) {
+      return null
+    }
+
+    return (
+      <div className={s.endpointErrorMessage}
+        onClick={() => this.handleCopyErrorClick()}
+        onMouseDown={e => e.stopPropagation()}
+        onMouseUp={e => e.stopPropagation()}
+      >
+        <span className={s.endpointErrorMessageContent}>{this.state.errorMessage}</span>
+        <span className="copyButton" />
+      </div>
+    )
+  }
+
+  renderEndpointErrorTitle() {
+    return (
+      <div className={s.endpointErrorMessageTitle}>
+        <span className={s.endpointErrorMessageTitleContent}>Validation Failed</span>
+        <span className={s.ednpointErrorMessageViewMore}
+          onClick={() => { this.handleShowErrorClick() }}
+        >{this.state.showErrorMessage ? 'Hide Error' : 'Show Error'}</span>
+      </div>
+    )
+  }
+
   renderEndpointStatus() {
-    if (this.state.endpointStatus === endpointStatuses.ERROR) {
-      return (
+    if (this.state.endpointStatus === endpointStatuses.SUCCESS) {
+      clearTimeout(this.closeTimeout)
+      this.closeTimeout = setTimeout(() => {
+        this.closeTimeout = null
+        this.handleClose()
+      }, 2000)
+    }
+
+    let endpointStatus = null
+    if (this.state.endpointStatus === endpointStatuses.ERROR ||
+      this.state.endpointStatus === endpointStatuses.SUCCESS) {
+      let icon = 'successIcon'
+      let content = 'Endpoint is Valid'
+      if (this.state.endpointStatus === endpointStatuses.ERROR) {
+        icon = 'errorIcon'
+        content = this.renderEndpointErrorTitle()
+      }
+
+      endpointStatus = (
         <div className={s.endpointStatus}>
-          <div className={s.endpointStatusIcon + ' errorIcon'}></div>
-          <div className={s.endpointStatusLabel}>
-            Validation Failed{this.state.errorMessage ? ': ' + this.state.errorMessage : ''}
+          <div className={s.endpointStatusTitle}>
+            <div className={s.endpointStatusIcon + ' ' + icon}></div>
+            <div className={s.endpointStatusLabel}>
+              {content}
+            </div>
           </div>
+          {this.renderEndpointErrorMessage()}
         </div>
       )
     }
 
-    return null
+    return endpointStatus
   }
 
   renderButtons() {
@@ -637,26 +680,23 @@ class AddCloudConnection extends Reflux.Component {
       <button className={s.leftBtn + " gray"} onClick={(e) => this.handleBack(e)}>Back</button> :
       <button className={s.leftBtn + " gray"} onClick={(e) => this.handleCancel(e)}>Cancel</button>
 
-    let saveButtonContent = this.state.endpointStatus === endpointStatuses.VALIDATING ?
-      <span>Validating ... <div className="spinner"></div></span> : 'Save'
+    let saveButtonContent = 'Validate and Save'
 
-    let saveButton = this.state.endpointStatus === endpointStatuses.IDLE ||
-      this.state.endpointStatus === endpointStatuses.ERROR ?
-      <DropdownButton
-        disabled={this.areFieldsDisabled()}
-        className={s.rightBtn}
-        options={saveOptions}
-        onChange={this.handleSaveOptionChange.bind(this)}
-        onButtonClick={this.handleSave.bind(this)}
-        value={saveOptions.find(o => o.value === this.state.saveOption)}
-      /> :
+    if (this.state.endpointStatus === endpointStatuses.VALIDATING ||
+      this.state.endpointStatus === endpointStatuses.SUCCESS) {
+      let text = this.state.endpointStatus === endpointStatuses.VALIDATING ? 'Validating' : 'Saving'
+      saveButtonContent = <span>{text} ... <div className="spinner"></div></span>
+    }
+
+    let saveButton = (
       <button
         className={s.rightBtn}
-        onClick={this.handleSaveAndClose.bind(this)}
-        disabled={this.state.endpointStatus === endpointStatuses.VALIDATING}
+        onClick={this.handleSave.bind(this)}
+        disabled={this.areFieldsDisabled()}
       >
         {saveButtonContent}
       </button>
+    )
 
     return (
       <div className={s.buttons}>
@@ -729,7 +769,7 @@ class AddCloudConnection extends Reflux.Component {
     return (
       <div tabIndex="0" className={s.root} ref={rootDiv => { this.rootDiv = rootDiv }}>
         <div className={s.header}>
-          <h3>{title}</h3>
+          <h3>{this.props.type === 'edit' ? 'Edit Cloud Connection' : title}</h3>
         </div>
         {modalBody}
       </div>

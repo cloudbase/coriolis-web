@@ -44,11 +44,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   position: relative;
   .endpointStatus {
     display: flex;
-    justify-content: center;
-    width: 336px;
     margin: 0 auto 32px auto;
+    flex-direction: column;
+    align-items: center;
+
+    .endpointErrorMessageTitle {
+      display: flex;
+      align-items: center;
+      .ednpointErrorMessageViewMore {
+        font-size: 10px;
+        color: $blue;
+        margin-left: 8px;
+        margin-top: 1px;
+        cursor: pointer;
+      }
+    }
     .endpointStatusIcon {
       margin-right: 8px;
+      margin-top: 1px;
+    }
+    .endpointStatusTitle {
+      display: flex;
+      justify-content: center;
+      width: 336px;
+    }
+    .endpointErrorMessage {
+      margin-top: 16px;
+      cursor: pointer;
+      display: flex;
+
+      &:hover :global(.copyButton) {
+        opacity: 1;
+      }
     }
   }
   :global(.form-group) {
