@@ -27,7 +27,6 @@ class UserDropdown extends Dropdown {
   static defaultProps = {
     options: [
       { label: "Profile", value: "profile" },
-      { label: "Plans", value: "plans" },
       { label: "Sign Out", value: "signout" },
     ],
     baseClassName: "UserDropdown"
