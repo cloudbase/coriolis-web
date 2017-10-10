@@ -60,4 +60,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   margin: 0 auto;
   padding: 0 0 40px;
   max-width: $max-content-width;
+
+  .message {
+    font-size: 16px;
+    text-align: center;
+    margin-top: 32px;
+  }
 }
