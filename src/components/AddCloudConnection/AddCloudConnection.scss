@@ -42,6 +42,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   margin: 0 auto;
   padding: 48px 32px 32px;
   position: relative;
+  .endpointStatus {
+    display: flex;
+    margin: 0 auto 32px auto;
+    flex-direction: column;
+    align-items: center;
+
+    .endpointErrorMessageTitle {
+      display: flex;
+      align-items: center;
+      .ednpointErrorMessageViewMore {
+        font-size: 10px;
+        color: $blue;
+        margin-left: 8px;
+        margin-top: 1px;
+        cursor: pointer;
+      }
+    }
+    .endpointStatusIcon {
+      margin-right: 8px;
+      margin-top: 1px;
+    }
+    .endpointStatusTitle {
+      display: flex;
+      justify-content: center;
+      width: 336px;
+    }
+    .endpointErrorMessage {
+      margin-top: 16px;
+      cursor: pointer;
+      display: flex;
+
+      &:hover :global(.copyButton) {
+        opacity: 1;
+      }
+    }
+  }
   :global(.form-group) {
     margin-bottom: 16px;
     margin-left: 64px;
@@ -83,6 +119,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
   .buttons {
     padding-top: 16px;
+    > * {
+      width: 224px;
+      position: relative;
+    }
     .leftBtn {
       float: left;
     }
@@ -91,6 +131,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     &:after {
 
+    }
+    :global(.spinner) {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border-top-color: white;
+      border-right-color: white;
+      border-bottom-color: white;
+      border-left-color: #7190CD;
     }
     .centerBtn {
       margin: 0 auto;
@@ -102,6 +151,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     display: flex;
     flex-wrap: wrap;
     margin-left: -64px;
+    margin-top: 48px;
     &.radioFields {
       margin-left: 0;
     }
@@ -123,9 +173,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         margin-left: 16px;
       }
 
-    }
-    &.larger {
-      margin-top: 0px;
     }
   }
   &:after {
@@ -179,7 +226,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .cloudImage {
   text-align: center;
-  height: 164px;
+  height: 142px;
 }
 .connecting {
   margin: 160px auto;

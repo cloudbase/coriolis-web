@@ -1,0 +1,115 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import '../variables.scss';
+
+.root {
+  display: flex;
+  position: relative;
+  align-items: center;
+  height: 32px;
+  border-radius: 4px;
+  background-color: $blue;
+  border: none;
+  font-size: 14px;
+  color: #FFF;
+  padding: 0;
+  cursor: pointer;
+  &.disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .label {
+    flex-grow: 1;
+    text-align: center;
+    padding-left: 16px;
+  }
+
+  .arrow {
+    width: 32px;
+    height: 28px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIxMnB4IiBoZWlnaHQ9IjZweCIgdmlld0JveD0iMCAwIDEyIDYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+Q2hldnJvbi1HcmV5PC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlN5bWJvbHMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+ICAgICAgICA8ZyBpZD0iRHJvcGRvd24tRmlsbCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3MC4wMDAwMDAsIC0xMy4wMDAwMDApIiBzdHJva2U9IiNGRkZGRkYiPiAgICAgICAgICAgIDxnIGlkPSJDaGV2cm9uLVdoaXRlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNjguMDAwMDAwLCA4LjAwMDAwMCkiPiAgICAgICAgICAgICAgICA8cG9seWxpbmUgaWQ9IlJlY3RhbmdsZS1Db3B5IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4LjAwMDAwMCwgNS41MDAwMDApIHJvdGF0ZSgtMzE1LjAwMDAwMCkgdHJhbnNsYXRlKC04LjAwMDAwMCwgLTUuNTAwMDAwKSAiIHBvaW50cz0iMTEuODg5MDg3MyAxLjYxMDkxMjcgMTEuODg5MDg3MyA5LjM4OTA4NzMgNC4xMTA5MTI3IDkuMzg5MDg3MyI+PC9wb2x5bGluZT4gICAgICAgICAgICA8L2c+ICAgICAgICA8L2c+ICAgIDwvZz48L3N2Zz4=);
+  }
+
+  .menu {
+    position: absolute;
+    top: 32px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: #333;
+    outline: none;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid $gray;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    box-sizing: border-box;
+    margin-top: 8px;
+    border-radius: $border-radius;
+    overflow: visible;
+
+    &:after {
+      content: " ";
+      display: block;
+      position: absolute;
+      border: 1px solid $gray;
+      width: 10px;
+      height: 10px;
+      right: 9px;
+      top: -6px;
+      transform: rotate(135deg);
+      border-color: transparent transparent $gray $gray;
+      background-color: white;
+    }
+
+    &.firstItemHover:after {
+      background-color: $blue;
+    }
+
+    :first-child {
+      border-top-left-radius: $border-radius;
+      border-top-right-radius: $border-radius;
+    }
+
+    :last-child {
+      border-bottom-left-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+
+    .menuItem {
+      box-sizing: border-box;
+      color: rgba(51,51,51,0.8);
+      cursor: pointer;
+      display: block;
+      padding: 8px 16px;
+      background-color: #FFF;
+      text-align: left;
+
+      &:hover {
+        background-color: $blue;
+        color: #FFF;
+      }
+
+      &.selected {
+        font-weight: $weight-semibold;
+      }
+    }
+  }
+}

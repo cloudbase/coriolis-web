@@ -86,10 +86,10 @@ class CloudItem extends Component {
     return credential;
   }
 
-  addConnection(connection) {
+  handleConnectionAdded(connection) {
     let newCredentials = { cloudName: this.props.cloud.name, connection: connection }
     this.props.addCredentialsCallback(newCredentials)
-    this.onCredentialsChange({ label: connection, value: connection })
+    this.onCredentialsChange({ label: connection.name, value: connection.id })
   }
 
   closeModal() {
@@ -146,8 +146,8 @@ class CloudItem extends Component {
         >
           <AddCloudConnection
             closeHandle={(e) => this.closeModal(e)}
-            addHandle={(e) => this.addConnection(e)}
             cloud={this.props.cloud}
+            onConnectionAdded={this.handleConnectionAdded.bind(this)}
           />
         </Modal>
       </div>
