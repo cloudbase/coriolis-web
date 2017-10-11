@@ -153,6 +153,9 @@ class WizardOptions extends Reflux.Component {
     if (!this.isValid(field)) {
       extraClasses += " error"
     }
+    if (field.required) {
+      extraClasses += ' required'
+    }
     switch (field.type) {
       case "text":
         returnValue = (
@@ -161,12 +164,12 @@ class WizardOptions extends Reflux.Component {
             key={"cloudField_" + field.name}
           >
             <div className="input-label">
-              {field.label + (field.required ? " *" : "")}
+              {field.label}
               <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
             </div>
             <input
               type="text"
-              placeholder={field.label + (field.required ? " *" : "")}
+              placeholder={field.label}
               onChange={(e) => this.handleOptionsFieldChange(e, field)}
               value={this.state.destination_environment[field.name]}
             />
@@ -179,13 +182,13 @@ class WizardOptions extends Reflux.Component {
             className={"form-group " + extraClasses}
             key={"cloudField_" + field.name}
           >
-            <div className="input-label">{
-              field.label + (field.required ? " *" : "")}
+            <div className="input-label">
+              {field.label}
               <InfoIcon text={Helper.getCloudFieldDescription(field.name)} />
             </div>
             <input
               type="password"
-              placeholder={field.label + (field.required ? " *" : "")}
+              placeholder={field.label}
               onChange={(e) => this.handleOptionsFieldChange(e, field)}
               value={this.state.destination_environment[field.name]}
             />

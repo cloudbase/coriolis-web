@@ -441,13 +441,13 @@ class AddCloudConnection extends Reflux.Component {
     switch (field.type) {
       case "text":
         returnValue = (
-          <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
-            <div className="input-label">
-              {field.label + (field.required ? " *" : "")}
-            </div>
+          <div className={"form-group " + (this.isValid(field) ? "" : s.error) + (field.required ? ' required' : '')}
+            key={"cloudField_" + field.name}
+          >
+            <div className="input-label">{field.label}</div>
             <input
               type="text"
-              placeholder={field.label + (field.required ? " *" : "")}
+              placeholder={field.label}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
               value={this.state.currentCloudData[field.name]}
             />
@@ -456,13 +456,13 @@ class AddCloudConnection extends Reflux.Component {
         break;
       case "password":
         returnValue = (
-          <div className={"form-group " + (this.isValid(field) ? "" : s.error)} key={"cloudField_" + field.name}>
-            <div className="input-label">
-              {field.label + (field.required ? " *" : "")}
-            </div>
+          <div className={"form-group " + (this.isValid(field) ? "" : s.error) + (field.required ? ' required' : '')}
+            key={"cloudField_" + field.name}
+          >
+            <div className="input-label">{field.label}</div>
             <input
               type="password"
-              placeholder={field.label + (field.required ? " *" : "")}
+              placeholder={field.label}
               onChange={(e) => this.handleCloudFieldChange(e, field)}
               value={this.state.currentCloudData[field.name]}
             />
@@ -557,14 +557,14 @@ class AddCloudConnection extends Reflux.Component {
         </div>
         <div className={s.cloudFields + (cloud.endpoint.fields.length > 6 ? " " + s.larger : "")}>
           <div className={"form-group " + (this.state.cloudFormsSubmitted &&
-            this.state.connectionName.trim().length == 0 ? s.error : "")}
+            this.state.connectionName.trim().length == 0 ? s.error : "") + ' required'}
           >
             <div className="input-label">
-              Endpoint Name *
+              Endpoint Name
             </div>
             <input
               type="text"
-              placeholder="Endpoint Name *"
+              placeholder="Endpoint Name"
               onChange={(e) => this.handleChangeName(e)}
               value={this.state.connectionName}
             />
