@@ -249,7 +249,7 @@ class AddCloudConnection extends Reflux.Component {
       } else {
         this.setState({
           endpointStatus: endpointStatuses.ERROR,
-          errorMessage: validation.message,
+          errorMessage: validation.message
         })
       }
     }, () => {
@@ -623,19 +623,27 @@ class AddCloudConnection extends Reflux.Component {
         onMouseDown={e => e.stopPropagation()}
         onMouseUp={e => e.stopPropagation()}
       >
-        <span className={s.endpointErrorMessageContent}>{this.state.errorMessage}</span>
-        <span className="copyButton" />
+        <span className={s.endpointErrorMessageContent}>
+          {this.state.errorMessage}<span className="copyButton" />
+        </span>
       </div>
     )
   }
 
   renderEndpointErrorTitle() {
-    return (
-      <div className={s.endpointErrorMessageTitle}>
-        <span className={s.endpointErrorMessageTitleContent}>Validation Failed</span>
+    let errorMessage = null
+    if (this.state.errorMessage) {
+      errorMessage = (
         <span className={s.ednpointErrorMessageViewMore}
           onClick={() => { this.handleShowErrorClick() }}
         >{this.state.showErrorMessage ? 'Hide Error' : 'Show Error'}</span>
+      )
+    }
+
+    return (
+      <div className={s.endpointErrorMessageTitle}>
+        <span className={s.endpointErrorMessageTitleContent}>Validation Failed</span>
+        {errorMessage}
       </div>
     )
   }
