@@ -128,7 +128,7 @@ const clientConfig = extend(true, {}, config, {
     new webpack.DefinePlugin({
       ...GLOBALS,
       'process.env.BROWSER': true,
-      CORIOLIS_URL: JSON.stringify(process.env.CORIOLIS_URL)
+      'process.env.CORIOLIS_URL': JSON.stringify(process.env.CORIOLIS_URL)
     }),
     new AssetsPlugin({
       path: path.join(__dirname, '../build'),
@@ -185,7 +185,7 @@ const serverConfig = extend(true, {}, config, {
   plugins: [
     ...config.plugins,
     new webpack.DefinePlugin({ ...GLOBALS, 'process.env.BROWSER': false,
-      CORIOLIS_URL: JSON.stringify(process.env.CORIOLIS_URL) }),
+      'process.env.CORIOLIS_URL': JSON.stringify(process.env.CORIOLIS_URL) }),
     new webpack.BannerPlugin('require("source-map-support").install();',
       { raw: true, entryOnly: false }),
   ],
