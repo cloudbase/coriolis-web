@@ -46,6 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     margin-bottom: 16px;
     margin-left: 64px;
     width: 224px;
+    position: relative;
     :global(.input-label) {
       font-weight: $weight-regular;
       font-size: 10px;
@@ -54,6 +55,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       text-transform: uppercase;
       margin-bottom: 2px;
     }
+
+    &:global(.required) {
+      &:after {
+        content: " ";
+        position: absolute;
+        right: 8px;
+        bottom: 11px;
+        width: 8px;
+        height: 10px;
+        background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSI4cHgiIGhlaWdodD0iMTBweCIgdmlld0JveD0iMCAwIDggMTAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+SWNvbi1TdGFyPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlN5bWJvbHMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+ICAgICAgICA8ZyBpZD0iVGV4dC1GaWVsZC1QbGFjZWhvbGRlci1SZXF1aXJlZC1BY3RpdmUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNzIuMDAwMDAwLCAtMTEuMDAwMDAwKSIgc3Ryb2tlPSIjMDA0NENBIj4gICAgICAgICAgICA8ZyBpZD0iSWNvbi1TdGFyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNzIuMDAwMDAwLCAxMi4wMDAwMDApIj4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTQsMCBMNCw4IiBpZD0iTGluZSI+PC9wYXRoPiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOCwyIEwwLDYiIGlkPSJMaW5lLUNvcHkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQuMDAwMDAwLCA0LjAwMDAwMCkgc2NhbGUoLTEsIDEpIHRyYW5zbGF0ZSgtNC4wMDAwMDAsIC00LjAwMDAwMCkgIj48L3BhdGg+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik04LDIgTDAsNiIgaWQ9IkxpbmUtQ29weSI+PC9wYXRoPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
+      }
+
+      input[type="text"], input[type="password"] {
+        padding-right: 22px;
+      }
+    } 
   }
   input[type="text"], input[type="password"] {
     width: 100%;
