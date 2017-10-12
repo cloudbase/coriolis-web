@@ -78,29 +78,44 @@ class WizardSummary extends Component {
       </div>
     ))
 
-    let networks = this.props.summary.networks.map((network, index) => {
-      if (network.selected || true) {
-        return (
-          <div className="item" key={"Network_" + index}>
-            <span className="cell">
-              <TextTruncate line={1} text={network.network_name} truncateText="..." />
-            </span>
-            <span className="cell">
-              <div className="arrow"></div>
-            </span>
-            <span className="cell">
-              <TextTruncate
-                line={1}
-                text={network.migrateNetwork ? network.migrateNetwork : "Create new"}
-                truncateText="..."
-              />
-            </span>
+    let networksContainer = null
+    if (this.props.summary.networks) {
+      let networks = this.props.summary.networks && this.props.summary.networks.map((network, index) => {
+        if (network.selected || true) {
+          return (
+            <div className="item" key={"Network_" + index}>
+              <span className="cell">
+                <TextTruncate line={1} text={network.network_name} truncateText="..." />
+              </span>
+              <span className="cell">
+                <div className="arrow"></div>
+              </span>
+              <span className="cell">
+                <TextTruncate
+                  line={1}
+                  text={network.migrateNetwork ? network.migrateNetwork : "Create new"}
+                  truncateText="..."
+                />
+              </span>
+            </div>
+          )
+        } else {
+          return null
+        }
+      })
+
+      networksContainer = (
+        <div className={s.group}>
+          <h3>
+            Networks
+              </h3>
+          <div className={s.networks + " items-list"}>
+            {networks}
           </div>
-        )
-      } else {
-        return null
-      }
-    })
+        </div>
+      )
+    }
+
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -151,14 +166,7 @@ class WizardSummary extends Component {
                 {instances}
               </div>
             </div>
-            <div className={s.group}>
-              <h3>
-                Networks
-              </h3>
-              <div className={s.networks + " items-list"}>
-                {networks}
-              </div>
-            </div>
+            {networksContainer}
           </div>
         </div>
       </div>

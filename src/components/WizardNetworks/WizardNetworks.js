@@ -33,7 +33,6 @@ class WizardNetworks extends Component {
 
   static propTypes = {
     data: PropTypes.object,
-    setWizardState: PropTypes.func
   }
 
   constructor(props) {
@@ -65,7 +64,8 @@ class WizardNetworks extends Component {
     this.state = {
       networks: networks || null,
       nextStep: "WizardSummary",
-      valid: valid
+      valid: valid,
+      hasNoNics: false
     }
   }
 
@@ -80,9 +80,14 @@ class WizardNetworks extends Component {
 
   processProps(props) {
     let networks = []
+    let hasNoNics = false
 
     props.data.selectedInstances.forEach((vm) => {
       if (vm.devices && vm.devices.nics) {
+        if (vm.devices.nics.length === 0) {
+          hasNoNics = true
+        }
+
         vm.devices.nics.forEach((item) => {
           let exists = false
           networks.forEach(network => {
@@ -100,9 +105,12 @@ class WizardNetworks extends Component {
       }
     })
 
-    if (networks.length == 0) {
+    if (networks.length === 0) {
       networks = null
+    } else {
+      hasNoNics = false
     }
+
     if (props.data.targetNetworks && props.data.targetNetworks.length) {
       this.networkOptions = []
 
@@ -116,7 +124,14 @@ class WizardNetworks extends Component {
         })
       }, this)
     }
-    this.setState({ networks: networks })
+
+    if (!this.state.valid && hasNoNics) {
+      this.setState({ networks, hasNoNics, valid: true }, () => {
+        WizardActions.updateWizardState({ networks, valid: true })
+      })
+    } else {
+      this.setState({ networks, hasNoNics })
+    }
   }
 
   handleChangeNetwork(event, network) {
@@ -139,6 +154,18 @@ class WizardNetworks extends Component {
   }
 
   render() {
+    if (this.state.hasNoNics) {
+      return (
+        <div className={s.root}>
+          <div className={s.container}>
+            <div className="items-list">
+              <div className={s.message}>The selected instances have no NICs.</div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     if (this.state.networks != null) {
       let networks = this.state.networks.map((network, index) => {
         let networkDropdown
@@ -180,17 +207,17 @@ class WizardNetworks extends Component {
           </div>
         </div>
       );
-    } else {
-      return (
-        <div className={s.root}>
-          <div className={s.container}>
-            <div className="items-list">
-              <LoadingIcon text="Loading networks..." />
-            </div>
+    }
+
+    return (
+      <div className={s.root}>
+        <div className={s.container}>
+          <div className="items-list">
+            <LoadingIcon text="Loading networks..." />
           </div>
         </div>
-      );
-    }
+      </div>
+    );
   }
 
 }
