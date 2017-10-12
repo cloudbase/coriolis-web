@@ -168,7 +168,7 @@ class MigrationWizard extends Reflux.Component {
         step = <WizardVms setWizardState={(e) => this.setWizardState(e)} data={this.state} />
         break;
       case "WizardNetworks":
-        step = <WizardNetworks setWizardState={(e) => this.setWizardState(e)} data={this.state} />
+        step = <WizardNetworks data={this.state} />
         break;
       case "WizardMigrationType":
         step = (<WizardMigrationType

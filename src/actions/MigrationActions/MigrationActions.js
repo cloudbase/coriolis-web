@@ -266,9 +266,11 @@ MigrationActions.addMigration.listen((migration, callback = null, errorCallback 
   })
 
   let networkMap = {}
-  migration.networks.forEach(network => {
-    networkMap[network.network_name] = network.migrateNetwork
-  })
+  if (migration.networks) {
+    migration.networks.forEach(network => {
+      networkMap[network.network_name] = network.migrateNetwork
+    })
+  }
 
   let destinationEnv = {}
 
@@ -300,7 +302,7 @@ MigrationActions.addMigration.listen((migration, callback = null, errorCallback 
     }
   }
 
-  destinationEnv["network_map"] = networkMap // eslint-disable-line dot-notation
+  destinationEnv.network_map = networkMap
 
   payload[migration.migrationType] = {
     origin_endpoint_id: migration.sourceCloud.credential.id,

@@ -33,7 +33,6 @@ class WizardNetworks extends Component {
 
   static propTypes = {
     data: PropTypes.object,
-    setWizardState: PropTypes.func
   }
 
   constructor(props) {
@@ -126,10 +125,13 @@ class WizardNetworks extends Component {
       }, this)
     }
 
-    this.setState({
-      networks: networks,
-      hasNoNics: hasNoNics
-    })
+    if (!this.state.valid && hasNoNics) {
+      this.setState({ networks, hasNoNics, valid: true }, () => {
+        WizardActions.updateWizardState({ networks, valid: true })
+      })
+    } else {
+      this.setState({ networks, hasNoNics })
+    }
   }
 
   handleChangeNetwork(event, network) {
