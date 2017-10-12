@@ -47,11 +47,14 @@ export const providerType = {
 }
 
 export const loginButtons = [
-  {
-    name: "Microsoft",
-    id: "microsoft",
-    url: ``
-  }
+  // Add here your login providers
+  // Example:
+
+  // {
+  //   name: "Microsoft",
+  //   id: "microsoft",
+  //   url: ``
+  // }
 ]
 
 export const useSecret = true; // flag to use secret_ref for endpoints
