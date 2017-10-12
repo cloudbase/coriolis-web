@@ -54,6 +54,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   background-color: rgba(221, 224, 229, 0.5);
   box-sizing: border-box;
   border-radius: 8px;
+  .loginFailedInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4px;
+    margin-bottom: 16px;
+
+    .loginFailedIcon {
+      width: 26px;
+      height: 26px;
+      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNnB4IiBoZWlnaHQ9IjI2cHgiIHZpZXdCb3g9IjAgMCAyNiAyNiIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5JY29uL0Vycm9yL1JlZDwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz48L2RlZnM+ICAgIDxnIGlkPSJDb3Jpb2xpcyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+ICAgICAgICA8ZyBpZD0iMDEtTG9naW4tQi1Db3B5LTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03MDcuMDAwMDAwLCAtNDgzLjAwMDAwMCkiIHN0cm9rZT0iI0Y5MTY2MSI+ICAgICAgICAgICAgPGcgaWQ9Ikljb24vRXJyb3IvUmVkLTMyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3MDQuMDAwMDAwLCA0ODAuMDAwMDAwKSI+ICAgICAgICAgICAgICAgIDxnIGlkPSJHcm91cCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNC4wMDAwMDAsIDQuMDAwMDAwKSI+ICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTIiIGN4PSIxMiIgY3k9IjEyIiByPSIxMiI+PC9jaXJjbGU+ICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcuMTQyODU3MSw2Ljg1NzE0Mjg2IEw2Ljg1NzE0Mjg2LDE3LjE0Mjg1NzEiIGlkPSJMaW5lIj48L3BhdGg+ICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTcuMTQyODU3MSwxNy4xNDI4NTcxIEw2Ljg1NzE0Mjg2LDYuODU3MTQyODYiIGlkPSJMaW5lLUNvcHkiPjwvcGF0aD4gICAgICAgICAgICAgICAgPC9nPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
+    }
+
+    .loginFailedText {
+      color: white;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+  }
   &.noSeparator {
     padding-top: 16px;
   }

@@ -70,6 +70,12 @@ class ApiCaller {
         reject(err)
       }
 
+      let reportError = (data) => {
+        if (data && data.error && data.error.message) {
+          NotificationActions.notify(data.error.message, "error")
+        }
+      }
+
       request.onload = () => {
         let result = {
           status: request.status,
@@ -82,13 +88,18 @@ class ApiCaller {
           resolve(result);
         } else {
           console.log(`Error Response: ${options.url}`, result.data);
-          if (result.data && result.data.error && result.data.error.message) {
-            NotificationActions.notify(result.data.error.message, "error")
-          }
-          if (result.status == 401) {
+
+          if (result.status === 401) {
             this.resetHeaders()
-            window.location.href = "/"
+            
+            if (window.location.pathname !== '/login') {
+              window.location.href = '/login'
+              reportError(result.data)
+            }
+          } else {
+            reportError(result.data)
           }
+
           reject({ status: request.status });
         }
       };

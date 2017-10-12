@@ -149,6 +149,15 @@ export class LoginPage extends Reflux.Component {
     let buttonContent = this.state.disableLogin ?
       <span>Please wait ... <div className="spinner"></div></span> : 'Login'
 
+    let loginFailedInfo = this.state.loginFailed ? (
+      <div className={s.loginFailedInfo}>
+        <div className={s.loginFailedIcon} />
+        <div className={s.loginFailedText}>
+          The username or password did not match. Please try again.  
+        </div>  
+      </div>  
+    ) : null
+    
     return (
       <div className={s.root}>
         <div className={s.container + " " + (loginButtons.length <= 2 ? s.oneColumn : "")}>
@@ -162,6 +171,7 @@ export class LoginPage extends Reflux.Component {
             </div>
           </div>
           <div className={s.loginContainer + ' ' + (!loginSeparator ? s.noSeparator : '')}>
+            {loginFailedInfo}  
             <div className={s.loginSocialButtons}>
               {loginButtonsTemplate}
             </div>
