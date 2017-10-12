@@ -49,7 +49,8 @@ class UserStore extends Reflux.Store
 
     this.state = {
       currentUser: this.user,
-      loadingState: false
+      loadingState: false,
+      loginFailed: false,
     }
 
     let token = cookie.load('token')
@@ -61,7 +62,7 @@ class UserStore extends Reflux.Store
 
   onLogin() {
     Api.setDefaultHeader('X-Auth-Token', null)
-    this.setState({ loadingState: true })
+    this.setState({ loadingState: true, loginFailed: false })
   }
 
   onLoginSuccess(response) {
@@ -88,7 +89,7 @@ class UserStore extends Reflux.Store
   }
 
   onLoginScopeSuccess(response) {
-    this.setState({ loadingState: false })
+    this.setState({ loadingState: false, loginFailed: false })
 
     let currentUser = this.state.currentUser
     currentUser.id = response.data.token.user.id
@@ -115,7 +116,7 @@ class UserStore extends Reflux.Store
   }
 
   onLoginFailed() {
-    this.setState({ loadingState: false })
+    this.setState({ loadingState: false, loginFailed: true })
   }
 
   onLogout() {

@@ -148,14 +148,6 @@ class NotificationsStore extends Reflux.Store
     this.setState({ notifications: notifications })
   }
 
-  onLoginFailed() {
-    let notifications = [{
-      message: "Login failed",
-      type: 'error'
-    }]
-    this.setState({ notifications: notifications })
-  }
-
   onExecuteReplicaCompleted() {
     let notifications = [{
       message: "Executing replica",
