@@ -153,11 +153,11 @@ export class LoginPage extends Reflux.Component {
       <div className={s.loginFailedInfo}>
         <div className={s.loginFailedIcon} />
         <div className={s.loginFailedText}>
-          The username or password did not match. Please try again.  
-        </div>  
-      </div>  
+          The username or password did not match. Please try again.
+        </div>
+      </div>
     ) : null
-    
+
     return (
       <div className={s.root}>
         <div className={s.container + " " + (loginButtons.length <= 2 ? s.oneColumn : "")}>
