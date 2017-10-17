@@ -26,14 +26,9 @@ import LoadingIcon from "../LoadingIcon/LoadingIcon";
 import ProgressBar from '../ProgressBar';
 import Helper from '../Helper';
 
-function hasProgress(msg) {
-  if (msg.indexOf('progress:') > -1) {
-    let progressStr = msg.substr(msg.indexOf('progress:'))
-    let value = progressStr.match(/(100|[0-9]{1,2})%/)
-    return value[1]
-  } else {
-    return false
-  }
+let getProgressPercentage = (msg) => {
+  let match = msg.match(/.*progress.*?(100|\d{1,2})%/)
+  return match && match[1]
 }
 
 class Tasks extends Component {
@@ -83,18 +78,18 @@ class Tasks extends Component {
           }
           for (let i = item.progress_updates.length - 1; i >= 0; i--) {
             let date = "-"
-            if (item.progress_updates[i]) {
-              let createdAt = Helper.getTimeObject(item.progress_updates[i].created_at)
+            let progressUpdate = item.progress_updates[i]
+            if (progressUpdate) {
+              let createdAt = Helper.getTimeObject(progressUpdate.created_at)
               date = moment(createdAt).format("YYYY-MM-DD HH:mm:ss")
 
+              let percentage = getProgressPercentage(progressUpdate.message)
               progressUpdates.push(
                 <div key={"progress_" + i} className={first ? " first" : ""}>
                   <span>{date}</span>
                   <span>
-                    {item.progress_updates[i] && item.progress_updates[i].message}
-                    {hasProgress(item.progress_updates[i].message) &&
-                    <ProgressBar progress={hasProgress(item.progress_updates[i].message)} />
-                    }
+                    {progressUpdate.message}
+                    {percentage && <ProgressBar progress={percentage} />}
                   </span>
                 </div>)
               first = false
