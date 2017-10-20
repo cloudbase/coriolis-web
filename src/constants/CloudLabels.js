@@ -45,7 +45,7 @@ export const defaultLabels = {
   volumes_are_zeroed: "Volumes on destination are created zeroed",
   port_reuse_policy: "Port Reuse Policy",
   keep_mac: "Keep MAC address",
-  reuse_port: "Reuse Existing Ports",
+  reuse_ports: "Reuse Existing Ports",
   replace_mac: "Replace MAC address",
   migr_image_name: "Migration Image Name",
   migr_image_name_map: "Migration Image Name Map",
