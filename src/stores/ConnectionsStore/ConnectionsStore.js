@@ -276,7 +276,18 @@ class ConnectionsStore extends Reflux.Store
           break
 
         case "string":
-          field.type = "text"
+          let enums = cloudData.properties[propName].enum
+          if (enums && enums.length) {
+            field.type = "dropdown"
+            field.options = enums.map(option => {
+              return {
+                label: Helper.convertCloudFieldLabel(option),
+                value: option
+              }
+            })
+          } else {
+            field.type = "text"
+          }
           break
 
         case "integer":
