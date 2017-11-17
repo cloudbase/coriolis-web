@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon-CentOS</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Elements/Item/Networks" transform="translate(0.000000, -8.000000)">
+            <g id="Icon/network" transform="translate(0.000000, 8.000000)">
+                <rect id="Rectangle-6" fill="#D8DBE2" fill-rule="evenodd" x="0" y="0" width="48" height="48" rx="8"></rect>
+                <path d="M34,38.5 C34,39.8807119 35.1192887,41 36.5,41 C37.8807113,41 39,39.8807119 39,38.5 C39,37.1192881 37.8807113,36 36.5,36 C35.1192887,36 34,37.1192881 34,38.5 L34,38.5 Z" id="Shape" fill="#0044CA" fill-rule="evenodd"></path>
+                <path d="M34,10 C34,11.3807119 35.1192888,12.5 36.5,12.5 C37.8807113,12.5 39,11.3807119 39,10 C39,8.61928813 37.8807113,7.5 36.5,7.5 C35.1192888,7.5 34,8.61928813 34,10 L34,10 Z" id="Shape-Copy-3" fill="#0044CA" fill-rule="evenodd"></path>
+                <path d="M34,24 C34,25.3807119 35.1192887,26.5 36.5,26.5 C37.8807112,26.5 39,25.3807119 39,24 C39,22.6192881 37.8807112,21.5 36.5,21.5 C35.1192887,21.5 34,22.6192881 34,24 L34,24 Z" id="Shape-Copy-2" fill="#0044CA" fill-rule="evenodd"></path>
+                <path d="M7,24 C7,25.3807119 8.11928875,26.5 9.5,26.5 C10.8807112,26.5 12,25.3807119 12,24 C12,22.6192881 10.8807112,21.5 9.5,21.5 C8.11928875,21.5 7,22.6192881 7,24 L7,24 Z" id="Shape-Copy-4" fill="#0044CA" fill-rule="evenodd"></path>
+                <path d="M32,38 L26.667988,38 C24.0023354,38 23.0353634,37.722 22.0604164,37.199 C21.0854694,36.676 20.3208638,35.908 19.7994964,34.931 C19.2781291,33.953 19,32.983 19,30.308 L19,27" id="Page-1" stroke="#0044CA" stroke-width="1.5"></path>
+                <path d="M32,21 L26.667988,21 C24.0023354,21 23.0353634,20.722 22.0604164,20.199 C21.0854694,19.676 20.3208638,18.908 19.7994964,17.931 C19.2781291,16.953 19,15.983 19,13.308 L19,10" id="Page-1-Copy-2" stroke="#0044CA" stroke-width="1.5" transform="translate(25.500000, 15.500000) scale(1, -1) translate(-25.500000, -15.500000) "></path>
+                <path d="M14,24 L32,24" id="Line-2" stroke="#0044CA" stroke-width="1.5"></path>
+            </g>
+        </g>
+    </g>
+</svg>

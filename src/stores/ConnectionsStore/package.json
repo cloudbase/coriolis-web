@@ -1,6 +1,0 @@
-{
-  "name": "ConnectionsStore",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./ConnectionsStore.js"
-}

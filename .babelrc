@@ -1,11 +1,44 @@
 {
   "presets": [
-    "es2015",
-    "stage-0",
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ],
     "react",
-    "babel-preset-jest"
+    "stage-1"
   ],
   "plugins": [
-    "transform-runtime"
-  ]
+    "react-hot-loader/babel"
+  ],
+  "env": {
+    "development": {
+      "plugins": [
+        "transform-es2015-modules-commonjs",
+        [
+          "styled-components",
+          {
+            "minify": false
+          }
+        ]
+      ]
+    },
+    "test": {
+      "plugins": [
+        "transform-es2015-modules-commonjs"
+      ]
+    },
+    "production": {
+      "plugins": [
+        "transform-react-remove-prop-types",
+        [
+          "styled-components",
+          {
+            "displayName": false
+          }
+        ]
+      ]
+    }
+  }
 }

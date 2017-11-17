@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon-Progress Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="202-Replica-Executions" transform="translate(-392.000000, -839.000000)">
+            <g id="Group-2" transform="translate(360.000000, 240.000000)">
+                <g id="Group-3" transform="translate(0.000000, 79.000000)">
+                    <g id="Icon/Pending" transform="translate(32.000000, 520.000000)">
+                        <circle id="Oval-2-Copy" fill="#C8CCD7" fill-rule="evenodd" cx="8" cy="8" r="8"></circle>
+                        <circle id="Oval-2-Copy" cx="8" cy="8" r="6"></circle>
+                        <path d="M8,8 L8,3" id="Line-Copy-2" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round"></path>
+                        <path d="M8,8 L10.5,10.5" id="Line-Copy-3" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

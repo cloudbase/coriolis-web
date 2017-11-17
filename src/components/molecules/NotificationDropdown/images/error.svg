@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/Error/White</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Error/White">
+            <circle id="Oval-2" fill="#FFFFFF" cx="8" cy="8" r="8"></circle>
+            <path d="M11.4285714,4.57142857 L4.57142857,11.4285714" id="Line" stroke="#F91661" stroke-linecap="round"></path>
+            <path d="M11.4285714,11.4285714 L4.57142857,4.57142857" id="Line-Copy" stroke="#F91661" stroke-linecap="round"></path>
+        </g>
+    </g>
+</svg>

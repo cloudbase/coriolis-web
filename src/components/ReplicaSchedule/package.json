@@ -1,6 +1,0 @@
-{
-  "name": "ReplicaSchedule",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./ReplicaSchedule.js"
-}

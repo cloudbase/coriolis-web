@@ -1,6 +1,0 @@
-{
-  "name": "Replica",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./Replica.js"
-}
