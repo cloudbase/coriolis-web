@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon-Refresh-Blue</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Replica-List-and-Notifications" transform="translate(-737.000000, -136.000000)" stroke="#616870">
+            <g id="Icon/Refresh-Grey" transform="translate(736.000000, 135.000000)">
+                <path d="M12.5730162,4.81663885 C11.5662458,3.37307746 9.89342348,2.42857143 8,2.42857143 C4.92298497,2.42857143 2.42857143,4.92298497 2.42857143,8 C2.42857143,11.077015 4.92298497,13.5714286 8,13.5714286 L8,13.5714286 C11.077015,13.5714286 13.5714286,11.077015 13.5714286,8" id="Oval-4"></path>
+                <polyline id="Rectangle-10" stroke-linejoin="round" points="13.1428571 2 13.1428571 5.42857143 9.71428571 5.42857143"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

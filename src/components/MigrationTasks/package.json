@@ -1,6 +1,0 @@
-{
-  "name": "MigrationTasks",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./MigrationTasks.js"
-}

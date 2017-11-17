@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/Error/Red</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="01-Login-B-Copy-2" transform="translate(-707.000000, -483.000000)" stroke="#F91661">
+            <g id="Icon/Error/Red-32" transform="translate(704.000000, 480.000000)">
+                <g id="Group" transform="translate(4.000000, 4.000000)">
+                    <circle id="Oval-2" cx="12" cy="12" r="12"></circle>
+                    <path d="M17.1428571,6.85714286 L6.85714286,17.1428571" id="Line"></path>
+                    <path d="M17.1428571,17.1428571 L6.85714286,6.85714286" id="Line-Copy"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

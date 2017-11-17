@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="12px" viewBox="0 0 16 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Copy Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="=Endpoint-Overview" transform="translate(-920.000000, -434.000000)" stroke="#0044CA" stroke-width="1.3" fill-rule="nonzero">
+            <g id="Icon/Eye" transform="translate(920.000000, 432.000000)">
+                <path d="M8,13 C5.80854979,13 3.55340064,11.7961177 1.23455254,9.38835315 L1.23454962,9.38835596 C0.488330554,8.61352304 0.488673987,7.38723034 1.23532694,6.61281551 C3.55752711,4.20427184 5.81241813,3 8,3 C10.1914507,3 12.4466,4.20388228 14.7654477,6.61164685 L14.7654506,6.61164405 C15.5116696,7.38647697 15.5113261,8.61276957 14.7646732,9.38718435 C12.442473,11.7957281 10.1875819,13 8,13 Z" id="Shape"></path>
+                <path d="M10,8 C10,9.105469 9.105469,10 8,10 C6.8945315,10 6,9.105469 6,8 C6,6.8945315 6.8945315,6 8,6 C9.105469,6 10,6.8945315 10,8 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

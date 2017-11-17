@@ -1,21 +1,13 @@
-FROM node:7.9.0-alpine
+FROM node:9.2.0
 
-# Set a working directory
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+
 WORKDIR /usr/src/app
+COPY . .
 
-COPY ./build/package.json .
-COPY yarn.lock .
+RUN yarn install --production
+RUN yarn build
 
-# Set CORIOLIS_URL
-ENV CORIOLIS_URL http://127.0.0.1
-COPY ./src/config.sample.js ./src/config.js
-
-# Install Node.js dependencies
-RUN yarn install --production --no-progress
-
-# Copy application files
-COPY ./build .
+ENTRYPOINT [ "node", "server.js" ]
 
 EXPOSE 3000
-
-CMD [ "node", "server.js" ]

@@ -1,6 +1,0 @@
-{
-  "name": "WizardStore",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./WizardStore.js"
-}
