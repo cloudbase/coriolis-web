@@ -79,8 +79,8 @@ const Loading = styled.div`
 
 class MainDetails extends React.Component {
   static propTypes = {
-    item: PropTypes.object,
-    endpoints: PropTypes.array,
+    item: PropTypes.object.isRequired,
+    endpoints: PropTypes.array.isRequired,
     bottomControls: PropTypes.node,
     loading: PropTypes.bool,
   }
@@ -218,7 +218,7 @@ class MainDetails extends React.Component {
           <Row marginBottom>
             <Field>
               <Label>Created</Label>
-              <Value>{DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')}</Value>
+              <Value>{this.props.item.created_at ? DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss') : '-'}</Value>
             </Field>
           </Row>
           <Row>

@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 
 class FilterList extends React.Component {
   static propTypes = {
-    items: PropTypes.array,
+    items: PropTypes.array.isRequired,
     actions: PropTypes.array,
     loading: PropTypes.bool,
     onReloadButtonClick: PropTypes.func,
@@ -31,8 +31,8 @@ class FilterList extends React.Component {
     onActionChange: PropTypes.func,
     selectionLabel: PropTypes.string,
     renderItemComponent: PropTypes.func,
-    itemFilterFunction: PropTypes.func,
-    filterItems: PropTypes.array,
+    itemFilterFunction: PropTypes.func.isRequired,
+    filterItems: PropTypes.array.isRequired,
     emptyListImage: PropTypes.string,
     emptyListMessage: PropTypes.string,
     emptyListExtraMessage: PropTypes.string,

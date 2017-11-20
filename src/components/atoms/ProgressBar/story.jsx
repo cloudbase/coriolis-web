@@ -17,16 +17,18 @@ import { storiesOf } from '@storybook/react'
 
 import ProgressBar from './ProgressBar'
 
+let Wrapper = props => <div style={{ width: '800px' }}><ProgressBar {...props} /></div>
+
 storiesOf('ProgressBar', module)
   .add('default 100%', () => (
-    <ProgressBar />
+    <Wrapper />
   ))
   .add('50%', () => (
-    <ProgressBar progress={50} />
+    <Wrapper progress={50} />
   ))
   .add('10%', () => (
-    <ProgressBar progress={10} />
+    <Wrapper progress={10} />
   ))
   .add('0%', () => (
-    <ProgressBar progress={0} />
+    <Wrapper progress={0} />
   ))

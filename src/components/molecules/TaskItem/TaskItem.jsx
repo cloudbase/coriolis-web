@@ -108,8 +108,8 @@ const ProgressUpdateValue = styled.div`
 
 class TaskItem extends React.Component {
   static propTypes = {
-    columnWidths: PropTypes.array,
-    item: PropTypes.object,
+    columnWidths: PropTypes.array.isRequired,
+    item: PropTypes.object.isRequired,
     open: PropTypes.bool,
   }
 

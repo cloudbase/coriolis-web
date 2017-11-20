@@ -14,7 +14,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import styled from 'styled-components'
 import WizardOptionsField from './WizardOptionsField'
+
+const WizardOptionsFieldStyled = styled(WizardOptionsField) `
+  width: 319px;
+  justify-content: space-between;
+`
 
 class Wrapper extends React.Component {
   constructor() {
@@ -28,28 +34,51 @@ class Wrapper extends React.Component {
 
   render() {
     return (
-      <WizardOptionsField
-        {...this.props}
-        value={this.state.value}
-        onChange={value => { this.handleChange(value) }}
-      />
+      <div style={{ width: '800px' }}>
+        <WizardOptionsFieldStyled
+          {...this.props}
+          value={this.state.value}
+          onChange={value => { this.handleChange(value) }}
+        />
+      </div>
     )
   }
 }
 
 storiesOf('WizardOptionsField', module)
-  .add('enum dropdown', () => (
-    <WizardOptionsField
+  .add('string', () => (
+    <Wrapper
+      name="String input"
       type="string"
-      name="Port Reuse"
-      value="keep_mac"
-      enum={['keep_mac', 'reuse_ports', 'replace_mac']}
+    />
+  ))
+  .add('switch with boolean', () => (
+    <Wrapper
+      name="Switch"
+      type="boolean"
     />
   ))
   .add('switch with strict-boolean', () => (
     <Wrapper
       name="Switch"
-      type="boolean"
-      value={undefined}
+      type="strict-boolean"
+    />
+  ))
+  .add('enum dropdown', () => (
+    <Wrapper
+      type="string"
+      name="Port Reuse"
+      enum={['keep_mac', 'reuse_ports', 'replace_mac']}
+    />
+  ))
+  .add('object table', () => (
+    <Wrapper
+      type="object"
+      name="Object table"
+      properties={[
+        { type: 'boolean', name: 'prop-1', label: 'Property 1' },
+        { type: 'boolean', name: 'prop-2', label: 'Property 2' },
+      ]}
+      valueCallback={prop => prop.name === 'prop-2'}
     />
   ))

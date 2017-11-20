@@ -56,9 +56,9 @@ const Row = styled.div`
 
 class PropertiesTable extends React.Component {
   static propTypes = {
-    properties: PropTypes.array,
+    properties: PropTypes.array.isRequired,
     onChange: PropTypes.func,
-    valueCallback: PropTypes.func,
+    valueCallback: PropTypes.func.isRequired,
   }
 
   renderSwitch(prop) {

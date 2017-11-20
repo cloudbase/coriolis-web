@@ -170,7 +170,7 @@ class LoginForm extends React.Component {
           <LoginFormField
             label="Username"
             value={this.state.username}
-            name="password"
+            name="username"
             onChange={this.handleUsernameChange}
           />
           <LoginFormField

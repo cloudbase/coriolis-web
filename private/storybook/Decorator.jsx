@@ -18,6 +18,7 @@ import PropTypes from 'prop-types'
 import Palette from '../../src/components/styleUtils/Palette'
 
 const Wrapper = styled.div`
+  display: inline-block;
   background: ${Palette.grayscale[7]};
   padding: 32px;
 `

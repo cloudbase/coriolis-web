@@ -70,7 +70,7 @@ const NoExecutionText = styled.div`
 
 class Executions extends React.Component {
   static propTypes = {
-    item: PropTypes.object,
+    item: PropTypes.object.isRequired,
     onCancelExecutionClick: PropTypes.func,
     onDeleteExecutionClick: PropTypes.func,
     onExecuteClick: PropTypes.func,
