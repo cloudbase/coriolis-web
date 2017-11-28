@@ -16,7 +16,7 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { Switch, TextInput, PropertiesTable, Dropdown } from 'components'
+import { Switch, TextInput, PropertiesTable, Dropdown, InfoIcon } from 'components'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import LabelDictionary from '../../../utils/LabelDictionary'
@@ -141,7 +141,18 @@ class WizardOptionsField extends React.Component {
   }
 
   renderLabel() {
-    return <Label>{LabelDictionary.get(this.props.name)}</Label>
+    let description = LabelDictionary.getDescription(this.props.name)
+    let infoIcon = null
+    if (description) {
+      infoIcon = <InfoIcon text={description} />
+    }
+
+    return (
+      <Label>
+        {LabelDictionary.get(this.props.name)}
+        {infoIcon}
+      </Label>
+    )
   }
 
   render() {

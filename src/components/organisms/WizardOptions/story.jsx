@@ -18,6 +18,10 @@ import WizardOptions from './WizardOptions'
 
 let fields = [
   {
+    name: 'separate_vm',
+    type: 'boolean',
+  },
+  {
     name: 'string_field',
     type: 'string',
   },

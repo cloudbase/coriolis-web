@@ -86,24 +86,39 @@ class LabelDictionary {
     force: 'Force',
     skip_os_morphing: 'Skip OS Morphing',
     shutdown_instances: 'Shutdown Instances',
-    separate_vm: 'Separate Migration/VM?',
     aws: 'Amazon',
     openstack: 'OpenStack',
     oracle_vm: 'Oracle VM',
     opc: 'Oracle Cloud',
     azure: 'Azure',
     vmware_vsphere: 'VMware',
+    separate_vm: { label: 'Separate Migration/VM?', description: 'Separate migration per selected instance' },
   }
 
   static get(fieldName) {
-    let label = this.dictionary[fieldName]
-    if (label) {
-      return label
+    let labelInfo = this.dictionary[fieldName]
+    if (labelInfo) {
+      if (typeof labelInfo === 'string') {
+        return labelInfo
+      }
+      if (labelInfo.label) {
+        return labelInfo.label
+      }
     }
 
     let words = fieldName.split('_')
     words = words.map(word => word.charAt(0).toUpperCase() + word.substr(1))
     return words.join(' ')
+  }
+
+  static getDescription(fieldName) {
+    let labelInfo = this.dictionary[fieldName]
+
+    if (labelInfo && typeof labelInfo === 'object') {
+      return labelInfo.description || ''
+    }
+
+    return ''
   }
 }
 
