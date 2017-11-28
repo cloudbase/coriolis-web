@@ -19,9 +19,13 @@ class NotificationStore {
   constructor() {
     this.bindListeners({
       notify: NotificationActions.NOTIFY,
+      notifySuccess: NotificationActions.NOTIFY_SUCCESS,
+      loadNotificationsSuccess: NotificationActions.LOAD_NOTIFICATIONS_SUCCESS,
+      clearNotificationsSuccess: NotificationActions.CLEAR_NOTIFICATIONS_SUCCESS,
     })
 
     this.notifications = []
+    this.persistedNotifications = []
   }
 
   notify(options) {
@@ -30,6 +34,18 @@ class NotificationStore {
     }
 
     this.notifications = this.notifications.concat(newItem)
+  }
+
+  notifySuccess(notification) {
+    this.persistedNotifications = this.persistedNotifications.concat([notification])
+  }
+
+  loadNotificationsSuccess(notifications) {
+    this.persistedNotifications = notifications
+  }
+
+  clearNotificationsSuccess() {
+    this.persistedNotifications = []
   }
 }
 

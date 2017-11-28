@@ -29,8 +29,7 @@ const Wrapper = styled.div``
 class Notifications extends React.Component {
   constructor() {
     super()
-
-    this.state = NotificationStore.getState()
+    this.notificationsCount = 0
   }
 
   componentDidMount() {
@@ -42,7 +41,7 @@ class Notifications extends React.Component {
   }
 
   onStoreChange(state) {
-    if (!state.notifications.length) {
+    if (!state.notifications.length || state.notifications.length <= this.notificationsCount) {
       return
     }
 
@@ -55,6 +54,8 @@ class Notifications extends React.Component {
       autoDismiss: 10,
       action: lastNotification.action,
     })
+
+    this.notificationsCount = state.notifications.length
   }
 
   render() {

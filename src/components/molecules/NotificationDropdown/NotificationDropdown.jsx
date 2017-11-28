@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import moment from 'moment'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -111,11 +112,11 @@ const Title = styled.div`
   margin-bottom: 14px;
 `
 
-const getTypeIcon = props => {
-  if (props.success) {
+const getTypeIcon = level => {
+  if (level === 'success') {
     return successImage
   }
-  if (props.error) {
+  if (level === 'error') {
     return errorImage
   }
   return infoImage
@@ -123,7 +124,7 @@ const getTypeIcon = props => {
 const TypeIcon = styled.div`
   width: 16px;
   height: 16px;
-  background: url('${props => getTypeIcon(props)}') no-repeat center;
+  background: url('${props => getTypeIcon(props.level)}') no-repeat center;
   margin-right: 8px;
 `
 const TitleLabel = styled.div`flex-grow: 1;`
@@ -135,9 +136,9 @@ const NoItems = styled.div`
 
 class NotificationDropdown extends React.Component {
   static propTypes = {
-    onItemClick: PropTypes.func,
     white: PropTypes.bool,
     items: PropTypes.array,
+    onClose: PropTypes.func,
   }
 
   constructor() {
@@ -145,22 +146,6 @@ class NotificationDropdown extends React.Component {
 
     this.state = {
       showDropdownList: false,
-      // items: [{
-      //   title: 'Migration',
-      //   time: '12:53 PM',
-      //   description: 'A full VM migration between two clouds',
-      //   icon: { info: true },
-      // }, {
-      //   title: 'Replica',
-      //   time: '12:53 PM',
-      //   description: 'Incrementally replicate virtual machines',
-      //   icon: { error: true },
-      // }, {
-      //   title: 'Endpoint',
-      //   time: '12:53 PM',
-      //   description: 'A conection to a public or private cloud',
-      //   icon: { success: true },
-      // }],
     }
 
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -174,21 +159,25 @@ class NotificationDropdown extends React.Component {
     window.removeEventListener('mousedown', this.handlePageClick, false)
   }
 
-  handleItemClick(item) {
+  handleItemClick() {
     this.setState({ showDropdownList: false })
-
-    if (this.props.onItemClick) {
-      this.props.onItemClick(item)
-    }
+    this.props.onClose()
   }
 
   handlePageClick() {
     if (!this.itemMouseDown) {
+      if (this.state.showDropdownList) {
+        this.props.onClose()
+      }
       this.setState({ showDropdownList: false })
     }
   }
 
   handleButtonClick() {
+    if (this.state.showDropdownList) {
+      this.props.onClose()
+    }
+
     this.setState({ showDropdownList: !this.state.showDropdownList })
   }
 
@@ -217,6 +206,9 @@ class NotificationDropdown extends React.Component {
     let list = (
       <List>
         {this.props.items.map(item => {
+          let title = (item.options.persistInfo && item.options.persistInfo.title) || item.message
+          let message = title === item.message ? '' : item.message
+
           return (
             <ListItem
               key={item.title}
@@ -225,11 +217,11 @@ class NotificationDropdown extends React.Component {
               onClick={() => { this.handleItemClick(item) }}
             >
               <Title>
-                <TypeIcon {...item.icon} />
-                <TitleLabel>{item.title}</TitleLabel>
-                <Time>{item.time}</Time>
+                <TypeIcon level={item.level} />
+                <TitleLabel>{title}</TitleLabel>
+                <Time>{moment(item.id).format('HH:mm')}</Time>
               </Title>
-              <Description>{item.description}</Description>
+              <Description>{message}</Description>
             </ListItem>
           )
         })}
@@ -239,7 +231,7 @@ class NotificationDropdown extends React.Component {
     return list
   }
   renderBell() {
-    let badge = this.props.items && this.props.items.length > 1 ? (
+    let badge = this.props.items && this.props.items.length >= 1 ? (
       <Badge>
         <BadgeLabel>{this.props.items.length}</BadgeLabel>
       </Badge>

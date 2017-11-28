@@ -93,7 +93,10 @@ class WizardSource {
           }
         }, () => {
           count += 1
-          NotificationActions.notify(`Error while creating ${type} for instance ${instance.name}`, 'error')
+          NotificationActions.notify(`Error while creating ${type} for instance ${instance.name}`, 'error', {
+            persist: true,
+            persistInfo: { title: `${type} creation error` },
+          })
         })
       })
     })

@@ -203,7 +203,7 @@ class WizardPage extends React.Component {
 
   handleCreationSuccess(items) {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    NotificationActions.notify(`${typeLabel} was succesfully created`, 'success')
+    NotificationActions.notify(`${typeLabel} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${typeLabel} created` } })
 
     if (this.state.type === 'replica') {
       items.forEach(replica => {

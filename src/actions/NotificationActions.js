@@ -14,9 +14,60 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import alt from '../alt'
 
+import NotificationSource from '../sources/NotificationSource'
+
 class NotificationActions {
   notify(message, level, options) {
+    if (options && options.persist) {
+      NotificationSource.notify(message, level, options).then(
+        notification => { this.notifySuccess(notification) },
+        response => { this.notifyFailed(response) }
+      )
+    }
+
     return { message, level, ...options }
+  }
+
+  notifySuccess(notification) {
+    return notification
+  }
+
+  notifyFailed(response) {
+    return response || true
+  }
+
+  loadNotifications() {
+    NotificationSource.loadNotifications().then(
+      notifications => { this.loadNotificationsSuccess(notifications) },
+      response => { this.loadNotificationsFailed(response) }
+    )
+
+    return true
+  }
+
+  loadNotificationsSuccess(notifications) {
+    return notifications
+  }
+
+  loadNotificationsFailed(response) {
+    return response || true
+  }
+
+  clearNotifications() {
+    NotificationSource.clearNotifications().then(
+      () => { this.clearNotificationsSuccess() },
+      response => { this.clearNotificationsFailed(response) }
+    )
+
+    return true
+  }
+
+  clearNotificationsSuccess() {
+    return true
+  }
+
+  clearNotificationsFailed(response) {
+    return response || true
   }
 }
 

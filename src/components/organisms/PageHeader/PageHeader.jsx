@@ -30,6 +30,8 @@ import {
 import ProjectStore from '../../../stores/ProjectStore'
 import UserStore from '../../../stores/UserStore'
 import UserActions from '../../../actions/UserActions'
+import NotificationActions from '../../../actions/NotificationActions'
+import NotificationStore from '../../../stores/NotificationStore'
 import ProviderActions from '../../../actions/ProviderActions'
 import ProviderStore from '../../../stores/ProviderStore'
 import Palette from '../../styleUtils/Palette'
@@ -64,10 +66,11 @@ class PageHeader extends React.Component {
     projectStore: PropTypes.object,
     userStore: PropTypes.object,
     providerStore: PropTypes.object,
+    notificationStore: PropTypes.object,
   }
 
   static getStores() {
-    return [UserStore, ProjectStore, ProviderStore]
+    return [UserStore, ProjectStore, ProviderStore, NotificationStore]
   }
 
   static getPropsFromStores() {
@@ -75,6 +78,7 @@ class PageHeader extends React.Component {
       userStore: UserStore.getState(),
       projectStore: ProjectStore.getState(),
       providerStore: ProviderStore.getState(),
+      notificationStore: NotificationStore.getState(),
     }
   }
 
@@ -85,6 +89,10 @@ class PageHeader extends React.Component {
       showChooseProviderModal: false,
       showEndpointModal: false,
     }
+  }
+
+  componentDidMount() {
+    NotificationActions.loadNotifications()
   }
 
   getCurrentProject() {
@@ -123,6 +131,10 @@ class PageHeader extends React.Component {
     }
   }
 
+  handleNotificationsClose() {
+    NotificationActions.clearNotifications()
+  }
+
   handleCloseChooseProviderModal() {
     this.setState({ showChooseProviderModal: false })
   }
@@ -152,7 +164,7 @@ class PageHeader extends React.Component {
             labelField="name"
           />
           <NewItemDropdown onChange={item => { this.handleNewItem(item) }} />
-          <NotificationDropdown />
+          <NotificationDropdown items={this.props.notificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
           <UserDropdown user={this.props.userStore.user} onItemClick={item => { this.handleUserItemClick(item) }} />
         </Controls>
         <Modal
