@@ -39,12 +39,12 @@ class ReplicaSourceUtils {
     replicas.sort((a, b) => {
       ReplicaSourceUtils.sortExecutions(a.executions)
       ReplicaSourceUtils.sortExecutions(b.executions)
-      let aLastExecution = a.executions && a.executions.length ?
-        a.executions[a.executions.length - 1].updated_at : null
-      let bLastExecution = b.executions && b.executions.length ?
-        b.executions[b.executions.length - 1].updated_at : null
-      let aTime = aLastExecution || a.updated_at || a.created_at
-      let bTime = bLastExecution || b.updated_at || b.created_at
+      let aLastExecution = a.executions && a.executions.length ? a.executions[a.executions.length - 1] : null
+      let bLastExecution = b.executions && b.executions.length ? b.executions[b.executions.length - 1] : null
+      let aLastTime = aLastExecution ? aLastExecution.updated_at || aLastExecution.created_at : null
+      let bLastTime = bLastExecution ? bLastExecution.updated_at || bLastExecution.created_at : null
+      let aTime = aLastTime || a.updated_at || a.created_at
+      let bTime = bLastTime || b.updated_at || b.created_at
       return moment(bTime).diff(moment(aTime))
     })
   }
@@ -82,8 +82,8 @@ class ReplicaSource {
         method: 'GET',
       }).then(response => {
         let replicas = response.data.replicas
-        replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(response.data.replicas)
-        ReplicaSourceUtils.sortReplicas(response.data.replicas)
+        replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
+        ReplicaSourceUtils.sortReplicas(replicas)
         resolve(replicas)
       }, reject).catch(reject)
     })

@@ -104,6 +104,7 @@ class MainListItem extends React.Component {
     item: PropTypes.object.isRequired,
     onClick: PropTypes.func,
     selected: PropTypes.bool,
+    useTasksRemaining: PropTypes.bool,
     image: PropTypes.string,
     endpointType: PropTypes.func,
     onSelectedChange: PropTypes.func,
@@ -146,6 +147,10 @@ class MainListItem extends React.Component {
     let total = lastExecution.tasks.length
 
     return `${unfinished} of ${total}`
+  }
+
+  getTotalExecutions() {
+    return (this.props.item.executions && this.props.item.executions.length) || '-'
   }
 
   renderLastExecution() {
@@ -197,8 +202,8 @@ class MainListItem extends React.Component {
           {endpointImages}
           {this.renderLastExecution()}
           <TasksRemaining>
-            <ItemLabel>Tasks Remaining</ItemLabel>
-            <ItemValue>{this.getTasksRemaining()}</ItemValue>
+            <ItemLabel>{this.props.useTasksRemaining ? 'Tasks Remaining' : 'Total Executions'}</ItemLabel>
+            <ItemValue>{this.props.useTasksRemaining ? this.getTasksRemaining() : this.getTotalExecutions()}</ItemValue>
           </TasksRemaining>
         </Content>
       </Wrapper>

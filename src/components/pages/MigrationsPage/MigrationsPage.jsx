@@ -198,6 +198,7 @@ class MigrationsPage extends React.Component {
                   {...options}
                   image={migrationItemImage}
                   endpointType={id => this.getEndpoint(id).type}
+                  useTasksRemaining
                 />)
               }
               emptyListImage={migrationLargeImage}
