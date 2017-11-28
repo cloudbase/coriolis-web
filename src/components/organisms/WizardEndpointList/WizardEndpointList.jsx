@@ -16,7 +16,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { EndpointLogos, Dropdown, StatusImage } from 'components'
+import { EndpointLogos, Dropdown, StatusImage, Button } from 'components'
 
 const Wrapper = styled.div`
   display: flex;
@@ -69,25 +69,39 @@ class WizardEndpointList extends React.Component {
       let items = this.props.endpoints.filter(e => e.type === provider && (!otherEndpoint || otherEndpoint.id !== e.id))
       let selectedItem = this.props.selectedEndpoint && this.props.selectedEndpoint.type === provider
         ? this.props.selectedEndpoint : null
+      let actionInput = null
+      if (items.length > 0) {
+        items = [
+          ...items,
+          { id: 'addNew', name: 'Add new ...', provider },
+        ]
 
-      items = [
-        ...items,
-        { id: 'addNew', name: 'Add new ...', provider },
-      ]
-
-      return (
-        <Item key={provider}>
-          <EndpointLogosStyled height={128} endpoint={provider} />
+        actionInput = (
           <Dropdown
             primary={Boolean(selectedItem)}
             items={items}
             labelField="name"
-            noItemsMessage="Add"
             noSelectionMessage="Select"
             centered
             selectedItem={selectedItem}
             onChange={selectedItem => { this.handleOnChange(selectedItem) }}
           />
+        )
+      } else {
+        actionInput = (
+          <Button
+            secondary
+            hollow
+            hoverPrimary
+            onClick={() => { this.handleOnChange({ id: 'addNew', provider }) }}
+          >Add</Button>
+        )
+      }
+
+      return (
+        <Item key={provider}>
+          <EndpointLogosStyled height={128} endpoint={provider} disabled={items.length === 0} />
+          {actionInput}
         </Item>
       )
     })

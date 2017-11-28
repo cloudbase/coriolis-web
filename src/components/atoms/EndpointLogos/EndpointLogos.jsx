@@ -30,13 +30,6 @@ import openstack45Image from './images/openstack-45.svg'
 import oraclevm45Image from './images/oraclevm-45.svg'
 import vmware45Image from './images/vmware-45.svg'
 
-import aws128Image from './images/aws-128.svg'
-import azure128Image from './images/azure-128.svg'
-import opc128Image from './images/opc-128.svg'
-import openstack128Image from './images/openstack-128.svg'
-import oraclevm128Image from './images/oraclevm-128.svg'
-import vmware128Image from './images/vmware-128.svg'
-
 import aws64Image from './images/aws-64.svg'
 import azure64Image from './images/azure-64.svg'
 import opc64Image from './images/opc-64.svg'
@@ -44,70 +37,82 @@ import openstack64Image from './images/openstack-64.svg'
 import oraclevm64Image from './images/oraclevm-64.svg'
 import vmware64Image from './images/vmware-64.svg'
 
+import aws128Image from './images/aws-128.svg'
+import azure128Image from './images/azure-128.svg'
+import opc128Image from './images/opc-128.svg'
+import openstack128Image from './images/openstack-128.svg'
+import oraclevm128Image from './images/oraclevm-128.svg'
+import vmware128Image from './images/vmware-128.svg'
+
+import aws128DisabledImage from './images/aws-128-disabled.svg'
+import azure128DisabledImage from './images/azure-128-disabled.svg'
+import opc128DisabledImage from './images/opc-128-disabled.svg'
+import openstack128DisabledImage from './images/openstack-128-disabled.svg'
+import oraclevm128DisabledImage from './images/oraclevm-128-disabled.svg'
+import vmware128DisabledImage from './images/vmware-128-disabled.svg'
+
 const endpointImages = {
-  azure: {
-    h32: azure32Image,
-    h45: azure45Image,
-    h128: azure128Image,
-    h64: azure64Image,
-  },
-  openstack: {
-    h32: openstack32Image,
-    h45: openstack45Image,
-    h128: openstack128Image,
-    h64: openstack64Image,
-  },
-  opc: {
-    h32: opc32Image,
-    h45: opc45Image,
-    h128: opc128Image,
-    h64: opc64Image,
-  },
-  oracle_vm: {
-    h32: oraclevm32Image,
-    h45: oraclevm45Image,
-    h128: oraclevm128Image,
-    h64: oraclevm64Image,
-  },
-  vmware_vsphere: {
-    h32: vmware32Image,
-    h45: vmware45Image,
-    h128: vmware128Image,
-    h64: vmware64Image,
-  },
-  aws: {
-    h32: aws32Image,
-    h45: aws45Image,
-    h128: aws128Image,
-    h64: aws64Image,
-  },
+  azure: [
+    { h: 32, image: azure32Image },
+    { h: 45, image: azure45Image },
+    { h: 64, image: azure64Image },
+    { h: 128, image: azure128Image },
+    { h: 128, image: azure128DisabledImage, disabled: true },
+  ],
+  openstack: [
+    { h: 32, image: openstack32Image },
+    { h: 45, image: openstack45Image },
+    { h: 64, image: openstack64Image },
+    { h: 128, image: openstack128Image },
+    { h: 128, image: openstack128DisabledImage, disabled: true },
+  ],
+  opc: [
+    { h: 32, image: opc32Image },
+    { h: 45, image: opc45Image },
+    { h: 64, image: opc64Image },
+    { h: 128, image: opc128Image },
+    { h: 128, image: opc128DisabledImage, disabled: true },
+  ],
+  oracle_vm: [
+    { h: 32, image: oraclevm32Image },
+    { h: 45, image: oraclevm45Image },
+    { h: 64, image: oraclevm64Image },
+    { h: 128, image: oraclevm128Image },
+    { h: 128, image: oraclevm128DisabledImage, disabled: true },
+  ],
+  vmware_vsphere: [
+    { h: 32, image: vmware32Image },
+    { h: 45, image: vmware45Image },
+    { h: 64, image: vmware64Image },
+    { h: 128, image: vmware128Image },
+    { h: 128, image: vmware128DisabledImage, disabled: true },
+  ],
+  aws: [
+    { h: 32, image: aws32Image },
+    { h: 45, image: aws45Image },
+    { h: 64, image: aws64Image },
+    { h: 128, image: aws128Image },
+    { h: 128, image: aws128DisabledImage, disabled: true },
+  ],
 }
 const Wrapper = styled.div``
-const Logo32 = styled.div`
-  width: 80px;
-  height: 32px;
-  background: url('${props => props.endpoint ? endpointImages[props.endpoint].h32 : ''}') no-repeat center;
+const Logo = styled.div`
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
+  ${props => props.imageInfo ? `background: url('${props.imageInfo.image}') no-repeat center;` : ''}  
 `
-const Logo45 = styled.div`
-  width: 112px;
-  height: 45px;
-  background: url('${props => props.endpoint ? endpointImages[props.endpoint].h45 : ''}') no-repeat center;
-`
-const Logo128 = styled.div`
-  width: 192px;
-  height: 128px;
-  background: url('${props => props.endpoint ? endpointImages[props.endpoint].h128 : ''}') no-repeat center;
-`
-const Logo64 = styled.div`
-  width: 192px;
-  height: 64px;
-  background: url('${props => props.endpoint ? endpointImages[props.endpoint].h64 : ''}') no-repeat center;
-`
+const widthHeights = [
+  { w: 80, h: 32 },
+  { w: 112, h: 45 },
+  { w: 192, h: 128 },
+  { w: 192, h: 64 },
+]
 
 class EndpointLogos extends React.Component {
   static propTypes = {
     endpoint: PropTypes.string,
     height: PropTypes.number,
+    disabled: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -115,24 +120,24 @@ class EndpointLogos extends React.Component {
   }
 
   render() {
-    let logo
-    switch (this.props.height) {
-      case 32:
-        logo = <Logo32 endpoint={this.props.endpoint} />
-        break
-      case 45:
-        logo = <Logo45 endpoint={this.props.endpoint} />
-        break
-      case 128:
-        logo = <Logo128 endpoint={this.props.endpoint} />
-        break
-      default:
-        logo = <Logo64 endpoint={this.props.endpoint} />
+    let imageInfo = null
+    let size = widthHeights.find(wh => wh.h === this.props.height)
+
+    if (!size) {
+      return null
+    }
+
+    if (this.props.endpoint) {
+      imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true))
     }
 
     return (
       <Wrapper {...this.props}>
-        {logo}
+        <Logo
+          width={size.w}
+          height={size.h}
+          imageInfo={imageInfo}
+        />
       </Wrapper>
     )
   }
