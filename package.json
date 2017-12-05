@@ -6,7 +6,7 @@
     "start": "npm run env:dev && node server.js --dev",
     "env:dev": "cross-env NODE_ENV=development",
     "env:prod": "cross-env NODE_ENV=production",
-    "test": "jest --runInBand",
+    "test": "jest",
     "storybook": "start-storybook -p 9001 -c private/storybook",
     "lint": "eslint src private webpack.config.js --ext js,jsx",
     "build:clean": "rimraf \"dist/!(.git*|Procfile)**\"",

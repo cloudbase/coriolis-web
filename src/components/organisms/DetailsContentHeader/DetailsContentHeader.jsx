@@ -75,8 +75,7 @@ class DetailsContentHeader extends React.Component {
     onCancelClick: PropTypes.func,
     typeImage: PropTypes.string,
     buttonLabel: PropTypes.string,
-    description: PropTypes.string,
-    item: PropTypes.object,
+    item: PropTypes.object.isRequired,
     alertInfoPill: PropTypes.bool,
     primaryInfoPill: PropTypes.bool,
     alertButton: PropTypes.bool,
@@ -117,7 +116,7 @@ class DetailsContentHeader extends React.Component {
           alert={this.props.alertInfoPill}
           primary={this.props.primaryInfoPill}
         />
-        {<StatusPill status={this.getStatus()} />}
+        <StatusPill status={this.getStatus()} />
       </StatusPills>
     )
   }

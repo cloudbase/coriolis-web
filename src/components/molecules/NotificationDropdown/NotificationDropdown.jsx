@@ -137,6 +137,7 @@ class NotificationDropdown extends React.Component {
   static propTypes = {
     onItemClick: PropTypes.func,
     white: PropTypes.bool,
+    items: PropTypes.array,
   }
 
   constructor() {
@@ -173,8 +174,12 @@ class NotificationDropdown extends React.Component {
     window.removeEventListener('mousedown', this.handlePageClick, false)
   }
 
-  handleItemClick() {
+  handleItemClick(item) {
     this.setState({ showDropdownList: false })
+
+    if (this.props.onItemClick) {
+      this.props.onItemClick(item)
+    }
   }
 
   handlePageClick() {
@@ -185,14 +190,10 @@ class NotificationDropdown extends React.Component {
 
   handleButtonClick() {
     this.setState({ showDropdownList: !this.state.showDropdownList })
-
-    if (this.props.onItemClick) {
-      this.props.onItemClick()
-    }
   }
 
   renderNoItems() {
-    if (!this.state.showDropdownList || (this.state.items && this.state.items.length > 0)) {
+    if (!this.state.showDropdownList || (this.props.items && this.props.items.length > 0)) {
       return null
     }
 
@@ -209,13 +210,13 @@ class NotificationDropdown extends React.Component {
   }
 
   renderList() {
-    if (!this.state.showDropdownList || !this.state.items || this.state.items.length === 0) {
+    if (!this.state.showDropdownList || !this.props.items || this.props.items.length === 0) {
       return null
     }
 
     let list = (
       <List>
-        {this.state.items.map(item => {
+        {this.props.items.map(item => {
           return (
             <ListItem
               key={item.title}
@@ -238,9 +239,9 @@ class NotificationDropdown extends React.Component {
     return list
   }
   renderBell() {
-    let badge = this.state.items && this.state.items.length > 1 ? (
+    let badge = this.props.items && this.props.items.length > 1 ? (
       <Badge>
-        <BadgeLabel>{this.state.items.length}</BadgeLabel>
+        <BadgeLabel>{this.props.items.length}</BadgeLabel>
       </Badge>
     ) : null
 

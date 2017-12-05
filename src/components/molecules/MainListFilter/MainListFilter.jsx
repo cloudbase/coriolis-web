@@ -72,9 +72,9 @@ class MainListFilter extends React.Component {
     onActionChange: PropTypes.func,
     actions: PropTypes.array,
     selectedValue: PropTypes.string,
-    selectionInfo: PropTypes.object,
+    selectionInfo: PropTypes.object.isRequired,
     selectAllSelected: PropTypes.bool,
-    items: PropTypes.array,
+    items: PropTypes.array.isRequired,
   }
 
   renderFilterGroup() {

@@ -105,6 +105,10 @@ class Timeline extends React.Component {
   }
 
   moveToSelectedItem() {
+    if (!this.progressLineRef || !this.endLineRef) {
+      return
+    }
+
     if (!this.itemRef || !this.props.selectedItem || !this.itemsRef) {
       this.progressLineRef.style.width = 0
       this.endLineRef.style.width = '100%'

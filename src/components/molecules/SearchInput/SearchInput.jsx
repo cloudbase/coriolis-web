@@ -86,7 +86,7 @@ class SearchInput extends React.Component {
   }
 
   handleSearchButtonClick() {
-    this.input.focus()
+    this.input && this.input.focus()
     this.setState({ open: !this.state.open })
   }
 

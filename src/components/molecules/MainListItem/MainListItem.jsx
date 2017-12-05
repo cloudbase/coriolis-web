@@ -101,7 +101,7 @@ const TasksRemaining = styled.div`
 
 class MainListItem extends React.Component {
   static propTypes = {
-    item: PropTypes.object,
+    item: PropTypes.object.isRequired,
     onClick: PropTypes.func,
     selected: PropTypes.bool,
     image: PropTypes.string,

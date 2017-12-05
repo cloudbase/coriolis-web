@@ -41,8 +41,8 @@ const Name = styled.div`
 
 class WizardBreadcrumbs extends React.Component {
   static propTypes = {
-    selected: PropTypes.object,
-    wizardType: PropTypes.string,
+    selected: PropTypes.object.isRequired,
+    wizardType: PropTypes.string.isRequired,
   }
 
   render() {

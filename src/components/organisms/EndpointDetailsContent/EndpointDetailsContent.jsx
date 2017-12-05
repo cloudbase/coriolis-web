@@ -66,7 +66,7 @@ const LoadingWrapper = styled.div`
 
 class EndpointDetailsContent extends React.Component {
   static propTypes = {
-    item: PropTypes.object,
+    item: PropTypes.object.isRequired,
     connectionInfo: PropTypes.object,
     loading: PropTypes.bool,
     onDeleteClick: PropTypes.func,

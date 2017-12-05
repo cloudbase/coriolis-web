@@ -21,7 +21,6 @@ import {
   Switch,
   Dropdown,
   Button,
-  DatetimePicker,
   ReplicaExecutionOptions,
   Modal,
   DropdownLink,
@@ -29,6 +28,7 @@ import {
   AlertModal,
 } from 'components'
 
+import DatetimePicker from '../../molecules/DatetimePicker/DatetimePicker'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import NotificationActions from '../../../actions/NotificationActions'

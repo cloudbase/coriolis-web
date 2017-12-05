@@ -30,15 +30,12 @@ storiesOf('Schedule', module)
   .add('no schedules secondary', () => (
     <Wrapper><Schedule secondaryEmpty /></Wrapper>
   ))
-  .add('enabled/disabled schedules', () => (
+  .add('some values', () => (
     <Wrapper><Schedule
-      schedules={[{}, { enabled: true }]}
-    /></Wrapper>
-  ))
-  .add('some date values schedules', () => (
-    <Wrapper><Schedule
+      onChange={() => { }}
       schedules={[
         { schedule: { dom: 2, dow: 3, month: 2, hour: 13, minute: 29 }, expiration_date: new Date() },
-        { enabled: true, schedule: { dom: 2, dow: 3, month: 2, hour: 13, minute: 29 }, expiration_date: new Date() }]}
+        { enabled: true, schedule: { dom: 2, dow: 3, month: 2, hour: 13, minute: 29 }, expiration_date: new Date() },
+      ]}
     /></Wrapper>
   ))
