@@ -18,6 +18,8 @@ import { css } from 'styled-components'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
+import closeImage from './images/close.svg'
+
 const NotificationsStyle = css`
   .notifications-br {
     width: 244px !important;
@@ -42,14 +44,14 @@ const NotificationsStyle = css`
     height: auto !important;
   }
   .notification-dismiss {
-    background-color: ${Palette.grayscale[3]} !important;
     border-radius: 4px !important;
     width: 16px !important;
     height: 16px !important;
-    color: ${Palette.grayscale[1]} !important;
     font-size: 16px !important;
     top: 8px !important;
     right: 8px !important;
+    text-indent: -2000px;
+    background: url('${closeImage}') center no-repeat !important;
   }
   .notification-title {
     padding-left: 24px !important;
