@@ -33,6 +33,9 @@ const backgroundColor = (props) => {
 }
 
 const hoverBackgroundColor = (props) => {
+  if (props.hoverPrimary) {
+    return Palette.primary
+  }
   if (props.secondary) {
     return Palette.grayscale[3]
   }

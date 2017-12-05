@@ -28,7 +28,7 @@ const Wrapper = styled.div`
     margin-top: 32px;
   }
 `
-const wrap = (endpoint, height) => <EndpointLogos endpoint={endpoint} height={height} />
+const wrap = (endpoint, height, disabled = false) => <EndpointLogos endpoint={endpoint} height={height} disabled={disabled} />
 
 storiesOf('EndpointLogos', module)
   .add('32px', () => {
@@ -80,6 +80,19 @@ storiesOf('EndpointLogos', module)
         {wrap('openstack', height)}
         {wrap('oracle_vm', height)}
         {wrap('vmware_vsphere', height)}
+      </Wrapper>
+    )
+  })
+  .add('128px - disabled', () => {
+    let height = 128
+    return (
+      <Wrapper>
+        {wrap('aws', height, true)}
+        {wrap('azure', height, true)}
+        {wrap('opc', height, true)}
+        {wrap('openstack', height, true)}
+        {wrap('oracle_vm', height, true)}
+        {wrap('vmware_vsphere', height, true)}
       </Wrapper>
     )
   })
