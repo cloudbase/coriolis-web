@@ -18,12 +18,16 @@ import WizardOptions from './WizardOptions'
 
 let fields = [
   {
-    name: 'separate_vm',
+    name: 'list_all_destination_networks',
     type: 'boolean',
   },
   {
-    name: 'string_field',
-    type: 'string',
+    name: 'migr_worker_use_config_drive',
+    type: 'boolean',
+  },
+  {
+    name: 'set_dhcp',
+    type: 'boolean',
   },
   {
     name: 'string_field_with_default',

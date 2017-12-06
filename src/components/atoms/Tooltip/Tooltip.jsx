@@ -22,7 +22,7 @@ injectGlobal`
   .reactTooltip {
     color: ${Palette.grayscale[4]} !important;
     background: ${Palette.grayscale[1]} !important;
-    width: 128px;
+    max-width: 192px;
     padding: 8px !important;
     box-shadow: 0 0 9px 1px rgba(32, 34, 52, 0.1);
     margin-left: 12px !important;
@@ -39,6 +39,10 @@ injectGlobal`
 `
 
 class Tooltip extends React.Component {
+  static rebuild = () => {
+    ReactTooltip.rebuild()
+  }
+
   render() {
     return (
       <ReactTooltip place="right" effect="solid" className="reactTooltip" />

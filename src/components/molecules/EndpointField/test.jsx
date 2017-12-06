@@ -14,24 +14,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import Field from './Field'
+import EndpointField from './EndpointField'
 
-const wrap = props => shallow(<Field {...props} />)
+const wrap = props => shallow(<EndpointField {...props} />)
 
 it('renders boolean field with correct value', () => {
-  let wrapper = wrap({ type: 'boolean', label: 'label', value: true })
+  let wrapper = wrap({ type: 'boolean', name: 'label', value: true })
   expect(wrapper.childAt(1).name()).toBe('Switch')
   expect(wrapper.childAt(1).prop('checked')).toBe(true)
 })
 
 it('renders boolean field disabled', () => {
-  let wrapper = wrap({ type: 'boolean', label: 'label', disabled: true })
+  let wrapper = wrap({ type: 'boolean', name: 'label', disabled: true })
   expect(wrapper.childAt(1).prop('disabled')).toBe(true)
 })
 
 it('renders text input field with correct label and value', () => {
-  let wrapper = wrap({ type: 'string', label: 'field-label', value: 'text-input' })
-  expect(wrapper.childAt(0).contains('field-label')).toBe(true)
+  let wrapper = wrap({ type: 'string', name: 'field_label', value: 'text-input' })
+  expect(wrapper.childAt(0).contains('Field Label')).toBe(true)
   expect(wrapper.childAt(1).name()).toBe('TextInput')
   expect(wrapper.childAt(1).prop('value')).toBe('text-input')
 })
@@ -39,7 +39,7 @@ it('renders text input field with correct label and value', () => {
 it('renders text input field with password, large, disabled, highlighted and required', () => {
   let wrapper = wrap({
     type: 'string',
-    label: 'field-label',
+    name: 'field-label',
     value: 'text-input',
     password: true,
     large: true,
@@ -57,7 +57,7 @@ it('renders text input field with password, large, disabled, highlighted and req
 it('renders integer dropdown field with correct items', () => {
   let wrapper = wrap({
     type: 'integer',
-    label: 'field-label',
+    name: 'field-label',
     value: 11,
     minimum: 10,
     maximum: 15,
@@ -68,7 +68,7 @@ it('renders integer dropdown field with correct items', () => {
 })
 
 it('renders radio input field with correct value', () => {
-  let wrapper = wrap({ type: 'radio', label: 'label', value: true })
+  let wrapper = wrap({ type: 'radio', name: 'label', value: true })
   expect(wrapper.childAt(0).name()).toBe('RadioInput')
   expect(wrapper.childAt(0).prop('checked')).toBe(true)
 })

@@ -24,17 +24,18 @@ const Wrapper = styled.div`
   background: url('${questionImage}') center no-repeat;
   display: inline-block;
   margin-bottom: -4px;
-  margin-left: 4px;
+  margin-left: ${props => props.marginLeft ? `${props.marginLeft}px` : '4px'};
 `
 
 class InfoIcon extends React.Component {
   static propTypes = {
     text: PropTypes.string,
+    marginLeft: PropTypes.number,
   }
 
   render() {
     return (
-      <Wrapper data-tip={this.props.text} />
+      <Wrapper data-tip={this.props.text} marginLeft={this.props.marginLeft} />
     )
   }
 }

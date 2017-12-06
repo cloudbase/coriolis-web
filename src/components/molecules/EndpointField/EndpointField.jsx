@@ -16,8 +16,9 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { Switch, TextInput, Dropdown, RadioInput } from 'components'
+import { Switch, TextInput, Dropdown, RadioInput, InfoIcon } from 'components'
 
+import LabelDictionary from '../../../utils/LabelDictionary'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 
@@ -29,11 +30,14 @@ const Label = styled.div`
   text-transform: uppercase;
   margin-bottom: 4px;
 `
+const LabelText = styled.span`
+  margin-right: 24px;
+`
 
 class Field extends React.Component {
   static propTypes = {
-    label: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    type: PropTypes.string,
     value: PropTypes.any,
     onChange: PropTypes.func,
     className: PropTypes.string,
@@ -65,7 +69,7 @@ class Field extends React.Component {
         large={this.props.large}
         value={this.props.value}
         onChange={e => { this.props.onChange(e.target.value) }}
-        placeholder={this.props.label}
+        placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
       />
     )
@@ -96,7 +100,7 @@ class Field extends React.Component {
     return (
       <RadioInput
         checked={this.props.value}
-        label={this.props.label}
+        label={LabelDictionary.get(this.props.name)}
         onChange={e => this.props.onChange(e.target.checked)}
         disabled={this.props.disabled}
       />
@@ -121,10 +125,29 @@ class Field extends React.Component {
     }
   }
 
+  renderLabel() {
+    if (this.props.type === 'radio') {
+      return null
+    }
+
+    let description = LabelDictionary.getDescription(this.props.name)
+    let infoIcon = null
+    if (description) {
+      infoIcon = <InfoIcon text={description} marginLeft={-20} />
+    }
+
+    return (
+      <Label>
+        <LabelText>{LabelDictionary.get(this.props.name)}</LabelText>
+        {infoIcon}
+      </Label>
+    )
+  }
+
   render() {
     return (
       <Wrapper className={this.props.className}>
-        {this.props.type !== 'radio' ? <Label>{this.props.label}</Label> : null}
+        {this.renderLabel()}
         {this.renderInput()}
       </Wrapper>
     )
