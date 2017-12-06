@@ -17,8 +17,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import connectToStores from 'alt-utils/lib/connectToStores'
 
-import { EndpointLogos, Field, Button, StatusIcon, LoadingButton, CopyButton } from 'components'
-import LabelDictionary from '../../../utils/LabelDictionary'
+import { EndpointLogos, EndpointField, Button, StatusIcon, LoadingButton, CopyButton, Tooltip } from 'components'
 import NotificationActions from '../../../actions/NotificationActions'
 import EndpointStore from '../../../stores/EndpointStore'
 import EndpointActions from '../../../actions/EndpointActions'
@@ -41,7 +40,7 @@ const Fields = styled.div`
   margin-left: -64px;
   margin-top: 32px;
 `
-const FieldStyled = styled(Field) `
+const FieldStyled = styled(EndpointField)`
   margin-left: 64px;
   min-width: 224px;
   max-width: 224px;
@@ -334,7 +333,7 @@ class Endpoint extends React.Component {
           password={field.name === 'password'}
           type={field.type}
           highlight={this.state.invalidFields.findIndex(fn => fn === field.name) > -1}
-          label={LabelDictionary.get(field.name)}
+          name={field.name}
           value={this.getFieldValue(field, parentGroup)}
           onChange={value => { this.handleFieldChange(field, value, parentGroup) }}
         />
@@ -415,6 +414,8 @@ class Endpoint extends React.Component {
         {this.renderEndpointStatus()}
         <Fields>
           {this.renderFields(this.props.providerStore.connectionInfoSchema)}
+          <Tooltip />
+          {Tooltip.rebuild()}
         </Fields>
         <Buttons>
           <Button large secondary onClick={() => { this.handleCancelClick() }}>Cancel</Button>

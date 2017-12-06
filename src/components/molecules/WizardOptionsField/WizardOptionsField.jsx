@@ -16,7 +16,7 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { Switch, TextInput, PropertiesTable, Dropdown } from 'components'
+import { Switch, TextInput, PropertiesTable, Dropdown, InfoIcon } from 'components'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import LabelDictionary from '../../../utils/LabelDictionary'
@@ -37,6 +37,9 @@ const Label = styled.div`
   font-weight: ${StyleProps.fontWeights.medium};
   ${props => getDirection(props) === 'column' ? 'margin-bottom: 8px;' : ''}
 `
+const LabelText = styled.span`
+  margin-right: 24px;
+`
 
 class WizardOptionsField extends React.Component {
   static propTypes = {
@@ -54,6 +57,8 @@ class WizardOptionsField extends React.Component {
   renderSwitch({ triState }) {
     return (
       <Switch
+        width="112px"
+        justifyContent="flex-end"
         triState={triState}
         checked={this.props.value}
         onChange={checked => { this.props.onChange(checked) }}
@@ -141,7 +146,18 @@ class WizardOptionsField extends React.Component {
   }
 
   renderLabel() {
-    return <Label>{LabelDictionary.get(this.props.name)}</Label>
+    let description = LabelDictionary.getDescription(this.props.name)
+    let infoIcon = null
+    if (description) {
+      infoIcon = <InfoIcon text={description} marginLeft={-20} />
+    }
+
+    return (
+      <Label>
+        <LabelText>{LabelDictionary.get(this.props.name)}</LabelText>
+        {infoIcon}
+      </Label>
+    )
   }
 
   render() {

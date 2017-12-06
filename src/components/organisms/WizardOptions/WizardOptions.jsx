@@ -16,7 +16,7 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { ToggleButtonBar, WizardOptionsField } from 'components'
+import { ToggleButtonBar, WizardOptionsField, Tooltip } from 'components'
 
 import { executionOptions } from '../../../config'
 
@@ -142,6 +142,7 @@ class WizardOptions extends React.Component {
           <OneColumn>
             {fields.map(f => f.component)}
           </OneColumn>
+          <Tooltip />
         </Fields>
       )
     }
@@ -154,6 +155,7 @@ class WizardOptions extends React.Component {
         <Column right>
           {fields.map(f => f.column === 'right' && f.component)}
         </Column>
+        <Tooltip />
       </Fields>
     )
   }

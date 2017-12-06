@@ -24,6 +24,8 @@ const Wrapper = styled.div`
   height: ${StyleProps.inputSizes.regular.height}px;
   align-items: center;
   ${props => props.disabled ? 'opacity: 0.5;' : ''}
+  ${props => props.justifyContent ? `justify-content: ${props.justifyContent};` : ''}
+  ${props => props.width ? `width: ${props.width};` : ''}
 `
 const InputWrapper = styled.div`
   position: relative;
@@ -118,6 +120,8 @@ class Switch extends React.Component {
     secondary: PropTypes.bool,
     noLabel: PropTypes.bool,
     height: PropTypes.number,
+    width: PropTypes.string,
+    justifyContent: PropTypes.string,
     big: PropTypes.bool,
     checkedLabel: PropTypes.string,
     uncheckedLabel: PropTypes.string,
@@ -215,7 +219,12 @@ class Switch extends React.Component {
 
   render() {
     return (
-      <Wrapper disabled={this.props.disabled} style={this.props.style}>
+      <Wrapper
+        disabled={this.props.disabled}
+        style={this.props.style}
+        width={this.props.width}
+        justifyContent={this.props.justifyContent}
+      >
         {this.renderLeftLabel()}
         {this.renderInput()}
         {this.renderRightLabel()}
