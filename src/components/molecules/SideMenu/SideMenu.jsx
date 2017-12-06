@@ -25,9 +25,11 @@ const Wrapper = styled.div`
 `
 const OpenTopLayer = css`
   transform: rotate(45deg) translateX(3px);
+  width: 19px;
 `
 const OpenMiddleLayer = css`
   transform: rotate(-45deg) translateY(7px) translateX(-4px);
+  width: 19px;
 `
 const Close = css`
   transform: rotate(0) translateY(0) translateX(0);
@@ -40,7 +42,7 @@ const OpenBottomLayer = css`
 const Hamburger = styled.div`
   cursor: pointer;
   #top-layer, #middle-layer, #bottom-layer {
-    transition: all ${StyleProps.animations.swift};
+    transition: all .4s cubic-bezier(0, 1.4, 1, 1);
   }
   #top-layer {
     ${props => props.open ? OpenTopLayer : Close};
