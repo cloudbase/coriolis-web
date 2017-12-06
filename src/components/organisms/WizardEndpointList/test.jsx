@@ -52,8 +52,7 @@ it('has providers with correct enpoints available', () => {
 
 it('renders add new', () => {
   let wrapper = wrap({ endpoints, providers })
-  expect(wrapper.find('Dropdown').at(2).prop('items').length).toBe(1)
-  expect(wrapper.find('Dropdown').at(2).prop('items')[0].id).toBe('addNew')
+  expect(wrapper.findWhere(w => w.name() === 'Button' && w.html().indexOf('Add') > -1).length).toBe(4)
 })
 
 it('renders loading', () => {
@@ -65,7 +64,6 @@ it('renders dropdown as primary if endpoint is selected', () => {
   let wrapper = wrap({ endpoints, providers, selectedEndpoint: { ...endpoints[1] } })
   expect(wrapper.find('Dropdown').at(1).prop('primary')).toBe(true)
   expect(wrapper.find('Dropdown').at(0).prop('primary')).toBe(false)
-  expect(wrapper.find('Dropdown').at(2).prop('primary')).toBe(false)
 })
 
 it('doesn\'t render endpoint if another endpoint is supplied', () => {
