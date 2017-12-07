@@ -21,6 +21,7 @@ class ReplicaStore {
     this.replicas = []
     this.replicaDetails = {}
     this.loading = true
+    this.backgroundLoading = false
     this.detailsLoading = true
     this.replicasExecutionsLoading = false
 
@@ -44,25 +45,22 @@ class ReplicaStore {
   }
 
   handleGetReplicas({ showLoading }) {
+    this.backgroundLoading = true
+
     if (showLoading || this.replicas.length === 0) {
       this.loading = true
     }
   }
 
   handleGetReplicasSuccess(replicas) {
-    this.replicas = replicas.map(replica => {
-      let oldReplica = this.replicas.find(r => r.id === replica.id)
-      if (oldReplica) {
-        replica.executions = oldReplica.executions
-      }
-
-      return replica
-    })
+    this.replicas = replicas
     this.loading = false
+    this.backgroundLoading = false
   }
 
   handleGetReplicasFailed() {
     this.loading = false
+    this.backgroundLoading = false
   }
 
   handleGetReplicasExecutions() {

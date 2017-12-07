@@ -75,7 +75,6 @@ class ReplicasPage extends React.Component {
     document.title = 'Coriolis Replicas'
 
     ProjectActions.getProjects()
-    ReplicaActions.getReplicas()
     EndpointActions.getEndpoints()
 
     this.pollData()
@@ -114,7 +113,6 @@ class ReplicasPage extends React.Component {
       ProjectActions.getProjects()
       ReplicaActions.getReplicas()
       EndpointActions.getEndpoints()
-      this.pollData()
     })
 
     UserActions.switchProject(project.id)
@@ -124,7 +122,6 @@ class ReplicasPage extends React.Component {
     ProjectActions.getProjects()
     ReplicaActions.getReplicas({ showLoading: true })
     EndpointActions.getEndpoints()
-    this.pollData()
   }
 
   handleItemClick(item) {
@@ -169,11 +166,9 @@ class ReplicasPage extends React.Component {
   }
 
   pollData() {
-    Wait.for(() => this.props.replicaStore.replicas.length !== 0, () => {
-      ReplicaActions.getReplicasExecutions(this.props.replicaStore.replicas)
-      Wait.for(() => !this.props.replicaStore.replicasExecutionsLoading, () => {
-        this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
-      })
+    ReplicaActions.getReplicas()
+    Wait.for(() => !this.props.replicaStore.backgroundLoading, () => {
+      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
 
