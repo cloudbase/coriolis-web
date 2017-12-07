@@ -211,7 +211,7 @@ class NotificationDropdown extends React.Component {
 
           return (
             <ListItem
-              key={item.title}
+              key={item.id}
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
               onClick={() => { this.handleItemClick(item) }}

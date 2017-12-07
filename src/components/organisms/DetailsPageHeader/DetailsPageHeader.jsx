@@ -51,7 +51,7 @@ const User = styled.div`
   align-items: center;
 `
 
-class DetailsPageHeader extends React.Component {
+export class DetailsPageHeader extends React.Component {
   static propTypes = {
     user: PropTypes.object,
     onUserItemClick: PropTypes.func,

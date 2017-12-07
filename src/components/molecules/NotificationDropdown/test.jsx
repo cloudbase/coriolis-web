@@ -21,47 +21,49 @@ const wrap = props => shallow(<NotificationDropdown {...props} />)
 
 let items = [
   {
-    title: 'Migration',
-    time: '12:53 PM',
-    description: 'A full VM migration between two clouds',
-    icon: { info: true },
-  }, {
-    title: 'Replica',
-    time: '12:53 PM',
-    description: 'Incrementally replicate virtual machines',
-    icon: { error: true },
-  }, {
-    title: 'Endpoint',
-    time: '12:53 PM',
-    description: 'A conection to a public or private cloud',
-    icon: { success: true },
+    id: new Date().getTime() + 1,
+    message: 'A full VM migration between two clouds',
+    level: 'success',
+    options: { persistInfo: { title: 'Migration' } },
+  },
+  {
+    id: new Date().getTime() + 2,
+    message: 'Incrementally replicate virtual machines',
+    level: 'error',
+    options: { persistInfo: { title: 'Replica' } },
+  },
+  {
+    id: new Date().getTime() + 3,
+    message: 'A conection to a public or private cloud',
+    level: 'info',
+    options: { persistInfo: { title: 'Endpoint' } },
   },
 ]
 
 it('renders no items message on click', () => {
-  let wrapper = wrap()
+  let wrapper = wrap({ onClose: () => { } })
   expect(wrapper.children().length).toBe(1)
   wrapper.childAt(0).simulate('click')
   expect(wrapper.childAt(1).html().indexOf('There are no notifications')).toBeGreaterThan(-1)
 })
 
 it('renders items correctly', () => {
-  let wrapper = wrap({ items })
+  let wrapper = wrap({ items, onClose: () => { } })
   expect(wrapper.children().length).toBe(1)
   wrapper.childAt(0).simulate('click')
   let itemsWrapper = wrapper.childAt(1)
-  expect(itemsWrapper.findWhere(w => w.prop('success')).length).toBe(1)
-  expect(itemsWrapper.findWhere(w => w.prop('info')).length).toBe(1)
-  expect(itemsWrapper.findWhere(w => w.prop('error')).length).toBe(1)
+  expect(itemsWrapper.findWhere(w => w.prop('level') === 'success').length).toBe(1)
+  expect(itemsWrapper.findWhere(w => w.prop('level') === 'info').length).toBe(1)
+  expect(itemsWrapper.findWhere(w => w.prop('level') === 'error').length).toBe(1)
   expect(itemsWrapper.childAt(1).html().indexOf('Incrementally replicate virtual machines')).toBeGreaterThan(-1)
 })
 
-it('dispatches item click', () => {
-  let onItemClick = sinon.spy()
-  let wrapper = wrap({ items, onItemClick })
+it('dispatches onClose', () => {
+  let onClose = sinon.spy()
+  let wrapper = wrap({ items, onClose })
   expect(wrapper.children().length).toBe(1)
   wrapper.childAt(0).simulate('click')
   let itemsWrapper = wrapper.childAt(1)
   itemsWrapper.childAt(2).simulate('click')
-  expect(onItemClick.args[0][0].title).toBe('Endpoint')
+  expect(onClose.calledOnce).toBe(true)
 })
