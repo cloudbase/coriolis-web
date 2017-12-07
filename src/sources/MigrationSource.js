@@ -20,9 +20,27 @@ import Api from '../utils/ApiCaller'
 import { servicesUrl } from '../config'
 
 class MigrationSourceUtils {
+  static sortTaskUpdates(migration) {
+    if (migration && migration.tasks) {
+      migration.tasks.forEach(task => {
+        if (task && task.progress_updates) {
+          task.progress_updates.sort((a, b) => {
+            let sortNull = !a && b ? 1 : a && !b ? -1 : !a && !b ? 0 : false
+            if (sortNull !== false) {
+              return sortNull
+            }
+            return moment(a.created_at).isBefore(moment(b.created_at))
+          })
+        }
+      })
+    }
+  }
+
   static sortMigrations(migrations) {
-    migrations.sort((a, b) => {
-      return moment(b.created_at).diff(moment(a.created_at))
+    migrations.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)))
+
+    migrations.forEach(migration => {
+      MigrationSourceUtils.sortTaskUpdates(migration)
     })
   }
 }
@@ -51,6 +69,7 @@ class MigrationSource {
         method: 'GET',
       }).then(response => {
         let migration = response.data.migration
+        MigrationSourceUtils.sortTaskUpdates(migration)
         resolve(migration)
       }, reject).catch(reject)
     })
