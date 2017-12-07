@@ -16,6 +16,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 
 import StyleProps from '../../styleUtils/StyleProps'
+import Palette from '../../styleUtils/Palette'
 
 import hamburgerImage from './images/hamburger'
 import backgroundImage from './images/star-bg.jpg'
@@ -28,7 +29,7 @@ const OpenTopLayer = css`
   width: 19px;
 `
 const OpenMiddleLayer = css`
-  transform: rotate(-45deg) translateY(7px) translateX(-4px);
+  transform: rotate(-45deg) translateY(4.5px) translateX(-10.5px);
   width: 19px;
 `
 const Close = css`
@@ -48,7 +49,6 @@ const Hamburger = styled.div`
     ${props => props.open ? OpenTopLayer : Close};
   }
   #middle-layer {
-    transform-origin: 0% 100%;
     ${props => props.open ? OpenMiddleLayer : Close};
   }
   #bottom-layer {
@@ -67,6 +67,7 @@ const Menu = styled.div`
   transition: all ${StyleProps.animations.swift};
   display: flex;
   flex-direction: column;
+  z-index: 1;
 `
 const MenuItem = styled.a`
   font-size: 18px;
@@ -74,6 +75,10 @@ const MenuItem = styled.a`
   margin-bottom: 24px;
   cursor: pointer;
   text-decoration: none;
+
+  &:hover {
+    color: ${Palette.primary};
+  }
 `
 
 class SideMenu extends React.Component {
