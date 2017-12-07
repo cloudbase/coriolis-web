@@ -50,7 +50,7 @@ const NotificationsStyle = css`
     font-size: 16px !important;
     top: 8px !important;
     right: 8px !important;
-    text-indent: -2000px;
+    text-indent: -100000px;
     background: url('${closeImage}') center no-repeat !important;
   }
   .notification-title {
