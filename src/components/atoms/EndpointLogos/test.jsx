@@ -21,5 +21,7 @@ const wrap = props => shallow(<EndpointLogos {...props} />).dive()
 it('passes down props', () => {
   let wrapper = wrap({ height: 32, endpoint: 'aws' })
   expect(wrapper.prop('height')).toBe(32)
-  expect(wrapper.children().prop('endpoint')).toBe('aws')
+  let imageInfo = wrapper.findWhere(w => w.name() === 'styled.div' && w.prop('imageInfo')).prop('imageInfo')
+  expect(imageInfo.h).toBe(32)
+  expect(imageInfo.image).toBe('file')
 })
