@@ -13,7 +13,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { injectGlobal } from 'styled-components'
+import PropTypes from 'prop-types'
 
 import reloadImage from './images/reload.svg'
 
@@ -24,10 +25,37 @@ const Wrapper = styled.div`
   cursor: pointer;
 `
 
+injectGlobal`
+  .reload-animation {
+    transform: rotate(360deg);
+    transition: transform 1s cubic-bezier(0, 1.4, 1, 1);
+  }
+`
+
 class ReloadButton extends React.Component {
+  static propTypes = {
+    onClick: PropTypes.func,
+  }
+
+  onClick() {
+    if (this.timeout) {
+      return
+    }
+
+    if (this.props.onClick) {
+      this.props.onClick()
+    }
+
+    this.wrapper.className += ' reload-animation'
+    this.timeout = setTimeout(() => {
+      this.wrapper.className = this.wrapper.className.substr(0, this.wrapper.className.indexOf(' reload-animation'))
+      this.timeout = null
+    }, 1000)
+  }
+
   render() {
     return (
-      <Wrapper {...this.props} />
+      <Wrapper innerRef={div => { this.wrapper = div }} {...this.props} onClick={() => { this.onClick() }} />
     )
   }
 }
