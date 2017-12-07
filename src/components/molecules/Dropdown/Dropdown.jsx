@@ -210,7 +210,11 @@ class Dropdown extends React.Component {
     }
 
     return (
-      <Wrapper className={this.props.className}>
+      <Wrapper
+        className={this.props.className}
+        onMouseDown={() => { this.itemMouseDown = true }}
+        onMouseUp={() => { this.itemMouseDown = false }}
+      >
         <DropdownButton
           {...this.props}
           onMouseDown={() => { this.itemMouseDown = true }}
