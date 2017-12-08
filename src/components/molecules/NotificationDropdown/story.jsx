@@ -28,20 +28,22 @@ storiesOf('NotificationDropdown', module)
       <NotificationDropdown
         items={[
           {
-            title: 'Migration',
-            time: '12:53 PM',
-            description: 'A full VM migration between two clouds',
-            icon: { info: true },
-          }, {
-            title: 'Replica',
-            time: '12:53 PM',
-            description: 'Incrementally replicate virtual machines',
-            icon: { error: true },
-          }, {
-            title: 'Endpoint',
-            time: '12:53 PM',
-            description: 'A conection to a public or private cloud',
-            icon: { success: true },
+            id: new Date().getTime(),
+            message: 'A full VM migration between two clouds',
+            level: 'success',
+            options: { persistInfo: { title: 'Migration' } },
+          },
+          {
+            id: new Date().getTime(),
+            message: 'Incrementally replicate virtual machines',
+            level: 'error',
+            options: { persistInfo: { title: 'Replica' } },
+          },
+          {
+            id: new Date().getTime(),
+            message: 'A conection to a public or private cloud',
+            level: 'info',
+            options: { persistInfo: { title: 'Endpoint' } },
           },
         ]}
       />

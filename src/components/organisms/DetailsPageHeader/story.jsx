@@ -14,11 +14,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import DetailsPageHeader from './DetailsPageHeader'
+import { DetailsPageHeader } from './DetailsPageHeader'
 
 storiesOf('DetailsPageHeader', module)
   .add('default', () => (
     <div style={{ width: '800px' }}>
-      <DetailsPageHeader user={{ name: 'Name', email: 'email@email.com' }} />
+      <DetailsPageHeader notificationStore={{}} user={{ name: 'Name', email: 'email@email.com' }} />
     </div>
   ))

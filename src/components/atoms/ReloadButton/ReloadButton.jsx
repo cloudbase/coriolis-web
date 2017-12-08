@@ -46,6 +46,10 @@ class ReloadButton extends React.Component {
       this.props.onClick()
     }
 
+    if (!this.wrapper) {
+      return
+    }
+
     this.wrapper.className += ' reload-animation'
     this.timeout = setTimeout(() => {
       this.wrapper.className = this.wrapper.className.substr(0, this.wrapper.className.indexOf(' reload-animation'))
