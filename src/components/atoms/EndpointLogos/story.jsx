@@ -44,8 +44,8 @@ storiesOf('EndpointLogos', module)
       </Wrapper>
     )
   })
-  .add('45px', () => {
-    let height = 45
+  .add('42px', () => {
+    let height = 42
     return (
       <Wrapper>
         {wrap('aws', height)}

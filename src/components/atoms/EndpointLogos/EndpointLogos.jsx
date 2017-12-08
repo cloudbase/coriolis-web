@@ -23,12 +23,12 @@ import openstack32Image from './images/openstack-32.svg'
 import oraclevm32Image from './images/oraclevm-32.svg'
 import vmware32Image from './images/vmware-32.svg'
 
-import aws45Image from './images/aws-45.svg'
-import azure45Image from './images/azure-45.svg'
-import opc45Image from './images/opc-45.svg'
-import openstack45Image from './images/openstack-45.svg'
-import oraclevm45Image from './images/oraclevm-45.svg'
-import vmware45Image from './images/vmware-45.svg'
+import aws42Image from './images/aws-42.svg'
+import azure42Image from './images/azure-42.svg'
+import opc42Image from './images/opc-42.svg'
+import openstack42Image from './images/openstack-42.svg'
+import oraclevm42Image from './images/oraclevm-42.svg'
+import vmware42Image from './images/vmware-42.svg'
 
 import aws64Image from './images/aws-64.svg'
 import azure64Image from './images/azure-64.svg'
@@ -54,42 +54,42 @@ import vmware128DisabledImage from './images/vmware-128-disabled.svg'
 const endpointImages = {
   azure: [
     { h: 32, image: azure32Image },
-    { h: 45, image: azure45Image },
+    { h: 42, image: azure42Image },
     { h: 64, image: azure64Image },
     { h: 128, image: azure128Image },
     { h: 128, image: azure128DisabledImage, disabled: true },
   ],
   openstack: [
     { h: 32, image: openstack32Image },
-    { h: 45, image: openstack45Image },
+    { h: 42, image: openstack42Image },
     { h: 64, image: openstack64Image },
     { h: 128, image: openstack128Image },
     { h: 128, image: openstack128DisabledImage, disabled: true },
   ],
   opc: [
     { h: 32, image: opc32Image },
-    { h: 45, image: opc45Image },
+    { h: 42, image: opc42Image },
     { h: 64, image: opc64Image },
     { h: 128, image: opc128Image },
     { h: 128, image: opc128DisabledImage, disabled: true },
   ],
   oracle_vm: [
     { h: 32, image: oraclevm32Image },
-    { h: 45, image: oraclevm45Image },
+    { h: 42, image: oraclevm42Image },
     { h: 64, image: oraclevm64Image },
     { h: 128, image: oraclevm128Image },
     { h: 128, image: oraclevm128DisabledImage, disabled: true },
   ],
   vmware_vsphere: [
     { h: 32, image: vmware32Image },
-    { h: 45, image: vmware45Image },
+    { h: 42, image: vmware42Image },
     { h: 64, image: vmware64Image },
     { h: 128, image: vmware128Image },
     { h: 128, image: vmware128DisabledImage, disabled: true },
   ],
   aws: [
     { h: 32, image: aws32Image },
-    { h: 45, image: aws45Image },
+    { h: 42, image: aws42Image },
     { h: 64, image: aws64Image },
     { h: 128, image: aws128Image },
     { h: 128, image: aws128DisabledImage, disabled: true },
@@ -99,11 +99,11 @@ const Wrapper = styled.div``
 const Logo = styled.div`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
-  ${props => props.imageInfo ? `background: url('${props.imageInfo.image}') no-repeat center;` : ''}  
+  ${props => props.imageInfo ? `background: url('${props.imageInfo.image}') no-repeat center;` : ''}
 `
 const widthHeights = [
   { w: 80, h: 32 },
-  { w: 112, h: 45 },
+  { w: 105, h: 42 },
   { w: 192, h: 128 },
   { w: 192, h: 64 },
 ]
