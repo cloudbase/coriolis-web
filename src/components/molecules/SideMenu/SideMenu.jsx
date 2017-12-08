@@ -16,6 +16,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 
 import StyleProps from '../../styleUtils/StyleProps'
+import Palette from '../../styleUtils/Palette'
 
 import hamburgerImage from './images/hamburger'
 import backgroundImage from './images/star-bg.jpg'
@@ -25,9 +26,11 @@ const Wrapper = styled.div`
 `
 const OpenTopLayer = css`
   transform: rotate(45deg) translateX(3px);
+  width: 19px;
 `
 const OpenMiddleLayer = css`
-  transform: rotate(-45deg) translateY(7px) translateX(-4px);
+  transform: rotate(-45deg) translateY(4.5px) translateX(-10.5px);
+  width: 19px;
 `
 const Close = css`
   transform: rotate(0) translateY(0) translateX(0);
@@ -40,13 +43,12 @@ const OpenBottomLayer = css`
 const Hamburger = styled.div`
   cursor: pointer;
   #top-layer, #middle-layer, #bottom-layer {
-    transition: all ${StyleProps.animations.swift};
+    transition: all .4s cubic-bezier(0, 1.4, 1, 1);
   }
   #top-layer {
     ${props => props.open ? OpenTopLayer : Close};
   }
   #middle-layer {
-    transform-origin: 0% 100%;
     ${props => props.open ? OpenMiddleLayer : Close};
   }
   #bottom-layer {
@@ -65,6 +67,7 @@ const Menu = styled.div`
   transition: all ${StyleProps.animations.swift};
   display: flex;
   flex-direction: column;
+  z-index: 1;
 `
 const MenuItem = styled.a`
   font-size: 18px;
@@ -72,6 +75,10 @@ const MenuItem = styled.a`
   margin-bottom: 24px;
   cursor: pointer;
   text-decoration: none;
+
+  &:hover {
+    color: ${Palette.primary};
+  }
 `
 
 class SideMenu extends React.Component {
