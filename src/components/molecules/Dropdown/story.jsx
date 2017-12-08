@@ -37,10 +37,10 @@ class Wrapper extends React.Component {
   render() {
     return (
       <Dropdown
-        {...this.props}
         items={items}
         selectedItem={this.state.selectedItem}
         onChange={item => { this.handleChange(item) }}
+        {...this.props}
       />
     )
   }
@@ -52,4 +52,30 @@ storiesOf('Dropdown', module)
   ))
   .add('disabled', () => (
     <Wrapper disabled />
+  ))
+  .add('long list', () => (
+    <Wrapper
+      items={[
+        { label: 'Item 1', value: 'item-1' },
+        { label: 'Item 2', value: 'item-2' },
+        { label: 'Item 3', value: 'item-3' },
+        { label: 'Item 4', value: 'item-4' },
+        { label: 'Item 1', value: 'item-1' },
+        { label: 'Item 2', value: 'item-2' },
+        { label: 'Item 3', value: 'item-3' },
+        { label: 'Item 4', value: 'item-4' },
+        { label: 'Item 1', value: 'item-1' },
+        { label: 'Item 2', value: 'item-2' },
+        { label: 'Item 3', value: 'item-3' },
+        { label: 'Item 4', value: 'item-4' },
+        { label: 'Item 1', value: 'item-1' },
+        { label: 'Item 2', value: 'item-2' },
+        { label: 'Item 3', value: 'item-3' },
+        { label: 'Item 4', value: 'item-4' },
+        { label: 'Item 1', value: 'item-1' },
+        { label: 'Item 2', value: 'item-2' },
+        { label: 'Item 3', value: 'item-3' },
+        { label: 'Item 4', value: 'item-4' },
+      ]}
+    />
   ))
