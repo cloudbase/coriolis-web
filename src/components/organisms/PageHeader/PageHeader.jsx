@@ -117,12 +117,6 @@ class PageHeader extends React.Component {
 
   handleNewItem(item) {
     switch (item.value) {
-      case 'migration':
-        window.location.href = '/#/wizard/migration'
-        break
-      case 'replica':
-        window.location.href = '/#/wizard/replica'
-        break
       case 'endpoint':
         ProviderActions.loadProviders()
         this.setState({ showChooseProviderModal: true })

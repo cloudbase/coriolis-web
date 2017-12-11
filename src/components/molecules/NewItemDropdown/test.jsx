@@ -31,6 +31,6 @@ it('dispatches change on item click with correct args', () => {
   let onChange = sinon.spy()
   let wrapper = wrap({ onChange })
   wrapper.childAt(0).simulate('click')
-  wrapper.childAt(1).childAt(1).simulate('click')
-  expect(onChange.args[0][0].value).toBe('replica')
+  wrapper.childAt(1).childAt(2).simulate('click')
+  expect(onChange.args[0][0].value).toBe('endpoint')
 })
