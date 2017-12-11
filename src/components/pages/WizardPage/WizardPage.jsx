@@ -103,9 +103,6 @@ class WizardPage extends React.Component {
         ProviderActions.loadProviders()
         EndpointActions.getEndpoints()
         break
-      case 'vms':
-        InstanceActions.loadInstances(this.props.wizardStore.data.source.id)
-        break
       case 'options':
         ProviderActions.loadOptionsSchema(this.props.wizardStore.data.target.type, this.state.type)
         break
@@ -274,6 +271,8 @@ class WizardPage extends React.Component {
 
   handleSourceEndpointChange(source) {
     WizardActions.updateData({ source, selectedInstances: null, networks: null })
+    // Preload instances for 'vms' page
+    InstanceActions.loadInstances(source.id)
   }
 
   handleTargetEndpointChange(target) {
