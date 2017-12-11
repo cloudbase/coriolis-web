@@ -91,6 +91,7 @@ const StatusError = styled.div`
 class Endpoint extends React.Component {
   static propTypes = {
     type: PropTypes.string,
+    cancelButtonText: PropTypes.string,
     deleteOnCancel: PropTypes.bool,
     endpoint: PropTypes.object,
     connectionInfo: PropTypes.object,
@@ -100,6 +101,10 @@ class Endpoint extends React.Component {
     onValidateClick: PropTypes.func,
     endpointStore: PropTypes.object,
     providerStore: PropTypes.object,
+  }
+
+  static defaultProps = {
+    cancelButtonText: 'Cancel',
   }
 
   static getStores() {
@@ -418,7 +423,7 @@ class Endpoint extends React.Component {
           {Tooltip.rebuild()}
         </Fields>
         <Buttons>
-          <Button large secondary onClick={() => { this.handleCancelClick() }}>Cancel</Button>
+          <Button large secondary onClick={() => { this.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
           {this.renderActionButton()}
         </Buttons>
       </Wrapper>
