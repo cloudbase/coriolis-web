@@ -179,6 +179,20 @@ class ReplicaSource {
       }).then(() => { resolve(replicaId) }, reject).catch(reject)
     })
   }
+
+  static deleteDisks(replicaId) {
+    return new Promise((resolve, reject) => {
+      let projectId = cookie.get('projectId')
+
+      Api.sendAjaxRequest({
+        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/actions`,
+        method: 'POST',
+        data: { 'delete-disks': null },
+      }).then(response => {
+        resolve(response.data.execution)
+      }, reject).catch(reject)
+    })
+  }
 }
 
 export default ReplicaSource

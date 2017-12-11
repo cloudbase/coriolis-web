@@ -177,6 +177,22 @@ class ReplicaActions {
   clearDetails() {
     return true
   }
+
+  deleteDisks(replicaId) {
+    ReplicaSource.deleteDisks(replicaId).then(
+      execution => { this.deleteDisksSuccess(replicaId, execution) },
+      response => { this.deleteDisksFailed(response) },
+    )
+    return replicaId
+  }
+
+  deleteDisksSuccess(replicaId, execution) {
+    return { replicaId, execution }
+  }
+
+  deleteDisksFailed(execution) {
+    return execution || true
+  }
 }
 
 export default alt.createActions(ReplicaActions)
