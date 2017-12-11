@@ -16,7 +16,7 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { EndpointLogos, Button } from 'components'
+import { EndpointLogos, Button, StatusImage } from 'components'
 
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -24,6 +24,7 @@ const Wrapper = styled.div`
   padding: 22px 0 32px 0;
   text-align: center;
 `
+const Providers = styled.div``
 const Logos = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -37,21 +38,45 @@ const EndpointLogosStyled = styled(EndpointLogos) `
     transform: scale(0.7);
   }
 `
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 32px 0;
+`
+const LoadingText = styled.div`
+  font-size: 18px;
+  margin-top: 32px;
+`
 
 class ChooseProvider extends React.Component {
   static propTypes = {
     providers: PropTypes.object,
     onCancelClick: PropTypes.func,
     onProviderClick: PropTypes.func,
+    loading: PropTypes.bool,
   }
 
-  render() {
-    if (!this.props.providers) {
+  renderLoading() {
+    if (!this.props.loading) {
       return null
     }
 
     return (
-      <Wrapper>
+      <LoadingWrapper>
+        <StatusImage loading />
+        <LoadingText>Loading providers ...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
+
+  renderProviders() {
+    if (!this.props.providers || this.props.loading) {
+      return null
+    }
+
+    return (
+      <Providers>
         <Logos>
           {Object.keys(this.props.providers).map(k => {
             return (
@@ -65,6 +90,15 @@ class ChooseProvider extends React.Component {
           })}
         </Logos>
         <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
+      </Providers>
+    )
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        {this.renderProviders()}
+        {this.renderLoading()}
       </Wrapper>
     )
   }
