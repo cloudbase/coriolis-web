@@ -56,6 +56,12 @@ class NewModal extends React.Component {
     setTimeout(this.positionModal, 100)
   }
 
+  componentWillReceiveProps(newProps) {
+    if (this.props.isOpen === true && newProps.isOpen === false) {
+      this.handleModalClose()
+    }
+  }
+
   componentWillUpdate() {
     setTimeout(this.positionModal, 100)
   }
@@ -66,6 +72,22 @@ class NewModal extends React.Component {
 
   handleChildUpdate() {
     setTimeout(this.positionModal, 100)
+  }
+
+  handleModalOpen() {
+    this.windowScrollY = window.scrollY
+    document.body.style.top = `${-this.windowScrollY}px`
+    document.body.style.position = 'fixed'
+    document.body.style.width = '100%'
+    document.body.style.height = '100%'
+  }
+
+  handleModalClose() {
+    document.body.style.top = ''
+    document.body.style.position = ''
+    document.body.style.width = ''
+    document.body.style.height = ''
+    window.scroll(0, this.windowScrollY)
   }
 
   positionModal() {
@@ -145,6 +167,7 @@ class NewModal extends React.Component {
         contentLabel={this.props.contentLabel || this.props.title}
         style={modalStyle}
         onRequestClose={this.props.onRequestClose}
+        onAfterOpen={() => { this.handleModalOpen() }}
       >
         {this.renderTitle()}
         {children}
