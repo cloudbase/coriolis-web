@@ -17,7 +17,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import connectToStores from 'alt-utils/lib/connectToStores'
 
-import { EndpointLogos, EndpointField, Button, StatusIcon, LoadingButton, CopyButton, Tooltip } from 'components'
+import { EndpointLogos, EndpointField, Button, StatusIcon, LoadingButton, CopyButton, Tooltip, StatusImage } from 'components'
 import NotificationActions from '../../../actions/NotificationActions'
 import EndpointStore from '../../../stores/EndpointStore'
 import EndpointActions from '../../../actions/EndpointActions'
@@ -86,6 +86,17 @@ const StatusError = styled.div`
     background-position-y: 4px;
     margin-left: 4px;
   }
+`
+const Content = styled.div``
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 32px 0;
+`
+const LoadingText = styled.div`
+  font-size: 18px;
+  margin-top: 32px;
 `
 
 class Endpoint extends React.Component {
@@ -400,6 +411,40 @@ class Endpoint extends React.Component {
     return button
   }
 
+  renderContent() {
+    if (this.props.providerStore.connectionSchemaLoading) {
+      return null
+    }
+
+    return (
+      <Content>
+        {this.renderEndpointStatus()}
+        <Fields>
+          {this.renderFields(this.props.providerStore.connectionInfoSchema)}
+          <Tooltip />
+          {Tooltip.rebuild()}
+        </Fields>
+        <Buttons>
+          <Button large secondary onClick={() => { this.handleCancelClick() }}>Cancel</Button>
+          {this.renderActionButton()}
+        </Buttons>
+      </Content>
+    )
+  }
+
+  renderLoading() {
+    if (!this.props.providerStore.connectionSchemaLoading) {
+      return null
+    }
+
+    return (
+      <LoadingWrapper>
+        <StatusImage loading />
+        <LoadingText>Loading connection schema ...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
+
   render() {
     if (this.props.endpointStore.validation && this.props.endpointStore.validation.valid
       && !this.closeTimeout) {
@@ -411,16 +456,8 @@ class Endpoint extends React.Component {
     return (
       <Wrapper>
         <EndpointLogos style={{ marginBottom: '16px' }} height={128} endpoint={this.getEndpointType()} />
-        {this.renderEndpointStatus()}
-        <Fields>
-          {this.renderFields(this.props.providerStore.connectionInfoSchema)}
-          <Tooltip />
-          {Tooltip.rebuild()}
-        </Fields>
-        <Buttons>
-          <Button large secondary onClick={() => { this.handleCancelClick() }}>Cancel</Button>
-          {this.renderActionButton()}
-        </Buttons>
+        {this.renderContent()}
+        {this.renderLoading()}
       </Wrapper>
     )
   }

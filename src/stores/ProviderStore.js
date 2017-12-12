@@ -18,13 +18,16 @@ import ProviderActions from '../actions/ProviderActions'
 class ProviderStore {
   constructor() {
     this.connectionInfoSchema = []
+    this.connectionSchemaLoading = false
     this.providers = null
     this.providersLoading = false
     this.optionsSchema = []
     this.optionsSchemaLoading = false
 
     this.bindListeners({
+      handleGetConnectionInfoSchema: ProviderActions.GET_CONNECTION_INFO_SCHEMA,
       handleGetConnectionInfoSchemaSuccess: ProviderActions.GET_CONNECTION_INFO_SCHEMA_SUCCESS,
+      handleGetConnectionInfoSchemaFailed: ProviderActions.GET_CONNECTION_INFO_SCHEMA_FAILED,
       handleLoadProviders: ProviderActions.LOAD_PROVIDERS,
       handleLoadProvidersSuccess: ProviderActions.LOAD_PROVIDERS_SUCCESS,
       handleLoadOptionsSchema: ProviderActions.LOAD_OPTIONS_SCHEMA,
@@ -33,8 +36,17 @@ class ProviderStore {
     })
   }
 
+  handleGetConnectionInfoSchema() {
+    this.connectionSchemaLoading = true
+  }
+
   handleGetConnectionInfoSchemaSuccess(schema) {
+    this.connectionSchemaLoading = false
     this.connectionInfoSchema = schema
+  }
+
+  handleGetConnectionInfoSchemaFailed() {
+    this.connectionSchemaLoading = false
   }
 
   handleLoadProviders() {
