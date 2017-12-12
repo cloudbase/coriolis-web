@@ -38,11 +38,13 @@ const List = styled.div`
   top: 45px;
   z-index: 10;
 `
-const ListItem = styled.div`
+const ListItem = styled.a`
   display: flex;
   align-items: center;
   border-bottom: 1px solid white;
   transition: all ${StyleProps.animations.swift};
+  text-decoration: none;
+  color: ${Palette.black};
   &:hover {
     background: ${Palette.grayscale[0]};
   }
@@ -151,12 +153,12 @@ class NewItemDropdown extends React.Component {
 
     let items = [{
       title: 'Migration',
-      value: 'migration',
+      href: '/#/wizard/migration',
       description: 'Migrate VMs between two clouds',
       icon: { migration: true },
     }, {
       title: 'Replica',
-      value: 'replica',
+      href: '/#/wizard/replica',
       description: 'Incrementally replicate VMs between two clouds',
       icon: { replica: true },
     }, {
@@ -174,6 +176,7 @@ class NewItemDropdown extends React.Component {
               key={item.title}
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
+              href={item.href}
               onClick={() => { this.handleItemClick(item) }}
             >
               <Icon {...item.icon} />
