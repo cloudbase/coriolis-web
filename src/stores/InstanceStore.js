@@ -76,12 +76,17 @@ class InstanceStore {
     })
   }
 
-  handleLoadInstances() {
+  handleLoadInstances(endpointId) {
+    this.endpointId = endpointId
     this.instancesLoading = true
     this.searchNotFound = false
   }
 
-  handleLoadInstancesSuccess(instances) {
+  handleLoadInstancesSuccess({ endpointId, instances }) {
+    if (endpointId !== this.endpointId) {
+      return
+    }
+
     this.currentPage = 1
     this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
     this.instances = instances
@@ -89,7 +94,11 @@ class InstanceStore {
     this.instancesLoading = false
   }
 
-  handleLoadInstancesFailed() {
+  handleLoadInstancesFailed({ endpointId }) {
+    if (endpointId !== this.endpointId) {
+      return
+    }
+
     this.instancesLoading = false
   }
 

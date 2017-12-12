@@ -21,18 +21,18 @@ import { wizardConfig } from '../config'
 class InstanceActions {
   loadInstances(endpointId) {
     InstanceSource.loadInstances(endpointId).then(
-      instances => { this.loadInstancesSuccess(instances) },
-      response => { this.loadInstancesFailed(response) },
+      instances => { this.loadInstancesSuccess(endpointId, instances) },
+      response => { this.loadInstancesFailed(endpointId, response) },
     )
-    return true
+    return endpointId
   }
 
-  loadInstancesSuccess(instances) {
-    return instances
+  loadInstancesSuccess(endpointId, instances) {
+    return { endpointId, instances }
   }
 
-  loadInstancesFailed(response) {
-    return response || true
+  loadInstancesFailed(endpointId, response) {
+    return { endpointId, response: response || true }
   }
 
   searchInstances(endpointId, searchText) {
