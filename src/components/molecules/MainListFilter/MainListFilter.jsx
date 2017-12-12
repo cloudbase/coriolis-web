@@ -29,10 +29,11 @@ const Wrapper = styled.div`
 `
 const Main = styled.div`
   display: flex;
-  align-items: center;
   margin-right: 16px;
   flex-grow: 1;
   margin-bottom: 32px;
+  height: 32px;
+  align-items: center;
 `
 const FilterGroup = styled.div`
   display: flex;
@@ -53,9 +54,14 @@ const FilterItem = styled.div`
 const Selection = styled.div`
   display: flex;
   align-items: center;
-  opacity: ${props => props.show ? 1 : 0};
   transition: all ${StyleProps.animations.swift};
   margin-bottom: 32px;
+  animation: show-animation .4s;
+
+  @keyframes show-animation {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
 `
 const SelectionText = styled.div`
   margin-right: 16px;
@@ -94,6 +100,26 @@ class MainListFilter extends React.Component {
     )
   }
 
+  renderSelectionInfo() {
+    if (!this.props.selectionInfo.selected) {
+      return null
+    }
+
+    return (
+      <Selection>
+        <SelectionText>
+          {this.props.selectionInfo.selected} of {this.props.selectionInfo.total}&nbsp;
+          {this.props.selectionInfo.label}(s) selected
+        </SelectionText>
+        <Dropdown
+          noSelectionMessage="Select an action"
+          items={this.props.actions}
+          onChange={item => { this.props.onActionChange(item.value) }}
+        />
+      </Selection>
+    )
+  }
+
   render() {
     return (
       <Wrapper>
@@ -106,17 +132,7 @@ class MainListFilter extends React.Component {
           <ReloadButton style={{ marginRight: '16px' }} onClick={this.props.onReloadButtonClick} />
           <SearchInput onChange={this.props.onSearchChange} />
         </Main>
-        <Selection show={this.props.selectionInfo.selected}>
-          <SelectionText>
-            {this.props.selectionInfo.selected} of {this.props.selectionInfo.total}&nbsp;
-            {this.props.selectionInfo.label}(s) selected
-          </SelectionText>
-          <Dropdown
-            noSelectionMessage="Select an action"
-            items={this.props.actions}
-            onChange={item => { this.props.onActionChange(item.value) }}
-          />
-        </Selection>
+        {this.renderSelectionInfo()}
       </Wrapper>
     )
   }
