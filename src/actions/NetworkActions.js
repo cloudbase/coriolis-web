@@ -15,19 +15,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import alt from '../alt'
 
 import NetworkSource from '../sources/NetworkSource'
+import NetworkStore from '../stores/NetworkStore'
 
 class NetworkActions {
   loadNetworks(endpointId, environment) {
+    let storedCacheId = NetworkStore.getState().cacheId
+    let cacheId = `${endpointId}-${btoa(JSON.stringify(environment))}`
+    if (cacheId === storedCacheId) {
+      return { fromCache: true }
+    }
+
     NetworkSource.loadNetworks(endpointId, environment).then(
-      networks => { this.loadNetworksSuccess(networks) },
+      networks => { this.loadNetworksSuccess(networks, cacheId) },
       response => { this.loadNetworksFailed(response) }
     )
 
-    return true
+    return { fromCache: false }
   }
 
-  loadNetworksSuccess(networks) {
-    return networks
+  loadNetworksSuccess(networks, cacheId) {
+    return { networks, cacheId }
   }
 
   loadNetworksFailed(response) {
