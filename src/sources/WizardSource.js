@@ -101,6 +101,27 @@ class WizardSource {
       })
     })
   }
+
+  static setPermalink(data) {
+    let hashExp = /(#\/wizard\/.*?)(?:\?|$)/
+
+    if (!hashExp.test(window.location.hash)) {
+      return
+    }
+
+    let hash = hashExp.exec(window.location.hash)[1]
+    window.history.replaceState({}, null, `${hash}?d=${btoa(JSON.stringify(data))}`)
+  }
+
+  static getDataFromPermalink() {
+    let dataExp = /\?d=(.*)/
+
+    if (!dataExp.test(window.location.hash)) {
+      return null
+    }
+
+    return JSON.parse(atob(dataExp.exec(window.location.hash)[1]))
+  }
 }
 
 export default WizardSource

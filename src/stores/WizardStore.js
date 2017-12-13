@@ -42,6 +42,7 @@ class WizardStore {
       handleCreateMultiple: WizardActions.CREATE_MULTIPLE,
       handleCreateMultipleSuccess: WizardActions.CREATE_MULTIPLE_SUCCESS,
       handleCreateMultipleFailed: WizardActions.CREATE_MULTIPLE_FAILED,
+      handleGetDataFromPermalink: WizardActions.GET_DATA_FROM_PERMALINK,
     })
   }
 
@@ -144,6 +145,17 @@ class WizardStore {
 
   handleCreateMultipleFailed() {
     this.creatingItems = false
+  }
+
+  handleGetDataFromPermalink(data) {
+    if (data === true) {
+      return
+    }
+
+    this.data = {
+      ...this.data,
+      ...data,
+    }
   }
 }
 

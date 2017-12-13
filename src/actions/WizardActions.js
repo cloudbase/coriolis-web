@@ -86,6 +86,16 @@ class WizardActions {
   createMultipleFailed(response) {
     return response || true
   }
+
+  setPermalink(data) {
+    WizardSource.setPermalink(data)
+    return data || true
+  }
+
+  getDataFromPermalink() {
+    let data = WizardSource.getDataFromPermalink()
+    return data || true
+  }
 }
 
 export default alt.createActions(WizardActions)
