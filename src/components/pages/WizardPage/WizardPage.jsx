@@ -83,6 +83,7 @@ class WizardPage extends React.Component {
   }
 
   componentWillMount() {
+    WizardActions.getDataFromPermalink()
     let type = this.props.match && this.props.match.params.type
     if (type === 'migration' || type === 'replica') {
       this.setState({ type })
@@ -99,10 +100,16 @@ class WizardPage extends React.Component {
 
   loadDataForPage(page) {
     switch (page.id) {
-      case 'source':
+      case 'source': {
         ProviderActions.loadProviders()
         EndpointActions.getEndpoints()
+        // Preload instances if data is set from 'Permalink'
+        let source = WizardStore.getState().data.source
+        if (InstanceStore.getState().instances.length === 0 && source) {
+          InstanceActions.loadInstances(source.id)
+        }
         break
+      }
       case 'options':
         ProviderActions.loadOptionsSchema(this.props.wizardStore.data.target.type, this.state.type)
         break
@@ -271,12 +278,14 @@ class WizardPage extends React.Component {
 
   handleSourceEndpointChange(source) {
     WizardActions.updateData({ source, selectedInstances: null, networks: null })
+    WizardActions.setPermalink(WizardStore.getState().data)
     // Preload instances for 'vms' page
     InstanceActions.loadInstances(source.id)
   }
 
   handleTargetEndpointChange(target) {
     WizardActions.updateData({ target, networks: null, options: null })
+    WizardActions.setPermalink(WizardStore.getState().data)
   }
 
   handleAddEndpoint(newEndpointType, newEndpointFromSource) {
@@ -295,6 +304,7 @@ class WizardPage extends React.Component {
         WizardActions.updateData({ target: this.props.endpointStore.endpoints[0] })
       }
     }
+    WizardActions.setPermalink(WizardStore.getState().data)
     this.setState({ showNewEndpointModal: false })
   }
 
@@ -317,27 +327,33 @@ class WizardPage extends React.Component {
   handleInstanceClick(instance) {
     WizardActions.updateData({ networks: null })
     WizardActions.toggleInstanceSelection(instance)
+    WizardActions.setPermalink(WizardStore.getState().data)
   }
 
   handleOptionsChange(field, value) {
     WizardActions.updateData({ networks: null })
     WizardActions.updateOptions({ field, value })
+    WizardActions.setPermalink(WizardStore.getState().data)
   }
 
   handleNetworkChange(sourceNic, targetNetwork) {
     WizardActions.updateNetworks({ sourceNic, targetNetwork })
+    WizardActions.setPermalink(WizardStore.getState().data)
   }
 
   handleAddScheduleClick(schedule) {
     WizardActions.addSchedule(schedule)
+    WizardActions.setPermalink(WizardStore.getState().data)
   }
 
   handleScheduleChange(scheduleId, data) {
     WizardActions.updateSchedule(scheduleId, data)
+    WizardActions.setPermalink(WizardStore.getState().data)
   }
 
   handleScheduleRemove(scheduleId) {
     WizardActions.removeSchedule(scheduleId)
+    WizardActions.setPermalink(WizardStore.getState().data)
   }
 
   render() {
