@@ -103,6 +103,13 @@ class InstanceActions {
   }
 
   loadInstancesDetails(endpointId, instances) {
+    let store = InstanceStore.getState()
+    instances.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
+    let hash = i => `${i.instance_name}-${i.id}`
+    if (store.instancesDetails.map(hash).join('_') === instances.map(hash).join('_')) {
+      return { fromCache: true }
+    }
+
     instances.forEach(instance => {
       InstanceSource.loadInstanceDetails(endpointId, instance.instance_name).then(
         instance => { this.loadInstanceDetailsSuccess(instance) },

@@ -19,6 +19,7 @@ class NetworkStore {
   constructor() {
     this.networks = []
     this.loading = false
+    this.cacheId = null
 
     this.bindListeners({
       handleLoadNetworks: NetworkActions.LOAD_NETWORKS,
@@ -27,13 +28,18 @@ class NetworkStore {
     })
   }
 
-  handleLoadNetworks() {
+  handleLoadNetworks({ fromCache }) {
+    if (fromCache) {
+      return
+    }
+
     this.loading = true
   }
 
-  handleLoadNetworksSuccess(networks) {
+  handleLoadNetworksSuccess({ networks, cacheId }) {
     this.loading = false
     this.networks = networks
+    this.cacheId = cacheId
   }
 
   handleLoadNetworksFailed() {

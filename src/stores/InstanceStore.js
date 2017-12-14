@@ -174,7 +174,11 @@ class InstanceStore {
     this.searchNotFound = true
   }
 
-  handleLoadInstancesDetails({ count }) {
+  handleLoadInstancesDetails({ count, fromCache }) {
+    if (fromCache) {
+      return
+    }
+
     this.loadingInstancesDetails = true
     this.instancesDetailsCount = count
     this.instancesDetails = []
