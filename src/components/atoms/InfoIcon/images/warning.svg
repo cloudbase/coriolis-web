@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/Warning Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="8" cy="8" r="8"></circle>
+    </defs>
+    <g id="Azure-Migrate/VM-List-–-w/-EP" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(0.000000, -56.000000)">
+        <g id="Icon/Warning-2" transform="translate(0.000000, 56.000000)">
+            <g id="Oval-2">
+                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                <circle stroke="#FFDC00" stroke-width="1.5" cx="8" cy="8" r="7.25"></circle>
+            </g>
+            <path d="M8,8 L8,3.5" id="Line-Copy" stroke="#FFDC00" stroke-width="1.5" stroke-linecap="square"></path>
+            <path d="M8,13 C8.82842712,13 9.5,12.3284271 9.5,11.5 C9.5,10.6715729 8.82842712,10 8,10 C7.17157288,10 6.5,10.6715729 6.5,11.5 C6.5,12.3284271 7.17157288,13 8,13 Z" id="Oval-3" fill="#FFDC00" fill-rule="evenodd"></path>
+        </g>
+    </g>
+</svg>

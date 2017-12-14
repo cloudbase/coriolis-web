@@ -75,9 +75,10 @@ const MockButton = styled.div`
 type Props = {
   onBackButonClick: () => void,
   onActionButtonClick?: () => void,
-  onCancelClick: (?Execution | ?MainItem) => void,
-  typeImage: string,
+  onCancelClick?: (?Execution | ?MainItem) => void,
+  typeImage?: string,
   buttonLabel?: string,
+  statusLabel?: string,
   item: ?MainItem,
   alertInfoPill?: boolean,
   primaryInfoPill?: boolean,
@@ -110,6 +111,10 @@ class DetailsContentHeader extends React.Component<Props> {
     if (!this.getStatus()) {
       return null
     }
+    let statusLabel = this.getStatus()
+    if (this.props.statusLabel) {
+      statusLabel = this.props.statusLabel
+    }
     return (
       <StatusPills>
         <StatusPill
@@ -118,7 +123,13 @@ class DetailsContentHeader extends React.Component<Props> {
           alert={this.props.alertInfoPill}
           primary={this.props.primaryInfoPill}
         />
-        <StatusPill status={this.getStatus()} />
+        <StatusPill
+          status={this.getStatus()}
+          label={
+            // $FlowIssue
+            statusLabel
+          }
+        />
       </StatusPills>
     )
   }
@@ -132,7 +143,10 @@ class DetailsContentHeader extends React.Component<Props> {
       return (
         <Button
           secondary
-          onClick={() => { this.props.onCancelClick(this.getLastExecution()) }}
+          onClick={() => {
+            // $FlowIssue
+            if (this.props.onCancelClick) this.props.onCancelClick(this.getLastExecution())
+          }}
         >Cancel</Button>
       )
     }

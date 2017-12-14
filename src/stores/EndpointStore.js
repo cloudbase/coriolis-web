@@ -29,11 +29,13 @@ class EndpointStore {
   @observable loading = false
   @observable loading = false
   @observable connectionInfo: ?$PropertyType<Endpoint, 'connection_info'> = null
+  @observable connectionsInfo: Endpoint[] = []
   @observable validation: ?Validation = null
   @observable validating = false
   @observable updating = false
   @observable adding = false
   @observable connectionInfoLoading = false
+  @observable connectionsInfoLoading = false
 
   @action getEndpoints(options?: { showLoading: boolean }) {
     if ((options && options.showLoading) || this.endpoints.length === 0) {
@@ -61,6 +63,16 @@ class EndpointStore {
       this.setConnectionInfo(connectionInfo)
     }).catch(() => {
       this.connectionInfoLoading = false
+    })
+  }
+
+  @action getConnectionsInfo(endpointsData: Endpoint[]): Promise<void> {
+    this.connectionsInfoLoading = true
+    return EndpointSource.getConnectionsInfo(endpointsData).then(endpoints => {
+      this.connectionsInfoLoading = false
+      this.connectionsInfo = endpoints
+    }).catch(() => {
+      this.connectionsInfoLoading = false
     })
   }
 

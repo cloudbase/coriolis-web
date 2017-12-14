@@ -20,6 +20,7 @@ import styled, { css } from 'styled-components'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 
+import { navigationMenu } from '../../../config'
 import hamburgerImage from './images/hamburger'
 import backgroundImage from './images/star-bg.jpg'
 
@@ -109,9 +110,11 @@ class SideMenu extends React.Component<Props, State> {
           dangerouslySetInnerHTML={{ __html: hamburgerImage() }}
         />
         <Menu open={this.state.open}>
-          <MenuItem href="/#/replicas">Replicas</MenuItem>
-          <MenuItem href="/#/migrations">Migrations</MenuItem>
-          <MenuItem href="/#/endpoints">Cloud Endpoints</MenuItem>
+          {navigationMenu.filter(i => !i.disabled).map(item => {
+            return (
+              <MenuItem key={item.value} href={`/#/${item.value}`}>{item.label}</MenuItem>
+            )
+          })}
         </Menu>
       </Wrapper>
     )

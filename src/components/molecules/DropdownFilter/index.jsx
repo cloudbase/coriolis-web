@@ -1,0 +1,166 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+// @flow
+
+import React from 'react'
+import styled from 'styled-components'
+
+import SearchInput from '../SearchInput'
+
+import Palette from '../../styleUtils/Palette'
+
+import filterImage from './images/filter'
+
+const border = '1px solid rgba(216, 219, 226, 0.4)'
+
+const Wrapper = styled.div`
+  position: relative;
+  margin-top: -1px;
+`
+const Button = styled.div`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+const List = styled.div`
+  position: absolute;
+  top: 24px;
+  right: -7px;
+  z-index: 20;
+  padding: 8px;
+  background: ${Palette.grayscale[1]};
+  border-radius: 4px;
+  border: ${border};
+  box-shadow: 0 0 4px 0 rgba(32, 34, 52, 0.13);
+`
+const Tip = styled.div`
+  position: absolute;
+  top: -6px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  background: ${Palette.grayscale[1]};
+  border-top: ${border}};
+  border-left: ${border};
+  border-bottom: 1px solid transparent;
+  border-right: 1px solid transparent;
+  transform: rotate(45deg);
+`
+const ListItems = styled.div`
+  width: 199px;
+  height: 32px;
+`
+
+type Props = {
+  searchPlaceholder?: string,
+  searchValue?: string,
+  onSearchChange?: (value: string) => void,
+}
+type State = {
+  showDropdownList: boolean
+}
+class DropdownFilter extends React.Component<Props, State> {
+  static defaultProps: $Shape<Props> = {
+    searchPlaceholder: 'Filter',
+  }
+
+  itemMouseDown: boolean
+
+  constructor() {
+    super()
+
+    // $FlowIssue
+    this.handlePageClick = this.handlePageClick.bind(this)
+
+    this.state = {
+      showDropdownList: false,
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener('mousedown', this.handlePageClick, false)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handlePageClick, false)
+  }
+
+  handlePageClick() {
+    if (!this.itemMouseDown) {
+      this.setState({ showDropdownList: false })
+    }
+  }
+
+  handleButtonClick() {
+    this.setState({ showDropdownList: !this.state.showDropdownList })
+  }
+
+  handleCloseClick() {
+    this.setState({ showDropdownList: false })
+  }
+
+  renderList() {
+    if (!this.state.showDropdownList) {
+      return null
+    }
+
+    return (
+      <List
+        onMouseDown={() => { this.itemMouseDown = true }}
+        onMouseUp={() => { this.itemMouseDown = false }}
+      >
+        <Tip />
+        <ListItems>
+          <SearchInput
+            width="100%"
+            alwaysOpen
+            placeholder={this.props.searchPlaceholder}
+            value={this.props.searchValue}
+            onChange={this.props.onSearchChange}
+            useFilterIcon
+            focusOnMount
+            disablePrimary
+            onCloseClick={() => { this.handleCloseClick() }}
+          />
+        </ListItems>
+      </List>
+    )
+  }
+
+  renderButton() {
+    return (
+      <Button
+        onMouseDown={() => { this.itemMouseDown = true }}
+        onMouseUp={() => { this.itemMouseDown = false }}
+        onClick={() => { this.handleButtonClick() }}
+        dangerouslySetInnerHTML={{ __html: filterImage(this.props.searchValue ? Palette.primary : Palette.grayscale[5]) }}
+      />
+    )
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        {this.renderButton()}
+        {this.renderList()}
+      </Wrapper>
+    )
+  }
+}
+
+export default DropdownFilter

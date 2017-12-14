@@ -21,6 +21,8 @@ class ApiCaller {
     'Content-Type': 'application/json',
   }
 
+  requests = []
+
   constructor() {
     if (!apiInstance) {
       apiInstance = this
@@ -29,9 +31,26 @@ class ApiCaller {
     return apiInstance
   }
 
+  addRequest(request) {
+    this.requests.unshift(request)
+    if (this.requests.length > 100) {
+      this.requests.pop()
+    }
+  }
+
+  cancelRequest(requestInfo) {
+    requestInfo.request.abort()
+    this.requests = this.requests.filter(r => r.requestId !== requestInfo.requestId)
+  }
+
   sendAjaxRequest(options) {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest()
+
+      if (options.requestId) {
+        this.addRequest({ requestId: options.requestId, request })
+      }
+
       request.open(options.method, options.url)
 
       let headers = Object.assign({}, this.defaultHeaders)
@@ -50,6 +69,8 @@ class ApiCaller {
         if (request.readyState === 4) { // if complete
           if (!(request.status >= 200 && request.status <= 299)) { // check if "OK" (200)
             reject({ status: request.status })
+          } else if (request.status === 0) { // check if aborted
+            reject({ status: 0 })
           }
         }
       }

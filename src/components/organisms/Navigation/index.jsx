@@ -19,6 +19,7 @@ import styled from 'styled-components'
 
 import Logo from '../../atoms/Logo'
 
+import { navigationMenu } from '../../../config'
 import backgroundImage from './images/star-bg.jpg'
 
 const Wrapper = styled.div`
@@ -46,24 +47,11 @@ const MenuItem = styled.a`
 `
 const Footer = styled.div``
 
-const MenuItems = [
-  {
-    label: 'Replicas',
-    value: 'replicas',
-  }, {
-    label: 'Migrations',
-    value: 'migrations',
-  }, {
-    label: 'Cloud Endpoints',
-    value: 'endpoints',
-  },
-]
-
-class Navigation extends React.Component<{ currentPage: string }> {
+class Navigation extends React.Component<{currentPage: string}> {
   renderMenu() {
     return (
       <Menu>
-        {MenuItems.map(item => {
+        {navigationMenu.filter(i => !i.disabled).map(item => {
           return (
             <MenuItem
               key={item.value}
@@ -79,7 +67,7 @@ class Navigation extends React.Component<{ currentPage: string }> {
   render() {
     return (
       <Wrapper>
-        <LogoStyled small href="/#/replicas" />
+        <LogoStyled small href={navigationMenu[0].value} />
         {this.renderMenu()}
         <Footer />
       </Wrapper>

@@ -93,7 +93,8 @@ class LabelDictionary {
     opc: 'Oracle Cloud',
     azure: 'Azure',
     vmware_vsphere: 'VMware',
-    separate_vm: { label: 'Separate Migration/VM?', description: 'Separate migration per selected instance' },
+    separate_vm: 'Separate Migration/VM?',
+    use_replica: 'Use replica',
   }
 
   static get(fieldName) {

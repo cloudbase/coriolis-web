@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96px" height="68px" viewBox="0 0 96 68" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>User-VL Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="NAM-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-240.000000, -110.000000)">
+        <g id="Modal/Icon-96/2-Buttons" stroke="#0044CA" stroke-width="1.5">
+            <g id="Azure-Migrate/Icon96" transform="translate(240.000000, 96.000000)">
+                <polyline id="Rectangle-Copy" stroke-linecap="round" stroke-linejoin="round" transform="translate(44.000000, 54.800000) rotate(-405.000000) translate(-44.000000, -54.800000) " points="54.3708995 44.2216826 54.3708995 65.3783174 33.6291005 65.3783174"></polyline>
+                <polyline id="Rectangle-Copy" stroke-linecap="round" stroke-linejoin="round" transform="translate(62.666667, 54.800000) rotate(-405.000000) translate(-62.666667, -54.800000) " points="73.0375661 44.2216826 73.0375661 65.3783174 52.2957672 65.3783174"></polyline>
+                <polyline id="Rectangle-Copy" stroke-linecap="round" stroke-linejoin="round" transform="translate(25.333333, 54.800000) rotate(-405.000000) translate(-25.333333, -54.800000) " points="35.7042328 44.2216826 35.7042328 65.3783174 14.9624339 65.3783174"></polyline>
+                <path d="M38.4,14.75 C26.4942961,14.75 16.8057103,24.8628507 16.2898777,37.726303 L16.2682887,38.2646725 L15.751187,38.4160451 C6.95162499,40.9919634 0.75,49.5048643 0.75,59.3340202 C0.75,71.3871691 9.94011624,81.25 21.12,81.25 L78.72,81.25 C87.7878838,81.25 95.25,73.2416583 95.25,63.4551074 C95.25,55.9253123 90.6318176,49.2645554 84.0462573,46.9019388 L83.5670876,46.7300333 L83.5499453,46.2212492 C83.1534893,34.4544158 74.2216824,25.0527181 63.36,25.0527181 C61.7595305,25.0527181 60.3552686,25.3544351 57.8800133,26.1157834 L57.323809,26.2868628 L57.0199148,25.7905971 C52.8472502,18.9765458 45.9267364,14.75 38.4,14.75 Z" id="Path-Copy" transform="translate(48.000000, 48.000000) scale(-1, 1) translate(-48.000000, -48.000000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

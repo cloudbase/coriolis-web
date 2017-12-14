@@ -27,20 +27,21 @@ const Wrapper = styled.div``
 type DictItem = { value: string, label: string }
 type Props = {
   items: MainItem[],
-  actions: DictItem[],
+  actions?: DictItem[],
   loading: boolean,
   onReloadButtonClick: () => void,
   onItemClick: (item: MainItem) => void,
-  onActionChange: (selectedItems: MainItem[], actionValue: string) => void,
+  onActionChange?: (selectedItems: MainItem[], actionValue: string) => void,
   selectionLabel: string,
   renderItemComponent: (componentProps: ItemComponentProps) => React.Node,
   itemFilterFunction: (item: MainItem, filterStatus?: ?string, filterState?: string) => boolean,
   filterItems: DictItem[],
-  emptyListImage: string,
+  emptyListImage: ?string,
   emptyListMessage: string,
   emptyListExtraMessage: string,
-  emptyListButtonLabel: string,
-  onEmptyListButtonClick: () => void,
+  emptyListButtonLabel?: string,
+  onEmptyListButtonClick?: () => void,
+  customFilterComponent?: React.Node,
 }
 type State = {
   items: MainItem[],
@@ -125,7 +126,7 @@ class FilterList extends React.Component<Props, State> {
   }
 
   handleActionChange(actionValue: string) {
-    this.props.onActionChange(this.state.selectedItems, actionValue)
+    if (this.props.onActionChange) this.props.onActionChange(this.state.selectedItems, actionValue)
   }
 
   filterItems(items: MainItem[], filterStatus?: ?string, filterText?: string): MainItem[] {
@@ -146,8 +147,10 @@ class FilterList extends React.Component<Props, State> {
           selectedValue={this.state.filterStatus}
           onReloadButtonClick={this.props.onReloadButtonClick}
           onSearchChange={text => { this.handleSearchChange(text) }}
+          searchValue={this.state.filterText}
           onSelectAllChange={selected => { this.handleSelectAllChange(selected) }}
           selectAllSelected={this.state.selectAllSelected}
+          customFilterComponent={this.props.customFilterComponent}
           selectionInfo={{
             selected: this.state.selectedItems.length,
             total: this.state.items.length,

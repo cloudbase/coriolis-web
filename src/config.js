@@ -27,6 +27,13 @@ export const servicesUrl = {
 
 export const useSecret = true // use secret_ref when creating and endpoint
 
+export const navigationMenu = [
+  { label: 'Replicas', value: 'replicas' },
+  { label: 'Migrations', value: 'migrations' },
+  { label: 'Cloud Endpoints', value: 'endpoints' },
+  { label: 'Planning', value: 'planning', disabled: false },
+]
+
 export const requestPollTimeout = 5000
 
 export const providerTypes = {
