@@ -133,6 +133,7 @@ class EndpointDetailsPage extends React.Component {
   }
 
   handleDeleteEndpointConfirmation() {
+    this.setState({ showDeleteEndpointConfirmation: false })
     window.location.href = '/#/endpoints'
     EndpointActions.delete(this.getEndpoint())
   }

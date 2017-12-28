@@ -102,6 +102,7 @@ class MigrationDetailsPage extends React.Component {
   }
 
   handleDeleteMigrationConfirmation() {
+    this.setState({ showDeleteMigrationConfirmation: false })
     window.location.href = '/#/migrations'
     MigrationActions.delete(this.props.migrationStore.migrationDetails.id)
   }

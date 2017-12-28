@@ -152,6 +152,7 @@ class ReplicaDetailsPage extends React.Component {
   }
 
   handleDeleteReplicaConfirmation() {
+    this.setState({ showDeleteReplicaConfirmation: false })
     window.location.href = '/#/replicas'
     ReplicaActions.delete(this.props.replicaStore.replicaDetails.id)
   }
