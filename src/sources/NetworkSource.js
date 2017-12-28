@@ -31,9 +31,9 @@ class NetworkSource {
         url,
         method: 'GET',
       }).then(response => {
-        let networks = response.data.networks
+        let networks = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
         networks.sort((a, b) => a.name.localeCompare(b.name))
-        resolve(response.data.networks)
+        resolve(networks)
       }, reject).catch(reject)
     })
   }
