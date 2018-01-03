@@ -16,34 +16,18 @@ import webpack from 'webpack'
 import webpackConfig from '../webpack.config'
 
 module.exports = (app, PORT) => {
-  let isBrowserOpen = false
+  let isFirstTimeSuccess = false
   const compiler = webpack(webpackConfig)
 
   app.use(require('webpack-dev-middleware')(compiler, {
     noInfo: false,
     publicPath: webpackConfig.output.publicPath,
-    stats: {
-      colors: true,
-    },
+    stats: 'errors-only',
     log: text => {
-      let statusIndex = text.indexOf('webpack: Compiled') > -1
-        ? text.indexOf('webpack: Compiled') : text.indexOf('webpack: Failed')
-      if (statusIndex > -1) {
-        let left = text.substr(0, statusIndex)
-        let isSuccesfull = text.indexOf('webpack: Compiled successfully.') > -1
-        let color = text.indexOf('webpack: Compiled with warnings.') > -1 ? '\x1b[43m\x1b[30m' : ''
-        color = isSuccesfull ? '\x1b[42m\x1b[30m' : color
-        color = text.indexOf('webpack: Failed to compile.') > -1 ? '\x1b[41m' : color
-
-        let end = `${color + text.substr(statusIndex)}\x1b[0m`
-        console.log(left + end) // eslint-disable-line no-console
-
-        if (!isBrowserOpen && isSuccesfull) {
-          isBrowserOpen = true
-          console.log(`\x1b[96mServer is available at http://localhost:${PORT}\x1b[0m`) // eslint-disable-line no-console
-        }
-      } else {
-        console.log(text)// eslint-disable-line no-console
+      let isSuccessfull = text.indexOf('webpack: Compiled successfully.') > -1
+      if (!isFirstTimeSuccess && isSuccessfull) {
+        isFirstTimeSuccess = true
+        console.log(`\x1b[36mServer is available at http://localhost:${PORT}\x1b[0m`) // eslint-disable-line no-console
       }
     },
   }))
