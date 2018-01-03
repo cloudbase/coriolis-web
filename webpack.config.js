@@ -16,6 +16,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const splitVendor = require('webpack-blocks-split-vendor')
 const happypack = require('webpack-blocks-happypack')
+const WebpackLoggingPlugin = require('webpack-logging-plugin')
 
 const {
   addPlugins, createConfig, entryPoint, env, setOutput,
@@ -56,6 +57,15 @@ const resolveModules = modules => () => ({
   },
 })
 
+const node = () => () => ({
+  node: {
+    console: true,
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  },
+})
+
 const config = createConfig([
   setOutput({
     filename: '[name].js',
@@ -66,18 +76,20 @@ const config = createConfig([
     'process.env.NODE_ENV': process.env.NODE_ENV,
     'process.env.PUBLIC_PATH': publicPath.replace(/\/$/, ''),
   }),
+  () => ({ stats: 'errors-only' }),
   addPlugins([
-    new webpack.ProgressPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.join(process.cwd(), 'public/index.html'),
     }),
+    new WebpackLoggingPlugin(),
   ]),
   happypack([
     babel(),
   ]),
   assets(),
   resolveModules(sourceDir),
+  node(),
 
   env('development', [
     entryPoint({
