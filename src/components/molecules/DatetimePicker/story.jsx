@@ -14,15 +14,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import moment from 'moment'
 import DatetimePicker from './DatetimePicker'
 
 class Wrapper extends React.Component {
   render() {
-    return <div style={{ marginLeft: '100px' }}><DatetimePicker onChange={() => { }} /></div>
+    return <div style={{ marginLeft: '100px' }}><DatetimePicker {...this.props} onChange={() => { }} /></div>
   }
 }
 
 storiesOf('DatetimePicker', module)
   .add('default', () => (
     <Wrapper />
+  ))
+  .add('disabled dates', () => (
+    <Wrapper isValidDate={currentDate => currentDate.isAfter(moment().subtract(1, 'minute'))} />
   ))

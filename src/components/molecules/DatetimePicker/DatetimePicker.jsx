@@ -52,6 +52,7 @@ class DatetimePicker extends React.Component {
   static propTypes = {
     value: PropTypes.object,
     onChange: PropTypes.func.isRequired,
+    isValidDate: PropTypes.func,
     timezone: PropTypes.string,
   }
 
@@ -75,6 +76,14 @@ class DatetimePicker extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handlePageClick, false)
+  }
+
+  isValidDate(currentDate, selectedDate) {
+    if (!this.props.isValidDate) {
+      return true
+    }
+
+    return this.props.isValidDate(currentDate, selectedDate)
   }
 
   handlePageClick(e) {
@@ -128,6 +137,7 @@ class DatetimePicker extends React.Component {
           dateFormat="DD/MM/YYYY"
           timeFormat="hh:mm A"
           locale="en-gb"
+          isValidDate={(currentDate, selectedDate) => this.isValidDate(currentDate, selectedDate)}
         />
       </Wrapper>
     )

@@ -147,7 +147,7 @@ const style = css`
       }
     }
 
-    .rdtDay.rdtOld, .rdtDay.rdtNew {
+    .rdtDay.rdtOld, .rdtDay.rdtDisabled, .rdtDay.rdtNew {
       color: ${Palette.grayscale[3]};
     }
 

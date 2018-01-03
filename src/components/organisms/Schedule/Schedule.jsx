@@ -433,6 +433,7 @@ class Schedule extends React.Component {
         value={date}
         timezone={this.props.timezone}
         onChange={date => { this.handleExpirationDateChange(s, date) }}
+        isValidDate={date => date.isAfter(moment())}
       />
     )
   }
