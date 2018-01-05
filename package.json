@@ -61,6 +61,7 @@
     "babel-register": "^6.26.0",
     "copyfiles": "^1.2.0",
     "cross-env": "^5.0.5",
+    "document-offset": "^1.0.4",
     "express": "^4.16.1",
     "file-loader": "^1.1.5",
     "fs": "^0.0.1-security",
