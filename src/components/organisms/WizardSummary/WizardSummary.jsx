@@ -260,7 +260,7 @@ class WizardSummary extends React.Component {
         <Table>
           {data.networks.map(mapping => {
             return (
-              <Row key={mapping.sourceNic.id} direction="row">
+              <Row key={mapping.sourceNic.network_name} direction="row">
                 <SourceNetwork>{mapping.sourceNic.network_name}</SourceNetwork>
                 <NetworkArrow />
                 <TargetNetwork>{mapping.targetNetwork.name}</TargetNetwork>

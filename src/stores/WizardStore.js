@@ -87,7 +87,7 @@ class WizardStore {
       this.data.networks = []
     }
 
-    this.data.networks = this.data.networks.filter(n => n.sourceNic.id !== sourceNic.id)
+    this.data.networks = this.data.networks.filter(n => n.sourceNic.network_name !== sourceNic.network_name)
     this.data.networks.push({ sourceNic, targetNetwork })
   }
 
