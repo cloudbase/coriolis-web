@@ -27,6 +27,7 @@ const sourceDir = 'src'
 const publicPath = `/${process.env.PUBLIC_PATH || ''}/`.replace('//', '/')
 const sourcePath = path.join(process.cwd(), sourceDir)
 const outputPath = path.join(process.cwd(), 'dist')
+process.noDeprecation = true
 
 const babel = () => () => ({
   module: {
