@@ -105,7 +105,7 @@ class EndpointStore {
     this.validation = null
   }
 
-  handleUpdate(endpoint) {
+  handleUpdate({ endpoint }) {
     this.endpoints = updateEndpoint(endpoint, this.endpoints)
     this.connectionInfo = { ...endpoint.connection_info }
     this.updating = true

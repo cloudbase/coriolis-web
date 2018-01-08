@@ -24,7 +24,6 @@ import EndpointActions from '../../../actions/EndpointActions'
 import ProviderStore from '../../../stores/ProviderStore'
 import ProviderActions from '../../../actions/ProviderActions'
 import ObjectUtils from '../../../utils/ObjectUtils'
-import Wait from '../../../utils/Wait'
 import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
 
@@ -256,16 +255,14 @@ class Endpoint extends React.Component {
   }
 
   update() {
-    EndpointActions.update(this.state.endpoint)
-    Wait.for(() => EndpointStore.getState().updating === false, () => {
+    EndpointActions.update(this.state.endpoint).promise.then(() => {
       NotificationActions.notify('Validating endpoint ...')
       EndpointActions.validate(this.state.endpoint)
     })
   }
 
   add() {
-    EndpointActions.add(this.state.endpoint)
-    Wait.for(() => EndpointStore.getState().adding === false, () => {
+    EndpointActions.add(this.state.endpoint).promise.then(() => {
       let endpoint = EndpointStore.getState().endpoints[0]
       this.setState({ isNew: false, endpoint })
       NotificationActions.notify('Validating endpoint ...')

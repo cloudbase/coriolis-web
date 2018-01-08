@@ -18,11 +18,13 @@ import ReplicaSource from '../sources/ReplicaSource'
 
 class ReplicaActions {
   getReplicas(options) {
-    ReplicaSource.getReplicas().then(
-      response => { this.getReplicasSuccess(response) },
-      response => { this.getReplicasFailed(response) },
-    )
-    return options || true
+    return {
+      ...options,
+      promise: ReplicaSource.getReplicas().then(
+        response => { this.getReplicasSuccess(response) },
+        response => { this.getReplicasFailed(response) },
+      ),
+    }
   }
 
   getReplicasSuccess(replicas) {
@@ -71,11 +73,13 @@ class ReplicaActions {
   }
 
   getReplicaExecutions(replicaId) {
-    ReplicaSource.getReplicaExecutions(replicaId).then(
-      response => { this.getReplicaExecutionsSuccess(response) },
-      response => { this.getReplicaExecutionsFailed(response) },
-    )
-    return replicaId
+    return {
+      replicaId,
+      promise: ReplicaSource.getReplicaExecutions(replicaId).then(
+        response => { this.getReplicaExecutionsSuccess(response) },
+        response => { this.getReplicaExecutionsFailed(response) },
+      ),
+    }
   }
 
   getReplicaExecutionsSuccess({ replicaId, executions }) {

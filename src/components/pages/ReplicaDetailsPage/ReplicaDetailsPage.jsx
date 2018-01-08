@@ -28,7 +28,6 @@ import {
   ReplicaMigrationOptions,
 } from 'components'
 
-import Wait from '../../../utils/Wait'
 import ReplicaStore from '../../../stores/ReplicaStore'
 import UserStore from '../../../stores/UserStore'
 import UserActions from '../../../actions/UserActions'
@@ -86,12 +85,11 @@ class ReplicaDetailsPage extends React.Component {
     EndpointActions.getEndpoints()
     ScheduleActions.getSchedules(this.props.match.params.id)
     this.pollData()
-    this.pollInterval = setInterval(() => { this.pollData() }, requestPollTimeout)
   }
 
   componentWillUnmount() {
     ReplicaActions.clearDetails()
-    clearInterval(this.pollInterval)
+    clearInterval(this.pollTimeout)
   }
 
   isActionButtonDisabled() {
@@ -207,8 +205,9 @@ class ReplicaDetailsPage extends React.Component {
   }
 
   pollData() {
-    Wait.for(() => this.props.replicaStore.replicaDetails.id === this.props.match.params.id,
-      () => { ReplicaActions.getReplicaExecutions(this.props.match.params.id) })
+    ReplicaActions.getReplicaExecutions(this.props.match.params.id).promise.then(() => {
+      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+    })
   }
 
   render() {

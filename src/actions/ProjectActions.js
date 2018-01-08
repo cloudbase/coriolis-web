@@ -18,12 +18,12 @@ import PojectSource from '../sources/ProjectSource'
 
 class ProjectActions {
   getProjects() {
-    PojectSource.getProjects().then(
-      this.getProjectsCompleted.bind(this),
-      this.getProjectsFailed.bind(this)
-    ).catch(this.getProjectsFailed.bind(this))
-
-    return true
+    return {
+      promise: PojectSource.getProjects().then(
+        this.getProjectsCompleted.bind(this),
+        this.getProjectsFailed.bind(this)
+      ).catch(this.getProjectsFailed.bind(this)),
+    }
   }
 
   getProjectsCompleted(response) {

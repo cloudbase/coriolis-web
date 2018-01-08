@@ -99,7 +99,7 @@ class MigrationsPage extends React.Component {
     Wait.for(() => this.props.userStore.user.project.id === project.id, () => {
       ProjectActions.getProjects()
       EndpointActions.getEndpoints()
-      MigrationActions.getMigrations()
+      MigrationActions.getMigrations({ showLoading: true })
     })
 
     UserActions.switchProject(project.id)

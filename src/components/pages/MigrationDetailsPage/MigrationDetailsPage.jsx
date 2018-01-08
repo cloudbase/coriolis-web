@@ -32,7 +32,6 @@ import MigrationActions from '../../../actions/MigrationActions'
 import EndpointStore from '../../../stores/EndpointStore'
 import EndpointActions from '../../../actions/EndpointActions'
 import NotificationActions from '../../../actions/NotificationActions'
-import Wait from '../../../utils/Wait'
 import { requestPollTimeout } from '../../../config'
 
 import migrationImage from './images/migration.svg'
@@ -121,8 +120,7 @@ class MigrationDetailsPage extends React.Component {
 
   handleCancelConfirmation() {
     this.setState({ showCancelConfirmation: false })
-    MigrationActions.cancel(this.props.migrationStore.migrationDetails.id)
-    Wait.for(() => MigrationStore.getState().canceling !== true, () => {
+    MigrationActions.cancel(this.props.migrationStore.migrationDetails.id).promise.then(() => {
       if (MigrationStore.getState().canceling === false) {
         NotificationActions.notify('Canceled', 'success')
       } else {

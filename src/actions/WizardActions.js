@@ -54,12 +54,14 @@ class WizardActions {
   }
 
   create(type, data) {
-    WizardSource.create(type, data).then(
-      item => { this.createSuccess(item) },
-      response => { this.createFailed(response) }
-    )
-
-    return { type, data }
+    return {
+      type,
+      data,
+      promise: WizardSource.create(type, data).then(
+        item => { this.createSuccess(item) },
+        response => { this.createFailed(response) }
+      ),
+    }
   }
 
   createSuccess(item) {
@@ -71,12 +73,14 @@ class WizardActions {
   }
 
   createMultiple(type, data) {
-    WizardSource.createMultiple(type, data).then(
-      items => { this.createMultipleSuccess(items) },
-      response => { this.createMultipleFailed(response) }
-    )
-
-    return { type, data }
+    return {
+      type,
+      data,
+      promise: WizardSource.createMultiple(type, data).then(
+        items => { this.createMultipleSuccess(items) },
+        response => { this.createMultipleFailed(response) }
+      ),
+    }
   }
 
   createMultipleSuccess(items) {
