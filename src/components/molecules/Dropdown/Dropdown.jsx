@@ -15,6 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import ReactDOM from 'react-dom'
+import offset from 'document-offset'
 
 import { DropdownButton } from 'components'
 
@@ -37,7 +39,6 @@ const getWidth = props => {
 }
 const List = styled.div`
   position: absolute;
-  top: 45px;
   background: white;
   cursor: pointer;
   width: ${props => getWidth(props)}px;
@@ -118,6 +119,10 @@ class Dropdown extends React.Component {
     window.addEventListener('mousedown', this.handlePageClick, false)
   }
 
+  componentDidUpdate() {
+    this.updateListPosition()
+  }
+
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handlePageClick, false)
   }
@@ -130,6 +135,18 @@ class Dropdown extends React.Component {
     }
 
     return (item[labelField] !== null && item[labelField] !== undefined && item[labelField].toString()) || item.toString()
+  }
+
+  updateListPosition() {
+    if (!this.state.showDropdownList || !this.listRef || !this.buttonRef) {
+      return
+    }
+
+    let buttonHeight = this.buttonRef.offsetHeight
+    let tipHeight = 8
+    let buttonOffset = offset(this.buttonRef)
+    this.listRef.style.top = `${buttonOffset.top + buttonHeight + tipHeight}px`
+    this.listRef.style.left = `${buttonOffset.left}px`
   }
 
   handlePageClick() {
@@ -172,8 +189,8 @@ class Dropdown extends React.Component {
     }
 
     let selectedLabel = this.getLabel(this.props.selectedItem)
-    let list = (
-      <List {...this.props}>
+    let list = ReactDOM.createPortal((
+      <List {...this.props} innerRef={ref => { this.listRef = ref }}>
         <Tip primary={this.state.firstItemHover} />
         <ListItems>
           {this.props.items.map((item, i) => {
@@ -195,7 +212,7 @@ class Dropdown extends React.Component {
           })}
         </ListItems>
       </List>
-    )
+    ), document.body)
 
     return list
   }
@@ -217,6 +234,7 @@ class Dropdown extends React.Component {
       >
         <DropdownButton
           {...this.props}
+          innerRef={ref => { this.buttonRef = ref }}
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
           value={buttonValue()}
