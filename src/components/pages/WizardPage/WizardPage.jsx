@@ -124,8 +124,7 @@ class WizardPage extends React.Component {
   createMultiple() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     NotificationActions.notify(`Creating ${typeLabel}s ...`)
-    WizardActions.createMultiple(this.state.type, this.props.wizardStore.data)
-    Wait.for(() => !WizardStore.getState().creatingItems, () => {
+    WizardActions.createMultiple(this.state.type, this.props.wizardStore.data).promise.then(() => {
       let items = WizardStore.getState().createdItems
       if (!items) {
         Notification.notify(`${typeLabel}s couldn't be created`, 'error')
@@ -139,8 +138,7 @@ class WizardPage extends React.Component {
   createSingle() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     NotificationActions.notify(`Creating ${typeLabel} ...`)
-    WizardActions.create(this.state.type, this.props.wizardStore.data)
-    Wait.for(() => !WizardStore.getState().creatingItem, () => {
+    WizardActions.create(this.state.type, this.props.wizardStore.data).promise.then(() => {
       let item = WizardStore.getState().createdItem
       if (!item) {
         Notification.notify(`${typeLabel} couldn't be created`, 'error')

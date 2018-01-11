@@ -17,7 +17,6 @@ import alt from '../alt'
 import UserSource from '../sources/UserSource'
 import ProjectActions from './ProjectActions'
 import ProjectStore from '../stores/ProjectStore'
-import Wait from '../utils/Wait'
 import NotificationActions from './NotificationActions'
 
 class UserActions {
@@ -41,8 +40,7 @@ class UserActions {
       UserSource.loginScoped(projectId || projectStore.projects[0].id)
         .then(this.loginScopedSuccess, this.loginScopedFailed)
     } else {
-      ProjectActions.getProjects()
-      Wait.for(() => ProjectStore.getState().projects.length, () => {
+      ProjectActions.getProjects().promise.then(() => {
         UserSource.loginScoped(projectId || ProjectStore.getState().projects[0].id)
           .then(this.loginScopedSuccess, this.loginScopedFailed)
       })

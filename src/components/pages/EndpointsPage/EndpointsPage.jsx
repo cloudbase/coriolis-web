@@ -125,7 +125,7 @@ class EndpointsPage extends React.Component {
   handleProjectChange(project) {
     Wait.for(() => this.props.userStore.user.project.id === project.id, () => {
       ProjectActions.getProjects()
-      EndpointActions.getEndpoints()
+      EndpointActions.getEndpoints({ showLoading: true })
       MigrationActions.getMigrations()
       ReplicaActions.getReplicas()
     })

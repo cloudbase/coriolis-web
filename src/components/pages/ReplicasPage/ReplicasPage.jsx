@@ -166,8 +166,7 @@ class ReplicasPage extends React.Component {
   }
 
   pollData() {
-    ReplicaActions.getReplicas()
-    Wait.for(() => !this.props.replicaStore.backgroundLoading, () => {
+    ReplicaActions.getReplicas().promise.then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }

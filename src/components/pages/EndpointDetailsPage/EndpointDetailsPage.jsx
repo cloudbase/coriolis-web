@@ -36,7 +36,6 @@ import MigrationActions from '../../../actions/MigrationActions'
 import ReplicaActions from '../../../actions/ReplicaActions'
 import UserStore from '../../../stores/UserStore'
 import UserActions from '../../../actions/UserActions'
-import Wait from '../../../utils/Wait'
 
 import endpointImage from './images/endpoint.svg'
 
@@ -119,9 +118,7 @@ class EndpointDetailsPage extends React.Component {
   handleDeleteEndpointClick() {
     this.setState({ showEndpointInUseLoadingModal: true })
 
-    ReplicaActions.getReplicas()
-    MigrationActions.getMigrations()
-    Wait.for(() => !ReplicaStore.getState().loading && !MigrationStore.getState().loading, () => {
+    Promise.all([ReplicaActions.getReplicas().promise, MigrationActions.getMigrations().promise]).then(() => {
       let endpointUsage = this.getEndpointUsage()
 
       if (endpointUsage.migrationsCount === 0 && endpointUsage.replicasCount === 0) {
@@ -173,9 +170,7 @@ class EndpointDetailsPage extends React.Component {
   }
 
   loadData() {
-    EndpointActions.getEndpoints()
-
-    Wait.for(() => this.getEndpoint().id, () => {
+    EndpointActions.getEndpoints().promise.then(() => {
       let endpoint = this.getEndpoint()
 
       if (endpoint.connection_info && endpoint.connection_info.secret_ref) {

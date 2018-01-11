@@ -18,11 +18,13 @@ import MigrationSource from '../sources/MigrationSource'
 
 class MigrationActions {
   getMigrations(options) {
-    MigrationSource.getMigrations().then(
-      response => { this.getMigrationsSuccess(response) },
-      response => { this.getMigrationsFailed(response) },
-    )
-    return options || true
+    return {
+      ...options,
+      promise: MigrationSource.getMigrations().then(
+        response => { this.getMigrationsSuccess(response) },
+        response => { this.getMigrationsFailed(response) },
+      ),
+    }
   }
 
   getMigrationsSuccess(migrations) {
@@ -51,12 +53,13 @@ class MigrationActions {
   }
 
   cancel(migrationId) {
-    MigrationSource.cancel(migrationId).then(
-      () => { this.cancelSuccess(migrationId) },
-      response => { this.cancelFailed(response) },
-    )
-
-    return { migrationId }
+    return {
+      migrationId,
+      promise: MigrationSource.cancel(migrationId).then(
+        () => { this.cancelSuccess(migrationId) },
+        response => { this.cancelFailed(response) },
+      ),
+    }
   }
 
   cancelSuccess(migrationId) {

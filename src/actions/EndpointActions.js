@@ -18,12 +18,13 @@ import EndpointSource from '../sources/EndpointSource'
 
 class EndpointActions {
   getEndpoints(options) {
-    EndpointSource.getEndpoints().then(
-      endpoints => { this.getEndpointsCompleted(endpoints) },
-      response => { this.getEndpointsFailed(response) }
-    )
-
-    return options || true
+    return {
+      ...options,
+      promise: EndpointSource.getEndpoints().then(
+        endpoints => { this.getEndpointsCompleted(endpoints) },
+        response => { this.getEndpointsFailed(response) }
+      ),
+    }
   }
 
   getEndpointsCompleted(endpoints) {
@@ -87,12 +88,13 @@ class EndpointActions {
   }
 
   update(endpoint) {
-    EndpointSource.update(endpoint).then(
-      endpointResponse => { this.updateSuccess(endpointResponse) },
-      response => { this.updateFailed(response) },
-    )
-
-    return endpoint
+    return {
+      endpoint,
+      promise: EndpointSource.update(endpoint).then(
+        endpointResponse => { this.updateSuccess(endpointResponse) },
+        response => { this.updateFailed(response) },
+      ),
+    }
   }
 
   updateSuccess(endpoint) {
@@ -108,12 +110,13 @@ class EndpointActions {
   }
 
   add(endpoint) {
-    EndpointSource.add(endpoint).then(
-      endpointResponse => { this.addSuccess(endpointResponse) },
-      response => { this.addFailed(response) },
-    )
-
-    return endpoint
+    return {
+      endpoint,
+      promise: EndpointSource.add(endpoint).then(
+        endpointResponse => { this.addSuccess(endpointResponse) },
+        response => { this.addFailed(response) },
+      ),
+    }
   }
 
   addSuccess(endpoint) {
