@@ -170,7 +170,7 @@ class WizardNetworks extends React.Component {
             }
             return false
           }).map(i => i.instance_name)
-          let selectedNetworkName = this.props.selectedNetworks && this.props.selectedNetworks.find(n => n.sourceNic.id === nic.id)
+          let selectedNetworkName = this.props.selectedNetworks && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
           if (selectedNetworkName) {
             selectedNetworkName = selectedNetworkName.targetNetwork.name
           }
