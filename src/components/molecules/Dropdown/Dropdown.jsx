@@ -44,7 +44,7 @@ const List = styled.div`
   width: ${props => getWidth(props)}px;
   border: 1px solid ${Palette.grayscale[3]};
   border-radius: ${StyleProps.borderRadius};
-  z-index: 10;
+  z-index: 1000;
 `
 const ListItems = styled.div`
   max-height: 400px;
