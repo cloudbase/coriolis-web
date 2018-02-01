@@ -145,7 +145,17 @@ class Dropdown extends React.Component {
     let buttonHeight = this.buttonRef.offsetHeight
     let tipHeight = 8
     let buttonOffset = offset(this.buttonRef)
-    this.listRef.style.top = `${buttonOffset.top + buttonHeight + tipHeight}px`
+    let listTop = buttonOffset.top + buttonHeight + tipHeight
+    let listHeight = this.listRef.offsetHeight
+
+    if (listTop + listHeight > window.innerHeight) {
+      listTop = window.innerHeight - listHeight - 10
+      this.tipRef.style.display = 'none'
+    } else {
+      this.tipRef.style.display = 'block'
+    }
+
+    this.listRef.style.top = `${listTop}px`
     this.listRef.style.left = `${buttonOffset.left}px`
   }
 
@@ -191,7 +201,7 @@ class Dropdown extends React.Component {
     let selectedLabel = this.getLabel(this.props.selectedItem)
     let list = ReactDOM.createPortal((
       <List {...this.props} innerRef={ref => { this.listRef = ref }}>
-        <Tip primary={this.state.firstItemHover} />
+        <Tip innerRef={ref => { this.tipRef = ref }} primary={this.state.firstItemHover} />
         <ListItems>
           {this.props.items.map((item, i) => {
             let label = this.getLabel(item)
