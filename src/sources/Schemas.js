@@ -50,7 +50,7 @@ let connectionParsersToFields = {
     return connectionParseToFields(schema.oneOf[0])
   },
   azure: schema => {
-    let commonFields = connectionParseToFields(schema).filter(f => f.type !== 'object' && f.name !== 'secret_ref')
+    let commonFields = connectionParseToFields(schema).filter(f => f.type !== 'object' && f.name !== 'secret_ref' && Object.keys(f).findIndex(k => k === 'enum') === -1)
 
     let getOption = (option) => {
       return {
@@ -70,7 +70,17 @@ let connectionParsersToFields = {
       items: [getOption('user_credentials'), getOption('service_principal_credentials')],
     }
 
-    return [radioGroup]
+    let cloudProfileDropdown = {
+      name: 'cloud_profile',
+      type: 'string',
+      ...schema.properties.cloud_profile,
+      custom_cloud_fields: [
+        ...parseToFields(schema.properties.custom_cloud_properties.properties.endpoints),
+        ...parseToFields(schema.properties.custom_cloud_properties.properties.suffixes),
+      ],
+    }
+
+    return [radioGroup, cloudProfileDropdown]
   },
 }
 
@@ -93,6 +103,18 @@ let parsersToPayload = {
   azure: (data, schema) => {
     let payload = parseToPayload(data, schema)
     payload[data.login_type] = parseToPayload(data, schema.properties[data.login_type])
+
+    if (data.cloud_profile === 'CustomCloud') {
+      payload.custom_cloud_properties = {
+        endpoints: {
+          ...parseToPayload(data, schema.properties.custom_cloud_properties.properties.endpoints),
+        },
+        suffixes: {
+          ...parseToPayload(data, schema.properties.custom_cloud_properties.properties.suffixes),
+        },
+      }
+    }
+
     return payload
   },
 }

@@ -16,7 +16,13 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { Switch, TextInput, Dropdown, RadioInput, InfoIcon } from 'components'
+import {
+  Switch,
+  TextInput,
+  Dropdown,
+  RadioInput,
+  InfoIcon,
+} from 'components'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -48,13 +54,14 @@ class Field extends React.Component {
     large: PropTypes.bool,
     highlight: PropTypes.bool,
     disabled: PropTypes.bool,
+    enum: PropTypes.array,
   }
 
   renderSwitch() {
     return (
       <Switch
         disabled={this.props.disabled}
-        checked={this.props.value}
+        checked={this.props.value || false}
         onChange={checked => { this.props.onChange(checked) }}
       />
     )
@@ -70,6 +77,26 @@ class Field extends React.Component {
         value={this.props.value}
         onChange={e => { this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
+        disabled={this.props.disabled}
+      />
+    )
+  }
+
+  renderEnumDropdown() {
+    let items = this.props.enum.map(e => {
+      return {
+        label: LabelDictionary.get(e),
+        value: e,
+      }
+    })
+    let selectedItem = items.find(i => i.value === this.props.value)
+
+    return (
+      <Dropdown
+        large={this.props.large}
+        selectedItem={selectedItem}
+        items={items}
+        onChange={item => this.props.onChange(item.value)}
         disabled={this.props.disabled}
       />
     )
@@ -112,6 +139,9 @@ class Field extends React.Component {
       case 'boolean':
         return this.renderSwitch()
       case 'string':
+        if (this.props.enum) {
+          return this.renderEnumDropdown()
+        }
         return this.renderTextInput()
       case 'integer':
         if (this.props.minimum || this.props.maximum) {
