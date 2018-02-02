@@ -17,7 +17,18 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import connectToStores from 'alt-utils/lib/connectToStores'
 
-import { EndpointLogos, EndpointField, Button, StatusIcon, LoadingButton, CopyButton, Tooltip, StatusImage } from 'components'
+import {
+  EndpointLogos,
+  EndpointField,
+  Button,
+  StatusIcon,
+  LoadingButton,
+  CopyButton,
+  Tooltip,
+  StatusImage,
+  RadioInput,
+  TextArea,
+} from 'components'
 import NotificationActions from '../../../actions/NotificationActions'
 import EndpointStore from '../../../stores/EndpointStore'
 import EndpointActions from '../../../actions/EndpointActions'
@@ -26,6 +37,7 @@ import ProviderActions from '../../../actions/ProviderActions'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
+import StyleProps from '../../styleUtils/StyleProps'
 
 const Wrapper = styled.div`
   padding: 48px 32px 32px 32px;
@@ -86,7 +98,9 @@ const StatusError = styled.div`
     margin-left: 4px;
   }
 `
-const Content = styled.div``
+const Content = styled.div`
+  width: 100%;
+`
 const LoadingWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -97,6 +111,31 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
+const ConfigLabel = styled.div`
+  font-size: 11px;
+  margin-top: -10px;
+  color: ${Palette.grayscale[3]};
+`
+const AdditionalConfigTitle = styled.div`
+  text-align: center;
+`
+const AzureConfigInputType = styled.div`
+  margin-top: 32px;
+  > div {
+    margin-bottom: 16px;
+  }
+`
+const PasteField = styled.div`
+  margin-top: 32px;
+`
+const PasteFieldLabel = styled.div`
+  font-size: 10px;
+  font-weight: ${StyleProps.fontWeights.medium};
+  color: ${Palette.grayscale[3]};
+  text-transform: uppercase;
+  margin-bottom: 4px;
+`
+const PasteFieldInput = styled.div``
 
 class Endpoint extends React.Component {
   static propTypes = {
@@ -138,6 +177,9 @@ class Endpoint extends React.Component {
       showErrorMessage: false,
       endpoint: {},
       isNew: null,
+      showAdditionalConfig: false, // if azure
+      additionConfigManualInput: false, // if azure
+      masJsonConfig: '', // if azure
     }
   }
 
@@ -175,6 +217,14 @@ class Endpoint extends React.Component {
     }
 
     this.props.onResizeUpdate()
+  }
+
+  // if azure?
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.showAdditionalConfig !== this.state.showAdditionalConfig ||
+      prevState.additionConfigManualInput !== this.state.additionConfigManualInput) {
+      this.props.onResizeUpdate()
+    }
   }
 
   componentWillUnmount() {
@@ -233,7 +283,8 @@ class Endpoint extends React.Component {
     return this.state.validating
   }
 
-  findInvalidFields(invalidFields, schemaRoot) {
+  // if azure - isFinal
+  findInvalidFields(invalidFields, schemaRoot, isFinal) {
     schemaRoot.forEach(field => {
       if (field.type === 'radio-group') {
         let selectedItem = field.items.find(i => i.name === this.state.endpoint[field.name])
@@ -243,13 +294,15 @@ class Endpoint extends React.Component {
         if (!value) {
           invalidFields.push(field.name)
         }
+      } else if (isFinal && field.name === 'cloud_profile' && this.state.endpoint.cloud_profile === 'CustomCloud') {
+        this.findInvalidFields(invalidFields, field.custom_cloud_fields)
       }
     })
   }
 
-  highlightRequired() {
+  highlightRequired(isFinal) {
     let invalidFields = []
-    this.findInvalidFields(invalidFields, this.props.providerStore.connectionInfoSchema)
+    this.findInvalidFields(invalidFields, this.props.providerStore.connectionInfoSchema, isFinal)
     this.setState({ invalidFields })
     return invalidFields.length > 0
   }
@@ -283,7 +336,7 @@ class Endpoint extends React.Component {
   }
 
   handleValidateClick() {
-    if (!this.highlightRequired()) {
+    if (!this.highlightRequired(true)) {
       this.setState({ validating: true })
 
       NotificationActions.notify('Saving endpoint ...')
@@ -318,6 +371,65 @@ class Endpoint extends React.Component {
     this.props.onCancelClick()
   }
 
+  // if azure
+  handleNextClick() {
+    if (!this.highlightRequired()) {
+      this.setState({ showAdditionalConfig: true })
+    } else {
+      NotificationActions.notify('Please fill all the required fields', 'error')
+    }
+  }
+
+  // if azure
+  handleMasJsonConfigChange(value) {
+    this.setState({ masJsonConfig: value })
+
+    // JSON parse
+    let json
+    try {
+      json = JSON.parse(value)
+    } catch (e) {
+      return
+    }
+
+    if (!json.endpoints || !json.suffixes) {
+      return
+    }
+
+    const fieldNameMapper = {
+      activeDirectory: 'active_directory_url',
+      activeDirectoryDataLakeResourceId: 'active_directory_data_lake_resource_id',
+      activeDirectoryGraphResourceId: 'active_directory_graph_resource_id',
+      activeDirectoryResourceId: 'active_directory_resource_id',
+      batchResourceId: 'batch_resource_endpoint',
+      gallery: 'gallery_endpoint',
+      management: 'management_endpoint',
+      resourceManager: 'resource_manager_endpoint',
+      sqlManagement: 'sql_management_endpoint',
+      vmImageAliasDoc: 'vm_image_alias_doc',
+      azureDatalakeAnalyticsCatalogAndJobEndpoint: 'azure_datalake_analytics_catalog_and_job_endpoint',
+      azureDatalakeStoreFileSystemEndpoint: 'azure_datalake_store_file_system_endpoint',
+      keyvaultDns: 'keyvault_dns',
+      sqlServerHostname: 'sql_server_hostname',
+      storageEndpoint: 'storage_endpoint',
+    }
+
+    let endpoint = this.state.endpoint
+    const setValue = (object, key) => {
+      if (object[key]) {
+        endpoint[fieldNameMapper[key]] = object[key]
+      }
+    }
+    Object.keys(json.endpoints).forEach(k => {
+      setValue(json.endpoints, k)
+    })
+    Object.keys(json.suffixes).forEach(k => {
+      setValue(json.suffixes, k)
+    })
+
+    this.setState({ endpoint })
+  }
+
   renderFields(fields, parentGroup) {
     let renderedFields = []
 
@@ -344,9 +456,7 @@ class Endpoint extends React.Component {
             || (this.props.endpointStore.validation && this.props.endpointStore.validation.valid)}
           key={field.name}
           password={field.name === 'password'}
-          type={field.type}
           highlight={this.state.invalidFields.findIndex(fn => fn === field.name) > -1}
-          name={field.name}
           value={this.getFieldValue(field, parentGroup)}
           onChange={value => { this.handleFieldChange(field, value, parentGroup) }}
         />
@@ -396,7 +506,21 @@ class Endpoint extends React.Component {
     )
   }
 
+  // if azure
+  renderNextButton() {
+    if (!this.state.endpoint.cloud_profile || this.state.endpoint.cloud_profile !== 'CustomCloud' || this.state.showAdditionalConfig) {
+      return null
+    }
+
+    return <Button large onClick={() => this.handleNextClick()}>Next</Button>
+  }
+
   renderActionButton() {
+    let nextButton = this.renderNextButton()
+    if (nextButton) {
+      return nextButton
+    }
+
     let button = <Button large onClick={() => this.handleValidateClick()}>Validate and save</Button>
 
     let message = 'Validating Endpoint ...'
@@ -413,8 +537,27 @@ class Endpoint extends React.Component {
     return button
   }
 
+  renderCancelButton() {
+    // if azure
+    if (this.state.showAdditionalConfig) {
+      return <Button large secondary onClick={() => { this.setState({ showAdditionalConfig: false }) }}>Back</Button>
+    }
+
+    return <Button large secondary onClick={() => { this.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
+  }
+
+  // if azure
+  renderAdditionalConfigLabel() {
+    if (!this.state.endpoint.cloud_profile || this.state.endpoint.cloud_profile !== 'CustomCloud') {
+      return null
+    }
+
+    return <ConfigLabel>* Additional configuration required</ConfigLabel>
+  }
+
   renderContent() {
-    if (this.props.providerStore.connectionSchemaLoading) {
+    // if azure
+    if (this.props.providerStore.connectionSchemaLoading || this.state.showAdditionalConfig) {
       return null
     }
 
@@ -423,13 +566,77 @@ class Endpoint extends React.Component {
         {this.renderEndpointStatus()}
         <Fields>
           {this.renderFields(this.props.providerStore.connectionInfoSchema)}
-          <Tooltip />
-          {Tooltip.rebuild()}
         </Fields>
+        {this.renderAdditionalConfigLabel()}
         <Buttons>
-          <Button large secondary onClick={() => { this.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
+          {this.renderCancelButton()}
           {this.renderActionButton()}
         </Buttons>
+        <Tooltip />
+        {Tooltip.rebuild()}
+      </Content>
+    )
+  }
+
+  // if azure
+  renderAdditionalConfigContent() {
+    if (!this.state.showAdditionalConfig) {
+      return null
+    }
+
+    let fieldsContent = null
+
+    if (this.state.additionConfigManualInput) {
+      fieldsContent = (
+        <Fields>
+          {this.renderFields(this.props.providerStore.connectionInfoSchema.find(f => f.name === 'cloud_profile').custom_cloud_fields)}
+        </Fields>
+      )
+    } else {
+      fieldsContent = (
+        <PasteField>
+          <PasteFieldLabel>Azure Stack Profile Configuration</PasteFieldLabel>
+          <PasteFieldInput>
+            <TextArea
+              width="100%"
+              height="164px"
+              placeholder="Paste JSON output here"
+              value={this.state.masJsonConfig}
+              onChange={e => { this.handleMasJsonConfigChange(e.target.value) }}
+            />
+          </PasteFieldInput>
+        </PasteField>
+      )
+    }
+
+    let title = <AdditionalConfigTitle>Azure Stack Additional Configuration</AdditionalConfigTitle>
+    if (this.isValidating() || this.props.endpointStore.validation) {
+      title = null
+    }
+
+    return (
+      <Content>
+        {title}
+        {this.renderEndpointStatus()}
+        <AzureConfigInputType>
+          <RadioInput
+            checked={!this.state.additionConfigManualInput}
+            label="Paste Configuration"
+            onChange={e => { this.setState({ additionConfigManualInput: !e.target.checked }) }}
+          />
+          <RadioInput
+            checked={this.state.additionConfigManualInput}
+            label="Manual Input"
+            onChange={e => { this.setState({ additionConfigManualInput: e.target.checked }) }}
+          />
+        </AzureConfigInputType>
+        {fieldsContent}
+        <Buttons>
+          {this.renderCancelButton()}
+          {this.renderActionButton()}
+        </Buttons>
+        <Tooltip />
+        {Tooltip.rebuild()}
       </Content>
     )
   }
@@ -459,6 +666,7 @@ class Endpoint extends React.Component {
       <Wrapper>
         <EndpointLogos style={{ marginBottom: '16px' }} height={128} endpoint={this.getEndpointType()} />
         {this.renderContent()}
+        {this.renderAdditionalConfigContent()}
         {this.renderLoading()}
       </Wrapper>
     )
