@@ -17,7 +17,7 @@ import {
   defaultSchemaToFields,
   generateField,
   fieldsToPayload,
-} from '../default/ConnectionSchemaParser'
+} from '../default/SchemaPlugin'
 
 const azureConnectionParse = schema => {
   let commonFields = connectionSchemaToFields(schema).filter(f => f.type !== 'object' && f.name !== 'secret_ref' && Object.keys(f).findIndex(k => k === 'enum') === -1)
@@ -73,7 +73,8 @@ export default class ConnectionSchemaParser {
     payload.description = data.description
 
     let connectionInfo = fieldsToPayload(data, schema)
-    connectionInfo[data.login_type] = fieldsToPayload(data, schema.properties[data.login_type])
+    let loginType = data.login_type || 'user_credentials'
+    connectionInfo[loginType] = fieldsToPayload(data, schema.properties[loginType])
 
     if (data.cloud_profile === 'CustomCloud') {
       connectionInfo.custom_cloud_properties = {

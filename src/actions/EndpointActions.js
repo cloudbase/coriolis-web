@@ -124,7 +124,7 @@ class EndpointActions {
   }
 
   addFailed(response) {
-    return response || true
+    throw response
   }
 }
 

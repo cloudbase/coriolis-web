@@ -33,6 +33,10 @@ class ProviderActions {
     return response || true
   }
 
+  clearConnectionInfoSchema() {
+    return true
+  }
+
   loadProviders() {
     ProviderSource.loadProviders().then(
       providers => { this.loadProvidersSuccess(providers) },

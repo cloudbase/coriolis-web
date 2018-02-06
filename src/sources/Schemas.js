@@ -12,8 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ConnectionSchemaParsers } from '../plugins/endpoint'
-import { defaultSchemaToFields } from '../plugins/endpoint/default/ConnectionSchemaParser'
+import { SchemaPlugin } from '../plugins/endpoint'
+import { defaultSchemaToFields } from '../plugins/endpoint/default/SchemaPlugin'
 
 class SchemaParser {
   static storedConnectionsSchemas = {}
@@ -23,7 +23,7 @@ class SchemaParser {
       this.storedConnectionsSchemas[provider] = schema
     }
 
-    let parsers = ConnectionSchemaParsers[provider] || ConnectionSchemaParsers.default
+    let parsers = SchemaPlugin[provider] || SchemaPlugin.default
     let fields = parsers.parseSchemaToFields(schema)
 
     return fields
@@ -47,7 +47,7 @@ class SchemaParser {
 
   static fieldsToPayload(data) {
     let storedSchema = this.storedConnectionsSchemas[data.type] || this.storedConnectionsSchemas.general
-    let parsers = ConnectionSchemaParsers[data.type] || ConnectionSchemaParsers.default
+    let parsers = SchemaPlugin[data.type] || SchemaPlugin.default
     let payload = parsers.parseFieldsToPayload(data, storedSchema)
 
     return payload

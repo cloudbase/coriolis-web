@@ -12,15 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import DefaultSchemaParser from './default/ConnectionSchemaParser'
-import AzureSchemaParser from './azure/ConnectionSchemaParser'
-import DefaultContentRenderer from './default/ContentRenderer'
+import DefaultSchemaPlugin from './default/SchemaPlugin'
+import AzureSchemaPlugin from './azure/SchemaPlugin'
+import DefaultContentPlugin from './default/ContentPlugin'
+import AzureContentPlugin from './azure/ContentPlugin'
 
-export const ConnectionSchemaParsers = {
-  default: DefaultSchemaParser,
-  azure: AzureSchemaParser,
+export const SchemaPlugin = {
+  default: DefaultSchemaPlugin,
+  azure: AzureSchemaPlugin,
 }
 
-export const ContentRenderer = {
-  default: DefaultContentRenderer,
+export const ContentPlugin = {
+  default: DefaultContentPlugin,
+  azure: AzureContentPlugin,
 }
