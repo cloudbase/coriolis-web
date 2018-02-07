@@ -145,6 +145,8 @@ class NewModal extends React.Component {
         right: 'auto',
         transition: 'all 0.2s',
         opacity: 0,
+        display: 'flex',
+        flexDirection: 'column',
       },
     }
 

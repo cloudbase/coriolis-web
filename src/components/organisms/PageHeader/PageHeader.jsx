@@ -63,6 +63,8 @@ class PageHeader extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     onProjectChange: PropTypes.func,
+    onModalOpen: PropTypes.func,
+    onModalClose: PropTypes.func,
     projectStore: PropTypes.object,
     userStore: PropTypes.object,
     providerStore: PropTypes.object,
@@ -119,6 +121,9 @@ class PageHeader extends React.Component {
     switch (item.value) {
       case 'endpoint':
         ProviderActions.loadProviders()
+        if (this.props.onModalOpen) {
+          this.props.onModalOpen()
+        }
         this.setState({ showChooseProviderModal: true })
         break
       default:
@@ -130,6 +135,9 @@ class PageHeader extends React.Component {
   }
 
   handleCloseChooseProviderModal() {
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
     this.setState({ showChooseProviderModal: false })
   }
 
@@ -142,6 +150,9 @@ class PageHeader extends React.Component {
   }
 
   handleCloseEndpointModal() {
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
     this.setState({ showEndpointModal: false })
   }
 

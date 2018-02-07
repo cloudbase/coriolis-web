@@ -39,6 +39,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  min-height: 0;
 `
 const Status = styled.div`
   display: flex;
@@ -47,6 +48,7 @@ const Status = styled.div`
 `
 const StatusHeader = styled.div`
   display: flex;
+  align-items: center;
 `
 const StatusMessage = styled.div`
   margin-left: 8px;
@@ -74,6 +76,9 @@ const StatusError = styled.div`
 `
 const Content = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 `
 const LoadingWrapper = styled.div`
   display: flex;

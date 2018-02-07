@@ -27,16 +27,18 @@ import {
   RadioInput,
 } from '../../../components'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+`
 const Fields = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  margin-left: -64px;
   margin-top: 32px;
-  position: relative;
+  flex-direction: column;
+  overflow: auto;
 `
 const FieldStyled = styled(EndpointField) `
-  margin-left: 64px;
   min-width: 224px;
   max-width: 224px;
   margin-bottom: 16px;
@@ -44,22 +46,29 @@ const FieldStyled = styled(EndpointField) `
 const RadioGroup = styled.div`
   width: 100%;
 `
+const CloudProfile = styled.div``
 const ConfigLabel = styled.div`
   font-size: 11px;
-  margin-top: -10px;
   color: ${Palette.grayscale[3]};
-  position: absolute;
-  bottom: -4px;
-  left: 64px;
+  margin-top: -10px;
 `
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin-top: 32px;
+  flex-shrink: 0;
+`
+const Row = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
 `
 const CustomConfigWrapper = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 `
 const CustomConfigTitle = styled.div`
   text-align: center;
@@ -72,6 +81,7 @@ const CustomInputType = styled.div`
 `
 const PasteField = styled.div`
   margin-top: 32px;
+  overflow: auto;
 `
 const PasteFieldLabel = styled.div`
   font-size: 10px;
@@ -89,6 +99,24 @@ const Pages = {
 const CustomTypes = {
   manual: 'manual',
   json: 'json',
+}
+
+const fieldNameMapper = {
+  activeDirectory: 'active_directory_url',
+  activeDirectoryDataLakeResourceId: 'active_directory_data_lake_resource_id',
+  activeDirectoryGraphResourceId: 'active_directory_graph_resource_id',
+  activeDirectoryResourceId: 'active_directory_resource_id',
+  batchResourceId: 'batch_resource_endpoint',
+  gallery: 'gallery_endpoint',
+  management: 'management_endpoint',
+  resourceManager: 'resource_manager_endpoint',
+  sqlManagement: 'sql_management_endpoint',
+  vmImageAliasDoc: 'vm_image_alias_doc',
+  azureDatalakeAnalyticsCatalogAndJobEndpoint: 'azure_datalake_analytics_catalog_and_job_endpoint',
+  azureDatalakeStoreFileSystemEndpoint: 'azure_datalake_store_file_system_endpoint',
+  keyvaultDns: 'keyvault_dns',
+  sqlServerHostname: 'sql_server_hostname',
+  storageEndpoint: 'storage_endpoint',
 }
 
 class ContentPlugin extends React.Component {
@@ -181,24 +209,6 @@ class ContentPlugin extends React.Component {
       return
     }
 
-    const fieldNameMapper = {
-      activeDirectory: 'active_directory_url',
-      activeDirectoryDataLakeResourceId: 'active_directory_data_lake_resource_id',
-      activeDirectoryGraphResourceId: 'active_directory_graph_resource_id',
-      activeDirectoryResourceId: 'active_directory_resource_id',
-      batchResourceId: 'batch_resource_endpoint',
-      gallery: 'gallery_endpoint',
-      management: 'management_endpoint',
-      resourceManager: 'resource_manager_endpoint',
-      sqlManagement: 'sql_management_endpoint',
-      vmImageAliasDoc: 'vm_image_alias_doc',
-      azureDatalakeAnalyticsCatalogAndJobEndpoint: 'azure_datalake_analytics_catalog_and_job_endpoint',
-      azureDatalakeStoreFileSystemEndpoint: 'azure_datalake_store_file_system_endpoint',
-      keyvaultDns: 'keyvault_dns',
-      sqlServerHostname: 'sql_server_hostname',
-      storageEndpoint: 'storage_endpoint',
-    }
-
     let updatedFields = []
     const setValue = (object, key) => {
       if (object[key]) {
@@ -212,6 +222,17 @@ class ContentPlugin extends React.Component {
       setValue(json.suffixes, k)
     })
     this.props.handleFieldsChange(updatedFields)
+  }
+
+  handleJsonPaste() {
+    if (this.pasteTimeout) {
+      clearTimeout(this.pasteTimeout)
+      this.pasteTimeout = null
+    }
+
+    this.pasteTimeout = setTimeout(() => {
+      this.setState({ customType: CustomTypes.manual })
+    }, 1000)
   }
 
   renderField(field, customProps) {
@@ -230,6 +251,25 @@ class ContentPlugin extends React.Component {
     )
   }
 
+  renderFieldGroup(fields) {
+    const rows = []
+    let lastField
+    fields.forEach((field, i) => {
+      const currentField = this.renderField(field)
+      if (i % 2 !== 0) {
+        rows.push((
+          <Row key={field.name}>
+            {lastField}
+            {currentField}
+          </Row>
+        ))
+      }
+      lastField = currentField
+    })
+
+    return rows
+  }
+
   renderCustomPage() {
     if (this.state.currentPage !== Pages.custom) {
       return null
@@ -240,9 +280,7 @@ class ContentPlugin extends React.Component {
     if (this.state.customType === CustomTypes.manual) {
       fields = (
         <Fields>
-          {this.props.connectionInfoSchema.find(f => f.name === 'cloud_profile').custom_cloud_fields.map(field =>
-            this.renderField(field)
-          )}
+          {this.renderFieldGroup(this.props.connectionInfoSchema.find(f => f.name === 'cloud_profile').custom_cloud_fields)}
         </Fields>
       )
     } else {
@@ -256,6 +294,7 @@ class ContentPlugin extends React.Component {
               placeholder="Paste JSON output here"
               value={this.state.jsonConfig}
               onChange={e => { this.handleJsonConfigChange(e.target.value) }}
+              onPaste={() => { this.handleJsonPaste() }}
             />
           </PasteFieldInput>
         </PasteField>
@@ -294,9 +333,7 @@ class ContentPlugin extends React.Component {
 
     const fields = this.props.connectionInfoSchema
 
-    let renderedFields = fields.filter(f => f.name !== 'login_type' && f.name !== 'cloud_profile').map(field =>
-      this.renderField(field)
-    )
+    let renderedFields = this.renderFieldGroup(fields.filter(f => f.name !== 'login_type' && f.name !== 'cloud_profile'))
 
     let loginTypeField = fields.find(f => f.name === 'login_type')
 
@@ -311,16 +348,19 @@ class ContentPlugin extends React.Component {
       </RadioGroup>
     ))
 
-    renderedFields = renderedFields.concat(loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)).fields.map(field =>
-      this.renderField(field)
-    ))
+    renderedFields = renderedFields.concat(this.renderFieldGroup(loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)).fields))
 
-    renderedFields.push(this.renderField(fields.find(f => f.name === 'cloud_profile')))
+    const cloudProfileWrapper = (
+      <CloudProfile key="cloudProfile">
+        {this.renderField(fields.find(f => f.name === 'cloud_profile'))}
+        {this.renderAdditionalConfigLabel()}
+      </CloudProfile>
+    )
+    renderedFields.push(cloudProfileWrapper)
 
     return (
       <Fields>
         {renderedFields}
-        {this.renderAdditionalConfigLabel()}
       </Fields>
     )
   }

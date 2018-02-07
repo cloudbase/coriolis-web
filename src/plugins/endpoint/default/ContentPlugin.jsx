@@ -18,15 +18,18 @@ import PropTypes from 'prop-types'
 
 import { EndpointField, Button, LoadingButton } from '../../../components'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+`
 const Fields = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  margin-left: -64px;
   margin-top: 32px;
+  flex-direction: column;
+  overflow: auto;
 `
 const FieldStyled = styled(EndpointField)`
-  margin-left: 64px;
   min-width: 224px;
   max-width: 224px;
   margin-bottom: 16px;
@@ -36,6 +39,12 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
   margin-top: 32px;
+  flex-shrink: 0;
+`
+const Row = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
 `
 
 class ContentPlugin extends React.Component {
@@ -56,6 +65,7 @@ class ContentPlugin extends React.Component {
   componentDidMount() {
     this.props.onRef(this)
   }
+
   componentWillUnmount() {
     this.props.onRef(undefined)
   }
@@ -73,22 +83,34 @@ class ContentPlugin extends React.Component {
   }
 
   renderFields() {
-    const renderedFields = this.props.connectionInfoSchema.map(field => (
-      <FieldStyled
-        {...field}
-        large
-        disabled={this.props.disabled}
-        key={field.name}
-        password={field.name === 'password'}
-        highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
-        value={this.props.getFieldValue(field)}
-        onChange={value => { this.props.handleFieldChange(field, value) }}
-      />
-    ))
+    const rows = []
+    let lastField
+    this.props.connectionInfoSchema.forEach((field, i) => {
+      const currentField = (
+        <FieldStyled
+          {...field}
+          large
+          disabled={this.props.disabled}
+          password={field.name === 'password'}
+          highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
+          value={this.props.getFieldValue(field)}
+          onChange={value => { this.props.handleFieldChange(field, value) }}
+        />
+      )
+      if (i % 2 !== 0) {
+        rows.push((
+          <Row key={field.name}>
+            {lastField}
+            {currentField}
+          </Row>
+        ))
+      }
+      lastField = currentField
+    })
 
     return (
       <Fields>
-        {renderedFields}
+        {rows}
       </Fields>
     )
   }

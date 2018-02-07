@@ -68,6 +68,7 @@ class ReplicasPage extends React.Component {
     this.state = {
       showDeleteReplicaConfirmation: false,
       confirmationItems: null,
+      modalIsOpen: false,
     }
   }
 
@@ -165,7 +166,20 @@ class ReplicasPage extends React.Component {
     window.location.href = '/#/wizard/replica'
   }
 
+  handleModalOpen() {
+    this.setState({ modalIsOpen: true })
+  }
+
+  handleModalClose() {
+    this.setState({ modalIsOpen: false }, () => {
+      this.pollData()
+    })
+  }
+
   pollData() {
+    if (this.state.modalIsOpen) {
+      return
+    }
     ReplicaActions.getReplicas().promise.then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
@@ -232,6 +246,8 @@ class ReplicasPage extends React.Component {
             <PageHeader
               title="Coriolis Replicas"
               onProjectChange={project => { this.handleProjectChange(project) }}
+              onModalOpen={() => { this.handleModalOpen() }}
+              onModalClose={() => { this.handleModalClose() }}
             />
           }
         />
