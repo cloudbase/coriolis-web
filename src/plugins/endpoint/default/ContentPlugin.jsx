@@ -18,30 +18,30 @@ import PropTypes from 'prop-types'
 
 import { EndpointField, Button, LoadingButton } from '../../../components'
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 0;
 `
-const Fields = styled.div`
+export const Fields = styled.div`
   display: flex;
   margin-top: 32px;
   flex-direction: column;
   overflow: auto;
 `
-const FieldStyled = styled(EndpointField)`
+export const FieldStyled = styled(EndpointField)`
   min-width: 224px;
   max-width: 224px;
   margin-bottom: 16px;
 `
-const Buttons = styled.div`
+export const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin-top: 32px;
   flex-shrink: 0;
 `
-const Row = styled.div`
+export const Row = styled.div`
   display: flex;
   flex-shrink: 0;
   justify-content: space-between;

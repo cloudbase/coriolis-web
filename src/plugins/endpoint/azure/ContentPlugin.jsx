@@ -20,29 +20,13 @@ import NotificationActions from '../../../actions/NotificationActions'
 import Palette from '../../../components/styleUtils/Palette'
 import StyleProps from '../../../components/styleUtils/StyleProps'
 import {
-  EndpointField,
   Button,
   LoadingButton,
   TextArea,
   RadioInput,
 } from '../../../components'
+import { Wrapper, Fields, FieldStyled, Buttons, Row } from '../default/ContentPlugin'
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-`
-const Fields = styled.div`
-  display: flex;
-  margin-top: 32px;
-  flex-direction: column;
-  overflow: auto;
-`
-const FieldStyled = styled(EndpointField) `
-  min-width: 224px;
-  max-width: 224px;
-  margin-bottom: 16px;
-`
 const RadioGroup = styled.div`
   width: 100%;
 `
@@ -51,18 +35,6 @@ const ConfigLabel = styled.div`
   font-size: 11px;
   color: ${Palette.grayscale[3]};
   margin-top: -10px;
-`
-const Buttons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 32px;
-  flex-shrink: 0;
-`
-const Row = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  justify-content: space-between;
 `
 const CustomConfigWrapper = styled.div`
   width: 100%;
