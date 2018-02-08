@@ -19,6 +19,23 @@ import {
   fieldsToPayload,
 } from '../default/SchemaPlugin'
 
+const fieldsToPayloadUseDefaults = (data, schema) => {
+  let info = {}
+
+  Object.keys(schema.properties).forEach(fieldName => {
+    if (typeof data[fieldName] === 'object') {
+      return
+    }
+    if (data[fieldName]) {
+      info[fieldName] = data[fieldName]
+    } else if (schema.properties[fieldName].default) {
+      info[fieldName] = schema.properties[fieldName].default
+    }
+  })
+
+  return info
+}
+
 const azureConnectionParse = schema => {
   let commonFields = connectionSchemaToFields(schema).filter(f => f.type !== 'object' && f.name !== 'secret_ref' && Object.keys(f).findIndex(k => k === 'enum') === -1)
 
@@ -79,10 +96,10 @@ export default class ConnectionSchemaParser {
     if (data.cloud_profile === 'CustomCloud') {
       connectionInfo.custom_cloud_properties = {
         endpoints: {
-          ...fieldsToPayload(data, schema.properties.custom_cloud_properties.properties.endpoints),
+          ...fieldsToPayloadUseDefaults(data, schema.properties.custom_cloud_properties.properties.endpoints),
         },
         suffixes: {
-          ...fieldsToPayload(data, schema.properties.custom_cloud_properties.properties.suffixes),
+          ...fieldsToPayloadUseDefaults(data, schema.properties.custom_cloud_properties.properties.suffixes),
         },
       }
     }
