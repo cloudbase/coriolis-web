@@ -66,6 +66,7 @@ class MigrationsPage extends React.Component {
 
     this.state = {
       showDeleteMigrationConfirmation: false,
+      showCancelMigrationConfirmation: false,
       confirmationItems: null,
     }
   }
@@ -119,18 +120,33 @@ class MigrationsPage extends React.Component {
     }
   }
 
-  handleActionChange(items, action) {
+  handleActionChange(confirmationItems, action) {
     if (action === 'cancel') {
-      items.forEach(migration => {
-        MigrationActions.cancel(migration.id)
+      this.setState({
+        showCancelMigrationConfirmation: true,
+        confirmationItems,
       })
-      NotificationActions.notify('Canceling migrations')
     } else if (action === 'delete') {
       this.setState({
         showDeleteMigrationConfirmation: true,
-        confirmationItems: items,
+        confirmationItems,
       })
     }
+  }
+
+  handleCancelMigrationConfirmation() {
+    this.state.confirmationItems.forEach(migration => {
+      MigrationActions.cancel(migration.id)
+    })
+    NotificationActions.notify('Canceling migrations')
+    this.handleCloseCancelMigration()
+  }
+
+  handleCloseCancelMigration() {
+    this.setState({
+      showCancelMigrationConfirmation: false,
+      confirmationItems: null,
+    })
   }
 
   handleCloseDeleteMigrationConfirmation() {
@@ -178,6 +194,20 @@ class MigrationsPage extends React.Component {
   }
 
   render() {
+    const renderAlert = () => {
+      const isDelete = this.state.showDeleteMigrationConfirmation
+      const props = {
+        isOpen: this.state.showCancelMigrationConfirmation || this.state.showDeleteMigrationConfirmation,
+        title: `${isDelete ? 'Delete' : 'Cancel'} Migrations?`,
+        message: `Are you sure you want to ${isDelete ? 'delete' : 'cancel'} the selected migrations?`,
+        extraMessage: `${isDelete ? 'Deleting' : 'Canceling'} a Coriolis Migration is permanent!`,
+        onConfirmation: () => { isDelete ? this.handleDeleteMigrationConfirmation() : this.handleCancelMigrationConfirmation() },
+        onRequestClose: () => { isDelete ? this.handleCloseDeleteMigrationConfirmation() : this.handleCloseCancelMigration() },
+      }
+
+      return <AlertModal {...props} />
+    }
+
     return (
       <Wrapper>
         <MainTemplate
@@ -215,14 +245,7 @@ class MigrationsPage extends React.Component {
             />
           }
         />
-        <AlertModal
-          isOpen={this.state.showDeleteMigrationConfirmation}
-          title="Delete Migrations?"
-          message="Are you sure you want to delete the selected migrations?"
-          extraMessage="Deleting a Coriolis Migration is permanent!"
-          onConfirmation={() => { this.handleDeleteMigrationConfirmation() }}
-          onRequestClose={() => { this.handleCloseDeleteMigrationConfirmation() }}
-        />
+        {renderAlert()}
       </Wrapper>
     )
   }
