@@ -73,6 +73,7 @@ class ReplicaDetailsPage extends React.Component {
       showMigrationModal: false,
       showDeleteExecutionConfirmation: false,
       showDeleteReplicaConfirmation: false,
+      showDeleteReplicaDisksConfirmation: false,
       confirmationItem: null,
       showCancelConfirmation: false,
     }
@@ -149,6 +150,10 @@ class ReplicaDetailsPage extends React.Component {
     this.setState({ showDeleteReplicaConfirmation: true })
   }
 
+  handleDeleteReplicaDisksClick() {
+    this.setState({ showDeleteReplicaDisksConfirmation: true })
+  }
+
   handleDeleteReplicaConfirmation() {
     this.setState({ showDeleteReplicaConfirmation: false })
     window.location.href = '/#/replicas'
@@ -157,6 +162,16 @@ class ReplicaDetailsPage extends React.Component {
 
   handleCloseDeleteReplicaConfirmation() {
     this.setState({ showDeleteReplicaConfirmation: false })
+  }
+
+  handleDeleteReplicaDisksConfirmation() {
+    this.setState({ showDeleteReplicaDisksConfirmation: false })
+    ReplicaActions.deleteDisks(this.props.replicaStore.replicaDetails.id)
+    window.location.href = `/#/replica/executions/${this.props.replicaStore.replicaDetails.id}`
+  }
+
+  handleCloseDeleteReplicaDisksConfirmation() {
+    this.setState({ showDeleteReplicaDisksConfirmation: false })
   }
 
   handleCloseMigrationModal() {
@@ -239,6 +254,7 @@ class ReplicaDetailsPage extends React.Component {
             onExecuteClick={() => { this.handleActionButtonClick() }}
             onCreateMigrationClick={() => { this.handleCreateMigrationClick() }}
             onDeleteReplicaClick={() => { this.handleDeleteReplicaClick() }}
+            onDeleteReplicaDisksClick={() => { this.handleDeleteReplicaDisksClick() }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
             onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
@@ -279,6 +295,14 @@ class ReplicaDetailsPage extends React.Component {
           extraMessage="Deleting a Coriolis Replica is permanent!"
           onConfirmation={() => { this.handleDeleteReplicaConfirmation() }}
           onRequestClose={() => { this.handleCloseDeleteReplicaConfirmation() }}
+        />
+        <AlertModal
+          isOpen={this.state.showDeleteReplicaDisksConfirmation}
+          title="Delete Replica Disks?"
+          message="Are you sure you want to delete this replica's disks?"
+          extraMessage="Deleting Coriolis Replica Disks is permanent!"
+          onConfirmation={() => { this.handleDeleteReplicaDisksConfirmation() }}
+          onRequestClose={() => { this.handleCloseDeleteReplicaDisksConfirmation() }}
         />
         <AlertModal
           isOpen={this.state.showCancelConfirmation}

@@ -16,6 +16,23 @@ import alt from '../alt'
 import ReplicaActions from '../actions/ReplicaActions'
 import NotificationActions from '../actions/NotificationActions'
 
+class ReplicaStoreUtils {
+  static addExecutionToReplica({ replicaStore, replicaId, execution }) {
+    let executions = [execution]
+
+    if (replicaStore.replicaDetails.id === replicaId) {
+      if (replicaStore.replicaDetails.executions) {
+        executions = [...replicaStore.replicaDetails.executions, execution]
+      }
+
+      replicaStore.replicaDetails = {
+        ...replicaStore.replicaDetails,
+        executions,
+      }
+    }
+  }
+}
+
 class ReplicaStore {
   constructor() {
     this.replicas = []
@@ -39,6 +56,7 @@ class ReplicaStore {
       handleExecuteSuccess: ReplicaActions.EXECUTE_SUCCESS,
       handleDeleteExecutionSuccess: ReplicaActions.DELETE_EXECUTION_SUCCESS,
       handleDeleteSuccess: ReplicaActions.DELETE_SUCCESS,
+      handleDeleteDisksSuccess: ReplicaActions.DELETE_DISKS_SUCCESS,
       handleCancelExecutionSuccess: ReplicaActions.CANCEL_EXECUTION_SUCCESS,
       handleClearDetails: ReplicaActions.CLEAR_DETAILS,
     })
@@ -111,18 +129,11 @@ class ReplicaStore {
   }
 
   handleExecuteSuccess({ replicaId, execution }) {
-    let executions = [execution]
+    ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
+  }
 
-    if (this.replicaDetails.id === replicaId) {
-      if (this.replicaDetails.executions) {
-        executions = [...this.replicaDetails.executions, execution]
-      }
-
-      this.replicaDetails = {
-        ...this.replicaDetails,
-        executions,
-      }
-    }
+  handleDeleteDisksSuccess({ replicaId, execution }) {
+    ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
   }
 
   handleDeleteExecutionSuccess({ replicaId, executionId }) {

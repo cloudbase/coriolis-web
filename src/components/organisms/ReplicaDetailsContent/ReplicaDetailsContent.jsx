@@ -24,8 +24,18 @@ const Wrapper = styled.div`
 `
 
 const Buttons = styled.div`
-  & > button:last-child {
-    float: right;
+  display: flex;
+  justify-content: space-between;
+`
+const LeftButtons = styled.div``
+const RightButtons = styled.div`
+  display: flex;
+  button {
+    margin-right: 16px;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 `
 const DetailsBody = styled.div`
@@ -58,6 +68,7 @@ class ReplicaDetailsContent extends React.Component {
     onExecuteClick: PropTypes.func,
     onCreateMigrationClick: PropTypes.func,
     onDeleteReplicaClick: PropTypes.func,
+    onDeleteReplicaDisksClick: PropTypes.func,
     onAddScheduleClick: PropTypes.func,
     onScheduleChange: PropTypes.func,
     onScheduleRemove: PropTypes.func,
@@ -95,16 +106,27 @@ class ReplicaDetailsContent extends React.Component {
   renderBottomControls() {
     return (
       <Buttons>
-        <Button
-          primary
-          disabled={this.getStatus() !== 'COMPLETED' || this.isEndpointMissing()}
-          onClick={this.props.onCreateMigrationClick}
-        >Create Migration</Button>
-        <Button
-          alert
-          hollow
-          onClick={this.props.onDeleteReplicaClick}
-        >Delete Replica</Button>
+        <LeftButtons>
+          <Button
+            primary
+            disabled={this.getStatus() !== 'COMPLETED' || this.isEndpointMissing()}
+            onClick={this.props.onCreateMigrationClick}
+          >Create Migration</Button>
+        </LeftButtons>
+        <RightButtons>
+          <Button
+            alert
+            hollow
+            secondary
+            onClick={this.props.onDeleteReplicaDisksClick}
+            disabled={!this.props.item.executions || this.props.item.executions.length === 0}
+          >Delete Replica Disks</Button>
+          <Button
+            alert
+            hollow
+            onClick={this.props.onDeleteReplicaClick}
+          >Delete Replica</Button>
+        </RightButtons>
       </Buttons>
     )
   }

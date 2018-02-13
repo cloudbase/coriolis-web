@@ -60,7 +60,7 @@ it('renders schedule page', () => {
 
 it('has `Create migration` button disabled if the last status is not completed', () => {
   let wrapper = wrap({ endpoints, item, page: '' })
-  expect((wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.disabled)).toBe(true)
+  expect(wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.children.props.disabled).toBe(true)
 })
 
 it('has `Create migration` button enabled if the last status is completed', () => {
@@ -69,13 +69,13 @@ it('has `Create migration` button enabled if the last status is completed', () =
     executions: [...item.executions, { id: 'execution-4', status: 'COMPLETED', created_at: new Date() }],
   }
   let wrapper = wrap({ endpoints, item: newItem, page: '' })
-  expect((wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.disabled)).toBe(false)
+  expect(wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.children.props.disabled).toBe(false)
 })
 
 it('dispaches create migration click', () => {
   let onCreateMigrationClick = sinon.spy()
   let wrapper = wrap({ endpoints, item, page: '', onCreateMigrationClick })
-  wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.onClick()
+  wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.children.props.onClick()
   expect(onCreateMigrationClick.calledOnce).toBe(true)
 })
 
@@ -86,12 +86,12 @@ it('has `Create migration` button disabled if endpoint is missing and last statu
     executions: [...item.executions, { id: 'execution-4', status: 'COMPLETED', created_at: new Date() }],
   }
   let wrapper = wrap({ endpoints, item: newItem, page: '' })
-  expect((wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.disabled)).toBe(true)
+  expect((wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.children.props.disabled)).toBe(true)
 })
 
 it('dispatches delete click', () => {
   let onDeleteReplicaClick = sinon.spy()
   let wrapper = wrap({ endpoints, item, page: '', onDeleteReplicaClick })
-  wrapper.find('MainDetails').prop('bottomControls').props.children[1].props.onClick()
+  wrapper.find('MainDetails').prop('bottomControls').props.children[1].props.children[1].props.onClick()
   expect(onDeleteReplicaClick.calledOnce).toBe(true)
 })
