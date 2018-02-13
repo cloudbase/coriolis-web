@@ -25,7 +25,6 @@ const Title = styled.div`
   font-size: 24px;
   font-weight: ${StyleProps.fontWeights.light};
   background: ${Palette.grayscale[1]};
-  border-top-radius: ${StyleProps.borderRadius};
   text-align: center;
   line-height: 48px;
 `
