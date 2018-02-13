@@ -16,62 +16,30 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import NotificationActions from '../../../actions/NotificationActions'
+import { TextArea } from 'components'
 import Palette from '../../../components/styleUtils/Palette'
 import StyleProps from '../../../components/styleUtils/StyleProps'
-import {
-  Button,
-  LoadingButton,
-  TextArea,
-  RadioInput,
-} from '../../../components'
-import { Wrapper, Fields, FieldStyled, Buttons, Row } from '../default/ContentPlugin'
+import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
 const RadioGroup = styled.div`
   width: 100%;
 `
-const CloudProfile = styled.div``
-const ConfigLabel = styled.div`
-  font-size: 11px;
-  color: ${Palette.grayscale[3]};
-  margin-top: -10px;
-`
-const CustomConfigWrapper = styled.div`
-  width: 100%;
+const PasteWrapper = styled.div``
+const PasteLabel = styled.div`
   display: flex;
-  flex-direction: column;
-  min-height: 0;
-`
-const CustomConfigTitle = styled.div`
-  text-align: center;
-`
-const CustomInputType = styled.div`
-  margin-top: 32px;
-  > div {
-    margin-bottom: 16px;
-  }
-`
-const PasteField = styled.div`
-  margin-top: 32px;
-  overflow: auto;
-`
-const PasteFieldLabel = styled.div`
   font-size: 10px;
+`
+const PasteLabelText = styled.div`
   font-weight: ${StyleProps.fontWeights.medium};
   color: ${Palette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 4px;
 `
-const PasteFieldInput = styled.div``
-
-const Pages = {
-  main: 'main',
-  custom: 'custom',
-}
-const CustomTypes = {
-  manual: 'manual',
-  json: 'json',
-}
+const PasteLabelShowMore = styled.div`
+  color: ${Palette.primary};
+  margin-left: 5px;
+  cursor: pointer;
+`
 
 const fieldNameMapper = {
   activeDirectory: 'active_directory_url',
@@ -107,15 +75,15 @@ class ContentPlugin extends React.Component {
     highlightRequired: PropTypes.func,
     onRef: PropTypes.func,
     onResizeUpdate: PropTypes.func,
+    scrollableRef: PropTypes.func,
   }
 
   constructor() {
     super()
 
     this.state = {
-      currentPage: Pages.main,
-      customType: CustomTypes.json,
       jsonConfig: '',
+      showPasteInput: false,
     }
   }
 
@@ -124,21 +92,14 @@ class ContentPlugin extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.customType !== this.state.customType || prevState.currentPage !== this.state.currentPage) {
-      this.props.onResizeUpdate()
+    if (this.cloudProfileChanged || prevState.showPasteInput !== this.state.showPasteInput) {
+      this.props.onResizeUpdate(this.fieldsRef)
+      this.cloudProfileChanged = false
     }
   }
 
   componentWillUnmount() {
     this.props.onRef(undefined)
-  }
-
-  handleNextClick() {
-    if (!this.props.highlightRequired()) {
-      this.setState({ currentPage: Pages.custom })
-    } else {
-      NotificationActions.notify('Please fill all the required fields', 'error')
-    }
   }
 
   findInvalidFields = () => {
@@ -159,7 +120,7 @@ class ContentPlugin extends React.Component {
     let selectedLoginTypeField = loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField))
     find(selectedLoginTypeField.fields)
 
-    if (this.state.currentPage === Pages.custom) {
+    if (this.props.getFieldValue({ name: 'cloud_profile' }) === 'CustomCloud') {
       let customCloudFields = this.props.connectionInfoSchema.find(f => f.name === 'cloud_profile').custom_cloud_fields
       find(customCloudFields)
     }
@@ -167,12 +128,15 @@ class ContentPlugin extends React.Component {
     return invalidFields
   }
 
-  handleJsonConfigChange(value) {
-    this.setState({ jsonConfig: value })
+  handleJsonConfigBlur() {
+    if (this.lastBlurValue && this.lastBlurValue === this.state.jsonConfig) {
+      return
+    }
+    this.lastBlurValue = this.state.jsonConfig
 
     let json
     try {
-      json = JSON.parse(value)
+      json = JSON.parse(this.state.jsonConfig)
     } catch (e) {
       return
     }
@@ -196,15 +160,11 @@ class ContentPlugin extends React.Component {
     this.props.handleFieldsChange(updatedFields)
   }
 
-  handleJsonPaste() {
-    if (this.pasteTimeout) {
-      clearTimeout(this.pasteTimeout)
-      this.pasteTimeout = null
+  handleFieldChange(field, value) {
+    if (field.name === 'cloud_profile') {
+      this.cloudProfileChanged = true
     }
-
-    this.pasteTimeout = setTimeout(() => {
-      this.setState({ customType: CustomTypes.manual })
-    }, 1000)
+    this.props.handleFieldChange(field, value)
   }
 
   renderField(field, customProps) {
@@ -217,13 +177,13 @@ class ContentPlugin extends React.Component {
         password={field.name === 'password'}
         highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
         value={this.props.getFieldValue(field)}
-        onChange={value => { this.props.handleFieldChange(field, value) }}
+        onChange={value => { this.handleFieldChange(field, value) }}
         {...customProps}
       />
     )
   }
 
-  renderFieldGroup(fields) {
+  renderFieldRows(fields) {
     const rows = []
     let lastField
     fields.forEach((field, i) => {
@@ -235,6 +195,12 @@ class ContentPlugin extends React.Component {
             {currentField}
           </Row>
         ))
+      } else if (i === fields.length - 1) {
+        rows.push((
+          <Row key={field.name}>
+            {currentField}
+          </Row>
+        ))
       }
       lastField = currentField
     })
@@ -242,151 +208,71 @@ class ContentPlugin extends React.Component {
     return rows
   }
 
-  renderCustomPage() {
-    if (this.state.currentPage !== Pages.custom) {
-      return null
-    }
-
-    let fields = null
-
-    if (this.state.customType === CustomTypes.manual) {
-      fields = (
-        <Fields>
-          {this.renderFieldGroup(this.props.connectionInfoSchema.find(f => f.name === 'cloud_profile').custom_cloud_fields)}
-        </Fields>
-      )
-    } else {
-      fields = (
-        <PasteField>
-          <PasteFieldLabel>Azure Stack Profile Configuration JSON</PasteFieldLabel>
-          <PasteFieldInput>
-            <TextArea
-              width="100%"
-              height="164px"
-              placeholder="Paste JSON output here"
-              value={this.state.jsonConfig}
-              onChange={e => { this.handleJsonConfigChange(e.target.value) }}
-              onPaste={() => { this.handleJsonPaste() }}
-            />
-          </PasteFieldInput>
-        </PasteField>
-      )
-    }
-
-    let title = <CustomConfigTitle>Azure Stack Additional Configuration</CustomConfigTitle>
-    if (this.props.validating || this.props.validation) {
-      title = null
-    }
+  renderPasteField() {
+    const textArea = (
+      <TextArea
+        width="100%"
+        height="96px"
+        placeholder="Use the Azure CLI to get the details of a registered cloud and paste it here"
+        value={this.state.jsonConfig}
+        onBlur={() => { this.handleJsonConfigBlur() }}
+        onChange={e => { this.setState({ jsonConfig: e.target.value }) }}
+        disabled={this.props.disabled}
+      />
+    )
 
     return (
-      <CustomConfigWrapper>
-        {title}
-        <CustomInputType>
-          <RadioInput
-            checked={this.state.customType === CustomTypes.json}
-            label="Paste Configuration"
-            onChange={e => { if (e.target.checked) this.setState({ customType: CustomTypes.json }) }}
-          />
-          <RadioInput
-            checked={this.state.customType === CustomTypes.manual}
-            label="Manual Input"
-            onChange={e => { if (e.target.checked) this.setState({ customType: CustomTypes.manual }) }}
-          />
-        </CustomInputType>
-        {fields}
-      </CustomConfigWrapper>
+      <PasteWrapper>
+        <PasteLabel>
+          <PasteLabelText>Paste Configuration (optional)</PasteLabelText>
+          <PasteLabelShowMore
+            onClick={() => { this.setState({ showPasteInput: !this.state.showPasteInput }) }}
+          >{this.state.showPasteInput ? 'Hide' : 'Show'}</PasteLabelShowMore>
+        </PasteLabel>
+        {this.state.showPasteInput ? textArea : null}
+      </PasteWrapper>
     )
   }
 
-  renderMainPage() {
-    if (this.state.currentPage === Pages.custom) {
-      return null
-    }
-
+  renderFields() {
     const fields = this.props.connectionInfoSchema
+    const cloudProfileField = fields.find(f => f.name === 'cloud_profile')
+    const loginTypeField = fields.find(f => f.name === 'login_type')
+    const allowUntrustedField = loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)).fields.find(f => f.name === 'allow_untrusted')
 
-    let renderedFields = this.renderFieldGroup(fields.filter(f => f.name !== 'login_type' && f.name !== 'cloud_profile'))
+    let renderedFields = this.renderFieldRows(fields.filter(f => f.name !== loginTypeField.name && f.name !== cloudProfileField.name))
 
-    let loginTypeField = fields.find(f => f.name === 'login_type')
+    const radioGroupRow = (
+      <Row key="radio-group-row">
+        <RadioGroup key="radio-group">
+          {loginTypeField.items.map(field =>
+            this.renderField(field, {
+              value: this.props.getFieldValue(loginTypeField) === field.name,
+              onChange: value => { if (value) this.props.handleFieldChange(loginTypeField, field.name) },
+            })
+          )}
+        </RadioGroup>
+        {this.renderField(allowUntrustedField)}
+      </Row>
+    )
 
-    renderedFields.push((
-      <RadioGroup key="radio-group">
-        {loginTypeField.items.map(field =>
-          this.renderField(field, {
-            value: this.props.getFieldValue(loginTypeField) === field.name,
-            onChange: value => { if (value) this.props.handleFieldChange(loginTypeField, field.name) },
-          })
-        )}
-      </RadioGroup>
+    renderedFields.push(radioGroupRow)
+    renderedFields = renderedFields.concat(this.renderFieldRows(
+      loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)).fields
+        .filter(f => f.name !== allowUntrustedField.name)
+        .concat([cloudProfileField])
     ))
 
-    renderedFields = renderedFields.concat(this.renderFieldGroup(loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)).fields))
-
-    const cloudProfileWrapper = (
-      <CloudProfile key="cloudProfile">
-        {this.renderField(fields.find(f => f.name === 'cloud_profile'))}
-        {this.renderAdditionalConfigLabel()}
-      </CloudProfile>
-    )
-    renderedFields.push(cloudProfileWrapper)
+    const isCustomCloud = this.props.getFieldValue(cloudProfileField) === 'CustomCloud'
+    if (isCustomCloud) {
+      renderedFields = renderedFields.concat(this.renderFieldRows(cloudProfileField.custom_cloud_fields))
+    }
 
     return (
-      <Fields>
+      <Fields innerRef={ref => { this.props.scrollableRef(ref) }}>
         {renderedFields}
+        {isCustomCloud ? this.renderPasteField() : null}
       </Fields>
-    )
-  }
-
-  renderAdditionalConfigLabel() {
-    const fields = this.props.connectionInfoSchema
-
-    if (fields.length === 0 ||
-      this.props.getFieldValue(this.props.connectionInfoSchema.find(f => f.name === 'cloud_profile')) !== 'CustomCloud') {
-      return null
-    }
-
-    return <ConfigLabel>* Additional configuration required</ConfigLabel>
-  }
-
-  renderActionButton() {
-    let cloudProfileField = this.props.connectionInfoSchema.find(f => f.name === 'cloud_profile')
-
-    if (this.props.getFieldValue(cloudProfileField) === 'CustomCloud' && this.state.currentPage === Pages.main) {
-      return <Button large onClick={() => this.handleNextClick()}>Next</Button>
-    }
-
-    let actionButton = <Button large onClick={() => this.props.handleValidateClick()}>Validate and save</Button>
-
-    let message = 'Validating Endpoint ...'
-    if (this.props.validating || (this.props.validation && this.props.validation.valid)) {
-      if (this.props.validation && this.props.validation.valid) {
-        message = 'Saving ...'
-      }
-
-      actionButton = <LoadingButton large>{message}</LoadingButton>
-    }
-
-    return actionButton
-  }
-
-  renderCancelButton() {
-    let cancelButton
-
-    if (this.state.currentPage === Pages.main) {
-      cancelButton = <Button large secondary onClick={() => { this.props.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
-    } else {
-      cancelButton = <Button large secondary onClick={() => { this.setState({ currentPage: Pages.main }) }}>Back</Button>
-    }
-
-    return cancelButton
-  }
-
-  renderButtons() {
-    return (
-      <Buttons>
-        {this.renderCancelButton()}
-        {this.renderActionButton()}
-      </Buttons>
     )
   }
 
@@ -398,9 +284,7 @@ class ContentPlugin extends React.Component {
 
     return (
       <Wrapper>
-        {this.renderMainPage()}
-        {this.renderCustomPage()}
-        {this.renderButtons()}
+        {this.renderFields()}
       </Wrapper>
     )
   }

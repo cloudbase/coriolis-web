@@ -23,6 +23,8 @@ import {
   CopyButton,
   Tooltip,
   StatusImage,
+  Button,
+  LoadingButton,
 } from 'components'
 import NotificationActions from '../../../actions/NotificationActions'
 import EndpointStore from '../../../stores/EndpointStore'
@@ -45,6 +47,7 @@ const Status = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
 `
 const StatusHeader = styled.div`
   display: flex;
@@ -89,6 +92,13 @@ const LoadingWrapper = styled.div`
 const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
+`
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 32px;
+  flex-shrink: 0;
 `
 
 class Endpoint extends React.Component {
@@ -159,7 +169,7 @@ class Endpoint extends React.Component {
       })
     }
 
-    this.props.onResizeUpdate()
+    this.props.onResizeUpdate(this.scrollableRef)
   }
 
   componentWillUnmount() {
@@ -300,6 +310,26 @@ class Endpoint extends React.Component {
     )
   }
 
+  renderButtons() {
+    let actionButton = <Button large onClick={() => this.handleValidateClick()}>Validate and save</Button>
+
+    let message = 'Validating Endpoint ...'
+    if (this.state.validating || (this.props.endpointStore.validation && this.props.endpointStore.validation.valid)) {
+      if (this.props.endpointStore.validation && this.props.endpointStore.validation.valid) {
+        message = 'Saving ...'
+      }
+
+      actionButton = <LoadingButton large>{message}</LoadingButton>
+    }
+
+    return (
+      <Buttons>
+        <Button large secondary onClick={() => { this.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
+        {actionButton}
+      </Buttons>
+    )
+  }
+
   renderContent() {
     if (this.props.providerStore.connectionSchemaLoading) {
       return null
@@ -321,9 +351,11 @@ class Endpoint extends React.Component {
           handleFieldsChange: fields => { this.handleFieldsChange(fields) },
           handleValidateClick: () => { this.handleValidateClick() },
           handleCancelClick: () => { this.handleCancelClick() },
+          scrollableRef: ref => { this.scrollableRef = ref },
           onRef: ref => { this.contentPluginRef = ref },
-          onResizeUpdate: () => { this.props.onResizeUpdate() },
+          onResizeUpdate: () => { this.props.onResizeUpdate(this.scrollableRef) },
         })}
+        {this.renderButtons()}
         <Tooltip />
         {Tooltip.rebuild()}
       </Content>

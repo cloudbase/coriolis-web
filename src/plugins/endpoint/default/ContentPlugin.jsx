@@ -16,7 +16,7 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { EndpointField, Button, LoadingButton } from '../../../components'
+import { EndpointField } from '../../../components'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -33,13 +33,6 @@ export const FieldStyled = styled(EndpointField)`
   min-width: 224px;
   max-width: 224px;
   margin-bottom: 16px;
-`
-export const Buttons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 32px;
-  flex-shrink: 0;
 `
 export const Row = styled.div`
   display: flex;
@@ -104,6 +97,12 @@ class ContentPlugin extends React.Component {
             {currentField}
           </Row>
         ))
+      } else if (i === this.props.connectionInfoSchema.length - 1) {
+        rows.push((
+          <Row key={field.name}>
+            {currentField}
+          </Row>
+        ))
       }
       lastField = currentField
     })
@@ -115,31 +114,10 @@ class ContentPlugin extends React.Component {
     )
   }
 
-  renderButtons() {
-    let actionButton = <Button large onClick={() => this.props.handleValidateClick()}>Validate and save</Button>
-
-    let message = 'Validating Endpoint ...'
-    if (this.props.validating || (this.props.validation && this.props.validation.valid)) {
-      if (this.props.validation && this.props.validation.valid) {
-        message = 'Saving ...'
-      }
-
-      actionButton = <LoadingButton large>{message}</LoadingButton>
-    }
-
-    return (
-      <Buttons>
-        <Button large secondary onClick={() => { this.props.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
-        {actionButton}
-      </Buttons>
-    )
-  }
-
   render() {
     return (
       <Wrapper>
         {this.renderFields()}
-        {this.renderButtons()}
       </Wrapper>
     )
   }

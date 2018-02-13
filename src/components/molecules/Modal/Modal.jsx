@@ -69,8 +69,14 @@ class NewModal extends React.Component {
     window.removeEventListener('resize', this.positionModal, true)
   }
 
-  handleChildUpdate() {
-    setTimeout(this.positionModal, 100)
+  handleChildUpdate(scrollableRef) {
+    if (scrollableRef) {
+      this.scrollableRef = scrollableRef
+    }
+
+    setTimeout(() => {
+      this.positionModal()
+    }, 100)
   }
 
   handleModalOpen() {
@@ -95,8 +101,8 @@ class NewModal extends React.Component {
     if (!contentNode) {
       return
     }
-
-    let scrollTop = contentNode.scrollTop
+    let scrollableNode = this.scrollableRef || contentNode
+    let scrollTop = scrollableNode.scrollTop
     contentNode.style.height = 'auto'
     let left = (pageNode.offsetWidth / 2) - (contentNode.offsetWidth / 2)
     let top = (pageNode.offsetHeight / 2) - (contentNode.offsetHeight / 2)
@@ -111,7 +117,7 @@ class NewModal extends React.Component {
     contentNode.style.top = `${top}px`
     contentNode.style.height = height
     contentNode.style.opacity = 1
-    contentNode.scrollTo(0, scrollTop)
+    scrollableNode.scrollTo(0, scrollTop)
   }
 
   renderTitle() {
@@ -157,7 +163,7 @@ class NewModal extends React.Component {
 
     let children = React.Children.map(this.props.children,
       child => React.cloneElement(child, {
-        onResizeUpdate: () => { this.handleChildUpdate() },
+        onResizeUpdate: scrollableRef => { this.handleChildUpdate(scrollableRef) },
       })
     )
 
