@@ -156,8 +156,8 @@ class PageHeader extends React.Component {
     this.setState({ showEndpointModal: false })
   }
 
-  handleBackEndpointModal() {
-    this.setState({ showChooseProviderModal: true, showEndpointModal: false })
+  handleBackEndpointModal(options) {
+    this.setState({ showChooseProviderModal: !options || !options.autoClose, showEndpointModal: false })
   }
 
   render() {
@@ -197,7 +197,7 @@ class PageHeader extends React.Component {
             deleteOnCancel
             type={this.state.providerType}
             cancelButtonText="Back"
-            onCancelClick={() => { this.handleBackEndpointModal() }}
+            onCancelClick={options => { this.handleBackEndpointModal(options) }}
           />
         </Modal>
       </Wrapper>
