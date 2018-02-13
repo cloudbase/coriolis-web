@@ -93,7 +93,11 @@ class ContentPlugin extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.cloudProfileChanged || prevState.showPasteInput !== this.state.showPasteInput) {
-      this.props.onResizeUpdate(this.fieldsRef)
+      let scrollOffset = 0
+      if (prevState.showPasteInput !== this.state.showPasteInput && this.state.showPasteInput) {
+        scrollOffset = 100
+      }
+      this.props.onResizeUpdate(this.fieldsRef, scrollOffset)
       this.cloudProfileChanged = false
     }
   }
