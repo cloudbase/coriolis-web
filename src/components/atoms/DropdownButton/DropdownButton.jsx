@@ -44,7 +44,7 @@ const Label = styled.div`
 
 const getBackgroundColor = props => {
   if (props.disabled) {
-    return Palette.grayscale[7]
+    return Palette.grayscale[0]
   }
 
   if (props.primary) {
@@ -75,7 +75,7 @@ const getWidth = props => {
 }
 const borderColor = props => {
   if (props.disabled) {
-    return Palette.grayscale[7]
+    return Palette.grayscale[0]
   }
   if (props.primary) {
     return Palette.primary
