@@ -145,6 +145,14 @@ class ContentPlugin extends React.Component {
       return
     }
 
+    let managementUrl = json.endpoints.management
+    if (managementUrl && !json.endpoints.sqlManagement) {
+      if (managementUrl.lastIndexOf('/') === managementUrl.length - 1) {
+        managementUrl = managementUrl.substr(0, managementUrl.length - 1)
+      }
+      json.endpoints.sqlManagement = `${managementUrl}:8443/`
+    }
+
     let updatedFields = []
     const setValue = (object, key) => {
       if (object[key]) {
