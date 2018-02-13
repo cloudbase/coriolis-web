@@ -74,10 +74,6 @@ class EndpointDetailsContent extends React.Component {
     onEditClick: PropTypes.func,
   }
 
-  isUrl(value) {
-    return /^https?:\/\//.test(value)
-  }
-
   renderConnectionInfoLoading() {
     if (!this.props.loading) {
       return null
@@ -124,10 +120,8 @@ class EndpointDetailsContent extends React.Component {
 
       if (key === 'password') {
         valueClass = <PasswordValue value={value} />
-      } else if (this.isUrl(value)) {
-        valueClass = <CopyValue value={value} maxWidth="90%" />
       } else {
-        valueClass = <Value>{value}</Value>
+        valueClass = this.renderValue(value)
       }
 
       return (
@@ -153,28 +147,32 @@ class EndpointDetailsContent extends React.Component {
     )
   }
 
+  renderValue(value) {
+    return <CopyValue value={value} maxWidth="90%" />
+  }
+
   render() {
     this.renderedKeys = {}
-
+    const { type, name, description, created_at } = this.props.item
     return (
       <Wrapper>
-        <EndpointLogos endpoint={this.props.item.type} />
+        <EndpointLogos endpoint={type} />
         <Info>
           <Field>
             <Label>Name</Label>
-            <Value>{this.props.item.name}</Value>
+            {this.renderValue(name)}
           </Field>
           <Field>
             <Label>Type</Label>
-            <Value>{this.props.item.type}</Value>
+            {this.renderValue(type)}
           </Field>
           <Field>
             <Label>Description</Label>
-            <Value>{this.props.item.description || '-'}</Value>
+            {description ? this.renderValue(description) : <Value>-</Value>}
           </Field>
           <Field>
             <Label>Created</Label>
-            <Value>{DateUtils.getLocalTime(this.props.item.created_at).format('DD/MM/YYYY HH:mm')}</Value>
+            {this.renderValue(DateUtils.getLocalTime(created_at).format('DD/MM/YYYY HH:mm'))}
           </Field>
           {this.renderConnectionInfoLoading()}
           {this.renderConnectionInfo(this.props.connectionInfo)}
