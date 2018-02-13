@@ -54,7 +54,7 @@ class ApiCaller {
         }
       }
 
-      console.log(`Sending ${options.method} Request to ${options.url}`) // eslint-disable-line no-console
+      console.log(`%cSending ${options.method} Request to ${options.url}`, 'color: #F5A623') // eslint-disable-line no-console
 
       try {
         options.data ? request.send(JSON.stringify(options.data)) : request.send()
@@ -77,10 +77,10 @@ class ApiCaller {
           headers: ApiCaller.processHeaders(request.getAllResponseHeaders()),
         }
         if (result.status >= 200 && result.status <= 299) {
-          console.log(`Response ${options.url}`, result.data) // eslint-disable-line no-console
+          console.log(`%cResponse ${options.url}`, 'color: #0044CA', result.data) // eslint-disable-line no-console
           resolve(result)
         } else {
-          console.log(`Error Response: ${options.url}`, result.data) // eslint-disable-line no-console
+          console.log(`%cError Response: ${options.url}`, 'color: #D0021B', result.data) // eslint-disable-line no-console
 
           let loginUrl = '#/'
 
@@ -104,7 +104,7 @@ class ApiCaller {
           connection to the server.`, 'error')
         }
 
-        console.log('Error Response: ', result.data) // eslint-disable-line no-console
+        console.log('%cError Response: ', 'color: #D0021B', result.data) // eslint-disable-line no-console
         reject({ status: 500, data: 'Connection error' })
       }
     })
