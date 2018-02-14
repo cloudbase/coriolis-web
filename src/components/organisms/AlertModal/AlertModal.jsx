@@ -56,12 +56,33 @@ class AlertModal extends React.Component {
     message: PropTypes.string,
     extraMessage: PropTypes.string,
     type: PropTypes.string,
+    isOpen: PropTypes.bool,
     onRequestClose: PropTypes.func,
     onConfirmation: PropTypes.func,
   }
 
   static defaultProps = {
     type: 'confirmation',
+  }
+
+  constructor() {
+    super()
+
+    this.handleKeyPress = this.handleKeyPress.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('keypress', this.handleKeyPress)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.handleKeyPress)
+  }
+
+  handleKeyPress(evt) {
+    if (evt.keyCode === 13 && this.props.isOpen) {
+      this.props.onConfirmation()
+    }
   }
 
   renderDismissButton() {
