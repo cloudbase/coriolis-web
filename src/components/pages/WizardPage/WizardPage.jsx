@@ -80,6 +80,8 @@ class WizardPage extends React.Component {
       showNewEndpointModal: false,
       nextButtonDisabled: false,
     }
+
+    this.handleKeyPress = this.handleKeyPress.bind(this)
   }
 
   componentWillMount() {
@@ -92,10 +94,24 @@ class WizardPage extends React.Component {
 
   componentDidMount() {
     document.title = 'Coriolis Wizard'
+    document.addEventListener('keydown', this.handleKeyPress)
   }
 
   componentWillUnmount() {
     WizardActions.clearData()
+    document.removeEventListener('keydown', this.handleKeyPress)
+  }
+
+  handleKeyPress(evt) {
+    if (this.state.showNewEndpointModal) {
+      return
+    }
+    if (evt.keyCode === 13 && this.contentRef && !this.contentRef.isNextButtonDisabled()) {
+      this.handleNextClick()
+    }
+    if (evt.keyCode === 27) {
+      this.handleBackClick()
+    }
   }
 
   loadDataForPage(page) {
@@ -387,6 +403,7 @@ class WizardPage extends React.Component {
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
             onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
+            onContentRef={ref => { this.contentRef = ref }}
           />}
         />
         <Modal

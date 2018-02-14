@@ -108,6 +108,7 @@ class WizardPageContent extends React.Component {
     onAddScheduleClick: PropTypes.func,
     onScheduleChange: PropTypes.func,
     onScheduleRemove: PropTypes.func,
+    onContentRef: PropTypes.func,
   }
 
   constructor() {
@@ -117,6 +118,14 @@ class WizardPageContent extends React.Component {
       useAdvancedOptions: false,
       timezone: 'local',
     }
+  }
+
+  componentDidMount() {
+    this.props.onContentRef(this)
+  }
+
+  componentWillUnmount() {
+    this.props.onContentRef(null)
   }
 
   getProvidersType(type) {
