@@ -28,6 +28,7 @@ class ProviderStore {
       handleGetConnectionInfoSchema: ProviderActions.GET_CONNECTION_INFO_SCHEMA,
       handleGetConnectionInfoSchemaSuccess: ProviderActions.GET_CONNECTION_INFO_SCHEMA_SUCCESS,
       handleGetConnectionInfoSchemaFailed: ProviderActions.GET_CONNECTION_INFO_SCHEMA_FAILED,
+      handleClearConnectionInfoSchema: ProviderActions.CLEAR_CONNECTION_INFO_SCHEMA,
       handleLoadProviders: ProviderActions.LOAD_PROVIDERS,
       handleLoadProvidersSuccess: ProviderActions.LOAD_PROVIDERS_SUCCESS,
       handleLoadOptionsSchema: ProviderActions.LOAD_OPTIONS_SCHEMA,
@@ -47,6 +48,10 @@ class ProviderStore {
 
   handleGetConnectionInfoSchemaFailed() {
     this.connectionSchemaLoading = false
+  }
+
+  handleClearConnectionInfoSchema() {
+    this.connectionInfoSchema = []
   }
 
   handleLoadProviders() {

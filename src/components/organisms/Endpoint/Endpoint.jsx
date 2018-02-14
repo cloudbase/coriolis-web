@@ -17,7 +17,15 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import connectToStores from 'alt-utils/lib/connectToStores'
 
-import { EndpointLogos, EndpointField, Button, StatusIcon, LoadingButton, CopyButton, Tooltip, StatusImage } from 'components'
+import {
+  EndpointLogos,
+  StatusIcon,
+  CopyButton,
+  Tooltip,
+  StatusImage,
+  Button,
+  LoadingButton,
+} from 'components'
 import NotificationActions from '../../../actions/NotificationActions'
 import EndpointStore from '../../../stores/EndpointStore'
 import EndpointActions from '../../../actions/EndpointActions'
@@ -26,41 +34,24 @@ import ProviderActions from '../../../actions/ProviderActions'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
+import { ContentPlugin } from '../../../plugins/endpoint'
 
 const Wrapper = styled.div`
   padding: 48px 32px 32px 32px;
   display: flex;
   align-items: center;
   flex-direction: column;
-`
-const Fields = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -64px;
-  margin-top: 32px;
-`
-const FieldStyled = styled(EndpointField)`
-  margin-left: 64px;
-  min-width: 224px;
-  max-width: 224px;
-  margin-bottom: 16px;
-`
-const RadioGroup = styled.div`
-  width: 100%;
-`
-const Buttons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 32px;
+  min-height: 0;
 `
 const Status = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
 `
 const StatusHeader = styled.div`
   display: flex;
+  align-items: center;
 `
 const StatusMessage = styled.div`
   margin-left: 8px;
@@ -86,7 +77,12 @@ const StatusError = styled.div`
     margin-left: 4px;
   }
 `
-const Content = styled.div``
+const Content = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+`
 const LoadingWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -97,6 +93,13 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
+const Buttons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 32px;
+  flex-shrink: 0;
+`
 
 class Endpoint extends React.Component {
   static propTypes = {
@@ -105,10 +108,8 @@ class Endpoint extends React.Component {
     deleteOnCancel: PropTypes.bool,
     endpoint: PropTypes.object,
     connectionInfo: PropTypes.object,
-    onFieldChange: PropTypes.func,
     onCancelClick: PropTypes.func,
     onResizeUpdate: PropTypes.func,
-    onValidateClick: PropTypes.func,
     endpointStore: PropTypes.object,
     providerStore: PropTypes.object,
   }
@@ -132,7 +133,6 @@ class Endpoint extends React.Component {
     super()
 
     this.state = {
-      fields: null,
       invalidFields: [],
       validating: false,
       showErrorMessage: false,
@@ -146,9 +146,6 @@ class Endpoint extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    let selectedRadio = this.getSelectedRadio(props.endpointStore.connectionInfo,
-      props.providerStore.connectionInfoSchema)
-
     if (this.state.validating) {
       if (props.endpointStore.validation && !props.endpointStore.validation.valid) {
         this.setState({ validating: false })
@@ -159,7 +156,6 @@ class Endpoint extends React.Component {
       this.setState({
         endpoint: {
           ...ObjectUtils.flatten(props.endpoint),
-          ...selectedRadio,
           ...ObjectUtils.flatten(props.endpointStore.connectionInfo),
         },
       })
@@ -168,17 +164,17 @@ class Endpoint extends React.Component {
         isNew: this.state.isNew === null || this.state.isNew,
         endpoint: {
           type: props.type,
-          ...selectedRadio,
           ...ObjectUtils.flatten(this.state.endpoint),
         },
       })
     }
 
-    this.props.onResizeUpdate()
+    this.props.onResizeUpdate(this.scrollableRef)
   }
 
   componentWillUnmount() {
     EndpointActions.clearValidation()
+    ProviderActions.clearConnectionInfoSchema()
     clearTimeout(this.closeTimeout)
   }
 
@@ -190,34 +186,7 @@ class Endpoint extends React.Component {
     return this.props.type
   }
 
-  getSelectedRadio(connectionInfo, schema) {
-    let radioGroup = schema.find(f => f.type === 'radio-group')
-
-    if (!radioGroup) {
-      return null
-    }
-
-    let selectedGroupItem = {}
-
-    if (!connectionInfo) {
-      selectedGroupItem[radioGroup.name] = radioGroup.default
-    } else {
-      radioGroup.items.forEach(i => {
-        let key = Object.keys(connectionInfo).find(k => k === i.name)
-        if (key) {
-          selectedGroupItem[radioGroup.name] = key
-        }
-      })
-    }
-
-    return selectedGroupItem
-  }
-
-  getFieldValue(field, parentGroup) {
-    if (parentGroup) {
-      return this.state.endpoint[parentGroup.name] === field.name
-    }
-
+  getFieldValue(field) {
     if (this.state.endpoint[field.name]) {
       return this.state.endpoint[field.name]
     }
@@ -233,23 +202,8 @@ class Endpoint extends React.Component {
     return this.state.validating
   }
 
-  findInvalidFields(invalidFields, schemaRoot) {
-    schemaRoot.forEach(field => {
-      if (field.type === 'radio-group') {
-        let selectedItem = field.items.find(i => i.name === this.state.endpoint[field.name])
-        this.findInvalidFields(invalidFields, selectedItem.fields)
-      } else if (field.required) {
-        let value = this.getFieldValue(field)
-        if (!value) {
-          invalidFields.push(field.name)
-        }
-      }
-    })
-  }
-
   highlightRequired() {
-    let invalidFields = []
-    this.findInvalidFields(invalidFields, this.props.providerStore.connectionInfoSchema)
+    let invalidFields = this.contentPluginRef.findInvalidFields()
     this.setState({ invalidFields })
     return invalidFields.length > 0
   }
@@ -270,20 +224,18 @@ class Endpoint extends React.Component {
     })
   }
 
-  handleFieldChange(field, value, parentGroup) {
+  handleFieldsChange(items) {
     let endpoint = { ...this.state.endpoint }
 
-    if (parentGroup) {
-      endpoint[parentGroup.name] = field.name
-    } else {
-      endpoint[field.name] = value
-    }
+    items.forEach(item => {
+      endpoint[item.field.name] = item.value
+    })
 
     this.setState({ endpoint })
   }
 
   handleValidateClick() {
-    if (!this.highlightRequired()) {
+    if (!this.highlightRequired(true)) {
       this.setState({ validating: true })
 
       NotificationActions.notify('Saving endpoint ...')
@@ -316,44 +268,6 @@ class Endpoint extends React.Component {
       EndpointActions.delete(EndpointStore.getState().endpoints[0])
     }
     this.props.onCancelClick()
-  }
-
-  renderFields(fields, parentGroup) {
-    let renderedFields = []
-
-    fields.forEach(field => {
-      if (field.type === 'radio-group') {
-        renderedFields = renderedFields.concat(
-          <RadioGroup key={field.name}>{this.renderFields(field.items, field)}</RadioGroup>
-        )
-
-        field.items.forEach(item => {
-          if (this.getFieldValue(item, field)) {
-            renderedFields = renderedFields.concat(this.renderFields(item.fields))
-          }
-        })
-
-        return
-      }
-
-      renderedFields = renderedFields.concat(
-        <FieldStyled
-          {...field}
-          large
-          disabled={this.isValidating()
-            || (this.props.endpointStore.validation && this.props.endpointStore.validation.valid)}
-          key={field.name}
-          password={field.name === 'password'}
-          type={field.type}
-          highlight={this.state.invalidFields.findIndex(fn => fn === field.name) > -1}
-          name={field.name}
-          value={this.getFieldValue(field, parentGroup)}
-          onChange={value => { this.handleFieldChange(field, value, parentGroup) }}
-        />
-      )
-    })
-
-    return renderedFields
   }
 
   renderEndpointStatus() {
@@ -396,21 +310,24 @@ class Endpoint extends React.Component {
     )
   }
 
-  renderActionButton() {
-    let button = <Button large onClick={() => this.handleValidateClick()}>Validate and save</Button>
+  renderButtons() {
+    let actionButton = <Button large onClick={() => this.handleValidateClick()}>Validate and save</Button>
 
     let message = 'Validating Endpoint ...'
-    let validation = this.props.endpointStore.validation
-
-    if (this.isValidating() || (validation && validation.valid)) {
-      if (validation && validation.valid) {
+    if (this.state.validating || (this.props.endpointStore.validation && this.props.endpointStore.validation.valid)) {
+      if (this.props.endpointStore.validation && this.props.endpointStore.validation.valid) {
         message = 'Saving ...'
       }
 
-      button = <LoadingButton large>{message}</LoadingButton>
+      actionButton = <LoadingButton large>{message}</LoadingButton>
     }
 
-    return button
+    return (
+      <Buttons>
+        <Button large secondary onClick={() => { this.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
+        {actionButton}
+      </Buttons>
+    )
   }
 
   renderContent() {
@@ -421,15 +338,26 @@ class Endpoint extends React.Component {
     return (
       <Content>
         {this.renderEndpointStatus()}
-        <Fields>
-          {this.renderFields(this.props.providerStore.connectionInfoSchema)}
-          <Tooltip />
-          {Tooltip.rebuild()}
-        </Fields>
-        <Buttons>
-          <Button large secondary onClick={() => { this.handleCancelClick() }}>{this.props.cancelButtonText}</Button>
-          {this.renderActionButton()}
-        </Buttons>
+        {React.createElement(ContentPlugin[this.getEndpointType()] || ContentPlugin.default, {
+          connectionInfoSchema: this.props.providerStore.connectionInfoSchema,
+          validation: this.props.endpointStore.validation,
+          invalidFields: this.state.invalidFields,
+          validating: this.state.validating,
+          disabled: this.isValidating() || (this.props.endpointStore.validation && this.props.endpointStore.validation.valid),
+          cancelButtonText: this.props.cancelButtonText,
+          getFieldValue: field => this.getFieldValue(field),
+          highlightRequired: () => this.highlightRequired(),
+          handleFieldChange: (field, value) => { this.handleFieldsChange([{ field, value }]) },
+          handleFieldsChange: fields => { this.handleFieldsChange(fields) },
+          handleValidateClick: () => { this.handleValidateClick() },
+          handleCancelClick: () => { this.handleCancelClick() },
+          scrollableRef: ref => { this.scrollableRef = ref },
+          onRef: ref => { this.contentPluginRef = ref },
+          onResizeUpdate: (scrollableRef, scrollOffset) => { this.props.onResizeUpdate(this.scrollableRef, scrollOffset) },
+        })}
+        {this.renderButtons()}
+        <Tooltip />
+        {Tooltip.rebuild()}
       </Content>
     )
   }
