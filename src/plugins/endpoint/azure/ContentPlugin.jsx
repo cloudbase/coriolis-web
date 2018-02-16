@@ -19,6 +19,7 @@ import PropTypes from 'prop-types'
 import { TextArea } from 'components'
 import Palette from '../../../components/styleUtils/Palette'
 import StyleProps from '../../../components/styleUtils/StyleProps'
+import KeyboardManager from '../../../utils/KeyboardManager'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
 const RadioGroup = styled.div`
@@ -227,7 +228,8 @@ class ContentPlugin extends React.Component {
         height="96px"
         placeholder="Use the Azure CLI to get the details of a registered cloud and paste it here"
         value={this.state.jsonConfig}
-        onBlur={() => { this.handleJsonConfigBlur() }}
+        onFocus={() => { KeyboardManager.onKeyDown('json-config', null, 3) }} // disable key down propagation
+        onBlur={() => { KeyboardManager.removeKeyDown('json-config'); this.handleJsonConfigBlur() }}
         onChange={e => { this.setState({ jsonConfig: e.target.value }) }}
         disabled={this.props.disabled}
       />

@@ -35,6 +35,7 @@ import ObjectUtils from '../../../utils/ObjectUtils'
 import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
 import { ContentPlugin } from '../../../plugins/endpoint'
+import KeyboardManager from '../../../utils/KeyboardManager'
 
 const Wrapper = styled.div`
   padding: 48px 32px 32px 32px;
@@ -143,6 +144,7 @@ class Endpoint extends React.Component {
 
   componentDidMount() {
     ProviderActions.getConnectionInfoSchema(this.getEndpointType())
+    KeyboardManager.onEnter('endpoint', () => { if (this.isValidateButtonEnabled) this.handleValidateClick() }, 2)
   }
 
   componentWillReceiveProps(props) {
@@ -176,6 +178,7 @@ class Endpoint extends React.Component {
     EndpointActions.clearValidation()
     ProviderActions.clearConnectionInfoSchema()
     clearTimeout(this.closeTimeout)
+    KeyboardManager.removeKeyDown('endpoint')
   }
 
   getEndpointType() {
@@ -311,6 +314,7 @@ class Endpoint extends React.Component {
   }
 
   renderButtons() {
+    this.isValidateButtonEnabled = true
     let actionButton = <Button large onClick={() => this.handleValidateClick()}>Validate and save</Button>
 
     let message = 'Validating Endpoint ...'
@@ -319,6 +323,7 @@ class Endpoint extends React.Component {
         message = 'Saving ...'
       }
 
+      this.isValidateButtonEnabled = false
       actionButton = <LoadingButton large>{message}</LoadingButton>
     }
 
