@@ -19,6 +19,7 @@ import PropTypes from 'prop-types'
 import { Modal, Button, StatusImage } from 'components'
 
 import Palette from '../../styleUtils/Palette'
+import KeyboardManager from '../../../utils/KeyboardManager'
 
 import questionImage from './images/question.svg'
 import errorImage from './images/error.svg'
@@ -65,24 +66,16 @@ class AlertModal extends React.Component {
     type: 'confirmation',
   }
 
-  constructor() {
-    super()
-
-    this.handleKeyPress = this.handleKeyPress.bind(this)
-  }
-
-  componentDidMount() {
-    document.addEventListener('keypress', this.handleKeyPress)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keypress', this.handleKeyPress)
-  }
-
-  handleKeyPress(evt) {
-    if (evt.keyCode === 13 && this.props.isOpen) {
-      this.props.onConfirmation()
+  componentWillReceiveProps(newProps) {
+    if (newProps.isOpen && !this.props.isOpen) {
+      KeyboardManager.onEnter('alert', () => { this.handleEnter() }, 2)
+    } else if (!newProps.isOpen && this.props.isOpen) {
+      KeyboardManager.removeKeyDown('alert')
     }
+  }
+
+  handleEnter() {
+    this.props.onConfirmation()
   }
 
   renderDismissButton() {

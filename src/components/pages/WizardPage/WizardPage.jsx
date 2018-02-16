@@ -42,6 +42,7 @@ import ReplicaActions from '../../../actions/ReplicaActions'
 import ScheduleActions from '../../../actions/ScheduleActions'
 import ScheduleStore from '../../../stores/ScheduleStore'
 import Wait from '../../../utils/Wait'
+import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardConfig, executionOptions } from '../../../config'
 
 const Wrapper = styled.div``
@@ -80,8 +81,6 @@ class WizardPage extends React.Component {
       showNewEndpointModal: false,
       nextButtonDisabled: false,
     }
-
-    this.handleKeyPress = this.handleKeyPress.bind(this)
   }
 
   componentWillMount() {
@@ -94,24 +93,23 @@ class WizardPage extends React.Component {
 
   componentDidMount() {
     document.title = 'Coriolis Wizard'
-    document.addEventListener('keydown', this.handleKeyPress)
+    KeyboardManager.onEnter('wizard', () => { this.handleEnterKey() })
+    KeyboardManager.onEsc('wizard', () => { this.handleEscKey() })
   }
 
   componentWillUnmount() {
     WizardActions.clearData()
-    document.removeEventListener('keydown', this.handleKeyPress)
+    KeyboardManager.removeKeyDown('wizard')
   }
 
-  handleKeyPress(evt) {
-    if (this.state.showNewEndpointModal) {
-      return
-    }
-    if (evt.keyCode === 13 && this.contentRef && !this.contentRef.isNextButtonDisabled()) {
+  handleEnterKey() {
+    if (this.contentRef && !this.contentRef.isNextButtonDisabled()) {
       this.handleNextClick()
     }
-    if (evt.keyCode === 27) {
-      this.handleBackClick()
-    }
+  }
+
+  handleEscKey() {
+    this.handleBackClick()
   }
 
   loadDataForPage(page) {
