@@ -108,7 +108,7 @@ const StyledButton = styled.button`
 
 const Button = ({ ...props }) => {
   return (
-    <StyledButton {...props} />
+    <StyledButton {...props} onFocus={e => { e.target.blur() }} />
   )
 }
 
