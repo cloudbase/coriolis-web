@@ -13,13 +13,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
-import LinesEllipsis from 'react-lines-ellipsis'
 import { Collapse } from 'react-collapse'
 
-import { StatusIcon, Arrow, StatusPill, CopyValue, ProgressBar } from 'components'
+import { StatusIcon, Arrow, StatusPill, CopyValue, ProgressBar, CopyButton } from 'components'
 
+import NotificationActions from '../../../actions/NotificationActions'
+import DomUtils from '../../../utils/DomUtils'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import DateUtils from '../../../utils/DateUtils'
@@ -67,20 +68,21 @@ const TitleText = styled.div`
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 24px 0;
-  color: ${Palette.grayscale[4]};
-`
-const Columns = styled.div`
-  display: flex;
-  flex-direction: row;
+  padding: 24px 8px;
 `
 const Row = styled.div`
-  ${props => props.margin ? 'margin-left: 32px;' : ''}
-  ${props => props.noPadding ? '' : 'padding-bottom: 16px;'}
-  word-break: break-word;
+  display: flex;
+  margin-bottom: 24px;
+  &:last-child {
+    margin-bottom: 0;
+  }
 `
-const Column = styled.div`
-  width: ${props => props.width || 'auto'};
+const RowData = styled.div`
+  ${props => props.width ? css`width: ${props.width};` : ''}
+  &:first-child {
+    padding-left: 24px;
+    ${props => css`width: calc(${props.width} - 24px);`}
+  }
 `
 const Label = styled.div`
   text-transform: uppercase;
@@ -90,7 +92,20 @@ const Label = styled.div`
   margin-bottom: 4px;
 `
 const Value = styled.div`
-  ${props => props.margin ? 'margin-left: 32px;' : ''}
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  ${props => props.primary ? css`color: ${Palette.primary};` : ''}
+`
+const ExceptionText = styled.div`
+  cursor: pointer;
+  &:hover > span {
+    opacity: 1;
+  }
+  > span {
+    background-position-y: 4px;
+    margin-left: 4px;
+  }
 `
 const ProgressUpdates = styled.div`
   color: ${Palette.black};
@@ -100,9 +115,10 @@ const ProgressUpdate = styled.div`
 `
 const ProgressUpdateDate = styled.div`
   min-width: ${props => props.width || 'auto'};
-  & > span {margin-left: 32px;}
+  & > span {margin-left: 24px;}
 `
 const ProgressUpdateValue = styled.div`
+  width: 100%;
   margin-right: 32px;
 `
 
@@ -127,6 +143,14 @@ class TaskItem extends React.Component {
   getMessageProgress(message) {
     let match = message.match(/.*progress.*?(100|\d{1,2})%/)
     return match && match[1]
+  }
+
+  handleExceptionTextClick(exceptionText) {
+    let succesful = DomUtils.copyTextToClipboard(exceptionText)
+
+    if (succesful) {
+      NotificationActions.notify('The message has been copied to clipboard.')
+    }
   }
 
   renderHeader() {
@@ -155,14 +179,21 @@ class TaskItem extends React.Component {
 
   renderDependsOnValue() {
     if (this.props.item.depends_on && this.props.item.depends_on[0]) {
-      return <CopyValue value={this.props.item.depends_on[0]} width="auto" />
+      return (
+        <Value
+          primary
+          textEllipsis
+          onClick={e => { e.stopPropagation() }}
+          onMouseDown={e => { e.stopPropagation() }}
+          onMouseUp={e => { e.stopPropagation() }}
+        >{this.props.item.depends_on[0]}</Value>)
     }
 
     return <Value>N/A</Value>
   }
 
   renderProgressUpdates() {
-    let naValue = <Value margin>N/A</Value>
+    let naValue = <Value style={{ marginLeft: '24px' }}>N/A</Value>
     if (!this.props.item.progress_updates.length) {
       return naValue
     }
@@ -191,41 +222,54 @@ class TaskItem extends React.Component {
     )
   }
 
-  renderBody() {
+  renderExceptionDetails() {
     let exceptionsText = (this.props.item.exception_details && this.props.item.exception_details.length
-      && this.props.item.exception_details) || 'N/A'
+      && this.props.item.exception_details)
 
+    let valueField
+    if (!exceptionsText) {
+      valueField = <Value>N/A</Value>
+    } else {
+      valueField = (
+        <ExceptionText
+          onClick={(e) => { e.stopPropagation(); this.handleExceptionTextClick(exceptionsText) }}
+          onMouseDown={e => { e.stopPropagation() }}
+          onMouseUp={e => { e.stopPropagation() }}
+        >{exceptionsText}<CopyButton /></ExceptionText>)
+    }
+
+    return valueField
+  }
+
+  renderBody() {
     return (
       <Collapse isOpened={this.props.open} springConfig={{ stiffness: 100, damping: 20 }}>
         <Body>
-          <Columns>
-            <Column width={this.props.columnWidths[0]}>
-              <Row margin>
-                <Label>Status</Label>
-                <StatusPill small status={this.props.item.status} />
-              </Row>
-              <Row margin>
-                <Label>Exception Details</Label>
-                <LinesEllipsis
-                  maxLine="10"
-                  text={exceptionsText}
-                />
-              </Row>
-              <Row margin noPadding>
-                <Label>Progress Updates</Label>
-              </Row>
-            </Column>
-            <Column>
-              <Row>
-                <Label>ID</Label>
-                <CopyValue value={this.props.item.id} width="auto" />
-              </Row>
-              <Row>
-                <Label>Depends on</Label>
-                {this.renderDependsOnValue()}
-              </Row>
-            </Column>
-          </Columns>
+          <Row>
+            <RowData width={this.props.columnWidths[0]}>
+              <Label>Status</Label>
+              <StatusPill small status={this.props.item.status} />
+            </RowData>
+            <RowData width={`${parseInt(this.props.columnWidths[1], 10) + parseInt(this.props.columnWidths[2], 10)}%`}>
+              <Label>ID</Label>
+              <CopyValue value={this.props.item.id} width="auto" />
+            </RowData>
+            <RowData width={this.props.columnWidths[3]}>
+              <Label>Depends on</Label>
+              {this.renderDependsOnValue()}
+            </RowData>
+          </Row>
+          <Row>
+            <RowData width="100%">
+              <Label>Exception Details</Label>
+              {this.renderExceptionDetails()}
+            </RowData>
+          </Row>
+          <Row style={{ marginBottom: 0 }}>
+            <RowData width="100%">
+              <Label>Progress Updates</Label>
+            </RowData>
+          </Row>
           {this.renderProgressUpdates()}
         </Body>
       </Collapse>
