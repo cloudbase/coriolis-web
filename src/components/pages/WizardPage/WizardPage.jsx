@@ -42,6 +42,7 @@ import ReplicaActions from '../../../actions/ReplicaActions'
 import ScheduleActions from '../../../actions/ScheduleActions'
 import ScheduleStore from '../../../stores/ScheduleStore'
 import Wait from '../../../utils/Wait'
+import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardConfig, executionOptions } from '../../../config'
 
 const Wrapper = styled.div``
@@ -92,10 +93,23 @@ class WizardPage extends React.Component {
 
   componentDidMount() {
     document.title = 'Coriolis Wizard'
+    KeyboardManager.onEnter('wizard', () => { this.handleEnterKey() })
+    KeyboardManager.onEsc('wizard', () => { this.handleEscKey() })
   }
 
   componentWillUnmount() {
     WizardActions.clearData()
+    KeyboardManager.removeKeyDown('wizard')
+  }
+
+  handleEnterKey() {
+    if (this.contentRef && !this.contentRef.isNextButtonDisabled()) {
+      this.handleNextClick()
+    }
+  }
+
+  handleEscKey() {
+    this.handleBackClick()
   }
 
   loadDataForPage(page) {
@@ -387,6 +401,7 @@ class WizardPage extends React.Component {
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
             onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
+            onContentRef={ref => { this.contentRef = ref }}
           />}
         />
         <Modal

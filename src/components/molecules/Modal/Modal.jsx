@@ -19,6 +19,7 @@ import Modal from 'react-modal'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
+import KeyboardManager from '../../../utils/KeyboardManager'
 
 const Title = styled.div`
   height: 48px;
@@ -56,7 +57,10 @@ class NewModal extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.isOpen === true && newProps.isOpen === false) {
+    if (!this.props.isOpen && newProps.isOpen) {
+      KeyboardManager.onKeyDown('modal', null, 1)
+    } else if (this.props.isOpen && !newProps.isOpen) {
+      KeyboardManager.removeKeyDown('modal')
       this.handleModalClose()
     }
   }

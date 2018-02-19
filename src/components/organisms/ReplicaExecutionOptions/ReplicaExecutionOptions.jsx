@@ -19,10 +19,11 @@ import PropTypes from 'prop-types'
 import { WizardOptionsField, Button } from 'components'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
+import KeyboardManager from '../../../utils/KeyboardManager'
+import { executionOptions } from '../../../config'
 
 import executionImage from './images/execution.svg'
 
-import { executionOptions } from '../../../config'
 
 const Wrapper = styled.div`
   display: flex;
@@ -69,6 +70,14 @@ class ReplicaExecutionOptions extends React.Component {
     this.state = {
       fields: [...executionOptions],
     }
+  }
+
+  componentDidMount() {
+    KeyboardManager.onEnter('execution-options', () => { this.props.onExecuteClick(this.state.fields) }, 2)
+  }
+
+  componentWillUnmount() {
+    KeyboardManager.removeKeyDown('execution-options')
   }
 
   getFieldValue(field) {

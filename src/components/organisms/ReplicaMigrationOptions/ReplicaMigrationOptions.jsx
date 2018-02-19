@@ -19,6 +19,7 @@ import PropTypes from 'prop-types'
 import { Button, WizardOptionsField } from 'components'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
+import KeyboardManager from '../../../utils/KeyboardManager'
 import replicaMigrationImage from './images/replica-migration.svg'
 
 const Wrapper = styled.div`
@@ -77,6 +78,14 @@ class ReplicaMigrationOptions extends React.Component {
         },
       ],
     }
+  }
+
+  componentDidMount() {
+    KeyboardManager.onEnter('migration-options', () => { this.props.onMigrateClick(this.state.fields) }, 2)
+  }
+
+  componentWillUnmount() {
+    KeyboardManager.removeKeyDown('migration-options')
   }
 
   handleValueChange(field, value) {
