@@ -46,6 +46,7 @@ const LoadingWrapper = styled.div`
 const InstancesWrapper = styled.div`
   margin-left: -32px;
   flex-grow: 1;
+  overflow: auto;
 `
 const InstanceContent = styled.div`
   display: flex;
@@ -120,8 +121,8 @@ const FilterSeparator = styled.div`
 const Pagination = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 64px;
-  margin-top: 32px;
+  margin: 32px 0 16px 0;
+  flex-shrink: 0;
 `
 const Page = styled.div`
   width: 30px;
