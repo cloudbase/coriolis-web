@@ -37,6 +37,7 @@ const getInputWidth = props => {
 const Input = styled.input`
   width: ${props => getInputWidth(props)};
   height: ${StyleProps.inputSizes.regular.height}px;
+  line-height: ${StyleProps.inputSizes.regular.height}px;
   border-radius: ${StyleProps.borderRadius};
   background-color: #FFF;
   border: 1px solid ${props => props.highlight ? Palette.alert : Palette.grayscale[3]};
