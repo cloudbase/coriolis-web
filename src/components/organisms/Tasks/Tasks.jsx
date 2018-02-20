@@ -90,6 +90,11 @@ class Tasks extends React.Component {
     this.dragStartPosition = null
   }
 
+  handleDependsOnClick(id) {
+    let item = this.props.items.find(i => i.id === id)
+    this.toggleItem(item)
+  }
+
   toggleItem(item) {
     let openedItems = this.state.openedItems
     if (openedItems.find(i => i.id === item.id)) {
@@ -124,6 +129,7 @@ class Tasks extends React.Component {
             item={item}
             columnWidths={ColumnWidths}
             open={Boolean(this.state.openedItems.find(i => i.id === item.id))}
+            onDependsOnClick={id => { this.handleDependsOnClick(id) }}
           />
         ))}
       </Body>
