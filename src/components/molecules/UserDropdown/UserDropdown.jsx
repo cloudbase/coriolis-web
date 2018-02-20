@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -58,12 +58,13 @@ const ListItem = styled.div`
 
 const Label = styled.div`
   display: inline-block;
-  cursor: pointer;
   white-space: nowrap;
-
-  &:hover {
-    color: ${Palette.primary};
-  }
+  ${props => props.selectable ? css`
+    cursor: pointer;
+    &:hover {
+      color: ${Palette.primary};
+    }
+  ` : ''}
 `
 
 const ListHeader = styled.div`
@@ -137,6 +138,26 @@ class UserDropdown extends React.Component {
     this.setState({ showDropdownList: !this.state.showDropdownList })
   }
 
+  renderNoUser() {
+    if (this.props.user) {
+      return null
+    }
+
+    return <Label>No signed in user</Label>
+  }
+
+  renderListHeader() {
+    if (!this.props.user) {
+      return null
+    }
+    return (
+      <ListHeader>
+        <Username>{this.props.user.name}</Username>
+        <Email>{this.props.user.email}</Email>
+      </ListHeader>
+    )
+  }
+
   renderList() {
     if (!this.state.showDropdownList) {
       return null
@@ -149,20 +170,20 @@ class UserDropdown extends React.Component {
     let list = (
       <List>
         <ListHeader>
-          <Username>{this.props.user.name}</Username>
-          <Email>{this.props.user.email}</Email>
+          {this.renderListHeader()}
+          {this.renderNoUser()}
         </ListHeader>
-        {items.map(item => {
+        {this.props.user ? items.map(item => {
           return (
             <ListItem
               key={item.value}
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
             >
-              <Label onClick={() => { this.handleItemClick(item) }}>{item.label}</Label>
+              <Label selectable onClick={() => { this.handleItemClick(item) }}>{item.label}</Label>
             </ListItem>
           )
-        })}
+        }) : null}
       </List>
     )
 
