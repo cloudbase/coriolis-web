@@ -92,10 +92,14 @@ const Label = styled.div`
   margin-bottom: 4px;
 `
 const Value = styled.div`
+  ${props => props.width ? css`width: ${props.width};` : ''}
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   ${props => props.primary ? css`color: ${Palette.primary};` : ''}
+  &:hover {
+    ${props => props.primaryOnHover ? css`color: ${Palette.primary};` : ''}
+  }
 `
 const ExceptionText = styled.div`
   cursor: pointer;
@@ -127,6 +131,7 @@ class TaskItem extends React.Component {
     columnWidths: PropTypes.array.isRequired,
     item: PropTypes.object.isRequired,
     open: PropTypes.bool,
+    onDependsOnClick: PropTypes.func,
   }
 
   getLastMessage() {
@@ -181,9 +186,10 @@ class TaskItem extends React.Component {
     if (this.props.item.depends_on && this.props.item.depends_on[0]) {
       return (
         <Value
-          primary
+          width="calc(100% - 16px)"
+          primaryOnHover
           textEllipsis
-          onClick={e => { e.stopPropagation() }}
+          onClick={e => { e.stopPropagation(); this.props.onDependsOnClick(this.props.item.depends_on[0]) }}
           onMouseDown={e => { e.stopPropagation() }}
           onMouseUp={e => { e.stopPropagation() }}
         >{this.props.item.depends_on[0]}</Value>)
