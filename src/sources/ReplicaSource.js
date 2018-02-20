@@ -36,6 +36,11 @@ class ReplicaSourceUtils {
   }
 
   static sortReplicas(replicas) {
+    if (replicas.length === 1) {
+      ReplicaSourceUtils.sortExecutions(replicas[0].executions)
+      return
+    }
+
     replicas.sort((a, b) => {
       ReplicaSourceUtils.sortExecutions(a.executions)
       ReplicaSourceUtils.sortExecutions(b.executions)
