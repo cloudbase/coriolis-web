@@ -16,7 +16,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import ReactDOM from 'react-dom'
-import offset from 'document-offset'
 
 import { DropdownButton } from 'components'
 
@@ -117,6 +116,7 @@ class Dropdown extends React.Component {
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
+    this.buttonRect = this.buttonRef.getBoundingClientRect()
   }
 
   componentDidUpdate() {
@@ -144,8 +144,7 @@ class Dropdown extends React.Component {
 
     let buttonHeight = this.buttonRef.offsetHeight
     let tipHeight = 8
-    let buttonOffset = offset(this.buttonRef)
-    let listTop = buttonOffset.top + buttonHeight + tipHeight
+    let listTop = this.buttonRect.top + buttonHeight + tipHeight
     let listHeight = this.listRef.offsetHeight
 
     if (listTop + listHeight > window.innerHeight) {
@@ -156,7 +155,7 @@ class Dropdown extends React.Component {
     }
 
     this.listRef.style.top = `${listTop}px`
-    this.listRef.style.left = `${buttonOffset.left}px`
+    this.listRef.style.left = `${this.buttonRect.left}px`
   }
 
   handlePageClick() {
