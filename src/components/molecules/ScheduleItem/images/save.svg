@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Delete Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Elements/Schedule-Line" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-968.000000, -24.000000)">
+        <g id="Icon/Save/Outline" transform="translate(968.000000, 24.000000)">
+            <path d="M15.25,4.05585279 L11.9441472,0.75 L1.96153846,0.75 C1.29882895,0.75 0.75,1.29882895 0.75,1.96153846 L0.75,14.0384615 C0.75,14.7011711 1.29882895,15.25 1.96153846,15.25 L14.0384615,15.25 C14.7011711,15.25 15.25,14.7011711 15.25,14.0384615 L15.25,4.05585279 Z" id="Path" stroke="#0044CA" stroke-width="1.5"></path>
+            <rect id="Rectangle-8" stroke="#0044CA" stroke-width="1.5" stroke-linejoin="round" x="4.5" y="10.5" width="7" height="4.5"></rect>
+            <rect id="Rectangle-8-Copy-2" stroke="#0044CA" stroke-width="1.5" stroke-linejoin="round" transform="translate(7.500000, 3.000000) scale(1, -1) translate(-7.500000, -3.000000) " x="3.5" y="0.5" width="8" height="5"></rect>
+            <rect id="Rectangle-12" fill="#0044CA" fill-rule="evenodd" x="8" y="0" width="2" height="4"></rect>
+        </g>
+    </g>
+</svg>

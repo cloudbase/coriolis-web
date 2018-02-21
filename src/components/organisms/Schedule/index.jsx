@@ -15,31 +15,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
-import styled, { css } from 'styled-components'
-import moment from 'moment'
+import styled from 'styled-components'
 
 import Button from '../../atoms/Button'
 import StatusImage from '../../atoms/StatusImage'
-import Switch from '../../atoms/Switch'
-import Dropdown from '../../molecules/Dropdown'
 import Modal from '../../molecules/Modal'
 import DropdownLink from '../../molecules/DropdownLink'
-import DatetimePicker from '../../molecules/DatetimePicker'
 import AlertModal from '../../organisms/AlertModal'
 import ReplicaExecutionOptions from '../../organisms/ReplicaExecutionOptions'
+import ScheduleItem from '../../molecules/ScheduleItem'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
-import NotificationActions from '../../../actions/NotificationActions'
 import DateUtils from '../../../utils/DateUtils'
-import type { Schedule as ScheduleType, ScheduleInfo as ScheduleInfoType } from '../../../types/Schedule'
+import type { Schedule as ScheduleType } from '../../../types/Schedule'
 import type { Field } from '../../../types/Field'
 import { executionOptions } from '../../../config'
 
-import deleteImage from './images/delete.svg'
-import deleteHoverImage from './images/delete-hover.svg'
-import saveImage from './images/save.svg'
-import saveHoverImage from './images/save-hover.svg'
 import scheduleImage from './images/schedule.svg'
 
 const Wrapper = styled.div`
@@ -68,43 +60,6 @@ const HeaderData = styled.div`
   text-transform: uppercase;
 `
 const Body = styled.div``
-const Row = styled.div`
-  display: flex;
-  border-top: 1px solid ${Palette.grayscale[1]};
-  padding: 16px 0;
-  position: relative;
-  &:last-child {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
-  }
-`
-const ItemButton = props => css`
-  width: 16px;
-  height: 16px;
-  position: absolute;
-  cursor: pointer;
-  top: 24px;
-  ${props.hidden ? 'display: none;' : ''}
-`
-const DeleteButton = styled.div`
-  ${props => ItemButton(props)}
-  background: url('${deleteImage}') center no-repeat;
-  right: -32px;
-  
-  &:hover {
-    background: url('${deleteHoverImage}') center no-repeat;
-  }
-`
-const SaveButton = styled.div`
-  ${props => ItemButton(props)}
-  background: url('${saveImage}') center no-repeat;
-  right: -64px;
-  &:hover {
-    background: url('${saveHoverImage}') center no-repeat;
-  }
-`
-const RowData = styled.div`
-  width: ${props => props.width};
-`
 const NoSchedules = styled.div`
   display: flex;
   flex-direction: column;
@@ -124,23 +79,6 @@ const ScheduleImage = styled.div`
   ${StyleProps.exactSize('96px')}
   background: url('${scheduleImage}') no-repeat center;
   margin-bottom: 46px;
-`
-const DropdownStyled = styled(Dropdown)`
-  font-size: 12px;
-`
-const Label = styled.div`
-  background: ${Palette.grayscale[7]};
-  height: 100%;
-  font-size: 12px;
-  margin-right: 8px;
-  border-radius: ${StyleProps.borderRadius};
-  padding: 0 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  line-height: 35px;
-  margin-bottom: -8px;
 `
 const Footer = styled.div`
   margin-top: 16px;
@@ -167,7 +105,6 @@ const Buttons = styled.div`
 `
 
 type TimeZoneValue = 'local' | 'utc'
-type DictItem = { label: string, value: any }
 type Props = {
   schedules: ScheduleType[],
   unsavedSchedules: ScheduleType[],
@@ -176,7 +113,7 @@ type Props = {
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onChange: (scheduleId: ?string, schedule: ScheduleType, forceSave?: boolean) => void,
   onRemove: (scheduleId: ?string) => void,
-  onSaveSchedule: (schedule: ScheduleType) => void,
+  onSaveSchedule?: (schedule: ScheduleType) => void,
   adding?: boolean,
   loading?: boolean,
   secondaryEmpty?: boolean,
@@ -189,9 +126,12 @@ type State = {
 }
 
 const colWidths = ['6%', '18%', '10%', '18%', '10%', '10%', '23%', '5%']
-const daysInMonths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 class Schedule extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
+    unsavedSchedules: [],
+  }
+
+  static defaultProps = {
     unsavedSchedules: [],
   }
 
@@ -204,30 +144,6 @@ class Schedule extends React.Component<Props, State> {
       selectedSchedule: null,
       executionOptions: null,
     }
-  }
-
-  getFieldValue(schedule: ?ScheduleInfoType, items: DictItem[], fieldName: string, zeroBasedIndex?: boolean, defaultSelectedIndex?: number) {
-    if (schedule === null || schedule === undefined) {
-      return defaultSelectedIndex !== undefined ? items[defaultSelectedIndex] : items[0]
-    }
-
-    if (schedule[fieldName] === null || schedule[fieldName] === undefined) {
-      return items[0]
-    }
-
-    if (zeroBasedIndex) {
-      let value = schedule[fieldName]
-
-      if (fieldName === 'hour') {
-        if (this.props.timezone === 'local') {
-          value = DateUtils.getLocalHour(value)
-        }
-      }
-
-      return items[value + 1]
-    }
-
-    return items[schedule[fieldName]]
   }
 
   handleDeleteClick(selectedSchedule: ScheduleType) {
@@ -272,35 +188,6 @@ class Schedule extends React.Component<Props, State> {
     options[fieldName] = value
 
     this.setState({ executionOptions: options })
-  }
-
-  handleMonthChange(s: ScheduleType, item: DictItem) {
-    let month = item.value || 1
-    let maxNumDays = daysInMonths[month - 1]
-    let change: ScheduleType = { schedule: { month: item.value } }
-    if (s.schedule && s.schedule.dom && s.schedule.dom > maxNumDays) {
-      if (change.schedule) change.schedule.dom = maxNumDays
-    }
-
-    this.props.onChange(s.id, change)
-  }
-
-  handleExpirationDateChange(s: ScheduleType, date: Date) {
-    let newDate = moment(date)
-    if (newDate.diff(new Date(), 'minutes') < 60) {
-      NotificationActions.notify('Please select a further expiration date.', 'error')
-      return
-    }
-
-    this.props.onChange(s.id, { expiration_date: newDate.toDate() })
-  }
-
-  handleHourChange(s: ScheduleType, hour: number) {
-    if (this.props.timezone === 'local' && hour !== null && hour !== undefined) {
-      hour = DateUtils.getUtcHour(hour)
-    }
-
-    this.props.onChange(s.id, { schedule: { hour } })
   }
 
   handleAddScheduleClick() {
@@ -368,202 +255,22 @@ class Schedule extends React.Component<Props, State> {
     )
   }
 
-  renderLabel(value: DictItem) {
-    return <Label>{value.label}</Label>
-  }
-
-  renderMonthValue(s: ScheduleType) {
-    let items = [{ label: 'Any', value: null }]
-    let months = moment.months()
-    months.forEach((label, value) => {
-      items.push({ label, value: value + 1 })
-    })
-
-    if (s.enabled) {
-      return this.renderLabel(this.getFieldValue(s.schedule, items, 'month'))
-    }
-
-    return (
-      <DropdownStyled
-        centered
-        width={136}
-        items={items}
-        useBold={this.shouldUseBold(s.id, 'month')}
-        selectedItem={this.getFieldValue(s.schedule, items, 'month')}
-        onChange={item => { this.handleMonthChange(s, item) }}
-      />
-    )
-  }
-
-  renderDayOfMonthValue(s: ScheduleType) {
-    let month = s.schedule ? s.schedule.month || 1 : 1
-    let items = [{ label: 'Any', value: null }]
-    for (let i = 1; i <= daysInMonths[month - 1]; i += 1) {
-      items.push({ label: i.toString(), value: i })
-    }
-
-    if (s.enabled) {
-      return this.renderLabel(this.getFieldValue(s.schedule, items, 'dom'))
-    }
-
-    return (
-      <DropdownStyled
-        centered
-        width={72}
-        items={items}
-        useBold={this.shouldUseBold(s.id, 'dom')}
-        selectedItem={this.getFieldValue(s.schedule, items, 'dom')}
-        onChange={item => { this.props.onChange(s.id, { schedule: { dom: item.value } }) }}
-      />
-    )
-  }
-
-  renderDayOfWeekValue(s: ScheduleType) {
-    let items = [{ label: 'Any', value: null }]
-    // $FlowIssue
-    let days = moment.weekdays(true)
-    days.forEach((label, value) => {
-      items.push({ label, value })
-    })
-
-    if (s.enabled) {
-      return this.renderLabel(this.getFieldValue(s.schedule, items, 'dow', true))
-    }
-
-    return (
-      <DropdownStyled
-        centered
-        width={136}
-        items={items}
-        useBold={this.shouldUseBold(s.id, 'dow')}
-        selectedItem={this.getFieldValue(s.schedule, items, 'dow', true)}
-        onChange={item => { this.props.onChange(s.id, { schedule: { dow: item.value } }) }}
-      />
-    )
-  }
-
-  renderHourValue(s: ScheduleType) {
-    let items = [{ label: 'Any', value: null }]
-    for (let i = 0; i <= 23; i += 1) {
-      items.push({ label: this.padNumber(i), value: i })
-    }
-
-    if (s.enabled) {
-      return this.renderLabel(this.getFieldValue(s.schedule, items, 'hour', true, 1))
-    }
-
-    return (
-      <DropdownStyled
-        centered
-        width={72}
-        items={items}
-        useBold={this.shouldUseBold(s.id, 'hour')}
-        selectedItem={this.getFieldValue(s.schedule, items, 'hour', true, 1)}
-        onChange={item => { this.handleHourChange(s, item.value) }}
-      />
-    )
-  }
-
-  renderMinuteValue(s: ScheduleType) {
-    let items = [{ label: 'Any', value: null }]
-    for (let i = 0; i <= 59; i += 1) {
-      items.push({ label: this.padNumber(i), value: i })
-    }
-
-    if (s.enabled) {
-      return this.renderLabel(this.getFieldValue(s.schedule, items, 'minute', true, 1))
-    }
-
-    return (
-      <DropdownStyled
-        centered
-        width={72}
-        items={items}
-        useBold={this.shouldUseBold(s.id, 'minute')}
-        selectedItem={this.getFieldValue(s.schedule, items, 'minute', true, 1)}
-        onChange={item => { this.props.onChange(s.id, { schedule: { minute: item.value } }) }}
-      />
-    )
-  }
-
-  renderExpirationValue(s: ScheduleType) {
-    let date = s.expiration_date ? moment(s.expiration_date) : null
-    let labelDate = date
-    if (this.props.timezone === 'utc' && date) {
-      labelDate = DateUtils.getUtcTime(date)
-    }
-
-    if (s.enabled) {
-      return this.renderLabel({ label: labelDate ? labelDate.format('DD/MM/YYYY hh:mm A') : '-', value: '' })
-    }
-
-    return (
-      <DatetimePicker
-        value={date ? date.toDate() : null}
-        timezone={this.props.timezone}
-        useBold={this.shouldUseBold(s.id, 'expiration_date', true)}
-        onChange={date => { this.handleExpirationDateChange(s, date) }}
-        isValidDate={date => moment(date).isAfter(moment())}
-      />
-    )
-  }
-
   renderBody() {
     return (
       <Body>
-        {this.props.schedules.map((s, i) => {
-          return (
-            <Row key={i}>
-              <RowData width={colWidths[0]}>
-                <Switch
-                  noLabel
-                  height={16}
-                  checked={s.enabled !== null && s.enabled !== undefined ? s.enabled : false}
-                  onChange={enabled => { this.props.onChange(s.id, { enabled }, true) }}
-                />
-              </RowData>
-              <RowData width={colWidths[1]}>
-                {this.renderMonthValue(s)}
-              </RowData>
-              <RowData width={colWidths[2]}>
-                {this.renderDayOfMonthValue(s)}
-              </RowData>
-              <RowData width={colWidths[3]}>
-                {this.renderDayOfWeekValue(s)}
-              </RowData>
-              <RowData width={colWidths[4]}>
-                {this.renderHourValue(s)}
-              </RowData>
-              <RowData width={colWidths[5]}>
-                {this.renderMinuteValue(s)}
-              </RowData>
-              <RowData width={colWidths[6]}>
-                {this.renderExpirationValue(s)}
-              </RowData>
-              <RowData width={colWidths[7]}>
-                <Button
-                  onClick={() => { this.handleShowOptions(s) }}
-                  secondary
-                  hollow={!this.areExecutionOptionsChanged(s)}
-                  width="40px"
-                  style={{
-                    fontSize: '9px',
-                    letterSpacing: '1px',
-                    padding: '0 0 1px 3px',
-                  }}
-                >•••</Button>
-              </RowData>
-              <DeleteButton
-                onClick={() => { this.handleDeleteClick(s) }}
-                hidden={s.enabled}
-              />
-              <SaveButton
-                onClick={() => { this.props.onSaveSchedule(s) }}
-                hidden={s.enabled || !this.props.unsavedSchedules.find(us => us.id === s.id)}
-              />
-            </Row>
-          )
-        })}
+        {this.props.schedules.map(schedule => (
+          <ScheduleItem
+            key={schedule.id}
+            colWidths={colWidths}
+            item={schedule}
+            unsavedSchedules={this.props.unsavedSchedules}
+            timezone={this.props.timezone}
+            onChange={(data, forceSave) => { this.props.onChange(schedule.id, data, forceSave) }}
+            onSaveSchedule={() => { if (this.props.onSaveSchedule) this.props.onSaveSchedule(schedule) }}
+            onShowOptionsClick={() => { this.handleShowOptions(schedule) }}
+            onDeleteClick={() => { this.handleDeleteClick(schedule) }}
+          />
+        ))}
       </Body>
     )
   }
