@@ -53,7 +53,8 @@ type Props = {
   value: ?Date,
   onChange: (date: Date) => void,
   isValidDate: (currentDate: Date, selectedDate: Date) => boolean,
-  timezone: 'utc' | 'local'
+  timezone: 'utc' | 'local',
+  useBold?: boolean,
 }
 type State = {
   showPicker: boolean,
@@ -133,6 +134,7 @@ class DatetimePicker extends React.Component<Props, State> {
           width={176}
           value={(timezoneDate && moment(timezoneDate).format('DD/MM/YYYY hh:mm A')) || '-'}
           centered
+          useBold={this.props.useBold}
           onClick={() => { this.handleDropdownClick() }}
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}

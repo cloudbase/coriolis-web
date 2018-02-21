@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import moment from 'moment'
 
 import Button from '../../atoms/Button'
@@ -37,6 +37,8 @@ import type { Field } from '../../../types/Field'
 
 import deleteImage from './images/delete.svg'
 import deleteHoverImage from './images/delete-hover.svg'
+import saveImage from './images/save.svg'
+import saveHoverImage from './images/save-hover.svg'
 import scheduleImage from './images/schedule.svg'
 
 const Wrapper = styled.div`
@@ -74,18 +76,29 @@ const Row = styled.div`
     border-bottom: 1px solid ${Palette.grayscale[1]};
   }
 `
-const DeleteButton = styled.div`
+const ItemButton = props => css`
   width: 16px;
   height: 16px;
-  background: url('${deleteImage}') center no-repeat;
   position: absolute;
   cursor: pointer;
-  right: -32px;
   top: 24px;
-  ${props => props.hidden ? 'display: none;' : ''}
-
+  ${props.hidden ? 'display: none;' : ''}
+`
+const DeleteButton = styled.div`
+  ${props => ItemButton(props)}
+  background: url('${deleteImage}') center no-repeat;
+  right: -32px;
+  
   &:hover {
     background: url('${deleteHoverImage}') center no-repeat;
+  }
+`
+const SaveButton = styled.div`
+  ${props => ItemButton(props)}
+  background: url('${saveImage}') center no-repeat;
+  right: -64px;
+  &:hover {
+    background: url('${saveHoverImage}') center no-repeat;
   }
 `
 const RowData = styled.div`
@@ -131,7 +144,7 @@ const Label = styled.div`
 const Footer = styled.div`
   margin-top: 16px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 `
 const Timezone = styled.div`
@@ -141,16 +154,28 @@ const Timezone = styled.div`
 const TimezoneLabel = styled.div`
   margin-right: 4px;
 `
+const Buttons = styled.div`
+  display: flex;
+  flex-direction: column;
+  button {
+    margin-bottom: 16px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+`
 
 type TimeZoneValue = 'local' | 'utc'
 type DictItem = { label: string, value: any }
 type Props = {
   schedules: ScheduleType[],
+  unsavedSchedules: ScheduleType[],
   timezone: TimeZoneValue,
   onTimezoneChange: (timezone: TimeZoneValue) => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
-  onChange: (scheduleId: ?string, schedule: ScheduleType) => void,
+  onChange: (scheduleId: ?string, schedule: ScheduleType, forceSave?: boolean) => void,
   onRemove: (scheduleId: ?string) => void,
+  onSaveSchedule: (schedule: ScheduleType) => void,
   adding?: boolean,
   loading?: boolean,
   secondaryEmpty?: boolean,
@@ -165,6 +190,10 @@ type State = {
 const colWidths = ['6%', '18%', '10%', '18%', '10%', '10%', '23%', '5%']
 const daysInMonths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 class Schedule extends React.Component<Props, State> {
+  static defaultProps: $Shape<Props> = {
+    unsavedSchedules: [],
+  }
+
   constructor() {
     super()
 
@@ -228,7 +257,7 @@ class Schedule extends React.Component<Props, State> {
       options[f.name] = f.value || false
     })
 
-    this.props.onChange(this.state.selectedSchedule ? this.state.selectedSchedule.id : null, options)
+    this.props.onChange(this.state.selectedSchedule ? this.state.selectedSchedule.id : null, options, true)
   }
 
   handleExecutionOptionsChange(fieldName: string, value: string) {
@@ -289,6 +318,18 @@ class Schedule extends React.Component<Props, State> {
     return number.toString()
   }
 
+  shouldUseBold(scheduleId: ?string, fieldName: string, isRootField?: boolean) {
+    const unsavedSchedule = this.props.unsavedSchedules.find(s => s.id === scheduleId)
+    if (!unsavedSchedule) {
+      return false
+    }
+    let data = isRootField ? unsavedSchedule : unsavedSchedule.schedule
+    if (data && data[fieldName] !== undefined && data[fieldName] !== null) {
+      return true
+    }
+    return false
+  }
+
   renderLoading() {
     if (!this.props.loading) {
       return null
@@ -334,6 +375,7 @@ class Schedule extends React.Component<Props, State> {
         centered
         width={136}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'month')}
         selectedItem={this.getFieldValue(s.schedule, items, 'month')}
         onChange={item => { this.handleMonthChange(s, item) }}
       />
@@ -356,6 +398,7 @@ class Schedule extends React.Component<Props, State> {
         centered
         width={72}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'dom')}
         selectedItem={this.getFieldValue(s.schedule, items, 'dom')}
         onChange={item => { this.props.onChange(s.id, { schedule: { dom: item.value } }) }}
       />
@@ -379,6 +422,7 @@ class Schedule extends React.Component<Props, State> {
         centered
         width={136}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'dow')}
         selectedItem={this.getFieldValue(s.schedule, items, 'dow', true)}
         onChange={item => { this.props.onChange(s.id, { schedule: { dow: item.value } }) }}
       />
@@ -400,6 +444,7 @@ class Schedule extends React.Component<Props, State> {
         centered
         width={72}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'hour')}
         selectedItem={this.getFieldValue(s.schedule, items, 'hour', true, 1)}
         onChange={item => { this.handleHourChange(s, item.value) }}
       />
@@ -421,6 +466,7 @@ class Schedule extends React.Component<Props, State> {
         centered
         width={72}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'minute')}
         selectedItem={this.getFieldValue(s.schedule, items, 'minute', true, 1)}
         onChange={item => { this.props.onChange(s.id, { schedule: { minute: item.value } }) }}
       />
@@ -442,6 +488,7 @@ class Schedule extends React.Component<Props, State> {
       <DatetimePicker
         value={date ? date.toDate() : null}
         timezone={this.props.timezone}
+        useBold={this.shouldUseBold(s.id, 'expiration_date', true)}
         onChange={date => { this.handleExpirationDateChange(s, date) }}
         isValidDate={date => moment(date).isAfter(moment())}
       />
@@ -459,7 +506,7 @@ class Schedule extends React.Component<Props, State> {
                   noLabel
                   height={16}
                   checked={s.enabled !== null && s.enabled !== undefined ? s.enabled : false}
-                  onChange={enabled => { this.props.onChange(s.id, { enabled }) }}
+                  onChange={enabled => { this.props.onChange(s.id, { enabled }, true) }}
                 />
               </RowData>
               <RowData width={colWidths[1]}>
@@ -489,7 +536,11 @@ class Schedule extends React.Component<Props, State> {
               </RowData>
               <DeleteButton
                 onClick={() => { this.handleDeleteClick(s) }}
-                hidden={s.enabled !== null && s.enabled !== undefined ? s.enabled : false}
+                hidden={s.enabled}
+              />
+              <SaveButton
+                onClick={() => { this.props.onSaveSchedule(s) }}
+                hidden={s.enabled || !this.props.unsavedSchedules.find(us => us.id === s.id)}
               />
             </Row>
           )
@@ -539,11 +590,13 @@ class Schedule extends React.Component<Props, State> {
 
     return (
       <Footer>
-        <Button
-          disabled={this.props.adding}
-          secondary
-          onClick={() => { this.handleAddScheduleClick() }}
-        >Add Schedule</Button>
+        <Buttons>
+          <Button
+            disabled={this.props.adding}
+            secondary
+            onClick={() => { this.handleAddScheduleClick() }}
+          >Add Schedule</Button>
+        </Buttons>
         <Timezone>
           <TimezoneLabel>Show all times in</TimezoneLabel>
           <DropdownLink
