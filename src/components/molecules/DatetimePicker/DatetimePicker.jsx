@@ -54,6 +54,7 @@ class DatetimePicker extends React.Component {
     onChange: PropTypes.func.isRequired,
     isValidDate: PropTypes.func,
     timezone: PropTypes.string,
+    useBold: PropTypes.bool,
   }
 
   constructor() {
@@ -125,6 +126,7 @@ class DatetimePicker extends React.Component {
           width={176}
           value={(timezoneDate && moment(timezoneDate).format('DD/MM/YYYY hh:mm A')) || '-'}
           centered
+          useBold={this.props.useBold}
           onClick={() => { this.handleDropdownClick() }}
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}

@@ -130,7 +130,7 @@ const Label = styled.div`
 const Footer = styled.div`
   margin-top: 16px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 `
 const Timezone = styled.div`
@@ -140,20 +140,37 @@ const Timezone = styled.div`
 const TimezoneLabel = styled.div`
   margin-right: 4px;
 `
+const Buttons = styled.div`
+  display: flex;
+  flex-direction: column;
+  button {
+    margin-bottom: 16px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+`
 
 const colWidths = ['6%', '18%', '10%', '18%', '10%', '10%', '23%', '5%']
 const daysInMonths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 class Schedule extends React.Component {
   static propTypes = {
     schedules: PropTypes.array,
+    unsavedSchedules: PropTypes.array,
     timezone: PropTypes.string,
     onTimezoneChange: PropTypes.func,
     onAddScheduleClick: PropTypes.func,
     onChange: PropTypes.func,
     onRemove: PropTypes.func,
+    onSaveChanges: PropTypes.func,
     adding: PropTypes.bool,
     loading: PropTypes.bool,
+    saving: PropTypes.bool,
     secondaryEmpty: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    unsavedSchedules: [],
   }
 
   constructor() {
@@ -199,6 +216,18 @@ class Schedule extends React.Component {
     return number
   }
 
+  shouldUseBold(scheduleId, fieldName, isRootField) {
+    const unsavedSchedule = this.props.unsavedSchedules.find(s => s.id === scheduleId)
+    if (!unsavedSchedule) {
+      return false
+    }
+    let data = isRootField ? unsavedSchedule : unsavedSchedule.schedule
+    if (data && data[fieldName] !== undefined && data[fieldName] !== null) {
+      return true
+    }
+    return false
+  }
+
   handleDeleteClick(selectedSchedule) {
     this.setState({ showDeleteConfirmation: true, selectedSchedule })
   }
@@ -227,7 +256,7 @@ class Schedule extends React.Component {
       options[f.name] = f.value || false
     })
 
-    this.props.onChange(this.state.selectedSchedule.id, options)
+    this.props.onChange(this.state.selectedSchedule.id, options, true)
   }
 
   handleExecutionOptionsChange(fieldName, value) {
@@ -325,6 +354,7 @@ class Schedule extends React.Component {
         centered
         width={136}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'month')}
         selectedItem={this.getFieldValue(s.schedule, items, 'month')}
         onChange={item => { this.handleMonthChange(s, item) }}
       />
@@ -347,6 +377,7 @@ class Schedule extends React.Component {
         centered
         width={72}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'dom')}
         selectedItem={this.getFieldValue(s.schedule, items, 'dom')}
         onChange={item => { this.props.onChange(s.id, { schedule: { dom: item.value } }) }}
       />
@@ -369,6 +400,7 @@ class Schedule extends React.Component {
         centered
         width={136}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'dow')}
         selectedItem={this.getFieldValue(s.schedule, items, 'dow', true)}
         onChange={item => { this.props.onChange(s.id, { schedule: { dow: item.value } }) }}
       />
@@ -390,6 +422,7 @@ class Schedule extends React.Component {
         centered
         width={72}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'hour')}
         selectedItem={this.getFieldValue(s.schedule, items, 'hour', true, 1)}
         onChange={item => { this.handleHourChange(s, item.value) }}
       />
@@ -411,6 +444,7 @@ class Schedule extends React.Component {
         centered
         width={72}
         items={items}
+        useBold={this.shouldUseBold(s.id, 'minute')}
         selectedItem={this.getFieldValue(s.schedule, items, 'minute', true, 1)}
         onChange={item => { this.props.onChange(s.id, { schedule: { minute: item.value } }) }}
       />
@@ -432,6 +466,7 @@ class Schedule extends React.Component {
       <DatetimePicker
         value={date}
         timezone={this.props.timezone}
+        useBold={this.shouldUseBold(s.id, 'expiration_date', true)}
         onChange={date => { this.handleExpirationDateChange(s, date) }}
         isValidDate={date => date.isAfter(moment())}
       />
@@ -449,7 +484,7 @@ class Schedule extends React.Component {
                   noLabel
                   height={16}
                   checked={s.enabled !== null && s.enabled !== undefined ? s.enabled : false}
-                  onChange={enabled => { this.props.onChange(s.id, { enabled }) }}
+                  onChange={enabled => { this.props.onChange(s.id, { enabled }, true) }}
                 />
               </RowData>
               <RowData width={colWidths[1]}>
@@ -529,11 +564,19 @@ class Schedule extends React.Component {
 
     return (
       <Footer>
-        <Button
-          disabled={this.props.adding}
-          secondary
-          onClick={() => { this.handleAddScheduleClick() }}
-        >Add Schedule</Button>
+        <Buttons>
+          <Button
+            disabled={this.props.adding}
+            secondary
+            onClick={() => { this.handleAddScheduleClick() }}
+          >Add Schedule</Button>
+          {this.props.unsavedSchedules.length > 0 ? (
+            <Button
+              onClick={this.props.onSaveChanges}
+              disabled={this.props.saving}
+            >Save Changes</Button>
+          ) : null}
+        </Buttons>
         <Timezone>
           <TimezoneLabel>Show all times in</TimezoneLabel>
           <DropdownLink

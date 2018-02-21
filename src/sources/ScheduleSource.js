@@ -127,24 +127,24 @@ class ScheduleSource {
     })
   }
 
-  static updateSchedule(replicaId, scheduleId, scheduleData, scheduleOldData) {
+  static updateSchedule(replicaId, scheduleId, scheduleData, scheduleOldData, unsavedData) {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let payload = {}
-      if (scheduleData.expiration_date) {
-        payload.expiration_date = moment(scheduleData.expiration_date).toISOString()
-      }
       if (scheduleData.enabled !== null && scheduleData.enabled !== undefined) {
         payload.enabled = scheduleData.enabled
       }
       if (scheduleData.shutdown_instances !== null && scheduleData.shutdown_instances !== undefined) {
         payload.shutdown_instance = scheduleData.shutdown_instances
       }
-      if (scheduleData.schedule !== null && scheduleData.schedule !== undefined && Object.keys(scheduleData.schedule).length) {
+      if (unsavedData && unsavedData.expiration_date) {
+        payload.expiration_date = moment(unsavedData.expiration_date).toISOString()
+      }
+      if (unsavedData && unsavedData.schedule !== null && unsavedData.schedule !== undefined && Object.keys(unsavedData.schedule).length) {
         payload.schedule = { ...scheduleOldData.schedule }
-        Object.keys(scheduleData.schedule).forEach(prop => {
-          if (scheduleData.schedule[prop] !== null && scheduleData.schedule[prop] !== undefined) {
-            payload.schedule[prop] = scheduleData.schedule[prop]
+        Object.keys(unsavedData.schedule).forEach(prop => {
+          if (unsavedData.schedule[prop] !== null && unsavedData.schedule[prop] !== undefined) {
+            payload.schedule[prop] = unsavedData.schedule[prop]
           } else {
             delete payload.schedule[prop]
           }
@@ -165,6 +165,38 @@ class ScheduleSource {
         }
         resolve(s)
       }, reject).catch(reject)
+    })
+  }
+
+  static updateMultiple(replicaId, schedulesToUpdate) {
+    return new Promise((resolve, reject) => {
+      let updatedSchedules = []
+      let processed = 0
+      schedulesToUpdate.forEach(s => {
+        let projectId = cookie.get('projectId')
+
+        Api.sendAjaxRequest({
+          url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/schedules/${s.id}`,
+          method: 'PUT',
+          data: s,
+        }).then(response => {
+          let updatedSchedule = { ...response.data.schedule }
+          if (updatedSchedule.expiration_date) {
+            updatedSchedule.expiration_date = DateUtils.getLocalTime(updatedSchedule.expiration_date)
+          }
+          if (updatedSchedule.shutdown_instance) {
+            updatedSchedule.shutdown_instances = updatedSchedule.shutdown_instance
+          }
+
+          updatedSchedules.push(updatedSchedule)
+          processed += 1
+
+          if (processed === schedulesToUpdate.length) {
+            resolve(updatedSchedules)
+          }
+        }, err => { processed += 1; if (processed === schedulesToUpdate.length) reject(err) })
+          .catch(err => { processed += 1; if (processed === schedulesToUpdate.length) reject(err) })
+      })
     })
   }
 }

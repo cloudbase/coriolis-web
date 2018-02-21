@@ -92,7 +92,7 @@ const StyledButton = styled.button`
   ${props => StyleProps.exactWidth(getWidth(props))}
   cursor: pointer;
   font-size: inherit;
-  transition: all ${StyleProps.animations.swift};
+  transition: background-color ${StyleProps.animations.swift}, opacity ${StyleProps.animations.swift};
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;

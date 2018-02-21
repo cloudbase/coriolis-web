@@ -90,6 +90,7 @@ class ReplicaDetailsPage extends React.Component {
 
   componentWillUnmount() {
     ReplicaActions.clearDetails()
+    ScheduleActions.clearUnsavedSchedules()
     clearInterval(this.pollTimeout)
   }
 
@@ -186,13 +187,18 @@ class ReplicaDetailsPage extends React.Component {
     ScheduleActions.addSchedule(this.props.match.params.id, schedule)
   }
 
-  handleScheduleChange(scheduleId, data) {
+  handleScheduleChange(scheduleId, data, forceSave) {
     let oldData = this.props.scheduleStore.schedules.find(s => s.id === scheduleId)
-    ScheduleActions.updateSchedule(this.props.match.params.id, scheduleId, data, oldData)
+    let unsavedData = this.props.scheduleStore.unsavedSchedules.find(s => s.id === scheduleId)
+    ScheduleActions.updateSchedule(this.props.match.params.id, scheduleId, data, oldData, unsavedData, forceSave)
   }
 
   handleScheduleRemove(scheduleId) {
     ScheduleActions.removeSchedule(this.props.match.params.id, scheduleId)
+  }
+
+  handleScheduleSaveChanges() {
+    ScheduleActions.saveChanges(this.props.match.params.id, this.props.scheduleStore.schedules, this.props.scheduleStore.unsavedSchedules)
   }
 
   handleCancelExecutionClick(confirmationItem) {
@@ -256,8 +262,9 @@ class ReplicaDetailsPage extends React.Component {
             onDeleteReplicaClick={() => { this.handleDeleteReplicaClick() }}
             onDeleteReplicaDisksClick={() => { this.handleDeleteReplicaDisksClick() }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
-            onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
+            onScheduleChange={(scheduleId, data, forceSave) => { this.handleScheduleChange(scheduleId, data, forceSave) }}
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
+            onScheduleSaveChanges={() => { this.handleScheduleSaveChanges() }}
           />}
         />
         <Modal

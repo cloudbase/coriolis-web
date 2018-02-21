@@ -15,12 +15,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import alt from '../alt'
 import ScheduleActions from '../actions/ScheduleActions'
 
+const updateSchedule = (schedules, id, data) => {
+  return schedules.map(schedule => {
+    if (schedule.id === id) {
+      let newSchedule = { ...schedule, ...data }
+      if (data.schedule !== null && data.schedule !== undefined && Object.keys(data.schedule).length) {
+        newSchedule.schedule = { ...schedule.schedule, ...data.schedule || {} }
+      }
+      return newSchedule
+    }
+
+    return { ...schedule }
+  })
+}
+
 class ScheduleStore {
   constructor() {
     this.loading = false
     this.schedules = []
+    this.unsavedSchedules = []
     this.scheduling = false
     this.adding = false
+    this.saving = false
 
     this.bindListeners({
       handleScheduleMultiple: ScheduleActions.SCHEDULE_MULTIPLE,
@@ -35,6 +51,10 @@ class ScheduleStore {
       handleRemoveSchedule: ScheduleActions.REMOVE_SCHEDULE,
       handleUpdateSchedule: ScheduleActions.UPDATE_SCHEDULE,
       handleUpdateScheduleSuccess: ScheduleActions.UPDATE_SCHEDULE_SUCCESS,
+      handleClearUnsavedSchedules: ScheduleActions.CLEAR_UNSAVED_SCHEDULES,
+      handleSaveChanges: ScheduleActions.SAVE_CHANGES,
+      handleSaveChangesSuccess: ScheduleActions.SAVE_CHANGES_SUCCESS,
+      handleSaveChangesFailed: ScheduleActions.SAVE_CHANGES_FAILED,
     })
   }
 
@@ -78,20 +98,20 @@ class ScheduleStore {
 
   handleRemoveSchedule({ scheduleId }) {
     this.schedules = this.schedules.filter(s => s.id !== scheduleId)
+    this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== scheduleId)
   }
 
-  handleUpdateSchedule({ scheduleId, data }) {
-    this.schedules = this.schedules.map(schedule => {
-      if (schedule.id === scheduleId) {
-        let newSchedule = { ...schedule }
-        if (data.schedule !== null && data.schedule !== undefined && Object.keys(data.schedule).length) {
-          newSchedule.schedule = { ...schedule.schedule, ...data.schedule || {} }
-        }
-        return newSchedule
-      }
+  handleUpdateSchedule({ scheduleId, data, forceSave }) {
+    this.schedules = updateSchedule(this.schedules, scheduleId, data)
 
-      return { ...schedule }
-    })
+    if (!forceSave) {
+      const unsavedSchedule = this.unsavedSchedules.find(s => s.id === scheduleId)
+      if (unsavedSchedule) {
+        this.unsavedSchedules = updateSchedule(this.unsavedSchedules, scheduleId, data)
+      } else {
+        this.unsavedSchedules.push({ id: scheduleId, ...data })
+      }
+    }
   }
 
   handleUpdateScheduleSuccess(schedule) {
@@ -102,6 +122,34 @@ class ScheduleStore {
 
       return { ...s }
     })
+    this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== schedule.id)
+  }
+
+  handleClearUnsavedSchedules() {
+    this.unsavedSchedules = []
+    this.saving = false
+  }
+
+  handleSaveChanges() {
+    this.saving = true
+  }
+
+  handleSaveChangesSuccess(updatedSchedules) {
+    this.unsavedSchedules = []
+    this.schedules = this.schedules.map(s => {
+      let updatedSchedule = updatedSchedules.find(us => us.id === s.id)
+      if (updatedSchedule) {
+        return { ...updatedSchedule }
+      }
+
+      return { ...s }
+    })
+    this.saving = false
+  }
+
+  handleSaveChangesFailed() {
+    this.unsavedSchedules = []
+    this.saving = false
   }
 }
 

@@ -84,13 +84,15 @@ class ScheduleActions {
     return response || true
   }
 
-  updateSchedule(replicaId, scheduleId, data, oldData) {
-    ScheduleSource.updateSchedule(replicaId, scheduleId, data, oldData).then(
-      schedule => { this.updateScheduleSuccess(schedule) },
-      response => { this.updateScheduleFailed(response) },
-    )
+  updateSchedule(replicaId, scheduleId, data, oldData, unsavedData, forceSave) {
+    if (forceSave) {
+      ScheduleSource.updateSchedule(replicaId, scheduleId, data, oldData, unsavedData).then(
+        schedule => { this.updateScheduleSuccess(schedule) },
+        response => { this.updateScheduleFailed(response) },
+      )
+    }
 
-    return { replicaId, scheduleId, data }
+    return { replicaId, scheduleId, data, forceSave }
   }
 
   updateScheduleSuccess(schedule) {
@@ -99,6 +101,40 @@ class ScheduleActions {
 
   updateScheduleFailed(response) {
     return response || null
+  }
+
+  saveChanges(replicaId, allSchedules, unsavedSchedules) {
+    let schedulesToUpdate = unsavedSchedules.map(s => {
+      if (s.schedule) {
+        s.schedule = {
+          ...allSchedules.find(sc => sc.id === s.id).schedule,
+          ...s.schedule,
+        }
+      }
+      return s
+    })
+    ScheduleSource.updateMultiple(replicaId, schedulesToUpdate).then(
+      updatedSchedules => { this.saveChangesSuccess(updatedSchedules) },
+      err => { this.saveChangesFailed(err) }
+    )
+
+    return {
+      replicaId,
+      allSchedules,
+      unsavedSchedules,
+    }
+  }
+
+  saveChangesSuccess(updatedSchedules) {
+    return updatedSchedules
+  }
+
+  saveChangesFailed(err) {
+    return err || true
+  }
+
+  clearUnsavedSchedules() {
+    return true
   }
 }
 

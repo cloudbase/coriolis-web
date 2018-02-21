@@ -72,6 +72,7 @@ class ReplicaDetailsContent extends React.Component {
     onAddScheduleClick: PropTypes.func,
     onScheduleChange: PropTypes.func,
     onScheduleRemove: PropTypes.func,
+    onScheduleSaveChanges: PropTypes.func,
   }
 
   constructor() {
@@ -169,11 +170,14 @@ class ReplicaDetailsContent extends React.Component {
     return (
       <Schedule
         schedules={this.props.scheduleStore.schedules}
+        unsavedSchedules={this.props.scheduleStore.unsavedSchedules}
         adding={this.props.scheduleStore.adding}
         loading={this.props.scheduleStore.loading}
+        saving={this.props.scheduleStore.saving}
         onAddScheduleClick={this.props.onAddScheduleClick}
         onChange={this.props.onScheduleChange}
         onRemove={this.props.onScheduleRemove}
+        onSaveChanges={this.props.onScheduleSaveChanges}
         timezone={this.state.timezone}
         onTimezoneChange={timezone => { this.handleTimezoneChange(timezone) }}
       />
