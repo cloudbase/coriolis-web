@@ -119,6 +119,10 @@ class Dropdown extends React.Component {
     this.buttonRect = this.buttonRef.getBoundingClientRect()
   }
 
+  componentWillUpdate() {
+    this.buttonRect = this.buttonRef.getBoundingClientRect()
+  }
+
   componentDidUpdate() {
     this.updateListPosition()
   }
