@@ -34,6 +34,7 @@ import NotificationActions from '../../../actions/NotificationActions'
 import DateUtils from '../../../utils/DateUtils'
 import type { Schedule as ScheduleType, ScheduleInfo as ScheduleInfoType } from '../../../types/Schedule'
 import type { Field } from '../../../types/Field'
+import { executionOptions } from '../../../config'
 
 import deleteImage from './images/delete.svg'
 import deleteHoverImage from './images/delete-hover.svg'
@@ -310,6 +311,18 @@ class Schedule extends React.Component<Props, State> {
     this.props.onAddScheduleClick({ schedule: { hour, minute: 0 } })
   }
 
+  areExecutionOptionsChanged(schedule: ScheduleType) {
+    let isChanged = false
+    executionOptions.forEach(o => {
+      let scheduleValue = schedule[o.name]
+      let optionValue = o.value !== undefined ? o.value : false
+      if (scheduleValue !== undefined && scheduleValue !== null && scheduleValue !== optionValue) {
+        isChanged = true
+      }
+    })
+    return isChanged
+  }
+
   padNumber(number: number) {
     if (number < 10) {
       return `0${number}`
@@ -531,7 +544,13 @@ class Schedule extends React.Component<Props, State> {
                 <Button
                   onClick={() => { this.handleShowOptions(s) }}
                   secondary
+                  hollow={!this.areExecutionOptionsChanged(s)}
                   width="40px"
+                  style={{
+                    fontSize: '9px',
+                    letterSpacing: '1px',
+                    padding: '0 0 1px 3px',
+                  }}
                 >•••</Button>
               </RowData>
               <DeleteButton
