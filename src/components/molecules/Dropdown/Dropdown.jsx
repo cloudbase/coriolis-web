@@ -158,7 +158,7 @@ class Dropdown extends React.Component {
       this.tipRef.style.display = 'block'
     }
 
-    this.listRef.style.top = `${listTop}px`
+    this.listRef.style.top = `${listTop + window.pageYOffset}px`
     this.listRef.style.left = `${this.buttonRect.left}px`
   }
 
