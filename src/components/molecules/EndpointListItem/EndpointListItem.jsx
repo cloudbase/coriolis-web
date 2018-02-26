@@ -27,14 +27,6 @@ const CheckboxStyled = styled(Checkbox) `
   opacity: ${props => props.checked ? 1 : 0};
   transition: all ${StyleProps.animations.swift};
 `
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-
-  &:hover ${CheckboxStyled} {
-    opacity: 1;
-  }
-`
 const Content = styled.div`
   display: flex;
   align-items: center;
@@ -48,6 +40,18 @@ const Content = styled.div`
 
   &:hover {
     background: ${Palette.grayscale[1]};
+  }
+`
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  &:hover ${CheckboxStyled} {
+    opacity: 1;
+  } }
+
+  &:last-child ${Content} {
+    border-bottom: 1px solid ${Palette.grayscale[1]};
   }
 `
 const Image = styled.div`
