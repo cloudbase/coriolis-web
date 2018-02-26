@@ -158,7 +158,13 @@ class Dropdown extends React.Component {
       this.tipRef.style.display = 'block'
     }
 
-    this.listRef.style.top = `${listTop + window.pageYOffset}px`
+    // If a modal is opened, body scroll is removed and body top is set to replicate scroll position
+    let scrollOffset = 0
+    if (parseInt(document.body.style.top, 10) < 0) {
+      scrollOffset = -parseInt(document.body.style.top, 10)
+    }
+
+    this.listRef.style.top = `${listTop + (window.pageYOffset || scrollOffset)}px`
     this.listRef.style.left = `${this.buttonRect.left}px`
   }
 
