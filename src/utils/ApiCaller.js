@@ -66,7 +66,11 @@ class ApiCaller {
         let data = null
 
         if (options.json !== false && request.responseText) {
-          data = JSON.parse(request.responseText)
+          try {
+            data = JSON.parse(request.responseText)
+          } catch (err) {
+            reject({ message: 'Invalid server response!' })
+          }
         } else if (request.responseText) {
           data = request.responseText
         }
