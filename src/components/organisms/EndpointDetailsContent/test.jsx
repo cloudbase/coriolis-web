@@ -40,39 +40,39 @@ let connectionInfo = {
 
 it('renders endpoint details', () => {
   let wrapper = wrap({ item })
-  expect(wrapper.html().indexOf('endpoint_name')).toBeGreaterThan(-1)
-  expect(wrapper.html().indexOf('openstack')).toBeGreaterThan(-1)
-  expect(wrapper.html().indexOf('endpoint_description')).toBeGreaterThan(-1)
-  expect(wrapper.html().indexOf('24/11/2017 15:56')).toBeGreaterThan(-1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'endpoint_name').length).toBe(1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'openstack').length).toBe(1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'endpoint_description').length).toBe(1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === '24/11/2017 15:56').length).toBe(1)
 })
 
 it('renders connection info loading', () => {
   let wrapper = wrap({ item, loading: true })
-  expect(wrapper.html().indexOf('endpoint_name')).toBeGreaterThan(-1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'endpoint_name').length).toBe(1)
   expect(wrapper.find('StatusImage').prop('loading')).toBe(true)
 })
 
 it('renders simple connection info', () => {
   let wrapper = wrap({ item, connectionInfo })
-  expect(wrapper.html().indexOf('username')).toBeGreaterThan(-1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'username').length).toBe(1)
   expect(wrapper.find('PasswordValue').prop('value')).toBe('password123')
-  expect(wrapper.html().indexOf('other details')).toBeGreaterThan(-1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'other details').length).toBe(1)
 })
 
 it('renders boolean as Yes and No', () => {
   let wrapper = wrap({ item, connectionInfo })
   let yesResults = wrapper.findWhere(w => w.html().indexOf('Boolean True') > -1)
-  expect(yesResults.at(yesResults.length - 2).html().indexOf('Yes')).toBeGreaterThan(-1)
+  expect(yesResults.at(yesResults.length - 2).find('CopyValue').findWhere(c => c.prop('value') === 'Yes').length).toBe(1)
   let noResults = wrapper.findWhere(w => w.html().indexOf('Boolean False') > -1)
-  expect(noResults.at(noResults.length - 2).html().indexOf('No')).toBeGreaterThan(-1)
+  expect(noResults.at(noResults.length - 2).find('CopyValue').findWhere(c => c.prop('value') === 'No').length).toBe(1)
 })
 
 it('renders nested connection info', () => {
   let wrapper = wrap({ item, connectionInfo })
   expect(wrapper.html().indexOf('Nested 1')).toBeGreaterThan(-1)
-  expect(wrapper.html().indexOf('nested_first')).toBeGreaterThan(-1)
-  expect(wrapper.html().indexOf('nested_second')).toBeGreaterThan(-1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'nested_first').length).toBe(1)
   expect(wrapper.html().indexOf('Nested 2')).toBeGreaterThan(-1)
+  expect(wrapper.find('CopyValue').findWhere(c => c.prop('value') === 'nested_second').length).toBe(1)
 })
 
 it('dispatches button clicks', () => {
