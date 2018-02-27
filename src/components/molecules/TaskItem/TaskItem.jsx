@@ -159,6 +159,8 @@ class TaskItem extends React.Component {
   }
 
   renderHeader() {
+    let date = this.props.item.updated_at ? this.props.item.updated_at : this.props.item.created_at
+
     return (
       <Header>
         <HeaderData capitalize width={this.props.columnWidths[0]} black>
@@ -174,8 +176,7 @@ class TaskItem extends React.Component {
           {this.getLastMessage()}
         </HeaderData>
         <HeaderData width={this.props.columnWidths[3]}>
-          {this.props.item.created_at ?
-            DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss') : '-'}
+          {date ? DateUtils.getLocalTime(date).format('YYYY-MM-DD HH:mm:ss') : '-'}
         </HeaderData>
         <ArrowStyled primary orientation={this.props.open ? 'up' : 'down'} opacity={this.props.open ? 1 : 0} />
       </Header>
