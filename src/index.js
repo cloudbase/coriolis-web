@@ -12,13 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import 'react-hot-loader/patch'
 import React from 'react'
 import { render } from 'react-dom'
 import { HashRouter } from 'react-router-dom'
 
-import { basename } from 'config'
-import App from 'components/App.jsx'
+import { basename } from './config'
+import App from './components/App.jsx'
 
 const renderApp = () => React.createElement(
   HashRouter,
@@ -27,11 +29,16 @@ const renderApp = () => React.createElement(
 )
 
 const root = document.getElementById('app')
-render(renderApp(), root)
+if (root) {
+  render(renderApp(), root)
+}
 
 if (module.hot) {
-  module.hot.accept('components/App.jsx', () => {
-    require('components/App.jsx')
-    render(renderApp(), root)
+  // $FlowIgnore
+  module.hot.accept('./components/App.jsx', () => {
+    require('./components/App.jsx')
+    if (root) {
+      render(renderApp(), root)
+    }
   })
 }

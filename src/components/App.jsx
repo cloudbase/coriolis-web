@@ -12,23 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import styled, { injectGlobal } from 'styled-components'
 
-import {
-  LoginPage,
-  Fonts,
-  Notifications,
-  NotFoundPage,
-  ReplicasPage,
-  ReplicaDetailsPage,
-  MigrationsPage,
-  MigrationDetailsPage,
-  EndpointsPage,
-  EndpointDetailsPage,
-  WizardPage,
-} from 'components'
+import Fonts from './atoms/Fonts'
+import Notifications from './organisms/Notifications'
+import LoginPage from './pages/LoginPage'
+import ReplicasPage from './pages/ReplicasPage'
+import NotFoundPage from './pages/NotFoundPage'
+import ReplicaDetailsPage from './pages/ReplicaDetailsPage'
+import MigrationsPage from './pages/MigrationsPage'
+import MigrationDetailsPage from './pages/MigrationDetailsPage'
+import EndpointsPage from './pages/EndpointsPage'
+import EndpointDetailsPage from './pages/EndpointDetailsPage'
+import WizardPage from './pages/WizardPage'
 
 import Palette from './styleUtils/Palette'
 import StyleProps from './styleUtils/StyleProps'
@@ -48,7 +48,7 @@ injectGlobal`
 `
 const Wrapper = styled.div``
 
-class App extends React.Component {
+class App extends React.Component<{}> {
   componentWillMount() {
     UserActions.tokenLogin()
   }

@@ -12,12 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
 import { SchemaParser } from './Schemas'
 import ObjectUtils from '../utils/ObjectUtils'
+import type { Endpoint } from '../types/Endpoint'
 
 import { servicesUrl, useSecret } from '../config'
 
@@ -35,7 +38,7 @@ let getBarbicanPayload = data => {
 }
 
 class EdnpointSource {
-  static getEndpoints() {
+  static getEndpoints(): Promise<Endpoint[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       if (projectId) {
@@ -59,9 +62,9 @@ class EdnpointSource {
       }
     })
   }
-  static delete(endpoint) {
+  static delete(endpoint: Endpoint): Promise<string> {
     return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+      let projectId :any = cookie.get('projectId')
 
       Api.sendAjaxRequest({
         url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}`,
@@ -69,6 +72,7 @@ class EdnpointSource {
       }).then(() => {
         if (endpoint.connection_info && endpoint.connection_info.secret_ref) {
           let uuidIndex = endpoint.connection_info.secret_ref.lastIndexOf('/')
+          // $FlowIssue
           let uuid = endpoint.connection_info.secret_ref.substr(uuidIndex + 1)
           Api.sendAjaxRequest({
             url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
@@ -81,13 +85,13 @@ class EdnpointSource {
     })
   }
 
-  static getConnectionInfo(endpoint) {
-    let index = endpoint.connection_info.secret_ref.lastIndexOf('/')
-    let uuid = endpoint.connection_info.secret_ref.substr(index + 1)
+  static getConnectionInfo(endpoint: Endpoint): Promise<$PropertyType<Endpoint, 'connection_info'>> {
+    let index = endpoint.connection_info.secret_ref && endpoint.connection_info.secret_ref.lastIndexOf('/')
+    let uuid = index && endpoint.connection_info.secret_ref && endpoint.connection_info.secret_ref.substr(index + 1)
 
     return new Promise((resolve, reject) => {
       Api.sendAjaxRequest({
-        url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
+        url: `${servicesUrl.barbican}/v1/secrets/${uuid || ''}/payload`,
         method: 'GET',
         json: false,
         headers: { Accept: 'text/plain' },
@@ -97,11 +101,11 @@ class EdnpointSource {
     })
   }
 
-  static validate(endpoint) {
+  static validate(endpoint: Endpoint): Promise<{ valid: boolean, validation: { message: string } }> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}/actions`,
+        url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}/actions`,
         method: 'POST',
         data: { 'validate-connection': null },
       }).then(response => {
@@ -110,7 +114,7 @@ class EdnpointSource {
     })
   }
 
-  static update(endpoint) {
+  static update(endpoint: Endpoint): Promise<Endpoint> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
@@ -138,7 +142,7 @@ class EdnpointSource {
             },
           }
           Api.sendAjaxRequest({
-            url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}`,
+            url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}`,
             method: 'PUT',
             data: newPayload,
           }).then(putResponse => {
@@ -162,7 +166,7 @@ class EdnpointSource {
         }, reject).catch(reject)
       } else {
         Api.sendAjaxRequest({
-          url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}`,
+          url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}`,
           method: 'PUT',
           data: { endpoint: parsedEndpoint },
         }).then(response => {
@@ -172,7 +176,7 @@ class EdnpointSource {
     })
   }
 
-  static add(endpoint) {
+  static add(endpoint: Endpoint): Promise<Endpoint> {
     return new Promise((resolve, reject) => {
       let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
       let projectId = cookie.get('projectId')
@@ -192,7 +196,7 @@ class EdnpointSource {
             },
           }
           Api.sendAjaxRequest({
-            url: `${servicesUrl.coriolis}/${projectId}/endpoints`,
+            url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints`,
             method: 'POST',
             data: newPayload,
           }).then(postResponse => {
@@ -216,7 +220,7 @@ class EdnpointSource {
         }, reject).catch(reject)
       } else {
         Api.sendAjaxRequest({
-          url: `${servicesUrl.coriolis}/${projectId}/endpoints`,
+          url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints`,
           method: 'POST',
           data: { endpoint: parsedEndpoint },
         }).then(response => {

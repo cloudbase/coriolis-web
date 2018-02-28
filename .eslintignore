@@ -1,1 +1,3 @@
-server.js
+# flow-typed
+flow-typed/npm/*
+!flow-typed/npm/module_vx.x.x.js
