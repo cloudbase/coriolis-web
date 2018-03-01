@@ -40,7 +40,7 @@ let instancesDetails = [
 
 let selectedNetworks = [
   {
-    sourceNic: { id: 'n-2' },
+    sourceNic: { id: 'n-2', network_name: 'network 2' },
     targetNetwork: { name: 'network 1' },
   },
 ]

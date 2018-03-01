@@ -116,11 +116,11 @@ class Dropdown extends React.Component {
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
-    this.buttonRect = this.buttonRef.getBoundingClientRect()
+    if (this.buttonRef) this.buttonRect = this.buttonRef.getBoundingClientRect()
   }
 
   componentWillUpdate() {
-    this.buttonRect = this.buttonRef.getBoundingClientRect()
+    if (this.buttonRef) this.buttonRect = this.buttonRef.getBoundingClientRect()
   }
 
   componentDidUpdate() {
