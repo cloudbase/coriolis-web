@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import ChooseProvider from './ChooseProvider'
+import ChooseProvider from '.'
 
 let providers = {
   azure: { },

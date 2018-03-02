@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import ReplicaMigrationOptions from './ReplicaMigrationOptions'
+import ReplicaMigrationOptions from '.'
 
 const wrap = props => shallow(<ReplicaMigrationOptions {...props} />)
 

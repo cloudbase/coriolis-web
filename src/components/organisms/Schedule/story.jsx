@@ -16,7 +16,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styled from 'styled-components'
 
-import Schedule from './Schedule'
+import Schedule from '.'
 
 const Wrapper = styled.div`
   padding: 32px;

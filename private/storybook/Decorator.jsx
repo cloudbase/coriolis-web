@@ -12,9 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
+// @flow
+
+import * as React from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
 import Palette from '../../src/components/styleUtils/Palette'
 
 const Wrapper = styled.div`
@@ -23,10 +24,9 @@ const Wrapper = styled.div`
   padding: 32px;
 `
 
-const Decorator = ({ children }) => <Wrapper>{children}</Wrapper>
-
-Decorator.propTypes = {
-  children: PropTypes.node,
+type Props = {
+  children: React.Node,
 }
+const Decorator = (props: Props) => <Wrapper>{props.children}</Wrapper>
 
 export default Decorator

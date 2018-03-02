@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import PropertiesTable from './PropertiesTable'
+import PropertiesTable from '.'
 
 let properties = [
   { type: 'boolean', name: 'prop-1', label: 'Property 1' },

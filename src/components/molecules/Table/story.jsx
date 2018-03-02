@@ -17,7 +17,7 @@ import { storiesOf } from '@storybook/react'
 import { css } from 'styled-components'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
-import Table from './Table'
+import Table from '.'
 
 let items = [
   ['item-1', 'item-2', 'item-3', 'item-4', 'item-5'],

@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import EndpointListItem from './EndpointListItem'
+import EndpointListItem from '.'
 
 const wrap = props => shallow(<EndpointListItem {...props} />)
 

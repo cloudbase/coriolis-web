@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import StatusPill from './StatusPill'
+import StatusPill from '.'
 
 storiesOf('StatusPill', module)
   .add('completed', () => (

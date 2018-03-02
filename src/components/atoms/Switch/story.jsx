@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import PropTypes from 'prop-types'
-import Switch from './Switch'
+import Switch from '.'
 
 class Wrapper extends React.Component {
   static propTypes = {

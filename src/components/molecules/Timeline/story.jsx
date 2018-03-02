@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import Timeline from './Timeline'
+import Timeline from '.'
 
 let items = [
   { id: 'item-1', status: 'ERROR', created_at: new Date() },

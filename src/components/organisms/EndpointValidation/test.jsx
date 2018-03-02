@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import EndpointValidation from './EndpointValidation'
+import EndpointValidation from '.'
 
 const wrap = props => shallow(<EndpointValidation {...props} />)
 

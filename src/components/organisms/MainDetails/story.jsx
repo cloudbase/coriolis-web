@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import MainDetails from './MainDetails'
+import MainDetails from '.'
 
 let endpoints = [
   { id: 'endpoint-1', name: 'Endpoint OPS', type: 'openstack' },
