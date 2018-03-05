@@ -127,24 +127,24 @@ class ScheduleSource {
     })
   }
 
-  static updateSchedule(replicaId, scheduleId, scheduleData, scheduleOldData) {
+  static updateSchedule(replicaId, scheduleId, scheduleData, scheduleOldData, unsavedData) {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let payload = {}
-      if (scheduleData.expiration_date) {
-        payload.expiration_date = moment(scheduleData.expiration_date).toISOString()
-      }
       if (scheduleData.enabled !== null && scheduleData.enabled !== undefined) {
         payload.enabled = scheduleData.enabled
       }
       if (scheduleData.shutdown_instances !== null && scheduleData.shutdown_instances !== undefined) {
         payload.shutdown_instance = scheduleData.shutdown_instances
       }
-      if (scheduleData.schedule !== null && scheduleData.schedule !== undefined && Object.keys(scheduleData.schedule).length) {
+      if (unsavedData && unsavedData.expiration_date) {
+        payload.expiration_date = moment(unsavedData.expiration_date).toISOString()
+      }
+      if (unsavedData && unsavedData.schedule !== null && unsavedData.schedule !== undefined && Object.keys(unsavedData.schedule).length) {
         payload.schedule = { ...scheduleOldData.schedule }
-        Object.keys(scheduleData.schedule).forEach(prop => {
-          if (scheduleData.schedule[prop] !== null && scheduleData.schedule[prop] !== undefined) {
-            payload.schedule[prop] = scheduleData.schedule[prop]
+        Object.keys(unsavedData.schedule).forEach(prop => {
+          if (unsavedData.schedule[prop] !== null && unsavedData.schedule[prop] !== undefined) {
+            payload.schedule[prop] = unsavedData.schedule[prop]
           } else {
             delete payload.schedule[prop]
           }

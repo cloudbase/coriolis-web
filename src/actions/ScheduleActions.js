@@ -86,13 +86,15 @@ class ScheduleActions {
     return response || true
   }
 
-  updateSchedule(replicaId, scheduleId, data, oldData) {
-    ScheduleSource.updateSchedule(replicaId, scheduleId, data, oldData).then(
-      schedule => { this.updateScheduleSuccess(schedule) },
-      response => { this.updateScheduleFailed(response) },
-    )
+  updateSchedule(replicaId, scheduleId, data, oldData, unsavedData, forceSave) {
+    if (forceSave) {
+      ScheduleSource.updateSchedule(replicaId, scheduleId, data, oldData, unsavedData).then(
+        schedule => { this.updateScheduleSuccess(schedule) },
+        response => { this.updateScheduleFailed(response) },
+      )
+    }
 
-    return { replicaId, scheduleId, data }
+    return { replicaId, scheduleId, data, forceSave }
   }
 
   updateScheduleSuccess(schedule) {
@@ -101,6 +103,10 @@ class ScheduleActions {
 
   updateScheduleFailed(response) {
     return response || null
+  }
+
+  clearUnsavedSchedules() {
+    return true
   }
 }
 

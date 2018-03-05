@@ -25,6 +25,7 @@ import Schedule from '../../organisms/Schedule'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
 import type { Execution } from '../../../types/Execution'
+import type { Schedule as ScheduleType } from '../../../types/Schedule'
 
 const Wrapper = styled.div`
   display: flex;
@@ -80,6 +81,7 @@ type Props = {
   onAddScheduleClick: () => void,
   onScheduleChange: () => void,
   onScheduleRemove: () => void,
+  onScheduleSave: (schedule: ScheduleType) => void,
 }
 type State = {
   timezone: TimezoneValue,
@@ -180,11 +182,13 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
     return (
       <Schedule
         schedules={this.props.scheduleStore.schedules}
+        unsavedSchedules={this.props.scheduleStore.unsavedSchedules}
         adding={this.props.scheduleStore.adding}
         loading={this.props.scheduleStore.loading}
         onAddScheduleClick={this.props.onAddScheduleClick}
         onChange={this.props.onScheduleChange}
         onRemove={this.props.onScheduleRemove}
+        onSaveSchedule={this.props.onScheduleSave}
         timezone={this.state.timezone}
         onTimezoneChange={timezone => { this.handleTimezoneChange(timezone) }}
       />

@@ -40,6 +40,7 @@ const Label = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   flex-grow: 1;
+  ${props => props.useBold ? `font-weight: ${StyleProps.fontWeights.medium};` : ''}
   ${props => props.centered ? 'text-align: center;' : ''}
 `
 
