@@ -12,49 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
 
-import { EndpointField } from '../../../components'
+import type { Field } from '../../../types/Field'
 
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-`
-export const Fields = styled.div`
-  display: flex;
-  margin-top: 32px;
-  flex-direction: column;
-  overflow: auto;
-`
-export const FieldStyled = styled(EndpointField) `
-  min-width: 224px;
-  max-width: 224px;
-  margin-bottom: 16px;
-`
-export const Row = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  justify-content: space-between;
-`
+import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
-class ContentPlugin extends React.Component {
-  static propTypes = {
-    connectionInfoSchema: PropTypes.array,
-    validation: PropTypes.object,
-    invalidFields: PropTypes.array,
-    getFieldValue: PropTypes.func,
-    handleFieldChange: PropTypes.func,
-    disabled: PropTypes.bool,
-    cancelButtonText: PropTypes.string,
-    validating: PropTypes.bool,
-    handleValidateClick: PropTypes.func,
-    handleCancelClick: PropTypes.func,
-    onRef: PropTypes.func,
-  }
-
+type Props = {
+  connectionInfoSchema: Field[],
+  validation: { valid: boolean, validation: { message: string } },
+  invalidFields: string[],
+  getFieldValue: (field: ?Field) => any,
+  handleFieldChange: (field: Field, value: any) => void,
+  disabled: boolean,
+  cancelButtonText: string,
+  validating: boolean,
+  onRef: (contentPlugin: any) => void,
+}
+class ContentPlugin extends React.Component<Props> {
   componentDidMount() {
     this.props.onRef(this)
   }
@@ -64,8 +41,15 @@ class ContentPlugin extends React.Component {
   }
 
   findInvalidFields = () => {
+    const apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
     const invalidFields = this.props.connectionInfoSchema.filter(field => {
-      if (field.required) {
+      let required
+      if (typeof field.required === 'function') {
+        required = field.required(apiVersion)
+      } else {
+        required = field.required
+      }
+      if (required) {
         let value = this.props.getFieldValue(field)
         return !value
       }
@@ -78,10 +62,12 @@ class ContentPlugin extends React.Component {
   renderFields() {
     const rows = []
     let lastField
+    let apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
     this.props.connectionInfoSchema.forEach((field, i) => {
       const currentField = (
         <FieldStyled
           {...field}
+          required={typeof field.required === 'function' ? field.required(apiVersion) : field.required}
           large
           disabled={this.props.disabled}
           password={field.name === 'password'}

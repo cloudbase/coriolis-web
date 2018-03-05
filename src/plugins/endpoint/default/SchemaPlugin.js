@@ -12,7 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export const defaultSchemaToFields = schema => {
+// @flow
+
+import type { Schema } from '../../../types/Schema'
+import type { Field } from '../../../types/Field'
+
+export const defaultSchemaToFields = (schema: Schema) => {
   let fields = Object.keys(schema.properties).map(fieldName => {
     let field = {
       ...schema.properties[fieldName],
@@ -25,7 +30,7 @@ export const defaultSchemaToFields = schema => {
   return fields
 }
 
-export const connectionSchemaToFields = schema => {
+export const connectionSchemaToFields = (schema: Schema) => {
   let fields = defaultSchemaToFields(schema)
 
   let sortPriority = { username: 1, password: 2 }
@@ -45,12 +50,13 @@ export const connectionSchemaToFields = schema => {
   return fields
 }
 
-export const generateField = (name, label, required = false, type = 'string', defaultValue = null) => {
+export const generateField = (name: string, label: string, required: boolean = false, type: string = 'string', defaultValue: any = null) => {
   let field = {
     name,
     label,
     type,
     required,
+    default: undefined,
   }
 
   if (defaultValue) {
@@ -60,7 +66,7 @@ export const generateField = (name, label, required = false, type = 'string', de
   return field
 }
 
-export const fieldsToPayload = (data, schema) => {
+export const fieldsToPayload = (data: { [string]: mixed }, schema: Schema) => {
   let info = {}
 
   Object.keys(schema.properties).forEach(fieldName => {
@@ -73,7 +79,7 @@ export const fieldsToPayload = (data, schema) => {
 }
 
 export default class ConnectionSchemaParser {
-  static parseSchemaToFields(schema) {
+  static parseSchemaToFields(schema: Schema): Field[] {
     let fields = connectionSchemaToFields(schema.oneOf[0])
 
     fields = [
@@ -85,7 +91,7 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseFieldsToPayload(data, schema) {
+  static parseFieldsToPayload(data: { [string]: mixed }, schema: Schema) {
     let payload = {}
 
     payload.name = data.name

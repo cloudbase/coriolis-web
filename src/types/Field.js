@@ -19,8 +19,10 @@ export type Field = {
   type?: string,
   value?: any,
   enum?: string[],
-  required?: boolean,
+  required?: boolean | (value: any) => boolean,
   default?: any,
   items?: Field[],
   fields?: Field[],
+  minimum?: number,
+  maximum?: number,
 }

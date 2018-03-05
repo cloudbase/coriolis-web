@@ -14,21 +14,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import DefaultSchemaPlugin from './default/SchemaPlugin'
-import AzureSchemaPlugin from './azure/SchemaPlugin'
-import DefaultContentPlugin from './default/ContentPlugin'
-import AzureContentPlugin from './azure/ContentPlugin'
-import OpenstackContentPlugin from './openstack/ContentPlugin'
-import OpenstackSchemaPlugin from './openstack/SchemaPlugin'
-
-export const SchemaPlugin = {
-  default: DefaultSchemaPlugin,
-  azure: AzureSchemaPlugin,
-  openstack: OpenstackSchemaPlugin,
-}
-
-export const ContentPlugin = {
-  default: DefaultContentPlugin,
-  azure: AzureContentPlugin,
-  openstack: OpenstackContentPlugin,
+export type Schema = {
+  properties: {
+    [string]: {
+      name: string,
+    }
+  },
+  required: string[],
+  oneOf: Schema[],
 }
