@@ -74,7 +74,7 @@ type Props = {
   cancelButtonText: string,
   validating: boolean,
   onRef: (contentPlugin: any) => void,
-  onResizeUpdate: (fieldsRef: HTMLElement, scrollOfset: number) => void,
+  onResizeUpdate: (scrollOfset: number) => void,
   scrollableRef: (ref: HTMLElement) => void,
 }
 type State = {
@@ -83,7 +83,6 @@ type State = {
 }
 class ContentPlugin extends React.Component<Props, State> {
   cloudProfileChanged: boolean
-  fieldsRef: HTMLElement
   lastBlurValue: string
 
   constructor() {
@@ -105,7 +104,7 @@ class ContentPlugin extends React.Component<Props, State> {
       if (prevState.showPasteInput !== this.state.showPasteInput && this.state.showPasteInput) {
         scrollOffset = 100
       }
-      this.props.onResizeUpdate(this.fieldsRef, scrollOffset)
+      this.props.onResizeUpdate(scrollOffset)
       this.cloudProfileChanged = false
     }
   }

@@ -374,7 +374,7 @@ class Endpoint extends React.Component<Props, State> {
           handleCancelClick: () => { this.handleCancelClick() },
           scrollableRef: ref => { this.scrollableRef = ref },
           onRef: ref => { this.contentPluginRef = ref },
-          onResizeUpdate: (scrollableRef, scrollOffset) => { this.props.onResizeUpdate(this.scrollableRef, scrollOffset) },
+          onResizeUpdate: (scrollOffset: number) => { this.props.onResizeUpdate(this.scrollableRef, scrollOffset) },
         })}
         {this.renderButtons()}
         <Tooltip />

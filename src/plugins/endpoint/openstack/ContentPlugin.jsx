@@ -15,10 +15,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import styled from 'styled-components'
 
+import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
-
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
+
+const ToggleButtonBarStyled = styled(ToggleButtonBar)`
+  margin-top: 16px;
+`
 
 type Props = {
   connectionInfoSchema: Field[],
@@ -30,14 +35,36 @@ type Props = {
   cancelButtonText: string,
   validating: boolean,
   onRef: (contentPlugin: any) => void,
+  onResizeUpdate: (scrollOfset: number) => void,
+  scrollableRef: (ref: HTMLElement) => void,
 }
-class ContentPlugin extends React.Component<Props> {
+type State = {
+  useAdvancedOptions: boolean,
+}
+class ContentPlugin extends React.Component<Props, State> {
+  constructor() {
+    super()
+    this.state = {
+      useAdvancedOptions: false,
+    }
+  }
+
   componentDidMount() {
     this.props.onRef(this)
   }
 
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevState.useAdvancedOptions !== this.state.useAdvancedOptions) {
+      this.props.onResizeUpdate(0)
+    }
+  }
+
   componentWillUnmount() {
     this.props.onRef(undefined)
+  }
+
+  handleAdvancedOptionsToggle(useAdvancedOptions: boolean) {
+    this.setState({ useAdvancedOptions })
   }
 
   findInvalidFields = () => {
@@ -59,11 +86,41 @@ class ContentPlugin extends React.Component<Props> {
     return invalidFields
   }
 
+  filterSimpleAdvanced(): Field[] {
+    const apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
+    const extraAdvancedFields = ['description', 'glance_api_version', 'identity_api_version']
+    return this.props.connectionInfoSchema.filter(field => {
+      if (this.state.useAdvancedOptions) {
+        return true
+      }
+      let required
+      if (typeof field.required === 'function') {
+        required = field.required(apiVersion)
+      } else {
+        required = field.required
+      }
+      return required || extraAdvancedFields.find(fieldName => field.name === fieldName)
+    })
+  }
+
+  renderSimpleAdvancedToggle() {
+    return (
+      <ToggleButtonBarStyled
+        items={[{ label: 'Simple', value: 'simple' }, { label: 'Advanced', value: 'advanced' }]}
+        selectedValue={this.state.useAdvancedOptions ? 'advanced' : 'simple'}
+        onChange={item => { this.handleAdvancedOptionsToggle(item.value === 'advanced') }}
+      />
+    )
+  }
+
   renderFields() {
     const rows = []
     let lastField
     let apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
-    this.props.connectionInfoSchema.forEach((field, i) => {
+
+    let fields = this.filterSimpleAdvanced()
+
+    fields.forEach((field, i) => {
       const currentField = (
         <FieldStyled
           {...field}
@@ -94,7 +151,7 @@ class ContentPlugin extends React.Component<Props> {
     })
 
     return (
-      <Fields>
+      <Fields innerRef={ref => { this.props.scrollableRef(ref) }}>
         {rows}
       </Fields>
     )
@@ -103,6 +160,7 @@ class ContentPlugin extends React.Component<Props> {
   render() {
     return (
       <Wrapper>
+        {this.renderSimpleAdvancedToggle()}
         {this.renderFields()}
       </Wrapper>
     )
