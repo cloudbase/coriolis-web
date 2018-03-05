@@ -14,9 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { WizardOptionsField } from 'components'
+import WizardOptionsField from '../../molecules/WizardOptionsField'
 
-import Tooltip from './Tooltip'
+import Tooltip from '.'
 
 storiesOf('Tooltip', module)
   .add('default', () => (

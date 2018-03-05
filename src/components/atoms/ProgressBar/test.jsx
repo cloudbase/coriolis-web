@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import ProgressBar from './ProgressBar'
+import ProgressBar from '.'
 
 const wrap = props => shallow(<ProgressBar {...props} />).dive()
 

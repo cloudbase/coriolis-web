@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import Navigation from './Navigation'
+import Navigation from '.'
 
 const wrap = props => shallow(<Navigation {...props} />)
 

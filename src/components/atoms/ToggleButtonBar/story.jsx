@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import ToggleButtonBar from './ToggleButtonBar'
+import ToggleButtonBar from '.'
 
 class Wrapper extends React.Component {
   constructor() {

@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styled from 'styled-components'
-import WizardOptionsField from './WizardOptionsField'
+import WizardOptionsField from '.'
 
 const WizardOptionsFieldStyled = styled(WizardOptionsField) `
   width: 319px;

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import DetailsNavigation from './DetailsNavigation'
+import DetailsNavigation from '.'
 
 const items = [
   { label: 'Item 1', value: 'item-1' },

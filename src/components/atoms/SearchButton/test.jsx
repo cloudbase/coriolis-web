@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import SearchButton from './SearchButton'
+import SearchButton from '.'
 
 const wrap = props => shallow(<SearchButton {...props} />)
 

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf, action } from '@storybook/react'
-import DropdownButton from './DropdownButton'
+import DropdownButton from '.'
 
 storiesOf('DropdownButton', module)
   .add('default', () => (

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import LoadingButton from './LoadingButton'
+import LoadingButton from '.'
 
 it('renders disabled with given label', () => {
   let wrapper = shallow(<LoadingButton>Loading ...</LoadingButton>)

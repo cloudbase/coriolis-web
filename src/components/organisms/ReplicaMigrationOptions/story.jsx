@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import ReplicaMigrationOptions from './ReplicaMigrationOptions'
+import ReplicaMigrationOptions from '.'
 
 storiesOf('ReplicaMigrationOptions', module)
   .add('default', () => (

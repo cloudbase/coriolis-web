@@ -16,7 +16,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styled from 'styled-components'
 
-import CopyButton from './CopyButton'
+import CopyButton from '.'
 
 const Wrapper = styled.div`
   cursor: pointer;

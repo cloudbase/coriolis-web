@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import Logo from './Logo'
+import Logo from '.'
 
 storiesOf('Logo', module)
   .add('default', () => (

@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import DefaultSchemaPlugin from './default/SchemaPlugin'
 import AzureSchemaPlugin from './azure/SchemaPlugin'
 import DefaultContentPlugin from './default/ContentPlugin'

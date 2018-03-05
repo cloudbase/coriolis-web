@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import WizardNetworks from './WizardNetworks'
+import WizardNetworks from '.'
 
 let networks = [
   { name: 'network 1', value: 'n-1' },

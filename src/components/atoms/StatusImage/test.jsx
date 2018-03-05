@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import StatusImage from './StatusImage'
+import StatusImage from '.'
 
 const wrap = props => shallow(<StatusImage {...props} />)
 

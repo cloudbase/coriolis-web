@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import WizardOptions from './WizardOptions'
+import WizardOptions from '.'
 
 const wrap = props => shallow(<WizardOptions {...props} />)
 

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import PasswordValue from './PasswordValue'
+import PasswordValue from '.'
 
 const wrap = props => shallow(<PasswordValue {...props} />)
 const text = html => html.substring(html.indexOf('>') + 1, html.lastIndexOf('<'))

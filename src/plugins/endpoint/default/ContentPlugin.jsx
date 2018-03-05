@@ -12,11 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
 
-import { EndpointField } from '../../../components'
+import EndpointField from '../../../components/molecules/EndpointField'
+import type { Field } from '../../../types/Field'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -40,21 +42,18 @@ export const Row = styled.div`
   justify-content: space-between;
 `
 
-class ContentPlugin extends React.Component {
-  static propTypes = {
-    connectionInfoSchema: PropTypes.array,
-    validation: PropTypes.object,
-    invalidFields: PropTypes.array,
-    getFieldValue: PropTypes.func,
-    handleFieldChange: PropTypes.func,
-    disabled: PropTypes.bool,
-    cancelButtonText: PropTypes.string,
-    validating: PropTypes.bool,
-    handleValidateClick: PropTypes.func,
-    handleCancelClick: PropTypes.func,
-    onRef: PropTypes.func,
-  }
-
+type Props = {
+  connectionInfoSchema: Field[],
+  validation: { valid: boolean, validation: { message: string } },
+  invalidFields: string[],
+  getFieldValue: (field: ?Field) => any,
+  handleFieldChange: (field: Field, value: any) => void,
+  disabled: boolean,
+  cancelButtonText: string,
+  validating: boolean,
+  onRef: (contentPlugin: any) => void,
+}
+class ContentPlugin extends React.Component<Props> {
   componentDidMount() {
     this.props.onRef(this)
   }

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import DetailsContentHeader from './DetailsContentHeader'
+import DetailsContentHeader from '.'
 
 let item = {
   origin_endpoint_id: 'openstack',

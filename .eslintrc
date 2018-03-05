@@ -22,6 +22,20 @@
     }
   },
   "rules": {
+    "react/sort-comp": [1, {
+      "order": [
+        "static-methods",
+        "type-annotations",
+        "lifecycle",
+        "/^set.+$/",
+        "/^get.+$/",
+        "/^is.+$/",
+        "/^has.+$/",
+        "/^handle.+$/",
+        "everything-else",
+        "render"
+      ]
+    }],
     "semi": [2, "never"],
     "comma-dangle": [2, "always-multiline"],
     "newline-per-chained-call": 0,
@@ -45,6 +59,52 @@
     "import/prefer-default-export": 0,
     "react/require-default-props": 0,
     "react/forbid-prop-types": 0,
-    "jsx-a11y/href-no-hash": 0
-  }
+    "jsx-a11y/href-no-hash": 0,
+    "flowtype/boolean-style": [
+      "error",
+      "boolean"
+    ],
+    "flowtype/define-flow-type": "warn",
+    "flowtype/delimiter-dangle": [
+      "error",
+      "only-multiline"
+    ],
+    "flowtype/generic-spacing": [
+      "error",
+      "never"
+    ],
+    "flowtype/no-primitive-constructor-types": "error",
+    "flowtype/object-type-delimiter": [
+      "error",
+      "comma"
+    ],
+    "flowtype/require-parameter-type": "off",
+    "flowtype/require-return-type": "off",
+    "flowtype/require-valid-file-annotation": "off",
+    "flowtype/semi": [
+      "error",
+      "never"
+    ],
+    "flowtype/space-after-type-colon": [
+      "error",
+      "always"
+    ],
+    "flowtype/space-before-generic-bracket": [
+      "error",
+      "never"
+    ],
+    "flowtype/space-before-type-colon": [
+      "error",
+      "never"
+    ],
+    "flowtype/union-intersection-spacing": [
+      "error",
+      "always"
+    ],
+    "flowtype/use-flow-type": "error",
+    "flowtype/valid-syntax": "error"
+  },
+  "plugins": [
+    "flowtype"
+  ]
 }
