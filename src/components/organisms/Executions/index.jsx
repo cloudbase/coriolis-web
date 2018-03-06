@@ -236,10 +236,7 @@ class Executions extends React.Component<Props, State> {
         <ExecutionInfoId>
           ID:&nbsp;<CopyValue
             width="107px"
-            value={
-              // $FlowIssue
-              this.state.selectedExecution.status
-            }
+            value={this.state.selectedExecution ? this.state.selectedExecution.id : ''}
           />
         </ExecutionInfoId>
         {this.renderExecutionInfoButton()}
