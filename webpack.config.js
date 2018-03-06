@@ -16,7 +16,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const splitVendor = require('webpack-blocks-split-vendor')
 const happypack = require('webpack-blocks-happypack')
-const WebpackLoggingPlugin = require('webpack-logging-plugin')
+const ProgressPlugin = require('webpack/lib/ProgressPlugin')
 
 const {
   addPlugins, createConfig, entryPoint, env, setOutput,
@@ -83,7 +83,7 @@ const config = createConfig([
       filename: 'index.html',
       template: path.join(process.cwd(), 'public/index.html'),
     }),
-    new WebpackLoggingPlugin(),
+    new ProgressPlugin(),
   ]),
   happypack([
     babel(),
