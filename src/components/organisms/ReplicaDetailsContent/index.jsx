@@ -122,7 +122,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         <LeftButtons>
           <Button
             primary
-            disabled={this.getStatus() !== 'COMPLETED' || this.isEndpointMissing()}
+            disabled={this.isEndpointMissing()}
             onClick={this.props.onCreateMigrationClick}
           >Create Migration</Button>
         </LeftButtons>
