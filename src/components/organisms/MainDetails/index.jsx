@@ -28,6 +28,7 @@ import type { Endpoint } from '../../../types/Endpoint'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
+import LabelDictionary from '../../../utils/LabelDictionary'
 
 import arrowImage from './images/arrow.svg'
 
@@ -49,7 +50,10 @@ const Arrow = styled.div`
   margin-top: 68px;
 `
 const Row = styled.div`
-  margin-bottom: ${props => props.marginBottom ? 32 : 16}px;
+  margin-bottom: 32px;
+  &:last-child {
+    margin-bottom: 16px;
+  }
 `
 const Field = styled.div`
   display: flex;
@@ -62,7 +66,7 @@ const Label = styled.div`
   text-transform: uppercase;
 `
 const Value = styled.div`
-  display: ${props => props.flex ? 'flex' : 'inline-table'};
+  display: ${props => props.flex ? 'flex' : props.block ? 'block' : 'inline-table'};
   margin-top: 3px;
   ${props => props.capitalize ? 'text-transform: capitalize;' : ''}
 `
@@ -82,6 +86,23 @@ const Loading = styled.div`
   justify-content: center;
   align-items: center;
   height: 200px;
+`
+const PropertiesTable = styled.div``
+const PropertyRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+`
+const PropertyText = css``
+const PropertyName = styled.div`
+  ${PropertyText}
+`
+const PropertyValue = styled.div`
+  ${PropertyText}
+  color: ${Palette.grayscale[4]};
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 type Props = {
@@ -199,6 +220,35 @@ class MainDetails extends React.Component<Props> {
     return endpointIsMissing
   }
 
+  renderPropertiesTable() {
+    let renderValue = (value: any) => {
+      if (value === true) {
+        return 'Yes'
+      }
+      if (value === false) {
+        return 'No'
+      }
+      return value.toString()
+    }
+
+    return (
+      <PropertiesTable>
+        {Object.keys(this.props.item.destination_environment).map(propName => {
+          let skipProps = ['description', 'network_map']
+          if (skipProps.find(p => p === propName)) {
+            return null
+          }
+          return (
+            <PropertyRow key={propName}>
+              <PropertyName>{LabelDictionary.get(propName)}</PropertyName>
+              <PropertyValue>{renderValue(this.props.item.destination_environment[propName])}</PropertyValue>
+            </PropertyRow>
+          )
+        })}
+      </PropertiesTable>
+    )
+  }
+
   renderTable() {
     if (this.props.loading) {
       return null
@@ -218,13 +268,13 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <EndpointLogos endpoint={sourceEndpoint ? sourceEndpoint.type : ''} />
           </Row>
-          <Row marginBottom>
+          <Row>
             <Field>
               <Label>Id</Label>
               <CopyValue value={this.props.item.id} width="192px" />
             </Field>
           </Row>
-          <Row marginBottom>
+          <Row>
             <Field>
               <Label>Created</Label>
               <Value>{this.props.item.created_at ? DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss') : '-'}</Value>
@@ -234,6 +284,18 @@ class MainDetails extends React.Component<Props> {
             <Field>
               <Label>Description</Label>
               <Value>{(this.props.item.destination_environment && this.props.item.destination_environment.description) || '-'}</Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
+              <Label>Type</Label>
+              <Value capitalize>Coriolis {this.props.item.type}</Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
+              <Label>Last Updated</Label>
+              <Value>{this.getLastExecutionTime()}</Value>
             </Field>
           </Row>
         </Column>
@@ -250,16 +312,16 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <EndpointLogos endpoint={destinationEndpoint ? destinationEndpoint.type : ''} />
           </Row>
-          <Row marginBottom>
+          <Row>
             <Field>
-              <Label>Type</Label>
-              <Value capitalize>Coriolis {this.props.item.type}</Value>
+              <Label>Properties</Label>
+              <Value block>{this.renderPropertiesTable()}</Value>
             </Field>
           </Row>
           <Row>
             <Field>
-              <Label>Last Updated</Label>
-              <Value>{this.getLastExecutionTime()}</Value>
+              <Label>Instances</Label>
+              <Value>{this.props.item.instances.join(', ')}</Value>
             </Field>
           </Row>
         </Column>

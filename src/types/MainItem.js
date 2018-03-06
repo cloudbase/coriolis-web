@@ -34,6 +34,7 @@ export type DestinationEnvInfo = {
       destination_network: string,
     } | 'string'
   },
+  description: string,
   [string]: mixed,
 }
 
