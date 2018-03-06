@@ -130,15 +130,6 @@ class MainDetails extends React.Component<Props> {
     return {}
   }
 
-  getLastExecutionTime() {
-    let lastExecution = this.getLastExecution()
-    if (lastExecution.updated_at || lastExecution.created_at) {
-      return DateUtils.getLocalTime(lastExecution.updated_at || lastExecution.created_at).format('YYYY-MM-DD HH:mm:ss')
-    }
-
-    return '-'
-  }
-
   getConnectedVms(networkId: string) {
     let vms = []
     Object.keys(this.props.item.info).forEach(key => {
@@ -182,6 +173,19 @@ class MainDetails extends React.Component<Props> {
     })
 
     return networks
+  }
+
+  renderLastExecutionTime() {
+    let lastExecution = this.getLastExecution()
+    if (lastExecution.updated_at || lastExecution.created_at) {
+      return this.renderValue(DateUtils.getLocalTime(lastExecution.updated_at || lastExecution.created_at).format('YYYY-MM-DD HH:mm:ss'))
+    }
+
+    return <Value>-</Value>
+  }
+
+  renderValue(value: string) {
+    return <CopyValue value={value} maxWidth="90%" />
   }
 
   renderNetworksTable() {
@@ -277,13 +281,13 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Created</Label>
-              <Value>{this.props.item.created_at ? DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss') : '-'}</Value>
+              {this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')) : <Value>-</Value>}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Description</Label>
-              <Value>{(this.props.item.destination_environment && this.props.item.destination_environment.description) || '-'}</Value>
+              {this.props.item.destination_environment && this.props.item.destination_environment.description ? this.renderValue(this.props.item.destination_environment.description) : <Value>-</Value>}
             </Field>
           </Row>
           <Row>
@@ -295,7 +299,7 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Last Updated</Label>
-              <Value>{this.getLastExecutionTime()}</Value>
+              <Value>{this.renderLastExecutionTime()}</Value>
             </Field>
           </Row>
         </Column>
