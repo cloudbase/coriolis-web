@@ -236,9 +236,10 @@ class WizardSummary extends React.Component<Props> {
         <SectionTitle>{type} Options</SectionTitle>
         <OptionsList>
           {this.props.wizardType === 'replica' ? executeNowOption : null}
-          {this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
+          {this.props.data.selectedInstances && this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
           {data.options ? Object.keys(data.options).map(optionName => {
             if (optionName === 'execute_now' || optionName === 'separate_vm'
+              // $FlowIssue  
               || data.options[optionName] === null || data.options[optionName] === undefined) {
               return null
             }
@@ -246,7 +247,10 @@ class WizardSummary extends React.Component<Props> {
             return (
               <Option key={optionName}>
                 <OptionLabel>{LabelDictionary.get(optionName)}</OptionLabel>
-                <OptionValue>{this.renderOptionValue(data.options[optionName])}</OptionValue>
+                <OptionValue>{
+                  // $FlowIssue
+                  this.renderOptionValue(data.options[optionName])
+                }</OptionValue>
               </Option>
             )
           }) : null}
@@ -287,7 +291,7 @@ class WizardSummary extends React.Component<Props> {
       <Section>
         <SectionTitle>Instances</SectionTitle>
         <Table>
-          {data.selectedInstances.map(instance => {
+          {data.selectedInstances ? data.selectedInstances.map(instance => {
             let flavorName = instance.flavor_name ? `/${instance.flavor_name}` : ''
             return (
               <Row key={instance.id}>
@@ -295,7 +299,7 @@ class WizardSummary extends React.Component<Props> {
                 <InstanceRowSubtitle>{`${instance.num_cpu}vCPU/${instance.memory_mb}MB${flavorName}`}</InstanceRowSubtitle>
               </Row>
             )
-          })}
+          }) : null}
         </Table>
       </Section>
     )
@@ -311,15 +315,15 @@ class WizardSummary extends React.Component<Props> {
           <OverviewRow>
             <OverviewLabel>Source</OverviewLabel>
             <OverviewRowData>
-              <StatusPill secondary small label={LabelDictionary.get(data.source.type).toUpperCase()} />
-              <OverviewRowLabel>{data.source.name}</OverviewRowLabel>
+              <StatusPill secondary small label={LabelDictionary.get(data.source && data.source.type).toUpperCase()} />
+              <OverviewRowLabel>{data.source ? data.source.name : ''}</OverviewRowLabel>
             </OverviewRowData>
           </OverviewRow>
           <OverviewRow>
             <OverviewLabel>Target</OverviewLabel>
             <OverviewRowData>
-              <StatusPill secondary small label={LabelDictionary.get(data.target.type).toUpperCase()} />
-              <OverviewRowLabel>{data.target.name}</OverviewRowLabel>
+              <StatusPill secondary small label={LabelDictionary.get(data.target && data.target.type).toUpperCase()} />
+              <OverviewRowLabel>{data.target && data.target.name}</OverviewRowLabel>
             </OverviewRowData>
           </OverviewRow>
           <OverviewRow>

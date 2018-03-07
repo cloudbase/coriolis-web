@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled, { injectGlobal } from 'styled-components'
 import NotificationSystem from 'react-notification-system'
+import { observe } from 'mobx'
 
 import NotificationStore from '../../../stores/NotificationStore'
+import type { NotificationItem } from '../../../types/NotificationItem'
 
 import NotificationsStyle from './style.js'
 
@@ -28,9 +30,6 @@ injectGlobal`
 
 const Wrapper = styled.div``
 
-type StoreState = {
-  notifications: { message: string, level: string, action: string }[],
-}
 class Notifications extends React.Component<{}> {
   notificationsCount: number
   notificationSystem: NotificationSystem
@@ -41,29 +40,27 @@ class Notifications extends React.Component<{}> {
   }
 
   componentDidMount() {
-    NotificationStore.listen((state) => { this.onStoreChange(state) })
+    observe(NotificationStore.notifications, change => {
+      this.handleStoreChange(change.object)
+    })
   }
 
-  componentWillUnmount() {
-    NotificationStore.unlisten(this.onStoreChange.bind(this))
-  }
-
-  onStoreChange(state: StoreState) {
-    if (!state.notifications.length || state.notifications.length <= this.notificationsCount) {
+  handleStoreChange(notifications: NotificationItem[]) {
+    if (!notifications.length || notifications.length <= this.notificationsCount) {
       return
     }
 
-    let lastNotification = state.notifications[state.notifications.length - 1]
+    let lastNotification = notifications[notifications.length - 1]
     this.notificationSystem.addNotification({
       title: lastNotification.title || lastNotification.message,
       message: lastNotification.title ? lastNotification.message : null,
       level: lastNotification.level || 'info',
       position: 'br',
       autoDismiss: 10,
-      action: lastNotification.action,
+      action: lastNotification.options ? lastNotification.options.action : null,
     })
 
-    this.notificationsCount = state.notifications.length
+    this.notificationsCount = notifications.length
   }
 
   render() {

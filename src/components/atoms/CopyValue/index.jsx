@@ -18,8 +18,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 import CopyButton from '../CopyButton'
-import NotificationActions from '../../../actions/NotificationActions'
 import DomUtils from '../../../utils/DomUtils'
+import NotificationStore from '../../../stores/NotificationStore'
 
 const Wrapper = styled.div`
   cursor: pointer;
@@ -50,9 +50,9 @@ class CopyValue extends React.Component<Props> {
     let succesful = DomUtils.copyTextToClipboard(this.props.value)
 
     if (succesful) {
-      NotificationActions.notify('The value has been copied to clipboard.')
+      NotificationStore.notify('The value has been copied to clipboard.')
     } else {
-      NotificationActions.notify('The value couldn\'t be copied', 'error')
+      NotificationStore.notify('The value couldn\'t be copied', 'error')
     }
   }
 

@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { observer } from 'mobx-react'
 
 import type { Endpoint } from '../../../types/Endpoint'
 import Checkbox from '../../atoms/Checkbox'
@@ -99,6 +100,7 @@ type Props = {
   onSelectedChange: (value: boolean) => void,
   getUsage: (item: Endpoint) => { replicasCount: number, migrationsCount: number },
 }
+@observer
 class EndpointListItem extends React.Component<Props> {
   render() {
     return (

@@ -23,7 +23,7 @@ import Dropdown from '../../molecules/Dropdown'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import type { Instance, Nic as NicType } from '../../../types/Instance'
-import type { Network } from '../../../types/Network'
+import type { Network, NetworkMap } from '../../../types/Network'
 
 import networkImage from './images/network.svg'
 import bigNetworkImage from './images/network-big.svg'
@@ -109,7 +109,7 @@ type Props = {
   loadingInstancesDetails: boolean,
   networks: Network[],
   instancesDetails: Instance[],
-  selectedNetworks: Network[],
+  selectedNetworks: ?NetworkMap[],
   onChange: (nic: NicType, network: Network) => void,
 }
 class WizardNetworks extends React.Component<Props> {

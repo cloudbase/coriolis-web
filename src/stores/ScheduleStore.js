@@ -12,8 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import ScheduleActions from '../actions/ScheduleActions'
+// @flow
+
+import { observable, action } from 'mobx'
+
+import type { Schedule } from '../types/Schedule'
+import Source from '../sources/ScheduleSource'
 
 const updateSchedule = (schedules, id, data) => {
   return schedules.map(schedule => {
@@ -30,74 +34,60 @@ const updateSchedule = (schedules, id, data) => {
 }
 
 class ScheduleStore {
-  constructor() {
-    this.loading = false
-    this.schedules = []
-    this.unsavedSchedules = []
-    this.scheduling = false
-    this.adding = false
+  @observable loading: boolean = false
+  @observable schedules: Schedule[] = []
+  @observable unsavedSchedules: Schedule[] = []
+  @observable scheduling: boolean = false
+  @observable adding: boolean = false
 
-    this.bindListeners({
-      handleScheduleMultiple: ScheduleActions.SCHEDULE_MULTIPLE,
-      handleScheduleMultipleSuccess: ScheduleActions.SCHEDULE_MULTIPLE_SUCCESS,
-      handleScheduleMultipleFailed: ScheduleActions.SCHEDULE_MULTIPLE_FAILED,
-      handleGetSchedules: ScheduleActions.GET_SCHEDULES,
-      handleGetSchedulesSuccess: ScheduleActions.GET_SCHEDULES_SUCCESS,
-      handleGetSchedulesFailed: ScheduleActions.GET_SCHEDULES_FAILED,
-      handleAddSchedule: ScheduleActions.ADD_SCHEDULE,
-      handleAddScheduleSuccess: ScheduleActions.ADD_SCHEDULE_SUCCESS,
-      handleAddScheduleFailed: ScheduleActions.ADD_SCHEDULE_FAILED,
-      handleRemoveSchedule: ScheduleActions.REMOVE_SCHEDULE,
-      handleUpdateSchedule: ScheduleActions.UPDATE_SCHEDULE,
-      handleUpdateScheduleSuccess: ScheduleActions.UPDATE_SCHEDULE_SUCCESS,
-      handleClearUnsavedSchedules: ScheduleActions.CLEAR_UNSAVED_SCHEDULES,
+  @action scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<void> {
+    this.scheduling = true
+
+    return Source.scheduleMultiple(replicaId, schedules).then((schedules: Schedule[]) => {
+      this.scheduling = false
+      this.schedules = schedules
+    }).catch(() => {
+      this.scheduling = false
     })
   }
 
-  handleScheduleMultiple() {
-    this.scheduling = true
-  }
-
-  handleScheduleMultipleSuccess() {
-    this.scheduling = false
-  }
-
-  handleScheduleMultipleFailed() {
-    this.scheduling = false
-  }
-
-  handleGetSchedules() {
+  @action getSchedules(replicaId: string): Promise<void> {
     this.loading = true
+
+    return Source.getSchedules(replicaId).then((schedules: Schedule[]) => {
+      this.loading = false
+      this.schedules = schedules
+    }).catch(() => {
+      this.loading = false
+    })
   }
 
-  handleGetSchedulesSuccess(schedules) {
-    this.loading = false
-    this.schedules = schedules
-  }
-
-  handleGetSchedulesFailed() {
-    this.loading = false
-  }
-
-  handleAddSchedule() {
+  @action addSchedule(replicaId: string, schedule: Schedule): Promise<void> {
     this.adding = true
+
+    return Source.addSchedule(replicaId, schedule).then((schedule: Schedule) => {
+      this.adding = false
+      this.schedules = [...this.schedules, schedule]
+    }).catch(() => {
+      this.adding = false
+    })
   }
 
-  handleAddScheduleSuccess(schedule) {
-    this.adding = false
-    this.schedules = [...this.schedules, schedule]
-  }
-
-  handleAddScheduleFailed() {
-    this.adding = false
-  }
-
-  handleRemoveSchedule({ scheduleId }) {
+  @action removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
     this.schedules = this.schedules.filter(s => s.id !== scheduleId)
     this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== scheduleId)
+
+    return Source.removeSchedule(replicaId, scheduleId)
   }
 
-  handleUpdateSchedule({ scheduleId, data, forceSave }) {
+  @action updateSchedule(
+    replicaId: string,
+    scheduleId: string,
+    data: Schedule,
+    oldData: ?Schedule,
+    unsavedData: ?Schedule,
+    forceSave?: boolean
+  ): Promise<void> {
     this.schedules = updateSchedule(this.schedules, scheduleId, data)
 
     if (!forceSave) {
@@ -107,24 +97,23 @@ class ScheduleStore {
       } else {
         this.unsavedSchedules.push({ id: scheduleId, ...data })
       }
+      return Promise.resolve()
     }
-  }
 
-  handleUpdateScheduleSuccess(schedule) {
-    this.schedules = this.schedules.map(s => {
-      if (s.id === schedule.id) {
-        return { ...schedule }
-      }
-
-      return { ...s }
+    return Source.updateSchedule(replicaId, scheduleId, data, oldData, unsavedData).then((schedule: Schedule) => {
+      this.schedules = this.schedules.map(s => {
+        if (s.id === schedule.id) {
+          return { ...schedule }
+        }
+        return { ...s }
+      })
+      this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== schedule.id)
     })
-    this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== schedule.id)
   }
 
-  handleClearUnsavedSchedules() {
+  @action clearUnsavedSchedules() {
     this.unsavedSchedules = []
-    this.saving = false
   }
 }
 
-export default alt.createStore(ScheduleStore)
+export default new ScheduleStore()

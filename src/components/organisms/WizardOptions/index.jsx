@@ -42,8 +42,8 @@ const WizardOptionsFieldStyled = styled(WizardOptionsField) `
 
 type Props = {
   fields: Field[],
-  selectedInstances: Instance[],
-  data: { [string]: mixed },
+  selectedInstances: ?Instance[],
+  data: ?{ [string]: mixed },
   onChange: (field: Field, value: any) => void,
   useAdvancedOptions: boolean,
   onAdvancedOptionsToggle: (showAdvanced: boolean) => void,
@@ -67,7 +67,7 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'strict-boolean', default: false })
     }
 
-    if (this.props.selectedInstances.length > 1) {
+    if (this.props.selectedInstances && this.props.selectedInstances.length > 1) {
       fieldsSchema.unshift({ name: 'separate_vm', type: 'strict-boolean', default: true })
     }
 

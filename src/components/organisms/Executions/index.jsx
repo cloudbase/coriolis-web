@@ -76,7 +76,7 @@ const NoExecutionText = styled.div`
 `
 
 type Props = {
-  item: MainItem,
+  item: ?MainItem,
   onCancelExecutionClick: (execution: ?Execution) => void,
   onDeleteExecutionClick: (execution: ?Execution) => void,
   onExecuteClick: () => void,
@@ -105,9 +105,9 @@ class Executions extends React.Component<Props, State> {
     let lastExecution = this.getLastExecution(props)
     let selectExecution = null
 
-    if (props.item.executions && this.props.item.executions) {
+    if (props.item && props.item.executions && this.props.item && this.props.item.executions) {
       if (this.props.item.executions.length !== props.item.executions.length
-        && lastExecution.status === 'RUNNING') {
+        && lastExecution && lastExecution.status === 'RUNNING') {
         selectExecution = lastExecution
       }
 
@@ -117,9 +117,9 @@ class Executions extends React.Component<Props, State> {
         if (!isSelectedAvailable) {
           // $FlowIssue
           let lastIndex = this.props.item.executions.findIndex(e => e.id === this.state.selectedExecution.id)
-
+          // $FlowIssue
           if (props.item.executions.length) {
-            if (props.item.executions[lastIndex]) {
+            if (props.item.executions.length - 1 >= lastIndex) {
               selectExecution = props.item.executions[lastIndex]
             } else {
               selectExecution = props.item.executions[lastIndex - 1]
@@ -149,11 +149,11 @@ class Executions extends React.Component<Props, State> {
   }
 
   getLastExecution(props: Props) {
-    return this.hasExecutions(props) && props.item.executions[props.item.executions.length - 1]
+    return this.hasExecutions(props) && props.item && props.item.executions[props.item.executions.length - 1]
   }
 
   hasExecutions(props: Props) {
-    return props.item.executions && props.item.executions.length
+    return props.item && props.item.executions && props.item.executions.length
   }
 
   handlePreviousExecutionClick() {
@@ -164,14 +164,14 @@ class Executions extends React.Component<Props, State> {
       return
     }
 
-    this.setState({ selectedExecution: this.props.item.executions[selectedIndex - 1] })
+    this.setState({ selectedExecution: this.props.item ? this.props.item.executions[selectedIndex - 1] : null })
   }
 
   handleNextExecutionClick() {
     // $FlowIssue
     let selectedIndex = this.props.item.executions.findIndex(e => e.id === this.state.selectedExecution.id)
 
-    if (selectedIndex >= this.props.item.executions.length - 1) {
+    if (!this.props.item || selectedIndex >= this.props.item.executions.length - 1) {
       return
     }
 
@@ -189,7 +189,7 @@ class Executions extends React.Component<Props, State> {
   renderTimeline() {
     return (
       <Timeline
-        items={this.props.item.executions || null}
+        items={this.props.item ? this.props.item.executions : null}
         selectedItem={this.state.selectedExecution}
         onPreviousClick={() => { this.handlePreviousExecutionClick() }}
         onNextClick={() => { this.handleNextExecutionClick() }}

@@ -25,7 +25,7 @@ import StatusPill from '../../atoms/StatusPill'
 import CopyValue from '../../atoms/CopyValue'
 import ProgressBar from '../../atoms/ProgressBar'
 import CopyButton from '../../atoms/CopyButton'
-import NotificationActions from '../../../actions/NotificationActions'
+import NotificationStore from '../../../stores/NotificationStore'
 import DomUtils from '../../../utils/DomUtils'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -159,7 +159,7 @@ class TaskItem extends React.Component<Props> {
     let succesful = DomUtils.copyTextToClipboard(exceptionText)
 
     if (succesful) {
-      NotificationActions.notify('The message has been copied to clipboard.')
+      NotificationStore.notify('The message has been copied to clipboard.')
     }
   }
 
@@ -189,7 +189,7 @@ class TaskItem extends React.Component<Props> {
   }
 
   renderDependsOnValue() {
-    if (this.props.item.depends_on && this.props.item.depends_on[0]) {
+    if (this.props.item.depends_on && this.props.item.depends_on.length > 0 && this.props.item.depends_on[0]) {
       return (
         <Value
           width="calc(100% - 16px)"

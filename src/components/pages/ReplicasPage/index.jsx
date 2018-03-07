@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import MainTemplate from '../../templates/MainTemplate'
 import Navigation from '../../organisms/Navigation'
@@ -25,6 +25,7 @@ import PageHeader from '../../organisms/PageHeader'
 import AlertModal from '../../organisms/AlertModal'
 import MainListItem from '../../molecules/MainListItem'
 import type { MainItem } from '../../../types/MainItem'
+import type { Project } from '../../../types/Project'
 
 import replicaItemImage from './images/replica.svg'
 import replicaLargeImage from './images/replica-large.svg'
@@ -33,12 +34,8 @@ import ProjectStore from '../../../stores/ProjectStore'
 import UserStore from '../../../stores/UserStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
 import EndpointStore from '../../../stores/EndpointStore'
-import ProjectActions from '../../../actions/ProjectActions'
-import ReplicaActions from '../../../actions/ReplicaActions'
-import EndpointActions from '../../../actions/EndpointActions'
-import UserActions from '../../../actions/UserActions'
 import Wait from '../../../utils/Wait'
-import NotificationActions from '../../../actions/NotificationActions'
+import NotificationStore from '../../../stores/NotificationStore'
 import { requestPollTimeout } from '../../../config'
 
 const Wrapper = styled.div``
@@ -48,31 +45,13 @@ const BulkActions = [
   { label: 'Delete', value: 'delete' },
 ]
 
-type Props = {
-  projectStore: any,
-  replicaStore: any,
-  userStore: any,
-  endpointStore: any,
-}
 type State = {
   showDeleteReplicaConfirmation: boolean,
   confirmationItems: ?MainItem[],
   modalIsOpen: boolean,
 }
-class ReplicasPage extends React.Component<Props, State> {
-  static getStores() {
-    return [UserStore, ProjectStore, ReplicaStore, EndpointStore]
-  }
-
-  static getPropsFromStores() {
-    return {
-      userStore: UserStore.getState(),
-      projectStore: ProjectStore.getState(),
-      replicaStore: ReplicaStore.getState(),
-      endpointStore: EndpointStore.getState(),
-    }
-  }
-
+@observer
+class ReplicasPage extends React.Component<{}, State> {
   pollTimeout: TimeoutID
 
   constructor() {
@@ -88,8 +67,8 @@ class ReplicasPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Coriolis Replicas'
 
-    ProjectActions.getProjects()
-    EndpointActions.getEndpoints()
+    ProjectStore.getProjects()
+    EndpointStore.getEndpoints()
 
     this.pollData()
   }
@@ -98,12 +77,8 @@ class ReplicasPage extends React.Component<Props, State> {
     clearTimeout(this.pollTimeout)
   }
 
-  getEndpoint(endpointId) {
-    if (!this.props.endpointStore.endpoints || this.props.endpointStore.endpoints === 0) {
-      return {}
-    }
-
-    return this.props.endpointStore.endpoints.find(endpoint => endpoint.id === endpointId) || {}
+  getEndpoint(endpointId: string) {
+    return EndpointStore.endpoints.find(endpoint => endpoint.id === endpointId)
   }
 
   getFilterItems() {
@@ -115,30 +90,31 @@ class ReplicasPage extends React.Component<Props, State> {
     ]
   }
 
-  getLastExecution(item) {
+  getLastExecution(item: MainItem) {
     let lastExecution = item.executions && item.executions.length ?
       item.executions[item.executions.length - 1] : null
 
     return lastExecution
   }
 
-  handleProjectChange(project) {
-    Wait.for(() => this.props.userStore.user.project.id === project.id, () => {
-      ProjectActions.getProjects()
-      ReplicaActions.getReplicas()
-      EndpointActions.getEndpoints()
+  handleProjectChange(project: Project) {
+    // $FlowIssue
+    Wait.for(() => UserStore.user.project.id === project.id, () => {
+      ProjectStore.getProjects()
+      ReplicaStore.getReplicas()
+      EndpointStore.getEndpoints()
     })
 
-    UserActions.switchProject(project.id)
+    UserStore.switchProject(project.id)
   }
 
   handleReloadButtonClick() {
-    ProjectActions.getProjects()
-    ReplicaActions.getReplicas({ showLoading: true })
-    EndpointActions.getEndpoints()
+    ProjectStore.getProjects()
+    ReplicaStore.getReplicas({ showLoading: true })
+    EndpointStore.getEndpoints()
   }
 
-  handleItemClick(item) {
+  handleItemClick(item: MainItem) {
     let lastExecution = this.getLastExecution(item)
     if (lastExecution && lastExecution.status === 'RUNNING') {
       window.location.href = `/#/replica/executions/${item.id}`
@@ -147,12 +123,12 @@ class ReplicasPage extends React.Component<Props, State> {
     }
   }
 
-  handleActionChange(items, action) {
+  handleActionChange(items: MainItem[], action: string) {
     if (action === 'execute') {
       items.forEach(replica => {
-        ReplicaActions.execute(replica.id)
+        ReplicaStore.execute(replica.id)
       })
-      NotificationActions.notify('Executing replicas')
+      NotificationStore.notify('Executing replicas')
     } else if (action === 'delete') {
       this.setState({
         showDeleteReplicaConfirmation: true,
@@ -173,7 +149,7 @@ class ReplicasPage extends React.Component<Props, State> {
       return
     }
     this.state.confirmationItems.forEach(replica => {
-      ReplicaActions.delete(replica.id)
+      ReplicaStore.delete(replica.id)
     })
     this.handleCloseDeleteReplicaConfirmation()
   }
@@ -196,12 +172,12 @@ class ReplicasPage extends React.Component<Props, State> {
     if (this.state.modalIsOpen) {
       return
     }
-    ReplicaActions.getReplicas().promise.then(() => {
+    ReplicaStore.getReplicas().then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
 
-  searchText(item, text) {
+  searchText(item: MainItem, text: ?string) {
     let result = false
     if (item.instances[0].toLowerCase().indexOf(text || '') > -1) {
       return true
@@ -218,7 +194,7 @@ class ReplicasPage extends React.Component<Props, State> {
     return result
   }
 
-  itemFilterFunction(item, filterStatus, filterText) {
+  itemFilterFunction(item: MainItem, filterStatus?: ?string, filterText?: string) {
     let lastExecution = this.getLastExecution(item)
     if ((filterStatus !== 'all' && (!lastExecution || lastExecution.status !== filterStatus)) ||
       !this.searchText(item, filterText)
@@ -238,8 +214,8 @@ class ReplicasPage extends React.Component<Props, State> {
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="replica"
-              loading={this.props.replicaStore.loading}
-              items={this.props.replicaStore.replicas}
+              loading={ReplicaStore.loading}
+              items={ReplicaStore.replicas}
               onItemClick={item => { this.handleItemClick(item) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               actions={BulkActions}
@@ -249,7 +225,13 @@ class ReplicasPage extends React.Component<Props, State> {
                 (<MainListItem
                   {...options}
                   image={replicaItemImage}
-                  endpointType={id => this.getEndpoint(id).type}
+                  endpointType={id => {
+                    let endpoint = this.getEndpoint(id)
+                    if (endpoint) {
+                      return endpoint.type
+                    }
+                    return ''
+                  }}
                 />)
               }
               emptyListImage={replicaLargeImage}
@@ -281,4 +263,4 @@ class ReplicasPage extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(ReplicasPage)
+export default ReplicasPage

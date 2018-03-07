@@ -15,8 +15,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 export type NotificationItem = {
-  options: { persistInfo?: { title: string } },
-  message?: string,
-  id: string,
-  level: 'success' | 'error' | 'info',
+  options?: {
+    persist?: boolean,
+    persistInfo?: { title: string },
+    action?: {
+      label: string,
+      callback: () => void,
+    }
+  },
+  message: string,
+  id?: string,
+  level?: 'success' | 'error' | 'info',
 }

@@ -22,8 +22,9 @@ import CopyButton from '../../atoms/CopyButton'
 import StatusImage from '../../atoms/StatusImage'
 
 import Palette from '../../styleUtils/Palette'
+import type { Validation as ValidationType } from '../../../types/Endpoint'
 
-import NotificationActions from '../../../actions/NotificationActions'
+import NotificationStore from '../../../stores/NotificationStore'
 import DomUtils from '../../../utils/DomUtils'
 
 const Wrapper = styled.div`
@@ -71,7 +72,7 @@ const Error = styled.div`
 
 type Props = {
   loading: boolean,
-  validation?: { valid: boolean, message: string },
+  validation?: ?ValidationType,
   onCancelClick: () => void,
   onRetryClick: () => void,
 }
@@ -80,9 +81,9 @@ class EndpointValidation extends React.Component<Props> {
     let succesful = DomUtils.copyTextToClipboard(message)
 
     if (succesful) {
-      NotificationActions.notify('The value has been copied to clipboard.')
+      NotificationStore.notify('The value has been copied to clipboard.')
     } else {
-      NotificationActions.notify('The value couldn\'t be copied', 'error')
+      NotificationStore.notify('The value couldn\'t be copied', 'error')
     }
   }
 

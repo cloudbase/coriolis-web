@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import NotificationActions from '../actions/NotificationActions'
+import NotificationStore from '../stores/NotificationStore'
 
 let apiInstance = null
 
@@ -90,7 +90,7 @@ class ApiCaller {
 
           if (result.data && result.data.error && result.data.error.message &&
             (result.status !== 401 || window.location.hash !== loginUrl)) {
-            NotificationActions.notify(result.data.error.message, 'error')
+            NotificationStore.notify(result.data.error.message, 'error')
           }
 
           if (result.status === 401 && window.location.hash !== loginUrl) {
@@ -104,7 +104,7 @@ class ApiCaller {
       request.onerror = (result) => {
         let loginUrl = '#/'
         if (window.location.hash !== loginUrl) {
-          NotificationActions.notify(`Request failed, there might be a problem with the 
+          NotificationStore.notify(`Request failed, there might be a problem with the 
           connection to the server.`, 'error')
         }
 

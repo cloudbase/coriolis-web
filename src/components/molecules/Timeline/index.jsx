@@ -82,7 +82,7 @@ const ItemLabel = styled.div`
 `
 
 type Props = {
-  items: Execution[],
+  items: ?Execution[],
   selectedItem: ?Execution,
   onPreviousClick: () => void,
   onNextClick: () => void,
@@ -113,7 +113,7 @@ class Timeline extends React.Component<Props> {
   }
 
   moveToSelectedItem() {
-    if (!this.progressLineRef || !this.endLineRef) {
+    if (!this.progressLineRef || !this.endLineRef || !this.props.items) {
       return
     }
 
@@ -132,6 +132,7 @@ class Timeline extends React.Component<Props> {
 
     this.itemsRef.style.marginLeft = `${offset}px`
 
+    // $FlowIssue
     let lastItemPos = (itemGap * (this.props.items.length - 1)) + offset + itemHalfWidth
     this.progressLineRef.style.width = `${lastItemPos}px`
     this.endLineRef.style.width = `${Math.max(this.wrapperRef.offsetWidth - lastItemPos, 0)}px`

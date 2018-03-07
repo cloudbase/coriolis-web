@@ -106,24 +106,24 @@ const PropertyValue = styled.div`
 `
 
 type Props = {
-  item: MainItem,
+  item: ?MainItem,
   endpoints: Endpoint[],
   bottomControls: React.Node,
   loading: boolean,
 }
 class MainDetails extends React.Component<Props> {
   getSourceEndpoint(): ?Endpoint {
-    let endpoint = this.props.endpoints.find(e => e.id === this.props.item.origin_endpoint_id)
+    let endpoint = this.props.endpoints.find(e => this.props.item && e.id === this.props.item.origin_endpoint_id)
     return endpoint
   }
 
   getDestinationEndpoint(): ?Endpoint {
-    let endpoint = this.props.endpoints.find(e => e.id === this.props.item.destination_endpoint_id)
+    let endpoint = this.props.endpoints.find(e => this.props.item && e.id === this.props.item.destination_endpoint_id)
     return endpoint
   }
 
   getLastExecution() {
-    if (this.props.item.executions && this.props.item.executions.length) {
+    if (this.props.item && this.props.item.executions && this.props.item.executions.length) {
       return this.props.item.executions[this.props.item.executions.length - 1]
     }
 
@@ -132,7 +132,11 @@ class MainDetails extends React.Component<Props> {
 
   getConnectedVms(networkId: string) {
     let vms = []
+    if (!this.props.item) {
+      return '-'
+    }
     Object.keys(this.props.item.info).forEach(key => {
+      // $FlowIssue
       let instance = this.props.item.info[key]
       if (instance.export_info && instance.export_info.devices.nics.length) {
         instance.export_info.devices.nics.forEach(nic => {
@@ -153,7 +157,7 @@ class MainDetails extends React.Component<Props> {
     let networks = []
     Object.keys(this.props.item.destination_environment.network_map).forEach(key => {
       let newItem
-      if (typeof this.props.item.destination_environment.network_map[key] === 'object') {
+      if (this.props.item && typeof this.props.item.destination_environment.network_map[key] === 'object') {
         newItem = [
           this.props.item.destination_environment.network_map[key].source_network,
           this.getConnectedVms(key),
@@ -165,7 +169,7 @@ class MainDetails extends React.Component<Props> {
         newItem = [
           key,
           this.getConnectedVms(key),
-          this.props.item.destination_environment.network_map[key],
+          this.props.item ? this.props.item.destination_environment.network_map[key] : '-',
           'Existing network',
         ]
       }
@@ -237,7 +241,7 @@ class MainDetails extends React.Component<Props> {
 
     return (
       <PropertiesTable>
-        {Object.keys(this.props.item.destination_environment).map(propName => {
+        {this.props.item ? Object.keys(this.props.item.destination_environment).map(propName => {
           let skipProps = ['description', 'network_map']
           if (skipProps.find(p => p === propName)) {
             return null
@@ -245,10 +249,10 @@ class MainDetails extends React.Component<Props> {
           return (
             <PropertyRow key={propName}>
               <PropertyName>{LabelDictionary.get(propName)}</PropertyName>
-              <PropertyValue>{renderValue(this.props.item.destination_environment[propName])}</PropertyValue>
+              <PropertyValue>{renderValue(this.props.item ? this.props.item.destination_environment[propName] : '')}</PropertyValue>
             </PropertyRow>
           )
-        })}
+        }) : null}
       </PropertiesTable>
     )
   }
@@ -275,25 +279,25 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Id</Label>
-              <CopyValue value={this.props.item.id} width="192px" />
+              <CopyValue value={this.props.item ? this.props.item.id : '-'} width="192px" />
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Created</Label>
-              {this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')) : <Value>-</Value>}
+              {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')) : <Value>-</Value>}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Description</Label>
-              {this.props.item.destination_environment && this.props.item.destination_environment.description ? this.renderValue(this.props.item.destination_environment.description) : <Value>-</Value>}
+              {this.props.item && this.props.item.destination_environment && this.props.item.destination_environment.description ? this.renderValue(this.props.item.destination_environment.description) : <Value>-</Value>}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Type</Label>
-              <Value capitalize>Coriolis {this.props.item.type}</Value>
+              <Value capitalize>Coriolis {this.props.item && this.props.item.type}</Value>
             </Field>
           </Row>
           <Row>
@@ -325,7 +329,7 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Instances</Label>
-              <Value>{this.props.item.instances.join(', ')}</Value>
+              <Value>{this.props.item && this.props.item.instances.join(', ')}</Value>
             </Field>
           </Row>
         </Column>

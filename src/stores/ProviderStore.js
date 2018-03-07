@@ -12,70 +12,59 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import ProviderActions from '../actions/ProviderActions'
+// @flow
+
+import { observable, action } from 'mobx'
+
+import ProviderSource from '../sources/ProviderSource'
+import type { Field } from '../types/Field'
+import type { Providers } from '../types/Providers'
 
 class ProviderStore {
-  constructor() {
-    this.connectionInfoSchema = []
-    this.connectionSchemaLoading = false
-    this.providers = null
-    this.providersLoading = false
-    this.optionsSchema = []
-    this.optionsSchemaLoading = false
+  @observable connectionInfoSchema: Field[] = []
+  @observable connectionSchemaLoading: boolean = false
+  @observable providers: ?Providers
+  @observable providersLoading: boolean = false
+  @observable optionsSchema: Field[] = []
+  @observable optionsSchemaLoading: boolean = false
 
-    this.bindListeners({
-      handleGetConnectionInfoSchema: ProviderActions.GET_CONNECTION_INFO_SCHEMA,
-      handleGetConnectionInfoSchemaSuccess: ProviderActions.GET_CONNECTION_INFO_SCHEMA_SUCCESS,
-      handleGetConnectionInfoSchemaFailed: ProviderActions.GET_CONNECTION_INFO_SCHEMA_FAILED,
-      handleClearConnectionInfoSchema: ProviderActions.CLEAR_CONNECTION_INFO_SCHEMA,
-      handleLoadProviders: ProviderActions.LOAD_PROVIDERS,
-      handleLoadProvidersSuccess: ProviderActions.LOAD_PROVIDERS_SUCCESS,
-      handleLoadOptionsSchema: ProviderActions.LOAD_OPTIONS_SCHEMA,
-      handleLoadOptionsSchemaSuccess: ProviderActions.LOAD_OPTIONS_SCHEMA_SUCCESS,
-      handleLoadOptionsSchemaFailed: ProviderActions.LOAD_OPTIONS_SCHEMA_FAILED,
+  @action getConnectionInfoSchema(providerName: string): Promise<void> {
+    this.connectionSchemaLoading = true
+
+    return ProviderSource.getConnectionInfoSchema(providerName).then((fields: Field[]) => {
+      this.connectionSchemaLoading = false
+      this.connectionInfoSchema = fields
+    }).catch(() => {
+      this.connectionSchemaLoading = false
     })
   }
 
-  handleGetConnectionInfoSchema() {
-    this.connectionSchemaLoading = true
-  }
-
-  handleGetConnectionInfoSchemaSuccess(schema) {
-    this.connectionSchemaLoading = false
-    this.connectionInfoSchema = schema
-  }
-
-  handleGetConnectionInfoSchemaFailed() {
-    this.connectionSchemaLoading = false
-  }
-
-  handleClearConnectionInfoSchema() {
+  @action clearConnectionInfoSchema() {
     this.connectionInfoSchema = []
   }
 
-  handleLoadProviders() {
+  @action loadProviders(): Promise<void> {
     this.providers = null
     this.providersLoading = true
+
+    return ProviderSource.loadProviders().then((providers: Providers) => {
+      this.providers = providers
+      this.providersLoading = false
+    }).catch(() => {
+      this.providersLoading = false
+    })
   }
 
-  handleLoadProvidersSuccess(providers) {
-    this.providers = providers
-    this.providersLoading = false
-  }
-
-  handleLoadOptionsSchema() {
+  @action loadOptionsSchema(providerName: string, schemaType: string): Promise<void> {
     this.optionsSchemaLoading = true
-  }
 
-  handleLoadOptionsSchemaSuccess(schema) {
-    this.optionsSchemaLoading = false
-    this.optionsSchema = schema
-  }
-
-  handleLoadOptionsSchemaFailed() {
-    this.optionsSchemaLoading = false
+    return ProviderSource.loadOptionsSchema(providerName, schemaType).then((fields: Field[]) => {
+      this.optionsSchemaLoading = false
+      this.optionsSchema = fields
+    }).catch(() => {
+      this.optionsSchemaLoading = false
+    })
   }
 }
 
-export default alt.createStore(ProviderStore)
+export default new ProviderStore()

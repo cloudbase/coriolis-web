@@ -104,7 +104,7 @@ class ReplicaSource {
         let executions = response.data.executions
         ReplicaSourceUtils.sortExecutionsAndTaskUpdates(executions)
 
-        resolve({ replicaId, executions })
+        resolve(executions)
       }, reject).catch(reject)
     })
   }
@@ -142,7 +142,7 @@ class ReplicaSource {
       }).then((response) => {
         let execution = response.data.execution
         ReplicaSourceUtils.sortTaskUpdates(execution)
-        resolve({ replicaId, execution })
+        resolve(execution)
       }, reject).catch(reject)
     })
   }

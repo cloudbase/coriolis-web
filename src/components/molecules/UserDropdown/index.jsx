@@ -100,7 +100,7 @@ type User = { name: string, email: string }
 type DictItem = { label: string, value: string }
 type Props = {
   onItemClick: (item: DictItem) => void,
-  user: User,
+  user: ?User,
   white?: boolean,
 }
 type State = {

@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import Dropdown from '../../molecules/Dropdown'
 import NewItemDropdown from '../../molecules/NewItemDropdown'
@@ -29,10 +29,7 @@ import Endpoint from '../../organisms/Endpoint'
 
 import ProjectStore from '../../../stores/ProjectStore'
 import UserStore from '../../../stores/UserStore'
-import UserActions from '../../../actions/UserActions'
-import NotificationActions from '../../../actions/NotificationActions'
 import NotificationStore from '../../../stores/NotificationStore'
-import ProviderActions from '../../../actions/ProviderActions'
 import ProviderStore from '../../../stores/ProviderStore'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -64,32 +61,16 @@ const Controls = styled.div`
 type Props = {
   title: string,
   onProjectChange: (project: Project) => void,
-  onModalOpen: () => void,
-  onModalClose: () => void,
-  projectStore: any,
-  userStore: any,
-  providerStore: any,
-  notificationStore: any,
+  onModalOpen?: () => void,
+  onModalClose?: () => void,
 }
 type State = {
   showChooseProviderModal: boolean,
   showEndpointModal: boolean,
   providerType?: string,
 }
+@observer
 class PageHeader extends React.Component<Props, State> {
-  static getStores() {
-    return [UserStore, ProjectStore, ProviderStore, NotificationStore]
-  }
-
-  static getPropsFromStores(): $Shape<Props> {
-    return {
-      userStore: UserStore.getState(),
-      projectStore: ProjectStore.getState(),
-      providerStore: ProviderStore.getState(),
-      notificationStore: NotificationStore.getState(),
-    }
-  }
-
   constructor() {
     super()
 
@@ -100,21 +81,22 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    NotificationActions.loadNotifications()
+    NotificationStore.loadNotifications()
   }
 
   getCurrentProject() {
-    if (this.props.userStore.user && this.props.userStore.user.project) {
-      return this.props.projectStore.projects.find(p => p.id === this.props.userStore.user.project.id)
+    if (UserStore.user && UserStore.user.project) {
+      // $FlowIssue
+      return ProjectStore.projects.find(p => p.id === UserStore.user.project.id)
     }
 
     return null
   }
 
-  handleUserItemClick(item) {
+  handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserActions.logout()
+        UserStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -126,7 +108,7 @@ class PageHeader extends React.Component<Props, State> {
   handleNewItem(item: ItemType) {
     switch (item.value) {
       case 'endpoint':
-        ProviderActions.loadProviders()
+        ProviderStore.loadProviders()
         if (this.props.onModalOpen) {
           this.props.onModalOpen()
         }
@@ -137,7 +119,7 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   handleNotificationsClose() {
-    NotificationActions.clearNotifications()
+    NotificationStore.clearNotifications()
   }
 
   handleCloseChooseProviderModal() {
@@ -162,7 +144,7 @@ class PageHeader extends React.Component<Props, State> {
     this.setState({ showEndpointModal: false })
   }
 
-  handleBackEndpointModal(options) {
+  handleBackEndpointModal(options?: { autoClose?: boolean }) {
     this.setState({ showChooseProviderModal: !options || !options.autoClose, showEndpointModal: false })
   }
 
@@ -173,14 +155,14 @@ class PageHeader extends React.Component<Props, State> {
         <Controls>
           <Dropdown
             selectedItem={this.getCurrentProject()}
-            items={this.props.projectStore.projects}
+            items={ProjectStore.projects}
             onChange={this.props.onProjectChange}
             noItemsMessage="Loading..."
             labelField="name"
           />
           <NewItemDropdown onChange={item => { this.handleNewItem(item) }} />
-          <NotificationDropdown items={this.props.notificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
-          <UserDropdown user={this.props.userStore.user} onItemClick={item => { this.handleUserItemClick(item) }} />
+          <NotificationDropdown items={NotificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
+          <UserDropdown user={UserStore.user} onItemClick={item => { this.handleUserItemClick(item) }} />
         </Controls>
         <Modal
           isOpen={this.state.showChooseProviderModal}
@@ -189,8 +171,8 @@ class PageHeader extends React.Component<Props, State> {
         >
           <ChooseProvider
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
-            providers={this.props.providerStore.providers}
-            loading={this.props.providerStore.providersLoading}
+            providers={ProviderStore.providers}
+            loading={ProviderStore.providersLoading}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
           />
         </Modal>
@@ -211,4 +193,4 @@ class PageHeader extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(PageHeader)
+export default PageHeader

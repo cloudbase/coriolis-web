@@ -16,7 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { observer } from 'mobx-react'
 
+import ScheduleStore from '../../../stores/ScheduleStore'
 import Button from '../../atoms/Button'
 import DetailsNavigation from '../../molecules/DetailsNavigation'
 import MainDetails from '../../organisms/MainDetails'
@@ -67,9 +69,9 @@ const NavigationItems = [
 
 type TimezoneValue = 'utc' | 'local'
 type Props = {
-  item: MainItem,
+  item: ?MainItem,
   endpoints: Endpoint[],
-  scheduleStore: any,
+  scheduleStore: typeof ScheduleStore,
   page: string,
   detailsLoading: boolean,
   onCancelExecutionClick: (execution: ?Execution) => void,
@@ -78,14 +80,15 @@ type Props = {
   onCreateMigrationClick: () => void,
   onDeleteReplicaClick: () => void,
   onDeleteReplicaDisksClick: () => void,
-  onAddScheduleClick: () => void,
-  onScheduleChange: () => void,
-  onScheduleRemove: () => void,
+  onAddScheduleClick: (schedule: ScheduleType) => void,
+  onScheduleChange: (scheduleId: ?string, data: ScheduleType, forceSave?: boolean) => void,
+  onScheduleRemove: (scheduleId: ?string) => void,
   onScheduleSave: (schedule: ScheduleType) => void,
 }
 type State = {
   timezone: TimezoneValue,
 }
+@observer
 class ReplicaDetailsContent extends React.Component<Props, State> {
   constructor() {
     super()
@@ -96,7 +99,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
   }
 
   getLastExecution() {
-    return this.props.item.executions && this.props.item.executions.length
+    return this.props.item && this.props.item.executions && this.props.item.executions.length
       && this.props.item.executions[this.props.item.executions.length - 1]
   }
 
@@ -106,8 +109,8 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
   }
 
   isEndpointMissing() {
-    let originEndpoint = this.props.endpoints.find(e => e.id === this.props.item.origin_endpoint_id)
-    let targetEndpoint = this.props.endpoints.find(e => e.id === this.props.item.destination_endpoint_id)
+    let originEndpoint = this.props.endpoints.find(e => this.props.item && e.id === this.props.item.origin_endpoint_id)
+    let targetEndpoint = this.props.endpoints.find(e => this.props.item && e.id === this.props.item.destination_endpoint_id)
 
     return Boolean(!originEndpoint || !targetEndpoint)
   }
@@ -132,7 +135,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
             hollow
             secondary
             onClick={this.props.onDeleteReplicaDisksClick}
-            disabled={!this.props.item.executions || this.props.item.executions.length === 0}
+            disabled={!this.props.item || !this.props.item.executions || this.props.item.executions.length === 0}
           >Delete Replica Disks</Button>
           <Button
             alert
@@ -201,7 +204,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         <DetailsNavigation
           items={NavigationItems}
           selectedValue={this.props.page}
-          itemId={this.props.item.id}
+          itemId={this.props.item ? this.props.item.id : ''}
           itemType="replica"
         />
         <DetailsBody>

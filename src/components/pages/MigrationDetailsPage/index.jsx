@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
 import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
@@ -26,11 +26,8 @@ import AlertModal from '../../organisms/AlertModal'
 
 import MigrationStore from '../../../stores/MigrationStore'
 import UserStore from '../../../stores/UserStore'
-import UserActions from '../../../actions/UserActions'
-import MigrationActions from '../../../actions/MigrationActions'
 import EndpointStore from '../../../stores/EndpointStore'
-import EndpointActions from '../../../actions/EndpointActions'
-import NotificationActions from '../../../actions/NotificationActions'
+import NotificationStore from '../../../stores/NotificationStore'
 import { requestPollTimeout } from '../../../config'
 
 import migrationImage from './images/migration.svg'
@@ -39,27 +36,13 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
-  migrationStore: any,
-  endpointStore: any,
-  userStore: any,
 }
 type State = {
   showDeleteMigrationConfirmation: boolean,
   showCancelConfirmation: boolean,
 }
+@observer
 class MigrationDetailsPage extends React.Component<Props, State> {
-  static getStores() {
-    return [MigrationStore, EndpointStore, UserStore]
-  }
-
-  static getPropsFromStores() {
-    return {
-      migrationStore: MigrationStore.getState(),
-      endpointStore: EndpointStore.getState(),
-      userStore: UserStore.getState(),
-    }
-  }
-
   pollInterval: IntervalID
 
   constructor() {
@@ -74,20 +57,20 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Migration Details'
 
-    EndpointActions.getEndpoints()
+    EndpointStore.getEndpoints()
     this.pollData(true)
     this.pollInterval = setInterval(() => { this.pollData() }, requestPollTimeout)
   }
 
   componentWillUnmount() {
-    MigrationActions.clearDetails()
+    MigrationStore.clearDetails()
     clearInterval(this.pollInterval)
   }
 
-  handleUserItemClick(item) {
+  handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserActions.logout()
+        UserStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -107,7 +90,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   handleDeleteMigrationConfirmation() {
     this.setState({ showDeleteMigrationConfirmation: false })
     window.location.href = '/#/migrations'
-    MigrationActions.delete(this.props.migrationStore.migrationDetails.id)
+    if (MigrationStore.migrationDetails) {
+      MigrationStore.delete(MigrationStore.migrationDetails.id)
+    }
   }
 
   handleCloseDeleteMigrationConfirmation() {
@@ -124,17 +109,20 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
   handleCancelConfirmation() {
     this.setState({ showCancelConfirmation: false })
-    MigrationActions.cancel(this.props.migrationStore.migrationDetails.id).promise.then(() => {
-      if (MigrationStore.getState().canceling === false) {
-        NotificationActions.notify('Canceled', 'success')
+    if (!MigrationStore.migrationDetails) {
+      return
+    }
+    MigrationStore.cancel(MigrationStore.migrationDetails.id).then(() => {
+      if (MigrationStore.canceling === false) {
+        NotificationStore.notify('Canceled', 'success')
       } else {
-        NotificationActions.notify('The migration couldn\'t be canceled', 'error')
+        NotificationStore.notify('The migration couldn\'t be canceled', 'error')
       }
     })
   }
 
-  pollData(showLoading) {
-    MigrationActions.getMigration(this.props.match.params.id, showLoading)
+  pollData(showLoading?: boolean) {
+    MigrationStore.getMigration(this.props.match.params.id, showLoading || false)
   }
 
   render() {
@@ -142,21 +130,21 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       <Wrapper>
         <DetailsTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={this.props.userStore.user}
+            user={UserStore.user}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
-            item={this.props.migrationStore.migrationDetails}
+            item={MigrationStore.migrationDetails}
             onBackButonClick={() => { this.handleBackButtonClick() }}
             typeImage={migrationImage}
             primaryInfoPill
             onCancelClick={() => { this.handleCancelMigrationClick() }}
           />}
           contentComponent={<MigrationDetailsContent
-            item={this.props.migrationStore.migrationDetails}
-            endpoints={this.props.endpointStore.endpoints}
+            item={MigrationStore.migrationDetails}
+            endpoints={EndpointStore.endpoints}
             page={this.props.match.params.page || ''}
-            detailsLoading={this.props.endpointStore.loading || this.props.migrationStore.detailsLoading}
+            detailsLoading={EndpointStore.loading || MigrationStore.detailsLoading}
             onDeleteMigrationClick={() => { this.handleDeleteMigrationClick() }}
           />}
         />
@@ -182,4 +170,4 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(MigrationDetailsPage)
+export default MigrationDetailsPage

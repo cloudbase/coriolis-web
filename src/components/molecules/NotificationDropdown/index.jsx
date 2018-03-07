@@ -213,7 +213,7 @@ class NotificationDropdown extends React.Component<Props, State> {
     let list = (
       <List>
         {this.props.items.map(item => {
-          let title = (item.options.persistInfo && item.options.persistInfo.title) || item.message
+          let title = (item.options && item.options.persistInfo && item.options.persistInfo.title) || item.message
           let message = title === item.message ? '' : item.message
 
           return (

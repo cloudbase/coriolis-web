@@ -12,81 +12,76 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import MigrationActions from '../actions/MigrationActions'
-import NotificationActions from '../actions/NotificationActions'
+// @flow
+
+import { observable, action } from 'mobx'
+
+import type { MainItem } from '../types/MainItem'
+import type { Field } from '../types/Field'
+import NotificationStore from '../stores/NotificationStore'
+import MigrationSource from '../sources/MigrationSource'
 
 class MigrationStore {
-  constructor() {
-    this.migrations = []
-    this.migrationDetails = {}
-    this.loading = true
-    this.canceling = true
-    this.detailsLoading = true
+  @observable migrations: MainItem[] = []
+  @observable migrationDetails: ?MainItem = null
+  @observable loading: boolean = true
+  @observable canceling: boolean | { failed: boolean } = true
+  @observable detailsLoading: boolean = true
 
-    this.bindListeners({
-      handleGetMigrations: MigrationActions.GET_MIGRATIONS,
-      handleGetMigrationsSuccess: MigrationActions.GET_MIGRATIONS_SUCCESS,
-      handleGetMigrationsFailed: MigrationActions.GET_MIGRATIONS_FAILED,
-      handleGetMigration: MigrationActions.GET_MIGRATION,
-      handleGetMigrationSuccess: MigrationActions.GET_MIGRATION_SUCCESS,
-      handleGetMigrationFailed: MigrationActions.GET_MIGRATION_FAILED,
-      handleDeleteSuccess: MigrationActions.DELETE_SUCCESS,
-      handleMigrateReplicaSuccess: MigrationActions.MIGRATE_REPLICA_SUCCESS,
-      handleCancel: MigrationActions.CANCEL,
-      handleCancelSuccess: MigrationActions.CANCEL_SUCCESS,
-      handleCancelFailed: MigrationActions.CANCEL_FAILED,
-      handleClearDetails: MigrationActions.CLEAR_DETAILS,
-    })
-  }
-
-  handleGetMigrations({ showLoading }) {
-    if (showLoading || this.migrations.length === 0) {
+  @action getMigrations(options?: { showLoading: boolean }) {
+    if ((options && options.showLoading) || this.migrations.length === 0) {
       this.loading = true
     }
-  }
 
-  handleGetMigrationsSuccess(migrations) {
-    this.migrations = migrations.map(migration => {
-      let oldMigration = this.migrations.find(r => r.id === migration.id)
-      if (oldMigration) {
-        migration.executions = oldMigration.executions
-      }
+    return MigrationSource.getMigrations().then(migrations => {
+      this.migrations = migrations.map(migration => {
+        let oldMigration = this.migrations.find(r => r.id === migration.id)
+        if (oldMigration) {
+          migration.executions = oldMigration.executions
+        }
 
-      return migration
+        return migration
+      })
+      this.loading = false
+    }).catch(() => {
+      this.loading = false
     })
-    this.loading = false
   }
 
-  handleGetMigrationsFailed() {
-    this.loading = false
-  }
-
-  handleGetMigration({ showLoading }) {
+  @action getMigration(migrationId: string, showLoading: boolean) {
     this.detailsLoading = showLoading
+
+    return MigrationSource.getMigration(migrationId).then(migration => {
+      this.detailsLoading = false
+      this.migrationDetails = migration
+    }).catch(() => {
+      this.detailsLoading = false
+    })
   }
 
-  handleGetMigrationSuccess(migration) {
-    this.detailsLoading = false
-    this.migrationDetails = migration
+  @action cancel(migrationId: string) {
+    this.canceling = true
+    return MigrationSource.cancel(migrationId).then(() => {
+      this.canceling = false
+    }).catch(() => {
+      this.canceling = { failed: true }
+    })
   }
 
-  handleGetMigrationFailed() {
-    this.detailsLoading = false
+  @action delete(migrationId: string) {
+    return MigrationSource.delete(migrationId).then(() => {
+      this.migrations = this.migrations.filter(r => r.id !== migrationId)
+    })
   }
 
-  handleDeleteSuccess(migrationId) {
-    this.migrations = this.migrations.filter(r => r.id !== migrationId)
-  }
+  @action migrateReplica(replicaId: string, options: Field[]) {
+    return MigrationSource.migrateReplica(replicaId, options).then(migration => {
+      this.migrations = [
+        migration,
+        ...this.migrations,
+      ]
 
-  handleMigrateReplicaSuccess(migration) {
-    this.migrations = [
-      migration,
-      ...this.migrations,
-    ]
-
-    setTimeout(() => {
-      NotificationActions.notify('Migration successfully created from replica.', 'success', {
+      NotificationStore.notify('Migration successfully created from replica.', 'success', {
         action: {
           label: 'View Migration Status',
           callback: () => {
@@ -96,24 +91,12 @@ class MigrationStore {
         persist: true,
         persistInfo: { title: 'Migration created' },
       })
-    }, 0)
+    })
   }
 
-  handleCancel() {
-    this.canceling = true
-  }
-
-  handleCancelSuccess() {
-    this.canceling = false
-  }
-
-  handleCancelFailed() {
-    this.canceling = { failed: true }
-  }
-
-  handleClearDetails() {
+  @action clearDetails() {
     this.detailsLoading = true
   }
 }
 
-export default alt.createStore(MigrationStore)
+export default new MigrationStore()

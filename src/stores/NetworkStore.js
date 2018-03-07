@@ -12,39 +12,33 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import NetworkActions from '../actions/NetworkActions'
+// @flow
+
+import { observable, action } from 'mobx'
+import type { Network } from '../types/Network'
+import NetworkSource from '../sources/NetworkSource'
 
 class NetworkStore {
-  constructor() {
-    this.networks = []
-    this.loading = false
-    this.cacheId = null
+  @observable networks: Network[] = []
+  @observable loading: boolean = false
 
-    this.bindListeners({
-      handleLoadNetworks: NetworkActions.LOAD_NETWORKS,
-      handleLoadNetworksSuccess: NetworkActions.LOAD_NETWORKS_SUCCESS,
-      handleLoadNetworksFailed: NetworkActions.LOAD_NETWORKS_FAILED,
-    })
-  }
+  cachedId: string = ''
 
-  handleLoadNetworks({ fromCache }) {
-    if (fromCache) {
-      return
+  @action loadNetworks(endpointId: string, environment: ?{ [string]: mixed }): Promise<void> {
+    let id = `${endpointId}-${btoa(JSON.stringify(environment))}`
+    if (this.cachedId === id) {
+      return Promise.resolve()
     }
 
     this.loading = true
-  }
-
-  handleLoadNetworksSuccess({ networks, cacheId }) {
-    this.loading = false
-    this.networks = networks
-    this.cacheId = cacheId
-  }
-
-  handleLoadNetworksFailed() {
-    this.loading = false
+    return NetworkSource.loadNetworks(endpointId, environment).then((networks: Network[]) => {
+      this.loading = false
+      this.networks = networks
+      this.cachedId = id
+    }).catch(() => {
+      this.loading = false
+    })
   }
 }
 
-export default alt.createStore(NetworkStore)
+export default new NetworkStore()

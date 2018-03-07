@@ -20,7 +20,7 @@ import moment from 'moment'
 import Api from '../utils/ApiCaller'
 import { SchemaParser } from './Schemas'
 import ObjectUtils from '../utils/ObjectUtils'
-import type { Endpoint } from '../types/Endpoint'
+import type { Endpoint, Validation } from '../types/Endpoint'
 
 import { servicesUrl, useSecret } from '../config'
 
@@ -101,7 +101,7 @@ class EdnpointSource {
     })
   }
 
-  static validate(endpoint: Endpoint): Promise<{ valid: boolean, validation: { message: string } }> {
+  static validate(endpoint: Endpoint): Promise<Validation> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       Api.sendAjaxRequest({

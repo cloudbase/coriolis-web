@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import MainTemplate from '../../templates/MainTemplate'
 import Navigation from '../../organisms/Navigation'
@@ -28,6 +28,7 @@ import Modal from '../../molecules/Modal'
 import ChooseProvider from '../../organisms/ChooseProvider'
 import Endpoint from '../../organisms/Endpoint'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
+import type { Project } from '../../../types/Project'
 
 import endpointImage from './images/endpoint-large.svg'
 
@@ -36,13 +37,7 @@ import UserStore from '../../../stores/UserStore'
 import EndpointStore from '../../../stores/EndpointStore'
 import MigrationStore from '../../../stores/MigrationStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
-import ProjectActions from '../../../actions/ProjectActions'
 import ProviderStore from '../../../stores/ProviderStore'
-import ProviderActions from '../../../actions/ProviderActions'
-import EndpointActions from '../../../actions/EndpointActions'
-import MigrationActions from '../../../actions/MigrationActions'
-import ReplicaActions from '../../../actions/ReplicaActions'
-import UserActions from '../../../actions/UserActions'
 import Wait from '../../../utils/Wait'
 import LabelDictionary from '../../../utils/LabelDictionary'
 
@@ -52,14 +47,6 @@ const BulkActions = [
   { label: 'Delete', value: 'delete' },
 ]
 
-type Props = {
-  projectStore: any,
-  userStore: any,
-  endpointStore: any,
-  migrationStore: any,
-  replicaStore: any,
-  providerStore: any,
-}
 type State = {
   showDeleteEndpointsConfirmation: boolean,
   confirmationItems: ?EndpointType[],
@@ -67,22 +54,8 @@ type State = {
   showEndpointModal: boolean,
   providerType: ?string,
 }
-class EndpointsPage extends React.Component<Props, State> {
-  static getStores() {
-    return [UserStore, ProjectStore, EndpointStore, MigrationStore, ReplicaStore, ProviderStore]
-  }
-
-  static getPropsFromStores() {
-    return {
-      userStore: UserStore.getState(),
-      projectStore: ProjectStore.getState(),
-      endpointStore: EndpointStore.getState(),
-      migrationStore: MigrationStore.getState(),
-      replicaStore: ReplicaStore.getState(),
-      providerStore: ProviderStore.getState(),
-    }
-  }
-
+@observer
+class EndpointsPage extends React.Component<{}, State> {
   pollInterval: IntervalID
 
   constructor() {
@@ -100,10 +73,10 @@ class EndpointsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Coriolis Endpoints'
 
-    ProjectActions.getProjects()
-    EndpointActions.getEndpoints()
-    MigrationActions.getMigrations()
-    ReplicaActions.getReplicas()
+    ProjectStore.getProjects()
+    EndpointStore.getEndpoints()
+    MigrationStore.getMigrations()
+    ReplicaStore.getReplicas()
   }
 
   componentWillUnmount() {
@@ -112,7 +85,7 @@ class EndpointsPage extends React.Component<Props, State> {
 
   getFilterItems() {
     let types = [{ label: 'All', value: 'all' }]
-    this.props.endpointStore.endpoints.forEach(endpoint => {
+    EndpointStore.endpoints.forEach(endpoint => {
       if (!types.find(t => t.value === endpoint.type)) {
         types.push({ label: LabelDictionary.get(endpoint.type), value: endpoint.type })
       }
@@ -121,38 +94,39 @@ class EndpointsPage extends React.Component<Props, State> {
     return types
   }
 
-  getEndpointUsage(endpoint: Endpoint) {
-    let replicasCount = this.props.replicaStore.replicas.filter(
+  getEndpointUsage(endpoint: EndpointType) {
+    let replicasCount = ReplicaStore.replicas.filter(
       r => r.origin_endpoint_id === endpoint.id || r.destination_endpoint_id === endpoint.id).length
-    let migrationsCount = this.props.migrationStore.migrations.filter(
+    let migrationsCount = MigrationStore.migrations.filter(
       r => r.origin_endpoint_id === endpoint.id || r.destination_endpoint_id === endpoint.id).length
 
     return { migrationsCount, replicasCount }
   }
 
-  handleProjectChange(project) {
-    Wait.for(() => this.props.userStore.user.project.id === project.id, () => {
-      ProjectActions.getProjects()
-      EndpointActions.getEndpoints({ showLoading: true })
-      MigrationActions.getMigrations()
-      ReplicaActions.getReplicas()
+  handleProjectChange(project: Project) {
+    // $FlowIssue
+    Wait.for(() => UserStore.user.project.id === project.id, () => {
+      ProjectStore.getProjects()
+      EndpointStore.getEndpoints({ showLoading: true })
+      MigrationStore.getMigrations()
+      ReplicaStore.getReplicas()
     })
 
-    UserActions.switchProject(project.id)
+    UserStore.switchProject(project.id)
   }
 
   handleReloadButtonClick() {
-    ProjectActions.getProjects()
-    EndpointActions.getEndpoints({ showLoading: true })
-    MigrationActions.getMigrations()
-    ReplicaActions.getReplicas()
+    ProjectStore.getProjects()
+    EndpointStore.getEndpoints({ showLoading: true })
+    MigrationStore.getMigrations()
+    ReplicaStore.getReplicas()
   }
 
-  handleItemClick(item) {
+  handleItemClick(item: EndpointType) {
     window.location.href = `/#/endpoint/${item.id}`
   }
 
-  handleActionChange(items, action) {
+  handleActionChange(items: EndpointType[], action: string) {
     if (action === 'delete') {
       this.setState({
         showDeleteEndpointsConfirmation: true,
@@ -172,14 +146,14 @@ class EndpointsPage extends React.Component<Props, State> {
   handleDeleteEndpointsConfirmation() {
     if (this.state.confirmationItems) {
       this.state.confirmationItems.forEach(endpoint => {
-        EndpointActions.delete(endpoint)
+        EndpointStore.delete(endpoint)
       })
     }
     this.handleCloseDeleteEndpointsConfirmation()
   }
 
   handleEmptyListButtonClick() {
-    ProviderActions.loadProviders()
+    ProviderStore.loadProviders()
     this.setState({ showChooseProviderModal: true })
   }
 
@@ -187,7 +161,7 @@ class EndpointsPage extends React.Component<Props, State> {
     this.setState({ showChooseProviderModal: false })
   }
 
-  handleProviderClick(providerType) {
+  handleProviderClick(providerType: string) {
     this.setState({
       showChooseProviderModal: false,
       showEndpointModal: true,
@@ -199,11 +173,12 @@ class EndpointsPage extends React.Component<Props, State> {
     this.setState({ showEndpointModal: false })
   }
 
-  itemFilterFunction(item, filterItem, filterText) {
-    if ((filterItem !== 'all' && (item.type !== filterItem)) ||
-      (item.name.toLowerCase().indexOf(filterText || '') === -1 &&
+  itemFilterFunction(item: any, filterItem?: ?string, filterText?: string) {
+    let endpoint: EndpointType = item
+    if ((filterItem !== 'all' && (endpoint.type !== filterItem)) ||
+      (endpoint.name.toLowerCase().indexOf(filterText || '') === -1 &&
       // $FlowIssue
-      item.description.toLowerCase().indexOf(filterText) === -1)
+      endpoint.description.toLowerCase().indexOf(filterText) === -1)
     ) {
       return false
     }
@@ -212,6 +187,7 @@ class EndpointsPage extends React.Component<Props, State> {
   }
 
   render() {
+    let items: any = EndpointStore.endpoints
     return (
       <Wrapper>
         <MainTemplate
@@ -220,12 +196,20 @@ class EndpointsPage extends React.Component<Props, State> {
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="endpoint"
-              loading={this.props.endpointStore.loading}
-              items={this.props.endpointStore.endpoints}
-              onItemClick={item => { this.handleItemClick(item) }}
+              loading={EndpointStore.loading}
+              items={items}
+              onItemClick={item => {
+                let anyItem: any = item
+                let endpoint: EndpointType = anyItem
+                this.handleItemClick(endpoint)
+              }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               actions={BulkActions}
-              onActionChange={(items, action) => { this.handleActionChange(items, action) }}
+              onActionChange={(items, action) => {
+                let anyItems: any = items
+                let endpoints: EndpointType[] = anyItems
+                this.handleActionChange(endpoints, action)
+              }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={options =>
                 // $FlowIssue
@@ -263,8 +247,8 @@ class EndpointsPage extends React.Component<Props, State> {
         >
           <ChooseProvider
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
-            providers={this.props.providerStore.providers}
-            loading={this.props.providerStore.providersLoading}
+            providers={ProviderStore.providers}
+            loading={ProviderStore.providersLoading}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
           />
         </Modal>
@@ -284,4 +268,4 @@ class EndpointsPage extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(EndpointsPage)
+export default EndpointsPage

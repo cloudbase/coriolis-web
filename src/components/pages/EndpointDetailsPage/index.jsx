@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
 import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
@@ -28,13 +28,9 @@ import EndpointValidation from '../../organisms/EndpointValidation'
 import Endpoint from '../../organisms/Endpoint'
 
 import EndpointStore from '../../../stores/EndpointStore'
-import EndpointActions from '../../../actions/EndpointActions'
 import MigrationStore from '../../../stores/MigrationStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
-import MigrationActions from '../../../actions/MigrationActions'
-import ReplicaActions from '../../../actions/ReplicaActions'
 import UserStore from '../../../stores/UserStore'
-import UserActions from '../../../actions/UserActions'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 
 import endpointImage from './images/endpoint.svg'
@@ -43,10 +39,6 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
-  endpointStore: any,
-  userStore: any,
-  migrationStore: any,
-  replicaStore: any,
 }
 type State = {
   showDeleteEndpointConfirmation: boolean,
@@ -55,20 +47,8 @@ type State = {
   showEndpointInUseModal: boolean,
   showEndpointInUseLoadingModal: boolean,
 }
+@observer
 class EndpointDetailsPage extends React.Component<Props, State> {
-  static getStores() {
-    return [EndpointStore, UserStore, MigrationStore, ReplicaStore]
-  }
-
-  static getPropsFromStores() {
-    return {
-      endpointStore: EndpointStore.getState(),
-      userStore: UserStore.getState(),
-      migrationStore: MigrationStore.getState(),
-      replicaStore: ReplicaStore.getState(),
-    }
-  }
-
   constructor() {
     super()
 
@@ -88,18 +68,18 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    EndpointActions.clearConnectionInfo()
+    EndpointStore.clearConnectionInfo()
   }
 
   getEndpoint(): ?EndpointType {
-    return this.props.endpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
+    return EndpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
   }
 
   getEndpointUsage() {
     let endpointId = this.props.match.params.id
-    let replicasCount = this.props.replicaStore.replicas.filter(
+    let replicasCount = ReplicaStore.replicas.filter(
       r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId).length
-    let migrationsCount = this.props.migrationStore.migrations.filter(
+    let migrationsCount = MigrationStore.migrations.filter(
       r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId).length
 
     return { migrationsCount, replicasCount }
@@ -108,7 +88,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserActions.logout()
+        UserStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -124,7 +104,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   handleDeleteEndpointClick() {
     this.setState({ showEndpointInUseLoadingModal: true })
 
-    Promise.all([ReplicaActions.getReplicas().promise, MigrationActions.getMigrations().promise]).then(() => {
+    Promise.all([ReplicaStore.getReplicas(), MigrationStore.getMigrations()]).then(() => {
       let endpointUsage = this.getEndpointUsage()
 
       if (endpointUsage.migrationsCount === 0 && endpointUsage.replicasCount === 0) {
@@ -138,7 +118,10 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   handleDeleteEndpointConfirmation() {
     this.setState({ showDeleteEndpointConfirmation: false })
     window.location.href = '/#/endpoints'
-    EndpointActions.delete(this.getEndpoint())
+    let endpoint = this.getEndpoint()
+    if (endpoint) {
+      EndpointStore.delete(endpoint)
+    }
   }
 
   handleCloseDeleteEndpointConfirmation() {
@@ -146,16 +129,22 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   handleValidateClick() {
-    EndpointActions.validate(this.getEndpoint())
+    let endpoint = this.getEndpoint()
+    if (endpoint) {
+      EndpointStore.validate(endpoint)
+    }
     this.setState({ showValidationModal: true })
   }
 
   handleRetryValidation() {
-    EndpointActions.validate(this.getEndpoint())
+    let endpoint = this.getEndpoint()
+    if (endpoint) {
+      EndpointStore.validate(endpoint)
+    }
   }
 
   handleCloseValidationModal() {
-    EndpointActions.clearValidation()
+    EndpointStore.clearValidation()
     this.setState({ showValidationModal: false })
   }
 
@@ -163,8 +152,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     this.setState({ showEndpointModal: true })
   }
 
-  handleEditValidateClick(endpoint) {
-    EndpointActions.validate(endpoint)
+  handleEditValidateClick(endpoint: EndpointType) {
+    EndpointStore.validate(endpoint)
   }
 
   handleCloseEndpointModal() {
@@ -176,13 +165,13 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   loadData() {
-    EndpointActions.getEndpoints().promise.then(() => {
+    EndpointStore.getEndpoints().then(() => {
       let endpoint = this.getEndpoint()
 
       if (endpoint && endpoint.connection_info && endpoint.connection_info.secret_ref) {
-        EndpointActions.getConnectionInfo(endpoint)
+        EndpointStore.getConnectionInfo(endpoint)
       } else if (endpoint && endpoint.connection_info) {
-        EndpointActions.getConnectionInfoSuccess(endpoint.connection_info)
+        EndpointStore.setConnectionInfo(endpoint.connection_info)
       }
     })
   }
@@ -193,7 +182,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
       <Wrapper>
         <DetailsTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={this.props.userStore.user}
+            user={UserStore.user}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
@@ -206,8 +195,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           />}
           contentComponent={<EndpointDetailsContent
             item={endpoint}
-            loading={this.props.endpointStore.connectionInfoLoading || this.props.endpointStore.loading}
-            connectionInfo={this.props.endpointStore.connectionInfo}
+            loading={EndpointStore.connectionInfoLoading || EndpointStore.loading}
+            connectionInfo={EndpointStore.connectionInfo}
             onDeleteClick={() => { this.handleDeleteEndpointClick() }}
             onValidateClick={() => { this.handleValidateClick() }}
             onEditClick={() => { this.handleEditClick() }}
@@ -240,8 +229,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           onRequestClose={() => { this.handleCloseValidationModal() }}
         >
           <EndpointValidation
-            validation={this.props.endpointStore.validation}
-            loading={this.props.endpointStore.validating}
+            validation={EndpointStore.validation}
+            loading={EndpointStore.validating}
             onCancelClick={() => { this.handleCloseValidationModal() }}
             onRetryClick={() => { this.handleRetryValidation() }}
           />
@@ -262,4 +251,4 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(EndpointDetailsPage)
+export default EndpointDetailsPage
