@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Delete Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M1.96153846,0 C0.884615385,0 0,0.884615385 0,1.96153846 L0,14.0384615 C0,15.1153846 0.884615385,16 1.96153846,16 L14.0384615,16 C15.1153846,16 16,15.1153846 16,14.0384615 L16,3.74519262 L12.2548074,0 L1.96153846,0 Z" id="path-1"></path>
+    </defs>
+    <g id="Elements/Schedule-Line" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-968.000000, -24.000000)">
+        <g id="Icon/Save/Fill" transform="translate(968.000000, 24.000000)">
+            <g id="Path">
+                <use fill="#0044CA" fill-rule="evenodd" xlink:href="#path-1"></use>
+                <path stroke="#0044CA" stroke-width="1.5" d="M15.25,4.05585279 L11.9441472,0.75 L1.96153846,0.75 C1.29882895,0.75 0.75,1.29882895 0.75,1.96153846 L0.75,14.0384615 C0.75,14.7011711 1.29882895,15.25 1.96153846,15.25 L14.0384615,15.25 C14.7011711,15.25 15.25,14.7011711 15.25,14.0384615 L15.25,4.05585279 Z"></path>
+            </g>
+            <path d="M3,6 L3,2 C3,1.44771525 3.44771525,1 4,1 L11,1 C11.5522847,1 12,1.44771525 12,2 L12,6 L3,6 Z" id="Rectangle-8-Copy-2" fill="#FFFFFF" fill-rule="evenodd" transform="translate(7.500000, 3.500000) scale(1, -1) translate(-7.500000, -3.500000) "></path>
+            <rect id="Rectangle-12" fill="#0044CA" fill-rule="evenodd" x="8" y="0" width="2" height="4"></rect>
+            <path d="M4,15 L4,11 C4,10.4477153 4.44771525,10 5,10 L11,10 C11.5522847,10 12,10.4477153 12,11 L12,15 L4,15 Z" id="Rectangle-8-Copy-3" fill="#FFFFFF" fill-rule="evenodd"></path>
+        </g>
+    </g>
+</svg>
