@@ -40,6 +40,7 @@ class LabelDictionary {
     migr_image: 'Migration Image Name or Id',
     migr_image_map: 'Migration Image Map',
     migr_network: 'Migration Network Name or ID',
+    migr_worker_boot_from_volume: 'Boot Migration Workers from Volume',
     volumes_are_zeroed: 'Volumes on destination are created zeroed',
     port_reuse_policy: 'Port Reuse Policy',
     keep_mac: 'Keep MAC address',
