@@ -58,7 +58,7 @@ class UserSource {
       }).then((response) => {
         let token = response.headers['X-Subject-Token'] || response.headers['x-subject-token']
         Api.setDefaultHeader('X-Auth-Token', token)
-        cookie.set('unscopedToken', token, { expires: 1 / 24 })
+        cookie.set('unscopedToken', token, { expires: 30 })
         resolve(response)
       }, reject).catch(reject)
     })
@@ -95,8 +95,8 @@ class UserSource {
         let token = response.headers['X-Subject-Token'] || response.headers['x-subject-token']
         let data = UserModel.parseUserData(response)
         data = { ...data, token }
-        cookie.set('token', data.token, { expires: 1 / 24 })
-        cookie.set('projectId', data.project.id, { expires: 1 * 30 })
+        cookie.set('token', data.token, { expires: 30 })
+        cookie.set('projectId', data.project.id, { expires: 30 })
         Api.setDefaultHeader('X-Auth-Token', data.token)
 
         resolve(data)

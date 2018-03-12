@@ -21,6 +21,14 @@ import ProjectActions from './ProjectActions'
 import ProjectStore from '../stores/ProjectStore'
 import NotificationActions from './NotificationActions'
 
+/**
+ * This is the authentication / authorization flow:
+ * 1. Post username and password unscoped login. Set unscoped token in cookies.
+ * 2. Post unscoped token with project id. Set scoped token and project id in cookies.
+ * 3. Get token login on subsequent app reloads to retrieve the user info.
+ * 
+ * After token expiration, the app is redirected to login page.
+ */
 class UserActions {
   login(data) {
     UserSource.login(data).then(this.loginSuccess, this.loginFailed)
