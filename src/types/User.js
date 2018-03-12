@@ -14,27 +14,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import alt from '../alt'
+import type { Project } from './Project'
 
-import PojectSource from '../sources/ProjectSource'
-
-class ProjectActions {
-  getProjects() {
-    return {
-      promise: PojectSource.getProjects().then(
-        this.getProjectsCompleted.bind(this),
-        this.getProjectsFailed.bind(this)
-      ).catch(this.getProjectsFailed.bind(this)),
-    }
-  }
-
-  getProjectsCompleted(response) {
-    return response || true
-  }
-
-  getProjectsFailed(response) {
-    return response || true
-  }
+export type User = {
+  scoped: boolean,
+  project: Project,
+  email: string,
+  name: string,
 }
 
-export default alt.createActions(ProjectActions)
+export type Credentials = {
+  name: string,
+  password: string,
+}

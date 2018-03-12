@@ -14,11 +14,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import type { Nic } from './Instance'
+
 export type Network = {
-  sourceNic: {
-    network_name: string,
-  },
-  targetNetwork: {
-    name: string,
-  },
+  name: string,
+}
+
+export type NetworkMap = {
+  sourceNic: Nic,
+  targetNetwork: Network,
 }

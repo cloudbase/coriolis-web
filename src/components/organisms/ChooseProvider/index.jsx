@@ -20,6 +20,7 @@ import styled from 'styled-components'
 import EndpointLogos from '../../atoms/EndpointLogos'
 import Button from '../../atoms/Button'
 import StatusImage from '../../atoms/StatusImage'
+import type { Providers as ProvidersType } from '../../../types/Providers'
 
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -53,7 +54,7 @@ const LoadingText = styled.div`
 `
 
 type Props = {
-  providers: { [string]: any },
+  providers: ?ProvidersType,
   onCancelClick: () => void,
   onProviderClick: (provider: string) => void,
   loading: boolean,

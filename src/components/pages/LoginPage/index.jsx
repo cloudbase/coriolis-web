@@ -16,14 +16,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import EmptyTemplate from '../../templates/EmptyTemplate'
 import Logo from '../../atoms/Logo'
 import LoginForm from '../../organisms/LoginForm'
 
 import StyleProps from '../../styleUtils/StyleProps'
-import UserActions from '../../../actions/UserActions'
 import UserStore from '../../../stores/UserStore'
 
 import backgroundImage from './images/star-bg.jpg'
@@ -76,51 +75,24 @@ const CbsLogo = styled.a`
   cursor: pointer;
 `
 
-type Props = {
-  loading: boolean,
-  loginFailedResponse: { status: string },
-  user: { username: string, email: string },
-}
-type State = {
-  loading: boolean,
-}
-class LoginPage extends React.Component<Props, State> {
-  static getStores() {
-    return [UserStore]
-  }
-
-  static getPropsFromStores() {
-    return UserStore.getState()
-  }
-
-  constructor() {
-    super()
-
-    this.state = {
-      loading: false,
-    }
-  }
-
+@observer
+class LoginPage extends React.Component<{}> {
   componentDidMount() {
     document.title = 'Log In'
   }
 
-  componentWillReceiveProps(props) {
-    if (props.user) {
-      window.location.href = '/#/replicas'
-    }
-  }
-
-  handleFormSubmit(data) {
-    this.setState({ loading: true })
-
-    UserActions.login({
+  handleFormSubmit(data: { username: string, password: string }) {
+    UserStore.login({
       name: data.username,
       password: data.password,
     })
   }
 
   render() {
+    if (UserStore.user) {
+      window.location.href = '/#/replicas'
+    }
+
     return (
       <EmptyTemplate>
         <Wrapper>
@@ -128,8 +100,8 @@ class LoginPage extends React.Component<Props, State> {
             <Logo />
             <StyledLoginForm
               onFormSubmit={data => this.handleFormSubmit(data)}
-              loading={this.props.loading}
-              loginFailedResponse={this.props.loginFailedResponse}
+              loading={UserStore.loading}
+              loginFailedResponse={UserStore.loginFailedResponse}
             />
             <Footer>
               <FooterText>Coriolis® is a service offered by</FooterText>
@@ -142,4 +114,4 @@ class LoginPage extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(LoginPage)
+export default LoginPage

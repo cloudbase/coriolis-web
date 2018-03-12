@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { observer } from 'mobx-react'
 
 import EndpointLogos from '../../atoms/EndpointLogos'
 import WizardType from '../../molecules/WizardType'
@@ -33,8 +34,15 @@ import Palette from '../../styleUtils/Palette'
 import { providerTypes, wizardConfig } from '../../../config'
 import type { WizardData } from '../../../types/WizardData'
 import type { Endpoint } from '../../../types/Endpoint'
+import type { Instance, Nic } from '../../../types/Instance'
+import type { Field } from '../../../types/Field'
+import type { Network } from '../../../types/Network'
+import type { Schedule as ScheduleType } from '../../../types/Schedule'
+import InstanceStore from '../../../stores/InstanceStore'
+import ProviderStore from '../../../stores/ProviderStore'
 
 import migrationArrowImage from './images/migration.js'
+import NetworkStore from '../../../stores/NetworkStore'
 
 const bodyWidth = 800
 const Wrapper = styled.div`
@@ -86,9 +94,9 @@ type Props = {
   page: { id: string, title: string },
   type: 'replica' | 'migration',
   nextButtonDisabled: boolean,
-  providerStore: any,
-  instanceStore: any,
-  networkStore: any,
+  providerStore: typeof ProviderStore,
+  instanceStore: typeof InstanceStore,
+  networkStore: typeof NetworkStore,
   wizardData: WizardData,
   endpoints: Endpoint[],
   onTypeChange: (isReplicaChecked: ?boolean) => void,
@@ -97,16 +105,16 @@ type Props = {
   onSourceEndpointChange: (endpoint: Endpoint) => void,
   onTargetEndpointChange: (endpoint: Endpoint) => void,
   onAddEndpoint: (provider: string, fromSource: boolean) => void,
-  onInstancesSearchInputChange: () => void,
-  onInstancesNextPageClick: () => void,
+  onInstancesSearchInputChange: (searchText: string) => void,
+  onInstancesNextPageClick: (searchText: string) => void,
   onInstancesPreviousPageClick: () => void,
-  onInstancesReloadClick: () => void,
-  onInstanceClick: () => void,
-  onOptionsChange: () => void,
-  onNetworkChange: () => void,
-  onAddScheduleClick: () => void,
-  onScheduleChange: () => void,
-  onScheduleRemove: () => void,
+  onInstancesReloadClick: (searchText: string) => void,
+  onInstanceClick: (instance: Instance) => void,
+  onOptionsChange: (field: Field, value: any) => void,
+  onNetworkChange: (nic: Nic, network: Network) => void,
+  onAddScheduleClick: (schedule: ScheduleType) => void,
+  onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void,
+  onScheduleRemove: (scheudleId: string) => void,
   onContentRef: (ref: any) => void,
 }
 type TimezoneValue = 'local' | 'utc'
@@ -114,6 +122,8 @@ type State = {
   useAdvancedOptions: boolean,
   timezone: TimezoneValue,
 }
+
+@observer
 class WizardPageContent extends React.Component<Props, State> {
   constructor() {
     super()
@@ -149,9 +159,14 @@ class WizardPageContent extends React.Component<Props, State> {
   getProviders(type: string) {
     let providers = []
     let providerType = this.getProvidersType(type)
+    let providersObject = this.props.providerStore.providers
 
-    Object.keys(this.props.providerStore.providers || {}).forEach(provider => {
-      if (this.props.providerStore.providers[provider].types.findIndex(t => t === providerType) > -1) {
+    if (!providersObject) {
+      return []
+    }
+
+    Object.keys(providersObject).forEach(provider => {
+      if (providersObject[provider].types.findIndex(t => t === providerType) > -1) {
         providers.push(provider)
       }
     })

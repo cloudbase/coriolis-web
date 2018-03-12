@@ -73,7 +73,7 @@ const LoadingWrapper = styled.div`
 
 type Props = {
   item: ?Endpoint,
-  connectionInfo: { [string]: mixed },
+  connectionInfo: ?$PropertyType<Endpoint, 'connection_info'>,
   loading: boolean,
   onDeleteClick: () => void,
   onValidateClick: () => void,

@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import MainTemplate from '../../templates/MainTemplate'
 import Navigation from '../../organisms/Navigation'
@@ -25,6 +25,7 @@ import PageHeader from '../../organisms/PageHeader'
 import AlertModal from '../../organisms/AlertModal'
 import MainListItem from '../../molecules/MainListItem'
 import type { MainItem } from '../../../types/MainItem'
+import type { Project } from '../../../types/Project'
 
 import migrationItemImage from './images/migration.svg'
 import migrationLargeImage from './images/migration-large.svg'
@@ -33,12 +34,8 @@ import ProjectStore from '../../../stores/ProjectStore'
 import UserStore from '../../../stores/UserStore'
 import MigrationStore from '../../../stores/MigrationStore'
 import EndpointStore from '../../../stores/EndpointStore'
-import ProjectActions from '../../../actions/ProjectActions'
-import MigrationActions from '../../../actions/MigrationActions'
-import EndpointActions from '../../../actions/EndpointActions'
-import UserActions from '../../../actions/UserActions'
 import Wait from '../../../utils/Wait'
-import NotificationActions from '../../../actions/NotificationActions'
+import NotificationStore from '../../../stores/NotificationStore'
 
 const Wrapper = styled.div``
 
@@ -47,31 +44,13 @@ const BulkActions = [
   { label: 'Delete', value: 'delete' },
 ]
 
-type Props = {
-  projectStore: any,
-  migrationStore: any,
-  userStore: any,
-  endpointStore: any,
-}
 type State = {
   showDeleteMigrationConfirmation: boolean,
   showCancelMigrationConfirmation: boolean,
   confirmationItems: ?MainItem[],
 }
-class MigrationsPage extends React.Component<Props, State> {
-  static getStores() {
-    return [UserStore, ProjectStore, MigrationStore, EndpointStore]
-  }
-
-  static getPropsFromStores() {
-    return {
-      userStore: UserStore.getState(),
-      projectStore: ProjectStore.getState(),
-      migrationStore: MigrationStore.getState(),
-      endpointStore: EndpointStore.getState(),
-    }
-  }
-
+@observer
+class MigrationsPage extends React.Component<{}, State> {
   constructor() {
     super()
 
@@ -85,17 +64,13 @@ class MigrationsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Coriolis Migrations'
 
-    ProjectActions.getProjects()
-    EndpointActions.getEndpoints()
-    MigrationActions.getMigrations()
+    ProjectStore.getProjects()
+    EndpointStore.getEndpoints()
+    MigrationStore.getMigrations()
   }
 
-  getEndpoint(endpointId) {
-    if (!this.props.endpointStore.endpoints || this.props.endpointStore.endpoints === 0) {
-      return {}
-    }
-
-    return this.props.endpointStore.endpoints.find(endpoint => endpoint.id === endpointId) || {}
+  getEndpoint(endpointId: string) {
+    return EndpointStore.endpoints.find(endpoint => endpoint.id === endpointId)
   }
 
   getFilterItems() {
@@ -107,23 +82,24 @@ class MigrationsPage extends React.Component<Props, State> {
     ]
   }
 
-  handleProjectChange(project) {
-    Wait.for(() => this.props.userStore.user.project.id === project.id, () => {
-      ProjectActions.getProjects()
-      EndpointActions.getEndpoints()
-      MigrationActions.getMigrations({ showLoading: true })
+  handleProjectChange(project: Project) {
+    // $FlowIssue
+    Wait.for(() => UserStore.user.project.id === project.id, () => {
+      ProjectStore.getProjects()
+      EndpointStore.getEndpoints()
+      MigrationStore.getMigrations({ showLoading: true })
     })
 
-    UserActions.switchProject(project.id)
+    UserStore.switchProject(project.id)
   }
 
   handleReloadButtonClick() {
-    ProjectActions.getProjects()
-    EndpointActions.getEndpoints()
-    MigrationActions.getMigrations({ showLoading: true })
+    ProjectStore.getProjects()
+    EndpointStore.getEndpoints()
+    MigrationStore.getMigrations({ showLoading: true })
   }
 
-  handleItemClick(item) {
+  handleItemClick(item: MainItem) {
     if (item.status === 'RUNNING') {
       window.location.href = `/#/migration/tasks/${item.id}`
     } else {
@@ -131,7 +107,7 @@ class MigrationsPage extends React.Component<Props, State> {
     }
   }
 
-  handleActionChange(confirmationItems, action) {
+  handleActionChange(confirmationItems: MainItem[], action: string) {
     if (action === 'cancel') {
       this.setState({
         showCancelMigrationConfirmation: true,
@@ -150,9 +126,9 @@ class MigrationsPage extends React.Component<Props, State> {
       return
     }
     this.state.confirmationItems.forEach(migration => {
-      MigrationActions.cancel(migration.id)
+      MigrationStore.cancel(migration.id)
     })
-    NotificationActions.notify('Canceling migrations')
+    NotificationStore.notify('Canceling migrations')
     this.handleCloseCancelMigration()
   }
 
@@ -175,7 +151,7 @@ class MigrationsPage extends React.Component<Props, State> {
       return
     }
     this.state.confirmationItems.forEach(migration => {
-      MigrationActions.delete(migration.id)
+      MigrationStore.delete(migration.id)
     })
     this.handleCloseDeleteMigrationConfirmation()
   }
@@ -184,7 +160,7 @@ class MigrationsPage extends React.Component<Props, State> {
     window.location.href = '/#/wizard/migration'
   }
 
-  searchText(item, text) {
+  searchText(item: MainItem, text?: string) {
     let result = false
     if (item.instances[0].toLowerCase().indexOf(text || '') > -1) {
       return true
@@ -201,7 +177,7 @@ class MigrationsPage extends React.Component<Props, State> {
     return result
   }
 
-  itemFilterFunction(item, filterStatus, filterText) {
+  itemFilterFunction(item: MainItem, filterStatus?: ?string, filterText?: string) {
     if ((filterStatus !== 'all' && (item.status !== filterStatus)) ||
       !this.searchText(item, filterText)
     ) {
@@ -234,8 +210,8 @@ class MigrationsPage extends React.Component<Props, State> {
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="migration"
-              loading={this.props.migrationStore.loading}
-              items={this.props.migrationStore.migrations}
+              loading={MigrationStore.loading}
+              items={MigrationStore.migrations}
               onItemClick={item => { this.handleItemClick(item) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               actions={BulkActions}
@@ -245,7 +221,13 @@ class MigrationsPage extends React.Component<Props, State> {
                 (<MainListItem
                   {...options}
                   image={migrationItemImage}
-                  endpointType={id => this.getEndpoint(id).type}
+                  endpointType={id => {
+                    let endpoint = this.getEndpoint(id)
+                    if (endpoint) {
+                      return endpoint.type
+                    }
+                    return ''
+                  }}
                   useTasksRemaining
                 />)
               }
@@ -269,4 +251,4 @@ class MigrationsPage extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(MigrationsPage)
+export default MigrationsPage

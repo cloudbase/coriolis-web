@@ -12,8 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import EndpointActions from '../actions/EndpointActions'
+// @flow
+import { observable, action } from 'mobx'
+import type { Endpoint, Validation } from '../types/Endpoint'
+import EndpointSource from '../sources/EndpointSource'
 
 const updateEndpoint = (endpoint, endpoints) => endpoints.map(e => {
   if (e.id === endpoint.id) {
@@ -23,121 +25,98 @@ const updateEndpoint = (endpoint, endpoints) => endpoints.map(e => {
 })
 
 class EndpointStore {
-  constructor() {
-    this.endpoints = []
-    this.loading = false
-    this.connectionInfo = null
-    this.validation = null
-    this.validating = false
-    this.updating = false
-    this.adding = false
-    this.connectionInfoLoading = false
+  @observable endpoints: Endpoint[] = []
+  @observable loading = false
+  @observable loading = false
+  @observable connectionInfo: ?$PropertyType<Endpoint, 'connection_info'> = null
+  @observable validation: ?Validation = null
+  @observable validating = false
+  @observable updating = false
+  @observable adding = false
+  @observable connectionInfoLoading = false
 
-    this.bindListeners({
-      handleGetEndpoints: EndpointActions.GET_ENDPOINTS,
-      handleGetEndpointsCompleted: EndpointActions.GET_ENDPOINTS_COMPLETED,
-      handleGetEndpointsFailed: EndpointActions.GET_ENDPOINTS_FAILED,
-      handleDeleteSuccess: EndpointActions.DELETE_SUCCESS,
-      handleGetConnectionInfo: EndpointActions.GET_CONNECTION_INFO,
-      handleGetConnectionInfoSuccess: EndpointActions.GET_CONNECTION_INFO_SUCCESS,
-      handleGetConnectionInfoFailed: EndpointActions.GET_CONNECTION_INFO_FAILED,
-      handleValidate: EndpointActions.VALIDATE,
-      handleValidateSuccess: EndpointActions.VALIDATE_SUCCESS,
-      handleValidateFailed: EndpointActions.VALIDATE_FAILED,
-      handleClearValidation: EndpointActions.CLEAR_VALIDATION,
-      handleUpdateSuccess: EndpointActions.UPDATE_SUCCESS,
-      handleUpdate: EndpointActions.UPDATE,
-      handleClearConnectionInfo: EndpointActions.CLEAR_CONNECTION_INFO,
-      handleAdd: EndpointActions.ADD,
-      handleAddSuccess: EndpointActions.ADD_SUCCESS,
-      handleAddFailed: EndpointActions.ADD_FAILED,
+  @action getEndpoints(options?: { showLoading: boolean }) {
+    if ((options && options.showLoading) || this.endpoints.length === 0) {
+      this.loading = true
+    }
+
+    return EndpointSource.getEndpoints().then(endpoints => {
+      this.endpoints = endpoints
+      this.loading = false
+    }).catch(() => {
+      this.loading = false
     })
   }
 
-  handleGetEndpoints({ showLoading }) {
-    if (showLoading || this.endpoints.length === 0) {
-      this.loading = true
-    }
+  @action delete(endpoint: Endpoint) {
+    return EndpointSource.delete(endpoint).then(() => {
+      this.endpoints = this.endpoints.filter(e => e.id !== endpoint.id)
+    })
   }
 
-  handleGetEndpointsCompleted(endpoints) {
-    this.endpoints = endpoints
-    this.loading = false
-  }
-
-  handleGetEndpointsFailed() {
-    this.loading = false
-  }
-
-  handleDeleteSuccess(endpointId) {
-    this.endpoints = this.endpoints.filter(e => e.id !== endpointId)
-  }
-
-  handleGetConnectionInfo() {
+  @action getConnectionInfo(endpoint: Endpoint) {
     this.connectionInfoLoading = true
+
+    return EndpointSource.getConnectionInfo(endpoint).then(connectionInfo => {
+      this.setConnectionInfo(connectionInfo)
+    }).catch(() => {
+      this.connectionInfoLoading = false
+    })
   }
 
-  handleGetConnectionInfoSuccess(connectionInfo) {
+  @action setConnectionInfo(connectionInfo: $PropertyType<Endpoint, 'connection_info'>) {
     this.connectionInfo = connectionInfo
     this.connectionInfoLoading = false
   }
 
-  handleGetConnectionInfoFailed() {
-    this.connectionInfoLoading = false
-  }
-
-  handleValidate() {
+  @action validate(endpoint: Endpoint) {
     this.validating = true
+
+    return EndpointSource.validate(endpoint).then(validation => {
+      this.validation = validation
+      this.validating = false
+    }).catch(() => {
+      this.validating = false
+      this.validation = { valid: false, message: '' }
+    })
   }
 
-  handleValidateSuccess(validation) {
-    this.validation = validation
-    this.validating = false
-  }
-
-  handleValidateFailed() {
-    this.validating = false
-    this.validation = { valid: false }
-  }
-
-  handleClearValidation() {
+  @action clearValidation() {
     this.validating = false
     this.validation = null
   }
 
-  handleUpdate({ endpoint }) {
+  @action update(endpoint: Endpoint) {
     this.endpoints = updateEndpoint(endpoint, this.endpoints)
     this.connectionInfo = { ...endpoint.connection_info }
     this.updating = true
+
+    return EndpointSource.update(endpoint).then(updatedEndpoint => {
+      this.endpoints = updateEndpoint(updatedEndpoint, this.endpoints)
+      this.connectionInfo = { ...updatedEndpoint.connection_info }
+      this.updating = false
+    })
   }
 
-  handleUpdateSuccess(endpoint) {
-    this.endpoints = updateEndpoint(endpoint, this.endpoints)
-    this.connectionInfo = { ...endpoint.connection_info }
-    this.updating = false
-  }
-
-  handleClearConnectionInfo() {
+  @action clearConnectionInfo() {
     this.connectionInfo = null
   }
 
-  handleAdd() {
+  @action add(endpoint: Endpoint) {
     this.adding = true
-  }
 
-  handleAddSuccess(endpoint) {
-    this.endpoints = [
-      endpoint,
-      ...this.endpoints,
-    ]
+    return EndpointSource.add(endpoint).then(addedEndpoint => {
+      this.endpoints = [
+        addedEndpoint,
+        ...this.endpoints,
+      ]
 
-    this.connectionInfo = endpoint.connection_info
-    this.adding = false
-  }
-
-  handleAddFailed() {
-    this.adding = false
+      this.connectionInfo = addedEndpoint.connection_info
+      this.adding = false
+    }).catch(() => {
+      this.adding = false
+    })
   }
 }
 
-export default alt.createStore(EndpointStore)
+export default new EndpointStore()

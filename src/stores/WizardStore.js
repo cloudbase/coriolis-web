@@ -12,143 +12,137 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import WizardActions from '../actions/WizardActions'
+// @flow
 
+import { observable, action } from 'mobx'
+
+import type { WizardData, WizardPage } from '../types/WizardData'
+import type { MainItem } from '../types/MainItem'
+import type { Instance } from '../types/Instance'
+import type { Field } from '../types/Field'
+import type { NetworkMap } from '../types/Network'
+import type { Schedule } from '../types/Schedule'
 import { wizardConfig } from '../config'
+import Source from '../sources/WizardSource'
 
 class WizardStore {
-  constructor() {
-    this.data = {}
-    this.currentPage = wizardConfig.pages[0]
-    this.createdItem = null
-    this.creatingItem = false
-    this.createdItems = null
-    this.creatingItems = false
+  @observable data: WizardData = { schedules: [] }
+  @observable currentPage: WizardPage = wizardConfig.pages[0]
+  @observable createdItem: ?MainItem = null
+  @observable creatingItem: boolean = false
+  @observable createdItems: ?MainItem[] = null
+  @observable creatingItems: boolean = false
 
-    this.bindListeners({
-      handleUpdateData: WizardActions.UPDATE_DATA,
-      handleClearData: WizardActions.CLEAR_DATA,
-      handleSetCurrentPage: WizardActions.SET_CURRENT_PAGE,
-      handleToggleInstanceSelection: WizardActions.TOGGLE_INSTANCE_SELECTION,
-      handleUpdateOptions: WizardActions.UPDATE_OPTIONS,
-      handleUpdateNetworks: WizardActions.UPDATE_NETWORKS,
-      handleAddSchedule: WizardActions.ADD_SCHEDULE,
-      handleUpdateSchedule: WizardActions.UPDATE_SCHEDULE,
-      handleRemoveSchedule: WizardActions.REMOVE_SCHEDULE,
-      handleCreate: WizardActions.CREATE,
-      handleCreateSuccess: WizardActions.CREATE_SUCCESS,
-      handleCreateFailed: WizardActions.CREATE_FAILED,
-      handleCreateMultiple: WizardActions.CREATE_MULTIPLE,
-      handleCreateMultipleSuccess: WizardActions.CREATE_MULTIPLE_SUCCESS,
-      handleCreateMultipleFailed: WizardActions.CREATE_MULTIPLE_FAILED,
-      handleGetDataFromPermalink: WizardActions.GET_DATA_FROM_PERMALINK,
-    })
+  @action updateData(data: WizardData) {
+    this.data = { ...this.data, ...data }
   }
 
-  handleUpdateData(data) {
-    this.data = {
-      ...this.data,
-      ...data,
-    }
-  }
-
-  handleClearData() {
-    this.data = {}
-    this.currentPage = wizardConfig.pages[0]
-  }
-
-  handleSetCurrentPage(page) {
-    this.currentPage = page
-  }
-
-  handleToggleInstanceSelection(instance) {
+  @action toggleInstanceSelection(instance: Instance) {
     if (!this.data.selectedInstances) {
       this.data.selectedInstances = [instance]
       return
     }
 
     if (this.data.selectedInstances.find(i => i.id === instance.id)) {
+      // $FlowIssue
       this.data.selectedInstances = this.data.selectedInstances.filter(i => i.id !== instance.id)
     } else {
+      // $FlowIssue
       this.data.selectedInstances = [...this.data.selectedInstances, instance]
     }
   }
 
-  handleUpdateOptions({ field, value }) {
+  @action clearData() {
+    this.data = {}
+    this.currentPage = wizardConfig.pages[0]
+  }
+
+  @action setCurrentPage(page: WizardPage) {
+    this.currentPage = page
+  }
+
+  @action updateOptions(data: { field: Field, value: any }) {
     this.data.options = {
       ...this.data.options,
     }
-    this.data.options[field.name] = value
+    this.data.options[data.field.name] = data.value
   }
 
-  handleUpdateNetworks({ sourceNic, targetNetwork }) {
+  @action updateNetworks(network: NetworkMap) {
     if (!this.data.networks) {
       this.data.networks = []
     }
 
-    this.data.networks = this.data.networks.filter(n => n.sourceNic.network_name !== sourceNic.network_name)
-    this.data.networks.push({ sourceNic, targetNetwork })
+    this.data.networks = this.data.networks.filter(n => n.sourceNic.network_name !== network.sourceNic.network_name)
+    this.data.networks.push(network)
   }
 
-  handleAddSchedule(schedule) {
+  @action addSchedule(schedule: Schedule) {
     if (!this.data.schedules) {
       this.data.schedules = []
     }
-    this.data.schedules.push({ id: new Date().getTime(), schedule: schedule.schedule })
+    this.data.schedules.push({ id: new Date().getTime().toString(), schedule: schedule.schedule })
   }
 
-  handleUpdateSchedule({ scheduleId, data }) {
-    let schedule = this.data.schedules.find(s => s.id === scheduleId)
-    if (data.schedule) {
-      schedule.schedule = {
-        ...schedule.schedule,
-        ...data.schedule,
-      }
-    } else {
-      schedule = {
-        ...schedule,
-        ...data,
-      }
+  @action updateSchedule(scheduleId: string, data: Schedule) {
+    if (!this.data.schedules) {
+      return
     }
-
-    this.data.schedules = this.data.schedules.filter(s => s.id !== scheduleId)
-    this.data.schedules.push(schedule)
-    this.data.schedules.sort((a, b) => a.id > b.id)
+    this.data.schedules = this.data.schedules.map(schedule => {
+      if (schedule.id !== scheduleId) {
+        return schedule
+      }
+      if (data.schedule) {
+        schedule.schedule = {
+          ...schedule.schedule,
+          ...data.schedule,
+        }
+      } else {
+        schedule = {
+          ...schedule,
+          ...data,
+        }
+      }
+      return schedule
+    })
   }
 
-  handleRemoveSchedule(scheduleId) {
+  @action removeSchedule(scheduleId: string) {
+    if (!this.data.schedules) {
+      return
+    }
     this.data.schedules = this.data.schedules.filter(s => s.id !== scheduleId)
   }
 
-  handleCreate() {
+  @action create(type: string, data: WizardData): Promise<void> {
     this.creatingItem = true
+
+    return Source.create(type, data).then((item: MainItem) => {
+      this.createdItem = item
+      this.creatingItem = false
+    }).catch(() => {
+      this.creatingItem = false
+    })
   }
 
-  handleCreateSuccess(item) {
-    this.createdItem = item
-    this.creatingItem = false
-  }
-
-  handleCreateFailed() {
-    this.creatingItem = false
-  }
-
-  handleCreateMultiple() {
+  @action createMultiple(type: string, data: WizardData): Promise<void> {
     this.creatingItems = true
+
+    return Source.createMultiple(type, data).then((items: MainItem[]) => {
+      this.createdItems = items
+      this.creatingItems = false
+    }).catch(() => {
+      this.creatingItems = false
+    })
   }
 
-  handleCreateMultipleSuccess(items) {
-    this.createdItems = items
-    this.creatingItems = false
+  @action setPermalink(data: WizardData) {
+    Source.setPermalink(data)
   }
 
-  handleCreateMultipleFailed() {
-    this.creatingItems = false
-  }
-
-  handleGetDataFromPermalink(data) {
-    if (data === true) {
+  @action getDataFromPermalink() {
+    let data = Source.getDataFromPermalink()
+    if (!data) {
       return
     }
 
@@ -159,4 +153,4 @@ class WizardStore {
   }
 }
 
-export default alt.createStore(WizardStore)
+export default new WizardStore()

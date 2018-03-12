@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { observer } from 'mobx-react'
 
 import Button from '../../atoms/Button'
 import StatusImage from '../../atoms/StatusImage'
@@ -106,13 +107,13 @@ const Buttons = styled.div`
 
 type TimeZoneValue = 'local' | 'utc'
 type Props = {
-  schedules: ScheduleType[],
+  schedules: ?ScheduleType[],
   unsavedSchedules: ScheduleType[],
   timezone: TimeZoneValue,
   onTimezoneChange: (timezone: TimeZoneValue) => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
-  onChange: (scheduleId: ?string, schedule: ScheduleType, forceSave?: boolean) => void,
-  onRemove: (scheduleId: ?string) => void,
+  onChange: (scheduleId: string, schedule: ScheduleType, forceSave?: boolean) => void,
+  onRemove: (scheduleId: string) => void,
   onSaveSchedule?: (schedule: ScheduleType) => void,
   adding?: boolean,
   loading?: boolean,
@@ -126,6 +127,7 @@ type State = {
 }
 
 const colWidths = ['6%', '18%', '10%', '18%', '10%', '10%', '23%', '5%']
+@observer
 class Schedule extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
     unsavedSchedules: [],
@@ -156,7 +158,9 @@ class Schedule extends React.Component<Props, State> {
 
   handleDeleteConfirmation() {
     this.setState({ showDeleteConfirmation: false })
-    this.props.onRemove(this.state.selectedSchedule ? this.state.selectedSchedule.id : null)
+    if (this.state.selectedSchedule && this.state.selectedSchedule.id) {
+      this.props.onRemove(this.state.selectedSchedule.id)
+    }
   }
 
   handleShowOptions(selectedSchedule: $Subtype<ScheduleType>) {
@@ -174,7 +178,9 @@ class Schedule extends React.Component<Props, State> {
       options[f.name] = f.value || false
     })
 
-    this.props.onChange(this.state.selectedSchedule ? this.state.selectedSchedule.id : null, options, true)
+    if (this.state.selectedSchedule && this.state.selectedSchedule.id) {
+      this.props.onChange(this.state.selectedSchedule.id, options, true)
+    }
   }
 
   handleExecutionOptionsChange(fieldName: string, value: string) {
@@ -256,6 +262,10 @@ class Schedule extends React.Component<Props, State> {
   }
 
   renderBody() {
+    if (!this.props.schedules) {
+      return null
+    }
+
     return (
       <Body>
         {this.props.schedules.map(schedule => (
@@ -265,7 +275,7 @@ class Schedule extends React.Component<Props, State> {
             item={schedule}
             unsavedSchedules={this.props.unsavedSchedules}
             timezone={this.props.timezone}
-            onChange={(data, forceSave) => { this.props.onChange(schedule.id, data, forceSave) }}
+            onChange={(data, forceSave) => { if (schedule.id) this.props.onChange(schedule.id, data, forceSave) }}
             onSaveSchedule={() => { if (this.props.onSaveSchedule) this.props.onSaveSchedule(schedule) }}
             onShowOptionsClick={() => { this.handleShowOptions(schedule) }}
             onDeleteClick={() => { this.handleDeleteClick(schedule) }}

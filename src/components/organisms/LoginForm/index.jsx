@@ -27,7 +27,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import errorIcon from './images/error.svg'
 
 import { loginButtons } from '../../../config'
-import NotificationActions from '../../../actions/NotificationActions'
+import NotificationStore from '../../../stores/NotificationStore'
 
 const Form = styled.form`
   background: rgba(221, 224, 229, 0.5);
@@ -118,7 +118,7 @@ class LoginForm extends React.Component<Props, State> {
     e.preventDefault()
 
     if (this.state.username.length === 0 || this.state.password.length === 0) {
-      NotificationActions.notify('Please fill in all fields')
+      NotificationStore.notify('Please fill in all fields')
     } else {
       this.props.onFormSubmit({ username: this.state.username, password: this.state.password })
     }

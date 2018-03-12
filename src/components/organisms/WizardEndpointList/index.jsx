@@ -65,8 +65,8 @@ type Props = {
   providers: string[],
   endpoints: Endpoint[],
   loading: boolean,
-  selectedEndpoint: Endpoint,
-  otherEndpoint: Endpoint,
+  selectedEndpoint: ?Endpoint,
+  otherEndpoint: ?Endpoint,
   onChange: (endpoint: Endpoint) => void,
   onAddEndpoint: (provider: string) => void,
 }

@@ -16,7 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
+import { observe } from 'mobx'
 
 import EndpointLogos from '../../atoms/EndpointLogos'
 import StatusIcon from '../../atoms/StatusIcon'
@@ -27,11 +28,10 @@ import Button from '../../atoms/Button'
 import LoadingButton from '../../molecules/LoadingButton'
 
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
-import NotificationActions from '../../../actions/NotificationActions'
+import type { Field } from '../../../types/Field'
+import NotificationStore from '../../../stores/NotificationStore'
 import EndpointStore from '../../../stores/EndpointStore'
-import EndpointActions from '../../../actions/EndpointActions'
 import ProviderStore from '../../../stores/ProviderStore'
-import ProviderActions from '../../../actions/ProviderActions'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
@@ -105,43 +105,32 @@ const Buttons = styled.div`
 `
 
 type Props = {
-  type: string,
+  type: ?string,
   cancelButtonText: string,
   deleteOnCancel: boolean,
-  endpoint: EndpointType,
-  connectionInfo: { [string]: mixed },
+  endpoint: ?EndpointType,
   onCancelClick: (opts?: { autoClose?: boolean }) => void,
   onResizeUpdate: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
-  endpointStore: any,
-  providerStore: any,
 }
 type State = {
   invalidFields: any[],
   validating: boolean,
   showErrorMessage: boolean,
-  endpoint: EndpointType | {},
+  endpoint: ?EndpointType,
   isNew: ?boolean,
 }
+@observer
 class Endpoint extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
     cancelButtonText: 'Cancel',
-  }
-
-  static getStores() {
-    return [EndpointStore, ProviderStore]
-  }
-
-  static getPropsFromStores() {
-    return {
-      endpointStore: EndpointStore.getState(),
-      providerStore: ProviderStore.getState(),
-    }
   }
 
   scrollableRef: HTMLElement
   closeTimeout: TimeoutID
   contentPluginRef: DefaultContentPlugin
   isValidateButtonEnabled: boolean
+  providerStoreObserver: any
+  endpointStoreObserver: any
 
   constructor() {
     super()
@@ -150,28 +139,38 @@ class Endpoint extends React.Component<Props, State> {
       invalidFields: [],
       validating: false,
       showErrorMessage: false,
-      endpoint: {},
+      endpoint: null,
       isNew: null,
     }
   }
 
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props)
+    this.providerStoreObserver = observe(ProviderStore, 'connectionInfoSchema', () => {
+      this.props.onResizeUpdate(this.scrollableRef)
+    })
+    this.endpointStoreObserver = observe(EndpointStore, 'validation', () => {
+      this.componentWillReceiveProps(this.props)
+    })
+  }
+
   componentDidMount() {
-    ProviderActions.getConnectionInfoSchema(this.getEndpointType())
+    ProviderStore.getConnectionInfoSchema(this.getEndpointType())
     KeyboardManager.onEnter('endpoint', () => { if (this.isValidateButtonEnabled) this.handleValidateClick() }, 2)
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props: Props) {
     if (this.state.validating) {
-      if (props.endpointStore.validation && !props.endpointStore.validation.valid) {
+      if (EndpointStore.validation && !EndpointStore.validation.valid) {
         this.setState({ validating: false })
       }
     }
 
-    if (props.endpoint && props.endpointStore.connectionInfo) {
+    if (props.endpoint && EndpointStore.connectionInfo) {
       this.setState({
         endpoint: {
-          ...ObjectUtils.flatten(props.endpoint),
-          ...ObjectUtils.flatten(props.endpointStore.connectionInfo),
+          ...ObjectUtils.flatten(props.endpoint || {}),
+          ...ObjectUtils.flatten(EndpointStore.connectionInfo || {}),
         },
       })
     } else {
@@ -179,19 +178,21 @@ class Endpoint extends React.Component<Props, State> {
         isNew: this.state.isNew === null || this.state.isNew,
         endpoint: {
           type: props.type,
-          ...ObjectUtils.flatten(this.state.endpoint),
+          ...ObjectUtils.flatten(this.state.endpoint || {}),
         },
       })
     }
 
-    this.props.onResizeUpdate(this.scrollableRef)
+    props.onResizeUpdate(this.scrollableRef)
   }
 
   componentWillUnmount() {
-    EndpointActions.clearValidation()
-    ProviderActions.clearConnectionInfoSchema()
+    EndpointStore.clearValidation()
+    ProviderStore.clearConnectionInfoSchema()
     clearTimeout(this.closeTimeout)
     KeyboardManager.removeKeyDown('endpoint')
+    this.providerStoreObserver()
+    this.endpointStoreObserver()
   }
 
   getEndpointType() {
@@ -199,11 +200,11 @@ class Endpoint extends React.Component<Props, State> {
       return this.props.endpoint.type
     }
 
-    return this.props.type
+    return this.props.type || ''
   }
 
-  getFieldValue(field) {
-    if (!field) {
+  getFieldValue(field: ?Field) {
+    if (!field || !this.state.endpoint) {
       return ''
     }
     if (this.state.endpoint[field.name]) {
@@ -217,11 +218,7 @@ class Endpoint extends React.Component<Props, State> {
     return ''
   }
 
-  isValidating() {
-    return this.state.validating
-  }
-
-  handleFieldsChange(items) {
+  handleFieldsChange(items: { field: Field, value: any }[]) {
     let endpoint: EndpointType = { ...this.state.endpoint }
 
     items.forEach(item => {
@@ -235,8 +232,8 @@ class Endpoint extends React.Component<Props, State> {
     if (!this.highlightRequired()) {
       this.setState({ validating: true })
 
-      NotificationActions.notify('Saving endpoint ...')
-      EndpointActions.clearValidation()
+      NotificationStore.notify('Saving endpoint ...')
+      EndpointStore.clearValidation()
 
       if (this.state.isNew) {
         this.add()
@@ -244,25 +241,31 @@ class Endpoint extends React.Component<Props, State> {
         this.update()
       }
     } else {
-      NotificationActions.notify('Please fill all the required fields', 'error')
+      NotificationStore.notify('Please fill all the required fields', 'error')
     }
   }
 
   handleShowErrorMessageClick() {
-    this.setState({ showErrorMessage: !this.state.showErrorMessage })
+    this.setState({ showErrorMessage: !this.state.showErrorMessage }, () => {
+      this.props.onResizeUpdate(this.scrollableRef)
+    })
   }
 
   handleCopyErrorMessageClick() {
-    let succesful = DomUtils.copyTextToClipboard(this.props.endpointStore.validation.message)
+    if (!EndpointStore.validation) {
+      return
+    }
+    // $FlowIssue
+    let succesful = DomUtils.copyTextToClipboard(EndpointStore.validation.message)
 
     if (succesful) {
-      NotificationActions.notify('The message has been copied to clipboard.')
+      NotificationStore.notify('The message has been copied to clipboard.')
     }
   }
 
   handleCancelClick() {
     if (this.props.deleteOnCancel && this.state.isNew === false) {
-      EndpointActions.delete(EndpointStore.getState().endpoints[0])
+      EndpointStore.delete(EndpointStore.endpoints[0])
     }
     this.props.onCancelClick()
   }
@@ -274,24 +277,33 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   update() {
-    EndpointActions.update(this.state.endpoint).promise.then(() => {
-      NotificationActions.notify('Validating endpoint ...')
-      EndpointActions.validate(this.state.endpoint)
+    if (!this.state.endpoint) {
+      return
+    }
+
+    EndpointStore.update(this.state.endpoint).then(() => {
+      NotificationStore.notify('Validating endpoint ...')
+      // $FlowIssue
+      EndpointStore.validate(this.state.endpoint)
     })
   }
 
   add() {
-    EndpointActions.add(this.state.endpoint).promise.then(() => {
-      let endpoint = EndpointStore.getState().endpoints[0]
+    if (!this.state.endpoint) {
+      return
+    }
+
+    EndpointStore.add(this.state.endpoint).then(() => {
+      let endpoint = EndpointStore.endpoints[0]
       this.setState({ isNew: false, endpoint })
-      NotificationActions.notify('Validating endpoint ...')
-      EndpointActions.validate(endpoint)
+      NotificationStore.notify('Validating endpoint ...')
+      EndpointStore.validate(endpoint)
     })
   }
 
   renderEndpointStatus() {
-    let validation = this.props.endpointStore.validation
-    if (!this.isValidating() && !validation) {
+    let validation = EndpointStore.validation
+    if (!this.state.validating && !validation) {
       return null
     }
 
@@ -334,8 +346,8 @@ class Endpoint extends React.Component<Props, State> {
     let actionButton = <Button large onClick={() => this.handleValidateClick()}>Validate and save</Button>
 
     let message = 'Validating Endpoint ...'
-    if (this.state.validating || (this.props.endpointStore.validation && this.props.endpointStore.validation.valid)) {
-      if (this.props.endpointStore.validation && this.props.endpointStore.validation.valid) {
+    if (this.state.validating || (EndpointStore.validation && EndpointStore.validation.valid)) {
+      if (EndpointStore.validation && EndpointStore.validation.valid) {
         message = 'Saving ...'
       }
 
@@ -352,19 +364,20 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   renderContent() {
-    if (this.props.providerStore.connectionSchemaLoading) {
+    const endpointType = this.getEndpointType()
+    if (ProviderStore.connectionSchemaLoading || !endpointType) {
       return null
     }
-
     return (
       <Content>
         {this.renderEndpointStatus()}
-        {React.createElement(ContentPlugin[this.getEndpointType()] || ContentPlugin.default, {
-          connectionInfoSchema: this.props.providerStore.connectionInfoSchema,
-          validation: this.props.endpointStore.validation,
+        {React.createElement(ContentPlugin[endpointType] || ContentPlugin.default, {
+          connectionInfoSchema: ProviderStore.connectionInfoSchema,
+          // $FlowIgnore
+          validation: EndpointStore.validation,
           invalidFields: this.state.invalidFields,
           validating: this.state.validating,
-          disabled: this.isValidating() || (this.props.endpointStore.validation && this.props.endpointStore.validation.valid),
+          disabled: this.state.validating,
           cancelButtonText: this.props.cancelButtonText,
           getFieldValue: field => this.getFieldValue(field),
           highlightRequired: () => this.highlightRequired(),
@@ -384,7 +397,7 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   renderLoading() {
-    if (!this.props.providerStore.connectionSchemaLoading) {
+    if (!ProviderStore.connectionSchemaLoading) {
       return null
     }
 
@@ -397,7 +410,7 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   render() {
-    if (this.props.endpointStore.validation && this.props.endpointStore.validation.valid
+    if (EndpointStore.validation && EndpointStore.validation.valid
       && !this.closeTimeout) {
       this.closeTimeout = setTimeout(() => {
         this.props.onCancelClick({ autoClose: true })
@@ -414,4 +427,4 @@ class Endpoint extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(Endpoint)
+export default Endpoint

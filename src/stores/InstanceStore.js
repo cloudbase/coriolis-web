@@ -12,10 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import InstanceActions from '../actions/InstanceActions'
+// @flow
+
+import { observable, action } from 'mobx'
 
 import { wizardConfig } from '../config'
+import type { Instance } from '../types/Instance'
+import InstanceSource from '../sources/InstanceSource'
 
 class InstanceStoreUtils {
   static hasNextPage(instances) {
@@ -42,167 +45,151 @@ class InstanceStoreUtils {
 }
 
 class InstanceStore {
-  constructor() {
-    this.instances = []
-    this.instancesLoading = false
-    this.searching = false
-    this.searchNotFound = false
-    this.loadingPage = false
-    this.currentPage = 1
-    this.hasNextPage = false
-    this.cachedHasNextPage = false
-    this.cachedInstances = []
-    this.reloading = false
-    this.instancesDetails = []
-    this.loadingInstancesDetails = true
+  @observable instances: Instance[] = []
+  @observable instancesLoading = false
+  @observable searching = false
+  @observable searchNotFound: boolean = false
+  @observable loadingPage = false
+  @observable currentPage = 1
+  @observable hasNextPage = false
+  @observable cachedHasNextPage = false
+  @observable cachedInstances: Instance[] = []
+  @observable reloading = false
+  @observable instancesDetails: Instance[] = []
+  @observable loadingInstancesDetails = true
 
-    this.bindListeners({
-      handleLoadInstances: InstanceActions.LOAD_INSTANCES,
-      handleLoadInstancesSuccess: InstanceActions.LOAD_INSTANCES_SUCCESS,
-      handleLoadInstancesFailed: InstanceActions.LOAD_INSTANCES_FAILED,
-      handleSearchInstances: InstanceActions.SEARCH_INSTANCES,
-      handleSearchInstancesSuccess: InstanceActions.SEARCH_INSTANCES_SUCCESS,
-      handleSearchInstancesFailed: InstanceActions.SEARCH_INSTANCES_FAILED,
-      handleLoadNextPage: InstanceActions.LOAD_NEXT_PAGE,
-      handleLoadNextPageSuccess: InstanceActions.LOAD_NEXT_PAGE_SUCCESS,
-      handleLoadNextPageFailed: InstanceActions.LOAD_NEXT_PAGE_FAILED,
-      handleLoadPreviousPage: InstanceActions.LOAD_PREVIOUS_PAGE,
-      handleReloadInstances: InstanceActions.RELOAD_INSTANCES,
-      handleReloadInstancesSuccess: InstanceActions.RELOAD_INSTANCES_SUCCESS,
-      handleReloadInstancesFailed: InstanceActions.RELOAD_INSTANCES_FAILED,
-      handleLoadInstancesDetails: InstanceActions.LOAD_INSTANCES_DETAILS,
-      handleLoadInstanceDetailsSuccess: InstanceActions.LOAD_INSTANCE_DETAILS_SUCCESS,
-      handleLoadInstanceDetailsFailed: InstanceActions.LOAD_INSTANCE_DETAILS_FAILED,
+  lastEndpointId: string
+
+  @action loadInstances(endpointId: string) {
+    this.instancesLoading = true
+    this.searchNotFound = false
+    this.lastEndpointId = endpointId
+
+    return InstanceSource.loadInstances(endpointId).then(instances => {
+      if (endpointId !== this.lastEndpointId) {
+        return
+      }
+      this.currentPage = 1
+      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
+      this.instances = instances
+      this.cachedInstances = instances
+      this.instancesLoading = false
+    }).catch(() => {
+      if (endpointId !== this.lastEndpointId) {
+        return
+      }
+      this.instancesLoading = false
     })
   }
 
-  handleLoadInstances(endpointId) {
-    this.endpointId = endpointId
-    this.instancesLoading = true
-    this.searchNotFound = false
-  }
-
-  handleLoadInstancesSuccess({ endpointId, instances }) {
-    if (endpointId !== this.endpointId) {
-      return
-    }
-
-    this.currentPage = 1
-    this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-    this.instances = instances
-    this.cachedInstances = instances
-    this.instancesLoading = false
-  }
-
-  handleLoadInstancesFailed({ endpointId }) {
-    if (endpointId !== this.endpointId) {
-      return
-    }
-
-    this.instancesLoading = false
-  }
-
-  handleSearchInstances() {
+  @action searchInstances(endpointId: string, searchText: string) {
     this.searching = true
+    return InstanceSource.loadInstances(endpointId, searchText).then(instances => {
+      this.currentPage = 1
+      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
+      this.instances = instances
+      this.cachedInstances = instances
+      this.searching = false
+      this.searchNotFound = Boolean(instances.length === 0 && searchText)
+    }).catch(() => {
+      this.searching = false
+      this.searchNotFound = true
+    })
   }
 
-  handleSearchInstancesSuccess({ instances, searchText }) {
-    this.currentPage = 1
-    this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-    this.instances = instances
-    this.cachedInstances = instances
-    this.searching = false
-    this.searchNotFound = instances.length === 0 && searchText
-  }
-
-  handleSearchInstancesFailed() {
-    this.searching = false
-    this.searchNotFound = true
-  }
-
-  handleLoadNextPage({ fromCache }) {
-    if (!fromCache) {
-      this.loadingPage = true
-      return
+  @action loadNextPage(endpointId: string, searchText: string): Promise<void> {
+    if (this.cachedInstances.length > wizardConfig.instancesItemsPerPage * this.currentPage) {
+      this.currentPage = this.currentPage + 1
+      let numCachedPages = Math.ceil(this.cachedInstances.length / wizardConfig.instancesItemsPerPage)
+      if (this.currentPage === numCachedPages) {
+        this.hasNextPage = this.cachedHasNextPage
+      } else {
+        this.hasNextPage = true
+      }
+      this.instances = InstanceStoreUtils.loadFromCache(this.cachedInstances, this.currentPage)
+      return Promise.resolve()
     }
-    this.currentPage = this.currentPage + 1
-    let numCachedPages = Math.ceil(this.cachedInstances.length / wizardConfig.instancesItemsPerPage)
-    if (this.currentPage === numCachedPages) {
-      this.hasNextPage = this.cachedHasNextPage
-    } else {
-      this.hasNextPage = true
-    }
-    this.instances = InstanceStoreUtils.loadFromCache(this.cachedInstances, this.currentPage)
+
+    this.loadingPage = true
+    return InstanceSource.loadInstances(
+      endpointId,
+      searchText,
+      this.instances[this.instances.length - 1].id
+    ).then(instances => {
+      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
+      this.cachedHasNextPage = this.hasNextPage
+      this.cachedInstances = [...this.cachedInstances, ...instances]
+      this.instances = instances
+      this.loadingPage = false
+      this.currentPage = this.currentPage + 1
+    }).catch(() => {
+      this.loadingPage = false
+    })
   }
 
-  handleLoadNextPageSuccess(instances) {
-    this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-    this.cachedHasNextPage = this.hasNextPage
-    this.cachedInstances = [...this.cachedInstances, ...instances]
-    this.instances = instances
-    this.loadingPage = false
-    this.currentPage = this.currentPage + 1
-  }
-
-  handleLoadNextPageFailed() {
-    this.loadingPage = false
-  }
-
-  handleLoadPreviousPage() {
+  @action loadPreviousPage() {
     this.hasNextPage = true
     this.currentPage = this.currentPage - 1
     this.instances = InstanceStoreUtils.loadFromCache(this.cachedInstances, this.currentPage)
   }
 
-  handleReloadInstances() {
+  @action reloadInstances(endpointId: string, searchText: string) {
     this.reloading = true
     this.searchNotFound = false
+
+    InstanceSource.loadInstances(endpointId, searchText).then(instances => {
+      this.reloading = false
+      this.currentPage = 1
+      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
+      this.instances = instances
+      this.cachedInstances = instances
+      this.searching = false
+      this.searchNotFound = Boolean(instances.length === 0 && searchText)
+    }).catch(() => {
+      this.reloading = false
+      this.searchNotFound = true
+    })
   }
 
-  handleReloadInstancesSuccess({ instances, searchText }) {
-    this.reloading = false
-    this.currentPage = 1
-    this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-    this.instances = instances
-    this.cachedInstances = instances
-    this.searching = false
-    this.searchNotFound = instances.length === 0 && searchText
-  }
-
-  handleReloadInstancesFailed() {
-    this.reloading = false
-    this.searchNotFound = true
-  }
-
-  handleLoadInstancesDetails({ count, fromCache }) {
-    if (fromCache) {
-      return
+  @action loadInstancesDetails(endpointId: string, instances: Instance[]): Promise<void> {
+    instances.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
+    let hash = i => `${i.instance_name}-${i.id}`
+    if (this.instancesDetails.map(hash).join('_') === instances.map(hash).join('_')) {
+      return Promise.resolve()
     }
 
     this.loadingInstancesDetails = true
-    this.instancesDetailsCount = count
     this.instancesDetails = []
-  }
+    let count = instances.length
+    return new Promise((resolve) => {
+      instances.forEach(instance => {
+        InstanceSource.loadInstanceDetails(endpointId, instance.instance_name).then(instance => {
+          count -= 1
+          this.loadingInstancesDetails = count > 0
 
-  handleLoadInstanceDetailsSuccess(instance) {
-    this.instancesDetailsCount -= 1
-    this.loadingInstancesDetails = this.instancesDetailsCount > 0
+          if (this.instancesDetails.find(i => i.id === instance.id)) {
+            this.instancesDetails = this.instancesDetails.filter(i => i.id !== instance.id)
+          }
 
-    if (this.instancesDetails.find(i => i.id === instance.id)) {
-      this.instancesDetails = this.instancesDetails.filter(i => i.id !== instance.id)
-    }
+          this.instancesDetails = [
+            ...this.instancesDetails,
+            instance,
+          ]
+          this.instancesDetails.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
 
-    this.instancesDetails = [
-      ...this.instancesDetails,
-      instance,
-    ]
-    this.instancesDetails.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
-  }
-
-  handleLoadInstanceDetailsFailed() {
-    this.instancesDetailsCount -= 1
-    this.loadingInstancesDetails = this.instancesDetailsCount > 0
+          if (count === 0) {
+            resolve()
+          }
+        }).catch(() => {
+          count -= 1
+          this.loadingInstancesDetails = count > 0
+          if (count === 0) {
+            resolve()
+          }
+        })
+      })
+    })
   }
 }
 
-export default alt.createStore(InstanceStore)
+export default new InstanceStore()

@@ -16,14 +16,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { Schedule } from './Schedule'
 import type { Instance } from './Instance'
-import type { Network } from './Network'
+import type { NetworkMap } from './Network'
 import type { Endpoint } from './Endpoint'
 
 export type WizardData = {
-  options: { [string]: mixed },
-  schedules: Schedule[],
-  selectedInstances: Instance[],
-  networks: Network[],
-  source: Endpoint,
-  target: Endpoint,
+  options?: ?{ [string]: mixed },
+  schedules?: Schedule[],
+  selectedInstances?: ?Instance[],
+  networks?: ?NetworkMap[],
+  source?: Endpoint,
+  target?: Endpoint,
+}
+
+export type WizardPage = {
+  id: string,
+  title: string,
+  breadcrumb: string,
+  excludeFrom?: 'replica' | 'migration',
 }

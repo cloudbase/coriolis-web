@@ -29,10 +29,10 @@ import MigrationDetailsPage from './pages/MigrationDetailsPage'
 import EndpointsPage from './pages/EndpointsPage'
 import EndpointDetailsPage from './pages/EndpointDetailsPage'
 import WizardPage from './pages/WizardPage'
+import UserStore from '../stores/UserStore'
 
 import Palette from './styleUtils/Palette'
 import StyleProps from './styleUtils/StyleProps'
-import UserActions from '../actions/UserActions'
 
 injectGlobal`
   ${Fonts}
@@ -50,7 +50,7 @@ const Wrapper = styled.div``
 
 class App extends React.Component<{}> {
   componentWillMount() {
-    UserActions.tokenLogin()
+    UserStore.tokenLogin()
   }
 
   render() {

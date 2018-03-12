@@ -16,13 +16,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import SideMenu from '../../molecules/SideMenu'
 import NotificationDropdown from '../../molecules/NotificationDropdown'
 import UserDropdown from '../../molecules/UserDropdown'
+import type { User as UserType } from '../../../types/User'
 
-import NotificationActions from '../../../actions/NotificationActions'
 import NotificationStore from '../../../stores/NotificationStore'
 
 import backgroundImage from './images/star-bg.jpg'
@@ -55,27 +55,17 @@ const User = styled.div`
 `
 
 type Props = {
-  user: { username: string, email: string },
+  user?: ?UserType,
   onUserItemClick: (userItem: { label: string, value: string }) => void,
-  notificationStore?: any,
 }
+@observer
 export class DetailsPageHeader extends React.Component<Props> {
-  static getStores() {
-    return [NotificationStore]
-  }
-
-  static getPropsFromStores(): $Shape<Props> {
-    return {
-      notificationStore: NotificationStore.getState(),
-    }
-  }
-
   componentDidMount() {
-    NotificationActions.loadNotifications()
+    NotificationStore.loadNotifications()
   }
 
   handleNotificationsClose() {
-    NotificationActions.clearNotifications()
+    NotificationStore.clearNotifications()
   }
 
   render() {
@@ -86,7 +76,7 @@ export class DetailsPageHeader extends React.Component<Props> {
           <Logo href="/#/replicas" />
         </Menu>
         <User>
-          <NotificationDropdown white items={this.props.notificationStore ? this.props.notificationStore.persistedNotifications : []} onClose={() => this.handleNotificationsClose()} />
+          <NotificationDropdown white items={NotificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
           <UserDropdownStyled
             white
             user={this.props.user}
@@ -98,4 +88,4 @@ export class DetailsPageHeader extends React.Component<Props> {
   }
 }
 
-export default connectToStores(DetailsPageHeader)
+export default DetailsPageHeader

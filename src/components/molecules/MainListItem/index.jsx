@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { observer } from 'mobx-react'
 
 import Checkbox from '../../atoms/Checkbox'
 import StatusPill from '../../atoms/StatusPill'
@@ -113,6 +114,7 @@ type Props = {
   endpointType: (endpointId: string) => string,
   onSelectedChange: (value: boolean) => void,
 }
+@observer
 class MainListItem extends React.Component<Props> {
   getLastExecution(): ?Execution | ?MainItem {
     if (this.props.item.executions && this.props.item.executions.length) {

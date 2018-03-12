@@ -180,7 +180,7 @@ const BigInstanceImage = styled.div`
 
 type Props = {
   instances: InstanceType[],
-  selectedInstances: InstanceType[],
+  selectedInstances: ?InstanceType[],
   currentPage: number,
   loading: boolean,
   searching: boolean,

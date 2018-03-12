@@ -14,6 +14,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+export type Validation = {
+  valid: boolean,
+  message: string,
+}
+
 export type Endpoint = {
   id: string,
   name: string,

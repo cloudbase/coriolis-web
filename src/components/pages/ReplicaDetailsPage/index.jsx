@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import connectToStores from 'alt-utils/lib/connectToStores'
+import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
 import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
@@ -28,15 +28,13 @@ import AlertModal from '../../organisms/AlertModal'
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
 import type { MainItem } from '../../../types/MainItem'
 import type { Execution } from '../../../types/Execution'
+import type { Schedule } from '../../../types/Schedule'
+import type { Field } from '../../../types/Field'
 
 import ReplicaStore from '../../../stores/ReplicaStore'
+import MigrationStore from '../../../stores/MigrationStore'
 import UserStore from '../../../stores/UserStore'
-import UserActions from '../../../actions/UserActions'
-import ReplicaActions from '../../../actions/ReplicaActions'
-import MigrationActions from '../../../actions/MigrationActions'
 import EndpointStore from '../../../stores/EndpointStore'
-import EndpointActions from '../../../actions/EndpointActions'
-import ScheduleActions from '../../../actions/ScheduleActions'
 import ScheduleStore from '../../../stores/ScheduleStore'
 import { requestPollTimeout } from '../../../config'
 
@@ -46,10 +44,6 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
-  replicaStore: any,
-  endpointStore: any,
-  userStore: any,
-  scheduleStore: any,
 }
 type State = {
   showOptionsModal: boolean,
@@ -60,20 +54,8 @@ type State = {
   confirmationItem: ?MainItem | ?Execution,
   showCancelConfirmation: boolean,
 }
+@observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
-  static getStores() {
-    return [ReplicaStore, EndpointStore, UserStore, ScheduleStore]
-  }
-
-  static getPropsFromStores() {
-    return {
-      replicaStore: ReplicaStore.getState(),
-      endpointStore: EndpointStore.getState(),
-      userStore: UserStore.getState(),
-      scheduleStore: ScheduleStore.getState(),
-    }
-  }
-
   pollTimeout: TimeoutID
 
   constructor() {
@@ -93,32 +75,32 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Replica Details'
 
-    ReplicaActions.getReplica(this.props.match.params.id)
-    EndpointActions.getEndpoints()
-    ScheduleActions.getSchedules(this.props.match.params.id)
+    ReplicaStore.getReplica(this.props.match.params.id)
+    EndpointStore.getEndpoints()
+    ScheduleStore.getSchedules(this.props.match.params.id)
     this.pollData()
   }
 
   componentWillUnmount() {
-    ReplicaActions.clearDetails()
-    ScheduleActions.clearUnsavedSchedules()
+    ReplicaStore.clearDetails()
+    ScheduleStore.clearUnsavedSchedules()
     clearTimeout(this.pollTimeout)
   }
 
   isActionButtonDisabled() {
-    let originEndpoint = this.props.endpointStore.endpoints.find(e => e.id === this.props.replicaStore.replicaDetails.origin_endpoint_id)
-    let targetEndpoint = this.props.endpointStore.endpoints.find(e => e.id === this.props.replicaStore.replicaDetails.destination_endpoint_id)
-    let lastExecution = this.props.replicaStore.replicaDetails.executions && this.props.replicaStore.replicaDetails.executions.length
-      && this.props.replicaStore.replicaDetails.executions[this.props.replicaStore.replicaDetails.executions.length - 1]
+    let originEndpoint = EndpointStore.endpoints.find(e => ReplicaStore.replicaDetails && e.id === ReplicaStore.replicaDetails.origin_endpoint_id)
+    let targetEndpoint = EndpointStore.endpoints.find(e => ReplicaStore.replicaDetails && e.id === ReplicaStore.replicaDetails.destination_endpoint_id)
+    let lastExecution = ReplicaStore.replicaDetails && ReplicaStore.replicaDetails.executions && ReplicaStore.replicaDetails.executions.length
+      && ReplicaStore.replicaDetails.executions[ReplicaStore.replicaDetails.executions.length - 1]
     let status = lastExecution && lastExecution.status
 
     return Boolean(!originEndpoint || !targetEndpoint || status === 'RUNNING')
   }
 
-  handleUserItemClick(item) {
+  handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserActions.logout()
+        UserStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -143,11 +125,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     if (!this.state.confirmationItem) {
       return
     }
-    ReplicaActions.deleteExecution(this.props.replicaStore.replicaDetails.id, this.state.confirmationItem.id)
+    ReplicaStore.deleteExecution(ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : '', this.state.confirmationItem.id)
     this.handleCloseExecutionConfirmation()
   }
 
-  handleDeleteExecutionClick(execution) {
+  handleDeleteExecutionClick(execution: ?Execution) {
     this.setState({
       showDeleteExecutionConfirmation: true,
       confirmationItem: execution,
@@ -172,7 +154,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   handleDeleteReplicaConfirmation() {
     this.setState({ showDeleteReplicaConfirmation: false })
     window.location.href = '/#/replicas'
-    ReplicaActions.delete(this.props.replicaStore.replicaDetails.id)
+    ReplicaStore.delete(ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : '')
   }
 
   handleCloseDeleteReplicaConfirmation() {
@@ -181,8 +163,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   handleDeleteReplicaDisksConfirmation() {
     this.setState({ showDeleteReplicaDisksConfirmation: false })
-    ReplicaActions.deleteDisks(this.props.replicaStore.replicaDetails.id)
-    window.location.href = `/#/replica/executions/${this.props.replicaStore.replicaDetails.id}`
+    ReplicaStore.deleteDisks(ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : '')
+    window.location.href = `/#/replica/executions/${ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : ''}`
   }
 
   handleCloseDeleteReplicaDisksConfirmation() {
@@ -197,25 +179,32 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.setState({ showMigrationModal: true })
   }
 
-  handleAddScheduleClick(schedule) {
-    ScheduleActions.addSchedule(this.props.match.params.id, schedule)
+  handleAddScheduleClick(schedule: Schedule) {
+    ScheduleStore.addSchedule(this.props.match.params.id, schedule)
   }
 
-  handleScheduleChange(scheduleId, data, forceSave) {
-    let oldData = this.props.scheduleStore.schedules.find(s => s.id === scheduleId)
-    let unsavedData = this.props.scheduleStore.unsavedSchedules.find(s => s.id === scheduleId)
-    ScheduleActions.updateSchedule(this.props.match.params.id, scheduleId, data, oldData, unsavedData, forceSave)
+  handleScheduleChange(scheduleId: ?string, data: Schedule, forceSave?: boolean) {
+    let oldData = ScheduleStore.schedules.find(s => s.id === scheduleId)
+    let unsavedData = ScheduleStore.unsavedSchedules.find(s => s.id === scheduleId)
+
+    if (scheduleId) {
+      ScheduleStore.updateSchedule(this.props.match.params.id, scheduleId, data, oldData, unsavedData, forceSave)
+    }
   }
 
-  handleScheduleSave(schedule) {
-    ScheduleActions.updateSchedule(this.props.match.params.id, schedule.id, schedule, schedule, schedule, true)
+  handleScheduleSave(schedule: Schedule) {
+    if (schedule.id) {
+      ScheduleStore.updateSchedule(this.props.match.params.id, schedule.id, schedule, schedule, schedule, true)
+    }
   }
 
-  handleScheduleRemove(scheduleId) {
-    ScheduleActions.removeSchedule(this.props.match.params.id, scheduleId)
+  handleScheduleRemove(scheduleId: ?string) {
+    if (scheduleId) {
+      ScheduleStore.removeSchedule(this.props.match.params.id, scheduleId)
+    }
   }
 
-  handleCancelExecutionClick(confirmationItem) {
+  handleCancelExecutionClick(confirmationItem: ?Execution) {
     this.setState({ confirmationItem, showCancelConfirmation: true })
   }
 
@@ -227,23 +216,23 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     if (!this.state.confirmationItem) {
       return
     }
-    ReplicaActions.cancelExecution(this.props.replicaStore.replicaDetails.id, this.state.confirmationItem.id)
+    ReplicaStore.cancelExecution(ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : '', this.state.confirmationItem.id)
     this.setState({ showCancelConfirmation: false })
   }
 
-  migrateReplica(options) {
-    MigrationActions.migrateReplica(this.props.replicaStore.replicaDetails.id, options)
+  migrateReplica(options: Field[]) {
+    MigrationStore.migrateReplica(ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : '', options)
     this.handleCloseMigrationModal()
   }
 
-  executeReplica(fields) {
-    ReplicaActions.execute(this.props.replicaStore.replicaDetails.id, fields)
+  executeReplica(fields: Field[]) {
+    ReplicaStore.execute(ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : '', fields)
     this.handleCloseOptionsModal()
-    window.location.href = `/#/replica/executions/${this.props.replicaStore.replicaDetails.id}`
+    window.location.href = `/#/replica/executions/${ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : ''}`
   }
 
   pollData() {
-    ReplicaActions.getReplicaExecutions(this.props.match.params.id).promise.then(() => {
+    ReplicaStore.getReplicaExecutions(this.props.match.params.id).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
@@ -253,24 +242,28 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       <Wrapper>
         <DetailsTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={this.props.userStore.user}
+            user={UserStore.user}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
-            item={this.props.replicaStore.replicaDetails}
+            item={ReplicaStore.replicaDetails}
             onBackButonClick={() => { this.handleBackButtonClick() }}
             onActionButtonClick={() => { this.handleActionButtonClick() }}
-            onCancelClick={execution => { this.handleCancelExecutionClick(execution) }}
+            onCancelClick={item => {
+              let any: any = item
+              let execution: Execution = any
+              this.handleCancelExecutionClick(execution)
+            }}
             actionButtonDisabled={this.isActionButtonDisabled()}
             typeImage={replicaImage}
             alertInfoPill
             buttonLabel="Execute Now"
           />}
           contentComponent={<ReplicaDetailsContent
-            item={this.props.replicaStore.replicaDetails}
-            endpoints={this.props.endpointStore.endpoints}
-            scheduleStore={this.props.scheduleStore}
-            detailsLoading={this.props.replicaStore.detailsLoading || this.props.endpointStore.loading}
+            item={ReplicaStore.replicaDetails}
+            endpoints={EndpointStore.endpoints}
+            scheduleStore={ScheduleStore}
+            detailsLoading={ReplicaStore.detailsLoading || EndpointStore.loading}
             page={this.props.match.params.page || ''}
             onCancelExecutionClick={execution => { this.handleCancelExecutionClick(execution) }}
             onDeleteExecutionClick={execution => { this.handleDeleteExecutionClick(execution) }}
@@ -341,4 +334,4 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default connectToStores(ReplicaDetailsPage)
+export default ReplicaDetailsPage

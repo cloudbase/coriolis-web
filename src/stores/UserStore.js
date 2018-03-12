@@ -12,67 +12,102 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import UserActions from '../actions/UserActions'
+// @flow
 
+import { observable, action } from 'mobx'
+import type { User, Credentials } from '../types/User'
+import UserSource from '../sources/UserSource'
+import ProjectStore from './ProjectStore'
+import NotificationStore from '../stores/NotificationStore'
+
+/**
+ * This is the authentication / authorization flow:
+ * 1. Post username and password unscoped login. Set unscoped token in cookies.
+ * 2. Post unscoped token with project id. Set scoped token and project id in cookies.
+ * 3. Get token login on subsequent app reloads to retrieve the user info.
+ * 
+ * After token expiration, the app is redirected to login page.
+ */
 class UserStore {
-  constructor() {
+  @observable user: ?User = null
+  @observable loading: boolean = false
+  @observable loginFailedResponse: any = null
+
+  @action login(creds: Credentials): Promise<void> {
+    this.loading = true
     this.user = null
-    this.loading = false
     this.loginFailedResponse = null
 
-    this.bindListeners({
-      handleLogin: UserActions.LOGIN,
-      handleLoginFailed: UserActions.LOGIN_FAILED,
-      handleLoginScopedSuccess: UserActions.LOGIN_SCOPED_SUCCESS,
-      handleLoginScopedFailed: UserActions.LOGIN_SCOPED_FAILED,
-      handleTokenLogin: UserActions.TOKEN_LOGIN,
-      handleTokenLoginSuccess: UserActions.TOKEN_LOGIN_SUCCESS,
-      handleTokenLoginFailed: UserActions.TOKEN_LOGIN_FAILED,
-      handleGetUserInfoSuccess: UserActions.GET_USER_INFO_SUCCESS,
+    return UserSource.login(creds).then(() => {
+      return this.loginScoped()
+    }).then((user: User) => {
+      this.loading = false
+      NotificationStore.notify('Signed in', 'success')
+      this.user = user
+      this.getUserInfo(user)
+    }).catch((reason) => {
+      this.loading = false
+      this.loginFailedResponse = reason
     })
   }
 
-  handleLogin() {
+  @action loginScoped(projectId?: string): Promise<User> {
+    return new Promise((resolve) => {
+      if (ProjectStore.projects && ProjectStore.projects.length) {
+        UserSource.loginScoped(projectId || ProjectStore.projects[0].id).then((user: User) => {
+          this.user = { ...user, scoped: true }
+          resolve(user)
+        })
+      }
+      ProjectStore.getProjects().then(() => {
+        UserSource.loginScoped(projectId || ProjectStore.projects[0].id).then((user: User) => {
+          this.user = { ...user, scoped: true }
+          resolve(user)
+        })
+      })
+    })
+  }
+
+  @action getUserInfo(user: User): Promise<User> {
+    return UserSource.getUserInfo(user).then((userData: User) => {
+      this.user = { ...this.user, ...userData }
+    }).catch(reason => {
+      console.error('Error while getting user data', reason)
+      NotificationStore.notify('Error while getting user data', 'error')
+    })
+  }
+
+  @action tokenLogin(): Promise<User> {
+    this.user = null
     this.loading = true
-    this.user = null
-    this.loginFailedResponse = null
+
+    return UserSource.tokenLogin().then(user => {
+      this.loading = false
+      this.user = { ...this.user, ...user }
+      NotificationStore.notify('Signed in', 'success')
+      this.getUserInfo(user)
+    }).catch(() => {
+      this.loading = false
+    })
   }
 
-  handleLoginFailed(response) {
-    this.loading = false
-    this.loginFailedResponse = response
+  @action switchProject(projectId: string): Promise<User> {
+    NotificationStore.notify('Switching projects')
+    return UserSource.switchProject().then(() => {
+      return this.loginScoped(projectId)
+    }).catch(reason => {
+      console.error('Error switching projects', reason)
+      NotificationStore.notify('Error switching projects')
+      this.logout()
+    })
   }
 
-  handleLoginScopedSuccess(data) {
-    this.user = { ...data, scoped: true }
-    this.loading = false
-  }
-
-  handleLoginScopedFailed(response) {
-    this.user = null
-    this.loading = false
-    this.loginFailedResponse = response
-  }
-
-  handleTokenLogin() {
-    this.user = null
-    this.loading = true
-  }
-
-  handleTokenLoginSuccess(data) {
-    this.user = { ...data, scoped: true }
-    this.loading = false
-  }
-
-  handleTokenLoginFailed() {
-    this.user = null
-    this.loading = false
-  }
-
-  handleGetUserInfoSuccess(user) {
-    this.user = { ...this.user, ...user }
+  @action logout(): Promise<void> {
+    return UserSource.logout().catch(reason => {
+      console.log('Error logging out', reason)
+      NotificationStore.notify('Error logging out')
+    })
   }
 }
 
-export default alt.createStore(UserStore)
+export default new UserStore()

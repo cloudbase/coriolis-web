@@ -12,41 +12,40 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import NotificationActions from '../actions/NotificationActions'
+// @flow
+
+import { observable, action } from 'mobx'
+
+import type { NotificationItem } from '../types/NotificationItem'
+import NotificationSource from '../sources/NotificationSource'
 
 class NotificationStore {
-  constructor() {
-    this.bindListeners({
-      notify: NotificationActions.NOTIFY,
-      notifySuccess: NotificationActions.NOTIFY_SUCCESS,
-      loadNotificationsSuccess: NotificationActions.LOAD_NOTIFICATIONS_SUCCESS,
-      clearNotificationsSuccess: NotificationActions.CLEAR_NOTIFICATIONS_SUCCESS,
-    })
+  @observable notifications: NotificationItem[] = []
+  @observable persistedNotifications: NotificationItem[] = []
 
-    this.notifications = []
-    this.persistedNotifications = []
-  }
+  @action notify(message: string, level?: $PropertyType<NotificationItem, 'level'>, options?: $PropertyType<NotificationItem, 'options'>): Promise<void> {
+    this.notifications.push({ message, level, options })
 
-  notify(options) {
-    let newItem = {
-      ...options,
+    if (options && options.persist) {
+      return NotificationSource.notify(message, level, options).then((notification: NotificationItem) => {
+        this.persistedNotifications.push(notification)
+      })
     }
 
-    this.notifications = this.notifications.concat(newItem)
+    return Promise.resolve()
   }
 
-  notifySuccess(notification) {
-    this.persistedNotifications = this.persistedNotifications.concat([notification])
+  @action loadNotifications(): Promise<void> {
+    return NotificationSource.loadNotifications().then((notifications: NotificationItem[]) => {
+      this.persistedNotifications = notifications
+    })
   }
 
-  loadNotificationsSuccess(notifications) {
-    this.persistedNotifications = notifications
-  }
-
-  clearNotificationsSuccess() {
-    this.persistedNotifications = []
+  @action clearNotifications(): Promise<void> {
+    return NotificationSource.clearNotifications().then(() => {
+      this.persistedNotifications = []
+    })
   }
 }
 
-export default alt.createStore(NotificationStore)
+export default new NotificationStore()

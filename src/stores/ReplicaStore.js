@@ -12,21 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import alt from '../alt'
-import ReplicaActions from '../actions/ReplicaActions'
-import NotificationActions from '../actions/NotificationActions'
+// @flow
+
+import { observable, action } from 'mobx'
+
+import NotificationStore from '../stores/NotificationStore'
+import ReplicaSource from '../sources/ReplicaSource'
+import type { MainItem } from '../types/MainItem'
+import type { Execution } from '../types/Execution'
+import type { Field } from '../types/Field'
 
 class ReplicaStoreUtils {
-  static addExecutionToReplica({ replicaStore, replicaId, execution }) {
-    let executions = [execution]
+  static addExecutionToReplica(opts: { replicaStore: any, replicaId: string, execution: Execution }) {
+    let executions = [opts.execution]
 
-    if (replicaStore.replicaDetails.id === replicaId) {
-      if (replicaStore.replicaDetails.executions) {
-        executions = [...replicaStore.replicaDetails.executions, execution]
+    if (opts.replicaStore.replicaDetails.id === opts.replicaId) {
+      if (opts.replicaStore.replicaDetails.executions) {
+        executions = [...opts.replicaStore.replicaDetails.executions, opts.execution]
       }
 
-      replicaStore.replicaDetails = {
-        ...replicaStore.replicaDetails,
+      opts.replicaStore.replicaDetails = {
+        ...opts.replicaStore.replicaDetails,
         executions,
       }
     }
@@ -34,135 +40,102 @@ class ReplicaStoreUtils {
 }
 
 class ReplicaStore {
-  constructor() {
-    this.replicas = []
-    this.replicaDetails = {}
-    this.loading = true
-    this.backgroundLoading = false
-    this.detailsLoading = true
-    this.replicasExecutionsLoading = false
+  @observable replicas: MainItem[] = []
+  @observable replicaDetails: ?MainItem = null
+  @observable loading: boolean = true
+  @observable backgroundLoading: boolean = false
+  @observable detailsLoading: boolean = true
 
-    this.bindListeners({
-      handleGetReplicas: ReplicaActions.GET_REPLICAS,
-      handleGetReplicasSuccess: ReplicaActions.GET_REPLICAS_SUCCESS,
-      handleGetReplicasFailed: ReplicaActions.GET_REPLICAS_FAILED,
-      handleGetReplicasExecutions: ReplicaActions.GET_REPLICAS_EXECUTIONS,
-      handleGetReplicasExecutionsSuccess: ReplicaActions.GET_REPLICAS_EXECUTIONS_SUCCESS,
-      handleGetReplicasExecutionsFailed: ReplicaActions.GET_REPLICAS_EXECUTIONS_FAILED,
-      handleGetReplicaExecutionsSuccess: ReplicaActions.GET_REPLICA_EXECUTIONS_SUCCESS,
-      handleGetReplica: ReplicaActions.GET_REPLICA,
-      handleGetReplicaSuccess: ReplicaActions.GET_REPLICA_SUCCESS,
-      handleGetReplicaFailed: ReplicaActions.GET_REPLICA_FAILED,
-      handleExecuteSuccess: ReplicaActions.EXECUTE_SUCCESS,
-      handleDeleteExecutionSuccess: ReplicaActions.DELETE_EXECUTION_SUCCESS,
-      handleDeleteSuccess: ReplicaActions.DELETE_SUCCESS,
-      handleDeleteDisksSuccess: ReplicaActions.DELETE_DISKS_SUCCESS,
-      handleCancelExecutionSuccess: ReplicaActions.CANCEL_EXECUTION_SUCCESS,
-      handleClearDetails: ReplicaActions.CLEAR_DETAILS,
+  @action getReplicas(options?: { showLoading: boolean }): Promise<MainItem[]> {
+    this.backgroundLoading = true
+
+    if ((options && options.showLoading) || this.replicas.length === 0) {
+      this.loading = true
+    }
+
+    return ReplicaSource.getReplicas().then(replicas => {
+      this.replicas = replicas
+      this.loading = false
+      this.backgroundLoading = false
+    }).catch(() => {
+      this.loading = false
+      this.backgroundLoading = false
     })
   }
 
-  handleGetReplicas({ showLoading }) {
-    this.backgroundLoading = true
-
-    if (showLoading || this.replicas.length === 0) {
-      this.loading = true
-    }
-  }
-
-  handleGetReplicasSuccess(replicas) {
-    this.replicas = replicas
-    this.loading = false
-    this.backgroundLoading = false
-  }
-
-  handleGetReplicasFailed() {
-    this.loading = false
-    this.backgroundLoading = false
-  }
-
-  handleGetReplicasExecutions() {
-    this.replicasExecutionsLoading = true
-  }
-
-  handleGetReplicasExecutionsSuccess(replicasExecutions) {
-    replicasExecutions.forEach(({ replicaId, executions }) => {
+  @action getReplicaExecutions(replicaId: string): Promise<Execution[]> {
+    return ReplicaSource.getReplicaExecutions(replicaId).then(executions => {
       let replica = this.replicas.find(replica => replica.id === replicaId)
+
       if (replica) {
         replica.executions = executions
       }
+
+      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+        this.replicaDetails = {
+          ...this.replicaDetails,
+          executions,
+        }
+      }
     })
-
-    this.replicasExecutionsLoading = false
   }
 
-  handleGetReplicasExecutionsFailed() {
-    this.replicasExecutionsLoading = false
-  }
-
-  handleGetReplicaExecutionsSuccess({ replicaId, executions }) {
-    let replica = this.replicas.find(replica => replica.id === replicaId)
-
-    if (replica) {
-      replica.executions = executions
-    }
-
-    if (this.replicaDetails.id === replicaId) {
-      this.replicaDetails = {
-        ...this.replicaDetails,
-        executions,
-      }
-    }
-  }
-
-  handleGetReplica() {
+  @action getReplica(replicaId: string): Promise<MainItem> {
     this.detailsLoading = true
+
+    return ReplicaSource.getReplica(replicaId).then(replica => {
+      this.detailsLoading = false
+      this.replicaDetails = replica
+    }).catch(() => {
+      this.detailsLoading = false
+    })
   }
 
-  handleGetReplicaSuccess(replica) {
-    this.detailsLoading = false
-    this.replicaDetails = replica
+  @action execute(replicaId: string, fields?: Field[]): Promise<void> {
+    return ReplicaSource.execute(replicaId, fields).then(execution => {
+      ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
+    })
   }
 
-  handleGetReplicaFailed() {
-    this.detailsLoading = false
+  @action cancelExecution(replicaId: string, executionId: string): Promise<void> {
+    return ReplicaSource.cancelExecution(replicaId, executionId).then(() => {
+      NotificationStore.notify('Cancelled', 'success')
+    })
   }
 
-  handleExecuteSuccess({ replicaId, execution }) {
-    ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
-  }
+  @action deleteExecution(replicaId: string, executionId: string): Promise<void> {
+    return ReplicaSource.deleteExecution(replicaId, executionId).then(() => {
+      let executions = []
 
-  handleDeleteDisksSuccess({ replicaId, execution }) {
-    ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
-  }
+      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+        if (this.replicaDetails.executions) {
+          executions = [...this.replicaDetails.executions.filter(e => e.id !== executionId)]
+        }
 
-  handleDeleteExecutionSuccess({ replicaId, executionId }) {
-    let executions = []
-
-    if (this.replicaDetails.id === replicaId) {
-      if (this.replicaDetails.executions) {
-        executions = [...this.replicaDetails.executions.filter(e => e.id !== executionId)]
+        this.replicaDetails = {
+          ...this.replicaDetails,
+          executions,
+        }
       }
-
-      this.replicaDetails = {
-        ...this.replicaDetails,
-        executions,
-      }
-    }
+    })
   }
 
-  handleDeleteSuccess(replicaId) {
-    this.replicas = this.replicas.filter(r => r.id !== replicaId)
+  @action delete(replicaId: string) {
+    return ReplicaSource.delete(replicaId).then(() => {
+      this.replicas = this.replicas.filter(r => r.id !== replicaId)
+    })
   }
 
-  handleCancelExecutionSuccess() {
-    setTimeout(() => { NotificationActions.notify('Cancelled', 'success') }, 0)
+  @action deleteDisks(replicaId: string) {
+    return ReplicaSource.deleteDisks(replicaId).then(execution => {
+      ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
+    })
   }
 
-  handleClearDetails() {
+  @action clearDetails() {
     this.detailsLoading = true
-    this.replicaDetails = {}
+    this.replicaDetails = null
   }
 }
 
-export default alt.createStore(ReplicaStore)
+export default new ReplicaStore()
