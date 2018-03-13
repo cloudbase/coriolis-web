@@ -23,19 +23,28 @@ import type { Execution } from '../types/Execution'
 import type { Field } from '../types/Field'
 
 class ReplicaStoreUtils {
-  static addExecutionToReplica(opts: { replicaStore: any, replicaId: string, execution: Execution }) {
-    let executions = [opts.execution]
-
-    if (opts.replicaStore.replicaDetails.id === opts.replicaId) {
-      if (opts.replicaStore.replicaDetails.executions) {
-        executions = [...opts.replicaStore.replicaDetails.executions, opts.execution]
-      }
-
-      opts.replicaStore.replicaDetails = {
-        ...opts.replicaStore.replicaDetails,
-        executions,
-      }
+  static addExecutionToReplica(opts: {
+    replicas: MainItem[],
+    replicaDetails: ?MainItem,
+    execution: Execution,
+    replicaId: string,
+  }) {
+    let replicasToUpdate = opts.replicas.filter(r => r.id === opts.replicaId)
+    if (opts.replicaDetails && opts.replicaDetails.id === opts.replicaId) {
+      replicasToUpdate.push(opts.replicaDetails)
     }
+
+    replicasToUpdate.forEach(r => {
+      if (r.executions.find(e => e.id === opts.execution.id)) {
+        return
+      }
+
+      if (r.executions) {
+        r.executions.push(opts.execution)
+      } else {
+        r.executions = [opts.execution]
+      }
+    })
   }
 }
 
@@ -93,7 +102,12 @@ class ReplicaStore {
 
   @action execute(replicaId: string, fields?: Field[]): Promise<void> {
     return ReplicaSource.execute(replicaId, fields).then(execution => {
-      ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
+      ReplicaStoreUtils.addExecutionToReplica({
+        replicaId,
+        replicas: this.replicas,
+        replicaDetails: this.replicaDetails,
+        execution,
+      })
     })
   }
 
@@ -128,7 +142,12 @@ class ReplicaStore {
 
   @action deleteDisks(replicaId: string) {
     return ReplicaSource.deleteDisks(replicaId).then(execution => {
-      ReplicaStoreUtils.addExecutionToReplica({ replicaStore: this, replicaId, execution })
+      ReplicaStoreUtils.addExecutionToReplica({
+        replicaId,
+        replicas: this.replicas,
+        replicaDetails: this.replicaDetails,
+        execution,
+      })
     })
   }
 
