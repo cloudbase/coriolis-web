@@ -17,10 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Project } from './Project'
 
 export type User = {
-  scoped: boolean,
+  scoped?: boolean,
   project: Project,
   email: string,
   name: string,
+  id: string,
 }
 
 export type Credentials = {

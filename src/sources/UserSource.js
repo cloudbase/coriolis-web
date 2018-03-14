@@ -12,17 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
-
 import { servicesUrl } from '../config'
+import type { Credentials, User } from '../types/User'
 
 class UserModel {
   static parseUserData(response) {
     let data = {
       id: response.data.token.user.id,
       name: response.data.token.user.name,
+      email: response.data.token.user.email,
       project: response.data.token.project,
     }
 
@@ -31,7 +34,7 @@ class UserModel {
 }
 
 class UserSource {
-  static login(userData) {
+  static login(userData: Credentials): Promise<User> {
     let auth = {
       auth: {
         identity: {
@@ -64,7 +67,7 @@ class UserSource {
     })
   }
 
-  static loginScoped(projectId, skipCookie) {
+  static loginScoped(projectId: string, skipCookie?: boolean): Promise<User> {
     let useProjectId = skipCookie ? projectId : cookie.get('projectId') || projectId
     let token = cookie.get('unscopedToken')
 
@@ -110,7 +113,7 @@ class UserSource {
     })
   }
 
-  static tokenLogin() {
+  static tokenLogin(): Promise<User> {
     let token = cookie.get('token')
     let projectId = cookie.get('projectId')
     if (token) {
@@ -144,7 +147,7 @@ class UserSource {
     })
   }
 
-  static switchProject() {
+  static switchProject(): Promise<void> {
     let token = cookie.get('unscopedToken')
     return new Promise((resolve, reject) => {
       if (token) {
@@ -156,7 +159,7 @@ class UserSource {
     })
   }
 
-  static logout() {
+  static logout(): Promise<void> {
     let token = cookie.get('token')
 
     return new Promise((resolve, reject) => {
@@ -178,7 +181,7 @@ class UserSource {
     })
   }
 
-  static getUserInfo(user) {
+  static getUserInfo(user: User): Promise<User> {
     return new Promise((resolve, reject) => {
       Api.sendAjaxRequest({
         url: `${servicesUrl.users}/${user.id}`,

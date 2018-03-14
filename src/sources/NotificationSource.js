@@ -12,12 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
+import type { NotificationItem } from '../types/NotificationItem'
+
 class NotificationSource {
-  static notify(message, level, options) {
+  static notify(message: string, level?: $PropertyType<NotificationItem, 'level'>, options?: $PropertyType<NotificationItem, 'options'>): Promise<NotificationItem> {
     return new Promise(resolve => {
       let notifications = JSON.parse(localStorage.getItem('notifications') || '[]')
       let newItem = {
-        id: new Date().getTime(),
+        id: new Date().getTime().toString(),
         message,
         level,
         options,
@@ -28,13 +32,13 @@ class NotificationSource {
     })
   }
 
-  static loadNotifications() {
+  static loadNotifications(): Promise<NotificationItem[]> {
     return new Promise(resolve => {
       resolve(JSON.parse(localStorage.getItem('notifications') || '[]'))
     })
   }
 
-  static clearNotifications() {
+  static clearNotifications(): Promise<void> {
     return new Promise(resolve => {
       localStorage.setItem('notifications', '[]')
       resolve()

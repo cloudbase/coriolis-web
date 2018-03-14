@@ -12,17 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
+import type { Network } from '../types/Network'
 
 import { servicesUrl } from '../config'
 
 class NetworkSource {
-  static loadNetworks(enpointId, environment) {
+  static loadNetworks(enpointId: string, environment: ?{ [string]: mixed }): Promise<Network[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
-      let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${enpointId}/networks`
+      let url = `${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${enpointId}/networks`
       if (environment) {
         url = `${url}?env=${btoa(JSON.stringify(environment))}`
       }

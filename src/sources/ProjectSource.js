@@ -12,12 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import Api from '../utils/ApiCaller'
 
 import { servicesUrl } from '../config'
+import type { Project } from '../types/Project'
 
 class ProjectsSource {
-  static getProjects() {
+  static getProjects(): Promise<Project[]> {
     return new Promise((resolve, reject) => {
       Api.sendAjaxRequest({
         url: servicesUrl.projects,

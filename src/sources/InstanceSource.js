@@ -12,16 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
+import type { Instance } from '../types/Instance'
 
 import { servicesUrl, wizardConfig } from '../config'
 
 class InstanceSource {
-  static loadInstances(endpointId, searchText, lastInstanceId) {
+  static loadInstances(endpointId: string, searchText?: string, lastInstanceId?: string): Promise<Instance[]> {
     return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+      let projectId = cookie.get('projectId') || 'undefined'
       let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpointId}/instances?limit=${wizardConfig.instancesItemsPerPage + 1}`
 
       if (searchText) {
@@ -41,9 +44,9 @@ class InstanceSource {
     })
   }
 
-  static loadInstanceDetails(endpointId, instanceName) {
+  static loadInstanceDetails(endpointId: string, instanceName: string): Promise<Instance> {
     return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+      let projectId = cookie.get('projectId') || 'undefined'
 
       Api.sendAjaxRequest({
         url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
