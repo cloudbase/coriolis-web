@@ -55,7 +55,7 @@ class ReplicaStore {
   @observable backgroundLoading: boolean = false
   @observable detailsLoading: boolean = true
 
-  @action getReplicas(options?: { showLoading: boolean }): Promise<MainItem[]> {
+  @action getReplicas(options?: { showLoading: boolean }): Promise<void> {
     this.backgroundLoading = true
 
     if ((options && options.showLoading) || this.replicas.length === 0) {
@@ -72,7 +72,7 @@ class ReplicaStore {
     })
   }
 
-  @action getReplicaExecutions(replicaId: string): Promise<Execution[]> {
+  @action getReplicaExecutions(replicaId: string): Promise<void> {
     return ReplicaSource.getReplicaExecutions(replicaId).then(executions => {
       let replica = this.replicas.find(replica => replica.id === replicaId)
 
@@ -89,7 +89,7 @@ class ReplicaStore {
     })
   }
 
-  @action getReplica(replicaId: string): Promise<MainItem> {
+  @action getReplica(replicaId: string): Promise<void> {
     this.detailsLoading = true
 
     return ReplicaSource.getReplica(replicaId).then(replica => {

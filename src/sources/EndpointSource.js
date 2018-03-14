@@ -120,7 +120,9 @@ class EdnpointSource {
       let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
 
       if (parsedEndpoint.connection_info && parsedEndpoint.connection_info.secret_ref) {
+        // $FlowIgnore
         let uuidIndex = parsedEndpoint.connection_info.secret_ref.lastIndexOf('/')
+        // $FlowIgnore
         let uuid = parsedEndpoint.connection_info.secret_ref.substr(uuidIndex + 1)
 
         Api.sendAjaxRequest({

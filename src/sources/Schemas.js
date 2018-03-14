@@ -12,13 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import { SchemaPlugin } from '../plugins/endpoint'
 import { defaultSchemaToFields } from '../plugins/endpoint/default/SchemaPlugin'
 
 class SchemaParser {
   static storedConnectionsSchemas = {}
 
-  static connectionSchemaToFields(provider, schema) {
+  static connectionSchemaToFields(provider: string, schema: { [string]: any }) {
     if (!this.storedConnectionsSchemas[provider]) {
       this.storedConnectionsSchemas[provider] = schema
     }
@@ -29,7 +31,7 @@ class SchemaParser {
     return fields
   }
 
-  static optionsSchemaToFields(provider, schema) {
+  static optionsSchemaToFields(provider: string, schema: { [string]: any }) {
     let fields = defaultSchemaToFields(schema.oneOf[0])
     fields.sort((a, b) => {
       if (a.required && !b.required) {
@@ -45,7 +47,7 @@ class SchemaParser {
     return fields
   }
 
-  static fieldsToPayload(data) {
+  static fieldsToPayload(data: { [string]: any }) {
     let storedSchema = this.storedConnectionsSchemas[data.type] || this.storedConnectionsSchemas.general
     let parsers = SchemaPlugin[data.type] || SchemaPlugin.default
     let payload = parsers.parseFieldsToPayload(data, storedSchema)

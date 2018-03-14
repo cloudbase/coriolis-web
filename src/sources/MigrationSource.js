@@ -12,10 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
+import type { MainItem } from '../types/MainItem'
+import type { Field } from '../types/Field'
 
 import { servicesUrl } from '../config'
 
@@ -46,9 +50,9 @@ class MigrationSourceUtils {
 }
 
 class MigrationSource {
-  static getMigrations() {
+  static getMigrations(): Promise<MainItem[]> {
     return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+      let projectId = cookie.get('projectId') || 'null'
       Api.sendAjaxRequest({
         url: `${servicesUrl.coriolis}/${projectId}/migrations/detail`,
         method: 'GET',
@@ -60,9 +64,9 @@ class MigrationSource {
     })
   }
 
-  static getMigration(migrationId) {
+  static getMigration(migrationId: string): Promise<MainItem> {
     return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+      let projectId = cookie.get('projectId') || 'null'
 
       Api.sendAjaxRequest({
         url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}`,
@@ -75,9 +79,9 @@ class MigrationSource {
     })
   }
 
-  static cancel(migrationId) {
+  static cancel(migrationId: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+      let projectId = cookie.get('projectId') || 'null'
 
       Api.sendAjaxRequest({
         url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}/actions`,
@@ -89,17 +93,17 @@ class MigrationSource {
     })
   }
 
-  static delete(migrationId) {
+  static delete(migrationId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations/${migrationId}`,
         method: 'DELETE',
       }).then(() => { resolve(migrationId) }, reject).catch(reject)
     })
   }
 
-  static migrateReplica(replicaId, options) {
+  static migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let payload = {
@@ -112,7 +116,7 @@ class MigrationSource {
       })
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/migrations`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations`,
         method: 'POST',
         data: payload,
       }).then(response => {

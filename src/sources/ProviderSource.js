@@ -12,20 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
 
 import { servicesUrl, providerTypes } from '../config'
 import { SchemaParser } from './Schemas'
+import type { Field } from '../types/Field'
+import type { Providers } from '../types/Providers'
 
 class ProviderSource {
-  static getConnectionInfoSchema(providerName) {
+  static getConnectionInfoSchema(providerName: string): Promise<Field[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`,
         method: 'GET',
       }).then(response => {
         let schema = response.data.schemas.connection_info_schema
@@ -35,12 +39,12 @@ class ProviderSource {
     })
   }
 
-  static loadProviders() {
+  static loadProviders(): Promise<Providers> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/providers`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/providers`,
         method: 'GET',
       }).then(response => {
         resolve(response.data.providers)
@@ -48,13 +52,13 @@ class ProviderSource {
     })
   }
 
-  static loadOptionsSchema(providerName, schemaType) {
+  static loadOptionsSchema(providerName: string, schemaType: string): Promise<Field[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let schemaTypeInt = schemaType === 'migration' ? providerTypes.TARGET_MIGRATION : providerTypes.TARGET_REPLICA
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/providers/${providerName}/schemas/${schemaTypeInt}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${schemaTypeInt}`,
         method: 'GET',
       }).then(response => {
         let schema = response.data.schemas.destination_environment_schema

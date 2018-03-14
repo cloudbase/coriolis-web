@@ -12,12 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
 
 import { servicesUrl } from '../config'
+import type { MainItem } from '../types/MainItem'
+import type { Execution } from '../types/Execution'
+import type { Field } from '../types/Field'
 
 class ReplicaSourceUtils {
   static filterDeletedExecutionsInReplicas(replicas) {
@@ -79,11 +84,11 @@ class ReplicaSourceUtils {
 }
 
 class ReplicaSource {
-  static getReplicas() {
+  static getReplicas(): Promise<MainItem[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/detail`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/detail`,
         method: 'GET',
       }).then(response => {
         let replicas = response.data.replicas
@@ -94,11 +99,11 @@ class ReplicaSource {
     })
   }
 
-  static getReplicaExecutions(replicaId) {
+  static getReplicaExecutions(replicaId: string): Promise<Execution[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/executions/detail`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/detail`,
         method: 'GET',
       }).then((response) => {
         let executions = response.data.executions
@@ -109,12 +114,12 @@ class ReplicaSource {
     })
   }
 
-  static getReplica(replicaId) {
+  static getReplica(replicaId: string): Promise<MainItem> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`,
         method: 'GET',
       }).then(response => {
         let replica = response.data.replica
@@ -125,7 +130,7 @@ class ReplicaSource {
     })
   }
 
-  static execute(replicaId, fields) {
+  static execute(replicaId: string, fields?: Field[]): Promise<Execution> {
     return new Promise((resolve, reject) => {
       let payload = { execution: { shutdown_instances: false } }
       if (fields) {
@@ -136,7 +141,7 @@ class ReplicaSource {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/executions`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions`,
         method: 'POST',
         data: payload,
       }).then((response) => {
@@ -147,50 +152,50 @@ class ReplicaSource {
     })
   }
 
-  static cancelExecution(replicaId, executionId) {
+  static cancelExecution(replicaId: string, executionId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}/actions`,
         method: 'POST',
         data: { cancel: null },
       }).then(() => {
-        resolve(replicaId, executionId)
+        resolve(replicaId)
       }, reject).catch(reject)
     })
   }
 
-  static deleteExecution(replicaId, executionId) {
+  static deleteExecution(replicaId: string, executionId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/executions/${executionId}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}`,
         method: 'DELETE',
       }).then(() => {
-        resolve(replicaId, executionId)
+        resolve(replicaId)
       }, reject).catch(reject)
     })
   }
 
-  static delete(replicaId) {
+  static delete(replicaId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`,
         method: 'DELETE',
       }).then(() => { resolve(replicaId) }, reject).catch(reject)
     })
   }
 
-  static deleteDisks(replicaId) {
+  static deleteDisks(replicaId: string): Promise<Execution> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/actions`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/actions`,
         method: 'POST',
         data: { 'delete-disks': null },
       }).then(response => {

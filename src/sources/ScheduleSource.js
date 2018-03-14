@@ -12,29 +12,35 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
 import { servicesUrl } from '../config'
 import DateUtils from '../utils/DateUtils'
+import type { Schedule } from '../types/Schedule'
 
 class ScheduleSource {
-  static scheduleSinge(replicaId, scheduleData) {
+  static scheduleSinge(replicaId: string, scheduleData: Schedule): Promise<Schedule> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let payload = {
         schedule: {},
+        expiration_date: null,
         enabled: scheduleData.enabled === null || scheduleData.enabled === undefined ? false : scheduleData.enabled,
         shutdown_instance: scheduleData.shutdown_instances === null || scheduleData.shutdown_instances === undefined ? false : scheduleData.shutdown_instances,
       }
 
       if (scheduleData.expiration_date) {
+        // $FlowIssue
         payload.expiration_date = moment(scheduleData.expiration_date).toISOString()
       }
 
       if (scheduleData.schedule !== null && scheduleData.schedule !== undefined) {
         Object.keys(scheduleData.schedule).forEach(prop => {
+          // $FlowIssue
           if (scheduleData.schedule[prop] !== null && scheduleData.schedule[prop] !== undefined) {
             payload.schedule[prop] = scheduleData.schedule[prop]
           }
@@ -42,7 +48,7 @@ class ScheduleSource {
       }
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/schedules`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules`,
         method: 'POST',
         data: payload,
       }).then(response => {
@@ -51,7 +57,7 @@ class ScheduleSource {
     })
   }
 
-  static scheduleMultiple(replicaId, schedules) {
+  static scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<Schedule[]> {
     return new Promise((resolve, reject) => {
       let createdSchedules = []
       let count = 0
@@ -71,12 +77,12 @@ class ScheduleSource {
     })
   }
 
-  static getSchedules(replicaId) {
+  static getSchedules(replicaId: string): Promise<Schedule[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/schedules`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules`,
         method: 'GET',
       }).then(response => {
         let schedules = [...response.data.schedules]
@@ -96,7 +102,7 @@ class ScheduleSource {
     })
   }
 
-  static addSchedule(replicaId, schedule) {
+  static addSchedule(replicaId: string, schedule: Schedule): Promise<Schedule> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let payload = {
@@ -108,7 +114,7 @@ class ScheduleSource {
       }
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/schedules`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules`,
         method: 'POST',
         data: payload,
       }).then(response => {
@@ -117,17 +123,23 @@ class ScheduleSource {
     })
   }
 
-  static removeSchedule(replicaId, scheduleId) {
+  static removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules/${scheduleId}`,
         method: 'DELETE',
       }).then(resolve, reject).catch(reject)
     })
   }
 
-  static updateSchedule(replicaId, scheduleId, scheduleData, scheduleOldData, unsavedData) {
+  static updateSchedule(
+    replicaId: string,
+    scheduleId: string,
+    scheduleData: Schedule,
+    scheduleOldData: ?Schedule,
+    unsavedData: ?Schedule
+  ): Promise<Schedule> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       let payload = {}
@@ -141,8 +153,12 @@ class ScheduleSource {
         payload.expiration_date = moment(unsavedData.expiration_date).toISOString()
       }
       if (unsavedData && unsavedData.schedule !== null && unsavedData.schedule !== undefined && Object.keys(unsavedData.schedule).length) {
-        payload.schedule = { ...scheduleOldData.schedule }
+        if (scheduleOldData) {
+          payload.schedule = { ...scheduleOldData.schedule }
+        }
+        // $FlowIssue
         Object.keys(unsavedData.schedule).forEach(prop => {
+          // $FlowIssue
           if (unsavedData.schedule[prop] !== null && unsavedData.schedule[prop] !== undefined) {
             payload.schedule[prop] = unsavedData.schedule[prop]
           } else {
@@ -152,7 +168,7 @@ class ScheduleSource {
       }
 
       Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules/${scheduleId}`,
         method: 'PUT',
         data: payload,
       }).then(response => {

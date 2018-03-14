@@ -68,7 +68,7 @@ class UserStore {
     })
   }
 
-  @action getUserInfo(user: User): Promise<User> {
+  @action getUserInfo(user: User): Promise<void> {
     return UserSource.getUserInfo(user).then((userData: User) => {
       this.user = { ...this.user, ...userData }
     }).catch(reason => {
@@ -77,7 +77,7 @@ class UserStore {
     })
   }
 
-  @action tokenLogin(): Promise<User> {
+  @action tokenLogin(): Promise<void> {
     this.user = null
     this.loading = true
 
@@ -91,10 +91,10 @@ class UserStore {
     })
   }
 
-  @action switchProject(projectId: string): Promise<User> {
+  @action switchProject(projectId: string): Promise<void> {
     NotificationStore.notify('Switching projects')
     return UserSource.switchProject().then(() => {
-      return this.loginScoped(projectId)
+      this.loginScoped(projectId)
     }).catch(reason => {
       console.error('Error switching projects', reason)
       NotificationStore.notify('Error switching projects')
