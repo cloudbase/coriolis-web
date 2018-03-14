@@ -226,7 +226,7 @@ class NotificationDropdown extends React.Component<Props, State> {
               <Title>
                 <TypeIcon level={item.level} />
                 <TitleLabel>{title}</TitleLabel>
-                <Time>{moment(item.id).format('HH:mm')}</Time>
+                <Time>{moment(Number(item.id)).format('HH:mm')}</Time>
               </Title>
               <Description>{message}</Description>
             </ListItem>
