@@ -36,6 +36,7 @@ import MigrationStore from '../../../stores/MigrationStore'
 import EndpointStore from '../../../stores/EndpointStore'
 import Wait from '../../../utils/Wait'
 import NotificationStore from '../../../stores/NotificationStore'
+import { requestPollTimeout } from '../../../config'
 
 const Wrapper = styled.div``
 
@@ -48,9 +49,13 @@ type State = {
   showDeleteMigrationConfirmation: boolean,
   showCancelMigrationConfirmation: boolean,
   confirmationItems: ?MainItem[],
+  modalIsOpen: boolean,
 }
 @observer
 class MigrationsPage extends React.Component<{}, State> {
+  pollTimeout: TimeoutID
+  stopPolling: boolean
+
   constructor() {
     super()
 
@@ -58,6 +63,7 @@ class MigrationsPage extends React.Component<{}, State> {
       showDeleteMigrationConfirmation: false,
       showCancelMigrationConfirmation: false,
       confirmationItems: null,
+      modalIsOpen: false,
     }
   }
 
@@ -66,7 +72,14 @@ class MigrationsPage extends React.Component<{}, State> {
 
     ProjectStore.getProjects()
     EndpointStore.getEndpoints()
-    MigrationStore.getMigrations()
+
+    this.stopPolling = false
+    this.pollData()
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.pollTimeout)
+    this.stopPolling = true
   }
 
   getEndpoint(endpointId: string) {
@@ -160,6 +173,16 @@ class MigrationsPage extends React.Component<{}, State> {
     window.location.href = '/#/wizard/migration'
   }
 
+  handleModalOpen() {
+    this.setState({ modalIsOpen: true })
+  }
+
+  handleModalClose() {
+    this.setState({ modalIsOpen: false }, () => {
+      this.pollData()
+    })
+  }
+
   searchText(item: MainItem, text?: string) {
     let result = false
     if (item.instances[0].toLowerCase().indexOf(text || '') > -1) {
@@ -185,6 +208,15 @@ class MigrationsPage extends React.Component<{}, State> {
     }
 
     return true
+  }
+
+  pollData() {
+    if (this.state.modalIsOpen || this.stopPolling) {
+      return
+    }
+    MigrationStore.getMigrations().then(() => {
+      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+    })
   }
 
   render() {
@@ -242,6 +274,8 @@ class MigrationsPage extends React.Component<{}, State> {
             <PageHeader
               title="Coriolis Migrations"
               onProjectChange={project => { this.handleProjectChange(project) }}
+              onModalOpen={() => { this.handleModalOpen() }}
+              onModalClose={() => { this.handleModalClose() }}
             />
           }
         />

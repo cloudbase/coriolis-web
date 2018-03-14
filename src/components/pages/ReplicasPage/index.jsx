@@ -53,6 +53,7 @@ type State = {
 @observer
 class ReplicasPage extends React.Component<{}, State> {
   pollTimeout: TimeoutID
+  stopPolling: boolean
 
   constructor() {
     super()
@@ -70,11 +71,13 @@ class ReplicasPage extends React.Component<{}, State> {
     ProjectStore.getProjects()
     EndpointStore.getEndpoints()
 
+    this.stopPolling = false
     this.pollData()
   }
 
   componentWillUnmount() {
     clearTimeout(this.pollTimeout)
+    this.stopPolling = true
   }
 
   getEndpoint(endpointId: string) {
@@ -169,7 +172,7 @@ class ReplicasPage extends React.Component<{}, State> {
   }
 
   pollData() {
-    if (this.state.modalIsOpen) {
+    if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
     ReplicaStore.getReplicas().then(() => {
