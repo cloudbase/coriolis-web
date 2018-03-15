@@ -107,7 +107,7 @@ class AlertModal extends React.Component<Props> {
   render() {
     return (
       <Modal {...this.props}>
-        <Wrapper>
+        <Wrapper data-test-id="alertModal">
           {this.props.type === 'loading' ? <StatusImage loading /> : <Image type={this.props.type} />}
           {this.props.message ? <Message>{this.props.message}</Message> : null}
           {this.props.extraMessage ? <ExtraMessage>{this.props.extraMessage}</ExtraMessage> : null}

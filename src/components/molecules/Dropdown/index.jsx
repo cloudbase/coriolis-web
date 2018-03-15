@@ -24,9 +24,6 @@ import DropdownButton from '../../atoms/DropdownButton'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
-const Wrapper = styled.div`
-  position: relative;
-`
 const getWidth = props => {
   if (props.large) {
     return StyleProps.inputSizes.large.width - 2
@@ -38,6 +35,9 @@ const getWidth = props => {
 
   return StyleProps.inputSizes.regular.width - 2
 }
+const Wrapper = styled.div`
+  position: relative;
+`
 const List = styled.div`
   position: absolute;
   background: white;
@@ -70,8 +70,8 @@ const ListItem = styled.div`
   position: relative;
   color: ${Palette.grayscale[4]};
   padding: 8px 16px;
-  transition: all ${StyleProps.animations.swift};
   ${props => props.selected ? `font-weight: ${StyleProps.fontWeights.medium};` : ''}
+  transition: all ${StyleProps.animations.swift};
 
   &:first-child {
     border-top-left-radius: ${StyleProps.borderRadius};
@@ -263,6 +263,7 @@ class Dropdown extends React.Component<Props, State> {
             let duplicatedLabel = duplicatedLabels.find(l => l === label)
             let listItem = (
               <ListItem
+                data-test-id="dropdownListItem"
                 key={value}
                 onMouseDown={() => { this.itemMouseDown = true }}
                 onMouseUp={() => { this.itemMouseDown = false }}

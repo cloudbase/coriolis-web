@@ -60,6 +60,7 @@ class Field extends React.Component<Props> {
   renderSwitch() {
     return (
       <Switch
+        dataTestId={`switch-${this.props.name}`}
         disabled={this.props.disabled}
         checked={this.props.value || false}
         onChange={checked => { this.props.onChange(checked) }}
@@ -114,6 +115,7 @@ class Field extends React.Component<Props> {
 
     return (
       <Dropdown
+        data-test-id={`dropdown-${this.props.name}`}
         large={this.props.large}
         selectedItem={this.props.value}
         items={items}

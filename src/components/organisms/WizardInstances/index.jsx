@@ -296,7 +296,7 @@ class WizardInstances extends React.Component<Props, State> {
               selected={selected}
             >
               <CheckboxStyled checked={selected} onChange={() => {}} />
-              <InstanceContent>
+              <InstanceContent data-test-id="instanceItem">
                 <Image />
                 <Label>{instance.instance_name}</Label>
                 <Details>{`${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM${flavorName}`}</Details>

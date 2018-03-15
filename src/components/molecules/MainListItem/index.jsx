@@ -199,7 +199,7 @@ class MainListItem extends React.Component<Props> {
           checked={this.props.selected}
           onChange={this.props.onSelectedChange}
         />
-        <Content onClick={this.props.onClick}>
+        <Content onClick={this.props.onClick} data-test-id="mainListItem">
           <Image image={this.props.image} />
           <Title>
             <TitleLabel>{this.props.item.instances[0]}</TitleLabel>

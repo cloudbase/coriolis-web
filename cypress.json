@@ -1,0 +1,11 @@
+{
+  "fileServerFolder": "private/cypress",
+  "fixturesFolder": false,
+  "integrationFolder": "private/cypress/integration",
+  "pluginsFile": false,
+  "screenshotsFolder": "private/cypress/screenshots",
+  "supportFile": false,
+  "videosFolder": "private/cypress/videos",
+  "viewportWidth": 1280,
+  "viewportHeight": 660
+}

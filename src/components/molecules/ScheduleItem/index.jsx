@@ -207,6 +207,7 @@ class ScheduleItem extends React.Component<Props> {
         useBold={this.shouldUseBold('month')}
         selectedItem={this.getFieldValue(items, 'month')}
         onChange={item => { this.handleMonthChange(item) }}
+        data-test-id="monthDropdown"
       />
     )
   }
@@ -276,6 +277,7 @@ class ScheduleItem extends React.Component<Props> {
         useBold={this.shouldUseBold('hour')}
         selectedItem={this.getFieldValue(items, 'hour', true, 1)}
         onChange={item => { this.handleHourChange(item.value) }}
+        data-test-id="hourDropdown"
       />
     )
   }
@@ -327,7 +329,7 @@ class ScheduleItem extends React.Component<Props> {
   render() {
     let enabled = typeof this.props.item.enabled !== 'undefined' && this.props.item.enabled !== null ? this.props.item.enabled : false
     return (
-      <Wrapper>
+      <Wrapper data-test-id="scheduleItem">
         <Data width={this.props.colWidths[0]}>
           <Switch
             noLabel
@@ -368,10 +370,12 @@ class ScheduleItem extends React.Component<Props> {
           >•••</Button>
         </Data>
         <DeleteButton
+          data-test-id="deleteButton"
           onClick={this.props.onDeleteClick}
           hidden={this.props.item.enabled}
         />
         <SaveButton
+          data-test-id="saveButton"
           onClick={this.props.onSaveSchedule}
           hidden={this.props.item.enabled || !this.props.unsavedSchedules.find(us => us.id === this.props.item.id)}
         />

@@ -126,6 +126,7 @@ type Props = {
   big: boolean,
   checkedLabel: string,
   uncheckedLabel: string,
+  dataTestId?: string,
   style: {[string]: mixed},
 }
 type State = {
@@ -182,6 +183,7 @@ class Switch extends React.Component<Props, State> {
         secondary={this.props.secondary}
         disabled={this.props.disabled}
         onClick={() => { this.handleInputChange() }}
+        data-test-id={this.props.dataTestId}
       >
         <InputBackground
           triState={this.props.triState}
