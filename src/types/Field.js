@@ -18,7 +18,7 @@ export type Field = {
   name: string,
   type?: string,
   value?: any,
-  enum?: string[],
+  enum?: string[] | {name: string, id: string}[],
   required?: boolean | (value: any) => boolean,
   default?: any,
   items?: Field[],

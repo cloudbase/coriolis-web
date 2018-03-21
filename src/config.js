@@ -72,4 +72,7 @@ export const wizardConfig = {
   instancesItemsPerPage: 6,
 }
 
+// Providers for which `destination-options` API call will be made
+export const providersWithExtraOptions = ['azure']
+
 export const basename = process.env.PUBLIC_PATH

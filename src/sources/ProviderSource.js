@@ -17,11 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
-
 import { servicesUrl, providerTypes } from '../config'
 import { SchemaParser } from './Schemas'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
+import type { DestinationOption } from '../types/Endpoint'
 
 class ProviderSource {
   static getConnectionInfoSchema(providerName: string): Promise<Field[]> {
@@ -65,6 +65,20 @@ class ProviderSource {
         let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
         resolve(fields)
       }, reject).catch(reject)
+    })
+  }
+
+  static getDestinationOptions(endpointId: string): Promise<DestinationOption[]> {
+    return new Promise((resolve, reject) => {
+      let projectId = cookie.get('projectId')
+
+      Api.sendAjaxRequest({
+        url: `${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/destination-options`,
+        method: 'GET',
+      }).then(response => {
+        let options = response.data.destination_options
+        resolve(options)
+      }).catch(() => { reject() })
     })
   }
 }
