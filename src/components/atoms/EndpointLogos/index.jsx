@@ -102,6 +102,12 @@ const Logo = styled.div`
   height: ${props => props.height}px;
   ${props => props.imageInfo ? `background: url('${props.imageInfo.image}') no-repeat center;` : ''}
 `
+const Text = styled.div`
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
+  font-size: 32px;
+  text-align: center;
+`
 const widthHeights = [
   { w: 80, h: 32 },
   { w: 105, h: 42 },
@@ -119,25 +125,48 @@ class EndpointLogos extends React.Component<Props> {
     height: 64,
   }
 
-  render() {
+  renderLogo(size: {w: number, h: number}) {
     let imageInfo = null
+
+    if (this.props.endpoint && endpointImages[this.props.endpoint]) {
+      imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true))
+    } else {
+      return null
+    }
+
+    if (!imageInfo) {
+      return null
+    }
+
+    return (
+      <Logo
+        width={size.w}
+        height={size.h}
+        imageInfo={imageInfo}
+      />
+    )
+  }
+
+  renderText(size: {w: number, h: number}) {
+    if (this.props.endpoint && endpointImages[this.props.endpoint]) {
+      return null
+    }
+
+    return (
+      <Text width={size.w} height={size.h}>{this.props.endpoint}</Text>
+    )
+  }
+
+  render() {
     let size = widthHeights.find(wh => wh.h === this.props.height)
 
     if (!size) {
       return null
     }
-
-    if (this.props.endpoint) {
-      imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true))
-    }
-
     return (
       <Wrapper {...this.props}>
-        <Logo
-          width={size.w}
-          height={size.h}
-          imageInfo={imageInfo}
-        />
+        {this.renderLogo(size)}
+        {this.renderText(size)}
       </Wrapper>
     )
   }
