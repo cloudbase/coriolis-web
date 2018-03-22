@@ -12,8 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 class ObjectUtils {
-  static flatten(object) {
+  static flatten(object: any): any {
     let result = {}
 
     Object.keys(object).forEach(k => {
@@ -33,7 +35,7 @@ class ObjectUtils {
     return result
   }
 
-  static skipField(object, fieldName) {
+  static skipField(object: any, fieldName: string) {
     let result = {}
 
     if (Object.keys(object).length === 0) {

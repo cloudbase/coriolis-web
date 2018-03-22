@@ -129,8 +129,8 @@ class Endpoint extends React.Component<Props, State> {
   closeTimeout: TimeoutID
   contentPluginRef: DefaultContentPlugin
   isValidateButtonEnabled: boolean
-  providerStoreObserver: any
-  endpointStoreObserver: any
+  providerStoreObserver: () => void
+  endpointValidationObserver: () => void
 
   constructor() {
     super()
@@ -149,7 +149,7 @@ class Endpoint extends React.Component<Props, State> {
     this.providerStoreObserver = observe(ProviderStore, 'connectionInfoSchema', () => {
       this.props.onResizeUpdate(this.scrollableRef)
     })
-    this.endpointStoreObserver = observe(EndpointStore, 'validation', () => {
+    this.endpointValidationObserver = observe(EndpointStore, 'validation', () => {
       this.componentWillReceiveProps(this.props)
     })
   }
@@ -192,7 +192,7 @@ class Endpoint extends React.Component<Props, State> {
     clearTimeout(this.closeTimeout)
     KeyboardManager.removeKeyDown('endpoint')
     this.providerStoreObserver()
-    this.endpointStoreObserver()
+    this.endpointValidationObserver()
   }
 
   getEndpointType() {
@@ -295,7 +295,7 @@ class Endpoint extends React.Component<Props, State> {
 
     EndpointStore.add(this.state.endpoint).then(() => {
       let endpoint = EndpointStore.endpoints[0]
-      this.setState({ isNew: false, endpoint })
+      this.setState({ isNew: false, endpoint: ObjectUtils.flatten(endpoint) })
       NotificationStore.notify('Validating endpoint ...')
       EndpointStore.validate(endpoint)
     })
