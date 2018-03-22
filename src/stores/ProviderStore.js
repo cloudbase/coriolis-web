@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action } from 'mobx'
 
 import ProviderSource from '../sources/ProviderSource'
+import { providersWithExtraOptions } from '../config.js'
+import type { DestinationOption } from '../types/Endpoint'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
 
@@ -27,6 +29,8 @@ class ProviderStore {
   @observable providersLoading: boolean = false
   @observable optionsSchema: Field[] = []
   @observable optionsSchemaLoading: boolean = false
+  @observable destinationOptions: DestinationOption[] = []
+  @observable destinationOptionsLoading: boolean = false
 
   @action getConnectionInfoSchema(providerName: string): Promise<void> {
     this.connectionSchemaLoading = true
@@ -64,6 +68,28 @@ class ProviderStore {
     }).catch(() => {
       this.optionsSchemaLoading = false
     })
+  }
+
+   @action getDestinationOptions(endpointId: string, provider: string): Promise<void> {
+    if (!providersWithExtraOptions.find(p => p === provider)) {
+      return Promise.resolve()
+    }
+
+    this.destinationOptionsLoading = true
+    return ProviderSource.getDestinationOptions(endpointId).then(options => {
+      this.optionsSchema.forEach(field => {
+        let fieldValues = options.find(f => f.name === field.name)
+        if (fieldValues) {
+          // $FlowIgnore
+          field.enum = [...fieldValues.values]
+          if (fieldValues.config_default) {
+            field.default = typeof fieldValues.config_default === 'string' ? fieldValues.config_default : fieldValues.config_default.id
+          }
+        }
+      })
+      this.destinationOptions = options
+      this.destinationOptionsLoading = false
+    }).catch(() => { this.destinationOptionsLoading = false })
   }
 }
 

@@ -181,6 +181,11 @@ class WizardPage extends React.Component<Props, State> {
   handleTargetEndpointChange(target: EndpointType) {
     WizardStore.updateData({ target, networks: null, options: null })
     WizardStore.setPermalink(WizardStore.data)
+    // Preload destination options schema
+    ProviderStore.loadOptionsSchema(target.type, this.state.type).then(() => {
+      // Preload destination options values
+      return ProviderStore.getDestinationOptions(target.id, target.type)
+    })
   }
 
   handleAddEndpoint(newEndpointType: string, newEndpointFromSource: boolean) {
@@ -269,11 +274,18 @@ class WizardPage extends React.Component<Props, State> {
         }
         break
       }
-      case 'options':
-        if (WizardStore.data.target) {
-          ProviderStore.loadOptionsSchema(WizardStore.data.target.type, this.state.type)
+      case 'target': {
+        // Preload destination options if data is set from 'Permalink'
+        let target = WizardStore.data.target
+        if (ProviderStore.destinationOptions.length === 0 && target) {
+          ProviderStore.getDestinationOptions(target.id, target.type)
+        }
+        // Preload destination options schema
+        if (ProviderStore.optionsSchema.length === 0 && target) {
+          ProviderStore.loadOptionsSchema(target.type, this.state.type)
         }
         break
+      }
       case 'networks':
         if (WizardStore.data.source && WizardStore.data.selectedInstances) {
           InstanceStore.loadInstancesDetails(WizardStore.data.source.id, WizardStore.data.selectedInstances)

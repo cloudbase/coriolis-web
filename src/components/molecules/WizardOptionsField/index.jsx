@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { observer } from 'mobx-react'
 
 import Switch from '../../atoms/Switch'
 import TextInput from '../../atoms/TextInput'
@@ -58,6 +59,7 @@ type Props = {
   enum: string[],
   required: boolean,
 }
+@observer
 class WizardOptionsField extends React.Component<Props> {
   renderSwitch(propss: { triState: boolean }) {
     return (
@@ -102,8 +104,8 @@ class WizardOptionsField extends React.Component<Props> {
   renderEnumDropdown() {
     let items = this.props.enum.map(e => {
       return {
-        label: LabelDictionary.get(e),
-        value: e,
+        label: typeof e === 'string' ? LabelDictionary.get(e) : e.name,
+        value: typeof e === 'string' ? e : e.id,
       }
     })
 

@@ -16,16 +16,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { observer } from 'mobx-react'
 
 import Tooltip from '../../atoms/Tooltip'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
 import WizardOptionsField from '../../molecules/WizardOptionsField'
+import StatusImage from '../../atoms/StatusImage'
 import type { Field } from '../../../types/Field'
 import type { Instance } from '../../../types/Instance'
 
 import { executionOptions } from '../../../config'
 
 const Wrapper = styled.div``
+const Options = styled.div``
 const Fields = styled.div`
   margin-top: 46px;
   display: flex;
@@ -39,6 +42,16 @@ const WizardOptionsFieldStyled = styled(WizardOptionsField) `
   justify-content: space-between;
   margin-bottom: 39px;
 `
+const LoadingWrapper = styled.div`
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+const LoadingText = styled.div`
+  margin-top: 38px;
+  font-size: 18px;
+`
 
 type Props = {
   fields: Field[],
@@ -48,7 +61,9 @@ type Props = {
   useAdvancedOptions: boolean,
   onAdvancedOptionsToggle: (showAdvanced: boolean) => void,
   wizardType: string,
+  loading: boolean,
 }
+@observer
 class WizardOptions extends React.Component<Props> {
   getFieldValue(fieldName: string, defaultValue: any) {
     if (!this.props.data || this.props.data[fieldName] === undefined) {
@@ -164,15 +179,41 @@ class WizardOptions extends React.Component<Props> {
     )
   }
 
-  render() {
+  renderLoading() {
+    if (!this.props.loading) {
+      return null
+    }
+
     return (
-      <Wrapper>
+      <LoadingWrapper>
+        <StatusImage loading />
+        <LoadingText>Loading options...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
+
+  renderOptions() {
+    if (this.props.loading) {
+      return null
+    }
+
+    return (
+      <Options>
         <ToggleButtonBar
           items={[{ label: 'Simple', value: 'simple' }, { label: 'Advanced', value: 'advanced' }]}
           selectedValue={this.props.useAdvancedOptions ? 'advanced' : 'simple'}
           onChange={item => { this.props.onAdvancedOptionsToggle(item.value === 'advanced') }}
         />
         {this.renderOptionsFields()}
+      </Options>
+    )
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        {this.renderOptions()}
+        {this.renderLoading()}
       </Wrapper>
     )
   }

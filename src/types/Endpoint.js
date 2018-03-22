@@ -30,3 +30,9 @@ export type Endpoint = {
     [string]: mixed
   },
 }
+
+export type DestinationOption = {
+  name: string,
+  values: string[] | {name: string, id: string}[],
+  config_default: string | {name: string, id: string},
+}

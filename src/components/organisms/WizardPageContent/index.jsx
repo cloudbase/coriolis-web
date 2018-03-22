@@ -200,7 +200,12 @@ class WizardPageContent extends React.Component<Props, State> {
       let required = schema.filter(f => f.required && f.type !== 'object')
       let validFieldsCount = 0
       required.forEach(f => {
-        if (this.props.wizardData.options && this.props.wizardData.options[f.name] !== null && this.props.wizardData.options[f.name] !== undefined) {
+        if (
+          (this.props.wizardData.options &&
+          this.props.wizardData.options[f.name] !== null &&
+          this.props.wizardData.options[f.name] !== undefined) ||
+          (f.default !== null && f.default !== undefined)
+        ) {
           validFieldsCount += 1
         }
       })
@@ -313,6 +318,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'options':
         body = (
           <WizardOptions
+            loading={this.props.providerStore.optionsSchemaLoading || this.props.providerStore.destinationOptionsLoading}
             selectedInstances={this.props.wizardData.selectedInstances}
             fields={this.props.providerStore.optionsSchema}
             onChange={this.props.onOptionsChange}
