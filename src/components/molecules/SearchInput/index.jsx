@@ -62,6 +62,7 @@ type State = {
   open: boolean,
   hover?: boolean,
   focus?: boolean,
+  value: string,
 }
 class SearchInput extends React.Component<Props, State> {
   static defaultProps = {
@@ -76,6 +77,7 @@ class SearchInput extends React.Component<Props, State> {
 
     this.state = {
       open: false,
+      value: '',
     }
 
     // $FlowIssue
@@ -120,7 +122,7 @@ class SearchInput extends React.Component<Props, State> {
   render() {
     return (
       <Wrapper
-        open={this.state.open || this.props.alwaysOpen}
+        open={this.state.open || this.props.alwaysOpen || this.state.value !== ''}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         onMouseEnter={() => { this.handleMouseEnter() }}
@@ -129,13 +131,21 @@ class SearchInput extends React.Component<Props, State> {
         <Input
           _ref={input => { this.input = input }}
           placeholder={this.props.placeholder}
-          onChange={e => { this.props.onChange(e.target.value) }}
+          onChange={e => {
+            this.setState({ value: e.target.value })
+            this.props.onChange(e.target.value)
+          }}
+          value={this.state.value}
           onFocus={() => { this.handleFocus() }}
           onBlur={() => { this.handleBlur() }}
           loading={this.props.loading}
         />
         <SearchButtonStyled
-          primary={this.state.open || (this.props.alwaysOpen && (this.state.hover || this.state.focus))}
+          primary={
+            this.state.open ||
+            (this.props.alwaysOpen && (this.state.hover || this.state.focus)) ||
+            (this.state.value !== '' && (this.state.hover || this.state.focus))
+          }
           onClick={() => { this.handleSearchButtonClick() }}
         />
         {this.props.loading ? <StatusIconStyled status="RUNNING" /> : null}
