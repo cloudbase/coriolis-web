@@ -122,7 +122,7 @@ class SearchInput extends React.Component<Props, State> {
   render() {
     return (
       <Wrapper
-        open={this.state.open || this.props.alwaysOpen}
+        open={this.state.open || this.props.alwaysOpen || this.state.value !== ''}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         onMouseEnter={() => { this.handleMouseEnter() }}
@@ -144,7 +144,7 @@ class SearchInput extends React.Component<Props, State> {
           primary={
             this.state.open ||
             (this.props.alwaysOpen && (this.state.hover || this.state.focus)) ||
-            (!this.props.alwaysOpen && this.state.value !== '')
+            (this.state.value !== '' && (this.state.hover || this.state.focus))
           }
           onClick={() => { this.handleSearchButtonClick() }}
         />
