@@ -16,7 +16,24 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import SearchInput from '.'
 
+class Wrapper extends React.Component {
+  constructor() {
+    super()
+
+    this.state = {
+      value: '',
+    }
+  }
+
+  render() {
+    return <SearchInput {...this.props} value={this.state.value} onChange={value => { this.setState({ value }) }} />
+  }
+}
+
 storiesOf('SearchInput', module)
   .add('default', () => (
-    <SearchInput />
+    <Wrapper />
+  ))
+  .add('always open', () => (
+    <Wrapper alwaysOpen />
   ))

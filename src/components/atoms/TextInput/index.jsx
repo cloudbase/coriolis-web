@@ -20,6 +20,7 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import starImage from './images/star.svg'
+import closeImage from './images/close.svg'
 
 const Wrapper = styled.div`
   position: relative;
@@ -35,23 +36,24 @@ const getInputWidth = props => {
 
   return `${StyleProps.inputSizes.regular.width}px`
 }
+const borderColor = (props, defaultColor = Palette.grayscale[3]) => props.highlight ? Palette.alert : defaultColor
 const Input = styled.input`
   width: ${props => getInputWidth(props)};
   height: ${StyleProps.inputSizes.regular.height}px;
   line-height: ${StyleProps.inputSizes.regular.height}px;
   border-radius: ${StyleProps.borderRadius};
   background-color: #FFF;
-  border: 1px solid ${props => props.highlight ? Palette.alert : Palette.grayscale[3]};
+  border: 1px solid ${props => borderColor(props)};
   color: ${Palette.black};
   padding: 0 ${props => props.customRequired ? '29px' : '8px'} 0 16px;
   font-size: inherit;
   transition: all ${StyleProps.animations.swift};
   box-sizing: border-box;
   &:hover {
-    border-color: ${props => props.highlight ? Palette.alert : Palette.primary};
+    border-color: ${props => borderColor(props, props.disablePrimary ? null : Palette.primary)};
   }
   &:focus {
-    border-color: ${props => props.highlight ? Palette.alert : Palette.primary};
+    border-color: ${props => borderColor(props, props.disablePrimary ? null : Palette.primary)};
     outline: none;
   }
   &:disabled {
@@ -72,6 +74,16 @@ const Required = styled.div`
   height: 8px;
   background: url('${starImage}') center no-repeat;
 `
+const Close = styled.div`
+  display: ${props => props.show ? 'block' : 'none'};
+  width: 16px;
+  height: 16px;
+  background: url('${closeImage}') center no-repeat;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+`
 
 type Props = {
   _ref?: (ref: HTMLElement) => void,
@@ -83,13 +95,32 @@ type Props = {
   placeholder?: string,
   type?: string,
   value?: string,
+  showClose?: boolean,
+  onCloseClick?: () => void,
 }
 const TextInput = (props: Props) => {
-  const { _ref, required } = props
+  const { _ref, required, value, onChange, showClose, onCloseClick } = props
+  let input
   return (
     <Wrapper>
-      <Input innerRef={_ref} type="text" customRequired={required} {...props} />
+      <Input
+        innerRef={ref => { input = ref; if (_ref) _ref(ref) }}
+        type="text"
+        customRequired={required}
+        value={value}
+        onChange={onChange}
+        {...props}
+      />
       <Required show={required} />
+      <Close
+        show={showClose && value}
+        onClick={() => {
+          input.focus()
+          // $FlowIgnore
+          if (onChange) onChange({ target: { value: '' } })
+          if (onCloseClick) onCloseClick()
+        }}
+      />
     </Wrapper>
   )
 }

@@ -78,6 +78,7 @@ type Props = {
   onFilterItemClick: (item: DictItem) => void,
   onReloadButtonClick: () => void,
   onSearchChange: (value: string) => void,
+  searchValue: string,
   onSelectAllChange: (checked: boolean) => void,
   onActionChange: (action: string) => void,
   actions: DictItem[],
@@ -134,7 +135,7 @@ class MainListFilter extends React.Component<Props> {
           />
           {this.renderFilterGroup()}
           <ReloadButton style={{ marginRight: '16px' }} onClick={this.props.onReloadButtonClick} />
-          <SearchInput onChange={this.props.onSearchChange} />
+          <SearchInput onChange={this.props.onSearchChange} value={this.props.searchValue} />
         </Main>
         {this.renderSelectionInfo()}
       </Wrapper>

@@ -146,6 +146,7 @@ class FilterList extends React.Component<Props, State> {
           selectedValue={this.state.filterStatus}
           onReloadButtonClick={this.props.onReloadButtonClick}
           onSearchChange={text => { this.handleSearchChange(text) }}
+          searchValue={this.state.filterText}
           onSelectAllChange={selected => { this.handleSelectAllChange(selected) }}
           selectAllSelected={this.state.selectAllSelected}
           selectionInfo={{
