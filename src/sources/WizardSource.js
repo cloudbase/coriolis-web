@@ -36,7 +36,7 @@ class WizardSourceUtils {
     env.network_map = {}
     if (data.networks && data.networks.length) {
       data.networks.forEach(mapping => {
-        env.network_map[mapping.sourceNic.network_name] = mapping.targetNetwork.name
+        env.network_map[mapping.sourceNic.network_name] = mapping.targetNetwork.id
       })
     }
 
