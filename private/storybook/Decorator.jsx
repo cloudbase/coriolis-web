@@ -17,11 +17,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 import Palette from '../../src/components/styleUtils/Palette'
+import StyleProps from '../../src/components/styleUtils/StyleProps'
 
 const Wrapper = styled.div`
   display: inline-block;
   background: ${Palette.grayscale[7]};
   padding: 32px;
+  color: ${Palette.black};
+  font-family: Rubik;
+  font-size: 14px;
+  font-weight: ${StyleProps.fontWeights.regular};
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 `
 
 type Props = {

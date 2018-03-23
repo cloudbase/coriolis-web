@@ -15,7 +15,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
+import Generic from './images/Generic'
 
 import aws32Image from './images/aws-32.svg'
 import azure32Image from './images/azure-32.svg'
@@ -98,9 +100,12 @@ const endpointImages = {
 }
 const Wrapper = styled.div``
 const Logo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: ${props => props.width}px;
   height: ${props => props.height}px;
-  ${props => props.imageInfo ? `background: url('${props.imageInfo.image}') no-repeat center;` : ''}
+  ${props => props.imageInfo ? css`background: url('${props.imageInfo.image}') no-repeat center;` : ''}
 `
 const widthHeights = [
   { w: 80, h: 32 },
@@ -119,15 +124,42 @@ class EndpointLogos extends React.Component<Props> {
     height: 64,
   }
 
-  render() {
+  renderLogo(size: {w: number, h: number}) {
     let imageInfo = null
+
+    if (this.props.endpoint && endpointImages[this.props.endpoint]) {
+      imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true))
+    } else {
+      return null
+    }
+
+    if (!imageInfo) {
+      return null
+    }
+
+    return (
+      <Logo
+        width={size.w}
+        height={size.h}
+        imageInfo={imageInfo}
+      />
+    )
+  }
+
+  renderGenericLogo(size: {w: number, h: number}) {
+    return <Generic size={size} name={this.props.endpoint || 'Generic Cloud'} disabled={this.props.disabled} />
+  }
+
+  render() {
     let size = widthHeights.find(wh => wh.h === this.props.height)
 
     if (!size) {
       return null
     }
 
-    if (this.props.endpoint) {
+    let imageInfo = null
+
+    if (this.props.endpoint && endpointImages[this.props.endpoint]) {
       imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true))
     }
 
@@ -137,7 +169,9 @@ class EndpointLogos extends React.Component<Props> {
           width={size.w}
           height={size.h}
           imageInfo={imageInfo}
-        />
+        >
+          {imageInfo ? null : this.renderGenericLogo(size)}
+        </Logo>
       </Wrapper>
     )
   }
