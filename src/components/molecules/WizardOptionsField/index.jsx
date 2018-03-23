@@ -120,7 +120,7 @@ class WizardOptionsField extends React.Component<Props> {
       <Dropdown
         width={320}
         noSelectionMessage="Choose a value"
-        selectedItem={selectedItem ? selectedItem.label : null}
+        selectedItem={selectedItem}
         items={items}
         onChange={item => this.props.onChange(item.value)}
       />

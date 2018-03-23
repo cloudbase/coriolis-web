@@ -87,11 +87,21 @@ const ListItem = styled.div`
     color: white;
   }
 `
+const DuplicatedLabel = styled.div`
+  display: flex;
+  font-size: 11px;
+  span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+`
 
 type Props = {
   selectedItem: any,
   items: any[],
   labelField: string,
+  valueField: string,
   className: string,
   onChange: (item: any) => void,
   noItemsMessage: string,
@@ -151,6 +161,16 @@ class Dropdown extends React.Component<Props, State> {
     }
 
     return (item[labelField] !== null && item[labelField] !== undefined && item[labelField].toString()) || item.toString()
+  }
+
+  getValue(item: any) {
+    let valueField = this.props.valueField || 'value'
+
+    if (item === null || item === undefined) {
+      return null
+    }
+
+    return (item[valueField] !== null && item[valueField] !== undefined && item[valueField].toString()) || this.getLabel(item)
   }
 
   handlePageClick() {
@@ -220,23 +240,37 @@ class Dropdown extends React.Component<Props, State> {
     }
 
     const body: any = document.body
-    let selectedLabel = this.getLabel(this.props.selectedItem)
+    let selectedValue = this.getValue(this.props.selectedItem)
+    let duplicatedLabels = []
+    this.props.items.forEach((item, i) => {
+      let label = this.getLabel(item)
+      for (let j = i + 1; j < this.props.items.length; j += 1) {
+        if (label === this.getLabel(this.props.items[j]) && !duplicatedLabels.find(item2 => this.getLabel(item2) === label)) {
+          duplicatedLabels.push(label)
+        }
+      }
+    })
+
     let list = ReactDOM.createPortal((
       <List {...this.props} innerRef={ref => { this.listRef = ref }}>
         <Tip innerRef={ref => { this.tipRef = ref }} primary={this.state.firstItemHover} />
         <ListItems>
           {this.props.items.map((item, i) => {
             let label = this.getLabel(item)
+            let value = this.getValue(item)
+            let duplicatedLabel = duplicatedLabels.find(l => l === label)
             let listItem = (
               <ListItem
-                key={label}
+                key={value}
                 onMouseDown={() => { this.itemMouseDown = true }}
                 onMouseUp={() => { this.itemMouseDown = false }}
                 onMouseEnter={() => { this.handleItemMouseEnter(i) }}
                 onMouseLeave={() => { this.handleItemMouseLeave(i) }}
                 onClick={() => { this.handleItemClick(item) }}
-                selected={label === selectedLabel}
-              >{label}
+                selected={value === selectedValue}
+              >
+                {label}
+                {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
               </ListItem>
             )
 

@@ -173,10 +173,7 @@ class WizardNetworks extends React.Component<Props> {
             }
             return false
           }).map(i => i.instance_name)
-          let selectedNetworkName = this.props.selectedNetworks && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
-          if (selectedNetworkName) {
-            selectedNetworkName = selectedNetworkName.targetNetwork.name
-          }
+          let selectedNetwork = this.props.selectedNetworks && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
           return (
             <Nic key={nic.id}>
               <NetworkImage />
@@ -190,9 +187,10 @@ class WizardNetworks extends React.Component<Props> {
                 centered
                 noSelectionMessage="Select ..."
                 noItemsMessage="No networks found"
-                selectedItem={selectedNetworkName}
+                selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
                 items={this.props.networks}
                 labelField="name"
+                valueField="id"
                 onChange={(item: Network) => { this.props.onChange(nic, item) }}
               />
             </Nic>
