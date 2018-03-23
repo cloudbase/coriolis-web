@@ -18,6 +18,7 @@ import type { Nic } from './Instance'
 
 export type Network = {
   name: string,
+  id: string,
 }
 
 export type NetworkMap = {

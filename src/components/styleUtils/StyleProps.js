@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import { css } from 'styled-components'
 
 const StyleProps = {
@@ -41,24 +43,24 @@ const StyleProps = {
   },
 
   media: {
-    handheld: (...args) => css`
+    handheld: (...args: any) => css`
       @media (max-height: 760px) { 
         ${css(...args)}
       }
     `,
   },
 
-  exactWidth: width => css`
+  exactWidth: (width: string) => css`
     min-width: ${width};
     max-width: ${width};
   `,
 
-  exactHeight: height => css`
+  exactHeight: (height: string) => css`
     min-height: ${height};
     max-height: ${height};
   `,
 
-  exactSize: size => css`
+  exactSize: (size: string) => css`
     ${StyleProps.exactWidth(size)}
     ${StyleProps.exactHeight(size)}
   `,
