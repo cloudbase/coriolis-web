@@ -147,7 +147,7 @@ class EndpointLogos extends React.Component<Props> {
   }
 
   renderGenericLogo(size: {w: number, h: number}) {
-    return <Generic size={size} name={this.props.endpoint || 'Generic Cloud'} disabled={this.props.disabled} />
+    return <Generic size={size} name={this.props.endpoint || ''} disabled={this.props.disabled} />
   }
 
   render() {
