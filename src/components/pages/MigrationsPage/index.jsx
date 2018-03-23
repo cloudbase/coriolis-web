@@ -71,7 +71,7 @@ class MigrationsPage extends React.Component<{}, State> {
     document.title = 'Coriolis Migrations'
 
     ProjectStore.getProjects()
-    EndpointStore.getEndpoints()
+    EndpointStore.getEndpoints({ showLoading: true })
 
     this.stopPolling = false
     this.pollData()
@@ -99,7 +99,7 @@ class MigrationsPage extends React.Component<{}, State> {
     // $FlowIssue
     Wait.for(() => UserStore.user.project.id === project.id, () => {
       ProjectStore.getProjects()
-      EndpointStore.getEndpoints()
+      EndpointStore.getEndpoints({ showLoading: true })
       MigrationStore.getMigrations({ showLoading: true })
     })
 
@@ -108,7 +108,7 @@ class MigrationsPage extends React.Component<{}, State> {
 
   handleReloadButtonClick() {
     ProjectStore.getProjects()
-    EndpointStore.getEndpoints()
+    EndpointStore.getEndpoints({ showLoading: true })
     MigrationStore.getMigrations({ showLoading: true })
   }
 
@@ -258,7 +258,10 @@ class MigrationsPage extends React.Component<{}, State> {
                     if (endpoint) {
                       return endpoint.type
                     }
-                    return ''
+                    if (EndpointStore.loading) {
+                      return 'Loading...'
+                    }
+                    return 'Not Found'
                   }}
                   useTasksRemaining
                 />)

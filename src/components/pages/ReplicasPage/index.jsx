@@ -69,7 +69,7 @@ class ReplicasPage extends React.Component<{}, State> {
     document.title = 'Coriolis Replicas'
 
     ProjectStore.getProjects()
-    EndpointStore.getEndpoints()
+    EndpointStore.getEndpoints({ showLoading: true })
 
     this.stopPolling = false
     this.pollData()
@@ -105,7 +105,7 @@ class ReplicasPage extends React.Component<{}, State> {
     Wait.for(() => UserStore.user.project.id === project.id, () => {
       ProjectStore.getProjects()
       ReplicaStore.getReplicas()
-      EndpointStore.getEndpoints()
+      EndpointStore.getEndpoints({ showLoading: true })
     })
 
     UserStore.switchProject(project.id)
@@ -114,7 +114,7 @@ class ReplicasPage extends React.Component<{}, State> {
   handleReloadButtonClick() {
     ProjectStore.getProjects()
     ReplicaStore.getReplicas({ showLoading: true })
-    EndpointStore.getEndpoints()
+    EndpointStore.getEndpoints({ showLoading: true })
   }
 
   handleItemClick(item: MainItem) {
@@ -233,7 +233,10 @@ class ReplicasPage extends React.Component<{}, State> {
                     if (endpoint) {
                       return endpoint.type
                     }
-                    return ''
+                    if (EndpointStore.loading) {
+                      return 'Loading...'
+                    }
+                    return 'Not Found'
                   }}
                 />)
               }
