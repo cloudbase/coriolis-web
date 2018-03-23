@@ -96,6 +96,7 @@ class WizardEndpointList extends React.Component<Props> {
         <Dropdown
           primary={Boolean(selectedItem)}
           items={items}
+          valueField="id"
           labelField="name"
           noSelectionMessage="Select"
           centered
