@@ -25,16 +25,13 @@ import PageHeader from '../../organisms/PageHeader'
 import AlertModal from '../../organisms/AlertModal'
 import MainListItem from '../../molecules/MainListItem'
 import type { MainItem } from '../../../types/MainItem'
-import type { Project } from '../../../types/Project'
 
 import replicaItemImage from './images/replica.svg'
 import replicaLargeImage from './images/replica-large.svg'
 
 import ProjectStore from '../../../stores/ProjectStore'
-import UserStore from '../../../stores/UserStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
 import EndpointStore from '../../../stores/EndpointStore'
-import Wait from '../../../utils/Wait'
 import NotificationStore from '../../../stores/NotificationStore'
 import { requestPollTimeout } from '../../../config'
 
@@ -100,15 +97,9 @@ class ReplicasPage extends React.Component<{}, State> {
     return lastExecution
   }
 
-  handleProjectChange(project: Project) {
-    // $FlowIssue
-    Wait.for(() => UserStore.user.project.id === project.id, () => {
-      ProjectStore.getProjects()
-      ReplicaStore.getReplicas()
-      EndpointStore.getEndpoints({ showLoading: true })
-    })
-
-    UserStore.switchProject(project.id)
+  handleProjectChange() {
+    ReplicaStore.getReplicas()
+    EndpointStore.getEndpoints({ showLoading: true })
   }
 
   handleReloadButtonClick() {
@@ -250,7 +241,7 @@ class ReplicasPage extends React.Component<{}, State> {
           headerComponent={
             <PageHeader
               title="Coriolis Replicas"
-              onProjectChange={project => { this.handleProjectChange(project) }}
+              onProjectChange={() => { this.handleProjectChange() }}
               onModalOpen={() => { this.handleModalOpen() }}
               onModalClose={() => { this.handleModalClose() }}
             />

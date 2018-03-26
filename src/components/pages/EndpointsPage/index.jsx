@@ -28,17 +28,14 @@ import Modal from '../../molecules/Modal'
 import ChooseProvider from '../../organisms/ChooseProvider'
 import Endpoint from '../../organisms/Endpoint'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
-import type { Project } from '../../../types/Project'
 
 import endpointImage from './images/endpoint-large.svg'
 
 import ProjectStore from '../../../stores/ProjectStore'
-import UserStore from '../../../stores/UserStore'
 import EndpointStore from '../../../stores/EndpointStore'
 import MigrationStore from '../../../stores/MigrationStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
 import ProviderStore from '../../../stores/ProviderStore'
-import Wait from '../../../utils/Wait'
 import LabelDictionary from '../../../utils/LabelDictionary'
 
 const Wrapper = styled.div``
@@ -103,16 +100,10 @@ class EndpointsPage extends React.Component<{}, State> {
     return { migrationsCount, replicasCount }
   }
 
-  handleProjectChange(project: Project) {
-    // $FlowIssue
-    Wait.for(() => UserStore.user.project.id === project.id, () => {
-      ProjectStore.getProjects()
-      EndpointStore.getEndpoints({ showLoading: true })
-      MigrationStore.getMigrations()
-      ReplicaStore.getReplicas()
-    })
-
-    UserStore.switchProject(project.id)
+  handleProjectChange() {
+    EndpointStore.getEndpoints({ showLoading: true })
+    MigrationStore.getMigrations()
+    ReplicaStore.getReplicas()
   }
 
   handleReloadButtonClick() {
@@ -228,7 +219,7 @@ class EndpointsPage extends React.Component<{}, State> {
           headerComponent={
             <PageHeader
               title="Coriolis Endpoints"
-              onProjectChange={project => { this.handleProjectChange(project) }}
+              onProjectChange={() => { this.handleProjectChange() }}
             />
           }
         />
