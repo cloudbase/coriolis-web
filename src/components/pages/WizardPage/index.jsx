@@ -33,7 +33,6 @@ import NetworkStore from '../../../stores/NetworkStore'
 import NotificationStore from '../../../stores/NotificationStore'
 import ScheduleStore from '../../../stores/ScheduleStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
-import Wait from '../../../utils/Wait'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardConfig, executionOptions } from '../../../config'
 import type { MainItem } from '../../../types/MainItem'
@@ -103,11 +102,12 @@ class WizardPage extends React.Component<Props, State> {
   handleCreationSuccess(items: MainItem[]) {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     NotificationStore.notify(`${typeLabel} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${typeLabel} created` } })
+    let schedulePromise = Promise.resolve()
 
     if (this.state.type === 'replica') {
       items.forEach(replica => {
         this.executeCreatedReplica(replica)
-        this.scheduleReplica(replica)
+        schedulePromise = this.scheduleReplica(replica)
       })
     }
 
@@ -118,8 +118,7 @@ class WizardPage extends React.Component<Props, State> {
       } else {
         location += 'tasks/'
       }
-
-      Wait.for(() => !ScheduleStore.scheduling, () => {
+      schedulePromise.then(() => {
         window.location.href = location + items[0].id
       })
     } else {
@@ -350,14 +349,14 @@ class WizardPage extends React.Component<Props, State> {
     this.separateVms()
   }
 
-  scheduleReplica(replica: MainItem) {
+  scheduleReplica(replica: MainItem): Promise<void> {
     let data = WizardStore.data
 
     if (!data.schedules || data.schedules.length === 0) {
-      return
+      return Promise.resolve()
     }
 
-    ScheduleStore.scheduleMultiple(replica.id, data.schedules)
+    return ScheduleStore.scheduleMultiple(replica.id, data.schedules)
   }
 
   executeCreatedReplica(replica: MainItem) {
