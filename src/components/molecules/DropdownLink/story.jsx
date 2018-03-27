@@ -40,6 +40,7 @@ class Wrapper extends React.Component {
           items={this.state.items}
           selectedItem={this.state.selectedItem}
           onChange={item => { this.handleItemChange(item.value) }}
+          {...this.props}
         />
       </div>
     )
@@ -49,4 +50,7 @@ class Wrapper extends React.Component {
 storiesOf('DropdownLink', module)
   .add('default', () => (
     <Wrapper />
+  ))
+  .add('searchable', () => (
+    <Wrapper searchable />
   ))

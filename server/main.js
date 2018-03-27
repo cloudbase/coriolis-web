@@ -32,6 +32,8 @@ if (isDev) {
 
 app.use(express.static('dist'))
 
+require('./proxy')(app)
+
 app.use((req, res) => {
   res.redirect(`${req.baseUrl}/#${req.url}`)
 })

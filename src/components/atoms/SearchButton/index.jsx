@@ -20,9 +20,11 @@ import styled from 'styled-components'
 import Palette from '../../styleUtils/Palette'
 
 import searchImage from './images/search.js'
+import filterImage from './images/filter.js'
 
-const Wrapper = styled.div`display: flex;`
-
+const Wrapper = styled.div`
+display: inline-block;
+`
 const Icon = styled.div`
   width: 16px;
   height: 16px;
@@ -35,13 +37,16 @@ const Icon = styled.div`
 type Props = {
   className: string,
   primary: boolean,
+  useFilterIcon: boolean,
 }
 class SearchButton extends React.Component<Props> {
   render() {
     return (
       <Wrapper className={this.props.className} {...this.props}>
         <Icon dangerouslySetInnerHTML={{
-          __html: searchImage(this.props.primary ? Palette.primary : Palette.grayscale[4]),
+          __html: this.props.useFilterIcon ?
+            filterImage(Palette.grayscale[3]) :
+            searchImage(this.props.primary ? Palette.primary : Palette.grayscale[4]),
         }}
         />
       </Wrapper>

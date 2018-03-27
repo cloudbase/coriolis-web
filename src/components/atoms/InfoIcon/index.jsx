@@ -18,23 +18,32 @@ import React from 'react'
 import styled from 'styled-components'
 
 import questionImage from './images/question.svg'
+import warningImage from './images/warning.svg'
 
 const Wrapper = styled.div`
   width: 16px;
   height: 16px;
-  background: url('${questionImage}') center no-repeat;
+  background: url('${props => props.warning ? warningImage : questionImage}') center no-repeat;
   display: inline-block;
   margin-bottom: -4px;
   margin-left: ${props => props.marginLeft ? `${props.marginLeft}px` : '4px'};
 `
 type Props = {
   text: string,
-  marginLeft: number,
+  marginLeft?: number,
+  className?: string,
+  marginLeft?: number,
+  warning?: boolean,
 }
 class InfoIcon extends React.Component<Props> {
   render() {
     return (
-      <Wrapper data-tip={this.props.text} marginLeft={this.props.marginLeft} />
+      <Wrapper
+        data-tip={this.props.text}
+        marginLeft={this.props.marginLeft}
+        className={this.props.className}
+        warning={this.props.warning}
+      />
     )
   }
 }

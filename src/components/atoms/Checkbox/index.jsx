@@ -70,6 +70,7 @@ class Checkbox extends React.Component<Props> {
         className={this.props.className}
         onClick={() => { this.handleClick() }}
         checked={this.props.checked}
+        disabled={this.props.disabled}
       >
         <CheckmarkImage />
       </Wrapper>

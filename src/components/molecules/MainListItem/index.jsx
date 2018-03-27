@@ -36,7 +36,7 @@ const CheckboxStyled = styled(Checkbox) `
 const Content = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 32px;
+  margin-left: 16px;
   border-top: 1px solid ${Palette.grayscale[1]};
   padding: 8px 16px;
   cursor: pointer;

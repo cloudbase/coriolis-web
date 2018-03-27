@@ -32,12 +32,13 @@ const Item = styled.a`
   margin-bottom: 13px;
   text-decoration: none;
 `
-
+type ItemType = { label: string, value: string }
 type Props = {
-  items: { label: string, value: string }[],
-  selectedValue: string,
-  itemId: string,
-  itemType: string,
+  items: ItemType[],
+  selectedValue?: string,
+  itemId?: string,
+  itemType?: string,
+  customHref?: (item: ItemType) => ?string,
 }
 class DetailsNavigation extends React.Component<Props> {
   renderItems() {
@@ -46,7 +47,7 @@ class DetailsNavigation extends React.Component<Props> {
         <Item
           selected={item.value === this.props.selectedValue}
           key={item.value || item.label}
-          href={`/#/${this.props.itemType}${(item.value && '/') || ''}${item.value}/${this.props.itemId}`}
+          href={this.props.customHref ? this.props.customHref(item) : `/#/${this.props.itemType || ''}${(item.value && '/') || ''}${item.value}/${this.props.itemId || ''}`}
         >{item.label}</Item>
       ))
     )

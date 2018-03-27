@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 3</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="AM-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-224.000000, -80.000000)">
+        <g id="Group-3" transform="translate(224.000000, 80.000000)">
+            <path d="M32,64 C49.673112,64 64,49.673112 64,32 C64,14.326888 49.673112,0 32,0 C14.326888,0 0,14.326888 0,32 C0,49.673112 14.326888,64 32,64 Z" id="Pat-Benetar" fill="#FFFFFF"></path>
+            <g id="Group-2" transform="translate(10.000000, 15.000000)" stroke="#0044CA" stroke-linecap="round" stroke-width="1.5">
+                <g id="Group">
+                    <polyline id="Rectangle-Copy" stroke-linejoin="round" transform="translate(20.625000, 19.200000) rotate(-405.000000) translate(-20.625000, -19.200000) " points="25.4863591 14.2219683 25.4863591 24.1780317 15.7636409 24.1780317"></polyline>
+                    <polyline id="Rectangle-Copy" stroke-linejoin="round" transform="translate(29.375000, 19.200000) rotate(-405.000000) translate(-29.375000, -19.200000) " points="34.2363591 14.2219683 34.2363591 24.1780317 24.5136409 24.1780317"></polyline>
+                    <polyline id="Rectangle-Copy" stroke-linejoin="round" transform="translate(11.875000, 19.200000) rotate(-405.000000) translate(-11.875000, -19.200000) " points="16.7363591 14.2219683 16.7363591 24.1780317 7.01364088 24.1780317"></polyline>
+                    <path d="M18,0 C12.1869,0 7.5321,4.95500136 7.2846,11.1511772 C3.0744,12.3884731 0,16.48144 0,21.3336566 C0,27.1952971 4.4595,32 9.9,32 L36.9,32 C41.3505,32 45,28.0679979 45,23.2729917 C45,19.4912881 42.66,16.2836278 39.5154,15.151056 C39.3246,9.46589497 35.0208,4.84833793 29.7,4.84833793 C28.7649,4.84833793 27.8946,5.09657283 27.0279,5.36420108 C25.0938,2.19338808 21.7953,0 18,0 Z" id="Path-Copy" transform="translate(22.500000, 16.000000) scale(-1, 1) translate(-22.500000, -16.000000) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

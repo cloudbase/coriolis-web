@@ -81,11 +81,11 @@ type Props = {
   onItemClick: (item: MainItem) => void,
   renderItemComponent: (componentProps: ItemComponentProps) => React.Node,
   showEmptyList: boolean,
-  emptyListImage: string,
+  emptyListImage: ?string,
   emptyListMessage: string,
   emptyListExtraMessage: string,
-  emptyListButtonLabel: string,
-  onEmptyListButtonClick: () => void,
+  emptyListButtonLabel?: string,
+  onEmptyListButtonClick?: () => void,
 }
 class MainList extends React.Component<Props> {
   renderList() {
@@ -125,12 +125,26 @@ class MainList extends React.Component<Props> {
   }
 
   renderEmptyList() {
+    let renderImage = () => {
+      if (this.props.emptyListImage) {
+        return <EmptyListImage source={this.props.emptyListImage} />
+      }
+      return null
+    }
+
+    let renderButton = () => {
+      if (this.props.emptyListButtonLabel) {
+        return <Button onClick={this.props.onEmptyListButtonClick}>{this.props.emptyListButtonLabel}</Button>
+      }
+      return null
+    }
+
     return (
       <EmptyList>
-        <EmptyListImage source={this.props.emptyListImage} />
+        {renderImage()}
         <EmptyListMessage>{this.props.emptyListMessage}</EmptyListMessage>
         <EmptyListExtraMessage>{this.props.emptyListExtraMessage}</EmptyListExtraMessage>
-        <Button onClick={this.props.onEmptyListButtonClick}>{this.props.emptyListButtonLabel}</Button>
+        {renderButton()}
       </EmptyList>
     )
   }

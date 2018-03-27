@@ -12,9 +12,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import StatusImage from '.'
+
+type State = {
+  loadingProgress: number,
+}
+class LoadingProgress extends React.Component<{}, State> {
+  state = {
+    loadingProgress: 50,
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      this.setState({ loadingProgress: this.state.loadingProgress === 50 ? 75 : 50 })
+    }, 1000)
+  }
+
+  render() {
+    return <StatusImage loading loadingProgress={this.state.loadingProgress} />
+  }
+}
 
 storiesOf('StatusImage', module)
   .add('completed', () => (
@@ -22,6 +43,12 @@ storiesOf('StatusImage', module)
   ))
   .add('running', () => (
     <StatusImage status="RUNNING" />
+  ))
+  .add('loading progress', () => (
+    <StatusImage loading loadingProgress={45} />
+  ))
+  .add('loading progress animated', () => (
+    <LoadingProgress />
   ))
   .add('error', () => (
     <StatusImage status="ERROR" />

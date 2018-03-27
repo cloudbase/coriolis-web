@@ -27,7 +27,7 @@ const Navigation = styled.div`
   width: 320px;
 `
 const Content = styled.div`
-  padding: 0 64px 0 32px;
+  padding: 0 64px 0 64px;
   position: absolute;
   left: 320px;
   right: 0;
@@ -37,6 +37,7 @@ const Content = styled.div`
 `
 const List = styled.div`
   padding-bottom: 32px;
+  margin-left: ${props => props.noMargin ? 0 : '-32px'};
 `
 const Header = styled.div``
 
@@ -44,6 +45,7 @@ type Props = {
   navigationComponent: React.Node,
   headerComponent: React.Node,
   listComponent: React.Node,
+  listNoMargin?: boolean,
 }
 const MainTemplate = (props: Props) => {
   return (
@@ -51,7 +53,7 @@ const MainTemplate = (props: Props) => {
       <Navigation>{props.navigationComponent}</Navigation>
       <Content>
         <Header>{props.headerComponent}</Header>
-        <List>{props.listComponent}</List>
+        <List noMargin={props.listNoMargin}>{props.listComponent}</List>
       </Content>
     </Wrapper>
   )

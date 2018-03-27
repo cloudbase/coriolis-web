@@ -22,38 +22,60 @@ import type { Instance } from '../types/Instance'
 import { servicesUrl, wizardConfig } from '../config'
 
 class InstanceSource {
-  static loadInstances(endpointId: string, searchText?: string, lastInstanceId?: string): Promise<Instance[]> {
+  static endpointId: string
+
+  static loadInstances(endpointId: string, searchText: ?string, lastInstanceId: ?string, skipLimit?: boolean): Promise<Instance[]> {
+    this.endpointId = endpointId
+
     return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId') || 'undefined'
-      let url = `${servicesUrl.coriolis}/${projectId}/endpoints/${endpointId}/instances?limit=${wizardConfig.instancesItemsPerPage + 1}`
+      let projectId = cookie.get('projectId')
+      let url = `${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/instances`
+      let symbol = '?'
+
+      if (!skipLimit) {
+        url = `${url + symbol}limit=${wizardConfig.instancesItemsPerPage + 1}`
+        symbol = '&'
+      }
 
       if (searchText) {
-        url = `${url}&name=${searchText}`
+        url = `${url + symbol}name=${searchText}`
+        symbol = '&'
       }
 
       if (lastInstanceId) {
-        url = `${url}&marker=${lastInstanceId}`
+        url = `${url + symbol}&marker=${lastInstanceId}`
       }
 
       Api.sendAjaxRequest({
         url,
         method: 'GET',
       }).then(response => {
-        resolve(response.data.instances)
+        if (this.endpointId === endpointId) {
+          resolve(response.data.instances)
+        }
       }, reject).catch(reject)
     })
   }
 
-  static loadInstanceDetails(endpointId: string, instanceName: string): Promise<Instance> {
+  static loadInstanceDetails(endpointId: string, instanceName: string, reqId: number): Promise<{ instance: Instance, reqId: number }> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId') || 'undefined'
 
       Api.sendAjaxRequest({
         url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
         method: 'GET',
+        requestId: `instanceDetail-${reqId}}`,
       }).then(response => {
-        resolve(response.data.instance)
-      }, reject).catch(reject)
+        resolve({ instance: response.data.instance, reqId })
+      }, response => { reject({ response, reqId }) }).catch(reject)
+    })
+  }
+
+  static cancelInstancesDetailsRequests(reqId: number) {
+    Api.requests.forEach(request => {
+      if (request.requestId.indexOf(`instanceDetail-${reqId}`) > -1) {
+        Api.cancelRequest(request)
+      }
     })
   }
 }

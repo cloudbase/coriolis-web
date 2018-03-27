@@ -57,18 +57,26 @@ class InstanceStore {
   @observable reloading = false
   @observable instancesDetails: Instance[] = []
   @observable loadingInstancesDetails = true
+  @observable instancesDetailsCount: number = 0
+  @observable instancesDetailsRemaining: number = 0
 
   lastEndpointId: string
+  reqId: number
 
-  @action loadInstances(endpointId: string) {
+  @action loadInstances(endpointId: string, skipLimit?: boolean, useCache?: boolean): Promise<void> {
+    if (this.cachedInstances.length > 0 && this.lastEndpointId === endpointId && useCache) {
+      return Promise.resolve()
+    }
+
     this.instancesLoading = true
     this.searchNotFound = false
     this.lastEndpointId = endpointId
 
-    return InstanceSource.loadInstances(endpointId).then(instances => {
+    return InstanceSource.loadInstances(endpointId, null, null, skipLimit).then(instances => {
       if (endpointId !== this.lastEndpointId) {
         return
       }
+
       this.currentPage = 1
       this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
       this.instances = instances
@@ -151,44 +159,67 @@ class InstanceStore {
     })
   }
 
-  @action loadInstancesDetails(endpointId: string, instances: Instance[]): Promise<void> {
-    instances.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
+  @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[]): Promise<void> {
+    // Use reqId to be able to uniquely identify the request so all but the latest request can be igonred and canceled
+    this.reqId = !this.reqId ? 1 : this.reqId + 1
+    InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
+
+    instancesInfo.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
     let hash = i => `${i.instance_name}-${i.id}`
-    if (this.instancesDetails.map(hash).join('_') === instances.map(hash).join('_')) {
+    if (this.instancesDetails.map(hash).join('_') === instancesInfo.map(hash).join('_')) {
       return Promise.resolve()
     }
 
+    let count = instancesInfo.length
     this.loadingInstancesDetails = true
     this.instancesDetails = []
-    let count = instances.length
-    return new Promise((resolve) => {
-      instances.forEach(instance => {
-        InstanceSource.loadInstanceDetails(endpointId, instance.instance_name).then(instance => {
-          count -= 1
-          this.loadingInstancesDetails = count > 0
+    this.loadingInstancesDetails = true
+    this.instancesDetailsCount = count
+    this.instancesDetailsRemaining = count
+    this.instancesDetails = []
 
-          if (this.instancesDetails.find(i => i.id === instance.id)) {
-            this.instancesDetails = this.instancesDetails.filter(i => i.id !== instance.id)
+    return new Promise((resolve) => {
+      instancesInfo.forEach(instanceInfo => {
+        InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name, this.reqId).then((resp: { instance: Instance, reqId: number }) => {
+          if (resp.reqId !== this.reqId) {
+            return
+          }
+
+          this.instancesDetailsRemaining -= 1
+          this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
+
+          if (this.instancesDetails.find(i => i.id === resp.instance.id)) {
+            this.instancesDetails = this.instancesDetails.filter(i => i.id !== resp.instance.id)
           }
 
           this.instancesDetails = [
             ...this.instancesDetails,
-            instance,
+            resp.instance,
           ]
           this.instancesDetails.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
 
-          if (count === 0) {
+          if (this.instancesDetailsRemaining === 0) {
             resolve()
           }
-        }).catch(() => {
-          count -= 1
-          this.loadingInstancesDetails = count > 0
+        }).catch((resp?: { reqId: number }) => {
+          if (!resp || resp.reqId !== this.reqId) {
+            return
+          }
+          this.instancesDetailsRemaining -= 1
+          this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
           if (count === 0) {
             resolve()
           }
         })
       })
     })
+  }
+
+  @action clearInstancesDetails() {
+    this.instancesDetails = []
+    this.loadingInstancesDetails = false
+    this.instancesDetailsCount = 0
+    this.instancesDetailsRemaining = 0
   }
 }
 

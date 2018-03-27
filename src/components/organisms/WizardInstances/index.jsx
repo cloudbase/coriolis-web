@@ -213,6 +213,7 @@ class WizardInstances extends React.Component<Props, State> {
     this.setState({ searchText })
 
     clearTimeout(this.timeout)
+    this.setState({ searchText })
     this.timeout = setTimeout(() => {
       this.props.onSearchInputChange(searchText)
     }, 500)
@@ -320,6 +321,7 @@ class WizardInstances extends React.Component<Props, State> {
           onChange={searchText => { this.handleSeachInputChange(searchText) }}
           value={this.state.searchText}
           loading={this.props.searching}
+          value={this.state.searchText}
           placeholder="Search VMs"
         />
         <FilterInfo>

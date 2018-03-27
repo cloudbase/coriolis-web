@@ -27,6 +27,7 @@ export type Endpoint = {
   created_at: Date,
   connection_info: {
     secret_ref?: string,
+    host?: string,
     [string]: mixed
   },
 }

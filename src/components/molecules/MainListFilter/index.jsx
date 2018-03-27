@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import styled from 'styled-components'
 
 import Checkbox from '../../atoms/Checkbox'
@@ -41,7 +41,7 @@ const Main = styled.div`
 `
 const FilterGroup = styled.div`
   display: flex;
-  margin: 0 16px 0 32px;
+  margin: 0 16px 0 ${props => props.noMargin ? '0' : '32px'};
   border-right: 1px solid ${Palette.grayscale[4]};
 `
 const FilterItem = styled.div`
@@ -81,16 +81,26 @@ type Props = {
   searchValue: string,
   onSelectAllChange: (checked: boolean) => void,
   onActionChange: (action: string) => void,
-  actions: DictItem[],
+  actions?: DictItem[],
   selectedValue: string,
   selectionInfo: { total: number, selected: number, label: string },
   selectAllSelected: ?boolean,
   items: DictItem[],
+  customFilterComponent?: React.Node,
+  searchValue?: string,
 }
 class MainListFilter extends React.Component<Props> {
   renderFilterGroup() {
+    let renderCustomComponent = () => {
+      if (this.props.customFilterComponent) {
+        return this.props.customFilterComponent
+      }
+      return null
+    }
+
     return (
-      <FilterGroup>
+      <FilterGroup noMargin={!this.props.actions || this.props.actions.length === 0}>
+        {renderCustomComponent()}
         {this.props.items.map(item => {
           return (
             <FilterItem
@@ -126,13 +136,22 @@ class MainListFilter extends React.Component<Props> {
   }
 
   render() {
-    return (
-      <Wrapper>
-        <Main>
+    let renderCheckbox = () => {
+      if (this.props.actions && this.props.actions.length > 0) {
+        return (
           <Checkbox
             onChange={checked => { this.props.onSelectAllChange(checked) }}
             checked={!!this.props.selectAllSelected}
           />
+        )
+      }
+      return null
+    }
+
+    return (
+      <Wrapper>
+        <Main>
+          {renderCheckbox()}
           {this.renderFilterGroup()}
           <ReloadButton style={{ marginRight: '16px' }} onClick={this.props.onReloadButtonClick} />
           <SearchInput onChange={this.props.onSearchChange} value={this.props.searchValue} />

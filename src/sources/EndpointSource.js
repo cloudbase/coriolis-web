@@ -101,6 +101,38 @@ class EdnpointSource {
     })
   }
 
+  static getConnectionsInfo(endpoints: Endpoint[]): Promise<Endpoint[]> {
+    return new Promise(resolve => {
+      if (!endpoints || endpoints.length === 0) {
+        resolve([])
+        return
+      }
+
+      let count = 0
+      let connectionsInfo = []
+      let isDone = () => {
+        count += 1
+        if (count === endpoints.length) {
+          resolve(connectionsInfo)
+        }
+      }
+
+      endpoints.forEach(endpoint => {
+        let index = endpoint.connection_info.secret_ref ? endpoint.connection_info.secret_ref.lastIndexOf('/') : ''
+        let uuid = endpoint.connection_info.secret_ref && index ? endpoint.connection_info.secret_ref.substr(index + 1) : ''
+        Api.sendAjaxRequest({
+          url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
+          method: 'GET',
+          json: false,
+          headers: { Accept: 'text/plain' },
+        }).then(response => {
+          connectionsInfo.push({ ...endpoint, connection_info: JSON.parse(response.data) })
+          isDone()
+        }, isDone).catch(isDone)
+      })
+    })
+  }
+
   static validate(endpoint: Endpoint): Promise<Validation> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')

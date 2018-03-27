@@ -21,7 +21,7 @@ class Wait {
    * @param {number} timeout Specifies after how many miliseconds should the wait give up.
    * @param {Function} timeoutCallback Called if wait reaches timeout.
    */
-  static for(stopCondition, stopCallback, timeout = 5000, timeoutCallback = () => { }) {
+  static for(stopCondition, stopCallback, timeout = -1, timeoutCallback = () => { }) {
     let startTime = new Date()
 
     if (stopCondition()) {
@@ -32,7 +32,7 @@ class Wait {
     let interval = setInterval(() => {
       let currentTime = new Date()
 
-      if (currentTime - startTime > timeout) {
+      if (timeout > -1 && currentTime - startTime > timeout) {
         clearInterval(interval)
         timeoutCallback()
       }
@@ -41,7 +41,7 @@ class Wait {
         clearInterval(interval)
         stopCallback()
       }
-    }, 500)
+    }, 0)
   }
 }
 

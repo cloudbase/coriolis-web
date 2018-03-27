@@ -30,7 +30,10 @@ import EndpointsPage from './pages/EndpointsPage'
 import EndpointDetailsPage from './pages/EndpointDetailsPage'
 import WizardPage from './pages/WizardPage'
 import UserStore from '../stores/UserStore'
+import AssessmentsPage from './pages/AssessmentsPage'
+import AssessmentDetailsPage from './pages/AssessmentDetailsPage'
 
+import { navigationMenu } from '../config'
 import Palette from './styleUtils/Palette'
 import StyleProps from './styleUtils/StyleProps'
 
@@ -54,6 +57,13 @@ class App extends React.Component<{}> {
   }
 
   render() {
+    let renderPlanningPage = () => {
+      if (navigationMenu.find(m => m.value === 'planning' && !m.disabled)) {
+        return <Route path="/planning" component={AssessmentsPage} />
+      }
+      return null
+    }
+
     return (
       <Wrapper>
         <Switch>
@@ -67,6 +77,8 @@ class App extends React.Component<{}> {
           <Route path="/migration/:page/:id" component={MigrationDetailsPage} />
           <Route path="/endpoints" component={EndpointsPage} />
           <Route path="/endpoint/:id" component={EndpointDetailsPage} />
+          {renderPlanningPage()}
+          <Route path="/assessment/:info" component={AssessmentDetailsPage} />
           <Route path="/wizard/:type" component={WizardPage} />
           <Route component={NotFoundPage} />
         </Switch>
