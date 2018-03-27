@@ -31,7 +31,7 @@ export const navigationMenu = [
   { label: 'Replicas', value: 'replicas' },
   { label: 'Migrations', value: 'migrations' },
   { label: 'Cloud Endpoints', value: 'endpoints' },
-  { label: 'Planning', value: 'planning', disabled: false },
+  { label: 'Planning', value: 'planning', disabled: true },
 ]
 
 export const requestPollTimeout = 5000
