@@ -24,49 +24,56 @@ import StatusIcon from '../../atoms/StatusIcon'
 import StyleProps from '../../styleUtils/StyleProps'
 
 const Input = styled(TextInput) `
-  position: absolute;
-  top: -8px;
-  left: -8px;
   padding-left: 32px;
-  ${props => props.loading ? 'padding-right: 32px;' : ''}
+  ${props => props.loading || (props.showClose && props.value) ? 'padding-right: 32px;' : ''}
   width: 50px;
   opacity: 0;
   transition: all ${StyleProps.animations.swift};
 `
-const InputAnimation = css`
+const InputAnimation = props => css`
   ${Input} {
-    width: ${StyleProps.inputSizes.regular.width}px;
+    width: ${props.width};
     opacity: 1;
   }
 `
 const Wrapper = styled.div`
   position: relative;
-  ${props => props.open ? InputAnimation : ''}
+  width: ${props => props.open ? props.width : '50px'};
+  ${props => props.open ? InputAnimation(props) : ''}
 `
 const SearchButtonStyled = styled(SearchButton)`
-  position: relative;
+  position: absolute;
+  top: 8px;
+  left: 8px;
 `
 const StatusIconStyled = styled(StatusIcon)`
   position: absolute;
-  left: 144px;
-  top: 0;
+  right: 8px;
+  top: 8px;
 `
 
 type Props = {
-  onChange: (value: string) => void,
+  onChange?: (value: string) => void,
+  onCloseClick?: () => void,
   alwaysOpen?: boolean,
   loading?: boolean,
-  placeholder: string,
+  focusOnMount?: boolean,
+  disablePrimary?: boolean,
+  useFilterIcon?: boolean,
+  placeholder?: string,
+  width?: string,
+  value?: string,
+  className?: string,
 }
 type State = {
   open: boolean,
   hover?: boolean,
   focus?: boolean,
-  value: string,
 }
 class SearchInput extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: $Shape<Props> = {
     placeholder: 'Search',
+    width: `${StyleProps.inputSizes.regular.width}px`,
   }
 
   input: HTMLElement
@@ -86,6 +93,8 @@ class SearchInput extends React.Component<Props, State> {
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
+
+    this.props.focusOnMount && this.input.focus()
   }
 
   componentWillUnmount() {
@@ -122,31 +131,37 @@ class SearchInput extends React.Component<Props, State> {
   render() {
     return (
       <Wrapper
-        open={this.state.open || this.props.alwaysOpen || this.state.value !== ''}
+        open={this.state.open || this.props.alwaysOpen || this.props.value !== ''}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         onMouseEnter={() => { this.handleMouseEnter() }}
         onMouseLeave={() => { this.handleMouseLeave() }}
+        width={this.props.width}
+        className={this.props.className}
       >
         <Input
           _ref={input => { this.input = input }}
           placeholder={this.props.placeholder}
-          onChange={e => {
-            this.setState({ value: e.target.value })
-            this.props.onChange(e.target.value)
-          }}
-          value={this.state.value}
+          onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
           onFocus={() => { this.handleFocus() }}
           onBlur={() => { this.handleBlur() }}
           loading={this.props.loading}
+          value={this.props.value}
+          disablePrimary={this.props.disablePrimary}
+          showClose={
+            !this.props.loading &&
+            (this.state.open || this.props.alwaysOpen || this.props.value !== '')
+          }
+          onCloseClick={() => { if (this.props.onCloseClick) this.props.onCloseClick() }}
         />
         <SearchButtonStyled
           primary={
             this.state.open ||
             (this.props.alwaysOpen && (this.state.hover || this.state.focus)) ||
-            (this.state.value !== '' && (this.state.hover || this.state.focus))
+            (this.props.value !== '' && (this.state.hover || this.state.focus))
           }
           onClick={() => { this.handleSearchButtonClick() }}
+          useFilterIcon={this.props.useFilterIcon}
         />
         {this.props.loading ? <StatusIconStyled status="RUNNING" /> : null}
       </Wrapper>

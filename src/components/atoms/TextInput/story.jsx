@@ -20,6 +20,19 @@ import TextInput from '.'
 const Wrapper = styled.div`
   display: inline-block;
 `
+class StatefulInput extends React.Component {
+  constructor() {
+    super()
+
+    this.state = {
+      value: '',
+    }
+  }
+
+  render() {
+    return <TextInput {...this.props} value={this.state.value} onChange={e => { this.setState({ value: e.target.value }) }} />
+  }
+}
 
 storiesOf('TextInput', module)
   .add('default', () => (
@@ -33,4 +46,7 @@ storiesOf('TextInput', module)
   ))
   .add('large', () => (
     <Wrapper><TextInput large /></Wrapper>
+  ))
+  .add('with close', () => (
+    <Wrapper><StatefulInput showClose /></Wrapper>
   ))
