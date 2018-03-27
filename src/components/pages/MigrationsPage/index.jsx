@@ -25,16 +25,13 @@ import PageHeader from '../../organisms/PageHeader'
 import AlertModal from '../../organisms/AlertModal'
 import MainListItem from '../../molecules/MainListItem'
 import type { MainItem } from '../../../types/MainItem'
-import type { Project } from '../../../types/Project'
 
 import migrationItemImage from './images/migration.svg'
 import migrationLargeImage from './images/migration-large.svg'
 
 import ProjectStore from '../../../stores/ProjectStore'
-import UserStore from '../../../stores/UserStore'
 import MigrationStore from '../../../stores/MigrationStore'
 import EndpointStore from '../../../stores/EndpointStore'
-import Wait from '../../../utils/Wait'
 import NotificationStore from '../../../stores/NotificationStore'
 import { requestPollTimeout } from '../../../config'
 
@@ -95,15 +92,9 @@ class MigrationsPage extends React.Component<{}, State> {
     ]
   }
 
-  handleProjectChange(project: Project) {
-    // $FlowIssue
-    Wait.for(() => UserStore.user.project.id === project.id, () => {
-      ProjectStore.getProjects()
-      EndpointStore.getEndpoints({ showLoading: true })
-      MigrationStore.getMigrations({ showLoading: true })
-    })
-
-    UserStore.switchProject(project.id)
+  handleProjectChange() {
+    EndpointStore.getEndpoints({ showLoading: true })
+    MigrationStore.getMigrations({ showLoading: true })
   }
 
   handleReloadButtonClick() {
@@ -276,7 +267,7 @@ class MigrationsPage extends React.Component<{}, State> {
           headerComponent={
             <PageHeader
               title="Coriolis Migrations"
-              onProjectChange={project => { this.handleProjectChange(project) }}
+              onProjectChange={() => { this.handleProjectChange() }}
               onModalOpen={() => { this.handleModalOpen() }}
               onModalClose={() => { this.handleModalClose() }}
             />

@@ -53,18 +53,19 @@ class UserStore {
 
   @action loginScoped(projectId?: string): Promise<User> {
     return new Promise((resolve) => {
-      if (ProjectStore.projects && ProjectStore.projects.length) {
+      const sourceLoginScoped = () => {
         UserSource.loginScoped(projectId || ProjectStore.projects[0].id).then((user: User) => {
           this.user = { ...user, scoped: true }
           resolve(user)
         })
       }
-      ProjectStore.getProjects().then(() => {
-        UserSource.loginScoped(projectId || ProjectStore.projects[0].id).then((user: User) => {
-          this.user = { ...user, scoped: true }
-          resolve(user)
+      if (ProjectStore.projects && ProjectStore.projects.length) {
+        sourceLoginScoped()
+      } else {
+        ProjectStore.getProjects().then(() => {
+          sourceLoginScoped()
         })
-      })
+      }
     })
   }
 
@@ -93,12 +94,17 @@ class UserStore {
 
   @action switchProject(projectId: string): Promise<void> {
     NotificationStore.notify('Switching projects')
-    return UserSource.switchProject().then(() => {
-      this.loginScoped(projectId)
-    }).catch(reason => {
-      console.error('Error switching projects', reason)
-      NotificationStore.notify('Error switching projects')
-      this.logout()
+    return new Promise((resolve, reject) => {
+      UserSource.switchProject().then(() => {
+        return this.loginScoped(projectId)
+      }).then(() => {
+        resolve()
+      }).catch(reason => {
+        console.error('Error switching projects', reason)
+        NotificationStore.notify('Error switching projects')
+        this.logout()
+        reject()
+      })
     })
   }
 

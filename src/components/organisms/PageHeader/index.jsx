@@ -60,7 +60,7 @@ const Controls = styled.div`
 
 type Props = {
   title: string,
-  onProjectChange: (project: Project) => void,
+  onProjectChange?: (project: Project) => void,
   onModalOpen?: () => void,
   onModalClose?: () => void,
 }
@@ -85,9 +85,9 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   getCurrentProject() {
-    if (UserStore.user && UserStore.user.project) {
-      // $FlowIssue
-      return ProjectStore.projects.find(p => p.id === UserStore.user.project.id)
+    let project = UserStore.user && UserStore.user.project ? UserStore.user.project : null
+    if (project) {
+      return ProjectStore.projects.find(p => p.id === project.id)
     }
 
     return null
@@ -148,6 +148,16 @@ class PageHeader extends React.Component<Props, State> {
     this.setState({ showChooseProviderModal: !options || !options.autoClose, showEndpointModal: false })
   }
 
+  handleProjectChange(project: Project) {
+    UserStore.switchProject(project.id).then(() => {
+      ProjectStore.getProjects()
+
+      if (this.props.onProjectChange) {
+        this.props.onProjectChange(project)
+      }
+    })
+  }
+
   render() {
     return (
       <Wrapper>
@@ -156,7 +166,7 @@ class PageHeader extends React.Component<Props, State> {
           <Dropdown
             selectedItem={this.getCurrentProject()}
             items={ProjectStore.projects}
-            onChange={this.props.onProjectChange}
+            onChange={project => { this.handleProjectChange(project) }}
             noItemsMessage="Loading..."
             labelField="name"
           />
