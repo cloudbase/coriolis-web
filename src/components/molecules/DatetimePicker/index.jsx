@@ -58,7 +58,7 @@ type Props = {
 }
 type State = {
   showPicker: boolean,
-  date: ?Date,
+  date: ?moment$Moment,
 }
 class DatetimePicker extends React.Component<Props, State> {
   itemMouseDown: boolean
@@ -76,7 +76,9 @@ class DatetimePicker extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    this.setState({ date: this.props.value })
+    if (this.props.value) {
+      this.setState({ date: moment(this.props.value) })
+    }
   }
 
   componentDidMount() {
@@ -100,7 +102,7 @@ class DatetimePicker extends React.Component<Props, State> {
 
     if (!this.itemMouseDown && !path.find(n => n.className === 'rdtPicker')) {
       if (this.state.date && this.state.showPicker) {
-        this.props.onChange(this.state.date)
+        this.props.onChange(this.state.date.toDate())
       }
       this.setState({ showPicker: false })
     }
@@ -108,15 +110,16 @@ class DatetimePicker extends React.Component<Props, State> {
 
   handleDropdownClick() {
     if (this.state.showPicker && this.state.date) {
-      this.props.onChange(this.state.date)
+      this.props.onChange(this.state.date.toDate())
     }
 
     this.setState({ showPicker: !this.state.showPicker })
   }
 
-  handleChange(date: Date) {
+  handleChange(newDate: Date) {
+    let date = moment(newDate)
     if (this.props.timezone === 'utc') {
-      date = DateUtils.getLocalTime(date)
+      date = DateUtils.getLocalTime(newDate)
     }
 
     this.setState({ date })

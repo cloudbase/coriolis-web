@@ -12,31 +12,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import moment from 'moment'
 
 class DateUtils {
-  static getLocalTime(rawDate) {
-    let offset = (new Date().getTimezoneOffset() / 60) * -1
-
-    return moment(rawDate).add(offset, 'hours')
+  static getLocalTime(rawDate: ?Date | ?moment$Moment): moment$Moment {
+    return moment(rawDate).add(-new Date().getTimezoneOffset(), 'minutes')
   }
 
-  static getUtcTime(rawDate) {
-    let offset = (new Date().getTimezoneOffset() / 60)
-    return moment(rawDate).add(offset, 'hours')
+  static getUtcTime(rawDate: ?Date | ?moment$Moment): moment$Moment {
+    return moment(rawDate).add(new Date().getTimezoneOffset(), 'minutes')
   }
 
-  static getLocalHour(hour) {
-    let hourDate = new Date(2017, 0, 1, hour)
-    return moment(hourDate).add(-hourDate.getTimezoneOffset(), 'minutes').get('hours')
+  static getLocalHour(hour: number): number {
+    return moment('00', 'HH').add(-new Date().getTimezoneOffset(), 'minutes').add(hour, 'hours').get('hours')
   }
 
-  static getUtcHour(hour) {
-    let hourDate = new Date(2017, 0, 1, hour)
-    return moment(hourDate).add(hourDate.getTimezoneOffset(), 'minutes').get('hours')
+  static getUtcHour(hour: number): number {
+    return moment('00', 'HH').add(new Date().getTimezoneOffset(), 'minutes').add(hour, 'hours').get('hours')
   }
 
-  static getOrdinalDay(number) {
+  static getOrdinalDay(number: number) {
     switch (number) {
       case 1:
       case 21:
