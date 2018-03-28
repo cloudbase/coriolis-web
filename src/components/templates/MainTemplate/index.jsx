@@ -39,7 +39,9 @@ const List = styled.div`
   padding-bottom: 32px;
   margin-left: ${props => props.noMargin ? 0 : '-32px'};
 `
-const Header = styled.div``
+const Header = styled.div`
+  min-width: 800px;
+`
 
 type Props = {
   navigationComponent: React.Node,

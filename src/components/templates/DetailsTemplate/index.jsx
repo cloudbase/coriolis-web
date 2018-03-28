@@ -17,7 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  min-width: 1100px;
+`
 const PageHeader = styled.div``
 const ContentHeader = styled.div``
 const Content = styled.div`

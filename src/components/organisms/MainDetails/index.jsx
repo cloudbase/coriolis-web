@@ -47,7 +47,7 @@ const Arrow = styled.div`
   width: 34px;
   height: 24px;
   background: url('${arrowImage}') center no-repeat;
-  margin-top: 68px;
+  margin-top: 84px;
 `
 const Row = styled.div`
   margin-bottom: 32px;
