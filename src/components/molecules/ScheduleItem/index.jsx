@@ -118,10 +118,8 @@ class ScheduleItem extends React.Component<Props> {
     if (zeroBasedIndex) {
       let value = this.props.item.schedule[fieldName]
 
-      if (fieldName === 'hour') {
-        if (this.props.timezone === 'local') {
-          value = DateUtils.getLocalHour(value)
-        }
+      if (fieldName === 'hour' && this.props.timezone === 'local') {
+        value = DateUtils.getLocalHour(value)
       }
 
       return items[value + 1]
@@ -304,12 +302,12 @@ class ScheduleItem extends React.Component<Props> {
 
   renderExpirationValue() {
     let date = this.props.item.expiration_date && moment(this.props.item.expiration_date)
-    let labelDate = date
-    if (this.props.timezone === 'utc' && date) {
-      labelDate = DateUtils.getUtcTime(date)
-    }
 
     if (this.props.item.enabled) {
+      let labelDate = date
+      if (this.props.timezone === 'utc' && date) {
+        labelDate = DateUtils.getUtcTime(date)
+      }
       return this.renderLabel({ label: (labelDate && labelDate.format('DD/MM/YYYY hh:mm A')) || '-' })
     }
 

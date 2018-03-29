@@ -21,5 +21,6 @@ export type Execution = {
   number: number,
   status: string,
   created_at: Date,
+  updated_at: Date,
   tasks: Task[],
 }

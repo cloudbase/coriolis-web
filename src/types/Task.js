@@ -23,6 +23,7 @@ export type Task = {
   id: string,
   status: string,
   created_at: Date,
+  updated_at: Date,
   progress_updates: ProgressUpdate[],
   task_type: string,
   instance: string,
