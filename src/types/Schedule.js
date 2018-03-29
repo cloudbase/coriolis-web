@@ -27,4 +27,5 @@ export type Schedule = {
   enabled?: ?boolean,
   schedule?: ScheduleInfo,
   expiration_date?: Date,
+  shutdown_instances?: boolean,
 }

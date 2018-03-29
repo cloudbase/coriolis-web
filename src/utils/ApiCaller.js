@@ -12,9 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import NotificationStore from '../stores/NotificationStore'
 
 let apiInstance = null
+
+type RequestOptions = {
+  method: string,
+  url: string,
+  requestId?: string,
+  headers?: {[string]: mixed},
+}
+
+type RequestInfo = {
+  requestId: string,
+  request: XMLHttpRequest,
+}
 
 class ApiCaller {
   defaultHeaders = {
@@ -31,19 +45,19 @@ class ApiCaller {
     return apiInstance
   }
 
-  addRequest(request) {
-    this.requests.unshift(request)
+  addRequest(requestInfo: RequestInfo) {
+    this.requests.unshift(requestInfo)
     if (this.requests.length > 100) {
       this.requests.pop()
     }
   }
 
-  cancelRequest(requestInfo) {
+  cancelRequest(requestInfo: RequestInfo) {
     requestInfo.request.abort()
     this.requests = this.requests.filter(r => r.requestId !== requestInfo.requestId)
   }
 
-  sendAjaxRequest(options) {
+  sendAjaxRequest(options: RequestOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest()
 
@@ -57,7 +71,7 @@ class ApiCaller {
 
       if (options.headers) {
         Object.keys(options.headers).forEach((key) => {
-          headers[key] = options.headers[key]
+          headers[key] = options.headers ? options.headers[key] : ''
         })
       }
 
@@ -111,6 +125,7 @@ class ApiCaller {
 
           if (result.data && result.data.error && result.data.error.message &&
             (result.status !== 401 || window.location.hash !== loginUrl)) {
+            // $FlowIgnore
             NotificationStore.notify(result.data.error.message, 'error')
           }
 
@@ -129,6 +144,7 @@ class ApiCaller {
           connection to the server.`, 'error')
         }
 
+        // $FlowIgnore
         console.log('%cError Response: ', 'color: #D0021B', result.data) // eslint-disable-line no-console
         reject({ status: 500, data: 'Connection error' })
       }
@@ -141,7 +157,7 @@ class ApiCaller {
     }
   }
 
-  static processHeaders(rawHeaders) {
+  static processHeaders(rawHeaders: string) {
     let headers = {}
     let lines = rawHeaders.split('\n')
     lines.forEach((line) => {
@@ -153,7 +169,7 @@ class ApiCaller {
     return headers
   }
 
-  setDefaultHeader(name, value) {
+  setDefaultHeader(name: string, value: ?string) {
     if (value == null) {
       delete this.defaultHeaders[name]
     } else {

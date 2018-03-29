@@ -12,13 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import request from 'ajax-request'
 
 let apiInstance = null
 let defaultApiVersion = '2017-11-11-preview'
 let azureUrl = 'https://management.azure.com/'
 
+type RequestOptions = {
+  headers?: {[string]: mixed},
+  url: string,
+}
+
 class AzureApiCaller {
+  headers: {[string]: mixed}
+
   constructor() {
     if (!apiInstance) {
       apiInstance = this
@@ -29,12 +38,12 @@ class AzureApiCaller {
     return apiInstance
   }
 
-  rejectError(error, reject) {
+  rejectError(error: string, reject: (error: any) => void) {
     console.error('%c', 'color: #D0021B', error) // eslint-disable-line no-console
     reject(error)
   }
 
-  send(options, apiVersion) {
+  send(options: RequestOptions, apiVersion?: string): Promise<any> {
     return new Promise((resolve, reject) => {
       options.headers = {
         ...options.headers,
@@ -74,7 +83,7 @@ class AzureApiCaller {
     })
   }
 
-  setHeader(name, value) {
+  setHeader(name: string, value: ?string) {
     this.headers[name] = value
   }
 }

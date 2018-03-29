@@ -110,7 +110,7 @@ class SideMenu extends React.Component<Props, State> {
           dangerouslySetInnerHTML={{ __html: hamburgerImage() }}
         />
         <Menu open={this.state.open}>
-          {navigationMenu.filter(i => !i.disabled).map(item => {
+          {navigationMenu.filter(i => i.disabled ? !i.disabled : true).map(item => {
             return (
               <MenuItem key={item.value} href={`/#/${item.value}`}>{item.label}</MenuItem>
             )

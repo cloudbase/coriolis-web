@@ -24,7 +24,7 @@ import App from './components/App.jsx'
 
 const renderApp = () => React.createElement(
   HashRouter,
-  { basename },
+  { basename: basename || '' },
   React.createElement(App, null)
 )
 

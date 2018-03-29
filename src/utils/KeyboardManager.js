@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 let eventAdded = false
 let listeners = []
 const keyDownHandler = evt => {
@@ -24,10 +26,10 @@ const keyDownHandler = evt => {
 }
 export default class KeyboardManager {
   static eventAdded = false
-  static onKeyDown(id, callback, priority) {
+  static onKeyDown(id: string, callback: ?(event: KeyboardEvent) => void, priority?: number) {
     if (!eventAdded) {
       eventAdded = true
-      document.addEventListener('keydown', evt => { keyDownHandler(evt) })
+      document.addEventListener('keydown', (evt: KeyboardEvent) => { keyDownHandler(evt) })
     }
 
     let listener = listeners.find(l => l.id === id)
@@ -37,7 +39,7 @@ export default class KeyboardManager {
     listeners.push({ id, callback, priority: priority || 0 })
   }
 
-  static onEnter(id, callback, priority) {
+  static onEnter(id: string, callback: (evt: KeyboardEvent) => void, priority?: number) {
     this.onKeyDown(`${id}-enter`, evt => {
       if (evt.keyCode === 13) {
         callback(evt)
@@ -45,7 +47,7 @@ export default class KeyboardManager {
     }, priority)
   }
 
-  static onEsc(id, callback, priority) {
+  static onEsc(id: string, callback: (evt: KeyboardEvent) => void, priority?: number) {
     this.onKeyDown(`${id}-esc`, evt => {
       if (evt.keyCode === 27) {
         callback(evt)
@@ -53,7 +55,7 @@ export default class KeyboardManager {
     }, priority)
   }
 
-  static removeKeyDown(id) {
+  static removeKeyDown(id: string) {
     listeners = listeners.filter(l => l.id !== id && l.id !== `${id}-enter` && l.id !== `${id}-esc`)
   }
 }
