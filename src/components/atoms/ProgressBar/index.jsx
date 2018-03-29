@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
@@ -35,6 +36,7 @@ const Progress = styled.div`
   width: ${(props: Props) => props.width}%;
 `
 
+@observer
 class ProgressBar extends React.Component<Props> {
   render() {
     return (

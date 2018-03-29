@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import { Collapse } from 'react-collapse'
 
@@ -138,6 +139,7 @@ type Props = {
   open: boolean,
   onDependsOnClick: (id: string) => void,
 }
+@observer
 class TaskItem extends React.Component<Props> {
   getLastMessage() {
     let message

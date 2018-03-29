@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
@@ -57,6 +58,7 @@ type Props = {
   onChange: (item: ItemType) => void,
   className?: string,
 }
+@observer
 class ToggleButtonBar extends React.Component<Props> {
   render() {
     if (!this.props.items) {

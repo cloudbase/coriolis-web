@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Arrow from '../../atoms/Arrow'
@@ -44,6 +45,7 @@ type Props = {
   selected: { id: string },
   wizardType: 'migration' | 'replica',
 }
+@observer
 class WizardBreadcrumbs extends React.Component<Props> {
   render() {
     let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== this.props.wizardType)

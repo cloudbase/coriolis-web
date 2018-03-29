@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Logo from '../../atoms/Logo'
@@ -47,6 +48,7 @@ const MenuItem = styled.a`
 `
 const Footer = styled.div``
 
+@observer
 class Navigation extends React.Component<{currentPage: string}> {
   renderMenu() {
     return (

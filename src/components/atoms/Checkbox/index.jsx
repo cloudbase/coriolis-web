@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
@@ -55,6 +56,7 @@ type Props = {
   disabled?: boolean,
   onChange?: (checked: boolean) => void,
 }
+@observer
 class Checkbox extends React.Component<Props> {
   handleClick() {
     if (this.props.disabled || !this.props.onChange) {

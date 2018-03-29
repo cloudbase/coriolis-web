@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
@@ -40,6 +41,7 @@ type Props = {
   itemType?: string,
   customHref?: (item: ItemType) => ?string,
 }
+@observer
 class DetailsNavigation extends React.Component<Props> {
   renderItems() {
     return (

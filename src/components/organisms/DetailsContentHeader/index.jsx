@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import type { MainItem } from '../../../types/MainItem'
@@ -87,6 +88,7 @@ type Props = {
   actionButtonDisabled?: boolean,
   noSidemenuSpace?: boolean,
 }
+@observer
 class DetailsContentHeader extends React.Component<Props> {
   getLastExecution(): ?MainItem | ?Execution {
     if (this.props.item && this.props.item.executions && this.props.item.executions.length) {

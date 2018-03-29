@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Button from '../../atoms/Button'
@@ -76,6 +77,7 @@ type Props = {
   onCancelClick: () => void,
   onRetryClick: () => void,
 }
+@observer
 class EndpointValidation extends React.Component<Props> {
   handleCopyClick(message: string) {
     let succesful = DomUtils.copyTextToClipboard(message)

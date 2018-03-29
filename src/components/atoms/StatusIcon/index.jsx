@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
@@ -75,6 +76,7 @@ const Wrapper = styled.div`
   ${props => statuses(props)[props.status]}
 `
 
+@observer
 class StatusIcon extends React.Component<Props> {
   render() {
     return (

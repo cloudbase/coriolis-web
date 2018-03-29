@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import ReactDOM from 'react-dom'
 
@@ -113,6 +114,7 @@ type State = {
   showDropdownList: boolean,
   firstItemHover: boolean
 }
+@observer
 class Dropdown extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
     noSelectionMessage: 'Select an item',

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import SearchButton from '../../atoms/SearchButton'
@@ -70,6 +71,7 @@ type State = {
   hover?: boolean,
   focus?: boolean,
 }
+@observer
 class SearchInput extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
     placeholder: 'Search',

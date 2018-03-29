@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
@@ -106,6 +107,7 @@ type Props = {
 type State = {
   showDropdownList: boolean,
 }
+@observer
 class UserDropdown extends React.Component<Props, State> {
   itemMouseDown: boolean
 

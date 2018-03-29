@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { injectGlobal } from 'styled-components'
 
 import reloadImage from './images/reload.svg'
@@ -36,6 +37,7 @@ injectGlobal`
 type Props = {
   onClick: () => void,
 }
+@observer
 class ReloadButton extends React.Component<Props> {
   wrapper: HTMLElement
   timeout: ?TimeoutID

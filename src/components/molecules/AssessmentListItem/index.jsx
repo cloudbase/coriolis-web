@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import moment from 'moment'
 
@@ -102,6 +103,7 @@ type Props = {
   item: Assessment,
   onClick: () => void,
 }
+@observer
 class AssessmentListItem extends React.Component<Props> {
   render() {
     let status = this.props.item.properties.status.toUpperCase()

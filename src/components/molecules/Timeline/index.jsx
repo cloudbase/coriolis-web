@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import type { Execution } from '../../../types/Execution'
@@ -88,6 +89,7 @@ type Props = {
   onNextClick: () => void,
   onItemClick: (item: Execution) => void,
 }
+@observer
 class Timeline extends React.Component<Props> {
   itemsRef: HTMLElement
   progressLineRef: HTMLElement

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import TaskItem from '../../molecules/TaskItem'
@@ -48,6 +49,7 @@ type Props = {
 type State = {
   openedItems: Task[],
 }
+@observer
 class Tasks extends React.Component<Props, State> {
   dragStartPosition: ?{ x: number, y: number }
 
