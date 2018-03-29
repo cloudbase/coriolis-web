@@ -164,7 +164,7 @@ class ScheduleItem extends React.Component<Props> {
       return false
     }
     let data = isRootField ? unsavedSchedule : unsavedSchedule.schedule
-    if (data && data[fieldName] !== undefined && data[fieldName] !== null) {
+    if (data && data[fieldName] !== undefined) {
       return true
     }
     return false

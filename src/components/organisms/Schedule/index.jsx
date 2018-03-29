@@ -133,10 +133,6 @@ class Schedule extends React.Component<Props, State> {
     unsavedSchedules: [],
   }
 
-  static defaultProps = {
-    unsavedSchedules: [],
-  }
-
   constructor() {
     super()
 
