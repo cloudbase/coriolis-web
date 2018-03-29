@@ -26,24 +26,27 @@ import DropdownFilterGroup from '../../organisms/DropdownFilterGroup'
 import AssessmentListItem from '../../molecules/AssessmentListItem'
 import type { Assessment } from '../../../types/Assessment'
 import type { Endpoint } from '../../../types/Endpoint'
-import type { Project } from '../../../types/Project'
 
 import AzureStore from '../../../stores/AzureStore'
 import AssessmentStore from '../../../stores/AssessmentStore'
 import EndpointStore from '../../../stores/EndpointStore'
 import ProjectStore from '../../../stores/ProjectStore'
 import UserStore from '../../../stores/UserStore'
-import Wait from '../../../utils/Wait'
 
 import { requestPollTimeout } from '../../../config'
 
 const Wrapper = styled.div``
 
 type Props = {}
+type State = {modalIsOpen: boolean}
 @observer
-class AssessmentsPage extends React.Component<Props> {
+class AssessmentsPage extends React.Component<Props, State> {
   disablePolling: boolean
   pollTimeout: TimeoutID
+
+  state = {
+    modalIsOpen: false,
+  }
 
   componentWillMount() {
     ProjectStore.getProjects()
@@ -66,6 +69,7 @@ class AssessmentsPage extends React.Component<Props> {
 
   componentWillUnmount() {
     this.disablePolling = true
+    clearTimeout(this.pollTimeout)
   }
 
   getEndpointsDropdownConfig() {
@@ -138,19 +142,25 @@ class AssessmentsPage extends React.Component<Props> {
     window.location.href = `/#/assessment/${encodeURIComponent(btoa(JSON.stringify({ ...info })))}`
   }
 
-  handleProjectChange(project: Project) {
-    Wait.for(() => UserStore.user ? UserStore.user.project.id === project.id : false, () => {
-      AssessmentStore.clearSelection()
-      AzureStore.clearAssessments()
-      EndpointStore.getEndpoints({ showLoading: true }).then(() => {
-        let endpoints = EndpointStore.endpoints.filter(e => e.type === 'azure')
-        if (endpoints.length > 0) {
-          this.chooseEndpoint(AssessmentStore.selectedEndpoint && AssessmentStore.selectedEndpoint.id ? AssessmentStore.selectedEndpoint : endpoints[0])
-        }
-      })
+  handleProjectChange() {
+    AssessmentStore.clearSelection()
+    AzureStore.clearAssessments()
+    EndpointStore.getEndpoints({ showLoading: true }).then(() => {
+      let endpoints = EndpointStore.endpoints.filter(e => e.type === 'azure')
+      if (endpoints.length > 0) {
+        this.chooseEndpoint(AssessmentStore.selectedEndpoint && AssessmentStore.selectedEndpoint.id ? AssessmentStore.selectedEndpoint : endpoints[0])
+      }
     })
+  }
 
-    UserStore.switchProject(project.id)
+  handleModalOpen() {
+    this.setState({ modalIsOpen: true })
+  }
+
+  handleModalClose() {
+    this.setState({ modalIsOpen: false }, () => {
+      this.pollData()
+    })
   }
 
   areResourceGroupsLoading() {
@@ -158,8 +168,7 @@ class AssessmentsPage extends React.Component<Props> {
   }
 
   pollData() {
-    if (this.disablePolling) {
-      clearTimeout(this.pollTimeout)
+    if (this.disablePolling || this.state.modalIsOpen) {
       return
     }
 
@@ -280,7 +289,9 @@ class AssessmentsPage extends React.Component<Props> {
           headerComponent={
             <PageHeader
               title="Planning"
-              onProjectChange={project => { this.handleProjectChange(project) }}
+              onProjectChange={() => { this.handleProjectChange() }}
+              onModalOpen={() => { this.handleModalOpen() }}
+              onModalClose={() => { this.handleModalClose() }}
             />
           }
         />
