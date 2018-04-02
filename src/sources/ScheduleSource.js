@@ -47,13 +47,13 @@ class ScheduleSource {
         })
       }
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules`,
         method: 'POST',
         data: payload,
       }).then(response => {
         resolve(response.data.schedule)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -81,10 +81,7 @@ class ScheduleSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules`,
-        method: 'GET',
-      }).then(response => {
+      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules`).then(response => {
         let schedules = [...response.data.schedules]
 
         schedules.forEach(s => {
@@ -98,7 +95,7 @@ class ScheduleSource {
         })
         schedules.sort((a, b) => moment(a.created_at).diff(b.created_at))
         resolve(schedules)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -113,23 +110,23 @@ class ScheduleSource {
         payload.schedule = { ...schedule.schedule }
       }
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules`,
         method: 'POST',
         data: payload,
       }).then(response => {
         resolve(response.data.schedule)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
   static removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules/${scheduleId}`,
         method: 'DELETE',
-      }).then(resolve, reject).catch(reject)
+      }).then(() => { resolve() }).catch(reject)
     })
   }
 
@@ -167,7 +164,7 @@ class ScheduleSource {
         })
       }
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/schedules/${scheduleId}`,
         method: 'PUT',
         data: payload,
@@ -180,7 +177,7 @@ class ScheduleSource {
           s.shutdown_instances = s.shutdown_instance
         }
         resolve(s)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 }

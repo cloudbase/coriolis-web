@@ -30,14 +30,11 @@ class NetworkSource {
         url = `${url}?env=${btoa(JSON.stringify(environment))}`
       }
 
-      Api.sendAjaxRequest({
-        url,
-        method: 'GET',
-      }).then(response => {
+      Api.get(url).then(response => {
         let networks = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
         networks.sort((a, b) => a.name.localeCompare(b.name))
         resolve(networks)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 }

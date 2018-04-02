@@ -22,10 +22,7 @@ import type { Project } from '../types/Project'
 class ProjectsSource {
   static getProjects(): Promise<Project[]> {
     return new Promise((resolve, reject) => {
-      Api.sendAjaxRequest({
-        url: servicesUrl.projects,
-        method: 'GET',
-      }).then((response) => {
+      Api.get(servicesUrl.projects).then((response) => {
         if (response.data.projects) {
           resolve(response.data.projects)
         }
