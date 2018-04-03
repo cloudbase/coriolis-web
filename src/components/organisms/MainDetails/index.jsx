@@ -22,6 +22,7 @@ import CopyValue from '../../atoms/CopyValue'
 import StatusIcon from '../../atoms/StatusIcon'
 import StatusImage from '../../atoms/StatusImage'
 import Table from '../../molecules/Table'
+import CopyButton from '../../atoms/CopyButton'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
@@ -29,6 +30,8 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
+import DomUtils from '../../../utils/DomUtils'
+import NotificationStore from '../../../stores/NotificationStore'
 
 import arrowImage from './images/arrow.svg'
 
@@ -103,6 +106,17 @@ const PropertyValue = styled.div`
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
+`
+const MultilineValue = styled.div`
+  cursor: pointer;
+
+  &:hover > span {
+    opacity: 1;
+  }
+  > span {
+    background-position-y: 4px;
+    margin-left: 4px;
+  }
 `
 
 type Props = {
@@ -179,6 +193,14 @@ class MainDetails extends React.Component<Props> {
     return networks
   }
 
+  handleCopy(text: string) {
+    let succesful = DomUtils.copyTextToClipboard(text)
+
+    if (succesful) {
+      NotificationStore.notify('The message has been copied to clipboard.')
+    }
+  }
+
   renderLastExecutionTime() {
     let lastExecution = this.getLastExecution()
     if (lastExecution.updated_at || lastExecution.created_at) {
@@ -228,7 +250,30 @@ class MainDetails extends React.Component<Props> {
     return endpointIsMissing
   }
 
-  renderPropertiesTable() {
+  renderMultilineValue(value: string) {
+    return (
+      <MultilineValue onClick={() => { this.handleCopy(value) }}>
+        {value}
+        <CopyButton />
+      </MultilineValue>
+    )
+  }
+
+  renderDescription() {
+    if (!this.props.item || !this.props.item.destination_environment || !this.props.item.destination_environment.description) {
+      return <Value>-</Value>
+    }
+    return this.renderMultilineValue(this.props.item.destination_environment.description)
+  }
+
+  renderInstances() {
+    if (!this.props.item) {
+      return <Value>-</Value>
+    }
+    return this.renderMultilineValue(this.props.item.instances.join(', '))
+  }
+
+  renderPropertiesTable(propertyNames: string[]) {
     let renderValue = (value: any) => {
       if (value === true) {
         return 'Yes'
@@ -241,18 +286,14 @@ class MainDetails extends React.Component<Props> {
 
     return (
       <PropertiesTable>
-        {this.props.item ? Object.keys(this.props.item.destination_environment).map(propName => {
-          let skipProps = ['description', 'network_map']
-          if (skipProps.find(p => p === propName)) {
-            return null
-          }
+        {propertyNames.map(propName => {
           return (
             <PropertyRow key={propName}>
               <PropertyName>{LabelDictionary.get(propName)}</PropertyName>
               <PropertyValue>{renderValue(this.props.item ? this.props.item.destination_environment[propName] : '')}</PropertyValue>
             </PropertyRow>
           )
-        }) : null}
+        })}
       </PropertiesTable>
     )
   }
@@ -263,6 +304,8 @@ class MainDetails extends React.Component<Props> {
     }
     const sourceEndpoint = this.getSourceEndpoint()
     const destinationEndpoint = this.getDestinationEndpoint()
+
+    const propertyNames = this.props.item ? Object.keys(this.props.item.destination_environment).filter(k => k !== 'description' && k !== 'network_map') : []
 
     return (
       <ColumnsLayout>
@@ -279,7 +322,7 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Id</Label>
-              <CopyValue value={this.props.item ? this.props.item.id : '-'} width="192px" />
+              {this.renderValue(this.props.item ? this.props.item.id + this.props.item.id : '-')}
             </Field>
           </Row>
           <Row>
@@ -291,7 +334,7 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Description</Label>
-              {this.props.item && this.props.item.destination_environment && this.props.item.destination_environment.description ? this.renderValue(this.props.item.destination_environment.description) : <Value>-</Value>}
+              {this.renderDescription()}
             </Field>
           </Row>
           <Row>
@@ -320,16 +363,18 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <EndpointLogos endpoint={destinationEndpoint ? destinationEndpoint.type : ''} />
           </Row>
-          <Row>
-            <Field>
-              <Label>Properties</Label>
-              <Value block>{this.renderPropertiesTable()}</Value>
-            </Field>
-          </Row>
+          {propertyNames.length > 0 ? (
+            <Row>
+              <Field>
+                <Label>Properties</Label>
+                <Value block>{this.renderPropertiesTable(propertyNames)}</Value>
+              </Field>
+            </Row>
+          ) : null}
           <Row>
             <Field>
               <Label>Instances</Label>
-              <Value>{this.props.item && this.props.item.instances.join(', ')}</Value>
+              {this.renderInstances()}
             </Field>
           </Row>
         </Column>
