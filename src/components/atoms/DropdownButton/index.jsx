@@ -128,8 +128,8 @@ const DropdownButton = (props: Props) => {
       disabled={props.disabled}
       {...props}
     >
-      <Label {...props} disabled={props.disabled}>{props.value}</Label>
-      <Arrow {...props} disabled={props.disabled} dangerouslySetInnerHTML={{ __html: arrowImage }} />
+      <Label {...props} data-test-id="" disabled={props.disabled}>{props.value}</Label>
+      <Arrow {...props} data-test-id="" disabled={props.disabled} dangerouslySetInnerHTML={{ __html: arrowImage }} />
     </Wrapper>
   )
 }

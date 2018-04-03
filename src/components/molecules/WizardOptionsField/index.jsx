@@ -119,6 +119,7 @@ class WizardOptionsField extends React.Component<Props> {
     return (
       <Dropdown
         width={320}
+        data-test-id={`dropdown-${this.props.name}`}
         noSelectionMessage="Choose a value"
         selectedItem={selectedItem}
         items={items}

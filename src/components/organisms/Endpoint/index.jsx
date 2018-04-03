@@ -331,7 +331,7 @@ class Endpoint extends React.Component<Props, State> {
     }
 
     return (
-      <Status>
+      <Status data-test-id="endpointStatus">
         <StatusHeader>
           <StatusIcon status={status} />
           <StatusMessage>{message}{showErrorButton}</StatusMessage>

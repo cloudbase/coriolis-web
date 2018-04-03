@@ -109,7 +109,7 @@ class EndpointListItem extends React.Component<Props> {
           checked={this.props.selected}
           onChange={this.props.onSelectedChange}
         />
-        <Content onClick={this.props.onClick}>
+        <Content onClick={this.props.onClick} data-test-id={`endpointListItemContent-${this.props.item.name}`}>
           <Image image={endpointImage} />
           <Title>
             <TitleLabel>{this.props.item.name}</TitleLabel>

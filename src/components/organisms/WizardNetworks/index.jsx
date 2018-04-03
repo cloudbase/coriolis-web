@@ -177,7 +177,7 @@ class WizardNetworks extends React.Component<Props> {
           }).map(i => i.instance_name)
           let selectedNetwork = this.props.selectedNetworks && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
           return (
-            <Nic key={nic.id}>
+            <Nic key={nic.id} data-test-id="networkItem">
               <NetworkImage />
               <NetworkTitle>
                 <NetworkName>{nic.network_name}</NetworkName>

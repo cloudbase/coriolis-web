@@ -96,6 +96,7 @@ class WizardEndpointList extends React.Component<Props> {
 
       actionInput = (
         <Dropdown
+          data-test-id={`dropdown-${provider}`}
           primary={Boolean(selectedItem)}
           items={items}
           valueField="id"

@@ -89,6 +89,7 @@ class ChooseProvider extends React.Component<Props> {
                 height={128}
                 key={k}
                 endpoint={k}
+                data-test-id={`endpointLogo-${k}`}
                 onClick={() => { this.props.onProviderClick(k) }}
               />
             )

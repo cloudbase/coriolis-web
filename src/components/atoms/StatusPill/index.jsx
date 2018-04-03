@@ -118,6 +118,7 @@ class StatusPill extends React.Component<Props> {
         secondary={this.props.secondary}
         alert={this.props.alert}
         small={this.props.small}
+        data-test-id={`statusPill-${this.props.status || 'null'}`}
       >
         {this.props.label || this.props.status}
       </Wrapper>
