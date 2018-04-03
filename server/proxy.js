@@ -14,9 +14,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import MsRest from 'ms-rest-azure'
 import bodyParser from 'body-parser'
-import request from 'request'
+import axios from 'axios'
 
 const forwardHeaders = ['authorization']
+
+let buildError = (status, message) => {
+  return {
+    error: { message: `Proxy - ${message}` },
+  }
+}
 
 module.exports = app => {
   const jsonParser = bodyParser.json()
@@ -40,14 +46,15 @@ module.exports = app => {
       }
     })
 
-    request({
-      url,
-      headers,
-    }, (err, resp, body) => {
-      if (!err) {
-        res.send(body)
+    axios({ url, headers }).then(response => {
+      res.send(response.data)
+    }).catch(error => {
+      if (error.response) {
+        res.status(error.response.status).send(buildError(error.response.status, error.response.data.error.message))
+      } else if (error.request) {
+        res.status(500).send(buildError(500, 'No Response!'))
       } else {
-        res.status(500).send(err)
+        res.status(500).send(buildError(500, 'Error creating request!'))
       }
     })
   })

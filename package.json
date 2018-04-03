@@ -54,7 +54,6 @@
   },
   "dependencies": {
     "@webpack-blocks/webpack2": "^0.4.0",
-    "ajax-request": "^1.2.3",
     "axios": "^0.18.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -93,7 +92,6 @@
     "react-notification-system": "^0.2.15",
     "react-router-dom": "^4.2.2",
     "react-tooltip": "^3.4.0",
-    "request": "^2.83.0",
     "rimraf": "^2.6.2",
     "styled-components": "2.2.0",
     "styled-tools": "^0.2.2",
