@@ -42,10 +42,7 @@ class EdnpointSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
       if (projectId) {
-        Api.sendAjaxRequest({
-          url: `${servicesUrl.coriolis}/${projectId}/endpoints`,
-          method: 'GET',
-        }).then(response => {
+        Api.get(`${servicesUrl.coriolis}/${projectId}/endpoints`).then(response => {
           let connections = []
           if (response.data.endpoints.length) {
             response.data.endpoints.forEach(endpoint => {
@@ -56,7 +53,7 @@ class EdnpointSource {
           connections.sort((c1, c2) => moment(c2.created_at).diff(moment(c1.created_at)))
 
           resolve(connections)
-        }, reject).catch(reject)
+        }).catch(reject)
       } else {
         reject()
       }
@@ -66,7 +63,7 @@ class EdnpointSource {
     return new Promise((resolve, reject) => {
       let projectId :any = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}`,
         method: 'DELETE',
       }).then(() => {
@@ -74,14 +71,14 @@ class EdnpointSource {
           let uuidIndex = endpoint.connection_info.secret_ref.lastIndexOf('/')
           // $FlowIssue
           let uuid = endpoint.connection_info.secret_ref.substr(uuidIndex + 1)
-          Api.sendAjaxRequest({
+          Api.send({
             url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
             method: 'DELETE',
-          }).then(() => { resolve(endpoint.id) }, reject).catch(reject)
+          }).then(() => { resolve(endpoint.id) }).catch(reject)
         } else {
           resolve(endpoint.id)
         }
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -90,14 +87,13 @@ class EdnpointSource {
     let uuid = index && endpoint.connection_info.secret_ref && endpoint.connection_info.secret_ref.substr(index + 1)
 
     return new Promise((resolve, reject) => {
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.barbican}/v1/secrets/${uuid || ''}/payload`,
-        method: 'GET',
-        json: false,
+        responseType: 'text',
         headers: { Accept: 'text/plain' },
       }).then((response) => {
-        resolve(JSON.parse(response.data))
-      }, reject).catch(reject)
+        resolve(response.data)
+      }).catch(reject)
     })
   }
 
@@ -120,13 +116,12 @@ class EdnpointSource {
       endpoints.forEach(endpoint => {
         let index = endpoint.connection_info.secret_ref ? endpoint.connection_info.secret_ref.lastIndexOf('/') : ''
         let uuid = endpoint.connection_info.secret_ref && index ? endpoint.connection_info.secret_ref.substr(index + 1) : ''
-        Api.sendAjaxRequest({
+        Api.send({
           url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
-          method: 'GET',
-          json: false,
+          responseType: 'text',
           headers: { Accept: 'text/plain' },
         }).then(response => {
-          connectionsInfo.push({ ...endpoint, connection_info: JSON.parse(response.data) })
+          connectionsInfo.push({ ...endpoint, connection_info: response.data })
           isDone()
         }, isDone).catch(isDone)
       })
@@ -136,13 +131,13 @@ class EdnpointSource {
   static validate(endpoint: Endpoint): Promise<Validation> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}/actions`,
         method: 'POST',
         data: { 'validate-connection': null },
       }).then(response => {
         resolve(response.data['validate-connection'])
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -157,12 +152,12 @@ class EdnpointSource {
         // $FlowIgnore
         let uuid = parsedEndpoint.connection_info.secret_ref.substr(uuidIndex + 1)
 
-        Api.sendAjaxRequest({
+        Api.send({
           url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
           method: 'DELETE',
         })
 
-        Api.sendAjaxRequest({
+        Api.send({
           url: `${servicesUrl.barbican}/v1/secrets`,
           method: 'POST',
           data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
@@ -175,7 +170,7 @@ class EdnpointSource {
               connection_info: connectionInfo,
             },
           }
-          Api.sendAjaxRequest({
+          Api.send({
             url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}`,
             method: 'PUT',
             data: newPayload,
@@ -184,28 +179,28 @@ class EdnpointSource {
             uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
             let newEndpoint = putResponse.data.endpoint
 
-            Api.sendAjaxRequest({
+            Api.send({
               url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
               method: 'GET',
-              json: false,
+              responseType: 'text',
               headers: { Accept: 'text/plain' },
             }).then(conInfoResponse => {
               newEndpoint.connection_info = {
                 ...newEndpoint.connection_info,
-                ...JSON.parse(conInfoResponse.data),
+                ...conInfoResponse.data,
               }
               resolve(newEndpoint)
-            }, reject).catch(reject)
-          }, reject).catch(reject)
-        }, reject).catch(reject)
+            }).catch(reject)
+          }).catch(reject)
+        }).catch(reject)
       } else {
-        Api.sendAjaxRequest({
+        Api.send({
           url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}`,
           method: 'PUT',
           data: { endpoint: parsedEndpoint },
         }).then(response => {
           resolve(response.data.endpoint)
-        }, reject).catch(reject)
+        }).catch(reject)
       }
     })
   }
@@ -215,7 +210,7 @@ class EdnpointSource {
       let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
       let projectId = cookie.get('projectId')
       if (useSecret) {
-        Api.sendAjaxRequest({
+        Api.send({
           url: `${servicesUrl.barbican}/v1/secrets`,
           method: 'POST',
           data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
@@ -229,7 +224,7 @@ class EdnpointSource {
               connection_info: connectionInfo,
             },
           }
-          Api.sendAjaxRequest({
+          Api.send({
             url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints`,
             method: 'POST',
             data: newPayload,
@@ -238,28 +233,27 @@ class EdnpointSource {
             let uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
             let newEndpoint = postResponse.data.endpoint
 
-            Api.sendAjaxRequest({
+            Api.send({
               url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
-              method: 'GET',
-              json: false,
+              responseType: 'text',
               headers: { Accept: 'text/plain' },
             }).then(conInfoResponse => {
               newEndpoint.connection_info = {
                 ...newEndpoint.connection_info,
-                ...JSON.parse(conInfoResponse.data),
+                ...conInfoResponse.data,
               }
               resolve(newEndpoint)
-            }, reject).catch(reject)
-          }, reject).catch(reject)
-        }, reject).catch(reject)
+            }).catch(reject)
+          }).catch(reject)
+        }).catch(reject)
       } else {
-        Api.sendAjaxRequest({
+        Api.send({
           url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints`,
           method: 'POST',
           data: { endpoint: parsedEndpoint },
         }).then(response => {
           resolve(response.data.endpoint)
-        }, reject).catch(reject)
+        }).catch(reject)
       }
     })
   }

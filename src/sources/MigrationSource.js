@@ -53,14 +53,11 @@ class MigrationSource {
   static getMigrations(): Promise<MainItem[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId') || 'null'
-      Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/migrations/detail`,
-        method: 'GET',
-      }).then(response => {
+      Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/detail`).then(response => {
         let migrations = response.data.migrations
         MigrationSourceUtils.sortMigrations(migrations)
         resolve(migrations)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -68,14 +65,11 @@ class MigrationSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId') || 'null'
 
-      Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}`,
-        method: 'GET',
-      }).then(response => {
+      Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}`).then(response => {
         let migration = response.data.migration
         MigrationSourceUtils.sortTaskUpdates(migration)
         resolve(migration)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -83,20 +77,20 @@ class MigrationSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId') || 'null'
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}/actions`,
         method: 'POST',
         data: { cancel: null },
       }).then(() => {
         resolve(migrationId)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
   static delete(migrationId: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations/${migrationId}`,
         method: 'DELETE',
       }).then(() => { resolve(migrationId) }, reject).catch(reject)
@@ -115,14 +109,14 @@ class MigrationSource {
         payload.migration[o.name] = o.value || false
       })
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations`,
         method: 'POST',
         data: payload,
       }).then(response => {
         let migration = response.data.migration
         resolve(migration)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 }

@@ -46,14 +46,11 @@ class InstanceSource {
         url = `${url + symbol}&marker=${lastInstanceId}`
       }
 
-      Api.sendAjaxRequest({
-        url,
-        method: 'GET',
-      }).then(response => {
+      Api.get(url).then(response => {
         if (this.endpointId === endpointId) {
           resolve(response.data.instances)
         }
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -61,10 +58,9 @@ class InstanceSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId') || 'undefined'
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
-        method: 'GET',
-        requestId: `instanceDetail-${reqId}}`,
+        cancelId: `instanceDetail-${reqId}`,
       }).then(response => {
         resolve({ instance: response.data.instance, reqId })
       }, response => { reject({ response, reqId }) }).catch(reject)
@@ -72,11 +68,7 @@ class InstanceSource {
   }
 
   static cancelInstancesDetailsRequests(reqId: number) {
-    Api.requests.forEach(request => {
-      if (request.requestId.indexOf(`instanceDetail-${reqId}`) > -1) {
-        Api.cancelRequest(request)
-      }
-    })
+    Api.cancelRequests(`instanceDetail-${reqId}`)
   }
 }
 

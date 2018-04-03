@@ -21,15 +21,15 @@ import { servicesUrl } from '../config'
 import type { Credentials, User } from '../types/User'
 
 class UserModel {
-  static parseUserData(response) {
-    let data = {
-      id: response.data.token.user.id,
-      name: response.data.token.user.name,
-      email: response.data.token.user.email,
-      project: response.data.token.project,
+  static parseUserData(data: any) {
+    let newData = {
+      id: data.token.user.id,
+      name: data.token.user.name,
+      email: data.token.user.email,
+      project: data.token.project,
     }
 
-    return data
+    return newData
   }
 }
 
@@ -54,16 +54,16 @@ class UserSource {
     Api.setDefaultHeader('X-Auth-Token', null)
 
     return new Promise((resolve, reject) => {
-      Api.sendAjaxRequest({
+      Api.send({
         url: servicesUrl.identity,
         method: 'POST',
         data: auth,
       }).then((response) => {
-        let token = response.headers['X-Subject-Token'] || response.headers['x-subject-token']
+        let token = response.headers ? response.headers['X-Subject-Token'] || response.headers['x-subject-token'] : ''
         Api.setDefaultHeader('X-Auth-Token', token)
         cookie.set('unscopedToken', token, { expires: 30 })
-        resolve(response)
-      }, reject).catch(reject)
+        resolve(response.data)
+      }).catch(reject)
     })
   }
 
@@ -90,13 +90,13 @@ class UserSource {
     Api.setDefaultHeader('X-Auth-Token', null)
 
     return new Promise((resolve, reject) => {
-      Api.sendAjaxRequest({
+      Api.send({
         url: servicesUrl.identity,
         method: 'POST',
         data: auth,
       }).then((response) => {
-        let token = response.headers['X-Subject-Token'] || response.headers['x-subject-token']
-        let data = UserModel.parseUserData(response)
+        let token = response.headers ? response.headers['X-Subject-Token'] || response.headers['x-subject-token'] : ''
+        let data = UserModel.parseUserData(response.data)
         data = { ...data, token }
         cookie.set('token', data.token, { expires: 30 })
         cookie.set('projectId', data.project.id, { expires: 30 })
@@ -125,23 +125,17 @@ class UserSource {
         reject()
         return
       }
-      Api.sendAjaxRequest({
+      Api.send({
         url: servicesUrl.identity,
-        method: 'GET',
         headers: { 'X-Subject-Token': token },
       }).then(response => {
-        let data = UserModel.parseUserData(response)
+        let data = UserModel.parseUserData(response.data)
         data = { ...data, token }
         resolve(data)
-      }, () => {
-        cookie.remove('token')
-        cookie.remove('projectId')
-        Api.resetHeaders()
-        reject()
       }).catch(() => {
         cookie.remove('token')
         cookie.remove('projectId')
-        Api.resetHeaders()
+        Api.setDefaultHeader('X-Auth-Token', null)
         reject()
       })
     })
@@ -163,30 +157,27 @@ class UserSource {
     let token = cookie.get('token')
 
     return new Promise((resolve, reject) => {
-      Api.sendAjaxRequest({
+      Api.send({
         url: servicesUrl.identity,
         method: 'DELETE',
-        headers: { 'X-Subject-Token': token },
+        headers: { 'X-Subject-Token': token || '' },
       }).then(() => {
         cookie.remove('token')
         window.location.href = '/'
         resolve()
-      }, reject).catch(() => {
+      }).catch(() => {
         cookie.remove('token')
         window.location.href = '/'
         reject()
       })
 
-      Api.resetHeaders()
+      Api.setDefaultHeader('X-Auth-Token', null)
     })
   }
 
   static getUserInfo(user: User): Promise<User> {
     return new Promise((resolve, reject) => {
-      Api.sendAjaxRequest({
-        url: `${servicesUrl.users}/${user.id}`,
-        method: 'GET',
-      }).then((response) => {
+      Api.get(`${servicesUrl.users}/${user.id}`).then((response) => {
         resolve(response.data.user)
       }, reject).catch(reject)
     })

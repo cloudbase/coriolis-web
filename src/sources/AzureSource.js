@@ -16,18 +16,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import AzureApiCaller from '../utils/AzureApiCaller'
+import Api from '../utils/ApiCaller'
 import type { Assessment, VmItem, VmSize } from '../types/Assessment'
 
-// $FlowIgnore
-const resourceGroupsUrl = ({ subscriptionId }) => `/subscriptions/${subscriptionId}/resourceGroups`
+const azureUrl = 'https://management.azure.com/'
+const defaultApiVersion = '2017-11-11-preview'
+
+const resourceGroupsUrl = (opts: { subscriptionId: string }) => `/subscriptions/${opts.subscriptionId}/resourceGroups`
 const projectsUrl = ({ resourceGroupName, ...other }) => `${resourceGroupsUrl({ ...other })}/${resourceGroupName}/providers/Microsoft.Migrate/projects`
 const groupsUrl = ({ projectName, ...other }) => `${projectsUrl({ ...other })}/${projectName}/groups`
 const assessmentsUrl = ({ groupName, ...other }) => `${groupsUrl({ ...other })}/${groupName}/assessments`
 const assessmentDetailsUrl = ({ assessmentName, ...other }) => `${assessmentsUrl({ ...other })}/${assessmentName}`
 const assessedVmsUrl = ({ ...other }) => `${assessmentDetailsUrl({ ...other })}/assessedMachines`
 
-class AzureSourceUtil {
+class Util {
+  static buildUrl(baseUrl: string, apiVersion?: string): string {
+    const url = `/proxy/${azureUrl + baseUrl}?api-version=${apiVersion || defaultApiVersion}`
+    return url
+  }
+
   static sortAssessments(assessments) {
     assessments.sort((a, b) => {
       return moment(b.properties.updatedTimestamp).toDate().getTime() - moment(a.properties.updatedTimestamp)
@@ -45,30 +52,42 @@ class AzureSourceUtil {
       callback()
     }
   }
+
+  static responseIsValid(resolve, reject, response, resolveData) {
+    if (response.data.error) {
+      const error = response.data.error
+      console.error('%c', 'color: #D0021B', `${error.code}: ${error.message}`)
+      reject()
+      return false
+    }
+
+    if (resolveData) {
+      resolve(resolveData)
+    }
+    return true
+  }
 }
 
 class AzureSource {
   static authenticate(username: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      AzureApiCaller.send({
+      Api.send({
         url: '/azure-login',
         method: 'POST',
         data: { username, password },
       }).then(response => {
-        let entries = Object.keys(response.tokenCache)[0]
-        let accessToken = response.tokenCache[entries][0].accessToken
-        AzureApiCaller.setHeader('Authorization', `Bearer ${accessToken}`)
-        resolve(response)
+        let entries = Object.keys(response.data.tokenCache)[0]
+        let accessToken = response.data.tokenCache[entries][0].accessToken
+        Api.setDefaultHeader('Authorization', `Bearer ${accessToken}`)
+        resolve(response.data)
       }, reject)
     })
   }
 
   static getResourceGroups(subscriptionId: string): Promise<$PropertyType<Assessment, 'group'>[]> {
     return new Promise((resolve, reject) => {
-      AzureApiCaller.send({
-        url: resourceGroupsUrl({ subscriptionId }),
-      }, '2017-08-01').then(response => {
-        resolve(response.value)
+      Api.get(Util.buildUrl(resourceGroupsUrl({ subscriptionId }), '2017-08-01')).then(response => {
+        Util.responseIsValid(resolve, reject, response, response.data.value)
       }, reject)
     })
   }
@@ -84,10 +103,12 @@ class AzureSource {
       let groupsQueue = 0
 
       // Load projects
-      AzureApiCaller.send({
-        url: projectsUrl({ resourceGroupName, subscriptionId }),
-      }).then(response => {
-        let projects = response.value
+      Api.get(Util.buildUrl(projectsUrl({ resourceGroupName, subscriptionId }))).then(response => {
+        if (!Util.responseIsValid(resolve, reject, response)) {
+          return
+        }
+
+        let projects = response.data.value
         projectsQueue = projects.length
 
         if (projectsQueue === 0 && subscriptionId + resourceGroupName === this.reqId) {
@@ -99,12 +120,13 @@ class AzureSource {
             return
           }
           // Load Groups
-          AzureApiCaller.send({
-            url: groupsUrl({ projectName: project.name, subscriptionId, resourceGroupName }),
-          }).then(response => {
+          Api.get(Util.buildUrl(groupsUrl({ projectName: project.name, subscriptionId, resourceGroupName }))).then(response => {
+            if (!Util.responseIsValid(resolve, reject, response)) {
+              return
+            }
             projectsQueue -= 1
 
-            let groups = response.value
+            let groups = response.data.value
             groupsQueue = groups.length
 
             if (groupsQueue === 0 && subscriptionId + resourceGroupName === this.reqId) {
@@ -113,16 +135,17 @@ class AzureSource {
 
             groups.forEach(group => {
               // Load Assessments
-              AzureApiCaller.send({
-                url: assessmentsUrl({ subscriptionId, resourceGroupName, projectName: project.name, groupName: group.name }),
-              }).then(response => {
+              Api.get(Util.buildUrl(assessmentsUrl({ subscriptionId, resourceGroupName, projectName: project.name, groupName: group.name }))).then(response => {
+                if (!Util.responseIsValid(resolve, reject, response)) {
+                  return
+                }
                 groupsQueue -= 1
 
-                assessments = assessments.concat(response.value.map(a => ({ ...a, project, group })))
-                AzureSourceUtil.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(AzureSourceUtil.sortAssessments(assessments)) })
-              }, () => { groupsQueue -= 1; AzureSourceUtil.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(AzureSourceUtil.sortAssessments(assessments)) }) })
+                assessments = assessments.concat(response.data.value.map(a => ({ ...a, project, group })))
+                Util.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(Util.sortAssessments(assessments)) })
+              }, () => { groupsQueue -= 1; Util.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(Util.sortAssessments(assessments)) }) })
             })
-          }, () => { projectsQueue -= 1; AzureSourceUtil.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(AzureSourceUtil.sortAssessments(assessments)) }) })
+          }, () => { projectsQueue -= 1; Util.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(Util.sortAssessments(assessments)) }) })
         })
       }, reject)
     })
@@ -130,21 +153,20 @@ class AzureSource {
 
   static getAssessmentDetails(info: Assessment): Promise<Assessment> {
     return new Promise((resolve, reject) => {
-      AzureApiCaller.send({
-        url: assessmentDetailsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }),
-      }).then(response => {
-        let assessment = { ...response, ...info }
-        resolve(assessment)
+      Api.get(Util.buildUrl(assessmentDetailsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }))).then(response => {
+        Util.responseIsValid(resolve, reject, response, { ...response.data, ...info })
       }, reject)
     })
   }
 
   static getAssessedVms(info: Assessment): Promise<VmItem[]> {
     return new Promise((resolve, reject) => {
-      AzureApiCaller.send({
-        url: assessedVmsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }),
-      }).then(response => {
-        let vms = response.value
+      Api.get(Util.buildUrl(assessedVmsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }))).then(response => {
+        if (!Util.responseIsValid(resolve, reject, response)) {
+          return
+        }
+
+        let vms = response.data.value
         vms.sort((a, b) => {
           let getLabel = item => `${item.properties.datacenterContainer}/${item.properties.displayName}`
           return getLabel(a).localeCompare(getLabel(b))
@@ -156,11 +178,8 @@ class AzureSource {
 
   static getVmSizes(info: Assessment): Promise<VmSize[]> {
     return new Promise((resolve, reject) => {
-      AzureApiCaller.send({
-        // $FlowIgnore
-        url: `/subscriptions/${info.connectionInfo.subscription_id}/providers/Microsoft.Compute/locations/${info.location}/vmSizes`,
-      }, '2017-12-01').then(response => {
-        resolve(response.value)
+      Api.get(Util.buildUrl(`/subscriptions/${info.connectionInfo.subscription_id}/providers/Microsoft.Compute/locations/${info.location}/vmSizes`, '2017-12-01')).then(response => {
+        Util.responseIsValid(resolve, reject, response, response.data.value)
       }, reject)
     })
   }

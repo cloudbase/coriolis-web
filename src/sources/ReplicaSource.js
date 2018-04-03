@@ -87,30 +87,24 @@ class ReplicaSource {
   static getReplicas(): Promise<MainItem[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
-      Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/detail`,
-        method: 'GET',
-      }).then(response => {
+      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/replicas/detail`).then(response => {
         let replicas = response.data.replicas
         replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
         ReplicaSourceUtils.sortReplicas(replicas)
         resolve(replicas)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
   static getReplicaExecutions(replicaId: string): Promise<Execution[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
-      Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/detail`,
-        method: 'GET',
-      }).then((response) => {
+      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/detail`).then((response) => {
         let executions = response.data.executions
         ReplicaSourceUtils.sortExecutionsAndTaskUpdates(executions)
 
         resolve(executions)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -118,15 +112,12 @@ class ReplicaSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`,
-        method: 'GET',
-      }).then(response => {
+      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`).then(response => {
         let replica = response.data.replica
         replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
         ReplicaSourceUtils.sortExecutions(replica.executions)
         resolve(replica)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -140,7 +131,7 @@ class ReplicaSource {
       }
       let projectId = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions`,
         method: 'POST',
         data: payload,
@@ -148,7 +139,7 @@ class ReplicaSource {
         let execution = response.data.execution
         ReplicaSourceUtils.sortTaskUpdates(execution)
         resolve(execution)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -156,13 +147,13 @@ class ReplicaSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}/actions`,
         method: 'POST',
         data: { cancel: null },
       }).then(() => {
         resolve(replicaId)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -170,12 +161,12 @@ class ReplicaSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}`,
         method: 'DELETE',
       }).then(() => {
         resolve(replicaId)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
@@ -183,7 +174,7 @@ class ReplicaSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`,
         method: 'DELETE',
       }).then(() => { resolve(replicaId) }, reject).catch(reject)
@@ -194,13 +185,13 @@ class ReplicaSource {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/actions`,
         method: 'POST',
         data: { 'delete-disks': null },
       }).then(response => {
         resolve(response.data.execution)
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 }

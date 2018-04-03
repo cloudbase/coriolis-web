@@ -46,6 +46,7 @@ export type Assessment = {
   projectName: string,
   resourceGroupName: string,
   groupName: string,
+  location: string,
   properties: {
     azureLocation: string,
   },
@@ -61,7 +62,7 @@ export type Assessment = {
     updatedTimestamp: string,
     azureLocation: string,
   },
-  connectionInfo: $PropertyType<Endpoint, 'connection_info'>,
+  connectionInfo: { subscription_id: string } & $PropertyType<Endpoint, 'connection_info'>,
 }
 
 export type MigrationInfo = {

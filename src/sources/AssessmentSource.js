@@ -61,7 +61,7 @@ class AssessmentSource {
         }
       })
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/${type}s`,
         method: 'POST',
         data: payload,

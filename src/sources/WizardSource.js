@@ -68,13 +68,13 @@ class WizardSource {
         payload[type].skip_os_morphing = data.options.skip_os_morphing
       }
 
-      Api.sendAjaxRequest({
+      Api.send({
         url: `${servicesUrl.coriolis}/${projectId || 'null'}/${type}s`,
         method: 'POST',
         data: payload,
       }).then(response => {
         resolve(response.data[type])
-      }, reject).catch(reject)
+      }).catch(reject)
     })
   }
 
