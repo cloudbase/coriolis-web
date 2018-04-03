@@ -7,5 +7,7 @@
   "supportFile": false,
   "videosFolder": "private/cypress/videos",
   "viewportWidth": 1280,
-  "viewportHeight": 660
+  "viewportHeight": 660,
+  "defaultCommandTimeout":	7000,
+  "execTimeout": 90000
 }
