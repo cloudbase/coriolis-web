@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import StatusImage from '../../atoms/StatusImage'
@@ -112,6 +113,7 @@ type Props = {
   selectedNetworks: ?NetworkMap[],
   onChange: (nic: NicType, network: Network) => void,
 }
+@observer
 class WizardNetworks extends React.Component<Props> {
   isLoading() {
     return this.props.loadingInstancesDetails || this.props.loading

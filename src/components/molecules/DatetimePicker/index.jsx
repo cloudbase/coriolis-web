@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { injectGlobal } from 'styled-components'
 import Datetime from 'react-datetime'
 import moment from 'moment'
@@ -60,6 +61,7 @@ type State = {
   showPicker: boolean,
   date: ?moment$Moment,
 }
+@observer
 class DatetimePicker extends React.Component<Props, State> {
   itemMouseDown: boolean
 

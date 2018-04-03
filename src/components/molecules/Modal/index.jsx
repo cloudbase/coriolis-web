@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import Modal from 'react-modal'
 
@@ -40,6 +41,7 @@ type Props = {
   topBottomMargin: number,
   title: string,
 }
+@observer
 class NewModal extends React.Component<Props> {
   static defaultProps: $Shape<Props> = {
     topBottomMargin: 8,

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Button from '../../atoms/Button'
@@ -39,6 +40,7 @@ const Loading = styled.span`
 type Props = {
   children: React.Node,
 }
+@observer
 class LoadingButton extends React.Component<Props> {
   render() {
     return (

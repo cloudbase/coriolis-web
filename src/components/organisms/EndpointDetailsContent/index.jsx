@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import EndpointLogos from '../../atoms/EndpointLogos'
@@ -79,6 +80,7 @@ type Props = {
   onValidateClick: () => void,
   onEditClick: () => void,
 }
+@observer
 class EndpointDetailsContent extends React.Component<Props> {
   renderedKeys: { [string]: boolean }
 

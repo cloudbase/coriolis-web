@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import StyleProps from '../../styleUtils/StyleProps'
@@ -97,6 +98,7 @@ type Props = {
   bodyStyle?: any,
   headerStyle?: any,
 }
+@observer
 class Table extends React.Component<Props> {
   static defaultProps: $Shape<Props> = {
     columnsWidths: [],

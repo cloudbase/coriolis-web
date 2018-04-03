@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import DropdownButton from '../../atoms/DropdownButton'
@@ -119,6 +120,7 @@ type Props = {
 type State = {
   showDropdownList: boolean,
 }
+@observer
 class NewItemDropdown extends React.Component<Props, State> {
   itemMouseDown: boolean
 

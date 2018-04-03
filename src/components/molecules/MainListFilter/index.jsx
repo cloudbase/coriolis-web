@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Checkbox from '../../atoms/Checkbox'
@@ -89,6 +90,7 @@ type Props = {
   customFilterComponent?: React.Node,
   searchValue?: string,
 }
+@observer
 class MainListFilter extends React.Component<Props> {
   renderFilterGroup() {
     let renderCustomComponent = () => {

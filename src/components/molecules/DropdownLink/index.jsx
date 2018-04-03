@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 
@@ -126,6 +127,7 @@ type State = {
   showDropdownList: boolean,
   searchText: string,
 }
+@observer
 class DropdownLink extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
     selectItemLabel: 'Select',

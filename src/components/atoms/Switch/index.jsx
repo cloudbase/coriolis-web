@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
@@ -130,6 +131,7 @@ type Props = {
 type State = {
   lastChecked: ?boolean,
 }
+@observer
 class Switch extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
     checkedLabel: 'Yes',

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Checkbox from '../../atoms/Checkbox'
@@ -67,6 +68,7 @@ type Props = {
   selectedVmSize: ?VmSize,
   recommendedVmSize: string,
 }
+@observer
 class AssessedVmListItem extends React.Component<Props> {
   getColumnWidth(index: number) {
     let width = parseInt(this.props.columnsWidths[index], 10)

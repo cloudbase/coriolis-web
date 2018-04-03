@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import moment from 'moment'
 
@@ -124,6 +125,7 @@ type Props = {
   data: WizardData,
   wizardType: 'replica' | 'migration',
 }
+@observer
 class WizardSummary extends React.Component<Props> {
   getDefaultOption(fieldName: string) {
     if (this.props.data.options && this.props.data.options[fieldName] === false) {

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Switch from '../../atoms/Switch'
@@ -65,6 +66,7 @@ type Props = {
   selected: 'replica' | 'migration',
   onChange: (checked: ?boolean) => void,
 }
+@observer
 class WizardType extends React.Component<Props> {
   render() {
     return (

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import EndpointLogos from '../../atoms/EndpointLogos'
@@ -125,6 +126,7 @@ type Props = {
   bottomControls: React.Node,
   loading: boolean,
 }
+@observer
 class MainDetails extends React.Component<Props> {
   getSourceEndpoint(): ?Endpoint {
     let endpoint = this.props.endpoints.find(e => this.props.item && e.id === this.props.item.origin_endpoint_id)

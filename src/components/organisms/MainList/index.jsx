@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import StatusImage from '../../atoms/StatusImage'
@@ -87,6 +88,7 @@ type Props = {
   emptyListButtonLabel?: string,
   onEmptyListButtonClick?: () => void,
 }
+@observer
 class MainList extends React.Component<Props> {
   renderList() {
     if (!this.props.items || this.props.items.length === 0) {

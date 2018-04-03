@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import moment from 'moment'
 
@@ -105,6 +106,7 @@ type Props = {
   unsavedSchedules: Schedule[],
   timezone: TimezoneValue,
 }
+@observer
 class ScheduleItem extends React.Component<Props> {
   getFieldValue(items: Field[], fieldName: string, zeroBasedIndex?: boolean, defaultSelectedIndex?: number) {
     if (this.props.item.schedule === null || this.props.item.schedule === undefined) {

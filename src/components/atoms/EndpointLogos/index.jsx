@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Generic from './images/Generic'
@@ -119,6 +120,7 @@ type Props = {
   height: number,
   disabled?: boolean,
 }
+@observer
 class EndpointLogos extends React.Component<Props> {
   static defaultProps: Props = {
     height: 64,

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { injectGlobal } from 'styled-components'
 import NotificationSystem from 'react-notification-system'
 import { observe } from 'mobx'
@@ -30,6 +31,7 @@ injectGlobal`
 
 const Wrapper = styled.div``
 
+@observer
 class Notifications extends React.Component<{}> {
   notificationsCount: number
   notificationSystem: NotificationSystem

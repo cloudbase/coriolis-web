@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import DropdownLink from '../../molecules/DropdownLink'
@@ -41,6 +42,7 @@ const DropdownLinkStyled = styled(DropdownLink)`
 type Props = {
   items: React.ElementProps<typeof DropdownLink>[]
 }
+@observer
 class DropdownFilterGroup extends React.Component<Props> {
   renderDropdowns() {
     return (

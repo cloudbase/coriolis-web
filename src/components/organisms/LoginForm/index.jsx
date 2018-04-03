@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Button from '../../atoms/Button'
@@ -92,6 +93,7 @@ type State = {
   username: string,
   password: string,
 }
+@observer
 class LoginForm extends React.Component<Props, State> {
   static defaultProps = {
     className: '',

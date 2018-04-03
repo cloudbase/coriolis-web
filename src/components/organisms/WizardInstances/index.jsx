@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Checkbox from '../../atoms/Checkbox'
@@ -198,6 +199,7 @@ type Props = {
 type State = {
   searchText: string,
 }
+@observer
 class WizardInstances extends React.Component<Props, State> {
   timeout: TimeoutID
 

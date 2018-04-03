@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Modal from '../../molecules/Modal'
@@ -64,6 +65,7 @@ type Props = {
   onRequestClose: () => void,
   onConfirmation: () => void,
 }
+@observer
 class AlertModal extends React.Component<Props> {
   static defaultProps: $Shape<Props> = {
     type: 'confirmation',

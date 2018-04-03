@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Button from '../../atoms/Button'
@@ -62,6 +63,7 @@ type Props = {
 type State = {
   fields: Field[],
 }
+@observer
 class ReplicaMigrationOptions extends React.Component<Props, State> {
   constructor() {
     super()

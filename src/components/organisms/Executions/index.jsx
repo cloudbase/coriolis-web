@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import StatusPill from '../../atoms/StatusPill'
@@ -84,6 +85,7 @@ type Props = {
 type State = {
   selectedExecution: ?Execution,
 }
+@observer
 class Executions extends React.Component<Props, State> {
   constructor() {
     super()

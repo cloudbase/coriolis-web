@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import CopyButton from '../CopyButton'
@@ -43,6 +44,7 @@ type Props = {
   width?: string,
   maxWidth?: string,
 }
+@observer
 class CopyValue extends React.Component<Props> {
   handleCopyIdClick(e: Event) {
     e.stopPropagation()

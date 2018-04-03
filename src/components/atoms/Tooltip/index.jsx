@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import { injectGlobal } from 'styled-components'
 import ReactTooltip from 'react-tooltip'
 
@@ -40,6 +41,7 @@ injectGlobal`
   }
 `
 
+@observer
 class Tooltip extends React.Component<{}> {
   static rebuild = () => {
     ReactTooltip.rebuild()

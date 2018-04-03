@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Switch from '../../atoms/Switch'
@@ -65,6 +66,7 @@ type Props = {
   onChange: (property: PropertyType, value: any) => void,
   valueCallback: (property: PropertyType) => any,
 }
+@observer
 class PropertiesTable extends React.Component<Props> {
   renderSwitch(prop: PropertyType) {
     return (

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import questionImage from './images/question.svg'
@@ -35,6 +36,7 @@ type Props = {
   marginLeft?: number,
   warning?: boolean,
 }
+@observer
 class InfoIcon extends React.Component<Props> {
   render() {
     return (

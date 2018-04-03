@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import StyleProps from '../../styleUtils/StyleProps'
@@ -51,6 +52,7 @@ type Props = {
 type State = {
   show: boolean,
 }
+@observer
 class PasswordValue extends React.Component<Props, State> {
   constructor() {
     super()

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import EndpointLogos from '../../atoms/EndpointLogos'
@@ -70,6 +71,7 @@ type Props = {
   onChange: (endpoint: Endpoint) => void,
   onAddEndpoint: (provider: string) => void,
 }
+@observer
 class WizardEndpointList extends React.Component<Props> {
   handleOnChange(selectedItem: ?Endpoint, provider: string) {
     if (selectedItem && selectedItem.id !== 'addNew') {

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import EndpointLogos from '../../atoms/EndpointLogos'
@@ -59,6 +60,7 @@ type Props = {
   onProviderClick: (provider: string) => void,
   loading: boolean,
 }
+@observer
 class ChooseProvider extends React.Component<Props> {
   renderLoading() {
     if (!this.props.loading) {
