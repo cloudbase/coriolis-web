@@ -51,7 +51,7 @@ class Navigation extends React.Component<{currentPage: string}> {
   renderMenu() {
     return (
       <Menu>
-        {navigationMenu.filter(i => !i.disabled).map(item => {
+        {navigationMenu.filter(i => i.disabled ? !i.disabled : true).map(item => {
           return (
             <MenuItem
               key={item.value}

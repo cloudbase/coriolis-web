@@ -87,7 +87,7 @@ class UserSource {
       },
     }
 
-    Api.setDefaultHeader({ 'X-Auth-Token': null })
+    Api.setDefaultHeader('X-Auth-Token', null)
 
     return new Promise((resolve, reject) => {
       Api.sendAjaxRequest({

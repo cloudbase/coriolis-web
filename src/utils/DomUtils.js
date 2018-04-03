@@ -12,15 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 class DomUtils {
-  static getEventPath(event) {
+  static getEventPath(event: Event): HTMLElement[] {
     let path = []
     let node = event.target
     while (node !== document.body && node.parentNode) {
       path.push(node)
+      // $FlowIssue
       node = node.parentNode
     }
 
+    // $FlowIgnore
     return path
   }
 
@@ -29,14 +33,14 @@ class DomUtils {
    * @param {string} text The text to copy
    * @return True if successful, false otherwise
    */
-  static copyTextToClipboard(text) {
+  static copyTextToClipboard(text: string): boolean {
     let textArea = document.createElement('textarea')
     textArea.style.position = 'fixed'
-    textArea.style.top = 0
-    textArea.style.left = 0
+    textArea.style.top = '0'
+    textArea.style.left = '0'
     textArea.style.width = '2em'
     textArea.style.height = '2em'
-    textArea.style.padding = 0
+    textArea.style.padding = '0'
     textArea.style.border = 'none'
     textArea.style.outline = 'none'
     textArea.style.boxShadow = 'none'
@@ -44,7 +48,7 @@ class DomUtils {
 
     textArea.value = text
 
-    document.body.appendChild(textArea)
+    if (document.body) document.body.appendChild(textArea)
 
     textArea.select()
 
@@ -55,7 +59,7 @@ class DomUtils {
     } catch (e) {
       successful = false
     } finally {
-      document.body.removeChild(textArea)
+      if (document.body) document.body.removeChild(textArea)
     }
     return successful
   }

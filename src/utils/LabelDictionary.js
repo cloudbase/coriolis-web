@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 class LabelDictionary {
   static dictionary = {
     username: 'Username',
@@ -97,8 +99,8 @@ class LabelDictionary {
     use_replica: 'Use replica',
   }
 
-  static get(fieldName) {
-    let labelInfo = this.dictionary[fieldName]
+  static get(fieldName: ?string): string {
+    let labelInfo = fieldName ? this.dictionary[fieldName] : null
     if (labelInfo) {
       if (typeof labelInfo === 'string') {
         return labelInfo
@@ -108,12 +110,12 @@ class LabelDictionary {
       }
     }
 
-    let words = fieldName.split('_')
+    let words = fieldName ? fieldName.split('_') : []
     words = words.map(word => word.charAt(0).toUpperCase() + word.substr(1))
     return words.join(' ')
   }
 
-  static getDescription(fieldName) {
+  static getDescription(fieldName: string): string {
     let labelInfo = this.dictionary[fieldName]
 
     if (labelInfo && typeof labelInfo === 'object') {
