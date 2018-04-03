@@ -117,8 +117,16 @@ const Option = styled.div`
 const OptionLabel = styled.div`
   color: ${Palette.grayscale[4]};
   flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
-const OptionValue = styled.div``
+const OptionValue = styled.div`
+  text-align: right;
+  max-width: 50%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`
 
 type Props = {
   data: WizardData,
