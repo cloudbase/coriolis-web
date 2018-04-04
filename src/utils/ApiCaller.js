@@ -94,7 +94,7 @@ class ApiCaller {
           }
 
           if (error.response.status === 401 && window.location.hash !== loginUrl) {
-            window.location.href = `/${loginUrl}`
+            window.location.href = '/'
           }
 
           console.log(`%cError Response: ${axiosOptions.url}`, 'color: #D0021B', error.response)

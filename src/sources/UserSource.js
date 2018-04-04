@@ -134,7 +134,6 @@ class UserSource {
         resolve(data)
       }).catch(() => {
         cookie.remove('token')
-        cookie.remove('projectId')
         Api.setDefaultHeader('X-Auth-Token', null)
         reject()
       })
