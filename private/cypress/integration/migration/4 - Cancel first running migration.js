@@ -1,18 +1,13 @@
 
 // @flow
 
-import config from '../../config'
-
 describe('Cancel a running migration', () => {
   before(() => {
-    cy.visit(config.nodeServer)
-    cy.get('input[label="Username"]').type(config.username)
-    cy.get('input[label="Password"]').type(config.password)
-    cy.get('button').click()
+    cy.login()
   })
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('unscopedToken', 'token', 'projectId')
+    Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
   it('Cancels migration', () => {
@@ -25,5 +20,6 @@ describe('Cancel a running migration', () => {
     cy.route({ url: '**/actions', method: 'POST' }).as('cancel')
     cy.get('button').contains('Yes').click()
     cy.wait('@cancel')
+    cy.get('div[data-test-id="mainStatusPill-ERROR"]', { timeout: 120000 })
   })
 })

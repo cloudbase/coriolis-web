@@ -1,18 +1,13 @@
 
 // @flow
 
-import config from '../../config'
-
 describe('Delete the first replica', () => {
   before(() => {
-    cy.visit(config.nodeServer)
-    cy.get('input[label="Username"]').type(config.username)
-    cy.get('input[label="Password"]').type(config.password)
-    cy.get('button').click()
+    cy.login()
   })
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('unscopedToken', 'token', 'projectId')
+    Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
   it('Delete replica', () => {

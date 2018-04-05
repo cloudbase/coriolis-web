@@ -5,14 +5,11 @@ import config from '../../config'
 
 describe('Create VmWare to Azure Replica', () => {
   before(() => {
-    cy.visit(config.nodeServer)
-    cy.get('input[label="Username"]').type(config.username)
-    cy.get('input[label="Password"]').type(config.password)
-    cy.get('button').click()
+    cy.login()
   })
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('unscopedToken', 'token', 'projectId')
+    Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
   it('Shows Wizard page', () => {
@@ -49,10 +46,13 @@ describe('Create VmWare to Azure Replica', () => {
 
   it('Fills Azure replica info', () => {
     cy.get('button').contains('Next').click()
-    cy.get('div[data-test-id="dropdown-location"]').first().click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.azure.location.label).click()
-    cy.get('div[data-test-id="dropdown-resource_group"]').first().click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.azure.resourceGroup.label).click()
+    cy.get('input[placeholder="Location"]').type(config.wizard.azure.location.value)
+    cy.get('input[placeholder="Resource Group"]').type(config.wizard.azure.resourceGroup.value)
+
+    // cy.get('div[data-test-id="dropdown-location"]').first().click()
+    // cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.azure.location.label).click()
+    // cy.get('div[data-test-id="dropdown-resource_group"]').first().click()
+    // cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.azure.resourceGroup.label).click()
   })
 
   it('Selects first available network mapping', () => {

@@ -2,6 +2,7 @@
 
 export default {
   nodeServer: 'http://localhost:3000/',
+  coriolisUrl: '',
   username: 'admin',
   password: '',
   endpoints: {
@@ -30,6 +31,9 @@ export default {
     azure: {
       location: { label: 'West US', value: 'westus' },
       resourceGroup: { label: 'Coriolis', value: 'coriolis' },
+    },
+    openstack: {
+      network: 'private',
     },
     instancesSearch: 'ubuntu',
     instancesSelectItem: 2,

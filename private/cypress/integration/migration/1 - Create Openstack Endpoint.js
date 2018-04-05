@@ -5,14 +5,11 @@ import config from '../../config'
 
 describe('Create Openstack Endpoint', () => {
   before(() => {
-    cy.visit(config.nodeServer)
-    cy.get('input[label="Username"]').type(config.username)
-    cy.get('input[label="Password"]').type(config.password)
-    cy.get('button').click()
+    cy.login()
   })
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('unscopedToken', 'token', 'projectId')
+    Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
   it('Shows new Openstack endpoint dialog', () => {

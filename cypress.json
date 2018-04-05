@@ -4,10 +4,10 @@
   "integrationFolder": "private/cypress/integration",
   "pluginsFile": false,
   "screenshotsFolder": "private/cypress/screenshots",
-  "supportFile": false,
   "videosFolder": "private/cypress/videos",
+  "supportFile": "private/cypress/support/index.js",
   "viewportWidth": 1280,
-  "viewportHeight": 660,
-  "defaultCommandTimeout":	7000,
+  "viewportHeight": 900,
+  "defaultCommandTimeout": 7000,
   "execTimeout": 90000
 }

@@ -126,7 +126,7 @@ class DetailsContentHeader extends React.Component<Props> {
           primary={this.props.primaryInfoPill}
         />
         <StatusPill
-          data-test-id={`statusPill-${statusLabel || ''}`}
+          data-test-id={`mainStatusPill-${statusLabel || ''}`}
           status={this.getStatus()}
           label={statusLabel || ''}
         />

@@ -5,14 +5,11 @@ import config from '../../config'
 
 describe('Create VmWare to Openstack Migration', () => {
   before(() => {
-    cy.visit(config.nodeServer)
-    cy.get('input[label="Username"]').type(config.username)
-    cy.get('input[label="Password"]').type(config.password)
-    cy.get('button').click()
+    cy.login()
   })
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('unscopedToken', 'token', 'projectId')
+    Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
   it('Shows Wizard page', () => {
@@ -50,8 +47,8 @@ describe('Create VmWare to Openstack Migration', () => {
   it('Fills Openstack migration info', () => {
     cy.get('button').contains('Next').click()
     cy.get('div').contains('Advanced').click()
-    cy.get('input[placeholder="Floating IP Pool"]').type(config.wizard.openstack.floatingIpPool)
-    cy.get('input[placeholder="Migration Floating IP Pool"]').type(config.wizard.openstack.migrationFloatingIpPool)
+    // cy.get('input[placeholder="Floating IP Pool"]').type(config.wizard.openstack.floatingIpPool)
+    // cy.get('input[placeholder="Migration Floating IP Pool"]').type(config.wizard.openstack.migrationFloatingIpPool)
   })
 
   it('Selects first available network mapping', () => {
@@ -64,7 +61,8 @@ describe('Create VmWare to Openstack Migration', () => {
     cy.get('button').contains('Next').should('be.disabled')
     cy.get('div[data-test-id="networkItem"]').its('length').should('be.gt', 0)
     cy.get('div[value="Select ..."]').first().click()
-    cy.get('div[data-test-id="dropdownListItem"]').first().click()
+    // cy.get('div[data-test-id="dropdownListItem"]').first().click()
+    cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.openstack.network).click()
     cy.get('button').contains('Next').should('not.be.disabled')
   })
 
@@ -75,8 +73,8 @@ describe('Create VmWare to Openstack Migration', () => {
     cy.get('#app').should('contain', 'e2e-openstack-test')
     cy.get('#app').should('contain', 'Coriolis Migration')
     cy.get('#app').should('contain', 'Migration Options')
-    cy.get('#app').should('contain', config.wizard.openstack.migrationFloatingIpPool)
-    cy.get('#app').should('contain', config.wizard.openstack.floatingIpPool)
+    // cy.get('#app').should('contain', config.wizard.openstack.migrationFloatingIpPool)
+    // cy.get('#app').should('contain', config.wizard.openstack.floatingIpPool)
     cy.get('#app').should('contain', 'Networks')
     cy.get('#app').should('contain', 'Instances')
   })
