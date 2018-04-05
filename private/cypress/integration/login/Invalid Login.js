@@ -5,7 +5,7 @@ import config from '../../config'
 
 declare var cy: any
 
-describe('Coriolis Login', () => {
+describe('Coriolis Login Failed', () => {
   it('Displays incorrect password', () => {
     cy.server()
     cy.route({ url: '**/identity/**', method: 'POST' }).as('login')

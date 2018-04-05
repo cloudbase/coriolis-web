@@ -2,6 +2,7 @@
 
 export default {
   nodeServer: 'http://localhost:3000/',
+  coriolisUrl: '',
   username: 'admin',
   password: '',
   endpoints: {
