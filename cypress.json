@@ -7,7 +7,7 @@
   "videosFolder": "private/cypress/videos",
   "supportFile": "private/cypress/support/index.js",
   "viewportWidth": 1280,
-  "viewportHeight": 660,
+  "viewportHeight": 900,
   "defaultCommandTimeout": 7000,
   "execTimeout": 90000
 }
