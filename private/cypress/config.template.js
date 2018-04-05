@@ -32,6 +32,9 @@ export default {
       location: { label: 'West US', value: 'westus' },
       resourceGroup: { label: 'Coriolis', value: 'coriolis' },
     },
+    openstack: {
+      network: 'private',
+    },
     instancesSearch: 'ubuntu',
     instancesSelectItem: 2,
   },
