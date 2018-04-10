@@ -50,6 +50,7 @@ type State = {
   showChooseProviderModal: boolean,
   showEndpointModal: boolean,
   providerType: ?string,
+  showEndpointsInUseModal: boolean,
 }
 @observer
 class EndpointsPage extends React.Component<{}, State> {
@@ -64,6 +65,7 @@ class EndpointsPage extends React.Component<{}, State> {
       showChooseProviderModal: false,
       showEndpointModal: false,
       providerType: null,
+      showEndpointsInUseModal: false,
     }
   }
 
@@ -119,11 +121,19 @@ class EndpointsPage extends React.Component<{}, State> {
 
   handleActionChange(items: EndpointType[], action: string) {
     if (action === 'delete') {
-      this.setState({
-        showDeleteEndpointsConfirmation: true,
-        // $FlowIssue
-        confirmationItems: items,
+      let endpointsInUse = items.filter(endpoint => {
+        const endpointUsage = this.getEndpointUsage(endpoint)
+        return endpointUsage.migrationsCount > 0 || endpointUsage.replicasCount > 0
       })
+
+      if (endpointsInUse.length > 0) {
+        this.setState({ showEndpointsInUseModal: true })
+      } else {
+        this.setState({
+          showDeleteEndpointsConfirmation: true,
+          confirmationItems: items,
+        })
+      }
     }
   }
 
@@ -254,6 +264,14 @@ class EndpointsPage extends React.Component<{}, State> {
             onCancelClick={() => { this.handleCloseEndpointModal() }}
           />
         </Modal>
+        <AlertModal
+          type="error"
+          isOpen={this.state.showEndpointsInUseModal}
+          title="Endpoints are in use"
+          message="Some of the selected endpoints can't be deleted because they are in use by replicas or migrations."
+          extraMessage="You must first delete the replicas or migrations which use these endpoints."
+          onRequestClose={() => { this.setState({ showEndpointsInUseModal: false }) }}
+        />
       </Wrapper>
     )
   }
