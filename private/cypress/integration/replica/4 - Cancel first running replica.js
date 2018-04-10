@@ -11,9 +11,11 @@ describe('Cancel a running replica', () => {
   })
 
   it('Cancels replica execution', () => {
-    cy.get('div[data-test-id="statusPill-RUNNING"]').eq(0).click()
-    cy.get('a').contains('Executions').click()
     cy.server()
+    cy.route({ url: '**/executions/detail', method: 'GET' }).as('execution')
+    cy.get('div[data-test-id="statusPill-RUNNING"]').eq(0).click()
+    cy.wait('@execution')
+    cy.get('a').contains('Executions').click()
     cy.get('button').contains('Cancel Execution').click()
     cy.route({ url: '**/actions', method: 'POST' }).as('cancel')
     cy.get('button').contains('Yes').click()

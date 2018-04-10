@@ -11,7 +11,10 @@ describe('Scheduler Operations', () => {
   })
 
   it('Goes to scheduler\'s page', () => {
+    cy.server()
+    cy.route('GET', '**/executions/detail').as('execution')
     cy.get('div[data-test-id="mainListItem"]').first().click()
+    cy.wait('@execution')
     cy.get('a').contains('Schedule').click()
     cy.get('button').should('contain', 'Add Schedule')
   })
