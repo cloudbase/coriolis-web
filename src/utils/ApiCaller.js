@@ -102,7 +102,9 @@ class ApiCaller {
         } else if (error.request) {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
-          NotificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
+          if (window.location.hash !== loginUrl) {
+            NotificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
+          }
           console.log(`%cError No Response: ${axiosOptions.url}`, 'color: #D0021B')
           reject({})
         } else {
