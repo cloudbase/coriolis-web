@@ -166,7 +166,8 @@ class ReplicasPage extends React.Component<{}, State> {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
-    ReplicaStore.getReplicas().then(() => {
+
+    Promise.all([ReplicaStore.getReplicas(), EndpointStore.getEndpoints()]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
