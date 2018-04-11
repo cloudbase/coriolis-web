@@ -37,6 +37,7 @@ import MigrationStore from '../../../stores/MigrationStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
 import ProviderStore from '../../../stores/ProviderStore'
 import LabelDictionary from '../../../utils/LabelDictionary'
+import { requestPollTimeout } from '../../../config.js'
 
 const Wrapper = styled.div``
 
@@ -51,10 +52,12 @@ type State = {
   showEndpointModal: boolean,
   providerType: ?string,
   showEndpointsInUseModal: boolean,
+  modalIsOpen: boolean,
 }
 @observer
 class EndpointsPage extends React.Component<{}, State> {
-  pollInterval: IntervalID
+  pollTimeout: TimeoutID
+  stopPolling: boolean
 
   constructor() {
     super()
@@ -66,6 +69,7 @@ class EndpointsPage extends React.Component<{}, State> {
       showEndpointModal: false,
       providerType: null,
       showEndpointsInUseModal: false,
+      modalIsOpen: false,
     }
   }
 
@@ -73,13 +77,14 @@ class EndpointsPage extends React.Component<{}, State> {
     document.title = 'Coriolis Endpoints'
 
     ProjectStore.getProjects()
-    EndpointStore.getEndpoints()
-    MigrationStore.getMigrations()
-    ReplicaStore.getReplicas()
+
+    this.stopPolling = false
+    this.pollData()
   }
 
   componentWillUnmount() {
-    clearInterval(this.pollInterval)
+    clearTimeout(this.pollTimeout)
+    this.stopPolling = true
   }
 
   getFilterItems() {
@@ -174,6 +179,26 @@ class EndpointsPage extends React.Component<{}, State> {
     this.setState({ showEndpointModal: false })
   }
 
+  handleModalOpen() {
+    this.setState({ modalIsOpen: true })
+  }
+
+  handleModalClose() {
+    this.setState({ modalIsOpen: false }, () => {
+      this.pollData()
+    })
+  }
+
+  pollData() {
+    if (this.state.modalIsOpen || this.stopPolling) {
+      return
+    }
+
+    Promise.all([EndpointStore.getEndpoints(), MigrationStore.getMigrations(), ReplicaStore.getReplicas()]).then(() => {
+      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+    })
+  }
+
   itemFilterFunction(item: any, filterItem?: ?string, filterText?: string) {
     let endpoint: EndpointType = item
     if ((filterItem !== 'all' && (endpoint.type !== filterItem)) ||
@@ -230,6 +255,8 @@ class EndpointsPage extends React.Component<{}, State> {
             <PageHeader
               title="Coriolis Endpoints"
               onProjectChange={() => { this.handleProjectChange() }}
+              onModalOpen={() => { this.handleModalOpen() }}
+              onModalClose={() => { this.handleModalClose() }}
             />
           }
         />
