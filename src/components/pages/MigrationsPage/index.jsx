@@ -205,7 +205,8 @@ class MigrationsPage extends React.Component<{}, State> {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
-    MigrationStore.getMigrations().then(() => {
+
+    Promise.all([MigrationStore.getMigrations(), EndpointStore.getEndpoints()]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
