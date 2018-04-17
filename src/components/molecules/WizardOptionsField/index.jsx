@@ -54,7 +54,7 @@ type Props = {
   value: any,
   onChange: (value: any) => void,
   valueCallback: (prop: PropertyType, value: any) => void,
-  className: string,
+  className?: string,
   properties: PropertyType[],
   enum: string[],
   required: boolean,

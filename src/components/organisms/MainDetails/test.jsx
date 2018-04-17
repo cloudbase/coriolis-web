@@ -12,10 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import moment from 'moment'
 import MainDetails from '.'
 
+// $FlowIgnore
 const wrap = props => shallow(<MainDetails {...props} />)
 
 let endpoints = [
@@ -37,38 +41,41 @@ let item = {
   type: 'Replica',
 }
 
-it('renders with endpoint missing', () => {
-  let wrapper = wrap({ item: {}, endpoints: [] })
-  expect(wrapper.html().indexOf('Endpoint is missing') > -1).toBe(true)
-})
+describe('MainDetails Component', () => {
+  it('renders with endpoint missing', () => {
+    let wrapper = wrap({ item: {}, endpoints: [] })
+    expect(wrapper.html().indexOf('Endpoint is missing') > -1).toBe(true)
+  })
 
-it('renders endpoint info', () => {
-  let wrapper = wrap({ item, endpoints })
-  expect(wrapper.find('CopyValue').prop('value')).toBe('item-id')
-  expect(wrapper.html().indexOf('2017-11-24 18:15:00') > -1).toBe(true)
-  expect(wrapper.html().indexOf('Endpoint OPS') > -1).toBe(true)
-  expect(wrapper.html().indexOf('Endpoint AZURE') > -1).toBe(true)
-  expect(wrapper.html().indexOf('A description') > -1).toBe(true)
-})
+  it('renders endpoint info', () => {
+    let wrapper = wrap({ item, endpoints })
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'id').prop('value')).toBe('item-id')
+    const localDate = moment(item.created_at).add(-new Date().getTimezoneOffset(), 'minutes')
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'created').prop('value')).toBe(localDate.format('YYYY-MM-DD HH:mm:ss'))
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'endpointName').at(0).dive().text()).toBe('Endpoint OPS')
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'endpointName').at(1).dive().text()).toBe('Endpoint AZURE')
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'description').dive().text()).toBe('A description<CopyButton />')
+  })
 
-it('renders endpoints logos', () => {
-  let wrapper = wrap({ item, endpoints })
-  expect(wrapper.find('EndpointLogos').at(0).prop('endpoint')).toBe('openstack')
-  expect(wrapper.find('EndpointLogos').at(1).prop('endpoint')).toBe('azure')
-})
+  it('renders endpoints logos', () => {
+    let wrapper = wrap({ item, endpoints })
+    expect(wrapper.find('EndpointLogos').at(0).prop('endpoint')).toBe('openstack')
+    expect(wrapper.find('EndpointLogos').at(1).prop('endpoint')).toBe('azure')
+  })
 
-it('renders network_map', () => {
-  let wrapper = wrap({ item, endpoints })
-  let tableItems = wrapper.find('Styled(Table)').prop('items')
-  expect(tableItems.length).toBe(1)
-  expect(tableItems[0].length).toBe(4)
-  expect(tableItems[0][0]).toBe('map_1')
-  expect(tableItems[0][1][0]).toBe('instance')
-  expect(tableItems[0][2]).toBe('Mapping 1')
-  expect(tableItems[0][3]).toBe('Existing network')
-})
+  it('renders network_map', () => {
+    let wrapper = wrap({ item, endpoints })
+    let tableItems = wrapper.find('Styled(Table)').prop('items')
+    expect(tableItems.length).toBe(1)
+    expect(tableItems[0].length).toBe(4)
+    expect(tableItems[0][0]).toBe('map_1')
+    expect(tableItems[0][1][0]).toBe('instance')
+    expect(tableItems[0][2]).toBe('Mapping 1')
+    expect(tableItems[0][3]).toBe('Existing network')
+  })
 
-it('renders loading', () => {
-  let wrapper = wrap({ item: {}, endpoints: [], loading: true })
-  expect(wrapper.find('StatusImage').prop('loading')).toBe(true)
+  it('renders loading', () => {
+    let wrapper = wrap({ item: {}, endpoints: [], loading: true })
+    expect(wrapper.find('StatusImage').prop('loading')).toBe(true)
+  })
 })

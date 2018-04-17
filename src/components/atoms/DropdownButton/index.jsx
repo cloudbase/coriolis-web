@@ -123,13 +123,22 @@ type Props = {
 const DropdownButton = (props: Props) => {
   return (
     <Wrapper
-      onClick={e => { props.disabled ? null : props.onClick && props.onClick(e) }}
-      className={props.className}
-      disabled={props.disabled}
       {...props}
+      onClick={e => { if (!props.disabled && props.onClick) props.onClick(e) }}
     >
-      <Label {...props} data-test-id="" disabled={props.disabled}>{props.value}</Label>
-      <Arrow {...props} data-test-id="" disabled={props.disabled} dangerouslySetInnerHTML={{ __html: arrowImage }} />
+      <Label
+        {...props}
+        onClick={() => {}}
+        data-test-id=""
+        disabled={props.disabled}
+      >{props.value}</Label>
+      <Arrow
+        {...props}
+        onClick={() => {}}
+        data-test-id=""
+        disabled={props.disabled}
+        dangerouslySetInnerHTML={{ __html: arrowImage }}
+      />
     </Wrapper>
   )
 }

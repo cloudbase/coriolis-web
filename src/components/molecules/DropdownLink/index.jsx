@@ -122,6 +122,7 @@ type Props = {
   listWidth?: string,
   searchable?: boolean,
   disabled?: boolean,
+  'data-test-id'?: string,
 }
 type State = {
   showDropdownList: boolean,
@@ -169,6 +170,10 @@ class DropdownLink extends React.Component<Props, State> {
   }
 
   setLabelWidth() {
+    if (!this.labelRef) {
+      return
+    }
+
     this.labelRef.style.width = ''
     let width = parseInt(this.props.width, 10)
     if (!width) {
@@ -340,12 +345,13 @@ class DropdownLink extends React.Component<Props, State> {
         className={this.props.className}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
+        data-test-id={this.props['data-test-id'] || 'dropdownLink'}
       >
         <LinkButton
           onClick={() => this.handleButtonClick()}
           disabled={this.props.disabled}
         >
-          <Label innerRef={label => { this.labelRef = label }}>{renderLabel()}</Label>
+          <Label innerRef={label => { this.labelRef = label }} data-test-id="dropdownLinkLabel">{renderLabel()}</Label>
           <Arrow innerRef={arrow => { this.arrowRef = arrow }} />
         </LinkButton>
         {this.renderList()}

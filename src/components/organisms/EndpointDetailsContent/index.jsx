@@ -157,8 +157,8 @@ class EndpointDetailsContent extends React.Component<Props> {
     )
   }
 
-  renderValue(value: string) {
-    return <CopyValue value={value} maxWidth="90%" />
+  renderValue(value: string, dataTestId?: string) {
+    return <CopyValue data-test-id={dataTestId} value={value} maxWidth="90%" />
   }
 
   render() {
@@ -170,19 +170,19 @@ class EndpointDetailsContent extends React.Component<Props> {
         <Info>
           <Field>
             <Label>Name</Label>
-            {this.renderValue(name)}
+            {this.renderValue(name, 'name')}
           </Field>
           <Field>
             <Label>Type</Label>
-            {this.renderValue(type)}
+            {this.renderValue(type, 'type')}
           </Field>
           <Field>
             <Label>Description</Label>
-            {description ? this.renderValue(description) : <Value>-</Value>}
+            {description ? this.renderValue(description, 'description') : <Value>-</Value>}
           </Field>
           <Field>
             <Label>Created</Label>
-            {this.renderValue(DateUtils.getLocalTime(created_at).format('DD/MM/YYYY HH:mm'))}
+            {this.renderValue(DateUtils.getLocalTime(created_at).format('DD/MM/YYYY HH:mm'), 'created')}
           </Field>
           {this.renderConnectionInfoLoading()}
           {this.renderConnectionInfo(this.props.connectionInfo)}

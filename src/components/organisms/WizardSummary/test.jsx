@@ -54,35 +54,39 @@ let data = {
   ],
 }
 
-it('renders overview section', () => {
-  let wrapper = wrap({ data, wizardType: 'replica' })
-  expect(wrapper.html().indexOf('source name') > -1).toBe(true)
-  expect(wrapper.find('StatusPill').at(0).prop('label')).toBe('OPENSTACK')
-  expect(wrapper.html().indexOf('target name') > -1).toBe(true)
-  expect(wrapper.find('StatusPill').at(1).prop('label')).toBe('AZURE')
-  expect(wrapper.find('StatusPill').at(2).prop('label')).toBe('REPLICA')
+describe('WizardSummary Component', () => {
+  it('renders overview section', () => {
+    let wrapper = wrap({ data, wizardType: 'replica' })
+    expect(wrapper.html().indexOf('source name') > -1).toBe(true)
+    expect(wrapper.find('StatusPill').at(0).prop('label')).toBe('OPENSTACK')
+    expect(wrapper.html().indexOf('target name') > -1).toBe(true)
+    expect(wrapper.find('StatusPill').at(1).prop('label')).toBe('AZURE')
+    expect(wrapper.find('StatusPill').at(2).prop('label')).toBe('REPLICA')
+  })
+
+  it('renders instances section', () => {
+    let wrapper = wrap({ data, wizardType: 'replica' })
+    expect(wrapper.html().indexOf('flavor_name') > -1).toBe(true)
+  })
+
+  it('renders networks section', () => {
+    let wrapper = wrap({ data, wizardType: 'replica' })
+    expect(wrapper.html().indexOf('target network') > -1).toBe(true)
+    expect(wrapper.html().indexOf('n-1') > -1).toBe(true)
+  })
+
+  it('renders options section', () => {
+    let wrapper = wrap({ data, wizardType: 'replica' })
+    expect(wrapper.html().indexOf('Description') > -1).toBe(true)
+    expect(wrapper.html().indexOf('A description') > -1).toBe(true)
+    expect(wrapper.html().indexOf('Field Name') > -1).toBe(true)
+    expect(wrapper.html().indexOf('Field name value') > -1).toBe(true)
+  })
+
+  it('renders schedule section', () => {
+    let wrapper = wrap({ data, wizardType: 'replica' })
+    let scheduleText = wrapper.findWhere(w => w.prop('data-test-id') === `scheduleItem-${data.schedules[0].id}`).dive().text()
+    expect(scheduleText).toBe('Every February, every 14th, every Wednesday, at 17:00')
+  })
 })
 
-it('renders instances section', () => {
-  let wrapper = wrap({ data, wizardType: 'replica' })
-  expect(wrapper.html().indexOf('flavor_name') > -1).toBe(true)
-})
-
-it('renders networks section', () => {
-  let wrapper = wrap({ data, wizardType: 'replica' })
-  expect(wrapper.html().indexOf('target network') > -1).toBe(true)
-  expect(wrapper.html().indexOf('n-1') > -1).toBe(true)
-})
-
-it('renders options section', () => {
-  let wrapper = wrap({ data, wizardType: 'replica' })
-  expect(wrapper.html().indexOf('Description') > -1).toBe(true)
-  expect(wrapper.html().indexOf('A description') > -1).toBe(true)
-  expect(wrapper.html().indexOf('Field Name') > -1).toBe(true)
-  expect(wrapper.html().indexOf('Field name value') > -1).toBe(true)
-})
-
-it('renders schedule section', () => {
-  let wrapper = wrap({ data, wizardType: 'replica' })
-  expect(wrapper.html().indexOf('Every February, every 14th, every Wednesday, at 17:00') > -1).toBe(true)
-})

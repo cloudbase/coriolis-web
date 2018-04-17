@@ -58,8 +58,8 @@ it('renders schedule page', () => {
   expect(wrapper.find('Schedule').prop('schedules').length).toBe(0)
 })
 
-it('has `Create migration` button disabled if the last status is not completed', () => {
-  let wrapper = wrap({ endpoints, item, page: '' })
+it('has `Create migration` button disabled if endpoint is missing', () => {
+  let wrapper = wrap({ endpoints, item: null, page: '' })
   expect(wrapper.find('MainDetails').prop('bottomControls').props.children[0].props.children.props.disabled).toBe(true)
 })
 

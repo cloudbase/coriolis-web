@@ -324,6 +324,7 @@ class Schedule extends React.Component<Props, State> {
       <Footer>
         <Buttons>
           <Button
+            data-test-id="addScheduleButton"
             disabled={this.props.adding}
             secondary
             onClick={() => { this.handleAddScheduleClick() }}
@@ -332,6 +333,7 @@ class Schedule extends React.Component<Props, State> {
         <Timezone>
           <TimezoneLabel>Show all times in</TimezoneLabel>
           <DropdownLink
+            data-test-id="timezoneDropdown"
             items={timezoneItems}
             selectedItem={selectedItem}
             onChange={item => { this.props.onTimezoneChange(item.value === 'utc' ? 'utc' : 'local') }}
@@ -348,27 +350,31 @@ class Schedule extends React.Component<Props, State> {
         {this.renderFooter()}
         {this.renderNoSchedules()}
         {this.renderLoading()}
-        <Modal
-          isOpen={this.state.showOptionsModal}
-          title="Execution options"
-          onRequestClose={() => { this.handleCloseOptionsModal() }}
-        >
-          <ReplicaExecutionOptions
-            options={this.state.executionOptions}
-            onChange={(fieldName, value) => { this.handleExecutionOptionsChange(fieldName, value) }}
-            executionLabel="Save"
-            onCancelClick={() => { this.handleCloseOptionsModal() }}
-            onExecuteClick={fields => { this.handleOptionsSave(fields) }}
+        {this.state.showOptionsModal ? (
+          <Modal
+            isOpen
+            title="Execution options"
+            onRequestClose={() => { this.handleCloseOptionsModal() }}
+          >
+            <ReplicaExecutionOptions
+              options={this.state.executionOptions}
+              onChange={(fieldName, value) => { this.handleExecutionOptionsChange(fieldName, value) }}
+              executionLabel="Save"
+              onCancelClick={() => { this.handleCloseOptionsModal() }}
+              onExecuteClick={fields => { this.handleOptionsSave(fields) }}
+            />
+          </Modal>
+        ) : null}
+        {this.state.showDeleteConfirmation ? (
+          <AlertModal
+            isOpen
+            title="Delete Schedule?"
+            message="Are you sure you want to delete this schedule?"
+            extraMessage=" "
+            onConfirmation={() => { this.handleDeleteConfirmation() }}
+            onRequestClose={() => { this.handleCloseDeleteConfirmation() }}
           />
-        </Modal>
-        <AlertModal
-          isOpen={this.state.showDeleteConfirmation}
-          title="Delete Schedule?"
-          message="Are you sure you want to delete this schedule?"
-          extraMessage=" "
-          onConfirmation={() => { this.handleDeleteConfirmation() }}
-          onRequestClose={() => { this.handleCloseDeleteConfirmation() }}
-        />
+        ) : null}
       </Wrapper>
     )
   }

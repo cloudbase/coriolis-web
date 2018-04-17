@@ -136,7 +136,7 @@ class MainList extends React.Component<Props> {
 
     let renderButton = () => {
       if (this.props.emptyListButtonLabel) {
-        return <Button onClick={this.props.onEmptyListButtonClick}>{this.props.emptyListButtonLabel}</Button>
+        return <Button onClick={this.props.onEmptyListButtonClick} data-test-id="emptyListButton">{this.props.emptyListButtonLabel}</Button>
       }
       return null
     }

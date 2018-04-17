@@ -212,8 +212,8 @@ class MainDetails extends React.Component<Props> {
     return <Value>-</Value>
   }
 
-  renderValue(value: string) {
-    return <CopyValue value={value} maxWidth="90%" />
+  renderValue(value: string, dateTestId?: string) {
+    return <CopyValue value={value} maxWidth="90%" data-test-id={dateTestId} />
   }
 
   renderNetworksTable() {
@@ -246,15 +246,15 @@ class MainDetails extends React.Component<Props> {
     let endpoint = type === 'source' ? this.getSourceEndpoint() : this.getDestinationEndpoint()
 
     if (endpoint) {
-      return <ValueLink href={`/#/endpoint/${endpoint.id}`}>{endpoint.name}</ValueLink>
+      return <ValueLink data-test-id="endpointName" href={`/#/endpoint/${endpoint.id}`}>{endpoint.name}</ValueLink>
     }
 
     return endpointIsMissing
   }
 
-  renderMultilineValue(value: string) {
+  renderMultilineValue(value: string, dataTestId?: string) {
     return (
-      <MultilineValue onClick={() => { this.handleCopy(value) }}>
+      <MultilineValue onClick={() => { this.handleCopy(value) }} data-test-id={dataTestId}>
         {value}
         <CopyButton />
       </MultilineValue>
@@ -265,14 +265,11 @@ class MainDetails extends React.Component<Props> {
     if (!this.props.item || !this.props.item.destination_environment || !this.props.item.destination_environment.description) {
       return <Value>-</Value>
     }
-    return this.renderMultilineValue(this.props.item.destination_environment.description)
+    return this.renderMultilineValue(this.props.item.destination_environment.description, 'description')
   }
 
-  renderInstances() {
-    if (!this.props.item) {
-      return <Value>-</Value>
-    }
-    return this.renderMultilineValue(this.props.item.instances.join(', '))
+  renderInstances(instances: string[]) {
+    return this.renderMultilineValue(instances.join(', '))
   }
 
   renderPropertiesTable(propertyNames: string[]) {
@@ -307,7 +304,7 @@ class MainDetails extends React.Component<Props> {
     const sourceEndpoint = this.getSourceEndpoint()
     const destinationEndpoint = this.getDestinationEndpoint()
 
-    const propertyNames = this.props.item ? Object.keys(this.props.item.destination_environment).filter(k => k !== 'description' && k !== 'network_map') : []
+    const propertyNames = this.props.item && this.props.item.destination_environment ? Object.keys(this.props.item.destination_environment).filter(k => k !== 'description' && k !== 'network_map') : []
 
     return (
       <ColumnsLayout>
@@ -324,13 +321,13 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Id</Label>
-              {this.renderValue(this.props.item ? this.props.item.id + this.props.item.id : '-')}
+              {this.renderValue(this.props.item ? this.props.item.id || '-' : '-', 'id')}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Created</Label>
-              {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')) : <Value>-</Value>}
+              {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss'), 'created') : <Value>-</Value>}
             </Field>
           </Row>
           <Row>
@@ -342,13 +339,13 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Type</Label>
-              <Value capitalize>Coriolis {this.props.item && this.props.item.type}</Value>
+              <Value capitalize data-test-id="type">Coriolis {this.props.item && this.props.item.type}</Value>
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Last Updated</Label>
-              <Value>{this.renderLastExecutionTime()}</Value>
+              <Value data-test-id="updated">{this.renderLastExecutionTime()}</Value>
             </Field>
           </Row>
         </Column>
@@ -373,12 +370,14 @@ class MainDetails extends React.Component<Props> {
               </Field>
             </Row>
           ) : null}
-          <Row>
-            <Field>
-              <Label>Instances</Label>
-              {this.renderInstances()}
-            </Field>
-          </Row>
+          {this.props.item && this.props.item.instances ? (
+            <Row>
+              <Field>
+                <Label>Instances</Label>
+                {this.renderInstances(this.props.item.instances)}
+              </Field>
+            </Row>
+          ) : null}
         </Column>
       </ColumnsLayout>
     )
