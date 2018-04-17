@@ -22,6 +22,7 @@ import Button from '../../atoms/Button'
 import DetailsNavigation from '../../molecules/DetailsNavigation'
 import MainDetails from '../../organisms/MainDetails'
 import Tasks from '../../organisms/Tasks'
+import StyleProps from '../../styleUtils/StyleProps'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
@@ -37,8 +38,7 @@ const Buttons = styled.div`
   }
 `
 const DetailsBody = styled.div`
-  min-width: 800px;
-  max-width: 800px;
+  ${StyleProps.exactWidth(StyleProps.contentWidth)}
 `
 
 const NavigationItems = [

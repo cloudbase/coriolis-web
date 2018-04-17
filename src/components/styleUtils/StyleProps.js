@@ -25,11 +25,13 @@ const StyleProps = {
   },
 
   inputSizes: {
-    regular: { width: 176, height: 32 },
+    regular: { width: 208, height: 32 },
     large: { width: 224, height: 32 },
+    wizard: { width: 384 },
   },
 
   borderRadius: '4px',
+  contentWidth: '928px',
 
   animations: {
     swift: '.45s cubic-bezier(0.3, 1, 0.4, 1) 0s',

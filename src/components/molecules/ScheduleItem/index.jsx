@@ -202,7 +202,7 @@ class ScheduleItem extends React.Component<Props> {
     return (
       <DropdownStyled
         centered
-        width={136}
+        width={160}
         items={items}
         useBold={this.shouldUseBold('month')}
         selectedItem={this.getFieldValue(items, 'month')}
@@ -226,7 +226,7 @@ class ScheduleItem extends React.Component<Props> {
     return (
       <DropdownStyled
         centered
-        width={72}
+        width={86}
         items={items}
         useBold={this.shouldUseBold('dom')}
         selectedItem={this.getFieldValue(items, 'dom')}
@@ -250,7 +250,7 @@ class ScheduleItem extends React.Component<Props> {
     return (
       <DropdownStyled
         centered
-        width={136}
+        width={160}
         items={items}
         useBold={this.shouldUseBold('dow')}
         selectedItem={this.getFieldValue(items, 'dow', true)}
@@ -272,7 +272,7 @@ class ScheduleItem extends React.Component<Props> {
     return (
       <DropdownStyled
         centered
-        width={72}
+        width={86}
         items={items}
         useBold={this.shouldUseBold('hour')}
         selectedItem={this.getFieldValue(items, 'hour', true, 1)}
@@ -295,7 +295,7 @@ class ScheduleItem extends React.Component<Props> {
     return (
       <DropdownStyled
         centered
-        width={72}
+        width={86}
         items={items}
         useBold={this.shouldUseBold('minute')}
         selectedItem={this.getFieldValue(items, 'minute', true, 1)}

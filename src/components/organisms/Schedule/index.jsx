@@ -36,7 +36,7 @@ import { executionOptions } from '../../../config'
 import scheduleImage from './images/schedule.svg'
 
 const Wrapper = styled.div`
-  width: 800px;
+  ${StyleProps.exactWidth(StyleProps.contentWidth)}
 `
 const LoadingWrapper = styled.div`
   margin-top: 32px;

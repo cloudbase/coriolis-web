@@ -22,6 +22,8 @@ import Table from '.'
 let items = [
   ['item-1', 'item-2', 'item-3', 'item-4', 'item-5'],
   ['item-6', 'item-7', 'item-8', 'item-9', 'item-10'],
+  ['item-6', 'item-7', 'item-8', 'item-9', 'item-10'],
+  ['item-6', 'item-7', 'item-8', 'item-9', 'item-10'],
 ]
 let header = ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5']
 

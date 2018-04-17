@@ -19,6 +19,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
 import Tooltip from '../../atoms/Tooltip'
+import StyleProps from '../../styleUtils/StyleProps'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
 import WizardOptionsField from '../../molecules/WizardOptionsField'
 import StatusImage from '../../atoms/StatusImage'
@@ -38,7 +39,7 @@ const Column = styled.div`
   ${props => props.left ? 'margin-right: 160px;' : ''}
 `
 const WizardOptionsFieldStyled = styled(WizardOptionsField) `
-  width: 320px;
+  width: ${StyleProps.inputSizes.wizard.width}px;
   justify-content: space-between;
   margin-bottom: 39px;
 `

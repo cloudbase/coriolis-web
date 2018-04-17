@@ -34,7 +34,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-right: ${props => props.noSidemenuSpace ? 54 : 64}px;
+  margin-left: -72px;
 `
 const BackButton = styled.div`
   ${StyleProps.exactSize('33px')}
@@ -49,7 +49,9 @@ const TypeImage = styled.div`
   margin-right: 64px;
 `
 const Title = styled.div`
-  ${StyleProps.exactWidth('622px')}
+  display: flex;
+  align-items: center;
+  ${StyleProps.exactWidth(StyleProps.contentWidth)}
 `
 const Text = styled.div`
   font-size: 30px;
@@ -57,6 +59,9 @@ const Text = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`
+const Status = styled.div`
+  flex-grow: 1;
 `
 const StatusPills = styled.div`
   display: flex;
@@ -86,7 +91,6 @@ type Props = {
   alertButton?: boolean,
   hollowButton?: boolean,
   actionButtonDisabled?: boolean,
-  noSidemenuSpace?: boolean,
 }
 @observer
 class DetailsContentHeader extends React.Component<Props> {
@@ -176,15 +180,17 @@ class DetailsContentHeader extends React.Component<Props> {
     let title = this.props.item ? (this.props.item.instances && this.props.item.instances[0]) || this.props.item.name : ''
 
     return (
-      <Wrapper noSidemenuSpace={this.props.noSidemenuSpace}>
+      <Wrapper>
         <BackButton onClick={this.props.onBackButonClick} />
         <TypeImage image={this.props.typeImage} />
         <Title>
-          <Text>{title}</Text>
-          {this.renderStatusPill()}
-          {this.renderDescription()}
+          <Status>
+            <Text>{title}</Text>
+            {this.renderStatusPill()}
+            {this.renderDescription()}
+          </Status>
+          {this.renderButton()}
         </Title>
-        {this.renderButton()}
       </Wrapper>
     )
   }

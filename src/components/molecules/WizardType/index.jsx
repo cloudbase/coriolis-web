@@ -45,11 +45,11 @@ const Row = styled.div`
   margin-top: 52px;
 `
 const Column = styled.div`
-  width: ${props => props.middle ? 192 : 304}px;
-  text-align: ${props => props.left ? 'right' : 'left'};
+  width: ${props => props.width};
+  text-align: ${props => props.alignRight ? 'right' : 'left'};
   display: flex;
   flex-direction: column;
-  ${props => props.middle ? 'align-items: center;' : ''}
+  ${props => props.alignCenter ? 'align-items: center;' : ''}
 `
 const Title = styled.div`
   font-size: 23px;
@@ -73,14 +73,14 @@ class WizardType extends React.Component<Props> {
       <Wrapper>
         <Image type={this.props.selected} dangerouslySetInnerHTML={{ __html: migrationImage }} />
         <Row>
-          <Column left>
+          <Column alignRight width="50%">
             <Title>Coriolis Migration</Title>
             <Message selected={this.props.selected === 'migration'}>A Coriolis Migration is a full instance migration between two cloud endpoints.</Message>
           </Column>
-          <Column middle>
+          <Column alignCenter width="192px">
             <Switch big onChange={this.props.onChange} checked={this.props.selected === 'replica'} />
           </Column>
-          <Column>
+          <Column width="50%">
             <Title>Coriolis Replica</Title>
             <Message selected={this.props.selected === 'replica'}>The Coriolis Replica is obtained by copying (replicating) incrementally the virtual machines data from the source environment to the target, without interfering with any running workload. A migration replica can then be finalized by automatically applying the required changes to adapt it to the target environment (migration phase).</Message>
           </Column>

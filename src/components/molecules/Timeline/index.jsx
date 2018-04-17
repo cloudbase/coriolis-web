@@ -26,6 +26,8 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import DateUtils from '../../../utils/DateUtils'
 
+const ITEM_GAP = 96
+
 const ArrowStyled = styled(Arrow) `
   opacity: ${props => props.forceShow ? 1 : 0};
   position: absolute;
@@ -69,7 +71,7 @@ const Item = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 90px;
+  margin-right: ${ITEM_GAP}px;
   cursor: pointer;
   min-width: 75px;
   max-width: 75px;
@@ -128,7 +130,7 @@ class Timeline extends React.Component<Props> {
     // $FlowIssue
     let itemIndex = this.props.items.findIndex(i => i.id === this.props.selectedItem.id)
     let halfWidth = this.wrapperRef.offsetWidth / 2
-    let itemGap = this.itemRef.offsetWidth + 90
+    let itemGap = this.itemRef.offsetWidth + ITEM_GAP
     let itemHalfWidth = this.itemRef.offsetWidth / 2
     let offset = (halfWidth - (itemGap * itemIndex)) - itemHalfWidth
 

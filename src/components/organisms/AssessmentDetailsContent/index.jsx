@@ -53,8 +53,7 @@ const Buttons = styled.div`
   }
 `
 const DetailsBody = styled.div`
-  min-width: 800px;
-  max-width: 800px;
+  ${StyleProps.exactWidth(StyleProps.contentWidth)}
   margin-bottom: 32px;
 `
 const Columns = styled.div`
@@ -317,13 +316,13 @@ class AssessmentDetailsContent extends React.Component<Props> {
       return null
     }
 
-    let columnsWidths = ['244px', '164px', '220px', '156px']
+    const COLUMN_WIDTHS = ['278px', '186px', '260px', '180px']
     let items = this.props.filteredAssessedVms.map(vm => {
       let filteredVm = this.props.filteredAssessedVms.find(v => v.id === vm.id)
       return (
         <AssessedVmListItem
           item={vm}
-          columnsWidths={columnsWidths}
+          columnsWidths={COLUMN_WIDTHS}
           selected={this.props.selectedVms.filter(m => m.id === vm.id).length > 0}
           onSelectedChange={(vm, selected) => { this.props.onVmSelectedChange(vm, selected) }}
           disabled={!this.doesVmMatchSource(vm)}
@@ -356,7 +355,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
         items={items}
         bodyStyle={TableBodyStyle}
         headerStyle={TableHeaderStyle}
-        columnsWidths={columnsWidths}
+        columnsWidths={COLUMN_WIDTHS}
         header={[vmHeaderItem, 'OS', 'Target Disk Type', 'Azure VM Size']}
         useSecondaryStyle
         noItemsLabel="No VMs found!"
@@ -386,7 +385,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
       return null
     }
 
-    let columnsWidths = ['357px', '275px', '152px']
+    const COLUMNS_WIDTHS = ['407px', '315px', '174px']
     let items = nics.map(nic => {
       let selectedNetworkName = this.props.selectedNetworks && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
       if (selectedNetworkName) {
@@ -396,10 +395,10 @@ class AssessmentDetailsContent extends React.Component<Props> {
       return (
         // $FlowIgnore
         <NetworkItem key={nic.network_name}>
-          <NetworkName width={columnsWidths[0]}>{nic.network_name}</NetworkName>
-          <Arrow width={columnsWidths[1]} />
+          <NetworkName width={COLUMNS_WIDTHS[0]}>{nic.network_name}</NetworkName>
+          <Arrow width={COLUMNS_WIDTHS[1]} />
           <DropdownLink
-            width={columnsWidths[2]}
+            width={COLUMNS_WIDTHS[2]}
             noItemsLabel="No Networks found"
             selectItemLabel="Select Network"
             selectedItem={selectedNetworkName}
@@ -412,7 +411,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
     return (
       <TableStyled
         items={items}
-        columnsWidths={columnsWidths}
+        columnsWidths={COLUMNS_WIDTHS}
         header={['Source Network', '', 'Target Network']}
         useSecondaryStyle
       />

@@ -47,8 +47,16 @@ const Header = styled.div`
   `}
   ${props => props.customStyle}
 `
+const TableData = props => css`
+  width: 100%;
+  max-width: ${props.width};
+  padding-right: 32px;
+  &:last-child {
+    padding-right: 0;
+  }
+`
 const HeaderData = styled.div`
-  ${props => props.useExactWidth ? StyleProps.exactWidth(props.width) : `width: ${props.width};`}
+  ${props => TableData(props)}
   color: ${props => props.secondary ? Palette.grayscale[5] : Palette.grayscale[3]};
   font-size: 10px;
   font-weight: ${StyleProps.fontWeights.medium};
@@ -76,7 +84,7 @@ const Row = styled.div`
   ` : ''}
 `
 const RowData = styled.div`
-  width: ${props => props.width};
+  ${props => TableData(props)}
   color: ${Palette.grayscale[4]};
   ${props => props.customStyle}
 `
@@ -114,7 +122,6 @@ class Table extends React.Component<Props> {
             <HeaderData
               width={this.props.columnsWidths && this.props.columnsWidths.length > 0 ? this.props.columnsWidths[i] : dataWidth}
               key={i}
-              useExactWidth={i < this.props.header.length - 1}
               secondary={this.props.useSecondaryStyle}
             >{headerItem}</HeaderData>
           )

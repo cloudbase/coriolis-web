@@ -191,7 +191,6 @@ class EndpointDetailsPage extends React.Component<Props, State> {
             onCancelClick={() => { }}
             typeImage={endpointImage}
             description={endpoint ? endpoint.description : ''}
-            noSidemenuSpace
           />}
           contentComponent={<EndpointDetailsContent
             item={endpoint}

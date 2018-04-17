@@ -28,6 +28,7 @@ import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
 import type { Execution } from '../../../types/Execution'
 import type { Schedule as ScheduleType } from '../../../types/Schedule'
+import StyleProps from '../../styleUtils/StyleProps'
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ const LeftButtons = styled.div``
 const RightButtons = styled.div`
   display: flex;
   button {
-    margin-right: 16px;
+    margin-right: 32px;
 
     &:last-child {
       margin-right: 0;
@@ -50,8 +51,7 @@ const RightButtons = styled.div`
   }
 `
 const DetailsBody = styled.div`
-  min-width: 800px;
-  max-width: 800px;
+  ${StyleProps.exactWidth(StyleProps.contentWidth)}
 `
 
 const NavigationItems = [
