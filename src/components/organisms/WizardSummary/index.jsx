@@ -172,15 +172,15 @@ class WizardSummary extends React.Component<Props> {
     }
 
 
-    let padNumber = number => number || 0 < 10 ? `0${number || 0}` : (number || 0).toString()
+    let padNumber = number => (number || 0) < 10 ? `0${number || 0}` : (number || 0).toString()
     let timeLabel
-    if (schedule.minute === null || schedule.minute === undefined) {
-      if (schedule.hour === null || schedule.hour === undefined) {
+    if (scheduleInfo.minute === null || scheduleInfo.minute === undefined) {
+      if (scheduleInfo.hour === null || scheduleInfo.hour === undefined) {
         timeLabel = 'every hour, every minute'
       } else {
         timeLabel = `at ${padNumber(scheduleInfo.hour)} o'clock, every minute`
       }
-    } else if (schedule.hour === null || schedule.hour === undefined) {
+    } else if (scheduleInfo.hour === null || scheduleInfo.hour === undefined) {
       timeLabel = `every hour, at minute ${padNumber(scheduleInfo.minute)}`
     } else {
       timeLabel = `at ${padNumber(scheduleInfo.hour)}:${padNumber(scheduleInfo.minute)}`
