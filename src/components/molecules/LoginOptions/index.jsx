@@ -94,20 +94,26 @@ const Logo = styled.div`
   margin: 0 8px 0 8px;
   ${props => buttonStyle(props.id, true)}
 `
+type Props = {
+  buttons?: {name: string, id: string}[]
+}
+const LoginOptions = (props: Props) => {
+  const buttons = props.buttons || loginButtons
 
-const LoginOptions = () => {
-  if (loginButtons.length === 0) {
+  if (buttons.length === 0) {
     return null
   }
 
   return (
-    <Wrapper>{loginButtons.map((button) => {
-      return (
-        <Button key={button.id} id={button.id}>
-          <Logo id={button.id} />Sign in with {button.name}
-        </Button>
-      )
-    })}</Wrapper>
+    <Wrapper>
+      {buttons.map((button) => {
+        return (
+          <Button key={button.id} id={button.id}>
+            <Logo id={button.id} />Sign in with {button.name}
+          </Button>
+        )
+      })}
+    </Wrapper>
   )
 }
 

@@ -12,20 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import SearchInput from '.'
 
 const wrap = props => shallow(<SearchInput {...props} />)
 
-it('opens on button click', () => {
-  let wrapper = wrap()
-  expect(wrapper.prop('open')).toBe(undefined)
-  wrapper.find('Styled(SearchButton)').simulate('click')
-  expect(wrapper.prop('open')).toBe(true)
-})
+describe('SearchInput Component', () => {
+  it('opens on button click', () => {
+    let wrapper = wrap()
+    expect(wrapper.prop('open')).toBe(false)
+    wrapper.find('Styled(SearchButton)').simulate('click')
+    expect(wrapper.prop('open')).toBe(true)
+  })
 
-it('has loading state', () => {
-  let wrapper = wrap({ loading: true })
-  expect(wrapper.find('Styled(StatusIcon)').prop('status')).toBe('RUNNING')
+  it('has loading state', () => {
+    let wrapper = wrap({ loading: true })
+    expect(wrapper.find('Styled(StatusIcon)').prop('status')).toBe('RUNNING')
+  })
 })

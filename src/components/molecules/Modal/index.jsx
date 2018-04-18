@@ -77,6 +77,7 @@ class NewModal extends React.Component<Props> {
   }
 
   componentWillUnmount() {
+    this.handleModalClose()
     window.removeEventListener('resize', this.positionModal, true)
   }
 

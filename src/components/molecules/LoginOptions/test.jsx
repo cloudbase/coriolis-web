@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import LoginOptions from '.'
@@ -41,9 +43,11 @@ let buttons = [
   },
 ]
 
-it('renders with given buttons', () => {
-  let wrapper = wrap({ buttons })
-  expect(wrapper.children().length).toBe(4)
-  expect(wrapper.childAt(2).prop('id')).toBe('facebook')
-  expect(wrapper.childAt(1).html().indexOf('Sign in with Microsoft')).toBeGreaterThan(-1)
+describe('LoginOptions Component', () => {
+  it('renders with given buttons', () => {
+    let wrapper = wrap({ buttons })
+    expect(wrapper.children().length).toBe(4)
+    expect(wrapper.childAt(2).prop('id')).toBe('facebook')
+    expect(wrapper.childAt(1).html().indexOf('Sign in with Microsoft')).toBeGreaterThan(-1)
+  })
 })

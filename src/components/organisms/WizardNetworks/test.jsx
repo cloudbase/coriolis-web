@@ -12,10 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import WizardNetworks from '.'
 
+// $FlowIgnore
 const wrap = props => shallow(<WizardNetworks {...props} />)
 
 let networks = [
@@ -45,38 +48,40 @@ let selectedNetworks = [
   },
 ]
 
-it('renders correct number of instance details', () => {
-  let wrapper = wrap({ networks, instancesDetails })
-  expect(wrapper.find('Dropdown').length).toBe(instancesDetails.length)
-})
+describe('WizardNetworks Component', () => {
+  it('renders correct number of instance details', () => {
+    let wrapper = wrap({ networks, instancesDetails })
+    expect(wrapper.find('Dropdown').length).toBe(instancesDetails.length)
+  })
 
-it('renders correct info for instance details', () => {
-  let wrapper = wrap({ networks, instancesDetails })
-  expect(wrapper.html().indexOf('Connected to Instance name 1') > -1).toBe(true)
-  expect(wrapper.html().indexOf('Connected to Instance name 2') > -1).toBe(true)
-  expect(wrapper.html().indexOf('network 1') > -1).toBe(true)
-  expect(wrapper.html().indexOf('network 2') > -1).toBe(true)
-})
+  it('renders correct info for instance details', () => {
+    let wrapper = wrap({ networks, instancesDetails })
+    expect(wrapper.html().indexOf('Connected to Instance name 1') > -1).toBe(true)
+    expect(wrapper.html().indexOf('Connected to Instance name 2') > -1).toBe(true)
+    expect(wrapper.html().indexOf('network 1') > -1).toBe(true)
+    expect(wrapper.html().indexOf('network 2') > -1).toBe(true)
+  })
 
-it('has dropdown with correct number of networks', () => {
-  let wrapper = wrap({ networks, instancesDetails })
-  expect(wrapper.find('Dropdown').at(0).prop('items').length).toBe(networks.length)
-})
+  it('has dropdown with correct number of networks', () => {
+    let wrapper = wrap({ networks, instancesDetails })
+    expect(wrapper.find('Dropdown').at(0).prop('items').length).toBe(networks.length)
+  })
 
-it('has dropdown with correct networks info', () => {
-  let wrapper = wrap({ networks, instancesDetails })
-  expect(wrapper.find('Dropdown').at(0).prop('items')[0].name).toBe('network 1')
-  expect(wrapper.find('Dropdown').at(0).prop('items')[1].name).toBe('network 2')
-})
+  it('has dropdown with correct networks info', () => {
+    let wrapper = wrap({ networks, instancesDetails })
+    expect(wrapper.find('Dropdown').at(0).prop('items')[0].name).toBe('network 1')
+    expect(wrapper.find('Dropdown').at(0).prop('items')[1].name).toBe('network 2')
+  })
 
-it('renders selected networks', () => {
-  let wrapper = wrap({ networks, instancesDetails, selectedNetworks })
-  expect(wrapper.find('Dropdown').at(0).prop('selectedItem')).toBeFalsy()
-  expect(wrapper.find('Dropdown').at(1).prop('selectedItem')).toBe('network 1')
-  expect(wrapper.find('Dropdown').at(2).prop('selectedItem')).toBeFalsy()
-})
+  it('renders selected networks', () => {
+    let wrapper = wrap({ networks, instancesDetails, selectedNetworks })
+    expect(wrapper.find('Dropdown').at(0).prop('selectedItem')).toBeFalsy()
+    expect(wrapper.find('Dropdown').at(1).prop('selectedItem').name).toBe('network 1')
+    expect(wrapper.find('Dropdown').at(2).prop('selectedItem')).toBeFalsy()
+  })
 
-it('renders no nics message', () => {
-  let wrapper = wrap({ networks, instancesDetails: [{ ...instancesDetails[0], devices: { nics: [] } }] })
-  expect(wrapper.html().indexOf('No networks were found') > -1).toBe(true)
+  it('renders no nics message', () => {
+    let wrapper = wrap({ networks, instancesDetails: [{ ...instancesDetails[0], devices: { nics: [] } }] })
+    expect(wrapper.html().indexOf('No networks were found') > -1).toBe(true)
+  })
 })

@@ -53,7 +53,7 @@ const DatetimeStyled = styled(Datetime)`
 type Props = {
   value: ?Date,
   onChange: (date: Date) => void,
-  isValidDate: (currentDate: Date, selectedDate: Date) => boolean,
+  isValidDate?: (currentDate: Date, selectedDate: Date) => boolean,
   timezone: 'utc' | 'local',
   useBold?: boolean,
 }

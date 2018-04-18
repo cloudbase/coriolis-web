@@ -201,7 +201,7 @@ class WizardSummary extends React.Component<Props> {
         <Table>
           {schedules.map(schedule => {
             return (
-              <Row key={schedule.id} schedule>
+              <Row key={schedule.id} schedule data-test-id={`scheduleItem-${schedule.id || 0}`}>
                 {this.renderScheduleLabel(schedule)}
               </Row>
             )

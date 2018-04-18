@@ -43,6 +43,7 @@ type Props = {
   value: string,
   width?: string,
   maxWidth?: string,
+  'data-test-id'?: string,
 }
 @observer
 class CopyValue extends React.Component<Props> {
@@ -64,6 +65,7 @@ class CopyValue extends React.Component<Props> {
         onClick={e => { this.handleCopyIdClick(e) }}
         onMouseDown={e => { e.stopPropagation() }}
         onMouseUp={e => { e.stopPropagation() }}
+        data-test-id={this.props['data-test-id'] || 'copyValue'}
       >
         <Value
           width={this.props.width}

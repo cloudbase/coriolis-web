@@ -76,6 +76,7 @@ class SearchInput extends React.Component<Props, State> {
   static defaultProps: $Shape<Props> = {
     placeholder: 'Search',
     width: `${StyleProps.inputSizes.regular.width}px`,
+    value: '',
   }
 
   input: HTMLElement
