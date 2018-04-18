@@ -256,7 +256,7 @@ class WizardSummary extends React.Component<Props> {
 
             return (
               <Option key={optionName}>
-                <OptionLabel>{LabelDictionary.get(optionName)}</OptionLabel>
+                <OptionLabel>{optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}</OptionLabel>
                 <OptionValue>{
                   // $FlowIssue
                   this.renderOptionValue(data.options[optionName])

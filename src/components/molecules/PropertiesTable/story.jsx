@@ -17,8 +17,11 @@ import { storiesOf } from '@storybook/react'
 import PropertiesTable from '.'
 
 let properties = [
-  { type: 'boolean', name: 'prop-1', label: 'Property 1' },
-  { type: 'boolean', name: 'prop-2', label: 'Property 2' },
+  { type: 'boolean', name: 'prop-1', label: 'Boolean' },
+  { type: 'strict-boolean', name: 'prop-2', label: 'Strict Boolean' },
+  { type: 'string', name: 'prop-3', label: 'String' },
+  { type: 'string', name: 'prop-3a', label: 'String', required: true },
+  { type: 'string', enum: ['a', 'b', 'c'], name: 'prop-4', label: 'String enum' },
 ]
 
 class Wrapper extends React.Component {
@@ -39,9 +42,8 @@ class Wrapper extends React.Component {
 
   render() {
     return (
-      <div style={{ width: '200px' }}>
+      <div style={{ width: '320px', background: 'white', padding: '50px' }}>
         <PropertiesTable
-          {...this.props}
           properties={properties}
           valueCallback={prop => this.valueCallback(prop)}
           onChange={(prop, value) => { this.handleChange(prop, value) }}

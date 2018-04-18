@@ -14,12 +14,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-export type Schema = {
+// export type Schema = {
+//   properties: {
+//     [string]: {
+//       name: string,
+//     }
+//   },
+//   required: string[],
+//   oneOf: Schema[],
+// }
+
+export type SchemaProperties = {
   properties: {
     [string]: {
-      name: string,
-    }
+      type: 'array',
+      items: {
+        type: string,
+      },
+    } | {
+      type: string,
+      enum?: string[],
+    } | {
+      $ref: string,
+    },
   },
   required: string[],
-  oneOf: Schema[],
+}
+
+export type SchemaDefinitions = {
+  [string]: SchemaProperties,
+}
+
+export type Schema = {
+  oneOf: SchemaProperties[],
+  definitions?: SchemaDefinitions,
 }
