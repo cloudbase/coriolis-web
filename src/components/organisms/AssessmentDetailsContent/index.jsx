@@ -58,9 +58,11 @@ const DetailsBody = styled.div`
 `
 const Columns = styled.div`
   display: flex;
+  margin-left: -32px;
 `
 const Column = styled.div`
   width: 50%;
+  margin-left: 32px;
 `
 const Row = styled.div`
   margin-bottom: 32px;
@@ -104,7 +106,7 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
-const TableStyled = styled(Table) `
+const TableStyled = styled(Table)`
   margin-top: 62px;
   ${props => props.addWidthPadding ? css`
     margin-left: -24px;
@@ -121,15 +123,30 @@ const TableBodyStyle = css`
 `
 const NetworkItem = styled.div`
   display: flex;
+  width: 100%;
+`
+const column = () => css`
+  padding-right: 32px;
+  width: 100%;
+  max-width: 25%;
 `
 const NetworkName = styled.div`
-  ${props => StyleProps.exactWidth(props.width)}
+  ${column()}
 `
 const Arrow = styled.div`
+  width: 32px;
   height: 16px;
+  position: absolute;
+  right: 0;
   background: url('${arrowImage}') no-repeat;
-  ${props => StyleProps.exactWidth(props.width)}
   background-position-y: center;
+`
+const ColumnStub = styled.div`
+  ${column()}
+  position: relative;
+  &:last-child {
+    padding-right: 0;
+  }
 `
 const VmHeaderItem = styled.div`
   display: flex;
@@ -316,13 +333,11 @@ class AssessmentDetailsContent extends React.Component<Props> {
       return null
     }
 
-    const COLUMN_WIDTHS = ['278px', '186px', '260px', '180px']
     let items = this.props.filteredAssessedVms.map(vm => {
       let filteredVm = this.props.filteredAssessedVms.find(v => v.id === vm.id)
       return (
         <AssessedVmListItem
           item={vm}
-          columnsWidths={COLUMN_WIDTHS}
           selected={this.props.selectedVms.filter(m => m.id === vm.id).length > 0}
           onSelectedChange={(vm, selected) => { this.props.onVmSelectedChange(vm, selected) }}
           disabled={!this.doesVmMatchSource(vm)}
@@ -355,7 +370,6 @@ class AssessmentDetailsContent extends React.Component<Props> {
         items={items}
         bodyStyle={TableBodyStyle}
         headerStyle={TableHeaderStyle}
-        columnsWidths={COLUMN_WIDTHS}
         header={[vmHeaderItem, 'OS', 'Target Disk Type', 'Azure VM Size']}
         useSecondaryStyle
         noItemsLabel="No VMs found!"
@@ -385,7 +399,6 @@ class AssessmentDetailsContent extends React.Component<Props> {
       return null
     }
 
-    const COLUMNS_WIDTHS = ['407px', '315px', '174px']
     let items = nics.map(nic => {
       let selectedNetworkName = this.props.selectedNetworks && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
       if (selectedNetworkName) {
@@ -395,24 +408,26 @@ class AssessmentDetailsContent extends React.Component<Props> {
       return (
         // $FlowIgnore
         <NetworkItem key={nic.network_name}>
-          <NetworkName width={COLUMNS_WIDTHS[0]}>{nic.network_name}</NetworkName>
-          <Arrow width={COLUMNS_WIDTHS[1]} />
-          <DropdownLink
-            width={COLUMNS_WIDTHS[2]}
-            noItemsLabel="No Networks found"
-            selectItemLabel="Select Network"
-            selectedItem={selectedNetworkName}
-            onChange={item => { this.props.onNetworkChange(nic, item.network) }}
-            items={this.props.networks.map(network => ({ value: network.name || '', label: network.name || '', network }))}
-          />
+          <NetworkName width="25%">{nic.network_name}</NetworkName>
+          <ColumnStub width="25%"><Arrow /></ColumnStub>
+          <ColumnStub width="25%" />
+          <ColumnStub width="25%">
+            <DropdownLink
+              width="208px"
+              noItemsLabel="No Networks found"
+              selectItemLabel="Select Network"
+              selectedItem={selectedNetworkName}
+              onChange={item => { this.props.onNetworkChange(nic, item.network) }}
+              items={this.props.networks.map(network => ({ value: network.name || '', label: network.name || '', network }))}
+            />
+          </ColumnStub>
         </NetworkItem>
       )
     })
     return (
       <TableStyled
         items={items}
-        columnsWidths={COLUMNS_WIDTHS}
-        header={['Source Network', '', 'Target Network']}
+        header={['Source Network', '', '', 'Target Network']}
         useSecondaryStyle
       />
     )
