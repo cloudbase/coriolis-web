@@ -233,7 +233,7 @@ class Dropdown extends React.Component<Props, State> {
     }
 
     this.listRef.style.top = `${listTop + (window.pageYOffset || scrollOffset)}px`
-    this.listRef.style.left = `${this.buttonRect.left}px`
+    this.listRef.style.left = `${this.buttonRect.left + window.pageXOffset}px`
   }
 
   renderList() {

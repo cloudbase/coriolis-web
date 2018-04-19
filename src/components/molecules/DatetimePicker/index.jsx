@@ -114,7 +114,7 @@ class DatetimePicker extends React.Component<Props, State> {
     }
 
     this.portalRef.style.top = `${topOffset + window.pageYOffset}px`
-    this.portalRef.style.left = `${leftOffset}px`
+    this.portalRef.style.left = `${leftOffset + window.pageXOffset}px`
   }
 
   isValidDate(currentDate: Date, selectedDate: Date): boolean {
