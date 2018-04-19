@@ -45,10 +45,12 @@ class ReplicaStore {
   @observable backgroundLoading: boolean = false
   @observable detailsLoading: boolean = true
 
+  replicasLoaded: boolean = false
+
   @action getReplicas(options?: { showLoading: boolean }): Promise<void> {
     this.backgroundLoading = true
 
-    if ((options && options.showLoading) || this.replicas.length === 0) {
+    if ((options && options.showLoading) || !this.replicasLoaded) {
       this.loading = true
     }
 
@@ -56,6 +58,7 @@ class ReplicaStore {
       this.replicas = replicas
       this.loading = false
       this.backgroundLoading = false
+      this.replicasLoaded = true
     }).catch(() => {
       this.loading = false
       this.backgroundLoading = false

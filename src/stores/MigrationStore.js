@@ -28,8 +28,10 @@ class MigrationStore {
   @observable canceling: boolean | { failed: boolean } = true
   @observable detailsLoading: boolean = true
 
+  migrationsLoaded: boolean = false
+
   @action getMigrations(options?: { showLoading: boolean }) {
-    if ((options && options.showLoading) || this.migrations.length === 0) {
+    if ((options && options.showLoading) || !this.migrationsLoaded) {
       this.loading = true
     }
 
@@ -43,6 +45,7 @@ class MigrationStore {
         return migration
       })
       this.loading = false
+      this.migrationsLoaded = true
     }).catch(() => {
       this.loading = false
     })
