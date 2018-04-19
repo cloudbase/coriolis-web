@@ -23,28 +23,18 @@ import type { Execution } from '../types/Execution'
 import type { Field } from '../types/Field'
 
 class ReplicaStoreUtils {
-  static addExecutionToReplica(opts: {
-    replicas: MainItem[],
-    replicaDetails: ?MainItem,
-    execution: Execution,
-    replicaId: string,
-  }) {
-    let replicasToUpdate = opts.replicas.filter(r => r.id === opts.replicaId)
-    if (opts.replicaDetails && opts.replicaDetails.id === opts.replicaId) {
-      replicasToUpdate.push(opts.replicaDetails)
+  static getNewReplica(replicaDetails: MainItem, execution: Execution): MainItem {
+    if (replicaDetails.executions) {
+      return {
+        ...replicaDetails,
+        executions: [...replicaDetails.executions, execution],
+      }
     }
 
-    replicasToUpdate.forEach(r => {
-      if (r.executions.find(e => e.id === opts.execution.id)) {
-        return
-      }
-
-      if (r.executions) {
-        r.executions.push(opts.execution)
-      } else {
-        r.executions = [opts.execution]
-      }
-    })
+    return {
+      ...replicaDetails,
+      executions: [execution],
+    }
   }
 }
 
@@ -102,12 +92,16 @@ class ReplicaStore {
 
   @action execute(replicaId: string, fields?: Field[]): Promise<void> {
     return ReplicaSource.execute(replicaId, fields).then(execution => {
-      ReplicaStoreUtils.addExecutionToReplica({
-        replicaId,
-        replicas: this.replicas,
-        replicaDetails: this.replicaDetails,
-        execution,
-      })
+      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+      }
+
+      let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
+
+      if (replicasItemIndex > -1) {
+        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+        this.replicas[replicasItemIndex] = updatedReplica
+      }
     })
   }
 
@@ -142,12 +136,16 @@ class ReplicaStore {
 
   @action deleteDisks(replicaId: string) {
     return ReplicaSource.deleteDisks(replicaId).then(execution => {
-      ReplicaStoreUtils.addExecutionToReplica({
-        replicaId,
-        replicas: this.replicas,
-        replicaDetails: this.replicaDetails,
-        execution,
-      })
+      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+      }
+
+      let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
+
+      if (replicasItemIndex > -1) {
+        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+        this.replicas[replicasItemIndex] = updatedReplica
+      }
     })
   }
 

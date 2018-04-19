@@ -114,13 +114,10 @@ class Executions extends React.Component<Props, State> {
       }
 
       if (this.props.item.executions.length > props.item.executions.length) {
-        // $FlowIssue
-        let isSelectedAvailable = props.item.executions.find(e => e.id === this.state.selectedExecution.id)
+        let isSelectedAvailable = props.item.executions.find(e => this.state.selectedExecution && e.id === this.state.selectedExecution.id)
         if (!isSelectedAvailable) {
-          // $FlowIssue
-          let lastIndex = this.props.item.executions.findIndex(e => e.id === this.state.selectedExecution.id)
-          // $FlowIssue
-          if (props.item.executions.length) {
+          let lastIndex = this.props.item && this.props.item.executions ? this.props.item.executions.findIndex(e => this.state.selectedExecution && e.id === this.state.selectedExecution.id) : -1
+          if (props.item && props.item.executions.length) {
             if (props.item.executions.length - 1 >= lastIndex) {
               selectExecution = props.item.executions[lastIndex]
             } else {
