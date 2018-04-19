@@ -16,11 +16,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { SchemaPlugin } from '../plugins/endpoint'
 import { defaultSchemaToFields } from '../plugins/endpoint/default/SchemaPlugin'
+import type { Schema } from '../types/Schema'
 
 class SchemaParser {
   static storedConnectionsSchemas = {}
 
-  static connectionSchemaToFields(provider: string, schema: { [string]: any }) {
+  static connectionSchemaToFields(provider: string, schema: Schema) {
     if (!this.storedConnectionsSchemas[provider]) {
       this.storedConnectionsSchemas[provider] = schema
     }
@@ -31,8 +32,8 @@ class SchemaParser {
     return fields
   }
 
-  static optionsSchemaToFields(provider: string, schema: { [string]: any }) {
-    let fields = defaultSchemaToFields(schema.oneOf[0])
+  static optionsSchemaToFields(provider: string, schema: Schema) {
+    let fields = defaultSchemaToFields(schema.oneOf[0], schema.definitions)
     fields.sort((a, b) => {
       if (a.required && !b.required) {
         return -1

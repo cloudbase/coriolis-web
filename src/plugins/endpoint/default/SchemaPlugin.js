@@ -14,23 +14,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import type { Schema } from '../../../types/Schema'
+import type { Schema, SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { Field } from '../../../types/Field'
 
-export const defaultSchemaToFields = (schema: Schema) => {
+export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, parent?: string): any[] => {
   let fields = Object.keys(schema.properties).map(fieldName => {
-    let field = {
-      ...schema.properties[fieldName],
-      name: fieldName,
+    let properties = schema.properties[fieldName]
+
+    if (typeof schema.properties[fieldName].$ref === 'string' && schemaDefinitions) {
+      const definitionName = schema.properties[fieldName].$ref.substr(schema.properties[fieldName].$ref.lastIndexOf('/') + 1)
+      properties = schemaDefinitions[definitionName]
+      return {
+        name: fieldName,
+        type: properties.type ? properties.type : '',
+        properties: properties.properties ? defaultSchemaToFields(properties, null, fieldName) : [],
+      }
+    }
+
+    return {
+      ...properties,
+      name: parent ? `${parent}/${fieldName}` : fieldName,
       required: schema.required && schema.required.find(k => k === fieldName) ? true : fieldName === 'username' || fieldName === 'password',
     }
-    return field
   })
 
   return fields
 }
 
-export const connectionSchemaToFields = (schema: Schema) => {
+export const connectionSchemaToFields = (schema: SchemaProperties) => {
   let fields = defaultSchemaToFields(schema)
 
   let sortPriority = { username: 1, password: 2 }
@@ -66,7 +77,7 @@ export const generateField = (name: string, label: string, required: boolean = f
   return field
 }
 
-export const fieldsToPayload = (data: { [string]: mixed }, schema: Schema) => {
+export const fieldsToPayload = (data: { [string]: mixed }, schema: SchemaProperties) => {
   let info = {}
 
   Object.keys(schema.properties).forEach(fieldName => {

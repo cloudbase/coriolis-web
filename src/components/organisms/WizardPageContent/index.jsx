@@ -195,17 +195,26 @@ class WizardPageContent extends React.Component<Props, State> {
   }
 
   isOptionsPageValid() {
+    const isValid = (field: Field): boolean => {
+      return (this.props.wizardData.options &&
+          this.props.wizardData.options[field.name] !== null &&
+          this.props.wizardData.options[field.name] !== undefined &&
+          this.props.wizardData.options[field.name] !== ''
+      ) || (field.default !== null && field.default !== undefined)
+    }
+
     let schema = this.props.providerStore.optionsSchema
     if (schema && schema.length > 0) {
       let required = schema.filter(f => f.required && f.type !== 'object')
+      schema.forEach(f => {
+        if (f.type === 'object' && f.properties && f.properties.filter(p => isValid(p)).length > 0) {
+          required = required.concat(f.properties.filter(p => p.required))
+        }
+      })
+
       let validFieldsCount = 0
       required.forEach(f => {
-        if (
-          (this.props.wizardData.options &&
-          this.props.wizardData.options[f.name] !== null &&
-          this.props.wizardData.options[f.name] !== undefined) ||
-          (f.default !== null && f.default !== undefined)
-        ) {
+        if (isValid(f)) {
           validFieldsCount += 1
         }
       })

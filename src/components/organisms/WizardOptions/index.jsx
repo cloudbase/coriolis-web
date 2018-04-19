@@ -106,17 +106,18 @@ class WizardOptions extends React.Component<Props> {
   }
 
   renderOptionsField(field: Field) {
+    let additionalProps
     if (field.type === 'object' && field.properties) {
-      return (
-        <WizardOptionsFieldStyled
-          key={field.name}
-          name={field.name}
-          type={field.type}
-          valueCallback={f => this.getFieldValue(f.name, f.default)}
-          properties={field.properties}
-          onChange={(f, value) => { this.props.onChange(f, value) }}
-        />
-      )
+      additionalProps = {
+        valueCallback: f => this.getFieldValue(f.name, f.default),
+        onChange: (f, value) => { this.props.onChange(f, value) },
+        properties: field.properties,
+      }
+    } else {
+      additionalProps = {
+        value: this.getFieldValue(field.name, field.default),
+        onChange: value => { this.props.onChange(field, value) },
+      }
     }
     return (
       <WizardOptionsFieldStyled
@@ -125,8 +126,7 @@ class WizardOptions extends React.Component<Props> {
         type={field.type}
         enum={field.enum}
         required={field.required}
-        value={this.getFieldValue(field.name, field.default)}
-        onChange={value => { this.props.onChange(field, value) }}
+        {...additionalProps}
       />
     )
   }

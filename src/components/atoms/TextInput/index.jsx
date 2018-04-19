@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -43,9 +43,9 @@ const Input = styled.input`
   line-height: ${StyleProps.inputSizes.regular.height}px;
   border-radius: ${StyleProps.borderRadius};
   background-color: #FFF;
-  border: 1px solid ${props => borderColor(props)};
+  border: ${props => props.embedded ? 0 : css`1px solid ${props => borderColor(props)}`};
   color: ${Palette.black};
-  padding: 0 ${props => props.customRequired ? '29px' : '8px'} 0 16px;
+  padding: 0 ${props => props.customRequired ? '29px' : '8px'} 0 ${props => props.embedded ? 0 : '16px'};
   font-size: inherit;
   transition: all ${StyleProps.animations.swift};
   box-sizing: border-box;
@@ -97,6 +97,7 @@ type Props = {
   value?: string,
   showClose?: boolean,
   onCloseClick?: () => void,
+  embedded?: boolean,
 }
 const TextInput = (props: Props) => {
   const { _ref, required, value, onChange, showClose, onCloseClick } = props

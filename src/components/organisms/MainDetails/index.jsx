@@ -273,7 +273,7 @@ class MainDetails extends React.Component<Props> {
   }
 
   renderPropertiesTable(propertyNames: string[]) {
-    let renderValue = (value: any) => {
+    let getValue = (value: any) => {
       if (value === true) {
         return 'Yes'
       }
@@ -283,13 +283,30 @@ class MainDetails extends React.Component<Props> {
       return value.toString()
     }
 
+    let properties = []
+    propertyNames.forEach(pn => {
+      let value = this.props.item ? this.props.item.destination_environment[pn] : ''
+      let label = LabelDictionary.get(pn)
+
+      if (value && typeof value === 'object') {
+        properties = properties.concat(Object.keys(value).map(p => {
+          return {
+            label: `${label} - ${LabelDictionary.get(p)}`,
+            value: getValue(value[p]),
+          }
+        }))
+      } else {
+        properties.push({ label, value: getValue(value) })
+      }
+    })
+
     return (
       <PropertiesTable>
-        {propertyNames.map(propName => {
+        {properties.map(prop => {
           return (
-            <PropertyRow key={propName}>
-              <PropertyName>{LabelDictionary.get(propName)}</PropertyName>
-              <PropertyValue>{renderValue(this.props.item ? this.props.item.destination_environment[propName] : '')}</PropertyValue>
+            <PropertyRow key={prop.label}>
+              <PropertyName>{prop.label}</PropertyName>
+              <PropertyValue>{prop.value}</PropertyValue>
             </PropertyRow>
           )
         })}

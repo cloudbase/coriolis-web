@@ -97,6 +97,8 @@ class LabelDictionary {
     vmware_vsphere: 'VMware',
     separate_vm: 'Separate Migration/VM?',
     use_replica: 'Use replica',
+    windows_migr_image: { label: 'Windows Migration Image', description: 'The Windows Migration Image information found on the Azure page' },
+    linux_migr_image: { label: 'Linux Migration Image', description: 'The Linux Migration Image information found on the Azure page' },
   }
 
   static get(fieldName: ?string): string {

@@ -34,7 +34,15 @@ class WizardSourceUtils {
           || data.options[optionName] === null || data.options[optionName] === undefined) {
           return
         }
-        env[optionName] = data.options[optionName]
+        if (optionName.indexOf('/') > 0) {
+          let parentName = optionName.substr(0, optionName.lastIndexOf('/'))
+          if (!env[parentName]) {
+            env[parentName] = {}
+          }
+          env[parentName][optionName.substr(optionName.lastIndexOf('/') + 1)] = data.options ? data.options[optionName] : null
+        } else {
+          env[optionName] = data.options ? data.options[optionName] : null
+        }
       })
     }
 

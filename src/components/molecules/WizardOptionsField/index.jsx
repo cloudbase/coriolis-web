@@ -27,6 +27,8 @@ import PropertiesTable from '../../molecules/PropertiesTable'
 import StyleProps from '../../styleUtils/StyleProps'
 import LabelDictionary from '../../../utils/LabelDictionary'
 
+import type { Field } from '../../../types/Field'
+
 const getDirection = props => {
   if (props.type === 'strict-boolean' || props.type === 'boolean') {
     return 'row'
@@ -47,15 +49,14 @@ const LabelText = styled.span`
   margin-right: 24px;
 `
 
-type PropertyType = { name: string, type: string }
 type Props = {
   type: 'replica' | 'migration',
   name: string,
   value: any,
   onChange: (value: any) => void,
-  valueCallback: (prop: PropertyType, value: any) => void,
+  valueCallback: (prop: Field, value: any) => void,
   className?: string,
-  properties: PropertyType[],
+  properties: Field[],
   enum: string[],
   required: boolean,
 }
