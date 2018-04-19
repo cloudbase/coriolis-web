@@ -32,6 +32,7 @@ import MigrationStore from '../../../stores/MigrationStore'
 import ReplicaStore from '../../../stores/ReplicaStore'
 import UserStore from '../../../stores/UserStore'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
+import type { MainItem } from '../../../types/MainItem'
 
 import endpointImage from './images/endpoint.svg'
 
@@ -46,6 +47,7 @@ type State = {
   showEndpointModal: boolean,
   showEndpointInUseModal: boolean,
   showEndpointInUseLoadingModal: boolean,
+  endpointUsage: {replicas: MainItem[], migrations: MainItem[]}
 }
 @observer
 class EndpointDetailsPage extends React.Component<Props, State> {
@@ -58,6 +60,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
       showEndpointModal: false,
       showEndpointInUseModal: false,
       showEndpointInUseLoadingModal: false,
+      endpointUsage: { replicas: [], migrations: [] },
     }
   }
 
@@ -75,14 +78,14 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     return EndpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
   }
 
-  getEndpointUsage() {
+  getEndpointUsage(): {migrations: MainItem[], replicas: MainItem[]} {
     let endpointId = this.props.match.params.id
-    let replicasCount = ReplicaStore.replicas.filter(
-      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId).length
-    let migrationsCount = MigrationStore.migrations.filter(
-      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId).length
+    let replicas = ReplicaStore.replicas.filter(
+      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId)
+    let migrations = MigrationStore.migrations.filter(
+      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId)
 
-    return { migrationsCount, replicasCount }
+    return { migrations, replicas }
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -105,9 +108,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     this.setState({ showEndpointInUseLoadingModal: true })
 
     Promise.all([ReplicaStore.getReplicas(), MigrationStore.getMigrations()]).then(() => {
-      let endpointUsage = this.getEndpointUsage()
+      const endpointUsage = this.getEndpointUsage()
 
-      if (endpointUsage.migrationsCount === 0 && endpointUsage.replicasCount === 0) {
+      if (endpointUsage.migrations.length === 0 && endpointUsage.replicas.length === 0) {
         this.setState({ showDeleteEndpointConfirmation: true, showEndpointInUseLoadingModal: false })
       } else {
         this.setState({ showEndpointInUseModal: true, showEndpointInUseLoadingModal: false })
@@ -174,6 +177,10 @@ class EndpointDetailsPage extends React.Component<Props, State> {
         EndpointStore.setConnectionInfo(endpoint.connection_info)
       }
     })
+
+    Promise.all([ReplicaStore.getReplicas(), MigrationStore.getMigrations()]).then(() => {
+      this.setState({ endpointUsage: this.getEndpointUsage() })
+    })
   }
 
   render() {
@@ -194,6 +201,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           />}
           contentComponent={<EndpointDetailsContent
             item={endpoint}
+            usage={this.state.endpointUsage}
             loading={EndpointStore.connectionInfoLoading || EndpointStore.loading}
             connectionInfo={EndpointStore.connectionInfo}
             onDeleteClick={() => { this.handleDeleteEndpointClick() }}

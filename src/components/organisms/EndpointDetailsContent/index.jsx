@@ -23,8 +23,12 @@ import PasswordValue from '../../atoms/PasswordValue'
 import Button from '../../atoms/Button'
 import CopyValue from '../../atoms/CopyValue'
 import StatusImage from '../../atoms/StatusImage'
+import CopyButton from '../../atoms/CopyButton'
+import NotificationStore from '../../../stores/NotificationStore'
+import DomUtils from '../../../utils/DomUtils'
 
 import type { Endpoint } from '../../../types/Endpoint'
+import type { MainItem } from '../../../types/MainItem'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
@@ -36,14 +40,15 @@ const Wrapper = styled.div`
   padding-left: 126px;
 `
 const Info = styled.div`
-  margin-top: 32px;
   display: flex;
   flex-wrap: wrap;
+  margin-top: 32px;
+  margin-left: -32px;  
 `
 const Field = styled.div`
+  ${StyleProps.exactWidth('calc(50% - 32px)')}
   margin-bottom: 32px;
-  min-width: 50%;
-  max-width: 50%;
+  margin-left: 32px;  
 `
 const Label = styled.div`
   font-size: 10px;
@@ -53,6 +58,17 @@ const Label = styled.div`
   margin-bottom: 3px;
 `
 const Value = styled.div``
+const MultilineValue = styled.div`
+  cursor: pointer;
+
+  &:hover > span {
+    opacity: 1;
+  }
+  > span {
+    background-position-y: 4px;
+    margin-left: 4px;
+  }
+`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
@@ -76,6 +92,7 @@ type Props = {
   item: ?Endpoint,
   connectionInfo: ?$PropertyType<Endpoint, 'connection_info'>,
   loading: boolean,
+  usage: { migrations: MainItem[], replicas: MainItem[] },
   onDeleteClick: () => void,
   onValidateClick: () => void,
   onEditClick: () => void,
@@ -83,6 +100,14 @@ type Props = {
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
   renderedKeys: { [string]: boolean }
+
+  handleCopy(text: string) {
+    let succesful = DomUtils.copyTextToClipboard(text)
+
+    if (succesful) {
+      NotificationStore.notify('The message has been copied to clipboard.')
+    }
+  }
 
   renderConnectionInfoLoading() {
     if (!this.props.loading) {
@@ -157,6 +182,15 @@ class EndpointDetailsContent extends React.Component<Props> {
     )
   }
 
+  renderMultilineValue(value: string, dataTestId?: string) {
+    return (
+      <MultilineValue onClick={() => { this.handleCopy(value) }} data-test-id={dataTestId}>
+        {value}
+        <CopyButton />
+      </MultilineValue>
+    )
+  }
+
   renderValue(value: string, dataTestId?: string) {
     return <CopyValue data-test-id={dataTestId} value={value} maxWidth="90%" />
   }
@@ -164,6 +198,8 @@ class EndpointDetailsContent extends React.Component<Props> {
   render() {
     this.renderedKeys = {}
     const { type, name, description, created_at } = this.props.item || {}
+    const usage = this.props.usage.replicas.concat(this.props.usage.migrations)
+
     return (
       <Wrapper>
         <EndpointLogos endpoint={type} />
@@ -178,11 +214,15 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Description</Label>
-            {description ? this.renderValue(description, 'description') : <Value>-</Value>}
+            {description ? this.renderMultilineValue(description, 'description') : <Value>-</Value>}
           </Field>
           <Field>
             <Label>Created</Label>
             {this.renderValue(DateUtils.getLocalTime(created_at).format('DD/MM/YYYY HH:mm'), 'created')}
+          </Field>
+          <Field>
+            <Label>Used in replicas/migrations ({usage.length})</Label>
+            {usage.length > 0 ? this.renderMultilineValue(usage.map(i => i.instances.join(', ')).join(', ')) : <Value>-</Value>}
           </Field>
           {this.renderConnectionInfoLoading()}
           {this.renderConnectionInfo(this.props.connectionInfo)}
