@@ -117,30 +117,43 @@ const Arrow = styled.div`
 type Props = {
   value: string,
   onClick?: (event: Event) => void,
+  customRef?: (ref: HTMLElement) => void,
+  innerRef?: (ref: HTMLElement) => void,
   className?: string,
   disabled?: boolean,
 }
-const DropdownButton = (props: Props) => {
-  return (
-    <Wrapper
-      {...props}
-      onClick={e => { if (!props.disabled && props.onClick) props.onClick(e) }}
-    >
-      <Label
-        {...props}
-        onClick={() => {}}
-        data-test-id=""
-        disabled={props.disabled}
-      >{props.value}</Label>
-      <Arrow
-        {...props}
-        onClick={() => {}}
-        data-test-id=""
-        disabled={props.disabled}
-        dangerouslySetInnerHTML={{ __html: arrowImage }}
-      />
-    </Wrapper>
-  )
+class DropdownButton extends React.Component<Props> {
+  render() {
+    return (
+      <Wrapper
+        {...this.props}
+        innerRef={e => {
+          if (this.props.customRef) {
+            this.props.customRef(e)
+          } else if (this.props.innerRef) {
+            this.props.innerRef(e)
+          }
+        }}
+        onClick={e => { if (!this.props.disabled && this.props.onClick) this.props.onClick(e) }}
+      >
+        <Label
+          {...this.props}
+          onClick={() => {}}
+          innerRef={() => {}}
+          data-test-id=""
+          disabled={this.props.disabled}
+        >{this.props.value}</Label>
+        <Arrow
+          {...this.props}
+          innerRef={() => {}}
+          onClick={() => {}}
+          data-test-id=""
+          disabled={this.props.disabled}
+          dangerouslySetInnerHTML={{ __html: arrowImage }}
+        />
+      </Wrapper>
+    )
+  }
 }
 
 export default DropdownButton

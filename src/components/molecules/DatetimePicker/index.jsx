@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { observer } from 'mobx-react'
 import styled, { injectGlobal } from 'styled-components'
 import Datetime from 'react-datetime'
@@ -33,22 +34,21 @@ require('moment/locale/en-gb')
 injectGlobal`${style}`
 
 const Wrapper = styled.div`
-  position: relative;
   width: ${StyleProps.inputSizes.regular.width}px;
 `
 const DropdownButtonStyled = styled(DropdownButton)`
   font-size: 12px;
 `
-const DatetimeStyled = styled(Datetime)`
+const Portal = styled.div`
   position: absolute;
-  right: -11px;
-  top: 49px;
   z-index: 10;
-
-  .rdtPicker {
-    display: ${props => props.open ? 'block' : 'none'};
+  &.hideTip {
+    .rdtPicker:after {
+      content: none;
+    }
   }
 `
+const DatetimeStyled = styled(Datetime)``
 
 type Props = {
   value: ?Date,
@@ -64,6 +64,8 @@ type State = {
 @observer
 class DatetimePicker extends React.Component<Props, State> {
   itemMouseDown: boolean
+  portalRef: HTMLElement
+  buttonRef: HTMLElement
 
   constructor() {
     super()
@@ -87,8 +89,32 @@ class DatetimePicker extends React.Component<Props, State> {
     window.addEventListener('mousedown', this.handlePageClick, false)
   }
 
+  componentDidUpdate() {
+    this.setPortalPosition()
+  }
+
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handlePageClick, false)
+  }
+
+  setPortalPosition() {
+    if (!this.portalRef || !this.buttonRef) {
+      return
+    }
+
+    const buttonRect = this.buttonRef.getBoundingClientRect()
+    const leftOffset = (buttonRect.left - (this.portalRef.offsetWidth - buttonRect.width)) + 10
+    const tipHeight = 12
+    let topOffset = buttonRect.top + this.buttonRef.offsetHeight + tipHeight
+    let listHeight = this.portalRef.offsetHeight
+
+    if (topOffset + listHeight > window.innerHeight) {
+      topOffset = window.innerHeight - listHeight - 10
+      this.portalRef.classList.add('hideTip')
+    }
+
+    this.portalRef.style.top = `${topOffset + window.pageYOffset}px`
+    this.portalRef.style.left = `${leftOffset}px`
   }
 
   isValidDate(currentDate: Date, selectedDate: Date): boolean {
@@ -127,6 +153,28 @@ class DatetimePicker extends React.Component<Props, State> {
     this.setState({ date })
   }
 
+  renderDateTimePicker(timezoneDate: ?moment$Moment) {
+    if (!this.state.showPicker) {
+      return null
+    }
+
+    let body: any = document.body
+    return ReactDOM.createPortal((
+      <Portal innerRef={e => { this.portalRef = e }}>
+        <DatetimeStyled
+          input={false}
+          value={timezoneDate}
+          style={{ top: 0, right: 0 }}
+          onChange={date => { this.handleChange(date) }}
+          dateFormat="DD/MM/YYYY"
+          timeFormat="hh:mm A"
+          locale="en-gb"
+          isValidDate={(currentDate, selectedDate) => this.isValidDate(currentDate, selectedDate)}
+        />
+      </Portal>
+    ), body)
+  }
+
   render() {
     let timezoneDate = this.state.date
     if (this.props.timezone === 'utc' && timezoneDate) {
@@ -136,6 +184,7 @@ class DatetimePicker extends React.Component<Props, State> {
     return (
       <Wrapper>
         <DropdownButtonStyled
+          customRef={e => { this.buttonRef = e }}
           width={207}
           value={(timezoneDate && moment(timezoneDate).format('DD/MM/YYYY hh:mm A')) || '-'}
           centered
@@ -144,16 +193,7 @@ class DatetimePicker extends React.Component<Props, State> {
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
         />
-        <DatetimeStyled
-          input={false}
-          value={timezoneDate}
-          open={this.state.showPicker}
-          onChange={date => { this.handleChange(date) }}
-          dateFormat="DD/MM/YYYY"
-          timeFormat="hh:mm A"
-          locale="en-gb"
-          isValidDate={(currentDate, selectedDate) => this.isValidDate(currentDate, selectedDate)}
-        />
+        {this.renderDateTimePicker(timezoneDate)}
       </Wrapper>
     )
   }
