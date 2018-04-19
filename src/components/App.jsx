@@ -47,6 +47,7 @@ injectGlobal`
     font-weight: ${StyleProps.fontWeights.regular};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-width: 1240px;
   }
 `
 const Wrapper = styled.div``

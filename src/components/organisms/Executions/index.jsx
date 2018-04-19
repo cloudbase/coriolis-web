@@ -237,7 +237,7 @@ class Executions extends React.Component<Props, State> {
         </ExecutionInfoDate>
         <ExecutionInfoId>
           ID:&nbsp;<CopyValue
-            width="107px"
+            width="186px"
             value={this.state.selectedExecution ? this.state.selectedExecution.id : ''}
           />
         </ExecutionInfoId>

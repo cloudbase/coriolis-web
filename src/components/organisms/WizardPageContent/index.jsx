@@ -44,9 +44,8 @@ import ProviderStore from '../../../stores/ProviderStore'
 import migrationArrowImage from './images/migration.js'
 import NetworkStore from '../../../stores/NetworkStore'
 
-const bodyWidth = 800
 const Wrapper = styled.div`
-  ${StyleProps.exactWidth(`${bodyWidth + 64}px`)}
+  ${StyleProps.exactWidth(`${parseInt(StyleProps.contentWidth, 10) + 64}px`)}
   margin: 64px auto 32px auto;
   position: absolute;
   top: 0;
@@ -78,7 +77,7 @@ const Navigation = styled.div`
 `
 const IconRepresentation = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-grow: 1;
   margin: 0 76px;
 `
@@ -89,6 +88,7 @@ const WizardTypeIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0 32px;
 `
 type Props = {
   page: { id: string, title: string },

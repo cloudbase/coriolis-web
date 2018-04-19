@@ -136,7 +136,7 @@ class DatetimePicker extends React.Component<Props, State> {
     return (
       <Wrapper>
         <DropdownButtonStyled
-          width={176}
+          width={207}
           value={(timezoneDate && moment(timezoneDate).format('DD/MM/YYYY hh:mm A')) || '-'}
           centered
           useBold={this.props.useBold}

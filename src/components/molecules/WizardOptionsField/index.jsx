@@ -78,7 +78,7 @@ class WizardOptionsField extends React.Component<Props> {
   renderTextInput() {
     return (
       <TextInput
-        width="320px"
+        width={`${StyleProps.inputSizes.wizard.width}px`}
         required={this.props.required}
         value={this.props.value}
         onChange={e => { this.props.onChange(e.target.value) }}
@@ -118,7 +118,7 @@ class WizardOptionsField extends React.Component<Props> {
 
     return (
       <Dropdown
-        width={320}
+        width={StyleProps.inputSizes.wizard.width}
         data-test-id={`dropdown-${this.props.name}`}
         noSelectionMessage="Choose a value"
         selectedItem={selectedItem}

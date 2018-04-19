@@ -308,7 +308,7 @@ class MainDetails extends React.Component<Props> {
 
     return (
       <ColumnsLayout>
-        <Column width="40%">
+        <Column width="34.5%">
           <Row>
             <Field>
               <Label>Source</Label>
@@ -349,10 +349,10 @@ class MainDetails extends React.Component<Props> {
             </Field>
           </Row>
         </Column>
-        <Column width="20%">
+        <Column width="17.5%">
           <Arrow />
         </Column>
-        <Column width="40%">
+        <Column width="auto" style={{ flexGrow: 1 }}>
           <Row>
             <Field>
               <Label>Target</Label>

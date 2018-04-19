@@ -31,9 +31,9 @@ import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
 
 const Wrapper = styled.div`
-  min-width: 656px;
-  max-width: 656px;
+  ${StyleProps.exactWidth(StyleProps.contentWidth)}
   margin: 0 auto;
+  padding-left: 126px;
 `
 const Info = styled.div`
   margin-top: 32px;
