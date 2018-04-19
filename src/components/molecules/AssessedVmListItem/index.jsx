@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Checkbox from '../../atoms/Checkbox'
 import InfoIcon from '../../atoms/InfoIcon'
@@ -24,31 +24,35 @@ import DropdownLink from '../../molecules/DropdownLink'
 import type { VmItem, VmSize } from '../../../types/Assessment'
 
 import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
 
 const Wrapper = styled.div`
   position: relative;
+  width: 100%;
 `
 const Content = styled.div`
   display: flex;
-  margin-left: -16px;
+  margin-left: -32px;
 
   & > div {
-    margin-left: 16px;
+    margin-left: 32px;
   }
 
   opacity: ${props => props.disabled ? 0.6 : 1};
 `
+const columnWidth = (width: string) => css`
+  width: 100%;
+  max-width: ${width};
+`
 const DisplayName = styled.div`
   display: flex;
-  ${props => StyleProps.exactWidth(props.width)}
-`
-const DisplayNameLabel = styled.div`
-  margin-left: 8px;
+  ${props => columnWidth(props.width)}
 `
 const Value = styled.div`
   color: ${Palette.grayscale[4]};
-  ${props => props.width ? StyleProps.exactWidth(props.width) : ''}
+  ${props => columnWidth(props.width)}
+`
+const DisplayNameLabel = styled.div`
+  margin-left: 8px;
 `
 const InfoIconStyled = styled(InfoIcon) `
   position: absolute;
@@ -58,7 +62,6 @@ const InfoIconStyled = styled(InfoIcon) `
 
 type Props = {
   item: VmItem,
-  columnsWidths: string[],
   selected: boolean,
   onSelectedChange: (item: VmItem, isChecked: boolean) => void,
   disabled: boolean,
@@ -70,11 +73,6 @@ type Props = {
 }
 @observer
 class AssessedVmListItem extends React.Component<Props> {
-  getColumnWidth(index: number) {
-    let width = parseInt(this.props.columnsWidths[index], 10)
-    return `${width - 16}px`
-  }
-
   renderInfoIcon() {
     if (!this.props.disabled) {
       return null
@@ -100,7 +98,7 @@ class AssessedVmListItem extends React.Component<Props> {
       <Wrapper>
         {this.renderInfoIcon()}
         <Content disabled={this.props.disabled}>
-          <DisplayName width={this.getColumnWidth(0)}>
+          <DisplayName width="25%">
             <Checkbox
               checked={this.props.selected}
               onChange={checked => { this.props.onSelectedChange(this.props.item, checked) }}
@@ -108,16 +106,16 @@ class AssessedVmListItem extends React.Component<Props> {
             />
             <DisplayNameLabel>{`${this.props.item.properties.datacenterContainer}/${this.props.item.properties.displayName}`}</DisplayNameLabel>
           </DisplayName>
-          <Value width={this.getColumnWidth(1)}>
+          <Value width="25%">
             {this.props.item.properties.operatingSystem}
           </Value>
-          <Value width={this.getColumnWidth(2)}>
+          <Value width="25%">
             {standardCount} Standard, {premiumCount} Premium
           </Value>
-          <Value>
+          <Value width="25%">
             <DropdownLink
               searchable
-              width={this.props.columnsWidths[3]}
+              width="208px"
               noItemsLabel="Loading..."
               items={this.props.loadingVmSizes ? [] : this.props.vmSizes.map(s => ({ value: s.name, label: s.name, size: s }))}
               selectedItem={this.props.selectedVmSize ? this.props.selectedVmSize.name : ''}
