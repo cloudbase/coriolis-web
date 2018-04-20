@@ -23,7 +23,7 @@ import CopyValue from '../../atoms/CopyValue'
 import StatusIcon from '../../atoms/StatusIcon'
 import StatusImage from '../../atoms/StatusImage'
 import Table from '../../molecules/Table'
-import CopyButton from '../../atoms/CopyButton'
+import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
@@ -31,8 +31,6 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
-import DomUtils from '../../../utils/DomUtils'
-import NotificationStore from '../../../stores/NotificationStore'
 
 import arrowImage from './images/arrow.svg'
 
@@ -45,7 +43,8 @@ const ColumnsLayout = styled.div`
   display: flex;
 `
 const Column = styled.div`
-  width: ${props => props.width};
+  ${props => StyleProps.exactWidth(props.width)}
+  /* width: ${props => props.width}; */
 `
 const Arrow = styled.div`
   width: 34px;
@@ -107,17 +106,6 @@ const PropertyValue = styled.div`
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
-`
-const MultilineValue = styled.div`
-  cursor: pointer;
-
-  &:hover > span {
-    opacity: 1;
-  }
-  > span {
-    background-position-y: 4px;
-    margin-left: 4px;
-  }
 `
 
 type Props = {
@@ -195,14 +183,6 @@ class MainDetails extends React.Component<Props> {
     return networks
   }
 
-  handleCopy(text: string) {
-    let succesful = DomUtils.copyTextToClipboard(text)
-
-    if (succesful) {
-      NotificationStore.notify('The message has been copied to clipboard.')
-    }
-  }
-
   renderLastExecutionTime() {
     let lastExecution = this.getLastExecution()
     if (lastExecution.updated_at || lastExecution.created_at) {
@@ -250,26 +230,6 @@ class MainDetails extends React.Component<Props> {
     }
 
     return endpointIsMissing
-  }
-
-  renderMultilineValue(value: string, dataTestId?: string) {
-    return (
-      <MultilineValue onClick={() => { this.handleCopy(value) }} data-test-id={dataTestId}>
-        {value}
-        <CopyButton />
-      </MultilineValue>
-    )
-  }
-
-  renderDescription() {
-    if (!this.props.item || !this.props.item.destination_environment || !this.props.item.destination_environment.description) {
-      return <Value>-</Value>
-    }
-    return this.renderMultilineValue(this.props.item.destination_environment.description, 'description')
-  }
-
-  renderInstances(instances: string[]) {
-    return this.renderMultilineValue(instances.join(', '))
   }
 
   renderPropertiesTable(propertyNames: string[]) {
@@ -350,7 +310,10 @@ class MainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Description</Label>
-              {this.renderDescription()}
+              {this.props.item && this.props.item.destination_environment
+              && this.props.item.destination_environment.description
+                ? <CopyMultilineValue value={this.props.item.destination_environment.description} data-test-id="description" />
+                : <Value>-</Value>}
             </Field>
           </Row>
           <Row>
@@ -391,7 +354,7 @@ class MainDetails extends React.Component<Props> {
             <Row>
               <Field>
                 <Label>Instances</Label>
-                {this.renderInstances(this.props.item.instances)}
+                <CopyMultilineValue value={this.props.item.instances.join(', ')} />
               </Field>
             </Row>
           ) : null}

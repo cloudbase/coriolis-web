@@ -22,10 +22,8 @@ import EndpointLogos from '../../atoms/EndpointLogos'
 import PasswordValue from '../../atoms/PasswordValue'
 import Button from '../../atoms/Button'
 import CopyValue from '../../atoms/CopyValue'
+import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 import StatusImage from '../../atoms/StatusImage'
-import CopyButton from '../../atoms/CopyButton'
-import NotificationStore from '../../../stores/NotificationStore'
-import DomUtils from '../../../utils/DomUtils'
 
 import type { Endpoint } from '../../../types/Endpoint'
 import type { MainItem } from '../../../types/MainItem'
@@ -58,17 +56,6 @@ const Label = styled.div`
   margin-bottom: 3px;
 `
 const Value = styled.div``
-const MultilineValue = styled.div`
-  cursor: pointer;
-
-  &:hover > span {
-    opacity: 1;
-  }
-  > span {
-    background-position-y: 4px;
-    margin-left: 4px;
-  }
-`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
@@ -100,14 +87,6 @@ type Props = {
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
   renderedKeys: { [string]: boolean }
-
-  handleCopy(text: string) {
-    let succesful = DomUtils.copyTextToClipboard(text)
-
-    if (succesful) {
-      NotificationStore.notify('The message has been copied to clipboard.')
-    }
-  }
 
   renderConnectionInfoLoading() {
     if (!this.props.loading) {
@@ -182,15 +161,6 @@ class EndpointDetailsContent extends React.Component<Props> {
     )
   }
 
-  renderMultilineValue(value: string, dataTestId?: string) {
-    return (
-      <MultilineValue onClick={() => { this.handleCopy(value) }} data-test-id={dataTestId}>
-        {value}
-        <CopyButton />
-      </MultilineValue>
-    )
-  }
-
   renderValue(value: string, dataTestId?: string) {
     return <CopyValue data-test-id={dataTestId} value={value} maxWidth="90%" />
   }
@@ -214,7 +184,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Description</Label>
-            {description ? this.renderMultilineValue(description, 'description') : <Value>-</Value>}
+            {description ? <CopyMultilineValue data-test-id="description" value={description} /> : <Value>-</Value>}
           </Field>
           <Field>
             <Label>Created</Label>
@@ -222,7 +192,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Used in replicas/migrations ({usage.length})</Label>
-            {usage.length > 0 ? this.renderMultilineValue(usage.map(i => i.instances.join(', ')).join(', ')) : <Value>-</Value>}
+            {usage.length > 0 ? <CopyMultilineValue value={usage.map(i => i.instances.join(', ')).join(', ')} /> : <Value>-</Value>}
           </Field>
           {this.renderConnectionInfoLoading()}
           {this.renderConnectionInfo(this.props.connectionInfo)}
