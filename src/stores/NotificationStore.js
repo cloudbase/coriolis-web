@@ -23,8 +23,17 @@ class NotificationStore {
   @observable notifications: NotificationItem[] = []
   @observable persistedNotifications: NotificationItem[] = []
 
+  visibleErrors: string[] = []
+
   @action notify(message: string, level?: $PropertyType<NotificationItem, 'level'>, options?: $PropertyType<NotificationItem, 'options'>): Promise<void> {
-    this.notifications.push({ message, level, options })
+    if (!this.visibleErrors.find(e => e === message)) {
+      this.notifications.push({ message, level, options })
+
+      if (level === 'error') {
+        this.visibleErrors.push(message)
+        setTimeout(() => { this.visibleErrors = this.visibleErrors.filter(e => e !== message) }, 10000)
+      }
+    }
 
     if (options && options.persist) {
       return NotificationSource.notify(message, level, options).then((notification: NotificationItem) => {
