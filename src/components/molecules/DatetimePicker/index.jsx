@@ -66,6 +66,7 @@ class DatetimePicker extends React.Component<Props, State> {
   itemMouseDown: boolean
   portalRef: HTMLElement
   buttonRef: HTMLElement
+  scrollableParent: HTMLElement
 
   constructor() {
     super()
@@ -75,8 +76,11 @@ class DatetimePicker extends React.Component<Props, State> {
       date: null,
     }
 
-    const self: any = this
-    self.handlePageClick = this.handlePageClick.bind(this)
+    // $FlowIssue
+    this.handlePageClick = this.handlePageClick.bind(this)
+
+    // $FlowIssue
+    this.handleScroll = this.handleScroll.bind(this)
   }
 
   componentWillMount() {
@@ -87,6 +91,10 @@ class DatetimePicker extends React.Component<Props, State> {
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
+    if (this.buttonRef) {
+      this.scrollableParent = DomUtils.getScrollableParent(this.buttonRef)
+      this.scrollableParent.addEventListener('scroll', this.handleScroll)
+    }
   }
 
   componentDidUpdate() {
@@ -95,6 +103,7 @@ class DatetimePicker extends React.Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handlePageClick, false)
+    this.scrollableParent.removeEventListener('scroll', this.handleScroll, false)
   }
 
   setPortalPosition() {
@@ -109,8 +118,10 @@ class DatetimePicker extends React.Component<Props, State> {
     let listHeight = this.portalRef.offsetHeight
 
     if (topOffset + listHeight > window.innerHeight) {
-      topOffset = window.innerHeight - listHeight - 10
+      topOffset = window.innerHeight - listHeight - 16
       this.portalRef.classList.add('hideTip')
+    } else {
+      this.portalRef.classList.remove('hideTip')
     }
 
     this.portalRef.style.top = `${topOffset + window.pageYOffset}px`
@@ -123,6 +134,16 @@ class DatetimePicker extends React.Component<Props, State> {
     }
 
     return this.props.isValidDate(currentDate, selectedDate)
+  }
+
+  handleScroll() {
+    if (this.buttonRef) {
+      if (DomUtils.isElementInViewport(this.buttonRef, this.scrollableParent)) {
+        this.setPortalPosition()
+      } else if (this.state.showPicker) {
+        this.setState({ showPicker: false })
+      }
+    }
   }
 
   handlePageClick(e: Event) {
