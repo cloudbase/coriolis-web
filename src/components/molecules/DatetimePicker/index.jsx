@@ -150,18 +150,13 @@ class DatetimePicker extends React.Component<Props, State> {
     let path = DomUtils.getEventPath(e)
 
     if (!this.itemMouseDown && !path.find(n => n.className === 'rdtPicker')) {
-      if (this.state.date && this.state.showPicker) {
-        this.props.onChange(this.state.date.toDate())
-      }
+      this.dispatchChange()
       this.setState({ showPicker: false })
     }
   }
 
   handleDropdownClick() {
-    if (this.state.showPicker && this.state.date) {
-      this.props.onChange(this.state.date.toDate())
-    }
-
+    this.dispatchChange()
     this.setState({ showPicker: !this.state.showPicker })
   }
 
@@ -172,6 +167,16 @@ class DatetimePicker extends React.Component<Props, State> {
     }
 
     this.setState({ date })
+  }
+
+  dispatchChange() {
+    if (
+      this.state.date
+      && this.state.showPicker
+      && this.state.date.toDate().getTime() !== (this.props.value && this.props.value.getTime())
+    ) {
+      this.props.onChange(this.state.date.toDate())
+    }
   }
 
   renderDateTimePicker(timezoneDate: ?moment$Moment) {
