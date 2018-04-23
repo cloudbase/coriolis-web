@@ -15,6 +15,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 class DomUtils {
+  static getScrollableParent(element: HTMLElement, includeHidden?: boolean): HTMLElement {
+    let style = getComputedStyle(element)
+    let excludeStaticParent = style.position === 'absolute'
+    let overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/
+
+    if (style.position === 'fixed') {
+      return window
+    }
+    /* eslint no-cond-assign: off */
+    for (let parent = element; (parent = parent.parentElement);) {
+      style = getComputedStyle(parent)
+      if (excludeStaticParent && style.position === 'static') {
+        /* eslint no-continue: off */
+        continue
+      }
+      if (overflowRegex.test(style.overflow + style.overflowY + style.overflowX)) {
+        let htmlEl: any = parent
+        return htmlEl
+      }
+    }
+
+    return window
+  }
+
+  static isElementInViewport(el: HTMLElement, scrollableParent: any): boolean {
+    let rect = el.getBoundingClientRect()
+    let scrollableRect = scrollableParent.getBoundingClientRect ? scrollableParent.getBoundingClientRect() : {
+      top: 0,
+      left: 0,
+      bottom: scrollableParent.innerHeight ? scrollableParent.innerHeight : window.innerHeight,
+      right: scrollableParent.innerWidth ? scrollableParent.innerWidth : window.innerWidth,
+    }
+
+    return (
+      rect.top + rect.height >= scrollableRect.top &&
+      rect.left >= scrollableRect.left &&
+      rect.bottom - rect.height <= scrollableRect.bottom &&
+      rect.right <= scrollableRect.right
+    )
+  }
+
   static getEventPath(event: Event): HTMLElement[] {
     let path = []
     let node = event.target

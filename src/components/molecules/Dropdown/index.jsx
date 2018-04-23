@@ -22,6 +22,7 @@ import ReactDOM from 'react-dom'
 import DropdownButton from '../../atoms/DropdownButton'
 
 import Palette from '../../styleUtils/Palette'
+import DomUtils from '../../../utils/DomUtils'
 import StyleProps from '../../styleUtils/StyleProps'
 
 const getWidth = props => {
@@ -123,6 +124,7 @@ class Dropdown extends React.Component<Props, State> {
   buttonRef: HTMLElement
   listRef: HTMLElement
   tipRef: HTMLElement
+  scrollableParent: HTMLElement
   buttonRect: ClientRect
   itemMouseDown: boolean
 
@@ -134,13 +136,21 @@ class Dropdown extends React.Component<Props, State> {
       firstItemHover: false,
     }
 
-    const self: any = this
-    self.handlePageClick = this.handlePageClick.bind(this)
+    // $FlowIssue
+    this.handlePageClick = this.handlePageClick.bind(this)
+
+    // $FlowIssue
+    this.handleScroll = this.handleScroll.bind(this)
   }
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
-    if (this.buttonRef) this.buttonRect = this.buttonRef.getBoundingClientRect()
+    if (this.buttonRef) {
+      this.scrollableParent = DomUtils.getScrollableParent(this.buttonRef)
+      this.scrollableParent.addEventListener('scroll', this.handleScroll)
+      window.addEventListener('resize', this.handleScroll)
+      this.buttonRect = this.buttonRef.getBoundingClientRect()
+    }
   }
 
   componentWillUpdate() {
@@ -153,6 +163,8 @@ class Dropdown extends React.Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handlePageClick, false)
+    window.removeEventListener('resize', this.handleScroll, false)
+    this.scrollableParent.removeEventListener('scroll', this.handleScroll, false)
   }
 
   getLabel(item: any) {
@@ -173,6 +185,17 @@ class Dropdown extends React.Component<Props, State> {
     }
 
     return (item[valueField] !== null && item[valueField] !== undefined && item[valueField].toString()) || this.getLabel(item)
+  }
+
+  handleScroll() {
+    if (this.buttonRef) {
+      if (DomUtils.isElementInViewport(this.buttonRef, this.scrollableParent)) {
+        this.buttonRect = this.buttonRef.getBoundingClientRect()
+        this.updateListPosition()
+      } else if (this.state.showDropdownList) {
+        this.setState({ showDropdownList: false })
+      }
+    }
   }
 
   handlePageClick() {
@@ -220,7 +243,7 @@ class Dropdown extends React.Component<Props, State> {
     let listHeight = this.listRef.offsetHeight
 
     if (listTop + listHeight > window.innerHeight) {
-      listTop = window.innerHeight - listHeight - 10
+      listTop = window.innerHeight - listHeight - 16
       this.tipRef.style.display = 'none'
     } else {
       this.tipRef.style.display = 'block'
