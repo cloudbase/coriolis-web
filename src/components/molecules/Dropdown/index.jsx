@@ -148,6 +148,7 @@ class Dropdown extends React.Component<Props, State> {
     if (this.buttonRef) {
       this.scrollableParent = DomUtils.getScrollableParent(this.buttonRef)
       this.scrollableParent.addEventListener('scroll', this.handleScroll)
+      window.addEventListener('resize', this.handleScroll)
       this.buttonRect = this.buttonRef.getBoundingClientRect()
     }
   }
@@ -162,6 +163,7 @@ class Dropdown extends React.Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handlePageClick, false)
+    window.removeEventListener('resize', this.handleScroll, false)
     this.scrollableParent.removeEventListener('scroll', this.handleScroll, false)
   }
 
