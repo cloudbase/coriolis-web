@@ -71,12 +71,19 @@ class AlertModal extends React.Component<Props> {
     type: 'confirmation',
   }
 
-  componentWillReceiveProps(newProps: Props) {
-    if (newProps.isOpen && !this.props.isOpen) {
-      KeyboardManager.onEnter('alert', () => { this.props.onConfirmation() }, 2)
-    } else if (!newProps.isOpen && this.props.isOpen) {
-      KeyboardManager.removeKeyDown('alert')
-    }
+  id: string
+
+  componentDidMount() {
+    this.id = new Date().getTime().toString()
+    KeyboardManager.onEnter(`alert-${this.id}`, () => {
+      if (this.props.isOpen) {
+        this.props.onConfirmation()
+      }
+    }, 2)
+  }
+
+  componentWillUnmount() {
+    KeyboardManager.removeKeyDown(`alert-${this.id}`)
   }
 
   renderDismissButton() {
