@@ -44,7 +44,6 @@ const ColumnsLayout = styled.div`
 `
 const Column = styled.div`
   ${props => StyleProps.exactWidth(props.width)}
-  /* width: ${props => props.width}; */
 `
 const Arrow = styled.div`
   width: 34px;
