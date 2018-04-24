@@ -121,11 +121,13 @@ type Props = {
   innerRef?: (ref: HTMLElement) => void,
   className?: string,
   disabled?: boolean,
+  'data-test-id'?: string,
 }
 class DropdownButton extends React.Component<Props> {
   render() {
     return (
       <Wrapper
+        data-test-id={this.props['data-test-id'] || 'dropdownButton'}
         {...this.props}
         innerRef={e => {
           if (this.props.customRef) {
@@ -140,7 +142,7 @@ class DropdownButton extends React.Component<Props> {
           {...this.props}
           onClick={() => {}}
           innerRef={() => {}}
-          data-test-id=""
+          data-test-id="dropdownButtonValue"
           disabled={this.props.disabled}
         >{this.props.value}</Label>
         <Arrow

@@ -19,12 +19,12 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import DropdownButton from '.'
 
-const wrap = props => shallow(<DropdownButton {...props} />).dive()
+const wrap = props => shallow(<DropdownButton {...props} />)
 
 describe('DropdownButton Component', () => {
   it('renders the given value', () => {
-    let text = wrap({ value: 'test' }).children().first()
-    expect(text.html().indexOf('test')).toBeGreaterThan(-1)
+    const wrapper = wrap({ value: 'the_value' })
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'dropdownButtonValue').dive().text()).toBe('the_value')
   })
 
   it('calls click handler', () => {

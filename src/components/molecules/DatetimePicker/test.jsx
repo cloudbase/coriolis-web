@@ -37,12 +37,4 @@ describe('DateTimePicker Component', () => {
     const label = moment(date).add(new Date().getTimezoneOffset(), 'minutes').format('DD/MM/YYYY hh:mm A')
     expect(wrapper.children().at(0).prop('value')).toBe(label)
   })
-
-  it('opens Datetime component on dropdown click', () => {
-    let onChange = sinon.spy()
-    let wrapper = wrap({ value: new Date(2017, 3, 21, 14, 22), onChange })
-    expect(wrapper.children().at(1).prop('open')).toBe(false)
-    wrapper.children().at(0).simulate('click')
-    expect(wrapper.children().at(1).prop('open')).toBe(true)
-  })
 })

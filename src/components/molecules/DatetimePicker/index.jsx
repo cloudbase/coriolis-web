@@ -211,6 +211,7 @@ class DatetimePicker extends React.Component<Props, State> {
       <Wrapper>
         <DropdownButtonStyled
           customRef={e => { this.buttonRef = e }}
+          data-test-id="dropdownButton"
           width={207}
           value={(timezoneDate && moment(timezoneDate).format('DD/MM/YYYY hh:mm A')) || '-'}
           centered

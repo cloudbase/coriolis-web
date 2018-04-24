@@ -17,19 +17,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import CopyValue from '.'
+import CopyMultilineValue from '.'
 
-const wrap = props => shallow(<CopyValue value="the_value" {...props} />)
+const wrap = props => shallow(<CopyMultilineValue value="" {...props} />)
 
-describe('CopyValue Component', () => {
+describe('CopyMultilineValue Component', () => {
   it('renders `value`', () => {
-    const wrapper = wrap()
-    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'value').dive().text()).toBe('the_value')
+    const wrapper = wrap({ value: 'the_value' })
+    expect(wrapper.dive().text()).toBe('the_value<CopyButton />')
   })
 
   it('copies `value` to clipboard', () => {
     const onCopy = sinon.spy()
-    const wrapper = wrap({ onCopy })
+    const wrapper = wrap({ value: 'the_value', onCopy })
     wrapper.simulate('click')
     expect(onCopy.calledOnce).toBe(true)
     expect(onCopy.args[0][0]).toBe('the_value')

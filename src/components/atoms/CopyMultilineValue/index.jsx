@@ -37,11 +37,13 @@ const Wrapper = styled.div`
 type Props = {
   'data-test-id'?: string,
   value: string,
+  onCopy?: (value: string) => void,
 }
 @observer
 class CopyMultineValue extends React.Component<Props> {
   handleCopy() {
     let succesful = DomUtils.copyTextToClipboard(this.props.value)
+    if (this.props.onCopy) this.props.onCopy(this.props.value)
 
     if (succesful) {
       NotificationStore.notify('The message has been copied to clipboard.')

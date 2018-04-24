@@ -21,7 +21,7 @@ import moment from 'moment'
 import EndpointDetailsContent from '.'
 
 // $FlowIgnore
-const wrap = props => shallow(<EndpointDetailsContent {...props} />)
+const wrap = props => shallow(<EndpointDetailsContent usage={{ replicas: [], migrations: [] }}{...props} />)
 
 let item = {
   name: 'endpoint_name',
@@ -68,10 +68,8 @@ describe('EndpointDetailsContent Component', () => {
 
   it('renders boolean as Yes and No', () => {
     let wrapper = wrap({ item, connectionInfo })
-    let yesResults = wrapper.findWhere(w => w.html().indexOf('Boolean True') > -1)
-    expect(yesResults.at(yesResults.length - 2).find('CopyValue').findWhere(c => c.prop('value') === 'Yes').length).toBe(1)
-    let noResults = wrapper.findWhere(w => w.html().indexOf('Boolean False') > -1)
-    expect(noResults.at(noResults.length - 2).find('CopyValue').findWhere(c => c.prop('value') === 'No').length).toBe(1)
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'value-boolean_true').prop('value')).toBe('Yes')
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'value-boolean_false').prop('value')).toBe('No')
   })
 
   it('renders nested connection info', () => {

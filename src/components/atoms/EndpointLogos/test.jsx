@@ -12,16 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import EndpointLogos from '.'
 
-const wrap = props => shallow(<EndpointLogos {...props} />).dive()
+const wrap = props => shallow(<EndpointLogos {...props} />)
 
-it('passes down props', () => {
-  let wrapper = wrap({ height: 32, endpoint: 'aws' })
-  expect(wrapper.prop('height')).toBe(32)
-  let imageInfo = wrapper.findWhere(w => w.name() === 'styled.div' && w.prop('imageInfo')).prop('imageInfo')
-  expect(imageInfo.h).toBe(32)
-  expect(imageInfo.image).toBe('file')
+describe('EndpointLogos Component', () => {
+  it('renders 32px aws', () => {
+    const wrapper = wrap({ height: 32, endpoint: 'aws' })
+    const logo = wrapper.findWhere(w => w.prop('data-test-id') === 'endpointLogos-logo')
+    expect(logo.prop('height')).toBe(32)
+    console.log(logo.prop('imageInfo'))
+  })
+
+  // it('passes down props', () => {
+  //   let wrapper = wrap({ height: 32, endpoint: 'aws' })
+  //   expect(wrapper.prop('height')).toBe(32)
+  //   let imageInfo = wrapper.findWhere(w => w.name() === 'styled.div' && w.prop('imageInfo')).prop('imageInfo')
+  //   expect(imageInfo.h).toBe(32)
+  //   expect(imageInfo.image).toBe('file')
+  // })
 })
