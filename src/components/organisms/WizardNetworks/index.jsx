@@ -136,7 +136,7 @@ class WizardNetworks extends React.Component<Props> {
     return (
       <NoNicsMessage>
         <BigNetworkImage />
-        <NoNicsTitle>No networks were found</NoNicsTitle>
+        <NoNicsTitle data-test-id="wNetworks-noNics">No networks were found</NoNicsTitle>
         <NoNicsSubtitle>We could not find any Networks attached to the selected Instances. Coriolis will skip this step.</NoNicsSubtitle>
       </NoNicsMessage>
     )
@@ -180,8 +180,8 @@ class WizardNetworks extends React.Component<Props> {
             <Nic key={nic.id} data-test-id="networkItem">
               <NetworkImage />
               <NetworkTitle>
-                <NetworkName>{nic.network_name}</NetworkName>
-                <NetworkSubtitle>{`Connected to ${connectedTo.join(', ')}`}</NetworkSubtitle>
+                <NetworkName data-test-id={`wNetworks-networkName-${nic.id}`}>{nic.network_name}</NetworkName>
+                <NetworkSubtitle data-test-id={`wNetworks-connectedTo-${nic.id}`}>{`Connected to ${connectedTo.join(', ')}`}</NetworkSubtitle>
               </NetworkTitle>
               <ArrowImage />
               <Dropdown
@@ -194,6 +194,7 @@ class WizardNetworks extends React.Component<Props> {
                 labelField="name"
                 valueField="id"
                 onChange={(item: Network) => { this.props.onChange(nic, item) }}
+                data-test-id={`wNetworks-dropdown-${nic.id}`}
               />
             </Nic>
           )

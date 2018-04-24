@@ -16,23 +16,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import EndpointLogos from '.'
 
-const wrap = props => shallow(<EndpointLogos {...props} />)
+const wrap = props => new TestWrapper(shallow(<EndpointLogos {...props} />), 'endpointLogos')
 
 describe('EndpointLogos Component', () => {
   it('renders 32px aws', () => {
     const wrapper = wrap({ height: 32, endpoint: 'aws' })
-    const logo = wrapper.findWhere(w => w.prop('data-test-id') === 'endpointLogos-logo')
-    expect(logo.prop('height')).toBe(32)
-    console.log(logo.prop('imageInfo'))
+    const logo = wrapper.find('logo')
+    expect(logo.prop('imageInfo').h).toBe(32)
+    expect(logo.prop('imageInfo').image).toBe('file')
+    expect(wrapper.prop('endpoint')).toBe('aws')
   })
 
-  // it('passes down props', () => {
-  //   let wrapper = wrap({ height: 32, endpoint: 'aws' })
-  //   expect(wrapper.prop('height')).toBe(32)
-  //   let imageInfo = wrapper.findWhere(w => w.name() === 'styled.div' && w.prop('imageInfo')).prop('imageInfo')
-  //   expect(imageInfo.h).toBe(32)
-  //   expect(imageInfo.image).toBe('file')
-  // })
+  it('renders 128px azure disabled', () => {
+    const wrapper = wrap({ height: 128, endpoint: 'azure', disabled: true })
+    const logo = wrapper.find('logo')
+    expect(logo.prop('imageInfo').h).toBe(128)
+    expect(logo.prop('imageInfo').disabled).toBe(true)
+    expect(wrapper.prop('endpoint')).toBe('azure')
+  })
+
+  it('renders 64px generic logo', () => {
+    const wrapper = wrap({ height: 64, endpoint: 'generic' })
+    const logo = wrapper.find('genericLogo')
+    expect(logo.prop('name')).toBe('generic')
+    expect(logo.prop('size').h).toBe(64)
+  })
 })

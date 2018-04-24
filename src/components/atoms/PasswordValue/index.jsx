@@ -69,7 +69,7 @@ class PasswordValue extends React.Component<Props, State> {
   render() {
     return (
       <Wrapper onClick={() => { this.handleShowClick() }} show={this.state.show}>
-        <Value>{this.state.show ? this.props.value : '•••••••••'}</Value>
+        <Value data-test-id="passwordValue-value">{this.state.show ? this.props.value : '•••••••••'}</Value>
         {!this.state.show ? <EyeIcon /> : null}
       </Wrapper>
     )

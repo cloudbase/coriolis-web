@@ -12,42 +12,44 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import AlertModal from '.'
 
-const wrap = props => shallow(<AlertModal {...props} />)
+const wrap = props => new TW(shallow(<AlertModal {...props} />), 'aModal')
 
-it('renders confirmation as default', () => {
-  let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra' })
-  expect(wrapper.findWhere(w => w.prop('type') === 'confirmation')).toBeTruthy()
-})
+describe('AlertModal Component', () => {
+  it('renders confirmation as default with message and extra message', () => {
+    let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra' })
+    expect(wrapper.findText('message')).toBe('alert-message')
+    expect(wrapper.findText('extraMessage')).toBe('alert-extra')
+    expect(wrapper.find('image').prop('type')).toBe('confirmation')
+    expect(wrapper.find('noButton').length).toBe(1)
+    expect(wrapper.find('yesButton').length).toBe(1)
+    expect(wrapper.find('dismissButton').length).toBe(0)
+  })
 
-it('renders message and extra message', () => {
-  let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra' })
-  expect(wrapper.childAt(0).html().indexOf('alert-message')).toBeGreaterThan(-1)
-  expect(wrapper.childAt(0).html().indexOf('alert-extra')).toBeGreaterThan(-1)
-})
+  it('has correct buttons for confirmation', () => {
+    let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra' })
+    expect(wrapper.find('noButton').prop('secondary')).toBe(true)
+    expect(wrapper.find('yesButton').prop('secondary')).toBe(undefined)
+    expect(wrapper.find('noButton').shallow.dive().dive().text()).toBe('No')
+    expect(wrapper.find('yesButton').shallow.dive().dive().text()).toBe('Yes')
+  })
 
-it('has correct buttons for confirmation', () => {
-  let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra' })
-  expect(wrapper.find('Button').at(0).prop('secondary')).toBe(true)
-  expect(wrapper.find('Button').at(0).html().indexOf('No')).toBeGreaterThan(-1)
-  expect(wrapper.find('Button').at(1).html().indexOf('Yes')).toBeGreaterThan(-1)
-})
+  it('has correct button for error', () => {
+    let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra', type: 'error' })
+    expect(wrapper.find('dismissButton').length).toBe(1)
+  })
 
-it('has correct button for error', () => {
-  let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra', type: 'error' })
-  expect(wrapper.find('Button').prop('secondary')).toBe(true)
-  expect(wrapper.find('Button').html().indexOf('Dismiss')).toBeGreaterThan(-1)
-})
-
-it('renders loading', () => {
-  let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra', type: 'loading' })
-  expect(wrapper.find('StatusImage').prop('loading')).toBe(true)
-})
-
-it('renders loading with no buttons', () => {
-  let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra', type: 'loading' })
-  expect(wrapper.find('Button').length).toBe(0)
+  it('renders loading', () => {
+    let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra', type: 'loading' })
+    expect(wrapper.find('status').prop('loading')).toBe(true)
+    expect(wrapper.find('noButton').length).toBe(0)
+    expect(wrapper.find('yesButton').length).toBe(0)
+    expect(wrapper.find('dismissButton').length).toBe(0)
+  })
 })

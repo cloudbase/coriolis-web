@@ -12,11 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import Tasks from '.'
 
-const wrap = props => shallow(<Tasks {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <Tasks {...props} />
+), 'tasks')
 
 let items = [
   {
@@ -80,23 +86,27 @@ let items = [
   },
 ]
 
-it('renders correct number of task items', () => {
-  let wrapper = wrap({ items })
-  expect(wrapper.find('TaskItem').length).toBe(items.length)
-})
+describe('Tasks Component', () => {
+  it('renders correct number of task items', () => {
+    let wrapper = wrap({ items })
+    items.forEach(item => {
+      expect(wrapper.find(`item-${item.id}`).prop('item').id).toBe(item.id)
+    })
+  })
 
-it('renders only running task opened', () => {
-  let wrapper = wrap({ items })
-  expect(wrapper.find('TaskItem').at(0).prop('open')).toBe(false)
-  expect(wrapper.find('TaskItem').at(1).prop('open')).toBe(false)
-  expect(wrapper.find('TaskItem').at(2).prop('open')).toBe(false)
-  expect(wrapper.find('TaskItem').at(3).prop('open')).toBe(true)
-  expect(wrapper.find('TaskItem').at(4).prop('open')).toBe(false)
-})
+  it('renders only running task opened', () => {
+    let wrapper = wrap({ items })
+    expect(wrapper.find('item-task-1').prop('open')).toBe(false)
+    expect(wrapper.find('item-task-2').prop('open')).toBe(false)
+    expect(wrapper.find('item-task-3').prop('open')).toBe(false)
+    expect(wrapper.find('item-task-4').prop('open')).toBe(true)
+    expect(wrapper.find('item-task-5').prop('open')).toBe(false)
+  })
 
-it('renders correct info in task item', () => {
-  let wrapper = wrap({ items })
-  expect(wrapper.find('TaskItem').at(2).prop('item').id).toBe('task-3')
-  expect(wrapper.find('TaskItem').at(4).prop('item').task_type).toBe('Task name 5')
-  expect(wrapper.find('TaskItem').at(0).prop('item').status).toBe('COMPLETED')
+  it('renders correct info in task item', () => {
+    let wrapper = wrap({ items })
+    expect(wrapper.find('item-task-3').prop('item').id).toBe('task-3')
+    expect(wrapper.find('item-task-5').prop('item').task_type).toBe('Task name 5')
+    expect(wrapper.find('item-task-1').prop('item').status).toBe('COMPLETED')
+  })
 })

@@ -188,6 +188,7 @@ class NewItemDropdown extends React.Component<Props, State> {
         {items.map(item => {
           return (
             <ListItem
+              data-test-id={`newItemDropdown-listItem-${item.title}`}
               key={item.title}
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
@@ -212,6 +213,7 @@ class NewItemDropdown extends React.Component<Props, State> {
     return (
       <Wrapper>
         <DropdownButton
+          data-test-id="newItemDropdown-button"
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
           onClick={() => this.handleButtonClick()}

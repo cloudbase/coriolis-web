@@ -12,12 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import DetailsContentHeader from '.'
 
-const wrap = props => shallow(<DetailsContentHeader {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <DetailsContentHeader {...props} />
+), 'dcHeader')
 
 let item = {
   origin_endpoint_id: 'openstack',
@@ -27,75 +33,76 @@ let item = {
   executions: [{ status: 'COMPLETED', created_at: new Date() }],
 }
 
-it('renders title', () => {
-  let wrapper = wrap({ item })
-  expect(wrapper.html().indexOf('The instance title')).toBeGreaterThan(-1)
-})
-
-it('renders with no action button', () => {
-  let wrapper = wrap({ item })
-  expect(wrapper.find('Button').length).toBe(0)
-})
-
-it('renders with action button, if there\'s action button handler', () => {
-  let wrapper = wrap({ item, buttonLabel: 'action button', onActionButtonClick: () => { } })
-  expect(wrapper.find('Button').length).toBe(1)
-})
-
-it('dispatches action button click', () => {
-  let onActionButtonClick = sinon.spy()
-  let wrapper = wrap({ item, buttonLabel: 'action button', onActionButtonClick })
-  wrapper.find('Button').simulate('click')
-  expect(onActionButtonClick.calledOnce).toBe(true)
-})
-
-it('dispatches back button click', () => {
-  let onBackButonClick = sinon.spy()
-  let wrapper = wrap({ item, onBackButonClick })
-  wrapper.childAt(0).simulate('click')
-  expect(onBackButonClick.called).toBe(true)
-})
-
-it('renders cancel button if status is running', () => {
-  let wrapper = wrap({
-    item: { ...item, executions: [{ ...item.executions[0], status: 'RUNNING' }] },
+describe('DetailsContentHeader Component', () => {
+  it('renders title', () => {
+    let wrapper = wrap({ item })
+    expect(wrapper.findText('title')).toBe(item.instances[0])
   })
-  expect(wrapper.find('Button').html().indexOf('Cancel')).toBeGreaterThan(-1)
-})
 
-it('dispatches cancel click', () => {
-  let onCancelClick = sinon.spy()
-  let wrapper = wrap({
-    item: { ...item, executions: [{ ...item.executions[0], status: 'RUNNING' }] },
-    onCancelClick,
+  it('renders with no action button', () => {
+    let wrapper = wrap({ item })
+    expect(wrapper.find('actionButton').length).toBe(0)
+    expect(wrapper.find('cancelButton').length).toBe(0)
   })
-  wrapper.find('Button').simulate('click')
-  expect(onCancelClick.args[0][0].status).toBe('RUNNING')
-})
 
-it('renders action button label', () => {
-  let wrapper = wrap({ item, buttonLabel: 'action button', onActionButtonClick: () => { } })
-  expect(wrapper.find('Button').html().indexOf('action button')).toBeGreaterThan(-1)
-})
+  it('renders with action button, if there\'s action button handler', () => {
+    let wrapper = wrap({ item, buttonLabel: 'action button', onActionButtonClick: () => { } })
+    expect(wrapper.find('actionButton').length).toBe(1)
+    expect(wrapper.find('actionButton').shallow.dive().dive().text()).toBe('action button')
+  })
 
-it('renders correct INFO pill', () => {
-  let wrapper = wrap({ item, primaryInfoPill: true })
-  expect(wrapper.findWhere(w => w.name() === 'StatusPill' && w.prop('status') === 'INFO').prop('primary')).toBe(true)
-  expect(wrapper.findWhere(w => w.name() === 'StatusPill' && w.prop('status') === 'INFO').prop('label')).toBe('ITEM TYPE')
-  wrapper = wrap({ item, alertInfoPill: true })
-  expect(wrapper.findWhere(w => w.name() === 'StatusPill' && w.prop('status') === 'INFO').prop('alert')).toBe(true)
-})
+  it('dispatches action button click', () => {
+    let onActionButtonClick = sinon.spy()
+    let wrapper = wrap({ item, buttonLabel: 'action button', onActionButtonClick })
+    wrapper.find('actionButton').simulate('click')
+    expect(onActionButtonClick.calledOnce).toBe(true)
+  })
 
-it('renders correct STATUS pill', () => {
-  let wrapper = wrap({ item })
-  expect(wrapper.findWhere(w => w.name() === 'StatusPill' && w.prop('status') === 'COMPLETED').length).toBe(1)
-  let newItem = { ...item, executions: [...item.executions] }
-  newItem.executions.push({ status: 'RUNNING', created_at: new Date() })
-  wrapper = wrap({ item: newItem })
-  expect(wrapper.findWhere(w => w.name() === 'StatusPill' && w.prop('status') === 'RUNNING').length).toBe(1)
-})
+  it('dispatches back button click', () => {
+    let onBackButonClick = sinon.spy()
+    let wrapper = wrap({ item, onBackButonClick })
+    wrapper.find('backButton').click()
+    expect(onBackButonClick.called).toBe(true)
+  })
 
-it('renders item description', () => {
-  let wrapper = wrap({ item: { ...item, description: 'item description' } })
-  expect(wrapper.html().indexOf('item description')).toBeGreaterThan(-1)
+  it('renders cancel button if status is running', () => {
+    let wrapper = wrap({
+      item: { ...item, executions: [{ ...item.executions[0], status: 'RUNNING' }] },
+    })
+    expect(wrapper.find('cancelButton').length).toBe(1)
+  })
+
+  it('dispatches cancel click', () => {
+    let onCancelClick = sinon.spy()
+    let wrapper = wrap({
+      item: { ...item, executions: [{ ...item.executions[0], status: 'RUNNING' }] },
+      onCancelClick,
+    })
+    wrapper.find('cancelButton').simulate('click')
+    expect(onCancelClick.args[0][0].status).toBe('RUNNING')
+  })
+
+  it('renders correct INFO pill', () => {
+    let wrapper = wrap({ item, primaryInfoPill: true })
+    expect(wrapper.find('infoPill').prop('primary')).toBe(true)
+    expect(wrapper.find('infoPill').prop('label')).toBe('ITEM TYPE')
+    expect(wrapper.find('infoPill').prop('alert')).toBe(undefined)
+
+    wrapper = wrap({ item, alertInfoPill: true })
+    expect(wrapper.find('infoPill').prop('alert')).toBe(true)
+  })
+
+  it('renders correct STATUS pill', () => {
+    let wrapper = wrap({ item })
+    expect(wrapper.find('statusPill-', true).prop('status')).toBe('COMPLETED')
+    let newItem = { ...item, executions: [...item.executions] }
+    newItem.executions.push({ status: 'RUNNING', created_at: new Date() })
+    wrapper = wrap({ item: newItem })
+    expect(wrapper.find('statusPill-', true).prop('status')).toBe('RUNNING')
+  })
+
+  it('renders item description', () => {
+    let wrapper = wrap({ item: { ...item, description: 'item description' } })
+    expect(wrapper.findText('description')).toBe('item description')
+  })
 })

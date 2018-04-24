@@ -121,13 +121,14 @@ class ReplicaExecutionOptions extends React.Component<Props, State> {
                 value={this.getFieldValue(field)}
                 label={LabelDictionary.get(field.name)}
                 onChange={value => this.handleValueChange(field, value)}
+                data-test-id={`reOptions-option-${field.name}`}
               />
             )
           })}
         </Form>
         <Buttons>
-          <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
-          <Button onClick={() => { this.props.onExecuteClick(this.state.fields) }}>{this.props.executionLabel}</Button>
+          <Button secondary onClick={this.props.onCancelClick} data-test-id="reOptions-cancelButton">Cancel</Button>
+          <Button onClick={() => { this.props.onExecuteClick(this.state.fields) }} data-test-id="reOptions-execButton">{this.props.executionLabel}</Button>
         </Buttons>
       </Wrapper>
     )

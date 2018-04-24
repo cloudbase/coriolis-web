@@ -106,6 +106,7 @@ class MainListFilter extends React.Component<Props> {
         {this.props.items.map(item => {
           return (
             <FilterItem
+              data-test-id={`mainListFilter-filterItem-${item.value}`}
               onClick={() => this.props.onFilterItemClick(item)}
               key={item.value}
               selected={this.props.selectedValue === item.value}
@@ -124,11 +125,12 @@ class MainListFilter extends React.Component<Props> {
 
     return (
       <Selection>
-        <SelectionText>
+        <SelectionText data-test-id="mainListFilter-selectionText">
           {this.props.selectionInfo.selected} of {this.props.selectionInfo.total}&nbsp;
           {this.props.selectionInfo.label}(s) selected
         </SelectionText>
         <Dropdown
+          data-test-id="mainListFilter-dropdown"
           noSelectionMessage="Select an action"
           items={this.props.actions}
           onChange={item => { this.props.onActionChange(item.value) }}
@@ -155,7 +157,11 @@ class MainListFilter extends React.Component<Props> {
         <Main>
           {renderCheckbox()}
           {this.renderFilterGroup()}
-          <ReloadButton style={{ marginRight: '16px' }} onClick={this.props.onReloadButtonClick} />
+          <ReloadButton
+            data-test-id="mainListFilter-reloadButton"
+            style={{ marginRight: '16px' }}
+            onClick={this.props.onReloadButtonClick}
+          />
           <SearchInput onChange={this.props.onSearchChange} value={this.props.searchValue} />
         </Main>
         {this.renderSelectionInfo()}

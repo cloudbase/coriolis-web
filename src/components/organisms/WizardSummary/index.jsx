@@ -201,7 +201,7 @@ class WizardSummary extends React.Component<Props> {
         <Table>
           {schedules.map(schedule => {
             return (
-              <Row key={schedule.id} schedule data-test-id={`scheduleItem-${schedule.id || 0}`}>
+              <Row key={schedule.id} schedule data-test-id={`wSummary-scheduleItem-${schedule.id || 0}`}>
                 {this.renderScheduleLabel(schedule)}
               </Row>
             )
@@ -256,8 +256,10 @@ class WizardSummary extends React.Component<Props> {
 
             return (
               <Option key={optionName}>
-                <OptionLabel>{optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}</OptionLabel>
-                <OptionValue>{
+                <OptionLabel data-test-id={`wSummary-optionLabel-${optionName}`}>
+                  {optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}
+                </OptionLabel>
+                <OptionValue data-test-id={`wSummary-optionValue-${optionName}`}>{
                   // $FlowIssue
                   this.renderOptionValue(data.options[optionName])
                 }</OptionValue>
@@ -283,9 +285,9 @@ class WizardSummary extends React.Component<Props> {
           {data.networks.map(mapping => {
             return (
               <Row key={mapping.sourceNic.network_name} direction="row">
-                <SourceNetwork>{mapping.sourceNic.network_name}</SourceNetwork>
+                <SourceNetwork data-test-id="wSummary-networkSource">{mapping.sourceNic.network_name}</SourceNetwork>
                 <NetworkArrow />
-                <TargetNetwork>{mapping.targetNetwork.name}</TargetNetwork>
+                <TargetNetwork data-test-id="wSummary-networkTarget">{mapping.targetNetwork.name}</TargetNetwork>
               </Row>
             )
           })}
@@ -305,7 +307,7 @@ class WizardSummary extends React.Component<Props> {
             let flavorName = instance.flavor_name ? `/${instance.flavor_name}` : ''
             return (
               <Row key={instance.id}>
-                <InstanceRowTitle>{instance.name}</InstanceRowTitle>
+                <InstanceRowTitle data-test-id={`wSummary-instance-${instance.id}`}>{instance.name}</InstanceRowTitle>
                 <InstanceRowSubtitle>{`${instance.num_cpu}vCPU/${instance.memory_mb}MB${flavorName}`}</InstanceRowSubtitle>
               </Row>
             )
@@ -325,21 +327,36 @@ class WizardSummary extends React.Component<Props> {
           <OverviewRow>
             <OverviewLabel>Source</OverviewLabel>
             <OverviewRowData>
-              <StatusPill secondary small label={LabelDictionary.get(data.source && data.source.type).toUpperCase()} />
-              <OverviewRowLabel>{data.source ? data.source.name : ''}</OverviewRowLabel>
+              <StatusPill
+                secondary
+                small
+                label={LabelDictionary.get(data.source && data.source.type).toUpperCase()}
+                data-test-id="wSummary-sourcePill"
+              />
+              <OverviewRowLabel data-test-id="wSummary-source">{data.source ? data.source.name : ''}</OverviewRowLabel>
             </OverviewRowData>
           </OverviewRow>
           <OverviewRow>
             <OverviewLabel>Target</OverviewLabel>
             <OverviewRowData>
-              <StatusPill secondary small label={LabelDictionary.get(data.target && data.target.type).toUpperCase()} />
-              <OverviewRowLabel>{data.target && data.target.name}</OverviewRowLabel>
+              <StatusPill
+                secondary
+                small
+                label={LabelDictionary.get(data.target && data.target.type).toUpperCase()}
+                data-test-id="wSummary-targetPill"
+              />
+              <OverviewRowLabel data-test-id="wSummary-target">{data.target && data.target.name}</OverviewRowLabel>
             </OverviewRowData>
           </OverviewRow>
           <OverviewRow>
             <OverviewLabel>Type</OverviewLabel>
             <OverviewRowData>
-              <StatusPill alert small label={this.props.wizardType.toUpperCase()} />
+              <StatusPill
+                alert
+                small
+                label={this.props.wizardType.toUpperCase()}
+                data-test-id="wSummary-typePill"
+              />
               <OverviewRowLabel>Coriolis {type}</OverviewRowLabel>
             </OverviewRowData>
           </OverviewRow>

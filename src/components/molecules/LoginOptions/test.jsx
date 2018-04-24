@@ -16,9 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import LoginOptions from '.'
 
-const wrap = props => shallow(<LoginOptions {...props} />)
+const wrap = props => new TestWrapper(shallow(<LoginOptions {...props} />), 'loginOptions')
 
 let buttons = [
   {
@@ -44,10 +45,12 @@ let buttons = [
 ]
 
 describe('LoginOptions Component', () => {
-  it('renders with given buttons', () => {
+  it('renders with all buttons', () => {
     let wrapper = wrap({ buttons })
-    expect(wrapper.children().length).toBe(4)
-    expect(wrapper.childAt(2).prop('id')).toBe('facebook')
-    expect(wrapper.childAt(1).html().indexOf('Sign in with Microsoft')).toBeGreaterThan(-1)
+    expect(wrapper.find('button', true).length).toBe(4)
+    buttons.forEach(button => {
+      expect(wrapper.findText(`button-${button.id}`)).toBe(`<styled.div />Sign in with ${button.name}`)
+      expect(wrapper.find(`logo-${button.id}`).prop('id')).toBe(button.id)
+    })
   })
 })

@@ -58,12 +58,12 @@ const Row = styled.div`
     border-bottom-left-radius: ${StyleProps.borderRadius};
   }
 `
-
+const baseId = 'propertiesTable'
 type Props = {
   properties: Field[],
   onChange: (property: Field, value: any) => void,
   valueCallback: (property: Field) => any,
- }
+}
 @observer
 class PropertiesTable extends React.Component<Props> {
   getName(propName: string): string {
@@ -76,6 +76,7 @@ class PropertiesTable extends React.Component<Props> {
   renderSwitch(prop: Field, opts: { triState: boolean }) {
     return (
       <Switch
+        data-test-id={`${baseId}-switch-${prop.name}`}
         secondary
         triState={opts.triState}
         height={16}
@@ -88,6 +89,7 @@ class PropertiesTable extends React.Component<Props> {
   renderTextInput(prop: Field) {
     return (
       <TextInput
+        data-test-id={`${baseId}-textInput-${prop.name}`}
         width="100%"
         embedded
         value={this.props.valueCallback(prop)}
@@ -118,6 +120,7 @@ class PropertiesTable extends React.Component<Props> {
 
     return (
       <Dropdown
+        data-test-id={`${baseId}-dropdown-${prop.name}`}
         width={320}
         noSelectionMessage="Choose a value"
         selectedItem={selectedItem ? selectedItem.label : null}
@@ -154,8 +157,8 @@ class PropertiesTable extends React.Component<Props> {
       <Wrapper>
         {this.props.properties.map(prop => {
           return (
-            <Row key={prop.name}>
-              <Column header>{this.getName(prop.name)}</Column>
+            <Row key={prop.name} data-test-id={`${baseId}-row-${prop.name}`}>
+              <Column header data-test-id={`${baseId}-header`}>{this.getName(prop.name)}</Column>
               <Column input>{this.renderInput(prop)}</Column>
             </Row>
           )

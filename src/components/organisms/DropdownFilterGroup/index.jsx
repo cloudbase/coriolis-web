@@ -24,7 +24,7 @@ import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div``
 const Dropdowns = styled.div``
-const DropdownLinkStyled = styled(DropdownLink)`
+const DropdownLinkStyled = styled(DropdownLink) `
   margin-right: 32px;
   position: relative;
 
@@ -40,14 +40,14 @@ const DropdownLinkStyled = styled(DropdownLink)`
 `
 
 type Props = {
-  items: React.ElementProps<typeof DropdownLink>[]
+  items: (React.ElementProps<typeof DropdownLink> & { key: string })[]
 }
 @observer
 class DropdownFilterGroup extends React.Component<Props> {
   renderDropdowns() {
     return (
       <Dropdowns>
-        {this.props.items.map(config => <DropdownLinkStyled {...config} />)}
+        {this.props.items.map(config => <DropdownLinkStyled data-test-id={`dfGroup-dropdown-${config.key}`} {...config} />)}
       </Dropdowns>
     )
   }

@@ -12,12 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import StatusImage from '.'
 
-const wrap = props => shallow(<StatusImage {...props} />)
+const wrap = props => new TestWrapper(shallow(<StatusImage {...props} />), 'statusImage')
 
-it('renders with props', () => {
-  expect(wrap({ status: 'success' }).prop('status')).toBe('success')
+describe('StatusImage Component', () => {
+  it('renders with status \'SUCCESS\' prop', () => {
+    expect(wrap({ status: 'success' }).prop('status')).toBe('success')
+  })
+
+  it('renders progress', () => {
+    const wrapper = wrap({ loading: true, loadingProgress: 45 })
+    expect(wrapper.find('progressBar').prop('strokeDashoffset')).toBe(165)
+    expect(wrapper.findText('progressText')).toBe('45%')
+  })
 })

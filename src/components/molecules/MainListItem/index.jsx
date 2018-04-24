@@ -29,7 +29,7 @@ import type { Execution } from '../../../types/Execution'
 
 import arrowImage from './images/arrow.svg'
 
-const CheckboxStyled = styled(Checkbox) `
+const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => props.checked ? 1 : 0};
   transition: all ${StyleProps.animations.swift};
 `
@@ -188,22 +188,24 @@ class MainListItem extends React.Component<Props> {
     let destinationType = this.props.endpointType(this.props.item.destination_endpoint_id)
     let endpointImages = (
       <EndpointsImages>
-        <EndpointLogos height={32} endpoint={sourceType} />
+        <EndpointLogos data-test-id="mainListItem-sourceLogo" height={32} endpoint={sourceType} />
         <EndpointImageArrow />
-        <EndpointLogos height={32} endpoint={destinationType} />
+        <EndpointLogos data-test-id="mainListItem-destLogo" height={32} endpoint={destinationType} />
       </EndpointsImages>
     )
+    const status = this.getStatus()
     return (
       <Wrapper>
         <CheckboxStyled
+          data-test-id="mainListItem-checkbox"
           checked={this.props.selected}
           onChange={this.props.onSelectedChange}
         />
-        <Content onClick={this.props.onClick} data-test-id="mainListItem">
+        <Content onClick={this.props.onClick} data-test-id="mainListItem-content">
           <Image image={this.props.image} />
           <Title>
             <TitleLabel>{this.props.item.instances[0]}</TitleLabel>
-            {this.getStatus() ? <StatusPill status={this.getStatus()} /> : null}
+            {status ? <StatusPill data-test-id={`mainListItem-statusPill-${status}`} status={status} /> : null}
           </Title>
           {endpointImages}
           {this.renderLastExecution()}

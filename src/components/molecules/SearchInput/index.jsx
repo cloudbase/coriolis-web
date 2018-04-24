@@ -42,12 +42,12 @@ const Wrapper = styled.div`
   width: ${props => props.open ? props.width : '50px'};
   ${props => props.open ? InputAnimation(props) : ''}
 `
-const SearchButtonStyled = styled(SearchButton)`
+const SearchButtonStyled = styled(SearchButton) `
   position: absolute;
   top: 8px;
   left: 8px;
 `
-const StatusIconStyled = styled(StatusIcon)`
+const StatusIconStyled = styled(StatusIcon) `
   position: absolute;
   right: 8px;
   top: 8px;
@@ -165,8 +165,9 @@ class SearchInput extends React.Component<Props, State> {
           }
           onClick={() => { this.handleSearchButtonClick() }}
           useFilterIcon={this.props.useFilterIcon}
+          data-test-id="searchInput-button"
         />
-        {this.props.loading ? <StatusIconStyled status="RUNNING" /> : null}
+        {this.props.loading ? <StatusIconStyled status="RUNNING" data-test-id="searchInput-loading" /> : null}
       </Wrapper>
     )
   }

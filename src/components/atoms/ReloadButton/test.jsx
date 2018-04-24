@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
@@ -19,9 +21,11 @@ import ReloadButton from '.'
 
 const wrap = props => shallow(<ReloadButton {...props} />)
 
-it('handles click', () => {
-  let onClick = sinon.spy()
-  let wrapper = wrap({ onClick })
-  wrapper.simulate('click')
-  expect(onClick.calledOnce).toBe(true)
+describe('ReloadButton Component', () => {
+  it('handles click', () => {
+    let onClick = sinon.spy()
+    let wrapper = wrap({ onClick })
+    wrapper.simulate('click')
+    expect(onClick.calledOnce).toBe(true)
+  })
 })

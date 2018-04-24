@@ -12,12 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import ChooseProvider from '.'
 
-const wrap = props => shallow(<ChooseProvider {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <ChooseProvider {...props} />
+), 'cProvider')
 
 let providers = {
   azure: {},
@@ -28,22 +34,26 @@ let providers = {
   aws: {},
 }
 
-it('renders all given providers', () => {
-  let wrapper = wrap({ providers })
-  expect(wrapper.find('Styled(EndpointLogos)').length).toBe(Object.keys(providers).length)
-})
+describe('ChooseProvider Component', () => {
+  it('renders all given providers', () => {
+    let wrapper = wrap({ providers })
+    Object.keys(providers).forEach(key => {
+      expect(wrapper.find(`endpointLogo-${key}`).prop('endpoint')).toBe(key)
+    })
+  })
 
-it('dispatches provider click', () => {
-  let onProviderClick = sinon.spy()
-  let wrapper = wrap({ providers, onProviderClick })
-  wrapper.find('Styled(EndpointLogos)').at(2).simulate('click')
-  expect(onProviderClick.calledOnce).toBe(true)
-  expect(onProviderClick.args[0][0]).toBe('opc')
-})
+  it('dispatches provider click', () => {
+    let onProviderClick = sinon.spy()
+    let wrapper = wrap({ providers, onProviderClick })
+    wrapper.find('endpointLogo-opc').click()
+    expect(onProviderClick.calledOnce).toBe(true)
+    expect(onProviderClick.args[0][0]).toBe('opc')
+  })
 
-it('dispatches cancel click', () => {
-  let onCancelClick = sinon.spy()
-  let wrapper = wrap({ providers, onCancelClick })
-  wrapper.find('Button').simulate('click')
-  expect(onCancelClick.calledOnce).toBe(true)
+  it('dispatches cancel click', () => {
+    let onCancelClick = sinon.spy()
+    let wrapper = wrap({ providers, onCancelClick })
+    wrapper.find('cancelButton').click()
+    expect(onCancelClick.calledOnce).toBe(true)
+  })
 })

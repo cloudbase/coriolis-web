@@ -16,10 +16,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import WizardNetworks from '.'
 
-// $FlowIgnore
-const wrap = props => shallow(<WizardNetworks {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <WizardNetworks {...props} />
+), 'wNetworks')
 
 let networks = [
   { name: 'network 1', value: 'n-1' },
@@ -51,37 +54,42 @@ let selectedNetworks = [
 describe('WizardNetworks Component', () => {
   it('renders correct number of instance details', () => {
     let wrapper = wrap({ networks, instancesDetails })
-    expect(wrapper.find('Dropdown').length).toBe(instancesDetails.length)
+    expect(wrapper.find('dropdown-', true).length).toBe(instancesDetails.length)
   })
 
   it('renders correct info for instance details', () => {
     let wrapper = wrap({ networks, instancesDetails })
-    expect(wrapper.html().indexOf('Connected to Instance name 1') > -1).toBe(true)
-    expect(wrapper.html().indexOf('Connected to Instance name 2') > -1).toBe(true)
-    expect(wrapper.html().indexOf('network 1') > -1).toBe(true)
-    expect(wrapper.html().indexOf('network 2') > -1).toBe(true)
+    expect(wrapper.findText('connectedTo-n-1')).toBe('Connected to Instance name 1')
+    expect(wrapper.findText('connectedTo-n-2')).toBe('Connected to Instance name 2')
+    expect(wrapper.findText('connectedTo-n-3')).toBe('Connected to Instance name 3')
+    expect(wrapper.findText('networkName-n-1')).toBe('network 1')
+    expect(wrapper.findText('networkName-n-2')).toBe('network 2')
+    expect(wrapper.findText('networkName-n-3')).toBe('network 3')
   })
 
   it('has dropdown with correct number of networks', () => {
     let wrapper = wrap({ networks, instancesDetails })
-    expect(wrapper.find('Dropdown').at(0).prop('items').length).toBe(networks.length)
+    expect(wrapper.find('dropdown-n-1').prop('items').length).toBe(networks.length)
+    expect(wrapper.find('dropdown-n-2').prop('items').length).toBe(networks.length)
+    expect(wrapper.find('dropdown-n-3').prop('items').length).toBe(networks.length)
   })
 
   it('has dropdown with correct networks info', () => {
     let wrapper = wrap({ networks, instancesDetails })
-    expect(wrapper.find('Dropdown').at(0).prop('items')[0].name).toBe('network 1')
-    expect(wrapper.find('Dropdown').at(0).prop('items')[1].name).toBe('network 2')
+    expect(wrapper.find('dropdown-n-1').prop('items')[0].name).toBe('network 1')
+    expect(wrapper.find('dropdown-n-2').prop('items')[1].name).toBe('network 2')
   })
 
   it('renders selected networks', () => {
     let wrapper = wrap({ networks, instancesDetails, selectedNetworks })
-    expect(wrapper.find('Dropdown').at(0).prop('selectedItem')).toBeFalsy()
-    expect(wrapper.find('Dropdown').at(1).prop('selectedItem').name).toBe('network 1')
-    expect(wrapper.find('Dropdown').at(2).prop('selectedItem')).toBeFalsy()
+    expect(wrapper.find('dropdown-n-1').prop('selectedItem')).toBeFalsy()
+    expect(wrapper.find('dropdown-n-2').prop('selectedItem').name).toBe('network 1')
+    expect(wrapper.find('dropdown-n-3').prop('selectedItem')).toBeFalsy()
+    expect(wrapper.find('noNics').length).toBe(0)
   })
 
   it('renders no nics message', () => {
     let wrapper = wrap({ networks, instancesDetails: [{ ...instancesDetails[0], devices: { nics: [] } }] })
-    expect(wrapper.html().indexOf('No networks were found') > -1).toBe(true)
+    expect(wrapper.find('noNics').length).toBe(1)
   })
 })

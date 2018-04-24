@@ -18,16 +18,17 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import moment from 'moment'
 import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import DatetimePicker from '.'
 
-const wrap = props => shallow(<DatetimePicker {...props} />)
+const wrap = props => new TestWrapper(shallow(<DatetimePicker {...props} />), 'datetimePicker')
 
 describe('DateTimePicker Component', () => {
   it('renders date value in dropdown label', () => {
     let onChange = sinon.spy()
     let wrapper = wrap({ value: new Date(2017, 3, 21, 14, 22), onChange })
     let label = '21/04/2017 02:22 PM'
-    expect(wrapper.children().at(0).prop('value')).toBe(label)
+    expect(wrapper.find('dropdownButton').prop('value')).toBe(label)
   })
 
   it('renders date value in UTC timezone in dropdown label', () => {
@@ -35,6 +36,6 @@ describe('DateTimePicker Component', () => {
     const date = new Date(2017, 3, 21, 14, 22)
     let wrapper = wrap({ value: date, onChange, timezone: 'utc' })
     const label = moment(date).add(new Date().getTimezoneOffset(), 'minutes').format('DD/MM/YYYY hh:mm A')
-    expect(wrapper.children().at(0).prop('value')).toBe(label)
+    expect(wrapper.find('dropdownButton').prop('value')).toBe(label)
   })
 })

@@ -12,16 +12,34 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import SearchButton from '.'
 
-const wrap = props => shallow(<SearchButton {...props} />)
+const wrap = props => new TestWrapper(shallow(<SearchButton {...props} />), 'searchButton')
 
-it('handles click', () => {
-  let onClick = sinon.spy()
-  let wrapper = wrap({ onClick })
-  wrapper.simulate('click')
-  expect(onClick.calledOnce).toBe(true)
+describe('SearchButton Component', () => {
+  it('uses filter or search icon', () => {
+    const getIconId = (w: TestWrapper): string => {
+      /* eslint no-underscore-dangle: off */
+      const iconSvg = w.find('icon').prop('dangerouslySetInnerHTML').__html
+      return /data-test-id="(.*?)"/g.exec(iconSvg)[1]
+    }
+    let wrapper = wrap()
+    expect(getIconId(wrapper)).toBe('searchButton-searchIcon')
+
+    wrapper = wrap({ useFilterIcon: true })
+    expect(getIconId(wrapper)).toBe('searchButton-filterIcon')
+  })
+
+  it('handles click', () => {
+    let onClick = sinon.spy()
+    let wrapper = wrap({ onClick })
+    wrapper.simulate('click')
+    expect(onClick.calledOnce).toBe(true)
+  })
 })

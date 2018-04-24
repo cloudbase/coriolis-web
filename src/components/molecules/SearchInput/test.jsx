@@ -16,20 +16,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import SearchInput from '.'
 
-const wrap = props => shallow(<SearchInput {...props} />)
+const wrap = props => new TW(shallow(<SearchInput {...props} />), 'searchInput')
 
 describe('SearchInput Component', () => {
   it('opens on button click', () => {
     let wrapper = wrap()
     expect(wrapper.prop('open')).toBe(false)
-    wrapper.find('Styled(SearchButton)').simulate('click')
+    wrapper.find('button').simulate('click')
     expect(wrapper.prop('open')).toBe(true)
   })
 
   it('has loading state', () => {
     let wrapper = wrap({ loading: true })
-    expect(wrapper.find('Styled(StatusIcon)').prop('status')).toBe('RUNNING')
+    expect(wrapper.find('loading').length).toBe(1)
   })
 })

@@ -61,7 +61,7 @@ const Label = styled.div`
   line-height: 35px;
   margin-bottom: -8px;
 `
-const DropdownStyled = styled(Dropdown)`
+const DropdownStyled = styled(Dropdown) `
   font-size: 12px;
 `
 const ItemButton = props => css`
@@ -207,7 +207,7 @@ class ScheduleItem extends React.Component<Props> {
         useBold={this.shouldUseBold('month')}
         selectedItem={this.getFieldValue(items, 'month')}
         onChange={item => { this.handleMonthChange(item) }}
-        data-test-id="monthDropdown"
+        data-test-id="scheduleItem-monthDropdown"
       />
     )
   }
@@ -231,6 +231,7 @@ class ScheduleItem extends React.Component<Props> {
         useBold={this.shouldUseBold('dom')}
         selectedItem={this.getFieldValue(items, 'dom')}
         onChange={item => { this.props.onChange({ schedule: { dom: item.value } }) }}
+        data-test-id="scheduleItem-dayOfMonthDropdown"
       />
     )
   }
@@ -255,6 +256,7 @@ class ScheduleItem extends React.Component<Props> {
         useBold={this.shouldUseBold('dow')}
         selectedItem={this.getFieldValue(items, 'dow', true)}
         onChange={item => { this.props.onChange({ schedule: { dow: item.value } }) }}
+        data-test-id="scheduleItem-dayOfWeekDropdown"
       />
     )
   }
@@ -277,7 +279,7 @@ class ScheduleItem extends React.Component<Props> {
         useBold={this.shouldUseBold('hour')}
         selectedItem={this.getFieldValue(items, 'hour', true, 1)}
         onChange={item => { this.handleHourChange(item.value) }}
-        data-test-id="hourDropdown"
+        data-test-id="scheduleItem-hourDropdown"
       />
     )
   }
@@ -300,6 +302,7 @@ class ScheduleItem extends React.Component<Props> {
         useBold={this.shouldUseBold('minute')}
         selectedItem={this.getFieldValue(items, 'minute', true, 1)}
         onChange={item => { this.props.onChange({ schedule: { minute: item.value } }) }}
+        data-test-id="scheduleItem-minuteDropdown"
       />
     )
   }
@@ -336,6 +339,7 @@ class ScheduleItem extends React.Component<Props> {
             height={16}
             checked={enabled}
             onChange={enabled => { this.props.onChange({ enabled }, true) }}
+            data-test-id="scheduleItem-enabled"
           />
         </Data>
         <Data width={this.props.colWidths[1]}>
@@ -367,15 +371,16 @@ class ScheduleItem extends React.Component<Props> {
               letterSpacing: '1px',
               padding: '0 0 1px 3px',
             }}
+            data-test-id="scheduleItem-optionsButton"
           >•••</Button>
         </Data>
         <DeleteButton
-          data-test-id="deleteButton"
+          data-test-id="scheduleItem-deleteButton"
           onClick={this.props.onDeleteClick}
           hidden={this.props.item.enabled}
         />
         <SaveButton
-          data-test-id="saveButton"
+          data-test-id="scheduleItem-saveButton"
           onClick={this.props.onSaveSchedule}
           hidden={this.props.item.enabled || !this.props.unsavedSchedules.find(us => us.id === this.props.item.id)}
         />

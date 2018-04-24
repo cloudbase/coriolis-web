@@ -35,14 +35,14 @@ describe('Create VmWare to Openstack Migration', () => {
     cy.server()
     cy.route({ url: '**/instances**', method: 'GET' }).as('sourceInstances')
     cy.get('button').contains('Next').click()
-    cy.get('div[data-test-id="dropdown-vmware_vsphere"]').first().click()
+    cy.get('div[data-test-id="wEndpointList-dropdown-vmware_vsphere"]').first().click()
     cy.get('div').contains('e2e-vmware-test').click()
     cy.wait('@sourceInstances')
   })
 
   it('Chooses Openstack as Target Cloud', () => {
     cy.get('button').contains('Next').click()
-    cy.get('div[data-test-id="dropdown-openstack"]').first().click()
+    cy.get('div[data-test-id="wEndpointList-dropdown-openstack"]').first().click()
     cy.get('div').contains('e2e-openstack-test').click()
   })
 
@@ -52,9 +52,9 @@ describe('Create VmWare to Openstack Migration', () => {
     cy.route({ url: '**/instances**', method: 'GET' }).as('search')
     cy.get('input[placeholder="Search VMs"]').type(config.wizard.instancesSearch)
     cy.wait('@search')
-    cy.get('div[data-test-id="instanceItem"]').contains(config.wizard.instancesSearch)
-    cy.get('div[data-test-id="instanceItem"]').its('length').should('be.gt', 0)
-    cy.get('div[data-test-id="instanceItem"]').eq(config.wizard.instancesSelectItem).click()
+    cy.get('div[data-test-id="wInstances-instanceItem"]').contains(config.wizard.instancesSearch)
+    cy.get('div[data-test-id="wInstances-instanceItem"]').its('length').should('be.gt', 0)
+    cy.get('div[data-test-id="wInstances-instanceItem"]').eq(config.wizard.instancesSelectItem).click()
   })
 
   it('Fills Openstack migration info', () => {

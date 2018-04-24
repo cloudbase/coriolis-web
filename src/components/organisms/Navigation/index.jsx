@@ -49,7 +49,7 @@ const MenuItem = styled.a`
 const Footer = styled.div``
 
 @observer
-class Navigation extends React.Component<{currentPage: string}> {
+class Navigation extends React.Component<{ currentPage: string }> {
   renderMenu() {
     return (
       <Menu>
@@ -59,6 +59,7 @@ class Navigation extends React.Component<{currentPage: string}> {
               key={item.value}
               selected={this.props.currentPage === item.value}
               href={`/#/${item.value}`}
+              data-test-id={`navigation-item-${item.value}`}
             >{item.label}</MenuItem>
           )
         })}

@@ -93,7 +93,7 @@ class AlertModal extends React.Component<Props> {
 
     return (
       <Buttons centered>
-        <Button secondary onClick={this.props.onRequestClose}>Dismiss</Button>
+        <Button secondary onClick={this.props.onRequestClose} data-test-id="aModal-dismissButton">Dismiss</Button>
       </Buttons>
     )
   }
@@ -105,8 +105,8 @@ class AlertModal extends React.Component<Props> {
 
     return (
       <Buttons>
-        <Button secondary onClick={this.props.onRequestClose}>No</Button>
-        <Button onClick={this.props.onConfirmation}>Yes</Button>
+        <Button secondary onClick={this.props.onRequestClose} data-test-id="aModal-noButton">No</Button>
+        <Button onClick={this.props.onConfirmation} data-test-id="aModal-yesButton">Yes</Button>
       </Buttons>
     )
   }
@@ -115,9 +115,9 @@ class AlertModal extends React.Component<Props> {
     return (
       <Modal {...this.props}>
         <Wrapper data-test-id="alertModal">
-          {this.props.type === 'loading' ? <StatusImage loading /> : <Image type={this.props.type} />}
-          {this.props.message ? <Message>{this.props.message}</Message> : null}
-          {this.props.extraMessage ? <ExtraMessage>{this.props.extraMessage}</ExtraMessage> : null}
+          {this.props.type === 'loading' ? <StatusImage loading data-test-id="aModal-status" /> : <Image type={this.props.type} data-test-id="aModal-image" />}
+          {this.props.message ? <Message data-test-id="aModal-message">{this.props.message}</Message> : null}
+          {this.props.extraMessage ? <ExtraMessage data-test-id="aModal-extraMessage">{this.props.extraMessage}</ExtraMessage> : null}
           {this.renderConfirmationButtons()}
           {this.renderDismissButton()}
         </Wrapper>

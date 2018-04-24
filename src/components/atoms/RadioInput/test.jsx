@@ -12,14 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import RadioInput from '.'
 
-const wrap = props => shallow(<RadioInput {...props} />)
+const wrap = props => new TestWrapper(shallow(<RadioInput {...props} />), 'radioInput')
 
-it('renders the given label', () => {
-  let wrapper = wrap({ label: 'test' })
-  let doc = new DOMParser().parseFromString(wrapper.html(), 'text/xml')
-  expect(doc.firstChild.querySelector('div').innerHTML).toBe('test')
+describe('RadioInput Component', () => {
+  it('renders the given label', () => {
+    const wrapper = wrap({ label: 'the_value' })
+    expect(wrapper.findText('label')).toBe('the_value')
+  })
 })

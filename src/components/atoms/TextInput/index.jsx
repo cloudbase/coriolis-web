@@ -98,23 +98,26 @@ type Props = {
   showClose?: boolean,
   onCloseClick?: () => void,
   embedded?: boolean,
+  'data-test-id'?: string,
 }
 const TextInput = (props: Props) => {
   const { _ref, required, value, onChange, showClose, onCloseClick } = props
   let input
   return (
-    <Wrapper>
+    <Wrapper data-test-id={props['data-test-id'] || 'textInput'}>
       <Input
         innerRef={ref => { input = ref; if (_ref) _ref(ref) }}
         type="text"
         customRequired={required}
         value={value}
         onChange={onChange}
+        data-test-id="textInput-input"
         {...props}
       />
-      <Required show={required} />
+      <Required show={required} data-test-id="textInput-required" />
       <Close
-        show={showClose && value}
+        data-test-id="textInput-close"
+        show={showClose && value !== '' && value !== undefined}
         onClick={() => {
           input.focus()
           // $FlowIgnore

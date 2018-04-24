@@ -147,7 +147,7 @@ class NewModal extends React.Component<Props> {
       return null
     }
 
-    return <Title>{this.props.title}</Title>
+    return <Title data-test-id="modal-title">{this.props.title}</Title>
   }
 
   render() {

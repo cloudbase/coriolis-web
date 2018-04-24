@@ -27,7 +27,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
 `
-const ArrowStyled = styled(Arrow)``
+const ArrowStyled = styled(Arrow) ``
 const Breadcrumb = styled.div`
   display: flex;
   align-items: center;
@@ -54,7 +54,7 @@ class WizardBreadcrumbs extends React.Component<Props> {
         {pages.map(page => {
           return (
             <Breadcrumb key={page.id}>
-              <Name selected={this.props.selected.id === page.id}>{page.breadcrumb}</Name>
+              <Name selected={this.props.selected.id === page.id} data-test-id={`wBreadCrumbs-name-${page.id}`}>{page.breadcrumb}</Name>
               <ArrowStyled primary={this.props.selected.id === page.id} useDefaultCursor />
             </Breadcrumb>
           )

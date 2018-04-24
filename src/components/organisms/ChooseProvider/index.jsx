@@ -89,13 +89,13 @@ class ChooseProvider extends React.Component<Props> {
                 height={128}
                 key={k}
                 endpoint={k}
-                data-test-id={`endpointLogo-${k}`}
+                data-test-id={`cProvider-endpointLogo-${k}`}
                 onClick={() => { this.props.onProviderClick(k) }}
               />
             )
           })}
         </Logos>
-        <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
+        <Button secondary onClick={this.props.onCancelClick} data-test-id="cProvider-cancelButton">Cancel</Button>
       </Providers>
     )
   }

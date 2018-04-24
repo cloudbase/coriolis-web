@@ -12,51 +12,41 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
-// import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import Dropdown from '.'
 
-const wrap = props => shallow(<Dropdown {...props} />)
+const wrap = props => new TestWrapper(shallow(<Dropdown {...props} />), 'dropdown')
 const items = [
   { label: 'Item 1', value: 'item-1' },
   { label: 'Item 2', value: 'item-2' },
   { label: 'Item 3', value: 'item-3' },
 ]
 
-// it('opens list with the correct 3 items on button click', () => {
-//   let wrapper = wrap({ items })
-//   wrapper.childAt(0).simulate('click')
-//   let itemsList = wrapper.childAt(1).childAt(1)
-//   expect(itemsList.children().length).toBe(3)
-//   expect(itemsList.childAt(0).contains('Item 1')).toBe(true)
-//   expect(itemsList.childAt(1).contains('Item 2')).toBe(true)
-//   expect(itemsList.childAt(2).contains('Item 3')).toBe(true)
-// })
+describe('Dropdown Component', () => {
+  it('renders selected item', () => {
+    let wrapper = wrap({ items, selectedItem: items[1] })
+    expect(wrapper.find('dropdownButton').prop('value')).toBe(items[1].label)
+    wrapper = wrap({ items, selectedItem: items[1].label })
+    expect(wrapper.find('dropdownButton').prop('value')).toBe(items[1].label)
+    wrapper = wrap({
+      items: [{ value: 'the_value', name: 'label' }],
+      selectedItem: { value: 'the_value', name: 'label' },
+      labelField: 'name',
+    })
+    expect(wrapper.find('dropdownButton').prop('value')).toBe('label')
+  })
 
-// it('dispatches change on item click with correct argument', () => {
-//   let onChange = sinon.spy()
-//   let wrapper = wrap({ items, onChange })
-//   wrapper.childAt(0).simulate('click')
-//   let itemsList = wrapper.childAt(1).childAt(1)
-//   itemsList.childAt(1).simulate('click')
-//   expect(onChange.args[0][0].value).toBe('item-2')
-// })
+  it('renders no items message', () => {
+    let wrapper = wrap({ items: [], noItemsMessage: 'no items' })
+    expect(wrapper.find('dropdownButton').prop('value')).toBe('no items')
+  })
 
-// it('uses labelField to render items', () => {
-//   let newItems = items.map(i => { return { value: i.value, name: i.label } })
-//   let wrapper = wrap({ items: newItems, labelField: 'name' })
-//   wrapper.childAt(0).simulate('click')
-//   let itemsList = wrapper.childAt(1).childAt(1)
-//   expect(itemsList.childAt(1).contains('Item 2')).toBe(true)
-// })
-
-it('renders no items message', () => {
-  let wrapper = wrap({ items: [], noItemsMessage: 'no items' })
-  expect(wrapper.childAt(0).prop('value')).toBe('no items')
-})
-
-it('renders no selection message', () => {
-  let wrapper = wrap({ items, noSelectionMessage: 'no selection' })
-  expect(wrapper.childAt(0).prop('value')).toBe('no selection')
+  it('renders no selection message', () => {
+    let wrapper = wrap({ items, noSelectionMessage: 'no selection' })
+    expect(wrapper.find('dropdownButton').prop('value')).toBe('no selection')
+  })
 })

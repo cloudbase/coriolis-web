@@ -17,14 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import DropdownButton from '.'
 
-const wrap = props => shallow(<DropdownButton {...props} />)
+const wrap = props => new TestWrapper(shallow(<DropdownButton {...props} />), 'dropdownButton')
 
 describe('DropdownButton Component', () => {
   it('renders the given value', () => {
     const wrapper = wrap({ value: 'the_value' })
-    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'dropdownButtonValue').dive().text()).toBe('the_value')
+    expect(wrapper.findText('value')).toBe('the_value')
   })
 
   it('calls click handler', () => {

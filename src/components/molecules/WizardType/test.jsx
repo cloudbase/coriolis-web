@@ -12,23 +12,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import WizardType from '.'
 
-const wrap = props => shallow(<WizardType {...props} />)
+const wrap = props => new TW(shallow(<WizardType {...props} />), 'wType')
 
-it('renders with the correct type selected', () => {
-  let wrapper = wrap({ selected: 'migration' })
-  expect(wrapper.find('Switch').prop('checked')).toBe(false)
-  wrapper = wrap({ selected: 'replica' })
-  expect(wrapper.find('Switch').prop('checked')).toBe(true)
-})
+describe('WizardType Component', () => {
+  it('renders with the correct type selected', () => {
+    let wrapper = wrap({ selected: 'migration' })
+    expect(wrapper.find('switch').prop('checked')).toBe(false)
+    wrapper = wrap({ selected: 'replica' })
+    expect(wrapper.find('switch').prop('checked')).toBe(true)
+  })
 
-it('dispatches change', () => {
-  let onChange = sinon.spy()
-  let wrapper = wrap({ selected: 'replica', onChange })
-  wrapper.find('Switch').simulate('change', { passed: true })
-  expect(onChange.args[0][0].passed).toBe(true)
+  it('dispatches change', () => {
+    let onChange = sinon.spy()
+    let wrapper = wrap({ selected: 'replica', onChange })
+    wrapper.find('switch').simulate('change', { passed: true })
+    expect(onChange.args[0][0].passed).toBe(true)
+  })
 })

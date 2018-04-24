@@ -126,6 +126,7 @@ class WizardOptions extends React.Component<Props> {
         type={field.type}
         enum={field.enum}
         required={field.required}
+        data-test-id={`wOptions-field-${field.name}`}
         {...additionalProps}
       />
     )

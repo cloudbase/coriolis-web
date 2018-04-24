@@ -164,9 +164,10 @@ class Timeline extends React.Component<Props> {
               key={item.id}
               innerRef={item => { this.itemRef = item }}
               onClick={() => { this.props.onItemClick(item) }}
+              data-test-id={`timeline-item-${item.id}`}
             >
               <StatusIcon status={item.status} useBackground />
-              <ItemLabel selected={this.props.selectedItem && this.props.selectedItem.id === item.id}>
+              <ItemLabel selected={this.props.selectedItem && this.props.selectedItem.id === item.id} data-test-id={`timeline-label-${item.id}`}>
                 {DateUtils.getLocalTime(item.created_at).format('DD MMM YYYY')}
               </ItemLabel>
             </Item>
@@ -184,6 +185,7 @@ class Timeline extends React.Component<Props> {
           forceShow={!this.props.items || !this.props.items.length}
           primary={Boolean(this.props.items && this.props.items.length)}
           onClick={this.props.onPreviousClick}
+          data-test-id="timeline-previous"
         />
         {this.renderMainLine()}
         {this.renderItems()}
@@ -191,6 +193,7 @@ class Timeline extends React.Component<Props> {
           orientation="right"
           forceShow={!this.props.items || !this.props.items.length}
           onClick={this.props.onNextClick}
+          data-test-id="timeline-next"
         />
       </Wrapper>
     )

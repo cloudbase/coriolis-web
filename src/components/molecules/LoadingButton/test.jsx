@@ -12,12 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import LoadingButton from '.'
 
-it('renders disabled with given label', () => {
-  let wrapper = shallow(<LoadingButton>Loading ...</LoadingButton>)
-  expect(wrapper.prop('disabled')).toBe(true)
-  expect(wrapper.childAt(0).contains('Loading ...')).toBe(true)
+describe('LoadingButton Component', () => {
+  it('renders disabled with given label', () => {
+    let wrapper = new TestWrapper(shallow(<LoadingButton>Loading ...</LoadingButton>), 'loadingButton')
+    expect(wrapper.prop('disabled')).toBe(true)
+    expect(wrapper.findText('label', true)).toBe('Loading ...<styled.span />')
+  })
 })

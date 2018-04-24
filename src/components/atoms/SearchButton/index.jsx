@@ -36,20 +36,22 @@ const Icon = styled.div`
 `
 
 type Props = {
-  className: string,
-  primary: boolean,
-  useFilterIcon: boolean,
+  className?: string,
+  primary?: boolean,
+  useFilterIcon?: boolean,
 }
 @observer
 class SearchButton extends React.Component<Props> {
   render() {
     return (
       <Wrapper className={this.props.className} {...this.props}>
-        <Icon dangerouslySetInnerHTML={{
-          __html: this.props.useFilterIcon ?
-            filterImage(Palette.grayscale[3]) :
-            searchImage(this.props.primary ? Palette.primary : Palette.grayscale[4]),
-        }}
+        <Icon
+          data-test-id="searchButton-icon"
+          dangerouslySetInnerHTML={{
+            __html: this.props.useFilterIcon ?
+              filterImage(Palette.grayscale[3]) :
+              searchImage(this.props.primary ? Palette.primary : Palette.grayscale[4]),
+          }}
         />
       </Wrapper>
     )

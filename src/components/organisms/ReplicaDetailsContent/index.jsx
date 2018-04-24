@@ -127,6 +127,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
             primary
             disabled={this.isEndpointMissing()}
             onClick={this.props.onCreateMigrationClick}
+            data-test-id="rdContent-createButton"
           >Create Migration</Button>
         </LeftButtons>
         <RightButtons>
@@ -141,6 +142,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
             alert
             hollow
             onClick={this.props.onDeleteReplicaClick}
+            data-test-id="rdContent-deleteButton"
           >Delete Replica</Button>
         </RightButtons>
       </Buttons>
@@ -158,6 +160,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         loading={this.props.detailsLoading}
         endpoints={this.props.endpoints}
         bottomControls={this.renderBottomControls()}
+        data-test-id="rdContent-mainDetails"
       />
     )
   }
@@ -173,6 +176,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         onCancelExecutionClick={this.props.onCancelExecutionClick}
         onDeleteExecutionClick={this.props.onDeleteExecutionClick}
         onExecuteClick={this.props.onExecuteClick}
+        data-test-id="rdContent-executions"
       />
     )
   }
@@ -194,6 +198,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         onSaveSchedule={this.props.onScheduleSave}
         timezone={this.state.timezone}
         onTimezoneChange={timezone => { this.handleTimezoneChange(timezone) }}
+        data-test-id="rdContent-schedule"
       />
     )
   }

@@ -36,6 +36,7 @@ injectGlobal`
 
 type Props = {
   onClick: () => void,
+  'data-test-id'?: string
 }
 @observer
 class ReloadButton extends React.Component<Props> {
@@ -64,7 +65,12 @@ class ReloadButton extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper innerRef={div => { this.wrapper = div }} {...this.props} onClick={() => { this.onClick() }} />
+      <Wrapper
+        data-test-id={this.props['data-test-id'] || 'reloadButton'}
+        innerRef={div => { this.wrapper = div }}
+        {...this.props}
+        onClick={() => { this.onClick() }}
+      />
     )
   }
 }

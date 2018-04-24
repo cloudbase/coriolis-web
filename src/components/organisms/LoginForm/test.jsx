@@ -12,32 +12,37 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import LoginForm from '.'
 
-const wrap = props => shallow(<LoginForm {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <LoginForm {...props} />
+), 'loginForm')
 
-it('renders incorrect credentials', () => {
-  let wrapper = wrap({ loginFailedResponse: { status: 401 } })
-  expect(wrapper.html().indexOf('The username or password did not match. Please try again.')).toBeGreaterThan(-1)
-})
+describe('LoginForm Component', () => {
+  it('renders incorrect credentials', () => {
+    let wrapper = wrap({ loginFailedResponse: { status: 401 } })
+    expect(wrapper.findText('errorText')).toBe('The username or password did not match. Please try again.')
+  })
 
-it('renders server error', () => {
-  let wrapper = wrap({ loginFailedResponse: {} })
-  expect(wrapper.html().indexOf('Request failed, there might be a problem with the connection to the server.')).toBeGreaterThan(-1)
-})
+  it('renders server error', () => {
+    let wrapper = wrap({ loginFailedResponse: {} })
+    expect(wrapper.findText('errorText')).toBe('Request failed, there might be a problem with the connection to the server.')
+  })
 
-it('submits correct info', () => {
-  let onFormSubmit = sinon.spy()
-  let wrapper = wrap({ onFormSubmit })
-  wrapper.findWhere(w => w.name() === 'LoginFormField' && w.prop('name') === 'username')
-    .simulate('change', { target: { value: 'usr' } })
-  wrapper.findWhere(w => w.name() === 'LoginFormField' && w.prop('name') === 'password')
-    .simulate('change', { target: { value: 'pswd' } })
-
-  wrapper.simulate('submit', { preventDefault: () => { } })
-  expect(onFormSubmit.args[0][0].username).toBe('usr')
-  expect(onFormSubmit.args[0][0].password).toBe('pswd')
+  it('submits correct info', () => {
+    let onFormSubmit = sinon.spy()
+    let wrapper = wrap({ onFormSubmit })
+    wrapper.find('usernameField').simulate('change', { target: { value: 'usr' } })
+    wrapper.find('passwordField').simulate('change', { target: { value: 'pswd' } })
+    wrapper.shallow.simulate('submit', { preventDefault: () => { } })
+    expect(onFormSubmit.args[0][0].username).toBe('usr')
+    expect(onFormSubmit.args[0][0].password).toBe('pswd')
+  })
 })

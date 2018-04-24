@@ -12,12 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import moment from 'moment'
+import TW from '../../../utils/TestWrapper'
 import NotificationDropdown from '.'
 
-const wrap = props => shallow(<NotificationDropdown {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <NotificationDropdown {...props} />
+), 'notificationDropdown')
 
 let items = [
   {
@@ -40,30 +47,31 @@ let items = [
   },
 ]
 
-it('renders no items message on click', () => {
-  let wrapper = wrap({ onClose: () => { } })
-  expect(wrapper.children().length).toBe(1)
-  wrapper.childAt(0).simulate('click')
-  expect(wrapper.childAt(1).html().indexOf('There are no notifications')).toBeGreaterThan(-1)
-})
+describe('NotificationDropdown Component', () => {
+  it('renders no items message on click', () => {
+    let wrapper = wrap({ onClose: () => { } })
+    expect(wrapper.find('noItems').length).toBe(0)
+    wrapper.find('button').simulate('click')
+    expect(wrapper.find('noItems').length).toBe(1)
+  })
 
-it('renders items correctly', () => {
-  let wrapper = wrap({ items, onClose: () => { } })
-  expect(wrapper.children().length).toBe(1)
-  wrapper.childAt(0).simulate('click')
-  let itemsWrapper = wrapper.childAt(1)
-  expect(itemsWrapper.findWhere(w => w.prop('level') === 'success').length).toBe(1)
-  expect(itemsWrapper.findWhere(w => w.prop('level') === 'info').length).toBe(1)
-  expect(itemsWrapper.findWhere(w => w.prop('level') === 'error').length).toBe(1)
-  expect(itemsWrapper.childAt(1).html().indexOf('Incrementally replicate virtual machines')).toBeGreaterThan(-1)
-})
+  it('renders items correctly', () => {
+    let wrapper = wrap({ items, onClose: () => { } })
+    wrapper.find('button').simulate('click')
 
-it('dispatches onClose', () => {
-  let onClose = sinon.spy()
-  let wrapper = wrap({ items, onClose })
-  expect(wrapper.children().length).toBe(1)
-  wrapper.childAt(0).simulate('click')
-  let itemsWrapper = wrapper.childAt(1)
-  itemsWrapper.childAt(2).simulate('click')
-  expect(onClose.calledOnce).toBe(true)
+    items.forEach(item => {
+      expect(wrapper.find(`item-${item.id}`).find('itemLevel').prop('level')).toBe(item.level)
+      expect(wrapper.find(`item-${item.id}`).findText('itemTitle')).toBe(item.options.persistInfo.title)
+      expect(wrapper.find(`item-${item.id}`).findText('itemDescription')).toBe(item.message)
+      expect(wrapper.find(`item-${item.id}`).findText('itemTime')).toBe(moment(Number(item.id)).format('HH:mm'))
+    })
+  })
+
+  it('dispatches onClose', () => {
+    let onClose = sinon.spy()
+    let wrapper = wrap({ items, onClose })
+    wrapper.find('button').simulate('click')
+    wrapper.find(`item-${items[0].id}`).simulate('click')
+    expect(onClose.calledOnce).toBe(true)
+  })
 })

@@ -28,7 +28,7 @@ describe('Delete the first migration', () => {
     cy.route({ url: '**/replicas/**', method: 'GET' }).as('replicas')
     cy.wait('@replicas')
     cy.get('a').contains('Migrations').click()
-    cy.get('div[data-test-id="mainListItem"]').first().click()
+    cy.get('div[data-test-id="mainListItem-content"]').first().click()
     cy.get('button').last().should('contain', 'Delete Migration').click()
     cy.route({ url: '**/migrations/**', method: 'DELETE' }).as('delete')
     cy.get('button').contains('Yes').click()

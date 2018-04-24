@@ -12,33 +12,40 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import UserDropdown from '.'
 
-const wrap = props => shallow(<UserDropdown {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <UserDropdown {...props} />
+), 'userDropdown')
 
 let user = { name: 'User name', email: 'email@email.com' }
 
-it('opens dropdown on click', () => {
-  let wrapper = wrap({ user })
-  wrapper.childAt(0).simulate('click')
-  expect(wrapper.childAt(1).children().length).toBe(2)
-})
+describe('UserDropdown Component', () => {
+  it('opens dropdown on click', () => {
+    let wrapper = wrap({ user })
+    expect(wrapper.find('username').length).toBe(0)
+    wrapper.find('button').simulate('click')
+    expect(wrapper.find('username').length).toBe(1)
+  })
 
-it('renders user info', () => {
-  let wrapper = wrap({ user })
-  wrapper.childAt(0).simulate('click')
-  expect(wrapper.childAt(1).html().indexOf('User name')).toBeGreaterThan(-1)
-  expect(wrapper.childAt(1).html().indexOf('email@email.com')).toBeGreaterThan(-1)
-})
+  it('renders user info', () => {
+    let wrapper = wrap({ user })
+    wrapper.find('button').simulate('click')
+    expect(wrapper.findText('username')).toBe(user.name)
+  })
 
-it('dispatches item click', () => {
-  let onItemClick = sinon.spy()
-  let wrapper = wrap({ user, onItemClick })
-  wrapper.childAt(0).simulate('click')
-  let signout = wrapper.findWhere(w => w.prop('onClick') && w.html().indexOf('Sign Out') > -1)
-  signout.simulate('click')
-  expect(onItemClick.args[0][0].value).toBe('signout')
+  it('dispatches item click', () => {
+    let onItemClick = sinon.spy()
+    let wrapper = wrap({ user, onItemClick })
+    wrapper.find('button').simulate('click')
+    wrapper.find('label-signout').simulate('click')
+    expect(onItemClick.args[0][0].value).toBe('signout')
+  })
 })

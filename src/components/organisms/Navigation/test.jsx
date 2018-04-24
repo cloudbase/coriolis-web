@@ -12,21 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @Flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
+import { navigationMenu } from '../../../config'
 import Navigation from '.'
 
-const wrap = props => shallow(<Navigation {...props} />)
+const wrap = props => new TW(shallow(<Navigation {...props} />), 'navigation')
 
-it('renders all items', () => {
-  let wrapper = wrap()
-  let links = wrapper.findWhere(w => w.name() === 'styled.a')
-  expect(links.length).toBeGreaterThan(2)
-  expect(links.at(1).prop('href')).toBe('/#/migrations')
-})
+describe('Navigation Component', () => {
+  it('renders all items', () => {
+    let wrapper = wrap()
+    navigationMenu.filter(item => !item.disabled).forEach(item => {
+      expect(wrapper.findText(`item-${item.value}`)).toBe(item.label)
+      expect(wrapper.find(`item-${item.value}`).prop('href')).toBe(`/#/${item.value}`)
+    })
+  })
 
-it('selects the current page', () => {
-  let wrapper = wrap({ currentPage: 'endpoints' })
-  let links = wrapper.findWhere(w => w.name() === 'styled.a' && w.prop('selected'))
-  expect(links.prop('href')).toBe('/#/endpoints')
+  it('selects the current page', () => {
+    let wrapper = wrap({ currentPage: 'endpoints' })
+    expect(wrapper.find('item-endpoints').prop('selected')).toBe(true)
+    expect(wrapper.find('item-replicas').prop('selected')).toBe(false)
+    expect(wrapper.find('item-migrations').prop('selected')).toBe(false)
+  })
 })

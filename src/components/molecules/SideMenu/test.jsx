@@ -12,20 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import SideMenu from '.'
 
-const wrap = props => shallow(<SideMenu {...props} />)
+const wrap = props => new TW(shallow(<SideMenu {...props} />), 'sideMenu')
 
-it('opens menu on click', () => {
-  let wrapper = wrap()
-  expect(wrapper.childAt(1).prop('open')).toBe(false)
-  wrapper.childAt(0).simulate('click')
-  expect(wrapper.childAt(1).prop('open')).toBe(true)
-})
+describe('SideMenu Component', () => {
+  it('opens menu on click', () => {
+    let wrapper = wrap()
+    expect(wrapper.find('menu').prop('open')).toBe(false)
+    wrapper.find('toggle').simulate('click')
+    expect(wrapper.find('menu').prop('open')).toBe(true)
+  })
 
-it('renders at least one item in the list', () => {
-  let wrapper = wrap()
-  expect(wrapper.childAt(1).children().length).toBeGreaterThan(0)
+  it('renders at least one item in the list', () => {
+    let wrapper = wrap()
+    expect(wrapper.find('item-', true).length).toBeGreaterThan(0)
+  })
 })

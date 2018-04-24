@@ -12,20 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import PasswordValue from '.'
 
-const wrap = props => shallow(<PasswordValue {...props} />)
-const text = html => html.substring(html.indexOf('>') + 1, html.lastIndexOf('<'))
-it('conceals the password', () => {
-  let password = text(wrap({ value: 'test' }).children().first().html())
-  expect(password).toBe('•••••••••')
-})
+const wrap = props => new TestWrapper(shallow(<PasswordValue value="the_value" {...props} />), 'passwordValue')
 
-it('reveals password on click', () => {
-  let wrapper = wrap({ value: 'test' })
-  wrapper.simulate('click')
-  let password = text(wrapper.children().first().html())
-  expect(password).toBe('test')
+describe('PasswordValue Component', () => {
+  it('conceals the password', () => {
+    const wrapper = wrap()
+    expect(wrapper.findText('value')).toBe('•••••••••')
+  })
+
+  it('reveals password on click', () => {
+    const wrapper = wrap()
+    wrapper.simulate('click')
+    expect(wrapper.findText('value')).toBe('the_value')
+  })
 })

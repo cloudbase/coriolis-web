@@ -239,7 +239,7 @@ class Schedule extends React.Component<Props, State> {
 
     return (
       <LoadingWrapper>
-        <StatusImage loading />
+        <StatusImage loading data-test-id="schedule-loadingStatus" />
         <LoadingText>Loading schedules...</LoadingText>
       </LoadingWrapper>
     )
@@ -275,6 +275,7 @@ class Schedule extends React.Component<Props, State> {
             onSaveSchedule={() => { if (this.props.onSaveSchedule) this.props.onSaveSchedule(schedule) }}
             onShowOptionsClick={() => { this.handleShowOptions(schedule) }}
             onDeleteClick={() => { this.handleDeleteClick(schedule) }}
+            data-test-id={`schedule-item-${schedule.id || ''}`}
           />
         ))}
       </Body>
@@ -302,9 +303,13 @@ class Schedule extends React.Component<Props, State> {
     return (
       <NoSchedules secondary={this.props.secondaryEmpty}>
         <ScheduleImage />
-        <NoSchedulesTitle>{this.props.secondaryEmpty ? 'Schedule this Replica' : 'This Replica has no Schedules.'}</NoSchedulesTitle>
+        <NoSchedulesTitle data-test-id="schedule-noScheduleTitle">{this.props.secondaryEmpty ? 'Schedule this Replica' : 'This Replica has no Schedules.'}</NoSchedulesTitle>
         <NoSchedulesSubtitle>{this.props.secondaryEmpty ? 'You can schedule this replica so that it executes automatically.' : 'Add a new schedule so that the Replica executes automatically.'}</NoSchedulesSubtitle>
-        <Button hollow={this.props.secondaryEmpty} onClick={() => { this.handleAddScheduleClick() }}>Add Schedule</Button>
+        <Button
+          hollow={this.props.secondaryEmpty}
+          onClick={() => { this.handleAddScheduleClick() }}
+          data-test-id="schedule-noScheduleAddButton"
+        >Add Schedule</Button>
       </NoSchedules>
     )
   }
@@ -324,7 +329,7 @@ class Schedule extends React.Component<Props, State> {
       <Footer>
         <Buttons>
           <Button
-            data-test-id="addScheduleButton"
+            data-test-id="schedule-addScheduleButton"
             disabled={this.props.adding}
             secondary
             onClick={() => { this.handleAddScheduleClick() }}
@@ -333,7 +338,7 @@ class Schedule extends React.Component<Props, State> {
         <Timezone>
           <TimezoneLabel>Show all times in</TimezoneLabel>
           <DropdownLink
-            data-test-id="timezoneDropdown"
+            data-test-id="schedule-timezoneDropdown"
             items={timezoneItems}
             selectedItem={selectedItem}
             onChange={item => { this.props.onTimezoneChange(item.value === 'utc' ? 'utc' : 'local') }}

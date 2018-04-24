@@ -95,7 +95,7 @@ class EndpointDetailsContent extends React.Component<Props> {
 
     return (
       <LoadingWrapper>
-        <StatusImage loading />
+        <StatusImage loading data-test-id="edContent-connLoading" />
       </LoadingWrapper>
     )
   }
@@ -133,9 +133,9 @@ class EndpointDetailsContent extends React.Component<Props> {
       let valueClass = null
 
       if (key === 'password') {
-        valueClass = <PasswordValue value={value} />
+        valueClass = <PasswordValue value={value} data-test-id="edContent-connPassword" />
       } else {
-        valueClass = this.renderValue(value, `value-${key}`)
+        valueClass = this.renderValue(value, `connValue-${key}`)
       }
 
       return (
@@ -151,18 +151,18 @@ class EndpointDetailsContent extends React.Component<Props> {
     return (
       <Buttons>
         <MainButtons>
-          <Button secondary onClick={this.props.onEditClick}>Edit Endpoint</Button>
-          <Button onClick={this.props.onValidateClick}>Validate Endpoint</Button>
+          <Button secondary onClick={this.props.onEditClick} data-test-id="edContent-editButton">Edit Endpoint</Button>
+          <Button onClick={this.props.onValidateClick} data-test-id="edContent-validateButton">Validate Endpoint</Button>
         </MainButtons>
         <DeleteButton>
-          <Button hollow alert onClick={this.props.onDeleteClick}>Delete Endpoint</Button>
+          <Button hollow alert onClick={this.props.onDeleteClick} data-test-id="edContent-deleteButton">Delete Endpoint</Button>
         </DeleteButton>
       </Buttons>
     )
   }
 
   renderValue(value: string, dataTestId?: string) {
-    return <CopyValue data-test-id={dataTestId} value={value} maxWidth="90%" />
+    return <CopyValue data-test-id={dataTestId ? `edContent-${dataTestId}` : undefined} value={value} maxWidth="90%" />
   }
 
   render() {
@@ -184,7 +184,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Description</Label>
-            {description ? <CopyMultilineValue data-test-id="description" value={description} /> : <Value>-</Value>}
+            {description ? <CopyMultilineValue data-test-id="edContent-description" value={description} /> : <Value>-</Value>}
           </Field>
           <Field>
             <Label>Created</Label>

@@ -145,7 +145,7 @@ class LoginForm extends React.Component<Props, State> {
     return (
       <LoginError>
         <LoginErrorIcon />
-        <LoginErrorText>
+        <LoginErrorText data-test-id="loginForm-errorText">
           {errorMessage}
         </LoginErrorText>
       </LoginError>
@@ -177,6 +177,7 @@ class LoginForm extends React.Component<Props, State> {
             value={this.state.username}
             name="username"
             onChange={e => { this.handleUsernameChange(e.target.value) }}
+            data-test-id="loginForm-usernameField"
           />
           <LoginFormField
             label="Password"
@@ -184,6 +185,7 @@ class LoginForm extends React.Component<Props, State> {
             onChange={e => { this.handlePasswordChange(e.target.value) }}
             name="password"
             type="password"
+            data-test-id="loginForm-passwordField"
           />
         </FormFields>
         {button}

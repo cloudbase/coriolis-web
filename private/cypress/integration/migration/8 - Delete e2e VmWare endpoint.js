@@ -32,8 +32,8 @@ describe('Delete the VmWare endpoint created for e2e testing', () => {
   })
 
   it('Delete e2e VmWare endpoint', () => {
-    cy.get('div[data-test-id="endpointListItemContent-e2e-vmware-test"]').should('contain', 'e2e-vmware-test')
-    cy.get('div[data-test-id="endpointListItemContent-e2e-vmware-test"]').first().click()
+    cy.get('div[data-test-id="endpointListItem-content-e2e-vmware-test"]').should('contain', 'e2e-vmware-test')
+    cy.get('div[data-test-id="endpointListItem-content-e2e-vmware-test"]').first().click()
     cy.server()
     cy.route({ url: '**/migrations/**', method: 'GET' }).as('migrations')
     cy.route({ url: '**/replicas/**', method: 'GET' }).as('replicas')

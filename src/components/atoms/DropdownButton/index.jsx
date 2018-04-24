@@ -142,7 +142,7 @@ class DropdownButton extends React.Component<Props> {
           {...this.props}
           onClick={() => {}}
           innerRef={() => {}}
-          data-test-id="dropdownButtonValue"
+          data-test-id="dropdownButton-value"
           disabled={this.props.disabled}
         >{this.props.value}</Label>
         <Arrow

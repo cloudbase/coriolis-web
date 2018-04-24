@@ -12,21 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import Modal from '.'
 
-const wrap = props => shallow(<Modal {...props} />)
+const wrap = props => new TestWrapper(shallow(<Modal {...props} />), 'modal')
 
-it('renders open with title', () => {
-  let wrapper = wrap({ isOpen: true, children: <div>Modal</div>, title: 'title' })
-  expect(wrapper.childAt(0).contains('title')).toBe(true)
-  expect(wrapper.prop('contentLabel')).toBe('title')
-  expect(wrapper.prop('isOpen')).toBe(true)
-})
+describe('Modal Component', () => {
+  it('renders open with title', () => {
+    let wrapper = wrap({ isOpen: true, children: <div>Modal</div>, title: 'the_title' })
+    expect(wrapper.findText('title')).toBe('the_title')
+    expect(wrapper.prop('contentLabel')).toBe('the_title')
+    expect(wrapper.prop('isOpen')).toBe(true)
+  })
 
-it('renders children and add resize handler', () => {
-  let wrapper = wrap({ isOpen: true, children: <div>Modal</div>, title: 'title' })
-  expect(wrapper.childAt(1).html().indexOf('Modal')).toBeGreaterThan(-1)
-  expect(wrapper.childAt(1).prop('onResizeUpdate')).toBeTruthy()
+  it('renders children and add resize handler', () => {
+    let wrapper = wrap({ isOpen: true, children: <div data-test-id="modal-child">Modal</div>, title: 'the_title' })
+    expect(wrapper.findText('child', true)).toBe('Modal')
+    expect(wrapper.find('child').prop('onResizeUpdate')).toBeTruthy()
+  })
 })

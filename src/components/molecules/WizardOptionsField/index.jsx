@@ -72,6 +72,7 @@ class WizardOptionsField extends React.Component<Props> {
         onChange={checked => { this.props.onChange(checked) }}
         style={{ marginTop: '-8px' }}
         leftLabel
+        data-test-id="wOptionsField-switch"
       />
     )
   }
@@ -84,6 +85,7 @@ class WizardOptionsField extends React.Component<Props> {
         value={this.props.value}
         onChange={e => { this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
+        data-test-id="wOptionsField-textInput"
       />
     )
   }
@@ -98,6 +100,7 @@ class WizardOptionsField extends React.Component<Props> {
         properties={this.props.properties}
         valueCallback={this.props.valueCallback}
         onChange={this.props.onChange}
+        data-test-id="wOptionsField-propertiesTable"
       />
     )
   }
@@ -120,7 +123,7 @@ class WizardOptionsField extends React.Component<Props> {
     return (
       <Dropdown
         width={StyleProps.inputSizes.wizard.width}
-        data-test-id={`dropdown-${this.props.name}`}
+        data-test-id={`wOptionsField-dropdown-${this.props.name}`}
         noSelectionMessage="Choose a value"
         selectedItem={selectedItem}
         items={items}
@@ -163,7 +166,7 @@ class WizardOptionsField extends React.Component<Props> {
 
     return (
       <Label>
-        <LabelText>{LabelDictionary.get(this.props.name)}</LabelText>
+        <LabelText data-test-id="wOptionsField-label">{LabelDictionary.get(this.props.name)}</LabelText>
         {infoIcon}
       </Label>
     )

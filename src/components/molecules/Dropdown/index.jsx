@@ -110,6 +110,7 @@ type Props = {
   noSelectionMessage: string,
   disabled: boolean,
   width: number,
+  'data-test-id'?: string,
 }
 type State = {
   showDropdownList: boolean,
@@ -323,9 +324,11 @@ class Dropdown extends React.Component<Props, State> {
         className={this.props.className}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
+        data-test-id={this.props['data-test-id'] || 'dropdown'}
       >
         <DropdownButton
           {...this.props}
+          data-test-id="dropdown-dropdownButton"
           innerRef={ref => { this.buttonRef = ref }}
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}

@@ -12,12 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import MigrationDetailsContent from '.'
 
-const wrap = props => shallow(<MigrationDetailsContent {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <MigrationDetailsContent {...props} />
+), 'mdContent')
 
 let tasks = [
   {
@@ -47,24 +53,26 @@ let item = {
   type: 'Migration',
 }
 
-it('renders main details page', () => {
-  let wrapper = wrap({ endpoints, item, page: '' })
-  expect(wrapper.find('MainDetails').prop('item').id).toBe('item-id')
-})
+describe('MigrationDetailsContent Component', () => {
+  it('renders main details page', () => {
+    let wrapper = wrap({ endpoints, item, page: '' })
+    expect(wrapper.find('mainDetails').prop('item').id).toBe('item-id')
+  })
 
-it('renders tasks page', () => {
-  let wrapper = wrap({ endpoints, item, page: 'tasks' })
-  expect(wrapper.find('Tasks').prop('items')[0].id).toBe('task-2')
-})
+  it('renders tasks page', () => {
+    let wrapper = wrap({ endpoints, item, page: 'tasks' })
+    expect(wrapper.find('tasks').prop('items')[0].id).toBe('task-2')
+  })
 
-it('renders details loading', () => {
-  let wrapper = wrap({ endpoints, item, page: '', detailsLoading: true })
-  expect(wrapper.find('MainDetails').prop('loading')).toBe(true)
-})
+  it('renders details loading', () => {
+    let wrapper = wrap({ endpoints, item, page: '', detailsLoading: true })
+    expect(wrapper.find('mainDetails').prop('loading')).toBe(true)
+  })
 
-it('dispatches delete click', () => {
-  let onDeleteMigrationClick = sinon.spy()
-  let wrapper = wrap({ endpoints, item, page: '', onDeleteMigrationClick })
-  wrapper.find('MainDetails').prop('bottomControls').props.children.props.onClick()
-  expect(onDeleteMigrationClick.calledOnce).toBe(true)
+  it('dispatches delete click', () => {
+    let onDeleteMigrationClick = sinon.spy()
+    let wrapper = wrap({ endpoints, item, page: '', onDeleteMigrationClick })
+    wrapper.find('mainDetails').prop('bottomControls').props.children.props.onClick()
+    expect(onDeleteMigrationClick.calledOnce).toBe(true)
+  })
 })

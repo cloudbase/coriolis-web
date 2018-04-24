@@ -12,33 +12,41 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import EndpointListItem from '.'
 
-const wrap = props => shallow(<EndpointListItem {...props} />)
+const wrap = props => new TestWrapper(shallow(
+  // $FlowIgnore
+  (<EndpointListItem {...props} />)
+), 'endpointListItem')
 
-it('renders item properties', () => {
-  let wrapper = wrap({
-    item: { name: 'name-to-test', description: 'description-to-test' },
-    getUsage: () => { return {} },
+describe('EndpointListItem Component', () => {
+  it('renders item properties', () => {
+    let wrapper = wrap({
+      item: { name: 'name-to-test', description: 'description-to-test' },
+      getUsage: () => { return {} },
+    })
+    expect(wrapper.findText('name')).toBe('name-to-test')
+    expect(wrapper.findText('description')).toBe('description-to-test')
   })
-  expect(wrapper.contains('name-to-test')).toBe(true)
-  expect(wrapper.contains('description-to-test')).toBe(true)
-})
 
-it('renders usage count', () => {
-  let wrapper = wrap({
-    item: {},
-    getUsage: () => { return { replicasCount: 12, migrationsCount: 11 } },
+  it('renders usage count', () => {
+    let wrapper = wrap({
+      item: {},
+      getUsage: () => { return { replicasCount: 12, migrationsCount: 11 } },
+    })
+    expect(wrapper.findText('usageCount')).toBe('11 migrations, 12 replicas')
   })
-  expect(wrapper.html().indexOf('11 migrations, 12 replicas') > -1).toBe(true)
-})
 
-it('dispatches onClick', () => {
-  let onClick = sinon.spy()
-  let wrapper = wrap({ item: {}, getUsage: () => { return {} }, onClick })
-  wrapper.childAt(1).simulate('click')
-  expect(onClick.calledOnce).toBe(true)
+  it('dispatches onClick', () => {
+    let onClick = sinon.spy()
+    let wrapper = wrap({ item: { name: 't' }, getUsage: () => { return {} }, onClick })
+    wrapper.find('content-t').simulate('click')
+    expect(onClick.calledOnce).toBe(true)
+  })
 })

@@ -12,20 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import StatusPill from '.'
 
 const wrap = props => shallow(<StatusPill {...props} />)
 
-it('renders label if given', () => {
-  let wrapper = wrap({ label: 'test', status: 'COMPLETED' })
-  let label = new DOMParser().parseFromString(wrapper.html(), 'text/xml').firstChild.innerHTML
-  expect(label).toBe('test')
-})
+describe('StatusPill Component', () => {
+  it('renders label if given', () => {
+    let wrapper = wrap({ label: 'the_value', status: 'COMPLETED' })
+    expect(wrapper.dive().text()).toBe('the_value')
+  })
 
-it('renders status as label if no label is given', () => {
-  let wrapper = wrap({ status: 'COMPLETED' })
-  let label = new DOMParser().parseFromString(wrapper.html(), 'text/xml').firstChild.innerHTML
-  expect(label).toBe('COMPLETED')
+  it('renders status as label if no label is given', () => {
+    let wrapper = wrap({ status: 'COMPLETED' })
+    expect(wrapper.dive().text()).toBe('COMPLETED')
+  })
 })
