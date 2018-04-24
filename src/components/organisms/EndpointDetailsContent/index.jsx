@@ -135,7 +135,7 @@ class EndpointDetailsContent extends React.Component<Props> {
       if (key === 'password') {
         valueClass = <PasswordValue value={value} />
       } else {
-        valueClass = this.renderValue(value)
+        valueClass = this.renderValue(value, `value-${key}`)
       }
 
       return (

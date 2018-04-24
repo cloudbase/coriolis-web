@@ -171,6 +171,7 @@ class EndpointLogos extends React.Component<Props> {
           width={size.w}
           height={size.h}
           imageInfo={imageInfo}
+          data-test-id="endpointLogos-logo"
         >
           {imageInfo ? null : this.renderGenericLogo(size)}
         </Logo>

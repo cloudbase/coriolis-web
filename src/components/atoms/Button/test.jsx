@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
@@ -19,16 +21,22 @@ import Button from '.'
 
 const wrap = props => shallow(<Button {...props} />)
 
-it('renders with different combination of props', () => {
-  let disabled = wrap({ disabled: true })
-  expect(disabled.prop('disabled')).toBe(true)
-  wrap({ primary: true })
-  wrap({ disabled: true, primary: true })
-})
+describe('Button Component', () => {
+  it('renders with different combination of props', () => {
+    let wrapper = wrap({ disabled: true })
+    expect(wrapper.prop('disabled')).toBe(true)
+    wrapper = wrap({ primary: true })
+    expect(wrapper.prop('disabled')).toBe(undefined)
+    expect(wrapper.prop('primary')).toBe(true)
+    wrapper = wrap({ disabled: true, primary: true })
+    expect(wrapper.prop('disabled')).toBe(true)
+    expect(wrapper.prop('primary')).toBe(true)
+  })
 
-it('dispatches click event', () => {
-  const onButtonClick = sinon.spy()
-  const wrapper = wrap({ onClick: onButtonClick })
-  wrapper.simulate('click')
-  expect(onButtonClick.calledOnce).toBe(true)
+  it('dispatches click event', () => {
+    const onButtonClick = sinon.spy()
+    const wrapper = wrap({ onClick: onButtonClick })
+    wrapper.simulate('click')
+    expect(onButtonClick.calledOnce).toBe(true)
+  })
 })

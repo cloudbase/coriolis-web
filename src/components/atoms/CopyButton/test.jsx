@@ -12,14 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import CopyButton from '.'
 
 const wrap = props => shallow(<CopyButton {...props} />).dive()
 
-it('should receive the props', () => {
-  let onClick = () => {}
-  let span = wrap({ onClick })
-  expect(span.prop('onClick')).toBe(onClick)
+describe('CopyButton Component', () => {
+  it('should receive the props', () => {
+    let onClick = () => {}
+    let span = wrap({ onClick })
+    expect(span.prop('onClick')).toBe(onClick)
+  })
 })

@@ -54,7 +54,7 @@ describe('MainDetails Component', () => {
     expect(wrapper.findWhere(w => w.prop('data-test-id') === 'created').prop('value')).toBe(localDate.format('YYYY-MM-DD HH:mm:ss'))
     expect(wrapper.findWhere(w => w.prop('data-test-id') === 'endpointName').at(0).dive().text()).toBe('Endpoint OPS')
     expect(wrapper.findWhere(w => w.prop('data-test-id') === 'endpointName').at(1).dive().text()).toBe('Endpoint AZURE')
-    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'description').dive().text()).toBe('A description<CopyButton />')
+    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'description').prop('value')).toBe('A description')
   })
 
   it('renders endpoints logos', () => {

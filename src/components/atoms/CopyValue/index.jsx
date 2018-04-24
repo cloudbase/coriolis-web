@@ -44,13 +44,15 @@ type Props = {
   width?: string,
   maxWidth?: string,
   'data-test-id'?: string,
+  onCopy?: (value: string) => void,
 }
 @observer
 class CopyValue extends React.Component<Props> {
   handleCopyIdClick(e: Event) {
-    e.stopPropagation()
+    if (e && e.stopPropagation) e.stopPropagation()
 
     let succesful = DomUtils.copyTextToClipboard(this.props.value)
+    if (this.props.onCopy) this.props.onCopy(this.props.value)
 
     if (succesful) {
       NotificationStore.notify('The value has been copied to clipboard.')
@@ -68,6 +70,7 @@ class CopyValue extends React.Component<Props> {
         data-test-id={this.props['data-test-id'] || 'copyValue'}
       >
         <Value
+          data-test-id="value"
           width={this.props.width}
           maxWidth={this.props.maxWidth}
         >{this.props.value}</Value>

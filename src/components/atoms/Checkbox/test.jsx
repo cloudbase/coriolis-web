@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
@@ -19,21 +21,23 @@ import Checkbox from '.'
 
 const wrap = props => shallow(<Checkbox {...props} />)
 
-it('passes `checked` to the component', () => {
-  let wrapper = wrap({ checked: true, onChange: () => {} })
-  expect(wrapper.prop('checked')).toBe(true)
-})
+describe('Checkbox Component', () => {
+  it('passes `checked` to the component', () => {
+    let wrapper = wrap({ checked: true, onChange: () => {} })
+    expect(wrapper.prop('checked')).toBe(true)
+  })
 
-it('calls `onChange` with correct value, on click', () => {
-  let onChange = sinon.spy()
-  let wrapper = wrap({ checked: false, onChange })
-  wrapper.simulate('click')
-  expect(onChange.args[0][0]).toBe(true)
-})
+  it('calls `onChange` with correct value, on click', () => {
+    let onChange = sinon.spy()
+    let wrapper = wrap({ checked: false, onChange })
+    wrapper.simulate('click')
+    expect(onChange.args[0][0]).toBe(true)
+  })
 
-it('doesn\'t call `onChange` if disabled', () => {
-  let onChange = sinon.spy()
-  let wrapper = wrap({ checked: false, onChange, disabled: true })
-  wrapper.simulate('click')
-  expect(onChange.notCalled).toBe(true)
+  it('doesn\'t call `onChange` if disabled', () => {
+    let onChange = sinon.spy()
+    let wrapper = wrap({ checked: false, onChange, disabled: true })
+    wrapper.simulate('click')
+    expect(onChange.notCalled).toBe(true)
+  })
 })
