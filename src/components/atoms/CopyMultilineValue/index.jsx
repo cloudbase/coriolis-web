@@ -54,7 +54,7 @@ class CopyMultineValue extends React.Component<Props> {
     return (
       <Wrapper
         onClick={() => { this.handleCopy() }}
-        data-test-id={this.props['data-test-id'] || 'copyMultilineValue'}
+        data-test-id={(this.props && this.props['data-test-id']) || 'copyMultilineValue'}
       >
         {this.props.value}
         <CopyButton />
