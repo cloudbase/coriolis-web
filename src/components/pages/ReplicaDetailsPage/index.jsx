@@ -78,7 +78,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     ReplicaStore.getReplica(this.props.match.params.id)
     EndpointStore.getEndpoints()
     ScheduleStore.getSchedules(this.props.match.params.id)
-    this.pollData()
+    this.pollData(true)
   }
 
   componentWillUnmount() {
@@ -231,9 +231,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     window.location.href = `/#/replica/executions/${ReplicaStore.replicaDetails ? ReplicaStore.replicaDetails.id : ''}`
   }
 
-  pollData() {
-    ReplicaStore.getReplicaExecutions(this.props.match.params.id).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+  pollData(showLoading: boolean) {
+    ReplicaStore.getReplicaExecutions(this.props.match.params.id, showLoading).then(() => {
+      this.pollTimeout = setTimeout(() => { this.pollData(false) }, requestPollTimeout)
     })
   }
 
@@ -264,6 +264,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             endpoints={EndpointStore.endpoints}
             scheduleStore={ScheduleStore}
             detailsLoading={ReplicaStore.detailsLoading || EndpointStore.loading}
+            executionsLoading={ReplicaStore.executionsLoading}
             page={this.props.match.params.page || ''}
             onCancelExecutionClick={execution => { this.handleCancelExecutionClick(execution) }}
             onDeleteExecutionClick={execution => { this.handleDeleteExecutionClick(execution) }}
