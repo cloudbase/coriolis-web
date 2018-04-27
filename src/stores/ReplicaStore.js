@@ -27,7 +27,7 @@ class ReplicaStoreUtils {
     if (replicaDetails.executions) {
       return {
         ...replicaDetails,
-        executions: [...replicaDetails.executions, execution],
+        executions: [...replicaDetails.executions.filter(e => e.id !== execution.id), execution],
       }
     }
 
@@ -44,6 +44,7 @@ class ReplicaStore {
   @observable loading: boolean = true
   @observable backgroundLoading: boolean = false
   @observable detailsLoading: boolean = true
+  @observable executionsLoading: boolean = false
 
   replicasLoaded: boolean = false
 
@@ -65,7 +66,9 @@ class ReplicaStore {
     })
   }
 
-  @action getReplicaExecutions(replicaId: string): Promise<void> {
+  @action getReplicaExecutions(replicaId: string, showLoading: boolean = false): Promise<void> {
+    if (showLoading) this.executionsLoading = true
+
     return ReplicaSource.getReplicaExecutions(replicaId).then(executions => {
       let replica = this.replicas.find(replica => replica.id === replicaId)
 
@@ -79,7 +82,9 @@ class ReplicaStore {
           executions,
         }
       }
-    })
+
+      this.executionsLoading = false
+    }).catch(() => { this.executionsLoading = false })
   }
 
   @action getReplica(replicaId: string): Promise<void> {

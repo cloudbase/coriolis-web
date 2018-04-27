@@ -74,6 +74,7 @@ type Props = {
   scheduleStore: typeof ScheduleStore,
   page: string,
   detailsLoading: boolean,
+  executionsLoading: boolean,
   onCancelExecutionClick: (execution: ?Execution) => void,
   onDeleteExecutionClick: (execution: ?Execution) => void,
   onExecuteClick: () => void,
@@ -176,6 +177,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         onCancelExecutionClick={this.props.onCancelExecutionClick}
         onDeleteExecutionClick={this.props.onDeleteExecutionClick}
         onExecuteClick={this.props.onExecuteClick}
+        loading={this.props.executionsLoading}
         data-test-id="rdContent-executions"
       />
     )

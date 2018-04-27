@@ -19,6 +19,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import StatusPill from '../../atoms/StatusPill'
+import StatusImage from '../../atoms/StatusImage'
 import CopyValue from '../../atoms/CopyValue'
 import Button from '../../atoms/Button'
 import Timeline from '../../molecules/Timeline'
@@ -31,7 +32,16 @@ import DateUtils from '../../../utils/DateUtils'
 
 import executionImage from './images/execution.svg'
 
-const Wrapper = styled.div`
+const Wrapper = styled.div``
+const LoadingWrapper = styled.div`
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+const LoadingText = styled.div`
+  margin-top: 38px;
+  font-size: 18px;
 `
 const ExecutionInfo = styled.div`
   background: ${Palette.grayscale[1]};
@@ -78,6 +88,7 @@ const NoExecutionText = styled.div`
 
 type Props = {
   item: ?MainItem,
+  loading: boolean,
   onCancelExecutionClick: (execution: ?Execution) => void,
   onDeleteExecutionClick: (execution: ?Execution) => void,
   onExecuteClick: () => void,
@@ -185,7 +196,24 @@ class Executions extends React.Component<Props, State> {
     this.props.onCancelExecutionClick(this.state.selectedExecution)
   }
 
+  renderLoading() {
+    if (!this.props.loading) {
+      return null
+    }
+
+    return (
+      <LoadingWrapper>
+        <StatusImage loading />
+        <LoadingText>Loading executions...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
+
   renderTimeline() {
+    if (this.props.loading) {
+      return null
+    }
+
     return (
       <Timeline
         items={this.props.item ? this.props.item.executions : null}
@@ -224,7 +252,7 @@ class Executions extends React.Component<Props, State> {
   }
 
   renderExecutionInfo() {
-    if (!this.state.selectedExecution) {
+    if (!this.state.selectedExecution || this.props.loading) {
       return null
     }
 
@@ -248,7 +276,8 @@ class Executions extends React.Component<Props, State> {
 
   renderTasks() {
     if (!this.state.selectedExecution || !this.state.selectedExecution.tasks
-      || !this.state.selectedExecution.tasks.length) {
+      || !this.state.selectedExecution.tasks.length
+      || this.props.loading) {
       return null
     }
 
@@ -258,7 +287,7 @@ class Executions extends React.Component<Props, State> {
   }
 
   renderNoExecution() {
-    if (this.hasExecutions(this.props)) {
+    if (this.hasExecutions(this.props) || this.props.loading) {
       return null
     }
 
@@ -275,6 +304,7 @@ class Executions extends React.Component<Props, State> {
   render() {
     return (
       <Wrapper>
+        {this.renderLoading()}
         {this.renderTimeline()}
         {this.renderExecutionInfo()}
         {this.renderTasks()}
