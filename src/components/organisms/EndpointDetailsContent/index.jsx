@@ -74,6 +74,11 @@ const LoadingWrapper = styled.div`
   width: 100%;
   margin: 32px 0 64px 0;
 `
+const Link = styled.a`
+  color: ${Palette.primary};
+  text-decoration: none;
+  cursor: pointer;
+`
 
 type Props = {
   item: ?Endpoint,
@@ -165,6 +170,20 @@ class EndpointDetailsContent extends React.Component<Props> {
     return <CopyValue data-test-id={dataTestId ? `edContent-${dataTestId}` : undefined} value={value} maxWidth="90%" />
   }
 
+  renderUsage(items: MainItem[]) {
+    return items.map((item, i) => (
+      <span>
+        <Link
+          key={item.id}
+          href={`#/${item.type}/${item.id}`}
+        >
+          {item.instances.join(', ')}
+        </Link>
+        {i < items.length - 1 ? ', ' : ''}
+      </span>
+    ))
+  }
+
   render() {
     this.renderedKeys = {}
     const { type, name, description, created_at } = this.props.item || {}
@@ -192,7 +211,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Used in replicas/migrations ({usage.length})</Label>
-            {usage.length > 0 ? <CopyMultilineValue value={usage.map(i => i.instances.join(', ')).join(', ')} /> : <Value>-</Value>}
+            {usage.length > 0 ? this.renderUsage(usage) : <Value>-</Value>}
           </Field>
           {this.renderConnectionInfoLoading()}
           {this.renderConnectionInfo(this.props.connectionInfo)}
