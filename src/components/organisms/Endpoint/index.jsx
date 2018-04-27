@@ -69,7 +69,9 @@ const ShowErrorButton = styled.span`
   cursor: pointer;
 `
 const StatusError = styled.div`
-  margin-top: 32px;
+  margin-top: 16px;
+  max-height: 140px;
+  overflow: auto;
   cursor: pointer;
 
   &:hover > span {
@@ -302,7 +304,7 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   renderEndpointStatus() {
-    let validation = EndpointStore.validation
+    const validation = EndpointStore.validation
     if (!this.state.validating && !validation) {
       return null
     }
