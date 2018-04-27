@@ -351,7 +351,7 @@ class DropdownLink extends React.Component<Props, State> {
           onClick={() => this.handleButtonClick()}
           disabled={this.props.disabled}
         >
-          <Label innerRef={label => { this.labelRef = label }} data-test-id="dropdownLinkLabel">{renderLabel()}</Label>
+          <Label innerRef={label => { this.labelRef = label }} data-test-id="dropdownLink-label">{renderLabel()}</Label>
           <Arrow innerRef={arrow => { this.arrowRef = arrow }} />
         </LinkButton>
         {this.renderList()}

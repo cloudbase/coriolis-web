@@ -96,6 +96,7 @@ class StatusImage extends React.Component<Props> {
             stroke={Palette.grayscale[2]}
           />
           <CircleProgressBar
+            data-test-id="statusImage-progressBar"
             r="47"
             cx="48"
             cy="48"
@@ -114,7 +115,11 @@ class StatusImage extends React.Component<Props> {
       return null
     }
 
-    return <ProgressText>{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%</ProgressText>
+    return (
+      <ProgressText
+        data-test-id="statusImage-progressText"
+      >{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%</ProgressText>
+    )
   }
 
   render() {

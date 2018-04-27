@@ -119,6 +119,7 @@ type Props = {
   endpoint?: string,
   height: number,
   disabled?: boolean,
+  'data-test-id'?: string,
 }
 @observer
 class EndpointLogos extends React.Component<Props> {
@@ -149,7 +150,14 @@ class EndpointLogos extends React.Component<Props> {
   }
 
   renderGenericLogo(size: {w: number, h: number}) {
-    return <Generic size={size} name={this.props.endpoint || ''} disabled={this.props.disabled} />
+    return (
+      <Generic
+        data-test-id="endpointLogos-genericLogo"
+        size={size}
+        name={this.props.endpoint || ''}
+        disabled={this.props.disabled}
+      />
+    )
   }
 
   render() {
@@ -166,7 +174,7 @@ class EndpointLogos extends React.Component<Props> {
     }
 
     return (
-      <Wrapper {...this.props}>
+      <Wrapper {...this.props} data-test-id={this.props['data-test-id'] || 'endpointLogos'}>
         <Logo
           width={size.w}
           height={size.h}

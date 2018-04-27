@@ -12,29 +12,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import ToggleButtonBar from '.'
 
-const wrap = props => shallow(<ToggleButtonBar {...props} />)
+const wrap = props => new TestWrapper(shallow(<ToggleButtonBar {...props} />), 'toggleButtonBar')
 const items = [
   { label: 'test1', value: 'test_1' },
   { label: 'test2', value: 'test_2' },
 ]
 
-it('renders the given items', () => {
-  let wrapper = wrap({ items })
-  let firstItemLabel = new DOMParser()
-    .parseFromString(wrapper.children().at(0).html(), 'text/xml').firstChild.innerHTML
-  let secondItemLabel = new DOMParser()
-    .parseFromString(wrapper.children().at(1).html(), 'text/xml').firstChild.innerHTML
-  expect(firstItemLabel).toBe('test1')
-  expect(secondItemLabel).toBe('test2')
-})
+describe('ToggleButtonBar Component', () => {
+  it('renders the given items', () => {
+    const wrapper = wrap({ items })
+    expect(wrapper.findText(items[0].value)).toBe(items[0].label)
+    expect(wrapper.findText(items[1].value)).toBe(items[1].label)
+  })
 
-it('selects the given value', () => {
-  let wrapper = wrap({ items, selectedValue: 'test_2' })
+  it('selects the given value', () => {
+    let wrapper = wrap({ items, selectedValue: 'test_2' })
 
-  expect(wrapper.children().at(0).prop('selected')).toBe(false)
-  expect(wrapper.children().at(1).prop('selected')).toBe(true)
+    expect(wrapper.find(items[0].value).prop('selected')).toBe(false)
+    expect(wrapper.find(items[1].value).prop('selected')).toBe(true)
+  })
 })

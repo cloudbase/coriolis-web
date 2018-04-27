@@ -12,25 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import NewItemDropdown from '.'
 
-const wrap = props => shallow(<NewItemDropdown {...props} />)
+const wrap = props => new TW(shallow(<NewItemDropdown onChange={() => { }} {...props} />), 'newItemDropdown')
 
-it('opens list on click', () => {
-  let wrapper = wrap()
-  expect(wrapper.children().length).toBe(1)
-  wrapper.childAt(0).simulate('click')
-  expect(wrapper.children().length).toBe(2)
-  expect(wrapper.childAt(1).children().length).toBe(3)
-})
+describe('NewItemDropdown Component', () => {
+  it('opens list on click', () => {
+    let wrapper = wrap()
+    expect(wrapper.find('listItem', true).length).toBe(0)
+    wrapper.find('button').simulate('click')
+    expect(wrapper.find('listItem', true).length).toBe(3)
+  })
 
-it('dispatches change on item click with correct args', () => {
-  let onChange = sinon.spy()
-  let wrapper = wrap({ onChange })
-  wrapper.childAt(0).simulate('click')
-  wrapper.childAt(1).childAt(2).simulate('click')
-  expect(onChange.args[0][0].value).toBe('endpoint')
+  it('dispatches change on item click with correct args', () => {
+    let onChange = sinon.spy()
+    let wrapper = wrap({ onChange })
+    wrapper.find('button').simulate('click')
+    wrapper.find('listItem-Endpoint').simulate('click')
+    expect(onChange.args[0][0].value).toBe('endpoint')
+  })
 })

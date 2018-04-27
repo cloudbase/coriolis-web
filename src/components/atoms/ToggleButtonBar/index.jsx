@@ -54,8 +54,8 @@ const Item = styled.div`
 type ItemType = { value: string, label: string }
 type Props = {
   items: Array<ItemType>,
-  selectedValue: string,
-  onChange: (item: ItemType) => void,
+  selectedValue?: string,
+  onChange?: (item: ItemType) => void,
   className?: string,
 }
 @observer
@@ -70,9 +70,10 @@ class ToggleButtonBar extends React.Component<Props> {
         {this.props.items.map(item => {
           return (
             <Item
+              data-test-id={`toggleButtonBar-${item.value}`}
               key={item.value}
               selected={this.props.selectedValue === item.value}
-              onClick={() => { this.props.onChange(item) }}
+              onClick={() => { if (this.props.onChange) this.props.onChange(item) }}
             >{item.label}</Item>
           )
         })}

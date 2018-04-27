@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import SearchButton from '.'
@@ -19,4 +21,10 @@ import SearchButton from '.'
 storiesOf('SearchButton', module)
   .add('default', () => (
     <SearchButton />
+  ))
+  .add('primary', () => (
+    <SearchButton primary />
+  ))
+  .add('filter icon', () => (
+    <SearchButton useFilterIcon />
   ))

@@ -123,6 +123,7 @@ class Table extends React.Component<Props> {
               width={this.props.columnsWidths && this.props.columnsWidths.length > 0 ? this.props.columnsWidths[i] : dataWidth}
               key={i}
               secondary={this.props.useSecondaryStyle}
+              data-test-id={`table-header-${i}`}
             >{headerItem}</HeaderData>
           )
         })}
@@ -135,7 +136,7 @@ class Table extends React.Component<Props> {
       return null
     }
 
-    return <NoItems secondary={this.props.useSecondaryStyle}>{this.props.noItemsLabel}</NoItems>
+    return <NoItems secondary={this.props.useSecondaryStyle} data-test-id="table-noItems">{this.props.noItemsLabel}</NoItems>
   }
 
   renderItems() {
@@ -148,7 +149,7 @@ class Table extends React.Component<Props> {
       <Body customStyle={this.props.bodyStyle}>
         {this.props.items.map((row, i) => {
           return (
-            <Row key={i} secondary={this.props.useSecondaryStyle}>
+            <Row key={i} secondary={this.props.useSecondaryStyle} data-test-id={`table-row-${i}`}>
               {
                 row.constructor === Array ? row.map((data, j) => {
                   let columnStyle = ''
@@ -158,7 +159,7 @@ class Table extends React.Component<Props> {
                   }
 
                   return (
-                    <RowData customStyle={columnStyle} width={dataWidth} key={`${i}-${j}`}>
+                    <RowData customStyle={columnStyle} width={dataWidth} key={`${i}-${j}`} data-test-id={`table-data-${i}-${j}`}>
                       {data}
                     </RowData>
                   )

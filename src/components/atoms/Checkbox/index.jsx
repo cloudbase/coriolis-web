@@ -55,6 +55,7 @@ type Props = {
   checked?: boolean,
   disabled?: boolean,
   onChange?: (checked: boolean) => void,
+  'data-test-id'?: string,
 }
 @observer
 class Checkbox extends React.Component<Props> {
@@ -69,6 +70,7 @@ class Checkbox extends React.Component<Props> {
   render() {
     return (
       <Wrapper
+        data-test-id={this.props['data-test-id'] || 'checkbox'}
         className={this.props.className}
         onClick={() => { this.handleClick() }}
         checked={this.props.checked}

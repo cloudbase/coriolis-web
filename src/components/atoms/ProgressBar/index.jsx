@@ -41,7 +41,7 @@ class ProgressBar extends React.Component<Props> {
   render() {
     return (
       <Wrapper {...this.props}>
-        <Progress width={this.props.progress} />
+        <Progress data-test-id="progressBar-progress" width={this.props.progress} />
       </Wrapper>
     )
   }

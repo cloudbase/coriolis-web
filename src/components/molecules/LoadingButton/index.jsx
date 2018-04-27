@@ -45,7 +45,7 @@ class LoadingButton extends React.Component<Props> {
   render() {
     return (
       <ButtonStyled {...this.props} disabled>
-        <span>{this.props.children}<Loading /></span>
+        <span data-test-id="loadingButton-label">{this.props.children}<Loading /></span>
       </ButtonStyled>
     )
   }

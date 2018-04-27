@@ -12,14 +12,47 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import TextInput from '.'
 
-const wrap = props => shallow(<TextInput {...props} />)
+const wrap = props => new TestWrapper(shallow(<TextInput {...props} />), 'textInput')
 
-it('passes props', () => {
-  let onChange = () => { }
-  let input = wrap({ onChange }).children().first()
-  expect(input.prop('onChange')).toBe(onChange)
+describe('TextInput Component', () => {
+  it('dispatches change', () => {
+    const onChange = sinon.spy()
+    const wrapper = wrap({ value: 'the_value', onChange })
+    const input = wrapper.find('input')
+    expect(input.prop('value')).toBe('the_value')
+    input.simulate('change', { value: 'A' })
+    expect(onChange.args[0][0].value).toBe('A')
+  })
+
+  it('shows required icon', () => {
+    let wrapper = wrap()
+    let required = wrapper.find('required')
+    expect(required.prop('show')).toBe(undefined)
+    wrapper = wrap({ required: true })
+    required = wrapper.find('required')
+    expect(required.prop('show')).toBe(true)
+  })
+
+  it('shows close icon', () => {
+    let wrapper = wrap()
+    let close = wrapper.find('close')
+    expect(close.prop('show')).toBe(undefined)
+    wrapper = wrap({ showClose: true, value: 'the_value' })
+    close = wrapper.find('close')
+    expect(close.prop('show')).toBe(true)
+    wrapper = wrap({ showClose: true, value: '' })
+    close = wrapper.find('close')
+    expect(close.prop('show')).toBe(false)
+    wrapper = wrap({ showClose: true })
+    close = wrapper.find('close')
+    expect(close.prop('show')).toBe(false)
+  })
 })

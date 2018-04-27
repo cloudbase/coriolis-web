@@ -96,9 +96,9 @@ class EndpointValidation extends React.Component<Props> {
 
     return (
       <Loading>
-        <StatusImage loading />
+        <StatusImage loading data-test-id="eValidation-status" />
         <Message>
-          <Title>Validating Endpoint</Title>
+          <Title data-test-id="eValidation-title">Validating Endpoint</Title>
           <Subtitle>Please wait ...</Subtitle>
         </Message>
       </Loading>
@@ -112,9 +112,9 @@ class EndpointValidation extends React.Component<Props> {
 
     return (
       <Validation>
-        <StatusImage status="COMPLETED" />
+        <StatusImage status="COMPLETED" data-test-id="eValidation-status" />
         <Message>
-          <Title>Endpoint is Valid</Title>
+          <Title data-test-id="eValidation-title">Endpoint is Valid</Title>
           <Subtitle>All tests passed succesfully.</Subtitle>
         </Message>
       </Validation>
@@ -130,10 +130,10 @@ class EndpointValidation extends React.Component<Props> {
 
     return (
       <Validation>
-        <StatusImage status="ERROR" />
+        <StatusImage status="ERROR" data-test-id="eValidation-status" />
         <Message>
-          <Title>Validation Failed</Title>
-          <Error onClick={() => { this.handleCopyClick(message) }}>
+          <Title data-test-id="eValidation-title">Validation Failed</Title>
+          <Error onClick={() => { this.handleCopyClick(message) }} data-test-id="eValidation-errorMessage">
             {message}<CopyButton />
           </Error>
         </Message>

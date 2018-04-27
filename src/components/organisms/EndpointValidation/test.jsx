@@ -12,32 +12,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import EndpointValidation from '.'
 
-const wrap = props => shallow(<EndpointValidation {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <EndpointValidation {...props} />
+), 'eValidation')
 
-it('renders loading', () => {
-  let wrapper = wrap({ loading: true })
-  expect(wrapper.find('StatusImage').prop('loading')).toBe(true)
-  expect(wrapper.html().indexOf('Validating')).toBeGreaterThan(-1)
-})
+describe('EndpointValidation Component', () => {
+  it('renders loading', () => {
+    let wrapper = wrap({ loading: true })
+    expect(wrapper.find('status').prop('loading')).toBe(true)
+    expect(wrapper.findText('title')).toBe('Validating Endpoint')
+  })
 
-it('renders valid', () => {
-  let wrapper = wrap({ validation: { valid: true } })
-  expect(wrapper.find('StatusImage').prop('status')).toBe('COMPLETED')
-  expect(wrapper.html().indexOf('Endpoint is Valid')).toBeGreaterThan(-1)
-})
+  it('renders valid', () => {
+    let wrapper = wrap({ validation: { valid: true } })
+    expect(wrapper.find('status').prop('status')).toBe('COMPLETED')
+    expect(wrapper.findText('title')).toBe('Endpoint is Valid')
+  })
 
-it('renders failed with default message', () => {
-  let wrapper = wrap({ validation: { } })
-  expect(wrapper.find('StatusImage').prop('status')).toBe('ERROR')
-  expect(wrapper.html().indexOf('An unexpected error occurred.')).toBeGreaterThan(-1)
-})
+  it('renders failed with default message', () => {
+    let wrapper = wrap({ validation: {} })
+    expect(wrapper.find('status').prop('status')).toBe('ERROR')
+    expect(wrapper.findText('title')).toBe('Validation Failed')
+    expect(wrapper.findText('errorMessage')).toBe('An unexpected error occurred.<CopyButton />')
+  })
 
-it('renders failed with custom message', () => {
-  let wrapper = wrap({ validation: { message: 'custom_message' } })
-  expect(wrapper.find('StatusImage').prop('status')).toBe('ERROR')
-  expect(wrapper.html().indexOf('custom_message')).toBeGreaterThan(-1)
+  it('renders failed with custom message', () => {
+    let wrapper = wrap({ validation: { message: 'custom_message' } })
+    expect(wrapper.find('status').prop('status')).toBe('ERROR')
+    expect(wrapper.findText('title')).toBe('Validation Failed')
+    expect(wrapper.findText('errorMessage')).toBe('custom_message<CopyButton />')
+  })
 })

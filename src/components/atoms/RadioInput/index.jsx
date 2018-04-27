@@ -60,8 +60,8 @@ class RadioInput extends React.Component<Props> {
     return (
       <Wrapper {...this.props}>
         <LabelStyled>
-          <InputStyled type="radio" {...this.props} />
-          <Text>{this.props.label}</Text>
+          <InputStyled type="radio" {...this.props} data-test-id="radioInput-input" />
+          <Text data-test-id="radioInput-label">{this.props.label}</Text>
         </LabelStyled>
       </Wrapper>
     )

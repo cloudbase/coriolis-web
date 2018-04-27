@@ -12,13 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TestWrapper from '../../../utils/TestWrapper'
 import ProgressBar from '.'
 
-const wrap = props => shallow(<ProgressBar {...props} />).dive()
+const wrap = props => new TestWrapper(shallow(<ProgressBar {...props} />), 'progressBar')
 
-it('has width according to progress number', () => {
-  let progressDiv = wrap({ progress: 61 }).children()
-  expect(progressDiv.prop('width')).toBe(61)
+describe('ProgressBar Component', () => {
+  it('has width according to progress number', () => {
+    const wrapper = wrap({ progress: 61 })
+    expect(wrapper.find('progress').prop('width')).toBe(61)
+  })
 })

@@ -12,11 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import WizardOptions from '.'
 
-const wrap = props => shallow(<WizardOptions {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <WizardOptions {...props} />
+), 'wOptions')
 
 let fields = [
   {
@@ -48,54 +54,50 @@ let fields = [
   },
 ]
 
-it('has description and required field in simple tab', () => {
-  let wrapper = wrap({ fields, selectedInstances: [] })
-  let optionsFields = wrapper.find('Styled(WizardOptionsField)')
-  expect(optionsFields.length).toBe(2)
-  expect(optionsFields.at(0).prop('name')).toBe('description')
-  expect(optionsFields.at(1).prop('name')).toBe('required_string_field')
-})
+describe('WizardOptions Component', () => {
+  it('has description and required field in simple tab', () => {
+    let wrapper = wrap({ fields, selectedInstances: [] })
+    expect(wrapper.find('field-', true).length).toBe(2)
+    expect(wrapper.find('field-description').length).toBe(1)
+    expect(wrapper.find('field-required_string_field').length).toBe(1)
+  })
 
-it('renders execute now for replica', () => {
-  let wrapper = wrap({ fields, selectedInstances: [], wizardType: 'replica' })
-  expect(wrapper.findWhere(w => w.name() === 'Styled(WizardOptionsField)' && w.prop('name') === 'execute_now').length).toBe(1)
-  expect(wrapper.findWhere(w => w.name() === 'Styled(WizardOptionsField)' && w.prop('name') === 'execute_now_options').length).toBe(1)
-})
+  it('renders execute now for replica', () => {
+    let wrapper = wrap({ fields, selectedInstances: [], wizardType: 'replica' })
+    expect(wrapper.find('field-execute_now').length).toBe(1)
+    expect(wrapper.find('field-execute_now_options').length).toBe(1)
+  })
 
-it('renders skip os morphing for migration', () => {
-  let wrapper = wrap({ fields, selectedInstances: [], wizardType: 'migration' })
-  expect(wrapper.findWhere(w => w.name() === 'Styled(WizardOptionsField)' && w.prop('name') === 'skip_os_morphing').length).toBe(1)
-})
+  it('renders skip os morphing for migration', () => {
+    let wrapper = wrap({ fields, selectedInstances: [], wizardType: 'migration' })
+    expect(wrapper.find('field-skip_os_morphing').length).toBe(1)
+  })
 
-it('renders separate / vm if multiple instances are selected', () => {
-  let wrapper = wrap({ fields, selectedInstances: [{}, {}] })
-  expect(wrapper.findWhere(w => w.name() === 'Styled(WizardOptionsField)' && w.prop('name') === 'separate_vm').length).toBe(1)
-})
+  it('renders separate / vm if multiple instances are selected', () => {
+    let wrapper = wrap({ fields, selectedInstances: [{}, {}] })
+    expect(wrapper.find('field-separate_vm').length).toBe(1)
+  })
 
-it('renders correct number of fields in advanced tab', () => {
-  let wrapper = wrap({ fields, selectedInstances: [], useAdvancedOptions: true })
-  let optionsFields = wrapper.find('Styled(WizardOptionsField)')
-  expect(optionsFields.length).toBe(fields.length + 1)
-})
+  it('renders correct number of fields in advanced tab', () => {
+    let wrapper = wrap({ fields, selectedInstances: [], useAdvancedOptions: true })
+    expect(wrapper.find('field-', true).length).toBe(fields.length + 1)
+  })
 
-it('renders correct field info', () => {
-  let wrapper = wrap({ fields, selectedInstances: [], useAdvancedOptions: true })
-  let findField = name => {
-    let field = wrapper.findWhere(w => w.name() === 'Styled(WizardOptionsField)' && w.prop('name') === name)
-    expect(field.length).toBe(1)
-    return field
-  }
-  expect(findField('description').prop('type')).toBe('string')
-  expect(findField('required_string_field').prop('required')).toBe(true)
-  expect(findField('string_field').prop('type')).toBe('string')
-  expect(findField('string_field_with_default').prop('value')).toBe('default')
-  expect(findField('enum_field').prop('enum')[0]).toBe('enum 1')
-  expect(findField('enum_field').prop('enum')[1]).toBe('enum 2')
-  expect(findField('boolean_field').prop('type')).toBe('boolean')
-  expect(findField('strict_boolean_field').prop('type')).toBe('strict-boolean')
-})
+  it('renders correct field info', () => {
+    let wrapper = wrap({ fields, selectedInstances: [], useAdvancedOptions: true })
 
-it('renders data into field', () => {
-  let wrapper = wrap({ fields, selectedInstances: [], useAdvancedOptions: true, data: { string_field: 'new data' } })
-  expect(wrapper.findWhere(w => w.name() === 'Styled(WizardOptionsField)' && w.prop('name') === 'string_field').prop('value')).toBe('new data')
+    expect(wrapper.find('field-description').prop('type')).toBe('string')
+    expect(wrapper.find('field-required_string_field').prop('required')).toBe(true)
+    expect(wrapper.find('field-string_field').prop('type')).toBe('string')
+    expect(wrapper.find('field-string_field_with_default').prop('value')).toBe('default')
+    expect(wrapper.find('field-enum_field').prop('enum')[0]).toBe('enum 1')
+    expect(wrapper.find('field-enum_field').prop('enum')[1]).toBe('enum 2')
+    expect(wrapper.find('field-boolean_field').prop('type')).toBe('boolean')
+    expect(wrapper.find('field-strict_boolean_field').prop('type')).toBe('strict-boolean')
+  })
+
+  it('renders data into field', () => {
+    let wrapper = wrap({ fields, selectedInstances: [], useAdvancedOptions: true, data: { string_field: 'new data' } })
+    expect(wrapper.find('field-string_field').prop('value')).toBe('new data')
+  })
 })

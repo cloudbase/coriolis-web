@@ -128,9 +128,10 @@ class DetailsContentHeader extends React.Component<Props> {
           label={this.props.item ? this.props.item.type && this.props.item.type.toUpperCase() : ''}
           alert={this.props.alertInfoPill}
           primary={this.props.primaryInfoPill}
+          data-test-id="dcHeader-infoPill"
         />
         <StatusPill
-          data-test-id={`mainStatusPill-${statusLabel || ''}`}
+          data-test-id={`dcHeader-statusPill-${statusLabel || ''}`}
           status={this.getStatus()}
           label={statusLabel || ''}
         />
@@ -151,6 +152,7 @@ class DetailsContentHeader extends React.Component<Props> {
             // $FlowIssue
             if (this.props.onCancelClick) this.props.onCancelClick(this.getLastExecution())
           }}
+          data-test-id="dcHeader-cancelButton"
         >Cancel</Button>
       )
     }
@@ -162,6 +164,7 @@ class DetailsContentHeader extends React.Component<Props> {
         hollow={this.props.hollowButton}
         onClick={this.props.onActionButtonClick}
         disabled={this.props.actionButtonDisabled}
+        data-test-id="dcHeader-actionButton"
       >{this.props.buttonLabel}</Button>
     )
   }
@@ -172,7 +175,7 @@ class DetailsContentHeader extends React.Component<Props> {
     }
 
     return (
-      <Description>{this.props.item.description}</Description>
+      <Description data-test-id="dcHeader-description">{this.props.item.description}</Description>
     )
   }
 
@@ -181,11 +184,11 @@ class DetailsContentHeader extends React.Component<Props> {
 
     return (
       <Wrapper>
-        <BackButton onClick={this.props.onBackButonClick} />
+        <BackButton onClick={this.props.onBackButonClick} data-test-id="dcHeader-backButton" />
         <TypeImage image={this.props.typeImage} />
         <Title>
           <Status>
-            <Text>{title}</Text>
+            <Text data-test-id="dcHeader-title">{title}</Text>
             {this.renderStatusPill()}
             {this.renderDescription()}
           </Status>

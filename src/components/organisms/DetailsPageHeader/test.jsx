@@ -12,27 +12,35 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import { DetailsPageHeader } from '.'
 
-const wrap = props => shallow(<DetailsPageHeader notificationStore={{}} {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <DetailsPageHeader notificationStore={{}} {...props} />
+), 'dpHeader')
 
 let user = {
   name: 'User name',
   email: 'email@email.com',
 }
 
-it('renders with given user', () => {
-  let wrapper = wrap({ user })
-  expect(wrapper.find('Styled(UserDropdown)').prop('user').name).toBe(user.name)
-  expect(wrapper.find('Styled(UserDropdown)').prop('user').email).toBe(user.email)
-})
+describe('DetailsPageHeader Component', () => {
+  it('renders with given user', () => {
+    let wrapper = wrap({ user })
+    expect(wrapper.find('userDropdown').prop('user').name).toBe(user.name)
+    expect(wrapper.find('userDropdown').prop('user').email).toBe(user.email)
+  })
 
-it('dispatches user item click', () => {
-  let onUserItemClick = sinon.spy()
-  let wrapper = wrap({ user, onUserItemClick })
-  wrapper.find('Styled(UserDropdown)').simulate('itemClick')
-  expect(onUserItemClick.called).toBe(true)
+  it('dispatches user item click', () => {
+    let onUserItemClick = sinon.spy()
+    let wrapper = wrap({ user, onUserItemClick })
+    wrapper.find('userDropdown').simulate('itemClick')
+    expect(onUserItemClick.called).toBe(true)
+  })
 })

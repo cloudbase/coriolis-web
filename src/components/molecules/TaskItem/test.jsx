@@ -12,11 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import TaskItem from '.'
 
-const wrap = props => shallow(<TaskItem {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <TaskItem {...props} />
+), 'taskItem')
 
 let item = {
   progress_updates: [
@@ -32,14 +38,14 @@ let item = {
 }
 let columnWidths = ['26%', '18%', '36%', '20%']
 
-it('renders progress updates', () => {
-  let wrapper = wrap({ item, columnWidths, open: true })
-  let collapse = wrapper.find('Collapse')
-  expect(collapse.html().indexOf('the task has a progress of 50%')).toBeGreaterThan(-1)
-  expect(collapse.html().indexOf('the task is almost done')).toBeGreaterThan(-1)
-})
+describe('TaskItem Component', () => {
+  it('renders progress updates', () => {
+    let wrapper = wrap({ item, columnWidths, open: true })
+    expect(wrapper.findText('progressUpdateMessage-1')).toBe('the task is almost done')
+  })
 
-it('renders progress bar', () => {
-  let wrapper = wrap({ item, columnWidths, open: true })
-  expect(wrapper.find('ProgressBar').prop('progress')).toBe(50)
+  it('renders progress bar', () => {
+    let wrapper = wrap({ item, columnWidths, open: true })
+    expect(wrapper.find('progressBar-0').prop('progress')).toBe(50)
+  })
 })

@@ -70,7 +70,7 @@ class CopyValue extends React.Component<Props> {
         data-test-id={this.props['data-test-id'] || 'copyValue'}
       >
         <Value
-          data-test-id="value"
+          data-test-id="copyValue-value"
           width={this.props.width}
           maxWidth={this.props.maxWidth}
         >{this.props.value}</Value>

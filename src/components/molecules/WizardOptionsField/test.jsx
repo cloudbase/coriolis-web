@@ -16,48 +16,49 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import WizardOptionsField from '.'
 
 // $FlowIgnore
-const wrap = props => shallow(<WizardOptionsField {...props} />)
+const wrap = props => new TW(shallow(<WizardOptionsField {...props} />), 'wOptionsField')
 
 describe('WizardOptionsField Component', () => {
   it('renders label', () => {
-    let wrapper = wrap({ name: 'test string', type: 'string', value: 'input-value' })
-    expect(wrapper.childAt(0).html().indexOf('Test string')).toBeGreaterThan(-1)
+    let wrapper = wrap({ name: 'the_name', type: 'string', value: 'the_value' })
+    expect(wrapper.findText('label')).toBe('The Name')
   })
 
   it('renders string input with correct value', () => {
-    let wrapper = wrap({ name: 'test string', type: 'string', value: 'input-value' })
-    expect(wrapper.find('TextInput').prop('value')).toBe('input-value')
+    let wrapper = wrap({ name: 'the_name', type: 'string', value: 'the_value' })
+    expect(wrapper.find('textInput').prop('value')).toBe('the_value')
   })
 
   it('renders required string input', () => {
-    let wrapper = wrap({ name: 'test string', type: 'string', value: 'input-value', required: true })
-    expect(wrapper.find('TextInput').prop('required')).toBe(true)
+    let wrapper = wrap({ name: 'the_name', type: 'string', value: 'the_value', required: true })
+    expect(wrapper.find('textInput').prop('required')).toBe(true)
   })
 
   it('renders strict boolean with correct value', () => {
-    let wrapper = wrap({ name: 'test string', type: 'strict-boolean', value: true })
-    expect(wrapper.find('Switch').prop('triState')).toBe(false)
-    expect(wrapper.find('Switch').prop('checked')).toBe(true)
+    let wrapper = wrap({ name: 'the_name', type: 'strict-boolean', value: true })
+    expect(wrapper.find('switch').prop('triState')).toBe(false)
+    expect(wrapper.find('switch').prop('checked')).toBe(true)
   })
 
   it('renders boolean with correct value', () => {
-    let wrapper = wrap({ name: 'test string', type: 'boolean', value: true })
-    expect(wrapper.find('Switch').prop('triState')).toBe(true)
-    expect(wrapper.find('Switch').prop('checked')).toBe(true)
+    let wrapper = wrap({ name: 'the_name', type: 'boolean', value: true })
+    expect(wrapper.find('switch').prop('triState')).toBe(true)
+    expect(wrapper.find('switch').prop('checked')).toBe(true)
   })
 
   it('renders enum string', () => {
     let wrapper = wrap({
-      name: 'test string',
+      name: 'the_name',
       type: 'string',
       value: 'reuse_ports',
       enum: ['keep_mac', 'reuse_ports', 'replace_mac'],
     })
-    expect(wrapper.find('Dropdown').prop('selectedItem').label).toBe('Reuse Existing Ports')
-    expect(wrapper.find('Dropdown').prop('items')[3].value).toBe('replace_mac')
+    expect(wrapper.find('dropdown-the_name').prop('selectedItem').label).toBe('Reuse Existing Ports')
+    expect(wrapper.find('dropdown-the_name').prop('items')[3].value).toBe('replace_mac')
   })
 
   it('renders object table', () => {
@@ -70,6 +71,6 @@ describe('WizardOptionsField Component', () => {
       ],
       valueCallback: prop => prop.name === 'prop-2',
     })
-    expect(wrapper.find('PropertiesTable').prop('properties')[1].name).toBe('prop-2')
+    expect(wrapper.find('propertiesTable').prop('properties')[1].name).toBe('prop-2')
   })
 })

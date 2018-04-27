@@ -42,8 +42,8 @@ type Props = {
 const LoginFormField = (props: Props) => {
   return (
     <Wrapper>
-      <FormFieldLabel>{props.label}</FormFieldLabel>
-      <StyledTextInput {...props} onChange={props.onChange} />
+      <FormFieldLabel data-test-id="loginFormField-label">{props.label}</FormFieldLabel>
+      <StyledTextInput data-test-id="loginFormField-input" {...props} onChange={props.onChange} />
     </Wrapper>
   )
 }

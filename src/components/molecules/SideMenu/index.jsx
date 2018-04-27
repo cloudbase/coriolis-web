@@ -110,11 +110,12 @@ class SideMenu extends React.Component<Props, State> {
           open={this.state.open}
           onClick={() => { this.handleHamburgerClick() }}
           dangerouslySetInnerHTML={{ __html: hamburgerImage() }}
+          data-test-id="sideMenu-toggle"
         />
-        <Menu open={this.state.open}>
+        <Menu open={this.state.open} data-test-id="sideMenu-menu">
           {navigationMenu.filter(i => i.disabled ? !i.disabled : true).map(item => {
             return (
-              <MenuItem key={item.value} href={`/#/${item.value}`}>{item.label}</MenuItem>
+              <MenuItem key={item.value} href={`/#/${item.value}`} data-test-id={`sideMenu-item-${item.value}`}>{item.label}</MenuItem>
             )
           })}
         </Menu>

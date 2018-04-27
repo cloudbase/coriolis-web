@@ -79,7 +79,7 @@ const ValueLink = styled.a`
   text-decoration: none;
   cursor: pointer;
 `
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table) `
   margin-top: 89px;
   margin-bottom: 48px;
 `
@@ -192,7 +192,7 @@ class MainDetails extends React.Component<Props> {
   }
 
   renderValue(value: string, dateTestId?: string) {
-    return <CopyValue value={value} maxWidth="90%" data-test-id={dateTestId} />
+    return <CopyValue value={value} maxWidth="90%" data-test-id={dateTestId ? `mainDetails-${dateTestId}` : undefined} />
   }
 
   renderNetworksTable() {
@@ -211,13 +211,14 @@ class MainDetails extends React.Component<Props> {
         header={['Source Network', 'Connected VMs', 'Destination Network', 'Destination Type']}
         items={items}
         columnsStyle={[css`color: ${Palette.black};`]}
+        data-test-id="mainDetails-networksTable"
       />
     )
   }
 
   renderEndpointLink(type: string): React.Node {
     let endpointIsMissing = (
-      <Value flex>
+      <Value flex data-test-id={`mainDetails-missing-${type}`}>
         <StatusIcon style={{ marginRight: '8px' }} status="ERROR" />Endpoint is missing
       </Value>
     )
@@ -225,7 +226,7 @@ class MainDetails extends React.Component<Props> {
     let endpoint = type === 'source' ? this.getSourceEndpoint() : this.getDestinationEndpoint()
 
     if (endpoint) {
-      return <ValueLink data-test-id="endpointName" href={`/#/endpoint/${endpoint.id}`}>{endpoint.name}</ValueLink>
+      return <ValueLink data-test-id={`mainDetails-name-${type}`} href={`/#/endpoint/${endpoint.id}`}>{endpoint.name}</ValueLink>
     }
 
     return endpointIsMissing
@@ -292,7 +293,10 @@ class MainDetails extends React.Component<Props> {
             </Field>
           </Row>
           <Row>
-            <EndpointLogos endpoint={sourceEndpoint ? sourceEndpoint.type : ''} />
+            <EndpointLogos
+              endpoint={sourceEndpoint ? sourceEndpoint.type : ''}
+              data-test-id="mainDetails-sourceLogo"
+            />
           </Row>
           <Row>
             <Field>
@@ -310,21 +314,21 @@ class MainDetails extends React.Component<Props> {
             <Field>
               <Label>Description</Label>
               {this.props.item && this.props.item.destination_environment
-              && this.props.item.destination_environment.description
-                ? <CopyMultilineValue value={this.props.item.destination_environment.description} data-test-id="description" />
+                && this.props.item.destination_environment.description
+                ? <CopyMultilineValue value={this.props.item.destination_environment.description} data-test-id="mainDetails-description" />
                 : <Value>-</Value>}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Type</Label>
-              <Value capitalize data-test-id="type">Coriolis {this.props.item && this.props.item.type}</Value>
+              <Value capitalize data-test-id="mainDetails-type">Coriolis {this.props.item && this.props.item.type}</Value>
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Last Updated</Label>
-              <Value data-test-id="updated">{this.renderLastExecutionTime()}</Value>
+              <Value data-test-id="mainDetails-updated">{this.renderLastExecutionTime()}</Value>
             </Field>
           </Row>
         </Column>
@@ -339,7 +343,10 @@ class MainDetails extends React.Component<Props> {
             </Field>
           </Row>
           <Row>
-            <EndpointLogos endpoint={destinationEndpoint ? destinationEndpoint.type : ''} />
+            <EndpointLogos
+              endpoint={destinationEndpoint ? destinationEndpoint.type : ''}
+              data-test-id="mainDetails-targetLogo"
+            />
           </Row>
           {propertyNames.length > 0 ? (
             <Row>
@@ -377,7 +384,7 @@ class MainDetails extends React.Component<Props> {
 
     return (
       <Loading>
-        <StatusImage loading />
+        <StatusImage loading data-test-id="mainDetails-loading" />
       </Loading>
     )
   }

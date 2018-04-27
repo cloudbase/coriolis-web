@@ -35,14 +35,14 @@ describe('Create VmWare to Azure Replica', () => {
     cy.server()
     cy.route({ url: '**/instances**', method: 'GET' }).as('sourceInstances')
     cy.get('button').contains('Next').click()
-    cy.get('div[data-test-id="dropdown-vmware_vsphere"]').first().click()
+    cy.get('div[data-test-id="wEndpointList-dropdown-vmware_vsphere"]').first().click()
     cy.get('div').contains('e2e-vmware-test').click()
     cy.wait('@sourceInstances')
   })
 
   it('Chooses Azure as Target Cloud', () => {
     cy.get('button').contains('Next').click()
-    cy.get('div[data-test-id="dropdown-azure"]').first().click()
+    cy.get('div[data-test-id="wEndpointList-dropdown-azure"]').first().click()
     cy.get('div').contains('e2e-azure-test').click()
   })
 
@@ -52,9 +52,9 @@ describe('Create VmWare to Azure Replica', () => {
     cy.route({ url: '**/instances**', method: 'GET' }).as('search')
     cy.get('input[placeholder="Search VMs"]').type(config.wizard.instancesSearch)
     cy.wait('@search')
-    cy.get('div[data-test-id="instanceItem"]').contains(config.wizard.instancesSearch)
-    cy.get('div[data-test-id="instanceItem"]').its('length').should('be.gt', 0)
-    cy.get('div[data-test-id="instanceItem"]').eq(config.wizard.instancesSelectItem).click()
+    cy.get('div[data-test-id="wInstances-instanceItem"]').contains(config.wizard.instancesSearch)
+    cy.get('div[data-test-id="wInstances-instanceItem"]').its('length').should('be.gt', 0)
+    cy.get('div[data-test-id="wInstances-instanceItem"]').eq(config.wizard.instancesSelectItem).click()
   })
 
   it('Fills Azure replica info', () => {
@@ -62,9 +62,9 @@ describe('Create VmWare to Azure Replica', () => {
     cy.get('input[placeholder="Location"]').type(config.wizard.azure.location.value)
     cy.get('input[placeholder="Resource Group"]').type(config.wizard.azure.resourceGroup.value)
 
-    // cy.get('div[data-test-id="dropdown-location"]').first().click()
-    // cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.azure.location.label).click()
-    // cy.get('div[data-test-id="dropdown-resource_group"]').first().click()
+    // cy.get('div[data-test-id="wOptionsField-dropdown-location"]').first().click()
+    // cy.get('div[data-test-id="wOptionsField-dropdownListItem"]').contains(config.wizard.azure.location.label).click()
+    // cy.get('div[data-test-id="wOptionsField-dropdown-resource_group"]').first().click()
     // cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.azure.resourceGroup.label).click()
   })
 

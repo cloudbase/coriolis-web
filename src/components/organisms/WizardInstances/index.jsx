@@ -248,7 +248,7 @@ class WizardInstances extends React.Component<Props, State> {
     return (
       <SearchNotFound>
         <StatusImage status="ERROR" />
-        <SearchNotFoundText>Your search returned no results</SearchNotFoundText>
+        <SearchNotFoundText data-test-id="wInstances-notFoundText">Your search returned no results</SearchNotFoundText>
         <Button hollow onClick={() => { this.props.onReloadClick(this.state.searchText) }}>Retry</Button>
       </SearchNotFound>
     )
@@ -273,7 +273,7 @@ class WizardInstances extends React.Component<Props, State> {
 
     return (
       <LoadingWrapper>
-        <StatusImage loading />
+        <StatusImage loading data-test-id="wInstances-loadingStatus" />
         <LoadingText>Loading instances...</LoadingText>
       </LoadingWrapper>
     )
@@ -294,12 +294,13 @@ class WizardInstances extends React.Component<Props, State> {
               key={instance.id}
               onClick={() => { this.props.onInstanceClick(instance) }}
               selected={selected}
+              data-test-id={`wInstances-item-${instance.id}`}
             >
-              <CheckboxStyled checked={selected} onChange={() => {}} />
-              <InstanceContent data-test-id="instanceItem">
+              <CheckboxStyled checked={selected} onChange={() => { }} />
+              <InstanceContent data-test-id="wInstances-instanceItem">
                 <Image />
-                <Label>{instance.instance_name}</Label>
-                <Details>{`${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM${flavorName}`}</Details>
+                <Label data-test-id="wInstances-itemName">{instance.instance_name}</Label>
+                <Details data-test-id="wInstances-itemDetails">{`${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM${flavorName}`}</Details>
               </InstanceContent>
             </Instance>
           )
@@ -323,13 +324,16 @@ class WizardInstances extends React.Component<Props, State> {
           onChange={searchText => { this.handleSeachInputChange(searchText) }}
           value={this.state.searchText}
           loading={this.props.searching}
-          value={this.state.searchText}
           placeholder="Search VMs"
+          data-test-id="wInstances-searchInput"
         />
         <FilterInfo>
-          <SelectionInfo>{count} instance{plural} selected</SelectionInfo>
+          <SelectionInfo data-test-id="wInstances-selInfo">{count} instance{plural} selected</SelectionInfo>
           <FilterSeparator>|</FilterSeparator>
-          <ReloadButton onClick={() => { this.props.onReloadClick(this.state.searchText) }} />
+          <ReloadButton
+            onClick={() => { this.props.onReloadClick(this.state.searchText) }}
+            data-test-id="wInstances-reloadButton"
+          />
         </FilterInfo>
       </FiltersWrapper>
     )
@@ -350,16 +354,24 @@ class WizardInstances extends React.Component<Props, State> {
           previous
           disabled={isPreviousDisabled}
           onClick={() => { if (!isPreviousDisabled) { this.props.onPreviousPageClick() } }}
+          data-test-id="wInstances-prevPageButton"
         >
           <Arrow orientation="left" disabled={isPreviousDisabled} />
         </Page>
-        <Page number>
-          {this.props.loadingPage ? <StatusIcon status="RUNNING" secondary /> : this.props.currentPage}
+        <Page number data-test-id="wInstances-currentPage">
+          {this.props.loadingPage ? (
+            <StatusIcon
+              status="RUNNING"
+              secondary
+              data-test-id="wInstances-pageLoadingStatus"
+            />
+          ) : this.props.currentPage}
         </Page>
         <Page
           next
           onClick={() => { if (!isNextDisabled) { this.props.onNextPageClick(this.state.searchText) } }}
           disabled={isNextDisabled}
+          data-test-id="wInstances-nextPageButton"
         >
           <Arrow disabled={isNextDisabled} />
         </Page>

@@ -32,8 +32,8 @@ describe('Delete the Openstack endpoint created for e2e testing', () => {
   })
 
   it('Delete e2e Openstack endpoint', () => {
-    cy.get('div[data-test-id="endpointListItemContent-e2e-openstack-test"]').should('contain', 'e2e-openstack-test')
-    cy.get('div[data-test-id="endpointListItemContent-e2e-openstack-test"]').first().click()
+    cy.get('div[data-test-id="endpointListItem-content-e2e-openstack-test"]').should('contain', 'e2e-openstack-test')
+    cy.get('div[data-test-id="endpointListItem-content-e2e-openstack-test"]').first().click()
     cy.server()
     cy.route({ url: '**/migrations/**', method: 'GET' }).as('migrations')
     cy.route({ url: '**/replicas/**', method: 'GET' }).as('replicas')

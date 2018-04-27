@@ -12,12 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import Executions from '.'
 
-const wrap = props => shallow(<Executions {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <Executions {...props} />
+), 'executions')
 
 let item = {
   executions: [
@@ -28,55 +34,71 @@ let item = {
   ],
 }
 
-it('selects last execution by default', () => {
-  let wrapper = wrap({ item })
-  expect(wrapper.html().indexOf('Execution #4')).toBeGreaterThan(-1)
-})
+describe('Executions Component', () => {
+  it('selects last execution by default', () => {
+    let wrapper = wrap({ item })
+    expect(wrapper.findText('number')).toBe('Execution #4')
+  })
 
-it('selects previous execution on previous click', () => {
-  let wrapper = wrap({ item })
-  wrapper.find('Timeline').simulate('previousClick')
-  expect(wrapper.html().indexOf('Execution #3')).toBeGreaterThan(-1)
-  wrapper.find('Timeline').simulate('previousClick')
-  expect(wrapper.html().indexOf('Execution #2')).toBeGreaterThan(-1)
-})
+  it('selects previous execution on previous click', () => {
+    let wrapper = wrap({ item })
+    wrapper.find('timeline').simulate('previousClick')
+    expect(wrapper.findText('number')).toBe('Execution #3')
+    wrapper.find('timeline').simulate('previousClick')
+    expect(wrapper.findText('number')).toBe('Execution #2')
+  })
 
-it('selects next execution on next click', () => {
-  let wrapper = wrap({ item })
-  wrapper.find('Timeline').simulate('previousClick')
-  wrapper.find('Timeline').simulate('previousClick')
-  wrapper.find('Timeline').simulate('nextClick')
-})
+  it('selects next execution on next click', () => {
+    let wrapper = wrap({ item })
+    wrapper.find('timeline').simulate('previousClick')
+    wrapper.find('timeline').simulate('previousClick')
+    wrapper.find('timeline').simulate('nextClick')
+    expect(wrapper.findText('number')).toBe('Execution #3')
+  })
 
-it('doesn\'t select next execution on next click if not possible', () => {
-  let wrapper = wrap({ item })
-  wrapper.find('Timeline').simulate('nextClick')
-  expect(wrapper.html().indexOf('Execution #4')).toBeGreaterThan(-1)
-})
+  it('doesn\'t select next execution on next click if not possible', () => {
+    let wrapper = wrap({ item })
+    wrapper.find('timeline').simulate('nextClick')
+    expect(wrapper.findText('number')).toBe('Execution #4')
+  })
 
-it('dispatches cancel click', () => {
-  let onCancelExecutionClick = sinon.spy()
-  let wrapper = wrap({ item, onCancelExecutionClick })
-  wrapper.find('Button').simulate('click')
-  expect(onCancelExecutionClick.calledOnce).toBe(true)
-})
+  it('shows cancel button on running executions', () => {
+    let wrapper = wrap({ item })
+    expect(wrapper.find('cancelButton').length).toBe(1)
+    expect(wrapper.find('deleteButton').length).toBe(0)
+  })
 
-it('dispatches delete click', () => {
-  let onDeleteExecutionClick = sinon.spy()
-  let wrapper = wrap({ item, onDeleteExecutionClick })
-  wrapper.find('Timeline').simulate('previousClick')
-  wrapper.find('Button').simulate('click')
-  expect(onDeleteExecutionClick.calledOnce).toBe(true)
-})
+  it('shows delete button on non-running executions', () => {
+    let wrapper = wrap({ item })
+    wrapper.find('timeline').simulate('previousClick')
+    expect(wrapper.find('cancelButton').length).toBe(0)
+    expect(wrapper.find('deleteButton').length).toBe(1)
+  })
 
-it('renders no executions', () => {
-  let wrapper = wrap({ item: {} })
-  expect(wrapper.html().indexOf('It looks like there are no executions in this replica')).toBeGreaterThan(-1)
-})
+  it('dispatches cancel click', () => {
+    let onCancelExecutionClick = sinon.spy()
+    let wrapper = wrap({ item, onCancelExecutionClick })
+    wrapper.find('cancelButton').simulate('click')
+    expect(onCancelExecutionClick.calledOnce).toBe(true)
+  })
 
-it('dispatches execute click', () => {
-  let onExecuteClick = sinon.spy()
-  let wrapper = wrap({ item: {}, onExecuteClick })
-  wrapper.find('Button').simulate('click')
-  expect(onExecuteClick.calledOnce).toBe(true)
+  it('dispatches delete click', () => {
+    let onDeleteExecutionClick = sinon.spy()
+    let wrapper = wrap({ item, onDeleteExecutionClick })
+    wrapper.find('timeline').simulate('previousClick')
+    wrapper.find('deleteButton').simulate('click')
+    expect(onDeleteExecutionClick.calledOnce).toBe(true)
+  })
+
+  it('renders no executions', () => {
+    let wrapper = wrap({ item: {} })
+    expect(wrapper.findText('noExTitle')).toBe('It looks like there are no executions in this replica.')
+  })
+
+  it('dispatches execute click', () => {
+    let onExecuteClick = sinon.spy()
+    let wrapper = wrap({ item: {}, onExecuteClick })
+    wrapper.find('executeButton').simulate('click')
+    expect(onExecuteClick.calledOnce).toBe(true)
+  })
 })

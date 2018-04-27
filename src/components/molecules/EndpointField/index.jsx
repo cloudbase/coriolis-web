@@ -44,8 +44,8 @@ type Props = {
   name: string,
   type: string,
   value: any,
-  onChange: (value: any) => void,
-  className: string,
+  onChange?: (value: any) => void,
+  className?: string,
   minimum: number,
   maximum: number,
   password: boolean,
@@ -53,17 +53,17 @@ type Props = {
   large: boolean,
   highlight: boolean,
   disabled: boolean,
-  enum: string[],
+  enum?: string[],
 }
 @observer
 class Field extends React.Component<Props> {
   renderSwitch() {
     return (
       <Switch
-        dataTestId={`switch-${this.props.name}`}
+        data-test-id={`endpointField-switch-${this.props.name}`}
         disabled={this.props.disabled}
         checked={this.props.value || false}
-        onChange={checked => { this.props.onChange(checked) }}
+        onChange={checked => { if (this.props.onChange) this.props.onChange(checked) }}
       />
     )
   }
@@ -71,12 +71,13 @@ class Field extends React.Component<Props> {
   renderTextInput() {
     return (
       <TextInput
+        data-test-id={`endpointField-textInput-${this.props.name}`}
         required={this.props.required}
         highlight={this.props.highlight}
         type={this.props.password ? 'password' : 'text'}
         large={this.props.large}
         value={this.props.value}
-        onChange={e => { this.props.onChange(e.target.value) }}
+        onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
       />
@@ -84,6 +85,10 @@ class Field extends React.Component<Props> {
   }
 
   renderEnumDropdown() {
+    if (!this.props.enum) {
+      return null
+    }
+
     let items = this.props.enum.map(e => {
       return {
         label: LabelDictionary.get(e),
@@ -94,10 +99,11 @@ class Field extends React.Component<Props> {
 
     return (
       <Dropdown
+        data-test-id={`endpointField-dropdown-${this.props.name}`}
         large={this.props.large}
         selectedItem={selectedItem}
         items={items}
-        onChange={item => this.props.onChange(item.value)}
+        onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
       />
     )
@@ -115,11 +121,11 @@ class Field extends React.Component<Props> {
 
     return (
       <Dropdown
-        data-test-id={`dropdown-${this.props.name}`}
+        data-test-id={`endpointField-dropdown-${this.props.name}`}
         large={this.props.large}
         selectedItem={this.props.value}
         items={items}
-        onChange={item => this.props.onChange(item.value)}
+        onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
       />
     )
@@ -128,9 +134,10 @@ class Field extends React.Component<Props> {
   renderRadioInput() {
     return (
       <RadioInput
+        data-test-id={`endpointField-radioInput-${this.props.name}`}
         checked={this.props.value}
         label={LabelDictionary.get(this.props.name)}
-        onChange={e => this.props.onChange(e.target.checked)}
+        onChange={e => { if (this.props.onChange) this.props.onChange(e.target.checked) }}
         disabled={this.props.disabled}
       />
     )
@@ -170,7 +177,7 @@ class Field extends React.Component<Props> {
 
     return (
       <Label>
-        <LabelText>{LabelDictionary.get(this.props.name)}</LabelText>
+        <LabelText data-test-id="endpointField-label">{LabelDictionary.get(this.props.name)}</LabelText>
         {infoIcon}
       </Label>
     )

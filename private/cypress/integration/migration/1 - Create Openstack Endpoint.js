@@ -28,7 +28,7 @@ describe('Create Openstack Endpoint', () => {
   it('Shows new Openstack endpoint dialog', () => {
     cy.get('div').contains('New').click()
     cy.get('a').contains('Endpoint').click()
-    cy.get('div[data-test-id="endpointLogo-openstack"]').click()
+    cy.get('div[data-test-id="cProvider-endpointLogo-openstack"]').click()
   })
 
   it('Fills Openstack connection info', () => {
@@ -38,9 +38,9 @@ describe('Create Openstack Endpoint', () => {
     cy.get('input[placeholder="Password"]').type(config.endpoints.openstack.password)
     cy.get('input[placeholder="Auth URL"]').type(config.endpoints.openstack.authUrl)
     cy.get('input[placeholder="Project Name"]').type(config.endpoints.openstack.projectName)
-    cy.get('div[data-test-id="dropdown-glance_api_version"]').first().click()
+    cy.get('div[data-test-id="endpointField-dropdown-glance_api_version"]').first().click()
     cy.get('div[data-test-id="dropdownListItem"]').contains('2').click()
-    cy.get('div[data-test-id="dropdown-identity_api_version"]').first().click()
+    cy.get('div[data-test-id="endpointField-dropdown-identity_api_version"]').first().click()
     cy.get('div[data-test-id="dropdownListItem"]').contains('3').click()
     cy.get('input[placeholder="Project Domain Name"]').type(config.endpoints.openstack.projectDomainName)
     cy.get('input[placeholder="User Domain Name"]').type(config.endpoints.openstack.userDomainName)
@@ -54,6 +54,6 @@ describe('Create Openstack Endpoint', () => {
 
   it('Added Openstack to endpoint list', () => {
     cy.visit(`${config.nodeServer}endpoints/`)
-    cy.get('div[data-test-id="endpointListItemContent-e2e-openstack-test"]').should('contain', 'e2e-openstack-test')
+    cy.get('div[data-test-id="endpointListItem-content-e2e-openstack-test"]').should('contain', 'e2e-openstack-test')
   })
 })

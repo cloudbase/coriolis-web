@@ -225,9 +225,9 @@ class TaskItem extends React.Component<Props> {
               <ProgressUpdateDate width={this.props.columnWidths[0]}>
                 <span>{DateUtils.getLocalTime(update.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
               </ProgressUpdateDate>
-              <ProgressUpdateValue>
+              <ProgressUpdateValue data-test-id={`taskItem-progressUpdateMessage-${i}`}>
                 {update.message}
-                {messageProgress && <ProgressBar style={{ margin: '8px 0' }} progress={Number(messageProgress)} />}
+                {messageProgress && <ProgressBar style={{ margin: '8px 0' }} progress={Number(messageProgress)} data-test-id={`taskItem-progressBar-${i}`} />}
               </ProgressUpdateValue>
             </ProgressUpdate>
           )

@@ -78,7 +78,12 @@ class WizardType extends React.Component<Props> {
             <Message selected={this.props.selected === 'migration'}>A Coriolis Migration is a full instance migration between two cloud endpoints.</Message>
           </Column>
           <Column alignCenter width="192px">
-            <Switch big onChange={this.props.onChange} checked={this.props.selected === 'replica'} />
+            <Switch
+              big
+              onChange={this.props.onChange}
+              checked={this.props.selected === 'replica'}
+              data-test-id="wType-switch"
+            />
           </Column>
           <Column width="50%">
             <Title>Coriolis Replica</Title>

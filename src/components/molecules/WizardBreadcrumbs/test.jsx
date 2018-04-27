@@ -12,27 +12,32 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import WizardBreadcrumbs from '.'
+import TW from '../../../utils/TestWrapper'
 import { wizardConfig } from '../../../config'
 
-const wrap = props => shallow(<WizardBreadcrumbs {...props} />)
+const wrap = props => new TW(shallow(<WizardBreadcrumbs {...props} />), 'wBreadCrumbs')
 
-it('renders correct number of crumbs for replica', () => {
-  let wrapper = wrap({ selected: wizardConfig.pages[2], wizardType: 'replica' })
-  let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'replica')
-  expect(wrapper.children().length).toBe(pages.length)
-})
+describe('WizardBreadcrumbs Component', () => {
+  it('renders correct number of crumbs for replica', () => {
+    let wrapper = wrap({ selected: wizardConfig.pages[2], wizardType: 'replica' })
+    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'replica')
+    expect(wrapper.find('name-', true).length).toBe(pages.length)
+  })
 
-it('renders correct number of crumbs for migration', () => {
-  let wrapper = wrap({ selected: wizardConfig.pages[2], wizardType: 'migration' })
-  let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'migration')
-  expect(wrapper.children().length).toBe(pages.length)
-})
+  it('renders correct number of crumbs for migration', () => {
+    let wrapper = wrap({ selected: wizardConfig.pages[2], wizardType: 'migration' })
+    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'migration')
+    expect(wrapper.find('name-', true).length).toBe(pages.length)
+  })
 
-it('has correct page selected', () => {
-  let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'migration')
-  let wrapper = wrap({ selected: pages[2], wizardType: 'migration' })
-  expect(wrapper.findWhere(w => w.prop('selected')).html().indexOf(pages[2].breadcrumb)).toBeGreaterThan(-1)
+  it('has correct page selected', () => {
+    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'migration')
+    let wrapper = wrap({ selected: pages[2], wizardType: 'migration' })
+    expect(wrapper.findText(`name-${pages[2].id}`)).toBe(pages[2].breadcrumb)
+  })
 })

@@ -17,14 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import CopyValue from '.'
 
-const wrap = props => shallow(<CopyValue value="the_value" {...props} />)
+const wrap = props => new TestWrapper(shallow(<CopyValue value="the_value" {...props} />), 'copyValue')
 
 describe('CopyValue Component', () => {
   it('renders `value`', () => {
     const wrapper = wrap()
-    expect(wrapper.findWhere(w => w.prop('data-test-id') === 'value').dive().text()).toBe('the_value')
+    expect(wrapper.findText('value')).toBe('the_value')
   })
 
   it('copies `value` to clipboard', () => {

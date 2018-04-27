@@ -50,7 +50,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField)`
+const WizardOptionsFieldStyled = styled(WizardOptionsField) `
   width: 319px;
   justify-content: space-between;
   margin-bottom: 32px;
@@ -124,8 +124,8 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
           })}
         </Form>
         <Buttons>
-          <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
-          <Button onClick={() => { this.props.onMigrateClick(this.state.fields) }}>Migrate</Button>
+          <Button secondary onClick={this.props.onCancelClick} data-test-id="rmOptions-cancelButton">Cancel</Button>
+          <Button onClick={() => { this.props.onMigrateClick(this.state.fields) }} data-test-id="rmOptions-execButton">Migrate</Button>
         </Buttons>
       </Wrapper>
     )

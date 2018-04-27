@@ -125,6 +125,7 @@ class DropdownFilter extends React.Component<Props, State> {
       <List
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
+        data-test-id="dropdownFilter-list"
       >
         <Tip />
         <ListItems>
@@ -147,6 +148,7 @@ class DropdownFilter extends React.Component<Props, State> {
   renderButton() {
     return (
       <Button
+        data-test-id="dropdownFilter-button"
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         onClick={() => { this.handleButtonClick() }}

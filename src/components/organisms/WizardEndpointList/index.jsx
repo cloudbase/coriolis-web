@@ -96,7 +96,7 @@ class WizardEndpointList extends React.Component<Props> {
 
       actionInput = (
         <Dropdown
-          data-test-id={`dropdown-${provider}`}
+          data-test-id={`wEndpointList-dropdown-${provider}`}
           primary={Boolean(selectedItem)}
           items={items}
           valueField="id"
@@ -114,13 +114,19 @@ class WizardEndpointList extends React.Component<Props> {
           hollow
           hoverPrimary
           onClick={() => { this.props.onAddEndpoint(provider) }}
+          data-test-id={`wEndpointList-addButton-${provider}`}
         >Add</Button>
       )
     }
 
     return (
       <Item key={provider}>
-        <EndpointLogosStyled height={128} endpoint={provider} disabled={items.length === 0} />
+        <EndpointLogosStyled
+          height={128}
+          endpoint={provider}
+          disabled={items.length === 0}
+          data-test-id={`wEndpointList-logo-${provider}`}
+        />
         {actionInput}
       </Item>
     )

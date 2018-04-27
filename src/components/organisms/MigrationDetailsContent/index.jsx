@@ -83,6 +83,7 @@ class MigrationDetailsContent extends React.Component<Props> {
         endpoints={this.props.endpoints}
         bottomControls={this.renderBottomControls()}
         loading={this.props.detailsLoading}
+        data-test-id="mdContent-mainDetails"
       />
     )
   }
@@ -95,6 +96,7 @@ class MigrationDetailsContent extends React.Component<Props> {
     return (
       <Tasks
         items={this.props.item.tasks}
+        data-test-id="mdContent-tasks"
       />
     )
   }

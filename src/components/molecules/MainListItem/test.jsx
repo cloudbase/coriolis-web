@@ -12,12 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TestWrapper from '../../../utils/TestWrapper'
 import MainListItem from '.'
 
-const wrap = props => shallow(<MainListItem {...props} />)
+const wrap = props => new TestWrapper(shallow(
+  // $FlowIgnore
+  <MainListItem {...props} />
+), 'mainListItem')
 
 let item = {
   origin_endpoint_id: 'openstack',
@@ -27,25 +33,27 @@ let item = {
 }
 let endpointType = id => id
 
-it('renders with given status', () => {
-  let wrapper = wrap({ item, endpointType })
-  expect(wrapper.find('StatusPill').prop('status')).toBe('COMPLETED')
-})
+describe('MainListItem Component', () => {
+  it('renders with given status', () => {
+    let wrapper = wrap({ item, endpointType })
+    expect(wrapper.find('statusPill', true).at(0).prop('status')).toBe('COMPLETED')
+  })
 
-it('renders with given endpoints', () => {
-  let wrapper = wrap({ item, endpointType })
-  expect(wrapper.find('EndpointLogos').at(0).prop('endpoint')).toBe('openstack')
-  expect(wrapper.find('EndpointLogos').at(1).prop('endpoint')).toBe('azure')
-})
+  it('renders with given endpoints', () => {
+    let wrapper = wrap({ item, endpointType })
+    expect(wrapper.find('sourceLogo').prop('endpoint')).toBe(item.origin_endpoint_id)
+    expect(wrapper.find('destLogo').prop('endpoint')).toBe(item.destination_endpoint_id)
+  })
 
-it('renders with selected', () => {
-  let wrapper = wrap({ item, endpointType, selected: true })
-  expect(wrapper.find('Styled(Checkbox)').prop('checked')).toBe(true)
-})
+  it('renders with selected', () => {
+    let wrapper = wrap({ item, endpointType, selected: true })
+    expect(wrapper.find('checkbox').prop('checked')).toBe(true)
+  })
 
-it('dispatched item click', () => {
-  let onClick = sinon.spy()
-  let wrapper = wrap({ item, endpointType, onClick })
-  wrapper.childAt(1).simulate('click')
-  expect(onClick.calledOnce).toBe(true)
+  it('dispatched item click', () => {
+    let onClick = sinon.spy()
+    let wrapper = wrap({ item, endpointType, onClick })
+    wrapper.find('content').simulate('click')
+    expect(onClick.calledOnce).toBe(true)
+  })
 })

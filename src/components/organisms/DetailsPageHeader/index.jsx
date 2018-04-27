@@ -81,6 +81,7 @@ export class DetailsPageHeader extends React.Component<Props> {
             white
             user={this.props.user}
             onItemClick={this.props.onUserItemClick}
+            data-test-id="dpHeader-userDropdown"
           />
         </User>
       </Wrapper>

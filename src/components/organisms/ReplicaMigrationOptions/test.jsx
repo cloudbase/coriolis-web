@@ -12,24 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import TW from '../../../utils/TestWrapper'
 import ReplicaMigrationOptions from '.'
 
-const wrap = props => shallow(<ReplicaMigrationOptions {...props} />)
+const wrap = props => new TW(shallow(<ReplicaMigrationOptions {...props} />), 'rmOptions')
 
-it('dispatches cancel click', () => {
-  let onCancelClick = sinon.spy()
-  let wrapper = wrap({ onCancelClick })
-  wrapper.findWhere(w => w.name() === 'Button' && w.html().indexOf('Cancel') > -1).simulate('click')
-  expect(onCancelClick.calledOnce).toBe(true)
-})
+describe('ReplicaMigrationOptions Component', () => {
+  it('dispatches cancel click', () => {
+    let onCancelClick = sinon.spy()
+    let wrapper = wrap({ onCancelClick })
+    wrapper.find('cancelButton').click()
+    expect(onCancelClick.calledOnce).toBe(true)
+  })
 
-it('dispatches migrate click', () => {
-  let onMigrateClick = sinon.spy()
-  let wrapper = wrap({ onMigrateClick })
-  wrapper.findWhere(w => w.name() === 'Button' && w.html().indexOf('Migrate') > -1).simulate('click')
-  expect(onMigrateClick.args[0][0][0].name).toBe('clone_disks')
-  expect(onMigrateClick.args[0][0][0].value).toBe(true)
+  it('dispatches migrate click', () => {
+    let onMigrateClick = sinon.spy()
+    let wrapper = wrap({ onMigrateClick })
+    wrapper.find('execButton').click()
+    expect(onMigrateClick.args[0][0][0].name).toBe('clone_disks')
+    expect(onMigrateClick.args[0][0][0].value).toBe(true)
+  })
 })

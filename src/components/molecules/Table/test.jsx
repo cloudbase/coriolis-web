@@ -12,11 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import Table from '.'
 
-const wrap = props => shallow(<Table {...props} />)
+const wrap = props => new TW(shallow(<Table {...props} />), 'table')
 
 let items = [
   ['item-1', 'item-2', 'item-3', 'item-4', 'item-5'],
@@ -24,15 +27,22 @@ let items = [
 ]
 let headerItems = ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5']
 
-it('renders header', () => {
-  let wrapper = wrap({ items, header: headerItems })
-  let header = wrapper.childAt(0)
-  expect(header.children().length).toBe(5)
-  expect(header.childAt(3).html().indexOf('Header 4')).toBeGreaterThan(-1)
-})
+describe('TTable Component', () => {
+  it('renders no items', () => {
+    let wrapper = wrap({ items: [], header: headerItems })
+    expect(wrapper.find('noItems').length).toBe(1)
+  })
 
-it('renders header with calculated widths', () => {
-  let wrapper = wrap({ items, header: headerItems })
-  let header = wrapper.childAt(0)
-  expect(header.childAt(3).prop('width')).toBe('20%')
+  it('renders header', () => {
+    let wrapper = wrap({ items, header: headerItems })
+    expect(wrapper.find('header-', true).length).toBe(headerItems.length)
+    headerItems.forEach((headerItem, i) => {
+      expect(wrapper.findText(`header-${i}`)).toBe(headerItem)
+    })
+  })
+
+  it('renders header with calculated widths', () => {
+    let wrapper = wrap({ items, header: headerItems })
+    expect(wrapper.find('header-', true).at(3).prop('width')).toBe('20%')
+  })
 })

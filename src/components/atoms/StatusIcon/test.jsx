@@ -12,12 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
 import StatusIcon from '.'
 
 const wrap = props => shallow(<StatusIcon {...props} />)
 
-it('renders with props', () => {
-  expect(wrap({ status: 'success' }).prop('status')).toBe('success')
+describe('StatusIcon Component', () => {
+  it('renders with props', () => {
+    expect(wrap({ status: 'success' }).prop('status')).toBe('success')
+  })
 })

@@ -136,7 +136,7 @@ const Description = styled.div``
 const NoItems = styled.div`
   text-align: center;
 `
-
+const baseId = 'notificationDropdown'
 type Props = {
   white?: boolean,
   items: NotificationItem[],
@@ -201,7 +201,7 @@ class NotificationDropdown extends React.Component<Props, State> {
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
         >
-          <NoItems>There are no notifications</NoItems>
+          <NoItems data-test-id="notificationDropdown-noItems">There are no notifications</NoItems>
         </ListItem>
       </List>
     )
@@ -220,17 +220,18 @@ class NotificationDropdown extends React.Component<Props, State> {
 
           return (
             <ListItem
+              data-test-id={`${baseId}-item-${item.id || new Date().getTime().toString()}`}
               key={item.id}
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
               onClick={() => { this.handleItemClick() }}
             >
               <Title>
-                <TypeIcon level={item.level} />
-                <TitleLabel>{title}</TitleLabel>
-                <Time>{moment(Number(item.id)).format('HH:mm')}</Time>
+                <TypeIcon data-test-id={`${baseId}-itemLevel`} level={item.level} />
+                <TitleLabel data-test-id={`${baseId}-itemTitle`}>{title}</TitleLabel>
+                <Time data-test-id={`${baseId}-itemTime`}>{moment(Number(item.id)).format('HH:mm')}</Time>
               </Title>
-              <Description>{message}</Description>
+              <Description data-test-id={`${baseId}-itemDescription`}>{message}</Description>
             </ListItem>
           )
         })}
@@ -248,6 +249,7 @@ class NotificationDropdown extends React.Component<Props, State> {
 
     return (
       <Icon
+        data-test-id="notificationDropdown-button"
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         onClick={() => this.handleButtonClick()}

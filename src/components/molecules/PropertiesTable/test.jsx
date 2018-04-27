@@ -12,37 +12,53 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import PropertiesTable from '.'
 
-const wrap = props => shallow(<PropertiesTable {...props} />)
+const wrap = props => new TW(shallow(<PropertiesTable onChange={() => { }} {...props} />), 'propertiesTable')
 
 let properties = [
-  { type: 'boolean', name: 'prop-1', value: true },
-  { type: 'boolean', name: 'prop-2', value: false },
+  { type: 'boolean', name: 'prop_1', label: 'Boolean', value: true },
+  { type: 'strict-boolean', name: 'prop_2', label: 'Strict Boolean', value: false },
+  { type: 'string', name: 'prop_3', label: 'String', value: 'value-3' },
+  { type: 'string', name: 'prop_3a', label: 'String', required: true, value: 'value-4' },
+  { type: 'string', enum: ['a', 'b', 'c'], name: 'prop_4', label: 'String enum', value: 'value-5' },
 ]
+const valueCallback = prop => {
+  const property = properties.find(p => p.name === prop.name)
+  return property ? property.value : null
+}
 
-it('renders boolean properties with correct labels', () => {
-  let wrapper = wrap({
-    properties,
-    valueCallback: prop => properties.find(p => p.name === prop.name).value,
+describe('PropertiesTable Component', () => {
+  it('renders all properties', () => {
+    const wrapper = wrap({ properties, valueCallback })
+    expect(wrapper.find('row-', true).length).toBe(properties.length)
+    expect(wrapper.find(`row-${properties[3].name}`).findText('header')).toBe('Prop 3a')
   })
-  expect(wrapper.children().length).toBe(2)
-  let item1 = wrapper.childAt(0)
-  let item2 = wrapper.childAt(1)
-  expect(item1.childAt(0).html().indexOf('Prop-1')).toBeGreaterThan(-1)
-  expect(item2.childAt(0).html().indexOf('Prop-2')).toBeGreaterThan(-1)
-})
 
-it('renders boolean properties with Switch components', () => {
-  let wrapper = wrap({
-    properties,
-    valueCallback: prop => properties.find(p => p.name === prop.name).value,
+  it('renders boolean properties', () => {
+    const wrapper = wrap({ properties, valueCallback })
+    expect(wrapper.find('switch-prop_1').prop('triState')).toBe(true)
+    expect(wrapper.find('switch-prop_1').prop('checked')).toBe(true)
+    expect(wrapper.find('switch-prop_2').prop('triState')).toBe(false)
+    expect(wrapper.find('switch-prop_2').prop('checked')).toBe(false)
   })
-  expect(wrapper.children().length).toBe(2)
-  let item1 = wrapper.childAt(0)
-  let item2 = wrapper.childAt(1)
-  expect(item1.find('Switch').prop('checked')).toBe(true)
-  expect(item2.find('Switch').prop('checked')).toBe(false)
+
+  it('renders string properties', () => {
+    const wrapper = wrap({ properties, valueCallback })
+    expect(wrapper.find('textInput-prop_3').prop('value')).toBe('value-3')
+    expect(wrapper.find('textInput-prop_3').prop('required')).toBe(false)
+    expect(wrapper.find('textInput-prop_3a').prop('value')).toBe('value-4')
+    expect(wrapper.find('textInput-prop_3a').prop('required')).toBe(true)
+  })
+
+  it('renders enum properties', () => {
+    const wrapper = wrap({ properties, valueCallback })
+    expect(wrapper.find('dropdown-prop_4').prop('items')[0].value).toBe(null)
+    expect(wrapper.find('dropdown-prop_4').prop('items')[2].value).toBe('b')
+  })
 })

@@ -12,11 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { shallow } from 'enzyme'
+import TW from '../../../utils/TestWrapper'
 import WizardSummary from '.'
 
-const wrap = props => shallow(<WizardSummary {...props} />)
+const wrap = props => new TW(shallow(
+  // $FlowIgnore
+  <WizardSummary {...props} />
+), 'wSummary')
 
 let data = {
   options: {
@@ -57,36 +63,36 @@ let data = {
 describe('WizardSummary Component', () => {
   it('renders overview section', () => {
     let wrapper = wrap({ data, wizardType: 'replica' })
-    expect(wrapper.html().indexOf('source name') > -1).toBe(true)
-    expect(wrapper.find('StatusPill').at(0).prop('label')).toBe('OPENSTACK')
-    expect(wrapper.html().indexOf('target name') > -1).toBe(true)
-    expect(wrapper.find('StatusPill').at(1).prop('label')).toBe('AZURE')
-    expect(wrapper.find('StatusPill').at(2).prop('label')).toBe('REPLICA')
+    expect(wrapper.findText('source')).toBe('source name')
+    expect(wrapper.find('sourcePill').prop('label')).toBe('OPENSTACK')
+    expect(wrapper.findText('target')).toBe('target name')
+    expect(wrapper.find('targetPill').prop('label')).toBe('AZURE')
+    expect(wrapper.find('typePill').prop('label')).toBe('REPLICA')
   })
 
   it('renders instances section', () => {
     let wrapper = wrap({ data, wizardType: 'replica' })
-    expect(wrapper.html().indexOf('flavor_name') > -1).toBe(true)
+    expect(wrapper.findText('instance-i-1')).toBe('name')
   })
 
   it('renders networks section', () => {
     let wrapper = wrap({ data, wizardType: 'replica' })
-    expect(wrapper.html().indexOf('target network') > -1).toBe(true)
-    expect(wrapper.html().indexOf('n-1') > -1).toBe(true)
+    expect(wrapper.findText('networkSource')).toBe('n-1')
+    expect(wrapper.findText('networkTarget')).toBe('target network')
   })
 
   it('renders options section', () => {
     let wrapper = wrap({ data, wizardType: 'replica' })
-    expect(wrapper.html().indexOf('Description') > -1).toBe(true)
-    expect(wrapper.html().indexOf('A description') > -1).toBe(true)
-    expect(wrapper.html().indexOf('Field Name') > -1).toBe(true)
-    expect(wrapper.html().indexOf('Field name value') > -1).toBe(true)
+    expect(wrapper.findText('optionLabel-description')).toBe('Description')
+    expect(wrapper.findText('optionValue-description')).toBe('A description')
+    expect(wrapper.findText('optionLabel-field_name')).toBe('Field Name')
+    expect(wrapper.findText('optionValue-field_name')).toBe('Field name value')
   })
 
   it('renders schedule section', () => {
     let wrapper = wrap({ data, wizardType: 'replica' })
-    let scheduleText = wrapper.findWhere(w => w.prop('data-test-id') === `scheduleItem-${data.schedules[0].id}`).dive().text()
-    expect(scheduleText).toBe('Every February, every 14th, every Wednesday, at 17:00')
+    expect(wrapper.findText(`scheduleItem-${data.schedules[0].id}`))
+      .toBe('Every February, every 14th, every Wednesday, at 17:00')
   })
 })
 

@@ -109,11 +109,11 @@ class EndpointListItem extends React.Component<Props> {
           checked={this.props.selected}
           onChange={this.props.onSelectedChange}
         />
-        <Content onClick={this.props.onClick} data-test-id={`endpointListItemContent-${this.props.item.name}`}>
+        <Content onClick={this.props.onClick} data-test-id={`endpointListItem-content-${this.props.item.name}`}>
           <Image image={endpointImage} />
           <Title>
-            <TitleLabel>{this.props.item.name}</TitleLabel>
-            <Subtitle>{this.props.item.description || 'N/A'}</Subtitle>
+            <TitleLabel data-test-id="endpointListItem-name">{this.props.item.name}</TitleLabel>
+            <Subtitle data-test-id="endpointListItem-description">{this.props.item.description || 'N/A'}</Subtitle>
           </Title>
           <EndpointLogos height={42} endpoint={this.props.item.type} />
           <Created>
@@ -124,7 +124,7 @@ class EndpointListItem extends React.Component<Props> {
           </Created>
           <Usage>
             <ItemLabel>Usage</ItemLabel>
-            <ItemValue>
+            <ItemValue data-test-id="endpointListItem-usageCount">
               {this.props.getUsage(this.props.item).migrationsCount} migrations,&nbsp;
               {this.props.getUsage(this.props.item).replicasCount} replicas
             </ItemValue>
