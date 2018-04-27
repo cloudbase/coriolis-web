@@ -36,7 +36,7 @@ import type { Endpoint } from '../../../types/Endpoint'
 import type { Instance, Nic } from '../../../types/Instance'
 import type { Network, NetworkMap } from '../../../types/Network'
 
-import azureMigrateImage from './images/azure-migrate.svg'
+import azureMigrateImage from './images/logo.svg'
 import arrowImage from './images/arrow.svg'
 
 const Wrapper = styled.div`
@@ -83,18 +83,9 @@ const Value = styled.div`
   ${props => props.capitalize ? 'text-transform: capitalize;' : ''}
 `
 const AzureMigrateLogo = styled.div`
-  display: flex;
-  text-align: center;
-`
-const AzureMigrateLogoImage = styled.div`
-  width: 48px;
-  height: 33px;
+  width: 208px;
+  height: 32px;
   background: url('${azureMigrateImage}') center no-repeat;
-`
-const AzureMigrateLogoText = styled.div`
-  font-size: 27px;
-  color: #2E97DE;
-  margin-left: 12px;
 `
 const LoadingWrapper = styled.div`
   display: flex;
@@ -106,7 +97,7 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
-const TableStyled = styled(Table)`
+const TableStyled = styled(Table) `
   margin-top: 62px;
   ${props => props.addWidthPadding ? css`
     margin-left: -24px;
@@ -182,7 +173,7 @@ type Props = {
   loadingVmSizes: boolean,
   vmSizes: VmSize[],
   onVmSizeChange: (vm: VmItem, size: { name: string }) => void,
-  onGetVmSize: (vm: VmItem) => ?VmSize,
+  onGetVmSize: (vm: VmItem) =>?VmSize,
   networks: Network[],
   sourceEndpoint: ?Endpoint,
   page: string,
@@ -266,10 +257,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
             </Field>
           </Row>
           <Row>
-            <AzureMigrateLogo>
-              <AzureMigrateLogoImage />
-              <AzureMigrateLogoText>Azure Migrate</AzureMigrateLogoText>
-            </AzureMigrateLogo>
+            <AzureMigrateLogo />
           </Row>
           <Row>
             <Field>
