@@ -144,7 +144,7 @@ class TaskItem extends React.Component<Props> {
   getLastMessage() {
     let message
     if (this.props.item.progress_updates.length) {
-      message = this.props.item.progress_updates[0].message
+      message = this.props.item.progress_updates[this.props.item.progress_updates.length - 1].message
     } else {
       message = '-'
     }
