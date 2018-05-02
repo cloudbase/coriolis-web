@@ -22,6 +22,11 @@ export type User = {
   email: string,
   name: string,
   id: string,
+  description?: string,
+  enabled?: boolean,
+  project_id?: string,
+  domain_id?: string,
+  isAdmin?: boolean,
 }
 
 export type Credentials = {

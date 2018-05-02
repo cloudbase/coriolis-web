@@ -37,8 +37,8 @@ import EndpointSource from '../../../sources/EndpointSource'
 import endpointStore from '../../../stores/EndpointStore'
 import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
-import providerStore from '../../../stores/ProviderStore'
 import notificationStore from '../../../stores/NotificationStore'
+import providerStore from '../../../stores/ProviderStore'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import { requestPollTimeout } from '../../../config.js'
 import EndpointDuplicateOptions from '../../organisms/EndpointDuplicateOptions'
@@ -166,7 +166,7 @@ class EndpointsPage extends React.Component<{}, State> {
   handleDuplicate(projectId: string) {
     this.setState({ modalIsOpen: false, duplicating: true })
 
-    let selectedProjectId = userStore.user ? userStore.user.project.id : ''
+    let selectedProjectId = userStore.loggedUser ? userStore.loggedUser.project.id : ''
     let switchProject = projectId !== selectedProjectId
 
     let endpoints = []
@@ -281,7 +281,7 @@ class EndpointsPage extends React.Component<{}, State> {
 
   render() {
     let items: any = endpointStore.endpoints
-    let selectedProjectId = userStore.user ? userStore.user.project.id : ''
+    let selectedProjectId = userStore.loggedUser ? userStore.loggedUser.project.id : ''
     return (
       <Wrapper>
         <MainTemplate

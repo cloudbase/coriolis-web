@@ -63,6 +63,7 @@ class EndpointStore {
       this.setConnectionInfo(connectionInfo)
     }).catch(() => {
       this.connectionInfoLoading = false
+      return Promise.reject()
     })
   }
 

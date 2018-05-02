@@ -56,7 +56,6 @@ type Props = {
   inputValue: string,
   onInputChange: (value: string) => void,
   placeholder?: string,
-  required?: boolean,
   highlight?: boolean,
   disabled?: boolean,
 }
@@ -80,12 +79,10 @@ class DropdownInput extends React.Component<Props, State> {
           embedded
           width="146px"
           style={{ paddingLeft: '8px', height: '30px' }}
-          required={this.props.required}
           value={this.props.inputValue}
           onChange={e => { this.props.onInputChange(e.target.value) }}
           placeholder={this.props.placeholder}
           disabled={this.props.disabled}
-          requiredStyle={{ top: '12px' }}
         />
       </Wrapper>
     )

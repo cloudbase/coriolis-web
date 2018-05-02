@@ -121,6 +121,7 @@ type Props = {
   disabled?: boolean,
   width?: number,
   dimNullValue?: boolean,
+  highlight?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -210,6 +211,10 @@ class AutocompleteDropdown extends React.Component<Props, State> {
 
     if (item === null || item === undefined) {
       return null
+    }
+
+    if (typeof item === 'string') {
+      return item
     }
 
     return (item[valueField] !== null && item[valueField] !== undefined && item[valueField].toString()) || null
@@ -463,6 +468,8 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           onClick={() => this.handleButtonClick()}
           onChange={searchValue => { this.handleSearchInputChange(searchValue) }}
           onFocus={() => { this.handleSearchInputChange(this.state.searchValue, true) }}
+          highlight={this.props.highlight}
+          disabled={this.props.disabled}
         />
         {this.renderList()}
       </Wrapper>

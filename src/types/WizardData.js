@@ -24,7 +24,7 @@ export type WizardData = {
   schedules?: Schedule[],
   selectedInstances?: ?Instance[],
   networks?: ?NetworkMap[],
-  source?: Endpoint,
+  source?: ?Endpoint,
   target?: Endpoint,
 }
 

@@ -32,6 +32,10 @@ import WizardPage from './pages/WizardPage'
 import userStore from '../stores/UserStore'
 import AssessmentsPage from './pages/AssessmentsPage'
 import AssessmentDetailsPage from './pages/AssessmentDetailsPage'
+import UsersPage from './pages/UsersPage'
+import UserDetailsPage from './pages/UserDetailsPage'
+import ProjectsPage from './pages/ProjectsPage'
+import ProjectDetailsPage from './pages/ProjectDetailsPage'
 
 import { navigationMenu } from '../config'
 import Palette from './styleUtils/Palette'
@@ -58,9 +62,11 @@ class App extends React.Component<{}> {
   }
 
   render() {
-    let renderPlanningPage = () => {
-      if (navigationMenu.find(m => m.value === 'planning' && !m.disabled)) {
-        return <Route path="/planning" component={AssessmentsPage} />
+    let renderOptionalPage = (name: string, component: any, path?: string, exact?: boolean) => {
+      const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : true
+      // $FlowIgnore
+      if (navigationMenu.find(m => m.value === name && !m.disabled && (!m.requiresAdmin || isAdmin))) {
+        return <Route path={`${path || `/${name}`}`} component={component} exact={exact} />
       }
       return null
     }
@@ -78,9 +84,13 @@ class App extends React.Component<{}> {
           <Route path="/migration/:page/:id" component={MigrationDetailsPage} />
           <Route path="/endpoints" component={EndpointsPage} />
           <Route path="/endpoint/:id" component={EndpointDetailsPage} />
-          {renderPlanningPage()}
-          <Route path="/assessment/:info" component={AssessmentDetailsPage} />
           <Route path="/wizard/:type" component={WizardPage} />
+          {renderOptionalPage('planning', AssessmentsPage)}
+          {renderOptionalPage('planning', AssessmentDetailsPage, '/assessment/:info')}
+          {renderOptionalPage('users', UsersPage)}
+          {renderOptionalPage('users', UserDetailsPage, '/user/:id', true)}
+          {renderOptionalPage('projects', ProjectsPage)}
+          {renderOptionalPage('projects', ProjectDetailsPage, '/project/:id', true)}
           <Route component={NotFoundPage} />
         </Switch>
         <Notifications />

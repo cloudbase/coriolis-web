@@ -171,11 +171,21 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.setCurrentPage(page)
   }
 
-  handleSourceEndpointChange(source: EndpointType) {
+  handleSourceEndpointChange(source: ?EndpointType) {
     wizardStore.updateData({ source, selectedInstances: null, networks: null })
     wizardStore.setPermalink(wizardStore.data)
-    // Preload instances for 'vms' page
-    instanceStore.loadInstances(source.id)
+
+    if (source) {
+      // Check if user has permission for this endpoint
+      endpointStore.getConnectionInfo(source).then(() => {
+        if (source) {
+          // Preload instances for 'vms' page
+          instanceStore.loadInstances(source.id)
+        }
+      }).catch(() => {
+        this.handleSourceEndpointChange(null)
+      })
+    }
   }
 
   handleTargetEndpointChange(target: EndpointType) {
@@ -311,7 +321,13 @@ class WizardPage extends React.Component<Props, State> {
         // Preload instances if data is set from 'Permalink'
         let source = wizardStore.data.source
         if (instanceStore.instances.length === 0 && source) {
-          instanceStore.loadInstances(source.id)
+          // Check if user has permission for this endpoint
+          endpointStore.getConnectionInfo(source).then(() => {
+            // Preload instances for 'vms' page
+            instanceStore.loadInstances(source.id)
+          }).catch(() => {
+            this.handleSourceEndpointChange(null)
+          })
         }
         break
       }
@@ -429,7 +445,7 @@ class WizardPage extends React.Component<Props, State> {
       <Wrapper>
         <WizardTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={userStore.user}
+            user={userStore.loggedUser}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           pageContentComponent={<WizardPageContent

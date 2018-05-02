@@ -25,11 +25,12 @@ import InfoIcon from '../../atoms/InfoIcon'
 import Dropdown from '../../molecules/Dropdown'
 import DropdownInput from '../../molecules/DropdownInput'
 import TextArea from '../../atoms/TextArea'
-import type { Field as FieldType } from '../../../types/Field'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
+
+import asteriskImage from './images/asterisk.svg'
 
 const Wrapper = styled.div``
 const Label = styled.div`
@@ -37,10 +38,20 @@ const Label = styled.div`
   font-weight: ${StyleProps.fontWeights.medium};
   color: ${Palette.grayscale[3]};
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
 `
 const LabelText = styled.span`
   margin-right: 24px;
+`
+export const Asterisk = styled.div`
+  ${StyleProps.exactSize('12px')}
+  display: inline-block;
+  background: url('${asteriskImage}') center no-repeat;
+  margin-bottom: 2px;
+  margin-left: ${props => props.marginLeft || '0px'};
+  opacity: 0.8;
 `
 
 type Props = {
@@ -51,16 +62,20 @@ type Props = {
   getFieldValue?: (fieldName: string) => string,
   onFieldChange?: (fieldName: string, fieldValue: string) => void,
   className?: string,
-  minimum: number,
-  maximum: number,
-  password: boolean,
-  required: boolean,
-  large: boolean,
-  highlight: boolean,
-  disabled: boolean,
-  enum?: string[],
-  items?: FieldType[],
+  minimum?: number,
+  maximum?: number,
+  password?: boolean,
+  required?: boolean,
+  large?: boolean,
+  highlight?: boolean,
+  disabled?: boolean,
+  // $FlowIssue
+  enum?: string[] | { label: string, value: string }[],
+  items?: any[],
   useTextArea?: boolean,
+  noSelectionMessage?: string,
+  noItemsMessage?: string,
+  selectedItems?: string[],
 }
 @observer
 class Field extends React.Component<Props> {
@@ -79,7 +94,6 @@ class Field extends React.Component<Props> {
     return (
       <TextInput
         data-test-id={`endpointField-textInput-${this.props.name}`}
-        required={this.props.required}
         highlight={this.props.highlight}
         type={this.props.password ? 'password' : 'text'}
         large={this.props.large}
@@ -95,7 +109,6 @@ class Field extends React.Component<Props> {
     return (
       <TextArea
         style={{ width: '100%' }}
-        required={this.props.required}
         highlight={this.props.highlight}
         value={this.props.value}
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
@@ -111,10 +124,13 @@ class Field extends React.Component<Props> {
     }
 
     let items = this.props.enum.map(e => {
-      return {
-        label: LabelDictionary.get(e),
-        value: e,
+      if (typeof e === 'string') {
+        return {
+          label: LabelDictionary.get(e),
+          value: e,
+        }
       }
+      return e
     })
     let selectedItem = items.find(i => i.value === this.props.value)
 
@@ -123,15 +139,37 @@ class Field extends React.Component<Props> {
         data-test-id={`endpointField-dropdown-${this.props.name}`}
         large={this.props.large}
         selectedItem={selectedItem}
+        noSelectionMessage={this.props.noSelectionMessage}
+        noItemsMessage={this.props.noItemsMessage}
         items={items}
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
-        required={this.props.required}
+        highlight={this.props.highlight}
+      />
+    )
+  }
+
+  renderArrayDropdown() {
+    return (
+      <Dropdown
+        multipleSelection
+        large={this.props.large}
+        disabled={this.props.disabled}
+        noSelectionMessage={this.props.noSelectionMessage}
+        noItemsMessage={this.props.noItemsMessage}
+        items={this.props.items}
+        selectedItems={this.props.selectedItems}
+        onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
+        highlight={this.props.highlight}
       />
     )
   }
 
   renderIntDropdown() {
+    if (!this.props.minimum || !this.props.maximum) {
+      return null
+    }
+
     let items = []
 
     for (let i = this.props.minimum; i <= this.props.maximum; i += 1) {
@@ -149,6 +187,7 @@ class Field extends React.Component<Props> {
         items={items}
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
+        highlight={this.props.highlight}
       />
     )
   }
@@ -186,7 +225,6 @@ class Field extends React.Component<Props> {
         inputValue={this.props.getFieldValue ? this.props.getFieldValue(fieldName) : ''}
         onInputChange={value => { if (this.props.onFieldChange) this.props.onFieldChange(fieldName, value) }}
         placeholder={LabelDictionary.get(fieldName)}
-        required={this.props.required}
         highlight={this.props.highlight}
         disabled={this.props.disabled}
       />
@@ -214,6 +252,8 @@ class Field extends React.Component<Props> {
         return this.renderTextInput()
       case 'radio':
         return this.renderRadioInput()
+      case 'array':
+        return this.renderArrayDropdown()
       default:
         return null
     }
@@ -234,6 +274,7 @@ class Field extends React.Component<Props> {
       <Label>
         <LabelText data-test-id="endpointField-label">{LabelDictionary.get(this.props.name)}</LabelText>
         {infoIcon}
+        {this.props.required ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}
       </Label>
     )
   }

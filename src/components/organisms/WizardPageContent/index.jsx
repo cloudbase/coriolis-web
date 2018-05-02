@@ -393,7 +393,7 @@ class WizardPageContent extends React.Component<Props, State> {
       <Navigation>
         <Button secondary onClick={this.props.onBackClick}>Back</Button>
         <IconRepresentation>
-          <EndpointLogos height={32} endpoint={sourceEndpoint} />
+          <EndpointLogos height={32} endpoint={sourceEndpoint || ''} />
           <WizardTypeIcon
             dangerouslySetInnerHTML={{
               __html: this.props.type === 'replica'

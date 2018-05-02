@@ -40,6 +40,7 @@ type Props = {
   contentStyle: { [string]: mixed },
   topBottomMargin: number,
   title: string,
+  componentRef?: (ref: any) => void,
 }
 @observer
 class NewModal extends React.Component<Props> {
@@ -54,8 +55,14 @@ class NewModal extends React.Component<Props> {
   constructor() {
     super()
 
-    const self :any = this
+    const self: any = this
     self.positionModal = this.positionModal.bind(this)
+  }
+
+  componentWillMount() {
+    if (this.props.componentRef) {
+      this.props.componentRef(this)
+    }
   }
 
   componentDidMount() {

@@ -16,17 +16,121 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Api from '../utils/ApiCaller'
 
-import { servicesUrl } from '../config'
-import type { Project } from '../types/Project'
+import UserSource from './UserSource'
+import ObjectUtils from '../utils/ObjectUtils'
+import { servicesUrl, coriolisUrl } from '../config'
+/* eslint import/no-duplicates: off */
+import type { Project, Role } from '../types/Project'
+import type { RoleAssignment } from '../types/Project'
+import type { User } from '../types/User'
 
 class ProjectsSource {
   static getProjects(): Promise<Project[]> {
-    return new Promise((resolve, reject) => {
-      Api.get(servicesUrl.projects).then((response) => {
-        if (response.data.projects) {
-          resolve(response.data.projects)
-        }
-      }, reject).catch(reject)
+    return Api.get(servicesUrl.projects).then((response) => {
+      if (response.data.projects) {
+        let projects: Project[] = response.data.projects
+        projects.sort((a, b) => a.name.localeCompare(b.name))
+        return projects
+      }
+      return []
+    })
+  }
+
+  static getProjectDetails(projectId: string): Promise<Project> {
+    return Api.get(`${coriolisUrl}/identity/projects/${projectId}`).then(response => {
+      return response.data.project
+    })
+  }
+
+  static getRoleAssignments(): Promise<RoleAssignment[]> {
+    return Api.get(`${coriolisUrl}identity/role_assignments?include_names`).then(response => {
+      let assignments: RoleAssignment[] = response.data.role_assignments
+      assignments.sort((a1, a2) => a1.role.name.localeCompare(a2.role.name))
+      return assignments
+    })
+  }
+
+  static getUsers(projectId: string): Promise<User[]> {
+    return this.getRoleAssignments().then(assignments => {
+      const userIds: string[] = assignments
+        .filter(a => a.scope.project.id === projectId)
+        .filter((a, i, arr) => arr.findIndex(e => a.user.id === e.user.id) === i)
+        .map(a => a.user.id)
+      return Promise.all(userIds.map(id => {
+        return UserSource.getUserInfo(id)
+      })).then((users: User[]) => {
+        users.sort((a, b) => a.name.localeCompare(b.name))
+        return users
+      })
+    })
+  }
+
+  static removeUser(projectId: string, userId: string, roleId: string): Promise<void> {
+    return Api.send({
+      url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${roleId}`,
+      method: 'DELETE',
+    }).then(() => { })
+  }
+
+  static assignUser(projectId: string, userId: string, roleId: string): Promise<void> {
+    return Api.send({
+      url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${roleId}`,
+      method: 'PUT',
+    }).then(() => { })
+  }
+
+  static getRoles(): Promise<Role[]> {
+    return UserSource.getRoles()
+  }
+
+  static update(projectId: string, project: Project): Promise<Project> {
+    let data = { project: {} }
+    if (ObjectUtils.isValid(project.name)) {
+      data.project.name = project.name
+    }
+    if (ObjectUtils.isValid(project.description)) {
+      data.project.description = project.description
+    }
+    if (ObjectUtils.isValid(project.enabled)) {
+      data.project.enabled = project.enabled
+    }
+
+    return Api.send({
+      url: `${coriolisUrl}identity/projects/${projectId}`,
+      method: 'PATCH',
+      data,
+    }).then(response => response.data.project)
+  }
+
+  static delete(projectId: string): Promise<void> {
+    return Api.send({
+      url: `${coriolisUrl}identity/projects/${projectId}`,
+      method: 'DELETE',
+    }).then(() => { })
+  }
+
+  static add(project: Project, userId: string): Promise<Project> {
+    let data = { project: {} }
+
+    data.project.name = project.name
+    if (ObjectUtils.isValid(project.enabled)) {
+      data.project.enabled = project.enabled
+    }
+    if (ObjectUtils.isValid(project.description)) {
+      data.project.description = project.description
+    }
+    let addedProject: Project
+    return Api.send({
+      url: `${coriolisUrl}identity/projects/`,
+      method: 'POST',
+      data,
+    }).then(response => {
+      addedProject = response.data.project
+      return UserSource.getAdminRoleId()
+    }).then(adminRoleId => {
+      return UserSource.assignUserToProjectWithRole(userId, addedProject.id, adminRoleId)
+    }).then(() => {
+      return addedProject
     })
   }
 }

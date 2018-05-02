@@ -22,10 +22,15 @@ import DropdownButton from '../../atoms/DropdownButton'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
+import userStore from '../../../stores/UserStore'
 
 import migrationImage from './images/migration.svg'
 import replicaImage from './images/replica.svg'
 import endpointImage from './images/endpoint.svg'
+import userImage from './images/user.svg'
+import projectImage from './images/project.svg'
+
+import { navigationMenu } from '../../../config'
 
 const Wrapper = styled.div`
   position: relative;
@@ -85,6 +90,12 @@ const getIcon = props => {
   }
   if (props.replica) {
     return replicaImage
+  }
+  if (props.user) {
+    return userImage
+  }
+  if (props.project) {
+    return projectImage
   }
   return endpointImage
 }
@@ -166,6 +177,7 @@ class NewItemDropdown extends React.Component<Props, State> {
       return null
     }
 
+    const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     let items: ItemType[] = [{
       title: 'Migration',
       href: '/#/wizard/migration',
@@ -181,28 +193,41 @@ class NewItemDropdown extends React.Component<Props, State> {
       value: 'endpoint',
       description: 'Add connection information for a cloud',
       icon: { endpoint: true },
+    }, {
+      title: 'User',
+      value: 'user',
+      description: 'Create a new Coriolis user',
+      icon: { user: true },
+      disabled: navigationMenu.find(i => i.value === 'users' && (i.disabled || (i.requiresAdmin && !isAdmin))),
+    }, {
+      title: 'Project',
+      value: 'project',
+      description: 'Create a new Coriolis project',
+      icon: { project: true },
+      disabled: navigationMenu.find(i => i.value === 'projects' && (i.disabled || (i.requiresAdmin && !isAdmin))),
     }]
 
     let list = (
       <List>
-        {items.map(item => {
-          return (
-            <ListItem
-              data-test-id={`newItemDropdown-listItem-${item.title}`}
-              key={item.title}
-              onMouseDown={() => { this.itemMouseDown = true }}
-              onMouseUp={() => { this.itemMouseDown = false }}
-              href={item.href}
-              onClick={() => { this.handleItemClick(item) }}
-            >
-              <Icon {...item.icon} />
-              <Content>
-                <Title>{item.title}</Title>
-                <Description>{item.description}</Description>
-              </Content>
-            </ListItem>
-          )
-        })}
+        {
+          items.filter(i => i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true).map(item => {
+            return (
+              <ListItem
+                data-test-id={`newItemDropdown-listItem-${item.title}`}
+                key={item.title}
+                onMouseDown={() => { this.itemMouseDown = true }}
+                onMouseUp={() => { this.itemMouseDown = false }}
+                href={item.href}
+                onClick={() => { this.handleItemClick(item) }}
+              >
+                <Icon {...item.icon} />
+                <Content>
+                  <Title>{item.title}</Title>
+                  <Description>{item.description}</Description>
+                </Content>
+              </ListItem>
+            )
+          })}
       </List>
     )
 

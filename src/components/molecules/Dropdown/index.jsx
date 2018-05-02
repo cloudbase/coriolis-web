@@ -25,6 +25,8 @@ import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
 import StyleProps from '../../styleUtils/StyleProps'
 
+import checkmarkImage from './images/checkmark'
+
 const getWidth = props => {
   if (props.large) {
     return StyleProps.inputSizes.large.width - 2
@@ -68,13 +70,27 @@ const Tip = styled.div`
   z-index: 11;
   transition: all ${StyleProps.animations.swift};
 `
+const Checkmark = styled.div`
+  ${StyleProps.exactWidth('16px')}
+  height: 16px;
+  margin-right: 8px;
+  margin-top: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  #symbol {
+    transition: all ${StyleProps.animations.swift};
+  }
+`
 const ListItem = styled.div`
   position: relative;
+  display: flex;
   color: ${props => props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
   ${props => props.selected ? css`background: ${Palette.primary};` : ''}
   ${props => props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : ''}
   padding: 8px 16px;
   transition: all ${StyleProps.animations.swift};
+  padding-left: ${props => props.paddingLeft}px;
 
   &:first-child {
     border-top-left-radius: ${StyleProps.borderRadius};
@@ -89,6 +105,9 @@ const ListItem = styled.div`
   &:hover {
     background: ${Palette.primary};
     color: white;
+    ${Checkmark} #symbol {
+      stroke: white;
+    }
   }
 `
 const DuplicatedLabel = styled.div`
@@ -106,6 +125,7 @@ const Separator = styled.div`
   margin: 8px 16px;
   background: ${Palette.grayscale[3]};
 `
+const Labels = styled.div``
 
 type Props = {
   selectedItem: any,
@@ -120,8 +140,10 @@ type Props = {
   width: number,
   'data-test-id'?: string,
   embedded?: boolean,
-  required?: boolean,
   dimFirstItem?: boolean,
+  multipleSelection?: boolean,
+  selectedItems?: string[],
+  highlight?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -187,7 +209,7 @@ class Dropdown extends React.Component<Props, State> {
       return this.props.noSelectionMessage
     }
 
-    return (item[labelField] !== null && item[labelField] !== undefined && item[labelField].toString()) || item.toString()
+    return (item[labelField] !== null && item[labelField] !== undefined && item[labelField].toString()) || (item.value && item.value.toString()) || item.toString()
   }
 
   getValue(item: any) {
@@ -228,7 +250,9 @@ class Dropdown extends React.Component<Props, State> {
   }
 
   handleItemClick(item: any) {
-    this.setState({ showDropdownList: false, firstItemHover: false })
+    if (!this.props.multipleSelection) {
+      this.setState({ showDropdownList: false, firstItemHover: false })
+    }
 
     if (this.props.onChange) {
       this.props.onChange(item)
@@ -318,6 +342,7 @@ class Dropdown extends React.Component<Props, State> {
             let label = this.getLabel(item)
             let value = this.getValue(item)
             let duplicatedLabel = duplicatedLabels.find(l => l === label)
+            let multipleSelected = this.props.selectedItems && this.props.selectedItems.find(i => i === value)
             let listItem = (
               <ListItem
                 data-test-id="dropdownListItem"
@@ -327,11 +352,15 @@ class Dropdown extends React.Component<Props, State> {
                 onMouseEnter={() => { this.handleItemMouseEnter(i) }}
                 onMouseLeave={() => { this.handleItemMouseLeave(i) }}
                 onClick={() => { this.handleItemClick(item) }}
-                selected={value === selectedValue}
+                selected={!this.props.multipleSelection && value === selectedValue}
                 dim={this.props.dimFirstItem && i === 0}
+                paddingLeft={this.props.multipleSelection ? 8 : 16}
               >
-                {label}
-                {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
+                {this.props.multipleSelection ? <Checkmark dangerouslySetInnerHTML={{ __html: multipleSelected ? checkmarkImage : '' }} /> : null}
+                <Labels>
+                  {label}
+                  {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
+                </Labels>
               </ListItem>
             )
 
@@ -347,6 +376,9 @@ class Dropdown extends React.Component<Props, State> {
   render() {
     let buttonValue = () => {
       if (this.props.items && this.props.items.length) {
+        if (this.props.multipleSelection && this.props.selectedItems && this.props.selectedItems.length > 0) {
+          return this.props.selectedItems.map(i => this.getLabel(this.props.items.find(item => this.getValue(item) === i))).join(', ')
+        }
         return this.getLabel(this.props.selectedItem)
       }
 

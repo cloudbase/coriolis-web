@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon-CentOS Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Project/Details" transform="translate(-192.000000, -80.000000)">
+            <g id="SubMenu-Copy" transform="translate(0.000000, 64.000000)">
+                <g id="Group-2" transform="translate(192.000000, 16.000000)">
+                    <g id="Icon/Project/64">
+                        <path d="M32,64 C49.673112,64 64,49.673112 64,32 C64,14.326888 49.673112,0 32,0 C14.326888,0 0,14.326888 0,32 C0,49.673112 14.326888,64 32,64 Z" id="Pat-Benetar" fill="#FFFFFF" fill-rule="evenodd"></path>
+                        <path d="M32,15.9898649 L32,8.92905405" id="Line-Copy" stroke="#0044CA" stroke-width="1.5" stroke-linecap="square"></path>
+                        <path d="M16.325,51.72629 L28.6539577,28.1065305 M35.286909,27.9932432 L47.675,51.72629" id="Triangle-Copy" stroke="#0044CA" stroke-width="1.5" stroke-linecap="round"></path>
+                        <path d="M14.9,39.2905405 L49.1,39.2905405" id="Line-Copy-2" stroke="#0044CA" stroke-width="1.5" stroke-linecap="round"></path>
+                        <ellipse id="Oval-Copy" stroke="#0044CA" stroke-width="1.5" stroke-linecap="round" cx="32" cy="22.3445946" rx="5.7" ry="5.64864865"></ellipse>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

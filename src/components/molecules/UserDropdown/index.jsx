@@ -86,8 +86,13 @@ const ListHeader = styled.div`
     transition: all ${StyleProps.animations.swift};
   }
 `
-const Username = styled.div`
+const Username = styled.a`
   font-size: 16px;
+  color: ${Palette.black};
+  text-decoration: none;
+  &:hover {
+    color: ${Palette.primary};
+  }
 `
 const Email = styled.div`
   font-size: 10px;
@@ -97,7 +102,7 @@ const Email = styled.div`
   border-bottom: 1px solid ${Palette.grayscale[3]};
 `
 
-type User = { name: string, email: string }
+type User = { name: string, email: string, id: string }
 type DictItem = { label: string, value: string }
 type Props = {
   onItemClick: (item: DictItem) => void,
@@ -161,8 +166,14 @@ class UserDropdown extends React.Component<Props, State> {
       return null
     }
     return (
-      <ListHeader>
-        <Username data-test-id="userDropdown-username">{this.props.user.name}</Username>
+      <ListHeader
+        onMouseDown={() => { this.itemMouseDown = true }}
+        onMouseUp={() => { this.itemMouseDown = false }}
+      >
+        <Username
+          data-test-id="userDropdown-username"
+          href={`#/user/${this.props.user.id}`}
+        >{this.props.user.name}</Username>
         <Email>{this.props.user.email}</Email>
       </ListHeader>
     )

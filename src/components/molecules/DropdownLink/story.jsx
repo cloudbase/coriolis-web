@@ -17,22 +17,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import DropdownLink from '.'
+import Palette from '../../styleUtils/Palette'
 
-class Wrapper extends React.Component<any, any> {
-  constructor() {
-    super()
-    this.state = {
-      items: [
-        { label: 'Item 1', value: 'item-1' },
-        { label: 'Item 2', value: 'item-2' },
-        { label: 'Item 3', value: 'item-3' },
-      ],
-      selectedItem: 'item-1',
-    }
+type Props = {
+  multipleSelection?: boolean,
+  getLLabel?: (items: string[]) => string,
+}
+type State = {
+  items: { label: string, value: string }[],
+  selectedItem: string,
+  selectedItems: string[],
+}
+class Wrapper extends React.Component<Props, State> {
+  state = {
+    items: [
+      { label: 'Item 1', value: 'item-1' },
+      { label: 'Item 2', value: 'item-2' },
+      { label: 'Item 3', value: 'item-3' },
+    ],
+    selectedItem: 'item-1',
+    selectedItems: [],
   }
 
   handleItemChange(selectedItem) {
-    this.setState({ selectedItem })
+    if (this.props.multipleSelection) {
+      let selectedItems = this.state.selectedItems
+      if (selectedItems.find(i => i === selectedItem)) {
+        this.setState({ selectedItems: selectedItems.filter(i => i !== selectedItem) })
+      } else {
+        this.setState({ selectedItems: [...selectedItems, selectedItem] })
+      }
+    } else {
+      this.setState({ selectedItem })
+    }
   }
 
   render() {
@@ -41,7 +58,9 @@ class Wrapper extends React.Component<any, any> {
         <DropdownLink
           items={this.state.items}
           selectedItem={this.state.selectedItem}
+          selectedItems={this.state.selectedItems}
           onChange={item => { this.handleItemChange(item.value) }}
+          getLabel={this.props.getLLabel ? () => this.props.getLLabel ? this.props.getLLabel(this.state.selectedItems) : '' : undefined}
           {...this.props}
         />
       </div>
@@ -56,5 +75,20 @@ storiesOf('DropdownLink', module)
   .add('searchable', () => (
     <Wrapper
       searchable
+    />
+  ))
+  .add('multiple selection', () => (
+    <Wrapper
+      width="200px"
+      getLLabel={items => items.length > 0 ? items.join(', ') : 'Choose something'}
+      listWidth="120px"
+      itemStyle={item => `color: ${item.value === 'remove' ? Palette.alert : Palette.black};`}
+      multipleSelection
+      items={[
+        { value: 'owner' },
+        { value: 'admin' },
+        { value: 'member', label: 'member' },
+      ]}
+      labelStyle={{ color: Palette.black }}
     />
   ))

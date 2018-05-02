@@ -85,7 +85,7 @@ type Props = {
   typeImage?: string,
   buttonLabel?: string,
   statusLabel?: string,
-  item: ?MainItem,
+  item: ?any,
   alertInfoPill?: boolean,
   primaryInfoPill?: boolean,
   alertButton?: boolean,

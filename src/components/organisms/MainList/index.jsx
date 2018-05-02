@@ -69,22 +69,22 @@ const EmptyListExtraMessage = styled.div`
 `
 export type ItemComponentProps = {
   key: string,
-  item: MainItem,
+  item: any,
   selected: boolean,
   onClick: () => void,
   onSelectedChange: (checked: boolean) => void
 }
 type Props = {
-  items: MainItem[],
-  selectedItems: MainItem[],
+  items: any[],
+  selectedItems: any[],
   loading: boolean,
   onSelectedChange: (item: MainItem, checked: boolean) => void,
   onItemClick: (item: MainItem) => void,
   renderItemComponent: (componentProps: ItemComponentProps) => React.Node,
   showEmptyList: boolean,
   emptyListImage: ?string,
-  emptyListMessage: string,
-  emptyListExtraMessage: string,
+  emptyListMessage?: string,
+  emptyListExtraMessage?: string,
   emptyListButtonLabel?: string,
   onEmptyListButtonClick?: () => void,
 }

@@ -19,7 +19,6 @@ import styled, { css } from 'styled-components'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
-import starImage from './images/star.svg'
 import closeImage from './images/close.svg'
 
 const Wrapper = styled.div`
@@ -49,7 +48,7 @@ const Input = styled.input`
   border-bottom-left-radius: ${props => props.embedded ? 0 : StyleProps.borderRadius};
   border-bottom-right-radius: ${StyleProps.borderRadius};
   color: ${Palette.black};
-  padding: 0 ${props => props.customRequired ? '29px' : '8px'} 0 ${props => props.embedded ? 0 : '16px'};
+  padding: 0 8px 0 ${props => props.embedded ? 0 : '16px'};
   font-size: inherit;
   transition: all ${StyleProps.animations.swift};
   box-sizing: border-box;
@@ -69,15 +68,6 @@ const Input = styled.input`
     color: ${Palette.grayscale[3]};
   }
 `
-const Required = styled.div`
-  display: ${props => props.show ? 'block' : 'none'};
-  position: absolute;
-  right: 12px;
-  top: 13px;
-  width: 8px;
-  height: 8px;
-  background: url('${starImage}') center no-repeat;
-`
 const Close = styled.div`
   display: ${props => props.show ? 'block' : 'none'};
   width: 16px;
@@ -91,7 +81,6 @@ const Close = styled.div`
 
 type Props = {
   _ref?: (ref: HTMLElement) => void,
-  required?: boolean,
   disabled?: boolean,
   highlight?: boolean,
   large?: boolean,
@@ -102,28 +91,21 @@ type Props = {
   showClose?: boolean,
   onCloseClick?: () => void,
   embedded?: boolean,
-  requiredStyle?: any,
   height?: string,
   'data-test-id'?: string,
 }
 const TextInput = (props: Props) => {
-  const { _ref, required, value, onChange, showClose, onCloseClick } = props
+  const { _ref, value, onChange, showClose, onCloseClick } = props
   let input
   return (
     <Wrapper data-test-id={props['data-test-id'] || 'textInput'}>
       <Input
         innerRef={ref => { input = ref; if (_ref) _ref(ref) }}
         type="text"
-        customRequired={required}
         value={value}
         onChange={onChange}
         data-test-id="textInput-input"
         {...props}
-      />
-      <Required
-        show={required}
-        data-test-id="textInput-required"
-        style={props.requiredStyle}
       />
       <Close
         data-test-id="textInput-close"

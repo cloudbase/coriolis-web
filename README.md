@@ -38,7 +38,7 @@ You can view some of the UIs components in the [Storybook](https://github.com/st
 
 ```
 Header always set Access-Control-Allow-Origin "*"
-Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT, PATCH"
 Header always set Access-Control-Max-Age "1000"
 Header always set Access-Control-Allow-Headers "x-requested-with, X-Auth-Token, X-Subject-Token, Content-Type, origin, authorization, accept, client-security-token"
 Header always set Access-Control-Allow-Credentials "true"

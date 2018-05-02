@@ -32,8 +32,18 @@ const backgroundColor = (props) => {
   }
   return Palette.primary
 }
+const disabledBackgroundColor = props => {
+  if (props.secondary && props.hollow) {
+    return Palette.grayscale[7]
+  }
+  return backgroundColor(props)
+}
 
 const hoverBackgroundColor = (props) => {
+  if (props.disabled && props.secondary && props.hollow) {
+    return Palette.grayscale[7]
+  }
+
   if (props.hoverPrimary) {
     return Palette.primary
   }
@@ -58,11 +68,17 @@ const border = (props) => {
   }
   return ''
 }
+const disabledBorder = props => {
+  if (props.secondary && props.hollow) {
+    return 'border: none;'
+  }
+  return border(props)
+}
 
 const color = (props) => {
   if (props.hollow) {
     if (props.secondary) {
-      return Palette.black
+      return props.disabled ? Palette.grayscale[3] : Palette.black
     }
     if (props.alert) {
       return Palette.alert
@@ -95,11 +111,13 @@ const StyledButton = styled.button`
   font-size: inherit;
   transition: background-color ${StyleProps.animations.swift}, opacity ${StyleProps.animations.swift};
   &:disabled {
-    opacity: 0.7;
+    opacity: ${props => props.secondary ? 1 : 0.7};
     cursor: not-allowed;
+    background-color: ${props => disabledBackgroundColor(props)};
+    ${props => disabledBorder(props)}
   }
   &:hover {
-    ${props => props.hollow ? 'color: white;' : ''}
+    ${props => props.hollow ? `color: ${props.disabled ? Palette.grayscale[3] : 'white'};` : ''}
     background-color: ${props => hoverBackgroundColor(props)};
   }
   &:focus {

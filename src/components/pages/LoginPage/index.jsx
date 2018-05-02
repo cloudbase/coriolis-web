@@ -89,7 +89,7 @@ class LoginPage extends React.Component<{}> {
   }
 
   render() {
-    if (userStore.user) {
+    if (userStore.loggedIn) {
       window.location.href = '/#/replicas'
     }
 

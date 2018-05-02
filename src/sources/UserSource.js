@@ -17,8 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl } from '../config'
+import { servicesUrl, coriolisUrl } from '../config'
 import type { Credentials, User } from '../types/User'
+import type { Role, Project, RoleAssignment } from '../types/Project'
 
 class UserModel {
   static parseUserData(data: any) {
@@ -174,11 +175,176 @@ class UserSource {
     })
   }
 
-  static getUserInfo(user: User): Promise<User> {
-    return new Promise((resolve, reject) => {
-      Api.get(`${servicesUrl.users}/${user.id}`).then((response) => {
-        resolve(response.data.user)
-      }, reject).catch(reject)
+  static getUserInfo(userId: string): Promise<User> {
+    return Api.get(`${servicesUrl.users}/${userId}`).then(response => {
+      return response.data.user
+    })
+  }
+
+  static getAllUsers(): Promise<User[]> {
+    return Api.get(`${servicesUrl.users}`).then(response => {
+      return response.data.users.sort((u1, u2) => u1.name.localeCompare(u2.name))
+    })
+  }
+
+  static update(userId: string, user: User, oldUser: ?User): Promise<User> {
+    const data = { user: {} }
+    let oldData = oldUser || {}
+
+    if (user.email || oldData.email) {
+      data.user.email = user.email
+    }
+    if (user.description || oldData.description) {
+      data.user.description = user.description
+    }
+    if (user.enabled !== undefined && user.enabled !== null) {
+      data.user.enabled = user.enabled
+    }
+    if (user.name) {
+      data.user.name = user.name
+    }
+    if (user.password) {
+      data.user.password = user.password
+    }
+    if (user.project_id || oldData.project_id) {
+      data.user.project_id = user.project_id
+    }
+    let updatedUser: User
+
+    return Api.send({
+      url: `${servicesUrl.users}/${userId}`,
+      method: 'PATCH',
+      data,
+    }).then(response => {
+      updatedUser = response.data.user
+      if (updatedUser.extra) {
+        updatedUser = {
+          ...updatedUser,
+          ...updatedUser.extra,
+        }
+      }
+      return updatedUser
+    }).then(() => {
+      // if project id was updated, assign him to that project, if his not already assigned
+      if (data.user.project_id) {
+        return this.getProjects(updatedUser.id).then((projects: Project[]) => {
+          if (projects.find(p => p.id === data.user.project_id)) {
+            return updatedUser
+          }
+
+          return this.assignUserToProject(updatedUser.id, updatedUser.project_id || 'undefined').then(() => {
+            return updatedUser
+          })
+        })
+      }
+
+      return updatedUser
+    })
+  }
+
+  static add(user: User): Promise<User> {
+    let data = { user: {} }
+    data.user.name = user.name
+    data.user.password = user.password || ''
+    data.user.enabled = user.enabled === null || user.enabled === undefined ? true : user.enabled
+
+    if (user.email) {
+      data.user.email = user.email
+    }
+    if (user.description) {
+      data.user.description = user.description
+    }
+    if (user.project_id) {
+      data.user.project_id = user.project_id
+    }
+    let addedUser: User
+    return Api.send({
+      url: `${servicesUrl.users}`,
+      method: 'POST',
+      data,
+    }).then(response => {
+      addedUser = response.data.user
+      if (addedUser.extra) {
+        addedUser = {
+          ...addedUser,
+          ...addedUser.extra,
+        }
+      }
+      return addedUser
+    }).then(() => {
+      // If the user has a project id set, assign him to that project with admin role
+      if (addedUser.project_id) {
+        return this.assignUserToProject(addedUser.id, addedUser.project_id || 'undefined').then(() => {
+          return addedUser
+        })
+      }
+      return addedUser
+    })
+  }
+
+  static delete(userId: string): Promise<void> {
+    return Api.send({
+      url: `${coriolisUrl}identity/users/${userId}`,
+      method: 'DELETE',
+    }).then(() => { })
+  }
+
+  static assignUserToProject(userId: string, projectId: string): Promise<void> {
+    return this.getMemberRoleId().then((roleId: string) => {
+      return this.assignUserToProjectWithRole(userId, projectId, roleId)
+    })
+  }
+
+  static assignUserToProjectWithRole(userId: string, projectId: string, roleId: string): Promise<void> {
+    return Api.send({
+      url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${roleId}`,
+      method: 'PUT',
+    }).then(() => { })
+  }
+
+  static getMemberRoleId(): Promise<string> {
+    return this.getRoles().then((roles: { id: string, name: string }[]) => {
+      const role = roles.find(r => r.name === '_member_')
+      const roleId = role ? role.id : ''
+      return roleId
+    })
+  }
+
+  static getAdminRoleId(): Promise<string> {
+    return this.getRoles().then((roles: { id: string, name: string }[]) => {
+      const role = roles.find(r => r.name === 'admin')
+      const roleId = role ? role.id : ''
+      return roleId
+    })
+  }
+
+  static getRoles(): Promise<Role[]> {
+    return Api.get(`${coriolisUrl}identity/roles`).then(response => {
+      let roles: Role[] = response.data.roles
+      roles.sort((r1, r2) => r1.name.localeCompare(r2.name))
+      return roles
+    })
+  }
+
+  static getProjects(userId: string): Promise<Project[]> {
+    return Api.get(`${coriolisUrl}identity/role_assignments?include_names`).then(response => {
+      let assignments: RoleAssignment[] = response.data.role_assignments
+      let projects: $Shape<Project>[] = assignments
+        .filter(a => a.user.id === userId)
+        .filter((a, i, arr) => arr.findIndex(e => e.scope.project.id === a.scope.project.id) === i)
+        .map(a => a.scope.project)
+
+      return projects
+    })
+  }
+
+  static isAdmin(userId: string): Promise<boolean> {
+    return Api.send({
+      url: `${coriolisUrl}identity/role_assignments?include_names`,
+      quietError: true,
+    }).then(response => {
+      let roleAssignments: RoleAssignment[] = response.data.role_assignments
+      return roleAssignments.filter(a => a.user.id === userId).filter(a => a.role.name === 'admin').length > 0
     })
   }
 }
