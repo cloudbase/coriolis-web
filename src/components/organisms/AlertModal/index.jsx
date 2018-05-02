@@ -74,7 +74,7 @@ class AlertModal extends React.Component<Props> {
   id: string
 
   componentDidMount() {
-    this.id = new Date().getTime().toString()
+    this.id = `${new Date().getTime().toString()}-${Math.random()}`
     KeyboardManager.onEnter(`alert-${this.id}`, () => {
       if (this.props.isOpen) {
         this.props.onConfirmation()
