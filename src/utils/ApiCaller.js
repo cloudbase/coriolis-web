@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import axios from 'axios'
 import type { AxiosXHRConfig, $AxiosXHR } from 'axios'
 
-import NotificationStore from '../stores/NotificationStore'
+import notificationStore from '../stores/NotificationStore'
 
 type Cancelable = {
   requestId: string,
@@ -90,7 +90,7 @@ class ApiCaller {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
           if (error.response.status !== 401 || window.location.hash !== loginUrl) {
-            NotificationStore.notify(error.response.data.error.message, 'error')
+            notificationStore.notify(error.response.data.error.message, 'error')
           }
 
           if (error.response.status === 401 && window.location.hash !== loginUrl) {
@@ -103,7 +103,7 @@ class ApiCaller {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
           if (window.location.hash !== loginUrl) {
-            NotificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
+            notificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
           }
           console.log(`%cError No Response: ${axiosOptions.url}`, 'color: #D0021B')
           reject({})
@@ -115,7 +115,7 @@ class ApiCaller {
           }
 
           // Something happened in setting up the request that triggered an Error
-          NotificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
+          notificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
           console.log(`%cError Something happened in setting up the request: ${axiosOptions.url}`, 'color: #D0021B')
         }
       })

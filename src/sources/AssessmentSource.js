@@ -20,7 +20,7 @@ import type { MigrationInfo } from '../types/Assessment'
 import type { MainItem } from '../types/MainItem'
 import Api from '../utils/ApiCaller'
 import { servicesUrl } from '../config'
-import NotificationStore from '../stores/NotificationStore'
+import notificationStore from '../stores/NotificationStore'
 
 class AssessmentSourceUtils {
   static getDestinationEnv(data: MigrationInfo) {
@@ -91,7 +91,7 @@ class AssessmentSource {
           }
         }, () => {
           count += 1
-          NotificationStore.notify(`Error while migrating instance ${instance.name}`, 'error', {
+          notificationStore.notify(`Error while migrating instance ${instance.name}`, 'error', {
             persist: true,
             persistInfo: { title: 'Migration creation error' },
           })

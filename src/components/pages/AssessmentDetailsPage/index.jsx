@@ -30,14 +30,14 @@ import type { VmItem, VmSize } from '../../../types/Assessment'
 import type { Field } from '../../../types/Field'
 import type { Network, NetworkMap } from '../../../types/Network'
 
-import AzureStore from '../../../stores/AzureStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import NotificationStore from '../../../stores/NotificationStore'
-import ReplicaStore from '../../../stores/ReplicaStore'
-import InstanceStore from '../../../stores/InstanceStore'
-import NetworkStore from '../../../stores/NetworkStore'
-import UserStore from '../../../stores/UserStore'
-import AssessmentStore from '../../../stores/AssessmentStore'
+import azureStore from '../../../stores/AzureStore'
+import endpointStore from '../../../stores/EndpointStore'
+import notificationStore from '../../../stores/NotificationStore'
+import replicaStore from '../../../stores/ReplicaStore'
+import instanceStore from '../../../stores/InstanceStore'
+import networkStore from '../../../stores/NetworkStore'
+import userStore from '../../../stores/UserStore'
+import assessmentStore from '../../../stores/AssessmentStore'
 
 import assessmentImage from './images/assessment.svg'
 
@@ -78,9 +78,9 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    AzureStore.clearAssessmentDetails()
-    AzureStore.clearAssessedVms()
-    InstanceStore.clearInstancesDetails()
+    azureStore.clearAssessmentDetails()
+    azureStore.clearAssessedVms()
+    instanceStore.clearInstancesDetails()
   }
 
   getUrlInfo() {
@@ -89,8 +89,8 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   getEndpoints() {
-    let vms = AzureStore.assessedVms
-    let connectionsInfo = EndpointStore.connectionsInfo
+    let vms = azureStore.assessedVms
+    let connectionsInfo = endpointStore.connectionsInfo
 
     if (vms.length === 0 || connectionsInfo.length === 0) {
       return []
@@ -103,17 +103,17 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   getInstancesDetailsProgress() {
-    let count = InstanceStore.instancesDetailsCount
+    let count = instanceStore.instancesDetailsCount
     if (count < 5) {
       return null
     }
-    let remaining = InstanceStore.instancesDetailsRemaining
+    let remaining = instanceStore.instancesDetailsRemaining
     return (count - remaining) / count
   }
 
   getFilteredAssessedVms(vms?: VmItem[]) {
     if (!vms) {
-      vms = AzureStore.assessedVms
+      vms = azureStore.assessedVms
     }
     return vms.filter(vm =>
       `${vm.properties.datacenterContainer}/${vm.properties.displayName}`.toLowerCase().indexOf(this.state.vmSearchValue.toLowerCase()) > -1
@@ -125,7 +125,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   getEnabledVms() {
-    let sourceConnInfo = EndpointStore.connectionsInfo.find(e => e.id === this.getSourceEndpointId())
+    let sourceConnInfo = endpointStore.connectionsInfo.find(e => e.id === this.getSourceEndpointId())
     if (!sourceConnInfo) {
       return []
     }
@@ -134,9 +134,9 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     if (!sourceHost) {
       return []
     }
-    return AzureStore.assessedVms.filter(vm => {
+    return azureStore.assessedVms.filter(vm => {
       if (vm.properties.datacenterManagementServer.toLowerCase() === sourceHost.toLowerCase() &&
-        InstanceStore.instances.find(i => i.instance_name === `${vm.properties.datacenterContainer}/${vm.properties.displayName}`)) {
+        instanceStore.instances.find(i => i.instance_name === `${vm.properties.datacenterContainer}/${vm.properties.displayName}`)) {
         return true
       }
       return false
@@ -166,7 +166,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   handleSourceEndpointChange(sourceEndpoint: ?Endpoint) {
     this.setState({ sourceEndpoint, selectedVms: [], selectedNetworks: [] })
-    InstanceStore.loadInstances(this.getSourceEndpointId(), true, true).then(() => {
+    instanceStore.loadInstances(this.getSourceEndpointId(), true, true).then(() => {
       this.initSelectedVms()
       this.loadInstancesDetails()
     })
@@ -175,7 +175,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserStore.logout()
+        userStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -198,8 +198,8 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   handleRefresh() {
     let urlInfo = this.getUrlInfo()
-    AzureStore.getAssessmentDetails({ ...urlInfo })
-    AzureStore.getAssessedVms({ ...urlInfo })
+    azureStore.getAssessmentDetails({ ...urlInfo })
+    azureStore.getAssessedVms({ ...urlInfo })
     this.loadInstancesDetails()
   }
 
@@ -212,7 +212,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   handleMigrationExecute(options: Field[]) {
-    let selectedInstances = InstanceStore.instancesDetails
+    let selectedInstances = instanceStore.instancesDetails
       .filter(i => this.state.selectedVms.find(m => i.instance_name === `${m.properties.datacenterContainer}/${m.properties.displayName}`))
     let vmSizes = {}
     selectedInstances.forEach(i => {
@@ -222,14 +222,14 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
     this.setState({ executeButtonDisabled: true })
 
-    AssessmentStore.migrate({
+    assessmentStore.migrate({
       source: this.state.sourceEndpoint,
       target: this.getUrlInfo().endpoint,
       networks: [...this.state.selectedNetworks],
       options: [...options],
       destinationEnv: {
         resource_group: this.getUrlInfo().resourceGroupName,
-        location: AzureStore.assessmentDetails ? AzureStore.assessmentDetails.properties.azureLocation : '',
+        location: azureStore.assessmentDetails ? azureStore.assessmentDetails.properties.azureLocation : '',
       },
       vmSizes,
       selectedInstances,
@@ -237,11 +237,11 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
       this.setState({ showMigrationOptions: false })
       let useReplicaOption = options.find(o => o.name === 'use_replica')
       let type = useReplicaOption && useReplicaOption.value ? 'Replica' : 'Migration'
-      NotificationStore.notify(`${type} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${type} created` } })
+      notificationStore.notify(`${type} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${type} created` } })
 
       if (type === 'Replica') {
-        AssessmentStore.migrations.forEach(replica => {
-          ReplicaStore.execute(replica.id, options)
+        assessmentStore.migrations.forEach(replica => {
+          replicaStore.execute(replica.id, options)
         })
       }
 
@@ -266,14 +266,14 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   azureAuthenticate() {
     let connectionInfo = this.getUrlInfo().connectionInfo
-    AzureStore.authenticate(connectionInfo.user_credentials.username, connectionInfo.user_credentials.password).then(() => {
+    azureStore.authenticate(connectionInfo.user_credentials.username, connectionInfo.user_credentials.password).then(() => {
       this.loadAssessmentDetails()
     })
   }
 
   loadSourceEndpoints() {
-    EndpointStore.getEndpoints({ showLoading: true }).then(() => {
-      EndpointStore.getConnectionsInfo(EndpointStore.endpoints.filter(e => e.type === 'vmware_vsphere')).then(() => {
+    endpointStore.getEndpoints({ showLoading: true }).then(() => {
+      endpointStore.getConnectionsInfo(endpointStore.endpoints.filter(e => e.type === 'vmware_vsphere')).then(() => {
         let endpoints = this.getEndpoints()
         let sourceEndpoint = endpoints.find(e => e.id === this.getSourceEndpointId())
         if (sourceEndpoint) {
@@ -289,11 +289,11 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   loadAssessmentDetails() {
     let urlInfo = this.getUrlInfo()
-    AzureStore.getAssessmentDetails({ ...urlInfo }).then(() => {
-      AzureStore.getVmSizes({ ...urlInfo, location: AzureStore.assessmentDetails ? AzureStore.assessmentDetails.properties.azureLocation : '' })
+    azureStore.getAssessmentDetails({ ...urlInfo }).then(() => {
+      azureStore.getVmSizes({ ...urlInfo, location: azureStore.assessmentDetails ? azureStore.assessmentDetails.properties.azureLocation : '' })
       this.loadNetworks()
     })
-    AzureStore.getAssessedVms({ ...urlInfo }).then(() => {
+    azureStore.getAssessedVms({ ...urlInfo }).then(() => {
       this.initVmSizes()
       this.loadSourceEndpoints()
     })
@@ -305,7 +305,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   initVmSizes() {
     let vmSizes = {}
-    let vms = AzureStore.assessedVms
+    let vms = azureStore.assessedVms
 
     vms.forEach(vm => {
       vmSizes[vm.id] = { name: vm.properties.recommendedSize }
@@ -316,23 +316,23 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   loadNetworks() {
     this.setState({ selectedNetworks: [] })
-    let details = AzureStore.assessmentDetails
-    NetworkStore.loadNetworks(this.getUrlInfo().endpoint.id, {
+    let details = azureStore.assessmentDetails
+    networkStore.loadNetworks(this.getUrlInfo().endpoint.id, {
       location: details ? details.properties.azureLocation : '',
       resource_group: this.getUrlInfo().resourceGroupName,
     })
   }
 
   loadInstancesDetails() {
-    let instances = InstanceStore.instances.filter(i => this.state.selectedVms.find(m => i.instance_name === `${m.properties.datacenterContainer}/${m.properties.displayName}`))
-    InstanceStore.clearInstancesDetails()
-    InstanceStore.loadInstancesDetails(this.getSourceEndpointId(), instances)
+    let instances = instanceStore.instances.filter(i => this.state.selectedVms.find(m => i.instance_name === `${m.properties.datacenterContainer}/${m.properties.displayName}`))
+    instanceStore.clearInstancesDetails()
+    instanceStore.loadInstancesDetails(this.getSourceEndpointId(), instances)
   }
 
   render() {
-    let details = AzureStore.assessmentDetails
-    let loading = AzureStore.loadingAssessmentDetails || AzureStore.authenticating || AzureStore.loadingAssessedVms
-    let endpointsLoading = EndpointStore.connectionsInfoLoading || EndpointStore.loading
+    let details = azureStore.assessmentDetails
+    let loading = azureStore.loadingAssessmentDetails || azureStore.authenticating || azureStore.loadingAssessedVms
+    let endpointsLoading = endpointStore.connectionsInfoLoading || endpointStore.loading
     let status = details ? details.properties.status.toUpperCase() : ''
     let statusLabel = status === 'COMPLETED' ? 'READY' : status
 
@@ -340,7 +340,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
       <Wrapper>
         <DetailsTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={UserStore.user}
+            user={userStore.user}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
@@ -364,23 +364,23 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
               sourceEndpoints={this.getEndpoints()}
               sourceEndpointsLoading={endpointsLoading}
               sourceEndpoint={this.state.sourceEndpoint}
-              assessedVmsCount={AzureStore.assessedVms.length}
+              assessedVmsCount={azureStore.assessedVms.length}
               filteredAssessedVms={this.getFilteredAssessedVms()}
               onSourceEndpointChange={endpoint => this.handleSourceEndpointChange(endpoint)}
               selectedVms={this.state.selectedVms}
               onVmSelectedChange={(vm, selected) => { this.handleVmSelectedChange(vm, selected) }}
               selectAllVmsChecked={this.getSelectAllVmsChecked()}
               onSelectAllVmsChange={checked => { this.handleSelectAllVmsChange(checked) }}
-              instances={InstanceStore.instances}
-              instancesDetails={InstanceStore.instancesDetails}
-              instancesDetailsLoading={InstanceStore.loadingInstancesDetails}
-              instancesLoading={InstanceStore.instancesLoading}
-              networksLoading={NetworkStore.loading}
+              instances={instanceStore.instances}
+              instancesDetails={instanceStore.instancesDetails}
+              instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+              instancesLoading={instanceStore.instancesLoading}
+              networksLoading={networkStore.loading}
               instancesDetailsProgress={this.getInstancesDetailsProgress()}
-              networks={NetworkStore.networks}
+              networks={networkStore.networks}
               selectedNetworks={this.state.selectedNetworks}
-              loadingVmSizes={AzureStore.loadingVmSizes}
-              vmSizes={AzureStore.vmSizes}
+              loadingVmSizes={azureStore.loadingVmSizes}
+              vmSizes={azureStore.vmSizes}
               onVmSizeChange={(vm, size) => {
                 // $FlowIgnore
                 this.handleVmSizeChange(vm, size)

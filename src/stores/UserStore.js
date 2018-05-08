@@ -17,8 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action } from 'mobx'
 import type { User, Credentials } from '../types/User'
 import UserSource from '../sources/UserSource'
-import ProjectStore from './ProjectStore'
-import NotificationStore from '../stores/NotificationStore'
+import projectStore from './ProjectStore'
+import notificationStore from '../stores/NotificationStore'
 
 /**
  * This is the authentication / authorization flow:
@@ -42,7 +42,7 @@ class UserStore {
       return this.loginScoped()
     }).then((user: User) => {
       this.loading = false
-      NotificationStore.notify('Signed in', 'success')
+      notificationStore.notify('Signed in', 'success')
       this.user = user
       this.getUserInfo(user)
     }).catch((reason) => {
@@ -54,15 +54,15 @@ class UserStore {
   @action loginScoped(projectId?: string): Promise<User> {
     return new Promise((resolve) => {
       const sourceLoginScoped = () => {
-        UserSource.loginScoped(projectId || ProjectStore.projects[0].id).then((user: User) => {
+        UserSource.loginScoped(projectId || projectStore.projects[0].id).then((user: User) => {
           this.user = { ...user, scoped: true }
           resolve(user)
         })
       }
-      if (ProjectStore.projects && ProjectStore.projects.length) {
+      if (projectStore.projects && projectStore.projects.length) {
         sourceLoginScoped()
       } else {
-        ProjectStore.getProjects().then(() => {
+        projectStore.getProjects().then(() => {
           sourceLoginScoped()
         })
       }
@@ -74,7 +74,7 @@ class UserStore {
       this.user = { ...this.user, ...userData }
     }).catch(reason => {
       console.error('Error while getting user data', reason)
-      NotificationStore.notify('Error while getting user data', 'error')
+      notificationStore.notify('Error while getting user data', 'error')
     })
   }
 
@@ -85,7 +85,7 @@ class UserStore {
     return UserSource.tokenLogin().then(user => {
       this.loading = false
       this.user = { ...this.user, ...user }
-      NotificationStore.notify('Signed in', 'success')
+      notificationStore.notify('Signed in', 'success')
       this.getUserInfo(user)
     }).catch(() => {
       this.loading = false
@@ -93,7 +93,7 @@ class UserStore {
   }
 
   @action switchProject(projectId: string): Promise<void> {
-    NotificationStore.notify('Switching projects')
+    notificationStore.notify('Switching projects')
     return new Promise((resolve, reject) => {
       UserSource.switchProject().then(() => {
         return this.loginScoped(projectId)
@@ -101,7 +101,7 @@ class UserStore {
         resolve()
       }).catch(reason => {
         console.error('Error switching projects', reason)
-        NotificationStore.notify('Error switching projects')
+        notificationStore.notify('Error switching projects')
         this.logout()
         reject()
       })
@@ -111,7 +111,7 @@ class UserStore {
   @action logout(): Promise<void> {
     return UserSource.logout().catch(reason => {
       console.log('Error logging out', reason)
-      NotificationStore.notify('Error logging out')
+      notificationStore.notify('Error logging out')
     })
   }
 }

@@ -70,7 +70,7 @@ class ProviderStore {
     })
   }
 
-   @action getDestinationOptions(endpointId: string, provider: string): Promise<void> {
+  @action getDestinationOptions(endpointId: string, provider: string): Promise<void> {
     if (!providersWithExtraOptions.find(p => p === provider)) {
       return Promise.resolve()
     }

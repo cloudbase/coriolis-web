@@ -20,7 +20,7 @@ import styled from 'styled-components'
 
 import CopyButton from '../CopyButton'
 import DomUtils from '../../../utils/DomUtils'
-import NotificationStore from '../../../stores/NotificationStore'
+import notificationStore from '../../../stores/NotificationStore'
 
 const Wrapper = styled.div`
   cursor: pointer;
@@ -55,9 +55,9 @@ class CopyValue extends React.Component<Props> {
     if (this.props.onCopy) this.props.onCopy(this.props.value)
 
     if (succesful) {
-      NotificationStore.notify('The value has been copied to clipboard.')
+      notificationStore.notify('The value has been copied to clipboard.')
     } else {
-      NotificationStore.notify('The value couldn\'t be copied', 'error')
+      notificationStore.notify('The value couldn\'t be copied', 'error')
     }
   }
 

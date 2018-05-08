@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
-import NotificationStore from '../stores/NotificationStore'
+import notificationStore from '../stores/NotificationStore'
 import { servicesUrl, executionOptions } from '../config'
 import type { WizardData } from '../types/WizardData'
 import type { MainItem } from '../types/MainItem'
@@ -112,7 +112,7 @@ class WizardSource {
           }
         }, () => {
           count += 1
-          NotificationStore.notify(`Error while creating ${type} for instance ${instance.name}`, 'error', {
+          notificationStore.notify(`Error while creating ${type} for instance ${instance.name}`, 'error', {
             persist: true,
             persistInfo: { title: `${type} creation error` },
           })

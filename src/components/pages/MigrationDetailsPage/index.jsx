@@ -24,10 +24,10 @@ import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import MigrationDetailsContent from '../../organisms/MigrationDetailsContent'
 import AlertModal from '../../organisms/AlertModal'
 
-import MigrationStore from '../../../stores/MigrationStore'
-import UserStore from '../../../stores/UserStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import NotificationStore from '../../../stores/NotificationStore'
+import migrationStore from '../../../stores/MigrationStore'
+import userStore from '../../../stores/UserStore'
+import endpointStore from '../../../stores/EndpointStore'
+import notificationStore from '../../../stores/NotificationStore'
 import { requestPollTimeout } from '../../../config'
 
 import migrationImage from './images/migration.svg'
@@ -57,20 +57,20 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Migration Details'
 
-    EndpointStore.getEndpoints()
+    endpointStore.getEndpoints()
     this.pollData(true)
     this.pollInterval = setInterval(() => { this.pollData() }, requestPollTimeout)
   }
 
   componentWillUnmount() {
-    MigrationStore.clearDetails()
+    migrationStore.clearDetails()
     clearInterval(this.pollInterval)
   }
 
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserStore.logout()
+        userStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -90,8 +90,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   handleDeleteMigrationConfirmation() {
     this.setState({ showDeleteMigrationConfirmation: false })
     window.location.href = '/#/migrations'
-    if (MigrationStore.migrationDetails) {
-      MigrationStore.delete(MigrationStore.migrationDetails.id)
+    if (migrationStore.migrationDetails) {
+      migrationStore.delete(migrationStore.migrationDetails.id)
     }
   }
 
@@ -109,20 +109,20 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
   handleCancelConfirmation() {
     this.setState({ showCancelConfirmation: false })
-    if (!MigrationStore.migrationDetails) {
+    if (!migrationStore.migrationDetails) {
       return
     }
-    MigrationStore.cancel(MigrationStore.migrationDetails.id).then(() => {
-      if (MigrationStore.canceling === false) {
-        NotificationStore.notify('Canceled', 'success')
+    migrationStore.cancel(migrationStore.migrationDetails.id).then(() => {
+      if (migrationStore.canceling === false) {
+        notificationStore.notify('Canceled', 'success')
       } else {
-        NotificationStore.notify('The migration couldn\'t be canceled', 'error')
+        notificationStore.notify('The migration couldn\'t be canceled', 'error')
       }
     })
   }
 
   pollData(showLoading?: boolean) {
-    MigrationStore.getMigration(this.props.match.params.id, showLoading || false)
+    migrationStore.getMigration(this.props.match.params.id, showLoading || false)
   }
 
   render() {
@@ -130,21 +130,21 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       <Wrapper>
         <DetailsTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={UserStore.user}
+            user={userStore.user}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
-            item={MigrationStore.migrationDetails}
+            item={migrationStore.migrationDetails}
             onBackButonClick={() => { this.handleBackButtonClick() }}
             typeImage={migrationImage}
             primaryInfoPill
             onCancelClick={() => { this.handleCancelMigrationClick() }}
           />}
           contentComponent={<MigrationDetailsContent
-            item={MigrationStore.migrationDetails}
-            endpoints={EndpointStore.endpoints}
+            item={migrationStore.migrationDetails}
+            endpoints={endpointStore.endpoints}
             page={this.props.match.params.page || ''}
-            detailsLoading={EndpointStore.loading || MigrationStore.detailsLoading}
+            detailsLoading={endpointStore.loading || migrationStore.detailsLoading}
             onDeleteMigrationClick={() => { this.handleDeleteMigrationClick() }}
           />}
         />

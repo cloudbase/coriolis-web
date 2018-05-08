@@ -27,18 +27,18 @@ import AssessmentListItem from '../../molecules/AssessmentListItem'
 import type { Assessment } from '../../../types/Assessment'
 import type { Endpoint } from '../../../types/Endpoint'
 
-import AzureStore from '../../../stores/AzureStore'
-import AssessmentStore from '../../../stores/AssessmentStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import ProjectStore from '../../../stores/ProjectStore'
-import UserStore from '../../../stores/UserStore'
+import azureStore from '../../../stores/AzureStore'
+import assessmentStore from '../../../stores/AssessmentStore'
+import endpointStore from '../../../stores/EndpointStore'
+import projectStore from '../../../stores/ProjectStore'
+import userStore from '../../../stores/UserStore'
 
 import { requestPollTimeout } from '../../../config'
 
 const Wrapper = styled.div``
 
 type Props = {}
-type State = {modalIsOpen: boolean}
+type State = { modalIsOpen: boolean }
 @observer
 class AssessmentsPage extends React.Component<Props, State> {
   disablePolling: boolean
@@ -49,20 +49,20 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    ProjectStore.getProjects()
+    projectStore.getProjects()
 
-    if (!AzureStore.isLoadedForCurrentProject()) {
-      AssessmentStore.clearSelection()
-      AzureStore.clearAssessments()
+    if (!azureStore.isLoadedForCurrentProject()) {
+      assessmentStore.clearSelection()
+      azureStore.clearAssessments()
     }
 
     this.disablePolling = false
     this.pollData()
 
-    EndpointStore.getEndpoints({ showLoading: true }).then(() => {
-      let endpoints = EndpointStore.endpoints.filter(e => e.type === 'azure')
+    endpointStore.getEndpoints({ showLoading: true }).then(() => {
+      let endpoints = endpointStore.endpoints.filter(e => e.type === 'azure')
       if (endpoints.length > 0) {
-        this.chooseEndpoint(AssessmentStore.selectedEndpoint && AssessmentStore.selectedEndpoint.id ? AssessmentStore.selectedEndpoint : endpoints[0])
+        this.chooseEndpoint(assessmentStore.selectedEndpoint && assessmentStore.selectedEndpoint.id ? assessmentStore.selectedEndpoint : endpoints[0])
       }
     })
   }
@@ -73,23 +73,23 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   getEndpointsDropdownConfig() {
-    let endpoints = EndpointStore.endpoints.filter(e => e.type === 'azure')
+    let endpoints = endpointStore.endpoints.filter(e => e.type === 'azure')
     return {
       key: 'endpoint',
-      selectedItem: AssessmentStore.selectedEndpoint ? AssessmentStore.selectedEndpoint.id : '',
+      selectedItem: assessmentStore.selectedEndpoint ? assessmentStore.selectedEndpoint.id : '',
       items: endpoints.map(endpoint => ({ label: endpoint.name, value: endpoint.id, endpoint })),
       onChange: (item: { endpoint: Endpoint }) => { this.chooseEndpoint(item.endpoint, true) },
       selectItemLabel: 'Select Endpoint',
-      noItemsLabel: EndpointStore.loading ? 'Loading ...' : 'No Endpoints',
+      noItemsLabel: endpointStore.loading ? 'Loading ...' : 'No Endpoints',
       limitListOffset: true,
     }
   }
 
   getResourceGroupsDropdownConfig() {
-    let groups = AzureStore.resourceGroups
+    let groups = azureStore.resourceGroups
     return {
       key: 'resource-group',
-      selectedItem: AssessmentStore.selectedResourceGroup ? AssessmentStore.selectedResourceGroup.id : '',
+      selectedItem: assessmentStore.selectedResourceGroup ? assessmentStore.selectedResourceGroup.id : '',
       items: groups.map(group => ({ label: group.name, value: group.id, group })),
       onChange: (item: Assessment) => { this.chooseResourceGroup(item.group) },
       selectItemLabel: 'Loading ...',
@@ -99,7 +99,7 @@ class AssessmentsPage extends React.Component<Props, State> {
 
   getFilterItems() {
     let types = [{ label: 'All projects', value: 'all' }]
-    let assessments = AzureStore.assessments
+    let assessments = azureStore.assessments
     let uniqueProjects = []
 
     assessments.forEach(a => {
@@ -113,15 +113,15 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   handleReloadButtonClick() {
-    if (!EndpointStore.connectionInfo) {
+    if (!endpointStore.connectionInfo) {
       return
     }
 
-    AzureStore.getAssessments(
+    azureStore.getAssessments(
       // $FlowIgnore
-      EndpointStore.connectionInfo.subscription_id,
-      AssessmentStore.selectedResourceGroup ? AssessmentStore.selectedResourceGroup.name : '',
-      UserStore.user ? UserStore.user.project.id : ''
+      endpointStore.connectionInfo.subscription_id,
+      assessmentStore.selectedResourceGroup ? assessmentStore.selectedResourceGroup.name : '',
+      userStore.user ? userStore.user.project.id : ''
     )
   }
 
@@ -130,9 +130,9 @@ class AssessmentsPage extends React.Component<Props, State> {
       return
     }
 
-    let connectionInfo = EndpointStore.connectionInfo
-    let endpoint = AssessmentStore.selectedEndpoint
-    let resourceGroupName = AssessmentStore.selectedResourceGroup ? AssessmentStore.selectedResourceGroup.name : ''
+    let connectionInfo = endpointStore.connectionInfo
+    let endpoint = assessmentStore.selectedEndpoint
+    let resourceGroupName = assessmentStore.selectedResourceGroup ? assessmentStore.selectedResourceGroup.name : ''
     let projectName = assessment.project.name
     let groupName = assessment.group.name
     let assessmentName = assessment.name
@@ -143,12 +143,12 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   handleProjectChange() {
-    AssessmentStore.clearSelection()
-    AzureStore.clearAssessments()
-    EndpointStore.getEndpoints({ showLoading: true }).then(() => {
-      let endpoints = EndpointStore.endpoints.filter(e => e.type === 'azure')
+    assessmentStore.clearSelection()
+    azureStore.clearAssessments()
+    endpointStore.getEndpoints({ showLoading: true }).then(() => {
+      let endpoints = endpointStore.endpoints.filter(e => e.type === 'azure')
       if (endpoints.length > 0) {
-        this.chooseEndpoint(AssessmentStore.selectedEndpoint && AssessmentStore.selectedEndpoint.id ? AssessmentStore.selectedEndpoint : endpoints[0])
+        this.chooseEndpoint(assessmentStore.selectedEndpoint && assessmentStore.selectedEndpoint.id ? assessmentStore.selectedEndpoint : endpoints[0])
       }
     })
   }
@@ -164,7 +164,7 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   areResourceGroupsLoading() {
-    return AzureStore.authenticating || AzureStore.loadingResourceGroups
+    return azureStore.authenticating || azureStore.loadingResourceGroups
   }
 
   pollData() {
@@ -172,19 +172,19 @@ class AssessmentsPage extends React.Component<Props, State> {
       return
     }
 
-    let connectionInfo = EndpointStore.connectionInfo
-    let selectedResourceGroup = AssessmentStore.selectedResourceGroup
+    let connectionInfo = endpointStore.connectionInfo
+    let selectedResourceGroup = assessmentStore.selectedResourceGroup
 
     if (!connectionInfo || !connectionInfo.subscription_id || !selectedResourceGroup || !selectedResourceGroup.name) {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
       return
     }
 
-    AzureStore.getAssessments(
+    azureStore.getAssessments(
       // $FlowIgnore
       connectionInfo.subscription_id,
       selectedResourceGroup.name,
-      UserStore.user ? UserStore.user.project.id : '',
+      userStore.user ? userStore.user.project.id : '',
       { backgroundLoading: true }
     ).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
@@ -192,41 +192,41 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   chooseResourceGroup(selectedResourceGroup: $PropertyType<Assessment, 'group'>) {
-    if (!EndpointStore.connectionInfo) {
+    if (!endpointStore.connectionInfo) {
       return
     }
 
-    AssessmentStore.updateSelectedResourceGroup(selectedResourceGroup)
-    AzureStore.getAssessments(
+    assessmentStore.updateSelectedResourceGroup(selectedResourceGroup)
+    azureStore.getAssessments(
       // $FlowIssue
-      EndpointStore.connectionInfo.subscription_id,
+      endpointStore.connectionInfo.subscription_id,
       selectedResourceGroup.name,
-      UserStore.user ? UserStore.user.project.id : '',
+      userStore.user ? userStore.user.project.id : '',
     )
   }
 
   chooseEndpoint(selectedEndpoint: Endpoint, clearResourceGroup?: boolean) {
-    if (AssessmentStore.selectedEndpoint && AssessmentStore.selectedEndpoint.id === selectedEndpoint.id) {
+    if (assessmentStore.selectedEndpoint && assessmentStore.selectedEndpoint.id === selectedEndpoint.id) {
       return
     }
 
-    AssessmentStore.updateSelectedEndpoint(selectedEndpoint)
+    assessmentStore.updateSelectedEndpoint(selectedEndpoint)
 
     if (clearResourceGroup) {
-      AssessmentStore.updateSelectedResourceGroup(null)
+      assessmentStore.updateSelectedResourceGroup(null)
     }
 
-    EndpointStore.getConnectionInfo(selectedEndpoint).then(() => {
-      let connectionInfo = EndpointStore.connectionInfo
+    endpointStore.getConnectionInfo(selectedEndpoint).then(() => {
+      let connectionInfo = endpointStore.connectionInfo
       if (!connectionInfo) {
         return
       }
       // $FlowIgnore
-      AzureStore.authenticate(connectionInfo.user_credentials.username, connectionInfo.user_credentials.password).then(() => {
+      azureStore.authenticate(connectionInfo.user_credentials.username, connectionInfo.user_credentials.password).then(() => {
         // $FlowIgnore
-        AzureStore.getResourceGroups(connectionInfo.subscription_id).then(() => {
-          let groups = AzureStore.resourceGroups
-          let selectedGroup = AssessmentStore.selectedResourceGroup
+        azureStore.getResourceGroups(connectionInfo.subscription_id).then(() => {
+          let groups = azureStore.resourceGroups
+          let selectedGroup = assessmentStore.selectedResourceGroup
           // $FlowIssue
           if (groups.filter(rg => rg.id === selectedGroup ? selectedGroup.id : '').length > 0) {
             return
@@ -260,10 +260,10 @@ class AssessmentsPage extends React.Component<Props, State> {
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="assessments"
-              loading={this.areResourceGroupsLoading() || AzureStore.loadingAssessments}
+              loading={this.areResourceGroupsLoading() || azureStore.loadingAssessments}
               items={
                 // $FlowIgnore
-                AzureStore.assessments
+                azureStore.assessments
               }
               onItemClick={item => {
                 let itemAny: any = item

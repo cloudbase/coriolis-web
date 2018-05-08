@@ -18,7 +18,7 @@ import { observable, action } from 'mobx'
 
 import type { MainItem } from '../types/MainItem'
 import type { Field } from '../types/Field'
-import NotificationStore from '../stores/NotificationStore'
+import notificationStore from '../stores/NotificationStore'
 import MigrationSource from '../sources/MigrationSource'
 
 class MigrationStore {
@@ -84,7 +84,7 @@ class MigrationStore {
         ...this.migrations,
       ]
 
-      NotificationStore.notify('Migration successfully created from replica.', 'success', {
+      notificationStore.notify('Migration successfully created from replica.', 'success', {
         action: {
           label: 'View Migration Status',
           callback: () => {

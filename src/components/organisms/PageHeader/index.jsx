@@ -27,10 +27,10 @@ import Modal from '../../molecules/Modal'
 import ChooseProvider from '../../organisms/ChooseProvider'
 import Endpoint from '../../organisms/Endpoint'
 
-import ProjectStore from '../../../stores/ProjectStore'
-import UserStore from '../../../stores/UserStore'
-import NotificationStore from '../../../stores/NotificationStore'
-import ProviderStore from '../../../stores/ProviderStore'
+import projectStore from '../../../stores/ProjectStore'
+import userStore from '../../../stores/UserStore'
+import notificationStore from '../../../stores/NotificationStore'
+import providerStore from '../../../stores/ProviderStore'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -81,13 +81,13 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    NotificationStore.loadNotifications()
+    notificationStore.loadNotifications()
   }
 
   getCurrentProject() {
-    let project = UserStore.user && UserStore.user.project ? UserStore.user.project : null
+    let project = userStore.user && userStore.user.project ? userStore.user.project : null
     if (project) {
-      return ProjectStore.projects.find(p => p.id === project.id)
+      return projectStore.projects.find(p => p.id === project.id)
     }
 
     return null
@@ -96,7 +96,7 @@ class PageHeader extends React.Component<Props, State> {
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserStore.logout()
+        userStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -108,7 +108,7 @@ class PageHeader extends React.Component<Props, State> {
   handleNewItem(item: ItemType) {
     switch (item.value) {
       case 'endpoint':
-        ProviderStore.loadProviders()
+        providerStore.loadProviders()
         if (this.props.onModalOpen) {
           this.props.onModalOpen()
         }
@@ -119,7 +119,7 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   handleNotificationsClose() {
-    NotificationStore.clearNotifications()
+    notificationStore.clearNotifications()
   }
 
   handleCloseChooseProviderModal() {
@@ -149,8 +149,8 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   handleProjectChange(project: Project) {
-    UserStore.switchProject(project.id).then(() => {
-      ProjectStore.getProjects()
+    userStore.switchProject(project.id).then(() => {
+      projectStore.getProjects()
 
       if (this.props.onProjectChange) {
         this.props.onProjectChange(project)
@@ -165,14 +165,14 @@ class PageHeader extends React.Component<Props, State> {
         <Controls>
           <Dropdown
             selectedItem={this.getCurrentProject()}
-            items={ProjectStore.projects}
+            items={projectStore.projects}
             onChange={project => { this.handleProjectChange(project) }}
             noItemsMessage="Loading..."
             labelField="name"
           />
           <NewItemDropdown onChange={item => { this.handleNewItem(item) }} />
-          <NotificationDropdown items={NotificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
-          <UserDropdown user={UserStore.user} onItemClick={item => { this.handleUserItemClick(item) }} />
+          <NotificationDropdown items={notificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
+          <UserDropdown user={userStore.user} onItemClick={item => { this.handleUserItemClick(item) }} />
         </Controls>
         <Modal
           isOpen={this.state.showChooseProviderModal}
@@ -181,8 +181,8 @@ class PageHeader extends React.Component<Props, State> {
         >
           <ChooseProvider
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
-            providers={ProviderStore.providers}
-            loading={ProviderStore.providersLoading}
+            providers={providerStore.providers}
+            loading={providerStore.providersLoading}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
           />
         </Modal>

@@ -20,7 +20,7 @@ import styled, { injectGlobal } from 'styled-components'
 import NotificationSystem from 'react-notification-system'
 import { observe } from 'mobx'
 
-import NotificationStore from '../../../stores/NotificationStore'
+import notificationStore from '../../../stores/NotificationStore'
 import type { NotificationItem } from '../../../types/NotificationItem'
 
 import NotificationsStyle from './style.js'
@@ -42,7 +42,7 @@ class Notifications extends React.Component<{}> {
   }
 
   componentDidMount() {
-    observe(NotificationStore.notifications, change => {
+    observe(notificationStore.notifications, change => {
       this.handleStoreChange(change.object)
     })
   }

@@ -27,10 +27,10 @@ import Modal from '../../molecules/Modal'
 import EndpointValidation from '../../organisms/EndpointValidation'
 import Endpoint from '../../organisms/Endpoint'
 
-import EndpointStore from '../../../stores/EndpointStore'
-import MigrationStore from '../../../stores/MigrationStore'
-import ReplicaStore from '../../../stores/ReplicaStore'
-import UserStore from '../../../stores/UserStore'
+import endpointStore from '../../../stores/EndpointStore'
+import migrationStore from '../../../stores/MigrationStore'
+import replicaStore from '../../../stores/ReplicaStore'
+import userStore from '../../../stores/UserStore'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 import type { MainItem } from '../../../types/MainItem'
 
@@ -47,7 +47,7 @@ type State = {
   showEndpointModal: boolean,
   showEndpointInUseModal: boolean,
   showEndpointInUseLoadingModal: boolean,
-  endpointUsage: {replicas: MainItem[], migrations: MainItem[]}
+  endpointUsage: { replicas: MainItem[], migrations: MainItem[] }
 }
 @observer
 class EndpointDetailsPage extends React.Component<Props, State> {
@@ -71,18 +71,18 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    EndpointStore.clearConnectionInfo()
+    endpointStore.clearConnectionInfo()
   }
 
   getEndpoint(): ?EndpointType {
-    return EndpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
+    return endpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
   }
 
-  getEndpointUsage(): {migrations: MainItem[], replicas: MainItem[]} {
+  getEndpointUsage(): { migrations: MainItem[], replicas: MainItem[] } {
     let endpointId = this.props.match.params.id
-    let replicas = ReplicaStore.replicas.filter(
+    let replicas = replicaStore.replicas.filter(
       r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId)
-    let migrations = MigrationStore.migrations.filter(
+    let migrations = migrationStore.migrations.filter(
       r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId)
 
     return { migrations, replicas }
@@ -91,7 +91,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserStore.logout()
+        userStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -107,7 +107,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   handleDeleteEndpointClick() {
     this.setState({ showEndpointInUseLoadingModal: true })
 
-    Promise.all([ReplicaStore.getReplicas(), MigrationStore.getMigrations()]).then(() => {
+    Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()]).then(() => {
       const endpointUsage = this.getEndpointUsage()
 
       if (endpointUsage.migrations.length === 0 && endpointUsage.replicas.length === 0) {
@@ -123,7 +123,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     window.location.href = '/#/endpoints'
     let endpoint = this.getEndpoint()
     if (endpoint) {
-      EndpointStore.delete(endpoint)
+      endpointStore.delete(endpoint)
     }
   }
 
@@ -134,7 +134,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   handleValidateClick() {
     let endpoint = this.getEndpoint()
     if (endpoint) {
-      EndpointStore.validate(endpoint)
+      endpointStore.validate(endpoint)
     }
     this.setState({ showValidationModal: true })
   }
@@ -142,12 +142,12 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   handleRetryValidation() {
     let endpoint = this.getEndpoint()
     if (endpoint) {
-      EndpointStore.validate(endpoint)
+      endpointStore.validate(endpoint)
     }
   }
 
   handleCloseValidationModal() {
-    EndpointStore.clearValidation()
+    endpointStore.clearValidation()
     this.setState({ showValidationModal: false })
   }
 
@@ -156,7 +156,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   handleEditValidateClick(endpoint: EndpointType) {
-    EndpointStore.validate(endpoint)
+    endpointStore.validate(endpoint)
   }
 
   handleCloseEndpointModal() {
@@ -168,17 +168,17 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   loadData() {
-    EndpointStore.getEndpoints().then(() => {
+    endpointStore.getEndpoints().then(() => {
       let endpoint = this.getEndpoint()
 
       if (endpoint && endpoint.connection_info && endpoint.connection_info.secret_ref) {
-        EndpointStore.getConnectionInfo(endpoint)
+        endpointStore.getConnectionInfo(endpoint)
       } else if (endpoint && endpoint.connection_info) {
-        EndpointStore.setConnectionInfo(endpoint.connection_info)
+        endpointStore.setConnectionInfo(endpoint.connection_info)
       }
     })
 
-    Promise.all([ReplicaStore.getReplicas(), MigrationStore.getMigrations()]).then(() => {
+    Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()]).then(() => {
       this.setState({ endpointUsage: this.getEndpointUsage() })
     })
   }
@@ -189,7 +189,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
       <Wrapper>
         <DetailsTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={UserStore.user}
+            user={userStore.user}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
@@ -202,8 +202,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           contentComponent={<EndpointDetailsContent
             item={endpoint}
             usage={this.state.endpointUsage}
-            loading={EndpointStore.connectionInfoLoading || EndpointStore.loading}
-            connectionInfo={EndpointStore.connectionInfo}
+            loading={endpointStore.connectionInfoLoading || endpointStore.loading}
+            connectionInfo={endpointStore.connectionInfo}
             onDeleteClick={() => { this.handleDeleteEndpointClick() }}
             onValidateClick={() => { this.handleValidateClick() }}
             onEditClick={() => { this.handleEditClick() }}
@@ -236,8 +236,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           onRequestClose={() => { this.handleCloseValidationModal() }}
         >
           <EndpointValidation
-            validation={EndpointStore.validation}
-            loading={EndpointStore.validating}
+            validation={endpointStore.validation}
+            loading={endpointStore.validating}
             onCancelClick={() => { this.handleCloseValidationModal() }}
             onRetryClick={() => { this.handleRetryValidation() }}
           />

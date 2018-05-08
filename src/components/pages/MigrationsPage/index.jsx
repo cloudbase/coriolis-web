@@ -29,10 +29,10 @@ import type { MainItem } from '../../../types/MainItem'
 import migrationItemImage from './images/migration.svg'
 import migrationLargeImage from './images/migration-large.svg'
 
-import ProjectStore from '../../../stores/ProjectStore'
-import MigrationStore from '../../../stores/MigrationStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import NotificationStore from '../../../stores/NotificationStore'
+import projectStore from '../../../stores/ProjectStore'
+import migrationStore from '../../../stores/MigrationStore'
+import endpointStore from '../../../stores/EndpointStore'
+import notificationStore from '../../../stores/NotificationStore'
 import { requestPollTimeout } from '../../../config'
 
 const Wrapper = styled.div``
@@ -67,8 +67,8 @@ class MigrationsPage extends React.Component<{}, State> {
   componentDidMount() {
     document.title = 'Coriolis Migrations'
 
-    ProjectStore.getProjects()
-    EndpointStore.getEndpoints({ showLoading: true })
+    projectStore.getProjects()
+    endpointStore.getEndpoints({ showLoading: true })
 
     this.stopPolling = false
     this.pollData()
@@ -80,7 +80,7 @@ class MigrationsPage extends React.Component<{}, State> {
   }
 
   getEndpoint(endpointId: string) {
-    return EndpointStore.endpoints.find(endpoint => endpoint.id === endpointId)
+    return endpointStore.endpoints.find(endpoint => endpoint.id === endpointId)
   }
 
   getFilterItems() {
@@ -93,14 +93,14 @@ class MigrationsPage extends React.Component<{}, State> {
   }
 
   handleProjectChange() {
-    EndpointStore.getEndpoints({ showLoading: true })
-    MigrationStore.getMigrations({ showLoading: true })
+    endpointStore.getEndpoints({ showLoading: true })
+    migrationStore.getMigrations({ showLoading: true })
   }
 
   handleReloadButtonClick() {
-    ProjectStore.getProjects()
-    EndpointStore.getEndpoints({ showLoading: true })
-    MigrationStore.getMigrations({ showLoading: true })
+    projectStore.getProjects()
+    endpointStore.getEndpoints({ showLoading: true })
+    migrationStore.getMigrations({ showLoading: true })
   }
 
   handleItemClick(item: MainItem) {
@@ -130,9 +130,9 @@ class MigrationsPage extends React.Component<{}, State> {
       return
     }
     this.state.confirmationItems.forEach(migration => {
-      MigrationStore.cancel(migration.id)
+      migrationStore.cancel(migration.id)
     })
-    NotificationStore.notify('Canceling migrations')
+    notificationStore.notify('Canceling migrations')
     this.handleCloseCancelMigration()
   }
 
@@ -155,7 +155,7 @@ class MigrationsPage extends React.Component<{}, State> {
       return
     }
     this.state.confirmationItems.forEach(migration => {
-      MigrationStore.delete(migration.id)
+      migrationStore.delete(migration.id)
     })
     this.handleCloseDeleteMigrationConfirmation()
   }
@@ -206,7 +206,7 @@ class MigrationsPage extends React.Component<{}, State> {
       return
     }
 
-    Promise.all([MigrationStore.getMigrations(), EndpointStore.getEndpoints()]).then(() => {
+    Promise.all([migrationStore.getMigrations(), endpointStore.getEndpoints()]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
@@ -234,8 +234,8 @@ class MigrationsPage extends React.Component<{}, State> {
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="migration"
-              loading={MigrationStore.loading}
-              items={MigrationStore.migrations}
+              loading={migrationStore.loading}
+              items={migrationStore.migrations}
               onItemClick={item => { this.handleItemClick(item) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               actions={BulkActions}
@@ -250,7 +250,7 @@ class MigrationsPage extends React.Component<{}, State> {
                     if (endpoint) {
                       return endpoint.type
                     }
-                    if (EndpointStore.loading) {
+                    if (endpointStore.loading) {
                       return 'Loading...'
                     }
                     return 'Not Found'
