@@ -186,13 +186,17 @@ class EndpointDetailsContent extends React.Component<Props> {
 
   render() {
     this.renderedKeys = {}
-    const { type, name, description, created_at } = this.props.item || {}
+    const { type, name, description, created_at, id } = this.props.item || {}
     const usage = this.props.usage.replicas.concat(this.props.usage.migrations)
 
     return (
       <Wrapper>
         <EndpointLogos endpoint={type} />
         <Info>
+          <Field>
+            <Label>Id</Label>
+            {this.renderValue(id)}
+          </Field>
           <Field>
             <Label>Name</Label>
             {this.renderValue(name, 'name')}
