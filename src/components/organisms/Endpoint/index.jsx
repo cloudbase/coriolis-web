@@ -394,6 +394,11 @@ class Endpoint extends React.Component<Props, State> {
         {this.renderButtons()}
         <Tooltip />
         {Tooltip.rebuild()}
+        {/* Fix browsers autofilling password fields */}
+        <div style={{ position: 'absolute', left: '-10000px' }}>
+          <input type="text" />
+          <input type="password" />
+        </div>
       </Content>
     )
   }
