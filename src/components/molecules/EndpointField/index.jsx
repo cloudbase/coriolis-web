@@ -23,6 +23,8 @@ import TextInput from '../../atoms/TextInput'
 import RadioInput from '../../atoms/RadioInput'
 import InfoIcon from '../../atoms/InfoIcon'
 import Dropdown from '../../molecules/Dropdown'
+import DropdownInput from '../../molecules/DropdownInput'
+import type { Field as FieldType } from '../../../types/Field'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -45,6 +47,8 @@ type Props = {
   type: string,
   value: any,
   onChange?: (value: any) => void,
+  getFieldValue?: (fieldName: string) => string,
+  onFieldChange?: (fieldName: string, fieldValue: string) => void,
   className?: string,
   minimum: number,
   maximum: number,
@@ -54,6 +58,7 @@ type Props = {
   highlight: boolean,
   disabled: boolean,
   enum?: string[],
+  items?: FieldType[],
 }
 @observer
 class Field extends React.Component<Props> {
@@ -143,8 +148,37 @@ class Field extends React.Component<Props> {
     )
   }
 
+  renderDropdownInput() {
+    if (!this.props.items) {
+      return null
+    }
+
+    let items = this.props.items.map(field => {
+      return {
+        value: field.name,
+        label: field.label || LabelDictionary.get(field.name),
+      }
+    })
+
+    return (
+      <DropdownInput
+        items={items}
+        selectedItem={this.props.value}
+        onItemChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
+        inputValue={this.props.getFieldValue ? this.props.getFieldValue(this.props.value) : ''}
+        onInputChange={value => { if (this.props.onFieldChange) this.props.onFieldChange(this.props.value, value) }}
+        placeholder={LabelDictionary.get(this.props.value)}
+        required={this.props.required}
+        highlight={this.props.highlight}
+        disabled={this.props.disabled}
+      />
+    )
+  }
+
   renderInput() {
     switch (this.props.type) {
+      case 'input-choice':
+        return this.renderDropdownInput()
       case 'boolean':
         return this.renderSwitch()
       case 'string':

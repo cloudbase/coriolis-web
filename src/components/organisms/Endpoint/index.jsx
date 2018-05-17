@@ -383,7 +383,7 @@ class Endpoint extends React.Component<Props, State> {
           cancelButtonText: this.props.cancelButtonText,
           getFieldValue: field => this.getFieldValue(field),
           highlightRequired: () => this.highlightRequired(),
-          handleFieldChange: (field, value) => { this.handleFieldsChange([{ field, value }]) },
+          handleFieldChange: (field, value) => { if (field) this.handleFieldsChange([{ field, value }]) },
           handleFieldsChange: fields => { this.handleFieldsChange(fields) },
           handleValidateClick: () => { this.handleValidateClick() },
           handleCancelClick: () => { this.handleCancelClick() },

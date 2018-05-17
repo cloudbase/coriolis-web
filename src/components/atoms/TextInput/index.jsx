@@ -41,9 +41,12 @@ const Input = styled.input`
   width: ${props => getInputWidth(props)};
   height: ${StyleProps.inputSizes.regular.height}px;
   line-height: ${StyleProps.inputSizes.regular.height}px;
-  border-radius: ${StyleProps.borderRadius};
   background-color: #FFF;
   border: ${props => props.embedded ? 0 : css`1px solid ${props => borderColor(props)}`};
+  border-top-left-radius: ${props => props.embedded ? 0 : StyleProps.borderRadius};
+  border-top-right-radius: ${StyleProps.borderRadius};
+  border-bottom-left-radius: ${props => props.embedded ? 0 : StyleProps.borderRadius};
+  border-bottom-right-radius: ${StyleProps.borderRadius};
   color: ${Palette.black};
   padding: 0 ${props => props.customRequired ? '29px' : '8px'} 0 ${props => props.embedded ? 0 : '16px'};
   font-size: inherit;
@@ -98,6 +101,7 @@ type Props = {
   showClose?: boolean,
   onCloseClick?: () => void,
   embedded?: boolean,
+  requiredStyle?: any,
   'data-test-id'?: string,
 }
 const TextInput = (props: Props) => {
@@ -114,7 +118,11 @@ const TextInput = (props: Props) => {
         data-test-id="textInput-input"
         {...props}
       />
-      <Required show={required} data-test-id="textInput-required" />
+      <Required
+        show={required}
+        data-test-id="textInput-required"
+        style={props.requiredStyle}
+      />
       <Close
         data-test-id="textInput-close"
         show={showClose && value !== '' && value !== undefined}

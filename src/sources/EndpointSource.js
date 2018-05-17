@@ -61,7 +61,7 @@ class EdnpointSource {
   }
   static delete(endpoint: Endpoint): Promise<string> {
     return new Promise((resolve, reject) => {
-      let projectId :any = cookie.get('projectId')
+      let projectId: any = cookie.get('projectId')
 
       Api.send({
         url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}`,

@@ -21,7 +21,7 @@ import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
-const ToggleButtonBarStyled = styled(ToggleButtonBar)`
+const ToggleButtonBarStyled = styled(ToggleButtonBar) `
   margin-top: 16px;
 `
 
@@ -30,7 +30,7 @@ type Props = {
   validation: { valid: boolean, validation: { message: string } },
   invalidFields: string[],
   getFieldValue: (field: ?Field) => any,
-  handleFieldChange: (field: Field, value: any) => void,
+  handleFieldChange: (field: ?Field, value: any) => void,
   disabled: boolean,
   cancelButtonText: string,
   validating: boolean,
@@ -63,23 +63,29 @@ class ContentPlugin extends React.Component<Props, State> {
     this.props.onRef(undefined)
   }
 
+  getApiVersion(): number {
+    return this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
+  }
+
   handleAdvancedOptionsToggle(useAdvancedOptions: boolean) {
     this.setState({ useAdvancedOptions })
   }
 
   findInvalidFields = () => {
-    const apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
+    let inputChoices = ['user_domain', 'project_domain']
+
     const invalidFields = this.props.connectionInfoSchema.filter(field => {
-      let required
-      if (typeof field.required === 'function') {
-        required = field.required(apiVersion)
-      } else {
-        required = field.required
-      }
-      if (required) {
+      if (field.required) {
         let value = this.props.getFieldValue(field)
         return !value
       }
+      let inputChoice = inputChoices.find(c => c === field.name)
+      if (inputChoice && this.getApiVersion() > 2) {
+        let selectionValue = this.props.getFieldValue(this.props.connectionInfoSchema.find(f => f.name === inputChoice))
+        let itemValue = this.props.getFieldValue(this.props.connectionInfoSchema.find(f => f.name === selectionValue))
+        return !itemValue
+      }
+
       return false
     }).map(f => f.name)
 
@@ -87,19 +93,16 @@ class ContentPlugin extends React.Component<Props, State> {
   }
 
   filterSimpleAdvanced(): Field[] {
-    const apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
-    const extraAdvancedFields = ['description', 'glance_api_version', 'identity_api_version']
-    return this.props.connectionInfoSchema.filter(field => {
+    let extraAdvancedFields = ['description', 'glance_api_version', 'identity_api_version']
+    if (this.getApiVersion() > 2) {
+      extraAdvancedFields = extraAdvancedFields.concat(['user_domain', 'project_domain'])
+    }
+    let ignoreFields = ['user_domain_id', 'project_domain_id', 'user_domain_name', 'project_domain_name']
+    return this.props.connectionInfoSchema.filter(f => !ignoreFields.find(i => i === f.name)).filter(field => {
       if (this.state.useAdvancedOptions) {
         return true
       }
-      let required
-      if (typeof field.required === 'function') {
-        required = field.required(apiVersion)
-      } else {
-        required = field.required
-      }
-      return required || extraAdvancedFields.find(fieldName => field.name === fieldName)
+      return field.required || extraAdvancedFields.find(fieldName => field.name === fieldName)
     })
   }
 
@@ -116,21 +119,21 @@ class ContentPlugin extends React.Component<Props, State> {
   renderFields() {
     const rows = []
     let lastField
-    let apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
-
     let fields = this.filterSimpleAdvanced()
 
     fields.forEach((field, i) => {
       const currentField = (
         <FieldStyled
           {...field}
-          required={typeof field.required === 'function' ? field.required(apiVersion) : field.required}
+          required={field.required || (this.getApiVersion() > 2 ? field.name === 'user_domain' || field.name === 'project_domain' : false)}
           large
           disabled={this.props.disabled}
           password={field.name === 'password'}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
           value={this.props.getFieldValue(field)}
           onChange={value => { this.props.handleFieldChange(field, value) }}
+          getFieldValue={fieldName => this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === fieldName))}
+          onFieldChange={(fieldName, fieldValue) => { this.props.handleFieldChange(this.props.connectionInfoSchema.find(n => n.name === fieldName), fieldValue) }}
         />
       )
       if (i % 2 !== 0) {
