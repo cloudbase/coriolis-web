@@ -19,7 +19,7 @@ export type Field = {
   type?: string,
   value?: any,
   enum?: string[],
-  required?: boolean | (value: any) => boolean,
+  required?: boolean,
   default?: any,
   items?: Field[],
   fields?: Field[],
@@ -27,4 +27,5 @@ export type Field = {
   maximum?: number,
   parent?: string,
   properties?: Field[],
+  isBasic?: boolean | (value: any) => boolean, // show this field in simple view even if is not 'required'
 }
