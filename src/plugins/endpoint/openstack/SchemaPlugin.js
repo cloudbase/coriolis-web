@@ -66,7 +66,6 @@ export default class ConnectionSchemaParser {
           name,
           type: 'input-choice',
           items: [field1, field2],
-          default: field1Name,
         }
         fields.push(field)
       }
