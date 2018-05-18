@@ -21,7 +21,7 @@ import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
-const ToggleButtonBarStyled = styled(ToggleButtonBar) `
+const ToggleButtonBarStyled = styled(ToggleButtonBar)`
   margin-top: 16px;
 `
 
@@ -88,18 +88,18 @@ class ContentPlugin extends React.Component<Props, State> {
 
   filterSimpleAdvanced(): Field[] {
     const apiVersion = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
-    const extraAdvancedFields = ['description']
+    const extraAdvancedFields = ['description', 'glance_api_version', 'identity_api_version']
     return this.props.connectionInfoSchema.filter(field => {
       if (this.state.useAdvancedOptions) {
         return true
       }
-      let isBasic
-      if (typeof field.isBasic === 'function') {
-        isBasic = field.isBasic(apiVersion)
+      let required
+      if (typeof field.required === 'function') {
+        required = field.required(apiVersion)
       } else {
-        isBasic = field.isBasic
+        required = field.required
       }
-      return field.required || isBasic || extraAdvancedFields.find(fieldName => field.name === fieldName)
+      return required || extraAdvancedFields.find(fieldName => field.name === fieldName)
     })
   }
 

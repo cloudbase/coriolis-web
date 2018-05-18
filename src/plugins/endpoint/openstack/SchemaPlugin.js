@@ -30,9 +30,7 @@ const customSort = (fields: Field[]) => {
     glance_api_version: 7,
     identity_api_version: 8,
     project_domain_name: 9,
-    project_domain_id: 10,
-    user_domain_name: 11,
-    user_domain_id: 12,
+    user_domain_name: 10,
   }
   fields.sort((a, b) => {
     if (sortPriority[a.name] && sortPriority[b.name]) {
@@ -60,26 +58,11 @@ export default class ConnectionSchemaParser {
     customSort(fields)
 
     let projectDomainField = fields.find(f => f.name === 'project_domain_name')
-    let projectDomainIdField = fields.find(f => f.name === 'project_domain_id')
     let userDomainField = fields.find(f => f.name === 'user_domain_name')
-    let userDomainIdField = fields.find(f => f.name === 'user_domain_id')
-    let glanceApiVersionField = fields.find(f => f.name === 'glance_api_version')
-    let identityApiVersionField = fields.find(f => f.name === 'identity_api_version')
-    let isBasicFunc = (apiVersion: number) => apiVersion > 2
-    if (
-      projectDomainField &&
-      userDomainField &&
-      glanceApiVersionField &&
-      identityApiVersionField &&
-      userDomainIdField &&
-      projectDomainIdField
-    ) {
-      projectDomainField.isBasic = isBasicFunc
-      projectDomainIdField.isBasic = isBasicFunc
-      userDomainField.isBasic = isBasicFunc
-      userDomainIdField.isBasic = isBasicFunc
-      glanceApiVersionField.isBasic = true
-      glanceApiVersionField.isBasic = true
+    let requiredFunc = (apiVersion: number) => apiVersion > 2
+    if (projectDomainField && userDomainField) {
+      projectDomainField.required = requiredFunc
+      userDomainField.required = requiredFunc
     }
 
     return fields
