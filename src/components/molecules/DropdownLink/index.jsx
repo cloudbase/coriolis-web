@@ -24,7 +24,7 @@ import SearchInput from '../../molecules/SearchInput'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
-import arrowImage from './images/arrow.svg'
+import arrowImage from './images/arrow.js'
 import checkmarkImage from './images/checkmark.svg'
 
 const Wrapper = styled.div`
@@ -39,8 +39,8 @@ const LinkButton = styled.div`
 `
 const List = styled.div`
   position: absolute;
-  z-index: 20;
-  padding: 8px;
+  z-index: 1001;
+  padding: 8px 16px 8px 8px;
   background: ${Palette.grayscale[1]};
   border-radius: 4px;
   border: 1px solid ${Palette.grayscale[0]};
@@ -89,7 +89,7 @@ const Checkmark = styled.div`
   margin-right: 8px;
 `
 const Label = styled.div`
-  color: ${Palette.primary};
+  color: ${props => props.secondary ? Palette.grayscale[4] : Palette.primary};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -97,9 +97,8 @@ const Label = styled.div`
 const Arrow = styled.div`
   width: 16px;
   height: 16px;
-  background: url('${arrowImage}') center no-repeat;
   margin-left: 4px;
-  margin-top: -1px;
+  margin-top: -3px;
 `
 const EmptySearch = styled.div`
   margin-top: 8px;
@@ -122,7 +121,10 @@ type Props = {
   listWidth?: string,
   searchable?: boolean,
   disabled?: boolean,
+  secondary?: boolean,
   'data-test-id'?: string,
+  linkButtonStyle?: any,
+  arrowImage?: (color: string) => string,
 }
 type State = {
   showDropdownList: boolean,
@@ -340,6 +342,8 @@ class DropdownLink extends React.Component<Props, State> {
       return this.props.selectItemLabel
     }
 
+    let arrowImageFunc = this.props.arrowImage || arrowImage
+
     return (
       <Wrapper
         className={this.props.className}
@@ -350,9 +354,19 @@ class DropdownLink extends React.Component<Props, State> {
         <LinkButton
           onClick={() => this.handleButtonClick()}
           disabled={this.props.disabled}
+          style={this.props.linkButtonStyle}
         >
-          <Label innerRef={label => { this.labelRef = label }} data-test-id="dropdownLink-label">{renderLabel()}</Label>
-          <Arrow innerRef={arrow => { this.arrowRef = arrow }} />
+          <Label
+            secondary={this.props.secondary}
+            innerRef={label => { this.labelRef = label }}
+            data-test-id="dropdownLink-label"
+          >{renderLabel()}</Label>
+          <Arrow
+            innerRef={arrow => { this.arrowRef = arrow }}
+            dangerouslySetInnerHTML={{
+              __html: arrowImageFunc(this.props.secondary ? Palette.grayscale[3] : Palette.primary),
+            }}
+          />
         </LinkButton>
         {this.renderList()}
       </Wrapper>

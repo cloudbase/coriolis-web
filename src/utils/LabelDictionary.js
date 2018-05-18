@@ -99,6 +99,8 @@ class LabelDictionary {
     use_replica: 'Use replica',
     windows_migr_image: { label: 'Windows Migration Image', description: 'The Windows Migration Image information found on the Azure page' },
     linux_migr_image: { label: 'Linux Migration Image', description: 'The Linux Migration Image information found on the Azure page' },
+    user_domain_id: 'User Domain ID',
+    project_domain_id: 'Project Domain ID',
   }
 
   static get(fieldName: ?string): string {
