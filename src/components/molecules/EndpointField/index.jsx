@@ -159,15 +159,16 @@ class Field extends React.Component<Props> {
         label: field.label || LabelDictionary.get(field.name),
       }
     })
+    let fieldName = this.props.value || items[0].value
 
     return (
       <DropdownInput
         items={items}
-        selectedItem={this.props.value}
+        selectedItem={fieldName}
         onItemChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
-        inputValue={this.props.getFieldValue ? this.props.getFieldValue(this.props.value) : ''}
-        onInputChange={value => { if (this.props.onFieldChange) this.props.onFieldChange(this.props.value, value) }}
-        placeholder={LabelDictionary.get(this.props.value)}
+        inputValue={this.props.getFieldValue ? this.props.getFieldValue(fieldName) : ''}
+        onInputChange={value => { if (this.props.onFieldChange) this.props.onFieldChange(fieldName, value) }}
+        placeholder={LabelDictionary.get(fieldName)}
         required={this.props.required}
         highlight={this.props.highlight}
         disabled={this.props.disabled}

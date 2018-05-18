@@ -251,7 +251,14 @@ class DropdownLink extends React.Component<Props, State> {
     let tipHeight = this.tipRef.offsetHeight
     const tipOffset = 7
     let arrowOffset = this.arrowRef.getBoundingClientRect()
-    this.listRef.style.top = `${arrowOffset.top + window.pageYOffset + arrowHeight + tipHeight}px`
+
+    // If a modal is opened, body scroll is removed and body top is set to replicate scroll position
+    let scrollOffset = 0
+    if (document.body && parseInt(document.body.style.top, 10) < 0) {
+      scrollOffset = -parseInt(document.body && document.body.style.top, 10)
+    }
+
+    this.listRef.style.top = `${arrowOffset.top + (window.pageYOffset || scrollOffset) + arrowHeight + tipHeight}px`
     this.listRef.style.left = `${arrowOffset.left + tipOffset + (arrowWidth - listWidth)}px`
   }
 

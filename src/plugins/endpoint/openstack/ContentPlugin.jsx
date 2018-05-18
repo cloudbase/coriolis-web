@@ -67,22 +67,49 @@ class ContentPlugin extends React.Component<Props, State> {
     return this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'identity_api_version'))
   }
 
+  getFieldValue(field: ?Field) {
+    let fieldValue = this.props.getFieldValue(field)
+    if (fieldValue) {
+      return fieldValue
+    }
+
+    let getInputChoiceValue = (fieldBaseName: string): string => {
+      let id = this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === `${fieldBaseName}_id`))
+      let previouslySelected = this.previouslySelectedChoices.find(f => f === `${fieldBaseName}_id`)
+      if (id || previouslySelected) {
+        if (!previouslySelected) this.previouslySelectedChoices.push(`${fieldBaseName}_id`)
+        return `${fieldBaseName}_id`
+      }
+      return `${fieldBaseName}_name`
+    }
+    if (field && field.name === 'user_domain') {
+      return getInputChoiceValue('user_domain')
+    }
+    if (field && field.name === 'project_domain') {
+      return getInputChoiceValue('project_domain')
+    }
+
+    return fieldValue
+  }
+
   handleAdvancedOptionsToggle(useAdvancedOptions: boolean) {
     this.setState({ useAdvancedOptions })
   }
+
+  previouslySelectedChoices: string[] = []
 
   findInvalidFields = () => {
     let inputChoices = ['user_domain', 'project_domain']
 
     const invalidFields = this.props.connectionInfoSchema.filter(field => {
       if (field.required) {
-        let value = this.props.getFieldValue(field)
+        let value = this.getFieldValue(field)
         return !value
       }
       let inputChoice = inputChoices.find(c => c === field.name)
       if (inputChoice && this.getApiVersion() > 2) {
-        let selectionValue = this.props.getFieldValue(this.props.connectionInfoSchema.find(f => f.name === inputChoice))
-        let itemValue = this.props.getFieldValue(this.props.connectionInfoSchema.find(f => f.name === selectionValue))
+        let selectionValue = this.getFieldValue(this.props.connectionInfoSchema.find(f => f.name === inputChoice))
+        let itemValue = this.getFieldValue(this.props.connectionInfoSchema.find(f => f.name === selectionValue))
         return !itemValue
       }
 
@@ -130,9 +157,9 @@ class ContentPlugin extends React.Component<Props, State> {
           disabled={this.props.disabled}
           password={field.name === 'password'}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
-          value={this.props.getFieldValue(field)}
+          value={this.getFieldValue(field)}
           onChange={value => { this.props.handleFieldChange(field, value) }}
-          getFieldValue={fieldName => this.props.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === fieldName))}
+          getFieldValue={fieldName => this.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === fieldName))}
           onFieldChange={(fieldName, fieldValue) => { this.props.handleFieldChange(this.props.connectionInfoSchema.find(n => n.name === fieldName), fieldValue) }}
         />
       )
