@@ -23,7 +23,7 @@ import Logo from '../../atoms/Logo'
 import LoginForm from '../../organisms/LoginForm'
 
 import StyleProps from '../../styleUtils/StyleProps'
-import UserStore from '../../../stores/UserStore'
+import userStore from '../../../stores/UserStore'
 
 import backgroundImage from './images/star-bg.jpg'
 import cbsImage from './images/cbs-logo.svg'
@@ -50,7 +50,7 @@ const Content = styled.div`
     margin-top: 96px;
   `}
 `
-const StyledLoginForm = styled(LoginForm)`
+const StyledLoginForm = styled(LoginForm) `
   margin-top: 32px;
   ${StyleProps.media.handheld`
     margin-top: 32px;
@@ -82,14 +82,14 @@ class LoginPage extends React.Component<{}> {
   }
 
   handleFormSubmit(data: { username: string, password: string }) {
-    UserStore.login({
+    userStore.login({
       name: data.username,
       password: data.password,
     })
   }
 
   render() {
-    if (UserStore.user) {
+    if (userStore.user) {
       window.location.href = '/#/replicas'
     }
 
@@ -100,8 +100,8 @@ class LoginPage extends React.Component<{}> {
             <Logo />
             <StyledLoginForm
               onFormSubmit={data => this.handleFormSubmit(data)}
-              loading={UserStore.loading}
-              loginFailedResponse={UserStore.loginFailedResponse}
+              loading={userStore.loading}
+              loginFailedResponse={userStore.loginFailedResponse}
             />
             <Footer>
               <FooterText>Coriolis® is a service offered by</FooterText>

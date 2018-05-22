@@ -38,11 +38,11 @@ import type { Instance, Nic } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { Network } from '../../../types/Network'
 import type { Schedule as ScheduleType } from '../../../types/Schedule'
-import InstanceStore from '../../../stores/InstanceStore'
-import ProviderStore from '../../../stores/ProviderStore'
+import instanceStore from '../../../stores/InstanceStore'
+import providerStore from '../../../stores/ProviderStore'
 
 import migrationArrowImage from './images/migration.js'
-import NetworkStore from '../../../stores/NetworkStore'
+import networkStore from '../../../stores/NetworkStore'
 
 const Wrapper = styled.div`
   ${StyleProps.exactWidth(`${parseInt(StyleProps.contentWidth, 10) + 64}px`)}
@@ -94,9 +94,9 @@ type Props = {
   page: { id: string, title: string },
   type: 'replica' | 'migration',
   nextButtonDisabled: boolean,
-  providerStore: typeof ProviderStore,
-  instanceStore: typeof InstanceStore,
-  networkStore: typeof NetworkStore,
+  providerStore: typeof providerStore,
+  instanceStore: typeof instanceStore,
+  networkStore: typeof networkStore,
   wizardData: WizardData,
   endpoints: Endpoint[],
   onTypeChange: (isReplicaChecked: ?boolean) => void,
@@ -197,9 +197,9 @@ class WizardPageContent extends React.Component<Props, State> {
   isOptionsPageValid() {
     const isValid = (field: Field): boolean => {
       return (this.props.wizardData.options &&
-          this.props.wizardData.options[field.name] !== null &&
-          this.props.wizardData.options[field.name] !== undefined &&
-          this.props.wizardData.options[field.name] !== ''
+        this.props.wizardData.options[field.name] !== null &&
+        this.props.wizardData.options[field.name] !== undefined &&
+        this.props.wizardData.options[field.name] !== ''
       ) || (field.default !== null && field.default !== undefined)
     }
 

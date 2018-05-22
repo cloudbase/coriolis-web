@@ -24,15 +24,15 @@ import WizardPageContent from '../../organisms/WizardPageContent'
 import Modal from '../../molecules/Modal'
 import Endpoint from '../../organisms/Endpoint'
 
-import UserStore from '../../../stores/UserStore'
-import ProviderStore from '../../../stores/ProviderStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import WizardStore from '../../../stores/WizardStore'
-import InstanceStore from '../../../stores/InstanceStore'
-import NetworkStore from '../../../stores/NetworkStore'
-import NotificationStore from '../../../stores/NotificationStore'
-import ScheduleStore from '../../../stores/ScheduleStore'
-import ReplicaStore from '../../../stores/ReplicaStore'
+import userStore from '../../../stores/UserStore'
+import providerStore from '../../../stores/ProviderStore'
+import endpointStore from '../../../stores/EndpointStore'
+import wizardStore from '../../../stores/WizardStore'
+import instanceStore from '../../../stores/InstanceStore'
+import networkStore from '../../../stores/NetworkStore'
+import notificationStore from '../../../stores/NotificationStore'
+import scheduleStore from '../../../stores/ScheduleStore'
+import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardConfig, executionOptions } from '../../../config'
 import type { MainItem } from '../../../types/MainItem'
@@ -71,7 +71,7 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    WizardStore.getDataFromPermalink()
+    wizardStore.getDataFromPermalink()
     let type = this.props.match && this.props.match.params.type
     if (type === 'migration' || type === 'replica') {
       this.setState({ type })
@@ -85,7 +85,7 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    WizardStore.clearData()
+    wizardStore.clearData()
     KeyboardManager.removeKeyDown('wizard')
   }
 
@@ -101,7 +101,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleCreationSuccess(items: MainItem[]) {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    NotificationStore.notify(`${typeLabel} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${typeLabel} created` } })
+    notificationStore.notify(`${typeLabel} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${typeLabel} created` } })
     let schedulePromise = Promise.resolve()
 
     if (this.state.type === 'replica') {
@@ -129,7 +129,7 @@ class WizardPage extends React.Component<Props, State> {
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'signout':
-        UserStore.logout()
+        userStore.logout()
         return
       case 'profile':
         window.location.href = '/#/profile'
@@ -144,7 +144,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleBackClick() {
     let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
-    let currentPageIndex = pages.findIndex(p => p.id === WizardStore.currentPage.id)
+    let currentPageIndex = pages.findIndex(p => p.id === wizardStore.currentPage.id)
 
     if (currentPageIndex === 0) {
       window.history.back()
@@ -153,12 +153,12 @@ class WizardPage extends React.Component<Props, State> {
 
     let page = pages[currentPageIndex - 1]
     this.loadDataForPage(page)
-    WizardStore.setCurrentPage(page)
+    wizardStore.setCurrentPage(page)
   }
 
   handleNextClick() {
     let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
-    let currentPageIndex = pages.findIndex(p => p.id === WizardStore.currentPage.id)
+    let currentPageIndex = pages.findIndex(p => p.id === wizardStore.currentPage.id)
 
     if (currentPageIndex === pages.length - 1) {
       this.create()
@@ -167,23 +167,23 @@ class WizardPage extends React.Component<Props, State> {
 
     let page = pages[currentPageIndex + 1]
     this.loadDataForPage(page)
-    WizardStore.setCurrentPage(page)
+    wizardStore.setCurrentPage(page)
   }
 
   handleSourceEndpointChange(source: EndpointType) {
-    WizardStore.updateData({ source, selectedInstances: null, networks: null })
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.updateData({ source, selectedInstances: null, networks: null })
+    wizardStore.setPermalink(wizardStore.data)
     // Preload instances for 'vms' page
-    InstanceStore.loadInstances(source.id)
+    instanceStore.loadInstances(source.id)
   }
 
   handleTargetEndpointChange(target: EndpointType) {
-    WizardStore.updateData({ target, networks: null, options: null })
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.updateData({ target, networks: null, options: null })
+    wizardStore.setPermalink(wizardStore.data)
     // Preload destination options schema
-    ProviderStore.loadOptionsSchema(target.type, this.state.type).then(() => {
+    providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
       // Preload destination options values
-      return ProviderStore.getDestinationOptions(target.id, target.type)
+      return providerStore.getDestinationOptions(target.id, target.type)
     })
   }
 
@@ -198,99 +198,99 @@ class WizardPage extends React.Component<Props, State> {
   handleCloseNewEndpointModal(options?: { autoClose?: boolean }) {
     if (options) {
       if (this.state.newEndpointFromSource) {
-        WizardStore.updateData({ source: EndpointStore.endpoints[0] })
+        wizardStore.updateData({ source: endpointStore.endpoints[0] })
       } else {
-        WizardStore.updateData({ target: EndpointStore.endpoints[0] })
+        wizardStore.updateData({ target: endpointStore.endpoints[0] })
       }
     }
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.setPermalink(wizardStore.data)
     this.setState({ showNewEndpointModal: false })
   }
 
   handleInstancesSearchInputChange(searchText: string) {
-    if (WizardStore.data.source) {
-      InstanceStore.searchInstances(WizardStore.data.source.id, searchText)
+    if (wizardStore.data.source) {
+      instanceStore.searchInstances(wizardStore.data.source.id, searchText)
     }
   }
 
   handleInstancesNextPageClick(searchText: string) {
-    if (WizardStore.data.source) {
-      InstanceStore.loadNextPage(WizardStore.data.source.id, searchText)
+    if (wizardStore.data.source) {
+      instanceStore.loadNextPage(wizardStore.data.source.id, searchText)
     }
   }
 
   handleInstancesPreviousPageClick() {
-    InstanceStore.loadPreviousPage()
+    instanceStore.loadPreviousPage()
   }
 
   handleInstancesReloadClick(searchText: string) {
-    if (WizardStore.data.source) {
-      InstanceStore.reloadInstances(WizardStore.data.source.id, searchText)
+    if (wizardStore.data.source) {
+      instanceStore.reloadInstances(wizardStore.data.source.id, searchText)
     }
   }
 
   handleInstanceClick(instance: Instance) {
-    WizardStore.updateData({ networks: null })
-    WizardStore.toggleInstanceSelection(instance)
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.updateData({ networks: null })
+    wizardStore.toggleInstanceSelection(instance)
+    wizardStore.setPermalink(wizardStore.data)
   }
 
   handleOptionsChange(field: Field, value: any) {
-    WizardStore.updateData({ networks: null })
-    WizardStore.updateOptions({ field, value })
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.updateData({ networks: null })
+    wizardStore.updateOptions({ field, value })
+    wizardStore.setPermalink(wizardStore.data)
   }
 
   handleNetworkChange(sourceNic: Nic, targetNetwork: Network) {
-    WizardStore.updateNetworks({ sourceNic, targetNetwork })
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.updateNetworks({ sourceNic, targetNetwork })
+    wizardStore.setPermalink(wizardStore.data)
   }
 
   handleAddScheduleClick(schedule: Schedule) {
-    WizardStore.addSchedule(schedule)
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.addSchedule(schedule)
+    wizardStore.setPermalink(wizardStore.data)
   }
 
   handleScheduleChange(scheduleId: string, data: Schedule) {
-    WizardStore.updateSchedule(scheduleId, data)
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.updateSchedule(scheduleId, data)
+    wizardStore.setPermalink(wizardStore.data)
   }
 
   handleScheduleRemove(scheduleId: string) {
-    WizardStore.removeSchedule(scheduleId)
-    WizardStore.setPermalink(WizardStore.data)
+    wizardStore.removeSchedule(scheduleId)
+    wizardStore.setPermalink(wizardStore.data)
   }
 
   loadDataForPage(page: WizardPageType) {
     switch (page.id) {
       case 'source': {
-        ProviderStore.loadProviders()
-        EndpointStore.getEndpoints()
+        providerStore.loadProviders()
+        endpointStore.getEndpoints()
         // Preload instances if data is set from 'Permalink'
-        let source = WizardStore.data.source
-        if (InstanceStore.instances.length === 0 && source) {
-          InstanceStore.loadInstances(source.id)
+        let source = wizardStore.data.source
+        if (instanceStore.instances.length === 0 && source) {
+          instanceStore.loadInstances(source.id)
         }
         break
       }
       case 'target': {
         // Preload destination options if data is set from 'Permalink'
-        let target = WizardStore.data.target
-        if (ProviderStore.destinationOptions.length === 0 && target) {
-          ProviderStore.getDestinationOptions(target.id, target.type)
+        let target = wizardStore.data.target
+        if (providerStore.destinationOptions.length === 0 && target) {
+          providerStore.getDestinationOptions(target.id, target.type)
         }
         // Preload destination options schema
-        if (ProviderStore.optionsSchema.length === 0 && target) {
-          ProviderStore.loadOptionsSchema(target.type, this.state.type)
+        if (providerStore.optionsSchema.length === 0 && target) {
+          providerStore.loadOptionsSchema(target.type, this.state.type)
         }
         break
       }
       case 'networks':
-        if (WizardStore.data.source && WizardStore.data.selectedInstances) {
-          InstanceStore.loadInstancesDetails(WizardStore.data.source.id, WizardStore.data.selectedInstances)
+        if (wizardStore.data.source && wizardStore.data.selectedInstances) {
+          instanceStore.loadInstancesDetails(wizardStore.data.source.id, wizardStore.data.selectedInstances)
         }
-        if (WizardStore.data.target) {
-          NetworkStore.loadNetworks(WizardStore.data.target.id, WizardStore.data.options)
+        if (wizardStore.data.target) {
+          networkStore.loadNetworks(wizardStore.data.target.id, wizardStore.data.options)
         }
         break
       default:
@@ -299,11 +299,11 @@ class WizardPage extends React.Component<Props, State> {
 
   createMultiple() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    NotificationStore.notify(`Creating ${typeLabel}s ...`)
-    WizardStore.createMultiple(this.state.type, WizardStore.data).then(() => {
-      let items = WizardStore.createdItems
+    notificationStore.notify(`Creating ${typeLabel}s ...`)
+    wizardStore.createMultiple(this.state.type, wizardStore.data).then(() => {
+      let items = wizardStore.createdItems
       if (!items) {
-        NotificationStore.notify(`${typeLabel}s couldn't be created`, 'error')
+        notificationStore.notify(`${typeLabel}s couldn't be created`, 'error')
         this.setState({ nextButtonDisabled: false })
         return
       }
@@ -313,11 +313,11 @@ class WizardPage extends React.Component<Props, State> {
 
   createSingle() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    NotificationStore.notify(`Creating ${typeLabel} ...`)
-    WizardStore.create(this.state.type, WizardStore.data).then(() => {
-      let item = WizardStore.createdItem
+    notificationStore.notify(`Creating ${typeLabel} ...`)
+    wizardStore.create(this.state.type, wizardStore.data).then(() => {
+      let item = wizardStore.createdItem
       if (!item) {
-        NotificationStore.notify(`${typeLabel} couldn't be created`, 'error')
+        notificationStore.notify(`${typeLabel} couldn't be created`, 'error')
         this.setState({ nextButtonDisabled: false })
         return
       }
@@ -326,7 +326,7 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   separateVms() {
-    let data = WizardStore.data
+    let data = wizardStore.data
     let separateVms = true
 
     if (data.options && data.options.separate_vm !== null && data.options.separate_vm !== undefined) {
@@ -350,17 +350,17 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   scheduleReplica(replica: MainItem): Promise<void> {
-    let data = WizardStore.data
+    let data = wizardStore.data
 
     if (!data.schedules || data.schedules.length === 0) {
       return Promise.resolve()
     }
 
-    return ScheduleStore.scheduleMultiple(replica.id, data.schedules)
+    return scheduleStore.scheduleMultiple(replica.id, data.schedules)
   }
 
   executeCreatedReplica(replica: MainItem) {
-    let options = WizardStore.data.options
+    let options = wizardStore.data.options
     let executeNow = true
     if (options && options.execute_now !== null && options.execute_now !== undefined) {
       executeNow = options.execute_now
@@ -376,7 +376,7 @@ class WizardPage extends React.Component<Props, State> {
       return field
     })
 
-    ReplicaStore.execute(replica.id, executeNowOptions)
+    replicaStore.execute(replica.id, executeNowOptions)
   }
 
   render() {
@@ -384,16 +384,16 @@ class WizardPage extends React.Component<Props, State> {
       <Wrapper>
         <WizardTemplate
           pageHeaderComponent={<DetailsPageHeader
-            user={UserStore.user}
+            user={userStore.user}
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           pageContentComponent={<WizardPageContent
-            page={WizardStore.currentPage}
-            providerStore={ProviderStore}
-            instanceStore={InstanceStore}
-            networkStore={NetworkStore}
-            endpoints={EndpointStore.endpoints}
-            wizardData={WizardStore.data}
+            page={wizardStore.currentPage}
+            providerStore={providerStore}
+            instanceStore={instanceStore}
+            networkStore={networkStore}
+            endpoints={endpointStore.endpoints}
+            wizardData={wizardStore.data}
             nextButtonDisabled={this.state.nextButtonDisabled}
             type={this.state.type}
             onTypeChange={isReplica => { this.handleTypeChange(isReplica) }}

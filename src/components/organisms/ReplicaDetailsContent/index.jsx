@@ -18,7 +18,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import ScheduleStore from '../../../stores/ScheduleStore'
+import scheduleStore from '../../../stores/ScheduleStore'
 import Button from '../../atoms/Button'
 import DetailsNavigation from '../../molecules/DetailsNavigation'
 import MainDetails from '../../organisms/MainDetails'
@@ -71,7 +71,7 @@ type TimezoneValue = 'utc' | 'local'
 type Props = {
   item: ?MainItem,
   endpoints: Endpoint[],
-  scheduleStore: typeof ScheduleStore,
+  scheduleStore: typeof scheduleStore,
   page: string,
   detailsLoading: boolean,
   executionsLoading: boolean,

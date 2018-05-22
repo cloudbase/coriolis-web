@@ -23,7 +23,7 @@ import NotificationDropdown from '../../molecules/NotificationDropdown'
 import UserDropdown from '../../molecules/UserDropdown'
 import type { User as UserType } from '../../../types/User'
 
-import NotificationStore from '../../../stores/NotificationStore'
+import notificationStore from '../../../stores/NotificationStore'
 
 import backgroundImage from './images/star-bg.jpg'
 import logoImage from './images/logo.svg'
@@ -61,11 +61,11 @@ type Props = {
 @observer
 export class DetailsPageHeader extends React.Component<Props> {
   componentDidMount() {
-    NotificationStore.loadNotifications()
+    notificationStore.loadNotifications()
   }
 
   handleNotificationsClose() {
-    NotificationStore.clearNotifications()
+    notificationStore.clearNotifications()
   }
 
   render() {
@@ -76,7 +76,7 @@ export class DetailsPageHeader extends React.Component<Props> {
           <Logo href="/#/replicas" />
         </Menu>
         <User>
-          <NotificationDropdown white items={NotificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
+          <NotificationDropdown white items={notificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
           <UserDropdownStyled
             white
             user={this.props.user}

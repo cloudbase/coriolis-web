@@ -26,7 +26,7 @@ import StatusPill from '../../atoms/StatusPill'
 import CopyValue from '../../atoms/CopyValue'
 import ProgressBar from '../../atoms/ProgressBar'
 import CopyButton from '../../atoms/CopyButton'
-import NotificationStore from '../../../stores/NotificationStore'
+import notificationStore from '../../../stores/NotificationStore'
 import DomUtils from '../../../utils/DomUtils'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -161,7 +161,7 @@ class TaskItem extends React.Component<Props> {
     let succesful = DomUtils.copyTextToClipboard(exceptionText)
 
     if (succesful) {
-      NotificationStore.notify('The message has been copied to clipboard.')
+      notificationStore.notify('The message has been copied to clipboard.')
     }
   }
 

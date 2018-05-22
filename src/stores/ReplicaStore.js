@@ -16,13 +16,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action } from 'mobx'
 
-import NotificationStore from '../stores/NotificationStore'
+import notificationStore from '../stores/NotificationStore'
 import ReplicaSource from '../sources/ReplicaSource'
 import type { MainItem } from '../types/MainItem'
 import type { Execution } from '../types/Execution'
 import type { Field } from '../types/Field'
 
-class ReplicaStoreUtils {
+class replicaStoreUtils {
   static getNewReplica(replicaDetails: MainItem, execution: Execution): MainItem {
     if (replicaDetails.executions) {
       return {
@@ -101,13 +101,13 @@ class ReplicaStore {
   @action execute(replicaId: string, fields?: Field[]): Promise<void> {
     return ReplicaSource.execute(replicaId, fields).then(execution => {
       if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+        this.replicaDetails = replicaStoreUtils.getNewReplica(this.replicaDetails, execution)
       }
 
       let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
 
       if (replicasItemIndex > -1) {
-        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+        const updatedReplica = replicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
         this.replicas[replicasItemIndex] = updatedReplica
       }
     })
@@ -115,7 +115,7 @@ class ReplicaStore {
 
   @action cancelExecution(replicaId: string, executionId: string): Promise<void> {
     return ReplicaSource.cancelExecution(replicaId, executionId).then(() => {
-      NotificationStore.notify('Cancelled', 'success')
+      notificationStore.notify('Cancelled', 'success')
     })
   }
 
@@ -145,13 +145,13 @@ class ReplicaStore {
   @action deleteDisks(replicaId: string) {
     return ReplicaSource.deleteDisks(replicaId).then(execution => {
       if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+        this.replicaDetails = replicaStoreUtils.getNewReplica(this.replicaDetails, execution)
       }
 
       let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
 
       if (replicasItemIndex > -1) {
-        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+        const updatedReplica = replicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
         this.replicas[replicasItemIndex] = updatedReplica
       }
     })

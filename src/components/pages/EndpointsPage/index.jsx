@@ -31,11 +31,11 @@ import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 
 import endpointImage from './images/endpoint-large.svg'
 
-import ProjectStore from '../../../stores/ProjectStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import MigrationStore from '../../../stores/MigrationStore'
-import ReplicaStore from '../../../stores/ReplicaStore'
-import ProviderStore from '../../../stores/ProviderStore'
+import projectStore from '../../../stores/ProjectStore'
+import endpointStore from '../../../stores/EndpointStore'
+import migrationStore from '../../../stores/MigrationStore'
+import replicaStore from '../../../stores/ReplicaStore'
+import providerStore from '../../../stores/ProviderStore'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import { requestPollTimeout } from '../../../config.js'
 
@@ -76,7 +76,7 @@ class EndpointsPage extends React.Component<{}, State> {
   componentDidMount() {
     document.title = 'Coriolis Endpoints'
 
-    ProjectStore.getProjects()
+    projectStore.getProjects()
 
     this.stopPolling = false
     this.pollData()
@@ -89,7 +89,7 @@ class EndpointsPage extends React.Component<{}, State> {
 
   getFilterItems() {
     let types = [{ label: 'All', value: 'all' }]
-    EndpointStore.endpoints.forEach(endpoint => {
+    endpointStore.endpoints.forEach(endpoint => {
       if (!types.find(t => t.value === endpoint.type)) {
         types.push({ label: LabelDictionary.get(endpoint.type), value: endpoint.type })
       }
@@ -99,25 +99,25 @@ class EndpointsPage extends React.Component<{}, State> {
   }
 
   getEndpointUsage(endpoint: EndpointType) {
-    let replicasCount = ReplicaStore.replicas.filter(
+    let replicasCount = replicaStore.replicas.filter(
       r => r.origin_endpoint_id === endpoint.id || r.destination_endpoint_id === endpoint.id).length
-    let migrationsCount = MigrationStore.migrations.filter(
+    let migrationsCount = migrationStore.migrations.filter(
       r => r.origin_endpoint_id === endpoint.id || r.destination_endpoint_id === endpoint.id).length
 
     return { migrationsCount, replicasCount }
   }
 
   handleProjectChange() {
-    EndpointStore.getEndpoints({ showLoading: true })
-    MigrationStore.getMigrations()
-    ReplicaStore.getReplicas()
+    endpointStore.getEndpoints({ showLoading: true })
+    migrationStore.getMigrations()
+    replicaStore.getReplicas()
   }
 
   handleReloadButtonClick() {
-    ProjectStore.getProjects()
-    EndpointStore.getEndpoints({ showLoading: true })
-    MigrationStore.getMigrations()
-    ReplicaStore.getReplicas()
+    projectStore.getProjects()
+    endpointStore.getEndpoints({ showLoading: true })
+    migrationStore.getMigrations()
+    replicaStore.getReplicas()
   }
 
   handleItemClick(item: EndpointType) {
@@ -152,14 +152,14 @@ class EndpointsPage extends React.Component<{}, State> {
   handleDeleteEndpointsConfirmation() {
     if (this.state.confirmationItems) {
       this.state.confirmationItems.forEach(endpoint => {
-        EndpointStore.delete(endpoint)
+        endpointStore.delete(endpoint)
       })
     }
     this.handleCloseDeleteEndpointsConfirmation()
   }
 
   handleEmptyListButtonClick() {
-    ProviderStore.loadProviders()
+    providerStore.loadProviders()
     this.setState({ showChooseProviderModal: true })
   }
 
@@ -194,7 +194,7 @@ class EndpointsPage extends React.Component<{}, State> {
       return
     }
 
-    Promise.all([EndpointStore.getEndpoints(), MigrationStore.getMigrations(), ReplicaStore.getReplicas()]).then(() => {
+    Promise.all([endpointStore.getEndpoints(), migrationStore.getMigrations(), replicaStore.getReplicas()]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
@@ -203,8 +203,8 @@ class EndpointsPage extends React.Component<{}, State> {
     let endpoint: EndpointType = item
     if ((filterItem !== 'all' && (endpoint.type !== filterItem)) ||
       (endpoint.name.toLowerCase().indexOf(filterText || '') === -1 &&
-      // $FlowIssue
-      endpoint.description.toLowerCase().indexOf(filterText) === -1)
+        // $FlowIssue
+        endpoint.description.toLowerCase().indexOf(filterText) === -1)
     ) {
       return false
     }
@@ -213,7 +213,7 @@ class EndpointsPage extends React.Component<{}, State> {
   }
 
   render() {
-    let items: any = EndpointStore.endpoints
+    let items: any = endpointStore.endpoints
     return (
       <Wrapper>
         <MainTemplate
@@ -222,7 +222,7 @@ class EndpointsPage extends React.Component<{}, State> {
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="endpoint"
-              loading={EndpointStore.loading}
+              loading={endpointStore.loading}
               items={items}
               onItemClick={item => {
                 let anyItem: any = item
@@ -275,8 +275,8 @@ class EndpointsPage extends React.Component<{}, State> {
         >
           <ChooseProvider
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
-            providers={ProviderStore.providers}
-            loading={ProviderStore.providersLoading}
+            providers={providerStore.providers}
+            loading={providerStore.providersLoading}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
           />
         </Modal>

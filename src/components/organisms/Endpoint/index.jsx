@@ -29,9 +29,9 @@ import LoadingButton from '../../molecules/LoadingButton'
 
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 import type { Field } from '../../../types/Field'
-import NotificationStore from '../../../stores/NotificationStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import ProviderStore from '../../../stores/ProviderStore'
+import notificationStore from '../../../stores/NotificationStore'
+import endpointStore from '../../../stores/EndpointStore'
+import providerStore from '../../../stores/ProviderStore'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
@@ -148,31 +148,31 @@ class Endpoint extends React.Component<Props, State> {
 
   componentWillMount() {
     this.componentWillReceiveProps(this.props)
-    this.providerStoreObserver = observe(ProviderStore, 'connectionInfoSchema', () => {
+    this.providerStoreObserver = observe(providerStore, 'connectionInfoSchema', () => {
       this.props.onResizeUpdate(this.scrollableRef)
     })
-    this.endpointValidationObserver = observe(EndpointStore, 'validation', () => {
+    this.endpointValidationObserver = observe(endpointStore, 'validation', () => {
       this.componentWillReceiveProps(this.props)
     })
   }
 
   componentDidMount() {
-    ProviderStore.getConnectionInfoSchema(this.getEndpointType())
+    providerStore.getConnectionInfoSchema(this.getEndpointType())
     KeyboardManager.onEnter('endpoint', () => { if (this.isValidateButtonEnabled) this.handleValidateClick() }, 2)
   }
 
   componentWillReceiveProps(props: Props) {
     if (this.state.validating) {
-      if (EndpointStore.validation && !EndpointStore.validation.valid) {
+      if (endpointStore.validation && !endpointStore.validation.valid) {
         this.setState({ validating: false })
       }
     }
 
-    if (props.endpoint && EndpointStore.connectionInfo) {
+    if (props.endpoint && endpointStore.connectionInfo) {
       this.setState({
         endpoint: {
           ...ObjectUtils.flatten(props.endpoint || {}),
-          ...ObjectUtils.flatten(EndpointStore.connectionInfo || {}),
+          ...ObjectUtils.flatten(endpointStore.connectionInfo || {}),
         },
       })
     } else {
@@ -189,8 +189,8 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    EndpointStore.clearValidation()
-    ProviderStore.clearConnectionInfoSchema()
+    endpointStore.clearValidation()
+    providerStore.clearConnectionInfoSchema()
     clearTimeout(this.closeTimeout)
     KeyboardManager.removeKeyDown('endpoint')
     this.providerStoreObserver()
@@ -234,8 +234,8 @@ class Endpoint extends React.Component<Props, State> {
     if (!this.highlightRequired()) {
       this.setState({ validating: true })
 
-      NotificationStore.notify('Saving endpoint ...')
-      EndpointStore.clearValidation()
+      notificationStore.notify('Saving endpoint ...')
+      endpointStore.clearValidation()
 
       if (this.state.isNew) {
         this.add()
@@ -243,7 +243,7 @@ class Endpoint extends React.Component<Props, State> {
         this.update()
       }
     } else {
-      NotificationStore.notify('Please fill all the required fields', 'error')
+      notificationStore.notify('Please fill all the required fields', 'error')
     }
   }
 
@@ -254,20 +254,20 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   handleCopyErrorMessageClick() {
-    if (!EndpointStore.validation) {
+    if (!endpointStore.validation) {
       return
     }
     // $FlowIssue
-    let succesful = DomUtils.copyTextToClipboard(EndpointStore.validation.message)
+    let succesful = DomUtils.copyTextToClipboard(endpointStore.validation.message)
 
     if (succesful) {
-      NotificationStore.notify('The message has been copied to clipboard.')
+      notificationStore.notify('The message has been copied to clipboard.')
     }
   }
 
   handleCancelClick() {
     if (this.props.deleteOnCancel && this.state.isNew === false) {
-      EndpointStore.delete(EndpointStore.endpoints[0])
+      endpointStore.delete(endpointStore.endpoints[0])
     }
     this.props.onCancelClick()
   }
@@ -283,10 +283,10 @@ class Endpoint extends React.Component<Props, State> {
       return
     }
 
-    EndpointStore.update(this.state.endpoint).then(() => {
-      NotificationStore.notify('Validating endpoint ...')
+    endpointStore.update(this.state.endpoint).then(() => {
+      notificationStore.notify('Validating endpoint ...')
       // $FlowIssue
-      EndpointStore.validate(this.state.endpoint)
+      endpointStore.validate(this.state.endpoint)
     })
   }
 
@@ -295,16 +295,16 @@ class Endpoint extends React.Component<Props, State> {
       return
     }
 
-    EndpointStore.add(this.state.endpoint).then(() => {
-      let endpoint = EndpointStore.endpoints[0]
+    endpointStore.add(this.state.endpoint).then(() => {
+      let endpoint = endpointStore.endpoints[0]
       this.setState({ isNew: false, endpoint: ObjectUtils.flatten(endpoint) })
-      NotificationStore.notify('Validating endpoint ...')
-      EndpointStore.validate(endpoint)
+      notificationStore.notify('Validating endpoint ...')
+      endpointStore.validate(endpoint)
     })
   }
 
   renderEndpointStatus() {
-    const validation = EndpointStore.validation
+    const validation = endpointStore.validation
     if (!this.state.validating && !validation) {
       return null
     }
@@ -348,8 +348,8 @@ class Endpoint extends React.Component<Props, State> {
     let actionButton = <Button large onClick={() => this.handleValidateClick()}>Validate and save</Button>
 
     let message = 'Validating Endpoint ...'
-    if (this.state.validating || (EndpointStore.validation && EndpointStore.validation.valid)) {
-      if (EndpointStore.validation && EndpointStore.validation.valid) {
+    if (this.state.validating || (endpointStore.validation && endpointStore.validation.valid)) {
+      if (endpointStore.validation && endpointStore.validation.valid) {
         message = 'Saving ...'
       }
 
@@ -367,16 +367,16 @@ class Endpoint extends React.Component<Props, State> {
 
   renderContent() {
     const endpointType = this.getEndpointType()
-    if (ProviderStore.connectionSchemaLoading || !endpointType) {
+    if (providerStore.connectionSchemaLoading || !endpointType) {
       return null
     }
     return (
       <Content>
         {this.renderEndpointStatus()}
         {React.createElement(ContentPlugin[endpointType] || ContentPlugin.default, {
-          connectionInfoSchema: ProviderStore.connectionInfoSchema,
+          connectionInfoSchema: providerStore.connectionInfoSchema,
           // $FlowIgnore
-          validation: EndpointStore.validation,
+          validation: endpointStore.validation,
           invalidFields: this.state.invalidFields,
           validating: this.state.validating,
           disabled: this.state.validating,
@@ -404,7 +404,7 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   renderLoading() {
-    if (!ProviderStore.connectionSchemaLoading) {
+    if (!providerStore.connectionSchemaLoading) {
       return null
     }
 
@@ -417,7 +417,7 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   render() {
-    if (EndpointStore.validation && EndpointStore.validation.valid
+    if (endpointStore.validation && endpointStore.validation.valid
       && !this.closeTimeout) {
       this.closeTimeout = setTimeout(() => {
         this.props.onCancelClick({ autoClose: true })

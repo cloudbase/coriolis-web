@@ -29,10 +29,10 @@ import type { MainItem } from '../../../types/MainItem'
 import replicaItemImage from './images/replica.svg'
 import replicaLargeImage from './images/replica-large.svg'
 
-import ProjectStore from '../../../stores/ProjectStore'
-import ReplicaStore from '../../../stores/ReplicaStore'
-import EndpointStore from '../../../stores/EndpointStore'
-import NotificationStore from '../../../stores/NotificationStore'
+import projectStore from '../../../stores/ProjectStore'
+import replicaStore from '../../../stores/ReplicaStore'
+import endpointStore from '../../../stores/EndpointStore'
+import notificationStore from '../../../stores/NotificationStore'
 import { requestPollTimeout } from '../../../config'
 
 const Wrapper = styled.div``
@@ -65,8 +65,8 @@ class ReplicasPage extends React.Component<{}, State> {
   componentDidMount() {
     document.title = 'Coriolis Replicas'
 
-    ProjectStore.getProjects()
-    EndpointStore.getEndpoints({ showLoading: true })
+    projectStore.getProjects()
+    endpointStore.getEndpoints({ showLoading: true })
 
     this.stopPolling = false
     this.pollData()
@@ -78,7 +78,7 @@ class ReplicasPage extends React.Component<{}, State> {
   }
 
   getEndpoint(endpointId: string) {
-    return EndpointStore.endpoints.find(endpoint => endpoint.id === endpointId)
+    return endpointStore.endpoints.find(endpoint => endpoint.id === endpointId)
   }
 
   getFilterItems() {
@@ -98,14 +98,14 @@ class ReplicasPage extends React.Component<{}, State> {
   }
 
   handleProjectChange() {
-    ReplicaStore.getReplicas()
-    EndpointStore.getEndpoints({ showLoading: true })
+    replicaStore.getReplicas()
+    endpointStore.getEndpoints({ showLoading: true })
   }
 
   handleReloadButtonClick() {
-    ProjectStore.getProjects()
-    ReplicaStore.getReplicas({ showLoading: true })
-    EndpointStore.getEndpoints({ showLoading: true })
+    projectStore.getProjects()
+    replicaStore.getReplicas({ showLoading: true })
+    endpointStore.getEndpoints({ showLoading: true })
   }
 
   handleItemClick(item: MainItem) {
@@ -120,9 +120,9 @@ class ReplicasPage extends React.Component<{}, State> {
   handleActionChange(items: MainItem[], action: string) {
     if (action === 'execute') {
       items.forEach(replica => {
-        ReplicaStore.execute(replica.id)
+        replicaStore.execute(replica.id)
       })
-      NotificationStore.notify('Executing replicas')
+      notificationStore.notify('Executing replicas')
     } else if (action === 'delete') {
       this.setState({
         showDeleteReplicaConfirmation: true,
@@ -143,7 +143,7 @@ class ReplicasPage extends React.Component<{}, State> {
       return
     }
     this.state.confirmationItems.forEach(replica => {
-      ReplicaStore.delete(replica.id)
+      replicaStore.delete(replica.id)
     })
     this.handleCloseDeleteReplicaConfirmation()
   }
@@ -167,7 +167,7 @@ class ReplicasPage extends React.Component<{}, State> {
       return
     }
 
-    Promise.all([ReplicaStore.getReplicas(), EndpointStore.getEndpoints()]).then(() => {
+    Promise.all([replicaStore.getReplicas(), endpointStore.getEndpoints()]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }
@@ -209,8 +209,8 @@ class ReplicasPage extends React.Component<{}, State> {
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="replica"
-              loading={ReplicaStore.loading}
-              items={ReplicaStore.replicas}
+              loading={replicaStore.loading}
+              items={replicaStore.replicas}
               onItemClick={item => { this.handleItemClick(item) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               actions={BulkActions}
@@ -225,7 +225,7 @@ class ReplicasPage extends React.Component<{}, State> {
                     if (endpoint) {
                       return endpoint.type
                     }
-                    if (EndpointStore.loading) {
+                    if (endpointStore.loading) {
                       return 'Loading...'
                     }
                     return 'Not Found'

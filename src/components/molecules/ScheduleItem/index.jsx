@@ -29,7 +29,7 @@ import { executionOptions } from '../../../config'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import DateUtils from '../../../utils/DateUtils'
-import NotificationStore from '../../../stores/NotificationStore'
+import notificationStore from '../../../stores/NotificationStore'
 import deleteImage from './images/delete.svg'
 import deleteHoverImage from './images/delete-hover.svg'
 import saveImage from './images/save.svg'
@@ -145,7 +145,7 @@ class ScheduleItem extends React.Component<Props> {
   handleExpirationDateChange(date: Date) {
     let newDate = moment(date)
     if (newDate.diff(new Date(), 'minutes') < 60) {
-      NotificationStore.notify('Please select a further expiration date.', 'error')
+      notificationStore.notify('Please select a further expiration date.', 'error')
       return
     }
 
