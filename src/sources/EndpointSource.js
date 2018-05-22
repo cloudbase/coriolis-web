@@ -205,9 +205,9 @@ class EdnpointSource {
     })
   }
 
-  static add(endpoint: Endpoint): Promise<Endpoint> {
+  static add(endpoint: Endpoint, skipSchemaParser: boolean = false): Promise<Endpoint> {
     return new Promise((resolve, reject) => {
-      let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
+      let parsedEndpoint = skipSchemaParser ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
       let projectId = cookie.get('projectId')
       if (useSecret) {
         Api.send({
