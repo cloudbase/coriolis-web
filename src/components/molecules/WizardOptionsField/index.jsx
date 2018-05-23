@@ -59,6 +59,8 @@ type Props = {
   properties: Field[],
   enum: string[],
   required: boolean,
+  width?: number,
+  skipNullValue?: boolean,
 }
 @observer
 class WizardOptionsField extends React.Component<Props> {
@@ -113,16 +115,18 @@ class WizardOptionsField extends React.Component<Props> {
       }
     })
 
-    items = [
-      { label: 'Choose a value', value: null },
-      ...items,
-    ]
+    if (!this.props.skipNullValue) {
+      items = [
+        { label: 'Choose a value', value: null },
+        ...items,
+      ]
+    }
 
     let selectedItem = items.find(i => i.value === this.props.value)
 
     return (
       <Dropdown
-        width={StyleProps.inputSizes.wizard.width}
+        width={this.props.width || StyleProps.inputSizes.wizard.width}
         data-test-id={`wOptionsField-dropdown-${this.props.name}`}
         noSelectionMessage="Choose a value"
         selectedItem={selectedItem}

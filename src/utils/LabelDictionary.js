@@ -101,6 +101,7 @@ class LabelDictionary {
     linux_migr_image: { label: 'Linux Migration Image', description: 'The Linux Migration Image information found on the Azure page' },
     user_domain_id: 'User Domain ID',
     project_domain_id: 'Project Domain ID',
+    duplicate_to_project: { label: 'Project', description: 'Duplicate endpoint to selected project' },
   }
 
   static get(fieldName: ?string): string {
