@@ -83,6 +83,12 @@ export const fieldsToPayload = (data: { [string]: mixed }, schema: SchemaPropert
   Object.keys(schema.properties).forEach(fieldName => {
     if (data[fieldName] && typeof data[fieldName] !== 'object') {
       info[fieldName] = data[fieldName]
+    } else if (
+      !data[fieldName] &&
+      schema.required && schema.required.find(f => f === fieldName) &&
+      schema.properties[fieldName].default
+    ) {
+      info[fieldName] = schema.properties[fieldName].default
     }
   })
 
