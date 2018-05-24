@@ -253,7 +253,7 @@ class EndpointsPage extends React.Component<{}, State> {
     if ((filterItem !== 'all' && (endpoint.type !== filterItem)) ||
       (endpoint.name.toLowerCase().indexOf(filterText || '') === -1 &&
         // $FlowIssue
-        endpoint.description.toLowerCase().indexOf(filterText) === -1)
+        (!endpoint.description || endpoint.description.toLowerCase().indexOf(filterText) === -1))
     ) {
       return false
     }
