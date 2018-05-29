@@ -31,8 +31,8 @@ export const Fields = styled.div`
   flex-direction: column;
   overflow: auto;
 `
-export const FieldStyled = styled(EndpointField)`
-  min-width: 224px;
+export const FieldStyled = styled(EndpointField) `
+  min-width: ${props => props.useTextArea ? '100%' : '224px'};
   max-width: 224px;
   margin-bottom: 16px;
 `
@@ -89,14 +89,14 @@ class ContentPlugin extends React.Component<Props> {
           onChange={value => { this.props.handleFieldChange(field, value) }}
         />
       )
-      if (i % 2 !== 0) {
+      if (i % 2 !== 0 && !field.useTextArea && !this.props.connectionInfoSchema[i - 1].useTextArea) {
         rows.push((
           <Row key={field.name}>
             {lastField}
             {currentField}
           </Row>
         ))
-      } else if (i === this.props.connectionInfoSchema.length - 1) {
+      } else if (field.useTextArea || i === this.props.connectionInfoSchema.length - 1) {
         rows.push((
           <Row key={field.name}>
             {currentField}

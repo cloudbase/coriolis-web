@@ -110,7 +110,7 @@ class WizardOptionsField extends React.Component<Props> {
   renderEnumDropdown() {
     let items = this.props.enum.map(e => {
       return {
-        label: typeof e === 'string' ? LabelDictionary.get(e) : e.name,
+        label: typeof e === 'string' ? e : e.name,
         value: typeof e === 'string' ? e : e.id,
       }
     })

@@ -81,7 +81,15 @@ export const wizardConfig = {
   instancesItemsPerPage: 6,
 }
 
-// Providers for which `destination-options` API call will be made
-export const providersWithExtraOptions = []
+// Providers for which `destination-options` API call(s) will be made
+// If item is an object and has `envRequestFields` array,
+// subsequent requests to `destination-options` will be made with those fields, if they are set
+export const providersWithExtraOptions = [
+  'openstack',
+  {
+    name: 'oci',
+    envRequestFields: ['compartment', 'availability_domain'],
+  },
+]
 
 export const basename = process.env.PUBLIC_PATH

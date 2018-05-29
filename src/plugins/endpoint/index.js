@@ -20,11 +20,13 @@ import DefaultContentPlugin from './default/ContentPlugin'
 import AzureContentPlugin from './azure/ContentPlugin'
 import OpenstackContentPlugin from './openstack/ContentPlugin'
 import OpenstackSchemaPlugin from './openstack/SchemaPlugin'
+import OciSchemaPlugin from './oci/SchemaPlugin'
 
 export const SchemaPlugin = {
   default: DefaultSchemaPlugin,
   azure: AzureSchemaPlugin,
   openstack: OpenstackSchemaPlugin,
+  oci: OciSchemaPlugin,
 }
 
 export const ContentPlugin = {

@@ -86,9 +86,13 @@ class EdnpointSource {
     let index = endpoint.connection_info.secret_ref && endpoint.connection_info.secret_ref.lastIndexOf('/')
     let uuid = index && endpoint.connection_info.secret_ref && endpoint.connection_info.secret_ref.substr(index + 1)
 
+    if (!uuid) {
+      return Promise.resolve(endpoint.connection_info)
+    }
+
     return new Promise((resolve, reject) => {
       Api.send({
-        url: `${servicesUrl.barbican}/v1/secrets/${uuid || ''}/payload`,
+        url: `${servicesUrl.barbican}/v1/secrets/${uuid || 'undefined'}/payload`,
         responseType: 'text',
         headers: { Accept: 'text/plain' },
       }).then((response) => {

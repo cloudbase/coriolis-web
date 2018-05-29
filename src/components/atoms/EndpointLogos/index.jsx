@@ -26,6 +26,7 @@ import opc32Image from './images/opc-32.svg'
 import openstack32Image from './images/openstack-32.svg'
 import oraclevm32Image from './images/oraclevm-32.svg'
 import vmware32Image from './images/vmware-32.svg'
+import oci32Image from './images/oci-32.svg'
 
 import aws42Image from './images/aws-42.svg'
 import azure42Image from './images/azure-42.svg'
@@ -33,6 +34,7 @@ import opc42Image from './images/opc-42.svg'
 import openstack42Image from './images/openstack-42.svg'
 import oraclevm42Image from './images/oraclevm-42.svg'
 import vmware42Image from './images/vmware-42.svg'
+import oci42Image from './images/oci-42.svg'
 
 import aws64Image from './images/aws-64.svg'
 import azure64Image from './images/azure-64.svg'
@@ -40,6 +42,7 @@ import opc64Image from './images/opc-64.svg'
 import openstack64Image from './images/openstack-64.svg'
 import oraclevm64Image from './images/oraclevm-64.svg'
 import vmware64Image from './images/vmware-64.svg'
+import oci64Image from './images/oci-64.svg'
 
 import aws128Image from './images/aws-128.svg'
 import azure128Image from './images/azure-128.svg'
@@ -47,6 +50,7 @@ import opc128Image from './images/opc-128.svg'
 import openstack128Image from './images/openstack-128.svg'
 import oraclevm128Image from './images/oraclevm-128.svg'
 import vmware128Image from './images/vmware-128.svg'
+import oci128Image from './images/oci-128.svg'
 
 import aws128DisabledImage from './images/aws-128-disabled.svg'
 import azure128DisabledImage from './images/azure-128-disabled.svg'
@@ -54,6 +58,7 @@ import opc128DisabledImage from './images/opc-128-disabled.svg'
 import openstack128DisabledImage from './images/openstack-128-disabled.svg'
 import oraclevm128DisabledImage from './images/oraclevm-128-disabled.svg'
 import vmware128DisabledImage from './images/vmware-128-disabled.svg'
+import oci128DisabledImage from './images/oci-128-disabled.svg'
 
 const endpointImages = {
   azure: [
@@ -98,6 +103,13 @@ const endpointImages = {
     { h: 128, image: aws128Image },
     { h: 128, image: aws128DisabledImage, disabled: true },
   ],
+  oci: [
+    { h: 32, image: oci32Image },
+    { h: 42, image: oci42Image },
+    { h: 64, image: oci64Image },
+    { h: 128, image: oci128Image },
+    { h: 128, image: oci128DisabledImage, disabled: true },
+  ],
 }
 const Wrapper = styled.div``
 const Logo = styled.div`
@@ -127,7 +139,7 @@ class EndpointLogos extends React.Component<Props> {
     height: 64,
   }
 
-  renderLogo(size: {w: number, h: number}) {
+  renderLogo(size: { w: number, h: number }) {
     let imageInfo = null
 
     if (this.props.endpoint && endpointImages[this.props.endpoint]) {
@@ -149,7 +161,7 @@ class EndpointLogos extends React.Component<Props> {
     )
   }
 
-  renderGenericLogo(size: {w: number, h: number}) {
+  renderGenericLogo(size: { w: number, h: number }) {
     return (
       <Generic
         data-test-id="endpointLogos-genericLogo"

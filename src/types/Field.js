@@ -28,4 +28,5 @@ export type Field = {
   parent?: string,
   properties?: Field[],
   required?: boolean,
+  useTextArea?: boolean,
 }

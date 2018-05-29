@@ -98,6 +98,9 @@ const PropertyRow = styled.div`
 const PropertyText = css``
 const PropertyName = styled.div`
   ${PropertyText}
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
 `
 const PropertyValue = styled.div`
   ${PropertyText}
@@ -105,6 +108,7 @@ const PropertyValue = styled.div`
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 50%;
 `
 
 type Props = {
@@ -266,7 +270,7 @@ class MainDetails extends React.Component<Props> {
           return (
             <PropertyRow key={prop.label}>
               <PropertyName>{prop.label}</PropertyName>
-              <PropertyValue>{prop.value}</PropertyValue>
+              <PropertyValue><CopyValue value={prop.value} /></PropertyValue>
             </PropertyRow>
           )
         })}
@@ -335,7 +339,7 @@ class MainDetails extends React.Component<Props> {
         <Column width="17.5%">
           <Arrow />
         </Column>
-        <Column width="auto" style={{ flexGrow: 1 }}>
+        <Column width="48%" style={{ flexGrow: 1 }}>
           <Row>
             <Field>
               <Label>Target</Label>

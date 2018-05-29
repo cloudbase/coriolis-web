@@ -38,7 +38,7 @@ class EndpointStore {
   @observable connectionsInfoLoading = false
 
   @action getEndpoints(options?: { showLoading: boolean }) {
-    if ((options && options.showLoading) || this.endpoints.length === 0) {
+    if (options && options.showLoading) {
       this.loading = true
     }
 

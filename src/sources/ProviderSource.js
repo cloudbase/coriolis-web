@@ -59,11 +59,15 @@ class ProviderSource {
     })
   }
 
-  static getDestinationOptions(endpointId: string): Promise<DestinationOption[]> {
+  static getDestinationOptions(endpointId: string, envData: ?{ [string]: mixed }): Promise<DestinationOption[]> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
+      let envString = ''
+      if (envData) {
+        envString = `?env=${btoa(JSON.stringify(envData))}`
+      }
 
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/destination-options`).then(response => {
+      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/destination-options${envString}`).then(response => {
         let options = response.data.destination_options
         resolve(options)
       }).catch(() => { reject() })

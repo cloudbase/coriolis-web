@@ -95,6 +95,7 @@ class LabelDictionary {
     opc: 'Oracle Cloud',
     azure: 'Azure',
     vmware_vsphere: 'VMware',
+    oci: 'OCI',
     separate_vm: 'Separate Migration/VM?',
     use_replica: 'Use replica',
     windows_migr_image: { label: 'Windows Migration Image', description: 'The Windows Migration Image information found on the Azure page' },

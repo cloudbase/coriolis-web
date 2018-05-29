@@ -34,7 +34,8 @@ import notificationStore from '../../../stores/NotificationStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import { wizardConfig, executionOptions } from '../../../config'
+import O from '../../../utils/ObjectUtils'
+import { wizardConfig, executionOptions, providersWithExtraOptions } from '../../../config'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 import type { Instance, Nic } from '../../../types/Instance'
@@ -238,6 +239,21 @@ class WizardPage extends React.Component<Props, State> {
   handleOptionsChange(field: Field, value: any) {
     wizardStore.updateData({ networks: null })
     wizardStore.updateOptions({ field, value })
+
+    let provider = wizardStore.data.target && wizardStore.data.target.type
+    let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p !== 'string' && p.name === provider)
+    if (provider && providerWithExtraOptions && typeof providerWithExtraOptions !== 'string' && providerWithExtraOptions.envRequestFields) {
+      let validFields = providerWithExtraOptions.envRequestFields.filter(fn => wizardStore.data.options ? O.isValid(wizardStore.data.options[fn]) : false)
+      if (
+        validFields.length === providerWithExtraOptions.envRequestFields.length &&
+        wizardStore.data.options &&
+        wizardStore.data.target &&
+        validFields.find(fn => fn === field.name)
+      ) {
+        providerStore.getDestinationOptions(wizardStore.data.target.id, provider, wizardStore.data.options)
+      }
+    }
+
     wizardStore.setPermalink(wizardStore.data)
   }
 
