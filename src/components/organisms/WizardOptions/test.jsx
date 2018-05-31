@@ -42,6 +42,7 @@ let fields = [
   {
     name: 'enum_field',
     type: 'string',
+    // $FlowIgnore
     enum: ['enum 1', 'enum 2', 'enum 3'],
   },
   {

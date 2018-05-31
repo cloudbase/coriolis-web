@@ -25,7 +25,7 @@ import type { MainItem } from '../types/MainItem'
 class WizardSourceUtils {
   static getDestinationEnv(data) {
     let env = {}
-    let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing'].concat(executionOptions.map(o => o.name))
+    let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'windows_image', 'linux_image'].concat(executionOptions.map(o => o.name))
 
     if (data.options) {
       Object.keys(data.options).forEach(optionName => {
@@ -51,6 +51,13 @@ class WizardSourceUtils {
       data.networks.forEach(mapping => {
         env.network_map[mapping.sourceNic.network_name] = mapping.targetNetwork.id
       })
+    }
+    env.migr_image_map = {}
+    if (data.options && data.options.windows_image) {
+      env.migr_image_map.windows = data.options.windows_image
+    }
+    if (data.options && data.options.linux_image) {
+      env.migr_image_map.linux = data.options.linux_image
     }
 
     return env

@@ -19,7 +19,8 @@ export type Field = {
   type?: string,
   value?: any,
   label?: string,
-  enum?: string[],
+  // $FlowIssue
+  enum?: string[] | { id: string, name: string, [string]: mixed }[],
   default?: any,
   items?: Field[],
   fields?: Field[],

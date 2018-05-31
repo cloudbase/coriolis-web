@@ -84,10 +84,26 @@ class ProviderStore {
       this.optionsSchema.forEach(field => {
         let fieldValues = options.find(f => f.name === field.name)
         if (fieldValues) {
-          // $FlowIgnore
-          field.enum = [...fieldValues.values]
-          if (fieldValues.config_default) {
-            field.default = typeof fieldValues.config_default === 'string' ? fieldValues.config_default : fieldValues.config_default.id
+          if (field.type === 'string') {
+            // $FlowIgnore
+            field.enum = [...fieldValues.values]
+            if (fieldValues.config_default) {
+              field.default = typeof fieldValues.config_default === 'string' ? fieldValues.config_default : fieldValues.config_default.id
+            }
+            // the `migr_image_map` field is special since it needs to group the values by OS type
+          } else if (field.name === 'migr_image_map') {
+            field.properties = [
+              {
+                name: 'windows_image',
+                type: 'string',
+                enum: fieldValues.values.filter(v => typeof v !== 'string' && v.os_type === 'windows'),
+              },
+              {
+                name: 'linux_image',
+                type: 'string',
+                enum: fieldValues.values.filter(v => typeof v !== 'string' && v.os_type === 'linux'),
+              },
+            ]
           }
         }
       })

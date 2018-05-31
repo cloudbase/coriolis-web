@@ -26,6 +26,7 @@ let properties = [
   { type: 'strict-boolean', name: 'prop_2', label: 'Strict Boolean', value: false },
   { type: 'string', name: 'prop_3', label: 'String', value: 'value-3' },
   { type: 'string', name: 'prop_3a', label: 'String', required: true, value: 'value-4' },
+  // $FlowIgnore
   { type: 'string', enum: ['a', 'b', 'c'], name: 'prop_4', label: 'String enum', value: 'value-5' },
 ]
 const valueCallback = prop => {

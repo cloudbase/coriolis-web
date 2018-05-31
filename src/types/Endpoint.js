@@ -34,6 +34,7 @@ export type Endpoint = {
 
 export type DestinationOption = {
   name: string,
-  values: string[] | {name: string, id: string}[],
-  config_default: string | {name: string, id: string},
+  // $FlowIssue
+  values: string[] | { name: string, id: string, [string]: mixed }[],
+  config_default: string | { name: string, id: string },
 }
