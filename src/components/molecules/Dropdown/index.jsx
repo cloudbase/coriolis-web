@@ -38,6 +38,7 @@ const getWidth = props => {
 }
 const Wrapper = styled.div`
   position: relative;
+  ${props => props.embedded ? 'width: 100%;' : ''}
 `
 const List = styled.div`
   position: absolute;
@@ -111,6 +112,7 @@ type Props = {
   disabled: boolean,
   width: number,
   'data-test-id'?: string,
+  embedded?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -325,6 +327,7 @@ class Dropdown extends React.Component<Props, State> {
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         data-test-id={this.props['data-test-id'] || 'dropdown'}
+        embedded={this.props.embedded}
       >
         <DropdownButton
           {...this.props}

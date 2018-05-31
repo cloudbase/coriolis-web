@@ -24,14 +24,15 @@ type Cancelable = {
   cancel: () => void,
 }
 
-type RequestOptions = {|
+type RequestOptions = {
   url: string,
   method?: string,
   cancelId?: string,
-  headers?: {[string]: string},
+  headers?: { [string]: string },
   data?: any,
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream',
-|}
+  quietError?: boolean,
+}
 
 let cancelables: Cancelable[] = []
 const CancelToken = axios.CancelToken
@@ -71,7 +72,7 @@ class ApiCaller {
       }
 
       if (options.cancelId) {
-        let cancel = () => {}
+        let cancel = () => { }
         axiosOptions.cancelToken = new CancelToken(c => {
           cancel = c
         })
@@ -89,7 +90,7 @@ class ApiCaller {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          if (error.response.status !== 401 || window.location.hash !== loginUrl) {
+          if ((error.response.status !== 401 || window.location.hash !== loginUrl) && !options.quietError && error.response.data.error) {
             notificationStore.notify(error.response.data.error.message, 'error')
           }
 

@@ -142,7 +142,7 @@ class WizardOptions extends React.Component<Props> {
     }
 
     let executeNowColumn
-    let fields = fieldsSchema.map((field, i) => {
+    let fields = fieldsSchema.filter(f => f.type !== 'object' || f.properties).map((field, i) => {
       let column = i % 2 === 0 ? 'left' : 'right'
       if (field.name === 'execute_now') {
         executeNowColumn = column

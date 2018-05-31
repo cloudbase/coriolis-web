@@ -24,7 +24,7 @@ import copyImage from './images/copy.svg'
 
 const Wrapper = styled.span`
   opacity: 0;
-  width: 16px;
+  min-width: 16px;
   height: 16px;
   display: inline-block;
   background: url('${copyImage}') no-repeat;

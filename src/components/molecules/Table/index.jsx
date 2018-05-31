@@ -86,7 +86,9 @@ const Row = styled.div`
 const RowData = styled.div`
   ${props => TableData(props)}
   color: ${Palette.grayscale[4]};
-  ${props => props.customStyle}
+  ${props => props.customStyle};
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 const NoItems = styled.div`
   text-align: center;
@@ -144,7 +146,7 @@ class Table extends React.Component<Props> {
       return null
     }
 
-    let dataWidth = `${100 / this.props.items.length}%`
+    let dataWidth = `${100 / this.props.header.length}%`
     return (
       <Body customStyle={this.props.bodyStyle}>
         {this.props.items.map((row, i) => {

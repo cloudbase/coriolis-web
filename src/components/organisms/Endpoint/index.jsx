@@ -372,6 +372,11 @@ class Endpoint extends React.Component<Props, State> {
     }
     return (
       <Content>
+        {/* Fix browsers autofilling password fields */}
+        <div style={{ position: 'absolute', left: '-10000px' }}>
+          <input name="username" type="text" />
+          <input name="password" type="password" />
+        </div>
         {this.renderEndpointStatus()}
         {React.createElement(ContentPlugin[endpointType] || ContentPlugin.default, {
           connectionInfoSchema: providerStore.connectionInfoSchema,
@@ -394,11 +399,6 @@ class Endpoint extends React.Component<Props, State> {
         {this.renderButtons()}
         <Tooltip />
         {Tooltip.rebuild()}
-        {/* Fix browsers autofilling password fields */}
-        <div style={{ position: 'absolute', left: '-10000px' }}>
-          <input type="text" />
-          <input type="password" />
-        </div>
       </Content>
     )
   }

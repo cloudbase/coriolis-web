@@ -24,6 +24,7 @@ import RadioInput from '../../atoms/RadioInput'
 import InfoIcon from '../../atoms/InfoIcon'
 import Dropdown from '../../molecules/Dropdown'
 import DropdownInput from '../../molecules/DropdownInput'
+import TextArea from '../../atoms/TextArea'
 import type { Field as FieldType } from '../../../types/Field'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
@@ -59,6 +60,7 @@ type Props = {
   disabled: boolean,
   enum?: string[],
   items?: FieldType[],
+  useTextArea?: boolean,
 }
 @observer
 class Field extends React.Component<Props> {
@@ -81,6 +83,20 @@ class Field extends React.Component<Props> {
         highlight={this.props.highlight}
         type={this.props.password ? 'password' : 'text'}
         large={this.props.large}
+        value={this.props.value}
+        onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
+        placeholder={LabelDictionary.get(this.props.name)}
+        disabled={this.props.disabled}
+      />
+    )
+  }
+
+  renderTextArea() {
+    return (
+      <TextArea
+        style={{ width: '100%' }}
+        required={this.props.required}
+        highlight={this.props.highlight}
         value={this.props.value}
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
@@ -185,6 +201,9 @@ class Field extends React.Component<Props> {
       case 'string':
         if (this.props.enum) {
           return this.renderEnumDropdown()
+        }
+        if (this.props.useTextArea) {
+          return this.renderTextArea()
         }
         return this.renderTextInput()
       case 'integer':

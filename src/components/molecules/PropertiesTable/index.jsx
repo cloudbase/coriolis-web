@@ -105,9 +105,15 @@ class PropertiesTable extends React.Component<Props> {
       return null
     }
     let items = prop.enum.map(e => {
+      if (typeof e === 'string') {
+        return {
+          label: this.getName(e),
+          value: e,
+        }
+      }
       return {
-        label: this.getName(e),
-        value: e,
+        label: e.name,
+        value: e.id,
       }
     })
 
@@ -120,6 +126,7 @@ class PropertiesTable extends React.Component<Props> {
 
     return (
       <Dropdown
+        embedded
         data-test-id={`${baseId}-dropdown-${prop.name}`}
         width={320}
         noSelectionMessage="Choose a value"

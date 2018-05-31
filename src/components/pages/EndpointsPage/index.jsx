@@ -38,6 +38,7 @@ import endpointStore from '../../../stores/EndpointStore'
 import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import providerStore from '../../../stores/ProviderStore'
+import notificationStore from '../../../stores/NotificationStore'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import { requestPollTimeout } from '../../../config.js'
 import EndpointDuplicateOptions from '../../organisms/EndpointDuplicateOptions'
@@ -87,7 +88,7 @@ class EndpointsPage extends React.Component<{}, State> {
     projectStore.getProjects()
 
     this.stopPolling = false
-    this.pollData()
+    this.pollData(true)
   }
 
   componentWillUnmount() {
@@ -172,7 +173,11 @@ class EndpointsPage extends React.Component<{}, State> {
     let items = this.state.confirmationItems || []
     Promise.all(items.map(endpoint => {
       return EndpointSource.getConnectionInfo(endpoint).then(connectionInfo => {
-        endpoints.push({ ...endpoint, connection_info: connectionInfo })
+        endpoints.push({
+          ...endpoint,
+          connection_info: connectionInfo,
+          name: `${endpoint.name}${!switchProject ? ' (copy)' : ''}`,
+        })
       })
     })).then(() => {
       if (switchProject) {
@@ -184,10 +189,23 @@ class EndpointsPage extends React.Component<{}, State> {
     }).then(() => {
       return Promise.all(endpoints.map(endpoint => {
         return EndpointSource.add(endpoint, true)
-      }))
+      }).map(p => p.catch(e => e))).then(results => {
+        let internalServerErrors = results.filter(r => r.status && r.status === 500)
+        if (internalServerErrors.length > 0) {
+          notificationStore.notify(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
+        }
+        let forbiddenErrors = results.filter(r => r.status && r.status === 403)
+        if (forbiddenErrors.length > 0 && forbiddenErrors[0].data && forbiddenErrors[0].data.description) {
+          notificationStore.notify(String(forbiddenErrors[0].data.description), 'error')
+        }
+      })
+    }).catch(e => {
+      if (e.data && e.data.description) {
+        notificationStore.notify(e.data.description, 'error')
+      }
     }).then(() => {
+      this.pollData(true)
       this.setState({ showDuplicateModal: false, duplicating: false })
-      this.pollData()
     })
   }
 
@@ -238,12 +256,12 @@ class EndpointsPage extends React.Component<{}, State> {
     })
   }
 
-  pollData() {
+  pollData(showLoading?: boolean = false) {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
 
-    Promise.all([endpointStore.getEndpoints(), migrationStore.getMigrations(), replicaStore.getReplicas()]).then(() => {
+    Promise.all([endpointStore.getEndpoints({ showLoading }), migrationStore.getMigrations(), replicaStore.getReplicas()]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
     })
   }

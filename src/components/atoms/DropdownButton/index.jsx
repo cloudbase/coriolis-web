@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import arrowImage from './images/arrow.js'
 
@@ -97,15 +97,20 @@ const Wrapper = styled.div`
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
   transition: all ${StyleProps.animations.swift};
   background: ${props => getBackgroundColor(props)};
+  ${props => props.embedded ? css`
+    border: 0;
+    width: calc(100% + 8px);
+    margin-left: -16px;
+  ` : ''}
 
   #dropdown-arrow-image {stroke: ${props => getArrowColor(props)};}
   &:hover {
-    #dropdown-arrow-image {stroke: ${props => props.disabled ? '' : 'white'};}
-    background: ${props => props.disabled ? '' : Palette.primary};
+    #dropdown-arrow-image {stroke: ${props => props.disabled ? '' : props.embedded ? '' : 'white'};}
+    background: ${props => props.disabled ? '' : props.embedded ? '' : Palette.primary};
   }
 
   &:hover ${Label} {
-    color: ${props => props.disabled ? '' : 'white'};
+    color: ${props => props.disabled ? '' : props.embedded ? '' : 'white'};
   }
 `
 const Arrow = styled.div`
@@ -122,6 +127,7 @@ type Props = {
   className?: string,
   disabled?: boolean,
   'data-test-id'?: string,
+  embedded?: boolean,
 }
 class DropdownButton extends React.Component<Props> {
   render() {
@@ -140,15 +146,15 @@ class DropdownButton extends React.Component<Props> {
       >
         <Label
           {...this.props}
-          onClick={() => {}}
-          innerRef={() => {}}
+          onClick={() => { }}
+          innerRef={() => { }}
           data-test-id="dropdownButton-value"
           disabled={this.props.disabled}
         >{this.props.value}</Label>
         <Arrow
           {...this.props}
-          innerRef={() => {}}
-          onClick={() => {}}
+          innerRef={() => { }}
+          onClick={() => { }}
           data-test-id=""
           disabled={this.props.disabled}
           dangerouslySetInnerHTML={{ __html: arrowImage }}
