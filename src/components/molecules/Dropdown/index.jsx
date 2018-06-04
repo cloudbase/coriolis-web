@@ -113,6 +113,7 @@ type Props = {
   width: number,
   'data-test-id'?: string,
   embedded?: boolean,
+  required?: boolean,
 }
 type State = {
   showDropdownList: boolean,

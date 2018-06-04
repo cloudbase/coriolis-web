@@ -126,6 +126,7 @@ class Field extends React.Component<Props> {
         items={items}
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
+        required={this.props.required}
       />
     )
   }
