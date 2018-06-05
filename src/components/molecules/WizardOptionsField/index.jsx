@@ -132,6 +132,7 @@ class WizardOptionsField extends React.Component<Props> {
         selectedItem={selectedItem}
         items={items}
         onChange={item => this.props.onChange(item.value)}
+        required={this.props.required}
       />
     )
   }
