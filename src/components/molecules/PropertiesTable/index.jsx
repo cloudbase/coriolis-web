@@ -110,6 +110,8 @@ class PropertiesTable extends React.Component<Props> {
           label: this.getName(e),
           value: e,
         }
+      } else if (e.separator === true) {
+        return e
       }
       return {
         label: e.name,

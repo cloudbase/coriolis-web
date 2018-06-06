@@ -99,6 +99,12 @@ const DuplicatedLabel = styled.div`
     overflow: hidden;
   }
 `
+const Separator = styled.div`
+  width: calc(100% - 32px);
+  height: 1px;
+  margin: 8px 16px;
+  background: ${Palette.grayscale[3]};
+`
 
 type Props = {
   selectedItem: any,
@@ -127,6 +133,7 @@ class Dropdown extends React.Component<Props, State> {
 
   buttonRef: HTMLElement
   listRef: HTMLElement
+  listItemsRef: HTMLElement
   tipRef: HTMLElement
   scrollableParent: HTMLElement
   buttonRect: ClientRect
@@ -213,7 +220,9 @@ class Dropdown extends React.Component<Props, State> {
       return
     }
 
-    this.setState({ showDropdownList: !this.state.showDropdownList })
+    this.setState({ showDropdownList: !this.state.showDropdownList }, () => {
+      this.scrollIntoView()
+    })
   }
 
   handleItemClick(item: any) {
@@ -259,8 +268,23 @@ class Dropdown extends React.Component<Props, State> {
       scrollOffset = -parseInt(document.body && document.body.style.top, 10)
     }
 
+    let widthDiff = this.listRef.offsetWidth - this.buttonRef.offsetWidth
     this.listRef.style.top = `${listTop + (window.pageYOffset || scrollOffset)}px`
-    this.listRef.style.left = `${this.buttonRect.left + window.pageXOffset}px`
+    this.listRef.style.left = `${(this.buttonRect.left + window.pageXOffset) - widthDiff}px`
+  }
+
+  scrollIntoView() {
+    if (!this.listRef || !this.listItemsRef) {
+      return
+    }
+
+    let itemIndex = this.props.items.findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
+    if (itemIndex === -1 || !this.listItemsRef.children[itemIndex]) {
+      return
+    }
+
+    // $FlowIssue
+    this.listItemsRef.children[itemIndex].parentNode.scrollTop = this.listItemsRef.children[itemIndex].offsetTop - this.listItemsRef.children[itemIndex].parentNode.offsetTop - 32
   }
 
   renderList() {
@@ -283,8 +307,12 @@ class Dropdown extends React.Component<Props, State> {
     let list = ReactDOM.createPortal((
       <List {...this.props} innerRef={ref => { this.listRef = ref }}>
         <Tip innerRef={ref => { this.tipRef = ref }} primary={this.state.firstItemHover} />
-        <ListItems>
+        <ListItems innerRef={ref => { this.listItemsRef = ref }}>
           {this.props.items.map((item, i) => {
+            if (item.separator === true) {
+              return <Separator />
+            }
+
             let label = this.getLabel(item)
             let value = this.getValue(item)
             let duplicatedLabel = duplicatedLabels.find(l => l === label)

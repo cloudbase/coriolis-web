@@ -93,7 +93,7 @@ class WizardOptionsField extends React.Component<Props> {
   }
 
   renderObjectTable() {
-    if (!this.props.properties) {
+    if (!this.props.properties || !this.props.properties.length) {
       return null
     }
 
@@ -109,6 +109,10 @@ class WizardOptionsField extends React.Component<Props> {
 
   renderEnumDropdown() {
     let items = this.props.enum.map(e => {
+      if (typeof e !== 'string' && e.separator === true) {
+        return e
+      }
+
       return {
         label: typeof e === 'string' ? e : e.name,
         value: typeof e === 'string' ? e : e.id,
