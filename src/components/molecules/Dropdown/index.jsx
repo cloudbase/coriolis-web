@@ -70,7 +70,7 @@ const Tip = styled.div`
 `
 const ListItem = styled.div`
   position: relative;
-  color: ${Palette.grayscale[4]};
+  color: ${props => props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
   padding: 8px 16px;
   ${props => props.selected ? `font-weight: ${StyleProps.fontWeights.medium};` : ''}
   transition: all ${StyleProps.animations.swift};
@@ -120,6 +120,7 @@ type Props = {
   'data-test-id'?: string,
   embedded?: boolean,
   required?: boolean,
+  dimFirstItem?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -326,6 +327,7 @@ class Dropdown extends React.Component<Props, State> {
                 onMouseLeave={() => { this.handleItemMouseLeave(i) }}
                 onClick={() => { this.handleItemClick(item) }}
                 selected={value === selectedValue}
+                dim={this.props.dimFirstItem && i === 0}
               >
                 {label}
                 {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}

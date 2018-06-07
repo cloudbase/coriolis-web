@@ -143,6 +143,7 @@ class WizardOptionsField extends React.Component<Props> {
         noSelectionMessage="Choose a value"
         selectedItem={selectedItem}
         items={items}
+        dimFirstItem
         onChange={item => this.props.onChange(item.value)}
       />
     )
