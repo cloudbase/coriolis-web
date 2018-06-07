@@ -132,7 +132,7 @@ class PropertiesTable extends React.Component<Props> {
         data-test-id={`${baseId}-dropdown-${prop.name}`}
         width={320}
         noSelectionMessage="Choose a value"
-        selectedItem={selectedItem ? selectedItem.label : null}
+        selectedItem={selectedItem}
         items={items}
         onChange={item => this.props.onChange(prop, item.value)}
       />
