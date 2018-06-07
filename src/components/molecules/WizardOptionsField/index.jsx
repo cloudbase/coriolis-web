@@ -29,6 +29,8 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 
 import type { Field } from '../../../types/Field'
 
+import asteriskImage from './images/asterisk.svg'
+
 const getDirection = props => {
   if (props.type === 'strict-boolean' || props.type === 'boolean') {
     return 'row'
@@ -47,6 +49,13 @@ const Label = styled.div`
 `
 const LabelText = styled.span`
   margin-right: 24px;
+`
+const Asterisk = styled.div`
+  ${StyleProps.exactSize('16px')}
+  display: inline-block;
+  background: url('${asteriskImage}') center no-repeat;
+  margin-bottom: -3px;
+  margin-left: ${props => props.marginLeft || '0px'};
 `
 
 type Props = {
@@ -83,7 +92,6 @@ class WizardOptionsField extends React.Component<Props> {
     return (
       <TextInput
         width={`${StyleProps.inputSizes.wizard.width}px`}
-        required={this.props.required}
         value={this.props.value}
         onChange={e => { this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
@@ -136,7 +144,6 @@ class WizardOptionsField extends React.Component<Props> {
         selectedItem={selectedItem}
         items={items}
         onChange={item => this.props.onChange(item.value)}
-        required={this.props.required}
       />
     )
   }
@@ -168,15 +175,13 @@ class WizardOptionsField extends React.Component<Props> {
 
   renderLabel() {
     let description = LabelDictionary.getDescription(this.props.name)
-    let infoIcon = null
-    if (description) {
-      infoIcon = <InfoIcon text={description} marginLeft={-20} />
-    }
-
     return (
       <Label>
-        <LabelText data-test-id="wOptionsField-label">{LabelDictionary.get(this.props.name)}</LabelText>
-        {infoIcon}
+        <LabelText data-test-id="wOptionsField-label">
+          {LabelDictionary.get(this.props.name)}
+        </LabelText>
+        {description ? <InfoIcon text={description} marginLeft={-20} /> : null}
+        {this.props.required ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}
       </Label>
     )
   }
