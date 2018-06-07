@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 
 import DropdownButton from '../../atoms/DropdownButton'
@@ -70,9 +70,10 @@ const Tip = styled.div`
 `
 const ListItem = styled.div`
   position: relative;
-  color: ${props => props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
+  color: ${props => props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
+  ${props => props.selected ? css`background: ${Palette.primary};` : ''}
+  ${props => props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : ''}
   padding: 8px 16px;
-  ${props => props.selected ? `font-weight: ${StyleProps.fontWeights.medium};` : ''}
   transition: all ${StyleProps.animations.swift};
 
   &:first-child {
