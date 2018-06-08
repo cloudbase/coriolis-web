@@ -20,6 +20,7 @@ import { observer } from 'mobx-react'
 
 import Switch from '../../atoms/Switch'
 import TextInput from '../../atoms/TextInput'
+import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import Dropdown from '../../molecules/Dropdown'
 import InfoIcon from '../../atoms/InfoIcon'
 import PropertiesTable from '../../molecules/PropertiesTable'
@@ -136,14 +137,25 @@ class WizardOptionsField extends React.Component<Props> {
 
     let selectedItem = items.find(i => i.value === this.props.value)
 
+    if (items.length < 10) {
+      return (
+        <Dropdown
+          width={this.props.width || StyleProps.inputSizes.wizard.width}
+          noSelectionMessage="Choose a value"
+          selectedItem={selectedItem}
+          items={items}
+          dimFirstItem
+          onChange={item => this.props.onChange(item.value)}
+        />
+      )
+    }
+
     return (
-      <Dropdown
+      <AutocompleteDropdown
         width={this.props.width || StyleProps.inputSizes.wizard.width}
-        data-test-id={`wOptionsField-dropdown-${this.props.name}`}
-        noSelectionMessage="Choose a value"
         selectedItem={selectedItem}
         items={items}
-        dimFirstItem
+        dimNullValue
         onChange={item => this.props.onChange(item.value)}
       />
     )

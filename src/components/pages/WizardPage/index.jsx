@@ -270,7 +270,16 @@ class WizardPage extends React.Component<Props, State> {
       let findFieldInSchema = (name: string) => providerStore.optionsSchema.find(f => f.name === name)
       let validFields = providerWithExtraOptions.envRequiredFields.filter(fn => {
         let schemaField = findFieldInSchema(fn)
-        return wizardStore.data.options ? O.isValid(wizardStore.data.options[fn]) || (schemaField && schemaField.default) : false
+        if (wizardStore.data.options) {
+          if (wizardStore.data.options[fn] === null) {
+            return false
+          }
+          if (wizardStore.data.options[fn] === undefined && schemaField && schemaField.default) {
+            return true
+          }
+          return wizardStore.data.options[fn]
+        }
+        return false
       })
       let currentFieldValied = field ? validFields.find(fn => field ? fn === field.name : false) : true
       if (
