@@ -25,7 +25,7 @@ const generateItem = (item: string, value?: string) => {
   }
 }
 
-const items = [
+const itemsLong = [
   generateItem('Item 1'),
   generateItem('Item 2'),
   generateItem('Item 3'),
@@ -35,13 +35,33 @@ const items = [
   generateItem('Item 7'),
   generateItem('Item 8'),
   generateItem('Item 8', 'item_8_2'),
+  generateItem('Item 9'),
+  generateItem('Item 10'),
+  generateItem('Item 11'),
+  generateItem('Item 12'),
+  generateItem('Item 13'),
+  generateItem('Item 14'),
+  generateItem('Item 15'),
+  generateItem('Item 16'),
+  generateItem('Item 17'),
+  generateItem('Item 18'),
+  generateItem('Item 19'),
+  generateItem('Item 20'),
+]
+
+const itemsShort = [
+  generateItem('Item 1'),
+  generateItem('Item 2'),
+  generateItem('Item 3'),
 ]
 
 type State = {
   selectedItem: string,
 }
-
-class Wrapper extends React.Component<{}, State> {
+type Props = {
+  items: { value: string, label: string }[],
+}
+class Wrapper extends React.Component<Props, State> {
   state = {
     selectedItem: '',
   }
@@ -49,7 +69,7 @@ class Wrapper extends React.Component<{}, State> {
   render() {
     return (
       <AutocompleteDropdown
-        items={items}
+        items={this.props.items}
         selectedItem={this.state.selectedItem}
         onChange={selectedItem => { this.setState({ selectedItem }) }}
         onInputChange={(value, filteredItems) => {
@@ -64,5 +84,8 @@ class Wrapper extends React.Component<{}, State> {
 
 storiesOf('AutocompleteDropdown', module)
   .add('default', () => (
-    <Wrapper />
+    <Wrapper items={itemsLong} />
+  ))
+  .add('short list', () => (
+    <Wrapper items={itemsShort} />
   ))
