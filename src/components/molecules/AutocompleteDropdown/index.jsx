@@ -25,6 +25,8 @@ import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
 import StyleProps from '../../styleUtils/StyleProps'
 
+import tipImage from './images/tip'
+
 const getWidth = props => {
   if (props.width) {
     return props.width - 2
@@ -55,18 +57,19 @@ const ListItems = styled.div`
 `
 const Tip = styled.div`
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: ${props => props.primary ? Palette.primary : 'white'};
-  border-top: 1px solid ${Palette.grayscale[3]};
-  border-left: 1px solid ${Palette.grayscale[3]};
-  border-bottom: 1px solid ${props => props.primary ? Palette.primary : 'white'};
-  border-right: 1px solid ${props => props.primary ? Palette.primary : 'white'};
-  transform: rotate(45deg);
+  width: 16px;
+  height: 8px;
   right: 8px;
-  top: -6px;
+  top: -8px;
   z-index: 11;
   transition: all ${StyleProps.animations.swift};
+  overflow: hidden;
+  svg {
+    #path {
+      transition: all ${StyleProps.animations.swift};
+      fill: ${props => props.primary ? Palette.primary : 'white'};
+    }
+  }
 `
 const SearchNotFound = styled.div`
   padding: 8px;
@@ -135,6 +138,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
   listRef: HTMLElement
   listItemsRef: HTMLElement
   tipRef: HTMLElement
+  firstItemRef: HTMLElement
   scrollableParent: HTMLElement
   buttonRect: ClientRect
   itemMouseDown: boolean
@@ -338,6 +342,20 @@ class AutocompleteDropdown extends React.Component<Props, State> {
 
     if (this.listItemsRef) {
       this.listItemsRef.style.maxHeight = `${listHeight}px`
+      if (this.tipRef && this.firstItemRef) {
+        let svgPath = this.tipRef.querySelector('#path')
+        if (svgPath) {
+          if (this.listItemsRef.clientHeight < this.listItemsRef.scrollHeight) {
+            // $FlowIssue
+            svgPath.style.fill = 'white'
+            this.firstItemRef.style.borderTopRightRadius = '0'
+          } else {
+            // $FlowIssue
+            svgPath.style.fill = ''
+            this.firstItemRef.style.borderTopRightRadius = ''
+          }
+        }
+      }
     }
   }
 
@@ -366,6 +384,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           let listItem = (
             <ListItem
               key={value}
+              innerRef={ref => { if (i === 0) { this.firstItemRef = ref } }}
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
               onMouseEnter={() => { this.handleItemMouseEnter(i) }}
@@ -411,7 +430,11 @@ class AutocompleteDropdown extends React.Component<Props, State> {
 
     let list = ReactDOM.createPortal((
       <List {...this.props} innerRef={ref => { this.listRef = ref }}>
-        <Tip innerRef={ref => { this.tipRef = ref }} primary={this.state.firstItemHover || isFirstItemSelected} />
+        <Tip
+          innerRef={ref => { this.tipRef = ref }}
+          primary={this.state.firstItemHover || isFirstItemSelected}
+          dangerouslySetInnerHTML={{ __html: tipImage }}
+        />
         {this.renderItems()}
         {this.renderSearchNotFound()}
       </List>
