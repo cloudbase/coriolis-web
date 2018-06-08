@@ -196,11 +196,17 @@ class WizardPageContent extends React.Component<Props, State> {
 
   isOptionsPageValid() {
     const isValid = (field: Field): boolean => {
-      return (this.props.wizardData.options &&
-        this.props.wizardData.options[field.name] !== null &&
-        this.props.wizardData.options[field.name] !== undefined &&
-        this.props.wizardData.options[field.name] !== ''
-      ) || (field.default !== null && field.default !== undefined)
+      if (this.props.wizardData.options) {
+        let fieldValue = this.props.wizardData.options[field.name]
+        if (fieldValue === null) {
+          return false
+        }
+        if (fieldValue === undefined) {
+          return field.default !== null && field.default !== undefined
+        }
+        return Boolean(fieldValue)
+      }
+      return field.default !== null && field.default !== undefined
     }
 
     let schema = this.props.providerStore.optionsSchema

@@ -39,8 +39,9 @@ const getInputWidth = props => {
 const borderColor = (props, defaultColor = Palette.grayscale[3]) => props.highlight ? Palette.alert : defaultColor
 const Input = styled.input`
   width: ${props => getInputWidth(props)};
-  height: ${StyleProps.inputSizes.regular.height}px;
-  line-height: ${StyleProps.inputSizes.regular.height}px;
+  height: ${props => props.height || `${StyleProps.inputSizes.regular.height}px`};
+  line-height: ${props => props.lineHeight || `${StyleProps.inputSizes.regular.height}px`};
+  border-radius: ${StyleProps.borderRadius};
   background-color: #FFF;
   border: ${props => props.embedded ? 0 : css`1px solid ${props => borderColor(props)}`};
   border-top-left-radius: ${props => props.embedded ? 0 : StyleProps.borderRadius};
@@ -102,6 +103,7 @@ type Props = {
   onCloseClick?: () => void,
   embedded?: boolean,
   requiredStyle?: any,
+  height?: string,
   'data-test-id'?: string,
 }
 const TextInput = (props: Props) => {
