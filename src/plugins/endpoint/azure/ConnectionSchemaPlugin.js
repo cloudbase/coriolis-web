@@ -17,7 +17,7 @@ import {
   defaultSchemaToFields,
   generateField,
   fieldsToPayload,
-} from '../default/SchemaPlugin'
+} from '../default/ConnectionSchemaPlugin'
 
 const fieldsToPayloadUseDefaults = (data, schema) => {
   let info = {}

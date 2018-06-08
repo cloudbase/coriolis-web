@@ -110,6 +110,8 @@ class PropertiesTable extends React.Component<Props> {
           label: this.getName(e),
           value: e,
         }
+      } else if (e.separator === true) {
+        return e
       }
       return {
         label: e.name,
@@ -130,7 +132,7 @@ class PropertiesTable extends React.Component<Props> {
         data-test-id={`${baseId}-dropdown-${prop.name}`}
         width={320}
         noSelectionMessage="Choose a value"
-        selectedItem={selectedItem ? selectedItem.label : null}
+        selectedItem={selectedItem}
         items={items}
         onChange={item => this.props.onChange(prop, item.value)}
       />

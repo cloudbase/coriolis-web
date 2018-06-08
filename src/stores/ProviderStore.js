@@ -18,6 +18,7 @@ import { observable, action } from 'mobx'
 
 import ProviderSource from '../sources/ProviderSource'
 import { providersWithExtraOptions } from '../config.js'
+import { OptionsSchemaPlugin } from '../plugins/endpoint'
 import type { DestinationOption } from '../types/Endpoint'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
@@ -82,34 +83,13 @@ class ProviderStore {
     this.destinationOptionsLoading = true
     return ProviderSource.getDestinationOptions(endpointId, envData).then(options => {
       this.optionsSchema.forEach(field => {
-        let fieldValues = options.find(f => f.name === field.name)
-        if (fieldValues) {
-          if (field.type === 'string') {
-            // $FlowIgnore
-            field.enum = [...fieldValues.values]
-            if (fieldValues.config_default) {
-              field.default = typeof fieldValues.config_default === 'string' ? fieldValues.config_default : fieldValues.config_default.id
-            }
-            // the `migr_image_map` field is special since it needs to group the values by OS type
-          } else if (field.name === 'migr_image_map') {
-            field.properties = [
-              {
-                name: 'windows_image',
-                type: 'string',
-                enum: fieldValues.values.filter(v => typeof v !== 'string' && v.os_type === 'windows'),
-              },
-              {
-                name: 'linux_image',
-                type: 'string',
-                enum: fieldValues.values.filter(v => typeof v !== 'string' && v.os_type === 'linux'),
-              },
-            ]
-          }
-        }
+        const parser = OptionsSchemaPlugin[provider] || OptionsSchemaPlugin.default
+        parser.fillFieldValues(field, options)
       })
       this.destinationOptions = options
       this.destinationOptionsLoading = false
-    }).catch(() => {
+    }).catch(err => {
+      console.error(err)
       if (envData) {
         return this.loadOptionsSchema(provider, this.lastOptionsSchemaType).then(() => {
           return this.getDestinationOptions(endpointId, provider)

@@ -18,62 +18,23 @@ import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
 import notificationStore from '../stores/NotificationStore'
-import { servicesUrl, executionOptions } from '../config'
+import { OptionsSchemaPlugin } from '../plugins/endpoint'
+
+import { servicesUrl } from '../config'
 import type { WizardData } from '../types/WizardData'
 import type { MainItem } from '../types/MainItem'
-
-class WizardSourceUtils {
-  static getDestinationEnv(data) {
-    let env = {}
-    let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'windows_image', 'linux_image'].concat(executionOptions.map(o => o.name))
-
-    if (data.options) {
-      Object.keys(data.options).forEach(optionName => {
-        if (specialOptions.find(o => o === optionName)
-          // $FlowIssue
-          || data.options[optionName] === null || data.options[optionName] === undefined) {
-          return
-        }
-        if (optionName.indexOf('/') > 0) {
-          let parentName = optionName.substr(0, optionName.lastIndexOf('/'))
-          if (!env[parentName]) {
-            env[parentName] = {}
-          }
-          env[parentName][optionName.substr(optionName.lastIndexOf('/') + 1)] = data.options ? data.options[optionName] : null
-        } else {
-          env[optionName] = data.options ? data.options[optionName] : null
-        }
-      })
-    }
-
-    env.network_map = {}
-    if (data.networks && data.networks.length) {
-      data.networks.forEach(mapping => {
-        env.network_map[mapping.sourceNic.network_name] = mapping.targetNetwork.id
-      })
-    }
-    env.migr_image_map = {}
-    if (data.options && data.options.windows_image) {
-      env.migr_image_map.windows = data.options.windows_image
-    }
-    if (data.options && data.options.linux_image) {
-      env.migr_image_map.linux = data.options.linux_image
-    }
-
-    return env
-  }
-}
 
 class WizardSource {
   static create(type: string, data: WizardData): Promise<MainItem> {
     return new Promise((resolve, reject) => {
       let projectId = cookie.get('projectId')
 
+      const parser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
       let payload = {}
       payload[type] = {
         origin_endpoint_id: data.source ? data.source.id : 'null',
         destination_endpoint_id: data.target ? data.target.id : 'null',
-        destination_environment: WizardSourceUtils.getDestinationEnv(data),
+        destination_environment: parser.getDestinationEnv(data),
         instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
         notes: '',
         security_groups: ['testgroup'],

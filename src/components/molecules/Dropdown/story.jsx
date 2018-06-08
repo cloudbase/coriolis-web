@@ -54,6 +54,9 @@ storiesOf('Dropdown', module)
   .add('disabled', () => (
     <Wrapper disabled />
   ))
+  .add('required', () => (
+    <Wrapper required />
+  ))
   .add('long list', () => (
     <Wrapper
       items={[
@@ -61,6 +64,7 @@ storiesOf('Dropdown', module)
         { label: 'Item 2', value: 'item-2' },
         { label: 'Item 3', value: 'item-3' },
         { label: 'Item 4', value: 'item-4' },
+        { separator: true },
         { label: 'Item 1', value: 'item-1' },
         { label: 'Item 2', value: 'item-2' },
         { label: 'Item 3', value: 'item-3' },

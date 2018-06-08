@@ -14,19 +14,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import DefaultSchemaPlugin from './default/SchemaPlugin'
-import AzureSchemaPlugin from './azure/SchemaPlugin'
+import DefaultConnectionSchemaPlugin from './default/ConnectionSchemaPlugin'
+import AzureConnectionSchemaPlugin from './azure/ConnectionSchemaPlugin'
+import OpenstackConnectionSchemaPlugin from './openstack/ConnectionSchemaPlugin'
+import OciConnectionSchemaPlugin from './oci/ConnectionSchemaPlugin'
 import DefaultContentPlugin from './default/ContentPlugin'
 import AzureContentPlugin from './azure/ContentPlugin'
 import OpenstackContentPlugin from './openstack/ContentPlugin'
-import OpenstackSchemaPlugin from './openstack/SchemaPlugin'
-import OciSchemaPlugin from './oci/SchemaPlugin'
 
-export const SchemaPlugin = {
-  default: DefaultSchemaPlugin,
-  azure: AzureSchemaPlugin,
-  openstack: OpenstackSchemaPlugin,
-  oci: OciSchemaPlugin,
+import DefaultOptionsSchemaPlugin from './default/OptionsSchemaPlugin'
+
+export const ConnectionSchemaPlugin = {
+  default: DefaultConnectionSchemaPlugin,
+  azure: AzureConnectionSchemaPlugin,
+  openstack: OpenstackConnectionSchemaPlugin,
+  oci: OciConnectionSchemaPlugin,
+}
+
+export const OptionsSchemaPlugin = {
+  default: DefaultOptionsSchemaPlugin,
 }
 
 export const ContentPlugin = {

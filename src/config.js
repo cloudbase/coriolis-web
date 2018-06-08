@@ -81,14 +81,18 @@ export const wizardConfig = {
   instancesItemsPerPage: 6,
 }
 
-// Providers for which `destination-options` API call(s) will be made
-// If item is an object and has `envRequestFields` array,
-// subsequent requests to `destination-options` will be made with those fields, if they are set
+// A list of providers for which `destination-options` API call(s) will be made in the Wizard
+// If the item is just a string with the provider name, only one API call will be made
+// If the item has `envRequiredFields`, an additional API call will be made once the specified fields are filled
 export const providersWithExtraOptions = [
   'openstack',
   {
+    name: 'azure',
+    envRequiredFields: ['location', 'resource_group'],
+  },
+  {
     name: 'oci',
-    envRequestFields: ['compartment', 'availability_domain'],
+    envRequiredFields: ['compartment', 'availability_domain'],
   },
 ]
 

@@ -239,21 +239,7 @@ class WizardPage extends React.Component<Props, State> {
   handleOptionsChange(field: Field, value: any) {
     wizardStore.updateData({ networks: null })
     wizardStore.updateOptions({ field, value })
-
-    let provider = wizardStore.data.target && wizardStore.data.target.type
-    let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p !== 'string' && p.name === provider)
-    if (provider && providerWithExtraOptions && typeof providerWithExtraOptions !== 'string' && providerWithExtraOptions.envRequestFields) {
-      let validFields = providerWithExtraOptions.envRequestFields.filter(fn => wizardStore.data.options ? O.isValid(wizardStore.data.options[fn]) : false)
-      if (
-        validFields.length === providerWithExtraOptions.envRequestFields.length &&
-        wizardStore.data.options &&
-        wizardStore.data.target &&
-        validFields.find(fn => fn === field.name)
-      ) {
-        providerStore.getDestinationOptions(wizardStore.data.target.id, provider, wizardStore.data.options)
-      }
-    }
-
+    this.loadEnvDestinationOptions(field)
     wizardStore.setPermalink(wizardStore.data)
   }
 
@@ -277,6 +263,37 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.setPermalink(wizardStore.data)
   }
 
+  loadEnvDestinationOptions(field?: Field) {
+    let provider = wizardStore.data.target && wizardStore.data.target.type
+    let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p !== 'string' && p.name === provider)
+    if (provider && providerWithExtraOptions && typeof providerWithExtraOptions !== 'string' && providerWithExtraOptions.envRequiredFields) {
+      let findFieldInSchema = (name: string) => providerStore.optionsSchema.find(f => f.name === name)
+      let validFields = providerWithExtraOptions.envRequiredFields.filter(fn => {
+        let schemaField = findFieldInSchema(fn)
+        return wizardStore.data.options ? O.isValid(wizardStore.data.options[fn]) || (schemaField && schemaField.default) : false
+      })
+      let currentFieldValied = field ? validFields.find(fn => field ? fn === field.name : false) : true
+      if (
+        validFields.length === providerWithExtraOptions.envRequiredFields.length &&
+        currentFieldValied
+      ) {
+        let envData = {}
+        validFields.forEach(fn => {
+          envData[fn] = wizardStore.data.options ? wizardStore.data.options[fn] : null
+          if (!O.isValid(envData[fn])) {
+            let schemaField = findFieldInSchema(fn)
+            if (schemaField && schemaField.default) {
+              envData[fn] = schemaField.default
+            }
+          }
+        })
+        if (wizardStore.data.target) {
+          providerStore.getDestinationOptions(wizardStore.data.target.id, provider, envData)
+        }
+      }
+    }
+  }
+
   loadDataForPage(page: WizardPageType) {
     switch (page.id) {
       case 'source': {
@@ -290,14 +307,17 @@ class WizardPage extends React.Component<Props, State> {
         break
       }
       case 'target': {
-        // Preload destination options if data is set from 'Permalink'
         let target = wizardStore.data.target
-        if (providerStore.destinationOptions.length === 0 && target) {
-          providerStore.getDestinationOptions(target.id, target.type)
-        }
         // Preload destination options schema
         if (providerStore.optionsSchema.length === 0 && target) {
-          providerStore.loadOptionsSchema(target.type, this.state.type)
+          providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
+            // Preload destination options if data is set from 'Permalink'
+            if (providerStore.destinationOptions.length === 0 && target) {
+              providerStore.getDestinationOptions(target.id, target.type).then(() => {
+                this.loadEnvDestinationOptions()
+              })
+            }
+          })
         }
         break
       }

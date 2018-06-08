@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Schema } from '../../../types/Schema'
 import type { Field } from '../../../types/Field'
 
-import DefaultConnectionSchemaParser from '../default/SchemaPlugin'
+import DefaultConnectionSchemaParser from '../default/ConnectionSchemaPlugin'
 
 const customSort = (fields: Field[]) => {
   const sortPriority = {

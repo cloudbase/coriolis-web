@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 
 import DropdownButton from '../../atoms/DropdownButton'
@@ -70,9 +70,10 @@ const Tip = styled.div`
 `
 const ListItem = styled.div`
   position: relative;
-  color: ${Palette.grayscale[4]};
+  color: ${props => props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
+  ${props => props.selected ? css`background: ${Palette.primary};` : ''}
+  ${props => props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : ''}
   padding: 8px 16px;
-  ${props => props.selected ? `font-weight: ${StyleProps.fontWeights.medium};` : ''}
   transition: all ${StyleProps.animations.swift};
 
   &:first-child {
@@ -99,6 +100,12 @@ const DuplicatedLabel = styled.div`
     overflow: hidden;
   }
 `
+const Separator = styled.div`
+  width: calc(100% - 32px);
+  height: 1px;
+  margin: 8px 16px;
+  background: ${Palette.grayscale[3]};
+`
 
 type Props = {
   selectedItem: any,
@@ -114,6 +121,7 @@ type Props = {
   'data-test-id'?: string,
   embedded?: boolean,
   required?: boolean,
+  dimFirstItem?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -127,6 +135,7 @@ class Dropdown extends React.Component<Props, State> {
 
   buttonRef: HTMLElement
   listRef: HTMLElement
+  listItemsRef: HTMLElement
   tipRef: HTMLElement
   scrollableParent: HTMLElement
   buttonRect: ClientRect
@@ -213,7 +222,9 @@ class Dropdown extends React.Component<Props, State> {
       return
     }
 
-    this.setState({ showDropdownList: !this.state.showDropdownList })
+    this.setState({ showDropdownList: !this.state.showDropdownList }, () => {
+      this.scrollIntoView()
+    })
   }
 
   handleItemClick(item: any) {
@@ -259,8 +270,23 @@ class Dropdown extends React.Component<Props, State> {
       scrollOffset = -parseInt(document.body && document.body.style.top, 10)
     }
 
+    let widthDiff = this.listRef.offsetWidth - this.buttonRef.offsetWidth
     this.listRef.style.top = `${listTop + (window.pageYOffset || scrollOffset)}px`
-    this.listRef.style.left = `${this.buttonRect.left + window.pageXOffset}px`
+    this.listRef.style.left = `${(this.buttonRect.left + window.pageXOffset) - widthDiff}px`
+  }
+
+  scrollIntoView() {
+    if (!this.listRef || !this.listItemsRef) {
+      return
+    }
+
+    let itemIndex = this.props.items.findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
+    if (itemIndex === -1 || !this.listItemsRef.children[itemIndex]) {
+      return
+    }
+
+    // $FlowIssue
+    this.listItemsRef.children[itemIndex].parentNode.scrollTop = this.listItemsRef.children[itemIndex].offsetTop - this.listItemsRef.children[itemIndex].parentNode.offsetTop - 32
   }
 
   renderList() {
@@ -283,8 +309,12 @@ class Dropdown extends React.Component<Props, State> {
     let list = ReactDOM.createPortal((
       <List {...this.props} innerRef={ref => { this.listRef = ref }}>
         <Tip innerRef={ref => { this.tipRef = ref }} primary={this.state.firstItemHover} />
-        <ListItems>
+        <ListItems innerRef={ref => { this.listItemsRef = ref }}>
           {this.props.items.map((item, i) => {
+            if (item.separator === true) {
+              return <Separator />
+            }
+
             let label = this.getLabel(item)
             let value = this.getValue(item)
             let duplicatedLabel = duplicatedLabels.find(l => l === label)
@@ -298,6 +328,7 @@ class Dropdown extends React.Component<Props, State> {
                 onMouseLeave={() => { this.handleItemMouseLeave(i) }}
                 onClick={() => { this.handleItemClick(item) }}
                 selected={value === selectedValue}
+                dim={this.props.dimFirstItem && i === 0}
               >
                 {label}
                 {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
