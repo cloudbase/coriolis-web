@@ -122,7 +122,7 @@ class WizardOptionsField extends React.Component<Props> {
       }
 
       return {
-        label: typeof e === 'string' ? e : e.name,
+        label: typeof e === 'string' ? LabelDictionary.get(e) : e.name,
         value: typeof e === 'string' ? e : e.id,
       }
     })
