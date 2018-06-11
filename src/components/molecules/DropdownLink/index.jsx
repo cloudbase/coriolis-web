@@ -40,7 +40,7 @@ const LinkButton = styled.div`
 const List = styled.div`
   position: absolute;
   z-index: 1001;
-  padding: 8px 16px 8px 8px;
+  padding: 8px;
   background: ${Palette.grayscale[1]};
   border-radius: 4px;
   border: 1px solid ${Palette.grayscale[0]};
@@ -72,6 +72,7 @@ const ListItem = styled.div`
   color: ${props => props.selected ? Palette.primary : Palette.grayscale[4]};
   cursor: pointer;
   display: flex;
+  align-items: center;
 
   &:first-child {
     padding-top: 0;
@@ -81,6 +82,8 @@ const ListItemLabel = styled.div`
   word-break: break-all;
   word-break: break-word;
   ${props => props.highlighted ? `font-weight: ${StyleProps.fontWeights.medium};` : ''}
+  ${props => props.addMargin ? css`margin-left: ${props.addMargin}px;` : ''}
+  ${props => props.customStyle}
 `
 const Checkmark = styled.div`
   ${StyleProps.exactWidth('16px')}
@@ -98,7 +101,11 @@ const Arrow = styled.div`
   width: 16px;
   height: 16px;
   margin-left: 4px;
-  margin-top: -3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ${props => props.orientation === 'right' ? css`transform: rotate(-90deg);` : ''}
+  ${props => props.orientation === 'left' ? css`transform: rotate(90deg);` : ''}
 `
 const EmptySearch = styled.div`
   margin-top: 8px;
@@ -122,9 +129,16 @@ type Props = {
   searchable?: boolean,
   disabled?: boolean,
   secondary?: boolean,
+  multipleSelection?: boolean,
+  selectedItems?: string[],
   'data-test-id'?: string,
   linkButtonStyle?: any,
   arrowImage?: (color: string) => string,
+  noCheckmark?: boolean,
+  itemStyle?: (item: ItemType) => string,
+  style?: { [mixed]: any },
+  labelStyle?: any,
+  getLabel?: () => string
 }
 type State = {
   showDropdownList: boolean,
@@ -192,7 +206,9 @@ class DropdownLink extends React.Component<Props, State> {
   }
 
   getFilteredItems() {
-    return this.props.items.filter(item =>
+    let items = this.props.items
+
+    return items.filter(item =>
       item.value.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1 ||
       item.label.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1
     )
@@ -215,7 +231,9 @@ class DropdownLink extends React.Component<Props, State> {
   }
 
   handleItemClick(item: ItemType) {
-    this.setState({ showDropdownList: false })
+    if (!this.props.multipleSelection) {
+      this.setState({ showDropdownList: false })
+    }
 
     if (this.props.onChange) {
       this.props.onChange(item)
@@ -291,6 +309,35 @@ class DropdownLink extends React.Component<Props, State> {
     return <EmptySearch>No items found</EmptySearch>
   }
 
+  renderItem(item: ItemType) {
+    let highlighted = item.value !== this.props.selectedItem ? item.value === this.props.highlightedItem : false
+    let label = item.label || item.value.toString().charAt(0).toUpperCase() + item.value.toString().substr(1)
+    let selected
+
+    if (this.props.multipleSelection && this.props.selectedItems) {
+      selected = Boolean(this.props.selectedItems.find(i => i === item.value))
+    } else {
+      selected = item.value === this.props.selectedItem
+    }
+
+    return (
+      <ListItem
+        key={item.label || item.value}
+        onMouseDown={() => { this.itemMouseDown = true }}
+        onMouseUp={() => { this.itemMouseDown = false }}
+        onClick={() => { this.handleItemClick(item) }}
+        selected={selected}
+      >
+        {!this.props.noCheckmark ? <Checkmark show={selected} /> : null}
+        <ListItemLabel
+          highlighted={highlighted}
+          addMargin={this.props.noCheckmark ? 8 : 0}
+          customStyle={this.props.itemStyle ? this.props.itemStyle(item) : ''}
+        >{label}</ListItemLabel>
+      </ListItem>
+    )
+  }
+
   renderListItems() {
     if (this.state.searchText && this.getFilteredItems().length === 0) {
       return null
@@ -299,21 +346,7 @@ class DropdownLink extends React.Component<Props, State> {
     return (
       <ListItems innerRef={ref => { this.listItemsRef = ref }} searchable={this.props.searchable}>
         {this.getFilteredItems().map((item) => {
-          let highlighted = item.value !== this.props.selectedItem ? item.value === this.props.highlightedItem : false
-          let listItem = (
-            <ListItem
-              key={item.label}
-              onMouseDown={() => { this.itemMouseDown = true }}
-              onMouseUp={() => { this.itemMouseDown = false }}
-              onClick={() => { this.handleItemClick(item) }}
-              selected={item.value === this.props.selectedItem}
-            >
-              <Checkmark show={item.value === this.props.selectedItem} />
-              <ListItemLabel highlighted={highlighted}>{item.label}</ListItemLabel>
-            </ListItem>
-          )
-
-          return listItem
+          return this.renderItem(item)
         })}
       </ListItems>
     )
@@ -337,6 +370,9 @@ class DropdownLink extends React.Component<Props, State> {
 
   render() {
     let renderLabel = () => {
+      if (this.props.getLabel) {
+        return this.props.getLabel()
+      }
       if (this.props.items && this.props.items.length && this.props.selectedItem) {
         let item = this.props.items.find(i => i.value === this.props.selectedItem)
         if (item && item.label) {
@@ -357,6 +393,7 @@ class DropdownLink extends React.Component<Props, State> {
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         data-test-id={this.props['data-test-id'] || 'dropdownLink'}
+        style={this.props.style}
       >
         <LinkButton
           onClick={() => this.handleButtonClick()}
@@ -367,6 +404,7 @@ class DropdownLink extends React.Component<Props, State> {
             secondary={this.props.secondary}
             innerRef={label => { this.labelRef = label }}
             data-test-id="dropdownLink-label"
+            style={this.props.labelStyle}
           >{renderLabel()}</Label>
           <Arrow
             innerRef={arrow => { this.arrowRef = arrow }}

@@ -86,7 +86,7 @@ const LoginErrorText = styled.div`
 type Props = {
   className: string,
   loading: boolean,
-  loginFailedResponse: { status: string },
+  loginFailedResponse: { status: string, message?: string },
   onFormSubmit: (credentials: { username: string, password: string }) => void,
 }
 type State = {
@@ -139,6 +139,7 @@ class LoginForm extends React.Component<Props, State> {
           errorMessage = 'The username or password did not match. Please try again.'
           break
         default:
+          errorMessage = this.props.loginFailedResponse.message || errorMessage
       }
     }
 

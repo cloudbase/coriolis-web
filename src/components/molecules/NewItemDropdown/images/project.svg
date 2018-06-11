@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="36px" height="45px" viewBox="0 0 36 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon-Info</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+        <g id="Replica/List/Loading" transform="translate(-1062.000000, -424.000000)" stroke="#0044CA">
+            <g id="Nav/Project-New-Bell-User" transform="translate(848.000000, 48.000000)">
+                <g id="Nav/NewButton/MenuNewButton" transform="translate(192.000000, 32.000000)">
+                    <g id="Notification-Menu-Item-Copy-4" transform="translate(0.000000, 328.000000)">
+                        <g id="Icon/Project/48" transform="translate(16.000000, 16.000000)">
+                            <g id="Group" transform="translate(6.000000, 0.000000)">
+                                <path d="M18,7.98986486 L18,0.929054054" id="Line-Copy" stroke-width="1.5"></path>
+                                <path d="M2.325,43.72629 L14.6539577,20.1065305 M21.286909,19.9932432 L33.675,43.72629" id="Triangle-Copy" stroke-width="1.5"></path>
+                                <path d="M0.9,31.2905405 L35.1,31.2905405" id="Line-Copy-2" stroke-width="1.5"></path>
+                                <ellipse id="Oval-Copy" stroke-width="1.5" cx="18" cy="14.3445946" rx="5.7" ry="5.64864865"></ellipse>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

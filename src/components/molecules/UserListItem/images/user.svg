@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon-Replica-White</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M24,48 C37.254834,48 48,37.254834 48,24 C48,10.745166 37.254834,0 24,0 C10.745166,0 0,10.745166 0,24 C0,37.254834 10.745166,48 24,48 Z" id="path-1"></path>
+    </defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="User/List" transform="translate(-400.000000, -200.000000)">
+            <g id="Item-Connection-Copy" transform="translate(352.000000, 192.000000)">
+                <g id="Icon/User/Item-48" transform="translate(48.000000, 8.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Pat-Benetar" fill="#C8CCD7" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    <path d="M33.555,38.5387597 C31.8975,37.8333333 29.85,36.9253488 29.85,36.2209302 L29.85,31.6860465 C32.2875,29.7713178 33.75,26.748062 33.75,23.624031 L33.75,17.5775194 C33.75,12.0348837 29.3625,7.5 24,7.5 C18.6375,7.5 14.25,12.0348837 14.25,17.5775194 L14.25,23.624031 C14.25,26.748062 15.7125,29.872093 18.15,31.6860465 L18.15,36.2209302 C18.15,36.8255814 16.1025,37.7325581 14.445,38.5387597 C10.4475,40.251938 4.5,42.872093 4.5,49.8255814 L4.5,50.8333333 L43.5,50.8333333 L43.5,49.8255814 C43.5,42.872093 37.553475,40.251938 33.555,38.5387597" id="Fill-1" stroke="#0044CA" stroke-width="1.5" stroke-linecap="round" mask="url(#mask-2)"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

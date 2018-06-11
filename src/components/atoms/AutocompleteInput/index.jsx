@@ -42,7 +42,7 @@ const Wrapper = styled.div`
   width: ${props => getWidth(props)}px;
   height: ${props => props.large ? StyleProps.inputSizes.large.height - 2
     : StyleProps.inputSizes.regular.height - 2}px;
-  border: 1px solid ${props => props.disabled ? Palette.grayscale[0] : Palette.grayscale[3]};
+  border: 1px solid ${props => props.highlight ? Palette.alert : props.disabled ? Palette.grayscale[0] : Palette.grayscale[3]};
   border-radius: ${StyleProps.borderRadius};
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
   transition: all ${StyleProps.animations.swift};
@@ -71,6 +71,7 @@ type Props = {
   width?: number,
   large?: boolean,
   onFocus?: () => void,
+  highlight?: boolean,
 }
 type State = {
   textInputFocus: boolean,
@@ -86,6 +87,8 @@ class AutocompleteInput extends React.Component<Props, State> {
         large={this.props.large}
         width={this.props.width}
         focus={this.state.textInputFocus}
+        highlight={this.props.highlight}
+        disabled={this.props.disabled}
         innerRef={e => {
           if (this.props.customRef) {
             this.props.customRef(e)

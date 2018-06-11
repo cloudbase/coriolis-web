@@ -33,7 +33,13 @@ export const navigationMenu = [
   { label: 'Replicas', value: 'replicas' },
   { label: 'Migrations', value: 'migrations' },
   { label: 'Cloud Endpoints', value: 'endpoints' },
+
+  // Optional pages
   { label: 'Planning', value: 'planning', disabled: true },
+
+  // User management pages
+  { label: 'Projects', value: 'projects', disabled: true, requiresAdmin: true },
+  { label: 'Users', value: 'users', disabled: true, requiresAdmin: true },
 ]
 
 export const requestPollTimeout = 5000

@@ -18,6 +18,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
+import type { User } from '../../../types/User'
+import type { Project } from '../../../types/Project'
 import Dropdown from '../../molecules/Dropdown'
 import NewItemDropdown from '../../molecules/NewItemDropdown'
 import type { ItemType } from '../../molecules/NewItemDropdown'
@@ -26,6 +28,8 @@ import UserDropdown from '../../molecules/UserDropdown'
 import Modal from '../../molecules/Modal'
 import ChooseProvider from '../../organisms/ChooseProvider'
 import Endpoint from '../../organisms/Endpoint'
+import UserModal from '../../organisms/UserModal'
+import ProjectModal from '../../organisms/ProjectModal'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
@@ -33,8 +37,6 @@ import notificationStore from '../../../stores/NotificationStore'
 import providerStore from '../../../stores/ProviderStore'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-
-import type { Project } from '../../../types/Project'
 
 const Wrapper = styled.div`
   display: flex;
@@ -67,6 +69,8 @@ type Props = {
 type State = {
   showChooseProviderModal: boolean,
   showEndpointModal: boolean,
+  showUserModal: boolean,
+  showProjectModal: boolean,
   providerType?: string,
 }
 @observer
@@ -77,6 +81,8 @@ class PageHeader extends React.Component<Props, State> {
     this.state = {
       showChooseProviderModal: false,
       showEndpointModal: false,
+      showUserModal: false,
+      showProjectModal: false,
     }
   }
 
@@ -85,7 +91,7 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   getCurrentProject() {
-    let project = userStore.user && userStore.user.project ? userStore.user.project : null
+    let project = userStore.loggedUser && userStore.loggedUser.project ? userStore.loggedUser.project : null
     if (project) {
       return projectStore.projects.find(p => p.id === project.id)
     }
@@ -113,6 +119,19 @@ class PageHeader extends React.Component<Props, State> {
           this.props.onModalOpen()
         }
         this.setState({ showChooseProviderModal: true })
+        break
+      case 'user':
+        projectStore.getProjects()
+        if (this.props.onModalOpen) {
+          this.props.onModalOpen()
+        }
+        this.setState({ showUserModal: true })
+        break
+      case 'project':
+        if (this.props.onModalOpen) {
+          this.props.onModalOpen()
+        }
+        this.setState({ showProjectModal: true })
         break
       default:
     }
@@ -158,6 +177,38 @@ class PageHeader extends React.Component<Props, State> {
     })
   }
 
+  handleUserModalClose() {
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
+    this.setState({ showUserModal: false })
+  }
+
+  handleUserUpdateClick(user: User) {
+    userStore.add(user).then(() => {
+      if (this.props.onModalClose) {
+        this.props.onModalClose()
+      }
+      this.setState({ showUserModal: false })
+    })
+  }
+
+  handleProjectModalClose() {
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
+    this.setState({ showProjectModal: false })
+  }
+
+  handleProjectModalUpdateClick(project: Project) {
+    projectStore.add(project).then(() => {
+      if (this.props.onModalClose) {
+        this.props.onModalClose()
+      }
+      this.setState({ showProjectModal: false })
+    })
+  }
+
   render() {
     return (
       <Wrapper>
@@ -172,7 +223,7 @@ class PageHeader extends React.Component<Props, State> {
           />
           <NewItemDropdown onChange={item => { this.handleNewItem(item) }} />
           <NotificationDropdown items={notificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
-          <UserDropdown user={userStore.user} onItemClick={item => { this.handleUserItemClick(item) }} />
+          <UserDropdown user={userStore.loggedUser} onItemClick={item => { this.handleUserItemClick(item) }} />
         </Controls>
         <Modal
           isOpen={this.state.showChooseProviderModal}
@@ -198,6 +249,23 @@ class PageHeader extends React.Component<Props, State> {
             onCancelClick={options => { this.handleBackEndpointModal(options) }}
           />
         </Modal>
+        {this.state.showUserModal ? (
+          <UserModal
+            isNewUser
+            loading={userStore.updating}
+            projects={projectStore.projects}
+            onRequestClose={() => { this.handleUserModalClose() }}
+            onUpdateClick={user => { this.handleUserUpdateClick(user) }}
+          />
+        ) : null}
+        {this.state.showProjectModal ? (
+          <ProjectModal
+            isNewProject
+            loading={projectStore.updating}
+            onRequestClose={() => { this.handleProjectModalClose() }}
+            onUpdateClick={project => { this.handleProjectModalUpdateClick(project) }}
+          />
+        ) : null}
       </Wrapper>
     )
   }

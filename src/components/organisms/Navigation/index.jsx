@@ -19,6 +19,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Logo from '../../atoms/Logo'
+import userStore from '../../../stores/UserStore'
 
 import { navigationMenu } from '../../../config'
 import backgroundImage from './images/star-bg.jpg'
@@ -35,7 +36,11 @@ const LogoStyled = styled(Logo) `
   cursor: pointer;
 `
 
-const Menu = styled.div`margin-top:32px;`
+const Menu = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top:32px;
+`
 
 const MenuItem = styled.a`
   font-size: 18px;
@@ -51,9 +56,10 @@ const Footer = styled.div``
 @observer
 class Navigation extends React.Component<{ currentPage: string }> {
   renderMenu() {
+    const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     return (
       <Menu>
-        {navigationMenu.filter(i => i.disabled ? !i.disabled : true).map(item => {
+        {navigationMenu.filter(i => i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true).map(item => {
           return (
             <MenuItem
               key={item.value}

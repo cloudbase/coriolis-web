@@ -66,7 +66,7 @@ const HeaderData = styled.div`
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: 225px;
+  max-height: 238px;
   overflow: auto;
   ${props => props.customStyle}
 `

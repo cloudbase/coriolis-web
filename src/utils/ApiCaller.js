@@ -90,8 +90,15 @@ class ApiCaller {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          if ((error.response.status !== 401 || window.location.hash !== loginUrl) && !options.quietError && error.response.data.error) {
-            notificationStore.notify(error.response.data.error.message, 'error')
+          if (
+            (error.response.status !== 401 || window.location.hash !== loginUrl) &&
+            !options.quietError &&
+            error.response.data) {
+            let data = error.response.data
+            let message = (data.error && data.error.message) || data.description
+            if (message) {
+              notificationStore.notify(message, 'error')
+            }
           }
 
           if (error.response.status === 401 && window.location.hash !== loginUrl) {

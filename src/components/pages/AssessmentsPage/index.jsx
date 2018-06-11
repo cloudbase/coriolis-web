@@ -121,7 +121,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       // $FlowIgnore
       endpointStore.connectionInfo.subscription_id,
       assessmentStore.selectedResourceGroup ? assessmentStore.selectedResourceGroup.name : '',
-      userStore.user ? userStore.user.project.id : ''
+      userStore.loggedUser ? userStore.loggedUser.project.id : ''
     )
   }
 
@@ -184,7 +184,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       // $FlowIgnore
       connectionInfo.subscription_id,
       selectedResourceGroup.name,
-      userStore.user ? userStore.user.project.id : '',
+      userStore.loggedUser ? userStore.loggedUser.project.id : '',
       { backgroundLoading: true }
     ).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
@@ -201,7 +201,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       // $FlowIssue
       endpointStore.connectionInfo.subscription_id,
       selectedResourceGroup.name,
-      userStore.user ? userStore.user.project.id : '',
+      userStore.loggedUser ? userStore.loggedUser.project.id : '',
     )
   }
 

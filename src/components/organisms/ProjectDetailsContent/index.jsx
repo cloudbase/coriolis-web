@@ -1,0 +1,341 @@
+/*
+Copyright (C) 2017  Cloudbase Solutions SRL
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+// @flow
+
+import React from 'react'
+import { observer } from 'mobx-react'
+import styled, { css } from 'styled-components'
+
+import AlertModal from '../../organisms/AlertModal'
+import Table from '../../molecules/Table'
+import CopyValue from '../../atoms/CopyValue'
+import CopyMultilineValue from '../../atoms/CopyMultilineValue'
+import StatusImage from '../../atoms/StatusImage'
+import DropdownLink from '../../molecules/DropdownLink'
+import Button from '../../atoms/Button'
+
+import type { Project, RoleAssignment, Role } from '../../../types/Project'
+import type { User } from '../../../types/User'
+import StyleProps from '../../styleUtils/StyleProps'
+import Palette from '../../styleUtils/Palette'
+
+const Wrapper = styled.div`
+  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  margin: 0 auto;
+  padding-left: 126px;
+`
+const Info = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 32px;
+  margin-left: -32px;  
+`
+const Field = styled.div`
+  ${StyleProps.exactWidth('calc(50% - 32px)')}
+  margin-bottom: 32px;
+  margin-left: 32px;
+`
+const Value = styled.div``
+const Label = styled.div`
+  font-size: 10px;
+  font-weight: ${StyleProps.fontWeights.medium};
+  color: ${Palette.grayscale[3]};
+  text-transform: uppercase;
+  margin-bottom: 3px;
+`
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 32px 0 64px 0;
+`
+const TableStyled = styled(Table) `
+  margin-top: 42px;
+  margin-bottom: 32px;
+`
+const Buttons = styled.div`
+  margin-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+`
+const UserColumn = styled.div`
+  ${props => props.disabled ? css`color: ${Palette.grayscale[3]};` : ''}
+`
+const UserName = styled.a`
+  ${props => props.disabled ? css`opacity: 0.7;` : ''}
+  color: ${Palette.primary};
+  text-decoration: none;
+`
+const ButtonsColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  button {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+`
+
+type Props = {
+  project: ?Project,
+  loading: boolean,
+  users: User[],
+  usersLoading: boolean,
+  deleteDisabled: boolean,
+  roleAssignments: RoleAssignment[],
+  roles: Role[],
+  loggedUserId: string,
+  onEnableUser: (user: User) => void,
+  onRemoveUser: (user: User) => void,
+  onUserRoleChange: (user: User, roleId: string, toggled: boolean) => void,
+  onEditProjectClick: () => void,
+  onDeleteConfirmation: () => void,
+  onAddMemberClick: () => void,
+}
+type State = {
+  showRemoveUserAlert: boolean,
+  showDeleteProjectAlert: boolean,
+}
+@observer
+class ProjectDetailsContent extends React.Component<Props, State> {
+  selectedUser: ?User
+
+  state = {
+    showRemoveUserAlert: false,
+    showDeleteProjectAlert: false,
+  }
+
+  handleRemoveUserAction(user: User) {
+    this.selectedUser = user
+    this.setState({ showRemoveUserAlert: true })
+  }
+
+  handleUserAction(user: User, item: { label: string, value: string }) {
+    switch (item.value) {
+      case 'enable':
+        this.props.onEnableUser(user)
+        break
+      case 'remove':
+        this.handleRemoveUserAction(user)
+        break
+      default:
+        break
+    }
+  }
+
+  handleRemoveUserConfirmation() {
+    if (this.selectedUser) {
+      this.props.onRemoveUser(this.selectedUser)
+    }
+
+    this.setState({ showRemoveUserAlert: false })
+  }
+
+  handleCloseRemoveUserConfirmation() {
+    this.setState({ showRemoveUserAlert: false })
+  }
+
+  handleDeleteConfirmation() {
+    this.setState({ showDeleteProjectAlert: false })
+    this.props.onDeleteConfirmation()
+  }
+
+  handleCloseDeleteConfirmation() {
+    this.setState({ showDeleteProjectAlert: false })
+  }
+
+  renderLoading() {
+    return (
+      <LoadingWrapper>
+        <StatusImage />
+      </LoadingWrapper>
+    )
+  }
+
+  renderButtons() {
+    if (this.props.loading) return null
+
+    return (
+      <Buttons>
+        <ButtonsColumn>
+          <Button
+            secondary
+            onClick={this.props.onEditProjectClick}
+          >Edit Project</Button>
+          <Button
+            onClick={this.props.onAddMemberClick}
+          >Add Member</Button>
+        </ButtonsColumn>
+        <ButtonsColumn>
+          <Button
+            alert
+            hollow
+            onClick={() => { this.setState({ showDeleteProjectAlert: true }) }}
+          >Delete Project</Button>
+        </ButtonsColumn>
+      </Buttons>
+    )
+  }
+
+  renderInfo() {
+    if (this.props.loading || !this.props.project) {
+      return null
+    }
+    const project = this.props.project
+
+    return (
+      <Info>
+        <Field>
+          <Label>Name</Label>
+          {this.renderValue(project.name)}
+        </Field>
+        <Field>
+          <Label>Description</Label>
+          {project.description ? <CopyMultilineValue value={project.description} /> : <Value>-</Value>}
+        </Field>
+        <Field>
+          <Label>ID</Label>
+          {this.renderValue(project.id)}
+        </Field>
+        <Field>
+          <Label>Enabled</Label>
+          <Value>{project.enabled ? 'Yes' : 'No'}</Value>
+        </Field>
+      </Info>
+    )
+  }
+
+  renderUsers() {
+    if (this.props.usersLoading || this.props.loading) {
+      return null
+    }
+    const rows = []
+    const actions = user => [
+      {
+        label: `${user.enabled ? 'Disable' : 'Enable'} User`,
+        value: 'enable',
+      }, {
+        label: 'Remove',
+        value: 'remove',
+      },
+    ]
+    let getUserRoles = user => {
+      let projectId = this.props.project ? this.props.project.id : ''
+      let roles = this.props.roleAssignments
+        .filter(a => a.scope.project.id === projectId)
+        .filter(a => a.user.id === user.id)
+        .map(a => { return { value: a.role.id, label: a.role.name } })
+      return roles
+    }
+    let allRoles = this.props.roles
+      .filter(r => r.name !== 'key-manager:service-admin')
+      .map(r => { return { value: r.id, label: r.name } })
+
+    this.props.users.forEach(user => {
+      let userActions = actions(user)
+      let userRoles = getUserRoles(user)
+      const columns = [
+        <UserName disabled={!user.enabled} href={`#/user/${user.id}`}>{user.name}</UserName>,
+        <DropdownLink
+          width="214px"
+          getLabel={() => userRoles.length > 0 ? userRoles.map(r => r.label).join(', ') : 'No roles'}
+          selectedItems={userRoles.map(r => r.value)}
+          listWidth="120px"
+          multipleSelection
+          items={allRoles}
+          labelStyle={{ color: Palette.grayscale[4] }}
+          disabled={!user.enabled}
+          style={{ opacity: user.enabled ? 1 : 0.7 }}
+          onChange={item => {
+            this.props.onUserRoleChange(user, item.value, !userRoles.find(i => i.value === item.value))
+          }}
+        />,
+        <UserColumn disabled={!user.enabled}>{user.enabled ? 'Enabled' : 'Disabled'}</UserColumn>,
+        <DropdownLink
+          noCheckmark
+          width="82px"
+          items={userActions}
+          selectedItem=""
+          selectItemLabel="Actions"
+          listWidth="120px"
+          onChange={item => { this.handleUserAction(user, item) }}
+          disabled={user.id === this.props.loggedUserId}
+          style={{ opacity: user.id === this.props.loggedUserId ? 0.7 : 1 }}
+          itemStyle={item => `color: ${item.value === 'remove' ? Palette.alert : Palette.black};`}
+        />,
+      ]
+      rows.push(columns)
+    })
+
+    return (
+      <TableStyled
+        header={['Member', 'Roles', 'Status', '']}
+        items={rows}
+        noItemsLabel="No members available!"
+        columnsStyle={[css`color: ${Palette.black};`]}
+      />
+    )
+  }
+
+  renderValue(value: string) {
+    return value !== '-' ? <CopyValue value={value} maxWidth="90%" /> : <Value>{value}</Value>
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        {this.renderInfo()}
+        {this.props.loading ? this.renderLoading() : null}
+        {this.renderUsers()}
+        {!this.props.loading && this.props.usersLoading ? this.renderLoading() : null}
+        {this.renderButtons()}
+        {this.state.showRemoveUserAlert ? (
+          <AlertModal
+            isOpen
+            title="Remove User?"
+            message="Are you sure you want to remove this user from the project?"
+            extraMessage=" "
+            onConfirmation={() => { this.handleRemoveUserConfirmation() }}
+            onRequestClose={() => { this.handleCloseRemoveUserConfirmation() }}
+          />
+        ) : null}
+        {this.state.showDeleteProjectAlert && !this.props.deleteDisabled ? (
+          <AlertModal
+            isOpen
+            title="Delete Project?"
+            message="Are you sure you want to delete this project?"
+            extraMessage="Deleting a Coriolis Project is permanent!"
+            onConfirmation={() => { this.handleDeleteConfirmation() }}
+            onRequestClose={() => { this.handleCloseDeleteConfirmation() }}
+          />
+        ) : this.state.showDeleteProjectAlert && this.props.deleteDisabled ? (
+          <AlertModal
+            isOpen
+            type="error"
+            title="Error deleting project"
+            message="The project can't be deleted"
+            extraMessage="You can't delete the last project since you'll no longer be able to log in"
+            onRequestClose={() => { this.handleCloseDeleteConfirmation() }}
+          />
+        ) : null}
+      </Wrapper>
+    )
+  }
+}
+
+export default ProjectDetailsContent

@@ -16,4 +16,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export type Project = {
   id: string,
+  name: string,
+  enabled?: boolean,
+  description?: string,
+  enabled?: boolean,
+}
+
+export type Role = {
+  id: string,
+  name: string,
+}
+
+export type RoleAssignment = {
+  scope: {
+    project: {
+      id: string,
+      name: string,
+    },
+  },
+  role: {
+    id: string,
+    name: string,
+  },
+  user: {
+    id: string,
+    name: string,
+  },
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon-CentOS Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M32,64 C49.673112,64 64,49.673112 64,32 C64,14.326888 49.673112,0 32,0 C14.326888,0 0,14.326888 0,32 C0,49.673112 14.326888,64 32,64 Z" id="path-1"></path>
+    </defs>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="User/Details" transform="translate(-192.000000, -80.000000)">
+            <g id="SubMenu-Copy" transform="translate(0.000000, 64.000000)">
+                <g id="Group-2" transform="translate(192.000000, 16.000000)">
+                    <g id="Icon/User/Item-64">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="Pat-Benetar" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <path d="M44.74,51.3850129 C42.53,50.4444444 39.8,49.2337984 39.8,48.2945736 L39.8,42.248062 C43.05,39.6950904 45,35.6640827 45,31.498708 L45,23.4366925 C45,16.0465116 39.15,10 32,10 C24.85,10 19,16.0465116 19,23.4366925 L19,31.498708 C19,35.6640827 20.95,39.8294574 24.2,42.248062 L24.2,48.2945736 C24.2,49.1007752 21.47,50.3100775 19.26,51.3850129 C13.93,53.6692506 6,57.1627907 6,66.4341085 L6,67.7777778 L58,67.7777778 L58,66.4341085 C58,57.1627907 50.0713,53.6692506 44.74,51.3850129" id="Fill-1" stroke="#0044CA" stroke-width="1.5" stroke-linecap="round" mask="url(#mask-2)"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

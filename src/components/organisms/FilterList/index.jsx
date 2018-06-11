@@ -27,28 +27,28 @@ const Wrapper = styled.div``
 
 type DictItem = { value: string, label: string }
 type Props = {
-  items: MainItem[],
+  items: any[],
   actions?: DictItem[],
   loading: boolean,
   onReloadButtonClick: () => void,
-  onItemClick: (item: MainItem) => void,
-  onActionChange?: (selectedItems: MainItem[], actionValue: string) => void,
+  onItemClick: (item: any) => void,
+  onActionChange?: (selectedItems: any[], actionValue: string) => void,
   selectionLabel: string,
   renderItemComponent: (componentProps: ItemComponentProps) => React.Node,
-  itemFilterFunction: (item: MainItem, filterStatus?: ?string, filterState?: string) => boolean,
+  itemFilterFunction: (item: any, filterStatus?: ?string, filterState?: string) => boolean,
   filterItems: DictItem[],
-  emptyListImage: ?string,
-  emptyListMessage: string,
-  emptyListExtraMessage: string,
+  emptyListImage?: ?string,
+  emptyListMessage?: string,
+  emptyListExtraMessage?: string,
   emptyListButtonLabel?: string,
   onEmptyListButtonClick?: () => void,
   customFilterComponent?: React.Node,
 }
 type State = {
-  items: MainItem[],
+  items: any[],
   filterStatus: string,
   filterText: string,
-  selectedItems: MainItem[],
+  selectedItems: any[],
   selectAllSelected?: boolean,
 }
 @observer

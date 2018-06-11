@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import Dropdown from '.'
@@ -23,7 +25,7 @@ const items = [
   { label: 'Item 3', value: 'item-3-duplicated' },
 ]
 
-class Wrapper extends React.Component {
+class Wrapper extends React.Component<any, any> {
   constructor() {
     super()
     this.state = {
@@ -46,6 +48,44 @@ class Wrapper extends React.Component {
     )
   }
 }
+
+type Props = {
+  items: any[],
+}
+type State = {
+  selectedItems: string[],
+}
+
+/* eslint react/no-multi-comp: off */
+class MultipleSelectionWrapper extends React.Component<Props, State> {
+  state = {
+    selectedItems: [],
+  }
+
+  render() {
+    return (
+      <Dropdown
+        multipleSelection
+        selectedItems={this.state.selectedItems}
+        onChange={item => {
+          console.log('state', this.state)
+          let itemIndex = this.state.selectedItems.findIndex(i => i === item.value)
+          if (itemIndex > -1) {
+            this.setState({
+              selectedItems: this.state.selectedItems.filter(i => i !== item.value),
+            })
+          } else {
+            this.setState({
+              selectedItems: [...this.state.selectedItems, item.value],
+            })
+          }
+        }}
+        items={this.props.items}
+      />
+    )
+  }
+}
+
 
 storiesOf('Dropdown', module)
   .add('default', () => (
@@ -81,6 +121,16 @@ storiesOf('Dropdown', module)
         { label: 'Item 2', value: 'item-2' },
         { label: 'Item 3', value: 'item-3' },
         { label: 'Item 4', value: 'item-4' },
+      ]}
+    />
+  ))
+  .add('multiple selection', () => (
+    <MultipleSelectionWrapper
+      items={[
+        { value: 'owner' },
+        { value: 'admin' },
+        { value: 'member_1', label: 'member' },
+        { value: 'member_2', label: 'member' },
       ]}
     />
   ))

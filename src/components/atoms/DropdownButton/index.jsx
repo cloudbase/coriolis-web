@@ -77,6 +77,9 @@ const getWidth = props => {
   return StyleProps.inputSizes.regular.width - 2
 }
 const borderColor = props => {
+  if (props.highlight) {
+    return Palette.alert
+  }
   if (props.disabled) {
     return Palette.grayscale[0]
   }
@@ -139,6 +142,7 @@ type Props = {
   'data-test-id'?: string,
   embedded?: boolean,
   required?: boolean,
+  highlight?: boolean,
 }
 class DropdownButton extends React.Component<Props> {
   render() {
