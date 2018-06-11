@@ -38,7 +38,7 @@ const OneColumn = styled.div``
 const Column = styled.div`
   ${props => props.left ? 'margin-right: 160px;' : ''}
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField) `
+const WizardOptionsFieldStyled = styled(WizardOptionsField)`
   width: ${StyleProps.inputSizes.wizard.width}px;
   justify-content: space-between;
   margin-bottom: 39px;
@@ -66,6 +66,21 @@ type Props = {
 }
 @observer
 class WizardOptions extends React.Component<Props> {
+  constructor() {
+    super()
+
+    // $FlowIssue
+    this.handleResize = this.handleResize.bind(this)
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize, false)
+  }
+
   getFieldValue(fieldName: string, defaultValue: any) {
     if (!this.props.data || this.props.data[fieldName] === undefined) {
       return defaultValue
@@ -105,6 +120,10 @@ class WizardOptions extends React.Component<Props> {
     return fieldsSchema
   }
 
+  handleResize() {
+    this.setState({})
+  }
+
   renderOptionsField(field: Field) {
     let additionalProps
     if (field.type === 'object' && field.properties) {
@@ -142,7 +161,7 @@ class WizardOptions extends React.Component<Props> {
     }
 
     let executeNowColumn
-    let fields = fieldsSchema.filter(f => f.type !== 'object' || f.properties).map((field, i) => {
+    let fields = fieldsSchema.filter(f => f.type !== 'array' && f.type !== 'integer' && (f.type !== 'object' || f.properties)).map((field, i) => {
       let column = i % 2 === 0 ? 'left' : 'right'
       if (field.name === 'execute_now') {
         executeNowColumn = column
@@ -157,7 +176,7 @@ class WizardOptions extends React.Component<Props> {
       }
     })
 
-    if (fields.length < 8) {
+    if (fields.length * 96 < window.innerHeight - 450) {
       return (
         <Fields>
           <OneColumn>
