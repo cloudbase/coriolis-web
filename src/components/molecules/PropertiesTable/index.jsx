@@ -124,7 +124,7 @@ class PropertiesTable extends React.Component<Props> {
       ...items,
     ]
 
-    let selectedItem = items.find(i => i.value === this.props.valueCallback(prop))
+    let selectedItem = items.find(i => !i.separator && i.value === this.props.valueCallback(prop))
 
     return (
       <Dropdown
