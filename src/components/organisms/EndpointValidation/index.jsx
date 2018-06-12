@@ -43,6 +43,8 @@ const Validation = styled.div`
   ${contentStyle}
 `
 const Message = styled.div`
+  max-width: 100%;
+  overflow: auto;
   margin-top: 48px;
   text-align: center;
 `
