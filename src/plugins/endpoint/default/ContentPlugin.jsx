@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import styled from 'styled-components'
 
 import EndpointField from '../../../components/molecules/EndpointField'
@@ -31,7 +31,7 @@ export const Fields = styled.div`
   flex-direction: column;
   overflow: auto;
 `
-export const FieldStyled = styled(EndpointField) `
+export const FieldStyled = styled(EndpointField)`
   min-width: ${props => props.useTextArea ? '100%' : '224px'};
   max-width: 224px;
   margin-bottom: 16px;
@@ -77,7 +77,8 @@ class ContentPlugin extends React.Component<Props> {
   renderFields() {
     const rows = []
     let lastField
-    this.props.connectionInfoSchema.forEach((field, i) => {
+    let i = 0
+    this.props.connectionInfoSchema.forEach((field, schemaIndex) => {
       const currentField = (
         <FieldStyled
           {...field}
@@ -89,21 +90,25 @@ class ContentPlugin extends React.Component<Props> {
           onChange={value => { this.props.handleFieldChange(field, value) }}
         />
       )
-      if (i % 2 !== 0 && !field.useTextArea && !this.props.connectionInfoSchema[i - 1].useTextArea) {
+      const pushRow = (field1: React.Node, field2?: React.Node) => {
         rows.push((
           <Row key={field.name}>
-            {lastField}
-            {currentField}
-          </Row>
-        ))
-      } else if (field.useTextArea || i === this.props.connectionInfoSchema.length - 1) {
-        rows.push((
-          <Row key={field.name}>
-            {currentField}
+            {field1}
+            {field2}
           </Row>
         ))
       }
-      lastField = currentField
+      if (field.useTextArea || schemaIndex === this.props.connectionInfoSchema.length - 1) {
+        pushRow(currentField)
+        if (field.useTextArea) {
+          i -= 1
+        }
+      } else if (i % 2 !== 0) {
+        pushRow(lastField, currentField)
+      } else {
+        lastField = currentField
+      }
+      i += 1
     })
 
     return (
