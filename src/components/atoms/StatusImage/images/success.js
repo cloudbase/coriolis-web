@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+export default `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="96px" height="96px" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
     <title>User-VL Copy</title>
@@ -9,11 +9,11 @@
             <g id="Modal-Connection">
                 <g id="Group-Copy" transform="translate(32.000000, 95.967742)">
                     <g id="Icon/Ok/Green-96" transform="translate(208.000000, 0.032258)">
-                        <circle id="Oval-2" cx="48" cy="48" r="47.25"></circle>
-                        <polyline id="Stroke-3" stroke-linecap="round" stroke-linejoin="round" points="69 35 43.1861395 61 27 45.4206722"></polyline>
+                        <circle class="circle" cx="48" cy="48" r="47.25"></circle>
+                        <polyline class="path" stroke-linecap="round" stroke-linejoin="round" points="69 35 43.1861395 61 27 45.4206722"></polyline>
                     </g>
                 </g>
             </g>
         </g>
     </g>
-</svg>
+</svg>`
