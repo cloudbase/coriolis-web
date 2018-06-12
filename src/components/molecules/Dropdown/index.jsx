@@ -81,13 +81,27 @@ const Checkmark = styled.div`
   justify-content: center;
   align-items: center;
   #symbol {
-    transition: all ${StyleProps.animations.swift};
+    transition: stroke ${StyleProps.animations.swift};
+    stroke-dasharray: 20;
+    stroke-dashoffset: ${props => props.show ? 0 : -12};
+    animation-duration: 100ms;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+
+    @keyframes dashOn {
+      from { stroke-dashoffset: -12; }
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes dashOff {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: -12; }
+    }
   }
 `
 const ListItem = styled.div`
   position: relative;
   display: flex;
-  color: ${props => props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
+  color: ${props => props.multipleSelected ? Palette.primary : props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
   ${props => props.selected ? css`background: ${Palette.primary};` : ''}
   ${props => props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : ''}
   padding: 8px 16px;
@@ -284,9 +298,11 @@ class Dropdown extends React.Component<Props, State> {
     })
   }
 
-  handleItemClick(item: any) {
+  handleItemClick(item: any, checkmarkRef: HTMLElement) {
     if (!this.props.multipleSelection) {
       this.setState({ showDropdownList: false, firstItemHover: false })
+    } else {
+      this.toggleCheckmarkAnimation(item, checkmarkRef)
     }
 
     if (this.props.onChange) {
@@ -303,6 +319,17 @@ class Dropdown extends React.Component<Props, State> {
   handleItemMouseLeave(index: number) {
     if (index === 0) {
       this.setState({ firstItemHover: false })
+    }
+  }
+
+  toggleCheckmarkAnimation(item: any, checkmarkRef: HTMLElement) {
+    if (!item || !checkmarkRef) {
+      return
+    }
+    let multipleSelected = this.props.selectedItems && this.props.selectedItems.find(i => i === this.getValue(item))
+    let symbol = checkmarkRef.querySelector('#symbol')
+    if (symbol) {
+      symbol.style.animationName = multipleSelected ? 'dashOff' : 'dashOn'
     }
   }
 
@@ -376,6 +403,7 @@ class Dropdown extends React.Component<Props, State> {
             let value = this.getValue(item)
             let duplicatedLabel = duplicatedLabels.find(l => l === label)
             let multipleSelected = this.props.selectedItems && this.props.selectedItems.find(i => i === value)
+            let checkmarkRef
             let listItem = (
               <ListItem
                 data-test-id="dropdownListItem"
@@ -385,12 +413,19 @@ class Dropdown extends React.Component<Props, State> {
                 onMouseUp={() => { this.itemMouseDown = false }}
                 onMouseEnter={() => { this.handleItemMouseEnter(i) }}
                 onMouseLeave={() => { this.handleItemMouseLeave(i) }}
-                onClick={() => { this.handleItemClick(item) }}
+                onClick={() => { this.handleItemClick(item, checkmarkRef) }}
                 selected={!this.props.multipleSelection && value === selectedValue}
+                multipleSelected={this.props.multipleSelection && multipleSelected}
                 dim={this.props.dimFirstItem && i === 0}
                 paddingLeft={this.props.multipleSelection ? 8 : 16}
               >
-                {this.props.multipleSelection ? <Checkmark dangerouslySetInnerHTML={{ __html: multipleSelected ? checkmarkImage : '' }} /> : null}
+                {this.props.multipleSelection ? (
+                  <Checkmark
+                    innerRef={ref => { checkmarkRef = ref }}
+                    dangerouslySetInnerHTML={{ __html: checkmarkImage }}
+                    show={multipleSelected}
+                  />
+                ) : null}
                 <Labels>
                   {label}
                   {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
