@@ -26,6 +26,7 @@ import DomUtils from '../../../utils/DomUtils'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import checkmarkImage from './images/checkmark'
+import tipImage from './images/tip'
 
 const getWidth = props => {
   if (props.large) {
@@ -55,20 +56,21 @@ const ListItems = styled.div`
   max-height: 400px;
   overflow: auto;
 `
-const Tip = styled.div`
+export const Tip = styled.div`
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: ${props => props.primary ? Palette.primary : 'white'};
-  border-top: 1px solid ${Palette.grayscale[3]};
-  border-left: 1px solid ${Palette.grayscale[3]};
-  border-bottom: 1px solid ${props => props.primary ? Palette.primary : 'white'};
-  border-right: 1px solid ${props => props.primary ? Palette.primary : 'white'};
-  transform: rotate(45deg);
+  width: 16px;
+  height: 8px;
   right: 8px;
-  top: -6px;
+  top: -8px;
   z-index: 11;
   transition: all ${StyleProps.animations.swift};
+  overflow: hidden;
+  svg {
+    #path {
+      transition: all ${StyleProps.animations.swift};
+      fill: ${props => props.primary ? Palette.primary : 'white'};
+    }
+  }
 `
 const Checkmark = styled.div`
   ${StyleProps.exactWidth('16px')}
@@ -127,6 +129,38 @@ const Separator = styled.div`
 `
 const Labels = styled.div``
 
+export const updateTipStyle = (listItemsRef: HTMLElement, tipRef: HTMLElement, firstItemRef: HTMLElement) => {
+  if (tipRef && firstItemRef) {
+    let svgPath = tipRef.querySelector('#path')
+    if (svgPath) {
+      if (listItemsRef.clientHeight < listItemsRef.scrollHeight) {
+        // $FlowIssue
+        svgPath.style.fill = 'white'
+        firstItemRef.style.borderTopRightRadius = '0'
+      } else {
+        // $FlowIssue
+        svgPath.style.fill = ''
+        firstItemRef.style.borderTopRightRadius = ''
+      }
+    }
+  }
+}
+
+export const scrollItemIntoView = (
+  listRef: HTMLElement,
+  listItemsRef: HTMLElement,
+  itemIndex: number
+) => {
+  if (!listRef || !listItemsRef) {
+    return
+  }
+  if (itemIndex === -1 || !listItemsRef.children[itemIndex]) {
+    return
+  }
+  // $FlowIssue
+  listItemsRef.children[itemIndex].parentNode.scrollTop = listItemsRef.children[itemIndex].offsetTop - listItemsRef.children[itemIndex].parentNode.offsetTop - 32
+}
+
 type Props = {
   selectedItem: any,
   items: any[],
@@ -158,6 +192,7 @@ class Dropdown extends React.Component<Props, State> {
   buttonRef: HTMLElement
   listRef: HTMLElement
   listItemsRef: HTMLElement
+  firstItemRef: HTMLElement
   tipRef: HTMLElement
   scrollableParent: HTMLElement
   buttonRect: ClientRect
@@ -297,20 +332,12 @@ class Dropdown extends React.Component<Props, State> {
     let widthDiff = this.listRef.offsetWidth - this.buttonRef.offsetWidth
     this.listRef.style.top = `${listTop + (window.pageYOffset || scrollOffset)}px`
     this.listRef.style.left = `${(this.buttonRect.left + window.pageXOffset) - widthDiff}px`
+    updateTipStyle(this.listItemsRef, this.tipRef, this.firstItemRef)
   }
 
   scrollIntoView() {
-    if (!this.listRef || !this.listItemsRef) {
-      return
-    }
-
     let itemIndex = this.props.items.findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
-    if (itemIndex === -1 || !this.listItemsRef.children[itemIndex]) {
-      return
-    }
-
-    // $FlowIssue
-    this.listItemsRef.children[itemIndex].parentNode.scrollTop = this.listItemsRef.children[itemIndex].offsetTop - this.listItemsRef.children[itemIndex].parentNode.offsetTop - 32
+    scrollItemIntoView(this.listRef, this.listItemsRef, itemIndex)
   }
 
   renderList() {
@@ -329,10 +356,16 @@ class Dropdown extends React.Component<Props, State> {
         }
       }
     })
+    const firstItemValue = this.props.items.length > 0 ? this.getValue(this.props.items[0]) : null
+    const isFirstItemSelected = selectedValue === firstItemValue
 
     let list = ReactDOM.createPortal((
       <List {...this.props} innerRef={ref => { this.listRef = ref }}>
-        <Tip innerRef={ref => { this.tipRef = ref }} primary={this.state.firstItemHover} />
+        <Tip
+          innerRef={ref => { this.tipRef = ref }}
+          primary={this.state.firstItemHover || isFirstItemSelected}
+          dangerouslySetInnerHTML={{ __html: tipImage }}
+        />
         <ListItems innerRef={ref => { this.listItemsRef = ref }}>
           {this.props.items.map((item, i) => {
             if (item.separator === true) {
@@ -346,6 +379,7 @@ class Dropdown extends React.Component<Props, State> {
             let listItem = (
               <ListItem
                 data-test-id="dropdownListItem"
+                innerRef={ref => { if (i === 0) { this.firstItemRef = ref } }}
                 key={value}
                 onMouseDown={() => { this.itemMouseDown = true }}
                 onMouseUp={() => { this.itemMouseDown = false }}

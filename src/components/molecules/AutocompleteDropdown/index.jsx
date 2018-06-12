@@ -20,12 +20,12 @@ import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 
 import AutocompleteInput from '../../atoms/AutocompleteInput'
+import { Tip, updateTipStyle, scrollItemIntoView } from '../Dropdown'
+import tipImage from '../Dropdown/images/tip'
 
 import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
 import StyleProps from '../../styleUtils/StyleProps'
-
-import tipImage from './images/tip'
 
 const getWidth = props => {
   if (props.width) {
@@ -54,22 +54,6 @@ const List = styled.div`
 const ListItems = styled.div`
   max-height: 400px;
   overflow: auto;
-`
-const Tip = styled.div`
-  position: absolute;
-  width: 16px;
-  height: 8px;
-  right: 8px;
-  top: -8px;
-  z-index: 11;
-  transition: all ${StyleProps.animations.swift};
-  overflow: hidden;
-  svg {
-    #path {
-      transition: all ${StyleProps.animations.swift};
-      fill: ${props => props.primary ? Palette.primary : 'white'};
-    }
-  }
 `
 const SearchNotFound = styled.div`
   padding: 8px;
@@ -307,17 +291,8 @@ class AutocompleteDropdown extends React.Component<Props, State> {
   }
 
   scrollIntoView() {
-    if (!this.listRef || !this.listItemsRef) {
-      return
-    }
-
     let itemIndex = this.state.filteredItems.findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
-    if (itemIndex === -1 || !this.listItemsRef.children[itemIndex]) {
-      return
-    }
-
-    // $FlowIssue
-    this.listItemsRef.children[itemIndex].parentNode.scrollTop = this.listItemsRef.children[itemIndex].offsetTop - this.listItemsRef.children[itemIndex].parentNode.offsetTop - 32
+    scrollItemIntoView(this.listRef, this.listItemsRef, itemIndex)
   }
 
   updateListPosition() {
@@ -347,20 +322,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
 
     if (this.listItemsRef) {
       this.listItemsRef.style.maxHeight = `${listHeight}px`
-      if (this.tipRef && this.firstItemRef) {
-        let svgPath = this.tipRef.querySelector('#path')
-        if (svgPath) {
-          if (this.listItemsRef.clientHeight < this.listItemsRef.scrollHeight) {
-            // $FlowIssue
-            svgPath.style.fill = 'white'
-            this.firstItemRef.style.borderTopRightRadius = '0'
-          } else {
-            // $FlowIssue
-            svgPath.style.fill = ''
-            this.firstItemRef.style.borderTopRightRadius = ''
-          }
-        }
-      }
+      updateTipStyle(this.listItemsRef, this.tipRef, this.firstItemRef)
     }
   }
 
