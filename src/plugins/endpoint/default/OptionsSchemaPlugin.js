@@ -85,6 +85,7 @@ export const defaultGetDestinationEnv = (data: WizardData): any => {
       }
     })
   }
+  return env
 }
 
 export const defaultGetNetworkMap = (data: WizardData) => {
