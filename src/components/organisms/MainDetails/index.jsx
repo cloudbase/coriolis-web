@@ -79,7 +79,7 @@ const ValueLink = styled.a`
   text-decoration: none;
   cursor: pointer;
 `
-const TableStyled = styled(Table) `
+const TableStyled = styled(Table)`
   margin-top: 89px;
   margin-bottom: 48px;
 `
@@ -252,7 +252,13 @@ class MainDetails extends React.Component<Props> {
       let value = this.props.item ? this.props.item.destination_environment[pn] : ''
       let label = LabelDictionary.get(pn)
 
-      if (value && typeof value === 'object') {
+      if (value && value.join) {
+        // $FlowIgnore
+        value.forEach((v, i) => {
+          let useLabel = i === 0 ? label : ''
+          properties.push({ label: useLabel, value: v })
+        })
+      } else if (value && typeof value === 'object') {
         properties = properties.concat(Object.keys(value).map(p => {
           return {
             label: `${label} - ${LabelDictionary.get(p)}`,

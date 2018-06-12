@@ -29,6 +29,9 @@ export const defaultFillFieldValues = (field: Field, option: DestinationOption) 
       field.default = typeof option.config_default === 'string' ? option.config_default : option.config_default.id
     }
   }
+  if (field.type === 'array') {
+    field.enum = [...option.values]
+  }
 }
 
 export const defaultFillMigrationImageMapValues = (field: Field, option: DestinationOption): boolean => {

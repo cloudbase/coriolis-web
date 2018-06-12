@@ -161,6 +161,30 @@ class WizardOptionsField extends React.Component<Props> {
     )
   }
 
+  renderArrayDropdown() {
+    let items = this.props.enum.map(e => {
+      if (typeof e !== 'string' && e.separator === true) {
+        return e
+      }
+
+      return {
+        label: typeof e === 'string' ? LabelDictionary.get(e) : e.name,
+        value: typeof e === 'string' ? e : e.id,
+      }
+    })
+    let selectedItems = this.props.value || []
+    return (
+      <Dropdown
+        multipleSelection
+        items={items}
+        selectedItems={selectedItems}
+        width={this.props.width || StyleProps.inputSizes.wizard.width}
+        noSelectionMessage="Choose values"
+        onChange={item => this.props.onChange(item.value)}
+      />
+    )
+  }
+
   renderField() {
     let field = null
     switch (this.props.type) {
@@ -179,6 +203,9 @@ class WizardOptionsField extends React.Component<Props> {
         break
       case 'object':
         field = this.renderObjectTable()
+        break
+      case 'array':
+        field = this.renderArrayDropdown()
         break
       default:
     }

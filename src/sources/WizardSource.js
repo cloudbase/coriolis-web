@@ -37,7 +37,6 @@ class WizardSource {
         destination_environment: parser.getDestinationEnv(data),
         instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
         notes: '',
-        security_groups: ['testgroup'],
       }
 
       if (data.options && data.options.skip_os_morphing !== null && data.options.skip_os_morphing !== undefined) {

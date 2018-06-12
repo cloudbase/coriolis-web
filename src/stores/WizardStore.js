@@ -65,7 +65,18 @@ class WizardStore {
     this.data.options = {
       ...this.data.options,
     }
-    this.data.options[data.field.name] = data.value
+    if (data.field.type === 'array') {
+      let oldValues: string[] = this.data.options[data.field.name] || []
+      if (oldValues.find(v => v === data.value)) {
+        // $FlowIssue
+        this.data.options[data.field.name] = oldValues.filter(v => v !== data.value)
+      } else {
+        // $FlowIssue
+        this.data.options[data.field.name] = [...oldValues, data.value]
+      }
+    } else {
+      this.data.options[data.field.name] = data.value
+    }
   }
 
   @action updateNetworks(network: NetworkMap) {
