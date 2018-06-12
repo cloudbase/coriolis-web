@@ -215,11 +215,12 @@ class WizardSummary extends React.Component<Props> {
     if (value === true) {
       return 'Yes'
     }
-
     if (value === false) {
       return 'No'
     }
-
+    if (value.join) {
+      return value.join(', ')
+    }
     return value
   }
 

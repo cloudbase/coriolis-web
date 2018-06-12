@@ -124,6 +124,12 @@ class WizardOptions extends React.Component<Props> {
     this.setState({})
   }
 
+  shouldRenderField(field: Field) {
+    return (field.type !== 'array' || (field.enum && field.enum.length && field.enum.length > 0)) &&
+      (field.type !== 'integer' || (field.minimum && field.maximum)) &&
+      (field.type !== 'object' || field.properties)
+  }
+
   renderOptionsField(field: Field) {
     let additionalProps
     if (field.type === 'object' && field.properties) {
@@ -161,7 +167,7 @@ class WizardOptions extends React.Component<Props> {
     }
 
     let executeNowColumn
-    let fields = fieldsSchema.filter(f => f.type !== 'array' && f.type !== 'integer' && (f.type !== 'object' || f.properties)).map((field, i) => {
+    let fields = fieldsSchema.filter(f => this.shouldRenderField(f)).map((field, i) => {
       let column = i % 2 === 0 ? 'left' : 'right'
       if (field.name === 'execute_now') {
         executeNowColumn = column
