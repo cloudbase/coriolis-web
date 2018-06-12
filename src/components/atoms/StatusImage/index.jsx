@@ -20,8 +20,8 @@ import styled, { css } from 'styled-components'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 
-import errorImage from './images/error.svg'
-import successImage from './images/success.svg'
+import errorImage from './images/error'
+import successImage from './images/success'
 import loadingImage from './images/loading.svg'
 
 type Props = {
@@ -29,36 +29,13 @@ type Props = {
   loading?: boolean,
   loadingProgress?: number,
 }
-
-const statuses = () => {
-  return {
-    ERROR: css`
-      background-image: url('${errorImage}');
-    `,
-    COMPLETED: css`
-      background-image: url('${successImage}');
-    `,
-    RUNNING: css`
-      background-image: url('${loadingImage}');
-      transform-origin: 48px 48px;
-      animation: rotate 1s linear infinite;
-
-      @keyframes rotate {
-        0% {transform: rotate(0deg);}
-        100% {transform: rotate(360deg);}
-      }
-    `,
-    PROGRESS: css``,
-  }
-}
 const Wrapper = styled.div`
   position: relative;
   ${StyleProps.exactSize('96px')}
   background-repeat: no-repeat;
   background-position: center;
-  ${(props: Props) => statuses()[props.status || 'RUNNING']}
 `
-const SvgWrapper = styled.svg`
+const ProgressSvgWrapper = styled.svg`
   ${StyleProps.exactSize('100%')}
   transform: rotate(-90deg);
 `
@@ -73,20 +50,56 @@ const ProgressText = styled.div`
 const CircleProgressBar = styled.circle`
   transition: stroke-dashoffset ${StyleProps.animations.swift};
 `
-
+const dashAnimationStyle = css`
+  .circle {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: dash 300ms ease-in-out forwards;
+  }
+  .path {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: dash 300ms ease-in-out forwards;
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: 0; }
+  }
+`
+const loadingAnimationStyle = css`
+  background: url(${loadingImage}) center no-repeat;
+  animation: rotate 1s linear infinite;
+  @keyframes rotate {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+  }
+`
+const Image = styled.div`
+  ${StyleProps.exactSize('96px')}
+  ${props => props.cssStyle}
+`
+const Images = {
+  COMPLETED: {
+    image: successImage,
+    style: dashAnimationStyle,
+  },
+  ERROR: {
+    image: errorImage,
+    style: dashAnimationStyle,
+  },
+  RUNNING: {
+    style: loadingAnimationStyle,
+    image: '',
+  },
+}
 @observer
 class StatusImage extends React.Component<Props> {
   static defaultProps: $Shape<Props> = {
     status: 'RUNNING',
   }
 
-  renderProgressImage(status: string) {
-    if (status !== 'PROGRESS') {
-      return null
-    }
-
+  renderProgressImage() {
     return (
-      <SvgWrapper id="svg" width="96" height="96" viewPort="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <ProgressSvgWrapper id="svg" width="96" height="96" viewPort="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <g strokeWidth="2">
           <circle
             r="47"
@@ -106,15 +119,11 @@ class StatusImage extends React.Component<Props> {
             strokeDashoffset={300 - ((this.props.loadingProgress || 0) * 3)}
           />
         </g>
-      </SvgWrapper>
+      </ProgressSvgWrapper>
     )
   }
 
-  renderProgressText(status: string) {
-    if (status !== 'PROGRESS') {
-      return null
-    }
-
+  renderProgressText() {
     return (
       <ProgressText
         data-test-id="statusImage-progressText"
@@ -123,7 +132,7 @@ class StatusImage extends React.Component<Props> {
   }
 
   render() {
-    let status = this.props.status
+    let status = this.props.status || ''
     if (this.props.loading) {
       status = 'RUNNING'
       if (this.props.loadingProgress !== undefined && this.props.loadingProgress > -1) {
@@ -132,12 +141,15 @@ class StatusImage extends React.Component<Props> {
     }
 
     return (
-      <Wrapper
-        {...this.props}
-        status={status}
-      >
-        {this.renderProgressImage(status || '')}
-        {this.renderProgressText(status || '')}
+      <Wrapper>
+        {status !== 'PROGRESS' ? (
+          <Image
+            dangerouslySetInnerHTML={{ __html: Images[status || 'RUNNING'].image }}
+            cssStyle={Images[status || 'RUNNING'].style}
+          />
+        ) : null}
+        {status === 'PROGRESS' ? this.renderProgressImage() : null}
+        {status === 'PROGRESS' ? this.renderProgressText() : null}
       </Wrapper>
     )
   }
