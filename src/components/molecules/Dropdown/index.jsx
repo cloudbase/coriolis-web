@@ -82,19 +82,19 @@ const Checkmark = styled.div`
   align-items: center;
   #symbol {
     transition: stroke ${StyleProps.animations.swift};
-    stroke-dasharray: 20;
-    stroke-dashoffset: ${props => props.show ? 0 : -12};
+    stroke-dasharray: 12;
+    stroke-dashoffset: ${props => props.show ? 0 : 12};
     animation-duration: 100ms;
     animation-timing-function: ease-in-out;
     animation-fill-mode: forwards;
 
     @keyframes dashOn {
-      from { stroke-dashoffset: -12; }
+      from { stroke-dashoffset: 12; }
       to { stroke-dashoffset: 0; }
     }
     @keyframes dashOff {
       from { stroke-dashoffset: 0; }
-      to { stroke-dashoffset: -12; }
+      to { stroke-dashoffset: 12; }
     }
   }
 `
