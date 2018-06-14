@@ -20,9 +20,6 @@ storiesOf('DropdownButton', module)
   .add('default', () => (
     <DropdownButton value="Dropdown Button" onClick={action('clicked')} />
   ))
-  .add('required', () => (
-    <DropdownButton required value="Dropdown Button Button Button" onClick={action('clicked')} />
-  ))
   .add('primary', () => (
     <DropdownButton primary value="Dropdown Button" onClick={action('clicked')} />
   ))

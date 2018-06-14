@@ -18,7 +18,6 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 
 import arrowImage from './images/arrow.js'
-import starImage from './images/star.js'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -36,7 +35,7 @@ const getLabelColor = props => {
 }
 const Label = styled.div`
   color: ${props => getLabelColor(props)};
-  margin: 0 ${props => props.required ? 44 : 32}px 0 16px;
+  margin: 0 32px 0 16px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -88,12 +87,6 @@ const borderColor = props => {
   }
   return Palette.grayscale[3]
 }
-const Required = styled.div`
-  position: absolute;
-  top: 7px;
-  right: 29px;
-  background: url('${starImage}') center no-repeat;
-`
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -121,10 +114,6 @@ const Wrapper = styled.div`
   &:hover ${Label} {
     color: ${props => props.disabled ? '' : props.embedded ? '' : 'white'};
   }
-
-  &:hover ${Required} #star {
-    stroke: white;
-  }
 `
 const Arrow = styled.div`
   position: absolute;
@@ -141,7 +130,6 @@ type Props = {
   disabled?: boolean,
   'data-test-id'?: string,
   embedded?: boolean,
-  required?: boolean,
   highlight?: boolean,
 }
 class DropdownButton extends React.Component<Props> {
@@ -168,7 +156,6 @@ class DropdownButton extends React.Component<Props> {
         >
           {this.props.value}
         </Label>
-        {this.props.required ? <Required dangerouslySetInnerHTML={{ __html: starImage }} /> : null}
         <Arrow
           {...this.props}
           innerRef={() => { }}
