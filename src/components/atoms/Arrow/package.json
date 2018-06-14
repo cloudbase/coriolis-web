@@ -1,0 +1,6 @@
+{
+  "name": "Arrow",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./Arrow.jsx"
+}

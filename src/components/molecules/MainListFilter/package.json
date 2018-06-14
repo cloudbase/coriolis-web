@@ -1,0 +1,6 @@
+{
+  "name": "MainListFilter",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./MainListFilter.jsx"
+}

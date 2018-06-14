@@ -1,0 +1,6 @@
+{
+  "name": "EndpointListItem",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./EndpointListItem.jsx"
+}

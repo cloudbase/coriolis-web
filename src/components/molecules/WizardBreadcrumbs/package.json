@@ -1,0 +1,6 @@
+{
+  "name": "WizardBreadcrumbs",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./WizardBreadcrumbs.jsx"
+}

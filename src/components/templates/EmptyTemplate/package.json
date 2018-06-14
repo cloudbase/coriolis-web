@@ -1,0 +1,6 @@
+{
+  "name": "EmptyTemplate",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./EmptyTemplate.jsx"
+}

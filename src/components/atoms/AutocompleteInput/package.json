@@ -1,0 +1,6 @@
+{
+  "name": "AutocompleteInput",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./AutocompleteInput.jsx"
+}

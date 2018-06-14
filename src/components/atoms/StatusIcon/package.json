@@ -1,0 +1,6 @@
+{
+  "name": "StatusIcon",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./StatusIcon.jsx"
+}

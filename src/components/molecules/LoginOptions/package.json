@@ -1,0 +1,6 @@
+{
+  "name": "LoginOptions",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./LoginOptions.jsx"
+}

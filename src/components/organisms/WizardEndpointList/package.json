@@ -1,0 +1,6 @@
+{
+  "name": "WizardEndpointList",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./WizardEndpointList.jsx"
+}

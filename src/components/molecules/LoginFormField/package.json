@@ -1,0 +1,6 @@
+{
+  "name": "LoginFormField",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./LoginFormField.jsx"
+}

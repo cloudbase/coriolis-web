@@ -1,0 +1,6 @@
+{
+  "name": "ToggleButtonBar",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./ToggleButtonBar.jsx"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Endpoint",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./Endpoint.jsx"
+}

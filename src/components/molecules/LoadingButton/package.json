@@ -1,0 +1,6 @@
+{
+  "name": "LoadingButton",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./LoadingButton.jsx"
+}

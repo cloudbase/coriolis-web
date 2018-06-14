@@ -1,0 +1,6 @@
+{
+  "name": "TaskItem",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./TaskItem.jsx"
+}

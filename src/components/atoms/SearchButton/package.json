@@ -1,0 +1,6 @@
+{
+  "name": "SearchButton",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./SearchButton.jsx"
+}
