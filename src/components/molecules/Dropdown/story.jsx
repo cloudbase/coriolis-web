@@ -94,9 +94,6 @@ storiesOf('Dropdown', module)
   .add('disabled', () => (
     <Wrapper disabled />
   ))
-  .add('required', () => (
-    <Wrapper required />
-  ))
   .add('long list', () => (
     <Wrapper
       items={[
