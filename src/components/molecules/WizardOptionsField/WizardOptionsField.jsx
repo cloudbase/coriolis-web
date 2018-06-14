@@ -140,6 +140,7 @@ class WizardOptionsField extends React.Component<Props> {
     if (items.length < 10) {
       return (
         <Dropdown
+          data-test-id={`wOptionsField-enumDropdown-${this.props.name}`}
           width={this.props.width || StyleProps.inputSizes.wizard.width}
           noSelectionMessage="Choose a value"
           selectedItem={selectedItem}
@@ -221,7 +222,7 @@ class WizardOptionsField extends React.Component<Props> {
           {LabelDictionary.get(this.props.name)}
         </LabelText>
         {description ? <InfoIcon text={description} marginLeft={-20} /> : null}
-        {this.props.required ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}
+        {this.props.required ? <Asterisk data-test-id="wOptionsField-required" marginLeft={description ? '4px' : '-16px'} /> : null}
       </Label>
     )
   }

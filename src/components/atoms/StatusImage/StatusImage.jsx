@@ -133,6 +133,8 @@ class StatusImage extends React.Component<Props> {
 
   render() {
     let status = this.props.status || ''
+    status = status.toUpperCase()
+    status = status === 'SUCCESS' ? 'COMPLETED' : status
     if (this.props.loading) {
       status = 'RUNNING'
       if (this.props.loadingProgress !== undefined && this.props.loadingProgress > -1) {
@@ -144,6 +146,7 @@ class StatusImage extends React.Component<Props> {
       <Wrapper>
         {status !== 'PROGRESS' ? (
           <Image
+            data-test-id="statusImage-image"
             dangerouslySetInnerHTML={{ __html: Images[status || 'RUNNING'].image }}
             cssStyle={Images[status || 'RUNNING'].style}
           />

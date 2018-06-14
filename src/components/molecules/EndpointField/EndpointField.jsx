@@ -274,7 +274,7 @@ class Field extends React.Component<Props> {
       <Label>
         <LabelText data-test-id="endpointField-label">{LabelDictionary.get(this.props.name)}</LabelText>
         {infoIcon}
-        {this.props.required ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}
+        {this.props.required ? <Asterisk data-test-id="endpointField-required" marginLeft={description ? '4px' : '-16px'} /> : null}
       </Label>
     )
   }
