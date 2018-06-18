@@ -23,7 +23,9 @@ const wrap = props => new TestWrapper(shallow(<StatusImage {...props} />), 'stat
 
 describe('StatusImage Component', () => {
   it('renders with status \'SUCCESS\' prop', () => {
-    expect(wrap({ status: 'success' }).prop('status')).toBe('success')
+    let wrapper = wrap({ status: 'success' })
+    /* eslint no-underscore-dangle: off */
+    expect(wrapper.find('image').prop('dangerouslySetInnerHTML').__html.indexOf('EP/Validate/Succes')).toBeGreaterThan(-1)
   })
 
   it('renders progress', () => {

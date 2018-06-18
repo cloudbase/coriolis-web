@@ -25,7 +25,7 @@ const wrap = props => new TW(shallow(<Navigation {...props} />), 'navigation')
 describe('Navigation Component', () => {
   it('renders all items', () => {
     let wrapper = wrap()
-    navigationMenu.filter(item => !item.disabled).forEach(item => {
+    navigationMenu.filter(item => !item.disabled && !item.requiresAdmin).forEach(item => {
       expect(wrapper.findText(`item-${item.value}`)).toBe(item.label)
       expect(wrapper.find(`item-${item.value}`).prop('href')).toBe(`/#/${item.value}`)
     })

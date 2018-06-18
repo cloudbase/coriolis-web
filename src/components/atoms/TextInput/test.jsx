@@ -32,15 +32,6 @@ describe('TextInput Component', () => {
     expect(onChange.args[0][0].value).toBe('A')
   })
 
-  it('shows required icon', () => {
-    let wrapper = wrap()
-    let required = wrapper.find('required')
-    expect(required.prop('show')).toBe(undefined)
-    wrapper = wrap({ required: true })
-    required = wrapper.find('required')
-    expect(required.prop('show')).toBe(true)
-  })
-
   it('shows close icon', () => {
     let wrapper = wrap()
     let close = wrapper.find('close')

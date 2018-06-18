@@ -33,9 +33,11 @@ describe('WizardOptionsField Component', () => {
     expect(wrapper.find('textInput').prop('value')).toBe('the_value')
   })
 
-  it('renders required string input', () => {
+  it('renders required field', () => {
     let wrapper = wrap({ name: 'the_name', type: 'string', value: 'the_value', required: true })
-    expect(wrapper.find('textInput').prop('required')).toBe(true)
+    expect(wrapper.find('required').length).toBe(1)
+    wrapper = wrap({ name: 'the_name', type: 'string', value: 'the_value', required: false })
+    expect(wrapper.find('required').length).toBe(0)
   })
 
   it('renders strict boolean with correct value', () => {
@@ -57,8 +59,8 @@ describe('WizardOptionsField Component', () => {
       value: 'reuse_ports',
       enum: ['keep_mac', 'reuse_ports', 'replace_mac'],
     })
-    expect(wrapper.find('dropdown-the_name').prop('selectedItem').label).toBe('Reuse Existing Ports')
-    expect(wrapper.find('dropdown-the_name').prop('items')[3].value).toBe('replace_mac')
+    expect(wrapper.find('enumDropdown-the_name').prop('selectedItem').label).toBe('Reuse Existing Ports')
+    expect(wrapper.find('enumDropdown-the_name').prop('items')[3].value).toBe('replace_mac')
   })
 
   it('renders object table', () => {
