@@ -1,0 +1,6 @@
+{
+  "name": "DetailsNavigation",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./DetailsNavigation.jsx"
+}

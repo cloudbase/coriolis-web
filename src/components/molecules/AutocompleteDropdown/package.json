@@ -1,0 +1,6 @@
+{
+  "name": "AutocompleteDropdown",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./AutocompleteDropdown.jsx"
+}

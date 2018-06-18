@@ -1,0 +1,6 @@
+{
+  "name": "DatetimePicker",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./DatetimePicker.jsx"
+}

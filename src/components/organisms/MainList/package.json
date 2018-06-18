@@ -1,0 +1,6 @@
+{
+  "name": "MainList",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./MainList.jsx"
+}

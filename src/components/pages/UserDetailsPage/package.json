@@ -1,0 +1,6 @@
+{
+  "name": "UserDetailsPage",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./UserDetailsPage.jsx"
+}

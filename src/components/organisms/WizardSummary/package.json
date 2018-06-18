@@ -1,0 +1,6 @@
+{
+  "name": "WizardSummary",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./WizardSummary.jsx"
+}

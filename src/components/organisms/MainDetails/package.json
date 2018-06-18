@@ -1,0 +1,6 @@
+{
+  "name": "MainDetails",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./MainDetails.jsx"
+}

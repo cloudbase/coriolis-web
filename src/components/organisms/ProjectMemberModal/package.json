@@ -1,0 +1,6 @@
+{
+  "name": "ProjectMemberModal",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./ProjectMemberModal.jsx"
+}

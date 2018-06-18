@@ -1,0 +1,6 @@
+{
+  "name": "CopyButton",
+  "version": "0.0.0",
+  "private": true,
+  "main":"./CopyButton.jsx"
+}
