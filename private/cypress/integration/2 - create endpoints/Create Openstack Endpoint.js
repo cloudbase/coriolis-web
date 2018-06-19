@@ -53,7 +53,7 @@ describe('Create Openstack Endpoint', () => {
   })
 
   it('Added Openstack to endpoint list', () => {
-    cy.visit(`${config.nodeServer}endpoints/`)
+    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
     cy.get('div[data-test-id="endpointListItem-content-e2e-openstack-test"]').should('contain', 'e2e-openstack-test')
   })
 })

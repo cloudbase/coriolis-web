@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import config from '../../config'
 
-describe('Create VmWare Endpoint', () => {
+describe('Create Azure Endpoint', () => {
   before(() => {
     cy.login()
   })
@@ -25,17 +25,18 @@ describe('Create VmWare Endpoint', () => {
     Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
-  it('Shows new VmWare endpoint dialog', () => {
+  it('Shows new Azure endpoint dialog', () => {
     cy.get('div').contains('New').click()
     cy.get('a').contains('Endpoint').click()
-    cy.get('div[data-test-id="cProvider-endpointLogo-vmware_vsphere"]').click()
+    cy.get('div[data-test-id="cProvider-endpointLogo-azure"]').click()
   })
 
-  it('Fills VmWare connection info', () => {
-    cy.get('input[placeholder="Name"]').type('e2e-vmware-test')
-    cy.get('input[placeholder="Username"]').type(config.endpoints.vmware.username)
-    cy.get('input[placeholder="Password"]').type(config.endpoints.vmware.password)
-    cy.get('input[placeholder="Host"]').type(config.endpoints.vmware.host)
+  it('Fills Azure connection info', () => {
+    cy.get('input[placeholder="Name"]').type('e2e-azure-test')
+    cy.get('div[data-test-id="endpointField-switch-allow_untrusted"]').click()
+    cy.get('input[placeholder="Username"]').type(config.endpoints.azure.username)
+    cy.get('input[placeholder="Password"]').type(config.endpoints.azure.password)
+    cy.get('input[placeholder="Subscription ID"]').type(config.endpoints.azure.subscriptionId)
 
     cy.server()
     cy.route({ url: '**/actions', method: 'POST' }).as('validate')
@@ -45,7 +46,7 @@ describe('Create VmWare Endpoint', () => {
   })
 
   it('Added Endpoint to endpoint list', () => {
-    cy.visit(`${config.nodeServer}endpoints/`)
-    cy.get('div[data-test-id="endpointListItem-content-e2e-vmware-test"]').should('contain', 'e2e-vmware-test')
+    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
+    cy.get('div[data-test-id="endpointListItem-content-e2e-azure-test"]').should('contain', 'e2e-azure-test')
   })
 })

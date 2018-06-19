@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-describe('Delete the first migration', () => {
+describe('Scheduler Operations', () => {
   before(() => {
     cy.login()
   })
@@ -23,14 +23,17 @@ describe('Delete the first migration', () => {
     Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
-  it('Deletes migration', () => {
+  it('Goes to replica page', () => {
     cy.server()
-    cy.route({ url: '**/replicas/**', method: 'GET' }).as('replicas')
-    cy.wait('@replicas')
-    cy.get('a').contains('Migrations').click()
+    cy.route('GET', '**/executions/detail').as('execution')
     cy.get('div[data-test-id="mainListItem-content"]').first().click()
-    cy.get('button').last().should('contain', 'Delete Migration').click()
-    cy.route({ url: '**/migrations/**', method: 'DELETE' }).as('delete')
+    cy.wait('@execution')
+  })
+
+  it('Deletes replica', () => {
+    cy.server()
+    cy.get('button[data-test-id="rdContent-deleteButton"]').click()
+    cy.route({ url: '**/replicas/**', method: 'DELETE' }).as('delete')
     cy.get('button').contains('Yes').click()
     cy.wait('@delete')
   })
