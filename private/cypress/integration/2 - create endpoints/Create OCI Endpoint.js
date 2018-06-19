@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import config from '../../config'
 
-describe('Create Azure Endpoint', () => {
+describe('Create OCI Endpoint', () => {
   before(() => {
     cy.login()
   })
@@ -25,19 +25,19 @@ describe('Create Azure Endpoint', () => {
     Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
-  it('Shows new Azure endpoint dialog', () => {
+  it('Shows new OCI endpoint dialog', () => {
     cy.get('div').contains('New').click()
     cy.get('a').contains('Endpoint').click()
-    cy.get('div[data-test-id="cProvider-endpointLogo-azure"]').click()
+    cy.get('div[data-test-id="cProvider-endpointLogo-oci"]').click()
   })
 
-  it('Fills Azure connection info', () => {
-    cy.get('input[placeholder="Name"]').type('e2e-azure-test')
-    cy.get('div[data-test-id="endpointField-switch-allow_untrusted"]').click()
-    cy.get('input[placeholder="Username"]').type(config.endpoints.azure.username)
-    cy.get('input[placeholder="Password"]').type(config.endpoints.azure.password)
-    cy.get('input[placeholder="Subscription ID"]').type(config.endpoints.azure.subscriptionId)
-
+  it('Fills OCI connection info', () => {
+    cy.get('input[data-test-id="endpointField-textInput-name"]').type('e2e-oci-test')
+    cy.get('textarea[data-test-id="endpointField-textArea-private_key_data"]').type(config.endpoints.oci.privateKeyData, { delay: 0 })
+    cy.get('input[data-test-id="endpointField-textInput-region"]').type(config.endpoints.oci.region)
+    cy.get('input[data-test-id="endpointField-textInput-tenancy"]').type(config.endpoints.oci.tenancy)
+    cy.get('input[data-test-id="endpointField-textInput-user"]').type(config.endpoints.oci.user)
+    cy.get('input[data-test-id="endpointField-textInput-private_key_passphrase"]').type(config.endpoints.oci.privateKeyPassphrase)
     cy.server()
     cy.route({ url: '**/actions', method: 'POST' }).as('validate')
     cy.get('button').contains('Validate and save').click()
@@ -46,7 +46,7 @@ describe('Create Azure Endpoint', () => {
   })
 
   it('Added Endpoint to endpoint list', () => {
-    cy.visit(`${config.nodeServer}endpoints/`)
-    cy.get('div[data-test-id="endpointListItem-content-e2e-azure-test"]').should('contain', 'e2e-azure-test')
+    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
+    cy.get('div[data-test-id="endpointListItem-content-e2e-oci-test"]').should('contain', 'e2e-oci-test')
   })
 })

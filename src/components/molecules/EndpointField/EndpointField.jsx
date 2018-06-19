@@ -108,10 +108,11 @@ class Field extends React.Component<Props> {
   renderTextArea() {
     return (
       <TextArea
+        data-test-id={`endpointField-textArea-${this.props.name}`}
         style={{ width: '100%' }}
         highlight={this.props.highlight}
         value={this.props.value}
-        onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
+        onChange={e => { console.log('changing', e); if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
       />

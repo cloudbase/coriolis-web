@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 export default {
   nodeServer: 'http://localhost:3000/',
   coriolisUrl: '',
-  username: 'admin',
+  username: 'cypress',
   password: '',
   endpoints: {
     azure: {
@@ -40,16 +40,35 @@ export default {
       glanceApiVersion: 2,
       identityVersion: 3,
     },
+    oci: {
+      privateKeyData: '',
+      region: '',
+      tenancy: '',
+      user: '',
+      privateKeyPassphrase: '',
+    },
   },
   wizard: {
     azure: {
-      location: { label: 'West US', value: 'westus' },
-      resourceGroup: { label: 'Coriolis', value: 'coriolis' },
+      resourceGroup: { label: '', value: '' },
     },
     openstack: {
-      network: 'private',
+      network: '',
     },
-    instancesSearch: 'ubuntu',
-    instancesSelectItem: 2,
+    oci: {
+      compartment: {
+        label: '', value: '',
+      },
+      migrSubnetId: {
+        label: '', value: '',
+      },
+      availabilityDomain: '',
+    },
+    instancesSearch: {
+      vmwareSearchText: 'ubuntu 14.04',
+      vmwareItemIndex: 1,
+      ociSearchText: 'ubuntu',
+      ociItemIndex: 0,
+    },
   },
 }

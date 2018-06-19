@@ -27,7 +27,7 @@ import DateUtils from '../../../utils/DateUtils'
 
 import endpointImage from './images/endpoint.svg'
 
-const CheckboxStyled = styled(Checkbox) `
+const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => props.checked ? 1 : 0};
   transition: all ${StyleProps.animations.swift};
 `
@@ -106,6 +106,7 @@ class EndpointListItem extends React.Component<Props> {
     return (
       <Wrapper>
         <CheckboxStyled
+          data-test-id={`endpointListItem-checkbox-${this.props.item.name}`}
           checked={this.props.selected}
           onChange={this.props.onSelectedChange}
         />

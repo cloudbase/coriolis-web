@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import config from '../../config'
 
-describe('Create VmWare to Azure Replica', () => {
+describe('Create VmWare to Openstack Migration', () => {
   before(() => {
     cy.login()
   })
@@ -27,8 +27,8 @@ describe('Create VmWare to Azure Replica', () => {
 
   it('Shows Wizard page', () => {
     cy.get('div').contains('New').click()
-    cy.get('a').contains('Replica').click()
-    cy.get('#app').should('contain', 'New Replica')
+    cy.get('a').contains('Migration').click()
+    cy.get('#app').should('contain', 'New Migration')
   })
 
   it('Chooses VmWare as Source Cloud', () => {
@@ -40,35 +40,30 @@ describe('Create VmWare to Azure Replica', () => {
     cy.wait('@sourceInstances')
   })
 
-  it('Chooses Azure as Target Cloud', () => {
+  it('Chooses Openstack as Target Cloud', () => {
     cy.get('button').contains('Next').click()
-    cy.get('div[data-test-id="wEndpointList-dropdown-azure"]').first().click()
-    cy.get('div').contains('e2e-azure-test').click()
+    cy.get('div[data-test-id="wEndpointList-dropdown-openstack"]').first().click()
+    cy.get('div').contains('e2e-openstack-test').click()
   })
 
   it('Searches and selects instances', () => {
     cy.get('button').contains('Next').click()
     cy.server()
     cy.route({ url: '**/instances**', method: 'GET' }).as('search')
-    cy.get('input[placeholder="Search VMs"]').type(config.wizard.instancesSearch)
+    cy.get('input[placeholder="Search VMs"]').type(config.wizard.instancesSearch.vmwareSearchText)
     cy.wait('@search')
-    cy.get('div[data-test-id="wInstances-instanceItem"]').contains(config.wizard.instancesSearch)
+    cy.get('div[data-test-id="wInstances-instanceItem"]').contains(config.wizard.instancesSearch.vmwareSearchText)
     cy.get('div[data-test-id="wInstances-instanceItem"]').its('length').should('be.gt', 0)
-    cy.get('div[data-test-id="wInstances-instanceItem"]').eq(config.wizard.instancesSelectItem).click()
+    cy.get('div[data-test-id="wInstances-instanceItem"]').eq(config.wizard.instancesSearch.vmwareItemIndex).click()
   })
 
-  it('Fills Azure replica info', () => {
+  it('Fills Openstack migration info', () => {
     cy.get('button').contains('Next').click()
-    cy.get('input[placeholder="Location"]').type(config.wizard.azure.location.value)
-    cy.get('input[placeholder="Resource Group"]').type(config.wizard.azure.resourceGroup.value)
-
-    // cy.get('div[data-test-id="wOptionsField-dropdown-location"]').first().click()
-    // cy.get('div[data-test-id="wOptionsField-dropdownListItem"]').contains(config.wizard.azure.location.label).click()
-    // cy.get('div[data-test-id="wOptionsField-dropdown-resource_group"]').first().click()
-    // cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.azure.resourceGroup.label).click()
+    cy.get('div').contains('Advanced').click()
+    cy.get('input[placeholder="Description"]').type('VmWare Openstack Migration')
   })
 
-  it('Selects first available network mapping', () => {
+  it('Selects network mapping', () => {
     cy.server()
     cy.route({ url: '**/networks**', method: 'GET' }).as('networks')
     cy.route({ url: '**/instances/**', method: 'GET' }).as('instances')
@@ -78,36 +73,48 @@ describe('Create VmWare to Azure Replica', () => {
     cy.get('button').contains('Next').should('be.disabled')
     cy.get('div[data-test-id="networkItem"]').its('length').should('be.gt', 0)
     cy.get('div[value="Select ..."]').first().click()
-    cy.get('div[data-test-id="dropdownListItem"]').first().click()
+    cy.get('div[data-test-id="dropdownListItem"]').contains(config.wizard.openstack.network).click()
     cy.get('button').contains('Next').should('not.be.disabled')
-  })
-
-  it('Shows schedule page', () => {
-    cy.get('button').contains('Next').click()
-    cy.get('#app').should('contain', 'Schedule')
   })
 
   it('Shows summary page', () => {
     cy.get('button').contains('Next').click()
     cy.get('#app').should('contain', 'Summary')
     cy.get('#app').should('contain', 'e2e-vmware-test')
-    cy.get('#app').should('contain', 'e2e-azure-test')
-    cy.get('#app').should('contain', 'Coriolis Replica')
-    cy.get('#app').should('contain', 'Replica Options')
-    cy.get('#app').should('contain', config.wizard.azure.location.value)
-    cy.get('#app').should('contain', config.wizard.azure.resourceGroup.value)
+    cy.get('#app').should('contain', 'e2e-openstack-test')
+    cy.get('#app').should('contain', 'Coriolis Migration')
+    cy.get('#app').should('contain', 'Migration Options')
+    cy.get('#app').should('contain', 'VmWare Openstack Migration')
     cy.get('#app').should('contain', 'Networks')
     cy.get('#app').should('contain', 'Instances')
   })
 
-  it('Executes replica', () => {
+  it('Executes migration', () => {
     cy.server()
-    cy.route({ url: '**/replicas', method: 'POST' }).as('replica')
+    cy.route({ url: '**/migrations', method: 'POST' }).as('migration')
     cy.get('button').contains('Finish').click()
-    cy.wait('@replica')
+    cy.wait('@migration')
   })
 
-  it('Shows running replica page', () => {
+  it('Shows running migration page', () => {
     cy.get('div[data-test-id="statusPill-RUNNING"]').should('exist')
+  })
+
+  it('Cancels migration', () => {
+    cy.server()
+    cy.get('button', { timeout: 10000 }).contains('Cancel').click()
+    cy.route({ url: '**/actions', method: 'POST' }).as('cancel')
+    cy.get('button').contains('Yes').click()
+    cy.wait('@cancel')
+    cy.get('div[data-test-id="dcHeader-statusPill-ERROR"]', { timeout: 120000 })
+  })
+
+  it('Deletes migration', () => {
+    cy.get('a[data-test-id="detailsNavigation-"]').click()
+    cy.get('button').contains('Delete Migration').click()
+    cy.server()
+    cy.route({ url: '**/migrations/**', method: 'DELETE' }).as('delete')
+    cy.get('button').contains('Yes').click()
+    cy.wait('@delete')
   })
 })

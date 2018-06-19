@@ -45,7 +45,7 @@ describe('Create VmWare Endpoint', () => {
   })
 
   it('Added Endpoint to endpoint list', () => {
-    cy.visit(`${config.nodeServer}endpoints/`)
+    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
     cy.get('div[data-test-id="endpointListItem-content-e2e-vmware-test"]').should('contain', 'e2e-vmware-test')
   })
 })
