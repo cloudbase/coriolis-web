@@ -25,20 +25,12 @@ import StatusImage from '../../atoms/StatusImage'
 import Palette from '../../styleUtils/Palette'
 import KeyboardManager from '../../../utils/KeyboardManager'
 
-import questionImage from './images/question.svg'
-import errorImage from './images/error.svg'
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 48px;
-`
-const Image = styled.div`
-  width: 96px;
-  height: 96px;
-  background: url('${props => props.type === 'error' ? errorImage : questionImage}');
 `
 const Message = styled.div`
   font-size: 18px;
@@ -112,10 +104,12 @@ class AlertModal extends React.Component<Props> {
   }
 
   render() {
+    let status = this.props.type === 'loading' ? 'RUNNING' : (this.props.type || 'confirmation')
+
     return (
       <Modal {...this.props}>
         <Wrapper data-test-id="alertModal">
-          {this.props.type === 'loading' ? <StatusImage loading data-test-id="aModal-status" /> : <Image type={this.props.type} data-test-id="aModal-image" />}
+          {<StatusImage status={status} data-test-id="aModal-status" />}
           {this.props.message ? <Message data-test-id="aModal-message">{this.props.message}</Message> : null}
           {this.props.extraMessage ? <ExtraMessage data-test-id="aModal-extraMessage">{this.props.extraMessage}</ExtraMessage> : null}
           {this.renderConfirmationButtons()}
