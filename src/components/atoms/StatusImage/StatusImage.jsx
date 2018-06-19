@@ -23,6 +23,7 @@ import Palette from '../../styleUtils/Palette'
 import errorImage from './images/error'
 import successImage from './images/success'
 import loadingImage from './images/loading.svg'
+import questionImage from './images/question'
 
 type Props = {
   status?: string,
@@ -54,15 +55,25 @@ const dashAnimationStyle = css`
   .circle {
     stroke-dasharray: 300;
     stroke-dashoffset: 300;
-    animation: dash 300ms ease-in-out forwards;
+    animation: circleDash 300ms ease-in-out 100ms forwards;
   }
   .path {
     stroke-dasharray: 60;
     stroke-dashoffset: 60;
-    animation: dash 300ms ease-in-out forwards;
+    animation: pathDash 300ms ease-in-out 100ms forwards;
   }
-  @keyframes dash {
-    to { stroke-dashoffset: 0; }
+  .dot {
+    fill-opacity: 0;
+    animation: appear 300ms ease-in-out 100ms forwards;
+  }
+  @keyframes appear {
+    to { fill-opacity: 1; }
+  }
+  @keyframes circleDash {
+    to { stroke-dashoffset: 600; }
+  }
+  @keyframes pathDash {
+    to { stroke-dashoffset: 120; }
   }
 `
 const loadingAnimationStyle = css`
@@ -89,6 +100,10 @@ const Images = {
   RUNNING: {
     style: loadingAnimationStyle,
     image: '',
+  },
+  QUESTION: {
+    image: questionImage,
+    style: dashAnimationStyle,
   },
 }
 @observer
@@ -132,9 +147,10 @@ class StatusImage extends React.Component<Props> {
   }
 
   render() {
-    let status = this.props.status || ''
+    let status = this.props.status || 'QUESTION'
     status = status.toUpperCase()
     status = status === 'SUCCESS' ? 'COMPLETED' : status
+    status = status === 'CONFIRMATION' ? 'QUESTION' : status
     if (this.props.loading) {
       status = 'RUNNING'
       if (this.props.loadingProgress !== undefined && this.props.loadingProgress > -1) {
@@ -147,8 +163,8 @@ class StatusImage extends React.Component<Props> {
         {status !== 'PROGRESS' ? (
           <Image
             data-test-id="statusImage-image"
-            dangerouslySetInnerHTML={{ __html: Images[status || 'RUNNING'].image }}
-            cssStyle={Images[status || 'RUNNING'].style}
+            dangerouslySetInnerHTML={{ __html: Images[status].image }}
+            cssStyle={Images[status].style}
           />
         ) : null}
         {status === 'PROGRESS' ? this.renderProgressImage() : null}

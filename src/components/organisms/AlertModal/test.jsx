@@ -26,7 +26,7 @@ describe('AlertModal Component', () => {
     let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra' })
     expect(wrapper.findText('message')).toBe('alert-message')
     expect(wrapper.findText('extraMessage')).toBe('alert-extra')
-    expect(wrapper.find('image').prop('type')).toBe('confirmation')
+    expect(wrapper.find('status').prop('status')).toBe('confirmation')
     expect(wrapper.find('noButton').length).toBe(1)
     expect(wrapper.find('yesButton').length).toBe(1)
     expect(wrapper.find('dismissButton').length).toBe(0)
@@ -47,7 +47,7 @@ describe('AlertModal Component', () => {
 
   it('renders loading', () => {
     let wrapper = wrap({ message: 'alert-message', extraMessage: 'alert-extra', type: 'loading' })
-    expect(wrapper.find('status').prop('loading')).toBe(true)
+    expect(wrapper.find('status').prop('status')).toBe('RUNNING')
     expect(wrapper.find('noButton').length).toBe(0)
     expect(wrapper.find('yesButton').length).toBe(0)
     expect(wrapper.find('dismissButton').length).toBe(0)

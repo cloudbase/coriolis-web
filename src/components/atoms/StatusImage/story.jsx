@@ -53,3 +53,6 @@ storiesOf('StatusImage', module)
   .add('error', () => (
     <StatusImage status="ERROR" />
   ))
+  .add('question', () => (
+    <StatusImage status="QUESTION" />
+  ))
