@@ -77,6 +77,10 @@ class WizardOptions extends React.Component<Props> {
     window.addEventListener('resize', this.handleResize)
   }
 
+  componentDidUpdate() {
+    Tooltip.rebuild()
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize, false)
   }
