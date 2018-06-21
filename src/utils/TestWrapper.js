@@ -42,6 +42,10 @@ export default class TestWrapper {
     this.shallow.simulate('click')
   }
 
+  text(render?: boolean) {
+    return render ? this.shallow.render().text() : this.shallow.text()
+  }
+
   find(id: string, isPartialId?: boolean) {
     const actualId = this.baseId ? `${this.baseId}-${id}` : id
     let tw = new TestWrapper(this.shallow.findWhere(w =>
@@ -51,9 +55,10 @@ export default class TestWrapper {
     return tw
   }
 
-  findText(id: string, isHostComponent?: boolean) {
+  findText(id: string, isHostComponent?: boolean, render?: boolean) {
     const wrapper = this.find(id).shallow
-    return isHostComponent ? wrapper.text() : wrapper.dive().text()
+    const text = (component: any) => render ? component.render().text() : component.text()
+    return isHostComponent ? text(wrapper) : text(wrapper.dive())
   }
 
   debug() {

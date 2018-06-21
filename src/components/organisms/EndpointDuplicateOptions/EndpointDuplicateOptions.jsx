@@ -73,7 +73,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField) `
+const WizardOptionsFieldStyled = styled(WizardOptionsField)`
   width: 319px;
   justify-content: space-between;
 `
@@ -87,6 +87,7 @@ type Props = {
 type State = {
   selectedProjectId: string,
 }
+const testName = 'edOptions'
 @observer
 class EndpointDuplicateOptions extends React.Component<Props, State> {
   componentWillMount() {
@@ -105,8 +106,8 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
 
   renderDuplicating() {
     return (
-      <Loading>
-        <StatusImage loading />
+      <Loading data-test-id={`${testName}-loading`}>
+        <StatusImage data loading />
         <Message>
           <Title>Duplicating Endpoint</Title>
           <Subtitle>Please wait ...</Subtitle>
@@ -121,6 +122,7 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
         <Image />
         <Form>
           <WizardOptionsFieldStyled
+            data-test-id={`${testName}-field-project`}
             name="duplicate_to_project"
             type="string"
             enum={this.props.projects}
@@ -134,7 +136,10 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
         </Form>
         <Buttons>
           <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
-          <Button onClick={() => { this.props.onDuplicateClick(this.state.selectedProjectId) }}>Duplicate</Button>
+          <Button
+            data-test-id={`${testName}-duplicateButton`}
+            onClick={() => { this.props.onDuplicateClick(this.state.selectedProjectId) }}
+          >Duplicate</Button>
         </Buttons>
       </Options>
     )

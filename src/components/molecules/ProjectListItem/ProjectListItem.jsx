@@ -110,19 +110,19 @@ class ProjectListItem extends React.Component<Props> {
         <Content onClick={this.props.onClick} data-test-id={`${testName}-content`}>
           <Image />
           <Title>
-            <TitleLabel>{this.props.item.name}</TitleLabel>
-            <Subtitle>{this.props.item.description}</Subtitle>
+            <TitleLabel data-test-id={`${testName}-name`}>{this.props.item.name}</TitleLabel>
+            <Subtitle data-test-id={`${testName}-description`}>{this.props.item.description}</Subtitle>
           </Title>
           <Body>
             <Data percentage={33}>
               <ItemLabel>Members</ItemLabel>
-              <ItemValue>
+              <ItemValue data-test-id={`${testName}-members`}>
                 {this.props.getMembers(this.props.item.id)}
               </ItemValue>
             </Data>
             <Data percentage={33}>
               <ItemLabel>Enabled</ItemLabel>
-              <ItemValue>
+              <ItemValue data-test-id={`${testName}-enabled`}>
                 {this.props.item.enabled ? 'Yes' : 'No'}
               </ItemValue>
             </Data>
@@ -133,8 +133,9 @@ class ProjectListItem extends React.Component<Props> {
                 hollow
                 onMouseDown={e => { e.stopPropagation() }}
                 onMouseUp={e => { e.stopPropagation() }}
-                onClick={e => { e.stopPropagation(); this.props.onSwitchProjectClick(this.props.item.id) }}
+                onClick={e => { if (e) e.stopPropagation(); this.props.onSwitchProjectClick(this.props.item.id) }}
                 disabled={isCurrentProject}
+                data-test-id={`${testName}-currentButton`}
               >{isCurrentProject ? 'Current' : 'Switch'}</Button>
             </Data>
           </Body>

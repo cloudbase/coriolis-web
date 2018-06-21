@@ -78,7 +78,7 @@ type State = {
   confirmPassword: string,
   description: string,
 }
-
+const testName = 'userModal'
 @observer
 class UserModal extends React.Component<Props, State> {
   componentWillMount() {
@@ -172,6 +172,7 @@ class UserModal extends React.Component<Props, State> {
 
     return (
       <Field
+        data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
         type={field.type || 'string'}
@@ -271,6 +272,7 @@ class UserModal extends React.Component<Props, State> {
               onClick={this.props.onRequestClose}
             >Cancel</Button>
             <Button
+              data-test-id={`${testName}-updateButton`}
               large
               disabled={this.props.loading}
               onClick={() => { this.handleUpdateClick() }}

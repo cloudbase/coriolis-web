@@ -76,6 +76,7 @@ type Props = {
   noSelectionMessage?: string,
   noItemsMessage?: string,
   selectedItems?: string[],
+  'data-test-id'?: string,
 }
 @observer
 class Field extends React.Component<Props> {
@@ -283,7 +284,7 @@ class Field extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper className={this.props.className}>
+      <Wrapper data-test-id={this.props['data-test-id'] || 'endpointField-wrapper'} className={this.props.className}>
         {this.renderLabel()}
         {this.renderInput()}
       </Wrapper>

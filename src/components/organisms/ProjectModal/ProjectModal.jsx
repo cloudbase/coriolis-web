@@ -66,7 +66,7 @@ type State = {
   highlightFieldNames: string[],
   description: string,
 }
-
+const testName = 'projectModal'
 @observer
 class ProjectModal extends React.Component<Props, State> {
   componentWillMount() {
@@ -117,6 +117,7 @@ class ProjectModal extends React.Component<Props, State> {
   renderField(field: FieldType, value: any, onChange: (value: any) => void) {
     return (
       <Field
+        data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
         type={field.type || 'string'}
@@ -176,6 +177,7 @@ class ProjectModal extends React.Component<Props, State> {
               onClick={this.props.onRequestClose}
             >Cancel</Button>
             <Button
+              data-test-id={`${testName}-updateButton`}
               large
               disabled={this.props.loading}
               onClick={() => { this.handleUpdateClick() }}

@@ -107,6 +107,7 @@ type Props = {
   noItemsLabel?: string,
   bodyStyle?: any,
   headerStyle?: any,
+  'data-test-id'?: string,
 }
 @observer
 class Table extends React.Component<Props> {
@@ -175,7 +176,11 @@ class Table extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper className={this.props.className} secondary={this.props.useSecondaryStyle}>
+      <Wrapper
+        data-test-id={this.props['data-test-id'] || 'table-wrapper'}
+        className={this.props.className}
+        secondary={this.props.useSecondaryStyle}
+      >
         {this.renderHeader()}
         {this.renderItems()}
         {this.renderNoItems()}

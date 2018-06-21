@@ -63,7 +63,7 @@ describe('Adds a new user as a member to the project', () => {
     cy.route({ url: '**/users', method: 'POST' }).as('addUser')
     cy.route({ url: '**/roles/**', method: 'PUT' }).as('addRole')
     cy.route({ url: '**/role_assignments**', method: 'GET' }).as('getRoles')
-    cy.get('button[data-test-id="projectModal-addButton"]').contains('Add Member').click()
+    cy.get('button[data-test-id="pmModal-addButton"]').contains('Add Member').click()
     cy.wait('@addUser')
     cy.wait('@addRole')
     cy.wait('@getRoles')
