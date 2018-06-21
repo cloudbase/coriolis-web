@@ -51,7 +51,10 @@ Cypress.Commands.add('login', () => {
       url: projectsUrl,
       headers: { 'X-Auth-Token': unscopedToken },
     }).then(projectsReponse => {
-      let projectId = projectsReponse.body.projects[0].id
+      let projects = projectsReponse.body.projects
+      let cypressProject = projects.find(p => p.name === 'cypress')
+      let projectId = cypressProject ? cypressProject.id : projects[0].id
+
       expect(projectId).to.exist
 
       let scopedBody = {

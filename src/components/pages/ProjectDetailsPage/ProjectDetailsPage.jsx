@@ -99,8 +99,8 @@ class ProjectDetailsPage extends React.Component<Props, State> {
     let roles = projectStore.roleAssignments
       .filter(a => a.scope.project.id === this.props.match.params.id)
       .filter(a => a.user.id === user.id)
-    let oldRoleId = roles.length > 0 ? roles[0].role.id : ''
-    projectStore.removeUser(this.props.match.params.id, user.id, oldRoleId)
+      .map(ra => ra.role.id)
+    projectStore.removeUser(this.props.match.params.id, user.id, roles)
   }
 
   handleEditProjectClick() {

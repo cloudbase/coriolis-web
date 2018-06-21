@@ -61,7 +61,7 @@ const LoadingWrapper = styled.div`
   width: 100%;
   margin: 32px 0 64px 0;
 `
-const TableStyled = styled(Table) `
+const TableStyled = styled(Table)`
   margin-top: 42px;
   margin-bottom: 32px;
 `
@@ -250,8 +250,13 @@ class ProjectDetailsContent extends React.Component<Props, State> {
       let userActions = actions(user)
       let userRoles = getUserRoles(user)
       const columns = [
-        <UserName disabled={!user.enabled} href={`#/user/${user.id}`}>{user.name}</UserName>,
+        <UserName
+          data-test-id={`pdContent-users-${user.name}`}
+          disabled={!user.enabled}
+          href={`#/user/${user.id}`}
+        >{user.name}</UserName>,
         <DropdownLink
+          data-test-id={`pdContent-roles-${user.name}`}
           width="214px"
           getLabel={() => userRoles.length > 0 ? userRoles.map(r => r.label).join(', ') : 'No roles'}
           selectedItems={userRoles.map(r => r.value)}
@@ -267,6 +272,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         />,
         <UserColumn disabled={!user.enabled}>{user.enabled ? 'Enabled' : 'Disabled'}</UserColumn>,
         <DropdownLink
+          data-test-id={`pdContent-actions-${user.name}`}
           noCheckmark
           width="82px"
           items={userActions}

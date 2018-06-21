@@ -96,6 +96,7 @@ type Props = {
   onClick: () => void,
   getProjectName: (projectId: ?string) => string,
 }
+const testName = 'ulItem'
 @observer
 class EndpointListItem extends React.Component<Props> {
   render() {
@@ -104,7 +105,7 @@ class EndpointListItem extends React.Component<Props> {
         <Content onClick={this.props.onClick}>
           <Image />
           <Title>
-            <TitleLabel>{this.props.item.name}</TitleLabel>
+            <TitleLabel data-test-id={`${testName}-name`}>{this.props.item.name}</TitleLabel>
             <Subtitle>{this.props.item.description}</Subtitle>
           </Title>
           <Body>

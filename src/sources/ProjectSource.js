@@ -65,11 +65,13 @@ class ProjectsSource {
     })
   }
 
-  static removeUser(projectId: string, userId: string, roleId: string): Promise<void> {
-    return Api.send({
-      url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${roleId}`,
-      method: 'DELETE',
-    }).then(() => { })
+  static removeUser(projectId: string, userId: string, roleIds: string[]): Promise<void> {
+    return Promise.all(roleIds.map(id => {
+      return Api.send({
+        url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${id}`,
+        method: 'DELETE',
+      })
+    })).then(() => { })
   }
 
   static assignUser(projectId: string, userId: string, roleId: string): Promise<void> {
