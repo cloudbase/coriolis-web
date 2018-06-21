@@ -88,6 +88,7 @@ type Props = {
   onDeleteClick: () => void,
   onValidateClick: () => void,
   onEditClick: () => void,
+  passwordFields?: string[],
 }
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
@@ -137,7 +138,7 @@ class EndpointDetailsContent extends React.Component<Props> {
 
       let valueClass = null
 
-      if (key === 'password') {
+      if (this.props.passwordFields && this.props.passwordFields.find(fn => fn === key)) {
         valueClass = <PasswordValue value={value} data-test-id="edContent-connPassword" />
       } else {
         valueClass = this.renderValue(value, `connValue-${key}`)

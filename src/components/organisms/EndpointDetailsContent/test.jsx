@@ -62,7 +62,7 @@ describe('EndpointDetailsContent Component', () => {
   })
 
   it('renders simple connection info', () => {
-    let wrapper = wrap({ item, connectionInfo })
+    let wrapper = wrap({ item, connectionInfo, passwordFields: ['password'] })
     expect(wrapper.find('connValue-username').prop('value')).toBe(connectionInfo.username)
     expect(wrapper.find('connPassword').prop('value')).toBe(connectionInfo.password)
     expect(wrapper.find('connValue-details').prop('value')).toBe(connectionInfo.details)

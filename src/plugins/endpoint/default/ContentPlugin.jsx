@@ -52,6 +52,7 @@ type Props = {
   cancelButtonText: string,
   validating: boolean,
   onRef: (contentPlugin: any) => void,
+  passwordFields?: string[],
 }
 class ContentPlugin extends React.Component<Props> {
   componentDidMount() {
@@ -79,12 +80,13 @@ class ContentPlugin extends React.Component<Props> {
     let lastField
     let i = 0
     this.props.connectionInfoSchema.forEach((field, schemaIndex) => {
+      let isPassword = this.props.passwordFields && this.props.passwordFields.find(fn => fn === field.name)
       const currentField = (
         <FieldStyled
           {...field}
           large
           disabled={this.props.disabled}
-          password={field.name === 'password'}
+          password={isPassword}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
           value={this.props.getFieldValue(field)}
           onChange={value => { this.props.handleFieldChange(field, value) }}
