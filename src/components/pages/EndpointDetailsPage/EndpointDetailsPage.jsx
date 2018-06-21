@@ -27,7 +27,7 @@ import Modal from '../../molecules/Modal'
 import EndpointValidation from '../../organisms/EndpointValidation'
 import Endpoint from '../../organisms/Endpoint'
 
-import endpointStore from '../../../stores/EndpointStore'
+import endpointStore, { passwordFields } from '../../../stores/EndpointStore'
 import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import userStore from '../../../stores/UserStore'
@@ -201,6 +201,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           />}
           contentComponent={<EndpointDetailsContent
             item={endpoint}
+            passwordFields={passwordFields}
             usage={this.state.endpointUsage}
             loading={endpointStore.connectionInfoLoading || endpointStore.loading}
             connectionInfo={endpointStore.connectionInfo}

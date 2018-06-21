@@ -17,6 +17,8 @@ import { observable, action } from 'mobx'
 import type { Endpoint, Validation } from '../types/Endpoint'
 import EndpointSource from '../sources/EndpointSource'
 
+export const passwordFields = ['password', 'private_key_passphrase']
+
 const updateEndpoint = (endpoint, endpoints) => endpoints.map(e => {
   if (e.id === endpoint.id) {
     return { ...endpoint }
