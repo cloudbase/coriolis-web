@@ -78,8 +78,8 @@ class ProjectStore {
     this.users = []
   }
 
-  @action removeUser(projectId: string, userId: string, roleId: string): Promise<void> {
-    return ProjectSource.removeUser(projectId, userId, roleId).then(() => {
+  @action removeUser(projectId: string, userId: string, roleIds: string[]): Promise<void> {
+    return ProjectSource.removeUser(projectId, userId, roleIds).then(() => {
       this.users = this.users.filter(u => u.id !== userId)
     })
   }
@@ -89,7 +89,7 @@ class ProjectStore {
   }
 
   @action removeUserRole(projectId: string, userId: string, roleId: string): Promise<void> {
-    return ProjectSource.removeUser(projectId, userId, roleId)
+    return ProjectSource.removeUser(projectId, userId, [roleId])
   }
 
   @action update(projectId: string, project: Project): Promise<void> {

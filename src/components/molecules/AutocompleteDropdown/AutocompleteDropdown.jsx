@@ -350,6 +350,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           let duplicatedLabel = duplicatedLabels.find(l => l === label)
           let listItem = (
             <ListItem
+              data-test-id="ad-listItem"
               key={value}
               innerRef={ref => { if (i === 0) { this.firstItemRef = ref } }}
               onMouseDown={() => { this.itemMouseDown = true }}

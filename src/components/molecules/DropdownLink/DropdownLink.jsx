@@ -344,7 +344,11 @@ class DropdownLink extends React.Component<Props, State> {
     }
 
     return (
-      <ListItems innerRef={ref => { this.listItemsRef = ref }} searchable={this.props.searchable}>
+      <ListItems
+        data-test-id="dropdownLink-listItem"
+        innerRef={ref => { this.listItemsRef = ref }}
+        searchable={this.props.searchable}
+      >
         {this.getFilteredItems().map((item) => {
           return this.renderItem(item)
         })}

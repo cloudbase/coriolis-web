@@ -99,6 +99,7 @@ type Props = {
   isCurrentProject: (projectId: string) => boolean,
   onSwitchProjectClick: (projectId: string) => void,
 }
+const testName = 'plItem'
 @observer
 class ProjectListItem extends React.Component<Props> {
   render() {
@@ -106,7 +107,7 @@ class ProjectListItem extends React.Component<Props> {
 
     return (
       <Wrapper>
-        <Content onClick={this.props.onClick}>
+        <Content onClick={this.props.onClick} data-test-id={`${testName}-content`}>
           <Image />
           <Title>
             <TitleLabel>{this.props.item.name}</TitleLabel>

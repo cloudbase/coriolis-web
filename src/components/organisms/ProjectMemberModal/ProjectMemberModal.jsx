@@ -372,6 +372,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
               large
               disabled={this.props.loading}
               onClick={() => { this.handleAddClick() }}
+              data-test-id="projectModal-addButton"
             >Add Member</Button>
           </Buttons>
         </Wrapper>

@@ -153,6 +153,7 @@ class Field extends React.Component<Props> {
   renderArrayDropdown() {
     return (
       <Dropdown
+        data-test-id={`endpointField-multidropdown-${this.props.name}`}
         multipleSelection
         large={this.props.large}
         disabled={this.props.disabled}
