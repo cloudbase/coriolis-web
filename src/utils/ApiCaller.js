@@ -101,7 +101,7 @@ class ApiCaller {
             }
           }
 
-          if (error.response.status === 401 && window.location.hash !== loginUrl) {
+          if (error.response.status === 401 && window.location.hash !== loginUrl && error.request.responseURL.indexOf('/proxy/') === -1) {
             window.location.href = '/'
           }
 

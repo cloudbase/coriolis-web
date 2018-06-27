@@ -23,18 +23,16 @@ import { servicesUrl } from '../config'
 
 class NetworkSource {
   static loadNetworks(enpointId: string, environment: ?{ [string]: mixed }): Promise<Network[]> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      let url = `${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${enpointId}/networks`
-      if (environment) {
-        url = `${url}?env=${btoa(JSON.stringify(environment))}`
-      }
+    let projectId = cookie.get('projectId')
+    let url = `${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${enpointId}/networks`
+    if (environment) {
+      url = `${url}?env=${btoa(JSON.stringify(environment))}`
+    }
 
-      Api.get(url).then(response => {
-        let networks = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
-        networks.sort((a, b) => a.name.localeCompare(b.name))
-        resolve(networks)
-      }).catch(reject)
+    return Api.get(url).then(response => {
+      let networks = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
+      networks.sort((a, b) => a.name.localeCompare(b.name))
+      return networks
     })
   }
 }

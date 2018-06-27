@@ -81,8 +81,6 @@ class AzureStore {
       }
       this.assessmentsProjectId = cookieProjectId
       this.assessments = assessments
-    }).catch(() => {
-      this.loadingAssessments = false
     })
   }
 

@@ -51,73 +51,58 @@ class MigrationSourceUtils {
 
 class MigrationSource {
   static getMigrations(): Promise<MainItem[]> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId') || 'null'
-      Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/detail`).then(response => {
-        let migrations = response.data.migrations
-        MigrationSourceUtils.sortMigrations(migrations)
-        resolve(migrations)
-      }).catch(reject)
+    let projectId = cookie.get('projectId') || 'null'
+    return Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/detail`).then(response => {
+      let migrations = response.data.migrations
+      MigrationSourceUtils.sortMigrations(migrations)
+      return migrations
     })
   }
 
   static getMigration(migrationId: string): Promise<MainItem> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId') || 'null'
+    let projectId = cookie.get('projectId') || 'null'
 
-      Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}`).then(response => {
-        let migration = response.data.migration
-        MigrationSourceUtils.sortTaskUpdates(migration)
-        resolve(migration)
-      }).catch(reject)
+    return Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}`).then(response => {
+      let migration = response.data.migration
+      MigrationSourceUtils.sortTaskUpdates(migration)
+      return migration
     })
   }
 
   static cancel(migrationId: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId') || 'null'
+    let projectId = cookie.get('projectId') || 'null'
 
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}/actions`,
-        method: 'POST',
-        data: { cancel: null },
-      }).then(() => {
-        resolve(migrationId)
-      }).catch(reject)
-    })
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}/actions`,
+      method: 'POST',
+      data: { cancel: null },
+    }).then(() => migrationId)
   }
 
   static delete(migrationId: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations/${migrationId}`,
-        method: 'DELETE',
-      }).then(() => { resolve(migrationId) }, reject).catch(reject)
-    })
+    let projectId = cookie.get('projectId')
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations/${migrationId}`,
+      method: 'DELETE',
+    }).then(() => migrationId)
   }
 
   static migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      let payload = {
-        migration: {
-          replica_id: replicaId,
-        },
-      }
-      options.forEach(o => {
-        payload.migration[o.name] = o.value || false
-      })
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations`,
-        method: 'POST',
-        data: payload,
-      }).then(response => {
-        let migration = response.data.migration
-        resolve(migration)
-      }).catch(reject)
+    let projectId = cookie.get('projectId')
+    let payload = {
+      migration: {
+        replica_id: replicaId,
+      },
+    }
+    options.forEach(o => {
+      payload.migration[o.name] = o.value || false
     })
+
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations`,
+      method: 'POST',
+      data: payload,
+    }).then(response => response.data.migration)
   }
 }
 

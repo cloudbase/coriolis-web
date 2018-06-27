@@ -49,6 +49,8 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   componentWillMount() {
+    document.title = 'Coriolis Planning'
+
     projectStore.getProjects()
 
     if (!azureStore.isLoadedForCurrentProject()) {

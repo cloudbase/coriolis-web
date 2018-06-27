@@ -25,52 +25,43 @@ import type { DestinationOption } from '../types/Endpoint'
 
 class ProviderSource {
   static getConnectionInfoSchema(providerName: string): Promise<Field[]> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+    let projectId = cookie.get('projectId')
 
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`).then(response => {
-        let schema = response.data.schemas.connection_info_schema
-        schema = SchemaParser.connectionSchemaToFields(providerName, schema)
-        resolve(schema)
-      }).catch(reject)
+    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`).then(response => {
+      let schema = response.data.schemas.connection_info_schema
+      schema = SchemaParser.connectionSchemaToFields(providerName, schema)
+      return schema
     })
   }
 
   static loadProviders(): Promise<Providers> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+    let projectId = cookie.get('projectId')
 
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers`).then(response => {
-        resolve(response.data.providers)
-      }).catch(reject)
-    })
+    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers`)
+      .then(response => response.data.providers)
   }
 
   static loadOptionsSchema(providerName: string, schemaType: string): Promise<Field[]> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      let schemaTypeInt = schemaType === 'migration' ? providerTypes.TARGET_MIGRATION : providerTypes.TARGET_REPLICA
+    let projectId = cookie.get('projectId')
+    let schemaTypeInt = schemaType === 'migration' ? providerTypes.TARGET_MIGRATION : providerTypes.TARGET_REPLICA
 
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
-        let schema = response.data.schemas.destination_environment_schema
-        let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
-        resolve(fields)
-      }).catch(reject)
+    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
+      let schema = response.data.schemas.destination_environment_schema
+      let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
+      return fields
     })
   }
 
   static getDestinationOptions(endpointId: string, envData: ?{ [string]: mixed }): Promise<DestinationOption[]> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      let envString = ''
-      if (envData) {
-        envString = `?env=${btoa(JSON.stringify(envData))}`
-      }
+    let projectId = cookie.get('projectId')
+    let envString = ''
+    if (envData) {
+      envString = `?env=${btoa(JSON.stringify(envData))}`
+    }
 
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/destination-options${envString}`).then(response => {
-        let options = response.data.destination_options
-        resolve(options)
-      }).catch(() => { reject() })
+    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/destination-options${envString}`).then(response => {
+      let options = response.data.destination_options
+      return options
     })
   }
 }

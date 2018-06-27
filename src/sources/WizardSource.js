@@ -26,66 +26,45 @@ import type { MainItem } from '../types/MainItem'
 
 class WizardSource {
   static create(type: string, data: WizardData): Promise<MainItem> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
+    let projectId = cookie.get('projectId')
 
-      const parser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
-      let payload = {}
-      payload[type] = {
-        origin_endpoint_id: data.source ? data.source.id : 'null',
-        destination_endpoint_id: data.target ? data.target.id : 'null',
-        destination_environment: parser.getDestinationEnv(data),
-        instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
-        notes: '',
-      }
+    const parser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
+    let payload = {}
+    payload[type] = {
+      origin_endpoint_id: data.source ? data.source.id : 'null',
+      destination_endpoint_id: data.target ? data.target.id : 'null',
+      destination_environment: parser.getDestinationEnv(data),
+      instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
+      notes: '',
+    }
 
-      if (data.options && data.options.skip_os_morphing !== null && data.options.skip_os_morphing !== undefined) {
-        payload[type].skip_os_morphing = data.options.skip_os_morphing
-      }
+    if (data.options && data.options.skip_os_morphing !== null && data.options.skip_os_morphing !== undefined) {
+      payload[type].skip_os_morphing = data.options.skip_os_morphing
+    }
 
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/${type}s`,
-        method: 'POST',
-        data: payload,
-      }).then(response => {
-        resolve(response.data[type])
-      }).catch(reject)
-    })
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${projectId || 'null'}/${type}s`,
+      method: 'POST',
+      data: payload,
+    }).then(response => response.data[type])
   }
 
   static createMultiple(type: string, data: WizardData): Promise<MainItem[]> {
-    return new Promise((resolve, reject) => {
-      let items = []
-      let count = 0
+    if (!data.selectedInstances) {
+      return Promise.reject('No selected instances')
+    }
 
-      if (!data.selectedInstances) {
-        reject('No selected instances')
-        return
-      }
-
-      data.selectedInstances.forEach(instance => {
-        let newData = { ...data }
-        newData.selectedInstances = [instance]
-        WizardSource.create(type, newData).then(item => {
-          count += 1
-          items.push(item)
-          // $FlowIssue
-          if (count === data.selectedInstances.length) {
-            if (items.length > 0) {
-              resolve(items)
-            } else {
-              reject()
-            }
-          }
-        }, () => {
-          count += 1
-          notificationStore.notify(`Error while creating ${type} for instance ${instance.name}`, 'error', {
-            persist: true,
-            persistInfo: { title: `${type} creation error` },
-          })
+    return Promise.all(data.selectedInstances.map(instance => {
+      let newData = { ...data }
+      newData.selectedInstances = [instance]
+      return WizardSource.create(type, newData).catch(() => {
+        notificationStore.notify(`Error while creating ${type} for instance ${instance.name}`, 'error', {
+          persist: true,
+          persistInfo: { title: `${type} creation error` },
         })
+        return null
       })
-    })
+    })).then(mainItems => mainItems.filter(Boolean).map(i => i))
   }
 
   static setPermalink(data: WizardData) {
