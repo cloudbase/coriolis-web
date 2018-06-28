@@ -14,8 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
-
 import type { MigrationInfo } from '../types/Assessment'
 import type { MainItem } from '../types/MainItem'
 import Api from '../utils/ApiCaller'
@@ -38,7 +36,6 @@ class AssessmentSourceUtils {
 
 class AssessmentSource {
   static migrate(data: MigrationInfo): Promise<MainItem> {
-    let projectId = cookie.get('projectId')
     let useReplicaField = data.options.find(o => o.name === 'use_replica')
     let type = useReplicaField && useReplicaField.value ? 'replica' : 'migration'
     let payload = {}
@@ -61,7 +58,7 @@ class AssessmentSource {
     })
 
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/${type}s`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,
       method: 'POST',
       data: payload,
     }).then(response => {

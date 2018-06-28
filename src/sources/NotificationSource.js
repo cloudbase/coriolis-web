@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { NotificationItem } from '../types/NotificationItem'
 
+
 class NotificationSource {
   static notify(message: string, level?: $PropertyType<NotificationItem, 'level'>, options?: $PropertyType<NotificationItem, 'options'>): Promise<NotificationItem> {
     let notifications = JSON.parse(localStorage.getItem('notifications') || '[]')

@@ -14,8 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
-
 import Api from '../utils/ApiCaller'
 import notificationStore from '../stores/NotificationStore'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
@@ -26,8 +24,6 @@ import type { MainItem } from '../types/MainItem'
 
 class WizardSource {
   static create(type: string, data: WizardData): Promise<MainItem> {
-    let projectId = cookie.get('projectId')
-
     const parser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     let payload = {}
     payload[type] = {
@@ -43,7 +39,7 @@ class WizardSource {
     }
 
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/${type}s`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,
       method: 'POST',
       data: payload,
     }).then(response => response.data[type])

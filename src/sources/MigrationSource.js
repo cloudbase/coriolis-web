@@ -14,7 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
@@ -51,8 +50,7 @@ class MigrationSourceUtils {
 
 class MigrationSource {
   static getMigrations(): Promise<MainItem[]> {
-    let projectId = cookie.get('projectId') || 'null'
-    return Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/detail`).then(response => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/migrations/detail`).then(response => {
       let migrations = response.data.migrations
       MigrationSourceUtils.sortMigrations(migrations)
       return migrations
@@ -60,9 +58,7 @@ class MigrationSource {
   }
 
   static getMigration(migrationId: string): Promise<MainItem> {
-    let projectId = cookie.get('projectId') || 'null'
-
-    return Api.get(`${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}`).then(response => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`).then(response => {
       let migration = response.data.migration
       MigrationSourceUtils.sortTaskUpdates(migration)
       return migration
@@ -70,25 +66,21 @@ class MigrationSource {
   }
 
   static cancel(migrationId: string): Promise<string> {
-    let projectId = cookie.get('projectId') || 'null'
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId}/migrations/${migrationId}/actions`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}/actions`,
       method: 'POST',
       data: { cancel: null },
     }).then(() => migrationId)
   }
 
   static delete(migrationId: string): Promise<string> {
-    let projectId = cookie.get('projectId')
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations/${migrationId}`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       method: 'DELETE',
     }).then(() => migrationId)
   }
 
   static migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
-    let projectId = cookie.get('projectId')
     let payload = {
       migration: {
         replica_id: replicaId,
@@ -99,7 +91,7 @@ class MigrationSource {
     })
 
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/migrations`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`,
       method: 'POST',
       data: payload,
     }).then(response => response.data.migration)

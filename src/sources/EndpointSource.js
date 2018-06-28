@@ -14,7 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
@@ -39,27 +38,21 @@ let getBarbicanPayload = data => {
 
 class EdnpointSource {
   static getEndpoints(): Promise<Endpoint[]> {
-    let projectId = cookie.get('projectId')
-    if (projectId) {
-      return Api.get(`${servicesUrl.coriolis}/${projectId}/endpoints`).then(response => {
-        let connections = []
-        if (response.data.endpoints.length) {
-          response.data.endpoints.forEach(endpoint => {
-            connections.push(endpoint)
-          })
-        }
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints`).then(response => {
+      let connections = []
+      if (response.data.endpoints.length) {
+        response.data.endpoints.forEach(endpoint => {
+          connections.push(endpoint)
+        })
+      }
 
-        connections.sort((c1, c2) => moment(c2.created_at).diff(moment(c1.created_at)))
-        return connections
-      })
-    }
-    return Promise.reject('No Project ID!')
+      connections.sort((c1, c2) => moment(c2.created_at).diff(moment(c1.created_at)))
+      return connections
+    })
   }
   static delete(endpoint: Endpoint): Promise<string> {
-    let projectId: any = cookie.get('projectId')
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpoint.id}`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
       method: 'DELETE',
     }).then(() => {
       if (endpoint.connection_info && endpoint.connection_info.secret_ref) {
@@ -107,9 +100,8 @@ class EdnpointSource {
   }
 
   static validate(endpoint: Endpoint): Promise<Validation> {
-    let projectId = cookie.get('projectId')
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}/actions`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}/actions`,
       method: 'POST',
       data: { 'validate-connection': null },
     }).then(response => {
@@ -118,7 +110,6 @@ class EdnpointSource {
   }
 
   static update(endpoint: Endpoint): Promise<Endpoint> {
-    let projectId = cookie.get('projectId')
     let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
 
     if (parsedEndpoint.connection_info && parsedEndpoint.connection_info.secret_ref) {
@@ -147,7 +138,7 @@ class EdnpointSource {
           },
         }
         return Api.send({
-          url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}`,
+          url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
           method: 'PUT',
           data: newPayload,
         })
@@ -171,7 +162,7 @@ class EdnpointSource {
     }
 
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints/${endpoint.id}`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
       method: 'PUT',
       data: { endpoint: parsedEndpoint },
     }).then(response => {
@@ -181,7 +172,6 @@ class EdnpointSource {
 
   static add(endpoint: Endpoint, skipSchemaParser: boolean = false): Promise<Endpoint> {
     let parsedEndpoint = skipSchemaParser ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
-    let projectId = cookie.get('projectId')
     let newEndpoint: any = {}
     let connectionInfo = {}
     if (useSecret) {
@@ -200,7 +190,7 @@ class EdnpointSource {
           },
         }
         return Api.send({
-          url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints`,
+          url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
           method: 'POST',
           data: newPayload,
         })
@@ -224,7 +214,7 @@ class EdnpointSource {
     }
 
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || ''}/endpoints`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
       method: 'POST',
       data: { endpoint: parsedEndpoint },
     }).then(response => {

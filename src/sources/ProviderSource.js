@@ -14,8 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
-
 import Api from '../utils/ApiCaller'
 import { servicesUrl, providerTypes } from '../config'
 import { SchemaParser } from './Schemas'
@@ -25,9 +23,7 @@ import type { DestinationOption } from '../types/Endpoint'
 
 class ProviderSource {
   static getConnectionInfoSchema(providerName: string): Promise<Field[]> {
-    let projectId = cookie.get('projectId')
-
-    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`).then(response => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`).then(response => {
       let schema = response.data.schemas.connection_info_schema
       schema = SchemaParser.connectionSchemaToFields(providerName, schema)
       return schema
@@ -35,17 +31,14 @@ class ProviderSource {
   }
 
   static loadProviders(): Promise<Providers> {
-    let projectId = cookie.get('projectId')
-
-    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers`)
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers`)
       .then(response => response.data.providers)
   }
 
   static loadOptionsSchema(providerName: string, schemaType: string): Promise<Field[]> {
-    let projectId = cookie.get('projectId')
     let schemaTypeInt = schemaType === 'migration' ? providerTypes.TARGET_MIGRATION : providerTypes.TARGET_REPLICA
 
-    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
       let schema = response.data.schemas.destination_environment_schema
       let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
       return fields
@@ -53,13 +46,12 @@ class ProviderSource {
   }
 
   static getDestinationOptions(endpointId: string, envData: ?{ [string]: mixed }): Promise<DestinationOption[]> {
-    let projectId = cookie.get('projectId')
     let envString = ''
     if (envData) {
       envString = `?env=${btoa(JSON.stringify(envData))}`
     }
 
-    return Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/destination-options${envString}`).then(response => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/destination-options${envString}`).then(response => {
       let options = response.data.destination_options
       return options
     })

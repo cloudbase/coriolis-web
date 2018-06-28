@@ -14,8 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
-
 import Api from '../utils/ApiCaller'
 import type { Instance } from '../types/Instance'
 
@@ -30,8 +28,7 @@ class InstanceSource {
       this.lastEndpointId = endpointId
     }
 
-    let projectId = cookie.get('projectId')
-    let url = `${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/instances`
+    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let symbol = '?'
 
     if (!skipLimit) {
@@ -54,10 +51,8 @@ class InstanceSource {
   }
 
   static loadInstanceDetails(endpointId: string, instanceName: string, reqId: number): Promise<{ instance: Instance, reqId: number }> {
-    let projectId = cookie.get('projectId') || 'undefined'
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
       cancelId: `instanceDetail-${reqId}`,
     }).then(response => {
       return { instance: response.data.instance, reqId }

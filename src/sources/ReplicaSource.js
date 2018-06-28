@@ -14,7 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
@@ -85,8 +84,7 @@ class ReplicaSourceUtils {
 
 class ReplicaSource {
   static getReplicas(): Promise<MainItem[]> {
-    let projectId = cookie.get('projectId') || 'undefined'
-    return Api.get(`${servicesUrl.coriolis}/${projectId}/replicas/detail`).then(response => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`).then(response => {
       let replicas = response.data.replicas
       replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
       ReplicaSourceUtils.sortReplicas(replicas)
@@ -95,8 +93,7 @@ class ReplicaSource {
   }
 
   static getReplicaExecutions(replicaId: string): Promise<Execution[]> {
-    let projectId = cookie.get('projectId') || 'undefined'
-    return Api.get(`${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/executions/detail`).then((response) => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`).then((response) => {
       let executions = response.data.executions
       ReplicaSourceUtils.sortExecutionsAndTaskUpdates(executions)
 
@@ -105,9 +102,7 @@ class ReplicaSource {
   }
 
   static getReplica(replicaId: string): Promise<MainItem> {
-    let projectId = cookie.get('projectId') || 'undefined'
-
-    return Api.get(`${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}`).then(response => {
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`).then(response => {
       let replica = response.data.replica
       replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
       ReplicaSourceUtils.sortExecutions(replica.executions)
@@ -122,10 +117,8 @@ class ReplicaSource {
         payload.execution[f.name] = f.value || false
       })
     }
-    let projectId = cookie.get('projectId') || 'undefined'
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId}/replicas/${replicaId}/executions`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions`,
       method: 'POST',
       data: payload,
     }).then((response) => {
@@ -136,38 +129,30 @@ class ReplicaSource {
   }
 
   static cancelExecution(replicaId: string, executionId: string): Promise<string> {
-    let projectId = cookie.get('projectId')
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}/actions`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
       method: 'POST',
       data: { cancel: null },
     }).then(() => replicaId)
   }
 
   static deleteExecution(replicaId: string, executionId: string): Promise<string> {
-    let projectId = cookie.get('projectId')
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}`,
       method: 'DELETE',
     }).then(() => replicaId)
   }
 
   static delete(replicaId: string): Promise<string> {
-    let projectId = cookie.get('projectId')
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`,
       method: 'DELETE',
     }).then(() => replicaId)
   }
 
   static deleteDisks(replicaId: string): Promise<Execution> {
-    let projectId = cookie.get('projectId')
-
     return Api.send({
-      url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/actions`,
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/actions`,
       method: 'POST',
       data: { 'delete-disks': null },
     }).then(response => response.data.execution)

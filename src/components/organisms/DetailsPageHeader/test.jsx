@@ -18,16 +18,26 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import TW from '../../../utils/TestWrapper'
+import type { User } from '../../../types/User'
 import { DetailsPageHeader } from '.'
 
-const wrap = props => new TW(shallow(
-  // $FlowIgnore
-  <DetailsPageHeader notificationStore={{}} {...props} />
+type Props = {
+  user?: ?User,
+}
+
+const wrap = (props: Props) => new TW(shallow(
+  <DetailsPageHeader
+    onUserItemClick={() => { }}
+    testMode
+    {...props}
+  />
 ), 'dpHeader')
 
 let user = {
   name: 'User name',
   email: 'email@email.com',
+  id: 'user',
+  project: { id: '', name: '' },
 }
 
 describe('DetailsPageHeader Component', () => {

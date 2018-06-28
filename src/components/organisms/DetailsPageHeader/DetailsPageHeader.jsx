@@ -42,7 +42,7 @@ const Logo = styled.a`
   background: url('${logoImage}') no-repeat;
   cursor: pointer;
 `
-const UserDropdownStyled = styled(UserDropdown) `
+const UserDropdownStyled = styled(UserDropdown)`
   margin-left: 16px;
 `
 const Menu = styled.div`
@@ -57,10 +57,14 @@ const User = styled.div`
 type Props = {
   user?: ?UserType,
   onUserItemClick: (userItem: { label: string, value: string }) => void,
+  testMode?: boolean,
 }
 @observer
 export class DetailsPageHeader extends React.Component<Props> {
   componentDidMount() {
+    if (this.props.testMode) {
+      return
+    }
     notificationStore.loadNotifications()
   }
 
