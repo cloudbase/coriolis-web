@@ -94,6 +94,7 @@ type Props = {
 type State = {
   showDeleteConfirmation: boolean,
 }
+const testName = 'udContent'
 @observer
 class UserDetailsContent extends React.Component<Props, State> {
   state = {
@@ -144,12 +145,9 @@ class UserDetailsContent extends React.Component<Props, State> {
 
   renderUserProjects(projects: { label: string, id: string }[]) {
     return projects.map((project, i) => (
-      <span>
+      <span key={project.id}>
         {project.label ? (
-          <Link
-            key={project.id}
-            href={`#/project/${project.id}`}
-          >
+          <Link data-test-id={`${testName}-project-${project.id}`} href={`#/project/${project.id}`}>
             {project.label}
           </Link>
         ) : project.id}
@@ -178,7 +176,7 @@ class UserDetailsContent extends React.Component<Props, State> {
       <Info>
         <Field>
           <Label>Name</Label>
-          {this.renderValue(user.name)}
+          {this.renderValue(user.name, 'name')}
         </Field>
         <Field>
           <Label>Description</Label>
@@ -186,7 +184,7 @@ class UserDetailsContent extends React.Component<Props, State> {
         </Field>
         <Field>
           <Label>ID</Label>
-          {this.renderValue(user.id)}
+          {this.renderValue(user.id, 'id')}
         </Field>
         <Field>
           <Label>Email</Label>
@@ -208,8 +206,14 @@ class UserDetailsContent extends React.Component<Props, State> {
     )
   }
 
-  renderValue(value: string) {
-    return value !== '-' ? <CopyValue value={value} maxWidth="90%" /> : <Value>{value}</Value>
+  renderValue(value: string, dataTestId?: string) {
+    return value !== '-' ? (
+      <CopyValue
+        data-test-id={`${testName}-${dataTestId || ''}`}
+        value={value}
+        maxWidth="90%"
+      />
+    ) : <Value>{value}</Value>
   }
 
   render() {

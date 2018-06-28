@@ -106,6 +106,7 @@ type Props = {
   width?: number,
   dimNullValue?: boolean,
   highlight?: boolean,
+  'data-test-id'?: string,
 }
 type State = {
   showDropdownList: boolean,
@@ -417,6 +418,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
 
     return (
       <Wrapper
+        data-test-id={this.props['data-test-id'] || 'acDropdown-wrapper'}
         className={this.props.className}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}

@@ -71,6 +71,7 @@ type Props = {
   required: boolean,
   width?: number,
   skipNullValue?: boolean,
+  'data-test-id'?: string,
 }
 @observer
 class WizardOptionsField extends React.Component<Props> {
@@ -235,7 +236,11 @@ class WizardOptionsField extends React.Component<Props> {
     }
 
     return (
-      <Wrapper type={this.props.type} className={this.props.className}>
+      <Wrapper
+        data-test-id={this.props['data-test-id'] || 'wOptionsField-wrapper'}
+        type={this.props.type}
+        className={this.props.className}
+      >
         {this.renderLabel()}
         {field}
       </Wrapper>

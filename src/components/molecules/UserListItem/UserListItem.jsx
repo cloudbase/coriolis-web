@@ -98,32 +98,32 @@ type Props = {
 }
 const testName = 'ulItem'
 @observer
-class EndpointListItem extends React.Component<Props> {
+class UserListItem extends React.Component<Props> {
   render() {
     return (
       <Wrapper>
-        <Content onClick={this.props.onClick}>
+        <Content data-test-id={`${testName}-content`} onClick={this.props.onClick}>
           <Image />
           <Title>
             <TitleLabel data-test-id={`${testName}-name`}>{this.props.item.name}</TitleLabel>
-            <Subtitle>{this.props.item.description}</Subtitle>
+            <Subtitle data-test-id={`${testName}-description`}>{this.props.item.description}</Subtitle>
           </Title>
           <Body>
             <Data percentage={45}>
               <ItemLabel>Email</ItemLabel>
-              <ItemValue>
+              <ItemValue data-test-id={`${testName}-email`}>
                 {this.props.item.email || '-'}
               </ItemValue>
             </Data>
             <Data percentage={35}>
               <ItemLabel>Primary Project</ItemLabel>
-              <ItemValue>
+              <ItemValue data-test-id={`${testName}-project`}>
                 {this.props.getProjectName(this.props.item.project_id)}
               </ItemValue>
             </Data>
             <Data percentage={20}>
               <ItemLabel>Enabled</ItemLabel>
-              <ItemValue>
+              <ItemValue data-test-id={`${testName}-enabled`}>
                 {this.props.item.enabled ? 'Yes' : 'No'}
               </ItemValue>
             </Data>
@@ -134,4 +134,4 @@ class EndpointListItem extends React.Component<Props> {
   }
 }
 
-export default EndpointListItem
+export default UserListItem

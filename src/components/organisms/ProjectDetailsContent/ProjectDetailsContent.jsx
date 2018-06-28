@@ -111,6 +111,7 @@ type State = {
   showRemoveUserAlert: boolean,
   showDeleteProjectAlert: boolean,
 }
+const testName = 'pdContent'
 @observer
 class ProjectDetailsContent extends React.Component<Props, State> {
   selectedUser: ?User
@@ -202,7 +203,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
       <Info>
         <Field>
           <Label>Name</Label>
-          {this.renderValue(project.name)}
+          {this.renderValue(project.name, 'name')}
         </Field>
         <Field>
           <Label>Description</Label>
@@ -210,7 +211,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         </Field>
         <Field>
           <Label>ID</Label>
-          {this.renderValue(project.id)}
+          {this.renderValue(project.id, 'id')}
         </Field>
         <Field>
           <Label>Enabled</Label>
@@ -256,7 +257,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
           href={`#/user/${user.id}`}
         >{user.name}</UserName>,
         <DropdownLink
-          data-test-id={`pdContent-roles-${user.name}`}
+          data-test-id={`${testName}-roles-${user.name}`}
           width="214px"
           getLabel={() => userRoles.length > 0 ? userRoles.map(r => r.label).join(', ') : 'No roles'}
           selectedItems={userRoles.map(r => r.value)}
@@ -272,7 +273,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         />,
         <UserColumn disabled={!user.enabled}>{user.enabled ? 'Enabled' : 'Disabled'}</UserColumn>,
         <DropdownLink
-          data-test-id={`pdContent-actions-${user.name}`}
+          data-test-id={`${testName}-actions-${user.name}`}
           noCheckmark
           width="82px"
           items={userActions}
@@ -290,6 +291,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
 
     return (
       <TableStyled
+        data-test-id={`${testName}-members`}
         header={['Member', 'Roles', 'Status', '']}
         items={rows}
         noItemsLabel="No members available!"
@@ -298,8 +300,14 @@ class ProjectDetailsContent extends React.Component<Props, State> {
     )
   }
 
-  renderValue(value: string) {
-    return value !== '-' ? <CopyValue value={value} maxWidth="90%" /> : <Value>{value}</Value>
+  renderValue(value: string, dataTestId: string) {
+    return value !== '-' ? (
+      <CopyValue
+        data-test-id={`${testName}-${dataTestId}`}
+        value={value}
+        maxWidth="90%"
+      />
+    ) : <Value>{value}</Value>
   }
 
   render() {

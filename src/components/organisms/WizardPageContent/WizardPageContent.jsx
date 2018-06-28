@@ -122,7 +122,7 @@ type State = {
   useAdvancedOptions: boolean,
   timezone: TimezoneValue,
 }
-
+const testName = 'wpContent'
 @observer
 class WizardPageContent extends React.Component<Props, State> {
   constructor() {
@@ -269,7 +269,7 @@ class WizardPageContent extends React.Component<Props, State> {
       title += ` ${this.props.type.charAt(0).toUpperCase() + this.props.type.substr(1)}`
     }
 
-    return <Header>{title}</Header>
+    return <Header data-test-id={`${testName}-header`}>{title}</Header>
   }
 
   renderBody() {
