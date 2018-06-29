@@ -49,7 +49,7 @@ describe('Adds existing user as a member to the project', () => {
   })
 
   it('Adds existing user', () => {
-    cy.get('input[data-test-id="textInput-input"]').type('cy')
+    cy.get('input[data-test-id="acInput-text"]').type('cy')
     cy.get('div[data-test-id="ad-listItem"]').contains('cypress-member-user').click()
     cy.get('div[data-test-id="endpointField-multidropdown-role(s)"]').click()
     cy.get('div[data-test-id="dropdownListItem"]').contains('_member_').click()
