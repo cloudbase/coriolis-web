@@ -14,7 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
@@ -85,114 +84,78 @@ class ReplicaSourceUtils {
 
 class ReplicaSource {
   static getReplicas(): Promise<MainItem[]> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/replicas/detail`).then(response => {
-        let replicas = response.data.replicas
-        replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
-        ReplicaSourceUtils.sortReplicas(replicas)
-        resolve(replicas)
-      }).catch(reject)
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`).then(response => {
+      let replicas = response.data.replicas
+      replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
+      ReplicaSourceUtils.sortReplicas(replicas)
+      return replicas
     })
   }
 
   static getReplicaExecutions(replicaId: string): Promise<Execution[]> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/detail`).then((response) => {
-        let executions = response.data.executions
-        ReplicaSourceUtils.sortExecutionsAndTaskUpdates(executions)
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`).then((response) => {
+      let executions = response.data.executions
+      ReplicaSourceUtils.sortExecutionsAndTaskUpdates(executions)
 
-        resolve(executions)
-      }).catch(reject)
+      return executions
     })
   }
 
   static getReplica(replicaId: string): Promise<MainItem> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-
-      Api.get(`${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`).then(response => {
-        let replica = response.data.replica
-        replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
-        ReplicaSourceUtils.sortExecutions(replica.executions)
-        resolve(replica)
-      }).catch(reject)
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`).then(response => {
+      let replica = response.data.replica
+      replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
+      ReplicaSourceUtils.sortExecutions(replica.executions)
+      return replica
     })
   }
 
   static execute(replicaId: string, fields?: Field[]): Promise<Execution> {
-    return new Promise((resolve, reject) => {
-      let payload = { execution: { shutdown_instances: false } }
-      if (fields) {
-        fields.forEach(f => {
-          payload.execution[f.name] = f.value || false
-        })
-      }
-      let projectId = cookie.get('projectId')
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions`,
-        method: 'POST',
-        data: payload,
-      }).then((response) => {
-        let execution = response.data.execution
-        ReplicaSourceUtils.sortTaskUpdates(execution)
-        resolve(execution)
-      }).catch(reject)
+    let payload = { execution: { shutdown_instances: false } }
+    if (fields) {
+      fields.forEach(f => {
+        payload.execution[f.name] = f.value || false
+      })
+    }
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions`,
+      method: 'POST',
+      data: payload,
+    }).then((response) => {
+      let execution = response.data.execution
+      ReplicaSourceUtils.sortTaskUpdates(execution)
+      return execution
     })
   }
 
   static cancelExecution(replicaId: string, executionId: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}/actions`,
-        method: 'POST',
-        data: { cancel: null },
-      }).then(() => {
-        resolve(replicaId)
-      }).catch(reject)
-    })
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
+      method: 'POST',
+      data: { cancel: null },
+    }).then(() => replicaId)
   }
 
   static deleteExecution(replicaId: string, executionId: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/executions/${executionId}`,
-        method: 'DELETE',
-      }).then(() => {
-        resolve(replicaId)
-      }).catch(reject)
-    })
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}`,
+      method: 'DELETE',
+    }).then(() => replicaId)
   }
 
   static delete(replicaId: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}`,
-        method: 'DELETE',
-      }).then(() => { resolve(replicaId) }, reject).catch(reject)
-    })
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`,
+      method: 'DELETE',
+    }).then(() => replicaId)
   }
 
   static deleteDisks(replicaId: string): Promise<Execution> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/replicas/${replicaId}/actions`,
-        method: 'POST',
-        data: { 'delete-disks': null },
-      }).then(response => {
-        resolve(response.data.execution)
-      }).catch(reject)
-    })
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/actions`,
+      method: 'POST',
+      data: { 'delete-disks': null },
+    }).then(response => response.data.execution)
   }
 }
 

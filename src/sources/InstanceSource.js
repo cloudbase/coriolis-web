@@ -14,56 +14,48 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
-
 import Api from '../utils/ApiCaller'
 import type { Instance } from '../types/Instance'
 
 import { servicesUrl, wizardConfig } from '../config'
 
 class InstanceSource {
-  static endpointId: string
+  static lastEndpointId: string
 
   static loadInstances(endpointId: string, searchText: ?string, lastInstanceId: ?string, skipLimit?: boolean): Promise<Instance[]> {
-    this.endpointId = endpointId
+    if (this.lastEndpointId) {
+      Api.cancelRequests(this.lastEndpointId)
+      this.lastEndpointId = endpointId
+    }
 
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      let url = `${servicesUrl.coriolis}/${projectId || 'null'}/endpoints/${endpointId}/instances`
-      let symbol = '?'
+    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
+    let symbol = '?'
 
-      if (!skipLimit) {
-        url = `${url + symbol}limit=${wizardConfig.instancesItemsPerPage + 1}`
-        symbol = '&'
-      }
+    if (!skipLimit) {
+      url = `${url + symbol}limit=${wizardConfig.instancesItemsPerPage + 1}`
+      symbol = '&'
+    }
 
-      if (searchText) {
-        url = `${url + symbol}name=${searchText}`
-        symbol = '&'
-      }
+    if (searchText) {
+      url = `${url + symbol}name=${searchText}`
+      symbol = '&'
+    }
 
-      if (lastInstanceId) {
-        url = `${url + symbol}&marker=${lastInstanceId}`
-      }
+    if (lastInstanceId) {
+      url = `${url + symbol}&marker=${lastInstanceId}`
+    }
 
-      Api.get(url).then(response => {
-        if (this.endpointId === endpointId) {
-          resolve(response.data.instances)
-        }
-      }).catch(reject)
+    return Api.send({ url, cancelId: endpointId }).then(response => {
+      return response.data.instances
     })
   }
 
   static loadInstanceDetails(endpointId: string, instanceName: string, reqId: number): Promise<{ instance: Instance, reqId: number }> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId') || 'undefined'
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
-        cancelId: `instanceDetail-${reqId}`,
-      }).then(response => {
-        resolve({ instance: response.data.instance, reqId })
-      }, response => { reject({ response, reqId }) }).catch(reject)
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
+      cancelId: `instanceDetail-${reqId}`,
+    }).then(response => {
+      return { instance: response.data.instance, reqId }
     })
   }
 

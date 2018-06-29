@@ -53,134 +53,130 @@ class Util {
     }
   }
 
-  static responseIsValid(resolve, reject, response, resolveData) {
-    if (response.data.error) {
+  static isResponseValid(response): boolean {
+    if (response && response.data && response.data.error) {
       const error = response.data.error
       console.error('%c', 'color: #D0021B', `${error.code}: ${error.message}`)
-      reject()
       return false
+    }
+    return true
+  }
+
+  static validateResponse(response, resolveData): Promise<any> {
+    if (!this.isResponseValid(response)) {
+      return Promise.reject()
     }
 
     if (resolveData) {
-      resolve(resolveData)
+      return Promise.resolve(resolveData)
     }
-    return true
+    return Promise.resolve(response)
   }
 }
 
 class AzureSource {
   static authenticate(username: string, password: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      Api.send({
-        url: '/azure-login',
-        method: 'POST',
-        data: { username, password },
-      }).then(response => {
-        let entries = Object.keys(response.data.tokenCache)[0]
-        let accessToken = response.data.tokenCache[entries][0].accessToken
-        Api.setDefaultHeader('Authorization', `Bearer ${accessToken}`)
-        resolve(response.data)
-      }, reject)
+    return Api.send({
+      url: '/azure-login',
+      method: 'POST',
+      data: { username, password },
+    }).then(response => {
+      let entries = Object.keys(response.data.tokenCache)[0]
+      let accessToken = response.data.tokenCache[entries][0].accessToken
+      Api.setDefaultHeader('Authorization', `Bearer ${accessToken}`)
+      return response.data
     })
   }
 
   static getResourceGroups(subscriptionId: string): Promise<$PropertyType<Assessment, 'group'>[]> {
-    return new Promise((resolve, reject) => {
-      Api.get(Util.buildUrl(resourceGroupsUrl({ subscriptionId }), '2017-08-01')).then(response => {
-        Util.responseIsValid(resolve, reject, response, response.data.value)
-      }, reject)
+    return Api.get(Util.buildUrl(resourceGroupsUrl({ subscriptionId }), '2017-08-01')).then(response => {
+      return Util.validateResponse(response, response.data.value)
     })
   }
 
-  static reqId: string
+  static previousReqId: string
 
   static getAssessments(subscriptionId: string, resourceGroupName: string): Promise<Assessment[]> {
-    this.reqId = subscriptionId + resourceGroupName
+    let cancelId = subscriptionId + resourceGroupName
+    if (this.previousReqId) {
+      Api.cancelRequests(this.previousReqId)
+    }
+    this.previousReqId = cancelId
 
-    return new Promise((resolve, reject) => {
-      let assessments = []
-      let projectsQueue
-      let groupsQueue = 0
+    // Load Projects
+    return Api.send({
+      url: Util.buildUrl(projectsUrl({ resourceGroupName, subscriptionId })),
+      cancelId,
+    }).then(projectsResponse => {
+      if (!Util.isResponseValid(projectsResponse)) {
+        return []
+      }
+      let projects = projectsResponse.data.value.filter(p => p.type === 'Microsoft.Migrate/projects')
 
-      // Load projects
-      Api.get(Util.buildUrl(projectsUrl({ resourceGroupName, subscriptionId }))).then(response => {
-        if (!Util.responseIsValid(resolve, reject, response)) {
-          return
-        }
-
-        let projects = response.data.value
-        projectsQueue = projects.length
-
-        if (projectsQueue === 0 && subscriptionId + resourceGroupName === this.reqId) {
-          resolve([])
-        }
-
-        projects.forEach(project => {
-          if (project.type !== 'Microsoft.Migrate/projects') {
-            return
+      // Load groups for each project
+      return Promise.all(projects.map(project => {
+        return Api.send({
+          url: Util.buildUrl(groupsUrl({ projectName: project.name, subscriptionId, resourceGroupName })),
+          cancelId,
+        }).then(groupsResponse => {
+          if (!Util.isResponseValid(groupsResponse)) {
+            return null
           }
-          // Load Groups
-          Api.get(Util.buildUrl(groupsUrl({ projectName: project.name, subscriptionId, resourceGroupName }))).then(response => {
-            if (!Util.responseIsValid(resolve, reject, response)) {
-              return
-            }
-            projectsQueue -= 1
-
-            let groups = response.data.value
-            groupsQueue = groups.length
-
-            if (groupsQueue === 0 && subscriptionId + resourceGroupName === this.reqId) {
-              resolve([])
-            }
-
-            groups.forEach(group => {
-              // Load Assessments
-              Api.get(Util.buildUrl(assessmentsUrl({ subscriptionId, resourceGroupName, projectName: project.name, groupName: group.name }))).then(response => {
-                if (!Util.responseIsValid(resolve, reject, response)) {
-                  return
-                }
-                groupsQueue -= 1
-
-                assessments = assessments.concat(response.data.value.map(a => ({ ...a, project, group })))
-                Util.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(Util.sortAssessments(assessments)) })
-              }, () => { groupsQueue -= 1; Util.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(Util.sortAssessments(assessments)) }) })
-            })
-          }, () => { projectsQueue -= 1; Util.checkQueues([groupsQueue, projectsQueue], [subscriptionId + resourceGroupName, this.reqId], () => { resolve(Util.sortAssessments(assessments)) }) })
+          return groupsResponse.data.value.map(group => { return { ...group, project } })
         })
-      }, reject)
+      }))
+    }).then(groupsResponses => {
+      let groups = []
+      groupsResponses.filter(r => r !== null).forEach(validGroupsReponse => {
+        groups = groups.concat(validGroupsReponse)
+      })
+
+      // Load assessments for each group
+      return Promise.all(groups.map(group => {
+        // $FlowIgnore
+        return Api.send({
+          url: Util.buildUrl(assessmentsUrl({ subscriptionId, resourceGroupName, projectName: group.project.name, groupName: group.name })),
+          cancelId,
+        }).then(assessmentResponse => {
+          if (!Util.isResponseValid(assessmentResponse)) {
+            return null
+          }
+          return assessmentResponse.data.value.map(assessment => { return { ...assessment, group, project: group.project } })
+        })
+      }))
+    }).then(assessementsResponses => {
+      let assessments = []
+      assessementsResponses.filter(r => r !== null).forEach(validAssessmentsResponse => {
+        assessments = assessments.concat(validAssessmentsResponse)
+      })
+      return Util.sortAssessments(assessments)
     })
   }
 
   static getAssessmentDetails(info: Assessment): Promise<Assessment> {
-    return new Promise((resolve, reject) => {
-      Api.get(Util.buildUrl(assessmentDetailsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }))).then(response => {
-        Util.responseIsValid(resolve, reject, response, { ...response.data, ...info })
-      }, reject)
+    return Api.get(Util.buildUrl(assessmentDetailsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }))).then(response => {
+      return Util.validateResponse(response, { ...response.data, ...info })
     })
   }
 
   static getAssessedVms(info: Assessment): Promise<VmItem[]> {
-    return new Promise((resolve, reject) => {
-      Api.get(Util.buildUrl(assessedVmsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }))).then(response => {
-        if (!Util.responseIsValid(resolve, reject, response)) {
-          return
-        }
+    return Api.get(Util.buildUrl(assessedVmsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }))).then(response => {
+      if (!Util.isResponseValid(response)) {
+        return []
+      }
 
-        let vms = response.data.value
-        vms.sort((a, b) => {
-          let getLabel = item => `${item.properties.datacenterContainer}/${item.properties.displayName}`
-          return getLabel(a).localeCompare(getLabel(b))
-        })
-        resolve(vms)
-      }, reject)
+      let vms = response.data.value
+      vms.sort((a, b) => {
+        let getLabel = item => `${item.properties.datacenterContainer}/${item.properties.displayName}`
+        return getLabel(a).localeCompare(getLabel(b))
+      })
+      return vms
     })
   }
 
   static getVmSizes(info: Assessment): Promise<VmSize[]> {
-    return new Promise((resolve, reject) => {
-      Api.get(Util.buildUrl(`/subscriptions/${info.connectionInfo.subscription_id}/providers/Microsoft.Compute/locations/${info.location}/vmSizes`, '2017-12-01')).then(response => {
-        Util.responseIsValid(resolve, reject, response, response.data.value)
-      }, reject)
+    return Api.get(Util.buildUrl(`/subscriptions/${info.connectionInfo.subscription_id}/providers/Microsoft.Compute/locations/${info.location}/vmSizes`, '2017-12-01')).then(response => {
+      return Util.validateResponse(response, response.data.value)
     })
   }
 }

@@ -54,17 +54,15 @@ class UserSource {
 
     Api.setDefaultHeader('X-Auth-Token', null)
 
-    return new Promise((resolve, reject) => {
-      Api.send({
-        url: servicesUrl.identity,
-        method: 'POST',
-        data: auth,
-      }).then((response) => {
-        let token = response.headers ? response.headers['X-Subject-Token'] || response.headers['x-subject-token'] : ''
-        Api.setDefaultHeader('X-Auth-Token', token)
-        cookie.set('unscopedToken', token, { expires: 30 })
-        resolve(response.data)
-      }).catch(reject)
+    return Api.send({
+      url: servicesUrl.identity,
+      method: 'POST',
+      data: auth,
+    }).then(response => {
+      let token = response.headers ? response.headers['X-Subject-Token'] || response.headers['x-subject-token'] : ''
+      Api.setDefaultHeader('X-Auth-Token', token)
+      cookie.set('unscopedToken', token, { expires: 30 })
+      return response.data
     })
   }
 
@@ -90,27 +88,24 @@ class UserSource {
 
     Api.setDefaultHeader('X-Auth-Token', null)
 
-    return new Promise((resolve, reject) => {
-      Api.send({
-        url: servicesUrl.identity,
-        method: 'POST',
-        data: auth,
-      }).then((response) => {
-        let token = response.headers ? response.headers['X-Subject-Token'] || response.headers['x-subject-token'] : ''
-        let data = UserModel.parseUserData(response.data)
-        data = { ...data, token }
-        cookie.set('token', data.token, { expires: 30 })
-        cookie.set('projectId', data.project.id, { expires: 30 })
-        Api.setDefaultHeader('X-Auth-Token', data.token)
+    return Api.send({
+      url: servicesUrl.identity,
+      method: 'POST',
+      data: auth,
+    }).then(response => {
+      let token = response.headers ? response.headers['X-Subject-Token'] || response.headers['x-subject-token'] : ''
+      let data = UserModel.parseUserData(response.data)
+      data = { ...data, token }
+      cookie.set('token', data.token, { expires: 30 })
+      cookie.set('projectId', data.project.id, { expires: 30 })
+      Api.setDefaultHeader('X-Auth-Token', data.token)
 
-        resolve(data)
-      }, response => {
-        if (!skipCookie) {
-          UserSource.loginScoped(projectId, true).then(resolve, reject)
-        } else {
-          reject(response)
-        }
-      }).catch(reject)
+      return data
+    }).catch(response => {
+      if (!skipCookie) {
+        return UserSource.loginScoped(projectId, true)
+      }
+      return Promise.reject(response)
     })
   }
 
@@ -121,70 +116,60 @@ class UserSource {
       Api.setDefaultHeader('X-Auth-Token', token)
     }
 
-    return new Promise((resolve, reject) => {
-      if (!token || !projectId) {
-        reject()
-        return
-      }
-      Api.send({
-        url: servicesUrl.identity,
-        headers: { 'X-Subject-Token': token },
-      }).then(response => {
-        let data = UserModel.parseUserData(response.data)
-        data = { ...data, token }
-        resolve(data)
-      }).catch(() => {
-        cookie.remove('token')
-        Api.setDefaultHeader('X-Auth-Token', null)
-        reject()
-      })
+    if (!token || !projectId) {
+      return Promise.reject()
+    }
+
+    return Api.send({
+      url: servicesUrl.identity,
+      headers: { 'X-Subject-Token': token },
+    }).then(response => {
+      let data = UserModel.parseUserData(response.data)
+      data = { ...data, token }
+      return data
+    }).catch(() => {
+      cookie.remove('token')
+      Api.setDefaultHeader('X-Auth-Token', null)
+      return Promise.reject()
     })
   }
 
   static switchProject(): Promise<void> {
     let token = cookie.get('unscopedToken')
-    return new Promise((resolve, reject) => {
-      if (token) {
-        cookie.remove('projectId')
-        resolve()
-      } else {
-        reject()
-      }
-    })
+    if (token) {
+      cookie.remove('projectId')
+      return Promise.resolve()
+    }
+    return Promise.reject()
   }
 
   static logout(): Promise<void> {
     let token = cookie.get('token')
-
-    return new Promise((resolve, reject) => {
-      Api.send({
-        url: servicesUrl.identity,
-        method: 'DELETE',
-        headers: { 'X-Subject-Token': token || '' },
-      }).then(() => {
-        cookie.remove('token')
-        window.location.href = '/'
-        resolve()
-      }).catch(() => {
-        cookie.remove('token')
-        window.location.href = '/'
-        reject()
-      })
-
+    let clear = () => {
+      cookie.remove('token')
+      window.location.href = '/'
       Api.setDefaultHeader('X-Auth-Token', null)
+    }
+
+    return Api.send({
+      url: servicesUrl.identity,
+      method: 'DELETE',
+      headers: { 'X-Subject-Token': token || '' },
+    }).then(() => {
+      clear()
+    }).catch(() => {
+      clear()
+      return Promise.reject()
     })
   }
 
   static getUserInfo(userId: string): Promise<User> {
-    return Api.get(`${servicesUrl.users}/${userId}`).then(response => {
-      return response.data.user
-    })
+    return Api.get(`${servicesUrl.users}/${userId}`).then(response => response.data.user)
   }
 
   static getAllUsers(): Promise<User[]> {
-    return Api.get(`${servicesUrl.users}`).then(response => {
-      return response.data.users.sort((u1, u2) => u1.name.localeCompare(u2.name))
-    })
+    return Api.get(`${servicesUrl.users}`)
+      .then(response => response.data.users.sort((u1, u2) => u1.name.localeCompare(u2.name)))
   }
 
   static update(userId: string, user: User, oldUser: ?User): Promise<User> {

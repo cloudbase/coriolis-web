@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import axios from 'axios'
 import type { AxiosXHRConfig, $AxiosXHR } from 'axios'
+import cookie from 'js-cookie'
 
 import notificationStore from '../stores/NotificationStore'
 
@@ -47,6 +48,10 @@ const addCancelable = (cancelable: Cancelable) => {
 class ApiCaller {
   constructor() {
     axios.defaults.headers.common['Content-Type'] = 'application/json'
+  }
+
+  get projectId(): string {
+    return cookie.get('projectId') || 'undefined'
   }
 
   cancelRequests(cancelRequestId: string) {
@@ -101,7 +106,7 @@ class ApiCaller {
             }
           }
 
-          if (error.response.status === 401 && window.location.hash !== loginUrl) {
+          if (error.response.status === 401 && window.location.hash !== loginUrl && error.request.responseURL.indexOf('/proxy/') === -1) {
             window.location.href = '/'
           }
 

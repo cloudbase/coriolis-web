@@ -14,8 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import cookie from 'js-cookie'
-
 import type { MigrationInfo } from '../types/Assessment'
 import type { MainItem } from '../types/MainItem'
 import Api from '../utils/ApiCaller'
@@ -38,66 +36,48 @@ class AssessmentSourceUtils {
 
 class AssessmentSource {
   static migrate(data: MigrationInfo): Promise<MainItem> {
-    return new Promise((resolve, reject) => {
-      let projectId = cookie.get('projectId')
-      let useReplicaField = data.options.find(o => o.name === 'use_replica')
-      let type = useReplicaField && useReplicaField.value ? 'replica' : 'migration'
-      let payload = {}
-      payload[type] = {
-        origin_endpoint_id: data.source ? data.source.id : 'null',
-        destination_endpoint_id: data.target.id,
-        destination_environment: AssessmentSourceUtils.getDestinationEnv(data),
-        instances: data.selectedInstances.map(i => i.instance_name),
-        notes: '',
-        security_groups: ['testgroup'],
+    let useReplicaField = data.options.find(o => o.name === 'use_replica')
+    let type = useReplicaField && useReplicaField.value ? 'replica' : 'migration'
+    let payload = {}
+    payload[type] = {
+      origin_endpoint_id: data.source ? data.source.id : 'null',
+      destination_endpoint_id: data.target.id,
+      destination_environment: AssessmentSourceUtils.getDestinationEnv(data),
+      instances: data.selectedInstances.map(i => i.instance_name),
+      notes: '',
+      security_groups: ['testgroup'],
+    }
+
+    data.options.forEach(option => {
+      if (option.name === 'use_replica') {
+        return
       }
+      if (option.value !== null && option.value !== undefined) {
+        payload[type][option.name] = option.value
+      }
+    })
 
-      data.options.forEach(option => {
-        if (option.name === 'use_replica') {
-          return
-        }
-        if (option.value !== null && option.value !== undefined) {
-          payload[type][option.name] = option.value
-        }
-      })
-
-      Api.send({
-        url: `${servicesUrl.coriolis}/${projectId || 'null'}/${type}s`,
-        method: 'POST',
-        data: payload,
-      }).then(response => {
-        resolve(response.data[type])
-      }, reject).catch(reject)
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,
+      method: 'POST',
+      data: payload,
+    }).then(response => {
+      return response.data[type]
     })
   }
 
   static migrateMultiple(data: MigrationInfo): Promise<MainItem[]> {
-    return new Promise((resolve, reject) => {
-      let items = []
-      let count = 0
-
-      data.selectedInstances.forEach(instance => {
-        let newData = { ...data }
-        newData.selectedInstances = [instance]
-        this.migrate(newData).then(item => {
-          count += 1
-          items.push(item)
-          if (count === data.selectedInstances.length) {
-            if (items.length > 0) {
-              resolve(items)
-            } else {
-              reject()
-            }
-          }
-        }, () => {
-          count += 1
-          notificationStore.notify(`Error while migrating instance ${instance.name}`, 'error', {
-            persist: true,
-            persistInfo: { title: 'Migration creation error' },
-          })
+    return Promise.all(data.selectedInstances.map(instance => {
+      let newData = { ...data }
+      newData.selectedInstances = [instance]
+      return this.migrate(newData).catch(() => {
+        notificationStore.notify(`Error while migrating instance ${instance.name}`, 'error', {
+          persist: true,
+          persistInfo: { title: 'Migration creation error' },
         })
+        return null
       })
-    })
+    })).then(items => items.filter(Boolean).map(i => i))
   }
 }
 
