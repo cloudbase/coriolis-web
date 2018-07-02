@@ -18,6 +18,7 @@ import config from '../config.js'
 
 const identityUrl = `${config.coriolisUrl}identity/auth/tokens`
 const projectsUrl = `${config.coriolisUrl}identity/auth/projects`
+const coriolisUrl = `${config.coriolisUrl}coriolis`
 
 declare var expect: any
 
@@ -86,5 +87,103 @@ Cypress.Commands.add('login', () => {
         cy.visit(config.nodeServer)
       })
     })
+  })
+})
+
+Cypress.Commands.add('logout', () => {
+  let token
+  return cy.getCookies().then(cookies => {
+    let tokenCookie = cookies.find(c => c.name === 'token')
+    if (tokenCookie) {
+      token = tokenCookie
+    }
+  }).then(() => {
+    if (!token) {
+      return Promise.resolve()
+    }
+    return cy.request({
+      method: 'DELETE',
+      url: `${config.coriolisUrl}identity/auth/tokens`,
+      headers: { 'X-Subject-Token': token, 'X-Auth-Token': token },
+    })
+  })
+})
+
+Cypress.Commands.add('cleanup', () => {
+  if (config.username !== 'cypress') {
+    return Promise.resolve()
+  }
+
+  let token
+  let projectId
+  return cy.getCookies().then(cookies => {
+    token = cookies.find(c => c.name === 'token').value
+    projectId = cookies.find(c => c.name === 'projectId').value
+  }).then(() => {
+    if (!token || !projectId) {
+      return Promise.resolve()
+    }
+
+    // Delete replicas
+    return cy.request({
+      method: 'GET',
+      url: `${coriolisUrl}/${projectId}/replicas/detail`,
+      headers: { 'X-Auth-Token': token },
+    }).then(response => response.body.replicas)
+      .then(replicas => Promise.all(replicas.map(replica => cy.request({
+        method: 'DELETE',
+        url: `${coriolisUrl}/${projectId}/replicas/${replica.id}`,
+        headers: { 'X-Auth-Token': token },
+      }))))
+  }).then(() => {
+    // Delete migrations
+    return cy.request({
+      method: 'GET',
+      url: `${coriolisUrl}/${projectId}/migrations/detail`,
+      headers: { 'X-Auth-Token': token },
+    }).then(response => response.body.migrations)
+      .then(migrations => Promise.all(migrations.map(migration => cy.request({
+        method: 'DELETE',
+        url: `${coriolisUrl}/${projectId}/migrations/${migration.id}`,
+        headers: { 'X-Auth-Token': token },
+      }))))
+  }).then(() => {
+    // Delete endpoints
+    return cy.request({
+      method: 'GET',
+      url: `${coriolisUrl}/${projectId}/endpoints`,
+      headers: { 'X-Auth-Token': token },
+    }).then(response => response.body.endpoints)
+      .then(endpoints => Promise.all(endpoints.map(endpoint => cy.request({
+        method: 'DELETE',
+        url: `${coriolisUrl}/${projectId}/endpoints/${endpoint.id}`,
+        headers: { 'X-Auth-Token': token },
+      }))))
+  }).then(() => {
+    // Delete users created by Cypress
+    return cy.request({
+      method: 'GET',
+      url: `${config.coriolisUrl}identity/users`,
+      headers: { 'X-Auth-Token': token },
+    }).then(response => response.body.users
+      .filter(user => user.description && /user created by cypress/gi.test(user.description))
+    ).then(users => Promise.all(users.map(user => cy.request({
+      method: 'DELETE',
+      url: `${config.coriolisUrl}identity/users/${user.id}`,
+      headers: { 'X-Auth-Token': token },
+    }))))
+  }).then(() => {
+    // Delete projects created by Cypress
+    return cy.request({
+      method: 'GET',
+      url: `${config.coriolisUrl}identity/projects`,
+      headers: { 'X-Auth-Token': token },
+    }).then(response => response.body.projects
+      .filter(project => project.description && /project created by cypress/gi.test(project.description))
+    ).then(projects => Promise.all(projects.map(project => cy.request({
+      method: 'DELETE',
+      url: `${config.coriolisUrl}identity/projects/${project.id}`,
+      headers: { 'X-Auth-Token': token },
+    }))))
   })
 })

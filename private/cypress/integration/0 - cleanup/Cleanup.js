@@ -14,26 +14,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import config from '../../config'
-
-declare var cy: any
-
-describe('Coriolis Login Failed', () => {
+describe('Cleaning up Cypress environment', () => {
   before(() => {
-    cy.logout()
+    cy.login()
   })
 
-  it('Displays incorrect password', () => {
-    cy.server()
-    cy.route({ url: '**/identity/**', method: 'POST' }).as('login')
-
-    cy.visit(config.nodeServer)
-    cy.get('input[label="Username"]').type('blabla')
-    cy.get('input[label="Password"]').type('blabla')
-
-    cy.get('button').click()
-    cy.wait('@login')
-
-    cy.get('#app').should('contain', 'The username or password did not match.')
+  beforeEach(() => {
+    Cypress.Cookies.preserveOnce('token', 'projectId')
   })
+
+  it('Loaded the UI', () => {
+    cy.get('[data-test-id="navigation-item-replicas"]').should('exist')
+    cy.cleanup()
+  })
+
+  it('Successfully cleaned up the Cypress environment', () => { })
 })
