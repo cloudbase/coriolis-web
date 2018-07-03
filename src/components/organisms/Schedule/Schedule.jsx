@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import moment from 'moment-timezone'
 import { observer } from 'mobx-react'
 
 import Button from '../../atoms/Button'
@@ -320,7 +321,7 @@ class Schedule extends React.Component<Props, State> {
     }
 
     let timezoneItems = [
-      { label: 'Local Time', value: 'local' },
+      { label: `${moment.tz(moment.tz.guess()).zoneAbbr()} (local time)`, value: 'local' },
       { label: 'UTC', value: 'utc' },
     ]
     let selectedItem = this.props.timezone || timezoneItems[0].value
