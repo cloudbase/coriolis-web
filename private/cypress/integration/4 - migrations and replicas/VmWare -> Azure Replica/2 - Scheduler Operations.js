@@ -54,7 +54,7 @@ describe('Scheduler Operations', () => {
   })
 
   it('Changes timezone', () => {
-    cy.get('div').contains('Local Time').click()
+    cy.get('[data-test-id="schedule-timezoneDropdown"]').click()
     cy.get('div').contains('UTC').click()
     let utcTime = 4 + (new Date().getTimezoneOffset() / 60)
     if (utcTime < 10) {
