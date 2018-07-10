@@ -48,6 +48,7 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
+  location: { search: string }
 }
 type WizardType = 'migration' | 'replica'
 type State = {
@@ -72,17 +73,21 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    wizardStore.getDataFromPermalink()
-    let type = this.props.match && this.props.match.params.type
-    if (type === 'migration' || type === 'replica') {
-      this.setState({ type })
-    }
+    this.initializeState()
   }
 
   componentDidMount() {
     document.title = 'Coriolis Wizard'
     KeyboardManager.onEnter('wizard', () => { this.handleEnterKey() })
     KeyboardManager.onEsc('wizard', () => { this.handleEscKey() })
+  }
+
+  componentWillReceiveProps(newProps: Props) {
+    if (newProps.location.search === this.props.location.search) {
+      return
+    }
+    wizardStore.clearData()
+    this.initializeState()
   }
 
   componentWillUnmount() {
@@ -271,6 +276,14 @@ class WizardPage extends React.Component<Props, State> {
   handleScheduleRemove(scheduleId: string) {
     wizardStore.removeSchedule(scheduleId)
     wizardStore.setPermalink(wizardStore.data)
+  }
+
+  initializeState() {
+    wizardStore.getDataFromPermalink()
+    let type = this.props.match && this.props.match.params.type
+    if (type === 'migration' || type === 'replica') {
+      this.setState({ type })
+    }
   }
 
   loadEnvDestinationOptions(field?: Field) {
