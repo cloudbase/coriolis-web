@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-export type NotificationItem = {
+export type AlertInfo = {
   options?: {
     persist?: boolean,
     persistInfo?: { title: string },
@@ -27,3 +27,14 @@ export type NotificationItem = {
   id?: string,
   level?: 'success' | 'error' | 'info',
 }
+
+export type NotificationItemData = {
+  id: string,
+  name: string,
+  description: string,
+  type: string,
+  status: string,
+  unseen?: boolean,
+  updatedAt?: string,
+}
+

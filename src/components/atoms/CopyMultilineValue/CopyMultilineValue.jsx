@@ -46,7 +46,7 @@ class CopyMultineValue extends React.Component<Props> {
     if (this.props.onCopy) this.props.onCopy(this.props.value)
 
     if (succesful) {
-      notificationStore.notify('The message has been copied to clipboard.')
+      notificationStore.alert('The message has been copied to clipboard.')
     }
   }
 

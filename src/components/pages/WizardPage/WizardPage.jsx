@@ -19,7 +19,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
 import WizardTemplate from '../../templates/WizardTemplate'
-import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
+import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import WizardPageContent from '../../organisms/WizardPageContent'
 import Modal from '../../molecules/Modal'
 import Endpoint from '../../organisms/Endpoint'
@@ -102,7 +102,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleCreationSuccess(items: MainItem[]) {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    notificationStore.notify(`${typeLabel} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${typeLabel} created` } })
+    notificationStore.alert(`${typeLabel} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${typeLabel} created` } })
     let schedulePromise = Promise.resolve()
 
     if (this.state.type === 'replica') {
@@ -360,11 +360,11 @@ class WizardPage extends React.Component<Props, State> {
 
   createMultiple() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    notificationStore.notify(`Creating ${typeLabel}s ...`)
+    notificationStore.alert(`Creating ${typeLabel}s ...`)
     wizardStore.createMultiple(this.state.type, wizardStore.data).then(() => {
       let items = wizardStore.createdItems
       if (!items) {
-        notificationStore.notify(`${typeLabel}s couldn't be created`, 'error')
+        notificationStore.alert(`${typeLabel}s couldn't be created`, 'error')
         this.setState({ nextButtonDisabled: false })
         return
       }
@@ -374,11 +374,11 @@ class WizardPage extends React.Component<Props, State> {
 
   createSingle() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    notificationStore.notify(`Creating ${typeLabel} ...`)
+    notificationStore.alert(`Creating ${typeLabel} ...`)
     wizardStore.create(this.state.type, wizardStore.data).then(() => {
       let item = wizardStore.createdItem
       if (!item) {
-        notificationStore.notify(`${typeLabel} couldn't be created`, 'error')
+        notificationStore.alert(`${typeLabel} couldn't be created`, 'error')
         this.setState({ nextButtonDisabled: false })
         return
       }

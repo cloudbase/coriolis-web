@@ -102,7 +102,7 @@ class ApiCaller {
             let data = error.response.data
             let message = (data.error && data.error.message) || data.description
             if (message) {
-              notificationStore.notify(message, 'error')
+              notificationStore.alert(message, 'error')
             }
           }
 
@@ -116,7 +116,7 @@ class ApiCaller {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
           if (window.location.hash !== loginUrl) {
-            notificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
+            notificationStore.alert('Request failed, there might be a problem with the connection to the server.', 'error')
           }
           console.log(`%cError No Response: ${axiosOptions.url}`, 'color: #D0021B')
           reject({})
@@ -128,7 +128,7 @@ class ApiCaller {
           }
 
           // Something happened in setting up the request that triggered an Error
-          notificationStore.notify('Request failed, there might be a problem with the connection to the server.', 'error')
+          notificationStore.alert('Request failed, there might be a problem with the connection to the server.', 'error')
           console.log(`%cError Something happened in setting up the request: ${axiosOptions.url}`, 'color: #D0021B')
         }
       })

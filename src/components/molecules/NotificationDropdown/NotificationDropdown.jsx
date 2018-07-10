@@ -16,17 +16,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import moment from 'moment'
+import styled, { css } from 'styled-components'
 
-import type { NotificationItem } from '../../../types/NotificationItem'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
+import type { NotificationItemData } from '../../../types/NotificationItem'
+import StatusIcon from '../../atoms/StatusIcon'
 
-import bellImage from './images/bell.js'
-import errorImage from './images/error.svg'
-import infoImage from './images/info.svg'
-import successImage from './images/success.svg'
+import bellImage from './images/bell'
+import loadingImage from './images/loading'
 
 const Wrapper = styled.div`
   cursor: pointer;
@@ -35,44 +33,51 @@ const Wrapper = styled.div`
 const Icon = styled.div`
   position: relative;
   transition: all ${StyleProps.animations.swift};
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     opacity: 0.9;
   }
 `
-const BellIcon = styled.div``
-const Badge = styled.div`
+const BellIcon = styled.div`
+  width: 12px;
+  height: 17px;
+`
+const bellBadgePostion = css`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 6px;
+  right: 9px;
+`
+const Badge = styled.div`
+  ${props => props.isBellBadge ? bellBadgePostion : ''}
   background: ${Palette.primary};
   border-radius: 50%;
-  width: 14px;
-  height: 14px;
+  width: 6px;
+  height: 6px;
   text-align: center;
-`
-const BadgeLabel = styled.div`
-  margin-top: 2px;
-  font-size: 10px;
-  color: white;
-  font-weight: ${StyleProps.fontWeights.medium};
 `
 const List = styled.div`
   cursor: pointer;
   background: ${Palette.grayscale[1]};
   border-radius: ${StyleProps.borderRadius};
-  width: 224px;
+  width: 272px;
   position: absolute;
   right: 0;
   top: 45px;
   z-index: 10;
 `
-const ListItem = styled.div`
+const ListItem = styled.a`
   display: flex;
   border-bottom: 1px solid ${Palette.grayscale[0]};
-  flex-direction: column;
   padding: 8px;
   transition: all ${StyleProps.animations.swift};
+  justify-content: space-between;
+  text-decoration: none;
+  color: inherit;
 
   &:hover {
     background: ${Palette.grayscale[0]};
@@ -109,37 +114,63 @@ const ListItem = styled.div`
     border-bottom-right-radius: ${StyleProps.borderRadius};
   }
 `
-const Title = styled.div`
+const InfoColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+const BadgeColumn = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 14px;
+  margin: 0 8px;
 `
+const MainItemInfo = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: -8px;
 
-const getTypeIcon = level => {
-  if (level === 'success') {
-    return successImage
+  & > div {
+    margin-right: 8px;
   }
-  if (level === 'error') {
-    return errorImage
-  }
-  return infoImage
-}
-const TypeIcon = styled.div`
-  width: 16px;
-  height: 16px;
-  background: url('${props => getTypeIcon(props.level)}') no-repeat center;
-  margin-right: 8px;
 `
-const TitleLabel = styled.div`flex-grow: 1;`
-const Time = styled.div`color: ${Palette.grayscale[4]};`
-const Description = styled.div``
+const ItemReplicaBadge = styled.div`
+  background: 'white';
+  color: #7F8795;
+  font-size: 9px;
+  ${StyleProps.exactWidth('13px')}
+  ${StyleProps.exactHeight('10px')}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  border-radius: 2px;
+  border: 1px solid #7F8795;
+`
+const ItemTitle = styled.div``
+const ItemDescription = styled.div`
+  color: ${Palette.grayscale[5]};
+  font-size: 10px;
+  margin-top: 8px;
+`
 const NoItems = styled.div`
   text-align: center;
+  width: 100%;
 `
-const baseId = 'notificationDropdown'
+const Loading = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  animation: rotate 3s linear infinite;
+  @keyframes rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+  }
+`
+
 type Props = {
   white?: boolean,
-  items: NotificationItem[],
+  items: NotificationItemData[],
   onClose: () => void,
 }
 type State = {
@@ -152,12 +183,12 @@ class NotificationDropdown extends React.Component<Props, State> {
   constructor() {
     super()
 
-    this.state = {
-      showDropdownList: false,
-    }
-
     // $FlowIssue
     this.handlePageClick = this.handlePageClick.bind(this)
+  }
+
+  state = {
+    showDropdownList: false,
   }
 
   componentDidMount() {
@@ -215,23 +246,25 @@ class NotificationDropdown extends React.Component<Props, State> {
     let list = (
       <List>
         {this.props.items.map(item => {
-          let title = (item.options && item.options.persistInfo && item.options.persistInfo.title) || item.message
-          let message = title === item.message ? '' : item.message
+          let executionsHref = item.status === 'RUNNING' ? item.type === 'replica' ? '/executions' : item.type === 'migration' ? '/tasks' : '' : ''
 
           return (
             <ListItem
-              data-test-id={`${baseId}-item-${item.id || new Date().getTime().toString()}`}
               key={item.id}
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
               onClick={() => { this.handleItemClick() }}
+              href={`/#/${item.type}${executionsHref}/${item.id}`}
             >
-              <Title>
-                <TypeIcon data-test-id={`${baseId}-itemLevel`} level={item.level} />
-                <TitleLabel data-test-id={`${baseId}-itemTitle`}>{title}</TitleLabel>
-                <Time data-test-id={`${baseId}-itemTime`}>{moment(Number(item.id)).format('HH:mm')}</Time>
-              </Title>
-              <Description data-test-id={`${baseId}-itemDescription`}>{message}</Description>
+              <InfoColumn>
+                <MainItemInfo>
+                  <StatusIcon status={item.status} hollow />
+                  <ItemReplicaBadge type={item.type}>{item.type === 'replica' ? 'RE' : 'MI'}</ItemReplicaBadge>
+                  <ItemTitle>{item.name}</ItemTitle>
+                </MainItemInfo>
+                <ItemDescription>{item.description}</ItemDescription>
+              </InfoColumn>
+              {item.unseen ? <BadgeColumn><Badge /></BadgeColumn> : null}
             </ListItem>
           )
         })}
@@ -241,11 +274,7 @@ class NotificationDropdown extends React.Component<Props, State> {
     return list
   }
   renderBell() {
-    let badge = this.props.items && this.props.items.length >= 1 ? (
-      <Badge>
-        <BadgeLabel>{this.props.items.length}</BadgeLabel>
-      </Badge>
-    ) : null
+    let isLoading = Boolean(this.props.items.find(i => i.status === 'RUNNING'))
 
     return (
       <Icon
@@ -257,7 +286,10 @@ class NotificationDropdown extends React.Component<Props, State> {
         <BellIcon
           dangerouslySetInnerHTML={{ __html: bellImage(this.props.white ? 'white' : Palette.grayscale[2]) }}
         />
-        {badge}
+        {this.props.items.find(i => i.unseen) ? <Badge isBellBadge /> : null}
+        {isLoading ? <Loading
+          dangerouslySetInnerHTML={{ __html: loadingImage(this.props.white) }}
+        /> : null}
       </Icon>
     )
   }

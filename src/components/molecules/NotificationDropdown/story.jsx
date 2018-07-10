@@ -12,40 +12,65 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+
+import type { NotificationItemData } from '../../../types/NotificationItem'
 import NotificationDropdown from '.'
+
+const items: NotificationItemData[] = [
+  {
+    id: '1111',
+    name: 'ubtuntu-1804-bionic',
+    type: 'replica',
+    status: 'COMPLETED',
+    unseen: true,
+    description: 'This is a description',
+  },
+  {
+    id: '2222',
+    name: 'centos7-8VCPU',
+    type: 'migration',
+    status: 'ERROR',
+    description: 'This is a description',
+  },
+]
+
+const itemsWithLoading: NotificationItemData[] = [
+  ...items,
+  {
+    id: '3333',
+    name: 'ubuntu-1804-bionic',
+    type: 'replica',
+    status: 'RUNNING',
+    description: 'This is a description',
+  },
+]
 
 storiesOf('NotificationDropdown', module)
   .add('default', () => (
-    <div style={{ marginLeft: '200px' }}><NotificationDropdown /></div>
-  ))
-  .add('white', () => (
-    <div style={{ marginLeft: '200px' }}><NotificationDropdown white /></div>
-  ))
-  .add('notification types', () => (
     <div style={{ marginLeft: '200px' }}>
       <NotificationDropdown
-        items={[
-          {
-            id: new Date().getTime(),
-            message: 'A full VM migration between two clouds',
-            level: 'success',
-            options: { persistInfo: { title: 'Migration' } },
-          },
-          {
-            id: new Date().getTime(),
-            message: 'Incrementally replicate virtual machines',
-            level: 'error',
-            options: { persistInfo: { title: 'Replica' } },
-          },
-          {
-            id: new Date().getTime(),
-            message: 'A conection to a public or private cloud',
-            level: 'info',
-            options: { persistInfo: { title: 'Endpoint' } },
-          },
-        ]}
+        items={items}
+        onClose={() => { }}
       />
     </div>
+  ))
+  .add('white', () => (
+    <div style={{ marginLeft: '200px' }}>
+      <NotificationDropdown
+        white
+        items={itemsWithLoading}
+        onClose={() => { }}
+      /></div>
+  ))
+  .add('loading', () => (
+    <div style={{ marginLeft: '200px' }}>
+      <NotificationDropdown
+        showBadge
+        items={itemsWithLoading}
+        onClose={() => { }}
+      /></div>
   ))

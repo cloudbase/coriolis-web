@@ -75,6 +75,9 @@ type State = {
 }
 @observer
 class PageHeader extends React.Component<Props, State> {
+  pollTimeout: TimeoutID
+  stopPolling: boolean
+
   constructor() {
     super()
 
@@ -86,8 +89,14 @@ class PageHeader extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    notificationStore.loadNotifications()
+  componentWillMount() {
+    this.stopPolling = false
+    this.pollData()
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.pollTimeout)
+    this.stopPolling = true
   }
 
   getCurrentProject() {
@@ -138,7 +147,7 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   handleNotificationsClose() {
-    notificationStore.clearNotifications()
+    notificationStore.saveSeen()
   }
 
   handleCloseChooseProviderModal() {
@@ -209,6 +218,22 @@ class PageHeader extends React.Component<Props, State> {
     })
   }
 
+  pollData() {
+    if (
+      this.stopPolling ||
+      this.state.showChooseProviderModal ||
+      this.state.showEndpointModal ||
+      this.state.showProjectModal ||
+      this.state.showUserModal
+    ) {
+      return
+    }
+
+    notificationStore.loadData().then(() => {
+      this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
+    })
+  }
+
   render() {
     return (
       <Wrapper>
@@ -222,7 +247,10 @@ class PageHeader extends React.Component<Props, State> {
             labelField="name"
           />
           <NewItemDropdown onChange={item => { this.handleNewItem(item) }} />
-          <NotificationDropdown items={notificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
+          <NotificationDropdown
+            items={notificationStore.notificationItems}
+            onClose={() => this.handleNotificationsClose()}
+          />
           <UserDropdown user={userStore.loggedUser} onItemClick={item => { this.handleUserItemClick(item) }} />
         </Controls>
         <Modal

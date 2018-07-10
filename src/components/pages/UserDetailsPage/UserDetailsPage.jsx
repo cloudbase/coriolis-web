@@ -20,7 +20,7 @@ import { observer } from 'mobx-react'
 
 import type { User } from '../../../types/User'
 import DetailsTemplate from '../../templates/DetailsTemplate'
-import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
+import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import UserDetailsContent from '../../organisms/UserDetailsContent'
 import UserModal from '../../organisms/UserModal'

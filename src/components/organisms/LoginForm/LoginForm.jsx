@@ -120,7 +120,7 @@ class LoginForm extends React.Component<Props, State> {
     e.preventDefault()
 
     if (this.state.username.length === 0 || this.state.password.length === 0) {
-      notificationStore.notify('Please fill in all fields')
+      notificationStore.alert('Please fill in all fields')
     } else {
       this.props.onFormSubmit({ username: this.state.username, password: this.state.password })
     }

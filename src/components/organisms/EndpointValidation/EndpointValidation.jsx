@@ -85,9 +85,9 @@ class EndpointValidation extends React.Component<Props> {
     let succesful = DomUtils.copyTextToClipboard(message)
 
     if (succesful) {
-      notificationStore.notify('The value has been copied to clipboard.')
+      notificationStore.alert('The value has been copied to clipboard.')
     } else {
-      notificationStore.notify('The value couldn\'t be copied', 'error')
+      notificationStore.alert('The value couldn\'t be copied', 'error')
     }
   }
 

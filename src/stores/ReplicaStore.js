@@ -115,7 +115,7 @@ class ReplicaStore {
 
   @action cancelExecution(replicaId: string, executionId: string): Promise<void> {
     return ReplicaSource.cancelExecution(replicaId, executionId).then(() => {
-      notificationStore.notify('Cancelled', 'success')
+      notificationStore.alert('Cancelled', 'success')
     })
   }
 

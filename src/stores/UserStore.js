@@ -57,7 +57,7 @@ class UserStore {
     }).then(() => {
       this.loading = false
       this.loggedIn = true
-      notificationStore.notify('Signed in', 'success')
+      notificationStore.alert('Signed in', 'success')
     }).catch((reason) => {
       this.loading = false
       this.loginFailedResponse = reason
@@ -100,7 +100,7 @@ class UserStore {
 
     return UserSource.tokenLogin().then(user => {
       this.loggedUser = { ...this.loggedUser, ...user }
-      notificationStore.notify('Signed in', 'success')
+      notificationStore.alert('Signed in', 'success')
       return this.getLoggedUserInfo()
     }).then(() => {
       return this.isAdmin()
@@ -113,14 +113,14 @@ class UserStore {
   }
 
   @action switchProject(projectId: string): Promise<void> {
-    notificationStore.notify('Switching projects')
+    notificationStore.alert('Switching projects')
     return UserSource.switchProject().then(() => {
       return this.loginScoped(projectId)
     }).then(() => {
       return this.isAdmin()
     }).catch(reason => {
       console.error('Error switching projects', reason)
-      notificationStore.notify('Error switching projects')
+      notificationStore.alert('Error switching projects')
       this.logout()
     })
   }
@@ -130,7 +130,7 @@ class UserStore {
 
     return UserSource.logout().catch(reason => {
       console.log('Error logging out', reason)
-      notificationStore.notify('Error logging out')
+      notificationStore.alert('Error logging out')
     })
   }
 

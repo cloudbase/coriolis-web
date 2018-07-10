@@ -21,7 +21,7 @@ import NotificationSystem from 'react-notification-system'
 import { observe } from 'mobx'
 
 import notificationStore from '../../../stores/NotificationStore'
-import type { NotificationItem } from '../../../types/NotificationItem'
+import type { AlertInfo } from '../../../types/NotificationItem'
 
 import NotificationsStyle from './style.js'
 
@@ -42,17 +42,17 @@ class Notifications extends React.Component<{}> {
   }
 
   componentDidMount() {
-    observe(notificationStore.notifications, change => {
+    observe(notificationStore.alerts, change => {
       this.handleStoreChange(change.object)
     })
   }
 
-  handleStoreChange(notifications: NotificationItem[]) {
-    if (!notifications.length || notifications.length <= this.notificationsCount) {
+  handleStoreChange(alerts: AlertInfo[]) {
+    if (!alerts.length || alerts.length <= this.notificationsCount) {
       return
     }
 
-    let lastNotification = notifications[notifications.length - 1]
+    let lastNotification = alerts[alerts.length - 1]
     this.notificationSystem.addNotification({
       title: lastNotification.title || lastNotification.message,
       message: lastNotification.title ? lastNotification.message : null,
@@ -62,7 +62,7 @@ class Notifications extends React.Component<{}> {
       action: lastNotification.options ? lastNotification.options.action : null,
     })
 
-    this.notificationsCount = notifications.length
+    this.notificationsCount = alerts.length
   }
 
   render() {

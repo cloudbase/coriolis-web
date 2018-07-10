@@ -84,7 +84,7 @@ class MigrationStore {
         ...this.migrations,
       ]
 
-      notificationStore.notify('Migration successfully created from replica.', 'success', {
+      notificationStore.alert('Migration successfully created from replica.', 'success', {
         action: {
           label: 'View Migration Status',
           callback: () => {

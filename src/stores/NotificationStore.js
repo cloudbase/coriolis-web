@@ -16,18 +16,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action } from 'mobx'
 
-import type { NotificationItem } from '../types/NotificationItem'
+import type { AlertInfo, NotificationItemData } from '../types/NotificationItem'
 import NotificationSource from '../sources/NotificationSource'
 
 class NotificationStore {
-  @observable notifications: NotificationItem[] = []
-  @observable persistedNotifications: NotificationItem[] = []
+  @observable alerts: AlertInfo[] = []
+  @observable notificationItems: NotificationItemData[] = []
 
   visibleErrors: string[] = []
 
-  @action notify(message: string, level?: $PropertyType<NotificationItem, 'level'>, options?: $PropertyType<NotificationItem, 'options'>): Promise<void> {
+  @action alert(message: string, level?: $PropertyType<AlertInfo, 'level'>, options?: $PropertyType<AlertInfo, 'options'>): Promise<void> {
     if (!this.visibleErrors.find(e => e === message)) {
-      this.notifications.push({ message, level, options })
+      this.alerts.push({ message, level, options })
 
       if (level === 'error') {
         this.visibleErrors.push(message)
@@ -35,25 +35,18 @@ class NotificationStore {
       }
     }
 
-    if (options && options.persist) {
-      return NotificationSource.notify(message, level, options).then((notification: NotificationItem) => {
-        this.persistedNotifications.push(notification)
-      })
-    }
-
     return Promise.resolve()
   }
 
-  @action loadNotifications(): Promise<void> {
-    return NotificationSource.loadNotifications().then((notifications: NotificationItem[]) => {
-      this.persistedNotifications = notifications
+  @action loadData(): Promise<void> {
+    return NotificationSource.loadData().then(data => {
+      this.notificationItems = data
     })
   }
 
-  @action clearNotifications(): Promise<void> {
-    return NotificationSource.clearNotifications().then(() => {
-      this.persistedNotifications = []
-    })
+  @action saveSeen() {
+    this.notificationItems = this.notificationItems.map(item => { return { ...item, unseen: false } })
+    NotificationSource.saveSeen(this.notificationItems)
   }
 }
 

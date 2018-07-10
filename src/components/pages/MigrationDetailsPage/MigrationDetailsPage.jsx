@@ -19,7 +19,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
-import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
+import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import MigrationDetailsContent from '../../organisms/MigrationDetailsContent'
 import AlertModal from '../../organisms/AlertModal'
@@ -60,6 +60,12 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     endpointStore.getEndpoints()
     this.pollData(true)
     this.pollInterval = setInterval(() => { this.pollData() }, requestPollTimeout)
+  }
+
+  componentWillReceiveProps(newProps: any) {
+    if (newProps.match.params.id !== this.props.match.params.id) {
+      migrationStore.getMigration(newProps.match.params.id, true)
+    }
   }
 
   componentWillUnmount() {
@@ -114,9 +120,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     }
     migrationStore.cancel(migrationStore.migrationDetails.id).then(() => {
       if (migrationStore.canceling === false) {
-        notificationStore.notify('Canceled', 'success')
+        notificationStore.alert('Canceled', 'success')
       } else {
-        notificationStore.notify('The migration couldn\'t be canceled', 'error')
+        notificationStore.alert('The migration couldn\'t be canceled', 'error')
       }
     })
   }

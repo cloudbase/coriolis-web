@@ -27,10 +27,13 @@ import progressImage from './images/progress.js'
 import successImage from './images/success.svg'
 import warningImage from './images/warning.svg'
 import pendingImage from './images/pending.svg'
+import successHollowImage from './images/success-hollow.svg'
+import errorHollowImage from './images/error-hollow.svg'
 
 type Props = {
   status: string,
   useBackground?: boolean,
+  hollow?: boolean,
 }
 
 const getRunningImageUrl = (props: Props) => {
@@ -46,14 +49,14 @@ const getRunningImageUrl = (props: Props) => {
 const statuses = props => {
   return {
     COMPLETED: css`
-      background-image: url('${successImage}');
+      background-image: url('${props.hollow ? successHollowImage : successImage}');
     `,
     RUNNING: css`
       background-image: ${getRunningImageUrl(props)};
       ${StyleProps.animations.rotation}
     `,
     ERROR: css`
-      background-image: url('${errorImage}');
+      background-image: url('${props.hollow ? errorHollowImage : errorImage}');
     `,
     WARNING: css`
       background-image: url('${warningImage}');

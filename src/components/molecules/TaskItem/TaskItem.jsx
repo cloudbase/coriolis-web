@@ -161,7 +161,7 @@ class TaskItem extends React.Component<Props> {
     let succesful = DomUtils.copyTextToClipboard(exceptionText)
 
     if (succesful) {
-      notificationStore.notify('The message has been copied to clipboard.')
+      notificationStore.alert('The message has been copied to clipboard.')
     }
   }
 

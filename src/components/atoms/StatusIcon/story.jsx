@@ -20,11 +20,17 @@ storiesOf('StatusIcon', module)
   .add('completed', () => (
     <StatusIcon status="COMPLETED" />
   ))
+  .add('completed hollow', () => (
+    <StatusIcon status="COMPLETED" hollow />
+  ))
   .add('running', () => (
     <StatusIcon status="RUNNING" />
   ))
   .add('error', () => (
     <StatusIcon status="ERROR" />
+  ))
+  .add('error hollow', () => (
+    <StatusIcon status="ERROR" hollow />
   ))
   .add('warning', () => (
     <StatusIcon status="WARNING" />

@@ -55,9 +55,9 @@ class CopyValue extends React.Component<Props> {
     if (this.props.onCopy) this.props.onCopy(this.props.value)
 
     if (succesful) {
-      notificationStore.notify('The value has been copied to clipboard.')
+      notificationStore.alert('The value has been copied to clipboard.')
     } else {
-      notificationStore.notify('The value couldn\'t be copied', 'error')
+      notificationStore.alert('The value couldn\'t be copied', 'error')
     }
   }
 

@@ -145,7 +145,7 @@ class ScheduleItem extends React.Component<Props> {
   handleExpirationDateChange(date: Date) {
     let newDate = moment(date)
     if (newDate.diff(new Date(), 'minutes') < 60) {
-      notificationStore.notify('Please select a further expiration date.', 'error')
+      notificationStore.alert('Please select a further expiration date.', 'error')
       return
     }
 
