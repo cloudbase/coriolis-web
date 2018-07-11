@@ -21,7 +21,7 @@ import { observer } from 'mobx-react'
 import type { User } from '../../../types/User'
 import type { Project, Role } from '../../../types/Project'
 import DetailsTemplate from '../../templates/DetailsTemplate'
-import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
+import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import ProjectDetailsContent from '../../organisms/ProjectDetailsContent'
 import ProjectModal from '../../organisms/ProjectModal'
@@ -145,7 +145,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
       Promise.all(roles.map(r => {
         return userStore.assignUserToProjectWithRole(userId, this.props.match.params.id, r.id)
       })).catch(e => {
-        notificationStore.notify('Error while assigning role to user', 'error')
+        notificationStore.alert('Error while assigning role to user', 'error')
         console.error(e)
       }).then(() => {
         this.loadData()

@@ -19,7 +19,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
-import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
+import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import EndpointDetailsContent from '../../organisms/EndpointDetailsContent'
 import AlertModal from '../../organisms/AlertModal'

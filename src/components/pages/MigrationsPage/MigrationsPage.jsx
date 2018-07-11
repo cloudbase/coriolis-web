@@ -132,7 +132,7 @@ class MigrationsPage extends React.Component<{}, State> {
     this.state.confirmationItems.forEach(migration => {
       migrationStore.cancel(migration.id)
     })
-    notificationStore.notify('Canceling migrations')
+    notificationStore.alert('Canceling migrations')
     this.handleCloseCancelMigration()
   }
 

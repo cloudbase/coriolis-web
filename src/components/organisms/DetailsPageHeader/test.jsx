@@ -19,7 +19,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import TW from '../../../utils/TestWrapper'
 import type { User } from '../../../types/User'
-import { DetailsPageHeader } from '.'
+import DetailsPageHeader from '.'
 
 type Props = {
   user?: ?User,

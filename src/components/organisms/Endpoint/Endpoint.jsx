@@ -235,7 +235,7 @@ class Endpoint extends React.Component<Props, State> {
     if (!this.highlightRequired()) {
       this.setState({ validating: true })
 
-      notificationStore.notify('Saving endpoint ...')
+      notificationStore.alert('Saving endpoint ...')
       endpointStore.clearValidation()
 
       if (this.state.isNew) {
@@ -244,7 +244,7 @@ class Endpoint extends React.Component<Props, State> {
         this.update()
       }
     } else {
-      notificationStore.notify('Please fill all the required fields', 'error')
+      notificationStore.alert('Please fill all the required fields', 'error')
     }
   }
 
@@ -262,7 +262,7 @@ class Endpoint extends React.Component<Props, State> {
     let succesful = DomUtils.copyTextToClipboard(endpointStore.validation.message)
 
     if (succesful) {
-      notificationStore.notify('The message has been copied to clipboard.')
+      notificationStore.alert('The message has been copied to clipboard.')
     }
   }
 
@@ -285,7 +285,7 @@ class Endpoint extends React.Component<Props, State> {
     }
 
     endpointStore.update(this.state.endpoint).then(() => {
-      notificationStore.notify('Validating endpoint ...')
+      notificationStore.alert('Validating endpoint ...')
       // $FlowIssue
       endpointStore.validate(this.state.endpoint)
     })
@@ -299,7 +299,7 @@ class Endpoint extends React.Component<Props, State> {
     endpointStore.add(this.state.endpoint).then(() => {
       let endpoint = endpointStore.endpoints[0]
       this.setState({ isNew: false, endpoint: ObjectUtils.flatten(endpoint) })
-      notificationStore.notify('Validating endpoint ...')
+      notificationStore.alert('Validating endpoint ...')
       endpointStore.validate(endpoint)
     })
   }

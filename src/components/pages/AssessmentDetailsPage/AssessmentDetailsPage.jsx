@@ -19,7 +19,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
-import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
+import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import AssessmentDetailsContent from '../../organisms/AssessmentDetailsContent'
 import Modal from '../../molecules/Modal'
@@ -237,7 +237,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
       this.setState({ showMigrationOptions: false })
       let useReplicaOption = options.find(o => o.name === 'use_replica')
       let type = useReplicaOption && useReplicaOption.value ? 'Replica' : 'Migration'
-      notificationStore.notify(`${type} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${type} created` } })
+      notificationStore.alert(`${type} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${type} created` } })
 
       if (type === 'Replica') {
         assessmentStore.migrations.forEach(replica => {

@@ -19,7 +19,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
-import { DetailsPageHeader } from '../../organisms/DetailsPageHeader'
+import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import ReplicaDetailsContent from '../../organisms/ReplicaDetailsContent'
 import Modal from '../../molecules/Modal'
@@ -79,6 +79,13 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     endpointStore.getEndpoints()
     scheduleStore.getSchedules(this.props.match.params.id)
     this.pollData(true)
+  }
+
+  componentWillReceiveProps(newProps: any) {
+    if (newProps.match.params.id !== this.props.match.params.id) {
+      replicaStore.getReplica(newProps.match.params.id)
+      scheduleStore.getSchedules(newProps.match.params.id)
+    }
   }
 
   componentWillUnmount() {

@@ -192,16 +192,16 @@ class EndpointsPage extends React.Component<{}, State> {
       }).map(p => p.catch(e => e))).then(results => {
         let internalServerErrors = results.filter(r => r.status && r.status === 500)
         if (internalServerErrors.length > 0) {
-          notificationStore.notify(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
+          notificationStore.alert(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
         }
         let forbiddenErrors = results.filter(r => r.status && r.status === 403)
         if (forbiddenErrors.length > 0 && forbiddenErrors[0].data && forbiddenErrors[0].data.description) {
-          notificationStore.notify(String(forbiddenErrors[0].data.description), 'error')
+          notificationStore.alert(String(forbiddenErrors[0].data.description), 'error')
         }
       })
     }).catch(e => {
       if (e.data && e.data.description) {
-        notificationStore.notify(e.data.description, 'error')
+        notificationStore.alert(e.data.description, 'error')
       }
     }).then(() => {
       this.pollData(true)

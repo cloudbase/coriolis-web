@@ -71,7 +71,7 @@ class AssessmentSource {
       let newData = { ...data }
       newData.selectedInstances = [instance]
       return this.migrate(newData).catch(() => {
-        notificationStore.notify(`Error while migrating instance ${instance.name}`, 'error', {
+        notificationStore.alert(`Error while migrating instance ${instance.name}`, 'error', {
           persist: true,
           persistInfo: { title: 'Migration creation error' },
         })

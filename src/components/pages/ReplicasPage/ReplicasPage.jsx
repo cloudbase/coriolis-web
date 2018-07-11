@@ -122,7 +122,7 @@ class ReplicasPage extends React.Component<{}, State> {
       items.forEach(replica => {
         replicaStore.execute(replica.id)
       })
-      notificationStore.notify('Executing replicas')
+      notificationStore.alert('Executing replicas')
     } else if (action === 'delete') {
       this.setState({
         showDeleteReplicaConfirmation: true,

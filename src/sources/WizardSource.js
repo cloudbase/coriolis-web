@@ -54,7 +54,7 @@ class WizardSource {
       let newData = { ...data }
       newData.selectedInstances = [instance]
       return WizardSource.create(type, newData).catch(() => {
-        notificationStore.notify(`Error while creating ${type} for instance ${instance.name}`, 'error', {
+        notificationStore.alert(`Error while creating ${type} for instance ${instance.name}`, 'error', {
           persist: true,
           persistInfo: { title: `${type} creation error` },
         })

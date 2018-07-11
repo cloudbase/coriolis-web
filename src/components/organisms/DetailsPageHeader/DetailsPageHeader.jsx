@@ -53,23 +53,42 @@ const User = styled.div`
   display: flex;
   align-items: center;
 `
-
 type Props = {
   user?: ?UserType,
   onUserItemClick: (userItem: { label: string, value: string }) => void,
   testMode?: boolean,
 }
+
 @observer
-export class DetailsPageHeader extends React.Component<Props> {
-  componentDidMount() {
+class DetailsPageHeader extends React.Component<Props, {}> {
+  pollTimeout: TimeoutID
+  stopPolling: boolean
+
+  componentWillMount() {
     if (this.props.testMode) {
       return
     }
-    notificationStore.loadNotifications()
+    this.stopPolling = false
+    this.pollData()
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.pollTimeout)
+    this.stopPolling = true
   }
 
   handleNotificationsClose() {
-    notificationStore.clearNotifications()
+    notificationStore.saveSeen()
+  }
+
+  pollData() {
+    if (this.stopPolling) {
+      return
+    }
+
+    notificationStore.loadData().then(() => {
+      this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
+    })
   }
 
   render() {
@@ -80,7 +99,11 @@ export class DetailsPageHeader extends React.Component<Props> {
           <Logo href="/#/replicas" />
         </Menu>
         <User>
-          <NotificationDropdown white items={notificationStore.persistedNotifications} onClose={() => this.handleNotificationsClose()} />
+          <NotificationDropdown
+            white
+            items={notificationStore.notificationItems}
+            onClose={() => this.handleNotificationsClose()}
+          />
           <UserDropdownStyled
             white
             user={this.props.user}
