@@ -41,7 +41,7 @@ const Wrapper = styled.div`
     background: ${Palette.grayscale[0]};
   }
 `
-const ArrowStyled = styled(Arrow) `
+const ArrowStyled = styled(Arrow)`
   position: absolute;
   left: -24px;
 `
@@ -123,6 +123,7 @@ const ProgressUpdates = styled.div`
 `
 const ProgressUpdate = styled.div`
   display: flex;
+  color: ${props => props.secondary ? Palette.grayscale[5] : 'inherit'};
 `
 const ProgressUpdateDate = styled.div`
   min-width: ${props => props.width || 'auto'};
@@ -221,7 +222,7 @@ class TaskItem extends React.Component<Props> {
           let messageProgress = this.getMessageProgress(update.message)
 
           return (
-            <ProgressUpdate key={i}>
+            <ProgressUpdate key={i} secondary={i < this.props.item.progress_updates.length - 1 || this.props.item.status !== 'RUNNING'}>
               <ProgressUpdateDate width={this.props.columnWidths[0]}>
                 <span>{DateUtils.getLocalTime(update.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
               </ProgressUpdateDate>
