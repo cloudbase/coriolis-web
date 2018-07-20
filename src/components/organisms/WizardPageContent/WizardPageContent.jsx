@@ -213,7 +213,7 @@ class WizardPageContent extends React.Component<Props, State> {
     if (schema && schema.length > 0) {
       let required = schema.filter(f => f.required && f.type !== 'object')
       schema.forEach(f => {
-        if (f.type === 'object' && f.properties && f.properties.length && f.properties.filter(p => isValid(p)).length > 0) {
+        if (f.type === 'object' && f.properties && f.properties.filter && f.properties.filter(p => isValid(p)).length > 0) {
           required = required.concat(f.properties.filter(p => p.required))
         }
       })
