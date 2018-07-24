@@ -20,7 +20,8 @@ import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-
+import { navigationMenu } from '../../../config'
+import type { User } from '../../../types/User'
 import userImage from './images/user.svg'
 import userWhiteImage from './images/user-white.svg'
 
@@ -91,7 +92,7 @@ const Username = styled.a`
   color: ${Palette.black};
   text-decoration: none;
   &:hover {
-    color: ${Palette.primary};
+    color: ${props => props.href ? Palette.primary : 'inherit'};
   }
 `
 const Email = styled.div`
@@ -102,7 +103,6 @@ const Email = styled.div`
   border-bottom: 1px solid ${Palette.grayscale[3]};
 `
 
-type User = { name: string, email: string, id: string }
 type DictItem = { label: string, value: string }
 type Props = {
   onItemClick: (item: DictItem) => void,
@@ -165,6 +165,13 @@ class UserDropdown extends React.Component<Props, State> {
     if (!this.props.user) {
       return null
     }
+
+    let href: ?string
+    let isAdmin = this.props.user.isAdmin
+    if (isAdmin && navigationMenu.find(m => m.value === 'users' && !m.disabled && (!m.requiresAdmin || isAdmin))) {
+      href = `#/user/${this.props.user.id}`
+    }
+
     return (
       <ListHeader
         onMouseDown={() => { this.itemMouseDown = true }}
@@ -172,7 +179,7 @@ class UserDropdown extends React.Component<Props, State> {
       >
         <Username
           data-test-id="userDropdown-username"
-          href={`#/user/${this.props.user.id}`}
+          href={href}
         >{this.props.user.name}</Username>
         <Email>{this.props.user.email}</Email>
       </ListHeader>
