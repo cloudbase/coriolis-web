@@ -17,61 +17,82 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import moment from 'moment'
+
+import type { NotificationItemData } from '../../../types/NotificationItem'
 import TW from '../../../utils/TestWrapper'
 import NotificationDropdown from '.'
+import type { Props } from '.'
 
-const wrap = props => new TW(shallow(
-  // $FlowIgnore
+const wrap = (props: Props) => new TW(shallow(
   <NotificationDropdown {...props} />
 ), 'notificationDropdown')
 
-let items = [
+let items: NotificationItemData[] = [
   {
-    id: new Date().getTime() + 1,
-    message: 'A full VM migration between two clouds',
-    level: 'success',
-    options: { persistInfo: { title: 'Migration' } },
+    id: '1',
+    name: 'notif-1',
+    description: 'desc-1',
+    type: 'replica',
+    status: 'COMPLETED',
+    unseen: false,
   },
   {
-    id: new Date().getTime() + 2,
-    message: 'Incrementally replicate virtual machines',
-    level: 'error',
-    options: { persistInfo: { title: 'Replica' } },
+    id: '2',
+    name: 'notif-2',
+    description: 'desc-2',
+    type: 'migration',
+    status: 'RUNNING',
+    unseen: true,
   },
   {
-    id: new Date().getTime() + 3,
-    message: 'A conection to a public or private cloud',
-    level: 'info',
-    options: { persistInfo: { title: 'Endpoint' } },
+    id: '3',
+    name: 'notif-3',
+    description: 'desc-3',
+    type: 'replica',
+    status: 'ERROR',
+    unseen: false,
   },
 ]
 
 describe('NotificationDropdown Component', () => {
   it('renders no items message on click', () => {
-    let wrapper = wrap({ onClose: () => { } })
+    let wrapper = wrap({ onClose: () => { }, items: [] })
     expect(wrapper.find('noItems').length).toBe(0)
     wrapper.find('button').simulate('click')
     expect(wrapper.find('noItems').length).toBe(1)
+    expect(wrapper.find('bell-badge').length).toBe(0)
+    expect(wrapper.find('bell-loading').length).toBe(0)
   })
 
   it('renders items correctly', () => {
     let wrapper = wrap({ items, onClose: () => { } })
     wrapper.find('button').simulate('click')
+    expect(wrapper.find('bell-badge').length).toBe(1)
+    expect(wrapper.find('bell-loading').length).toBe(1)
 
     items.forEach(item => {
-      expect(wrapper.find(`item-${item.id}`).find('itemLevel').prop('level')).toBe(item.level)
-      expect(wrapper.find(`item-${item.id}`).findText('itemTitle')).toBe(item.options.persistInfo.title)
-      expect(wrapper.find(`item-${item.id}`).findText('itemDescription')).toBe(item.message)
-      expect(wrapper.find(`item-${item.id}`).findText('itemTime')).toBe(moment(Number(item.id)).format('HH:mm'))
+      expect(wrapper.find(`${item.id}-status`).prop('status')).toBe(item.status)
+      expect(wrapper.findText(`${item.id}-type`)).toBe(item.type === 'replica' ? 'RE' : 'MI')
+      expect(wrapper.findText(`${item.id}-name`)).toBe(item.name)
+      expect(wrapper.findText(`${item.id}-description`)).toBe(item.description)
+      expect(wrapper.find(`${item.id}-badge`).length).toBe(item.unseen ? 1 : 0)
     })
+  })
+
+  it('renders button bell badge', () => {
+    let wrapper = wrap({ items: items.map(i => { return { ...i, unseen: false } }), onClose: () => { } })
+    expect(wrapper.find('bell-badge').length).toBe(0)
+    expect(wrapper.find('bell-loading').length).toBe(1)
+    wrapper = wrap({ items: items.map(i => { return { ...i, status: 'COMPLETED' } }), onClose: () => { } })
+    expect(wrapper.find('bell-badge').length).toBe(1)
+    expect(wrapper.find('bell-loading').length).toBe(0)
   })
 
   it('dispatches onClose', () => {
     let onClose = sinon.spy()
     let wrapper = wrap({ items, onClose })
     wrapper.find('button').simulate('click')
-    wrapper.find(`item-${items[0].id}`).simulate('click')
+    wrapper.find(`${items[0].id}-item`).simulate('click')
     expect(onClose.calledOnce).toBe(true)
   })
 })

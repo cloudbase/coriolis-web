@@ -95,7 +95,7 @@ Cypress.Commands.add('logout', () => {
   return cy.getCookies().then(cookies => {
     let tokenCookie = cookies.find(c => c.name === 'token')
     if (tokenCookie) {
-      token = tokenCookie
+      token = tokenCookie.value
     }
   }).then(() => {
     if (!token) {

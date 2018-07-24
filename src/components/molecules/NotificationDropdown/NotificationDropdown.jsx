@@ -168,7 +168,7 @@ const Loading = styled.div`
   }
 `
 
-type Props = {
+export type Props = {
   white?: boolean,
   items: NotificationItemData[],
   onClose: () => void,
@@ -176,6 +176,7 @@ type Props = {
 type State = {
   showDropdownList: boolean,
 }
+const testId = 'notificationDropdown'
 @observer
 class NotificationDropdown extends React.Component<Props, State> {
   itemMouseDown: boolean
@@ -232,7 +233,7 @@ class NotificationDropdown extends React.Component<Props, State> {
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
         >
-          <NoItems data-test-id="notificationDropdown-noItems">There are no notifications</NoItems>
+          <NoItems data-test-id={`${testId}-noItems`}>There are no notifications</NoItems>
         </ListItem>
       </List>
     )
@@ -255,16 +256,20 @@ class NotificationDropdown extends React.Component<Props, State> {
               onMouseUp={() => { this.itemMouseDown = false }}
               onClick={() => { this.handleItemClick() }}
               href={`/#/${item.type}${executionsHref}/${item.id}`}
+              data-test-id={`${testId}-${item.id}-item`}
             >
               <InfoColumn>
                 <MainItemInfo>
-                  <StatusIcon status={item.status} hollow />
-                  <ItemReplicaBadge type={item.type}>{item.type === 'replica' ? 'RE' : 'MI'}</ItemReplicaBadge>
-                  <ItemTitle>{item.name}</ItemTitle>
+                  <StatusIcon data-test-id={`${testId}-${item.id}-status`} status={item.status} hollow />
+                  <ItemReplicaBadge
+                    type={item.type}
+                    data-test-id={`${testId}-${item.id}-type`}
+                  >{item.type === 'replica' ? 'RE' : 'MI'}</ItemReplicaBadge>
+                  <ItemTitle data-test-id={`${testId}-${item.id}-name`}>{item.name}</ItemTitle>
                 </MainItemInfo>
-                <ItemDescription>{item.description}</ItemDescription>
+                <ItemDescription data-test-id={`${testId}-${item.id}-description`}>{item.description}</ItemDescription>
               </InfoColumn>
-              {item.unseen ? <BadgeColumn><Badge /></BadgeColumn> : null}
+              {item.unseen ? <BadgeColumn data-test-id={`${testId}-${item.id}-badge`}><Badge /></BadgeColumn> : null}
             </ListItem>
           )
         })}
@@ -278,7 +283,7 @@ class NotificationDropdown extends React.Component<Props, State> {
 
     return (
       <Icon
-        data-test-id="notificationDropdown-button"
+        data-test-id={`${testId}-button`}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         onClick={() => this.handleButtonClick()}
@@ -286,8 +291,9 @@ class NotificationDropdown extends React.Component<Props, State> {
         <BellIcon
           dangerouslySetInnerHTML={{ __html: bellImage(this.props.white ? 'white' : Palette.grayscale[2]) }}
         />
-        {this.props.items.find(i => i.unseen) ? <Badge isBellBadge /> : null}
+        {this.props.items.find(i => i.unseen) ? <Badge data-test-id={`${testId}-bell-badge`} isBellBadge /> : null}
         {isLoading ? <Loading
+          data-test-id={`${testId}-bell-loading`}
           dangerouslySetInnerHTML={{ __html: loadingImage(this.props.white) }}
         /> : null}
       </Icon>
