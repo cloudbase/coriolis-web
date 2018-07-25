@@ -18,17 +18,45 @@ import moment from 'moment'
 
 import { servicesUrl } from '../config'
 import Api from '../utils/ApiCaller'
-import type { NotificationItemData } from '../types/NotificationItem'
-
+import type { NotificationItemData, NotificationItem } from '../types/NotificationItem'
 
 class NotificationStorage {
+  static storeName: string = 'seenNotifications'
+
   static loadSeen(): ?NotificationItemData[] {
-    let notifications = localStorage.getItem('seen-notifications')
-    return notifications ? JSON.parse(notifications) : null
+    let storage: ?string = localStorage.getItem(this.storeName)
+
+    if (!storage) {
+      return null
+    }
+
+    let notificationItems: NotificationItem[] = JSON.parse(storage)
+    let notificationItem: ?NotificationItem = notificationItems.find(n => n.projectId === Api.projectId)
+
+    if (!notificationItem) {
+      return null
+    }
+
+    return notificationItem.items
   }
 
-  static saveSeen(notificationItems: NotificationItemData[]) {
-    localStorage.setItem('seen-notifications', JSON.stringify(notificationItems))
+  static saveSeen(items: NotificationItemData[]) {
+    let currentStorage: ?string = localStorage.getItem(this.storeName)
+    let currentItems: NotificationItem[] = []
+
+    if (currentStorage) {
+      currentItems = (JSON.parse(currentStorage): NotificationItem[])
+      currentItems = currentItems.filter(i => i.projectId !== Api.projectId)
+    }
+
+    let newItem: NotificationItem = {
+      projectId: Api.projectId,
+      items,
+    }
+    localStorage.setItem(this.storeName, JSON.stringify([
+      ...currentItems,
+      newItem,
+    ]))
   }
 
   static clean(notificationItems: NotificationItemData[]) {

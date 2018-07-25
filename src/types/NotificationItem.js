@@ -38,3 +38,7 @@ export type NotificationItemData = {
   updatedAt?: string,
 }
 
+export type NotificationItem = {
+  projectId: string,
+  items: NotificationItemData[],
+}
