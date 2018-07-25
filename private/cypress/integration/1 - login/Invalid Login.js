@@ -23,6 +23,10 @@ describe('Coriolis Login Failed', () => {
     cy.logout()
   })
 
+  beforeEach(() => {
+    Cypress.Cookies.preserveOnce('token', 'projectId')
+  })
+
   it('Displays incorrect password', () => {
     cy.server()
     cy.route({ url: '**/identity/**', method: 'POST' }).as('login')
