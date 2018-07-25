@@ -179,6 +179,7 @@ class PageHeader extends React.Component<Props, State> {
   handleProjectChange(project: Project) {
     userStore.switchProject(project.id).then(() => {
       projectStore.getProjects()
+      notificationStore.loadData()
 
       if (this.props.onProjectChange) {
         this.props.onProjectChange(project)
