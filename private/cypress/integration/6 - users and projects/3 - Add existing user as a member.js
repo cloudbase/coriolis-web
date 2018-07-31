@@ -59,8 +59,7 @@ describe('Adds existing user as a member to the project', () => {
     cy.route({ url: '**/roles/**', method: 'PUT' }).as('addRoles')
     cy.route({ url: '**/role_assignments**', method: 'GET' }).as('getRoles')
     cy.get('button[data-test-id="pmModal-addButton"]').click()
-    cy.wait('@addRoles')
-    cy.wait('@getRoles')
+    cy.wait(['@addRoles', '@getRoles'])
     cy.get('div[data-test-id="pdContent-roles-cypress-member-user"]').should('contain', '_member_, admin')
   })
 
