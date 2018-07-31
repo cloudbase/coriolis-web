@@ -145,8 +145,8 @@ class NewModal extends React.Component<Props> {
     contentNode.style.top = `${top}px`
     contentNode.style.height = height
     contentNode.style.opacity = 1
-    // $FlowIssue
-    scrollableNode.scrollTo(0, scrollTop + scrollOffset)
+
+    scrollableNode.scrollTop = scrollTop + scrollOffset
   }
 
   renderTitle() {
