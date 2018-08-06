@@ -59,9 +59,10 @@ class DomUtils {
   static getEventPath(event: Event): HTMLElement[] {
     let path = []
     let node = event.target
+    // $FlowIgnore
     while (node !== document.body && node.parentNode) {
       path.push(node)
-      // $FlowIssue
+      // $FlowIgnore
       node = node.parentNode
     }
 

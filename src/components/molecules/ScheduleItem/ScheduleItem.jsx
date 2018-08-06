@@ -61,7 +61,7 @@ const Label = styled.div`
   line-height: 35px;
   margin-bottom: -8px;
 `
-const DropdownStyled = styled(Dropdown) `
+const DropdownStyled = styled(Dropdown)`
   font-size: 12px;
 `
 const ItemButton = props => css`
@@ -176,7 +176,7 @@ class ScheduleItem extends React.Component<Props> {
     let isChanged = false
     executionOptions.forEach(o => {
       let scheduleValue = this.props.item[o.name]
-      let optionValue = o.value !== undefined ? o.value : false
+      let optionValue = o.defaultValue !== undefined ? o.defaultValue : false
       if (scheduleValue !== undefined && scheduleValue !== null && scheduleValue !== optionValue) {
         isChanged = true
       }

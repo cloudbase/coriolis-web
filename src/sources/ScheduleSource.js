@@ -117,10 +117,8 @@ class ScheduleSource {
       if (scheduleOldData) {
         payload.schedule = { ...scheduleOldData.schedule }
       }
-      // $FlowIssue
       Object.keys(unsavedData.schedule).forEach(prop => {
-        // $FlowIssue
-        if (unsavedData.schedule[prop] !== null && unsavedData.schedule[prop] !== undefined) {
+        if (unsavedData && unsavedData.schedule && unsavedData.schedule[prop] !== null && unsavedData.schedule[prop] !== undefined) {
           payload.schedule[prop] = unsavedData.schedule[prop]
         } else {
           delete payload.schedule[prop]

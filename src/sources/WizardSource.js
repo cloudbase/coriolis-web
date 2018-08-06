@@ -69,8 +69,8 @@ class WizardSource {
     if (!hashExp.test(window.location.hash)) {
       return
     }
-
-    let hash = hashExp.exec(window.location.hash)[1]
+    let hashExpExec = hashExp.exec(window.location.hash)
+    let hash = hashExpExec ? hashExpExec[1] : 'undefined'
     window.history.replaceState({}, null, `${hash}?d=${btoa(JSON.stringify(data))}`)
   }
 
@@ -81,7 +81,8 @@ class WizardSource {
       return null
     }
 
-    return JSON.parse(atob(dataExp.exec(window.location.hash)[1]))
+    let dataExpExec = dataExp.exec(window.location.hash)
+    return JSON.parse(atob(dataExpExec ? dataExpExec[1] : 'undefined'))
   }
 }
 

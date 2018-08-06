@@ -21,7 +21,7 @@ import sinon from 'sinon'
 import TestWrapper from '../../../utils/TestWrapper'
 import DatetimePicker from '.'
 
-const wrap = props => new TestWrapper(shallow(<DatetimePicker {...props} />), 'datetimePicker')
+const wrap = props => new TestWrapper(shallow(<DatetimePicker timezone="local" {...props} />), 'datetimePicker')
 
 describe('DateTimePicker Component', () => {
   it('renders date value in dropdown label', () => {

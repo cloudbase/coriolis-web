@@ -24,6 +24,7 @@ export type AlertInfo = {
     }
   },
   message: string,
+  title?: string,
   id?: string,
   level?: 'success' | 'error' | 'info',
 }

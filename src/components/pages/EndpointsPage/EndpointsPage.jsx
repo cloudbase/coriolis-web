@@ -189,16 +189,17 @@ class EndpointsPage extends React.Component<{}, State> {
     }).then(() => {
       return Promise.all(endpoints.map(endpoint => {
         return EndpointSource.add(endpoint, true)
-      }).map(p => p.catch(e => e))).then(results => {
-        let internalServerErrors = results.filter(r => r.status && r.status === 500)
-        if (internalServerErrors.length > 0) {
-          notificationStore.alert(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
-        }
-        let forbiddenErrors = results.filter(r => r.status && r.status === 403)
-        if (forbiddenErrors.length > 0 && forbiddenErrors[0].data && forbiddenErrors[0].data.description) {
-          notificationStore.alert(String(forbiddenErrors[0].data.description), 'error')
-        }
-      })
+      }).map((p: Promise<any>) => p.catch(e => e)))
+        .then((results: (Endpoint | { status: string, data?: { description: string } })[]) => {
+          let internalServerErrors = results.filter(r => r.status && r.status === 500)
+          if (internalServerErrors.length > 0) {
+            notificationStore.alert(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
+          }
+          let forbiddenErrors = results.filter(r => r.status && r.status === 403)
+          if (forbiddenErrors.length > 0 && forbiddenErrors[0].data && forbiddenErrors[0].data.description) {
+            notificationStore.alert(String(forbiddenErrors[0].data.description), 'error')
+          }
+        })
     }).catch(e => {
       if (e.data && e.data.description) {
         notificationStore.alert(e.data.description, 'error')

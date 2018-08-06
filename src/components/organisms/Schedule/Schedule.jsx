@@ -205,7 +205,7 @@ class Schedule extends React.Component<Props, State> {
     let isChanged = false
     executionOptions.forEach(o => {
       let scheduleValue = schedule[o.name]
-      let optionValue = o.value !== undefined ? o.value : false
+      let optionValue = o.defaultValue !== undefined ? o.defaultValue : false
       if (scheduleValue !== undefined && scheduleValue !== null && scheduleValue !== optionValue) {
         isChanged = true
       }

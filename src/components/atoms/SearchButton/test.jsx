@@ -27,7 +27,8 @@ describe('SearchButton Component', () => {
     const getIconId = (w: TestWrapper): string => {
       /* eslint no-underscore-dangle: off */
       const iconSvg = w.find('icon').prop('dangerouslySetInnerHTML').__html
-      return /data-test-id="(.*?)"/g.exec(iconSvg)[1]
+      const iconSvgId = /data-test-id="(.*?)"/g.exec(iconSvg)
+      return iconSvgId ? iconSvgId[1] : ''
     }
     let wrapper = wrap()
     expect(getIconId(wrapper)).toBe('searchButton-searchIcon')

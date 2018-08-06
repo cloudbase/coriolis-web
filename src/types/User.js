@@ -27,6 +27,7 @@ export type User = {
   project_id?: string,
   domain_id?: string,
   isAdmin?: boolean,
+  password?: string,
 }
 
 export type Credentials = {

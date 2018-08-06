@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
@@ -106,7 +106,7 @@ class EndpointDetailsContent extends React.Component<Props> {
     )
   }
 
-  renderConnectionInfo(connectionInfo: any) {
+  renderConnectionInfo(connectionInfo: any): React$Node {
     if (!connectionInfo) {
       return null
     }

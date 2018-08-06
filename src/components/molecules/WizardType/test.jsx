@@ -20,7 +20,7 @@ import sinon from 'sinon'
 import TW from '../../../utils/TestWrapper'
 import WizardType from '.'
 
-const wrap = props => new TW(shallow(<WizardType {...props} />), 'wType')
+const wrap = props => new TW(shallow(<WizardType onChange={() => { }} {...props} />), 'wType')
 
 describe('WizardType Component', () => {
   it('renders with the correct type selected', () => {

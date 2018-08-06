@@ -46,6 +46,7 @@ export type Assessment = {
   projectName: string,
   resourceGroupName: string,
   groupName: string,
+  assessmentName: string,
   location: string,
   properties: {
     azureLocation: string,
@@ -70,7 +71,7 @@ export type MigrationInfo = {
   source: ?Endpoint,
   target: Endpoint,
   selectedInstances: Instance[],
-  destinationEnv: {[string]: mixed},
+  destinationEnv: { [string]: mixed },
   networks: NetworkMap[],
-  vmSizes: {[string]: VmSize},
+  vmSizes: { [string]: VmSize },
 }

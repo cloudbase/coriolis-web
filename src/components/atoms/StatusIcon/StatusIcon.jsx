@@ -34,6 +34,7 @@ type Props = {
   status: string,
   useBackground?: boolean,
   hollow?: boolean,
+  secondary?: boolean,
 }
 
 const getRunningImageUrl = (props: Props) => {

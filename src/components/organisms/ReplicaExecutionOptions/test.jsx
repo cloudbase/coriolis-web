@@ -35,7 +35,7 @@ describe('ReplicaExecutionOptions Component', () => {
   it('renders executionOptions with default values', () => {
     let wrapper = wrap()
     executionOptions.forEach(option => {
-      expect(wrapper.find(`option-${option.name}`).prop('value')).toBe(option.value || undefined)
+      expect(wrapper.find(`option-${option.name}`).prop('value')).toBe(option.defaultValue || undefined)
     })
   })
 
