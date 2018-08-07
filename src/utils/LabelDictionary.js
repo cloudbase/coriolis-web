@@ -47,6 +47,10 @@ class LabelDictionary {
     duplicate_to_project: { label: 'Project', description: 'Duplicate endpoint to selected project' },
   }
 
+  // Fields which have enums for which dictionary labels should be used.
+  // If a field has enums and is not in this array, their values will be used as labels
+  static enumFields = ['port_reuse_policy']
+
   static get(fieldName: ?string): string {
     let labelInfo = fieldName ? this.dictionary[fieldName] : null
     if (labelInfo) {

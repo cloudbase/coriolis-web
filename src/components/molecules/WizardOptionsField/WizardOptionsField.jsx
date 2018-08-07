@@ -118,13 +118,14 @@ class WizardOptionsField extends React.Component<Props> {
   }
 
   renderEnumDropdown() {
+    const useDictionary = LabelDictionary.enumFields.find(f => f === this.props.name)
     let items = this.props.enum.map(e => {
       if (typeof e !== 'string' && e.separator === true) {
         return e
       }
 
       return {
-        label: typeof e === 'string' ? LabelDictionary.get(e) : e.name,
+        label: typeof e === 'string' ? (useDictionary ? LabelDictionary.get(e) : e) : e.name,
         value: typeof e === 'string' ? e : e.id,
       }
     })
