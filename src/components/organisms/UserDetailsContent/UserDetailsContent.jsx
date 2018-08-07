@@ -143,7 +143,7 @@ class UserDetailsContent extends React.Component<Props, State> {
     )
   }
 
-  renderUserProjects(projects: { label: string, id: string }[]) {
+  renderUserProjects(projects: { label: string, id: string }[]): React$Node {
     return projects.map((project, i) => (
       <span key={project.id}>
         {project.label ? (

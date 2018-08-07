@@ -20,7 +20,7 @@ import sinon from 'sinon'
 import TW from '../../../utils/TestWrapper'
 import ReplicaMigrationOptions from '.'
 
-const wrap = props => new TW(shallow(<ReplicaMigrationOptions {...props} />), 'rmOptions')
+const wrap = props => new TW(shallow(<ReplicaMigrationOptions onMigrateClick={() => { }} {...props} />), 'rmOptions')
 
 describe('ReplicaMigrationOptions Component', () => {
   it('dispatches cancel click', () => {

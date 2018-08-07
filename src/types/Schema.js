@@ -34,11 +34,13 @@ export type SchemaProperties = {
     } | {
       type: string,
       enum?: string[],
+      default?: string,
     } | {
       $ref: string,
     },
   },
   required: string[],
+  type?: string,
 }
 
 export type SchemaDefinitions = {

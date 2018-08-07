@@ -124,6 +124,8 @@ export type ItemType = {
   title: string,
   description: string,
   value?: string,
+  disabled?: boolean,
+  requiresAdmin?: boolean,
 }
 type Props = {
   onChange: (item: ItemType) => void,
@@ -198,13 +200,13 @@ class NewItemDropdown extends React.Component<Props, State> {
       value: 'user',
       description: 'Create a new Coriolis user',
       icon: { user: true },
-      disabled: navigationMenu.find(i => i.value === 'users' && (i.disabled || (i.requiresAdmin && !isAdmin))),
+      disabled: Boolean(navigationMenu.find(i => i.value === 'users' && (i.disabled || (i.requiresAdmin && !isAdmin)))),
     }, {
       title: 'Project',
       value: 'project',
       description: 'Create a new Coriolis project',
       icon: { project: true },
-      disabled: navigationMenu.find(i => i.value === 'projects' && (i.disabled || (i.requiresAdmin && !isAdmin))),
+      disabled: Boolean(navigationMenu.find(i => i.value === 'projects' && (i.disabled || (i.requiresAdmin && !isAdmin)))),
     }]
 
     let list = (

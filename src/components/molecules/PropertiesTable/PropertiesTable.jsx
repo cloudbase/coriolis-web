@@ -111,7 +111,7 @@ class PropertiesTable extends React.Component<Props> {
           value: e,
         }
       } else if (e.separator === true) {
-        return e
+        return { separator: true }
       }
       return {
         label: e.name,

@@ -51,10 +51,8 @@ class ProviderSource {
       envString = `?env=${btoa(JSON.stringify(envData))}`
     }
 
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/destination-options${envString}`).then(response => {
-      let options = response.data.destination_options
-      return options
-    })
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/destination-options${envString}`)
+      .then(response => response.data.destination_options)
   }
 }
 

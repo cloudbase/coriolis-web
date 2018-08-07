@@ -70,6 +70,7 @@ export const executionOptions = [
   {
     name: 'shutdown_instances',
     type: 'strict-boolean',
+    defaultValue: false,
   },
 ]
 

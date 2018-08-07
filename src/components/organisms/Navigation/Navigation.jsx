@@ -31,7 +31,7 @@ const Wrapper = styled.div`
   height: 100%;
 `
 
-const LogoStyled = styled(Logo) `
+const LogoStyled = styled(Logo)`
   margin: 40px auto 0 30px;
   cursor: pointer;
 `
@@ -59,16 +59,18 @@ class Navigation extends React.Component<{ currentPage: string }> {
     const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     return (
       <Menu>
-        {navigationMenu.filter(i => i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true).map(item => {
-          return (
-            <MenuItem
-              key={item.value}
-              selected={this.props.currentPage === item.value}
-              href={`/#/${item.value}`}
-              data-test-id={`navigation-item-${item.value}`}
-            >{item.label}</MenuItem>
-          )
-        })}
+        {
+          // $FlowIgnore
+          navigationMenu.filter(i => i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true).map(item => {
+            return (
+              <MenuItem
+                key={item.value}
+                selected={this.props.currentPage === item.value}
+                href={`/#/${item.value}`}
+                data-test-id={`navigation-item-${item.value}`}
+              >{item.label}</MenuItem>
+            )
+          })}
       </Menu>
     )
   }

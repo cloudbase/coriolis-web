@@ -99,7 +99,7 @@ class AssessmentsPage extends React.Component<Props, State> {
     }
   }
 
-  getFilterItems() {
+  getFilterItems(): { label: string, value: string }[] {
     let types = [{ label: 'All projects', value: 'all' }]
     let assessments = azureStore.assessments
     let uniqueProjects = []

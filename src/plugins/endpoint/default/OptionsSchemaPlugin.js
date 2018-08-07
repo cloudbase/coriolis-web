@@ -23,7 +23,6 @@ const migrationImageOsTypes = ['windows', 'linux']
 
 export const defaultFillFieldValues = (field: Field, option: DestinationOption) => {
   if (field.type === 'string') {
-    // $FlowIgnore
     field.enum = [...option.values]
     if (option.config_default) {
       field.default = typeof option.config_default === 'string' ? option.config_default : option.config_default.id

@@ -33,8 +33,8 @@ if (root) {
   render(renderApp(), root)
 }
 
+// $FlowIgnore
 if (module.hot) {
-  // $FlowIgnore
   module.hot.accept('./components/App.jsx', () => {
     require('./components/App.jsx')
     if (root) {
