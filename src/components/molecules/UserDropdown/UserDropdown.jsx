@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
+import autobind from 'autobind-decorator'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -114,18 +115,11 @@ type State = {
 }
 @observer
 class UserDropdown extends React.Component<Props, State> {
-  itemMouseDown: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDropdownList: false,
-    }
-
-    // $FlowIssue
-    this.handlePageClick = this.handlePageClick.bind(this)
+  state = {
+    showDropdownList: false,
   }
+
+  itemMouseDown: boolean
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
@@ -143,6 +137,7 @@ class UserDropdown extends React.Component<Props, State> {
     this.setState({ showDropdownList: false })
   }
 
+  @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })

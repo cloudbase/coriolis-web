@@ -56,21 +56,17 @@ type State = {
 }
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
-  pollTimeout: TimeoutID
-
-  constructor() {
-    super()
-
-    this.state = {
-      showOptionsModal: false,
-      showMigrationModal: false,
-      showDeleteExecutionConfirmation: false,
-      showDeleteReplicaConfirmation: false,
-      showDeleteReplicaDisksConfirmation: false,
-      confirmationItem: null,
-      showCancelConfirmation: false,
-    }
+  state = {
+    showOptionsModal: false,
+    showMigrationModal: false,
+    showDeleteExecutionConfirmation: false,
+    showDeleteReplicaConfirmation: false,
+    showDeleteReplicaDisksConfirmation: false,
+    confirmationItem: null,
+    showCancelConfirmation: false,
   }
+
+  pollTimeout: TimeoutID
 
   componentDidMount() {
     document.title = 'Replica Details'

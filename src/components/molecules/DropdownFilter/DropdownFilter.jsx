@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
+import autobind from 'autobind-decorator'
 
 import SearchInput from '../SearchInput'
 
@@ -81,18 +82,11 @@ class DropdownFilter extends React.Component<Props, State> {
     searchPlaceholder: 'Filter',
   }
 
-  itemMouseDown: boolean
-
-  constructor() {
-    super()
-
-    // $FlowIssue
-    this.handlePageClick = this.handlePageClick.bind(this)
-
-    this.state = {
-      showDropdownList: false,
-    }
+  state = {
+    showDropdownList: false,
   }
+
+  itemMouseDown: boolean
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
@@ -102,6 +96,7 @@ class DropdownFilter extends React.Component<Props, State> {
     window.removeEventListener('mousedown', this.handlePageClick, false)
   }
 
+  @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })

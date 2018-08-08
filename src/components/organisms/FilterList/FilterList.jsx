@@ -49,19 +49,16 @@ type State = {
   filterStatus: string,
   filterText: string,
   selectedItems: any[],
-  selectAllSelected?: boolean,
+  selectAllSelected: boolean,
 }
 @observer
 class FilterList extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      items: [],
-      filterStatus: 'all',
-      filterText: '',
-      selectedItems: [],
-    }
+  state = {
+    items: [],
+    filterStatus: 'all',
+    filterText: '',
+    selectedItems: [],
+    selectAllSelected: false,
   }
 
   componentWillMount() {

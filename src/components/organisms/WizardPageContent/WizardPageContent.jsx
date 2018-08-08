@@ -125,13 +125,9 @@ type State = {
 const testName = 'wpContent'
 @observer
 class WizardPageContent extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      useAdvancedOptions: false,
-      timezone: 'local',
-    }
+  state = {
+    useAdvancedOptions: false,
+    timezone: 'local',
   }
 
   componentDidMount() {

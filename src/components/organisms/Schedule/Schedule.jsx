@@ -134,15 +134,11 @@ class Schedule extends React.Component<Props, State> {
     unsavedSchedules: [],
   }
 
-  constructor() {
-    super()
-
-    this.state = {
-      showOptionsModal: false,
-      showDeleteConfirmation: false,
-      selectedSchedule: null,
-      executionOptions: null,
-    }
+  state = {
+    showOptionsModal: false,
+    showDeleteConfirmation: false,
+    selectedSchedule: null,
+    executionOptions: null,
   }
 
   handleDeleteClick(selectedSchedule: ScheduleType) {

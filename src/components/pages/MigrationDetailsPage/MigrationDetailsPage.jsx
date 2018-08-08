@@ -43,16 +43,12 @@ type State = {
 }
 @observer
 class MigrationDetailsPage extends React.Component<Props, State> {
-  pollInterval: IntervalID
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDeleteMigrationConfirmation: false,
-      showCancelConfirmation: false,
-    }
+  state = {
+    showDeleteMigrationConfirmation: false,
+    showCancelConfirmation: false,
   }
+
+  pollInterval: IntervalID
 
   componentDidMount() {
     document.title = 'Migration Details'

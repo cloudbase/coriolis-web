@@ -18,6 +18,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
+import autobind from 'autobind-decorator'
 
 import DropdownButton from '../../atoms/DropdownButton'
 
@@ -203,6 +204,11 @@ class Dropdown extends React.Component<Props, State> {
     noSelectionMessage: 'Select an item',
   }
 
+  state = {
+    showDropdownList: false,
+    firstItemHover: false,
+  }
+
   buttonRef: HTMLElement
   listRef: HTMLElement
   listItemsRef: HTMLElement
@@ -211,21 +217,6 @@ class Dropdown extends React.Component<Props, State> {
   scrollableParent: HTMLElement
   buttonRect: ClientRect
   itemMouseDown: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDropdownList: false,
-      firstItemHover: false,
-    }
-
-    // $FlowIssue
-    this.handlePageClick = this.handlePageClick.bind(this)
-
-    // $FlowIssue
-    this.handleScroll = this.handleScroll.bind(this)
-  }
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
@@ -271,6 +262,7 @@ class Dropdown extends React.Component<Props, State> {
     return (item[valueField] != null && item[valueField].toString()) || this.getLabel(item)
   }
 
+  @autobind
   handleScroll() {
     if (this.buttonRef) {
       if (DomUtils.isElementInViewport(this.buttonRef, this.scrollableParent)) {
@@ -282,6 +274,7 @@ class Dropdown extends React.Component<Props, State> {
     }
   }
 
+  @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })

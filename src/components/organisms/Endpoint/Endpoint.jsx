@@ -128,24 +128,20 @@ class Endpoint extends React.Component<Props, State> {
     cancelButtonText: 'Cancel',
   }
 
+  state = {
+    invalidFields: [],
+    validating: false,
+    showErrorMessage: false,
+    endpoint: null,
+    isNew: null,
+  }
+
   scrollableRef: HTMLElement
   closeTimeout: TimeoutID
   contentPluginRef: DefaultContentPlugin
   isValidateButtonEnabled: boolean
   providerStoreObserver: () => void
   endpointValidationObserver: () => void
-
-  constructor() {
-    super()
-
-    this.state = {
-      invalidFields: [],
-      validating: false,
-      showErrorMessage: false,
-      endpoint: null,
-      isNew: null,
-    }
-  }
 
   componentWillMount() {
     this.componentWillReceiveProps(this.props)
@@ -222,7 +218,7 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   handleFieldsChange(items: { field: Field, value: any }[]) {
-    let endpoint: EndpointType = { ...this.state.endpoint }
+    let endpoint: any = { ...this.state.endpoint }
 
     items.forEach(item => {
       endpoint[item.field.name] = item.value

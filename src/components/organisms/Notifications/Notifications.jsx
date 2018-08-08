@@ -33,13 +33,8 @@ const Wrapper = styled.div``
 
 @observer
 class Notifications extends React.Component<{}> {
-  notificationsCount: number
   notificationSystem: NotificationSystem
-
-  constructor() {
-    super()
-    this.notificationsCount = 0
-  }
+  notificationsCount = 0
 
   componentDidMount() {
     observe(notificationStore.alerts, change => {

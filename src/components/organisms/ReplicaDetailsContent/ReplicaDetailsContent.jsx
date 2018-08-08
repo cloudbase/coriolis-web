@@ -91,12 +91,8 @@ type State = {
 }
 @observer
 class ReplicaDetailsContent extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      timezone: 'local',
-    }
+  state = {
+    timezone: 'local',
   }
 
   getLastExecution() {

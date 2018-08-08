@@ -62,7 +62,7 @@ const InstanceContent = styled.div`
     background: ${Palette.grayscale[1]};
   }
 `
-const CheckboxStyled = styled(Checkbox) `
+const CheckboxStyled = styled(Checkbox)`
   opacity: 0;
   transition: all ${StyleProps.animations.swift};
 `
@@ -201,15 +201,11 @@ type State = {
 }
 @observer
 class WizardInstances extends React.Component<Props, State> {
-  timeout: TimeoutID
-
-  constructor() {
-    super()
-
-    this.state = {
-      searchText: '',
-    }
+  state = {
+    searchText: '',
   }
+
+  timeout: TimeoutID
 
   handleSeachInputChange(searchText: string) {
     this.setState({ searchText })

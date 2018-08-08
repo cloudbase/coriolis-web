@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
+import autobind from 'autobind-decorator'
 
 import SearchButton from '../../atoms/SearchButton'
 import TextInput from '../../atoms/TextInput'
@@ -24,7 +25,7 @@ import StatusIcon from '../../atoms/StatusIcon'
 
 import StyleProps from '../../styleUtils/StyleProps'
 
-const Input = styled(TextInput) `
+const Input = styled(TextInput)`
   padding-left: 32px;
   ${props => props.loading || (props.showClose && props.value) ? 'padding-right: 32px;' : ''}
   width: 50px;
@@ -42,12 +43,12 @@ const Wrapper = styled.div`
   width: ${props => props.open ? props.width : '50px'};
   ${props => props.open ? InputAnimation(props) : ''}
 `
-const SearchButtonStyled = styled(SearchButton) `
+const SearchButtonStyled = styled(SearchButton)`
   position: absolute;
   top: 8px;
   left: 8px;
 `
-const StatusIconStyled = styled(StatusIcon) `
+const StatusIconStyled = styled(StatusIcon)`
   position: absolute;
   right: 8px;
   top: 8px;
@@ -69,7 +70,7 @@ type Props = {
 type State = {
   open: boolean,
   hover?: boolean,
-  focus?: boolean,
+  focus: boolean,
 }
 @observer
 class SearchInput extends React.Component<Props, State> {
@@ -79,20 +80,14 @@ class SearchInput extends React.Component<Props, State> {
     value: '',
   }
 
+  state = {
+    open: false,
+    value: '',
+    focus: false,
+  }
+
   input: HTMLElement
   itemMouseDown: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      open: false,
-      value: '',
-    }
-
-    // $FlowIssue
-    this.handlePageClick = this.handlePageClick.bind(this)
-  }
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
@@ -104,6 +99,7 @@ class SearchInput extends React.Component<Props, State> {
     window.removeEventListener('mousedown', this.handlePageClick, false)
   }
 
+  @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
       this.setState({ open: false })

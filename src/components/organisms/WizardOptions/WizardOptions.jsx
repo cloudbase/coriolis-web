@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
+import autobind from 'autobind-decorator'
 
 import Tooltip from '../../atoms/Tooltip'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -66,13 +67,6 @@ type Props = {
 }
 @observer
 class WizardOptions extends React.Component<Props> {
-  constructor() {
-    super()
-
-    // $FlowIssue
-    this.handleResize = this.handleResize.bind(this)
-  }
-
   componentDidMount() {
     window.addEventListener('resize', this.handleResize)
   }
@@ -124,6 +118,7 @@ class WizardOptions extends React.Component<Props> {
     return fieldsSchema
   }
 
+  @autobind
   handleResize() {
     this.setState({})
   }

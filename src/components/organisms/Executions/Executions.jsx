@@ -98,12 +98,8 @@ type State = {
 }
 @observer
 class Executions extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      selectedExecution: null,
-    }
+  state = {
+    selectedExecution: null,
   }
 
   componentWillMount() {

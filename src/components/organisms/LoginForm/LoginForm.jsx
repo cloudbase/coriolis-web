@@ -99,13 +99,9 @@ class LoginForm extends React.Component<Props, State> {
     className: '',
   }
 
-  constructor() {
-    super()
-
-    this.state = {
-      username: '',
-      password: '',
-    }
+  state = {
+    username: '',
+    password: '',
   }
 
   handleUsernameChange(username: string) {

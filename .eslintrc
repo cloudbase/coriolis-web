@@ -22,22 +22,56 @@
     }
   },
   "rules": {
-    "react/sort-comp": [1, {
-      "order": [
-        "static-methods",
-        "type-annotations",
-        "lifecycle",
-        "/^set.+$/",
-        "/^get.+$/",
-        "/^is.+$/",
-        "/^has.+$/",
-        "/^handle.+$/",
-        "everything-else",
-        "render"
-      ]
-    }],
-    "semi": [2, "never"],
-    "comma-dangle": [2, "always-multiline"],
+    "react/sort-comp": [
+      1,
+      {
+        "order": [
+          "static-methods",
+          "displayName",
+          "propTypes",
+          "contextTypes",
+          "childContextTypes",
+          "mixins",
+          "statics",
+          "defaultProps",
+          "state",
+          "type-annotations",
+          "instance-variables",
+          "getters",
+          "setters",
+          "constructor",
+          "getDefaultProps",
+          "getInitialState",
+          "getChildContext",
+          "getDerivedStateFromProps",
+          "lifecycle",
+          "everything-else",
+          "^handle.+$",
+          "render"
+        ],
+        "groups": {
+          "lifecycle": [
+            "componentWillMount",
+            "componentDidMount",
+            "componentWillReceiveProps",
+            "shouldComponentUpdate",
+            "componentWillUpdate",
+            "getSnapshotBeforeUpdate",
+            "componentDidUpdate",
+            "componentDidCatch",
+            "componentWillUnmount"
+          ]
+        }
+      }
+    ],
+    "semi": [
+      2,
+      "never"
+    ],
+    "comma-dangle": [
+      2,
+      "always-multiline"
+    ],
     "newline-per-chained-call": 0,
     "class-methods-use-this": 0,
     "max-len": 0,

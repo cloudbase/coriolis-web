@@ -140,12 +140,8 @@ class Switch extends React.Component<Props, State> {
     height: 24,
   }
 
-  constructor() {
-    super()
-
-    this.state = {
-      lastChecked: null,
-    }
+  state = {
+    lastChecked: null,
   }
 
   getLabel() {

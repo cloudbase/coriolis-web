@@ -18,6 +18,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
+import autobind from 'autobind-decorator'
 
 import AutocompleteInput from '../../atoms/AutocompleteInput'
 import { Tip, updateTipStyle, scrollItemIntoView } from '../Dropdown'
@@ -120,6 +121,13 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     noItemsMessage: 'No results found',
   }
 
+  state = {
+    showDropdownList: false,
+    firstItemHover: false,
+    searchValue: '',
+    filteredItems: [],
+  }
+
   buttonRef: HTMLElement
   listRef: HTMLElement
   listItemsRef: HTMLElement
@@ -128,23 +136,6 @@ class AutocompleteDropdown extends React.Component<Props, State> {
   scrollableParent: HTMLElement
   buttonRect: ClientRect
   itemMouseDown: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDropdownList: false,
-      firstItemHover: false,
-      searchValue: '',
-      filteredItems: [],
-    }
-
-    // $FlowIssue
-    this.handlePageClick = this.handlePageClick.bind(this)
-
-    // $FlowIssue
-    this.handleScroll = this.handleScroll.bind(this)
-  }
 
   componentWillMount() {
     this.setState({
@@ -218,6 +209,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     })
   }
 
+  @autobind
   handleScroll() {
     if (this.buttonRef) {
       if (DomUtils.isElementInViewport(this.buttonRef, this.scrollableParent)) {
@@ -229,6 +221,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     }
   }
 
+  @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })

@@ -69,12 +69,8 @@ class ReplicaExecutionOptions extends React.Component<Props, State> {
     executionLabel: 'Execute',
   }
 
-  constructor() {
-    super()
-
-    this.state = {
-      fields: [...executionOptions],
-    }
+  state = {
+    fields: [...executionOptions],
   }
 
   componentDidMount() {

@@ -71,23 +71,20 @@ type State = {
   showEndpointModal: boolean,
   showUserModal: boolean,
   showProjectModal: boolean,
-  providerType?: string,
+  providerType: ?string,
 }
 @observer
 class PageHeader extends React.Component<Props, State> {
+  state = {
+    showChooseProviderModal: false,
+    showEndpointModal: false,
+    showUserModal: false,
+    showProjectModal: false,
+    providerType: null,
+  }
+
   pollTimeout: TimeoutID
   stopPolling: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      showChooseProviderModal: false,
-      showEndpointModal: false,
-      showUserModal: false,
-      showProjectModal: false,
-    }
-  }
 
   componentWillMount() {
     this.stopPolling = false
