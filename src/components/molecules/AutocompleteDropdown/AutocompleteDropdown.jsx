@@ -184,17 +184,17 @@ class AutocompleteDropdown extends React.Component<Props, State> {
   getLabel(item: any) {
     let labelField = this.props.labelField || 'label'
 
-    if (item === null || item === undefined) {
+    if (item == null) {
       return ''
     }
 
-    return (item[labelField] !== null && item[labelField] !== undefined && item[labelField].toString()) || item.toString()
+    return (item[labelField] != null && item[labelField].toString()) || item.toString()
   }
 
   getValue(item: any) {
     let valueField = this.props.valueField || 'value'
 
-    if (item === null || item === undefined) {
+    if (item == null) {
       return null
     }
 
@@ -202,7 +202,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       return item
     }
 
-    return (item[valueField] !== null && item[valueField] !== undefined && item[valueField].toString()) || null
+    return (item[valueField] != null && item[valueField].toString()) || null
   }
 
   getFilteredItems(props?: ?Props, searchValue?: string): any[] {
@@ -360,7 +360,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
               onMouseLeave={() => { this.handleItemMouseLeave(i) }}
               onClick={() => { this.handleItemClick(item) }}
               selected={value !== null && value === selectedValue}
-              dim={this.props.dimNullValue && (value === null || value === undefined)}
+              dim={this.props.dimNullValue && value == null}
             >
               {label}
               {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}

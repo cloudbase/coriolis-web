@@ -23,7 +23,7 @@ const updateSchedule = (schedules, id, data) => {
   return schedules.map(schedule => {
     if (schedule.id === id) {
       let newSchedule = { ...schedule, ...data }
-      if (data.schedule !== null && data.schedule !== undefined && Object.keys(data.schedule).length) {
+      if (data.schedule != null && Object.keys(data.schedule).length) {
         newSchedule.schedule = { ...schedule.schedule, ...data.schedule || {} }
       }
       return newSchedule

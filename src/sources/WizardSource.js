@@ -34,7 +34,7 @@ class WizardSource {
       notes: '',
     }
 
-    if (data.options && data.options.skip_os_morphing !== null && data.options.skip_os_morphing !== undefined) {
+    if (data.options && data.options.skip_os_morphing != null) {
       payload[type].skip_os_morphing = data.options.skip_os_morphing
     }
 

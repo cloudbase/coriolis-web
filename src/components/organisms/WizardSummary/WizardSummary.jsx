@@ -150,21 +150,21 @@ class WizardSummary extends React.Component<Props> {
       return null
     }
 
-    if (scheduleInfo.month === undefined || scheduleInfo.month === null) {
+    if (scheduleInfo.month == null) {
       monthLabel = 'Every month'
     } else {
       monthLabel = `Every ${moment.months()[scheduleInfo.month ? scheduleInfo.month - 1 : 0]}`
     }
 
     let dayOfMonthLabel
-    if (scheduleInfo.dom === null || scheduleInfo.dom === undefined) {
+    if (scheduleInfo.dom == null) {
       dayOfMonthLabel = 'every day'
     } else {
       dayOfMonthLabel = `every ${DateUtils.getOrdinalDay(scheduleInfo.dom)}`
     }
 
     let dayOfWeekLabel
-    if (scheduleInfo.dow === null || scheduleInfo.dow === undefined) {
+    if (scheduleInfo.dow == null) {
       dayOfWeekLabel = 'every weekday'
     } else {
       // $FlowIssue
@@ -174,13 +174,13 @@ class WizardSummary extends React.Component<Props> {
 
     let padNumber = number => (number || 0) < 10 ? `0${number || 0}` : (number || 0).toString()
     let timeLabel
-    if (scheduleInfo.minute === null || scheduleInfo.minute === undefined) {
-      if (scheduleInfo.hour === null || scheduleInfo.hour === undefined) {
+    if (scheduleInfo.minute == null) {
+      if (scheduleInfo.hour == null) {
         timeLabel = 'every hour, every minute'
       } else {
         timeLabel = `at ${padNumber(scheduleInfo.hour)} o'clock, every minute`
       }
-    } else if (scheduleInfo.hour === null || scheduleInfo.hour === undefined) {
+    } else if (scheduleInfo.hour == null) {
       timeLabel = `every hour, at minute ${padNumber(scheduleInfo.minute)}`
     } else {
       timeLabel = `at ${padNumber(scheduleInfo.hour)}:${padNumber(scheduleInfo.minute)}`
@@ -249,9 +249,7 @@ class WizardSummary extends React.Component<Props> {
           {this.props.wizardType === 'replica' ? executeNowOption : null}
           {this.props.data.selectedInstances && this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
           {data.options ? Object.keys(data.options).map(optionName => {
-            if (optionName === 'execute_now' || optionName === 'separate_vm'
-              // $FlowIssue  
-              || data.options[optionName] === null || data.options[optionName] === undefined) {
+            if (optionName === 'execute_now' || optionName === 'separate_vm' || !data.options || data.options[optionName] == null) {
               return null
             }
 
@@ -275,7 +273,7 @@ class WizardSummary extends React.Component<Props> {
   renderNetworksSection() {
     let data = this.props.data
 
-    if (data.networks === null || data.networks === undefined) {
+    if (data.networks == null) {
       return null
     }
 

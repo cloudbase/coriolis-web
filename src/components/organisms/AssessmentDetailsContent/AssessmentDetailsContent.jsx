@@ -97,7 +97,7 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
-const TableStyled = styled(Table) `
+const TableStyled = styled(Table)`
   margin-top: 62px;
   ${props => props.addWidthPadding ? css`
     margin-left: -24px;
@@ -445,7 +445,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
     }
 
     if (this.props.instancesDetailsLoading) {
-      if (this.props.instancesDetailsProgress !== undefined && this.props.instancesDetailsProgress !== null) {
+      if (this.props.instancesDetailsProgress != null) {
         loadingProgress = Math.round(this.props.instancesDetailsProgress * 100)
       }
       message = 'Loading instances details, please wait ...'

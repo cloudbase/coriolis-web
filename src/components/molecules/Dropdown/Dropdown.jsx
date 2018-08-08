@@ -254,21 +254,21 @@ class Dropdown extends React.Component<Props, State> {
   getLabel(item: any) {
     let labelField = this.props.labelField || 'label'
 
-    if (item === null || item === undefined) {
+    if (item == null) {
       return this.props.noSelectionMessage
     }
 
-    return (item[labelField] !== null && item[labelField] !== undefined && item[labelField].toString()) || (item.value && item.value.toString()) || item.toString()
+    return (item[labelField] != null && item[labelField].toString()) || (item.value && item.value.toString()) || item.toString()
   }
 
   getValue(item: any) {
     let valueField = this.props.valueField || 'value'
 
-    if (item === null || item === undefined) {
+    if (item == null) {
       return null
     }
 
-    return (item[valueField] !== null && item[valueField] !== undefined && item[valueField].toString()) || this.getLabel(item)
+    return (item[valueField] != null && item[valueField].toString()) || this.getLabel(item)
   }
 
   handleScroll() {

@@ -36,7 +36,7 @@ class ReplicaSourceUtils {
       return executions
     }
 
-    return executions.filter(execution => execution.deleted_at === null || execution.deleted_at === undefined)
+    return executions.filter(execution => execution.deleted_at == null)
   }
 
   static sortReplicas(replicas) {
