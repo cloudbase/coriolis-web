@@ -198,7 +198,7 @@ class WizardOptionsField extends React.Component<Props> {
         field = this.renderSwitch({ triState: true })
         break
       case 'string':
-        if (this.props.enum) {
+        if (this.props.enum && this.props.enum.length) {
           field = this.renderEnumDropdown()
         } else {
           field = this.renderTextInput()
