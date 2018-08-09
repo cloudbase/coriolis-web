@@ -52,7 +52,7 @@ class AssessmentSource {
       if (option.name === 'use_replica') {
         return
       }
-      if (option.value !== null && option.value !== undefined) {
+      if (option.value != null) {
         payload[type][option.name] = option.value
       }
     })

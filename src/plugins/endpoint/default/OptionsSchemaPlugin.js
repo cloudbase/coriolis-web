@@ -71,9 +71,7 @@ export const defaultGetDestinationEnv = (data: WizardData): any => {
 
   if (data.options) {
     Object.keys(data.options).forEach(optionName => {
-      if (specialOptions.find(o => o === optionName)
-        // $FlowIssue
-        || data.options[optionName] === null || data.options[optionName] === undefined) {
+      if (specialOptions.find(o => o === optionName) || !data.options || data.options[optionName] == null) {
         return
       }
       if (optionName.indexOf('/') > 0) {

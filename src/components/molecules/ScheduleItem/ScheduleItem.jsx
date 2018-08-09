@@ -109,11 +109,11 @@ type Props = {
 @observer
 class ScheduleItem extends React.Component<Props> {
   getFieldValue(items: Field[], fieldName: string, zeroBasedIndex?: boolean, defaultSelectedIndex?: number) {
-    if (this.props.item.schedule === null || this.props.item.schedule === undefined) {
+    if (this.props.item.schedule == null) {
       return defaultSelectedIndex !== undefined ? items[defaultSelectedIndex] : items[0]
     }
 
-    if (this.props.item.schedule[fieldName] === null || this.props.item.schedule[fieldName] === undefined) {
+    if (this.props.item.schedule[fieldName] == null) {
       return items[0]
     }
 
@@ -153,7 +153,7 @@ class ScheduleItem extends React.Component<Props> {
   }
 
   handleHourChange(hour: number) {
-    if (this.props.timezone === 'local' && hour !== null && hour !== undefined) {
+    if (this.props.timezone === 'local' && hour != null) {
       hour = DateUtils.getUtcHour(hour)
     }
 
@@ -177,7 +177,7 @@ class ScheduleItem extends React.Component<Props> {
     executionOptions.forEach(o => {
       let scheduleValue = this.props.item[o.name]
       let optionValue = o.defaultValue !== undefined ? o.defaultValue : false
-      if (scheduleValue !== undefined && scheduleValue !== null && scheduleValue !== optionValue) {
+      if (scheduleValue != null && scheduleValue !== optionValue) {
         isChanged = true
       }
     })

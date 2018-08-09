@@ -41,7 +41,7 @@ module.exports = app => {
     let url = req.url.substr('/proxy/'.length)
     let headers = {}
     forwardHeaders.forEach(headerName => {
-      if (req.headers[headerName] !== null && req.headers[headerName] !== undefined) {
+      if (req.headers[headerName] != null) {
         headers[headerName] = req.headers[headerName]
       }
     })

@@ -202,11 +202,11 @@ class WizardPageContent extends React.Component<Props, State> {
           return false
         }
         if (fieldValue === undefined) {
-          return field.default !== null && field.default !== undefined
+          return field.default != null
         }
         return Boolean(fieldValue)
       }
-      return field.default !== null && field.default !== undefined
+      return field.default != null
     }
 
     let schema = this.props.providerStore.optionsSchema

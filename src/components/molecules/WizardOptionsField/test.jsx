@@ -54,13 +54,13 @@ describe('WizardOptionsField Component', () => {
 
   it('renders enum string', () => {
     let wrapper = wrap({
-      name: 'the_name',
+      name: 'port_reuse_policy',
       type: 'string',
       value: 'reuse_ports',
       enum: ['keep_mac', 'reuse_ports', 'replace_mac'],
     })
-    expect(wrapper.find('enumDropdown-the_name').prop('selectedItem').label).toBe('Reuse Existing Ports')
-    expect(wrapper.find('enumDropdown-the_name').prop('items')[3].value).toBe('replace_mac')
+    expect(wrapper.find('enumDropdown-port_reuse_policy').prop('selectedItem').label).toBe('Reuse Existing Ports')
+    expect(wrapper.find('enumDropdown-port_reuse_policy').prop('items')[3].value).toBe('replace_mac')
   })
 
   it('renders object table', () => {

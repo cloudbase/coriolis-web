@@ -17,11 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 
 import UserSource from './UserSource'
-import ObjectUtils from '../utils/ObjectUtils'
 import { servicesUrl, coriolisUrl } from '../config'
-/* eslint import/no-duplicates: off */
-import type { Project, Role } from '../types/Project'
-import type { RoleAssignment } from '../types/Project'
+import type { Project, Role, RoleAssignment } from '../types/Project'
 import type { User } from '../types/User'
 
 class ProjectsSource {
@@ -87,13 +84,13 @@ class ProjectsSource {
 
   static update(projectId: string, project: Project): Promise<Project> {
     let data = { project: {} }
-    if (ObjectUtils.isValid(project.name)) {
+    if (project.name != null) {
       data.project.name = project.name
     }
-    if (ObjectUtils.isValid(project.description)) {
+    if (project.description != null) {
       data.project.description = project.description
     }
-    if (ObjectUtils.isValid(project.enabled)) {
+    if (project.description != null) {
       data.project.enabled = project.enabled
     }
 
@@ -115,10 +112,10 @@ class ProjectsSource {
     let data = { project: {} }
 
     data.project.name = project.name
-    if (ObjectUtils.isValid(project.enabled)) {
+    if (project.enabled != null) {
       data.project.enabled = project.enabled
     }
-    if (ObjectUtils.isValid(project.description)) {
+    if (project.description != null) {
       data.project.description = project.description
     }
     let addedProject: Project

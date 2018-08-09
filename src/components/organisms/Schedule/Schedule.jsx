@@ -206,7 +206,7 @@ class Schedule extends React.Component<Props, State> {
     executionOptions.forEach(o => {
       let scheduleValue = schedule[o.name]
       let optionValue = o.defaultValue !== undefined ? o.defaultValue : false
-      if (scheduleValue !== undefined && scheduleValue !== null && scheduleValue !== optionValue) {
+      if (scheduleValue != null && scheduleValue !== optionValue) {
         isChanged = true
       }
     })
@@ -227,7 +227,7 @@ class Schedule extends React.Component<Props, State> {
       return false
     }
     let data = isRootField ? unsavedSchedule : unsavedSchedule.schedule
-    if (data && data[fieldName] !== undefined && data[fieldName] !== null) {
+    if (data && data[fieldName] != null) {
       return true
     }
     return false

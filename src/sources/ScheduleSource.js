@@ -26,8 +26,8 @@ class ScheduleSource {
     let payload = {
       schedule: {},
       expiration_date: null,
-      enabled: scheduleData.enabled === null || scheduleData.enabled === undefined ? false : scheduleData.enabled,
-      shutdown_instance: scheduleData.shutdown_instances === null || scheduleData.shutdown_instances === undefined ? false : scheduleData.shutdown_instances,
+      enabled: scheduleData.enabled == null ? false : scheduleData.enabled,
+      shutdown_instance: scheduleData.shutdown_instances == null ? false : scheduleData.shutdown_instances,
     }
 
     if (scheduleData.expiration_date) {
@@ -35,10 +35,9 @@ class ScheduleSource {
       payload.expiration_date = moment(scheduleData.expiration_date).toISOString()
     }
 
-    if (scheduleData.schedule !== null && scheduleData.schedule !== undefined) {
+    if (scheduleData.schedule != null) {
       Object.keys(scheduleData.schedule).forEach(prop => {
-        // $FlowIssue
-        if (scheduleData.schedule[prop] !== null && scheduleData.schedule[prop] !== undefined) {
+        if (scheduleData.schedule && scheduleData.schedule[prop] != null) {
           payload.schedule[prop] = scheduleData.schedule[prop]
         }
       })
@@ -104,21 +103,21 @@ class ScheduleSource {
     unsavedData: ?Schedule
   ): Promise<Schedule> {
     let payload = {}
-    if (scheduleData.enabled !== null && scheduleData.enabled !== undefined) {
+    if (scheduleData.enabled != null) {
       payload.enabled = scheduleData.enabled
     }
-    if (scheduleData.shutdown_instances !== null && scheduleData.shutdown_instances !== undefined) {
+    if (scheduleData.shutdown_instances != null) {
       payload.shutdown_instance = scheduleData.shutdown_instances
     }
     if (unsavedData && unsavedData.expiration_date) {
       payload.expiration_date = moment(unsavedData.expiration_date).toISOString()
     }
-    if (unsavedData && unsavedData.schedule !== null && unsavedData.schedule !== undefined && Object.keys(unsavedData.schedule).length) {
+    if (unsavedData && unsavedData.schedule != null && Object.keys(unsavedData.schedule).length) {
       if (scheduleOldData) {
         payload.schedule = { ...scheduleOldData.schedule }
       }
       Object.keys(unsavedData.schedule).forEach(prop => {
-        if (unsavedData && unsavedData.schedule && unsavedData.schedule[prop] !== null && unsavedData.schedule[prop] !== undefined) {
+        if (unsavedData && unsavedData.schedule && unsavedData.schedule[prop] != null) {
           payload.schedule[prop] = unsavedData.schedule[prop]
         } else {
           delete payload.schedule[prop]

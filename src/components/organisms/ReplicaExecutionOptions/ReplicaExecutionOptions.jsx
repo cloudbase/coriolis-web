@@ -49,7 +49,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField) `
+const WizardOptionsFieldStyled = styled(WizardOptionsField)`
   width: 319px;
   justify-content: space-between;
 `
@@ -86,7 +86,7 @@ class ReplicaExecutionOptions extends React.Component<Props, State> {
   }
 
   getFieldValue(field: Field) {
-    if (!this.props.options || this.props.options[field.name] === null || this.props.options[field.name] === undefined) {
+    if (!this.props.options || this.props.options[field.name] == null) {
       return field.value
     }
 

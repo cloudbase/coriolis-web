@@ -34,7 +34,6 @@ import notificationStore from '../../../stores/NotificationStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import O from '../../../utils/ObjectUtils'
 import { wizardConfig, executionOptions, providersWithExtraOptions } from '../../../config'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
@@ -312,7 +311,7 @@ class WizardPage extends React.Component<Props, State> {
         let envData = {}
         validFields.forEach(fn => {
           envData[fn] = wizardStore.data.options ? wizardStore.data.options[fn] : null
-          if (!O.isValid(envData[fn])) {
+          if (envData[fn] == null) {
             let schemaField = findFieldInSchema(fn)
             if (schemaField && schemaField.default) {
               envData[fn] = schemaField.default
@@ -403,7 +402,7 @@ class WizardPage extends React.Component<Props, State> {
     let data = wizardStore.data
     let separateVms = true
 
-    if (data.options && data.options.separate_vm !== null && data.options.separate_vm !== undefined) {
+    if (data.options && data.options.separate_vm != null) {
       separateVms = data.options.separate_vm
     }
 
@@ -436,7 +435,7 @@ class WizardPage extends React.Component<Props, State> {
   executeCreatedReplica(replica: MainItem) {
     let options = wizardStore.data.options
     let executeNow = true
-    if (options && options.execute_now !== null && options.execute_now !== undefined) {
+    if (options && options.execute_now != null) {
       executeNow = options.execute_now
     }
     if (!executeNow) {
@@ -444,7 +443,7 @@ class WizardPage extends React.Component<Props, State> {
     }
 
     let executeNowOptions = executionOptions.map(field => {
-      if (options && options[field.name] !== null && options[field.name] !== undefined) {
+      if (options && options[field.name] != null) {
         return { name: field.name, value: options[field.name] }
       }
       return field

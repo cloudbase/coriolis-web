@@ -182,7 +182,7 @@ class UserSource {
     if (user.description || oldData.description) {
       data.user.description = user.description
     }
-    if (user.enabled !== undefined && user.enabled !== null) {
+    if (user.enabled != null) {
       data.user.enabled = user.enabled
     }
     if (user.name) {
@@ -231,7 +231,7 @@ class UserSource {
     let data = { user: {} }
     data.user.name = user.name
     data.user.password = user.password || ''
-    data.user.enabled = user.enabled === null || user.enabled === undefined ? true : user.enabled
+    data.user.enabled = user.enabled == null ? true : user.enabled
 
     if (user.email) {
       data.user.email = user.email

@@ -62,7 +62,7 @@ const getInputBorderColor = props => {
     return Palette.grayscale[5]
   }
 
-  if (props.triState && (props.checked === null || props.checked === undefined)) {
+  if (props.triState && props.checked == null) {
     return Palette.grayscale[2]
   }
 
@@ -84,7 +84,7 @@ const getThumbLeft = props => {
     return props.height - 1
   }
 
-  if (props.triState && (props.checked === null || props.checked === undefined)) {
+  if (props.triState && props.checked == null) {
     return (props.height / 2) - 1
   }
 
@@ -127,7 +127,7 @@ type Props = {
   checkedLabel: string,
   uncheckedLabel: string,
   'data-test-id'?: string,
-  style: {[string]: mixed},
+  style: { [string]: mixed },
 }
 type State = {
   lastChecked: ?boolean,
@@ -150,7 +150,7 @@ class Switch extends React.Component<Props, State> {
 
   getLabel() {
     let label = this.props.checked ? this.props.checkedLabel : this.props.uncheckedLabel
-    if (this.props.triState && (this.props.checked === null || this.props.checked === undefined)) {
+    if (this.props.triState && this.props.checked == null) {
       label = 'Not Set'
     }
 
