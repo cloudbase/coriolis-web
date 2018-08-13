@@ -51,15 +51,11 @@ type State = {
 }
 @observer
 class Tasks extends React.Component<Props, State> {
-  dragStartPosition: ?{ x: number, y: number }
-
-  constructor() {
-    super()
-
-    this.state = {
-      openedItems: [],
-    }
+  state = {
+    openedItems: [],
   }
+
+  dragStartPosition: ?{ x: number, y: number }
 
   componentWillMount() {
     this.componentWillReceiveProps(this.props)

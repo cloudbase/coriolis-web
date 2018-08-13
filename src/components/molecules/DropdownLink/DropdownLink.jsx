@@ -18,6 +18,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
+import autobind from 'autobind-decorator'
 
 import SearchInput from '../../molecules/SearchInput'
 
@@ -151,6 +152,11 @@ class DropdownLink extends React.Component<Props, State> {
     noItemsLabel: 'No items',
   }
 
+  state = {
+    showDropdownList: false,
+    searchText: '',
+  }
+
   itemMouseDown: boolean
   labelRef: HTMLElement
   listItemsRef: HTMLElement
@@ -158,18 +164,6 @@ class DropdownLink extends React.Component<Props, State> {
   arrowRef: HTMLElement
   tipRef: HTMLElement
   searchInputWrapperRef: HTMLElement
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDropdownList: false,
-      searchText: '',
-    }
-
-    const self: any = this
-    self.handlePageClick = this.handlePageClick.bind(this)
-  }
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
@@ -214,6 +208,7 @@ class DropdownLink extends React.Component<Props, State> {
     )
   }
 
+  @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })

@@ -21,7 +21,7 @@ import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
-const ToggleButtonBarStyled = styled(ToggleButtonBar) `
+const ToggleButtonBarStyled = styled(ToggleButtonBar)`
   margin-top: 16px;
 `
 
@@ -42,12 +42,11 @@ type State = {
   useAdvancedOptions: boolean,
 }
 class ContentPlugin extends React.Component<Props, State> {
-  constructor() {
-    super()
-    this.state = {
-      useAdvancedOptions: false,
-    }
+  state = {
+    useAdvancedOptions: false,
   }
+
+  previouslySelectedChoices: string[] = []
 
   componentDidMount() {
     this.props.onRef(this)
@@ -95,8 +94,6 @@ class ContentPlugin extends React.Component<Props, State> {
   handleAdvancedOptionsToggle(useAdvancedOptions: boolean) {
     this.setState({ useAdvancedOptions })
   }
-
-  previouslySelectedChoices: string[] = []
 
   findInvalidFields = () => {
     let inputChoices = ['user_domain', 'project_domain']

@@ -49,18 +49,14 @@ type State = {
 }
 @observer
 class ReplicasPage extends React.Component<{}, State> {
+  state = {
+    showDeleteReplicaConfirmation: false,
+    confirmationItems: null,
+    modalIsOpen: false,
+  }
+
   pollTimeout: TimeoutID
   stopPolling: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDeleteReplicaConfirmation: false,
-      confirmationItems: null,
-      modalIsOpen: false,
-    }
-  }
 
   componentDidMount() {
     document.title = 'Coriolis Replicas'

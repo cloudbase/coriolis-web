@@ -91,12 +91,8 @@ type State = {
 }
 @observer
 class SideMenu extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      open: false,
-    }
+  state = {
+    open: false,
   }
 
   handleHamburgerClick() {

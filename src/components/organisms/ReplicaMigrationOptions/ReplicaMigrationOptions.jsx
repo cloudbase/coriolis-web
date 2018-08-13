@@ -50,7 +50,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField) `
+const WizardOptionsFieldStyled = styled(WizardOptionsField)`
   width: 319px;
   justify-content: space-between;
   margin-bottom: 32px;
@@ -63,28 +63,25 @@ type Props = {
 type State = {
   fields: Field[],
 }
+let defaultFields: Field[] = [
+  {
+    name: 'clone_disks',
+    type: 'strict-boolean',
+    value: true,
+  },
+  {
+    name: 'force',
+    type: 'strict-boolean',
+  },
+  {
+    name: 'skip_os_morphing',
+    type: 'strict-boolean',
+  },
+]
 @observer
 class ReplicaMigrationOptions extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      fields: [
-        {
-          name: 'clone_disks',
-          type: 'strict-boolean',
-          value: true,
-        },
-        {
-          name: 'force',
-          type: 'strict-boolean',
-        },
-        {
-          name: 'skip_os_morphing',
-          type: 'strict-boolean',
-        },
-      ],
-    }
+  state = {
+    fields: defaultFields,
   }
 
   componentDidMount() {

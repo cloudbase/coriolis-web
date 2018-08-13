@@ -20,6 +20,7 @@ import { observer } from 'mobx-react'
 import styled, { injectGlobal } from 'styled-components'
 import Datetime from 'react-datetime'
 import moment from 'moment'
+import autobind from 'autobind-decorator'
 
 import DropdownButton from '../../atoms/DropdownButton'
 
@@ -63,25 +64,15 @@ type State = {
 }
 @observer
 class DatetimePicker extends React.Component<Props, State> {
+  state = {
+    showPicker: false,
+    date: null,
+  }
+
   itemMouseDown: boolean
   portalRef: HTMLElement
   buttonRef: HTMLElement
   scrollableParent: HTMLElement
-
-  constructor() {
-    super()
-
-    this.state = {
-      showPicker: false,
-      date: null,
-    }
-
-    // $FlowIssue
-    this.handlePageClick = this.handlePageClick.bind(this)
-
-    // $FlowIssue
-    this.handleScroll = this.handleScroll.bind(this)
-  }
 
   componentWillMount() {
     if (this.props.value) {
@@ -136,6 +127,7 @@ class DatetimePicker extends React.Component<Props, State> {
     return this.props.isValidDate(currentDate, selectedDate)
   }
 
+  @autobind
   handleScroll() {
     if (this.buttonRef) {
       if (DomUtils.isElementInViewport(this.buttonRef, this.scrollableParent)) {
@@ -146,6 +138,7 @@ class DatetimePicker extends React.Component<Props, State> {
     }
   }
 
+  @autobind
   handlePageClick(e: Event) {
     let path = DomUtils.getEventPath(e)
 

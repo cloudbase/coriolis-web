@@ -114,12 +114,12 @@ type State = {
 const testName = 'pdContent'
 @observer
 class ProjectDetailsContent extends React.Component<Props, State> {
-  selectedUser: ?User
-
   state = {
     showRemoveUserAlert: false,
     showDeleteProjectAlert: false,
   }
+
+  selectedUser: ?User
 
   handleRemoveUserAction(user: User) {
     this.selectedUser = user

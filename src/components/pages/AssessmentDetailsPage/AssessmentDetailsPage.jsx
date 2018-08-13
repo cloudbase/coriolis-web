@@ -57,18 +57,14 @@ type State = {
 }
 @observer
 class AssessmentDetailsPage extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      sourceEndpoint: null,
-      selectedVms: [],
-      selectedNetworks: [],
-      showMigrationOptions: false,
-      executeButtonDisabled: false,
-      vmSizes: {},
-      vmSearchValue: '',
-    }
+  state = {
+    sourceEndpoint: null,
+    selectedVms: [],
+    selectedNetworks: [],
+    showMigrationOptions: false,
+    executeButtonDisabled: false,
+    vmSizes: {},
+    vmSearchValue: '',
   }
 
   componentWillMount() {

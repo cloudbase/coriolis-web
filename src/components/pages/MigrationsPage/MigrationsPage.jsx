@@ -50,19 +50,15 @@ type State = {
 }
 @observer
 class MigrationsPage extends React.Component<{}, State> {
+  state = {
+    showDeleteMigrationConfirmation: false,
+    showCancelMigrationConfirmation: false,
+    confirmationItems: null,
+    modalIsOpen: false,
+  }
+
   pollTimeout: TimeoutID
   stopPolling: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDeleteMigrationConfirmation: false,
-      showCancelMigrationConfirmation: false,
-      confirmationItems: null,
-      modalIsOpen: false,
-    }
-  }
 
   componentDidMount() {
     document.title = 'Coriolis Migrations'

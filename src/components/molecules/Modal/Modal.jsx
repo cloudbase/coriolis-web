@@ -18,6 +18,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import Modal from 'react-modal'
+import autobind from 'autobind-decorator'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -51,13 +52,6 @@ class NewModal extends React.Component<Props> {
   scrollableRef: HTMLDivElement
   windowScrollY: number
   modalDiv: ?HTMLDivElement
-
-  constructor() {
-    super()
-
-    const self: any = this
-    self.positionModal = this.positionModal.bind(this)
-  }
 
   componentWillMount() {
     if (this.props.componentRef) {
@@ -122,6 +116,7 @@ class NewModal extends React.Component<Props> {
     window.scroll(0, this.windowScrollY)
   }
 
+  @autobind
   positionModal(scrollOffset: number) {
     // $FlowIssue
     let pageNode = this.modalDiv && this.modalDiv.node.firstChild

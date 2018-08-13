@@ -37,12 +37,12 @@ type State = {
 }
 @observer
 class UsersPage extends React.Component<{}, State> {
-  pollTimeout: TimeoutID
-  stopPolling: boolean
-
   state = {
     modalIsOpen: false,
   }
+
+  pollTimeout: TimeoutID
+  stopPolling: boolean
 
   componentDidMount() {
     document.title = 'Users'

@@ -82,17 +82,13 @@ type State = {
   showPasteInput: boolean,
 }
 class ContentPlugin extends React.Component<Props, State> {
+  state = {
+    jsonConfig: '',
+    showPasteInput: false,
+  }
+
   cloudProfileChanged: boolean
   lastBlurValue: string
-
-  constructor() {
-    super()
-
-    this.state = {
-      jsonConfig: '',
-      showPasteInput: false,
-    }
-  }
 
   componentDidMount() {
     this.props.onRef(this)

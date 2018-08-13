@@ -41,12 +41,12 @@ type Props = {}
 type State = { modalIsOpen: boolean }
 @observer
 class AssessmentsPage extends React.Component<Props, State> {
-  disablePolling: boolean
-  pollTimeout: TimeoutID
-
   state = {
     modalIsOpen: false,
   }
+
+  disablePolling: boolean
+  pollTimeout: TimeoutID
 
   componentWillMount() {
     document.title = 'Coriolis Planning'

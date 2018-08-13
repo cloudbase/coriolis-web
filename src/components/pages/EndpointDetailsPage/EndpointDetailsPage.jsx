@@ -51,17 +51,13 @@ type State = {
 }
 @observer
 class EndpointDetailsPage extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      showDeleteEndpointConfirmation: false,
-      showValidationModal: false,
-      showEndpointModal: false,
-      showEndpointInUseModal: false,
-      showEndpointInUseLoadingModal: false,
-      endpointUsage: { replicas: [], migrations: [] },
-    }
+  state = {
+    showDeleteEndpointConfirmation: false,
+    showValidationModal: false,
+    showEndpointModal: false,
+    showEndpointInUseModal: false,
+    showEndpointInUseLoadingModal: false,
+    endpointUsage: { replicas: [], migrations: [] },
   }
 
   componentDidMount() {

@@ -40,7 +40,7 @@ const Image = styled.div`
 const Fields = styled.div`
   margin-top: 64px;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField) `
+const WizardOptionsFieldStyled = styled(WizardOptionsField)`
   width: 319px;
   justify-content: space-between;
   margin-bottom: 32px;
@@ -91,14 +91,10 @@ type State = {
 }
 @observer
 class AssessmentMigrationOptions extends React.Component<Props, State> {
-  constructor() {
-    super()
-
-    this.state = {
-      generalFields: [...generalFields],
-      migrationFields: [...migrationFields],
-      replicaFields: [...replicaFields],
-    }
+  state = {
+    generalFields: [...generalFields],
+    migrationFields: [...migrationFields],
+    replicaFields: [...replicaFields],
   }
 
   handleValueChange(field: Field, value: any) {

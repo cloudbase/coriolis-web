@@ -54,22 +54,19 @@ type State = {
   type: WizardType,
   showNewEndpointModal: boolean,
   nextButtonDisabled: boolean,
-  newEndpointType?: string,
+  newEndpointType: ?string,
   newEndpointFromSource?: boolean,
 }
 @observer
 class WizardPage extends React.Component<Props, State> {
-  contentRef: WizardPageContent
-
-  constructor() {
-    super()
-
-    this.state = {
-      type: 'migration',
-      showNewEndpointModal: false,
-      nextButtonDisabled: false,
-    }
+  state = {
+    type: 'migration',
+    showNewEndpointModal: false,
+    nextButtonDisabled: false,
+    newEndpointType: null,
   }
+
+  contentRef: WizardPageContent
 
   componentWillMount() {
     this.initializeState()

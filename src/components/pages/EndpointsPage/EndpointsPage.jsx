@@ -63,24 +63,20 @@ type State = {
 }
 @observer
 class EndpointsPage extends React.Component<{}, State> {
+  state = {
+    showDeleteEndpointsConfirmation: false,
+    confirmationItems: null,
+    showChooseProviderModal: false,
+    showEndpointModal: false,
+    providerType: null,
+    showEndpointsInUseModal: false,
+    modalIsOpen: false,
+    showDuplicateModal: false,
+    duplicating: false,
+  }
+
   pollTimeout: TimeoutID
   stopPolling: boolean
-
-  constructor() {
-    super()
-
-    this.state = {
-      showDeleteEndpointsConfirmation: false,
-      confirmationItems: null,
-      showChooseProviderModal: false,
-      showEndpointModal: false,
-      providerType: null,
-      showEndpointsInUseModal: false,
-      modalIsOpen: false,
-      showDuplicateModal: false,
-      duplicating: false,
-    }
-  }
 
   componentDidMount() {
     document.title = 'Coriolis Endpoints'
