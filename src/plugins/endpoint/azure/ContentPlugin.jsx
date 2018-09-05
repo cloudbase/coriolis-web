@@ -18,6 +18,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import TextArea from '../../../components/atoms/TextArea'
+import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 
 import Palette from '../../../components/styleUtils/Palette'
@@ -25,6 +26,9 @@ import StyleProps from '../../../components/styleUtils/StyleProps'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
+const ToggleButtonBarStyled = styled(ToggleButtonBar)`
+  margin-top: 16px;
+`
 const RadioGroup = styled.div`
   width: 100%;
 `
@@ -80,11 +84,13 @@ type Props = {
 type State = {
   jsonConfig: string,
   showPasteInput: boolean,
+  showAdvancedOptions: boolean,
 }
 class ContentPlugin extends React.Component<Props, State> {
   state = {
     jsonConfig: '',
     showPasteInput: false,
+    showAdvancedOptions: false,
   }
 
   cloudProfileChanged: boolean
@@ -95,7 +101,8 @@ class ContentPlugin extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if (this.cloudProfileChanged || prevState.showPasteInput !== this.state.showPasteInput) {
+    if (prevState.showAdvancedOptions !== this.state.showAdvancedOptions || this.cloudProfileChanged
+      || prevState.showPasteInput !== this.state.showPasteInput) {
       let scrollOffset = 0
       if (prevState.showPasteInput !== this.state.showPasteInput && this.state.showPasteInput) {
         scrollOffset = 100
@@ -156,6 +163,10 @@ class ContentPlugin extends React.Component<Props, State> {
     this.props.handleFieldChange(field, value)
   }
 
+  handleAdvancedOptionsToggle(showAdvancedOptions: boolean) {
+    this.setState({ showAdvancedOptions })
+  }
+
   findInvalidFields = () => {
     let invalidFields = []
     const find = fields => {
@@ -202,10 +213,12 @@ class ContentPlugin extends React.Component<Props, State> {
     )
   }
 
-  renderFieldRows(fields: Field[]) {
+  renderFieldRows(fields: Field[], skipRequiredCheck?: boolean) {
     const rows = []
     let lastField
-    fields.forEach((field, i) => {
+    let filteredFields = skipRequiredCheck || this.state.showAdvancedOptions ? fields : fields.filter(f => f.required)
+
+    filteredFields.forEach((field, i) => {
       const currentField = this.renderField(field)
       if (i % 2 !== 0) {
         rows.push((
@@ -214,7 +227,7 @@ class ContentPlugin extends React.Component<Props, State> {
             {currentField}
           </Row>
         ))
-      } else if (i === fields.length - 1) {
+      } else if (i === filteredFields.length - 1) {
         rows.push((
           <Row key={field.name}>
             {currentField}
@@ -267,7 +280,7 @@ class ContentPlugin extends React.Component<Props, State> {
     }
     const allowUntrustedField = loginTypeFieldItems.fields.find(f => f.name === 'allow_untrusted')
 
-    let renderedFields = this.renderFieldRows(fields.filter(f => f.name !== loginTypeField.name && f.name !== cloudProfileField.name))
+    let renderedFields = this.renderFieldRows(fields.filter(f => f.name !== loginTypeField.name && f.name !== cloudProfileField.name), true)
 
     const radioGroupRow = (
       <Row key="radio-group-row">
@@ -293,13 +306,16 @@ class ContentPlugin extends React.Component<Props, State> {
     renderedFields = renderedFields.concat(this.renderFieldRows(
       loginTypeFieldItems.fields
         .filter(f => f.name !== allowUntrustedField.name)
-        .concat([cloudProfileField])
+        .concat(cloudProfileField)
     ))
 
     const isCustomCloud = this.props.getFieldValue(cloudProfileField) === 'CustomCloud'
     if (isCustomCloud) {
-      // $FlowIgnore
-      renderedFields = renderedFields.concat(this.renderFieldRows(cloudProfileField.custom_cloud_fields))
+      renderedFields.pop()
+      renderedFields = renderedFields.concat(this.renderFieldRows(
+        // $FlowIgnore
+        [cloudProfileField, ...cloudProfileField.custom_cloud_fields]
+      ))
     }
 
     return (
@@ -307,6 +323,16 @@ class ContentPlugin extends React.Component<Props, State> {
         {renderedFields}
         {isCustomCloud ? this.renderPasteField() : null}
       </Fields>
+    )
+  }
+
+  renderSimpleAdvancedToggle() {
+    return (
+      <ToggleButtonBarStyled
+        items={[{ label: 'Simple', value: 'simple' }, { label: 'Advanced', value: 'advanced' }]}
+        selectedValue={this.state.showAdvancedOptions ? 'advanced' : 'simple'}
+        onChange={item => { this.handleAdvancedOptionsToggle(item.value === 'advanced') }}
+      />
     )
   }
 
@@ -318,6 +344,7 @@ class ContentPlugin extends React.Component<Props, State> {
 
     return (
       <Wrapper>
+        {this.renderSimpleAdvancedToggle()}
         {this.renderFields()}
       </Wrapper>
     )

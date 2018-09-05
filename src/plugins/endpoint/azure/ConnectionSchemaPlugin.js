@@ -60,6 +60,7 @@ const azureConnectionParse = schema => {
   let cloudProfileDropdown = {
     name: 'cloud_profile',
     type: 'string',
+    required: true,
     ...schema.properties.cloud_profile,
     custom_cloud_fields: [
       ...defaultSchemaToFields(schema.properties.custom_cloud_properties.properties.endpoints),
