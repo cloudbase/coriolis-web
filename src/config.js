@@ -93,6 +93,7 @@ export const wizardConfig = {
 // If the item has `envRequiredFields`, an additional API call will be made once the specified fields are filled
 export const providersWithExtraOptions = [
   'openstack',
+  'oracle_vm',
   {
     name: 'azure',
     envRequiredFields: ['location', 'resource_group'],
