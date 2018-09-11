@@ -351,7 +351,6 @@ class EndpointsPage extends React.Component<{}, State> {
           onRequestClose={() => { this.handleCloseEndpointModal() }}
         >
           <Endpoint
-            deleteOnCancel
             type={this.state.providerType}
             onCancelClick={() => { this.handleCloseEndpointModal() }}
           />
