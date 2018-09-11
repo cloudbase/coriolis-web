@@ -54,7 +54,7 @@ const Title = styled.div`
 `
 const Controls = styled.div`
   display: flex;
-  
+
   & > div {
     margin-left: 16px;
   }
@@ -269,7 +269,6 @@ class PageHeader extends React.Component<Props, State> {
           onRequestClose={() => { this.handleCloseEndpointModal() }}
         >
           <Endpoint
-            deleteOnCancel
             type={this.state.providerType}
             cancelButtonText="Back"
             onCancelClick={options => { this.handleBackEndpointModal(options) }}

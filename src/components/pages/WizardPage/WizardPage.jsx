@@ -491,7 +491,6 @@ class WizardPage extends React.Component<Props, State> {
           onRequestClose={() => { this.handleCloseNewEndpointModal() }}
         >
           <Endpoint
-            deleteOnCancel
             type={this.state.newEndpointType}
             onCancelClick={autoClose => { this.handleCloseNewEndpointModal(autoClose) }}
           />
