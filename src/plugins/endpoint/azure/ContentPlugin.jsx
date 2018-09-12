@@ -167,28 +167,37 @@ class ContentPlugin extends React.Component<Props, State> {
     this.setState({ showAdvancedOptions })
   }
 
+  getSelectedLoginTypeField() {
+    let loginTypeField = this.props.connectionInfoSchema.find(f => f.name === 'login_type')
+    return loginTypeField && loginTypeField.items ? loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)) : null
+  }
+
+  isServicePrincipalLogin() {
+    let selectedLoginTypeField = this.getSelectedLoginTypeField()
+    return selectedLoginTypeField && selectedLoginTypeField.name === 'service_principal_credentials'
+  }
+
   findInvalidFields = () => {
     let invalidFields = []
+    let selectedLoginTypeField = this.getSelectedLoginTypeField()
+    const isCustomCloud = this.props.getFieldValue({ name: 'cloud_profile' }) === 'CustomCloud'
+
     const find = fields => {
       if (!fields) {
         return
       }
       fields.forEach(field => {
-        if (field.required) {
-          let value = this.props.getFieldValue(field)
-          if (!value) {
+        if ((field.name === 'tenant' && (isCustomCloud || this.isServicePrincipalLogin())) || field.required) {
+          if (!this.props.getFieldValue(field)) {
             invalidFields.push(field.name)
           }
         }
       })
     }
     find(this.props.connectionInfoSchema)
-
-    let loginTypeField = this.props.connectionInfoSchema.find(f => f.name === 'login_type')
-    let selectedLoginTypeField = loginTypeField && loginTypeField.items ? loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)) : null
     find(selectedLoginTypeField && selectedLoginTypeField.fields)
 
-    if (this.props.getFieldValue({ name: 'cloud_profile' }) === 'CustomCloud') {
+    if (isCustomCloud) {
       // $FlowIgnore
       let customCloudFields = this.props.connectionInfoSchema.find(f => f.name === 'cloud_profile').custom_cloud_fields
       find(customCloudFields)
@@ -216,20 +225,26 @@ class ContentPlugin extends React.Component<Props, State> {
   renderFieldRows(fields: Field[], skipRequiredCheck?: boolean) {
     const rows = []
     let lastField
+
+    let tenantField = fields.find(f => f.name === 'tenant')
+    if (tenantField) {
+      tenantField.required = this.isServicePrincipalLogin() || this.props.getFieldValue({ name: 'cloud_profile' }) === 'CustomCloud'
+    }
+
     let filteredFields = skipRequiredCheck || this.state.showAdvancedOptions ? fields : fields.filter(f => f.required)
 
     filteredFields.forEach((field, i) => {
       const currentField = this.renderField(field)
       if (i % 2 !== 0) {
         rows.push((
-          <Row key={field.name}>
+          <Row key={`${lastField.key}-${field.name}`}>
             {lastField}
             {currentField}
           </Row>
         ))
       } else if (i === filteredFields.length - 1) {
         rows.push((
-          <Row key={field.name}>
+          <Row id={field.name}>
             {currentField}
           </Row>
         ))
@@ -280,7 +295,7 @@ class ContentPlugin extends React.Component<Props, State> {
     }
     const allowUntrustedField = loginTypeFieldItems.fields.find(f => f.name === 'allow_untrusted')
 
-    let renderedFields = this.renderFieldRows(fields.filter(f => f.name !== loginTypeField.name && f.name !== cloudProfileField.name), true)
+    let fieldsRows = this.renderFieldRows(fields.filter(f => f.name !== loginTypeField.name && f.name !== cloudProfileField.name), true)
 
     const radioGroupRow = (
       <Row key="radio-group-row">
@@ -296,31 +311,33 @@ class ContentPlugin extends React.Component<Props, State> {
       </Row>
     )
 
-    renderedFields.push(radioGroupRow)
+    fieldsRows.push(radioGroupRow)
     if (!loginTypeField || !loginTypeField.items) {
       return null
     }
     if (!loginTypeFieldItems || !loginTypeFieldItems.fields || !allowUntrustedField) {
       return null
     }
-    renderedFields = renderedFields.concat(this.renderFieldRows(
-      loginTypeFieldItems.fields
-        .filter(f => f.name !== allowUntrustedField.name)
-        .concat(cloudProfileField)
-    ))
+
+    let fieldsToRender = [
+      ...loginTypeFieldItems.fields.filter(f => f.name !== allowUntrustedField.name),
+      cloudProfileField,
+    ]
 
     const isCustomCloud = this.props.getFieldValue(cloudProfileField) === 'CustomCloud'
     if (isCustomCloud) {
-      renderedFields.pop()
-      renderedFields = renderedFields.concat(this.renderFieldRows(
+      fieldsToRender = [
+        ...fieldsToRender,
         // $FlowIgnore
-        [cloudProfileField, ...cloudProfileField.custom_cloud_fields]
-      ))
+        ...cloudProfileField.custom_cloud_fields,
+      ]
     }
+
+    fieldsRows = fieldsRows.concat(this.renderFieldRows(fieldsToRender))
 
     return (
       <Fields innerRef={ref => { this.props.scrollableRef(ref) }}>
-        {renderedFields}
+        {fieldsRows}
         {isCustomCloud ? this.renderPasteField() : null}
       </Fields>
     )

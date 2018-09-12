@@ -39,6 +39,11 @@ const fieldsToPayloadUseDefaults = (data, schema) => {
 const azureConnectionParse = schema => {
   let commonFields = connectionSchemaToFields(schema).filter(f => f.type !== 'object' && f.name !== 'secret_ref' && Object.keys(f).findIndex(k => k === 'enum') === -1)
 
+  let subscriptionIdField = commonFields.find(f => f.name === 'subscription_id')
+  if (subscriptionIdField) {
+    subscriptionIdField.required = true
+  }
+
   let getOption = name => {
     return {
       name,
@@ -67,6 +72,16 @@ const azureConnectionParse = schema => {
       ...defaultSchemaToFields(schema.properties.custom_cloud_properties.properties.suffixes),
     ],
   }
+
+  cloudProfileDropdown.custom_cloud_fields.sort((a, b) => {
+    if (a.required && !b.required) {
+      return -1
+    }
+    if (!a.required && b.required) {
+      return 1
+    }
+    return a.name.localeCompare(b.name)
+  })
 
   return [radioGroup, cloudProfileDropdown]
 }
