@@ -101,10 +101,13 @@ export const defaultGetNetworkMap = (data: WizardData) => {
 
 export const defaultGetMigrationImageMap = (data: WizardData) => {
   let env = {}
-  env.migr_image_map = {}
   if (data.options) {
     migrationImageOsTypes.forEach(os => {
       if (data.options && data.options[`${os}_os_image`]) {
+        if (!env.migr_image_map) {
+          env.migr_image_map = {}
+        }
+
         env.migr_image_map[os] = data.options[`${os}_os_image`]
       }
     })
