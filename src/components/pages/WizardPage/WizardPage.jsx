@@ -250,7 +250,12 @@ class WizardPage extends React.Component<Props, State> {
   handleOptionsChange(field: Field, value: any) {
     wizardStore.updateData({ networks: null })
     wizardStore.updateOptions({ field, value })
-    this.loadEnvDestinationOptions(field)
+    // If the field is a string and doesn't have an enum property,
+    // we can't call destination options on "change" since too many calls will be made,
+    // it also means a potential problem with the server not populating the "enum" prop.
+    if (field.type !== 'string' || field.enum) {
+      this.loadEnvDestinationOptions(field)
+    }
     wizardStore.setPermalink(wizardStore.data)
   }
 
