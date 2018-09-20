@@ -24,6 +24,7 @@ import DetailsNavigation from '../../molecules/DetailsNavigation'
 import MainDetails from '../../organisms/MainDetails'
 import Executions from '../../organisms/Executions'
 import Schedule from '../../organisms/Schedule'
+import type { Instance } from '../../../types/Instance'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
 import type { Execution } from '../../../types/Execution'
@@ -71,6 +72,8 @@ type TimezoneValue = 'utc' | 'local'
 type Props = {
   item: ?MainItem,
   endpoints: Endpoint[],
+  instancesDetails: Instance[],
+  instancesDetailsLoading: boolean,
   scheduleStore: typeof scheduleStore,
   page: string,
   detailsLoading: boolean,
@@ -154,6 +157,8 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
     return (
       <MainDetails
         item={this.props.item}
+        instancesDetails={this.props.instancesDetails}
+        instancesDetailsLoading={this.props.instancesDetailsLoading}
         loading={this.props.detailsLoading}
         endpoints={this.props.endpoints}
         bottomControls={this.renderBottomControls()}

@@ -24,6 +24,7 @@ import MainDetails from '../../organisms/MainDetails'
 import Tasks from '../../organisms/Tasks'
 import StyleProps from '../../styleUtils/StyleProps'
 
+import type { Instance } from '../../../types/Instance'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
 
@@ -54,6 +55,8 @@ const NavigationItems = [
 type Props = {
   item: ?MainItem,
   detailsLoading: boolean,
+  instancesDetails: Instance[],
+  instancesDetailsLoading: boolean,
   endpoints: Endpoint[],
   page: string,
   onDeleteMigrationClick: () => void,
@@ -80,6 +83,8 @@ class MigrationDetailsContent extends React.Component<Props> {
     return (
       <MainDetails
         item={this.props.item}
+        instancesDetails={this.props.instancesDetails}
+        instancesDetailsLoading={this.props.instancesDetailsLoading}
         endpoints={this.props.endpoints}
         bottomControls={this.renderBottomControls()}
         loading={this.props.detailsLoading}

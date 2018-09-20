@@ -165,7 +165,7 @@ class InstanceStore {
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
 
     instancesInfo.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
-    let hash = i => `${i.instance_name}-${i.id}`
+    let hash = i => `${i.instance_name}-${i.id || endpointId}`
     if (this.instancesDetails.map(hash).join('_') === instancesInfo.map(hash).join('_')) {
       return Promise.resolve()
     }
@@ -202,11 +202,13 @@ class InstanceStore {
             resolve()
           }
         }).catch((resp?: { reqId: number }) => {
+          this.instancesDetailsRemaining -= 1
+          this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
+
           if (!resp || resp.reqId !== this.reqId) {
             return
           }
-          this.instancesDetailsRemaining -= 1
-          this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
+
           if (count === 0) {
             resolve()
           }

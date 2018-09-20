@@ -28,6 +28,7 @@ import migrationStore from '../../../stores/MigrationStore'
 import userStore from '../../../stores/UserStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
+import instanceStore from '../../../stores/InstanceStore'
 import { requestPollTimeout } from '../../../config'
 
 import migrationImage from './images/migration.svg'
@@ -54,19 +55,30 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     document.title = 'Migration Details'
 
     endpointStore.getEndpoints()
-    this.pollData(true)
+    this.loadMigrationWithInstances()
     this.pollInterval = setInterval(() => { this.pollData() }, requestPollTimeout)
   }
 
   componentWillReceiveProps(newProps: any) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      migrationStore.getMigration(newProps.match.params.id, true)
+      this.loadMigrationWithInstances()
     }
   }
 
   componentWillUnmount() {
     migrationStore.clearDetails()
     clearInterval(this.pollInterval)
+  }
+
+  loadMigrationWithInstances() {
+    migrationStore.getMigration(this.props.match.params.id, true).then(() => {
+      if (migrationStore.migrationDetails) {
+        instanceStore.loadInstancesDetails(
+          migrationStore.migrationDetails.origin_endpoint_id,
+          // $FlowIgnore
+          migrationStore.migrationDetails.instances.map(n => { return { instance_name: n } }))
+      }
+    })
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -123,8 +135,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     })
   }
 
-  pollData(showLoading?: boolean) {
-    migrationStore.getMigration(this.props.match.params.id, showLoading || false)
+  pollData() {
+    migrationStore.getMigration(this.props.match.params.id, false)
   }
 
   render() {
@@ -144,6 +156,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           />}
           contentComponent={<MigrationDetailsContent
             item={migrationStore.migrationDetails}
+            instancesDetails={instanceStore.instancesDetails}
+            instancesDetailsLoading={instanceStore.loadingInstancesDetails}
             endpoints={endpointStore.endpoints}
             page={this.props.match.params.page || ''}
             detailsLoading={endpointStore.loading || migrationStore.detailsLoading}

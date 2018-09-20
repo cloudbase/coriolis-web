@@ -36,6 +36,7 @@ import migrationStore from '../../../stores/MigrationStore'
 import userStore from '../../../stores/UserStore'
 import endpointStore from '../../../stores/EndpointStore'
 import scheduleStore from '../../../stores/ScheduleStore'
+import instanceStore from '../../../stores/InstanceStore'
 import { requestPollTimeout } from '../../../config'
 
 import replicaImage from './images/replica.svg'
@@ -71,7 +72,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Replica Details'
 
-    replicaStore.getReplica(this.props.match.params.id)
+    this.loadReplicaWithInstances()
     endpointStore.getEndpoints()
     scheduleStore.getSchedules(this.props.match.params.id)
     this.pollData(true)
@@ -79,7 +80,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   componentWillReceiveProps(newProps: any) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      replicaStore.getReplica(newProps.match.params.id)
+      this.loadReplicaWithInstances()
       scheduleStore.getSchedules(newProps.match.params.id)
     }
   }
@@ -88,6 +89,17 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     replicaStore.clearDetails()
     scheduleStore.clearUnsavedSchedules()
     clearTimeout(this.pollTimeout)
+  }
+
+  loadReplicaWithInstances() {
+    replicaStore.getReplica(this.props.match.params.id).then(() => {
+      if (replicaStore.replicaDetails) {
+        instanceStore.loadInstancesDetails(
+          replicaStore.replicaDetails.origin_endpoint_id,
+          // $FlowIgnore
+          replicaStore.replicaDetails.instances.map(n => { return { instance_name: n } }))
+      }
+    })
   }
 
   isActionButtonDisabled() {
@@ -264,6 +276,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           />}
           contentComponent={<ReplicaDetailsContent
             item={replicaStore.replicaDetails}
+            instancesDetails={instanceStore.instancesDetails}
+            instancesDetailsLoading={instanceStore.loadingInstancesDetails}
             endpoints={endpointStore.endpoints}
             scheduleStore={scheduleStore}
             detailsLoading={replicaStore.detailsLoading || endpointStore.loading}
