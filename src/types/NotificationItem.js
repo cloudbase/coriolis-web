@@ -16,8 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export type AlertInfo = {
   options?: {
-    persist?: boolean,
-    persistInfo?: { title: string },
     action?: {
       label: string,
       callback: () => void,
