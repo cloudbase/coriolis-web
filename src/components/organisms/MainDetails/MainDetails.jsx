@@ -25,6 +25,7 @@ import StatusImage from '../../atoms/StatusImage'
 import Table from '../../molecules/Table'
 import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 
+import type { Instance } from '../../../types/Instance'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -113,6 +114,8 @@ const PropertyValue = styled.div`
 
 type Props = {
   item: ?MainItem,
+  instancesDetails: Instance[],
+  instancesDetailsLoading: boolean,
   endpoints: Endpoint[],
   bottomControls: React.Node,
   loading: boolean,
@@ -138,19 +141,22 @@ class MainDetails extends React.Component<Props> {
   }
 
   getConnectedVms(networkId: string) {
-    let vms = []
+    if (this.props.instancesDetailsLoading) {
+      return 'Loading...'
+    }
+
     if (!this.props.item) {
       return '-'
     }
-    Object.keys(this.props.item.info).forEach(key => {
-      // $FlowIssue
-      let instance = this.props.item.info[key]
-      if (instance.export_info && instance.export_info.devices.nics.length) {
-        instance.export_info.devices.nics.forEach(nic => {
-          if (nic.network_name === networkId) {
-            vms.push(key)
-          }
-        })
+
+    let vms: string[] = []
+
+    this.props.instancesDetails.forEach(instanceDet => {
+      if (
+        instanceDet.devices && instanceDet.devices.nics && instanceDet.devices.nics.find &&
+        instanceDet.devices.nics.find(n => n.network_name === networkId)
+      ) {
+        vms.push(instanceDet.instance_name)
       }
     })
 
