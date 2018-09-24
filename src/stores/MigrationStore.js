@@ -91,8 +91,6 @@ class MigrationStore {
             window.location.href = `/#/migration/tasks/${migration.id}`
           },
         },
-        persist: true,
-        persistInfo: { title: 'Migration created' },
       })
     })
   }

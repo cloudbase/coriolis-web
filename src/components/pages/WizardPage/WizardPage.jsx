@@ -103,7 +103,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleCreationSuccess(items: MainItem[]) {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    notificationStore.alert(`${typeLabel} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${typeLabel} created` } })
+    notificationStore.alert(`${typeLabel} was succesfully created`, 'success')
     let schedulePromise = Promise.resolve()
 
     if (this.state.type === 'replica') {

@@ -233,7 +233,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
       this.setState({ showMigrationOptions: false })
       let useReplicaOption = options.find(o => o.name === 'use_replica')
       let type = useReplicaOption && useReplicaOption.value ? 'Replica' : 'Migration'
-      notificationStore.alert(`${type} was succesfully created`, 'success', { persist: true, persistInfo: { title: `${type} created` } })
+      notificationStore.alert(`${type} was succesfully created`, 'success')
 
       if (type === 'Replica') {
         assessmentStore.migrations.forEach(replica => {
