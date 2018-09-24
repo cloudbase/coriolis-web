@@ -45,6 +45,12 @@ class LabelDictionary {
     windows_migr_image: { label: 'Windows Migration Image', description: 'The Windows Migration Image information found on the Azure page' },
     linux_migr_image: { label: 'Linux Migration Image', description: 'The Linux Migration Image information found on the Azure page' },
     duplicate_to_project: { label: 'Project', description: 'Duplicate endpoint to selected project' },
+    // AzureStack suffixes
+    azure_datalake_analytics_catalog_and_job_endpoint: 'Azure Datalake Analytics Catalog And Job Endpoint Suffix',
+    azure_datalake_store_file_system_endpoint: 'Azure Datalake Store File System Endpoint Suffix',
+    keyvault_dns: 'Keyvault DNS Suffix',
+    sql_server_hostname: 'SQL Server Hostname Suffix',
+    storage_endpoint: 'Storage Endpoint Suffix',
   }
 
   // Fields which have enums for which dictionary labels should be used.
