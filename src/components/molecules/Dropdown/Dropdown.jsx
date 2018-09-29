@@ -249,7 +249,13 @@ class Dropdown extends React.Component<Props, State> {
       return this.props.noSelectionMessage
     }
 
-    return (item[labelField] != null && item[labelField].toString()) || (item.value && item.value.toString()) || item.toString()
+    if (item[labelField] != null) {
+      return item[labelField].toString()
+    }
+    if (item.value != null) {
+      return item.value.toString()
+    }
+    return item.toString()
   }
 
   getValue(item: any) {
@@ -420,7 +426,7 @@ class Dropdown extends React.Component<Props, State> {
                   />
                 ) : null}
                 <Labels>
-                  {label}
+                  {label === '' ? '\u00A0' : label}
                   {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
                 </Labels>
               </ListItem>
