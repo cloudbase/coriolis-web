@@ -65,6 +65,7 @@ const NotificationsStyle = css`
     font-weight: 400 !important;
     width: 160px;
     margin-bottom: 8px !important;
+    word-break: break-word;
   }
   .notification-message {
     font-size: 14px !important;

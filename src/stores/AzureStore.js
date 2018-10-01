@@ -40,6 +40,7 @@ class AzureStore {
       this.authenticating = false
     }).catch(() => {
       this.authenticating = false
+      return Promise.reject()
     })
   }
 
