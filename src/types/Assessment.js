@@ -35,6 +35,7 @@ export type VmItem = {
     },
     datacenterContainer: string,
     datacenterManagementServer: string,
+    datacenterMachineId: string,
     displayName: string,
     operatingSystem: string,
   },
