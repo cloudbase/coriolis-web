@@ -53,11 +53,13 @@ const Value = styled.div`
 `
 const DisplayNameLabel = styled.div`
   margin-left: 8px;
+  word-break: break-word;
 `
-const InfoIconStyled = styled(InfoIcon) `
+const InfoIconStyled = styled(InfoIcon)`
   position: absolute;
   left: -36px;
   top: 0px;
+  z-index: 10000;
 `
 
 type Props = {

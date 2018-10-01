@@ -204,7 +204,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
     }
 
     if (this.props.instances.length > 0 &&
-      !this.props.instances.find(i => i.instance_name === `${vm.properties.datacenterContainer}/${vm.properties.displayName}`)) {
+      !this.props.instances.find(i => i.id === `${vm.properties.datacenterMachineId}`)) {
       return false
     }
 
@@ -322,7 +322,6 @@ class AssessmentDetailsContent extends React.Component<Props> {
     }
 
     let items = this.props.filteredAssessedVms.map(vm => {
-      let filteredVm = this.props.filteredAssessedVms.find(v => v.id === vm.id)
       return (
         <AssessedVmListItem
           item={vm}
@@ -330,7 +329,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
           onSelectedChange={(vm, selected) => { this.props.onVmSelectedChange(vm, selected) }}
           disabled={!this.doesVmMatchSource(vm)}
           loadingVmSizes={this.props.loadingVmSizes}
-          recommendedVmSize={filteredVm ? filteredVm.properties.recommendedSize : ''}
+          recommendedVmSize={vm.properties.recommendedSize}
           vmSizes={this.props.vmSizes}
           selectedVmSize={this.props.onGetVmSize(vm)}
           onVmSizeChange={size => { this.props.onVmSizeChange(vm, size) }}

@@ -132,7 +132,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     }
     return azureStore.assessedVms.filter(vm => {
       if (vm.properties.datacenterManagementServer.toLowerCase() === sourceHost.toLowerCase() &&
-        instanceStore.instances.find(i => i.instance_name === `${vm.properties.datacenterContainer}/${vm.properties.displayName}`)) {
+        instanceStore.instances.find(i => i.id === `${vm.properties.datacenterMachineId}`)) {
         return true
       }
       return false
@@ -209,10 +209,10 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   handleMigrationExecute(options: Field[]) {
     let selectedInstances = instanceStore.instancesDetails
-      .filter(i => this.state.selectedVms.find(m => i.instance_name === `${m.properties.datacenterContainer}/${m.properties.displayName}`))
+      .filter(i => this.state.selectedVms.find(m => i.id === `${m.properties.datacenterMachineId}`))
     let vmSizes = {}
     selectedInstances.forEach(i => {
-      let vm = this.state.selectedVms.find(m => i.instance_name === `${m.properties.datacenterContainer}/${m.properties.displayName}`)
+      let vm = this.state.selectedVms.find(m => i.id === `${m.properties.datacenterMachineId}`)
       vmSizes[i.instance_name] = vm ? this.state.vmSizes[vm.id].name : ''
     })
 
@@ -320,7 +320,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   loadInstancesDetails() {
-    let instances = instanceStore.instances.filter(i => this.state.selectedVms.find(m => i.instance_name === `${m.properties.datacenterContainer}/${m.properties.displayName}`))
+    let instances = instanceStore.instances.filter(i => this.state.selectedVms.find(m => i.id === `${m.properties.datacenterMachineId}`))
     instanceStore.clearInstancesDetails()
     instanceStore.loadInstancesDetails(this.getSourceEndpointId(), instances)
   }
