@@ -99,7 +99,10 @@ class InstanceStore {
       this.cachedInstances = instances
       this.searching = false
       this.searchNotFound = Boolean(instances.length === 0 && searchText)
-    }).catch(() => {
+    }).catch(r => {
+      if (r.canceled) {
+        return
+      }
       this.searching = false
       this.searchNotFound = true
     })

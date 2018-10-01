@@ -121,9 +121,9 @@ class ApiCaller {
           console.log(`%cError No Response: ${axiosOptions.url}`, 'color: #D0021B')
           reject({})
         } else {
-          reject({})
-
-          if (error.constructor.name === 'Cancel') {
+          let canceled = error.constructor.name === 'Cancel'
+          reject({ canceled })
+          if (canceled) {
             return
           }
 
