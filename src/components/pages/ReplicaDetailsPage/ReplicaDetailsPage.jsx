@@ -72,15 +72,15 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Replica Details'
 
-    this.loadReplicaWithInstances()
+    this.loadReplicaWithInstances(this.props.match.params.id)
     endpointStore.getEndpoints()
     scheduleStore.getSchedules(this.props.match.params.id)
     this.pollData(true)
   }
 
-  componentWillReceiveProps(newProps: any) {
+  componentWillReceiveProps(newProps: Props) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadReplicaWithInstances()
+      this.loadReplicaWithInstances(newProps.match.params.id)
       scheduleStore.getSchedules(newProps.match.params.id)
     }
   }
@@ -91,8 +91,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     clearTimeout(this.pollTimeout)
   }
 
-  loadReplicaWithInstances() {
-    replicaStore.getReplica(this.props.match.params.id).then(() => {
+  loadReplicaWithInstances(replicaId: string) {
+    replicaStore.getReplica(replicaId).then(() => {
       if (replicaStore.replicaDetails) {
         instanceStore.loadInstancesDetails(
           replicaStore.replicaDetails.origin_endpoint_id,

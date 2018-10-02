@@ -55,13 +55,13 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     document.title = 'Migration Details'
 
     endpointStore.getEndpoints()
-    this.loadMigrationWithInstances()
+    this.loadMigrationWithInstances(this.props.match.params.id)
     this.pollInterval = setInterval(() => { this.pollData() }, requestPollTimeout)
   }
 
   componentWillReceiveProps(newProps: any) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadMigrationWithInstances()
+      this.loadMigrationWithInstances(newProps.match.params.id)
     }
   }
 
@@ -70,8 +70,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     clearInterval(this.pollInterval)
   }
 
-  loadMigrationWithInstances() {
-    migrationStore.getMigration(this.props.match.params.id, true).then(() => {
+  loadMigrationWithInstances(migrationId: string) {
+    migrationStore.getMigration(migrationId, true).then(() => {
       if (migrationStore.migrationDetails) {
         instanceStore.loadInstancesDetails(
           migrationStore.migrationDetails.origin_endpoint_id,
