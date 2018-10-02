@@ -74,19 +74,23 @@ class ProviderStore {
     })
   }
 
-  @action getDestinationOptions(endpointId: string, provider: string, envData?: { [string]: mixed }): Promise<void> {
+  @action getDestinationOptions(endpointId: string, provider: string, envData?: { [string]: mixed }): Promise<DestinationOption[]> {
     let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p === 'string' ? p === provider : p.name === provider)
     if (!providerWithExtraOptions) {
-      return Promise.resolve()
+      return Promise.resolve([])
     }
 
     this.destinationOptionsLoading = true
+    this.destinationOptions = []
+    let destOptions = []
+
     return ProviderSource.getDestinationOptions(endpointId, envData).then(options => {
       this.optionsSchema.forEach(field => {
         const parser = OptionsSchemaPlugin[provider] || OptionsSchemaPlugin.default
         parser.fillFieldValues(field, options)
       })
       this.destinationOptions = options
+      destOptions = options
       this.destinationOptionsLoading = false
     }).catch(err => {
       console.error(err)
@@ -97,8 +101,8 @@ class ProviderStore {
       }
       return this.loadOptionsSchema(provider, this.lastOptionsSchemaType)
     }).then(() => {
-      this.destinationOptions = []
       this.destinationOptionsLoading = false
+      return destOptions
     })
   }
 }

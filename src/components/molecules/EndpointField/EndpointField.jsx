@@ -25,6 +25,9 @@ import InfoIcon from '../../atoms/InfoIcon'
 import Dropdown from '../../molecules/Dropdown'
 import DropdownInput from '../../molecules/DropdownInput'
 import TextArea from '../../atoms/TextArea'
+import PropertiesTable from '../../molecules/PropertiesTable'
+
+import type { Field as FieldType } from '../../../types/Field'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -58,7 +61,8 @@ type Props = {
   name: string,
   type: string,
   value: any,
-  onChange?: (value: any) => void,
+  onChange?: (value: any, fieldName?: string) => void,
+  valueCallback?: (fieldName: string) => void,
   getFieldValue?: (fieldName: string) => string,
   onFieldChange?: (fieldName: string, fieldValue: string) => void,
   className?: string,
@@ -68,6 +72,7 @@ type Props = {
   required?: boolean,
   large?: boolean,
   highlight?: boolean,
+  properties?: FieldType[],
   disabled?: boolean,
   // $FlowIssue
   enum?: string[] | { label: string, value: string }[],
@@ -80,12 +85,13 @@ type Props = {
 }
 @observer
 class Field extends React.Component<Props> {
-  renderSwitch() {
+  renderSwitch(propss: { triState: boolean }) {
     return (
       <Switch
         data-test-id={`endpointField-switch-${this.props.name}`}
         disabled={this.props.disabled}
-        checked={this.props.value || false}
+        triState={propss.triState}
+        checked={this.props.value}
         onChange={checked => { if (this.props.onChange) this.props.onChange(checked) }}
       />
     )
@@ -102,6 +108,25 @@ class Field extends React.Component<Props> {
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
+      />
+    )
+  }
+
+  renderObjectTable() {
+    if (!this.props.properties || !this.props.properties.length) {
+      return null
+    }
+
+    return (
+      <PropertiesTable
+        properties={this.props.properties}
+        valueCallback={field => { if (this.props.valueCallback) { this.props.valueCallback(field.name) } }}
+        onChange={(field, value) => {
+          let fieldName = field.name.substr(field.name.lastIndexOf('/') + 1)
+          if (this.props.onChange) {
+            this.props.onChange(value, fieldName)
+          }
+        }}
       />
     )
   }
@@ -239,7 +264,9 @@ class Field extends React.Component<Props> {
       case 'input-choice':
         return this.renderDropdownInput()
       case 'boolean':
-        return this.renderSwitch()
+        return this.renderSwitch({ triState: false })
+      case 'optional-boolean':
+        return this.renderSwitch({ triState: true })
       case 'string':
         if (this.props.enum) {
           return this.renderEnumDropdown()
@@ -257,6 +284,8 @@ class Field extends React.Component<Props> {
         return this.renderRadioInput()
       case 'array':
         return this.renderArrayDropdown()
+      case 'object':
+        return this.renderObjectTable()
       default:
         return null
     }
@@ -270,7 +299,7 @@ class Field extends React.Component<Props> {
     let description = LabelDictionary.getDescription(this.props.name)
     let infoIcon = null
     if (description) {
-      infoIcon = <InfoIcon text={description} marginLeft={-20} />
+      infoIcon = <InfoIcon text={description} marginLeft={-20} marginBottom={0} />
     }
 
     return (

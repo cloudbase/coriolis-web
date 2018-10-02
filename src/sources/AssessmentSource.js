@@ -22,23 +22,32 @@ import notificationStore from '../stores/NotificationStore'
 
 class AssessmentSourceUtils {
   static getDestinationEnv(data: MigrationInfo) {
-    let env = { ...data.destinationEnv }
-    env.network_map = {}
+    let env = {}
     if (data.networks && data.networks.length) {
+      env.network_map = {}
       data.networks.forEach(mapping => {
         env.network_map[mapping.sourceNic.network_name] = mapping.targetNetwork.name
       })
     }
-    env.vm_size = data.vmSizes[Object.keys(data.vmSizes).filter(k => k === data.selectedInstances[0].instance_name)[0]]
+    let vmSize = data.vmSizes[Object.keys(data.vmSizes).filter(k => k === data.selectedInstances[0].instance_name)[0]]
+    if (vmSize) {
+      env.vm_size = vmSize
+    }
+    let skipFields = ['use_replica', 'separate_vm', 'shutdown_instances', 'skip_os_morphing']
+    Object.keys(data.fieldValues).filter(f => !skipFields.find(sf => sf === f)).forEach(fieldName => {
+      if (data.fieldValues[fieldName] != null) {
+        env[fieldName] = data.fieldValues[fieldName]
+      }
+    })
+
     return env
   }
 }
 
 class AssessmentSource {
   static migrate(data: MigrationInfo): Promise<MainItem> {
-    let useReplicaField = data.options.find(o => o.name === 'use_replica')
-    let type = useReplicaField && useReplicaField.value ? 'replica' : 'migration'
-    let payload = {}
+    let type = data.fieldValues.use_replica ? 'replica' : 'migration'
+    let payload: any = {}
     payload[type] = {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target.id,
@@ -48,14 +57,9 @@ class AssessmentSource {
       security_groups: ['testgroup'],
     }
 
-    data.options.forEach(option => {
-      if (option.name === 'use_replica') {
-        return
-      }
-      if (option.value != null) {
-        payload[type][option.name] = option.value
-      }
-    })
+    if (type === 'migration') {
+      payload[type].skip_os_morphing = data.fieldValues.skip_os_morphing
+    }
 
     return Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,

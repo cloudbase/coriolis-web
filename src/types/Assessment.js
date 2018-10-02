@@ -14,7 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import type { Field } from './Field'
 import type { Endpoint } from './Endpoint'
 import type { Instance } from './Instance'
 import type { NetworkMap } from './Network'
@@ -22,6 +21,16 @@ import type { NetworkMap } from './Network'
 export type VmSize = {
   name: string,
   size?: string,
+}
+
+export type Location = {
+  id: string,
+  name: string,
+}
+
+export type Group = {
+  id: string,
+  name: string,
 }
 
 export type VmItem = {
@@ -55,24 +64,21 @@ export type Assessment = {
   project: {
     name: string,
   },
-  group: {
-    name: string,
-    id: string,
-  },
+  group: Group,
   properties: {
     status: string,
     updatedTimestamp: string,
     azureLocation: string,
+    numberOfMachines: string,
   },
   connectionInfo: { subscription_id: string } & $PropertyType<Endpoint, 'connection_info'>,
 }
 
 export type MigrationInfo = {
-  options: Field[],
   source: ?Endpoint,
   target: Endpoint,
   selectedInstances: Instance[],
-  destinationEnv: { [string]: mixed },
+  fieldValues: { [string]: any },
   networks: NetworkMap[],
   vmSizes: { [string]: VmSize },
 }

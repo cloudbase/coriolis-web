@@ -18,23 +18,57 @@ import { observable, action } from 'mobx'
 import type { Network } from '../types/Network'
 import NetworkSource from '../sources/NetworkSource'
 
+class NetworkLocalStorage {
+  static loadNetworksFromStorage(id: string): ?Network[] {
+    let networkStorage: { id: string, networks: Network[] }[] = JSON.parse(localStorage.getItem('networks') || '[]')
+    let endpointNetworks = networkStorage.find(n => n.id === id)
+    if (!endpointNetworks) {
+      return null
+    }
+    return endpointNetworks.networks
+  }
+
+  static saveNetworksToLocalStorage(id: string, networks: Network[]) {
+    let networkStorage: { id: string, networks: Network[] }[] = JSON.parse(localStorage.getItem('networks') || '[]')
+    let endpointNetworksIndex = networkStorage.findIndex(n => n.id === id)
+    if (endpointNetworksIndex > -1) {
+      networkStorage.splice(endpointNetworksIndex, 1)
+    }
+    networkStorage.push({ id, networks })
+    localStorage.setItem('networks', JSON.stringify(networkStorage))
+  }
+}
+
 class NetworkStore {
   @observable networks: Network[] = []
   @observable loading: boolean = false
 
   cachedId: string = ''
 
-  @action loadNetworks(endpointId: string, environment: ?{ [string]: mixed }): Promise<void> {
+  @action loadNetworks(endpointId: string, environment: ?{ [string]: mixed }, useLocalStorage?: boolean): Promise<void> {
     let id = `${endpointId}-${btoa(JSON.stringify(environment))}`
     if (this.cachedId === id) {
       return Promise.resolve()
     }
 
     this.loading = true
+
+    if (useLocalStorage) {
+      let networkStorage = NetworkLocalStorage.loadNetworksFromStorage(id)
+      if (networkStorage) {
+        this.loading = false
+        this.networks = networkStorage
+        this.cachedId = id
+        return Promise.resolve()
+      }
+    }
+
     return NetworkSource.loadNetworks(endpointId, environment).then((networks: Network[]) => {
       this.loading = false
       this.networks = networks
       this.cachedId = id
+
+      NetworkLocalStorage.saveNetworksToLocalStorage(id, networks)
     }).catch(() => {
       this.loading = false
     })

@@ -28,10 +28,11 @@ import AssessedVmListItem from '../../molecules/AssessedVmListItem'
 import DropdownFilter from '../../molecules/DropdownFilter'
 import Tooltip from '../../atoms/Tooltip'
 import Checkbox from '../../atoms/Checkbox'
+import SmallLoading from '../../atoms/SmallLoading'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-import type { Assessment, VmItem, VmSize } from '../../../types/Assessment'
+import type { Assessment, VmItem, Location } from '../../../types/Assessment'
 import type { Endpoint } from '../../../types/Endpoint'
 import type { Instance, Nic } from '../../../types/Instance'
 import type { Network, NetworkMap } from '../../../types/Network'
@@ -97,6 +98,15 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
+const SmallLoadingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+const SmallLoadingText = styled.div`
+  font-size: 14px;
+  margin-left: 16px;
+`
 const TableStyled = styled(Table)`
   margin-top: 62px;
   ${props => props.addWidthPadding ? css`
@@ -157,25 +167,35 @@ const NavigationItems = [
 
 type Props = {
   item: ?Assessment,
-  targetEndpoint: Endpoint,
   detailsLoading: boolean,
   instancesDetailsLoading: boolean,
   instancesLoading: boolean,
   networksLoading: boolean,
   instancesDetailsProgress: ?number,
+  targetEndpoint: Endpoint,
+  targetEndpoints: Endpoint[],
+  onTargetEndpointChange: (endpoint: Endpoint) => void,
+  targetEndpointsLoading: boolean,
   sourceEndpoints: Endpoint[],
+  sourceEndpoint: ?Endpoint,
   sourceEndpointsLoading: boolean,
+  locations: Location[],
+  selectedLocation: ?string,
+  onLocationChange: (locationName: string) => void,
+  selectedResourceGroup: string,
+  resourceGroups: string[],
+  onResourceGroupChange: (resourceGroupName: string) => void,
+  targetOptionsLoading: boolean,
   assessedVmsCount: number,
   filteredAssessedVms: VmItem[],
-  selectedVms: VmItem[],
+  selectedVms: string[],
   instancesDetails: Instance[],
   instances: Instance[],
   loadingVmSizes: boolean,
-  vmSizes: VmSize[],
-  onVmSizeChange: (vm: VmItem, size: { name: string }) => void,
-  onGetVmSize: (vm: VmItem) =>?VmSize,
+  vmSizes: string[],
+  onVmSizeChange: (vmId: string, size: string) => void,
+  onGetSelectedVmSize: (vm: VmItem) =>?string,
   networks: Network[],
-  sourceEndpoint: ?Endpoint,
   page: string,
   onSourceEndpointChange: (endpoint: Endpoint) => void,
   onVmSearchValueChange: (value: string) => void,
@@ -223,39 +243,19 @@ class AssessmentDetailsContent extends React.Component<Props> {
     )
   }
 
-  renderSourceDropdown() {
-    return (
-      <DropdownLink
-        selectedItem={this.props.sourceEndpoint ? this.props.sourceEndpoint.id : ''}
-        items={this.props.sourceEndpoints.map(endpoint => ({ label: endpoint.name, value: endpoint.id, endpoint }))}
-        onChange={item => { this.props.onSourceEndpointChange(item.endpoint) }}
-        selectItemLabel="Select Endpoint"
-        noItemsLabel={this.props.sourceEndpointsLoading ? 'Loading ....' : 'No matching endpoints'}
-      />
-    )
-  }
-
   renderMainDetails() {
-    if (this.props.detailsLoading) {
-      return null
-    }
-
     if (this.props.page !== '' || !this.props.item || !this.props.item.id) {
       return null
     }
 
     let status = this.props.item ?
-      this.props.item.properties.status === 'Completed' ? 'Ready' : this.props.item.properties.status : ''
+      this.props.item.properties.status === 'Completed' ? 'Ready for Migration' : this.props.item.properties.status : ''
+
+    let locationItem: ?Location = this.props.locations.find(l => l.id.toLowerCase() === (this.props.selectedLocation ? this.props.selectedLocation.toLowerCase() : null))
 
     return (
       <Columns>
         <Column>
-          <Row>
-            <Field>
-              <Label>Type</Label>
-              <Value>Azure Migrate</Value>
-            </Field>
-          </Row>
           <Row>
             <AzureMigrateLogo />
           </Row>
@@ -263,40 +263,14 @@ class AssessmentDetailsContent extends React.Component<Props> {
             <Field>
               <Label>Last Update</Label>
               <Value>
-                {moment(this.props.item.properties.updatedTimestamp).format('YYYY-MM-DD HH:mm:ss')}
+                {this.props.item ? moment(this.props.item.properties.updatedTimestamp).format('YYYY-MM-DD HH:mm:ss') : '-'}
               </Value>
             </Field>
           </Row>
           <Row>
             <Field>
-              <Label>Status</Label>
-              <Value>{status}</Value>
-            </Field>
-          </Row>
-          <Row>
-            <Field>
-              <Label>Source Endpoint</Label>
-              <Value>{this.renderSourceDropdown()}</Value>
-            </Field>
-          </Row>
-        </Column>
-        <Column>
-          <Row>
-            <Field>
-              <Label>Project</Label>
+              <Label>Migration Project</Label>
               <Value>{this.props.item ? this.props.item.projectName : ''}</Value>
-            </Field>
-          </Row>
-          <Row>
-            <Field>
-              <Label>Location</Label>
-              <Value>{this.props.item ? this.props.item.properties.azureLocation : ''}</Value>
-            </Field>
-          </Row>
-          <Row>
-            <Field>
-              <Label>Resource Group</Label>
-              <Value>{this.props.item ? this.props.item.resourceGroupName : ''}</Value>
             </Field>
           </Row>
           <Row>
@@ -307,8 +281,64 @@ class AssessmentDetailsContent extends React.Component<Props> {
           </Row>
           <Row>
             <Field>
+              <Label>Status</Label>
+              <Value>{status}</Value>
+            </Field>
+          </Row>
+        </Column>
+        <Column>
+          <Row>
+            <Field>
+              <Label>Source Endpoint</Label>
+              <Value>
+                <DropdownLink
+                  selectedItem={this.props.sourceEndpoint ? this.props.sourceEndpoint.id : ''}
+                  items={this.props.sourceEndpoints.map(endpoint => ({ label: endpoint.name, value: endpoint.id, endpoint }))}
+                  onChange={item => { this.props.onSourceEndpointChange(item.endpoint) }}
+                  selectItemLabel="Select Endpoint"
+                  noItemsLabel={this.props.sourceEndpointsLoading ? 'Loading ....' : 'No matching endpoints'}
+                />
+              </Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
               <Label>Target endpoint</Label>
-              <Value>{this.props.targetEndpoint.name}</Value>
+              <Value>
+                <DropdownLink
+                  selectedItem={this.props.targetEndpoint ? this.props.targetEndpoint.id : ''}
+                  items={this.props.targetEndpoints.map(endpoint => ({ label: endpoint.name, value: endpoint.id, endpoint }))}
+                  onChange={item => { this.props.onTargetEndpointChange(item.endpoint) }}
+                  selectItemLabel="Select Endpoint"
+                  noItemsLabel={this.props.targetEndpointsLoading ? 'Loading ....' : 'No Azure endpoints'}
+                />
+              </Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
+              <Label>Resource Group</Label>
+              <Value>
+                <DropdownLink
+                  selectedItem={this.props.selectedResourceGroup}
+                  items={this.props.resourceGroups.map(group => ({ label: group, value: group }))}
+                  onChange={item => { this.props.onResourceGroupChange(item.value) }}
+                  noItemsLabel={this.props.targetOptionsLoading ? 'Loading ....' : 'No Resource Groups found'}
+                />
+              </Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
+              <Label>Location</Label>
+              <Value>
+                <DropdownLink
+                  selectedItem={locationItem ? locationItem.id : ''}
+                  items={this.props.locations.map(location => ({ label: location.name, value: location.id }))}
+                  onChange={item => { this.props.onLocationChange(item.value) }}
+                  noItemsLabel={this.props.targetOptionsLoading ? 'Loading ....' : 'No Locations found'}
+                />
+              </Value>
             </Field>
           </Row>
         </Column>
@@ -317,22 +347,20 @@ class AssessmentDetailsContent extends React.Component<Props> {
   }
 
   renderVmsTable() {
-    if (this.props.detailsLoading || this.props.sourceEndpointsLoading || this.props.instancesLoading) {
-      return null
-    }
+    let loading = this.props.instancesLoading
 
     let items = this.props.filteredAssessedVms.map(vm => {
       return (
         <AssessedVmListItem
           item={vm}
-          selected={this.props.selectedVms.filter(m => m.id === vm.id).length > 0}
+          selected={this.props.selectedVms.filter(m => m === vm.properties.datacenterMachineId).length > 0}
           onSelectedChange={(vm, selected) => { this.props.onVmSelectedChange(vm, selected) }}
           disabled={!this.doesVmMatchSource(vm)}
           loadingVmSizes={this.props.loadingVmSizes}
           recommendedVmSize={vm.properties.recommendedSize}
           vmSizes={this.props.vmSizes}
-          selectedVmSize={this.props.onGetVmSize(vm)}
-          onVmSizeChange={size => { this.props.onVmSizeChange(vm, size) }}
+          selectedVmSize={this.props.onGetSelectedVmSize(vm)}
+          onVmSizeChange={size => { this.props.onVmSizeChange(vm.properties.datacenterMachineId, size) }}
         />
       )
     })
@@ -341,7 +369,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
       `${this.props.filteredAssessedVms.length} OUT OF ${this.props.assessedVmsCount}`})`
     let vmHeaderItem = (
       <VmHeaderItem>
-        <Checkbox checked={this.props.selectAllVmsChecked} onChange={checked => { this.props.onSelectAllVmsChange(checked) }} />
+        {loading ? null : <Checkbox checked={this.props.selectAllVmsChecked} onChange={checked => { this.props.onSelectAllVmsChange(checked) }} />}
         <VmHeaderItemLabel>Virtual Machine {vmCountLabel}</VmHeaderItemLabel>
         <DropdownFilter
           searchPlaceholder="Filter Virtual Machines"
@@ -351,22 +379,33 @@ class AssessmentDetailsContent extends React.Component<Props> {
       </VmHeaderItem>
     )
 
+
     return (
       <TableStyled
         addWidthPadding
-        items={items}
+        items={loading ? [] : items}
         bodyStyle={TableBodyStyle}
         headerStyle={TableHeaderStyle}
         header={[vmHeaderItem, 'OS', 'Target Disk Type', 'Azure VM Size']}
         useSecondaryStyle
-        noItemsLabel="No VMs found!"
+        noItemsComponent={this.renderLoading('Loading instances, please wait ...')}
       />
     )
   }
 
   renderNetworkTable() {
-    if (this.props.detailsLoading || this.props.sourceEndpointsLoading || this.props.instancesDetailsLoading || this.props.networksLoading || this.props.instancesLoading) {
-      return null
+    let loading = this.props.networksLoading || this.props.instancesDetailsLoading
+
+    if (loading) {
+      return (
+        <TableStyled
+          items={[]}
+          header={['Source Network', '', '', 'Target Network']}
+          useSecondaryStyle
+          noItemsStyle={{ marginLeft: 0 }}
+          noItemsComponent={this.renderNetworksLoading()}
+        />
+      )
     }
 
     let nics = []
@@ -413,18 +452,32 @@ class AssessmentDetailsContent extends React.Component<Props> {
     })
     return (
       <TableStyled
-        items={items}
+        items={loading ? [] : items}
         header={['Source Network', '', '', 'Target Network']}
         useSecondaryStyle
+        noItemsStyle={{ marginLeft: 0 }}
+        noItemsComponent={this.renderNetworksLoading()}
       />
     )
   }
 
-  renderButtons() {
-    if (this.props.detailsLoading) {
-      return null
+  renderNetworksLoading() {
+    let loadingProgress = -1
+    if (this.props.instancesDetailsLoading) {
+      if (this.props.instancesDetailsProgress != null) {
+        loadingProgress = Math.round(this.props.instancesDetailsProgress * 100)
+      }
     }
 
+    return (
+      <SmallLoadingWrapper>
+        <SmallLoading loadingProgress={loadingProgress} />
+        <SmallLoadingText>Loading networks, please wait ...</SmallLoadingText>
+      </SmallLoadingWrapper>
+    )
+  }
+
+  renderButtons() {
     return (
       <Buttons>
         <Button secondary onClick={this.props.onRefresh}>Refresh</Button>
@@ -436,39 +489,10 @@ class AssessmentDetailsContent extends React.Component<Props> {
     )
   }
 
-  renderLoading() {
-    let message = ''
-    let loadingProgress = -1
-    if (!this.props.detailsLoading && !this.props.sourceEndpointsLoading && !this.props.instancesDetailsLoading && !this.props.networksLoading && !this.props.instancesLoading) {
-      return null
-    }
-
-    if (this.props.instancesDetailsLoading) {
-      if (this.props.instancesDetailsProgress != null) {
-        loadingProgress = Math.round(this.props.instancesDetailsProgress * 100)
-      }
-      message = 'Loading instances details, please wait ...'
-    }
-
-    if (this.props.instancesLoading) {
-      message = 'Loading instances ...'
-    }
-
-    if (this.props.networksLoading) {
-      message = 'Loading networks ...'
-    }
-
-    if (this.props.sourceEndpointsLoading) {
-      message = 'Loading source endpoints ...'
-    }
-
-    if (this.props.detailsLoading) {
-      message = 'Loading assessment ...'
-    }
-
+  renderLoading(message: string) {
     return (
       <LoadingWrapper>
-        <StatusImage loading loadingProgress={loadingProgress} />
+        <StatusImage loading />
         <LoadingText>{message}</LoadingText>
       </LoadingWrapper>
     )
@@ -484,11 +508,11 @@ class AssessmentDetailsContent extends React.Component<Props> {
           customHref={() => null}
         />
         <DetailsBody>
-          {this.renderMainDetails()}
-          {this.renderVmsTable()}
-          {this.renderNetworkTable()}
-          {this.renderLoading()}
-          {this.renderButtons()}
+          {this.props.detailsLoading ? null : this.renderMainDetails()}
+          {this.props.detailsLoading ? this.renderLoading('Loading assessment...') : null}
+          {this.props.detailsLoading ? null : this.renderVmsTable()}
+          {this.props.detailsLoading || this.props.instancesLoading ? null : this.renderNetworkTable()}
+          {this.props.detailsLoading ? null : this.renderButtons()}
           <Tooltip />
         </DetailsBody>
       </Wrapper>

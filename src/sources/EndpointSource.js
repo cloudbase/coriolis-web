@@ -89,6 +89,9 @@ class EdnpointSource {
     return Promise.all(endpoints.map(endpoint => {
       let index = endpoint.connection_info.secret_ref ? endpoint.connection_info.secret_ref.lastIndexOf('/') : ''
       let uuid = endpoint.connection_info.secret_ref && index ? endpoint.connection_info.secret_ref.substr(index + 1) : ''
+      if (!uuid) {
+        return Promise.resolve({ ...endpoint })
+      }
       return Api.send({
         url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
         responseType: 'text',
@@ -171,7 +174,7 @@ class EdnpointSource {
   }
 
   static add(endpoint: Endpoint, skipSchemaParser: boolean = false): Promise<Endpoint> {
-    let parsedEndpoint = skipSchemaParser ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
+    let parsedEndpoint: any = skipSchemaParser ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
     let newEndpoint: any = {}
     let connectionInfo = {}
     if (useSecret) {
@@ -216,7 +219,12 @@ class EdnpointSource {
     return Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
       method: 'POST',
-      data: { endpoint: parsedEndpoint },
+      data: {
+        endpoint: {
+          ...parsedEndpoint,
+          type: endpoint.type,
+        },
+      },
     }).then(response => {
       return response.data.endpoint
     })

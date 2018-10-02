@@ -26,12 +26,13 @@ const Wrapper = styled.div`
   height: 16px;
   background: url('${props => props.warning ? warningImage : questionImage}') center no-repeat;
   display: inline-block;
-  margin-bottom: -4px;
-  margin-left: ${props => props.marginLeft ? `${props.marginLeft}px` : '4px'};
+  margin-left: ${props => props.marginLeft != null ? `${props.marginLeft}px` : '4px'};
+  margin-bottom: ${props => props.marginBottom != null ? `${props.marginBottom}px` : '-4px'};
 `
 type Props = {
   text: string,
   marginLeft?: number,
+  marginBottom?: number,
   className?: string,
   marginLeft?: number,
   warning?: boolean,
@@ -43,6 +44,7 @@ class InfoIcon extends React.Component<Props> {
       <Wrapper
         data-tip={this.props.text}
         marginLeft={this.props.marginLeft}
+        marginBottom={this.props.marginBottom}
         className={this.props.className}
         warning={this.props.warning}
       />

@@ -110,7 +110,7 @@ const config = createConfig([
     }),
     splitVendor(),
     addPlugins([
-      new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
+      new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false }, mangle: { keep_fnames: true } }),
     ]),
   ]),
 ])
