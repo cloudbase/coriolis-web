@@ -18,7 +18,7 @@ import axios from 'axios'
 
 const forwardHeaders = ['authorization']
 
-let buildError = (status, message) => {
+let buildError = message => {
   return {
     error: { message: `Proxy - ${message}` },
   }
@@ -30,7 +30,7 @@ module.exports = app => {
   app.post('/azure-login', jsonParser, (req, res) => {
     MsRest.loginWithUsernamePassword(req.body.username, req.body.password, (err, credentials) => {
       if (err) {
-        res.status(400).send(err)
+        res.status(401).send(buildError(`Couldn't authenticate user: ${req.body.username}`))
       } else {
         res.send(credentials)
       }
@@ -50,11 +50,11 @@ module.exports = app => {
       res.send(response.data)
     }).catch(error => {
       if (error.response) {
-        res.status(error.response.status).send(buildError(error.response.status, error.response.data.error.message))
+        res.status(error.response.status).send(buildError(error.response.data.error.message))
       } else if (error.request) {
-        res.status(500).send(buildError(500, 'No Response!'))
+        res.status(500).send(buildError('No Response!'))
       } else {
-        res.status(500).send(buildError(500, 'Error creating request!'))
+        res.status(500).send(buildError('Error creating request!'))
       }
     })
   })
