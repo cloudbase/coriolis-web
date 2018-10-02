@@ -20,13 +20,8 @@ import type { Instance } from '../types/Instance'
 import { servicesUrl, wizardConfig } from '../config'
 
 class InstanceSource {
-  static lastEndpointId: string
-
   static loadInstances(endpointId: string, searchText: ?string, lastInstanceId: ?string, skipLimit?: boolean): Promise<Instance[]> {
-    if (this.lastEndpointId) {
-      Api.cancelRequests(this.lastEndpointId)
-      this.lastEndpointId = endpointId
-    }
+    Api.cancelRequests(endpointId)
 
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let symbol = '?'
