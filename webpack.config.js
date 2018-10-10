@@ -109,8 +109,13 @@ const config = createConfig([
       app: sourcePath,
     }),
     splitVendor(),
+    () => ({ devtool: 'nosources-source-map' }),
     addPlugins([
-      new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false }, mangle: { keep_fnames: true } }),
+      new webpack.optimize.UglifyJsPlugin({
+        compress: { warnings: false },
+        mangle: { keep_fnames: true },
+        sourceMap: true,
+      }),
     ]),
   ]),
 ])
