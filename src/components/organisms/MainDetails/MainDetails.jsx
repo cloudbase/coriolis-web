@@ -160,7 +160,7 @@ class MainDetails extends React.Component<Props> {
       }
     })
 
-    return vms.length === 0 ? '-' : vms
+    return vms.length === 0 ? '-' : vms.join(', ')
   }
 
   getNetworks() {
