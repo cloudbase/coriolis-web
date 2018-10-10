@@ -76,7 +76,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
         instanceStore.loadInstancesDetails(
           migrationStore.migrationDetails.origin_endpoint_id,
           // $FlowIgnore
-          migrationStore.migrationDetails.instances.map(n => { return { instance_name: n } }))
+          migrationStore.migrationDetails.instances.map(n => { return { instance_name: n } }),
+          false, true
+        )
       }
     })
   }

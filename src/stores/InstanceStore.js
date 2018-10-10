@@ -237,7 +237,7 @@ class InstanceStore {
     })
   }
 
-  @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean): Promise<void> {
+  @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean, quietError?: boolean): Promise<void> {
     // Use reqId to be able to uniquely identify the request so all but the latest request can be igonred and canceled
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
@@ -268,7 +268,7 @@ class InstanceStore {
 
     return new Promise((resolve) => {
       instancesInfo.forEach(instanceInfo => {
-        InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name, this.reqId).then((resp: { instance: Instance, reqId: number }) => {
+        InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name, this.reqId, quietError).then((resp: { instance: Instance, reqId: number }) => {
           if (resp.reqId !== this.reqId) {
             return
           }

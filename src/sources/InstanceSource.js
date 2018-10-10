@@ -45,10 +45,11 @@ class InstanceSource {
     })
   }
 
-  static loadInstanceDetails(endpointId: string, instanceName: string, reqId: number): Promise<{ instance: Instance, reqId: number }> {
+  static loadInstanceDetails(endpointId: string, instanceName: string, reqId: number, quietError?: boolean): Promise<{ instance: Instance, reqId: number }> {
     return Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
       cancelId: `instanceDetail-${reqId}`,
+      quietError,
     }).then(response => {
       return { instance: response.data.instance, reqId }
     })

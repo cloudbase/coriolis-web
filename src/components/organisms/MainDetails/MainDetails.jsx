@@ -160,7 +160,7 @@ class MainDetails extends React.Component<Props> {
       }
     })
 
-    return vms.length === 0 ? '-' : vms.join(', ')
+    return vms.length === 0 ? 'Failed to read network configuration for the original instance' : vms.join(', ')
   }
 
   getNetworks() {
