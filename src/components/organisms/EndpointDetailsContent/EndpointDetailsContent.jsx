@@ -41,12 +41,12 @@ const Info = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: 32px;
-  margin-left: -32px;  
+  margin-left: -32px;
 `
 const Field = styled.div`
   ${StyleProps.exactWidth('calc(50% - 32px)')}
   margin-bottom: 32px;
-  margin-left: 32px;  
+  margin-left: 32px;
 `
 const Label = styled.div`
   font-size: 10px;
@@ -172,15 +172,15 @@ class EndpointDetailsContent extends React.Component<Props> {
   }
 
   renderUsage(items: MainItem[]) {
-    return items.map((item, i) => (
+    return items.map(item => (
       <span>
         <Link
           key={item.id}
           href={`#/${item.type}/${item.id}`}
         >
-          {item.instances.join(', ')}
+          {item.instances[0]}
         </Link>
-        {i < items.length - 1 ? ', ' : ''}
+        <br />
       </span>
     ))
   }

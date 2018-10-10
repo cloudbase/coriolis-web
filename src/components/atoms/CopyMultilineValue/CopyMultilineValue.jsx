@@ -22,15 +22,15 @@ import CopyButton from '../CopyButton'
 import DomUtils from '../../../utils/DomUtils'
 import notificationStore from '../../../stores/NotificationStore'
 
+const CopyButtonStyled = styled(CopyButton)`
+  background-position-y: 4px;
+  margin-left: 4px;
+`
 const Wrapper = styled.div`
   cursor: pointer;
 
-  &:hover > span {
+  &:hover ${CopyButtonStyled} {
     opacity: 1;
-  }
-  > span {
-    background-position-y: 4px;
-    margin-left: 4px;
   }
 `
 
@@ -38,12 +38,18 @@ type Props = {
   'data-test-id'?: string,
   value: string,
   onCopy?: (value: string) => void,
+  useDangerousHtml?: boolean,
 }
 @observer
 class CopyMultineValue extends React.Component<Props> {
   handleCopy() {
-    let succesful = DomUtils.copyTextToClipboard(this.props.value)
-    if (this.props.onCopy) this.props.onCopy(this.props.value)
+    let value = this.props.value
+    if (this.props.useDangerousHtml) {
+      value = value.replace(/<br\s*\/>/g, '\n').replace(/<.*?>/g, '')
+    }
+
+    let succesful = DomUtils.copyTextToClipboard(value)
+    if (this.props.onCopy) this.props.onCopy(value)
 
     if (succesful) {
       notificationStore.alert('The message has been copied to clipboard.')
@@ -51,13 +57,18 @@ class CopyMultineValue extends React.Component<Props> {
   }
 
   render() {
+    let text = this.props.value
+    if (this.props.useDangerousHtml) {
+      text = <span dangerouslySetInnerHTML={{ __html: text }} />
+    }
+
     return (
       <Wrapper
         onClick={() => { this.handleCopy() }}
         data-test-id={(this.props && this.props['data-test-id']) || 'copyMultilineValue'}
       >
-        {this.props.value}
-        <CopyButton />
+        {text}
+        <CopyButtonStyled />
       </Wrapper>
     )
   }
