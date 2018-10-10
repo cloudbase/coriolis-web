@@ -109,6 +109,10 @@ export default class ConnectionSchemaParser {
     let loginType = data.login_type || 'user_credentials'
     connectionInfo[loginType] = fieldsToPayload(data, schema.properties[loginType])
 
+    if (!data.cloud_profile) {
+      connectionInfo.cloud_profile = 'AzureCloud'
+    }
+
     if (data.cloud_profile === 'CustomCloud') {
       connectionInfo.custom_cloud_properties = {
         endpoints: {
