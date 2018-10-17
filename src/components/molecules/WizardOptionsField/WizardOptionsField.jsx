@@ -58,7 +58,6 @@ const Asterisk = styled.div`
   margin-bottom: -3px;
   margin-left: ${props => props.marginLeft || '0px'};
 `
-
 type Props = {
   type: 'replica' | 'migration',
   name: string,

@@ -20,6 +20,67 @@ import { wizardConfig } from '../config'
 import type { Instance } from '../types/Instance'
 import InstanceSource from '../sources/InstanceSource'
 
+class InstanceLocalStorage {
+  static saveInstancesToLocalStorage(endpointId: string, instances: Instance[]) {
+    let instancesLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instances') || '[]')
+    let endpointIndex = instancesLocalStorage.findIndex(i => i.endpointId === endpointId)
+    if (endpointIndex > -1) {
+      instancesLocalStorage.splice(endpointIndex, 1)
+    }
+    instancesLocalStorage.push({ endpointId, instances })
+    localStorage.setItem('instances', JSON.stringify(instancesLocalStorage))
+  }
+
+  static loadInstancesFromLocalStorage(endpointId: string): ?Instance[] {
+    let instancesLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instances') || '[]')
+    let endpointInstances = instancesLocalStorage.find(i => i.endpointId === endpointId)
+    if (!endpointInstances) {
+      return null
+    }
+    return endpointInstances.instances
+  }
+
+  static saveDetailsToLocalStorage(endpointId: string, instance: Instance) {
+    let instancesDetailsLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instancesDetails') || '[]')
+    let endpointInstancesIndex = instancesDetailsLocalStorage.findIndex(i => i.endpointId === endpointId)
+    let endpointDetails = { endpointId, instances: [] }
+    if (endpointInstancesIndex > -1) {
+      endpointDetails = instancesDetailsLocalStorage[endpointInstancesIndex]
+      instancesDetailsLocalStorage.splice(endpointInstancesIndex, 1)
+    }
+
+    let localInstanceIndex = endpointDetails.instances.findIndex(i => i.id === instance.id)
+    if (localInstanceIndex > -1) {
+      endpointDetails.instances.splice(localInstanceIndex, 1)
+    }
+    endpointDetails.instances.push(instance)
+    instancesDetailsLocalStorage.push(endpointDetails)
+    localStorage.setItem('instancesDetails', JSON.stringify(instancesDetailsLocalStorage))
+  }
+
+  static loadDetailsFromLocalStorage(endpointId: string, instancesInfo: Instance[]): ?Instance[] {
+    let instancesDetailsLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instancesDetails') || '[]')
+    let endpointStorage = instancesDetailsLocalStorage.find(i => i.endpointId === endpointId)
+    if (!endpointStorage || !endpointStorage.instances) {
+      return null
+    }
+    let isValid = true
+    let instances: Instance[] = []
+    instancesInfo.forEach(instance => {
+      let storageInstance = endpointStorage.instances.find(i => instance.id === i.id)
+      if (storageInstance) {
+        instances.push(storageInstance)
+      } else {
+        isValid = false
+      }
+    })
+    if (isValid) {
+      return instances
+    }
+    return null
+  }
+}
+
 class InstanceStoreUtils {
   static hasNextPage(instances) {
     let result = false
@@ -63,7 +124,7 @@ class InstanceStore {
   lastEndpointId: string
   reqId: number
 
-  @action loadInstances(endpointId: string, skipLimit?: boolean, useCache?: boolean): Promise<void> {
+  @action loadInstances(endpointId: string, skipLimit?: boolean, useCache?: boolean, useLocalStorage?: boolean): Promise<void> {
     if (this.cachedInstances.length > 0 && this.lastEndpointId === endpointId && useCache) {
       return Promise.resolve()
     }
@@ -71,6 +132,18 @@ class InstanceStore {
     this.instancesLoading = true
     this.searchNotFound = false
     this.lastEndpointId = endpointId
+
+    if (useLocalStorage) {
+      let endpointInstances = InstanceLocalStorage.loadInstancesFromLocalStorage(endpointId)
+      if (endpointInstances) {
+        this.currentPage = 1
+        this.hasNextPage = false
+        this.instances = endpointInstances
+        this.cachedInstances = endpointInstances
+        this.instancesLoading = false
+        return Promise.resolve()
+      }
+    }
 
     return InstanceSource.loadInstances(endpointId, null, null, skipLimit).then(instances => {
       if (endpointId !== this.lastEndpointId) {
@@ -82,6 +155,8 @@ class InstanceStore {
       this.instances = instances
       this.cachedInstances = instances
       this.instancesLoading = false
+
+      InstanceLocalStorage.saveInstancesToLocalStorage(endpointId, instances)
     }).catch(() => {
       if (endpointId !== this.lastEndpointId) {
         return
@@ -162,7 +237,7 @@ class InstanceStore {
     })
   }
 
-  @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[]): Promise<void> {
+  @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean): Promise<void> {
     // Use reqId to be able to uniquely identify the request so all but the latest request can be igonred and canceled
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
@@ -179,7 +254,17 @@ class InstanceStore {
     this.loadingInstancesDetails = true
     this.instancesDetailsCount = count
     this.instancesDetailsRemaining = count
-    this.instancesDetails = []
+
+    if (useLocalStorage) {
+      let storageInstances = InstanceLocalStorage.loadDetailsFromLocalStorage(endpointId, instancesInfo)
+      if (storageInstances) {
+        this.loadingInstancesDetails = false
+        this.instancesDetails = storageInstances
+        this.loadingInstancesDetails = false
+        this.instancesDetailsRemaining = 0
+        return Promise.resolve()
+      }
+    }
 
     return new Promise((resolve) => {
       instancesInfo.forEach(instanceInfo => {
@@ -194,6 +279,8 @@ class InstanceStore {
           if (this.instancesDetails.find(i => i.id === resp.instance.id)) {
             this.instancesDetails = this.instancesDetails.filter(i => i.id !== resp.instance.id)
           }
+
+          InstanceLocalStorage.saveDetailsToLocalStorage(endpointId, resp.instance)
 
           this.instancesDetails = [
             ...this.instancesDetails,

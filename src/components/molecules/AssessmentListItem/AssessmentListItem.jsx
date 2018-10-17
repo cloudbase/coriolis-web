@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
-import moment from 'moment'
 
 import StatusPill from '../../atoms/StatusPill'
 
@@ -85,12 +84,13 @@ const AssessmentLabel = styled.div`
   color: ${Palette.grayscale[4]};
   width: 64px;
 `
-const Project = styled.div`
-  min-width: 96px;
+const TotalVms = styled.div`
+  ${StyleProps.exactWidth('96px')}
   margin-right: 48px;
 `
-const Updated = styled.div`
-  min-width: 175px;
+const Project = styled.div`
+  ${StyleProps.exactWidth('132px')}
+  margin-right: 48px;
 `
 const ItemLabel = styled.div`
   color: ${Palette.grayscale[4]};
@@ -133,12 +133,12 @@ class AssessmentListItem extends React.Component<Props> {
               {this.props.item.project.name}
             </ItemValue>
           </Project>
-          <Updated>
-            <ItemLabel>Updated</ItemLabel>
+          <TotalVms>
+            <ItemLabel>Instances</ItemLabel>
             <ItemValue>
-              {moment(this.props.item.properties.updatedTimestamp).format('DD MMMM YYYY, HH:mm')}
+              {this.props.item.properties.numberOfMachines}
             </ItemValue>
-          </Updated>
+          </TotalVms>
         </Content>
       </Wrapper>
     )

@@ -88,7 +88,7 @@ class AssessmentsPage extends React.Component<Props, State> {
   }
 
   getResourceGroupsDropdownConfig() {
-    let groups = azureStore.resourceGroups
+    let groups = azureStore.assessmentResourceGroups
     return {
       key: 'resource-group',
       selectedItem: assessmentStore.selectedResourceGroup ? assessmentStore.selectedResourceGroup.id : '',
@@ -227,7 +227,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       azureStore.authenticate(connectionInfo.user_credentials.username, connectionInfo.user_credentials.password).then(() => {
         // $FlowIgnore
         azureStore.getResourceGroups(connectionInfo.subscription_id).then(() => {
-          let groups = azureStore.resourceGroups
+          let groups = azureStore.assessmentResourceGroups
           let selectedGroup = assessmentStore.selectedResourceGroup
           // $FlowIssue
           if (groups.filter(rg => rg.id === selectedGroup ? selectedGroup.id : '').length > 0) {

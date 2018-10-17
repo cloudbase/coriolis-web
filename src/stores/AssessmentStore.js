@@ -36,14 +36,9 @@ class AssessmentStore {
   }
 
   @action migrate(data: MigrationInfo): Promise<void> {
-    if (!data.options) {
-      return Promise.resolve()
-    }
-
     this.migrating = true
     this.migrations = []
-    let seperateVmField = data.options.find(o => o.name === 'separate_vm')
-    let separateVm = seperateVmField ? seperateVmField.value : ''
+    let separateVm = data.fieldValues.separate_vm
 
     if (separateVm) {
       return AssessmentSource.migrateMultiple(data).then((items: MainItem[]) => {

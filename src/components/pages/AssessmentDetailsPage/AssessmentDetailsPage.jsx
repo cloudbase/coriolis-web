@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import cookie from 'js-cookie'
 import { observer } from 'mobx-react'
 
 import DetailsTemplate from '../../templates/DetailsTemplate'
@@ -26,11 +27,12 @@ import Modal from '../../molecules/Modal'
 import AssessmentMigrationOptions from '../../organisms/AssessmentMigrationOptions'
 import type { Endpoint } from '../../../types/Endpoint'
 import type { Nic } from '../../../types/Instance'
-import type { VmItem, VmSize } from '../../../types/Assessment'
+import type { VmItem } from '../../../types/Assessment'
 import type { Field } from '../../../types/Field'
 import type { Network, NetworkMap } from '../../../types/Network'
 
 import azureStore from '../../../stores/AzureStore'
+import type { LocalData } from '../../../stores/AzureStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import replicaStore from '../../../stores/ReplicaStore'
@@ -38,6 +40,7 @@ import instanceStore from '../../../stores/InstanceStore'
 import networkStore from '../../../stores/NetworkStore'
 import userStore from '../../../stores/UserStore'
 import assessmentStore from '../../../stores/AssessmentStore'
+import providerStore from '../../../stores/ProviderStore'
 
 import assessmentImage from './images/assessment.svg'
 
@@ -47,29 +50,32 @@ type Props = {
   match: any,
 }
 type State = {
-  sourceEndpoint: ?Endpoint,
-  selectedVms: VmItem[],
   selectedNetworks: NetworkMap[],
   showMigrationOptions: boolean,
   executeButtonDisabled: boolean,
-  vmSizes: { [string]: VmSize },
   vmSearchValue: string,
+  loadingTargetVmSizes: boolean,
+  replicaSchema: Field[],
+  migrationSchema: Field[],
 }
 @observer
 class AssessmentDetailsPage extends React.Component<Props, State> {
   state = {
-    sourceEndpoint: null,
-    selectedVms: [],
     selectedNetworks: [],
     showMigrationOptions: false,
     executeButtonDisabled: false,
-    vmSizes: {},
     vmSearchValue: '',
+    loadingTargetVmSizes: false,
+    replicaSchema: [],
+    migrationSchema: [],
   }
 
   componentWillMount() {
     document.title = 'Assessment Details'
-
+    let urlData: LocalData = JSON.parse(atob(decodeURIComponent(this.props.match.params.info)))
+    if (!azureStore.loadLocalData(urlData.assessmentName)) {
+      azureStore.setLocalData(urlData)
+    }
     this.azureAuthenticate()
   }
 
@@ -79,12 +85,17 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     instanceStore.clearInstancesDetails()
   }
 
-  getUrlInfo() {
-    let urlInfo = JSON.parse(atob(decodeURIComponent(this.props.match.params.info)))
-    return urlInfo
+  getLocalData(): LocalData {
+    // at this point we know for sure that at least URL data is there
+    let data: any = azureStore.localData
+    return data
   }
 
-  getEndpoints() {
+  getUrlInfo() {
+    return JSON.parse(atob(decodeURIComponent(this.props.match.params.info)))
+  }
+
+  getSourceEndpoints() {
     let vms = azureStore.assessedVms
     let connectionsInfo = endpointStore.connectionsInfo
 
@@ -96,6 +107,11 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
       endpoint => vms.find(vm => vm.properties.datacenterManagementServer.toLowerCase() === endpoint.connection_info.host.toLowerCase())
     )
     return endpoints
+  }
+
+  getTargetEndpoints() {
+    let endpoints = endpointStore.endpoints
+    return endpoints.filter(e => e.type === 'azure')
   }
 
   getInstancesDetailsProgress() {
@@ -117,7 +133,8 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   getSourceEndpointId() {
-    return this.state.sourceEndpoint ? this.state.sourceEndpoint.id : ''
+    let localData = this.getLocalData()
+    return localData.sourceEndpoint ? localData.sourceEndpoint.id : ''
   }
 
   getEnabledVms() {
@@ -143,28 +160,58 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     if (this.getFilteredAssessedVms().length === 0 || this.getEnabledVms().length === 0) {
       return false
     }
-
-    return this.state.selectedVms.length === this.getFilteredAssessedVms(this.getEnabledVms()).length
+    let selectedVms = this.getLocalData().selectedVms
+    return selectedVms.length === this.getFilteredAssessedVms(this.getEnabledVms()).length
   }
 
   handleVmSelectedChange(vm: VmItem, selected: boolean) {
+    let selectedVms = this.getLocalData().selectedVms
     if (selected) {
-      this.setState({ selectedVms: [...this.state.selectedVms, vm] }, () => { this.loadInstancesDetails() })
+      selectedVms = [
+        ...selectedVms,
+        vm.properties.datacenterMachineId,
+      ]
+      azureStore.updateSelectedVms(selectedVms)
+      this.loadInstancesDetails()
     } else {
-      this.setState({ selectedVms: this.state.selectedVms.filter(m => m.id !== vm.id) }, () => { this.loadInstancesDetails() })
+      selectedVms = this.getLocalData().selectedVms.filter(m => m !== vm.properties.datacenterMachineId)
     }
+    azureStore.updateSelectedVms(selectedVms)
+    this.loadInstancesDetails()
   }
 
   handleSelectAllVmsChange(selected: boolean) {
     let selectedVms = selected ? [...this.getFilteredAssessedVms(this.getEnabledVms())] : []
-    this.setState({ selectedVms }, () => { this.loadInstancesDetails() })
+    azureStore.updateSelectedVms(selectedVms.map(v => v.properties.datacenterMachineId))
+    this.loadInstancesDetails()
   }
 
   handleSourceEndpointChange(sourceEndpoint: ?Endpoint) {
-    this.setState({ sourceEndpoint, selectedVms: [], selectedNetworks: [] })
-    instanceStore.loadInstances(this.getSourceEndpointId(), true, true).then(() => {
+    this.setState({ selectedNetworks: [] })
+    azureStore.updateSourceEndpoint(sourceEndpoint)
+    instanceStore.loadInstances(this.getSourceEndpointId(), true, true, true).then(() => {
       this.initSelectedVms()
       this.loadInstancesDetails()
+    })
+  }
+
+  handleResourceGroupChange(resourceGroupName: string) {
+    azureStore.updateResourceGroup(resourceGroupName)
+    this.loadNetworks()
+    this.loadTargetVmSizes()
+  }
+
+  handleLocationChange(locationName: string) {
+    azureStore.updateLocation(locationName)
+    this.loadNetworks()
+    this.loadTargetVmSizes()
+  }
+
+  handleTargetEndpointChange(endpoint: Endpoint) {
+    azureStore.updateTargetEndpoint(endpoint)
+    this.loadTargetOptions().then(() => {
+      this.loadTargetVmSizes()
+      this.loadNetworks()
     })
   }
 
@@ -193,13 +240,21 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   handleRefresh() {
-    let urlInfo = this.getUrlInfo()
-    azureStore.getAssessmentDetails({ ...urlInfo })
-    azureStore.getAssessedVms({ ...urlInfo })
-    this.loadInstancesDetails()
+    localStorage.removeItem('instances')
+    localStorage.removeItem(`assessments-${cookie.get('projectId') || ''}`)
+    localStorage.removeItem('instancesDetails')
+    localStorage.removeItem('networks')
+    location.reload()
   }
 
   handleMigrateClick() {
+    let endpointType = this.getLocalData().endpoint.type
+    providerStore.loadOptionsSchema(endpointType, 'replica').then(() => {
+      this.setState({ replicaSchema: providerStore.optionsSchema })
+      return providerStore.loadOptionsSchema(endpointType, 'migration')
+    }).then(() => {
+      this.setState({ migrationSchema: providerStore.optionsSchema })
+    })
     this.setState({ showMigrationOptions: true })
   }
 
@@ -207,53 +262,12 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     this.setState({ showMigrationOptions: false })
   }
 
-  handleMigrationExecute(options: Field[]) {
-    let selectedInstances = instanceStore.instancesDetails
-      .filter(i => this.state.selectedVms.find(m => i.id === `${m.properties.datacenterMachineId}`))
-    let vmSizes = {}
-    selectedInstances.forEach(i => {
-      let vm = this.state.selectedVms.find(m => i.id === `${m.properties.datacenterMachineId}`)
-      vmSizes[i.instance_name] = vm ? this.state.vmSizes[vm.id].name : ''
-    })
-
-    this.setState({ executeButtonDisabled: true })
-
-    assessmentStore.migrate({
-      source: this.state.sourceEndpoint,
-      target: this.getUrlInfo().endpoint,
-      networks: [...this.state.selectedNetworks],
-      options: [...options],
-      destinationEnv: {
-        resource_group: this.getUrlInfo().resourceGroupName,
-        location: azureStore.assessmentDetails ? azureStore.assessmentDetails.properties.azureLocation : '',
-      },
-      vmSizes,
-      selectedInstances,
-    }).then(() => {
-      this.setState({ showMigrationOptions: false })
-      let useReplicaOption = options.find(o => o.name === 'use_replica')
-      let type = useReplicaOption && useReplicaOption.value ? 'Replica' : 'Migration'
-      notificationStore.alert(`${type} was succesfully created`, 'success')
-
-      if (type === 'Replica') {
-        assessmentStore.migrations.forEach(replica => {
-          replicaStore.execute(replica.id, options)
-        })
-      }
-
-      window.location.href = `/#/${type.toLowerCase()}s`
-    })
+  handleVmSizeChange(vmId: string, vmSize: string) {
+    azureStore.updateVmSize(vmId, vmSize)
   }
 
-  handleVmSizeChange(vm: VmItem, vmSize: VmSize) {
-    let vmSizes = this.state.vmSizes
-    vmSizes[vm.id] = vmSize
-
-    this.setState({ vmSizes })
-  }
-
-  handleGetVmSize(vm: VmItem): VmSize {
-    return this.state.vmSizes[vm.id]
+  handleGetVmSize(vm: VmItem): string {
+    return this.getLocalData().selectedVmSizes[vm.properties.datacenterMachineId]
   }
 
   handleVmSearchValueChange(vmSearchValue: string) {
@@ -267,62 +281,156 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     })
   }
 
-  loadSourceEndpoints() {
+  loadEndpoints() {
     endpointStore.getEndpoints({ showLoading: true }).then(() => {
-      endpointStore.getConnectionsInfo(endpointStore.endpoints.filter(e => e.type === 'vmware_vsphere')).then(() => {
-        let endpoints = this.getEndpoints()
-        let sourceEndpoint = endpoints.find(e => e.id === this.getSourceEndpointId())
-        if (sourceEndpoint) {
-          this.handleSourceEndpointChange(sourceEndpoint)
-        } else if (endpoints.length > 0) {
-          this.handleSourceEndpointChange(endpoints[0])
-        } else {
-          this.handleSourceEndpointChange(null)
-        }
-      })
+      this.loadSourceEndpointsInfo()
+    })
+  }
+
+  loadSourceEndpointsInfo() {
+    endpointStore.getConnectionsInfo(endpointStore.endpoints.filter(e => e.type === 'vmware_vsphere')).then(() => {
+      let endpoints = this.getSourceEndpoints()
+      let sourceEndpoint = endpoints.find(e => e.id === this.getSourceEndpointId())
+      if (sourceEndpoint) {
+        this.handleSourceEndpointChange(sourceEndpoint)
+      } else if (endpoints.length > 0) {
+        this.handleSourceEndpointChange(endpoints[0])
+      } else {
+        this.handleSourceEndpointChange(null)
+      }
     })
   }
 
   loadAssessmentDetails() {
     let urlInfo = this.getUrlInfo()
     azureStore.getAssessmentDetails({ ...urlInfo }).then(() => {
-      azureStore.getVmSizes({ ...urlInfo, location: azureStore.assessmentDetails ? azureStore.assessmentDetails.properties.azureLocation : '' })
+      let location = azureStore.assessmentDetails ? azureStore.assessmentDetails.properties.azureLocation : ''
+      azureStore.setLocation(location)
+      // azureStore.getVmSizes({ ...urlInfo, location })
       this.loadNetworks()
+      this.loadTargetOptions()
+      this.loadTargetVmSizes()
     })
+
     azureStore.getAssessedVms({ ...urlInfo }).then(() => {
       this.initVmSizes()
-      this.loadSourceEndpoints()
+      this.loadEndpoints()
+    })
+  }
+
+  loadTargetOptions(): Promise<void> {
+    let localData = this.getLocalData()
+    return providerStore.getDestinationOptions(localData.endpoint.id, localData.endpoint.type).then(options => {
+      let locations = options.find(o => o.name === 'location')
+      if (locations && locations.values) {
+        let localDataFind = locations.values.find(l => l.id === localData.locationName)
+        if (!localDataFind) {
+          azureStore.updateLocation(locations.values[0].id)
+        }
+
+        azureStore.saveLocations(locations.values)
+      }
+      let resourceGroups = options.find(o => o.name === 'resource_group')
+      if (resourceGroups && resourceGroups.values) {
+        let localDataFind = resourceGroups.values.find(g => g === localData.resourceGroupName)
+        if (!localDataFind) {
+          azureStore.updateResourceGroup(resourceGroups.values[0])
+        }
+        azureStore.saveResourceGroups(resourceGroups.values)
+      }
+    })
+  }
+
+  loadTargetVmSizes() {
+    let localData = this.getLocalData()
+    this.setState({ loadingTargetVmSizes: true })
+    providerStore.getDestinationOptions(localData.endpoint.id, localData.endpoint.type, {
+      location: localData.locationName,
+      resource_group: localData.resourceGroupName,
+    }).then(options => {
+      let vmSizes = options.find(o => o.name === 'vm_size')
+      if (vmSizes && vmSizes.values) {
+        azureStore.saveTargetVmSizes(vmSizes.values)
+      }
+      this.setState({ loadingTargetVmSizes: false })
     })
   }
 
   initSelectedVms() {
-    this.setState({ selectedVms: this.getEnabledVms() })
+    let localData = this.getLocalData()
+    let enabledVms = this.getEnabledVms().map(vm => vm.properties.datacenterMachineId)
+    if (localData.selectedVms.length === 0) {
+      azureStore.updateSelectedVms(enabledVms)
+    } else {
+      azureStore.updateSelectedVms(enabledVms.filter(id => localData.selectedVms.find(i => i === id)))
+    }
   }
 
   initVmSizes() {
     let vmSizes = {}
     let vms = azureStore.assessedVms
+    let localData = this.getLocalData()
 
     vms.forEach(vm => {
-      vmSizes[vm.id] = { name: vm.properties.recommendedSize }
+      vmSizes[vm.properties.datacenterMachineId] = localData.selectedVmSizes[vm.properties.datacenterMachineId] || vm.properties.recommendedSize || 'auto'
     })
-
-    this.setState({ vmSizes })
+    azureStore.updateVmSizes(vmSizes)
   }
 
   loadNetworks() {
+    let localData = this.getLocalData()
     this.setState({ selectedNetworks: [] })
-    let details = azureStore.assessmentDetails
-    networkStore.loadNetworks(this.getUrlInfo().endpoint.id, {
-      location: details ? details.properties.azureLocation : '',
-      resource_group: this.getUrlInfo().resourceGroupName,
-    })
+    networkStore.loadNetworks(localData.endpoint.id, {
+      location: localData.locationName,
+      resource_group: localData.resourceGroupName,
+    }, true)
   }
 
   loadInstancesDetails() {
-    let instances = instanceStore.instances.filter(i => this.state.selectedVms.find(m => i.id === `${m.properties.datacenterMachineId}`))
+    let selectedVms = this.getLocalData().selectedVms
+    let instances = instanceStore.instances.filter(i => selectedVms.find(m => i.id === m))
     instanceStore.clearInstancesDetails()
-    instanceStore.loadInstancesDetails(this.getSourceEndpointId(), instances)
+    instanceStore.loadInstancesDetails(this.getSourceEndpointId(), instances, true)
+  }
+
+  handleMigrationExecute(fieldValues: { [string]: any }) {
+    let selectedVms = this.getLocalData().selectedVms
+    let selectedInstances = instanceStore.instancesDetails.filter(i => selectedVms.find(m => i.id === m))
+    let vmSizes = {}
+    let localData = this.getLocalData()
+    selectedInstances.forEach(i => {
+      let vm = selectedVms.find(m => i.id === m)
+      let selectedVmSize = localData.selectedVmSizes[i.id]
+      if (vm && azureStore.vmSizes.find(s => s === selectedVmSize)) {
+        vmSizes[i.instance_name] = selectedVmSize
+      }
+    })
+
+    this.setState({ executeButtonDisabled: true })
+
+    fieldValues.resource_group = localData.resourceGroupName
+    fieldValues.location = localData.locationName
+
+    assessmentStore.migrate({
+      source: localData.sourceEndpoint,
+      target: localData.endpoint,
+      networks: [...this.state.selectedNetworks],
+      fieldValues,
+      vmSizes,
+      selectedInstances,
+    }).then(() => {
+      this.setState({ showMigrationOptions: false })
+      let type = fieldValues.use_replica ? 'Replica' : 'Migration'
+      notificationStore.alert(`${type} was succesfully created`, 'success')
+
+      if (type === 'Replica') {
+        assessmentStore.migrations.forEach(replica => {
+          replicaStore.execute(replica.id, [{ name: 'shutdown_instances', value: fieldValues.shutdown_instances || false }])
+        })
+      }
+
+      window.location.href = `/#/${type.toLowerCase()}s`
+    })
   }
 
   render() {
@@ -331,6 +439,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     let endpointsLoading = endpointStore.connectionsInfoLoading || endpointStore.loading
     let status = details ? details.properties.status.toUpperCase() : ''
     let statusLabel = status === 'COMPLETED' ? 'READY' : status
+    let localData = this.getLocalData()
 
     return (
       <Wrapper>
@@ -356,34 +465,41 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
             <AssessmentDetailsContent
               item={details}
               detailsLoading={loading}
-              targetEndpoint={this.getUrlInfo().endpoint}
-              sourceEndpoints={this.getEndpoints()}
+              instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+              instancesDetailsProgress={this.getInstancesDetailsProgress()}
+              instancesLoading={instanceStore.instancesLoading}
+              networksLoading={networkStore.loading}
+              targetEndpointsLoading={endpointStore.loading}
+              loadingVmSizes={this.state.loadingTargetVmSizes}
               sourceEndpointsLoading={endpointsLoading}
-              sourceEndpoint={this.state.sourceEndpoint}
+              targetOptionsLoading={providerStore.destinationOptionsLoading}
+              targetEndpoints={this.getTargetEndpoints()}
+              targetEndpoint={localData.endpoint}
+              onTargetEndpointChange={endpoint => { this.handleTargetEndpointChange(endpoint) }}
+              sourceEndpoints={this.getSourceEndpoints()}
+              sourceEndpoint={localData.sourceEndpoint}
+              locations={azureStore.locations}
+              selectedLocation={localData.locationName}
+              onLocationChange={locationName => { this.handleLocationChange(locationName) }}
+              selectedResourceGroup={localData.resourceGroupName}
+              resourceGroups={azureStore.coriolisResourceGroups}
+              onResourceGroupChange={resourceGroupName => { this.handleResourceGroupChange(resourceGroupName) }}
               assessedVmsCount={azureStore.assessedVms.length}
               filteredAssessedVms={this.getFilteredAssessedVms()}
               onSourceEndpointChange={endpoint => this.handleSourceEndpointChange(endpoint)}
-              selectedVms={this.state.selectedVms}
+              selectedVms={localData.selectedVms}
               onVmSelectedChange={(vm, selected) => { this.handleVmSelectedChange(vm, selected) }}
               selectAllVmsChecked={this.getSelectAllVmsChecked()}
               onSelectAllVmsChange={checked => { this.handleSelectAllVmsChange(checked) }}
               instances={instanceStore.instances}
               instancesDetails={instanceStore.instancesDetails}
-              instancesDetailsLoading={instanceStore.loadingInstancesDetails}
-              instancesLoading={instanceStore.instancesLoading}
-              networksLoading={networkStore.loading}
-              instancesDetailsProgress={this.getInstancesDetailsProgress()}
               networks={networkStore.networks}
               selectedNetworks={this.state.selectedNetworks}
-              loadingVmSizes={azureStore.loadingVmSizes}
               vmSizes={azureStore.vmSizes}
-              onVmSizeChange={(vm, size) => {
-                // $FlowIgnore
-                this.handleVmSizeChange(vm, size)
-              }}
+              onVmSizeChange={(vmId, size) => { this.handleVmSizeChange(vmId, size) }}
+              onGetSelectedVmSize={vm => this.handleGetVmSize(vm)}
               vmSearchValue={this.state.vmSearchValue}
               onVmSearchValueChange={value => { this.handleVmSearchValueChange(value) }}
-              onGetVmSize={vm => this.handleGetVmSize(vm)}
               onNetworkChange={(sourceNic, targetNetwork) => { this.handleNetworkChange(sourceNic, targetNetwork) }}
               onRefresh={() => this.handleRefresh()}
               onMigrateClick={() => { this.handleMigrateClick() }}
@@ -397,7 +513,9 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
         >
           <AssessmentMigrationOptions
             onCancelClick={() => { this.handleCloseMigrationOptions() }}
-            onExecuteClick={options => { this.handleMigrationExecute(options) }}
+            onExecuteClick={fieldValues => { this.handleMigrationExecute(fieldValues) }}
+            replicaSchema={this.state.replicaSchema}
+            migrationSchema={this.state.migrationSchema}
             executeButtonDisabled={this.state.executeButtonDisabled}
           />
         </Modal>

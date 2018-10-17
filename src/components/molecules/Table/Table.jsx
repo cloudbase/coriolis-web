@@ -105,6 +105,8 @@ type Props = {
   className?: string,
   useSecondaryStyle?: boolean,
   noItemsLabel?: string,
+  noItemsComponent?: React.Node,
+  noItemsStyle?: any,
   bodyStyle?: any,
   headerStyle?: any,
   'data-test-id'?: string,
@@ -139,7 +141,12 @@ class Table extends React.Component<Props> {
       return null
     }
 
-    return <NoItems secondary={this.props.useSecondaryStyle} data-test-id="table-noItems">{this.props.noItemsLabel}</NoItems>
+    return (
+      <NoItems
+        secondary={this.props.useSecondaryStyle}
+        data-test-id="table-noItems"
+        style={this.props.noItemsStyle}
+      >{this.props.noItemsComponent || this.props.noItemsLabel}</NoItems>)
   }
 
   renderItems() {

@@ -21,7 +21,7 @@ import styled, { css } from 'styled-components'
 import Checkbox from '../../atoms/Checkbox'
 import InfoIcon from '../../atoms/InfoIcon'
 import DropdownLink from '../../molecules/DropdownLink'
-import type { VmItem, VmSize } from '../../../types/Assessment'
+import type { VmItem } from '../../../types/Assessment'
 
 import Palette from '../../styleUtils/Palette'
 
@@ -68,9 +68,9 @@ type Props = {
   onSelectedChange: (item: VmItem, isChecked: boolean) => void,
   disabled: boolean,
   loadingVmSizes: boolean,
-  vmSizes: VmSize[],
-  onVmSizeChange: (size: VmSize) => void,
-  selectedVmSize: ?VmSize,
+  vmSizes: string[],
+  onVmSizeChange: (size: string) => void,
+  selectedVmSize: ?string,
   recommendedVmSize: string,
 }
 @observer
@@ -118,11 +118,12 @@ class AssessedVmListItem extends React.Component<Props> {
             <DropdownLink
               searchable
               width="208px"
-              noItemsLabel="Loading..."
-              items={this.props.loadingVmSizes ? [] : this.props.vmSizes.map(s => ({ value: s.name, label: s.name, size: s }))}
-              selectedItem={this.props.selectedVmSize ? this.props.selectedVmSize.name : ''}
+              noItemsLabel={this.props.loadingVmSizes ? 'Loading...' : 'No data'}
+              selectItemLabel="Auto Determined"
+              items={this.props.loadingVmSizes ? [] : this.props.vmSizes.map(s => ({ value: s, label: s }))}
+              selectedItem={this.props.selectedVmSize || ''}
               listWidth="200px"
-              onChange={item => { this.props.onVmSizeChange(item.size) }}
+              onChange={item => { this.props.onVmSizeChange(item.value) }}
               disabled={this.props.disabled}
               highlightedItem={this.props.recommendedVmSize}
             />
