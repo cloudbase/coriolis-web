@@ -130,7 +130,7 @@ class NotificationSource {
           id: item.id,
           status: mainInfo.status,
           type: item.type,
-          name: item.instances.join(', '),
+          name: item.instances[0],
           updatedAt: mainInfo.updated_at,
           description: DataUtils.getItemDescription(item),
         }
