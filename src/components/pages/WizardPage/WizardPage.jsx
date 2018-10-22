@@ -425,13 +425,11 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   scheduleReplica(replica: MainItem): Promise<void> {
-    let data = wizardStore.data
-
-    if (!data.schedules || data.schedules.length === 0) {
+    if (wizardStore.schedules.length === 0) {
       return Promise.resolve()
     }
 
-    return scheduleStore.scheduleMultiple(replica.id, data.schedules)
+    return scheduleStore.scheduleMultiple(replica.id, wizardStore.schedules)
   }
 
   executeCreatedReplica(replica: MainItem) {
@@ -469,6 +467,7 @@ class WizardPage extends React.Component<Props, State> {
             networkStore={networkStore}
             endpoints={endpointStore.endpoints}
             wizardData={wizardStore.data}
+            schedules={wizardStore.schedules}
             nextButtonDisabled={this.state.nextButtonDisabled}
             type={this.state.type}
             onTypeChange={isReplica => { this.handleTypeChange(isReplica) }}

@@ -14,14 +14,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import type { Schedule } from './Schedule'
 import type { Instance } from './Instance'
 import type { NetworkMap } from './Network'
 import type { Endpoint } from './Endpoint'
 
 export type WizardData = {
   options?: ?{ [string]: mixed },
-  schedules?: Schedule[],
   selectedInstances?: ?Instance[],
   networks?: ?NetworkMap[],
   source?: ?Endpoint,
