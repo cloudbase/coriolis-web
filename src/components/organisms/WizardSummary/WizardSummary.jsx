@@ -40,6 +40,9 @@ const Column = styled.div`
   &:first-child {
     margin-right: 160px;
   }
+  &:last-child {
+    max-width: calc(50% - 160px);
+  }
 `
 const Section = styled.div`
   margin-bottom: 42px;
@@ -109,6 +112,8 @@ const TargetNetwork = styled.div`
   width: 50%;
   text-align: right;
   margin-left: 20px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 const OptionsList = styled.div``
 const Option = styled.div`
@@ -132,6 +137,7 @@ const OptionValue = styled.div`
 type Props = {
   data: WizardData,
   wizardType: 'replica' | 'migration',
+  schedules: Schedule[],
 }
 @observer
 class WizardSummary extends React.Component<Props> {
@@ -190,7 +196,7 @@ class WizardSummary extends React.Component<Props> {
   }
 
   renderScheduleSection() {
-    let schedules = this.props.data.schedules
+    let schedules = this.props.schedules
     if (this.props.wizardType !== 'replica' || !schedules || schedules.length === 0) {
       return null
     }

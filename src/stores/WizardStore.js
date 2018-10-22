@@ -26,7 +26,8 @@ import { wizardConfig } from '../config'
 import Source from '../sources/WizardSource'
 
 class WizardStore {
-  @observable data: WizardData = { schedules: [] }
+  @observable data: WizardData = {}
+  @observable schedules: Schedule[] = []
   @observable currentPage: WizardPage = wizardConfig.pages[0]
   @observable createdItem: ?MainItem = null
   @observable creatingItem: boolean = false
@@ -89,17 +90,11 @@ class WizardStore {
   }
 
   @action addSchedule(schedule: Schedule) {
-    if (!this.data.schedules) {
-      this.data.schedules = []
-    }
-    this.data.schedules.push({ id: new Date().getTime().toString(), schedule: schedule.schedule })
+    this.schedules.push({ id: new Date().getTime().toString(), schedule: schedule.schedule })
   }
 
   @action updateSchedule(scheduleId: string, data: Schedule) {
-    if (!this.data.schedules) {
-      return
-    }
-    this.data.schedules = this.data.schedules.map(schedule => {
+    this.schedules = this.schedules.map(schedule => {
       if (schedule.id !== scheduleId) {
         return schedule
       }
@@ -119,10 +114,7 @@ class WizardStore {
   }
 
   @action removeSchedule(scheduleId: string) {
-    if (!this.data.schedules) {
-      return
-    }
-    this.data.schedules = this.data.schedules.filter(s => s.id !== scheduleId)
+    this.schedules = this.schedules.filter(s => s.id !== scheduleId)
   }
 
   @action create(type: string, data: WizardData): Promise<void> {

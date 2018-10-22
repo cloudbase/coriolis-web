@@ -99,6 +99,7 @@ type Props = {
   networkStore: typeof networkStore,
   wizardData: WizardData,
   endpoints: Endpoint[],
+  schedules: ScheduleType[],
   onTypeChange: (isReplicaChecked: ?boolean) => void,
   onBackClick: () => void,
   onNextClick: () => void,
@@ -355,7 +356,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'schedule':
         body = (
           <Schedule
-            schedules={this.props.wizardData.schedules}
+            schedules={this.props.schedules}
             onAddScheduleClick={this.props.onAddScheduleClick}
             onChange={this.props.onScheduleChange}
             onRemove={this.props.onScheduleRemove}
@@ -369,6 +370,7 @@ class WizardPageContent extends React.Component<Props, State> {
         body = (
           <WizardSummary
             data={this.props.wizardData}
+            schedules={this.props.schedules}
             wizardType={this.props.type}
           />
         )
