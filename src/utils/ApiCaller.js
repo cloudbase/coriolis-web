@@ -33,6 +33,7 @@ type RequestOptions = {
   data?: any,
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream',
   quietError?: boolean,
+  skipLog?: boolean,
 }
 
 let cancelables: Cancelable[] = []
@@ -84,10 +85,14 @@ class ApiCaller {
         addCancelable({ requestId: options.cancelId, cancel })
       }
 
-      console.log(`%cSending ${axiosOptions.method || 'GET'} Request to ${axiosOptions.url}`, 'color: #F5A623')
+      if (!options.skipLog) {
+        console.log(`%cSending ${axiosOptions.method || 'GET'} Request to ${axiosOptions.url}`, 'color: #F5A623')
+      }
 
       axios(axiosOptions).then((response) => {
-        console.log(`%cResponse ${axiosOptions.url}`, 'color: #0044CA', response.data)
+        if (!options.skipLog) {
+          console.log(`%cResponse ${axiosOptions.url}`, 'color: #0044CA', response.data)
+        }
         resolve(response)
       }).catch(error => {
         const loginUrl = '#/'
