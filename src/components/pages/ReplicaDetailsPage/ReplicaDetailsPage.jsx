@@ -97,7 +97,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         instanceStore.loadInstancesDetails(
           replicaStore.replicaDetails.origin_endpoint_id,
           // $FlowIgnore
-          replicaStore.replicaDetails.instances.map(n => { return { instance_name: n } }))
+          replicaStore.replicaDetails.instances.map(n => { return { instance_name: n } }),
+          false, true
+        )
       }
     })
   }
