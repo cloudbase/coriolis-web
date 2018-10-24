@@ -79,7 +79,7 @@ describe('MainDetails Component', () => {
     expect(tableItems.length).toBe(1)
     expect(tableItems[0].length).toBe(4)
     expect(tableItems[0][0]).toBe('network_1')
-    expect(tableItems[0][1][0]).toBe('instance_1')
+    expect(new TW(shallow(tableItems[0][1][0])).find('vm-', true).text()).toBe('instance_1')
     expect(tableItems[0][2]).toBe('Mapping 1')
     expect(tableItems[0][3]).toBe('Existing network')
     expect(wrapper.find('loading').length).toBe(0)

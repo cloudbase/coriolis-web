@@ -79,6 +79,7 @@
     "arrow-parens": 0,
     "react/prefer-stateless-function": 0,
     "react/no-array-index-key": 0,
+    "react/no-danger": 0,
     "no-param-reassign": 0,
     "no-shadow": 0,
     "arrow-body-style": 0,

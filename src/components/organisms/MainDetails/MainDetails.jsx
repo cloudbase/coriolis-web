@@ -160,7 +160,7 @@ class MainDetails extends React.Component<Props> {
       }
     })
 
-    return vms.length === 0 ? 'Failed to read network configuration for the original instance' : vms.join(', ')
+    return vms.length === 0 ? '-' : vms.map(vm => <div data-test-id={`vm-${vm}`} style={{ marginBottom: '8px' }}>{vm}<br /></div>)
   }
 
   getNetworks() {
@@ -376,7 +376,7 @@ class MainDetails extends React.Component<Props> {
             <Row>
               <Field>
                 <Label>Instances</Label>
-                <CopyMultilineValue value={this.props.item.instances.join(', ')} />
+                <CopyMultilineValue value={this.props.item.instances.join('<br />')} useDangerousHtml />
               </Field>
             </Row>
           ) : null}

@@ -24,7 +24,7 @@ const wrap = props => shallow(<CopyMultilineValue value="" {...props} />)
 describe('CopyMultilineValue Component', () => {
   it('renders `value`', () => {
     const wrapper = wrap({ value: 'the_value' })
-    expect(wrapper.dive().text()).toBe('the_value<CopyButton />')
+    expect(wrapper.dive().text()).toBe('the_value<Styled(CopyButton) />')
   })
 
   it('copies `value` to clipboard', () => {

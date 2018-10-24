@@ -24,6 +24,19 @@ const wrap = props => new TW(shallow(
   <WizardSummary {...props} />
 ), 'wSummary')
 
+let schedules = [
+  {
+    id: 's-1',
+    schedule: {
+      month: 2,
+      dom: 14,
+      dow: 3,
+      minute: 0,
+      hour: 17,
+    },
+  },
+]
+
 let data = {
   options: {
     description: 'A description',
@@ -46,18 +59,6 @@ let data = {
     type: 'azure',
     name: 'target name',
   },
-  schedules: [
-    {
-      id: 's-1',
-      schedule: {
-        month: 2,
-        dom: 14,
-        dow: 3,
-        minute: 0,
-        hour: 17,
-      },
-    },
-  ],
 }
 
 describe('WizardSummary Component', () => {
@@ -90,8 +91,8 @@ describe('WizardSummary Component', () => {
   })
 
   it('renders schedule section', () => {
-    let wrapper = wrap({ data, wizardType: 'replica' })
-    expect(wrapper.findText(`scheduleItem-${data.schedules[0].id}`))
+    let wrapper = wrap({ data, schedules, wizardType: 'replica' })
+    expect(wrapper.findText(`scheduleItem-${schedules[0].id}`))
       .toBe('Every February, every 14th, every Wednesday, at 17:00')
   })
 })
