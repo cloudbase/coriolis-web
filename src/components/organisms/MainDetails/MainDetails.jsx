@@ -160,7 +160,7 @@ class MainDetails extends React.Component<Props> {
       }
     })
 
-    return vms.length === 0 ? '-' : vms.map(vm => <div data-test-id={`vm-${vm}`} style={{ marginBottom: '8px' }}>{vm}<br /></div>)
+    return vms.length === 0 ? 'Failed to read network configuration for the original instance' : vms.map(vm => <div data-test-id={`vm-${vm}`} style={{ marginBottom: '8px' }}>{vm}<br /></div>)
   }
 
   getNetworks() {
