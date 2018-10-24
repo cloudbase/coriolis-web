@@ -142,7 +142,9 @@ const Separator = styled.div`
   margin: 8px 16px;
   background: ${Palette.grayscale[3]};
 `
-const Labels = styled.div``
+const Labels = styled.div`
+  word-break: break-word;
+`
 
 export const updateTipStyle = (listItemsRef: HTMLElement, tipRef: HTMLElement, firstItemRef: HTMLElement) => {
   if (tipRef && firstItemRef) {
