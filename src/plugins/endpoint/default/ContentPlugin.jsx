@@ -100,13 +100,16 @@ class ContentPlugin extends React.Component<Props> {
           </Row>
         ))
       }
-      if (field.useTextArea || schemaIndex === this.props.connectionInfoSchema.length - 1) {
+      if (field.useTextArea) {
+        pushRow(currentField)
+        i -= 1
+      } else if (i % 2 !== 0) {
+        pushRow(lastField, currentField)
+      } else if (schemaIndex === this.props.connectionInfoSchema.length - 1) {
         pushRow(currentField)
         if (field.useTextArea) {
           i -= 1
         }
-      } else if (i % 2 !== 0) {
-        pushRow(lastField, currentField)
       } else {
         lastField = currentField
       }
