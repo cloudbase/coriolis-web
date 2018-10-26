@@ -31,6 +31,7 @@ import Endpoint from '../../organisms/Endpoint'
 import UserModal from '../../organisms/UserModal'
 import ProjectModal from '../../organisms/ProjectModal'
 
+import logger from '../../../utils/ApiLogger'
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
 import notificationStore from '../../../stores/NotificationStore'
@@ -107,6 +108,9 @@ class PageHeader extends React.Component<Props, State> {
 
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
+      case 'downloadlog':
+        logger.download()
+        return
       case 'signout':
         userStore.logout()
         return

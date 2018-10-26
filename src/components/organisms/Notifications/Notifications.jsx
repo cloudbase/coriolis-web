@@ -53,7 +53,7 @@ class Notifications extends React.Component<{}> {
       message: lastNotification.title ? lastNotification.message : null,
       level: lastNotification.level || 'info',
       position: 'br',
-      autoDismiss: 10,
+      autoDismiss: lastNotification.message.length < 150 ? 10 : 30,
       action: lastNotification.options ? lastNotification.options.action : null,
     })
 

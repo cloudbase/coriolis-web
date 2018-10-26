@@ -56,7 +56,7 @@ const ListItem = styled.div`
   padding: 8px 0;
 
   &:last-child {
-    padding-bottom: 0;
+    padding: 0;
   }
 `
 
@@ -103,6 +103,7 @@ const Email = styled.div`
   padding-bottom: 8px;
   border-bottom: 1px solid ${Palette.grayscale[3]};
 `
+
 
 type DictItem = { label: string, value: string }
 type Props = {
@@ -187,6 +188,9 @@ class UserDropdown extends React.Component<Props, State> {
     }
 
     let items = [{
+      label: 'Download Log',
+      value: 'downloadlog',
+    }, {
       label: 'Sign Out',
       value: 'signout',
     }]
