@@ -144,6 +144,7 @@ const Separator = styled.div`
 `
 const Labels = styled.div`
   word-break: break-word;
+  max-width: 100%;
 `
 
 export const updateTipStyle = (listItemsRef: HTMLElement, tipRef: HTMLElement, firstItemRef: HTMLElement) => {
