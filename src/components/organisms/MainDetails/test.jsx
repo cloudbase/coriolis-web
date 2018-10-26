@@ -85,6 +85,12 @@ describe('MainDetails Component', () => {
     expect(wrapper.find('loading').length).toBe(0)
   })
 
+  it('renders network map with missing source instance', () => {
+    let wrapper = wrap({ item, endpoints, instancesDetails: [] })
+    let tableItems = wrapper.find('networksTable').prop('items')
+    expect(tableItems[0][1]).toBe('Failed to read network configuration for the original instance')
+  })
+
   it('renders loading', () => {
     let wrapper = wrap({ item: {}, endpoints: [], loading: true })
     expect(wrapper.find('loading').length).toBe(1)
