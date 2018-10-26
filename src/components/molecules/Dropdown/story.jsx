@@ -20,7 +20,8 @@ import Dropdown from '.'
 
 const items = [
   { label: 'Item 1', value: 'item-1' },
-  { label: 'Item 2', value: 'item-2' },
+  { label: 'Item 2 - contains a very long label that doesn\'t really fit', value: 'item-2' },
+  { label: 'containsaverylonglabelwhichalsodoesntcontainwhitespaces', value: 'item-2a' },
   { label: 'Item 3', value: 'item-3' },
   { label: 'Item 3', value: 'item-3-duplicated' },
 ]
@@ -110,8 +111,10 @@ storiesOf('Dropdown', module)
         { label: 'Item 2', value: 'item-2' },
         { label: 'Item 3', value: 'item-3' },
         { label: 'Item 4', value: 'item-4' },
-        { label: 'Item 1', value: 'item-1' },
-        { label: 'Item 2', value: 'item-2' },
+        { label: 'Item - contains a very long label that doesn\'t really fit', value: 'item-1' },
+        { label: 'Item - contains a very long label that doesn\'t really fit', value: 'item-1' },
+        { label: 'containsaverylonglabelwhichalsodoesntcontainwhitespaces', value: 'item-2' },
+        { label: 'containsaverylonglabelwhichalsodoesntcontainwhitespaces', value: 'item-2' },
         { label: 'Item 3', value: 'item-3' },
         { label: 'Item 4', value: 'item-4' },
         { label: 'Item 1', value: 'item-1' },
