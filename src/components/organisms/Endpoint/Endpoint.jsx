@@ -206,7 +206,7 @@ class Endpoint extends React.Component<Props, State> {
     if (!field || !this.state.endpoint) {
       return ''
     }
-    if (this.state.endpoint[field.name]) {
+    if (this.state.endpoint[field.name] != null) {
       return this.state.endpoint[field.name]
     }
 

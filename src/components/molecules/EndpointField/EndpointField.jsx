@@ -112,6 +112,24 @@ class Field extends React.Component<Props> {
     )
   }
 
+  renderIntInput() {
+    return (
+      <TextInput
+        highlight={this.props.highlight}
+        large={this.props.large}
+        value={this.props.value}
+        onChange={e => {
+          let value = Number(e.target.value.replace(/\D/g, '')) || ''
+          if (this.props.onChange) {
+            this.props.onChange(value)
+          }
+        }}
+        placeholder={LabelDictionary.get(this.props.name)}
+        disabled={this.props.disabled}
+      />
+    )
+  }
+
   renderObjectTable() {
     if (!this.props.properties || !this.props.properties.length) {
       return null
@@ -279,7 +297,7 @@ class Field extends React.Component<Props> {
         if (this.props.minimum || this.props.maximum) {
           return this.renderIntDropdown()
         }
-        return this.renderTextInput()
+        return this.renderIntInput()
       case 'radio':
         return this.renderRadioInput()
       case 'array':
