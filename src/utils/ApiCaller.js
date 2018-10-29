@@ -18,6 +18,7 @@ import axios from 'axios'
 import type { AxiosXHRConfig, $AxiosXHR } from 'axios'
 import cookie from 'js-cookie'
 
+import logger from './ApiLogger'
 import notificationStore from '../stores/NotificationStore'
 
 type Cancelable = {
@@ -86,12 +87,22 @@ class ApiCaller {
       }
 
       if (!options.skipLog) {
-        console.log(`%cSending ${axiosOptions.method || 'GET'} Request to ${axiosOptions.url}`, 'color: #F5A623')
+        logger.log({
+          url: axiosOptions.url,
+          method: axiosOptions.method || 'GET',
+          type: 'REQUEST',
+        })
       }
 
       axios(axiosOptions).then((response) => {
         if (!options.skipLog) {
           console.log(`%cResponse ${axiosOptions.url}`, 'color: #0044CA', response.data)
+          logger.log({
+            url: axiosOptions.url,
+            method: axiosOptions.method || 'GET',
+            type: 'RESPONSE',
+            requestStatus: 200,
+          })
         }
         resolve(response)
       }).catch(error => {
@@ -115,7 +126,13 @@ class ApiCaller {
             window.location.href = '/'
           }
 
-          console.log(`%cError Response: ${axiosOptions.url}`, 'color: #D0021B', error.response)
+          logger.log({
+            url: axiosOptions.url,
+            method: axiosOptions.method || 'GET',
+            type: 'RESPONSE',
+            requestStatus: error.response.status,
+            requestError: error,
+          })
           reject(error.response)
         } else if (error.request) {
           // The request was made but no response was received
@@ -123,18 +140,37 @@ class ApiCaller {
           if (window.location.hash !== loginUrl) {
             notificationStore.alert('Request failed, there might be a problem with the connection to the server.', 'error')
           }
-          console.log(`%cError No Response: ${axiosOptions.url}`, 'color: #D0021B')
+          logger.log({
+            url: axiosOptions.url,
+            method: axiosOptions.method || 'GET',
+            type: 'RESPONSE',
+            description: 'No response',
+            requestStatus: 500,
+            requestError: error,
+          })
           reject({})
         } else {
           let canceled = error.constructor.name === 'Cancel'
           reject({ canceled })
           if (canceled) {
+            logger.log({
+              url: axiosOptions.url,
+              method: axiosOptions.method || 'GET',
+              type: 'RESPONSE',
+              requestStatus: 'canceled',
+            })
             return
           }
 
           // Something happened in setting up the request that triggered an Error
+          logger.log({
+            url: axiosOptions.url,
+            method: axiosOptions.method || 'GET',
+            type: 'RESPONSE',
+            description: 'Something happened in setting up the request',
+            requestStatus: 500,
+          })
           notificationStore.alert('Request failed, there might be a problem with the connection to the server.', 'error')
-          console.log(`%cError Something happened in setting up the request: ${axiosOptions.url}`, 'color: #D0021B')
         }
       })
     })

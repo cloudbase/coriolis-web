@@ -50,7 +50,7 @@ describe('DetailsPageHeader Component', () => {
   it('dispatches user item click', () => {
     let onUserItemClick = sinon.spy()
     let wrapper = wrap({ user, onUserItemClick })
-    wrapper.find('userDropdown').simulate('itemClick')
+    wrapper.find('userDropdown').simulate('itemClick', { value: '', label: '' })
     expect(onUserItemClick.called).toBe(true)
   })
 })

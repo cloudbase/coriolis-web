@@ -24,6 +24,7 @@ import UserDropdown from '../../molecules/UserDropdown'
 import type { User as UserType } from '../../../types/User'
 
 import notificationStore from '../../../stores/NotificationStore'
+import logger from '../../../utils/ApiLogger'
 
 import backgroundImage from './images/star-bg.jpg'
 import logoImage from './images/logo.svg'
@@ -81,6 +82,14 @@ class DetailsPageHeader extends React.Component<Props, {}> {
     notificationStore.saveSeen()
   }
 
+  handleUserItemClick(item: { label: string, value: string }) {
+    if (item.value === 'downloadlog') {
+      logger.download()
+    } else {
+      this.props.onUserItemClick(item)
+    }
+  }
+
   pollData() {
     if (this.stopPolling) {
       return
@@ -107,7 +116,7 @@ class DetailsPageHeader extends React.Component<Props, {}> {
           <UserDropdownStyled
             white
             user={this.props.user}
-            onItemClick={this.props.onUserItemClick}
+            onItemClick={item => { this.handleUserItemClick(item) }}
             data-test-id="dpHeader-userDropdown"
           />
         </User>
