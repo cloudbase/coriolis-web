@@ -17,29 +17,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 import type { Instance } from '../types/Instance'
 
-import { servicesUrl, wizardConfig } from '../config'
+import { servicesUrl } from '../config'
 
 class InstanceSource {
-  static loadInstances(endpointId: string, searchText: ?string, lastInstanceId: ?string, skipLimit?: boolean): Promise<Instance[]> {
-    Api.cancelRequests(endpointId)
-
+  static loadInstancesChunk(
+    endpointId: string,
+    chunkSize: number,
+    lastInstanceId?: string,
+    cancelId?: string,
+    searchText?: string
+  ): Promise<Instance[]> {
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
-    let symbol = '?'
+    url = `${url}?limit=${chunkSize}`
 
-    if (!skipLimit) {
-      url = `${url + symbol}limit=${wizardConfig.instancesItemsPerPage + 1}`
-      symbol = '&'
+    if (lastInstanceId) {
+      url = `${url}&marker=${lastInstanceId}`
     }
 
     if (searchText) {
-      url = `${url + symbol}name=${searchText}`
-      symbol = '&'
+      url = `${url}&name=${searchText}`
     }
 
-    if (lastInstanceId) {
-      url = `${url + symbol}&marker=${lastInstanceId}`
-    }
+    return Api.send({ url, cancelId }).then(response => {
+      return response.data.instances
+    })
+  }
 
+  static loadInstances(endpointId: string): Promise<Instance[]> {
+    Api.cancelRequests(endpointId)
+    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     return Api.send({ url, cancelId: endpointId }).then(response => {
       return response.data.instances
     })

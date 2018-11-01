@@ -22,6 +22,7 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import arrowImage from './images/arrow.js'
+import arrowThickImage from './images/arrow-thick.js'
 
 const getOrientation = props => `
   ${props.orientation === 'left' ? 'transform: rotate(180deg);' : ''}
@@ -47,6 +48,8 @@ type Props = {
   orientation: 'left' | 'down' | 'up' | 'right',
   opacity: number,
   disabled?: boolean,
+  color?: string,
+  thick?: boolean,
 }
 
 @observer
@@ -58,12 +61,13 @@ class Arrow extends React.Component<Props> {
 
   render() {
     let color = this.props.primary ? Palette.primary : Palette.grayscale[4]
+    color = this.props.color || color
     color = this.props.disabled ? Palette.grayscale[0] : color
     return (
       <Wrapper
         {...this.props}
         dangerouslySetInnerHTML={
-          { __html: arrowImage(color) }
+          { __html: this.props.thick ? arrowThickImage(color) : arrowImage(color) }
         }
       />
     )

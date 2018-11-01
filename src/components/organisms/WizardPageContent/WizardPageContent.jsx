@@ -107,10 +107,9 @@ type Props = {
   onTargetEndpointChange: (endpoint: Endpoint) => void,
   onAddEndpoint: (provider: string, fromSource: boolean) => void,
   onInstancesSearchInputChange: (searchText: string) => void,
-  onInstancesNextPageClick: (searchText: string) => void,
-  onInstancesPreviousPageClick: () => void,
-  onInstancesReloadClick: (searchText: string) => void,
+  onInstancesReloadClick: () => void,
   onInstanceClick: (instance: Instance) => void,
+  onInstancePageClick: (page: number) => void,
   onOptionsChange: (field: Field, value: any) => void,
   onNetworkChange: (nic: Nic, network: Network) => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
@@ -311,18 +310,18 @@ class WizardPageContent extends React.Component<Props, State> {
         body = (
           <WizardInstances
             instances={this.props.instanceStore.instances}
+            chunkSize={this.props.instanceStore.chunkSize}
+            chunksLoading={this.props.instanceStore.chunksLoading}
+            currentPage={this.props.instanceStore.currentPage}
+            searchText={this.props.instanceStore.searchText}
             loading={this.props.instanceStore.instancesLoading}
             searching={this.props.instanceStore.searching}
             searchNotFound={this.props.instanceStore.searchNotFound}
             reloading={this.props.instanceStore.reloading}
             onSearchInputChange={this.props.onInstancesSearchInputChange}
-            onNextPageClick={this.props.onInstancesNextPageClick}
-            onPreviousPageClick={this.props.onInstancesPreviousPageClick}
-            hasNextPage={this.props.instanceStore.hasNextPage}
-            currentPage={this.props.instanceStore.currentPage}
-            loadingPage={this.props.instanceStore.loadingPage}
             onReloadClick={this.props.onInstancesReloadClick}
             onInstanceClick={this.props.onInstanceClick}
+            onPageClick={this.props.onInstancePageClick}
             selectedInstances={this.props.wizardData.selectedInstances}
           />
         )
