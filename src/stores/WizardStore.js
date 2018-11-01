@@ -125,6 +125,7 @@ class WizardStore {
       this.creatingItem = false
     }).catch(() => {
       this.creatingItem = false
+      return Promise.reject()
     })
   }
 

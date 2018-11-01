@@ -397,6 +397,8 @@ class WizardPage extends React.Component<Props, State> {
         return
       }
       this.handleCreationSuccess([item])
+    }).catch(() => {
+      this.setState({ nextButtonDisabled: false })
     })
   }
 
