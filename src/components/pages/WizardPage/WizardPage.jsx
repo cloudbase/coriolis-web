@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import autobind from 'autobind-decorator'
 import { observer } from 'mobx-react'
 
 import WizardTemplate from '../../templates/WizardTemplate'
@@ -68,14 +69,23 @@ class WizardPage extends React.Component<Props, State> {
 
   contentRef: WizardPageContent
 
+  get instancesChunkSize() {
+    let { min, max } = wizardConfig.instancesPerPage
+    const instancesTableDiff = 505
+    const instancesItemHeight = 67
+    return Math.min(max, Math.max(min, Math.floor((window.innerHeight - instancesTableDiff) / instancesItemHeight)))
+  }
+
   componentWillMount() {
     this.initializeState()
+    this.handleResize()
   }
 
   componentDidMount() {
     document.title = 'Coriolis Wizard'
     KeyboardManager.onEnter('wizard', () => { this.handleEnterKey() })
     KeyboardManager.onEsc('wizard', () => { this.handleEscKey() })
+    window.addEventListener('resize', this.handleResize)
   }
 
   componentWillReceiveProps(newProps: Props) {
@@ -90,6 +100,12 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.clearData()
     instanceStore.cancelIntancesChunksLoading()
     KeyboardManager.removeKeyDown('wizard')
+    window.removeEventListener('resize', this.handleResize, false)
+  }
+
+  @autobind
+  handleResize() {
+    instanceStore.updateChunkSize(this.instancesChunkSize)
   }
 
   handleEnterKey() {
@@ -182,7 +198,7 @@ class WizardPage extends React.Component<Props, State> {
       endpointStore.getConnectionInfo(source).then(() => {
         if (source) {
           // Preload instances for 'vms' page
-          instanceStore.loadInstancesInChunks(source.id)
+          instanceStore.loadInstancesInChunks(source.id, this.instancesChunkSize)
         }
       }).catch(() => {
         this.handleSourceEndpointChange(null)
@@ -228,7 +244,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstancesReloadClick() {
     if (wizardStore.data.source) {
-      instanceStore.reloadInstances(wizardStore.data.source.id)
+      instanceStore.reloadInstances(wizardStore.data.source.id, this.instancesChunkSize)
     }
   }
 
@@ -240,6 +256,10 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstancePageClick(page: number) {
     instanceStore.setPage(page)
+  }
+
+  handleInstanceChunkSizeUpdate(chunkSize: number) {
+    instanceStore.updateChunkSize(chunkSize)
   }
 
   handleOptionsChange(field: Field, value: any) {
@@ -333,7 +353,7 @@ class WizardPage extends React.Component<Props, State> {
           // Check if user has permission for this endpoint
           endpointStore.getConnectionInfo(source).then(() => {
             // Preload instances for 'vms' page
-            instanceStore.loadInstancesInChunks(source.id)
+            instanceStore.loadInstancesInChunks(source.id, this.instancesChunkSize)
           }).catch(() => {
             this.handleSourceEndpointChange(null)
           })
@@ -477,6 +497,7 @@ class WizardPage extends React.Component<Props, State> {
             onInstancesReloadClick={() => { this.handleInstancesReloadClick() }}
             onInstanceClick={instance => { this.handleInstanceClick(instance) }}
             onInstancePageClick={page => { this.handleInstancePageClick(page) }}
+            onInstanceChunkSizeUpdate={chunkSize => { this.handleInstanceChunkSizeUpdate(chunkSize) }}
             onOptionsChange={(field, value) => { this.handleOptionsChange(field, value) }}
             onNetworkChange={(sourceNic, targetNetwork) => { this.handleNetworkChange(sourceNic, targetNetwork) }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
