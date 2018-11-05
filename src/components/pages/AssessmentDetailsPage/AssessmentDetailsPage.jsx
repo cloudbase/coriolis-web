@@ -189,7 +189,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   handleSourceEndpointChange(sourceEndpoint: ?Endpoint) {
     this.setState({ selectedNetworks: [] })
     azureStore.updateSourceEndpoint(sourceEndpoint)
-    instanceStore.loadInstances(this.getSourceEndpointId(), true, true, true).then(() => {
+    instanceStore.loadInstances(this.getSourceEndpointId()).then(() => {
       this.initSelectedVms()
       this.loadInstancesDetails()
     })

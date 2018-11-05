@@ -14,11 +14,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, computed } from 'mobx'
 
-import { wizardConfig } from '../config'
 import type { Instance } from '../types/Instance'
 import InstanceSource from '../sources/InstanceSource'
+import ApiCaller from '../utils/ApiCaller'
 
 class InstanceLocalStorage {
   static saveInstancesToLocalStorage(endpointId: string, instances: Instance[]) {
@@ -81,81 +81,93 @@ class InstanceLocalStorage {
   }
 }
 
-class InstanceStoreUtils {
-  static hasNextPage(instances) {
-    let result = false
-    if (instances.length - 1 === wizardConfig.instancesItemsPerPage) {
-      result = true
-      instances.pop()
-    }
-
-    return result
-  }
-
-  static loadFromCache(cache, page) {
-    let startIndex = wizardConfig.instancesItemsPerPage * (page - 1)
-    let endIndex = startIndex + wizardConfig.instancesItemsPerPage
-    return cache.filter((item, index) => {
-      if (index >= startIndex && index < endIndex) {
-        return true
-      }
-
-      return false
-    })
-  }
-}
-
 class InstanceStore {
-  @observable instances: Instance[] = []
   @observable instancesLoading = false
-  @observable searching = false
-  @observable searchNotFound: boolean = false
-  @observable loadingPage = false
+  @observable chunkSize = 6
   @observable currentPage = 1
-  @observable hasNextPage = false
-  @observable cachedHasNextPage = false
-  @observable cachedInstances: Instance[] = []
+  @observable searchChunksLoading = false
+  @observable searchedInstances: Instance[] = []
+  @observable backgroundInstances: Instance[] = []
+  @observable backgroundChunksLoading = false
+  @observable searching = false
+  @observable searchNotFound = false
   @observable reloading = false
   @observable instancesDetails: Instance[] = []
   @observable loadingInstancesDetails = true
-  @observable instancesDetailsCount: number = 0
-  @observable instancesDetailsRemaining: number = 0
+  @observable instancesDetailsCount = 0
+  @observable instancesDetailsRemaining = 0
+  @observable searchText = ''
+
+  @computed get instances(): Instance[] {
+    if (this.searchText && this.searchedInstances.length > 0) {
+      return this.searchedInstances
+    }
+    return this.backgroundInstances
+  }
+
+  @computed get chunksLoading(): boolean {
+    if (this.searchText) {
+      return this.searchChunksLoading
+    }
+    return this.backgroundChunksLoading
+  }
 
   lastEndpointId: string
   reqId: number
 
-  @action loadInstances(endpointId: string, skipLimit?: boolean, useCache?: boolean, useLocalStorage?: boolean): Promise<void> {
-    if (this.cachedInstances.length > 0 && this.lastEndpointId === endpointId && useCache) {
+  @action loadInstancesInChunks(endpointId: string, reload?: boolean) {
+    ApiCaller.cancelRequests(`${endpointId}-chunk`)
+
+    this.backgroundInstances = []
+    if (reload) {
+      this.reloading = true
+    } else {
+      this.instancesLoading = true
+    }
+    this.backgroundChunksLoading = true
+    this.lastEndpointId = endpointId
+
+    let loadNextChunk = (lastEndpointId?: string) => {
+      let currentEndpointId = endpointId
+      InstanceSource.loadInstancesChunk(currentEndpointId, this.chunkSize, lastEndpointId, `${endpointId}-chunk`)
+        .then(instances => {
+          if (currentEndpointId !== this.lastEndpointId) {
+            return
+          }
+
+          this.backgroundInstances = [...this.backgroundInstances, ...instances]
+          if (reload) {
+            this.reloading = false
+          }
+          this.instancesLoading = false
+
+          if (instances.length < this.chunkSize) {
+            this.backgroundChunksLoading = false
+            return
+          }
+          loadNextChunk(instances[instances.length - 1].id)
+        })
+    }
+    loadNextChunk()
+  }
+
+  @action loadInstances(endpointId: string): Promise<void> {
+    this.instancesLoading = true
+    this.lastEndpointId = endpointId
+
+    let endpointInstances = InstanceLocalStorage.loadInstancesFromLocalStorage(endpointId)
+    if (endpointInstances) {
+      this.backgroundInstances = endpointInstances
+      this.instancesLoading = false
       return Promise.resolve()
     }
 
-    this.instancesLoading = true
-    this.searchNotFound = false
-    this.lastEndpointId = endpointId
-
-    if (useLocalStorage) {
-      let endpointInstances = InstanceLocalStorage.loadInstancesFromLocalStorage(endpointId)
-      if (endpointInstances) {
-        this.currentPage = 1
-        this.hasNextPage = false
-        this.instances = endpointInstances
-        this.cachedInstances = endpointInstances
-        this.instancesLoading = false
-        return Promise.resolve()
-      }
-    }
-
-    return InstanceSource.loadInstances(endpointId, null, null, skipLimit).then(instances => {
+    return InstanceSource.loadInstances(endpointId).then(instances => {
       if (endpointId !== this.lastEndpointId) {
         return
       }
-
-      this.currentPage = 1
-      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-      this.instances = instances
-      this.cachedInstances = instances
+      this.backgroundInstances = instances
       this.instancesLoading = false
-
       InstanceLocalStorage.saveInstancesToLocalStorage(endpointId, instances)
     }).catch(() => {
       if (endpointId !== this.lastEndpointId) {
@@ -166,75 +178,67 @@ class InstanceStore {
   }
 
   @action searchInstances(endpointId: string, searchText: string) {
-    this.searching = true
-    return InstanceSource.loadInstances(endpointId, searchText).then(instances => {
-      this.currentPage = 1
-      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-      this.instances = instances
-      this.cachedInstances = instances
-      this.searching = false
-      this.searchNotFound = Boolean(instances.length === 0 && searchText)
-    }).catch(r => {
-      if (r.canceled) {
-        return
-      }
-      this.searching = false
-      this.searchNotFound = true
-    })
-  }
+    ApiCaller.cancelRequests(`${endpointId}-chunk-search`)
 
-  @action loadNextPage(endpointId: string, searchText: string): Promise<void> {
-    if (this.cachedInstances.length > wizardConfig.instancesItemsPerPage * this.currentPage) {
-      this.currentPage = this.currentPage + 1
-      let numCachedPages = Math.ceil(this.cachedInstances.length / wizardConfig.instancesItemsPerPage)
-      if (this.currentPage === numCachedPages) {
-        this.hasNextPage = this.cachedHasNextPage
-      } else {
-        this.hasNextPage = true
-      }
-      this.instances = InstanceStoreUtils.loadFromCache(this.cachedInstances, this.currentPage)
-      return Promise.resolve()
-    }
-
-    this.loadingPage = true
-    return InstanceSource.loadInstances(
-      endpointId,
-      searchText,
-      this.instances[this.instances.length - 1].id
-    ).then(instances => {
-      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-      this.cachedHasNextPage = this.hasNextPage
-      this.cachedInstances = [...this.cachedInstances, ...instances]
-      this.instances = instances
-      this.loadingPage = false
-      this.currentPage = this.currentPage + 1
-    }).catch(() => {
-      this.loadingPage = false
-    })
-  }
-
-  @action loadPreviousPage() {
-    this.hasNextPage = true
-    this.currentPage = this.currentPage - 1
-    this.instances = InstanceStoreUtils.loadFromCache(this.cachedInstances, this.currentPage)
-  }
-
-  @action reloadInstances(endpointId: string, searchText: string) {
-    this.reloading = true
+    this.searchText = searchText
     this.searchNotFound = false
 
-    InstanceSource.loadInstances(endpointId, searchText).then(instances => {
-      this.reloading = false
+    if (!searchText) {
       this.currentPage = 1
-      this.hasNextPage = InstanceStoreUtils.hasNextPage(instances)
-      this.instances = instances
-      this.cachedInstances = instances
-      this.searching = false
-      this.searchNotFound = Boolean(instances.length === 0 && searchText)
-    }).catch(() => {
-      this.reloading = false
-      this.searchNotFound = true
-    })
+      this.searchedInstances = []
+      return
+    }
+
+    if (!this.backgroundChunksLoading) {
+      this.searchedInstances = this.backgroundInstances
+        .filter(i => i.instance_name.toLowerCase().indexOf(searchText.toLowerCase()) > -1)
+      this.searchNotFound = Boolean(this.searchedInstances.length === 0)
+      this.currentPage = 1
+      return
+    }
+
+    this.searching = true
+    this.searchChunksLoading = true
+
+    let loadNextChunk = (lastEndpointId?: string) => {
+      InstanceSource.loadInstancesChunk(
+        endpointId,
+        this.chunkSize,
+        lastEndpointId,
+        `${endpointId}-chunk-search`,
+        searchText
+      ).then(instances => {
+        if (this.searching) {
+          this.currentPage = 1
+          this.searchedInstances = []
+        }
+
+        this.searchedInstances = [...this.searchedInstances, ...instances]
+        this.searching = false
+        this.searchNotFound = Boolean(this.searchedInstances.length === 0)
+        if (instances.length < this.chunkSize) {
+          this.searchChunksLoading = false
+        }
+        return loadNextChunk(instances[instances.length - 1].id)
+      })
+    }
+    loadNextChunk()
+  }
+
+  @action reloadInstances(endpointId: string) {
+    this.searchNotFound = false
+    this.searchText = ''
+    this.currentPage = 1
+    this.loadInstancesInChunks(endpointId, true)
+  }
+
+  @action cancelIntancesChunksLoading() {
+    ApiCaller.cancelRequests(`${this.lastEndpointId}-chunk`)
+    this.lastEndpointId = ''
+  }
+
+  @action setPage(page: number) {
+    this.currentPage = page
   }
 
   @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean, quietError?: boolean): Promise<void> {

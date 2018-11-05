@@ -21,7 +21,7 @@ import styled, { css } from 'styled-components'
 import Checkbox from '../../atoms/Checkbox'
 import ReloadButton from '../../atoms/ReloadButton'
 import Arrow from '../../atoms/Arrow'
-import StatusIcon from '../../atoms/StatusIcon'
+import HorizontalLoading from '../../atoms/HorizontalLoading'
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
 import SearchInput from '../../molecules/SearchInput'
@@ -125,31 +125,38 @@ const Pagination = styled.div`
   margin: 32px 0 16px 0;
   flex-shrink: 0;
 `
-const Page = styled.div`
-  width: 30px;
-  height: 30px;
+const pageStyle = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${Palette.grayscale[3]};
+  background: ${Palette.grayscale[1]};
+`
+const pageButtonStyle = css`
+  width: 32px;
+  height: 30px;
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
-  ${props => props.previous ? css`
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    padding-top: 2px;
-    height: 28px;
-  ` : ''}
-  ${props => props.number ? css`
-    border-top: 1px solid ${Palette.grayscale[3]};
-    border-bottom: 1px solid ${Palette.grayscale[3]};
-    border-left: 1px solid white;
-    border-right: 1px solid white;
-    cursor: default;
-  ` : ''}
-  ${props => props.next ? css`
-    border-top-right-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
-  ` : ''}
+  padding-top: 2px;
+`
+
+const PagePrevious = styled.div`
+  border-top-left-radius: ${StyleProps.borderRadius};
+  border-bottom-left-radius: ${StyleProps.borderRadius};
+  ${pageStyle}
+  ${pageButtonStyle}
+`
+const PageNext = styled.div`
+  border-top-right-radius: ${StyleProps.borderRadius};
+  border-bottom-right-radius: ${StyleProps.borderRadius};
+  ${pageStyle}
+  ${pageButtonStyle}
+`
+const PageNumber = styled.div`
+  width: 64px;
+  height: 29px;
+  flex-direction: column;
+  margin: 0 1px;
+  padding-top: 3px;
+  ${pageStyle}
 `
 const Reloading = styled.div`
   margin: 32px auto 0 auto;
@@ -183,33 +190,33 @@ type Props = {
   instances: InstanceType[],
   selectedInstances: ?InstanceType[],
   currentPage: number,
+  chunkSize: number,
   loading: boolean,
+  chunksLoading: boolean,
   searching: boolean,
   searchNotFound: boolean,
-  loadingPage: boolean,
-  hasNextPage: boolean,
   reloading: boolean,
   onSearchInputChange: (value: string) => void,
-  onNextPageClick: (searchText: string) => void,
-  onPreviousPageClick: () => void,
-  onReloadClick: (searchText: string) => void,
+  onReloadClick: () => void,
   onInstanceClick: (instance: InstanceType) => void,
+  onPageClick: (page: number) => void,
 }
-
 type State = {
   searchText: string,
 }
+
 @observer
 class WizardInstances extends React.Component<Props, State> {
   state = {
     searchText: '',
   }
-
   timeout: TimeoutID
 
-  handleSeachInputChange(searchText: string) {
-    this.setState({ searchText })
+  componentWillUnmount() {
+    this.props.onSearchInputChange('')
+  }
 
+  handleSeachInputChange(searchText: string) {
     clearTimeout(this.timeout)
     this.setState({ searchText })
     this.timeout = setTimeout(() => {
@@ -217,8 +224,17 @@ class WizardInstances extends React.Component<Props, State> {
     }, 500)
   }
 
+  handlePreviousPageClick() {
+    this.props.onPageClick(this.props.currentPage - 1)
+  }
+
+  handleNextPageClick() {
+    this.props.onPageClick(this.props.currentPage + 1)
+  }
+
   areNoInstances() {
-    return !this.props.loading && !this.props.searchNotFound && !this.props.reloading && this.props.instances.length === 0
+    return !this.props.loading && !this.props.searchNotFound && !this.props.reloading
+      && this.props.instances.length === 0 && !this.props.searching
   }
 
   renderNoInstances() {
@@ -231,7 +247,7 @@ class WizardInstances extends React.Component<Props, State> {
         <BigInstanceImage />
         <SearchNotFoundText>It seems like you don’t have any Instances in this Endpoint</SearchNotFoundText>
         <SearchNotFoundSubtitle>You can retry the search or choose another Endpoint</SearchNotFoundSubtitle>
-        <Button hollow onClick={() => { this.props.onReloadClick(this.state.searchText) }}>Retry Search</Button>
+        <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry Search</Button>
       </SearchNotFound>
     )
   }
@@ -245,7 +261,7 @@ class WizardInstances extends React.Component<Props, State> {
       <SearchNotFound>
         <StatusImage status="ERROR" />
         <SearchNotFoundText data-test-id="wInstances-notFoundText">Your search returned no results</SearchNotFoundText>
-        <Button hollow onClick={() => { this.props.onReloadClick(this.state.searchText) }}>Retry</Button>
+        <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry</Button>
       </SearchNotFound>
     )
   }
@@ -279,10 +295,13 @@ class WizardInstances extends React.Component<Props, State> {
     if (this.props.loading || this.props.searchNotFound || this.props.reloading || this.areNoInstances()) {
       return null
     }
+    let startIdx = (this.props.currentPage - 1) * this.props.chunkSize
+    let endIdx = startIdx + (this.props.chunkSize - 1)
+    let filteredInstances = this.props.instances.filter((i, idx) => idx >= startIdx && idx <= endIdx)
 
     return (
       <InstancesWrapper>
-        {this.props.instances.map(instance => {
+        {filteredInstances.map(instance => {
           let selected = Boolean(this.props.selectedInstances && this.props.selectedInstances.find(i => i.id === instance.id))
           let flavorName = instance.flavor_name ? ` | ${instance.flavor_name}` : ''
           return (
@@ -327,7 +346,7 @@ class WizardInstances extends React.Component<Props, State> {
           <SelectionInfo data-test-id="wInstances-selInfo">{count} instance{plural} selected</SelectionInfo>
           <FilterSeparator>|</FilterSeparator>
           <ReloadButton
-            onClick={() => { this.props.onReloadClick(this.state.searchText) }}
+            onClick={() => { this.props.onReloadClick() }}
             data-test-id="wInstances-reloadButton"
           />
         </FilterInfo>
@@ -340,37 +359,33 @@ class WizardInstances extends React.Component<Props, State> {
       return null
     }
 
-    let areAllDisabled = this.props.searching || this.props.loadingPage
+    let hasNextPage = this.props.currentPage * this.props.chunkSize < this.props.instances.length
+    let areAllDisabled = this.props.searching
     let isPreviousDisabled = this.props.currentPage === 1 || areAllDisabled
-    let isNextDisabled = !this.props.hasNextPage || areAllDisabled
+    let isNextDisabled = !hasNextPage || areAllDisabled
 
     return (
-      <Pagination>
-        <Page
-          previous
+      <Pagination onMouseDown={e => { e.preventDefault() }}>
+        <PagePrevious
           disabled={isPreviousDisabled}
-          onClick={() => { if (!isPreviousDisabled) { this.props.onPreviousPageClick() } }}
+          onClick={() => { if (!isPreviousDisabled) { this.handlePreviousPageClick() } }}
           data-test-id="wInstances-prevPageButton"
         >
-          <Arrow orientation="left" disabled={isPreviousDisabled} />
-        </Page>
-        <Page number data-test-id="wInstances-currentPage">
-          {this.props.loadingPage ? (
-            <StatusIcon
-              status="RUNNING"
-              secondary
-              data-test-id="wInstances-pageLoadingStatus"
-            />
-          ) : this.props.currentPage}
-        </Page>
-        <Page
-          next
-          onClick={() => { if (!isNextDisabled) { this.props.onNextPageClick(this.state.searchText) } }}
+          <Arrow orientation="left" disabled={isPreviousDisabled} color={Palette.black} thick />
+        </PagePrevious>
+        <PageNumber data-test-id="wInstances-currentPage">
+          {this.props.currentPage} of {Math.ceil(this.props.instances.length / this.props.chunkSize)}
+          {this.props.chunksLoading ? (
+            <HorizontalLoading style={{ width: '100%', top: '3px' }} data-test-id="wInstances-loadingChunks" />
+          ) : null}
+        </PageNumber>
+        <PageNext
+          onClick={() => { if (!isNextDisabled) { this.handleNextPageClick() } }}
           disabled={isNextDisabled}
           data-test-id="wInstances-nextPageButton"
         >
-          <Arrow disabled={isNextDisabled} />
-        </Page>
+          <Arrow disabled={isNextDisabled} color={Palette.black} thick />
+        </PageNext>
       </Pagination>
     )
   }

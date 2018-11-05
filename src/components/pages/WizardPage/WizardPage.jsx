@@ -88,6 +88,7 @@ class WizardPage extends React.Component<Props, State> {
 
   componentWillUnmount() {
     wizardStore.clearData()
+    instanceStore.cancelIntancesChunksLoading()
     KeyboardManager.removeKeyDown('wizard')
   }
 
@@ -181,7 +182,7 @@ class WizardPage extends React.Component<Props, State> {
       endpointStore.getConnectionInfo(source).then(() => {
         if (source) {
           // Preload instances for 'vms' page
-          instanceStore.loadInstances(source.id)
+          instanceStore.loadInstancesInChunks(source.id)
         }
       }).catch(() => {
         this.handleSourceEndpointChange(null)
@@ -225,19 +226,9 @@ class WizardPage extends React.Component<Props, State> {
     }
   }
 
-  handleInstancesNextPageClick(searchText: string) {
+  handleInstancesReloadClick() {
     if (wizardStore.data.source) {
-      instanceStore.loadNextPage(wizardStore.data.source.id, searchText)
-    }
-  }
-
-  handleInstancesPreviousPageClick() {
-    instanceStore.loadPreviousPage()
-  }
-
-  handleInstancesReloadClick(searchText: string) {
-    if (wizardStore.data.source) {
-      instanceStore.reloadInstances(wizardStore.data.source.id, searchText)
+      instanceStore.reloadInstances(wizardStore.data.source.id)
     }
   }
 
@@ -245,6 +236,10 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.updateData({ networks: null })
     wizardStore.toggleInstanceSelection(instance)
     wizardStore.setPermalink(wizardStore.data)
+  }
+
+  handleInstancePageClick(page: number) {
+    instanceStore.setPage(page)
   }
 
   handleOptionsChange(field: Field, value: any) {
@@ -338,7 +333,7 @@ class WizardPage extends React.Component<Props, State> {
           // Check if user has permission for this endpoint
           endpointStore.getConnectionInfo(source).then(() => {
             // Preload instances for 'vms' page
-            instanceStore.loadInstances(source.id)
+            instanceStore.loadInstancesInChunks(source.id)
           }).catch(() => {
             this.handleSourceEndpointChange(null)
           })
@@ -479,10 +474,9 @@ class WizardPage extends React.Component<Props, State> {
             onTargetEndpointChange={endpoint => { this.handleTargetEndpointChange(endpoint) }}
             onAddEndpoint={(type, fromSource) => { this.handleAddEndpoint(type, fromSource) }}
             onInstancesSearchInputChange={searchText => { this.handleInstancesSearchInputChange(searchText) }}
-            onInstancesNextPageClick={searchText => { this.handleInstancesNextPageClick(searchText) }}
-            onInstancesPreviousPageClick={() => { this.handleInstancesPreviousPageClick() }}
-            onInstancesReloadClick={searchText => { this.handleInstancesReloadClick(searchText) }}
+            onInstancesReloadClick={() => { this.handleInstancesReloadClick() }}
             onInstanceClick={instance => { this.handleInstanceClick(instance) }}
+            onInstancePageClick={page => { this.handleInstancePageClick(page) }}
             onOptionsChange={(field, value) => { this.handleOptionsChange(field, value) }}
             onNetworkChange={(sourceNic, targetNetwork) => { this.handleNetworkChange(sourceNic, targetNetwork) }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}

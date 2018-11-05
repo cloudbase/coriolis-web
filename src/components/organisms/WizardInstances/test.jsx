@@ -22,7 +22,7 @@ import WizardInstances from '.'
 
 const wrap = props => new TW(shallow(
   // $FlowIgnore
-  <WizardInstances {...props} />
+  <WizardInstances chunkSize={6} {...props} />
 ), 'wInstances')
 
 let instances = [
@@ -61,8 +61,8 @@ describe('WizardInstances Component', () => {
   })
 
   it('renders current page', () => {
-    let wrapper = wrap({ instances, currentPage: 2 })
-    expect(wrapper.findText('currentPage')).toBe('2')
+    let wrapper = wrap({ instances, currentPage: 2, chunkSize: 2 })
+    expect(wrapper.findText('currentPage')).toBe('2 of 2')
   })
 
   it('renders previous page disabled if page is 1', () => {
@@ -89,33 +89,31 @@ describe('WizardInstances Component', () => {
   it('renders search not found', () => {
     let wrapper = wrap({ instances: [], currentPage: 1, searchNotFound: true })
     expect(wrapper.findText('notFoundText')).toBe('Your search returned no results')
-    expect(wrapper.find('pageLoadingStatus').length).toBe(0)
+    expect(wrapper.find('loadingChunks').length).toBe(0)
   })
 
   it('renders loading page', () => {
-    let wrapper = wrap({ instances, currentPage: 1, loadingPage: true })
-    expect(wrapper.find('pageLoadingStatus').length).toBe(1)
+    let wrapper = wrap({ instances, currentPage: 1, chunksLoading: true })
+    expect(wrapper.find('loadingChunks').length).toBe(1)
   })
 
   it('enabled next page', () => {
-    let wrapper = wrap({ instances, currentPage: 1, hasNextPage: true })
+    let wrapper = wrap({ instances, currentPage: 1 })
+    expect(wrapper.find('nextPageButton').prop('disabled')).toBe(true)
+    wrapper = wrap({ instances, currentPage: 1, chunkSize: 2 })
     expect(wrapper.find('nextPageButton').prop('disabled')).toBeFalsy()
   })
 
   it('dispatches next and previous page click, if enabled', () => {
-    let onNextPageClick = sinon.spy()
-    let onPreviousPageClick = sinon.spy()
-    let wrapper = wrap({ instances, currentPage: 1, onNextPageClick, onPreviousPageClick })
+    let onPageClick = sinon.spy()
+    let wrapper = wrap({ instances, currentPage: 1, onPageClick })
     wrapper.find('nextPageButton').click()
     wrapper.find('prevPageButton').click()
-    expect(onPreviousPageClick.called).toBe(false)
-    expect(onPreviousPageClick.called).toBe(false)
-
-    wrapper = wrap({ instances, currentPage: 2, onNextPageClick, onPreviousPageClick, hasNextPage: true })
+    expect(onPageClick.callCount).toBe(0)
+    wrapper = wrap({ instances, currentPage: 2, onPageClick, chunkSize: 1 })
     wrapper.find('nextPageButton').click()
     wrapper.find('prevPageButton').click()
-    expect(onPreviousPageClick.called).toBe(true)
-    expect(onPreviousPageClick.called).toBe(true)
+    expect(onPageClick.callCount).toBe(2)
   })
 
   it('dispaches reload click', () => {

@@ -85,7 +85,6 @@ export const wizardConfig = {
     { id: 'schedule', title: 'Schedule', breadcrumb: 'Schedule', excludeFrom: 'migration' },
     { id: 'summary', title: 'Summary', breadcrumb: 'Summary' },
   ],
-  instancesItemsPerPage: 6,
 }
 
 // A list of providers for which `destination-options` API call(s) will be made in the Wizard
