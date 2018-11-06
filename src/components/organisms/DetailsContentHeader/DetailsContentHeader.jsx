@@ -62,6 +62,8 @@ const Text = styled.div`
 `
 const Status = styled.div`
   flex-grow: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 const StatusPills = styled.div`
   display: flex;
@@ -164,6 +166,7 @@ class DetailsContentHeader extends React.Component<Props> {
         hollow={this.props.hollowButton}
         onClick={this.props.onActionButtonClick}
         disabled={this.props.actionButtonDisabled}
+        style={{ marginLeft: '32px' }}
         data-test-id="dcHeader-actionButton"
       >{this.props.buttonLabel}</Button>
     )
