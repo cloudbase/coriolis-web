@@ -115,7 +115,7 @@ class InstanceStore {
   lastEndpointId: string
   reqId: number
 
-  @action loadInstancesInChunks(endpointId: string, reload?: boolean) {
+  @action loadInstancesInChunks(endpointId: string, chunkSize?: number = 6, reload?: boolean) {
     ApiCaller.cancelRequests(`${endpointId}-chunk`)
 
     this.backgroundInstances = []
@@ -129,7 +129,7 @@ class InstanceStore {
 
     let loadNextChunk = (lastEndpointId?: string) => {
       let currentEndpointId = endpointId
-      InstanceSource.loadInstancesChunk(currentEndpointId, this.chunkSize, lastEndpointId, `${endpointId}-chunk`)
+      InstanceSource.loadInstancesChunk(currentEndpointId, chunkSize, lastEndpointId, `${endpointId}-chunk`)
         .then(instances => {
           if (currentEndpointId !== this.lastEndpointId) {
             return
@@ -141,7 +141,7 @@ class InstanceStore {
           }
           this.instancesLoading = false
 
-          if (instances.length < this.chunkSize) {
+          if (instances.length < chunkSize) {
             this.backgroundChunksLoading = false
             return
           }
@@ -199,11 +199,12 @@ class InstanceStore {
 
     this.searching = true
     this.searchChunksLoading = true
+    let chunkSize = this.chunkSize
 
     let loadNextChunk = (lastEndpointId?: string) => {
       InstanceSource.loadInstancesChunk(
         endpointId,
-        this.chunkSize,
+        chunkSize,
         lastEndpointId,
         `${endpointId}-chunk-search`,
         searchText
@@ -216,7 +217,7 @@ class InstanceStore {
         this.searchedInstances = [...this.searchedInstances, ...instances]
         this.searching = false
         this.searchNotFound = Boolean(this.searchedInstances.length === 0)
-        if (instances.length < this.chunkSize) {
+        if (instances.length < chunkSize) {
           this.searchChunksLoading = false
         }
         return loadNextChunk(instances[instances.length - 1].id)
@@ -225,20 +226,28 @@ class InstanceStore {
     loadNextChunk()
   }
 
-  @action reloadInstances(endpointId: string) {
+  @action reloadInstances(endpointId: string, chunkSize?: number) {
     this.searchNotFound = false
     this.searchText = ''
     this.currentPage = 1
-    this.loadInstancesInChunks(endpointId, true)
+    this.loadInstancesInChunks(endpointId, chunkSize, true)
   }
 
   @action cancelIntancesChunksLoading() {
     ApiCaller.cancelRequests(`${this.lastEndpointId}-chunk`)
     this.lastEndpointId = ''
+    this.searchNotFound = false
+    this.searchText = ''
+    this.currentPage = 1
   }
 
   @action setPage(page: number) {
     this.currentPage = page
+  }
+
+  @action updateChunkSize(chunkSize: number) {
+    this.currentPage = 1
+    this.chunkSize = chunkSize
   }
 
   @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean, quietError?: boolean): Promise<void> {

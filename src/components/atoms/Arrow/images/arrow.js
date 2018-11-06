@@ -20,7 +20,7 @@ version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
-     stroke-linecap="round" stroke-linejoin="round" transform="rotate(90deg)">
+     stroke-linecap="round" stroke-linejoin="round">
         <g id="202-Replica-Executions" transform="translate(-1197.000000, -194.000000)" stroke="${color}">
             <g id="Icon/Chevron/Grey"
             transform="translate(1200.000000, 200.000000) rotate(-90.000000)
