@@ -25,6 +25,7 @@ import WizardBreadcrumbs from '../../molecules/WizardBreadcrumbs'
 import WizardEndpointList from '../WizardEndpointList'
 import WizardInstances from '../WizardInstances'
 import WizardNetworks from '../WizardNetworks'
+import WizardStorage from '../WizardStorage'
 import WizardOptions from '../WizardOptions'
 import Schedule from '../Schedule'
 import WizardSummary from '../WizardSummary'
@@ -33,16 +34,17 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import { providerTypes, wizardConfig } from '../../../config'
 import type { WizardData } from '../../../types/WizardData'
-import type { Endpoint } from '../../../types/Endpoint'
-import type { Instance, Nic } from '../../../types/Instance'
+import type { Endpoint, Storage, StorageMap } from '../../../types/Endpoint'
+import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { Network } from '../../../types/Network'
 import type { Schedule as ScheduleType } from '../../../types/Schedule'
 import instanceStore from '../../../stores/InstanceStore'
 import providerStore from '../../../stores/ProviderStore'
+import endpointStore from '../../../stores/EndpointStore'
+import networkStore from '../../../stores/NetworkStore'
 
 import migrationArrowImage from './images/migration.js'
-import networkStore from '../../../stores/NetworkStore'
 
 const Wrapper = styled.div`
   ${StyleProps.exactWidth(`${parseInt(StyleProps.contentWidth, 10) + 64}px`)}
@@ -97,9 +99,11 @@ type Props = {
   providerStore: typeof providerStore,
   instanceStore: typeof instanceStore,
   networkStore: typeof networkStore,
+  endpointStore: typeof endpointStore,
   wizardData: WizardData,
-  endpoints: Endpoint[],
   schedules: ScheduleType[],
+  storageMap: StorageMap[],
+  hasStorageMap: boolean,
   onTypeChange: (isReplicaChecked: ?boolean) => void,
   onBackClick: () => void,
   onNextClick: () => void,
@@ -112,6 +116,7 @@ type Props = {
   onInstancePageClick: (page: number) => void,
   onOptionsChange: (field: Field, value: any) => void,
   onNetworkChange: (nic: Nic, network: Network) => void,
+  onStorageChange: (sourceStorage: Disk, targetStorage: Storage, type: 'backend' | 'disk') => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void,
   onScheduleRemove: (scheudleId: string) => void,
@@ -287,7 +292,7 @@ class WizardPageContent extends React.Component<Props, State> {
             loading={this.props.providerStore.providersLoading}
             otherEndpoint={this.props.wizardData.target}
             selectedEndpoint={this.props.wizardData.source}
-            endpoints={this.props.endpoints}
+            endpoints={this.props.endpointStore.endpoints}
             onChange={this.props.onSourceEndpointChange}
             onAddEndpoint={type => { this.props.onAddEndpoint(type, true) }}
           />
@@ -300,7 +305,7 @@ class WizardPageContent extends React.Component<Props, State> {
             loading={this.props.providerStore.providersLoading}
             otherEndpoint={this.props.wizardData.source}
             selectedEndpoint={this.props.wizardData.target}
-            endpoints={this.props.endpoints}
+            endpoints={this.props.endpointStore.endpoints}
             onChange={this.props.onTargetEndpointChange}
             onAddEndpoint={type => { this.props.onAddEndpoint(type, false) }}
           />
@@ -335,6 +340,8 @@ class WizardPageContent extends React.Component<Props, State> {
             onChange={this.props.onOptionsChange}
             data={this.props.wizardData.options}
             useAdvancedOptions={this.state.useAdvancedOptions}
+            hasStorageMap={this.props.hasStorageMap}
+            storage={this.props.endpointStore.storage}
             wizardType={this.props.type}
             onAdvancedOptionsToggle={useAdvancedOptions => { this.handleAdvancedOptionsToggle(useAdvancedOptions) }}
           />
@@ -349,6 +356,17 @@ class WizardPageContent extends React.Component<Props, State> {
             instancesDetails={this.props.instanceStore.instancesDetails}
             loadingInstancesDetails={this.props.instanceStore.loadingInstancesDetails}
             onChange={this.props.onNetworkChange}
+          />
+        )
+        break
+      case 'storage':
+        body = (
+          <WizardStorage
+            storage={this.props.endpointStore.storage}
+            instancesDetails={this.props.instanceStore.instancesDetails}
+            storageMap={this.props.storageMap}
+            defaultStorage={String(this.props.wizardData.options ? this.props.wizardData.options.default_storage : '')}
+            onChange={this.props.onStorageChange}
           />
         )
         break
@@ -370,7 +388,16 @@ class WizardPageContent extends React.Component<Props, State> {
           <WizardSummary
             data={this.props.wizardData}
             schedules={this.props.schedules}
+            storageMap={this.props.storageMap}
             wizardType={this.props.type}
+            instancesDetails={this.props.instanceStore.instancesDetails}
+            defaultStorage={
+              this.props.endpointStore.storage.find(
+                s => this.props.wizardData.options ?
+                  s.name === this.props.wizardData.options.default_storage :
+                  false
+              )
+            }
           />
         )
         break
@@ -418,7 +445,11 @@ class WizardPageContent extends React.Component<Props, State> {
         {this.renderBody()}
         <Footer>
           {this.renderNavigationActions()}
-          <WizardBreadcrumbs selected={this.props.page} wizardType={this.props.type} />
+          <WizardBreadcrumbs
+            selected={this.props.page}
+            wizardType={this.props.type}
+            destinationProvider={this.props.wizardData.target ? this.props.wizardData.target.type : null}
+          />
         </Footer>
       </Wrapper>
     )

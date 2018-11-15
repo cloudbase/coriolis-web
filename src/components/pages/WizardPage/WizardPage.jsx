@@ -37,8 +37,8 @@ import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardConfig, executionOptions, providersWithExtraOptions } from '../../../config'
 import type { MainItem } from '../../../types/MainItem'
-import type { Endpoint as EndpointType } from '../../../types/Endpoint'
-import type { Instance, Nic } from '../../../types/Instance'
+import type { Endpoint as EndpointType, Storage } from '../../../types/Endpoint'
+import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { Network } from '../../../types/Network'
 import type { Schedule } from '../../../types/Schedule'
@@ -74,6 +74,12 @@ class WizardPage extends React.Component<Props, State> {
     const instancesTableDiff = 505
     const instancesItemHeight = 67
     return Math.min(max, Math.max(min, Math.floor((window.innerHeight - instancesTableDiff) / instancesItemHeight)))
+  }
+
+  get pages() {
+    return wizardConfig.pages
+      .filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
+      .filter(p => !p.filter || (wizardStore.data.target && p.filter(wizardStore.data.target.type)))
   }
 
   componentWillMount() {
@@ -162,35 +168,34 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   handleBackClick() {
-    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
-    let currentPageIndex = pages.findIndex(p => p.id === wizardStore.currentPage.id)
+    let currentPageIndex = this.pages.findIndex(p => p.id === wizardStore.currentPage.id)
 
     if (currentPageIndex === 0) {
       window.history.back()
       return
     }
 
-    let page = pages[currentPageIndex - 1]
+    let page = this.pages[currentPageIndex - 1]
     this.loadDataForPage(page)
     wizardStore.setCurrentPage(page)
   }
 
   handleNextClick() {
-    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
-    let currentPageIndex = pages.findIndex(p => p.id === wizardStore.currentPage.id)
+    let currentPageIndex = this.pages.findIndex(p => p.id === wizardStore.currentPage.id)
 
-    if (currentPageIndex === pages.length - 1) {
+    if (currentPageIndex === this.pages.length - 1) {
       this.create()
       return
     }
 
-    let page = pages[currentPageIndex + 1]
+    let page = this.pages[currentPageIndex + 1]
     this.loadDataForPage(page)
     wizardStore.setCurrentPage(page)
   }
 
   handleSourceEndpointChange(source: ?EndpointType) {
     wizardStore.updateData({ source, selectedInstances: null, networks: null })
+    wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
 
     if (source) {
@@ -208,12 +213,16 @@ class WizardPage extends React.Component<Props, State> {
 
   handleTargetEndpointChange(target: EndpointType) {
     wizardStore.updateData({ target, networks: null, options: null })
+    wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
     // Preload destination options schema
     providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
       // Preload destination options values
       return providerStore.getDestinationOptions(target.id, target.type)
     })
+    if (this.pages.find(p => p.id === 'storage')) {
+      endpointStore.loadStorage(target.id, {})
+    }
   }
 
   handleAddEndpoint(newEndpointType: string, newEndpointFromSource: boolean) {
@@ -250,6 +259,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstanceClick(instance: Instance) {
     wizardStore.updateData({ networks: null })
+    wizardStore.clearStorageMap()
     wizardStore.toggleInstanceSelection(instance)
     wizardStore.setPermalink(wizardStore.data)
   }
@@ -264,6 +274,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleOptionsChange(field: Field, value: any) {
     wizardStore.updateData({ networks: null })
+    wizardStore.clearStorageMap()
     wizardStore.updateOptions({ field, value })
     // If the field is a string and doesn't have an enum property,
     // we can't call destination options on "change" since too many calls will be made,
@@ -279,19 +290,20 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.setPermalink(wizardStore.data)
   }
 
+  handleStorageChange(source: Disk, target: Storage, type: 'backend' | 'disk') {
+    wizardStore.updateStorage({ source, target, type })
+  }
+
   handleAddScheduleClick(schedule: Schedule) {
     wizardStore.addSchedule(schedule)
-    wizardStore.setPermalink(wizardStore.data)
   }
 
   handleScheduleChange(scheduleId: string, data: Schedule) {
     wizardStore.updateSchedule(scheduleId, data)
-    wizardStore.setPermalink(wizardStore.data)
   }
 
   handleScheduleRemove(scheduleId: string) {
     wizardStore.removeSchedule(scheduleId)
-    wizardStore.setPermalink(wizardStore.data)
   }
 
   initializeState() {
@@ -362,6 +374,10 @@ class WizardPage extends React.Component<Props, State> {
       }
       case 'target': {
         let target = wizardStore.data.target
+        // Preload Storage Mapping
+        if (this.pages.find(p => p.id === 'storage') && target) {
+          endpointStore.loadStorage(target.id, {})
+        }
         // Preload destination options schema
         if (providerStore.optionsSchema.length === 0 && target) {
           providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
@@ -380,7 +396,8 @@ class WizardPage extends React.Component<Props, State> {
           instanceStore.loadInstancesDetails(wizardStore.data.source.id, wizardStore.data.selectedInstances)
         }
         if (wizardStore.data.target) {
-          networkStore.loadNetworks(wizardStore.data.target.id, wizardStore.data.options)
+          let id = wizardStore.data.target.id
+          networkStore.loadNetworks(id, wizardStore.data.options)
         }
         break
       default:
@@ -390,7 +407,7 @@ class WizardPage extends React.Component<Props, State> {
   createMultiple() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel}s ...`)
-    wizardStore.createMultiple(this.state.type, wizardStore.data).then(() => {
+    wizardStore.createMultiple(this.state.type, wizardStore.data, wizardStore.storageMap).then(() => {
       let items = wizardStore.createdItems
       if (!items) {
         notificationStore.alert(`${typeLabel}s couldn't be created`, 'error')
@@ -404,7 +421,7 @@ class WizardPage extends React.Component<Props, State> {
   createSingle() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel} ...`)
-    wizardStore.create(this.state.type, wizardStore.data).then(() => {
+    wizardStore.create(this.state.type, wizardStore.data, wizardStore.storageMap).then(() => {
       let item = wizardStore.createdItem
       if (!item) {
         notificationStore.alert(`${typeLabel} couldn't be created`, 'error')
@@ -482,8 +499,10 @@ class WizardPage extends React.Component<Props, State> {
             providerStore={providerStore}
             instanceStore={instanceStore}
             networkStore={networkStore}
-            endpoints={endpointStore.endpoints}
+            endpointStore={endpointStore}
             wizardData={wizardStore.data}
+            hasStorageMap={Boolean(this.pages.find(p => p.id === 'storage'))}
+            storageMap={wizardStore.storageMap}
             schedules={wizardStore.schedules}
             nextButtonDisabled={this.state.nextButtonDisabled}
             type={this.state.type}
@@ -500,6 +519,7 @@ class WizardPage extends React.Component<Props, State> {
             onInstanceChunkSizeUpdate={chunkSize => { this.handleInstanceChunkSizeUpdate(chunkSize) }}
             onOptionsChange={(field, value) => { this.handleOptionsChange(field, value) }}
             onNetworkChange={(sourceNic, targetNetwork) => { this.handleNetworkChange(sourceNic, targetNetwork) }}
+            onStorageChange={(source, target, type) => { this.handleStorageChange(source, target, type) }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
             onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}

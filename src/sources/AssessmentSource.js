@@ -33,7 +33,7 @@ class AssessmentSourceUtils {
     if (vmSize) {
       env.vm_size = vmSize
     }
-    let skipFields = ['use_replica', 'separate_vm', 'shutdown_instances', 'skip_os_morphing']
+    let skipFields = ['use_replica', 'separate_vm', 'shutdown_instances', 'skip_os_morphing', 'default_storage']
     Object.keys(data.fieldValues).filter(f => !skipFields.find(sf => sf === f)).forEach(fieldName => {
       if (data.fieldValues[fieldName] != null) {
         env[fieldName] = data.fieldValues[fieldName]

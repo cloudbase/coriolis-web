@@ -250,6 +250,9 @@ class MainDetails extends React.Component<Props> {
       if (value === false) {
         return 'No'
       }
+      if (value.join && value.length && value[0].destination && (value[0].source || value[0].disk_id)) {
+        return value.map(v => `${v.source || v.disk_id}=${v.destination}`).join(', ')
+      }
       return value.toString()
     }
 

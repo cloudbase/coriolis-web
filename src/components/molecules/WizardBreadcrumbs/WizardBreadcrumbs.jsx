@@ -27,7 +27,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
 `
-const ArrowStyled = styled(Arrow) ``
+const ArrowStyled = styled(Arrow)``
 const Breadcrumb = styled.div`
   display: flex;
   align-items: center;
@@ -44,11 +44,15 @@ const Name = styled.div`
 type Props = {
   selected: { id: string },
   wizardType: 'migration' | 'replica',
+  destinationProvider: ?string,
 }
 @observer
 class WizardBreadcrumbs extends React.Component<Props> {
   render() {
-    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== this.props.wizardType)
+    let pages = wizardConfig.pages
+      .filter(p => !p.excludeFrom || p.excludeFrom !== this.props.wizardType)
+      .filter(p => !p.filter || (this.props.destinationProvider && p.filter(this.props.destinationProvider)))
+
     return (
       <Wrapper>
         {pages.map(page => {

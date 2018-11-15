@@ -19,6 +19,11 @@ export type Nic = {
   network_name: string
 }
 
+export type Disk = {
+  id: string,
+  storage_backend_identifier?: string,
+}
+
 export type Instance = {
   id: string,
   name: string,
@@ -28,5 +33,6 @@ export type Instance = {
   memory_mb: number,
   devices: {
     nics: Nic[],
+    disks: Disk[],
   },
 }

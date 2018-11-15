@@ -26,6 +26,7 @@ import WizardOptionsField from '../../molecules/WizardOptionsField'
 import StatusImage from '../../atoms/StatusImage'
 import type { Field } from '../../../types/Field'
 import type { Instance } from '../../../types/Instance'
+import type { Storage } from '../../../types/Endpoint'
 
 import { executionOptions } from '../../../config'
 
@@ -61,6 +62,8 @@ type Props = {
   data: ?{ [string]: mixed },
   onChange: (field: Field, value: any) => void,
   useAdvancedOptions: boolean,
+  hasStorageMap: boolean,
+  storage: Storage[],
   onAdvancedOptionsToggle: (showAdvanced: boolean) => void,
   wizardType: string,
   loading: boolean,
@@ -113,6 +116,10 @@ class WizardOptions extends React.Component<Props> {
           },
         ]
       }
+    }
+
+    if (this.props.hasStorageMap && this.props.useAdvancedOptions && this.props.storage.length > 0) {
+      fieldsSchema.push({ name: 'default_storage', type: 'string', enum: this.props.storage.map(s => s.name) })
     }
 
     return fieldsSchema

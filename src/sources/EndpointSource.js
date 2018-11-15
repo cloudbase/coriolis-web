@@ -19,7 +19,7 @@ import moment from 'moment'
 import Api from '../utils/ApiCaller'
 import { SchemaParser } from './Schemas'
 import ObjectUtils from '../utils/ObjectUtils'
-import type { Endpoint, Validation } from '../types/Endpoint'
+import type { Endpoint, Validation, Storage } from '../types/Endpoint'
 
 import { servicesUrl, useSecret } from '../config'
 
@@ -227,6 +227,13 @@ class EdnpointSource {
       },
     }).then(response => {
       return response.data.endpoint
+    })
+  }
+
+  static loadStorage(endpointId: string, data: any): Promise<Storage[]> {
+    let env = btoa(JSON.stringify(data))
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`).then(response => {
+      return response.data.storage
     })
   }
 }

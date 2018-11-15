@@ -27,6 +27,10 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import DateUtils from '../../../utils/DateUtils'
 import type { Schedule } from '../../../types/Schedule'
 import type { WizardData } from '../../../types/WizardData'
+import type { StorageMap, Storage } from '../../../types/Endpoint'
+import type { Instance, Disk } from '../../../types/Instance'
+
+import { getDisks } from '../WizardStorage'
 
 import networkArrowImage from './images/network-arrow.svg'
 
@@ -138,6 +142,9 @@ type Props = {
   data: WizardData,
   wizardType: 'replica' | 'migration',
   schedules: Schedule[],
+  storageMap: StorageMap[],
+  instancesDetails: Instance[],
+  defaultStorage: ?Storage,
 }
 @observer
 class WizardSummary extends React.Component<Props> {
@@ -255,7 +262,12 @@ class WizardSummary extends React.Component<Props> {
           {this.props.wizardType === 'replica' ? executeNowOption : null}
           {this.props.data.selectedInstances && this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
           {data.options ? Object.keys(data.options).map(optionName => {
-            if (optionName === 'execute_now' || optionName === 'separate_vm' || !data.options || data.options[optionName] == null) {
+            if (
+              optionName === 'execute_now' ||
+              optionName === 'separate_vm' ||
+              optionName === 'default_stoage' ||
+              !data.options || data.options[optionName] == null
+            ) {
               return null
             }
 
@@ -272,6 +284,47 @@ class WizardSummary extends React.Component<Props> {
             )
           }) : null}
         </OptionsList>
+      </Section>
+    )
+  }
+
+  renderStorageSection(type: 'backend' | 'disk') {
+    let storageMap = this.props.storageMap.filter(mapping => mapping.type === type)
+    let disks = getDisks(this.props.instancesDetails, type)
+
+    if (disks.length === 0 || (storageMap.length === 0 && !this.props.defaultStorage)) {
+      return null
+    }
+    let fieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
+
+    let fullStorageMap: { source: Disk, target: ?Storage }[] = disks.filter(d => d[fieldName]).map(disk => {
+      let diskMapped = storageMap.find(s => s.source[fieldName] === disk[fieldName])
+      if (diskMapped) {
+        return { source: diskMapped.source, target: diskMapped.target }
+      }
+      return { source: disk, target: this.props.defaultStorage }
+    })
+
+    fullStorageMap.sort((m1, m2) => String(m1.source[fieldName]).localeCompare(String(m2.source[fieldName])))
+    let title = type === 'backend' ? 'Storage Backend Mapping' : 'Disk Mapping'
+
+    return (
+      <Section>
+        <SectionTitle>{title}</SectionTitle>
+        <Table>
+          {fullStorageMap.filter(m => m.target).map(mapping => {
+            return (
+              <Row
+                key={`${type}-${mapping.source[fieldName] || ''}-${mapping.target ? mapping.target.name : ''}`}
+                direction="row"
+              >
+                <SourceNetwork>{mapping.source[fieldName]}</SourceNetwork>
+                <NetworkArrow />
+                <TargetNetwork>{mapping.target ? mapping.target.name : 'Default'}</TargetNetwork>
+              </Row>
+            )
+          })}
+        </Table>
       </Section>
     )
   }
@@ -380,6 +433,8 @@ class WizardSummary extends React.Component<Props> {
         </Column>
         <Column>
           {this.renderOptionsSection()}
+          {this.renderStorageSection('backend')}
+          {this.renderStorageSection('disk')}
           {this.renderScheduleSection()}
         </Column>
       </Wrapper>

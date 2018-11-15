@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import type { Field } from '../../../types/Field'
-import type { DestinationOption } from '../../../types/Endpoint'
+import type { DestinationOption, StorageMap } from '../../../types/Endpoint'
 import type { WizardData } from '../../../types/WizardData'
 import { executionOptions } from '../../../config'
 
@@ -64,7 +64,7 @@ export const defaultFillMigrationImageMapValues = (field: Field, option: Destina
 
 export const defaultGetDestinationEnv = (data: WizardData): any => {
   let env = {}
-  let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing']
+  let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'default_storage']
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes.map(o => `${o}_os_image`))
 
@@ -131,6 +131,38 @@ export default class OptionsSchemaParser {
         payload[mapping.sourceNic.network_name] = mapping.targetNetwork.id
       })
     }
+    return payload
+  }
+
+  static getStorageMap(data: WizardData, storageMap: StorageMap[]) {
+    let payload = {}
+    if (data.options && data.options.default_storage) {
+      payload.default = data.options.default_storage
+    }
+
+    storageMap.forEach(mapping => {
+      if (mapping.target.id === null) {
+        return
+      }
+
+      if (mapping.type === 'backend') {
+        if (!payload.backend_mappings) {
+          payload.backend_mappings = []
+        }
+        payload.backend_mappings.push({
+          source: mapping.source.storage_backend_identifier,
+          destination: mapping.target.name,
+        })
+      } else {
+        if (!payload.disk_mappings) {
+          payload.disk_mappings = []
+        }
+        payload.disk_mappings.push({
+          disk_id: mapping.source.id.toString(),
+          destination: mapping.target.name,
+        })
+      }
+    })
     return payload
   }
 }

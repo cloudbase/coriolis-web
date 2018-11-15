@@ -20,10 +20,11 @@ import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
 import { servicesUrl } from '../config'
 import type { WizardData } from '../types/WizardData'
+import type { StorageMap } from '../types/Endpoint'
 import type { MainItem } from '../types/MainItem'
 
 class WizardSource {
-  static create(type: string, data: WizardData): Promise<MainItem> {
+  static create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem> {
     const parser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     let payload = {}
     payload[type] = {
@@ -32,6 +33,7 @@ class WizardSource {
       destination_environment: parser.getDestinationEnv(data),
       network_map: parser.getNetworkMap(data),
       instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
+      storage_mappings: parser.getStorageMap(data, storageMap),
       notes: '',
     }
 
@@ -46,7 +48,7 @@ class WizardSource {
     }).then(response => response.data[type])
   }
 
-  static createMultiple(type: string, data: WizardData): Promise<MainItem[]> {
+  static createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem[]> {
     if (!data.selectedInstances) {
       return Promise.reject('No selected instances')
     }
@@ -54,7 +56,7 @@ class WizardSource {
     return Promise.all(data.selectedInstances.map(instance => {
       let newData = { ...data }
       newData.selectedInstances = [instance]
-      return WizardSource.create(type, newData).catch(() => {
+      return WizardSource.create(type, newData, storageMap).catch(() => {
         notificationStore.alert(`Error while creating ${type} for instance ${instance.name}`, 'error')
         return null
       })

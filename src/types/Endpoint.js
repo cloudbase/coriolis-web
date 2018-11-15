@@ -14,6 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import type { Disk } from './Instance'
+
 export type Validation = {
   valid: boolean,
   message: string,
@@ -37,4 +39,16 @@ export type DestinationOption = {
   // $FlowIssue
   values: string[] | { name: string, id: string, [string]: mixed }[],
   config_default: string | { name: string, id: string },
+}
+
+export type Storage = {
+  id: string,
+  name: string,
+  config_default?: string,
+}
+
+export type StorageMap = {
+  type: 'backend' | 'disk',
+  source: Disk,
+  target: Storage,
 }
