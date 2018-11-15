@@ -30,6 +30,7 @@ class WizardSource {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target ? data.target.id : 'null',
       destination_environment: parser.getDestinationEnv(data),
+      network_map: parser.getNetworkMap(data),
       instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
       notes: '',
     }

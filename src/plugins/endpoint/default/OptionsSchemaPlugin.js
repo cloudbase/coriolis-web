@@ -88,17 +88,6 @@ export const defaultGetDestinationEnv = (data: WizardData): any => {
   return env
 }
 
-export const defaultGetNetworkMap = (data: WizardData) => {
-  let env = {}
-  env.network_map = {}
-  if (data.networks && data.networks.length) {
-    data.networks.forEach(mapping => {
-      env.network_map[mapping.sourceNic.network_name] = mapping.targetNetwork.id
-    })
-  }
-  return env
-}
-
 export const defaultGetMigrationImageMap = (data: WizardData) => {
   let env = {}
   if (data.options) {
@@ -130,10 +119,19 @@ export default class OptionsSchemaParser {
   static getDestinationEnv(data: WizardData) {
     let env = {
       ...defaultGetDestinationEnv(data),
-      ...defaultGetNetworkMap(data),
       ...defaultGetMigrationImageMap(data),
     }
     return env
+  }
+
+  static getNetworkMap(data: WizardData) {
+    let payload = {}
+    if (data.networks && data.networks.length) {
+      data.networks.forEach(mapping => {
+        payload[mapping.sourceNic.network_name] = mapping.targetNetwork.id
+      })
+    }
+    return payload
   }
 }
 
