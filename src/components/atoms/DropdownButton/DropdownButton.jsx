@@ -57,14 +57,14 @@ const getBackgroundColor = props => {
 }
 const getArrowColor = props => {
   if (props.disabled) {
-    return Palette.grayscale[0]
+    return Palette.grayscale[3]
   }
 
   if (props.primary) {
     return 'white'
   }
 
-  return Palette.grayscale[4]
+  return Palette.black
 }
 const getWidth = props => {
   if (props.large) {
@@ -118,8 +118,12 @@ const Wrapper = styled.div`
 const Arrow = styled.div`
   position: absolute;
   right: 8px;
-  top: 12px;
+  top: 8px;
   display: flex;
+  width: 16px;
+  height: 16px;
+  justify-content: center;
+  align-items: center;
 `
 type Props = {
   value: string,
