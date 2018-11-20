@@ -93,7 +93,7 @@ describe('WizardSummary Component', () => {
   it('renders schedule section', () => {
     let wrapper = wrap({ data, schedules, wizardType: 'replica' })
     expect(wrapper.findText(`scheduleItem-${schedules[0].id}`))
-      .toBe('Every February, every 14th, every Wednesday, at 17:00')
+      .toBe('Every February, every 14th, every Wednesday, at 17:00 UTC')
   })
 })
 
