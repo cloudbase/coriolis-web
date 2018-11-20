@@ -184,12 +184,12 @@ class WizardSummary extends React.Component<Props> {
       if (scheduleInfo.hour == null) {
         timeLabel = 'every hour, every minute'
       } else {
-        timeLabel = `at ${padNumber(scheduleInfo.hour)} o'clock, every minute`
+        timeLabel = `at ${padNumber(scheduleInfo.hour)} o'clock, every minute UTC`
       }
     } else if (scheduleInfo.hour == null) {
-      timeLabel = `every hour, at minute ${padNumber(scheduleInfo.minute)}`
+      timeLabel = `every hour, at minute ${padNumber(scheduleInfo.minute)} UTC`
     } else {
-      timeLabel = `at ${padNumber(scheduleInfo.hour)}:${padNumber(scheduleInfo.minute)}`
+      timeLabel = `at ${padNumber(scheduleInfo.hour)}:${padNumber(scheduleInfo.minute)} UTC`
     }
 
     return `${monthLabel}, ${dayOfMonthLabel}, ${dayOfWeekLabel}, ${timeLabel}`
@@ -357,7 +357,7 @@ class WizardSummary extends React.Component<Props> {
             <OverviewLabel>Type</OverviewLabel>
             <OverviewRowData>
               <StatusPill
-                alert
+                alert={type === 'Replica'}
                 small
                 label={this.props.wizardType.toUpperCase()}
                 data-test-id="wSummary-typePill"
