@@ -16,12 +16,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export type Nic = {
   id: string,
-  network_name: string
+  network_name: string,
+  ip_addresses?: string[],
+  mac_address: string,
+  network_id: string,
 }
 
 export type Disk = {
   id: string,
+  name?: string,
   storage_backend_identifier?: string,
+  format?: string,
+  guest_device?: string,
+  size_bytes?: number,
 }
 
 export type Instance = {
@@ -31,6 +38,7 @@ export type Instance = {
   instance_name: string,
   num_cpu: number,
   memory_mb: number,
+  os_type: string,
   devices: {
     nics: Nic[],
     disks: Disk[],

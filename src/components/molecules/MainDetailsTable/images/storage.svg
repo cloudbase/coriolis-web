@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/Storage/16</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Migration/Details/Overview-Closed" transform="translate(-336.000000, -745.000000)">
+            <g id="Icon/Storage/16-Copy-2" transform="translate(336.000000, 745.000000)">
+                <path d="M7,11 C6.44964029,11 6,11.4493709 6,11.9994008 C6,12.5494308 6.44964029,13 7,13 C7.55035971,13 8,12.5494308 8,11.9994008 C8,11.4493709 7.55035971,11 7,11" id="Fill-7-Copy-4" fill="#0044CA" fill-rule="evenodd"></path>
+                <path d="M4,11 C3.44964029,11 3,11.4493709 3,11.9994008 C3,12.5494308 3.44964029,13 4,13 C4.55035971,13 5,12.5494308 5,11.9994008 C5,11.4493709 4.55035971,11 4,11" id="Fill-7-Copy-5" fill="#0044CA" fill-rule="evenodd"></path>
+                <rect id="Rectangle-9-Copy-2" stroke="#0044CA" stroke-width="1.5" x="1" y="9" width="14" height="6" rx="1.5"></rect>
+                <path d="M1,10.3866757 C1,9.88540581 1.13769484,9.10377173 1.30967924,8.63504411 L3.80143187,1.84400221 C3.97246299,1.37787266 4.50214254,1 4.98820212,1 L11.0117979,1 C11.4962019,1 12.0265837,1.37527459 12.1985681,1.84400221 L14.6903208,8.63504411 C14.8613519,9.10117366 15,9.88591999 15,10.3866757" id="Path" stroke="#0044CA" stroke-width="1.5"></path>
+            </g>
+        </g>
+    </g>
+</svg>
