@@ -37,6 +37,7 @@ import userStore from '../../../stores/UserStore'
 import endpointStore from '../../../stores/EndpointStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import instanceStore from '../../../stores/InstanceStore'
+import networkStore from '../../../stores/NetworkStore'
 import { requestPollTimeout } from '../../../config'
 
 import replicaImage from './images/replica.svg'
@@ -93,14 +94,20 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   loadReplicaWithInstances(replicaId: string) {
     replicaStore.getReplica(replicaId).then(() => {
-      if (replicaStore.replicaDetails) {
-        instanceStore.loadInstancesDetails(
-          replicaStore.replicaDetails.origin_endpoint_id,
-          // $FlowIgnore
-          replicaStore.replicaDetails.instances.map(n => { return { instance_name: n } }),
-          false, true
-        )
+      let details = replicaStore.replicaDetails
+      if (!details) {
+        return
       }
+      networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
+        useLocalStorage: true,
+        quietError: true,
+      })
+      instanceStore.loadInstancesDetails(
+        details.origin_endpoint_id,
+        // $FlowIgnore
+        details.instances.map(n => { return { instance_name: n } }),
+        false, true
+      )
     })
   }
 
@@ -282,6 +289,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             instancesDetailsLoading={instanceStore.loadingInstancesDetails}
             endpoints={endpointStore.endpoints}
             scheduleStore={scheduleStore}
+            networks={networkStore.networks}
             detailsLoading={replicaStore.detailsLoading || endpointStore.loading}
             executionsLoading={replicaStore.executionsLoading}
             page={this.props.match.params.page || ''}

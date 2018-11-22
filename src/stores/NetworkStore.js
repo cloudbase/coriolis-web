@@ -45,7 +45,10 @@ class NetworkStore {
 
   cachedId: string = ''
 
-  @action loadNetworks(endpointId: string, environment: ?{ [string]: mixed }, useLocalStorage?: boolean): Promise<void> {
+  @action loadNetworks(endpointId: string, environment: any, options?: {
+    useLocalStorage?: boolean,
+    quietError?: boolean,
+  }): Promise<void> {
     let id = `${endpointId}-${btoa(JSON.stringify(environment))}`
     if (this.cachedId === id) {
       return Promise.resolve()
@@ -53,7 +56,7 @@ class NetworkStore {
 
     this.loading = true
 
-    if (useLocalStorage) {
+    if (options && options.useLocalStorage) {
       let networkStorage = NetworkLocalStorage.loadNetworksFromStorage(id)
       if (networkStorage) {
         this.loading = false
@@ -63,7 +66,7 @@ class NetworkStore {
       }
     }
 
-    return NetworkSource.loadNetworks(endpointId, environment).then((networks: Network[]) => {
+    return NetworkSource.loadNetworks(endpointId, environment, options).then((networks: Network[]) => {
       this.loading = false
       this.networks = networks
       this.cachedId = id

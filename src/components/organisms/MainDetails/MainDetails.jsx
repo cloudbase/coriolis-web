@@ -28,6 +28,7 @@ import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 import type { Instance } from '../../../types/Instance'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
+import type { Network } from '../../../types/Network'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
@@ -113,6 +114,7 @@ type Props = {
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
   endpoints: Endpoint[],
+  networks?: Network[],
   bottomControls: React.Node,
   loading: boolean,
 }
@@ -194,7 +196,7 @@ class MainDetails extends React.Component<Props> {
       return this.renderValue(DateUtils.getLocalTime(lastExecution.updated_at || lastExecution.created_at).format('YYYY-MM-DD HH:mm:ss'))
     }
 
-    return <Value>-</Value>
+    return null
   }
 
   renderValue(value: string, dateTestId?: string) {
@@ -282,6 +284,8 @@ class MainDetails extends React.Component<Props> {
     const destinationEndpoint = this.getDestinationEndpoint()
 
     const propertyNames = this.props.item && this.props.item.destination_environment ? Object.keys(this.props.item.destination_environment).filter(k => k !== 'description' && k !== 'network_map') : []
+    const lastUpdated = this.renderLastExecutionTime()
+
 
     return (
       <ColumnsLayout>
@@ -310,21 +314,25 @@ class MainDetails extends React.Component<Props> {
               {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss'), 'created') : <Value>-</Value>}
             </Field>
           </Row>
-          <Row>
-            <Field>
-              <Label>Description</Label>
-              {this.props.item && this.props.item.destination_environment
-                && this.props.item.destination_environment.description
-                ? <CopyMultilineValue value={this.props.item.destination_environment.description} data-test-id="mainDetails-description" />
-                : <Value>-</Value>}
-            </Field>
-          </Row>
-          <Row>
-            <Field>
-              <Label>Last Updated</Label>
-              <Value data-test-id="mainDetails-updated">{this.renderLastExecutionTime()}</Value>
-            </Field>
-          </Row>
+          {this.props.item && this.props.item.destination_environment
+            && this.props.item.destination_environment.description
+            ? (
+              <Row >
+                <Field>
+                  <Label>Description</Label>
+                  <CopyMultilineValue value={this.props.item.destination_environment.description} data-test-id="mainDetails-description" />
+                </Field>
+              </Row>
+            )
+            : null}
+          {lastUpdated ? (
+            <Row>
+              <Field>
+                <Label>Last Updated</Label>
+                <Value data-test-id="mainDetails-updated">{lastUpdated}</Value>
+              </Field>
+            </Row>
+          ) : null}
         </Column>
         <Column width="9.5%">
           <Arrow />
@@ -383,6 +391,7 @@ class MainDetails extends React.Component<Props> {
           <MainDetailsTable
             item={this.props.item}
             instancesDetails={this.props.instancesDetails}
+            networks={this.props.networks}
           />
         )}
         {this.renderLoading()}
