@@ -25,6 +25,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
+import type { Network } from '../../../types/Network'
 
 import instanceIcon from './images/instance.svg'
 import networkIcon from './images/network.svg'
@@ -136,6 +137,7 @@ const ArrowIcon = styled.div`
 type Props = {
   item: ?MainItem,
   instancesDetails: Instance[],
+  networks?: Network[],
 }
 type State = {
   openedRows: string[],
@@ -292,10 +294,15 @@ class MainDetailsTable extends React.Component<Props, State> {
         let sourceBody = getBody(nic)
         let destinationBody = []
 
-        let destinationNetworkName = String(destinationNetworkMap[nic.network_name])
+        let destinationNetworkId = String(destinationNetworkMap[nic.network_name])
+        let destinationNetworkName = destinationNetworkId
+        let destinationNetwork = this.props.networks && this.props.networks.find(n => n.id === destinationNetworkId)
+        if (destinationNetwork) {
+          destinationNetworkName = destinationNetwork.name
+        }
         if (transferResult) {
           let destinationNic = transferResult.devices.nics
-            .find(n => n.network_id === destinationNetworkName || n.network_name === destinationNetworkName)
+            .find(n => n.network_id === destinationNetworkId || n.network_name === destinationNetworkId)
           if (destinationNic) {
             destinationNetworkName = destinationNic.network_name
             destinationBody = getBody(destinationNic)

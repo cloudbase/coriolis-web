@@ -383,7 +383,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     networkStore.loadNetworks(localData.endpoint.id, {
       location: localData.locationName,
       resource_group: localData.resourceGroupName,
-    }, true)
+    }, { useLocalStorage: true })
   }
 
   loadInstancesDetails() {
