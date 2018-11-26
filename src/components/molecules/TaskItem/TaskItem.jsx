@@ -186,7 +186,7 @@ class TaskItem extends React.Component<Props> {
         <HeaderData width={this.props.columnWidths[3]}>
           {date ? DateUtils.getLocalTime(date).format('YYYY-MM-DD HH:mm:ss') : '-'}
         </HeaderData>
-        <ArrowStyled primary orientation={this.props.open ? 'up' : 'down'} opacity={this.props.open ? 1 : 0} />
+        <ArrowStyled primary orientation={this.props.open ? 'up' : 'down'} opacity={this.props.open ? 1 : 0} thick />
       </Header>
     )
   }

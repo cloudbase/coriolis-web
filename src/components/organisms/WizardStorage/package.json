@@ -1,0 +1,6 @@
+{
+  "name": "WizardStorage",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./WizardStorage.jsx"
+}

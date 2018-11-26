@@ -74,6 +74,8 @@ export const executionOptions = [
   },
 ]
 
+export const storageProviders = ['openstack']
+
 export const wizardConfig = {
   pages: [
     { id: 'type', title: 'New', breadcrumb: 'Type' },
@@ -82,6 +84,12 @@ export const wizardConfig = {
     { id: 'vms', title: 'Select instances', breadcrumb: 'Select VMs' },
     { id: 'options', title: 'Options', breadcrumb: 'Options' },
     { id: 'networks', title: 'Networks', breadcrumb: 'Networks' },
+    {
+      id: 'storage',
+      title: 'Storage Mapping',
+      breadcrumb: 'Storage',
+      filter: (p: string) => storageProviders.find(s => s === p),
+    },
     { id: 'schedule', title: 'Schedule', breadcrumb: 'Schedule', excludeFrom: 'migration' },
     { id: 'summary', title: 'Summary', breadcrumb: 'Summary' },
   ],

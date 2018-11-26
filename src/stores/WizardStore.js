@@ -21,6 +21,7 @@ import type { MainItem } from '../types/MainItem'
 import type { Instance } from '../types/Instance'
 import type { Field } from '../types/Field'
 import type { NetworkMap } from '../types/Network'
+import type { StorageMap } from '../types/Endpoint'
 import type { Schedule } from '../types/Schedule'
 import { wizardConfig } from '../config'
 import Source from '../sources/WizardSource'
@@ -28,6 +29,7 @@ import Source from '../sources/WizardSource'
 class WizardStore {
   @observable data: WizardData = {}
   @observable schedules: Schedule[] = []
+  @observable storageMap: StorageMap[] = []
   @observable currentPage: WizardPage = wizardConfig.pages[0]
   @observable createdItem: ?MainItem = null
   @observable creatingItem: boolean = false
@@ -89,6 +91,17 @@ class WizardStore {
     this.data.networks.push(network)
   }
 
+  @action updateStorage(storage: StorageMap) {
+    let diskFieldName = storage.type === 'backend' ? 'storage_backend_identifier' : 'id'
+    this.storageMap = this.storageMap
+      .filter(n => n.type !== storage.type || n.source[diskFieldName] !== storage.source[diskFieldName])
+    this.storageMap.push(storage)
+  }
+
+  @action clearStorageMap() {
+    this.storageMap = []
+  }
+
   @action addSchedule(schedule: Schedule) {
     this.schedules.push({ id: new Date().getTime().toString(), schedule: schedule.schedule })
   }
@@ -117,10 +130,10 @@ class WizardStore {
     this.schedules = this.schedules.filter(s => s.id !== scheduleId)
   }
 
-  @action create(type: string, data: WizardData): Promise<void> {
+  @action create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
     this.creatingItem = true
 
-    return Source.create(type, data).then((item: MainItem) => {
+    return Source.create(type, data, storageMap).then((item: MainItem) => {
       this.createdItem = item
       this.creatingItem = false
     }).catch(() => {
@@ -129,10 +142,10 @@ class WizardStore {
     })
   }
 
-  @action createMultiple(type: string, data: WizardData): Promise<void> {
+  @action createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
     this.creatingItems = true
 
-    return Source.createMultiple(type, data).then((items: MainItem[]) => {
+    return Source.createMultiple(type, data, storageMap).then((items: MainItem[]) => {
       this.createdItems = items
       this.creatingItems = false
     }).catch(() => {

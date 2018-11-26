@@ -37,9 +37,6 @@ let item = {
   instances: ['instance_1'],
   destination_environment: {
     description: 'A description',
-    network_map: {
-      network_1: 'Mapping 1',
-    },
   },
   type: 'Replica',
 }
@@ -71,24 +68,6 @@ describe('MainDetails Component', () => {
     let wrapper = wrap({ item, endpoints, instancesDetails })
     expect(wrapper.find('sourceLogo').prop('endpoint')).toBe('openstack')
     expect(wrapper.find('targetLogo').prop('endpoint')).toBe('azure')
-  })
-
-  it('renders network_map', () => {
-    let wrapper = wrap({ item, endpoints, instancesDetails })
-    let tableItems = wrapper.find('networksTable').prop('items')
-    expect(tableItems.length).toBe(1)
-    expect(tableItems[0].length).toBe(4)
-    expect(tableItems[0][0]).toBe('network_1')
-    expect(new TW(shallow(tableItems[0][1][0])).find('vm-', true).text()).toBe('instance_1')
-    expect(tableItems[0][2]).toBe('Mapping 1')
-    expect(tableItems[0][3]).toBe('Existing network')
-    expect(wrapper.find('loading').length).toBe(0)
-  })
-
-  it('renders network map with missing source instance', () => {
-    let wrapper = wrap({ item, endpoints, instancesDetails: [] })
-    let tableItems = wrapper.find('networksTable').prop('items')
-    expect(tableItems[0][1]).toBe('Failed to read network configuration for the original instance')
   })
 
   it('renders loading', () => {

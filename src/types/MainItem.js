@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { Execution } from './Execution'
 import type { Task } from './Task'
+import type { Instance } from './Instance'
 
 export type MainItemInfo = {
   export_info: {
@@ -52,4 +53,16 @@ export type MainItem = {
   type: string,
   info: { [string]: MainItemInfo },
   destination_environment: DestinationEnvInfo,
+  transfer_result: ?{ [string]: Instance },
+  storage_mappings: ?{
+    backend_mappings: ?{
+      destination: string,
+      source: string,
+    }[],
+    default: ?string,
+    disk_mappings: ?{
+      destination: string,
+      disk_id: string,
+    }[],
+  },
 }

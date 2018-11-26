@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96px" height="93px" viewBox="0 0 96 93" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>splash-1</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Wizard/06-Storage---Empty" transform="translate(-672.000000, -289.000000)" stroke="#0044CA" stroke-width="1.5">
+            <g id="Splash-Copy" transform="translate(501.000000, 287.000000)">
+                <g id="Icon/Storage/96" transform="translate(171.000000, 0.000000)">
+                    <rect id="Rectangle-9-Copy-2" x="1" y="62" width="94" height="32" rx="9"></rect>
+                    <path d="M12,74 C9.79856115,74 8,75.7974835 8,77.9976034 C8,80.1977232 9.79856115,82 12,82 C14.2014388,82 16,80.1977232 16,77.9976034 C16,75.7974835 14.2014388,74 12,74" id="Fill-7-Copy-4" stroke-linecap="round"></path>
+                    <path d="M24,74 C21.7985612,74 20,75.7974835 20,77.9976034 C20,80.1977232 21.7985612,82 24,82 C26.2014388,82 28,80.1977232 28,77.9976034 C28,75.7974835 26.2014388,74 24,74" id="Fill-7-Copy-5" stroke-linecap="round"></path>
+                    <path d="M1,70.5502738 C1,66.9429354 1.92452251,61.3179838 3.07927492,57.9448323 L19.809614,9.07377759 C20.9579658,5.71932285 24.5143856,3 27.7779285,3 L68.2220715,3 C71.4744983,3 75.0356336,5.7006261 76.190386,9.07377759 L92.9207251,57.9448323 C94.0690769,61.299287 95,66.9466356 95,70.5502738" id="Path"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -22,7 +22,7 @@ import EndpointLogos from '../../atoms/EndpointLogos'
 import CopyValue from '../../atoms/CopyValue'
 import StatusIcon from '../../atoms/StatusIcon'
 import StatusImage from '../../atoms/StatusImage'
-import Table from '../../molecules/Table'
+import MainDetailsTable from '../../molecules/MainDetailsTable'
 import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 
 import type { Instance } from '../../../types/Instance'
@@ -79,10 +79,6 @@ const ValueLink = styled.a`
   color: ${Palette.primary};
   text-decoration: none;
   cursor: pointer;
-`
-const TableStyled = styled(Table)`
-  margin-top: 89px;
-  margin-bottom: 48px;
 `
 const Loading = styled.div`
   display: flex;
@@ -205,27 +201,6 @@ class MainDetails extends React.Component<Props> {
     return <CopyValue value={value} maxWidth="90%" data-test-id={dateTestId ? `mainDetails-${dateTestId}` : undefined} />
   }
 
-  renderNetworksTable() {
-    if (this.props.loading) {
-      return null
-    }
-
-    let items = this.getNetworks()
-
-    if (!items || !items.length) {
-      return null
-    }
-
-    return (
-      <TableStyled
-        header={['Source Network', 'Connected VMs', 'Destination Network', 'Destination Type']}
-        items={items}
-        columnsStyle={[css`color: ${Palette.black};`]}
-        data-test-id="mainDetails-networksTable"
-      />
-    )
-  }
-
   renderEndpointLink(type: string): React.Node {
     let endpointIsMissing = (
       <Value flex data-test-id={`mainDetails-missing-${type}`}>
@@ -250,6 +225,9 @@ class MainDetails extends React.Component<Props> {
       if (value === false) {
         return 'No'
       }
+      if (value.join && value.length && value[0].destination && value[0].source) {
+        return value.map(v => `${v.source}=${v.destination}`).join(', ')
+      }
       return value.toString()
     }
 
@@ -266,6 +244,9 @@ class MainDetails extends React.Component<Props> {
         })
       } else if (value && typeof value === 'object') {
         properties = properties.concat(Object.keys(value).map(p => {
+          if (p === 'disk_mappings') {
+            return null
+          }
           return {
             label: `${label} - ${LabelDictionary.get(p)}`,
             value: getValue(value[p]),
@@ -279,6 +260,9 @@ class MainDetails extends React.Component<Props> {
     return (
       <PropertiesTable>
         {properties.map(prop => {
+          if (prop == null) {
+            return null
+          }
           return (
             <PropertyRow key={prop.label}>
               <PropertyName>{prop.label}</PropertyName>
@@ -301,7 +285,7 @@ class MainDetails extends React.Component<Props> {
 
     return (
       <ColumnsLayout>
-        <Column width="34.5%">
+        <Column width="42.5%">
           <Row>
             <Field>
               <Label>Source</Label>
@@ -337,18 +321,12 @@ class MainDetails extends React.Component<Props> {
           </Row>
           <Row>
             <Field>
-              <Label>Type</Label>
-              <Value capitalize data-test-id="mainDetails-type">Coriolis {this.props.item && this.props.item.type}</Value>
-            </Field>
-          </Row>
-          <Row>
-            <Field>
               <Label>Last Updated</Label>
               <Value data-test-id="mainDetails-updated">{this.renderLastExecutionTime()}</Value>
             </Field>
           </Row>
         </Column>
-        <Column width="17.5%">
+        <Column width="9.5%">
           <Arrow />
         </Column>
         <Column width="48%" style={{ flexGrow: 1 }}>
@@ -372,14 +350,6 @@ class MainDetails extends React.Component<Props> {
               </Field>
             </Row>
           ) : null}
-          {this.props.item && this.props.item.instances ? (
-            <Row>
-              <Field>
-                <Label>Instances</Label>
-                <CopyMultilineValue value={this.props.item.instances.join('<br />')} useDangerousHtml />
-              </Field>
-            </Row>
-          ) : null}
         </Column>
       </ColumnsLayout>
     )
@@ -394,7 +364,7 @@ class MainDetails extends React.Component<Props> {
   }
 
   renderLoading() {
-    if (!this.props.loading) {
+    if (!this.props.loading && !this.props.instancesDetailsLoading) {
       return null
     }
 
@@ -409,9 +379,14 @@ class MainDetails extends React.Component<Props> {
     return (
       <Wrapper>
         {this.renderTable()}
-        {this.renderNetworksTable()}
-        {this.renderBottomControls()}
+        {this.props.instancesDetailsLoading || this.props.loading ? null : (
+          <MainDetailsTable
+            item={this.props.item}
+            instancesDetails={this.props.instancesDetails}
+          />
+        )}
         {this.renderLoading()}
+        {this.renderBottomControls()}
       </Wrapper>
     )
   }
