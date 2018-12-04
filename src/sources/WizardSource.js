@@ -37,6 +37,10 @@ class WizardSource {
       notes: '',
     }
 
+    // NOTE: the dest-env is passed directly to the Coriolis paltform plugins
+    // and thus we should not include "meta-information" such as the description:
+    delete payload[type].destination_environment.description
+
     if (data.options && data.options.skip_os_morphing != null) {
       payload[type].skip_os_morphing = data.options.skip_os_morphing
     }
