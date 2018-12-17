@@ -44,24 +44,31 @@ const Wrapper = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+`
+const Top = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: center;
   margin-top: 77px;
+  flex-shrink: 0;
   ${StyleProps.media.handheld`
     margin-top: 96px;
   `}
 `
-const StyledLoginForm = styled(LoginForm) `
+const StyledLoginForm = styled(LoginForm)`
   margin-top: 32px;
   ${StyleProps.media.handheld`
     margin-top: 32px;
   `}
 `
 const Footer = styled.div`
-  position: absolute;
-  bottom: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
+  margin: 48px 0;
 `
 const FooterText = styled.div`
   font-size: 12px;
@@ -97,12 +104,14 @@ class LoginPage extends React.Component<{}> {
       <EmptyTemplate>
         <Wrapper>
           <Content>
-            <Logo />
-            <StyledLoginForm
-              onFormSubmit={data => this.handleFormSubmit(data)}
-              loading={userStore.loading}
-              loginFailedResponse={userStore.loginFailedResponse}
-            />
+            <Top>
+              <Logo />
+              <StyledLoginForm
+                onFormSubmit={data => this.handleFormSubmit(data)}
+                loading={userStore.loading}
+                loginFailedResponse={userStore.loginFailedResponse}
+              />
+            </Top>
             <Footer>
               <FooterText>Coriolis® is a service offered by</FooterText>
               <CbsLogo href="https://cloudbase.it" target="_blank" />
