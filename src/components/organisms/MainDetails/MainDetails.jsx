@@ -282,9 +282,16 @@ class MainDetails extends React.Component<Props> {
     }
     const sourceEndpoint = this.getSourceEndpoint()
     const destinationEndpoint = this.getDestinationEndpoint()
-
-    const propertyNames = this.props.item && this.props.item.destination_environment ? Object.keys(this.props.item.destination_environment).filter(k => k !== 'description' && k !== 'network_map') : []
     const lastUpdated = this.renderLastExecutionTime()
+
+    const destEnv = this.props.item && this.props.item.destination_environment
+    const propertyNames = destEnv ?
+      Object.keys(destEnv).filter(k =>
+        k !== 'network_map' && (
+          k !== 'storage_mappings' ||
+          (destEnv[k] != null && typeof destEnv[k] === 'object' && Object.keys(destEnv[k]).length > 0)
+        )
+      ) : []
 
     return (
       <ColumnsLayout>
