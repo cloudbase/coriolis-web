@@ -27,7 +27,7 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import DateUtils from '../../../utils/DateUtils'
 import type { Schedule } from '../../../types/Schedule'
 import type { WizardData } from '../../../types/WizardData'
-import type { StorageMap, Storage } from '../../../types/Endpoint'
+import type { StorageMap, StorageBackend } from '../../../types/Endpoint'
 import type { Instance, Disk } from '../../../types/Instance'
 
 import { getDisks } from '../WizardStorage'
@@ -144,7 +144,7 @@ type Props = {
   schedules: Schedule[],
   storageMap: StorageMap[],
   instancesDetails: Instance[],
-  defaultStorage: ?Storage,
+  defaultStorage: ?StorageBackend,
 }
 @observer
 class WizardSummary extends React.Component<Props> {
@@ -297,7 +297,7 @@ class WizardSummary extends React.Component<Props> {
     }
     let fieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
 
-    let fullStorageMap: { source: Disk, target: ?Storage }[] = disks.filter(d => d[fieldName]).map(disk => {
+    let fullStorageMap: { source: Disk, target: ?StorageBackend }[] = disks.filter(d => d[fieldName]).map(disk => {
       let diskMapped = storageMap.find(s => s.source[fieldName] === disk[fieldName])
       if (diskMapped) {
         return { source: diskMapped.source, target: diskMapped.target }

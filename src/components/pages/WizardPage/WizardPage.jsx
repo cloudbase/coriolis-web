@@ -37,7 +37,7 @@ import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardConfig, executionOptions, providersWithExtraOptions } from '../../../config'
 import type { MainItem } from '../../../types/MainItem'
-import type { Endpoint as EndpointType, Storage } from '../../../types/Endpoint'
+import type { Endpoint as EndpointType, StorageBackend } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { Network } from '../../../types/Network'
@@ -290,7 +290,7 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.setPermalink(wizardStore.data)
   }
 
-  handleStorageChange(source: Disk, target: Storage, type: 'backend' | 'disk') {
+  handleStorageChange(source: Disk, target: StorageBackend, type: 'backend' | 'disk') {
     wizardStore.updateStorage({ source, target, type })
   }
 

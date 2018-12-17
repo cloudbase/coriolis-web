@@ -23,7 +23,7 @@ import Dropdown from '../../molecules/Dropdown'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import type { Instance, Disk } from '../../../types/Instance'
-import type { Storage, StorageMap } from '../../../types/Endpoint'
+import type { StorageBackend, StorageMap } from '../../../types/Endpoint'
 
 import backendImage from './images/backend.svg'
 import diskImage from './images/disk.svg'
@@ -138,11 +138,11 @@ export const getDisks = (instancesDetails: Instance[], type: 'backend' | 'disk')
 }
 
 type Props = {
-  storage: Storage[],
+  storageBackends: StorageBackend[],
   instancesDetails: Instance[],
   storageMap: ?StorageMap[],
   defaultStorage: ?string,
-  onChange: (sourceStorage: Disk, targetStorage: Storage, type: 'backend' | 'disk') => void,
+  onChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
 }
 @observer
 class WizardStorage extends React.Component<Props> {
@@ -162,7 +162,7 @@ class WizardStorage extends React.Component<Props> {
     let storageMap = this.props.storageMap
     let storageItems = [
       { name: 'Default', id: null },
-      ...this.props.storage,
+      ...this.props.storageBackends,
     ]
 
     disks = disks.filter(d => d[diskFieldName])
@@ -201,7 +201,7 @@ class WizardStorage extends React.Component<Props> {
                   items={storageItems}
                   labelField="name"
                   valueField="id"
-                  onChange={(item: Storage) => { this.props.onChange(disk, item, type) }}
+                  onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
                 />
               </StorageItem>
             )
@@ -214,7 +214,7 @@ class WizardStorage extends React.Component<Props> {
   renderBackendMapping() {
     let disks = getDisks(this.props.instancesDetails, 'backend')
 
-    if (disks.length === 0 || this.props.storage.length === 0) {
+    if (disks.length === 0 || this.props.storageBackends.length === 0) {
       return null
     }
 
@@ -224,7 +224,7 @@ class WizardStorage extends React.Component<Props> {
   renderDiskMapping() {
     let disks = getDisks(this.props.instancesDetails, 'disk')
 
-    if (disks.length === 0 || this.props.storage.length === 0) {
+    if (disks.length === 0 || this.props.storageBackends.length === 0) {
       return this.renderNoStorage()
     }
 

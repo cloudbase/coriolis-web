@@ -230,7 +230,7 @@ class EdnpointSource {
     })
   }
 
-  static loadStorage(endpointId: string, data: any): Promise<Storage[]> {
+  static loadStorage(endpointId: string, data: any): Promise<Storage> {
     let env = btoa(JSON.stringify(data))
     return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`).then(response => {
       return response.data.storage

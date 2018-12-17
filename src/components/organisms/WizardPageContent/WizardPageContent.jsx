@@ -34,7 +34,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import { providerTypes, wizardConfig } from '../../../config'
 import type { WizardData } from '../../../types/WizardData'
-import type { Endpoint, Storage, StorageMap } from '../../../types/Endpoint'
+import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { Network } from '../../../types/Network'
@@ -116,7 +116,7 @@ type Props = {
   onInstancePageClick: (page: number) => void,
   onOptionsChange: (field: Field, value: any) => void,
   onNetworkChange: (nic: Nic, network: Network) => void,
-  onStorageChange: (sourceStorage: Disk, targetStorage: Storage, type: 'backend' | 'disk') => void,
+  onStorageChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void,
   onScheduleRemove: (scheudleId: string) => void,
@@ -341,7 +341,7 @@ class WizardPageContent extends React.Component<Props, State> {
             data={this.props.wizardData.options}
             useAdvancedOptions={this.state.useAdvancedOptions}
             hasStorageMap={this.props.hasStorageMap}
-            storage={this.props.endpointStore.storage}
+            storageBackends={this.props.endpointStore.storageBackends}
             wizardType={this.props.type}
             onAdvancedOptionsToggle={useAdvancedOptions => { this.handleAdvancedOptionsToggle(useAdvancedOptions) }}
           />
@@ -362,7 +362,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'storage':
         body = (
           <WizardStorage
-            storage={this.props.endpointStore.storage}
+            storageBackends={this.props.endpointStore.storageBackends}
             instancesDetails={this.props.instanceStore.instancesDetails}
             storageMap={this.props.storageMap}
             defaultStorage={String(this.props.wizardData.options ? this.props.wizardData.options.default_storage : '')}
@@ -392,7 +392,7 @@ class WizardPageContent extends React.Component<Props, State> {
             wizardType={this.props.type}
             instancesDetails={this.props.instanceStore.instancesDetails}
             defaultStorage={
-              this.props.endpointStore.storage.find(
+              this.props.endpointStore.storageBackends.find(
                 s => this.props.wizardData.options ?
                   s.name === this.props.wizardData.options.default_storage :
                   false
