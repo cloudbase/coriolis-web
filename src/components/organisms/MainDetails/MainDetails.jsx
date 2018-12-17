@@ -286,7 +286,6 @@ class MainDetails extends React.Component<Props> {
     const propertyNames = this.props.item && this.props.item.destination_environment ? Object.keys(this.props.item.destination_environment).filter(k => k !== 'description' && k !== 'network_map') : []
     const lastUpdated = this.renderLastExecutionTime()
 
-
     return (
       <ColumnsLayout>
         <Column width="42.5%">
@@ -314,13 +313,12 @@ class MainDetails extends React.Component<Props> {
               {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss'), 'created') : <Value>-</Value>}
             </Field>
           </Row>
-          {this.props.item && this.props.item.destination_environment
-            && this.props.item.destination_environment.description
+          {this.props.item && this.props.item.notes
             ? (
               <Row >
                 <Field>
                   <Label>Description</Label>
-                  <CopyMultilineValue value={this.props.item.destination_environment.description} data-test-id="mainDetails-description" />
+                  <CopyMultilineValue value={this.props.item.notes} data-test-id="mainDetails-description" />
                 </Field>
               </Row>
             )
