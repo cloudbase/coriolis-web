@@ -41,14 +41,18 @@ export type DestinationOption = {
   config_default: string | { name: string, id: string },
 }
 
-export type Storage = {
+export type StorageBackend = {
   id: string,
   name: string,
+}
+
+export type Storage = {
+  storage_backends: StorageBackend[],
   config_default?: string,
 }
 
 export type StorageMap = {
   type: 'backend' | 'disk',
   source: Disk,
-  target: Storage,
+  target: StorageBackend,
 }

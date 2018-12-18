@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 import { observable, action } from 'mobx'
-import type { Endpoint, Validation, Storage } from '../types/Endpoint'
+import type { Endpoint, Validation, StorageBackend } from '../types/Endpoint'
 import EndpointSource from '../sources/EndpointSource'
 
 export const passwordFields = ['password', 'private_key_passphrase']
@@ -38,7 +38,7 @@ class EndpointStore {
   @observable adding = false
   @observable connectionInfoLoading = false
   @observable connectionsInfoLoading = false
-  @observable storage: Storage[] = []
+  @observable storageBackends: StorageBackend[] = []
 
   @action getEndpoints(options?: { showLoading: boolean }) {
     if (options && options.showLoading) {
@@ -135,9 +135,9 @@ class EndpointStore {
   }
 
   @action loadStorage(endpointId: string, data: any): Promise<void> {
-    this.storage = []
+    this.storageBackends = []
     return EndpointSource.loadStorage(endpointId, data).then(storage => {
-      this.storage = storage
+      this.storageBackends = storage.storage_backends
     })
   }
 }
