@@ -20,6 +20,8 @@ import styled, { css } from 'styled-components'
 import StyleProps from '../../styleUtils/StyleProps'
 import coriolisLargeImage from './images/coriolis-large.svg'
 import coriolisSmallImage from './images/coriolis-small.svg'
+import coriolisSmallBlackImage from './images/coriolis-small-black.svg'
+
 
 const largeProps = css`
   width: 256px;
@@ -33,10 +35,16 @@ const smallProps = css`
   background: url('${coriolisSmallImage}') center no-repeat;
 `
 
+const smallblackProps = css`
+  width: 245px;
+  height: 48px;
+  background: url('${coriolisSmallBlackImage}') center no-repeat;
+`
+
 const Wrapper = styled.a``
 const Coriolis = styled.div`
-  ${props => props.small ? smallProps : largeProps}
-  ${props => !props.large && !props.small ? StyleProps.media.handheld`
+  ${props => props.small ? smallProps : props.smallblack ? smallblackProps : largeProps}
+  ${props => !props.large && !props.small && !props.smallblack ? StyleProps.media.handheld`
     width: 246px;
     height: 42px;
     background: url('${coriolisSmallImage}') center no-repeat;
@@ -44,13 +52,14 @@ const Coriolis = styled.div`
 `
 
 type Props = {
-  large?: boolean,
   small?: boolean,
+  smallblack?:boolean,
+  large?: boolean,
 }
 const Logo = (props: Props) => {
   return (
     <Wrapper {...props}>
-      <Coriolis large={props.large} small={props.small} />
+      <Coriolis large={props.large} small={props.small} smallblack={props.smallblack} />
     </Wrapper>
   )
 }
