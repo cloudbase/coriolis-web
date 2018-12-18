@@ -35,10 +35,8 @@ let item = {
   id: 'item-id',
   created_at: new Date(2017, 10, 24, 16, 15),
   instances: ['instance_1'],
-  destination_environment: {
-    description: 'A description',
-  },
   type: 'Replica',
+  notes: 'A description',
 }
 let instancesDetails = [
   {

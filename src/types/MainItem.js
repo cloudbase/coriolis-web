@@ -35,7 +35,6 @@ export type DestinationEnvInfo = {
       destination_network: string,
     } | 'string'
   },
-  description: string,
   [string]: mixed,
 }
 
@@ -43,6 +42,7 @@ export type MainItem = {
   id: string,
   executions: Execution[],
   name: string,
+  notes: string,
   status: string,
   tasks: Task[],
   created_at: Date,

@@ -64,7 +64,7 @@ export const defaultFillMigrationImageMapValues = (field: Field, option: Destina
 
 export const defaultGetDestinationEnv = (data: WizardData): any => {
   let env = {}
-  let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'default_storage']
+  let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'default_storage', 'description']
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes.map(o => `${o}_os_image`))
 
