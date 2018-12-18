@@ -1,10 +1,6 @@
 # ![Coriolis Web](/src/components/atoms/Logo/images/coriolis-small-black.svg)
 
-##### Web  GUI for [coriolis](https://github.com/cloudbase/coriolis)  
-  
-  
-  
-   
+*Web  GUI for [coriolis](https://github.com/cloudbase/coriolis)*
    
 ### Install instructions
 - [node](https://nodejs.org/en/download/package-manager/) >=6.x and [yarn](https://yarnpkg.com/lang/en/docs/install/) are required
