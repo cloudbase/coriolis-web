@@ -17,9 +17,13 @@ import { storiesOf } from '@storybook/react'
 import Logo from '.'
 
 storiesOf('Logo', module)
-  .add('default', () => (
-    <Logo />
+  .add('Small White', () => (
+    <Logo small />
   ))
-  .add('large', () => (
+  .add('Large White', () => (
     <Logo large />
+  ))
+
+  .add('Small Black', () => (
+    <Logo smallblack />
   ))
