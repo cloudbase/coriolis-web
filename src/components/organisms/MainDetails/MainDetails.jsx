@@ -135,7 +135,7 @@ class MainDetails extends React.Component<Props> {
       return this.props.item.executions[this.props.item.executions.length - 1]
     }
 
-    return {}
+    return this.props.item || {}
   }
 
   getConnectedVms(networkId: string) {
@@ -192,8 +192,9 @@ class MainDetails extends React.Component<Props> {
 
   renderLastExecutionTime() {
     let lastExecution = this.getLastExecution()
-    if (lastExecution.updated_at || lastExecution.created_at) {
-      return this.renderValue(DateUtils.getLocalTime(lastExecution.updated_at || lastExecution.created_at).format('YYYY-MM-DD HH:mm:ss'))
+    let lastUpdate = lastExecution.updated_at || lastExecution.created_at
+    if (lastUpdate) {
+      return this.renderValue(DateUtils.getLocalTime(lastUpdate).format('YYYY-MM-DD HH:mm:ss'))
     }
 
     return null
