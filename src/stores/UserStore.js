@@ -113,7 +113,6 @@ class UserStore {
   }
 
   @action switchProject(projectId: string): Promise<void> {
-    notificationStore.alert('Switching projects')
     return UserSource.switchProject().then(() => {
       return this.loginScoped(projectId)
     }).then(() => {
