@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl, coriolisUrl } from '../config'
+import { servicesUrl, coriolisUrl, userDomain } from '../config'
 import type { Credentials, User } from '../types/User'
 import type { Role, Project, RoleAssignment } from '../types/Project'
 
@@ -43,7 +43,7 @@ class UserSource {
           password: {
             user: {
               name: userData.name,
-              domain: { name: 'default' },
+              domain: { name: userDomain },
               password: userData.password,
             },
           },
