@@ -21,7 +21,7 @@ import { SchemaParser } from './Schemas'
 import ObjectUtils from '../utils/ObjectUtils'
 import type { Endpoint, Validation, Storage } from '../types/Endpoint'
 
-import { servicesUrl, useSecret } from '../config'
+import { servicesUrl } from '../config'
 
 let getBarbicanPayload = data => {
   return {
@@ -177,6 +177,8 @@ class EdnpointSource {
     let parsedEndpoint: any = skipSchemaParser ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
     let newEndpoint: any = {}
     let connectionInfo = {}
+    let useSecret = SchemaParser.useSecret(endpoint.type)
+
     if (useSecret) {
       return Api.send({
         url: `${servicesUrl.barbican}/v1/secrets`,

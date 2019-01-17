@@ -14,12 +14,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import { useSecret } from '../config'
+
 import { ConnectionSchemaPlugin } from '../plugins/endpoint'
 import { defaultSchemaToFields } from '../plugins/endpoint/default/ConnectionSchemaPlugin'
 import type { Schema } from '../types/Schema'
 
 class SchemaParser {
   static storedConnectionsSchemas = {}
+
+  static useSecret(provider: string): boolean {
+    let plugin = ConnectionSchemaPlugin[provider]
+    return plugin && plugin.useSecret != null ? plugin.useSecret : useSecret
+  }
 
   static connectionSchemaToFields(provider: string, schema: Schema) {
     if (!this.storedConnectionsSchemas[provider]) {

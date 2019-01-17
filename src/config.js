@@ -27,6 +27,8 @@ export const servicesUrl = {
   openId: `${coriolisUrl}identity/OS-FEDERATION/identity_providers/google/protocols/openid/auth`,
 }
 
+export const useCurrentCredentialsForOpenstack = false
+
 export const useSecret = true // use secret_ref when creating and endpoint
 
 export const navigationMenu = [

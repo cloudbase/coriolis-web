@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
+import { useCurrentCredentialsForOpenstack as skipRequired } from '../../../config'
+
 import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
@@ -95,11 +97,15 @@ class ContentPlugin extends React.Component<Props, State> {
     this.setState({ useAdvancedOptions })
   }
 
+  isRequired(field: Field): boolean {
+    return field.name === 'name' || (Boolean(field.required) && !skipRequired)
+  }
+
   findInvalidFields = () => {
     let inputChoices = ['user_domain', 'project_domain']
 
     const invalidFields = this.props.connectionInfoSchema.filter(field => {
-      if (field.required) {
+      if (this.isRequired(field)) {
         let value = this.getFieldValue(field)
         return !value
       }
@@ -146,10 +152,13 @@ class ContentPlugin extends React.Component<Props, State> {
     let fields = this.filterSimpleAdvanced()
 
     fields.forEach((field, i) => {
+      let required = this.isRequired(field)
+        || (this.getApiVersion() > 2 ? field.name === 'user_domain' || field.name === 'project_domain' : false)
+
       const currentField = (
         <FieldStyled
           {...field}
-          required={field.required || (this.getApiVersion() > 2 ? field.name === 'user_domain' || field.name === 'project_domain' : false)}
+          required={required}
           large
           disabled={this.props.disabled}
           password={field.name === 'password'}

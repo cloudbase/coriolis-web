@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Schema } from '../../../types/Schema'
 import type { Field } from '../../../types/Field'
 
+import { useCurrentCredentialsForOpenstack, useSecret } from '../../../config'
+
 import DefaultConnectionSchemaParser from '../default/ConnectionSchemaPlugin'
 
 const customSort = (fields: Field[]) => {
@@ -49,6 +51,8 @@ const customSort = (fields: Field[]) => {
 }
 
 export default class ConnectionSchemaParser {
+  static useSecret: boolean = !useCurrentCredentialsForOpenstack && useSecret
+
   static parseSchemaToFields(schema: Schema): Field[] {
     let fields = DefaultConnectionSchemaParser.parseSchemaToFields(schema)
     let identityField = fields.find(f => f.name === 'identity_api_version')
@@ -80,7 +84,7 @@ export default class ConnectionSchemaParser {
   static parseFieldsToPayload(data: { [string]: mixed }, schema: Schema) {
     delete data.project_domain
     delete data.user_domain
-    let payload = DefaultConnectionSchemaParser.parseFieldsToPayload(data, schema)
+    let payload = DefaultConnectionSchemaParser.parseFieldsToPayload(data, schema, useCurrentCredentialsForOpenstack)
     return payload
   }
 }

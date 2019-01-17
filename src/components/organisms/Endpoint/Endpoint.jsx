@@ -254,7 +254,6 @@ class Endpoint extends React.Component<Props, State> {
     if (!endpointStore.validation) {
       return
     }
-    // $FlowIssue
     let succesful = DomUtils.copyTextToClipboard(endpointStore.validation.message)
 
     if (succesful) {

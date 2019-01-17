@@ -77,7 +77,7 @@ export const generateField = (name: string, label: string, required: boolean = f
   return field
 }
 
-export const fieldsToPayload = (data: { [string]: mixed }, schema: SchemaProperties) => {
+export const fieldsToPayload = (data: { [string]: mixed }, schema: SchemaProperties, skipUsingDefaults: boolean = false) => {
   let info = {}
 
   Object.keys(schema.properties).forEach(fieldName => {
@@ -86,7 +86,7 @@ export const fieldsToPayload = (data: { [string]: mixed }, schema: SchemaPropert
     } else if (
       !data[fieldName] &&
       schema.required && schema.required.find(f => f === fieldName) &&
-      schema.properties[fieldName].default
+      schema.properties[fieldName].default && !skipUsingDefaults
     ) {
       info[fieldName] = schema.properties[fieldName].default
     }
@@ -108,13 +108,13 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseFieldsToPayload(data: { [string]: mixed }, schema: Schema) {
+  static parseFieldsToPayload(data: { [string]: mixed }, schema: Schema, skipUsingDefaults: boolean = false) {
     let payload = {}
 
     payload.name = data.name
     payload.description = data.description
 
-    payload.connection_info = fieldsToPayload(data, schema.oneOf[0])
+    payload.connection_info = fieldsToPayload(data, schema.oneOf[0], skipUsingDefaults)
 
     if (data.secret_ref) {
       payload.connection_info.secret_ref = data.secret_ref
