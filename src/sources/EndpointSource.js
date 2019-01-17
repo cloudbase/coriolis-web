@@ -42,7 +42,7 @@ class EdnpointSource {
       let connections = []
       if (response.data.endpoints.length) {
         response.data.endpoints.forEach(endpoint => {
-          connections.push(endpoint)
+          connections.push(SchemaParser.parseConnectionResponse(endpoint))
         })
       }
 
@@ -115,10 +115,8 @@ class EdnpointSource {
   static update(endpoint: Endpoint): Promise<Endpoint> {
     let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
 
-    if (parsedEndpoint.connection_info && parsedEndpoint.connection_info.secret_ref) {
-      // $FlowIgnore
+    if (parsedEndpoint.connectionInfo && Object.keys(parsedEndpoint.connectionInfo).length > 0 && parsedEndpoint.connection_info.secret_ref) {
       let uuidIndex = parsedEndpoint.connection_info.secret_ref.lastIndexOf('/')
-      // $FlowIgnore
       let uuid = parsedEndpoint.connection_info.secret_ref.substr(uuidIndex + 1)
       let newEndpoint: any = {}
       let connectionInfo = {}
@@ -169,7 +167,7 @@ class EdnpointSource {
       method: 'PUT',
       data: { endpoint: parsedEndpoint },
     }).then(response => {
-      return response.data.endpoint
+      return SchemaParser.parseConnectionResponse(response.data.endpoint)
     })
   }
 
@@ -177,7 +175,7 @@ class EdnpointSource {
     let parsedEndpoint: any = skipSchemaParser ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
     let newEndpoint: any = {}
     let connectionInfo = {}
-    if (useSecret) {
+    if (useSecret && parsedEndpoint.connectionInfo && Object.keys(parsedEndpoint.connectionInfo).length > 0) {
       return Api.send({
         url: `${servicesUrl.barbican}/v1/secrets`,
         method: 'POST',
@@ -226,7 +224,7 @@ class EdnpointSource {
         },
       },
     }).then(response => {
-      return response.data.endpoint
+      return SchemaParser.parseConnectionResponse(response.data.endpoint)
     })
   }
 

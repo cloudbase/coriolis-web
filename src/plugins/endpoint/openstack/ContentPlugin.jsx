@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
+import { showOpenstackCurrentUserSwitch } from '../../../config'
+
 import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
@@ -47,6 +49,10 @@ class ContentPlugin extends React.Component<Props, State> {
   }
 
   previouslySelectedChoices: string[] = []
+
+  get useCurrentUser(): boolean {
+    return Boolean(this.getFieldValue(this.props.connectionInfoSchema.find(n => n.name === 'openstack_use_current_user')))
+  }
 
   componentDidMount() {
     this.props.onRef(this)
@@ -99,7 +105,7 @@ class ContentPlugin extends React.Component<Props, State> {
     let inputChoices = ['user_domain', 'project_domain']
 
     const invalidFields = this.props.connectionInfoSchema.filter(field => {
-      if (field.required) {
+      if (this.isFieldRequired(field)) {
         let value = this.getFieldValue(field)
         return !value
       }
@@ -117,17 +123,25 @@ class ContentPlugin extends React.Component<Props, State> {
   }
 
   filterSimpleAdvanced(): Field[] {
-    let extraAdvancedFields = ['description', 'glance_api_version', 'identity_api_version']
+    let extraAdvancedFields = ['description', 'glance_api_version', 'identity_api_version', 'openstack_use_current_user']
     if (this.getApiVersion() > 2) {
       extraAdvancedFields = extraAdvancedFields.concat(['user_domain', 'project_domain'])
     }
     let ignoreFields = ['user_domain_id', 'project_domain_id', 'user_domain_name', 'project_domain_name']
+    if (!showOpenstackCurrentUserSwitch) {
+      ignoreFields.push('openstack_use_current_user')
+    }
+
     return this.props.connectionInfoSchema.filter(f => !ignoreFields.find(i => i === f.name)).filter(field => {
       if (this.state.useAdvancedOptions) {
         return true
       }
       return field.required || extraAdvancedFields.find(fieldName => field.name === fieldName)
     })
+  }
+
+  isFieldRequired(field: Field) {
+    return this.useCurrentUser ? field.name === 'name' : field.required
   }
 
   renderSimpleAdvancedToggle() {
@@ -146,12 +160,17 @@ class ContentPlugin extends React.Component<Props, State> {
     let fields = this.filterSimpleAdvanced()
 
     fields.forEach((field, i) => {
+      let disabled = this.props.disabled
+        || (this.useCurrentUser && field.name !== 'name' && field.name !== 'description' && field.name !== 'openstack_use_current_user')
+      let required = this.isFieldRequired(field)
+        || (this.getApiVersion() > 2 ? field.name === 'user_domain' || field.name === 'project_domain' : false)
+
       const currentField = (
         <FieldStyled
           {...field}
-          required={field.required || (this.getApiVersion() > 2 ? field.name === 'user_domain' || field.name === 'project_domain' : false)}
+          required={required}
           large
-          disabled={this.props.disabled}
+          disabled={disabled}
           password={field.name === 'password'}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
           value={this.getFieldValue(field)}
@@ -167,7 +186,7 @@ class ContentPlugin extends React.Component<Props, State> {
             {currentField}
           </Row>
         ))
-      } else if (i === this.props.connectionInfoSchema.length - 1) {
+      } else if (i === fields.length - 1) {
         rows.push((
           <Row key={field.name}>
             {currentField}

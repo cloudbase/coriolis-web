@@ -29,7 +29,12 @@ export const servicesUrl = {
 
 export const userDomain = 'default'
 
-export const useSecret = true // use secret_ref when creating and endpoint
+// Whether to use Barbican secrets when creating a new endpoint
+export const useSecret = true
+
+// Shows the 'Use Current User/Project/Domain for Authentification' switch
+// when creating a new openstack endpoint
+export const showOpenstackCurrentUserSwitch = false
 
 export const navigationMenu = [
   { label: 'Replicas', value: 'replicas' },

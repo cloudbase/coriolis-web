@@ -52,6 +52,7 @@ class LabelDictionary {
     sql_server_hostname: 'SQL Server Hostname Suffix',
     storage_endpoint: 'Storage Endpoint Suffix',
     preserve_nic_ips: 'Preserve NIC IPs',
+    openstack_use_current_user: 'Use Current User/Project/Domain for Authentification',
   }
 
   // Fields which have enums for which dictionary labels should be used.
