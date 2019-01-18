@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { Schema } from '../../../types/Schema'
 import type { Field } from '../../../types/Field'
+import type { Endpoint } from '../../../types/Endpoint'
 
 import DefaultConnectionSchemaParser from '../default/ConnectionSchemaPlugin'
 
@@ -74,13 +75,35 @@ export default class ConnectionSchemaParser {
     createInputChoice('user_domain', 'user_domain_name', 'user_domain_id')
 
     customSort(fields)
+    fields.push({
+      name: 'openstack_use_current_user',
+      type: 'boolean',
+    })
     return fields
   }
 
   static parseFieldsToPayload(data: { [string]: mixed }, schema: Schema) {
+    if (data.openstack_use_current_user) {
+      return {
+        name: data.name,
+        description: data.description,
+        connection_info: {},
+      }
+    }
     delete data.project_domain
     delete data.user_domain
     let payload = DefaultConnectionSchemaParser.parseFieldsToPayload(data, schema)
     return payload
+  }
+
+  static parseConnectionResponse(endpoint: Endpoint) {
+    if (!endpoint.connection_info || Object.keys(endpoint.connection_info).length === 0) {
+      return {
+        openstack_use_current_user: true,
+        ...endpoint,
+      }
+    }
+
+    return endpoint
   }
 }

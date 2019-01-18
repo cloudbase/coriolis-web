@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { ConnectionSchemaPlugin } from '../plugins/endpoint'
 import { defaultSchemaToFields } from '../plugins/endpoint/default/ConnectionSchemaPlugin'
 import type { Schema } from '../types/Schema'
+import type { Endpoint } from '../types/Endpoint'
 
 class SchemaParser {
   static storedConnectionsSchemas = {}
@@ -54,6 +55,14 @@ class SchemaParser {
     let payload = parsers.parseFieldsToPayload(data, storedSchema)
 
     return payload
+  }
+
+  static parseConnectionResponse(endpoint: Endpoint) {
+    let parseConnectionResponse = ConnectionSchemaPlugin[endpoint.type] && ConnectionSchemaPlugin[endpoint.type].parseConnectionResponse
+    if (!parseConnectionResponse) {
+      return endpoint
+    }
+    return parseConnectionResponse(endpoint)
   }
 }
 
