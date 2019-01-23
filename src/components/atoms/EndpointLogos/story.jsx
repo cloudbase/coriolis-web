@@ -40,6 +40,7 @@ storiesOf('EndpointLogos', module)
         {wrap('opc', height)}
         {wrap('openstack', height)}
         {wrap('oracle_vm', height)}
+        {wrap('oci', height)}
         {wrap('vmware_vsphere', height)}
         {wrap('Generic Cloud', height)}
       </Wrapper>
@@ -51,6 +52,7 @@ storiesOf('EndpointLogos', module)
       <Wrapper>
         {wrap('aws', height)}
         {wrap('azure', height)}
+        {wrap('oci', height)}
         {wrap('opc', height)}
         {wrap('openstack', height)}
         {wrap('oracle_vm', height)}
@@ -65,6 +67,7 @@ storiesOf('EndpointLogos', module)
       <Wrapper>
         {wrap('aws', height)}
         {wrap('azure', height)}
+        {wrap('oci', height)}
         {wrap('opc', height)}
         {wrap('openstack', height)}
         {wrap('oracle_vm', height)}
@@ -79,6 +82,7 @@ storiesOf('EndpointLogos', module)
       <Wrapper>
         {wrap('aws', height)}
         {wrap('azure', height)}
+        {wrap('oci', height)}
         {wrap('opc', height)}
         {wrap('openstack', height)}
         {wrap('oracle_vm', height)}
@@ -93,6 +97,7 @@ storiesOf('EndpointLogos', module)
       <Wrapper>
         {wrap('aws', height, true)}
         {wrap('azure', height, true)}
+        {wrap('oci', height, true)}
         {wrap('opc', height, true)}
         {wrap('openstack', height, true)}
         {wrap('oracle_vm', height, true)}
