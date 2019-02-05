@@ -20,17 +20,19 @@ import styled from 'styled-components'
 import Modal from 'react-modal'
 import autobind from 'autobind-decorator'
 
-import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import KeyboardManager from '../../../utils/KeyboardManager'
+
+import headerBackground from './images/header-background.png'
 
 const Title = styled.div`
   height: 48px;
   font-size: 24px;
   font-weight: ${StyleProps.fontWeights.light};
-  background: ${Palette.grayscale[1]};
   text-align: center;
   line-height: 48px;
+  color: white;
+  background: url('${headerBackground}') center/contain no-repeat;
 `
 
 type Props = {
