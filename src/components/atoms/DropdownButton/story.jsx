@@ -26,3 +26,6 @@ storiesOf('DropdownButton', module)
   .add('disabled', () => (
     <DropdownButton disabled value="Dropdown Button" onClick={action('clicked')} />
   ))
+  .add('secondary centered', () => (
+    <DropdownButton secondary centered value="Dropdown Button" onClick={action('clicked')} />
+  ))

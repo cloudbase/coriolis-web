@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2017  Cloudbase Solutions SRL
+Copyright (C) 2019  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -14,26 +14,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-const Palette = {
-  primary: '#0044CB',
-  primaryLight: '#000EA9',
-  secondary: '#D9DCE3',
-  secondaryLight: '#777A8B',
-  black: '#202134',
-  alert: '#F91661',
-  success: '#4CD964',
-  warning: '#FDC02F',
-  grayscale: [
-    '#D8DBE2', // 0
-    '#ECEDF1', // 1
-    '#C8CCD7', // 2
-    '#A4AAB5', // 3
-    '#616770', // 4
-    '#7F8795', // 5
-    '#1B2733', // 6
-    '#F2F3F4', // 7
-    '#858B93', // 8
-  ],
-}
+import React from 'react'
+import { storiesOf } from '@storybook/react'
+import ActionDropdown from '.'
 
-export default Palette
+import Palette from '../../styleUtils/Palette'
+
+let actions = [{
+  label: 'Execute',
+  color: Palette.primary,
+  action: () => { console.log('execute clicked') },
+  disabled: true,
+}, {
+  label: 'Edit',
+  action: () => { console.log('Edit clicked') },
+}, {
+  label: 'Delete',
+  color: Palette.alert,
+  action: () => { console.log('Delete clicked') },
+}]
+
+storiesOf('ActionDropdown', module)
+  .add('default', () => (
+    <ActionDropdown actions={actions} />
+  ))

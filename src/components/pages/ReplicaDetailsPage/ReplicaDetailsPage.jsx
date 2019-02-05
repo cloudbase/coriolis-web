@@ -41,6 +41,7 @@ import networkStore from '../../../stores/NetworkStore'
 import { requestPollTimeout } from '../../../config'
 
 import replicaImage from './images/replica.svg'
+import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div``
 
@@ -111,14 +112,24 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     })
   }
 
-  isActionButtonDisabled() {
+  getLastExecution() {
+    if (replicaStore.replicaDetails && replicaStore.replicaDetails.executions && replicaStore.replicaDetails.executions.length) {
+      return replicaStore.replicaDetails.executions[replicaStore.replicaDetails.executions.length - 1]
+    }
+
+    return null
+  }
+
+  getStatus() {
+    let lastExecution = this.getLastExecution()
+    return lastExecution && lastExecution.status
+  }
+
+  isExecuteDisabled() {
     let originEndpoint = endpointStore.endpoints.find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.origin_endpoint_id)
     let targetEndpoint = endpointStore.endpoints.find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.destination_endpoint_id)
-    let lastExecution = replicaStore.replicaDetails && replicaStore.replicaDetails.executions && replicaStore.replicaDetails.executions.length
-      && replicaStore.replicaDetails.executions[replicaStore.replicaDetails.executions.length - 1]
-    let status = lastExecution && lastExecution.status
 
-    return Boolean(!originEndpoint || !targetEndpoint || status === 'RUNNING')
+    return Boolean(!originEndpoint || !targetEndpoint || this.getStatus() === 'RUNNING')
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -137,7 +148,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     window.location.href = '/#/replicas'
   }
 
-  handleActionButtonClick() {
+  handleExecuteClick() {
     this.setState({ showOptionsModal: true })
   }
 
@@ -228,7 +239,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  handleCancelExecutionClick(confirmationItem: ?Execution) {
+  handleCancelLastExecutionClick() {
+    this.handleCancelExecution(this.getLastExecution())
+  }
+
+  handleCancelExecution(confirmationItem: ?Execution) {
     this.setState({ confirmationItem, showCancelConfirmation: true })
   }
 
@@ -262,6 +277,27 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
+    let dropdownActions = [{
+      label: 'Execute',
+      action: () => { this.handleExecuteClick() },
+      hidden: this.isExecuteDisabled(),
+    }, {
+      label: 'Cancel',
+      hidden: this.getStatus() !== 'RUNNING',
+      action: () => { this.handleCancelLastExecutionClick() },
+    }, {
+      label: 'Create Migration',
+      color: Palette.primary,
+      action: () => { this.handleCreateMigrationClick() },
+    }, {
+      label: 'Delete Disks',
+      action: () => { this.handleDeleteReplicaDisksClick() },
+    }, {
+      label: 'Delete Replica',
+      color: Palette.alert,
+      action: () => { this.handleDeleteReplicaClick() },
+    }]
+
     return (
       <Wrapper>
         <DetailsTemplate
@@ -272,16 +308,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           contentHeaderComponent={<DetailsContentHeader
             item={replicaStore.replicaDetails}
             onBackButonClick={() => { this.handleBackButtonClick() }}
-            onActionButtonClick={() => { this.handleActionButtonClick() }}
-            onCancelClick={item => {
-              let any: any = item
-              let execution: Execution = any
-              this.handleCancelExecutionClick(execution)
-            }}
-            actionButtonDisabled={this.isActionButtonDisabled()}
+            dropdownActions={dropdownActions}
             typeImage={replicaImage}
             alertInfoPill
-            buttonLabel="Execute Now"
           />}
           contentComponent={<ReplicaDetailsContent
             item={replicaStore.replicaDetails}
@@ -293,12 +322,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             detailsLoading={replicaStore.detailsLoading || endpointStore.loading}
             executionsLoading={replicaStore.executionsLoading}
             page={this.props.match.params.page || ''}
-            onCancelExecutionClick={execution => { this.handleCancelExecutionClick(execution) }}
+            onCancelExecutionClick={execution => { this.handleCancelExecution(execution) }}
             onDeleteExecutionClick={execution => { this.handleDeleteExecutionClick(execution) }}
-            onExecuteClick={() => { this.handleActionButtonClick() }}
+            onExecuteClick={() => { this.handleExecuteClick() }}
             onCreateMigrationClick={() => { this.handleCreateMigrationClick() }}
             onDeleteReplicaClick={() => { this.handleDeleteReplicaClick() }}
-            onDeleteReplicaDisksClick={() => { this.handleDeleteReplicaDisksClick() }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
             onScheduleChange={(scheduleId, data, forceSave) => { this.handleScheduleChange(scheduleId, data, forceSave) }}
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}

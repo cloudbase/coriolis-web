@@ -41,14 +41,13 @@ const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
 `
-const LeftButtons = styled.div``
-const RightButtons = styled.div`
+const ButtonColumn = styled.div`
   display: flex;
+  flex-direction: column;
   button {
-    margin-right: 32px;
-
-    &:last-child {
-      margin-right: 0;
+    margin-top: 16px;
+    &:first-child {
+      margin-top: 0;
     }
   }
 `
@@ -85,7 +84,6 @@ type Props = {
   onExecuteClick: () => void,
   onCreateMigrationClick: () => void,
   onDeleteReplicaClick: () => void,
-  onDeleteReplicaDisksClick: () => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onScheduleChange: (scheduleId: ?string, data: ScheduleType, forceSave?: boolean) => void,
   onScheduleRemove: (scheduleId: ?string) => void,
@@ -124,29 +122,27 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
   renderBottomControls() {
     return (
       <Buttons>
-        <LeftButtons>
+        <ButtonColumn>
+          <Button
+            secondary
+            disabled={this.getStatus() === 'RUNNING'}
+            onClick={this.props.onExecuteClick}
+          >Execute Replica</Button>
           <Button
             primary
             disabled={this.isEndpointMissing()}
             onClick={this.props.onCreateMigrationClick}
             data-test-id="rdContent-createButton"
           >Create Migration</Button>
-        </LeftButtons>
-        <RightButtons>
-          <Button
-            alert
-            hollow
-            secondary
-            onClick={this.props.onDeleteReplicaDisksClick}
-            disabled={!this.props.item || !this.props.item.executions || this.props.item.executions.length === 0}
-          >Delete Replica Disks</Button>
+        </ButtonColumn>
+        <ButtonColumn>
           <Button
             alert
             hollow
             onClick={this.props.onDeleteReplicaClick}
             data-test-id="rdContent-deleteButton"
           >Delete Replica</Button>
-        </RightButtons>
+        </ButtonColumn>
       </Buttons>
     )
   }
