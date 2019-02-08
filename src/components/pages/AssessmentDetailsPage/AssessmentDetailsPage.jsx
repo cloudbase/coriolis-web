@@ -249,11 +249,11 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   handleMigrateClick() {
     let endpointType = this.getLocalData().endpoint.type
-    providerStore.loadOptionsSchema(endpointType, 'replica').then(() => {
-      this.setState({ replicaSchema: providerStore.optionsSchema })
-      return providerStore.loadOptionsSchema(endpointType, 'migration')
+    providerStore.loadDestinationSchema(endpointType, 'replica').then(() => {
+      this.setState({ replicaSchema: providerStore.destinationSchema })
+      return providerStore.loadDestinationSchema(endpointType, 'migration')
     }).then(() => {
-      this.setState({ migrationSchema: providerStore.optionsSchema })
+      this.setState({ migrationSchema: providerStore.destinationSchema })
     })
     this.setState({ showMigrationOptions: true })
   }
@@ -450,7 +450,6 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
           />}
           contentHeaderComponent={<DetailsContentHeader
             item={
-              // $FlowIgnore
               {
                 ...details,
                 type: 'Azure Migrate',

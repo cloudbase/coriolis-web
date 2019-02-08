@@ -39,6 +39,7 @@ class EndpointStore {
   @observable connectionInfoLoading = false
   @observable connectionsInfoLoading = false
   @observable storageBackends: StorageBackend[] = []
+  @observable storageLoading: boolean = false
 
   @action getEndpoints(options?: { showLoading: boolean }) {
     if (options && options.showLoading) {
@@ -136,8 +137,13 @@ class EndpointStore {
 
   @action loadStorage(endpointId: string, data: any): Promise<void> {
     this.storageBackends = []
+    this.storageLoading = true
     return EndpointSource.loadStorage(endpointId, data).then(storage => {
       this.storageBackends = storage.storage_backends
+      this.storageLoading = false
+    }).catch(ex => {
+      this.storageLoading = false
+      throw ex
     })
   }
 }

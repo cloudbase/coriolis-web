@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Execution } from './Execution'
 import type { Task } from './Task'
 import type { Instance } from './Instance'
+import type { NetworkMap } from './Network'
+import type { StorageMap } from './Endpoint'
 
 export type MainItemInfo = {
   export_info: {
@@ -28,14 +30,10 @@ export type MainItemInfo = {
   },
 }
 
-export type DestinationEnvInfo = {
-  network_map: {
-    [string]: {
-      source_network: string,
-      destination_network: string,
-    } | 'string'
-  },
-  [string]: mixed,
+export type UpdateData = {
+  destination: any,
+  network: NetworkMap[],
+  storage: StorageMap[],
 }
 
 export type MainItem = {
@@ -52,9 +50,9 @@ export type MainItem = {
   instances: string[],
   type: string,
   info: { [string]: MainItemInfo },
-  destination_environment: DestinationEnvInfo,
+  destination_environment: { [string]: mixed },
   transfer_result: ?{ [string]: Instance },
-  storage_mappings: ?{
+  storage_mappings?: ?{
     backend_mappings: ?{
       destination: string,
       source: string,
@@ -65,4 +63,10 @@ export type MainItem = {
       disk_id: string,
     }[],
   },
+  network_map?: {
+    [string]: {
+      source_network: string,
+      destination_network: string,
+    } | 'string'
+  }
 }

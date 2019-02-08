@@ -35,7 +35,7 @@ class ProviderSource {
       .then(response => response.data.providers)
   }
 
-  static loadOptionsSchema(providerName: string, schemaType: string): Promise<Field[]> {
+  static loadDestinationSchema(providerName: string, schemaType: string): Promise<Field[]> {
     let schemaTypeInt = schemaType === 'migration' ? providerTypes.TARGET_MIGRATION : providerTypes.TARGET_REPLICA
 
     return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {

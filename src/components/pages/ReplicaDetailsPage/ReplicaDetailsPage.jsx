@@ -25,6 +25,8 @@ import ReplicaDetailsContent from '../../organisms/ReplicaDetailsContent'
 import Modal from '../../molecules/Modal'
 import ReplicaExecutionOptions from '../../organisms/ReplicaExecutionOptions'
 import AlertModal from '../../organisms/AlertModal'
+import EditReplica from '../../organisms/EditReplica'
+
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
 import type { MainItem } from '../../../types/MainItem'
 import type { Execution } from '../../../types/Execution'
@@ -51,6 +53,7 @@ type Props = {
 type State = {
   showOptionsModal: boolean,
   showMigrationModal: boolean,
+  showEditModal: boolean,
   showDeleteExecutionConfirmation: boolean,
   showDeleteReplicaConfirmation: boolean,
   showDeleteReplicaDisksConfirmation: boolean,
@@ -62,6 +65,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   state = {
     showOptionsModal: false,
     showMigrationModal: false,
+    showEditModal: false,
     showDeleteExecutionConfirmation: false,
     showDeleteReplicaConfirmation: false,
     showDeleteReplicaDisksConfirmation: false,
@@ -214,6 +218,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.setState({ showMigrationModal: true })
   }
 
+  handleReplicaEditClick() {
+    this.setState({ showEditModal: true })
+  }
+
   handleAddScheduleClick(schedule: Schedule) {
     scheduleStore.addSchedule(this.props.match.params.id, schedule)
   }
@@ -271,9 +279,44 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   pollData(showLoading: boolean) {
+    if (this.state.showEditModal) {
+      return
+    }
+
+    if (!this.props.match.params.page) {
+      replicaStore.getReplica(this.props.match.params.id, showLoading)
+    }
+
     replicaStore.getReplicaExecutions(this.props.match.params.id, showLoading).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData(false) }, requestPollTimeout)
     })
+  }
+
+  closeEditModal() {
+    this.setState({ showEditModal: false }, () => {
+      this.pollData(false)
+    })
+  }
+
+  renderEditReplica() {
+    let destinationEndpoint = endpointStore.endpoints
+      .find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.destination_endpoint_id)
+
+    if (!this.state.showEditModal || !replicaStore.replicaDetails || !destinationEndpoint) {
+      return null
+    }
+
+    return (
+      <EditReplica
+        isOpen
+        onRequestClose={() => { this.closeEditModal() }}
+        replica={replicaStore.replicaDetails}
+        destinationEndpoint={destinationEndpoint}
+        instancesDetails={instanceStore.instancesDetails}
+        instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+        networks={networkStore.networks}
+      />
+    )
   }
 
   render() {
@@ -289,6 +332,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       label: 'Create Migration',
       color: Palette.primary,
       action: () => { this.handleCreateMigrationClick() },
+    }, {
+      label: 'Edit',
+      action: () => { this.handleReplicaEditClick() },
     }, {
       label: 'Delete Disks',
       action: () => { this.handleDeleteReplicaDisksClick() },
@@ -385,6 +431,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           onConfirmation={() => { this.handleCancelConfirmation() }}
           onRequestClose={() => { this.handleCloseCancelConfirmation() }}
         />
+        {this.renderEditReplica()}
       </Wrapper>
     )
   }

@@ -14,21 +14,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-export type Field = {
-  name: string,
-  type?: string,
-  value?: any,
-  label?: string,
-  // $FlowIssue
-  enum?: string[] | { id: string, name: string, [string]: mixed }[],
-  default?: any,
-  items?: Field[],
-  fields?: Field[],
-  minimum?: number,
-  maximum?: number,
-  parent?: string,
-  properties?: Field[],
-  required?: boolean,
-  useTextArea?: boolean,
-  readOnly?: boolean,
-}
+import React from 'react'
+import { storiesOf } from '@storybook/react'
+import Panel from '.'
+
+const navigationItems = [
+  { value: 'dest_options', label: 'Destination Options' },
+  { value: 'network', label: 'Network Mapping' },
+  { value: 'storage', label: 'Storage Mapping' },
+]
+
+storiesOf('Panel', module)
+  .add('default', () => (
+    <div style={{ width: '800px', height: '560px' }}>
+      <Panel
+        content={<div>Content</div>}
+        navigationItems={navigationItems}
+        selectedValue="network"
+        onChange={item => console.log(item, 'clicked')}
+      />
+    </div>
+  ))
+

@@ -61,8 +61,7 @@ const Nic = styled.div`
   }
 `
 const NetworkImage = styled.div`
-  width: 48px;
-  height: 48px;
+  ${StyleProps.exactSize('48px')}
   background: url('${networkImage}') center no-repeat;
   margin-right: 16px;
 `
@@ -78,8 +77,8 @@ const NetworkSubtitle = styled.div`
   margin-top: 1px;
 `
 const ArrowImage = styled.div`
-  width: 32px;
-  height: 16px;
+  ${StyleProps.exactWidth('32px')}
+  ${StyleProps.exactHeight('16px')}
   background: url('${arrowImage}') center no-repeat;
   flex-grow: 1;
   margin-right: 16px;

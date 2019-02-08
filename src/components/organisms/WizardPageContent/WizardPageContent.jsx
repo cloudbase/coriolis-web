@@ -92,6 +92,43 @@ const WizardTypeIcon = styled.div`
   align-items: center;
   margin: 0 32px;
 `
+export const isOptionsPageValid = (data: ?any, schema: Field[]) => {
+  const isValid = (field: Field): boolean => {
+    if (data) {
+      let fieldValue = data[field.name]
+      if (fieldValue === null) {
+        return false
+      }
+      if (fieldValue === undefined) {
+        return field.default != null
+      }
+      return Boolean(fieldValue)
+    }
+    return field.default != null
+  }
+
+  if (schema && schema.length > 0) {
+    let required = schema.filter(f => f.required && f.type !== 'object')
+    schema.forEach(f => {
+      if (f.type === 'object' && f.properties && f.properties.filter && f.properties.filter(p => isValid(p)).length > 0) {
+        required = required.concat(f.properties.filter(p => p.required))
+      }
+    })
+
+    let validFieldsCount = 0
+    required.forEach(f => {
+      if (isValid(f)) {
+        validFieldsCount += 1
+      }
+    })
+
+    if (validFieldsCount === required.length) {
+      return true
+    }
+  }
+
+  return false
+}
 type Props = {
   page: { id: string, title: string },
   type: 'replica' | 'migration',
@@ -195,45 +232,6 @@ class WizardPageContent extends React.Component<Props, State> {
     return false
   }
 
-  isOptionsPageValid() {
-    const isValid = (field: Field): boolean => {
-      if (this.props.wizardData.options) {
-        let fieldValue = this.props.wizardData.options[field.name]
-        if (fieldValue === null) {
-          return false
-        }
-        if (fieldValue === undefined) {
-          return field.default != null
-        }
-        return Boolean(fieldValue)
-      }
-      return field.default != null
-    }
-
-    let schema = this.props.providerStore.optionsSchema
-    if (schema && schema.length > 0) {
-      let required = schema.filter(f => f.required && f.type !== 'object')
-      schema.forEach(f => {
-        if (f.type === 'object' && f.properties && f.properties.filter && f.properties.filter(p => isValid(p)).length > 0) {
-          required = required.concat(f.properties.filter(p => p.required))
-        }
-      })
-
-      let validFieldsCount = 0
-      required.forEach(f => {
-        if (isValid(f)) {
-          validFieldsCount += 1
-        }
-      })
-
-      if (validFieldsCount === required.length) {
-        return true
-      }
-    }
-
-    return false
-  }
-
   isNextButtonDisabled() {
     if (this.props.nextButtonDisabled) {
       return true
@@ -247,7 +245,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'vms':
         return !this.props.wizardData.selectedInstances || !this.props.wizardData.selectedInstances.length
       case 'options':
-        return !this.isOptionsPageValid()
+        return !isOptionsPageValid(this.props.wizardData.options, this.props.providerStore.destinationSchema)
       case 'networks':
         return !this.isNetworksPageValid()
       default:
@@ -334,9 +332,9 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.optionsSchemaLoading || this.props.providerStore.destinationOptionsLoading}
+            loading={this.props.providerStore.destinationSchemaLoading || this.props.providerStore.destinationOptionsLoading}
             selectedInstances={this.props.wizardData.selectedInstances}
-            fields={this.props.providerStore.optionsSchema}
+            fields={this.props.providerStore.destinationSchema}
             onChange={this.props.onOptionsChange}
             data={this.props.wizardData.options}
             useAdvancedOptions={this.state.useAdvancedOptions}

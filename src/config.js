@@ -81,14 +81,14 @@ export const executionOptions = [
   },
 ]
 
-export const storageProviders = ['openstack']
+export const storageProviders = ['openstack', 'azure']
 
 export const wizardConfig = {
   pages: [
     { id: 'type', title: 'New', breadcrumb: 'Type' },
     { id: 'source', title: 'Select your source cloud', breadcrumb: 'Source Cloud' },
-    { id: 'target', title: 'Select your target cloud', breadcrumb: 'Target Cloud' },
     { id: 'vms', title: 'Select instances', breadcrumb: 'Select VMs' },
+    { id: 'target', title: 'Select your target cloud', breadcrumb: 'Target Cloud' },
     { id: 'options', title: 'Options', breadcrumb: 'Options' },
     { id: 'networks', title: 'Networks', breadcrumb: 'Networks' },
     {

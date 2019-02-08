@@ -18,11 +18,12 @@ import { observable, action } from 'mobx'
 
 import notificationStore from '../stores/NotificationStore'
 import ReplicaSource from '../sources/ReplicaSource'
-import type { MainItem } from '../types/MainItem'
+import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Execution } from '../types/Execution'
+import type { Endpoint } from '../types/Endpoint'
 import type { Field } from '../types/Field'
 
-class replicaStoreUtils {
+class ReplicaStoreUtils {
   static getNewReplica(replicaDetails: MainItem, execution: Execution): MainItem {
     if (replicaDetails.executions) {
       return {
@@ -87,8 +88,8 @@ class ReplicaStore {
     }).catch(() => { this.executionsLoading = false })
   }
 
-  @action getReplica(replicaId: string): Promise<void> {
-    this.detailsLoading = true
+  @action getReplica(replicaId: string, showLoading: boolean = true): Promise<void> {
+    this.detailsLoading = showLoading
 
     return ReplicaSource.getReplica(replicaId).then(replica => {
       this.detailsLoading = false
@@ -101,13 +102,13 @@ class ReplicaStore {
   @action execute(replicaId: string, fields?: Field[]): Promise<void> {
     return ReplicaSource.execute(replicaId, fields).then(execution => {
       if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        this.replicaDetails = replicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
       }
 
       let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
 
       if (replicasItemIndex > -1) {
-        const updatedReplica = replicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
         this.replicas[replicasItemIndex] = updatedReplica
       }
     })
@@ -145,13 +146,13 @@ class ReplicaStore {
   @action deleteDisks(replicaId: string) {
     return ReplicaSource.deleteDisks(replicaId).then(execution => {
       if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        this.replicaDetails = replicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
       }
 
       let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
 
       if (replicasItemIndex > -1) {
-        const updatedReplica = replicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
         this.replicas[replicasItemIndex] = updatedReplica
       }
     })
@@ -160,6 +161,10 @@ class ReplicaStore {
   @action clearDetails() {
     this.detailsLoading = true
     this.replicaDetails = null
+  }
+
+  @action update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData) {
+    return ReplicaSource.update(replica, destinationEndpoint, updateData)
   }
 }
 

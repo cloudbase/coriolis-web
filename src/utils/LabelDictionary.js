@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class LabelDictionary {
   // The word will be uppercased
-  static acronyms = ['id', 'api', 'url', 'vm', 'os', 'dhcp', 'sql', 'oci']
+  static acronyms = ['id', 'api', 'url', 'vm', 'os', 'dhcp', 'sql', 'oci', 'sku']
 
   // The word will be replaced
   static abbreviations = {

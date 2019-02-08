@@ -30,10 +30,10 @@ class WizardSource {
     payload[type] = {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target ? data.target.id : 'null',
-      destination_environment: parser.getDestinationEnv(data),
+      destination_environment: parser.getDestinationEnv(data.options),
       network_map: parser.getNetworkMap(data),
       instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
-      storage_mappings: parser.getStorageMap(data, storageMap),
+      storage_mappings: parser.getStorageMap(data.options, storageMap),
       notes: data.options ? data.options.description || '' : '',
     }
 

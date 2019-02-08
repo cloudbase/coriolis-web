@@ -24,15 +24,18 @@ import StyleProps from '../../styleUtils/StyleProps'
 import KeyboardManager from '../../../utils/KeyboardManager'
 
 import headerBackground from './images/header-background.png'
+import headerBackgroundWide from './images/header-background-wide.png'
+
+let headerHeight = 48
 
 const Title = styled.div`
-  height: 48px;
+  height: ${headerHeight}px;
   font-size: 24px;
   font-weight: ${StyleProps.fontWeights.light};
   text-align: center;
   line-height: 48px;
   color: white;
-  background: url('${headerBackground}') center/contain no-repeat;
+  background: url('${props => props.wide ? headerBackgroundWide : headerBackground}') center/contain no-repeat;
 `
 
 type Props = {
@@ -44,6 +47,8 @@ type Props = {
   topBottomMargin: number,
   title: string,
   componentRef?: (ref: any) => void,
+  onScrollableRef?: () => HTMLElement,
+  fixedHeight?: number,
 }
 @observer
 class NewModal extends React.Component<Props> {
@@ -126,12 +131,14 @@ class NewModal extends React.Component<Props> {
     if (!contentNode || !pageNode) {
       return
     }
-    let scrollableNode = this.scrollableRef || contentNode
+    let scrollableRef = this.props.onScrollableRef && this.props.onScrollableRef()
+    let scrollableNode = scrollableRef || this.scrollableRef || contentNode
     let scrollTop = scrollableNode.scrollTop
     contentNode.style.height = 'auto'
+    let contentDesiredHeight = this.props.fixedHeight ? this.props.fixedHeight + headerHeight : contentNode.offsetHeight
     let left = (pageNode.offsetWidth / 2) - (contentNode.offsetWidth / 2)
-    let top = (pageNode.offsetHeight / 2) - (contentNode.offsetHeight / 2)
-    let height = 'auto'
+    let top = (pageNode.offsetHeight / 2) - (contentDesiredHeight / 2)
+    let height = this.props.fixedHeight ? `${this.props.fixedHeight + headerHeight}px` : 'auto'
 
     if (top < this.props.topBottomMargin) {
       top = this.props.topBottomMargin
@@ -146,12 +153,12 @@ class NewModal extends React.Component<Props> {
     scrollableNode.scrollTop = scrollTop + scrollOffset
   }
 
-  renderTitle() {
+  renderTitle(contentWidth: string) {
     if (!this.props.title) {
       return null
     }
 
-    return <Title data-test-id="modal-title">{this.props.title}</Title>
+    return <Title data-test-id="modal-title" wide={contentWidth === '800px'}>{this.props.title}</Title>
   }
 
   render() {
@@ -202,7 +209,7 @@ class NewModal extends React.Component<Props> {
         onRequestClose={this.props.onRequestClose}
         onAfterOpen={() => { this.handleModalOpen() }}
       >
-        {this.renderTitle()}
+        {this.renderTitle(modalStyle.content.width)}
         {children}
       </Modal>
     )

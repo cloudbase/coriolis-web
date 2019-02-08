@@ -1,0 +1,6 @@
+{
+  "name": "EditReplica",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./EditReplica.jsx"
+}

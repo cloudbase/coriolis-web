@@ -26,7 +26,7 @@ import Modal from '../../molecules/Modal'
 import Endpoint from '../../organisms/Endpoint'
 
 import userStore from '../../../stores/UserStore'
-import providerStore from '../../../stores/ProviderStore'
+import providerStore, { getFieldChangeDestOptions } from '../../../stores/ProviderStore'
 import endpointStore from '../../../stores/EndpointStore'
 import wizardStore from '../../../stores/WizardStore'
 import instanceStore from '../../../stores/InstanceStore'
@@ -35,7 +35,8 @@ import notificationStore from '../../../stores/NotificationStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import { wizardConfig, executionOptions, providersWithExtraOptions } from '../../../config'
+import { wizardConfig, executionOptions } from '../../../config'
+
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType, StorageBackend } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
@@ -216,7 +217,7 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
     // Preload destination options schema
-    providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
+    providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
       // Preload destination options values
       return providerStore.getDestinationOptions(target.id, target.type)
     })
@@ -316,41 +317,15 @@ class WizardPage extends React.Component<Props, State> {
 
   loadEnvDestinationOptions(field?: Field) {
     let provider = wizardStore.data.target && wizardStore.data.target.type
-    let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p !== 'string' && p.name === provider)
-    if (provider && providerWithExtraOptions && typeof providerWithExtraOptions !== 'string' && providerWithExtraOptions.envRequiredFields) {
-      let findFieldInSchema = (name: string) => providerStore.optionsSchema.find(f => f.name === name)
-      let validFields = providerWithExtraOptions.envRequiredFields.filter(fn => {
-        let schemaField = findFieldInSchema(fn)
-        if (wizardStore.data.options) {
-          if (wizardStore.data.options[fn] === null) {
-            return false
-          }
-          if (wizardStore.data.options[fn] === undefined && schemaField && schemaField.default) {
-            return true
-          }
-          return wizardStore.data.options[fn]
-        }
-        return false
-      })
-      let currentFieldValied = field ? validFields.find(fn => field ? fn === field.name : false) : true
-      if (
-        validFields.length === providerWithExtraOptions.envRequiredFields.length &&
-        currentFieldValied
-      ) {
-        let envData = {}
-        validFields.forEach(fn => {
-          envData[fn] = wizardStore.data.options ? wizardStore.data.options[fn] : null
-          if (envData[fn] == null) {
-            let schemaField = findFieldInSchema(fn)
-            if (schemaField && schemaField.default) {
-              envData[fn] = schemaField.default
-            }
-          }
-        })
-        if (wizardStore.data.target) {
-          providerStore.getDestinationOptions(wizardStore.data.target.id, provider, envData)
-        }
-      }
+    let envData = getFieldChangeDestOptions({
+      provider: wizardStore.data.target && wizardStore.data.target.type,
+      destSchema: providerStore.destinationSchema,
+      data: wizardStore.data.options,
+      field,
+    })
+
+    if (provider && envData && wizardStore.data.target) {
+      providerStore.getDestinationOptions(wizardStore.data.target.id, provider, envData)
     }
   }
 
@@ -379,8 +354,8 @@ class WizardPage extends React.Component<Props, State> {
           endpointStore.loadStorage(target.id, {})
         }
         // Preload destination options schema
-        if (providerStore.optionsSchema.length === 0 && target) {
-          providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
+        if (providerStore.destinationSchema.length === 0 && target) {
+          providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
             // Preload destination options if data is set from 'Permalink'
             if (providerStore.destinationOptions.length === 0 && target) {
               providerStore.getDestinationOptions(target.id, target.type).then(() => {

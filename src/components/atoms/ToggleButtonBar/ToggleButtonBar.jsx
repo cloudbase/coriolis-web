@@ -58,6 +58,7 @@ type Props = {
   onChange?: (item: ItemType) => void,
   className?: string,
   'data-test-id'?: string,
+  style?: { [string]: mixed },
 }
 @observer
 class ToggleButtonBar extends React.Component<Props> {
@@ -70,6 +71,7 @@ class ToggleButtonBar extends React.Component<Props> {
       <Wrapper
         data-test-id={this.props['data-test-id'] || 'toggleButtonBar-wrapper'}
         className={this.props.className}
+        style={this.props.style}
       >
         {this.props.items.map(item => {
           return (

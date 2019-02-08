@@ -62,42 +62,44 @@ export const defaultFillMigrationImageMapValues = (field: Field, option: Destina
   return false
 }
 
-export const defaultGetDestinationEnv = (data: WizardData): any => {
+export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptions?: ?{ [string]: mixed }): any => {
   let env = {}
   let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'default_storage', 'description']
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes.map(o => `${o}_os_image`))
 
 
-  if (data.options) {
-    Object.keys(data.options).forEach(optionName => {
-      if (specialOptions.find(o => o === optionName) || !data.options || data.options[optionName] == null) {
-        return
-      }
-      if (optionName.indexOf('/') > 0) {
-        let parentName = optionName.substr(0, optionName.lastIndexOf('/'))
-        if (!env[parentName]) {
-          env[parentName] = {}
-        }
-        env[parentName][optionName.substr(optionName.lastIndexOf('/') + 1)] = data.options ? data.options[optionName] : null
-      } else {
-        env[optionName] = data.options ? data.options[optionName] : null
-      }
-    })
+  if (!options) {
+    return env
   }
+  Object.keys(options).forEach(optionName => {
+    if (specialOptions.find(o => o === optionName) || !options || options[optionName] == null) {
+      return
+    }
+
+    if (optionName.indexOf('/') > 0) {
+      let parentName = optionName.substr(0, optionName.lastIndexOf('/'))
+      if (!env[parentName]) {
+        env[parentName] = oldOptions ? oldOptions[parentName] || {} : {}
+      }
+      env[parentName][optionName.substr(optionName.lastIndexOf('/') + 1)] = options ? options[optionName] : null
+    } else {
+      env[optionName] = options ? options[optionName] : null
+    }
+  })
   return env
 }
 
-export const defaultGetMigrationImageMap = (data: WizardData) => {
+export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }) => {
   let env = {}
-  if (data.options) {
+  if (options) {
     migrationImageOsTypes.forEach(os => {
-      if (data.options && data.options[`${os}_os_image`]) {
+      if (options && options[`${os}_os_image`]) {
         if (!env.migr_image_map) {
           env.migr_image_map = {}
         }
 
-        env.migr_image_map[os] = data.options[`${os}_os_image`]
+        env.migr_image_map[os] = options[`${os}_os_image`]
       }
     })
   }
@@ -116,10 +118,10 @@ export default class OptionsSchemaParser {
     }
   }
 
-  static getDestinationEnv(data: WizardData) {
+  static getDestinationEnv(options: ?{ [string]: mixed }, oldOptions?: any) {
     let env = {
-      ...defaultGetDestinationEnv(data),
-      ...defaultGetMigrationImageMap(data),
+      ...defaultGetDestinationEnv(options, oldOptions),
+      ...defaultGetMigrationImageMap(options),
     }
     return env
   }
@@ -134,10 +136,10 @@ export default class OptionsSchemaParser {
     return payload
   }
 
-  static getStorageMap(data: WizardData, storageMap: StorageMap[]) {
+  static getStorageMap(data: any, storageMap: StorageMap[]) {
     let payload = {}
-    if (data.options && data.options.default_storage) {
-      payload.default = data.options.default_storage
+    if (data && data.default_storage) {
+      payload.default = data.default_storage
     }
 
     storageMap.forEach(mapping => {
