@@ -77,7 +77,7 @@ const NetworkSubtitle = styled.div`
   margin-top: 1px;
 `
 const ArrowImage = styled.div`
-  ${StyleProps.exactWidth('32px')}
+  min-width: 32px;
   ${StyleProps.exactHeight('16px')}
   background: url('${arrowImage}') center no-repeat;
   flex-grow: 1;

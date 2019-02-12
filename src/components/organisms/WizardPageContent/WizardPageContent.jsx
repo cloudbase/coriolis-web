@@ -151,7 +151,8 @@ type Props = {
   onInstancesReloadClick: () => void,
   onInstanceClick: (instance: Instance) => void,
   onInstancePageClick: (page: number) => void,
-  onOptionsChange: (field: Field, value: any) => void,
+  onDestOptionsChange: (field: Field, value: any) => void,
+  onSourceOptionsChange: (field: Field, value: any) => void,
   onNetworkChange: (nic: Nic, network: Network) => void,
   onStorageChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
@@ -244,8 +245,8 @@ class WizardPageContent extends React.Component<Props, State> {
         return !this.props.wizardData.target
       case 'vms':
         return !this.props.wizardData.selectedInstances || !this.props.wizardData.selectedInstances.length
-      case 'options':
-        return !isOptionsPageValid(this.props.wizardData.options, this.props.providerStore.destinationSchema)
+      case 'dest-options':
+        return !isOptionsPageValid(this.props.wizardData.destOptions, this.props.providerStore.destinationSchema)
       case 'networks':
         return !this.isNetworksPageValid()
       default:
@@ -329,14 +330,27 @@ class WizardPageContent extends React.Component<Props, State> {
           />
         )
         break
-      case 'options':
+      case 'source-options':
+        body = (
+          <WizardOptions
+            loading={this.props.providerStore.sourceSchemaLoading}
+            fields={this.props.providerStore.sourceSchema}
+            onChange={this.props.onSourceOptionsChange}
+            data={this.props.wizardData.sourceOptions}
+            useAdvancedOptions
+            hasStorageMap={false}
+            wizardType={`${this.props.type}-source-options`}
+          />
+        )
+        break
+      case 'dest-options':
         body = (
           <WizardOptions
             loading={this.props.providerStore.destinationSchemaLoading || this.props.providerStore.destinationOptionsLoading}
             selectedInstances={this.props.wizardData.selectedInstances}
             fields={this.props.providerStore.destinationSchema}
-            onChange={this.props.onOptionsChange}
-            data={this.props.wizardData.options}
+            onChange={this.props.onDestOptionsChange}
+            data={this.props.wizardData.destOptions}
             useAdvancedOptions={this.state.useAdvancedOptions}
             hasStorageMap={this.props.hasStorageMap}
             storageBackends={this.props.endpointStore.storageBackends}
@@ -363,7 +377,7 @@ class WizardPageContent extends React.Component<Props, State> {
             storageBackends={this.props.endpointStore.storageBackends}
             instancesDetails={this.props.instanceStore.instancesDetails}
             storageMap={this.props.storageMap}
-            defaultStorage={String(this.props.wizardData.options ? this.props.wizardData.options.default_storage : '')}
+            defaultStorage={String(this.props.wizardData.destOptions ? this.props.wizardData.destOptions.default_storage : '')}
             onChange={this.props.onStorageChange}
           />
         )
@@ -391,8 +405,8 @@ class WizardPageContent extends React.Component<Props, State> {
             instancesDetails={this.props.instanceStore.instancesDetails}
             defaultStorage={
               this.props.endpointStore.storageBackends.find(
-                s => this.props.wizardData.options ?
-                  s.name === this.props.wizardData.options.default_storage :
+                s => this.props.wizardData.destOptions ?
+                  s.name === this.props.wizardData.destOptions.default_storage :
                   false
               )
             }
@@ -447,6 +461,7 @@ class WizardPageContent extends React.Component<Props, State> {
             selected={this.props.page}
             wizardType={this.props.type}
             destinationProvider={this.props.wizardData.target ? this.props.wizardData.target.type : null}
+            sourceProvider={this.props.wizardData.source ? this.props.wizardData.source.type : null}
           />
         </Footer>
       </Wrapper>

@@ -64,7 +64,6 @@ const Buttons = styled.div`
   flex-shrink: 0;
   justify-content: space-between;
 `
-const Empty = styled.div``
 
 type Props = {
   isOpen: boolean,
@@ -101,7 +100,7 @@ class EditReplica extends React.Component<Props, State> {
     }
 
     providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, 'replica').then(() => {
-      return providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type)
+      return providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type, undefined, true)
     }).then(() => {
       this.loadEnvDestinationOptions()
     })
@@ -153,7 +152,7 @@ class EditReplica extends React.Component<Props, State> {
     })
 
     if (envData) {
-      providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type, envData)
+      providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type, envData, true)
     }
   }
 
@@ -206,8 +205,9 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   handleNetworkChange(sourceNic: Nic, targetNetwork: Network) {
+    let networkMap = this.state.selectedNetworks.filter(n => n.sourceNic.network_name !== sourceNic.network_name)
     this.setState({
-      selectedNetworks: [...this.state.selectedNetworks, { sourceNic, targetNetwork }],
+      selectedNetworks: [...networkMap, { sourceNic, targetNetwork }],
     })
   }
 
@@ -237,7 +237,7 @@ class EditReplica extends React.Component<Props, State> {
 
     if (networkMap) {
       Object.keys(networkMap).forEach(sourceNetworkName => {
-        let network = this.props.networks.find(n => n.name === networkMap[sourceNetworkName])
+        let network = this.props.networks.find(n => n.name === networkMap[sourceNetworkName] || n.id === networkMap[sourceNetworkName])
         if (!network) {
           return
         }
@@ -292,12 +292,12 @@ class EditReplica extends React.Component<Props, State> {
 
   renderDestinationOptions() {
     if (providerStore.destinationSchemaLoading || providerStore.destinationOptionsLoading) {
-      return this.renderLoading('Loading destination options ...')
+      return this.renderLoading('Loading target options ...')
     }
 
     return (
       <WizardOptions
-        wizardType="dest-edit"
+        wizardType="replica-dest-options-edit"
         getFieldValue={(f, d) => this.getFieldValue(f, d)}
         fields={providerStore.destinationSchema.filter(f => !f.readOnly)}
         hasStorageMap={this.hasStorageMap()}
@@ -312,10 +312,6 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   renderStorageMapping() {
-    if (!this.hasStorageMap()) {
-      return <Empty>The destination endpoint does not have storage listing.</Empty>
-    }
-
     if (this.props.instancesDetailsLoading) {
       return this.renderLoading('Loading instances details ...')
     }
@@ -394,10 +390,13 @@ class EditReplica extends React.Component<Props, State> {
 
   render() {
     const navigationItems: NavigationItem[] = [
-      { value: 'dest_options', label: 'Destination Options' },
+      { value: 'dest_options', label: 'Target Options' },
       { value: 'network_mapping', label: 'Network Mapping' },
-      { value: 'storage_mapping', label: 'Storage Mapping' },
     ]
+
+    if (this.hasStorageMap()) {
+      navigationItems.push({ value: 'storage_mapping', label: 'Storage Mapping' })
+    }
 
     return (
       <Modal

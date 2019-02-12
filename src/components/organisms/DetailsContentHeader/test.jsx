@@ -45,17 +45,9 @@ describe('DetailsContentHeader Component', () => {
     expect(wrapper.find('cancelButton').length).toBe(0)
   })
 
-  it('renders with action button, if there\'s action button handler', () => {
-    let wrapper = wrap({ item, buttonLabel: 'action button', onActionButtonClick: () => { } })
+  it('renders with action button, if there are dropdown actions', () => {
+    let wrapper = wrap({ item, dropdownActions: [] })
     expect(wrapper.find('actionButton').length).toBe(1)
-    expect(wrapper.find('actionButton').shallow.dive().dive().text()).toBe('action button')
-  })
-
-  it('dispatches action button click', () => {
-    let onActionButtonClick = sinon.spy()
-    let wrapper = wrap({ item, buttonLabel: 'action button', onActionButtonClick })
-    wrapper.find('actionButton').simulate('click')
-    expect(onActionButtonClick.calledOnce).toBe(true)
   })
 
   it('dispatches back button click', () => {
@@ -63,23 +55,6 @@ describe('DetailsContentHeader Component', () => {
     let wrapper = wrap({ item, onBackButonClick })
     wrapper.find('backButton').click()
     expect(onBackButonClick.called).toBe(true)
-  })
-
-  it('renders cancel button if status is running', () => {
-    let wrapper = wrap({
-      item: { ...item, executions: [{ ...item.executions[0], status: 'RUNNING' }] },
-    })
-    expect(wrapper.find('cancelButton').length).toBe(1)
-  })
-
-  it('dispatches cancel click', () => {
-    let onCancelClick = sinon.spy()
-    let wrapper = wrap({
-      item: { ...item, executions: [{ ...item.executions[0], status: 'RUNNING' }] },
-      onCancelClick,
-    })
-    wrapper.find('cancelButton').simulate('click')
-    expect(onCancelClick.args[0][0].status).toBe('RUNNING')
   })
 
   it('renders correct INFO pill', () => {

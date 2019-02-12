@@ -26,6 +26,21 @@ import type { Schedule } from '../types/Schedule'
 import { wizardConfig } from '../config'
 import Source from '../sources/WizardSource'
 
+const updateOptions = (oldOptions: ?{ [string]: mixed }, data: { field: Field, value: any }) => {
+  let options = { ...oldOptions }
+  if (data.field.type === 'array') {
+    let oldValues: string[] = options[data.field.name] || []
+    if (oldValues.find(v => v === data.value)) {
+      options[data.field.name] = oldValues.filter(v => v !== data.value)
+    } else {
+      options[data.field.name] = [...oldValues, data.value]
+    }
+  } else {
+    options[data.field.name] = data.value
+  }
+  return options
+}
+
 class WizardStore {
   @observable data: WizardData = {}
   @observable schedules: Schedule[] = []
@@ -64,22 +79,14 @@ class WizardStore {
     this.currentPage = page
   }
 
-  @action updateOptions(data: { field: Field, value: any }) {
-    this.data.options = {
-      ...this.data.options,
-    }
-    if (data.field.type === 'array') {
-      let oldValues: string[] = this.data.options[data.field.name] || []
-      if (oldValues.find(v => v === data.value)) {
-        // $FlowIssue
-        this.data.options[data.field.name] = oldValues.filter(v => v !== data.value)
-      } else {
-        // $FlowIssue
-        this.data.options[data.field.name] = [...oldValues, data.value]
-      }
-    } else {
-      this.data.options[data.field.name] = data.value
-    }
+  @action updateSourceOptions(data: { field: Field, value: any }) {
+    this.data = { ...this.data }
+    this.data.sourceOptions = updateOptions(this.data.sourceOptions, data)
+  }
+
+  @action updateDestOptions(data: { field: Field, value: any }) {
+    this.data = { ...this.data }
+    this.data.destOptions = updateOptions(this.data.destOptions, data)
   }
 
   @action updateNetworks(network: NetworkMap) {

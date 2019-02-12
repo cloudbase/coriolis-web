@@ -30,15 +30,19 @@ class WizardSource {
     payload[type] = {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target ? data.target.id : 'null',
-      destination_environment: parser.getDestinationEnv(data.options),
+      destination_environment: parser.getDestinationEnv(data.destOptions),
       network_map: parser.getNetworkMap(data),
       instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
-      storage_mappings: parser.getStorageMap(data.options, storageMap),
-      notes: data.options ? data.options.description || '' : '',
+      storage_mappings: parser.getStorageMap(data.destOptions, storageMap),
+      notes: data.destOptions ? data.destOptions.description || '' : '',
     }
 
-    if (data.options && data.options.skip_os_morphing != null) {
-      payload[type].skip_os_morphing = data.options.skip_os_morphing
+    if (data.destOptions && data.destOptions.skip_os_morphing != null) {
+      payload[type].skip_os_morphing = data.destOptions.skip_os_morphing
+    }
+
+    if (data.sourceOptions) {
+      payload[type].source_environment = parser.getDestinationEnv(data.sourceOptions)
     }
 
     return Api.send({

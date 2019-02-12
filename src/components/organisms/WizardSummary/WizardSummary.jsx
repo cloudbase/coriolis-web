@@ -149,7 +149,7 @@ type Props = {
 @observer
 class WizardSummary extends React.Component<Props> {
   getDefaultOption(fieldName: string) {
-    if (this.props.data.options && this.props.data.options[fieldName] === false) {
+    if (this.props.data.destOptions && this.props.data.destOptions[fieldName] === false) {
       return false
     }
 
@@ -237,7 +237,36 @@ class WizardSummary extends React.Component<Props> {
     return value
   }
 
-  renderOptionsSection() {
+  renderSourceOptionsSection() {
+    let data = this.props.data
+    let type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
+
+    return (
+      <Section>
+        <SectionTitle>{type} Source Options</SectionTitle>
+        <OptionsList>
+          {data.sourceOptions ? Object.keys(data.sourceOptions).map(optionName => {
+            if (!data.sourceOptions || data.sourceOptions[optionName] == null) {
+              return null
+            }
+
+            return (
+              <Option key={optionName}>
+                <OptionLabel>
+                  {optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}
+                </OptionLabel>
+                <OptionValue>{
+                  this.renderOptionValue(data.sourceOptions && data.sourceOptions[optionName])
+                }</OptionValue>
+              </Option>
+            )
+          }) : null}
+        </OptionsList>
+      </Section>
+    )
+  }
+
+  renderTargetOptionsSection() {
     let data = this.props.data
     let type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
 
@@ -257,16 +286,16 @@ class WizardSummary extends React.Component<Props> {
 
     return (
       <Section>
-        <SectionTitle>{type} Options</SectionTitle>
+        <SectionTitle>{type} Target Options</SectionTitle>
         <OptionsList>
           {this.props.wizardType === 'replica' ? executeNowOption : null}
           {this.props.data.selectedInstances && this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
-          {data.options ? Object.keys(data.options).map(optionName => {
+          {data.destOptions ? Object.keys(data.destOptions).map(optionName => {
             if (
               optionName === 'execute_now' ||
               optionName === 'separate_vm' ||
-              optionName === 'default_stoage' ||
-              !data.options || data.options[optionName] == null
+              optionName === 'default_storage' ||
+              !data.destOptions || data.destOptions[optionName] == null
             ) {
               return null
             }
@@ -277,8 +306,7 @@ class WizardSummary extends React.Component<Props> {
                   {optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}
                 </OptionLabel>
                 <OptionValue data-test-id={`wSummary-optionValue-${optionName}`}>{
-                  // $FlowIssue
-                  this.renderOptionValue(data.options[optionName])
+                  this.renderOptionValue(data.destOptions && data.destOptions[optionName])
                 }</OptionValue>
               </Option>
             )
@@ -432,7 +460,8 @@ class WizardSummary extends React.Component<Props> {
           {this.renderNetworksSection()}
         </Column>
         <Column>
-          {this.renderOptionsSection()}
+          {this.renderSourceOptionsSection()}
+          {this.renderTargetOptionsSection()}
           {this.renderStorageSection('backend')}
           {this.renderStorageSection('disk')}
           {this.renderScheduleSection()}

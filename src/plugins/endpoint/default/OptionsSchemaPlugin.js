@@ -94,13 +94,14 @@ export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }) => {
   let env = {}
   if (options) {
     migrationImageOsTypes.forEach(os => {
-      if (options && options[`${os}_os_image`]) {
-        if (!env.migr_image_map) {
-          env.migr_image_map = {}
-        }
-
-        env.migr_image_map[os] = options[`${os}_os_image`]
+      if (!options || !options[`${os}_os_image`]) {
+        return
       }
+      if (!env.migr_image_map) {
+        env.migr_image_map = {}
+      }
+
+      env.migr_image_map[os] = options[`${os}_os_image`]
     })
   }
 

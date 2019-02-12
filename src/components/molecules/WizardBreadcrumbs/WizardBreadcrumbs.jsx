@@ -45,13 +45,15 @@ type Props = {
   selected: { id: string },
   wizardType: 'migration' | 'replica',
   destinationProvider: ?string,
+  sourceProvider: ?string,
 }
 @observer
 class WizardBreadcrumbs extends React.Component<Props> {
   render() {
     let pages = wizardConfig.pages
       .filter(p => !p.excludeFrom || p.excludeFrom !== this.props.wizardType)
-      .filter(p => !p.filter || (this.props.destinationProvider && p.filter(this.props.destinationProvider)))
+      .filter(p => !p.targetFilter || (this.props.destinationProvider && p.targetFilter(this.props.destinationProvider)))
+      .filter(p => !p.sourceFilter || (this.props.sourceProvider && p.sourceFilter(this.props.sourceProvider)))
 
     return (
       <Wrapper>

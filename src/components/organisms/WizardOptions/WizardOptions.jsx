@@ -80,7 +80,7 @@ type Props = {
   onChange: (field: Field, value: any) => void,
   useAdvancedOptions?: boolean,
   hasStorageMap: boolean,
-  storageBackends: StorageBackend[],
+  storageBackends?: StorageBackend[],
   onAdvancedOptionsToggle?: (showAdvanced: boolean) => void,
   wizardType: string,
   loading?: boolean,
@@ -115,9 +115,11 @@ class WizardOptions extends React.Component<Props> {
   }
 
   getDefaultFieldsSchema() {
-    let fieldsSchema = [
-      { name: 'description', type: 'string' },
-    ]
+    let fieldsSchema = []
+
+    if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica') {
+      fieldsSchema.push({ name: 'description', type: 'string' })
+    }
 
     if (this.props.wizardType === 'migration') {
       fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'strict-boolean', default: false })
@@ -142,7 +144,7 @@ class WizardOptions extends React.Component<Props> {
       }
     }
 
-    if (this.props.hasStorageMap && this.props.useAdvancedOptions && this.props.storageBackends.length > 0) {
+    if (this.props.hasStorageMap && this.props.useAdvancedOptions && this.props.storageBackends && this.props.storageBackends.length > 0) {
       fieldsSchema.push({ name: 'default_storage', type: 'string', enum: this.props.storageBackends.map(s => s.name) })
     }
 

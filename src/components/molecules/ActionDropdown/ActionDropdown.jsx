@@ -66,6 +66,7 @@ type Props = {
   label: string,
   actions: Action[],
   style: any,
+  'data-test-id'?: string,
 }
 
 type State = {
@@ -190,7 +191,7 @@ class ActionDropdown extends React.Component<Props, State> {
 
   render() {
     return (
-      <Wrapper style={this.props.style}>
+      <Wrapper style={this.props.style} data-test-id={this.props['data-test-id']}>
         <DropdownButton
           secondary
           centered

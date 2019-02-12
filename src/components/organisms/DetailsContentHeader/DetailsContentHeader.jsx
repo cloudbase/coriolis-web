@@ -146,20 +146,9 @@ class DetailsContentHeader extends React.Component<Props> {
       <ActionDropdown
         actions={this.props.dropdownActions}
         style={{ marginLeft: '32px' }}
+        data-test-id="dcHeader-actionButton"
       />
     )
-
-    // return (
-    //   <Button
-    //     secondary={!this.props.alertButton}
-    //     alert={this.props.alertButton}
-    //     hollow={this.props.hollowButton}
-    //     onClick={this.props.onActionButtonClick}
-    //     disabled={this.props.actionButtonDisabled}
-    //     style={{ marginLeft: '32px' }}
-    //     data-test-id="dcHeader-actionButton"
-    //   >{this.props.buttonLabel}</Button>
-    // )
   }
 
   renderDescription() {

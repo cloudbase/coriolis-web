@@ -19,11 +19,12 @@ import type { NetworkMap } from './Network'
 import type { Endpoint } from './Endpoint'
 
 export type WizardData = {
-  options?: ?{ [string]: mixed },
+  destOptions?: ?{ [string]: mixed },
+  sourceOptions?: ?{ [string]: mixed },
   selectedInstances?: ?Instance[],
   networks?: ?NetworkMap[],
   source?: ?Endpoint,
-  target?: Endpoint,
+  target?: ?Endpoint,
 }
 
 export type WizardPage = {
