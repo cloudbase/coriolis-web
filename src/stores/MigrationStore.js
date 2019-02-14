@@ -21,6 +21,7 @@ import type { Field } from '../types/Field'
 import type { Endpoint } from '../types/Endpoint'
 import notificationStore from '../stores/NotificationStore'
 import MigrationSource from '../sources/MigrationSource'
+import DomUtils from '../utils/DomUtils'
 
 class MigrationStore {
   @observable migrations: MainItem[] = []
@@ -103,7 +104,7 @@ class MigrationStore {
         action: {
           label: 'View Migration Status',
           callback: () => {
-            window.location.href = `/#/migration/tasks/${migration.id}`
+            window.location.href = `/${DomUtils.urlHashPrefix}migration/tasks/${migration.id}`
           },
         },
       })

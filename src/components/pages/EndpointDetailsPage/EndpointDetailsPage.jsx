@@ -98,16 +98,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     switch (item.value) {
       case 'signout':
         userStore.logout()
-        return
-      case 'profile':
-        window.location.href = '/#/profile'
         break
       default:
     }
-  }
-
-  handleBackButtonClick() {
-    window.location.href = '/#/endpoints'
   }
 
   handleDeleteEndpointClick() {
@@ -126,7 +119,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   handleDeleteEndpointConfirmation() {
     this.setState({ showDeleteEndpointConfirmation: false })
-    window.location.href = '/#/endpoints'
+    this.props.history.push('/endpoints')
     let endpoint = this.getEndpoint()
     if (endpoint) {
       endpointStore.delete(endpoint)
@@ -244,7 +237,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           />}
           contentHeaderComponent={<DetailsContentHeader
             item={endpoint}
-            onBackButonClick={() => { this.handleBackButtonClick() }}
+            backLink="/endpoints"
+            onCancelClick={() => { }}
             dropdownActions={dropdownActions}
             typeImage={endpointImage}
             description={endpoint ? endpoint.description : ''}

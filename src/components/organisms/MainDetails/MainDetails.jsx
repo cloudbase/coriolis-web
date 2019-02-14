@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
@@ -74,7 +75,7 @@ const Value = styled.div`
   margin-top: 3px;
   ${props => props.capitalize ? 'text-transform: capitalize;' : ''}
 `
-const ValueLink = styled.a`
+const ValueLink = styled(Link)`
   display: flex;
   margin-top: 3px;
   color: ${Palette.primary};
@@ -215,7 +216,7 @@ class MainDetails extends React.Component<Props> {
     let endpoint = type === 'source' ? this.getSourceEndpoint() : this.getDestinationEndpoint()
 
     if (endpoint) {
-      return <ValueLink data-test-id={`mainDetails-name-${type}`} href={`/#/endpoint/${endpoint.id}`}>{endpoint.name}</ValueLink>
+      return <ValueLink data-test-id={`mainDetails-name-${type}`} to={`/endpoint/${endpoint.id}`}>{endpoint.name}</ValueLink>
     }
 
     return endpointIsMissing

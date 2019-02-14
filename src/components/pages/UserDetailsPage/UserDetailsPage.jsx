@@ -36,7 +36,8 @@ import userImage from './images/user.svg'
 const Wrapper = styled.div``
 
 type Props = {
-  match: { params: { id: string } }
+  match: { params: { id: string } },
+  history: any,
 }
 type State = {
   showUserModal: boolean,
@@ -77,17 +78,13 @@ class UserDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  handleBackButtonClick() {
-    window.location.href = '/#/users'
-  }
-
   handleEditClick() {
     this.setState({ showUserModal: true })
   }
 
   handleDeleteConfirmation() {
     userStore.delete(this.props.match.params.id).then(() => {
-      window.location.href = '/#/users'
+      this.props.history.push('/users')
     })
   }
 
@@ -139,7 +136,7 @@ class UserDetailsPage extends React.Component<Props, State> {
           />}
           contentHeaderComponent={<DetailsContentHeader
             item={{ ...userStore.userDetails, description: '' }}
-            onBackButonClick={() => { this.handleBackButtonClick() }}
+            backLink="/users"
             typeImage={userImage}
             dropdownActions={dropdownActions}
             description={''}

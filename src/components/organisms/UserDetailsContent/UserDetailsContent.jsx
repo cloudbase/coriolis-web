@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
@@ -39,7 +40,7 @@ const Info = styled.div`
   margin-top: 32px;
   margin-left: -32px;
 `
-const Link = styled.a`
+const LinkStyled = styled(Link)`
   color: ${Palette.primary};
   text-decoration: none;
 `
@@ -127,9 +128,9 @@ class UserDetailsContent extends React.Component<Props> {
     return projects.map((project, i) => (
       <span key={project.id}>
         {project.label ? (
-          <Link data-test-id={`${testName}-project-${project.id}`} href={`#/project/${project.id}`}>
+          <LinkStyled data-test-id={`${testName}-project-${project.id}`} to={`/project/${project.id}`}>
             {project.label}
-          </Link>
+          </LinkStyled>
         ) : project.id}
         {i < projects.length - 1 ? ', ' : ''}
       </span>

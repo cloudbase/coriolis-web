@@ -20,6 +20,7 @@ import cookie from 'js-cookie'
 
 import logger from './ApiLogger'
 import notificationStore from '../stores/NotificationStore'
+import DomUtils from '../utils/DomUtils'
 
 type Cancelable = {
   requestId: string,
@@ -106,7 +107,7 @@ class ApiCaller {
         }
         resolve(response)
       }).catch(error => {
-        const loginUrl = '#/'
+        const loginUrl = `${DomUtils.urlHashPrefix}`
 
         if (error.response) {
           // The request was made and the server responded with a status code

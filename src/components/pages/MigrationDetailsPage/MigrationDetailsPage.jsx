@@ -40,6 +40,7 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
+  history: any,
 }
 type State = {
   showDeleteMigrationConfirmation: boolean,
@@ -101,16 +102,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     switch (item.value) {
       case 'signout':
         userStore.logout()
-        return
-      case 'profile':
-        window.location.href = '/#/profile'
         break
       default:
     }
-  }
-
-  handleBackButtonClick() {
-    window.location.href = '/#/migrations'
   }
 
   handleDeleteMigrationClick() {
@@ -119,7 +113,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
   handleDeleteMigrationConfirmation() {
     this.setState({ showDeleteMigrationConfirmation: false })
-    window.location.href = '/#/migrations'
+    this.props.history.push('/migrations')
     if (migrationStore.migrationDetails) {
       migrationStore.delete(migrationStore.migrationDetails.id)
     }
@@ -176,6 +170,10 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     })
   }
 
+  handleUpdateComplete(redirectTo: string) {
+    this.props.history.push(redirectTo)
+  }
+
   renderEditModal() {
     let sourceEndpoint = endpointStore.endpoints
       .find(e => migrationStore.migrationDetails && e.id === migrationStore.migrationDetails.origin_endpoint_id)
@@ -191,6 +189,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
         type="migration"
         isOpen
         onRequestClose={() => { this.closeEditModal() }}
+        onUpdateComplete={url => { this.handleUpdateComplete(url) }}
         sourceEndpoint={sourceEndpoint}
         replica={migrationStore.migrationDetails}
         destinationEndpoint={destinationEndpoint}
@@ -225,7 +224,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           />}
           contentHeaderComponent={<DetailsContentHeader
             item={migrationStore.migrationDetails}
-            onBackButonClick={() => { this.handleBackButtonClick() }}
+            backLink="/migrations"
             typeImage={migrationImage}
             dropdownActions={dropdownActions}
             primaryInfoPill

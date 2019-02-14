@@ -17,13 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import 'react-hot-loader/patch'
 import React from 'react'
 import { render } from 'react-dom'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter, HashRouter } from 'react-router-dom'
 
 import { basename } from './config'
 import App from './components/App.jsx'
 
 const renderApp = () => React.createElement(
-  HashRouter,
+  window.env.ENV === 'development' ? HashRouter : BrowserRouter,
   { basename: basename || '' },
   React.createElement(App, null)
 )

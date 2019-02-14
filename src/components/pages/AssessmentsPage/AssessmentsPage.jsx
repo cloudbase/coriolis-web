@@ -37,7 +37,7 @@ import { requestPollTimeout } from '../../../config'
 
 const Wrapper = styled.div``
 
-type Props = {}
+type Props = { history: any }
 type State = { modalIsOpen: boolean }
 @observer
 class AssessmentsPage extends React.Component<Props, State> {
@@ -141,7 +141,7 @@ class AssessmentsPage extends React.Component<Props, State> {
 
     let info = { endpoint, connectionInfo, resourceGroupName, projectName, groupName, assessmentName }
 
-    window.location.href = `/#/assessment/${encodeURIComponent(btoa(JSON.stringify({ ...info })))}`
+    this.props.history.push(`/assessment/${encodeURIComponent(btoa(JSON.stringify({ ...info })))}`)
   }
 
   handleProjectChange() {
@@ -263,10 +263,7 @@ class AssessmentsPage extends React.Component<Props, State> {
               filterItems={this.getFilterItems()}
               selectionLabel="assessments"
               loading={this.areResourceGroupsLoading() || azureStore.loadingAssessments}
-              items={
-                // $FlowIgnore
-                azureStore.assessments
-              }
+              items={azureStore.assessments}
               onItemClick={item => {
                 let itemAny: any = item
                 let assessment: Assessment = itemAny

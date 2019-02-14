@@ -49,6 +49,7 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
+  history: any,
 }
 type State = {
   showOptionsModal: boolean,
@@ -139,16 +140,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     switch (item.value) {
       case 'signout':
         userStore.logout()
-        return
-      case 'profile':
-        window.location.href = '/#/profile'
         break
       default:
     }
-  }
-
-  handleBackButtonClick() {
-    window.location.href = '/#/replicas'
   }
 
   handleExecuteClick() {
@@ -191,7 +185,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   handleDeleteReplicaConfirmation() {
     this.setState({ showDeleteReplicaConfirmation: false })
-    window.location.href = '/#/replicas'
+    this.props.history.push('/replicas')
     replicaStore.delete(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '')
   }
 
@@ -202,7 +196,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   handleDeleteReplicaDisksConfirmation() {
     this.setState({ showDeleteReplicaDisksConfirmation: false })
     replicaStore.deleteDisks(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '')
-    window.location.href = `/#/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`
+    this.props.history.push(`/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`)
   }
 
   handleCloseDeleteReplicaDisksConfirmation() {
@@ -274,7 +268,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   executeReplica(fields: Field[]) {
     replicaStore.execute(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', fields)
     this.handleCloseOptionsModal()
-    window.location.href = `/#/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`
+    this.props.history.push(`/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`)
   }
 
   pollData(showLoading: boolean) {
@@ -297,6 +291,15 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     })
   }
 
+  handleUpdateComplete(redirectTo: string) {
+    if (!replicaStore.replicaDetails) {
+      return
+    }
+
+    this.props.history.push(redirectTo)
+    this.closeEditModal()
+  }
+
   renderEditReplica() {
     let sourceEndpoint = endpointStore.endpoints
       .find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.origin_endpoint_id)
@@ -310,7 +313,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     return (
       <EditReplica
         isOpen
+        type="replica"
         sourceEndpoint={sourceEndpoint}
+        onUpdateComplete={url => { this.handleUpdateComplete(url) }}
         onRequestClose={() => { this.closeEditModal() }}
         replica={replicaStore.replicaDetails}
         destinationEndpoint={destinationEndpoint}
@@ -356,8 +361,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           />}
           contentHeaderComponent={<DetailsContentHeader
             item={replicaStore.replicaDetails}
-            onBackButonClick={() => { this.handleBackButtonClick() }}
             dropdownActions={dropdownActions}
+            backLink="/replicas"
             typeImage={replicaImage}
             alertInfoPill
           />}
