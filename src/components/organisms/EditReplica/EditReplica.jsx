@@ -38,7 +38,7 @@ import type { Field } from '../../../types/Field'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Network, NetworkMap } from '../../../types/Network'
 
-import { storageProviders } from '../../../config'
+// import { storageProviders } from '../../../config'
 import StyleProps from '../../styleUtils/StyleProps'
 
 const PanelContent = styled.div`
@@ -73,6 +73,7 @@ type Props = {
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
   networks: Network[],
+  networksLoading: boolean,
 }
 type State = {
   selectedPanel: string,
@@ -107,7 +108,8 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   hasStorageMap() {
-    return Boolean(storageProviders.find(p => p === this.props.destinationEndpoint.type))
+    return false
+    // return Boolean(storageProviders.find(p => p === this.props.destinationEndpoint.type))
   }
 
   isUpdateDisabled() {
@@ -336,7 +338,7 @@ class EditReplica extends React.Component<Props, State> {
         instancesDetails={this.props.instancesDetails}
         loadingInstancesDetails={this.props.instancesDetailsLoading}
         networks={this.props.networks}
-        loading={false}
+        loading={this.props.networksLoading}
         onChange={(nic, network) => { this.handleNetworkChange(nic, network) }}
         selectedNetworks={this.getSelectedNetworks()}
       />

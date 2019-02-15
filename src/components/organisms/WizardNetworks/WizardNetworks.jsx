@@ -115,7 +115,7 @@ type Props = {
 @observer
 class WizardNetworks extends React.Component<Props> {
   isLoading() {
-    return this.props.loadingInstancesDetails || this.props.loading
+    return this.props.loadingInstancesDetails
   }
 
   renderLoading() {
@@ -187,7 +187,7 @@ class WizardNetworks extends React.Component<Props> {
                 large
                 centered
                 noSelectionMessage="Select ..."
-                noItemsMessage="No networks found"
+                noItemsMessage={this.props.loading ? 'Loading ...' : 'No networks found'}
                 selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
                 items={this.props.networks}
                 labelField="name"

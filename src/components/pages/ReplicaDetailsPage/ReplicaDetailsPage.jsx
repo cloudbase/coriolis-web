@@ -104,7 +104,6 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         return
       }
       networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
-        useLocalStorage: true,
         quietError: true,
       })
       instanceStore.loadInstancesDetails(
@@ -315,6 +314,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         instancesDetails={instanceStore.instancesDetails}
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
         networks={networkStore.networks}
+        networksLoading={networkStore.loading}
       />
     )
   }
