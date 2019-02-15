@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styled from 'styled-components'
@@ -29,20 +31,25 @@ const Wrapper = styled.div`
   }
 `
 const wrap = (endpoint, height, disabled = false) => <EndpointLogos endpoint={endpoint} height={height} disabled={disabled} />
+let providers = [
+  'aws',
+  'azure',
+  'opc',
+  'openstack',
+  'oracle_vm',
+  'oci',
+  'vmware_vsphere',
+  'Generic Cloud',
+  'hyper-v',
+  'scvmm',
+]
 
 storiesOf('EndpointLogos', module)
   .add('32px', () => {
     let height = 32
     return (
       <Wrapper>
-        {wrap('aws', height)}
-        {wrap('azure', height)}
-        {wrap('opc', height)}
-        {wrap('openstack', height)}
-        {wrap('oracle_vm', height)}
-        {wrap('oci', height)}
-        {wrap('vmware_vsphere', height)}
-        {wrap('Generic Cloud', height)}
+        {providers.map(p => wrap(p, height))}
       </Wrapper>
     )
   })
@@ -50,14 +57,7 @@ storiesOf('EndpointLogos', module)
     let height = 42
     return (
       <Wrapper>
-        {wrap('aws', height)}
-        {wrap('azure', height)}
-        {wrap('oci', height)}
-        {wrap('opc', height)}
-        {wrap('openstack', height)}
-        {wrap('oracle_vm', height)}
-        {wrap('vmware_vsphere', height)}
-        {wrap('Generic Cloud', height)}
+        {providers.map(p => wrap(p, height))}
       </Wrapper>
     )
   })
@@ -65,14 +65,7 @@ storiesOf('EndpointLogos', module)
     let height = 64
     return (
       <Wrapper>
-        {wrap('aws', height)}
-        {wrap('azure', height)}
-        {wrap('oci', height)}
-        {wrap('opc', height)}
-        {wrap('openstack', height)}
-        {wrap('oracle_vm', height)}
-        {wrap('vmware_vsphere', height)}
-        {wrap('Generic Cloud', height)}
+        {providers.map(p => wrap(p, height))}
       </Wrapper>
     )
   })
@@ -80,14 +73,7 @@ storiesOf('EndpointLogos', module)
     let height = 128
     return (
       <Wrapper>
-        {wrap('aws', height)}
-        {wrap('azure', height)}
-        {wrap('oci', height)}
-        {wrap('opc', height)}
-        {wrap('openstack', height)}
-        {wrap('oracle_vm', height)}
-        {wrap('vmware_vsphere', height)}
-        {wrap('Generic Cloud', height)}
+        {providers.map(p => wrap(p, height))}
       </Wrapper>
     )
   })
@@ -95,14 +81,7 @@ storiesOf('EndpointLogos', module)
     let height = 128
     return (
       <Wrapper>
-        {wrap('aws', height, true)}
-        {wrap('azure', height, true)}
-        {wrap('oci', height, true)}
-        {wrap('opc', height, true)}
-        {wrap('openstack', height, true)}
-        {wrap('oracle_vm', height, true)}
-        {wrap('vmware_vsphere', height, true)}
-        {wrap('Generic Cloud', height, true)}
+        {providers.map(p => wrap(p, height, true))}
       </Wrapper>
     )
   })

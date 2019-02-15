@@ -27,6 +27,8 @@ import openstack32Image from './images/openstack-32.svg'
 import oraclevm32Image from './images/oraclevm-32.svg'
 import vmware32Image from './images/vmware-32.svg'
 import oci32Image from './images/oci-32.svg'
+import hyperv32Image from './images/hyperv-32.svg'
+import scvmm32Image from './images/scvmm-32.svg'
 
 import aws42Image from './images/aws-42.svg'
 import azure42Image from './images/azure-42.svg'
@@ -35,6 +37,8 @@ import openstack42Image from './images/openstack-42.svg'
 import oraclevm42Image from './images/oraclevm-42.svg'
 import vmware42Image from './images/vmware-42.svg'
 import oci42Image from './images/oci-42.svg'
+import hyperv42Image from './images/hyperv-42.svg'
+import scvmm42Image from './images/scvmm-42.svg'
 
 import aws64Image from './images/aws-64.svg'
 import azure64Image from './images/azure-64.svg'
@@ -43,6 +47,8 @@ import openstack64Image from './images/openstack-64.svg'
 import oraclevm64Image from './images/oraclevm-64.svg'
 import vmware64Image from './images/vmware-64.svg'
 import oci64Image from './images/oci-64.svg'
+import hyperv64Image from './images/hyperv-64.svg'
+import scvmm64Image from './images/scvmm-64.svg'
 
 import aws128Image from './images/aws-128.svg'
 import azure128Image from './images/azure-128.svg'
@@ -51,6 +57,8 @@ import openstack128Image from './images/openstack-128.svg'
 import oraclevm128Image from './images/oraclevm-128.svg'
 import vmware128Image from './images/vmware-128.svg'
 import oci128Image from './images/oci-128.svg'
+import hyperv128Image from './images/hyperv-128.svg'
+import scvmm128Image from './images/scvmm-128.svg'
 
 import aws128DisabledImage from './images/aws-128-disabled.svg'
 import azure128DisabledImage from './images/azure-128-disabled.svg'
@@ -59,6 +67,8 @@ import openstack128DisabledImage from './images/openstack-128-disabled.svg'
 import oraclevm128DisabledImage from './images/oraclevm-128-disabled.svg'
 import vmware128DisabledImage from './images/vmware-128-disabled.svg'
 import oci128DisabledImage from './images/oci-128-disabled.svg'
+import hyperv128DisabledImage from './images/hyperv-128-disabled.svg'
+import scvmm128DisabledImage from './images/scvmm-128-disabled.svg'
 
 const endpointImages = {
   azure: [
@@ -109,6 +119,20 @@ const endpointImages = {
     { h: 64, image: oci64Image },
     { h: 128, image: oci128Image },
     { h: 128, image: oci128DisabledImage, disabled: true },
+  ],
+  'hyper-v': [
+    { h: 32, image: hyperv32Image },
+    { h: 42, image: hyperv42Image },
+    { h: 64, image: hyperv64Image },
+    { h: 128, image: hyperv128Image },
+    { h: 128, image: hyperv128DisabledImage, disabled: true },
+  ],
+  scvmm: [
+    { h: 32, image: scvmm32Image },
+    { h: 42, image: scvmm42Image },
+    { h: 64, image: scvmm64Image },
+    { h: 128, image: scvmm128Image },
+    { h: 128, image: scvmm128DisabledImage, disabled: true },
   ],
 }
 const Wrapper = styled.div``

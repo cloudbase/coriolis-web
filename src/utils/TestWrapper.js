@@ -17,11 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { ShallowWrapper } from 'enzyme'
 
 export default class TestWrapper {
-  shallow: ShallowWrapper
+  shallow: ShallowWrapper<any>
   baseId: ?string
   length: number
 
-  constructor(wrapper: ShallowWrapper, baseId?: ?string) {
+  constructor(wrapper: ShallowWrapper<any>, baseId?: ?string) {
     this.shallow = wrapper
     this.baseId = baseId
   }
