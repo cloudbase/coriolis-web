@@ -44,12 +44,14 @@ const hoverBackgroundColor = (props) => {
     return Palette.grayscale[7]
   }
 
+  if (props.secondary) {
+    return Palette.grayscale[8]
+  }
+
   if (props.hoverPrimary) {
     return Palette.primary
   }
-  if (props.secondary) {
-    return Palette.grayscale[3]
-  }
+
   if (props.alert) {
     return Palette.alert
   }

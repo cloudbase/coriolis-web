@@ -30,20 +30,30 @@ import type { StorageBackend } from '../../../types/Endpoint'
 
 import { executionOptions } from '../../../config'
 
-const Wrapper = styled.div``
-const Options = styled.div``
-const Fields = styled.div`
-  margin-top: 46px;
+const Wrapper = styled.div`
   display: flex;
+  min-height: 0;
+  flex-direction: column;
+`
+const Options = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+`
+const Fields = styled.div`
+  display: flex;
+  overflow: auto;
+  justify-content: space-between;
 `
 const OneColumn = styled.div``
 const Column = styled.div`
   ${props => props.left ? 'margin-right: 160px;' : ''}
+  margin-top: -16px;
 `
 const WizardOptionsFieldStyled = styled(WizardOptionsField)`
-  width: ${StyleProps.inputSizes.wizard.width}px;
+  width: ${props => props.width || StyleProps.inputSizes.wizard.width}px;
   justify-content: space-between;
-  margin-bottom: 39px;
+  margin-top: 16px;
 `
 const LoadingWrapper = styled.div`
   margin-top: 32px;
@@ -56,17 +66,27 @@ const LoadingText = styled.div`
   font-size: 18px;
 `
 
+export const shouldRenderField = (field: Field) => {
+  return (field.type !== 'array' || (field.enum && field.enum.length && field.enum.length > 0)) &&
+    (field.type !== 'integer' || (field.minimum && field.maximum)) &&
+    (field.type !== 'object' || field.properties)
+}
+
 type Props = {
   fields: Field[],
-  selectedInstances: ?Instance[],
-  data: ?{ [string]: mixed },
+  selectedInstances?: ?Instance[],
+  data?: ?{ [string]: mixed },
+  getFieldValue?: (fieldName: string, defaultValue: any) => any,
   onChange: (field: Field, value: any) => void,
-  useAdvancedOptions: boolean,
+  useAdvancedOptions?: boolean,
   hasStorageMap: boolean,
-  storageBackends: StorageBackend[],
-  onAdvancedOptionsToggle: (showAdvanced: boolean) => void,
+  storageBackends?: StorageBackend[],
+  onAdvancedOptionsToggle?: (showAdvanced: boolean) => void,
   wizardType: string,
-  loading: boolean,
+  loading?: boolean,
+  columnStyle?: { [string]: mixed },
+  fieldWidth?: number,
+  onScrollableRef?: (ref: HTMLElement) => void,
 }
 @observer
 class WizardOptions extends React.Component<Props> {
@@ -83,6 +103,10 @@ class WizardOptions extends React.Component<Props> {
   }
 
   getFieldValue(fieldName: string, defaultValue: any) {
+    if (this.props.getFieldValue) {
+      return this.props.getFieldValue(fieldName, defaultValue)
+    }
+
     if (!this.props.data || this.props.data[fieldName] === undefined) {
       return defaultValue
     }
@@ -91,9 +115,11 @@ class WizardOptions extends React.Component<Props> {
   }
 
   getDefaultFieldsSchema() {
-    let fieldsSchema = [
-      { name: 'description', type: 'string' },
-    ]
+    let fieldsSchema = []
+
+    if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica') {
+      fieldsSchema.push({ name: 'description', type: 'string' })
+    }
 
     if (this.props.wizardType === 'migration') {
       fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'strict-boolean', default: false })
@@ -118,7 +144,7 @@ class WizardOptions extends React.Component<Props> {
       }
     }
 
-    if (this.props.hasStorageMap && this.props.useAdvancedOptions && this.props.storageBackends.length > 0) {
+    if (this.props.hasStorageMap && this.props.useAdvancedOptions && this.props.storageBackends && this.props.storageBackends.length > 0) {
       fieldsSchema.push({ name: 'default_storage', type: 'string', enum: this.props.storageBackends.map(s => s.name) })
     }
 
@@ -128,12 +154,6 @@ class WizardOptions extends React.Component<Props> {
   @autobind
   handleResize() {
     this.setState({})
-  }
-
-  shouldRenderField(field: Field) {
-    return (field.type !== 'array' || (field.enum && field.enum.length && field.enum.length > 0)) &&
-      (field.type !== 'integer' || (field.minimum && field.maximum)) &&
-      (field.type !== 'object' || field.properties)
   }
 
   renderOptionsField(field: Field) {
@@ -158,6 +178,7 @@ class WizardOptions extends React.Component<Props> {
         enum={field.enum}
         required={field.required}
         data-test-id={`wOptions-field-${field.name}`}
+        width={this.props.fieldWidth}
         {...additionalProps}
       />
     )
@@ -173,7 +194,7 @@ class WizardOptions extends React.Component<Props> {
     }
 
     let executeNowColumn
-    let fields = fieldsSchema.filter(f => this.shouldRenderField(f)).map((field, i) => {
+    let fields = fieldsSchema.filter(f => shouldRenderField(f)).map((field, i) => {
       let column = i % 2 === 0 ? 'left' : 'right'
       if (field.name === 'execute_now') {
         executeNowColumn = column
@@ -200,8 +221,8 @@ class WizardOptions extends React.Component<Props> {
     }
 
     return (
-      <Fields>
-        <Column left>
+      <Fields innerRef={this.props.onScrollableRef}>
+        <Column left style={this.props.columnStyle}>
           {fields.map(f => f.column === 'left' && f.component)}
         </Column>
         <Column right>
@@ -230,13 +251,15 @@ class WizardOptions extends React.Component<Props> {
       return null
     }
 
+    let onAdvancedOptionsToggle = this.props.onAdvancedOptionsToggle
     return (
       <Options>
-        <ToggleButtonBar
+        {onAdvancedOptionsToggle ? <ToggleButtonBar
+          style={{ marginBottom: '46px' }}
           items={[{ label: 'Simple', value: 'simple' }, { label: 'Advanced', value: 'advanced' }]}
           selectedValue={this.props.useAdvancedOptions ? 'advanced' : 'simple'}
-          onChange={item => { this.props.onAdvancedOptionsToggle(item.value === 'advanced') }}
-        />
+          onChange={item => { onAdvancedOptionsToggle(item.value === 'advanced') }}
+        /> : null}
         {this.renderOptionsFields()}
       </Options>
     )

@@ -191,7 +191,6 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           contentHeaderComponent={<DetailsContentHeader
             item={(endpoint: any)}
             onBackButonClick={() => { this.handleBackButtonClick() }}
-            onCancelClick={() => { }}
             typeImage={endpointImage}
             description={endpoint ? endpoint.description : ''}
           />}

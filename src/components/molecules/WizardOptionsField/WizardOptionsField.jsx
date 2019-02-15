@@ -46,10 +46,11 @@ const Wrapper = styled.div`
 `
 const Label = styled.div`
   font-weight: ${StyleProps.fontWeights.medium};
+  margin-bottom: 8px;
   ${props => getDirection(props) === 'column' ? 'margin-bottom: 8px;' : ''}
 `
 const LabelText = styled.span`
-  margin-right: 24px;
+  margin-right: ${props => props.noMargin ? 0 : 24}px;
 `
 const Asterisk = styled.div`
   ${StyleProps.exactSize('16px')}
@@ -71,6 +72,7 @@ type Props = {
   width?: number,
   skipNullValue?: boolean,
   'data-test-id'?: string,
+  style?: { [string]: mixed },
 }
 @observer
 class WizardOptionsField extends React.Component<Props> {
@@ -79,6 +81,7 @@ class WizardOptionsField extends React.Component<Props> {
       <Switch
         width="112px"
         justifyContent="flex-end"
+        height={16}
         triState={propss.triState}
         checked={this.props.value}
         onChange={checked => { this.props.onChange(checked) }}
@@ -92,7 +95,7 @@ class WizardOptionsField extends React.Component<Props> {
   renderTextInput() {
     return (
       <TextInput
-        width={`${StyleProps.inputSizes.wizard.width}px`}
+        width={`${this.props.width || StyleProps.inputSizes.wizard.width}px`}
         value={this.props.value}
         onChange={e => { this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
@@ -219,7 +222,7 @@ class WizardOptionsField extends React.Component<Props> {
     let description = LabelDictionary.getDescription(this.props.name)
     return (
       <Label>
-        <LabelText data-test-id="wOptionsField-label">
+        <LabelText data-test-id="wOptionsField-label" noMargin={!description && !this.props.required}>
           {LabelDictionary.get(this.props.name)}
         </LabelText>
         {description ? <InfoIcon text={description} marginLeft={-20} /> : null}
@@ -240,6 +243,7 @@ class WizardOptionsField extends React.Component<Props> {
         data-test-id={this.props['data-test-id'] || 'wOptionsField-wrapper'}
         type={this.props.type}
         className={this.props.className}
+        style={this.props.style}
       >
         {this.renderLabel()}
         {field}

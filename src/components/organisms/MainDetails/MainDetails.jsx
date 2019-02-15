@@ -162,25 +162,26 @@ class MainDetails extends React.Component<Props> {
   }
 
   getNetworks() {
-    if (!this.props.item || !this.props.item.destination_environment || !this.props.item.destination_environment.network_map) {
+    let networkMap = this.props.item && this.props.item.network_map
+    if (!networkMap) {
       return null
     }
     let networks = []
-    Object.keys(this.props.item.destination_environment.network_map).forEach(key => {
+    Object.keys(networkMap).forEach(key => {
       let newItem
-      if (this.props.item && typeof this.props.item.destination_environment.network_map[key] === 'object') {
+      if (typeof networkMap[key] === 'string') {
         newItem = [
-          this.props.item.destination_environment.network_map[key].source_network,
+          key,
           this.getConnectedVms(key),
-          // $FlowIssue
-          this.props.item.destination_environment.network_map[key].destination_network,
+          networkMap[key],
           'Existing network',
         ]
       } else {
         newItem = [
-          key,
+          networkMap[key].source_network,
           this.getConnectedVms(key),
-          this.props.item ? this.props.item.destination_environment.network_map[key] : '-',
+          // $FlowIssue
+          networkMap[key].destination_network,
           'Existing network',
         ]
       }
@@ -262,10 +263,7 @@ class MainDetails extends React.Component<Props> {
 
     return (
       <PropertiesTable>
-        {properties.map(prop => {
-          if (prop == null) {
-            return null
-          }
+        {properties.filter(Boolean).filter(p => p.value != null && p.value !== '').map(prop => {
           return (
             <PropertyRow key={prop.label}>
               <PropertyName>{prop.label}</PropertyName>

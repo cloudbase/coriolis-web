@@ -303,7 +303,6 @@ class EndpointsPage extends React.Component<{}, State> {
               }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={options =>
-                // $FlowIssue
                 (<EndpointListItem
                   {...options}
                   getUsage={endpoint => this.getEndpointUsage(endpoint)}

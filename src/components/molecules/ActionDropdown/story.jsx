@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2017  Cloudbase Solutions SRL
+Copyright (C) 2019  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -14,22 +14,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import type { Instance } from './Instance'
-import type { NetworkMap } from './Network'
-import type { Endpoint } from './Endpoint'
+import React from 'react'
+import { storiesOf } from '@storybook/react'
+import ActionDropdown from '.'
 
-export type WizardData = {
-  destOptions?: ?{ [string]: mixed },
-  sourceOptions?: ?{ [string]: mixed },
-  selectedInstances?: ?Instance[],
-  networks?: ?NetworkMap[],
-  source?: ?Endpoint,
-  target?: ?Endpoint,
-}
+import Palette from '../../styleUtils/Palette'
 
-export type WizardPage = {
-  id: string,
-  title: string,
-  breadcrumb: string,
-  excludeFrom?: 'replica' | 'migration',
-}
+let actions = [{
+  label: 'Execute',
+  color: Palette.primary,
+  action: () => { console.log('execute clicked') },
+  disabled: true,
+}, {
+  label: 'Edit',
+  action: () => { console.log('Edit clicked') },
+}, {
+  label: 'Delete',
+  color: Palette.alert,
+  action: () => { console.log('Delete clicked') },
+}]
+
+storiesOf('ActionDropdown', module)
+  .add('default', () => (
+    <ActionDropdown actions={actions} />
+  ))

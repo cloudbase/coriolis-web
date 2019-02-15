@@ -152,7 +152,7 @@ const widthHeights = [
 ]
 
 type Props = {
-  endpoint?: string,
+  endpoint?: ?string,
   height: number,
   disabled?: boolean,
   'data-test-id'?: string,

@@ -38,7 +38,7 @@ let schedules = [
 ]
 
 let data = {
-  options: {
+  destOptions: {
     description: 'A description',
     field_name: 'Field name value',
   },

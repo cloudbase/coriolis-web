@@ -51,6 +51,11 @@ export const navigationMenu = [
 
 export const requestPollTimeout = 5000
 
+// https://github.com/cloudbase/coriolis/blob/master/coriolis/constants.py
+// PROVIDER_TYPE_IMPORT = 1 // migration target schema
+// PROVIDER_TYPE_EXPORT = 2 // migration source schema
+// PROVIDER_TYPE_REPLICA_IMPORT = 4 // replica target schema
+// PROVIDER_TYPE_REPLICA_EXPORT = 8 // replica source schema
 export const providerTypes = {
   TARGET_MIGRATION: 1,
   SOURCE_MIGRATION: 2,
@@ -81,21 +86,28 @@ export const executionOptions = [
   },
 ]
 
-export const storageProviders = ['openstack']
+export const storageProviders = ['openstack', 'azure']
+export const sourceOptionsProviders = ['aws']
 
 export const wizardConfig = {
   pages: [
     { id: 'type', title: 'New', breadcrumb: 'Type' },
     { id: 'source', title: 'Select your source cloud', breadcrumb: 'Source Cloud' },
-    { id: 'target', title: 'Select your target cloud', breadcrumb: 'Target Cloud' },
+    {
+      id: 'source-options',
+      title: 'Source options',
+      breadcrumb: 'Source Options',
+      sourceFilter: (p: string) => sourceOptionsProviders.find(s => s === p),
+    },
     { id: 'vms', title: 'Select instances', breadcrumb: 'Select VMs' },
-    { id: 'options', title: 'Options', breadcrumb: 'Options' },
+    { id: 'target', title: 'Select your target cloud', breadcrumb: 'Target Cloud' },
+    { id: 'dest-options', title: 'Target options', breadcrumb: 'Target Options' },
     { id: 'networks', title: 'Networks', breadcrumb: 'Networks' },
     {
       id: 'storage',
       title: 'Storage Mapping',
       breadcrumb: 'Storage',
-      filter: (p: string) => storageProviders.find(s => s === p),
+      targetFilter: (p: string) => storageProviders.find(s => s === p),
     },
     { id: 'schedule', title: 'Schedule', breadcrumb: 'Schedule', excludeFrom: 'migration' },
     { id: 'summary', title: 'Summary', breadcrumb: 'Summary' },

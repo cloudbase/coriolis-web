@@ -38,10 +38,10 @@ const LinkButton = styled.div`
   align-items: center;
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
 `
-const List = styled.div`
+export const List = styled.div`
   position: absolute;
   z-index: 1001;
-  padding: 8px;
+  padding: ${props => props.padding != null ? props.padding : 8}px;
   background: ${Palette.grayscale[1]};
   border-radius: 4px;
   border: 1px solid ${Palette.grayscale[0]};
@@ -49,26 +49,28 @@ const List = styled.div`
     min-width: 132px;
     max-width: 160px;
   `}
+  ${props => props.customStyle || ''}
 `
-const Tip = styled.div`
+export const Tip = styled.div`
   position: absolute;
   top: -6px;
   right: 8px;
   width: 10px;
   height: 10px;
   background: ${Palette.grayscale[1]};
-  border-top: 1px solid ${Palette.grayscale[0]};
-  border-left: 1px solid ${Palette.grayscale[0]};
+  border-top: 1px solid ${props => props.borderColor || Palette.grayscale[0]};
+  border-left: 1px solid ${props => props.borderColor || Palette.grayscale[0]};
   border-bottom: 1px solid transparent;
   border-right: 1px solid transparent;
   transform: rotate(45deg);
+  transition: all ${StyleProps.animations.swift};
 `
-const ListItems = styled.div`
+export const ListItems = styled.div`
   max-height: 400px;
   overflow: auto;
   ${props => props.searchable ? 'margin-top: 8px;' : ''}
 `
-const ListItem = styled.div`
+export const ListItem = styled.div`
   padding-top: 13px;
   color: ${props => props.selected ? Palette.primary : Palette.grayscale[4]};
   cursor: pointer;
@@ -79,7 +81,7 @@ const ListItem = styled.div`
     padding-top: 0;
   }
 `
-const ListItemLabel = styled.div`
+export const ListItemLabel = styled.div`
   word-break: break-all;
   word-break: break-word;
   ${props => props.highlighted ? `font-weight: ${StyleProps.fontWeights.medium};` : ''}

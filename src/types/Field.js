@@ -30,4 +30,5 @@ export type Field = {
   properties?: Field[],
   required?: boolean,
   useTextArea?: boolean,
+  readOnly?: boolean,
 }

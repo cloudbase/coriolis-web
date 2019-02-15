@@ -21,7 +21,8 @@ import styled from 'styled-components'
 import type { MainItem } from '../../../types/MainItem'
 import type { Execution } from '../../../types/Execution'
 import StatusPill from '../../atoms/StatusPill'
-import Button from '../../atoms/Button'
+import ActionDropdown from '../../molecules/ActionDropdown'
+import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -82,17 +83,12 @@ const MockButton = styled.div`
 
 type Props = {
   onBackButonClick: () => void,
-  onActionButtonClick?: () => void,
-  onCancelClick?: (?Execution | ?MainItem) => void,
+  dropdownActions?: DropdownAction[],
   typeImage?: string,
-  buttonLabel?: string,
   statusLabel?: string,
   item: ?any,
   alertInfoPill?: boolean,
   primaryInfoPill?: boolean,
-  alertButton?: boolean,
-  hollowButton?: boolean,
-  actionButtonDisabled?: boolean,
 }
 @observer
 class DetailsContentHeader extends React.Component<Props> {
@@ -142,33 +138,16 @@ class DetailsContentHeader extends React.Component<Props> {
   }
 
   renderButton() {
-    if (!this.props.onActionButtonClick && this.getStatus() !== 'RUNNING') {
+    if (!this.props.dropdownActions) {
       return <MockButton />
     }
 
-    if (this.getStatus() === 'RUNNING') {
-      return (
-        <Button
-          secondary
-          onClick={() => {
-            // $FlowIssue
-            if (this.props.onCancelClick) this.props.onCancelClick(this.getLastExecution())
-          }}
-          data-test-id="dcHeader-cancelButton"
-        >Cancel</Button>
-      )
-    }
-
     return (
-      <Button
-        secondary={!this.props.alertButton}
-        alert={this.props.alertButton}
-        hollow={this.props.hollowButton}
-        onClick={this.props.onActionButtonClick}
-        disabled={this.props.actionButtonDisabled}
+      <ActionDropdown
+        actions={this.props.dropdownActions}
         style={{ marginLeft: '32px' }}
         data-test-id="dcHeader-actionButton"
-      >{this.props.buttonLabel}</Button>
+      />
     )
   }
 

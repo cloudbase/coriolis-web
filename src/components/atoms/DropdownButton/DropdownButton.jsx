@@ -27,7 +27,7 @@ const getLabelColor = props => {
     return Palette.grayscale[3]
   }
 
-  if (props.primary) {
+  if (props.primary || props.secondary) {
     return 'white'
   }
 
@@ -49,6 +49,10 @@ const getBackgroundColor = props => {
     return Palette.grayscale[0]
   }
 
+  if (props.secondary) {
+    return Palette.secondaryLight
+  }
+
   if (props.primary) {
     return Palette.primary
   }
@@ -60,7 +64,7 @@ const getArrowColor = props => {
     return Palette.grayscale[3]
   }
 
-  if (props.primary) {
+  if (props.primary || props.secondary) {
     return 'white'
   }
 
@@ -85,8 +89,21 @@ const borderColor = props => {
   if (props.primary) {
     return Palette.primary
   }
+  if (props.secondary) {
+    return Palette.secondaryLight
+  }
   return Palette.grayscale[3]
 }
+const backgroundHover = props => {
+  if (props.disabled || props.embedded) {
+    return ''
+  }
+  if (props.secondary) {
+    return Palette.secondaryLight
+  }
+  return Palette.primary
+}
+
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -108,7 +125,7 @@ const Wrapper = styled.div`
   #dropdown-arrow-image {stroke: ${props => getArrowColor(props)};}
   &:hover {
     #dropdown-arrow-image {stroke: ${props => props.disabled ? '' : props.embedded ? '' : 'white'};}
-    background: ${props => props.disabled ? '' : props.embedded ? '' : Palette.primary};
+    background: ${props => backgroundHover(props)};
   }
 
   &:hover ${Label} {
@@ -130,11 +147,14 @@ type Props = {
   onClick?: (event: Event) => void,
   customRef?: (ref: HTMLElement) => void,
   innerRef?: (ref: HTMLElement) => void,
+  arrowRef?: (ref: HTMLElement) => void,
   className?: string,
   disabled?: boolean,
   'data-test-id'?: string,
   embedded?: boolean,
   highlight?: boolean,
+  secondary?: boolean,
+  centered?: boolean,
 }
 class DropdownButton extends React.Component<Props> {
   render() {
@@ -162,7 +182,7 @@ class DropdownButton extends React.Component<Props> {
         </Label>
         <Arrow
           {...this.props}
-          innerRef={() => { }}
+          innerRef={ref => { if (this.props.arrowRef) this.props.arrowRef(ref) }}
           onClick={() => { }}
           data-test-id=""
           disabled={this.props.disabled}

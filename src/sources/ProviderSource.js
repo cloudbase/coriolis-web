@@ -35,11 +35,21 @@ class ProviderSource {
       .then(response => response.data.providers)
   }
 
-  static loadOptionsSchema(providerName: string, schemaType: string): Promise<Field[]> {
+  static loadDestinationSchema(providerName: string, schemaType: string): Promise<Field[]> {
     let schemaTypeInt = schemaType === 'migration' ? providerTypes.TARGET_MIGRATION : providerTypes.TARGET_REPLICA
 
     return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
       let schema = response.data.schemas.destination_environment_schema
+      let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
+      return fields
+    })
+  }
+
+  static loadSourceSchema(providerName: string, isReplica: boolean): Promise<Field[]> {
+    let schemaTypeInt = isReplica ? providerTypes.SOURCE_REPLICA : providerTypes.SOURCE_MIGRATION
+
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
+      let schema = { oneOf: [response.data.schemas.source_environment_schema] }
       let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
       return fields
     })

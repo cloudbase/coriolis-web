@@ -14,22 +14,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import type { Instance } from './Instance'
-import type { NetworkMap } from './Network'
-import type { Endpoint } from './Endpoint'
+import React from 'react'
+import { storiesOf } from '@storybook/react'
+import Panel from '.'
 
-export type WizardData = {
-  destOptions?: ?{ [string]: mixed },
-  sourceOptions?: ?{ [string]: mixed },
-  selectedInstances?: ?Instance[],
-  networks?: ?NetworkMap[],
-  source?: ?Endpoint,
-  target?: ?Endpoint,
-}
+const navigationItems = [
+  { value: 'dest_options', label: 'Destination Options' },
+  { value: 'network', label: 'Network Mapping' },
+  { value: 'storage', label: 'Storage Mapping' },
+]
 
-export type WizardPage = {
-  id: string,
-  title: string,
-  breadcrumb: string,
-  excludeFrom?: 'replica' | 'migration',
-}
+storiesOf('Panel', module)
+  .add('default', () => (
+    <div style={{ width: '800px', height: '560px' }}>
+      <Panel
+        content={<div>Content</div>}
+        navigationItems={navigationItems}
+        selectedValue="network"
+        onChange={item => console.log(item, 'clicked')}
+      />
+    </div>
+  ))
+

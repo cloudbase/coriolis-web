@@ -34,11 +34,11 @@ const Wrapper = styled.div`
   border-radius: ${StyleProps.borderRadius};
 `
 const Column = styled.div`
-  ${StyleProps.exactWidth('calc(50% - 16px)')}
+  ${StyleProps.exactWidth('calc(50% - 32px)')}
   height: 32px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
-  padding-left: 16px;
   ${props => props.header ? css`
     color: ${Palette.grayscale[4]};
     background: ${Palette.grayscale[7]};

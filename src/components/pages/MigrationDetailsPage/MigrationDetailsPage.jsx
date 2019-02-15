@@ -32,6 +32,7 @@ import instanceStore from '../../../stores/InstanceStore'
 import { requestPollTimeout } from '../../../config'
 
 import migrationImage from './images/migration.svg'
+import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div``
 
@@ -141,7 +142,21 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     migrationStore.getMigration(this.props.match.params.id, false)
   }
 
+  getStatus() {
+    return migrationStore.migrationDetails && migrationStore.migrationDetails.status
+  }
+
   render() {
+    let dropdownActions = [{
+      label: 'Cancel',
+      disabled: this.getStatus() !== 'RUNNING',
+      action: () => { this.handleCancelMigrationClick() },
+    }, {
+      label: 'Delete Migration',
+      color: Palette.alert,
+      action: () => { this.handleDeleteMigrationClick() },
+    }]
+
     return (
       <Wrapper>
         <DetailsTemplate
@@ -153,8 +168,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
             item={migrationStore.migrationDetails}
             onBackButonClick={() => { this.handleBackButtonClick() }}
             typeImage={migrationImage}
+            dropdownActions={dropdownActions}
             primaryInfoPill
-            onCancelClick={() => { this.handleCancelMigrationClick() }}
           />}
           contentComponent={<MigrationDetailsContent
             item={migrationStore.migrationDetails}

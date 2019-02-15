@@ -268,8 +268,8 @@ class MainDetailsTable extends React.Component<Props, State> {
 
   renderNetworks(instance: Instance) {
     let destinationNetworkMap = null
-    if (this.props.item && this.props.item.destination_environment.network_map) {
-      destinationNetworkMap = this.props.item.destination_environment.network_map
+    if (this.props.item && this.props.item.network_map) {
+      destinationNetworkMap = this.props.item.network_map
     }
     if (destinationNetworkMap == null) {
       return null

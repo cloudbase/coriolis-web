@@ -18,7 +18,7 @@ const Palette = {
   primary: '#0044CB',
   primaryLight: '#000EA9',
   secondary: '#D9DCE3',
-  secondaryLight: '#7F8795',
+  secondaryLight: '#777A8B',
   black: '#202134',
   alert: '#F91661',
   success: '#4CD964',

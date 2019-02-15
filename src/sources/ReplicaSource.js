@@ -17,10 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
+import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
 import { servicesUrl } from '../config'
-import type { MainItem } from '../types/MainItem'
+import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Execution } from '../types/Execution'
+import type { Endpoint } from '../types/Endpoint'
 import type { Field } from '../types/Field'
 
 class ReplicaSourceUtils {
@@ -156,6 +158,33 @@ class ReplicaSource {
       method: 'POST',
       data: { 'delete-disks': null },
     }).then(response => response.data.execution)
+  }
+
+  static update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData): Promise<Execution> {
+    const parser = OptionsSchemaPlugin[destinationEndpoint.type] || OptionsSchemaPlugin.default
+    let payload = { replica: {} }
+
+    if (updateData.network.length > 0) {
+      let networkMap = {}
+      updateData.network.forEach(mapping => {
+        networkMap[mapping.sourceNic.network_name] = mapping.targetNetwork.name
+      })
+      payload.replica.network_map = networkMap
+    }
+
+    if (Object.keys(updateData.destination).length > 0) {
+      payload.replica.destination_environment = parser.getDestinationEnv(updateData.destination, replica.destination_environment)
+    }
+
+    if (updateData.storage.length > 0) {
+      payload.replica.storage_mappings = parser.getStorageMap(updateData.destination, updateData.storage)
+    }
+
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replica.id}`,
+      method: 'PUT',
+      data: payload,
+    }).then(response => response.data)
   }
 }
 

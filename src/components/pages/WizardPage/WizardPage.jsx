@@ -26,7 +26,7 @@ import Modal from '../../molecules/Modal'
 import Endpoint from '../../organisms/Endpoint'
 
 import userStore from '../../../stores/UserStore'
-import providerStore from '../../../stores/ProviderStore'
+import providerStore, { getFieldChangeDestOptions } from '../../../stores/ProviderStore'
 import endpointStore from '../../../stores/EndpointStore'
 import wizardStore from '../../../stores/WizardStore'
 import instanceStore from '../../../stores/InstanceStore'
@@ -35,7 +35,8 @@ import notificationStore from '../../../stores/NotificationStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import { wizardConfig, executionOptions, providersWithExtraOptions } from '../../../config'
+import { wizardConfig, executionOptions } from '../../../config'
+
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType, StorageBackend } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
@@ -79,7 +80,8 @@ class WizardPage extends React.Component<Props, State> {
   get pages() {
     return wizardConfig.pages
       .filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
-      .filter(p => !p.filter || (wizardStore.data.target && p.filter(wizardStore.data.target.type)))
+      .filter(p => !p.targetFilter || (wizardStore.data.target && p.targetFilter(wizardStore.data.target.type)))
+      .filter(p => !p.sourceFilter || (wizardStore.data.source && p.sourceFilter(wizardStore.data.source.type)))
   }
 
   componentWillMount() {
@@ -164,6 +166,16 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   handleTypeChange(isReplica: ?boolean) {
+    wizardStore.updateData({
+      target: null,
+      networks: null,
+      destOptions: null,
+      sourceOptions: null,
+      selectedInstances: null,
+      source: null,
+    })
+    wizardStore.clearStorageMap()
+    wizardStore.setPermalink(wizardStore.data)
     this.setState({ type: isReplica ? 'replica' : 'migration' })
   }
 
@@ -194,29 +206,33 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   handleSourceEndpointChange(source: ?EndpointType) {
-    wizardStore.updateData({ source, selectedInstances: null, networks: null })
+    wizardStore.updateData({ source, selectedInstances: null, networks: null, sourceOptions: null })
     wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
 
-    if (source) {
-      // Check if user has permission for this endpoint
-      endpointStore.getConnectionInfo(source).then(() => {
-        if (source) {
-          // Preload instances for 'vms' page
-          instanceStore.loadInstancesInChunks(source.id, this.instancesChunkSize)
-        }
-      }).catch(() => {
-        this.handleSourceEndpointChange(null)
-      })
+    if (!source) {
+      return
     }
+
+    // Check if user has permission for this endpoint
+    endpointStore.getConnectionInfo(source).then(() => {
+      if (source) {
+        // Preload instances for 'vms' page
+        instanceStore.loadInstancesInChunks(source.id, this.instancesChunkSize)
+      }
+    }).catch(() => {
+      this.handleSourceEndpointChange(null)
+    })
+
+    providerStore.loadSourceSchema(source.type, this.state.type === 'replica')
   }
 
   handleTargetEndpointChange(target: EndpointType) {
-    wizardStore.updateData({ target, networks: null, options: null })
+    wizardStore.updateData({ target, networks: null, destOptions: null })
     wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
     // Preload destination options schema
-    providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
+    providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
       // Preload destination options values
       return providerStore.getDestinationOptions(target.id, target.type)
     })
@@ -272,16 +288,21 @@ class WizardPage extends React.Component<Props, State> {
     instanceStore.updateChunkSize(chunkSize)
   }
 
-  handleOptionsChange(field: Field, value: any) {
+  handleDestOptionsChange(field: Field, value: any) {
     wizardStore.updateData({ networks: null })
     wizardStore.clearStorageMap()
-    wizardStore.updateOptions({ field, value })
+    wizardStore.updateDestOptions({ field, value })
     // If the field is a string and doesn't have an enum property,
     // we can't call destination options on "change" since too many calls will be made,
     // it also means a potential problem with the server not populating the "enum" prop.
     if (field.type !== 'string' || field.enum) {
       this.loadEnvDestinationOptions(field)
     }
+    wizardStore.setPermalink(wizardStore.data)
+  }
+
+  handleSourceOptionsChange(field: Field, value: any) {
+    wizardStore.updateSourceOptions({ field, value })
     wizardStore.setPermalink(wizardStore.data)
   }
 
@@ -316,41 +337,15 @@ class WizardPage extends React.Component<Props, State> {
 
   loadEnvDestinationOptions(field?: Field) {
     let provider = wizardStore.data.target && wizardStore.data.target.type
-    let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p !== 'string' && p.name === provider)
-    if (provider && providerWithExtraOptions && typeof providerWithExtraOptions !== 'string' && providerWithExtraOptions.envRequiredFields) {
-      let findFieldInSchema = (name: string) => providerStore.optionsSchema.find(f => f.name === name)
-      let validFields = providerWithExtraOptions.envRequiredFields.filter(fn => {
-        let schemaField = findFieldInSchema(fn)
-        if (wizardStore.data.options) {
-          if (wizardStore.data.options[fn] === null) {
-            return false
-          }
-          if (wizardStore.data.options[fn] === undefined && schemaField && schemaField.default) {
-            return true
-          }
-          return wizardStore.data.options[fn]
-        }
-        return false
-      })
-      let currentFieldValied = field ? validFields.find(fn => field ? fn === field.name : false) : true
-      if (
-        validFields.length === providerWithExtraOptions.envRequiredFields.length &&
-        currentFieldValied
-      ) {
-        let envData = {}
-        validFields.forEach(fn => {
-          envData[fn] = wizardStore.data.options ? wizardStore.data.options[fn] : null
-          if (envData[fn] == null) {
-            let schemaField = findFieldInSchema(fn)
-            if (schemaField && schemaField.default) {
-              envData[fn] = schemaField.default
-            }
-          }
-        })
-        if (wizardStore.data.target) {
-          providerStore.getDestinationOptions(wizardStore.data.target.id, provider, envData)
-        }
-      }
+    let envData = getFieldChangeDestOptions({
+      provider: wizardStore.data.target && wizardStore.data.target.type,
+      destSchema: providerStore.destinationSchema,
+      data: wizardStore.data.destOptions,
+      field,
+    })
+
+    if (provider && envData && wizardStore.data.target) {
+      providerStore.getDestinationOptions(wizardStore.data.target.id, provider, envData)
     }
   }
 
@@ -361,7 +356,13 @@ class WizardPage extends React.Component<Props, State> {
         endpointStore.getEndpoints()
         // Preload instances if data is set from 'Permalink'
         let source = wizardStore.data.source
-        if (instanceStore.instances.length === 0 && source) {
+        if (!source) {
+          return
+        }
+
+        providerStore.loadSourceSchema(source.type, this.state.type === 'replica')
+
+        if (instanceStore.instances.length === 0) {
           // Check if user has permission for this endpoint
           endpointStore.getConnectionInfo(source).then(() => {
             // Preload instances for 'vms' page
@@ -379,8 +380,8 @@ class WizardPage extends React.Component<Props, State> {
           endpointStore.loadStorage(target.id, {})
         }
         // Preload destination options schema
-        if (providerStore.optionsSchema.length === 0 && target) {
-          providerStore.loadOptionsSchema(target.type, this.state.type).then(() => {
+        if (providerStore.destinationSchema.length === 0 && target) {
+          providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
             // Preload destination options if data is set from 'Permalink'
             if (providerStore.destinationOptions.length === 0 && target) {
               providerStore.getDestinationOptions(target.id, target.type).then(() => {
@@ -397,7 +398,7 @@ class WizardPage extends React.Component<Props, State> {
         }
         if (wizardStore.data.target) {
           let id = wizardStore.data.target.id
-          networkStore.loadNetworks(id, wizardStore.data.options)
+          networkStore.loadNetworks(id, wizardStore.data.destOptions)
         }
         break
       default:
@@ -438,8 +439,8 @@ class WizardPage extends React.Component<Props, State> {
     let data = wizardStore.data
     let separateVms = true
 
-    if (data.options && data.options.separate_vm != null) {
-      separateVms = data.options.separate_vm
+    if (data.destOptions && data.destOptions.separate_vm != null) {
+      separateVms = data.destOptions.separate_vm
     }
 
     if (data.selectedInstances && data.selectedInstances.length === 1) {
@@ -467,7 +468,7 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   executeCreatedReplica(replica: MainItem) {
-    let options = wizardStore.data.options
+    let options = wizardStore.data.destOptions
     let executeNow = true
     if (options && options.execute_now != null) {
       executeNow = options.execute_now
@@ -517,7 +518,8 @@ class WizardPage extends React.Component<Props, State> {
             onInstanceClick={instance => { this.handleInstanceClick(instance) }}
             onInstancePageClick={page => { this.handleInstancePageClick(page) }}
             onInstanceChunkSizeUpdate={chunkSize => { this.handleInstanceChunkSizeUpdate(chunkSize) }}
-            onOptionsChange={(field, value) => { this.handleOptionsChange(field, value) }}
+            onDestOptionsChange={(field, value) => { this.handleDestOptionsChange(field, value) }}
+            onSourceOptionsChange={(field, value) => { this.handleSourceOptionsChange(field, value) }}
             onNetworkChange={(sourceNic, targetNetwork) => { this.handleNetworkChange(sourceNic, targetNetwork) }}
             onStorageChange={(source, target, type) => { this.handleStorageChange(source, target, type) }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}

@@ -8,6 +8,7 @@
     "env:prod": "cross-env NODE_ENV=production",
     "cypress": "cypress open",
     "test": "jest",
+    "testc": "jest --runInBand -t 'WizardOptions Component'",
     "storybook": "start-storybook -p 9001 -c private/storybook",
     "lint": "eslint src private webpack.config.js --ext js,jsx",
     "build:clean": "rimraf \"dist/!(.git*|Procfile)**\"",

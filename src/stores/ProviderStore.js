@@ -23,17 +23,66 @@ import type { DestinationOption } from '../types/Endpoint'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
 
+export const getFieldChangeDestOptions = (options: {
+  provider: ?string,
+  destSchema: Field[],
+  data: any,
+  field: ?Field,
+}) => {
+  let { provider, destSchema, data, field } = options
+  let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p !== 'string' && p.name === provider)
+  if (!provider || !providerWithExtraOptions || typeof providerWithExtraOptions === 'string' || !providerWithExtraOptions.envRequiredFields) {
+    return null
+  }
+
+  let findFieldInSchema = (name: string) => destSchema.find(f => f.name === name)
+
+  let validFields = providerWithExtraOptions.envRequiredFields.filter(fn => {
+    let schemaField = findFieldInSchema(fn)
+    if (data) {
+      if (data[fn] === null) {
+        return false
+      }
+      if (data[fn] === undefined && schemaField && schemaField.default) {
+        return true
+      }
+      return data[fn]
+    }
+    return false
+  })
+
+  let isCurrentFieldValid = field ? validFields.find(fn => field ? fn === field.name : false) : true
+  if (validFields.length !== providerWithExtraOptions.envRequiredFields.length || !isCurrentFieldValid) {
+    return null
+  }
+
+  let envData = {}
+  validFields.forEach(fn => {
+    envData[fn] = data ? data[fn] : null
+    if (envData[fn] == null) {
+      let schemaField = findFieldInSchema(fn)
+      if (schemaField && schemaField.default) {
+        envData[fn] = schemaField.default
+      }
+    }
+  })
+
+  return envData
+}
+
 class ProviderStore {
   @observable connectionInfoSchema: Field[] = []
   @observable connectionSchemaLoading: boolean = false
   @observable providers: ?Providers
   @observable providersLoading: boolean = false
-  @observable optionsSchema: Field[] = []
-  @observable optionsSchemaLoading: boolean = false
+  @observable destinationSchema: Field[] = []
+  @observable destinationSchemaLoading: boolean = false
   @observable destinationOptions: DestinationOption[] = []
   @observable destinationOptionsLoading: boolean = false
+  @observable sourceSchema: Field[] = []
+  @observable sourceSchemaLoading: boolean = false
 
-  lastOptionsSchemaType: string = ''
+  lastDestinationSchemaType: string = ''
 
   @action getConnectionInfoSchema(providerName: string): Promise<void> {
     this.connectionSchemaLoading = true
@@ -62,22 +111,47 @@ class ProviderStore {
     })
   }
 
-  @action loadOptionsSchema(providerName: string, schemaType: string): Promise<void> {
-    this.optionsSchemaLoading = true
-    this.lastOptionsSchemaType = schemaType
+  @action loadDestinationSchema(providerName: string, schemaType: string): Promise<void> {
+    this.destinationSchemaLoading = true
+    this.lastDestinationSchemaType = schemaType
 
-    return ProviderSource.loadOptionsSchema(providerName, schemaType).then((fields: Field[]) => {
-      this.optionsSchemaLoading = false
-      this.optionsSchema = fields
+    return ProviderSource.loadDestinationSchema(providerName, schemaType).then((fields: Field[]) => {
+      this.destinationSchemaLoading = false
+      this.destinationSchema = fields
     }).catch(() => {
-      this.optionsSchemaLoading = false
+      this.destinationSchemaLoading = false
     })
   }
 
-  @action getDestinationOptions(endpointId: string, provider: string, envData?: { [string]: mixed }): Promise<DestinationOption[]> {
+  @action loadSourceSchema(providerName: string, isReplica: boolean): Promise<void> {
+    this.sourceSchemaLoading = true
+
+    return ProviderSource.loadSourceSchema(providerName, isReplica).then((fields: Field[]) => {
+      this.sourceSchemaLoading = false
+      this.sourceSchema = fields
+    }).catch(() => { this.sourceSchemaLoading = false })
+  }
+
+  cache: { key: string, data: DestinationOption[] }[] = []
+
+  @action getDestinationOptions(endpointId: string, provider: string, envData?: { [string]: mixed }, useCache?: boolean): Promise<DestinationOption[]> {
     let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p === 'string' ? p === provider : p.name === provider)
     if (!providerWithExtraOptions) {
       return Promise.resolve([])
+    }
+
+    if (useCache) {
+      let key = `${endpointId}-${provider}-${JSON.stringify(envData)}`
+      let cacheItem = this.cache.find(c => c.key === key)
+      if (cacheItem) {
+        this.destinationSchema.forEach(field => {
+          const parser = OptionsSchemaPlugin[provider] || OptionsSchemaPlugin.default
+          parser.fillFieldValues(field, cacheItem.data)
+        })
+        this.destinationSchema = [...this.destinationSchema]
+        this.destinationOptions = cacheItem.data
+        return Promise.resolve(cacheItem.data)
+      }
     }
 
     this.destinationOptionsLoading = true
@@ -85,21 +159,29 @@ class ProviderStore {
     let destOptions = []
 
     return ProviderSource.getDestinationOptions(endpointId, envData).then(options => {
-      this.optionsSchema.forEach(field => {
+      this.destinationSchema.forEach(field => {
         const parser = OptionsSchemaPlugin[provider] || OptionsSchemaPlugin.default
         parser.fillFieldValues(field, options)
       })
       this.destinationOptions = options
       destOptions = options
       this.destinationOptionsLoading = false
+
+      if (useCache) {
+        let key = `${endpointId}-${provider}-${JSON.stringify(envData)}`
+        if (this.cache.length > 20) {
+          this.cache.splice(0)
+        }
+        this.cache.push({ key, data: options })
+      }
     }).catch(err => {
       console.error(err)
       if (envData) {
-        return this.loadOptionsSchema(provider, this.lastOptionsSchemaType).then(() => {
+        return this.loadDestinationSchema(provider, this.lastDestinationSchemaType).then(() => {
           return this.getDestinationOptions(endpointId, provider)
         })
       }
-      return this.loadOptionsSchema(provider, this.lastOptionsSchemaType)
+      return this.loadDestinationSchema(provider, this.lastDestinationSchemaType)
     }).then(() => {
       this.destinationOptionsLoading = false
       return destOptions
