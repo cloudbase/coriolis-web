@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action, computed } from 'mobx'
 
 import type { Instance } from '../types/Instance'
+import type { Endpoint } from '../types/Endpoint'
 import InstanceSource from '../sources/InstanceSource'
 import ApiCaller from '../utils/ApiCaller'
+import { instancesListBackgroundLoading as chunkSize } from '../config'
 
 class InstanceLocalStorage {
   static saveInstancesToLocalStorage(endpointId: string, instances: Instance[]) {
@@ -83,7 +85,7 @@ class InstanceLocalStorage {
 
 class InstanceStore {
   @observable instancesLoading = false
-  @observable chunkSize = 6
+  @observable instancesPerPage = 6
   @observable currentPage = 1
   @observable searchChunksLoading = false
   @observable searchedInstances: Instance[] = []
@@ -115,8 +117,8 @@ class InstanceStore {
   lastEndpointId: string
   reqId: number
 
-  @action loadInstancesInChunks(endpointId: string, chunkSize?: number = 6, reload?: boolean) {
-    ApiCaller.cancelRequests(`${endpointId}-chunk`)
+  @action loadInstancesInChunks(endpoint: Endpoint, vmsPerPage?: number = 6, reload?: boolean) {
+    ApiCaller.cancelRequests(`${endpoint.id}-chunk`)
 
     this.backgroundInstances = []
     if (reload) {
@@ -125,11 +127,13 @@ class InstanceStore {
       this.instancesLoading = true
     }
     this.backgroundChunksLoading = true
-    this.lastEndpointId = endpointId
+    this.lastEndpointId = endpoint.id
+
+    let chunkCount = Math.max(chunkSize[endpoint.type] || chunkSize.default, vmsPerPage)
 
     let loadNextChunk = (lastEndpointId?: string) => {
-      let currentEndpointId = endpointId
-      InstanceSource.loadInstancesChunk(currentEndpointId, chunkSize, lastEndpointId, `${endpointId}-chunk`)
+      let currentEndpointId = endpoint.id
+      InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`)
         .then(instances => {
           if (currentEndpointId !== this.lastEndpointId) {
             return
@@ -141,7 +145,7 @@ class InstanceStore {
           }
           this.instancesLoading = false
 
-          if (instances.length < chunkSize) {
+          if (instances.length < chunkCount) {
             this.backgroundChunksLoading = false
             return
           }
@@ -177,8 +181,8 @@ class InstanceStore {
     })
   }
 
-  @action searchInstances(endpointId: string, searchText: string) {
-    ApiCaller.cancelRequests(`${endpointId}-chunk-search`)
+  @action searchInstances(endpoint: Endpoint, searchText: string) {
+    ApiCaller.cancelRequests(`${endpoint.id}-chunk-search`)
 
     this.searchText = searchText
     this.searchNotFound = false
@@ -199,14 +203,15 @@ class InstanceStore {
 
     this.searching = true
     this.searchChunksLoading = true
-    let chunkSize = this.chunkSize
+
+    let chunkCount = Math.max(chunkSize[endpoint.type] || chunkSize.default, this.instancesPerPage)
 
     let loadNextChunk = (lastEndpointId?: string) => {
       InstanceSource.loadInstancesChunk(
-        endpointId,
-        chunkSize,
+        endpoint.id,
+        chunkCount,
         lastEndpointId,
-        `${endpointId}-chunk-search`,
+        `${endpoint.id}-chunk-search`,
         searchText
       ).then(instances => {
         if (this.searching) {
@@ -217,7 +222,7 @@ class InstanceStore {
         this.searchedInstances = [...this.searchedInstances, ...instances]
         this.searching = false
         this.searchNotFound = Boolean(this.searchedInstances.length === 0)
-        if (instances.length < chunkSize) {
+        if (instances.length < chunkCount) {
           this.searchChunksLoading = false
         }
         return loadNextChunk(instances[instances.length - 1].id)
@@ -226,11 +231,11 @@ class InstanceStore {
     loadNextChunk()
   }
 
-  @action reloadInstances(endpointId: string, chunkSize?: number) {
+  @action reloadInstances(endpoint: Endpoint, chunkSize?: number) {
     this.searchNotFound = false
     this.searchText = ''
     this.currentPage = 1
-    this.loadInstancesInChunks(endpointId, chunkSize, true)
+    this.loadInstancesInChunks(endpoint, chunkSize, true)
   }
 
   @action cancelIntancesChunksLoading() {
@@ -245,9 +250,9 @@ class InstanceStore {
     this.currentPage = page
   }
 
-  @action updateChunkSize(chunkSize: number) {
+  @action updateInstancesPerPage(instancesPerPage: number) {
     this.currentPage = 1
-    this.chunkSize = chunkSize
+    this.instancesPerPage = instancesPerPage
   }
 
   @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean, quietError?: boolean): Promise<void> {

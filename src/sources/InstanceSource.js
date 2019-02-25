@@ -28,15 +28,30 @@ class InstanceSource {
     searchText?: string
   ): Promise<Instance[]> {
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
-    url = `${url}?limit=${chunkSize}`
+    let queryParams: { [string]: string | number } = {}
 
-    if (lastInstanceId) {
-      url = `${url}&marker=${lastInstanceId}`
+    if (chunkSize !== Infinity) {
+      queryParams = {
+        limit: chunkSize,
+      }
+
+      if (lastInstanceId) {
+        queryParams = {
+          ...queryParams,
+          marker: lastInstanceId,
+        }
+      }
     }
 
     if (searchText) {
-      url = `${url}&name=${searchText}`
+      queryParams = {
+        ...queryParams,
+        name: searchText,
+      }
     }
+
+    let keys = Object.keys(queryParams)
+    url = `${url}${keys.length > 0 ? '?' : ''}${keys.map(p => `${p}=${queryParams[p]}`).join('&')}`
 
     return Api.send({ url, cancelId }).then(response => {
       return response.data.instances
