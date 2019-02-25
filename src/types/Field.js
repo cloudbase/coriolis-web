@@ -31,4 +31,6 @@ export type Field = {
   required?: boolean,
   useTextArea?: boolean,
   readOnly?: boolean,
+  title?: string,
+  description?: string,
 }

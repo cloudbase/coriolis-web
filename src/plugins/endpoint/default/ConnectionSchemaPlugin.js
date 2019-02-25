@@ -14,12 +14,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import LabelDictionary from '../../../utils/LabelDictionary'
 import type { Schema, SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { Field } from '../../../types/Field'
 
 export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, parent?: string): any[] => {
   let fields = Object.keys(schema.properties).map(fieldName => {
-    let properties = schema.properties[fieldName]
+    let properties: any = schema.properties[fieldName]
 
     if (typeof schema.properties[fieldName].$ref === 'string' && schemaDefinitions) {
       const definitionName = schema.properties[fieldName].$ref.substr(schema.properties[fieldName].$ref.lastIndexOf('/') + 1)
@@ -31,9 +32,12 @@ export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinition
       }
     }
 
+    const name = parent ? `${parent}/${fieldName}` : fieldName
+    LabelDictionary.pushToCache({ name, title: properties.title, description: properties.description })
+
     return {
       ...properties,
-      name: parent ? `${parent}/${fieldName}` : fieldName,
+      name,
       required: schema.required && schema.required.find(k => k === fieldName) ? true : fieldName === 'username' || fieldName === 'password',
     }
   })
