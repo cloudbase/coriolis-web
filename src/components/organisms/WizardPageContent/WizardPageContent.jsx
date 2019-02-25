@@ -195,7 +195,7 @@ class WizardPageContent extends React.Component<Props, State> {
     return providerTypes.TARGET_MIGRATION
   }
 
-  getProviders(type: string) {
+  getProviders(type: string): string[] {
     let providers = []
     let providerType = this.getProvidersType(type)
     let providersObject = this.props.providerStore.providers
@@ -210,6 +210,7 @@ class WizardPageContent extends React.Component<Props, State> {
       }
     })
 
+    providers.sort((a, b) => a.localeCompare(b))
     return providers
   }
 

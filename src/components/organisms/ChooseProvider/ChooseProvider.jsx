@@ -35,7 +35,7 @@ const Logos = styled.div`
   flex-wrap: wrap;
   padding-bottom: 42px;
 `
-const EndpointLogosStyled = styled(EndpointLogos) `
+const EndpointLogosStyled = styled(EndpointLogos)`
   transform: scale(0.67);
   transition: all ${StyleProps.animations.swift};
   cursor: pointer;
@@ -80,10 +80,12 @@ class ChooseProvider extends React.Component<Props> {
       return null
     }
 
+    let providersArray = Object.keys(this.props.providers).sort((a, b) => a.localeCompare(b))
+
     return (
       <Providers>
         <Logos>
-          {Object.keys(this.props.providers).map(k => {
+          {providersArray.map(k => {
             return (
               <EndpointLogosStyled
                 height={128}

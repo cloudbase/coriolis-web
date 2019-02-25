@@ -31,8 +31,7 @@ class ProviderSource {
   }
 
   static loadProviders(): Promise<Providers> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers`)
-      .then(response => response.data.providers)
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers`).then(response => response.data.providers)
   }
 
   static loadDestinationSchema(providerName: string, schemaType: string): Promise<Field[]> {
