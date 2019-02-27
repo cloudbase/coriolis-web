@@ -85,8 +85,8 @@ class ActionDropdown extends React.Component<Props, State> {
 
   itemMouseDown: boolean
   listRef: HTMLElement
-  arrowRef: HTMLElement
   tipRef: HTMLElement
+  buttonRef: HTMLElement
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
@@ -101,17 +101,12 @@ class ActionDropdown extends React.Component<Props, State> {
   }
 
   updateListPosition() {
-    if (!this.state.showDropdownList || !this.listRef || !this.arrowRef || !this.tipRef) {
+    if (!this.state.showDropdownList || !this.listRef || !this.tipRef || !this.buttonRef) {
       return
     }
-
-    let listWidth = this.listRef.offsetWidth
-    let arrowWidth = this.arrowRef.offsetWidth
-    let arrowHeight = this.arrowRef.offsetHeight
-    let tipHeight = this.tipRef.offsetHeight
-    const tipLeftOffset = 6
-    const tipTopOffset = 6
-    let arrowOffset = this.arrowRef.getBoundingClientRect()
+    let tipHeight = this.tipRef.offsetHeight / 2
+    let topOffset = 6
+    let buttonRect = this.buttonRef.getBoundingClientRect()
 
     // If a modal is opened, body scroll is removed and body top is set to replicate scroll position
     let scrollOffset = 0
@@ -119,8 +114,8 @@ class ActionDropdown extends React.Component<Props, State> {
       scrollOffset = -parseInt(document.body && document.body.style.top, 10)
     }
 
-    this.listRef.style.top = `${arrowOffset.top + (window.pageYOffset || scrollOffset) + arrowHeight + tipHeight + tipTopOffset}px`
-    this.listRef.style.left = `${arrowOffset.left + tipLeftOffset + (arrowWidth - listWidth)}px`
+    this.listRef.style.top = `${buttonRect.top + buttonRect.height + tipHeight + topOffset + (window.pageYOffset || scrollOffset)}px`
+    this.listRef.style.left = `${buttonRect.left + window.pageXOffset}px`
   }
 
   @autobind
@@ -179,7 +174,7 @@ class ActionDropdown extends React.Component<Props, State> {
     return ReactDOM.createPortal((
       <List
         innerRef={list => { this.listRef = list }}
-        width={`${StyleProps.inputSizes.regular.width - 4}px`}
+        width={`${StyleProps.inputSizes.regular.width}px`}
         padding={0}
         customStyle={ListStyle}
       >
@@ -196,8 +191,8 @@ class ActionDropdown extends React.Component<Props, State> {
           secondary
           centered
           value={this.props.label}
+          customRef={ref => { this.buttonRef = ref }}
           onClick={() => { this.handleButtonClick() }}
-          arrowRef={ref => { this.arrowRef = ref }}
         />
         {this.renderList()}
       </Wrapper>

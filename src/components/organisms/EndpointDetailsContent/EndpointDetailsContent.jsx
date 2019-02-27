@@ -59,14 +59,9 @@ const Value = styled.div``
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 64px;
 `
-const MainButtons = styled.div`
-  display: flex;
-  flex-direction: column;
-  button {
-    margin-bottom: 16px;
-  }
-`
+const MainButtons = styled.div``
 const DeleteButton = styled.div``
 const LoadingWrapper = styled.div`
   display: flex;
@@ -87,7 +82,6 @@ type Props = {
   usage: { migrations: MainItem[], replicas: MainItem[] },
   onDeleteClick: () => void,
   onValidateClick: () => void,
-  onEditClick: () => void,
   passwordFields?: string[],
 }
 @observer
@@ -157,7 +151,6 @@ class EndpointDetailsContent extends React.Component<Props> {
     return (
       <Buttons>
         <MainButtons>
-          <Button secondary onClick={this.props.onEditClick} data-test-id="edContent-editButton">Edit Endpoint</Button>
           <Button onClick={this.props.onValidateClick} data-test-id="edContent-validateButton">Validate Endpoint</Button>
         </MainButtons>
         <DeleteButton>

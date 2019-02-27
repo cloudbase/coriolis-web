@@ -83,13 +83,10 @@ describe('EndpointDetailsContent Component', () => {
   it('dispatches buttons clicks', () => {
     let onDeleteClick = sinon.spy()
     let onValidateClick = sinon.spy()
-    let onEditClick = sinon.spy()
 
-    let wrapper = wrap({ item, onDeleteClick, onValidateClick, onEditClick })
-    wrapper.find('editButton').click()
+    let wrapper = wrap({ item, onDeleteClick, onValidateClick })
     wrapper.find('validateButton').click()
     wrapper.find('deleteButton').click()
-    expect(onEditClick.calledOnce).toBe(true)
     expect(onValidateClick.calledOnce).toBe(true)
     expect(onDeleteClick.calledOnce).toBe(true)
   })

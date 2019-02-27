@@ -34,7 +34,7 @@ type Props = {
 const wrap = (props: Props) => new TW(shallow(
   <ProjectDetailsContent
     onAddMemberClick={() => { }}
-    onDeleteConfirmation={() => { }}
+    onDeleteClick={() => { }}
     onEditProjectClick={() => { }}
     onEnableUser={() => { }}
     onRemoveUser={() => { }}

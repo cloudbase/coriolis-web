@@ -33,6 +33,7 @@ const wrap = (props: Props) => new TW(shallow(
     onEditClick={() => { }}
     onUpdatePasswordClick={() => { }}
     onDeleteConfirmation={() => { }}
+    onDeleteClick={() => { }}
     {...props}
   />
 ), 'udContent')

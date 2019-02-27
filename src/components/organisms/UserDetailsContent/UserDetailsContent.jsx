@@ -22,7 +22,6 @@ import CopyValue from '../../atoms/CopyValue'
 import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
-import AlertModal from '../../organisms/AlertModal'
 
 import type { User } from '../../../types/User'
 import type { Project } from '../../../types/Project'
@@ -38,7 +37,7 @@ const Info = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: 32px;
-  margin-left: -32px;  
+  margin-left: -32px;
 `
 const Link = styled.a`
   color: ${Palette.primary};
@@ -64,10 +63,9 @@ const LoadingWrapper = styled.div`
   margin: 32px 0 64px 0;
 `
 const Buttons = styled.div`
-  margin-top: 32px;
+  margin-top: 64px;
   display: flex;
   justify-content: space-between;
-  margin-top: 32px;
 `
 const ButtonsColumn = styled.div`
   display: flex;
@@ -87,29 +85,12 @@ type Props = {
   projects: Project[],
   userProjects: Project[],
   isLoggedUser: boolean,
-  onEditClick: () => void,
   onUpdatePasswordClick: () => void,
-  onDeleteConfirmation: () => void,
-}
-type State = {
-  showDeleteConfirmation: boolean,
+  onDeleteClick: () => void,
 }
 const testName = 'udContent'
 @observer
-class UserDetailsContent extends React.Component<Props, State> {
-  state = {
-    showDeleteConfirmation: false,
-  }
-
-  handleDeleteConfirmation() {
-    this.setState({ showDeleteConfirmation: false })
-    this.props.onDeleteConfirmation()
-  }
-
-  handleCloseDeleteConfirmation() {
-    this.setState({ showDeleteConfirmation: false })
-  }
-
+class UserDetailsContent extends React.Component<Props> {
   renderLoading() {
     if (!this.props.loading) {
       return null
@@ -128,14 +109,13 @@ class UserDetailsContent extends React.Component<Props, State> {
     return (
       <Buttons>
         <ButtonsColumn>
-          <Button secondary onClick={this.props.onEditClick}>Edit user</Button>
           <Button hollow onClick={this.props.onUpdatePasswordClick}>Change password</Button>
         </ButtonsColumn>
         <ButtonsColumn>
           <Button
             alert
             hollow
-            onClick={() => { this.setState({ showDeleteConfirmation: true }) }}
+            onClick={() => { this.props.onDeleteClick() }}
             disabled={this.props.isLoggedUser}
           >Delete user</Button>
         </ButtonsColumn>
@@ -222,16 +202,6 @@ class UserDetailsContent extends React.Component<Props, State> {
         {this.renderInfo()}
         {this.renderLoading()}
         {this.renderButtons()}
-        {this.state.showDeleteConfirmation ? (
-          <AlertModal
-            isOpen
-            title="Delete User?"
-            message="Are you sure you want to delete this user?"
-            extraMessage="Deleting a Coriolis User is permanent!"
-            onConfirmation={() => { this.handleDeleteConfirmation() }}
-            onRequestClose={() => { this.handleCloseDeleteConfirmation() }}
-          />
-        ) : null}
       </Wrapper>
     )
   }

@@ -115,8 +115,8 @@ class DataUtils {
 class NotificationSource {
   static loadData(): Promise<NotificationItemData[]> {
     return Promise.all([
-      Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`, skipLog: true }),
-      Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`, skipLog: true }),
+      Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`, skipLog: true, quietError: true }),
+      Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`, skipLog: true, quietError: true }),
     ]).then(([migrationsResponse, replicasResponse]) => {
       let migrations = migrationsResponse.data.migrations
       let replicas = replicasResponse.data.replicas
