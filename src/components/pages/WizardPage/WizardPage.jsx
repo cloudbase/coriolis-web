@@ -70,8 +70,9 @@ class WizardPage extends React.Component<Props, State> {
 
   contentRef: WizardPageContent
 
-  get instancesChunkSize() {
-    let { min, max } = wizardConfig.instancesPerPage
+  get instancesPerPage() {
+    const min = 3
+    const max = Infinity
     const instancesTableDiff = 505
     const instancesItemHeight = 67
     return Math.min(max, Math.max(min, Math.floor((window.innerHeight - instancesTableDiff) / instancesItemHeight)))
@@ -113,7 +114,7 @@ class WizardPage extends React.Component<Props, State> {
 
   @autobind
   handleResize() {
-    instanceStore.updateChunkSize(this.instancesChunkSize)
+    instanceStore.updateInstancesPerPage(this.instancesPerPage)
   }
 
   handleEnterKey() {
@@ -218,7 +219,7 @@ class WizardPage extends React.Component<Props, State> {
     endpointStore.getConnectionInfo(source).then(() => {
       if (source) {
         // Preload instances for 'vms' page
-        instanceStore.loadInstancesInChunks(source.id, this.instancesChunkSize)
+        instanceStore.loadInstancesInChunks(source, this.instancesPerPage)
       }
     }).catch(() => {
       this.handleSourceEndpointChange(null)
@@ -263,13 +264,13 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstancesSearchInputChange(searchText: string) {
     if (wizardStore.data.source) {
-      instanceStore.searchInstances(wizardStore.data.source.id, searchText)
+      instanceStore.searchInstances(wizardStore.data.source, searchText)
     }
   }
 
   handleInstancesReloadClick() {
     if (wizardStore.data.source) {
-      instanceStore.reloadInstances(wizardStore.data.source.id, this.instancesChunkSize)
+      instanceStore.reloadInstances(wizardStore.data.source, this.instancesPerPage)
     }
   }
 
@@ -282,10 +283,6 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstancePageClick(page: number) {
     instanceStore.setPage(page)
-  }
-
-  handleInstanceChunkSizeUpdate(chunkSize: number) {
-    instanceStore.updateChunkSize(chunkSize)
   }
 
   handleDestOptionsChange(field: Field, value: any) {
@@ -366,7 +363,7 @@ class WizardPage extends React.Component<Props, State> {
           // Check if user has permission for this endpoint
           endpointStore.getConnectionInfo(source).then(() => {
             // Preload instances for 'vms' page
-            instanceStore.loadInstancesInChunks(source.id, this.instancesChunkSize)
+            instanceStore.loadInstancesInChunks(source, this.instancesPerPage)
           }).catch(() => {
             this.handleSourceEndpointChange(null)
           })
@@ -517,7 +514,6 @@ class WizardPage extends React.Component<Props, State> {
             onInstancesReloadClick={() => { this.handleInstancesReloadClick() }}
             onInstanceClick={instance => { this.handleInstanceClick(instance) }}
             onInstancePageClick={page => { this.handleInstancePageClick(page) }}
-            onInstanceChunkSizeUpdate={chunkSize => { this.handleInstanceChunkSizeUpdate(chunkSize) }}
             onDestOptionsChange={(field, value) => { this.handleDestOptionsChange(field, value) }}
             onSourceOptionsChange={(field, value) => { this.handleSourceOptionsChange(field, value) }}
             onNetworkChange={(sourceNic, targetNetwork) => { this.handleNetworkChange(sourceNic, targetNetwork) }}

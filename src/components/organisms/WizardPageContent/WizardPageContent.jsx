@@ -315,7 +315,7 @@ class WizardPageContent extends React.Component<Props, State> {
         body = (
           <WizardInstances
             instances={this.props.instanceStore.instances}
-            chunkSize={this.props.instanceStore.chunkSize}
+            instancesPerPage={this.props.instanceStore.instancesPerPage}
             chunksLoading={this.props.instanceStore.chunksLoading}
             currentPage={this.props.instanceStore.currentPage}
             searchText={this.props.instanceStore.searchText}

@@ -190,7 +190,7 @@ type Props = {
   instances: InstanceType[],
   selectedInstances: ?InstanceType[],
   currentPage: number,
-  chunkSize: number,
+  instancesPerPage: number,
   loading: boolean,
   chunksLoading: boolean,
   searching: boolean,
@@ -295,8 +295,8 @@ class WizardInstances extends React.Component<Props, State> {
     if (this.props.loading || this.props.searchNotFound || this.props.reloading || this.areNoInstances()) {
       return null
     }
-    let startIdx = (this.props.currentPage - 1) * this.props.chunkSize
-    let endIdx = startIdx + (this.props.chunkSize - 1)
+    let startIdx = (this.props.currentPage - 1) * this.props.instancesPerPage
+    let endIdx = startIdx + (this.props.instancesPerPage - 1)
     let filteredInstances = this.props.instances.filter((i, idx) => idx >= startIdx && idx <= endIdx)
 
     return (
@@ -359,7 +359,7 @@ class WizardInstances extends React.Component<Props, State> {
       return null
     }
 
-    let hasNextPage = this.props.currentPage * this.props.chunkSize < this.props.instances.length
+    let hasNextPage = this.props.currentPage * this.props.instancesPerPage < this.props.instances.length
     let areAllDisabled = this.props.searching
     let isPreviousDisabled = this.props.currentPage === 1 || areAllDisabled
     let isNextDisabled = !hasNextPage || areAllDisabled
@@ -374,7 +374,7 @@ class WizardInstances extends React.Component<Props, State> {
           <Arrow orientation="left" disabled={isPreviousDisabled} color={Palette.black} thick />
         </PagePrevious>
         <PageNumber data-test-id="wInstances-currentPage">
-          {this.props.currentPage} of {Math.ceil(this.props.instances.length / this.props.chunkSize)}
+          {this.props.currentPage} of {Math.ceil(this.props.instances.length / this.props.instancesPerPage)}
           {this.props.chunksLoading ? (
             <HorizontalLoading style={{ width: '100%', top: '3px' }} data-test-id="wInstances-loadingChunks" />
           ) : null}

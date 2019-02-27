@@ -112,8 +112,13 @@ export const wizardConfig = {
     { id: 'schedule', title: 'Schedule', breadcrumb: 'Schedule', excludeFrom: 'migration' },
     { id: 'summary', title: 'Summary', breadcrumb: 'Summary' },
   ],
-  instancesPerPage: { min: 3, max: Infinity },
 }
+
+// - Specifies the `limit` for each provider when listing all its VMs for pagination.
+// - If the provider is not in this list, the 'default' value will be used.
+// - If the `default` value is lower than the number of instances that fit into a page, the latter number will be used.
+// - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
+export const instancesListBackgroundLoading = { default: 10, ovm: Infinity }
 
 // A list of providers for which `destination-options` API call(s) will be made in the Wizard
 // If the item is just a string with the provider name, only one API call will be made
