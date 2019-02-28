@@ -26,6 +26,10 @@ import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div`
   margin-top: 8px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `
 const Separator = styled.div`
   height: 1px;
@@ -36,23 +40,30 @@ const Loading = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 88px;
+  flex-grow: 1;
 `
 const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 39px;
 `
-const List = styled.div``
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+`
 
 const NoResults = styled.div`
   margin-top: 39px;
   text-align: center;
 `
 const EmptyList = styled.div`
-  margin: 96px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
+  justify-content: center;
+  flex-grow: 1;
 `
 const EmptyListImage = styled.div`
   width: 96px;

@@ -31,6 +31,7 @@ const Wrapper = styled.div`
   align-items: center;
   padding-top: 8px;
   flex-wrap: wrap;
+  flex-shrink: 0;
 `
 const Main = styled.div`
   display: flex;

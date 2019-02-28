@@ -23,12 +23,14 @@ import userStore from '../../../stores/UserStore'
 
 import { navigationMenu } from '../../../config'
 import backgroundImage from './images/star-bg.jpg'
+import cbsImage from './images/cbs-logo.svg'
 
 const Wrapper = styled.div`
   background-image: url('${backgroundImage}');
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 `
 
 const LogoStyled = styled(Logo)`
@@ -40,6 +42,7 @@ const Menu = styled.div`
   display: flex;
   flex-direction: column;
   margin-top:32px;
+  flex-grow: 1;
 `
 
 const MenuItem = styled.a`
@@ -51,7 +54,22 @@ const MenuItem = styled.a`
   display: inline-block;
   text-decoration: none;
 `
-const Footer = styled.div``
+const Footer = styled.div`
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+`
+
+const CbsLogo = styled.a`
+  width: 128px;
+  height: 32px;
+  background: url('${cbsImage}') center no-repeat;
+  cursor: pointer;
+  display: flex;
+`
 
 @observer
 class Navigation extends React.Component<{ currentPage: string }> {
@@ -80,7 +98,9 @@ class Navigation extends React.Component<{ currentPage: string }> {
       <Wrapper>
         <LogoStyled small href={navigationMenu[0].value} />
         {this.renderMenu()}
-        <Footer />
+        <Footer>
+          <CbsLogo href="https://cloudbase.it" target="_blank" />
+        </Footer>
       </Wrapper>
     )
   }

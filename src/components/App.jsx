@@ -43,6 +43,9 @@ import StyleProps from './styleUtils/StyleProps'
 
 injectGlobal`
   ${Fonts}
+  html, body, main {
+    height: 100%;
+  }
   body {
     margin: 0;
     color: ${Palette.black};
@@ -51,10 +54,14 @@ injectGlobal`
     font-weight: ${StyleProps.fontWeights.regular};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    min-width: 1240px;
   }
 `
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  height: 100%;
+  > div:first-child {
+    height: 100%;
+  }
+`
 
 class App extends React.Component<{}> {
   componentWillMount() {
