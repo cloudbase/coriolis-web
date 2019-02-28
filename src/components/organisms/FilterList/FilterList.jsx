@@ -23,7 +23,12 @@ import MainListFilter from '../../molecules/MainListFilter'
 import type { ItemComponentProps } from '../../organisms/MainList'
 import MainList from '../../organisms/MainList'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+`
 
 type DictItem = { value: string, label: string }
 type Props = {

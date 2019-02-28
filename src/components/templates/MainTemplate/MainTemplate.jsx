@@ -18,29 +18,33 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
+  display: flex;
+  height: 100%;
 `
 const Navigation = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 320px;
+  display: flex;
+  min-width: 320px;
 `
 const Content = styled.div`
   padding: 0 64px 0 64px;
-  position: absolute;
-  left: 320px;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   overflow: auto;
 `
 const List = styled.div`
   padding-bottom: 32px;
   margin-left: ${props => props.noMargin ? 0 : '-32px'};
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 `
 const Header = styled.div`
   min-width: 800px;
+`
+const Footer = styled.div`
+  flex-shrink: 0;
 `
 
 type Props = {
@@ -56,6 +60,7 @@ const MainTemplate = (props: Props) => {
       <Content>
         <Header>{props.headerComponent}</Header>
         <List noMargin={props.listNoMargin}>{props.listComponent}</List>
+        <Footer />
       </Content>
     </Wrapper>
   )
