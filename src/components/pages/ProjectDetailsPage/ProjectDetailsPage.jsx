@@ -26,10 +26,13 @@ import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import ProjectDetailsContent from '../../organisms/ProjectDetailsContent'
 import ProjectModal from '../../organisms/ProjectModal'
 import ProjectMemberModal from '../../organisms/ProjectMemberModal'
+import AlertModal from '../../organisms/AlertModal'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
 import notificationStore from '../../../stores/NotificationStore'
+
+import Palette from '../../styleUtils/Palette'
 
 import projectImage from './images/project.svg'
 
@@ -41,6 +44,7 @@ type Props = {
 type State = {
   showProjectModal: boolean,
   showAddMemberModal: boolean,
+  showDeleteProjectAlert: boolean,
   addingMember: boolean,
 }
 @observer
@@ -48,6 +52,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
   state = {
     showProjectModal: false,
     showAddMemberModal: false,
+    showDeleteProjectAlert: false,
     addingMember: false,
   }
 
@@ -118,6 +123,8 @@ class ProjectDetailsPage extends React.Component<Props, State> {
   }
 
   handleDeleteConfirmation() {
+    this.setState({ showDeleteProjectAlert: false })
+
     projectStore.delete(this.props.match.params.id).then(() => {
       if (
         userStore.loggedUser &&
@@ -167,6 +174,10 @@ class ProjectDetailsPage extends React.Component<Props, State> {
     })
   }
 
+  handleDeleteProjectClick() {
+    this.setState({ showDeleteProjectAlert: true })
+  }
+
   loadData() {
     const projectId = this.props.match.params.id
     projectStore.getProjects()
@@ -177,6 +188,19 @@ class ProjectDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
+    let dropdownActions = [{
+      label: 'Add Member',
+      color: Palette.primary,
+      action: () => { this.handleAddMemberClick() },
+    }, {
+      label: 'Edit Project',
+      action: () => { this.handleEditProjectClick() },
+    }, {
+      label: 'Delete Project',
+      color: Palette.alert,
+      action: () => { this.handleDeleteProjectClick() },
+    }]
+
     return (
       <Wrapper>
         <DetailsTemplate
@@ -187,6 +211,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
           contentHeaderComponent={<DetailsContentHeader
             item={{ ...projectStore.projectDetails, description: '' }}
             onBackButonClick={() => { this.handleBackButtonClick() }}
+            dropdownActions={dropdownActions}
             typeImage={projectImage}
             description={''}
           />}
@@ -197,14 +222,12 @@ class ProjectDetailsPage extends React.Component<Props, State> {
             usersLoading={projectStore.usersLoading}
             roleAssignments={projectStore.roleAssignments}
             roles={projectStore.roles}
-            deleteDisabled={projectStore.projects.length === 1}
             loggedUserId={userStore.loggedUser ? userStore.loggedUser.id : ''}
             onEnableUser={user => { this.handleEnableUser(user) }}
             onRemoveUser={user => { this.handleRemoveUser(user) }}
-            onEditProjectClick={() => { this.handleEditProjectClick() }}
-            onDeleteConfirmation={() => { this.handleDeleteConfirmation() }}
             onAddMemberClick={() => { this.handleAddMemberClick() }}
             onUserRoleChange={(user, roleId, toggled) => { this.handleUserRoleChange(user, roleId, toggled) }}
+            onDeleteClick={() => this.handleDeleteProjectClick()}
           />}
         />
         {this.state.showProjectModal ? (
@@ -223,6 +246,25 @@ class ProjectDetailsPage extends React.Component<Props, State> {
             users={userStore.users.filter(u => !projectStore.users.find(pu => pu.id === u.id))}
             onAddClick={(user, isNew, roles) => { this.handleAddMember(user, isNew, roles) }}
             onRequestClose={() => { this.setState({ showAddMemberModal: false }) }}
+          />
+        ) : null}
+        {this.state.showDeleteProjectAlert && projectStore.projects.length > 1 ? (
+          <AlertModal
+            isOpen
+            title="Delete Project?"
+            message="Are you sure you want to delete this project?"
+            extraMessage="Deleting a Coriolis Project is permanent!"
+            onConfirmation={() => { this.handleDeleteConfirmation() }}
+            onRequestClose={() => { this.setState({ showDeleteProjectAlert: false }) }}
+          />
+        ) : this.state.showDeleteProjectAlert && projectStore.projects.length === 1 ? (
+          <AlertModal
+            isOpen
+            type="error"
+            title="Error deleting project"
+            message="The project can't be deleted"
+            extraMessage="You can't delete the last project since you'll no longer be able to log in"
+            onRequestClose={() => { this.setState({ showDeleteProjectAlert: false }) }}
           />
         ) : null}
       </Wrapper>

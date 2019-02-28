@@ -26,13 +26,18 @@ import AlertModal from '../../organisms/AlertModal'
 import Modal from '../../molecules/Modal'
 import EndpointValidation from '../../organisms/EndpointValidation'
 import Endpoint from '../../organisms/Endpoint'
+import EndpointDuplicateOptions from '../../organisms/EndpointDuplicateOptions'
 
 import endpointStore, { passwordFields } from '../../../stores/EndpointStore'
 import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import userStore from '../../../stores/UserStore'
+import projectStore from '../../../stores/ProjectStore'
+
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 import type { MainItem } from '../../../types/MainItem'
+
+import Palette from '../../styleUtils/Palette'
 
 import endpointImage from './images/endpoint.svg'
 
@@ -40,6 +45,7 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
+  history: any,
 }
 type State = {
   showDeleteEndpointConfirmation: boolean,
@@ -47,7 +53,9 @@ type State = {
   showEndpointModal: boolean,
   showEndpointInUseModal: boolean,
   showEndpointInUseLoadingModal: boolean,
-  endpointUsage: { replicas: MainItem[], migrations: MainItem[] }
+  endpointUsage: { replicas: MainItem[], migrations: MainItem[] },
+  showDuplicateModal: boolean,
+  duplicating: boolean,
 }
 @observer
 class EndpointDetailsPage extends React.Component<Props, State> {
@@ -57,6 +65,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     showEndpointModal: false,
     showEndpointInUseModal: false,
     showEndpointInUseLoadingModal: false,
+    showDuplicateModal: false,
+    duplicating: false,
     endpointUsage: { replicas: [], migrations: [] },
   }
 
@@ -163,7 +173,32 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     this.setState({ showEndpointInUseModal: false })
   }
 
+  handleDuplicateClick() {
+    this.setState({ showDuplicateModal: true })
+  }
+
+  handleDuplicate(projectId: string) {
+    let endpoint = this.getEndpoint()
+    if (!endpoint) {
+      return
+    }
+
+    this.setState({ duplicating: true })
+
+    let shouldSwitchProject = projectId !== (userStore.loggedUser ? userStore.loggedUser.project.id : '')
+
+    endpointStore.duplicate({
+      shouldSwitchProject,
+      endpoints: [endpoint],
+      onSwitchProject: () => userStore.switchProject(projectId),
+    }).then(() => {
+      this.props.history.push('/endpoints')
+    })
+  }
+
   loadData() {
+    projectStore.getProjects()
+
     endpointStore.getEndpoints().then(() => {
       let endpoint = this.getEndpoint()
 
@@ -180,7 +215,26 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
+    let selectedProjectId = userStore.loggedUser ? userStore.loggedUser.project.id : ''
+
     let endpoint = this.getEndpoint()
+    let dropdownActions = [{
+      label: 'Validate',
+      color: Palette.primary,
+      action: () => { this.handleValidateClick() },
+    }, {
+      label: 'Edit',
+      action: () => { this.handleEditClick() },
+
+    }, {
+      label: 'Duplicate',
+      action: () => { this.handleDuplicateClick() },
+
+    }, {
+      label: 'Delete Endpoint',
+      color: Palette.alert,
+      action: () => { this.handleDeleteEndpointClick() },
+    }]
     return (
       <Wrapper>
         <DetailsTemplate
@@ -189,8 +243,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
-            item={(endpoint: any)}
+            item={endpoint}
             onBackButonClick={() => { this.handleBackButtonClick() }}
+            dropdownActions={dropdownActions}
             typeImage={endpointImage}
             description={endpoint ? endpoint.description : ''}
           />}
@@ -202,7 +257,6 @@ class EndpointDetailsPage extends React.Component<Props, State> {
             connectionInfo={endpointStore.connectionInfo}
             onDeleteClick={() => { this.handleDeleteEndpointClick() }}
             onValidateClick={() => { this.handleValidateClick() }}
-            onEditClick={() => { this.handleEditClick() }}
           />}
         />
         <AlertModal
@@ -249,6 +303,21 @@ class EndpointDetailsPage extends React.Component<Props, State> {
             onCancelClick={() => { this.handleCloseEndpointModal() }}
           />
         </Modal>
+        {this.state.showDuplicateModal ? (
+          <Modal
+            isOpen
+            title="Duplicate Endpoint"
+            onRequestClose={() => { this.setState({ showDuplicateModal: false }) }}
+          >
+            <EndpointDuplicateOptions
+              duplicating={this.state.duplicating}
+              projects={projectStore.projects}
+              selectedProjectId={selectedProjectId}
+              onCancelClick={() => { this.setState({ showDuplicateModal: false }) }}
+              onDuplicateClick={projectId => { this.handleDuplicate(projectId) }}
+            />
+          </Modal>
+        ) : null}
       </Wrapper>
     )
   }

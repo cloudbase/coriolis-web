@@ -40,7 +40,7 @@ const Info = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: 32px;
-  margin-left: -32px;  
+  margin-left: -32px;
 `
 const Field = styled.div`
   ${StyleProps.exactWidth('calc(50% - 32px)')}
@@ -66,10 +66,9 @@ const TableStyled = styled(Table)`
   margin-bottom: 32px;
 `
 const Buttons = styled.div`
-  margin-top: 32px;
+  margin-top: 64px;
   display: flex;
   justify-content: space-between;
-  margin-top: 32px;
 `
 const UserColumn = styled.div`
   ${props => props.disabled ? css`color: ${Palette.grayscale[3]};` : ''}
@@ -96,27 +95,23 @@ type Props = {
   loading: boolean,
   users: User[],
   usersLoading: boolean,
-  deleteDisabled: boolean,
   roleAssignments: RoleAssignment[],
   roles: Role[],
   loggedUserId: string,
   onEnableUser: (user: User) => void,
   onRemoveUser: (user: User) => void,
   onUserRoleChange: (user: User, roleId: string, toggled: boolean) => void,
-  onEditProjectClick: () => void,
-  onDeleteConfirmation: () => void,
   onAddMemberClick: () => void,
+  onDeleteClick: () => void,
 }
 type State = {
   showRemoveUserAlert: boolean,
-  showDeleteProjectAlert: boolean,
 }
 const testName = 'pdContent'
 @observer
 class ProjectDetailsContent extends React.Component<Props, State> {
   state = {
     showRemoveUserAlert: false,
-    showDeleteProjectAlert: false,
   }
 
   selectedUser: ?User
@@ -151,15 +146,6 @@ class ProjectDetailsContent extends React.Component<Props, State> {
     this.setState({ showRemoveUserAlert: false })
   }
 
-  handleDeleteConfirmation() {
-    this.setState({ showDeleteProjectAlert: false })
-    this.props.onDeleteConfirmation()
-  }
-
-  handleCloseDeleteConfirmation() {
-    this.setState({ showDeleteProjectAlert: false })
-  }
-
   renderLoading() {
     return (
       <LoadingWrapper>
@@ -175,10 +161,6 @@ class ProjectDetailsContent extends React.Component<Props, State> {
       <Buttons>
         <ButtonsColumn>
           <Button
-            secondary
-            onClick={this.props.onEditProjectClick}
-          >Edit Project</Button>
-          <Button
             onClick={this.props.onAddMemberClick}
           >Add Member</Button>
         </ButtonsColumn>
@@ -186,7 +168,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
           <Button
             alert
             hollow
-            onClick={() => { this.setState({ showDeleteProjectAlert: true }) }}
+            onClick={() => { this.props.onDeleteClick() }}
           >Delete Project</Button>
         </ButtonsColumn>
       </Buttons>
@@ -326,25 +308,6 @@ class ProjectDetailsContent extends React.Component<Props, State> {
             extraMessage=" "
             onConfirmation={() => { this.handleRemoveUserConfirmation() }}
             onRequestClose={() => { this.handleCloseRemoveUserConfirmation() }}
-          />
-        ) : null}
-        {this.state.showDeleteProjectAlert && !this.props.deleteDisabled ? (
-          <AlertModal
-            isOpen
-            title="Delete Project?"
-            message="Are you sure you want to delete this project?"
-            extraMessage="Deleting a Coriolis Project is permanent!"
-            onConfirmation={() => { this.handleDeleteConfirmation() }}
-            onRequestClose={() => { this.handleCloseDeleteConfirmation() }}
-          />
-        ) : this.state.showDeleteProjectAlert && this.props.deleteDisabled ? (
-          <AlertModal
-            isOpen
-            type="error"
-            title="Error deleting project"
-            message="The project can't be deleted"
-            extraMessage="You can't delete the last project since you'll no longer be able to log in"
-            onRequestClose={() => { this.handleCloseDeleteConfirmation() }}
           />
         ) : null}
       </Wrapper>

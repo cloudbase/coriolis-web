@@ -33,11 +33,9 @@ import endpointImage from './images/endpoint-large.svg'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
-import EndpointSource from '../../../sources/EndpointSource'
 import endpointStore from '../../../stores/EndpointStore'
 import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
-import notificationStore from '../../../stores/NotificationStore'
 import providerStore from '../../../stores/ProviderStore'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import { requestPollTimeout } from '../../../config.js'
@@ -162,44 +160,15 @@ class EndpointsPage extends React.Component<{}, State> {
   handleDuplicate(projectId: string) {
     this.setState({ modalIsOpen: false, duplicating: true })
 
-    let selectedProjectId = userStore.loggedUser ? userStore.loggedUser.project.id : ''
-    let switchProject = projectId !== selectedProjectId
+    let shouldSwitchProject = projectId !== (userStore.loggedUser ? userStore.loggedUser.project.id : '')
+    let endpoints = this.state.confirmationItems || []
 
-    let endpoints = []
-    let items = this.state.confirmationItems || []
-    Promise.all(items.map(endpoint => {
-      return EndpointSource.getConnectionInfo(endpoint).then(connectionInfo => {
-        endpoints.push({
-          ...endpoint,
-          connection_info: connectionInfo,
-          name: `${endpoint.name}${!switchProject ? ' (copy)' : ''}`,
-        })
-      })
-    })).then(() => {
-      if (switchProject) {
-        return userStore.switchProject(projectId).then(() => {
-          this.handleProjectChange()
-        })
-      }
-      return Promise.resolve()
-    }).then(() => {
-      return Promise.all(endpoints.map(endpoint => {
-        return EndpointSource.add(endpoint, true)
-      }).map((p: Promise<any>) => p.catch(e => e)))
-        .then((results: (Endpoint | { status: string, data?: { description: string } })[]) => {
-          let internalServerErrors = results.filter(r => r.status && r.status === 500)
-          if (internalServerErrors.length > 0) {
-            notificationStore.alert(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
-          }
-          let forbiddenErrors = results.filter(r => r.status && r.status === 403)
-          if (forbiddenErrors.length > 0 && forbiddenErrors[0].data && forbiddenErrors[0].data.description) {
-            notificationStore.alert(String(forbiddenErrors[0].data.description), 'error')
-          }
-        })
-    }).catch(e => {
-      if (e.data && e.data.description) {
-        notificationStore.alert(e.data.description, 'error')
-      }
+    endpointStore.duplicate({
+      shouldSwitchProject,
+      endpoints,
+      onSwitchProject: () => userStore.switchProject(projectId).then(() => {
+        this.handleProjectChange()
+      }),
     }).then(() => {
       this.pollData(true)
       this.setState({ showDuplicateModal: false, duplicating: false })

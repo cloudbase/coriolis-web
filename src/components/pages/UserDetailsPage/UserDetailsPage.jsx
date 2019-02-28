@@ -24,9 +24,12 @@ import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import UserDetailsContent from '../../organisms/UserDetailsContent'
 import UserModal from '../../organisms/UserModal'
+import AlertModal from '../../organisms/AlertModal'
 
 import userStore from '../../../stores/UserStore'
 import projectStore from '../../../stores/ProjectStore'
+
+import Palette from '../../styleUtils/Palette'
 
 import userImage from './images/user.svg'
 
@@ -38,12 +41,14 @@ type Props = {
 type State = {
   showUserModal: boolean,
   editPassword: boolean,
+  showDeleteAlert: boolean,
 }
 @observer
 class UserDetailsPage extends React.Component<Props, State> {
   state = {
     showUserModal: false,
     editPassword: false,
+    showDeleteAlert: false,
   }
 
   componentDidMount() {
@@ -101,6 +106,10 @@ class UserDetailsPage extends React.Component<Props, State> {
     this.setState({ showUserModal: true, editPassword: true })
   }
 
+  handleDeleteClick() {
+    this.setState({ showDeleteAlert: true })
+  }
+
   loadData(id?: string) {
     projectStore.getProjects()
     userStore.getProjects(id || this.props.match.params.id)
@@ -108,6 +117,19 @@ class UserDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
+    let dropdownActions = [{
+      label: 'Change passowrd',
+      color: Palette.primary,
+      action: () => { this.handleUpdatePasswordClick() },
+    }, {
+      label: 'Edit user',
+      action: () => { this.handleEditClick() },
+    }, {
+      label: 'Delete user',
+      color: Palette.alert,
+      action: () => { this.handleDeleteClick() },
+    }]
+
     return (
       <Wrapper>
         <DetailsTemplate
@@ -119,16 +141,16 @@ class UserDetailsPage extends React.Component<Props, State> {
             item={{ ...userStore.userDetails, description: '' }}
             onBackButonClick={() => { this.handleBackButtonClick() }}
             typeImage={userImage}
+            dropdownActions={dropdownActions}
             description={''}
           />}
           contentComponent={<UserDetailsContent
-            onDeleteConfirmation={() => { this.handleDeleteConfirmation() }}
+            onDeleteClick={() => { this.handleDeleteClick() }}
             user={userStore.userDetails}
             isLoggedUser={userStore.loggedUser && userStore.userDetails ? userStore.loggedUser.id === userStore.userDetails.id : false}
             loading={userStore.userDetailsLoading}
             userProjects={userStore.projects}
             projects={projectStore.projects}
-            onEditClick={() => { this.handleEditClick() }}
             onUpdatePasswordClick={() => { this.handleUpdatePasswordClick() }}
           />}
         />
@@ -141,6 +163,16 @@ class UserDetailsPage extends React.Component<Props, State> {
             editPassword={this.state.editPassword}
             onRequestClose={() => { this.handleUserEditModalClose() }}
             onUpdateClick={user => { this.handleUserUpdateClick(user) }}
+          />
+        ) : null}
+        {this.state.showDeleteAlert ? (
+          <AlertModal
+            isOpen
+            title="Delete User?"
+            message="Are you sure you want to delete this user?"
+            extraMessage="Deleting a Coriolis User is permanent!"
+            onConfirmation={() => { this.handleDeleteConfirmation() }}
+            onRequestClose={() => { this.setState({ showDeleteAlert: false }) }}
           />
         ) : null}
       </Wrapper>

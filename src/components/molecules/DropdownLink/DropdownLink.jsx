@@ -54,7 +54,7 @@ export const List = styled.div`
 export const Tip = styled.div`
   position: absolute;
   top: -6px;
-  right: 8px;
+  right: 11px;
   width: 10px;
   height: 10px;
   background: ${Palette.grayscale[1]};
