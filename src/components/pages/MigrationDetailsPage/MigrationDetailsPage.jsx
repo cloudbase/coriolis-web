@@ -23,11 +23,13 @@ import DetailsPageHeader from '../../organisms/DetailsPageHeader'
 import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import MigrationDetailsContent from '../../organisms/MigrationDetailsContent'
 import AlertModal from '../../organisms/AlertModal'
+import EditReplica from '../../organisms/EditReplica'
 
 import migrationStore from '../../../stores/MigrationStore'
 import userStore from '../../../stores/UserStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
+import networkStore from '../../../stores/NetworkStore'
 import instanceStore from '../../../stores/InstanceStore'
 import { requestPollTimeout } from '../../../config'
 
@@ -42,45 +44,56 @@ type Props = {
 type State = {
   showDeleteMigrationConfirmation: boolean,
   showCancelConfirmation: boolean,
+  showEditModal: boolean,
 }
 @observer
 class MigrationDetailsPage extends React.Component<Props, State> {
   state = {
     showDeleteMigrationConfirmation: false,
     showCancelConfirmation: false,
+    showEditModal: false,
   }
 
-  pollInterval: IntervalID
+  pollTimeout: TimeoutID
 
   componentDidMount() {
     document.title = 'Migration Details'
 
     endpointStore.getEndpoints()
     this.loadMigrationWithInstances(this.props.match.params.id)
-    this.pollInterval = setInterval(() => { this.pollData() }, requestPollTimeout)
+    this.pollData()
   }
 
   componentWillReceiveProps(newProps: any) {
-    if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadMigrationWithInstances(newProps.match.params.id)
+    if (newProps.match.params.id === this.props.match.params.id) {
+      return
     }
+
+    endpointStore.getEndpoints()
+    this.loadMigrationWithInstances(newProps.match.params.id)
   }
 
   componentWillUnmount() {
     migrationStore.clearDetails()
-    clearInterval(this.pollInterval)
+    clearTimeout(this.pollTimeout)
   }
 
   loadMigrationWithInstances(migrationId: string) {
     migrationStore.getMigration(migrationId, true).then(() => {
-      if (migrationStore.migrationDetails) {
-        instanceStore.loadInstancesDetails(
-          migrationStore.migrationDetails.origin_endpoint_id,
-          // $FlowIgnore
-          migrationStore.migrationDetails.instances.map(n => { return { instance_name: n } }),
-          false, true
-        )
+      let details = migrationStore.migrationDetails
+      if (!details) {
+        return
       }
+
+      networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
+        quietError: true,
+      })
+      instanceStore.loadInstancesDetails(
+        details.origin_endpoint_id,
+        // $FlowIgnore
+        details.instances.map(n => { return { instance_name: n } }),
+        false, true
+      )
     })
   }
 
@@ -120,6 +133,12 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     this.setState({ showCancelConfirmation: true })
   }
 
+  handleRecreateClick() {
+    this.setState({
+      showEditModal: true,
+    })
+  }
+
   handleCloseCancelConfirmation() {
     this.setState({ showCancelConfirmation: false })
   }
@@ -139,11 +158,48 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   pollData() {
-    migrationStore.getMigration(this.props.match.params.id, false)
+    if (this.state.showEditModal) {
+      return
+    }
+    migrationStore.getMigration(this.props.match.params.id, false).then(() => {
+      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+    })
   }
 
   getStatus() {
     return migrationStore.migrationDetails && migrationStore.migrationDetails.status
+  }
+
+  closeEditModal() {
+    this.setState({ showEditModal: false }, () => {
+      this.pollData()
+    })
+  }
+
+  renderEditModal() {
+    let sourceEndpoint = endpointStore.endpoints
+      .find(e => migrationStore.migrationDetails && e.id === migrationStore.migrationDetails.origin_endpoint_id)
+    let destinationEndpoint = endpointStore.endpoints
+      .find(e => migrationStore.migrationDetails && e.id === migrationStore.migrationDetails.destination_endpoint_id)
+
+    if (!this.state.showEditModal || !migrationStore.migrationDetails || !destinationEndpoint || !sourceEndpoint) {
+      return null
+    }
+
+    return (
+      <EditReplica
+        type="migration"
+        isOpen
+        onRequestClose={() => { this.closeEditModal() }}
+        sourceEndpoint={sourceEndpoint}
+        replica={migrationStore.migrationDetails}
+        destinationEndpoint={destinationEndpoint}
+        instancesDetails={instanceStore.instancesDetails}
+        instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+        networks={networkStore.networks}
+        networksLoading={networkStore.loading}
+      />
+    )
   }
 
   render() {
@@ -151,6 +207,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       label: 'Cancel',
       disabled: this.getStatus() !== 'RUNNING',
       action: () => { this.handleCancelMigrationClick() },
+    }, {
+      label: 'Recreate Migration',
+      action: () => { this.handleRecreateClick() },
     }, {
       label: 'Delete Migration',
       color: Palette.alert,
@@ -198,6 +257,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           onConfirmation={() => { this.handleCancelConfirmation() }}
           onRequestClose={() => { this.handleCloseCancelConfirmation() }}
         />
+        {this.renderEditModal()}
       </Wrapper>
     )
   }

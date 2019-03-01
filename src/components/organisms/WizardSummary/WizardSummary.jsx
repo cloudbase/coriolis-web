@@ -240,6 +240,9 @@ class WizardSummary extends React.Component<Props> {
   renderSourceOptionsSection() {
     let data = this.props.data
     let type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
+    if (!data.sourceOptions) {
+      return null
+    }
 
     return (
       <Section>

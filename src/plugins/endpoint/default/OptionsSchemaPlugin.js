@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { Field } from '../../../types/Field'
 import type { DestinationOption, StorageMap } from '../../../types/Endpoint'
-import type { WizardData } from '../../../types/WizardData'
+import type { NetworkMap } from '../../../types/Network'
 import { executionOptions } from '../../../config'
 
 const migrationImageOsTypes = ['windows', 'linux']
@@ -127,20 +127,28 @@ export default class OptionsSchemaParser {
     return env
   }
 
-  static getNetworkMap(data: WizardData) {
+  static getNetworkMap(networkMappings: ?NetworkMap[]) {
     let payload = {}
-    if (data.networks && data.networks.length) {
-      data.networks.forEach(mapping => {
+    if (networkMappings && networkMappings.length) {
+      networkMappings.forEach(mapping => {
         payload[mapping.sourceNic.network_name] = mapping.targetNetwork.id
       })
     }
     return payload
   }
 
-  static getStorageMap(data: any, storageMap: StorageMap[]) {
+  static getStorageMap(defaultStorage: ?string, storageMap: ?StorageMap[]) {
+    if (!defaultStorage && !storageMap) {
+      return null
+    }
+
     let payload = {}
-    if (data && data.default_storage) {
-      payload.default = data.default_storage
+    if (defaultStorage) {
+      payload.default = defaultStorage
+    }
+
+    if (!storageMap) {
+      return payload
     }
 
     storageMap.forEach(mapping => {
