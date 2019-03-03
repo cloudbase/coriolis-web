@@ -21,10 +21,11 @@ import { observer } from 'mobx-react'
 import SideMenu from '../../molecules/SideMenu'
 import NotificationDropdown from '../../molecules/NotificationDropdown'
 import UserDropdown from '../../molecules/UserDropdown'
+import AboutModal from '../../organisms/AboutModal'
+
 import type { User as UserType } from '../../../types/User'
 
 import notificationStore from '../../../stores/NotificationStore'
-import logger from '../../../utils/ApiLogger'
 
 import backgroundImage from './images/star-bg.jpg'
 import logoImage from './images/logo.svg'
@@ -54,6 +55,9 @@ const User = styled.div`
   display: flex;
   align-items: center;
 `
+type State = {
+  showAbout: boolean,
+}
 type Props = {
   user?: ?UserType,
   onUserItemClick: (userItem: { label: string, value: string }) => void,
@@ -61,7 +65,11 @@ type Props = {
 }
 
 @observer
-class DetailsPageHeader extends React.Component<Props, {}> {
+class DetailsPageHeader extends React.Component<Props, State> {
+  state = {
+    showAbout: false,
+  }
+
   pollTimeout: TimeoutID
   stopPolling: boolean
 
@@ -83,10 +91,12 @@ class DetailsPageHeader extends React.Component<Props, {}> {
   }
 
   handleUserItemClick(item: { label: string, value: string }) {
-    if (item.value === 'downloadlog') {
-      logger.download()
-    } else {
-      this.props.onUserItemClick(item)
+    switch (item.value) {
+      case 'about':
+        this.setState({ showAbout: true })
+        break
+      default:
+        this.props.onUserItemClick(item)
     }
   }
 
@@ -120,6 +130,9 @@ class DetailsPageHeader extends React.Component<Props, {}> {
             data-test-id="dpHeader-userDropdown"
           />
         </User>
+        {this.state.showAbout ? (
+          <AboutModal onRequestClose={() => { this.setState({ showAbout: false }) }} />
+        ) : null}
       </Wrapper>
     )
   }

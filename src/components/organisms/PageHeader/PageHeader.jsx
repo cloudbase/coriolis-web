@@ -30,8 +30,8 @@ import ChooseProvider from '../../organisms/ChooseProvider'
 import Endpoint from '../../organisms/Endpoint'
 import UserModal from '../../organisms/UserModal'
 import ProjectModal from '../../organisms/ProjectModal'
+import AboutModal from '../../organisms/AboutModal'
 
-import logger from '../../../utils/ApiLogger'
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
 import notificationStore from '../../../stores/NotificationStore'
@@ -72,6 +72,7 @@ type State = {
   showEndpointModal: boolean,
   showUserModal: boolean,
   showProjectModal: boolean,
+  showAbout: boolean,
   providerType: ?string,
 }
 @observer
@@ -82,6 +83,7 @@ class PageHeader extends React.Component<Props, State> {
     showUserModal: false,
     showProjectModal: false,
     providerType: null,
+    showAbout: false,
   }
 
   pollTimeout: TimeoutID
@@ -108,8 +110,8 @@ class PageHeader extends React.Component<Props, State> {
 
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
-      case 'downloadlog':
-        logger.download()
+      case 'about':
+        this.setState({ showAbout: true })
         return
       case 'signout':
         userStore.logout()
@@ -294,6 +296,9 @@ class PageHeader extends React.Component<Props, State> {
             onRequestClose={() => { this.handleProjectModalClose() }}
             onUpdateClick={project => { this.handleProjectModalUpdateClick(project) }}
           />
+        ) : null}
+        {this.state.showAbout ? (
+          <AboutModal onRequestClose={() => { this.setState({ showAbout: false }) }} />
         ) : null}
       </Wrapper>
     )

@@ -14,6 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import express from 'express'
 import fs from 'fs'
+import packageJson from '../package.json'
 
 // Create our app
 const app = express()
@@ -33,6 +34,8 @@ if (isDev) {
 app.use(express.static('dist'))
 
 require('./proxy')(app)
+
+app.get('/version', (req, res) => { res.send({ version: packageJson.version }) })
 
 app.use((req, res) => {
   res.redirect(`${req.baseUrl}/#${req.url}`)

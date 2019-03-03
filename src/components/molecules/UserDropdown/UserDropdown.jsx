@@ -53,11 +53,7 @@ const List = styled.div`
   z-index: 10;
 `
 const ListItem = styled.div`
-  padding: 8px 0;
-
-  &:last-child {
-    padding: 0;
-  }
+  padding-top: 8px;
 `
 
 const Label = styled.div`
@@ -188,8 +184,8 @@ class UserDropdown extends React.Component<Props, State> {
     }
 
     let items = [{
-      label: 'Download Log',
-      value: 'downloadlog',
+      label: 'About Coriolis',
+      value: 'about',
     }, {
       label: 'Sign Out',
       value: 'signout',
