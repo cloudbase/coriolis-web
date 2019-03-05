@@ -298,16 +298,19 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   renderEditReplica() {
+    let sourceEndpoint = endpointStore.endpoints
+      .find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.origin_endpoint_id)
     let destinationEndpoint = endpointStore.endpoints
       .find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.destination_endpoint_id)
 
-    if (!this.state.showEditModal || !replicaStore.replicaDetails || !destinationEndpoint) {
+    if (!this.state.showEditModal || !replicaStore.replicaDetails || !destinationEndpoint || !sourceEndpoint) {
       return null
     }
 
     return (
       <EditReplica
         isOpen
+        sourceEndpoint={sourceEndpoint}
         onRequestClose={() => { this.closeEditModal() }}
         replica={replicaStore.replicaDetails}
         destinationEndpoint={destinationEndpoint}

@@ -20,6 +20,7 @@ import styled from 'styled-components'
 
 import providerStore, { getFieldChangeDestOptions } from '../../../stores/ProviderStore'
 import replicaStore from '../../../stores/ReplicaStore'
+import migrationStore from '../../../stores/MigrationStore'
 import endpointStore from '../../../stores/EndpointStore'
 
 import Button from '../../atoms/Button'
@@ -31,14 +32,14 @@ import WizardNetworks from '../../organisms/WizardNetworks'
 import WizardOptions from '../../organisms/WizardOptions'
 import WizardStorage from '../WizardStorage/WizardStorage'
 
-import type { MainItem } from '../../../types/MainItem'
+import type { MainItem, UpdateData } from '../../../types/MainItem'
 import type { NavigationItem } from '../../molecules/Panel'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoint'
 import type { Field } from '../../../types/Field'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Network, NetworkMap } from '../../../types/Network'
 
-// import { storageProviders } from '../../../config'
+import { storageProviders } from '../../../config'
 import StyleProps from '../../styleUtils/StyleProps'
 
 const PanelContent = styled.div`
@@ -66,10 +67,12 @@ const Buttons = styled.div`
 `
 
 type Props = {
+  type?: 'replica' | 'migration',
   isOpen: boolean,
   onRequestClose: () => void,
   replica: MainItem,
   destinationEndpoint: Endpoint,
+  sourceEndpoint: Endpoint,
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
   networks: Network[],
@@ -100,7 +103,7 @@ class EditReplica extends React.Component<Props, State> {
       endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
     }
 
-    providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, 'replica').then(() => {
+    providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica').then(() => {
       return providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type, undefined, true)
     }).then(() => {
       this.loadEnvDestinationOptions()
@@ -108,8 +111,12 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   hasStorageMap() {
-    return false
-    // return Boolean(storageProviders.find(p => p === this.props.destinationEndpoint.type))
+    if (this.props.type === 'replica') {
+      // storage mapping edit is not currently supported by the API
+      return false
+    }
+
+    return Boolean(storageProviders.find(p => p === this.props.destinationEndpoint.type))
   }
 
   isUpdateDisabled() {
@@ -196,14 +203,24 @@ class EditReplica extends React.Component<Props, State> {
   handleUpdateClick() {
     this.setState({ updateDisabled: true })
 
-    replicaStore.update(this.props.replica, this.props.destinationEndpoint, {
+    let updateData: UpdateData = {
       destination: this.state.destinationData,
       network: this.state.selectedNetworks.length > 0 ? this.getSelectedNetworks() : [],
       storage: this.state.destinationData.default_storage || this.state.storageMap.length > 0 ? this.getStorageMap() : [],
-    }).then(() => {
-      window.location.href = `/#/replica/executions/${this.props.replica.id}`
-      this.props.onRequestClose()
-    })
+    }
+    if (this.props.type === 'replica') {
+      replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData).then(() => {
+        window.location.href = `/#/replica/executions/${this.props.replica.id}`
+        this.props.onRequestClose()
+      })
+    } else {
+      migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData)
+        .then((migration: MainItem) => {
+          migrationStore.clearDetails()
+          window.location.href = `/#/migration/${migration.id}`
+          this.props.onRequestClose()
+        })
+    }
   }
 
   handleNetworkChange(sourceNic: Nic, targetNetwork: Network) {
@@ -279,8 +296,7 @@ class EditReplica extends React.Component<Props, State> {
     this.state.storageMap.forEach(mapping => {
       let fieldName = mapping.type === 'backend' ? 'storage_backend_identifier' : 'id'
       let existingMapping = storageMap.find(m => m.type === mapping.type &&
-        // $FlowIgnore
-        m[fieldName] === mapping[fieldName]
+        m.source[fieldName] === mapping.source[fieldName]
       )
       if (existingMapping) {
         existingMapping.target = mapping.target
@@ -296,12 +312,14 @@ class EditReplica extends React.Component<Props, State> {
     if (providerStore.destinationSchemaLoading || providerStore.destinationOptionsLoading) {
       return this.renderLoading('Loading target options ...')
     }
+    let fields = this.props.type === 'replica' ? providerStore.destinationSchema.filter(f => !f.readOnly) :
+      providerStore.destinationSchema
 
     return (
       <WizardOptions
         wizardType="replica-dest-options-edit"
         getFieldValue={(f, d) => this.getFieldValue(f, d)}
-        fields={providerStore.destinationSchema.filter(f => !f.readOnly)}
+        fields={fields}
         hasStorageMap={this.hasStorageMap()}
         onChange={(f, v) => { this.handleDestinationFieldChange(f, v) }}
         storageBackends={endpointStore.storageBackends}
@@ -309,6 +327,7 @@ class EditReplica extends React.Component<Props, State> {
         columnStyle={{ marginRight: 0 }}
         fieldWidth={StyleProps.inputSizes.large.width}
         onScrollableRef={ref => { this.scrollableRef = ref }}
+        availableHeight={384}
       />
     )
   }
@@ -373,7 +392,9 @@ class EditReplica extends React.Component<Props, State> {
             large
             onClick={() => { this.handleUpdateClick() }}
             disabled={this.isUpdateDisabled()}
-          >Update</Button>
+          >
+            {this.props.type === 'replica' ? 'Update' : 'Create'}
+          </Button>
         </Buttons>
       </PanelContent>
     )
@@ -403,7 +424,7 @@ class EditReplica extends React.Component<Props, State> {
     return (
       <Modal
         isOpen={this.props.isOpen}
-        title="Edit Replica"
+        title={`${this.props.type === 'replica' ? 'Edit Replica' : 'Recreate Migration'}`}
         onRequestClose={this.props.onRequestClose}
         contentStyle={{ width: '800px' }}
         onScrollableRef={() => this.scrollableRef}

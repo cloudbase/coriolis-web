@@ -25,15 +25,17 @@ import type { MainItem } from '../types/MainItem'
 
 class WizardSource {
   static create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem> {
-    const parser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
+    const sourceParser = data.source ? OptionsSchemaPlugin[data.source.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
+    const destParser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     let payload = {}
+    let defaultStorage: ?string = data.destOptions && data.destOptions.default_storage
     payload[type] = {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target ? data.target.id : 'null',
-      destination_environment: parser.getDestinationEnv(data.destOptions),
-      network_map: parser.getNetworkMap(data),
+      destination_environment: destParser.getDestinationEnv(data.destOptions),
+      network_map: destParser.getNetworkMap(data.networks),
       instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name) : 'null',
-      storage_mappings: parser.getStorageMap(data.destOptions, storageMap),
+      storage_mappings: destParser.getStorageMap(defaultStorage, storageMap),
       notes: data.destOptions ? data.destOptions.description || '' : '',
     }
 
@@ -42,7 +44,7 @@ class WizardSource {
     }
 
     if (data.sourceOptions) {
-      payload[type].source_environment = parser.getDestinationEnv(data.sourceOptions)
+      payload[type].source_environment = sourceParser.getDestinationEnv(data.sourceOptions)
     }
 
     return Api.send({

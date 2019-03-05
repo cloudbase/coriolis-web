@@ -16,8 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action } from 'mobx'
 
-import type { MainItem } from '../types/MainItem'
+import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Field } from '../types/Field'
+import type { Endpoint } from '../types/Endpoint'
 import notificationStore from '../stores/NotificationStore'
 import MigrationSource from '../sources/MigrationSource'
 
@@ -48,6 +49,20 @@ class MigrationStore {
       this.migrationsLoaded = true
     }).catch(() => {
       this.loading = false
+    })
+  }
+
+  @action recreate(migration: MainItem, sourceEndpoint: Endpoint, destEndpoint: Endpoint, updateData: UpdateData): Promise<MainItem> {
+    return MigrationSource.recreate({
+      sourceEndpoint,
+      destEndpoint,
+      instanceNames: migration.instances,
+      destEnv: migration.destination_environment,
+      updatedDestEnv: updateData.destination,
+      storageMappings: migration.storage_mappings,
+      updatedStorageMappings: updateData.storage,
+      networkMappings: migration.network_map,
+      updatedNetworkMappings: updateData.network,
     })
   }
 
@@ -97,6 +112,7 @@ class MigrationStore {
 
   @action clearDetails() {
     this.detailsLoading = true
+    this.migrationDetails = null
   }
 }
 

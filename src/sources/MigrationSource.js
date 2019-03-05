@@ -16,9 +16,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
+import { OptionsSchemaPlugin } from '../plugins/endpoint'
+
 import Api from '../utils/ApiCaller'
 import type { MainItem } from '../types/MainItem'
 import type { Field } from '../types/Field'
+import type { NetworkMap } from '../types/Network'
+import type { Endpoint, StorageMap } from '../types/Endpoint'
 
 import { servicesUrl } from '../config'
 
@@ -63,6 +67,72 @@ class MigrationSource {
       MigrationSourceUtils.sortTaskUpdates(migration)
       return migration
     })
+  }
+
+  static recreate(opts: {
+    sourceEndpoint: Endpoint,
+    destEndpoint: Endpoint,
+    instanceNames: string[],
+    destEnv: ?{ [string]: any },
+    updatedDestEnv: ?{ [string]: any },
+    sourceEnv?: ?{ [string]: any },
+    updatedSourceEnv?: ?{ [string]: any },
+    storageMappings: ?{ [string]: any },
+    updatedStorageMappings: ?StorageMap[],
+    networkMappings: ?{ [string]: any },
+    updatedNetworkMappings: ?NetworkMap[],
+  }): Promise<MainItem> {
+    const getValue = (fieldName: string): ?string => {
+      return (opts.updatedDestEnv && opts.updatedDestEnv[fieldName]) ||
+        (opts.destEnv && opts.destEnv[fieldName])
+    }
+
+    const sourceParser = OptionsSchemaPlugin[opts.sourceEndpoint.type] || OptionsSchemaPlugin.default
+    const destParser = OptionsSchemaPlugin[opts.destEndpoint.type] || OptionsSchemaPlugin.default
+    let payload: any = {}
+
+    payload.migration = {
+      origin_endpoint_id: opts.sourceEndpoint.id,
+      destination_endpoint_id: opts.destEndpoint.id,
+      destination_environment: {
+        ...opts.destEnv,
+        ...destParser.getDestinationEnv(opts.updatedDestEnv),
+      },
+      instances: opts.instanceNames,
+      notes: getValue('description') || '',
+    }
+
+    if (getValue('skip_os_morphing') != null) {
+      payload.migration.skip_os_morphing = getValue('skip_os_morphing')
+    }
+
+    if (opts.networkMappings || (opts.updatedNetworkMappings && opts.updatedNetworkMappings.length)) {
+      payload.migration.network_map = {
+        ...opts.networkMappings,
+        ...destParser.getNetworkMap(opts.updatedNetworkMappings),
+      }
+    }
+
+    if ((opts.storageMappings && Object.keys(opts.storageMappings).length)
+      || (opts.updatedStorageMappings && opts.updatedStorageMappings.length)) {
+      payload.migration.storage_mappings = {
+        ...opts.storageMappings,
+        ...destParser.getStorageMap(getValue('default_storage'), opts.updatedStorageMappings),
+      }
+    }
+
+    if (opts.sourceEnv || opts.updatedSourceEnv) {
+      payload.migration.source_environment = {
+        ...opts.sourceEnv,
+        ...sourceParser.getDestinationEnv(opts.updatedSourceEnv),
+      }
+    }
+
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`,
+      method: 'POST',
+      data: payload,
+    }).then(response => response.data.migration)
   }
 
   static cancel(migrationId: string): Promise<string> {
