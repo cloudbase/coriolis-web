@@ -327,6 +327,7 @@ class EditReplica extends React.Component<Props, State> {
         columnStyle={{ marginRight: 0 }}
         fieldWidth={StyleProps.inputSizes.large.width}
         onScrollableRef={ref => { this.scrollableRef = ref }}
+        availableHeight={384}
       />
     )
   }

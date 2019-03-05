@@ -87,6 +87,7 @@ type Props = {
   columnStyle?: { [string]: mixed },
   fieldWidth?: number,
   onScrollableRef?: (ref: HTMLElement) => void,
+  availableHeight?: number,
 }
 @observer
 class WizardOptions extends React.Component<Props> {
@@ -209,7 +210,9 @@ class WizardOptions extends React.Component<Props> {
       }
     })
 
-    if (fields.length * 96 < window.innerHeight - 450) {
+    let availableHeight = this.props.availableHeight || (window.innerHeight - 450)
+
+    if (fields.length * 96 < availableHeight) {
       return (
         <Fields>
           <OneColumn>
