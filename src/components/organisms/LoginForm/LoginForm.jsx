@@ -27,7 +27,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 
 import errorIcon from './images/error.svg'
 
-import { loginButtons } from '../../../config'
+import { loginButtons, showUserDomainInput } from '../../../config'
 import notificationStore from '../../../stores/NotificationStore'
 
 const Form = styled.form`
@@ -87,7 +87,12 @@ type Props = {
   className: string,
   loading: boolean,
   loginFailedResponse: { status: string, message?: string },
-  onFormSubmit: (credentials: { username: string, password: string }) => void,
+  domain: string,
+  onDomainChange: (domain: string) => void,
+  onFormSubmit: (credentials: {
+    username: string,
+    password: string,
+  }) => void,
 }
 type State = {
   username: string,
@@ -112,13 +117,20 @@ class LoginForm extends React.Component<Props, State> {
     this.setState({ password })
   }
 
+  handleDomainChange(domain: string) {
+    this.props.onDomainChange(domain)
+  }
+
   handleFormSubmit(e: Event) {
     e.preventDefault()
 
-    if (this.state.username.length === 0 || this.state.password.length === 0) {
+    if (!this.state.username.length || !this.state.password.length || !this.props.domain.length) {
       notificationStore.alert('Please fill in all fields')
     } else {
-      this.props.onFormSubmit({ username: this.state.username, password: this.state.password })
+      this.props.onFormSubmit({
+        username: this.state.username,
+        password: this.state.password,
+      })
     }
   }
 
@@ -132,7 +144,7 @@ class LoginForm extends React.Component<Props, State> {
     if (this.props.loginFailedResponse.status) {
       switch (this.props.loginFailedResponse.status) {
         case 401:
-          errorMessage = 'The username or password did not match. Please try again.'
+          errorMessage = 'Incorrect credentials.<br />Please try again.'
           break
         default:
           errorMessage = this.props.loginFailedResponse.message || errorMessage
@@ -142,9 +154,10 @@ class LoginForm extends React.Component<Props, State> {
     return (
       <LoginError>
         <LoginErrorIcon />
-        <LoginErrorText data-test-id="loginForm-errorText">
-          {errorMessage}
-        </LoginErrorText>
+        <LoginErrorText
+          data-test-id="loginForm-errorText"
+          dangerouslySetInnerHTML={{ __html: errorMessage }}
+        />
       </LoginError>
     )
   }
@@ -169,6 +182,13 @@ class LoginForm extends React.Component<Props, State> {
         <LoginOptions />
         {loginSeparator}
         <FormFields>
+          {showUserDomainInput ? (
+            <LoginFormField
+              label="Domain Name"
+              value={this.props.domain}
+              onChange={e => { this.handleDomainChange(e.target.value) }}
+            />
+          ) : null}
           <LoginFormField
             label="Username"
             value={this.state.username}

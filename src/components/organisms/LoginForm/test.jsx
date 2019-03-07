@@ -22,7 +22,7 @@ import LoginForm from '.'
 
 const wrap = props => new TW(shallow(
   // $FlowIgnore
-  <LoginForm {...props} />
+  <LoginForm {...props} domain="default" />
 ), 'loginForm')
 
 describe('LoginForm Component', () => {
