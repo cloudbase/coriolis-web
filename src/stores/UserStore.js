@@ -27,7 +27,7 @@ import notificationStore from '../stores/NotificationStore'
  * 2. Get user details with unscoped token to see if he has project id
  * 3. Post unscoped token with project id (either from his details or from cookies). Set scoped token and project id in cookies.
  * 4. Get token login on subsequent app reloads to retrieve the user info.
- * 
+ *
  * After token expiration, the app is redirected to login page.
  */
 class UserStore {
@@ -42,12 +42,22 @@ class UserStore {
   @observable projects: Project[] = []
   @observable allUsersLoading: boolean = false
 
+  get domainName(): string {
+    return UserSource.getDomainName()
+  }
+
+  saveDomainName(domainName: string) {
+    UserSource.saveDomainName(domainName)
+  }
+
   @action login(creds: Credentials): Promise<void> {
     this.loading = true
     this.loggedUser = null
     this.loginFailedResponse = null
 
     return UserSource.login(creds).then((auth: any) => {
+      this.saveDomainName(creds.domain)
+
       this.loggedUser = { id: auth.token.user.id, email: '', name: '', project: { id: '', name: '' } }
       return this.getLoggedUserInfo()
     }).then(() => {

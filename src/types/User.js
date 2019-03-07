@@ -33,4 +33,5 @@ export type User = {
 export type Credentials = {
   name: string,
   password: string,
+  domain: string,
 }

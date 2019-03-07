@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl, coriolisUrl, userDomain } from '../config'
+import { servicesUrl, coriolisUrl, defaultUserDomain } from '../config'
 import type { Credentials, User } from '../types/User'
 import type { Role, Project, RoleAssignment } from '../types/Project'
 
@@ -35,6 +35,14 @@ class UserModel {
 }
 
 class UserSource {
+  static saveDomainName(domainName: string) {
+    localStorage.setItem('userDomainName', domainName)
+  }
+
+  static getDomainName(): string {
+    return localStorage.getItem('userDomainName') || defaultUserDomain
+  }
+
   static login(userData: Credentials): Promise<User> {
     let auth = {
       auth: {
@@ -43,7 +51,7 @@ class UserSource {
           password: {
             user: {
               name: userData.name,
-              domain: { name: userDomain },
+              domain: { name: userData.domain },
               password: userData.password,
             },
           },

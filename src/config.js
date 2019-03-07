@@ -27,7 +27,8 @@ export const servicesUrl = {
   openId: `${coriolisUrl}identity/OS-FEDERATION/identity_providers/google/protocols/openid/auth`,
 }
 
-export const userDomain = 'default'
+export const showUserDomainInput = false
+export const defaultUserDomain = 'default'
 
 // Whether to use Barbican secrets when creating a new endpoint
 export const useSecret = true

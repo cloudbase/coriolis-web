@@ -82,16 +82,34 @@ const CbsLogo = styled.a`
   cursor: pointer;
 `
 
+type State = {
+  domain: string,
+}
+
 @observer
-class LoginPage extends React.Component<{}> {
+class LoginPage extends React.Component<{}, State> {
+  state = {
+    domain: '',
+  }
+
+  componentWillMount() {
+    this.setState({
+      domain: userStore.domainName,
+    })
+  }
+
   componentDidMount() {
     document.title = 'Log In'
   }
 
-  handleFormSubmit(data: { username: string, password: string }) {
+  handleFormSubmit(data: {
+    username: string,
+    password: string,
+  }) {
     userStore.login({
       name: data.username,
       password: data.password,
+      domain: this.state.domain,
     })
   }
 
@@ -107,6 +125,8 @@ class LoginPage extends React.Component<{}> {
             <Top>
               <Logo />
               <StyledLoginForm
+                domain={this.state.domain}
+                onDomainChange={domain => { this.setState({ domain }) }}
                 onFormSubmit={data => this.handleFormSubmit(data)}
                 loading={userStore.loading}
                 loginFailedResponse={userStore.loginFailedResponse}
