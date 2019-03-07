@@ -217,7 +217,7 @@ class EditReplica extends React.Component<Props, State> {
       migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData)
         .then((migration: MainItem) => {
           migrationStore.clearDetails()
-          window.location.href = `/#/migration/${migration.id}`
+          window.location.href = `/#/migration/tasks/${migration.id}`
           this.props.onRequestClose()
         })
     }
