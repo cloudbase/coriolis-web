@@ -41,7 +41,9 @@ const smallblackProps = css`
   background: url('${coriolisSmallBlackImage}') center no-repeat;
 `
 
-const Wrapper = styled.a``
+const Wrapper = styled.a`
+  transition: all ${StyleProps.animations.swift};
+`
 const Coriolis = styled.div`
   ${props => props.small ? smallProps : props.smallblack ? smallblackProps : largeProps}
   ${props => !props.large && !props.small && !props.smallblack ? StyleProps.media.handheld`
@@ -53,12 +55,14 @@ const Coriolis = styled.div`
 
 type Props = {
   small?: boolean,
-  smallblack?:boolean,
+  smallblack?: boolean,
   large?: boolean,
+  customRef?: (ref: HTMLElement) => void,
 }
+
 const Logo = (props: Props) => {
   return (
-    <Wrapper {...props}>
+    <Wrapper {...props} innerRef={ref => { if (props.customRef) props.customRef(ref) }}>
       <Coriolis large={props.large} small={props.small} smallblack={props.smallblack} />
     </Wrapper>
   )

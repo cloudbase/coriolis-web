@@ -23,7 +23,6 @@ const Wrapper = styled.div`
 `
 const Navigation = styled.div`
   display: flex;
-  min-width: 320px;
 `
 const Content = styled.div`
   padding: 0 64px 0 64px;

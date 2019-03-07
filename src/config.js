@@ -37,7 +37,8 @@ export const useSecret = true
 // when creating a new openstack endpoint
 export const showOpenstackCurrentUserSwitch = false
 
-export const navigationMenu = [
+
+export const navigationMenu: any[] = [
   { label: 'Replicas', value: 'replicas' },
   { label: 'Migrations', value: 'migrations' },
   { label: 'Cloud Endpoints', value: 'endpoints' },
