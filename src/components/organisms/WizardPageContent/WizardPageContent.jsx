@@ -32,8 +32,8 @@ import WizardSummary from '../WizardSummary'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
-import { providerTypes, wizardConfig } from '../../../config'
-import type { WizardData } from '../../../types/WizardData'
+import { providerTypes, wizardPages } from '../../../constants'
+import type { WizardData, WizardPage } from '../../../types/WizardData'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
@@ -141,6 +141,7 @@ type Props = {
   schedules: ScheduleType[],
   storageMap: StorageMap[],
   hasStorageMap: boolean,
+  pages: WizardPage[],
   onTypeChange: (isReplicaChecked: ?boolean) => void,
   onBackClick: () => void,
   onNextClick: () => void,
@@ -423,8 +424,8 @@ class WizardPageContent extends React.Component<Props, State> {
   renderNavigationActions() {
     let sourceEndpoint = this.props.wizardData.source && this.props.wizardData.source.type
     let targetEndpoint = this.props.wizardData.target && this.props.wizardData.target.type
-    let currentPageIndex = wizardConfig.pages.findIndex(p => p.id === this.props.page.id)
-    let isLastPage = currentPageIndex === wizardConfig.pages.length - 1
+    let currentPageIndex = wizardPages.findIndex(p => p.id === this.props.page.id)
+    let isLastPage = currentPageIndex === wizardPages.length - 1
 
     return (
       <Navigation>
@@ -460,9 +461,7 @@ class WizardPageContent extends React.Component<Props, State> {
           {this.renderNavigationActions()}
           <WizardBreadcrumbs
             selected={this.props.page}
-            wizardType={this.props.type}
-            destinationProvider={this.props.wizardData.target ? this.props.wizardData.target.type : null}
-            sourceProvider={this.props.wizardData.source ? this.props.wizardData.source.type : null}
+            pages={this.props.pages}
           />
         </Footer>
       </Wrapper>

@@ -19,7 +19,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
 
-import { basename } from './config'
+import { basename } from './constants'
 import App from './components/App.jsx'
 
 const renderApp = () => React.createElement(

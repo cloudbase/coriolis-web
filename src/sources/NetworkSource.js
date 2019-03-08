@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 import type { Network } from '../types/Network'
 
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 
 class NetworkSource {
   static loadNetworks(enpointId: string, environment: ?{ [string]: mixed }, options?: {

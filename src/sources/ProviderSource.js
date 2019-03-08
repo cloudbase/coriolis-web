@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl, providerTypes } from '../config'
+import { servicesUrl, providerTypes } from '../constants'
 import { SchemaParser } from './Schemas'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'

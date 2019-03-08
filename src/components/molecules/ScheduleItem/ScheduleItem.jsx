@@ -25,7 +25,7 @@ import DatetimePicker from '../../molecules/DatetimePicker'
 import Button from '../../atoms/Button'
 import type { Schedule } from '../../../types/Schedule'
 
-import { executionOptions } from '../../../config'
+import { executionOptions } from '../../../constants'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import DateUtils from '../../../utils/DateUtils'

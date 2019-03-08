@@ -20,7 +20,7 @@ import type { Instance } from '../types/Instance'
 import type { Endpoint } from '../types/Endpoint'
 import InstanceSource from '../sources/InstanceSource'
 import ApiCaller from '../utils/ApiCaller'
-import { instancesListBackgroundLoading as chunkSize } from '../config'
+import configLoader from '../utils/Config'
 
 class InstanceLocalStorage {
   static saveInstancesToLocalStorage(endpointId: string, instances: Instance[]) {
@@ -128,7 +128,7 @@ class InstanceStore {
     }
     this.backgroundChunksLoading = true
     this.lastEndpointId = endpoint.id
-
+    let chunkSize = configLoader.config.instancesListBackgroundLoading
     let chunkCount = Math.max(chunkSize[endpoint.type] || chunkSize.default, vmsPerPage)
 
     let loadNextChunk = (lastEndpointId?: string) => {
@@ -203,7 +203,7 @@ class InstanceStore {
 
     this.searching = true
     this.searchChunksLoading = true
-
+    let chunkSize = configLoader.config.instancesListBackgroundLoading
     let chunkCount = Math.max(chunkSize[endpoint.type] || chunkSize.default, this.instancesPerPage)
 
     let loadNextChunk = (lastEndpointId?: string) => {

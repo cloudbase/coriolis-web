@@ -38,7 +38,7 @@ import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import providerStore from '../../../stores/ProviderStore'
 import LabelDictionary from '../../../utils/LabelDictionary'
-import { requestPollTimeout } from '../../../config.js'
+import configLoader from '../../../utils/Config'
 import EndpointDuplicateOptions from '../../organisms/EndpointDuplicateOptions'
 
 const Wrapper = styled.div``
@@ -228,7 +228,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     }
 
     Promise.all([endpointStore.getEndpoints({ showLoading }), migrationStore.getMigrations(), replicaStore.getReplicas()]).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 

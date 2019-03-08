@@ -32,8 +32,7 @@ import assessmentStore from '../../../stores/AssessmentStore'
 import endpointStore from '../../../stores/EndpointStore'
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
-
-import { requestPollTimeout } from '../../../config'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div``
 
@@ -178,7 +177,7 @@ class AssessmentsPage extends React.Component<Props, State> {
     let selectedResourceGroup = assessmentStore.selectedResourceGroup
 
     if (!connectionInfo || !connectionInfo.subscription_id || !selectedResourceGroup || !selectedResourceGroup.name) {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
       return
     }
 
@@ -189,7 +188,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       userStore.loggedUser ? userStore.loggedUser.project.id : '',
       { backgroundLoading: true }
     ).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 

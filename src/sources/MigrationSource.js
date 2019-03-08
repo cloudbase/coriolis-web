@@ -24,7 +24,7 @@ import type { Field } from '../types/Field'
 import type { NetworkMap } from '../types/Network'
 import type { Endpoint, StorageMap } from '../types/Endpoint'
 
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 
 class MigrationSourceUtils {
   static sortTaskUpdates(migration) {

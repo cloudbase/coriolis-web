@@ -23,7 +23,7 @@ import type { Field } from '../types/Field'
 import type { NetworkMap } from '../types/Network'
 import type { StorageMap } from '../types/Endpoint'
 import type { Schedule } from '../types/Schedule'
-import { wizardConfig } from '../config'
+import { wizardPages } from '../constants'
 import Source from '../sources/WizardSource'
 
 const updateOptions = (oldOptions: ?{ [string]: mixed }, data: { field: Field, value: any }) => {
@@ -45,7 +45,7 @@ class WizardStore {
   @observable data: WizardData = {}
   @observable schedules: Schedule[] = []
   @observable storageMap: StorageMap[] = []
-  @observable currentPage: WizardPage = wizardConfig.pages[0]
+  @observable currentPage: WizardPage = wizardPages[0]
   @observable createdItem: ?MainItem = null
   @observable creatingItem: boolean = false
   @observable createdItems: ?MainItem[] = null
@@ -72,7 +72,7 @@ class WizardStore {
 
   @action clearData() {
     this.data = {}
-    this.currentPage = wizardConfig.pages[0]
+    this.currentPage = wizardPages[0]
   }
 
   @action setCurrentPage(page: WizardPage) {

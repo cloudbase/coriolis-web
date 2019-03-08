@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
-import { showOpenstackCurrentUserSwitch } from '../../../config'
+import configLoader from '../../../utils/Config'
 
 import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
@@ -128,7 +128,7 @@ class ContentPlugin extends React.Component<Props, State> {
       extraAdvancedFields = extraAdvancedFields.concat(['user_domain', 'project_domain'])
     }
     let ignoreFields = ['user_domain_id', 'project_domain_id', 'user_domain_name', 'project_domain_name']
-    if (!showOpenstackCurrentUserSwitch) {
+    if (!configLoader.config.showOpenstackCurrentUserSwitch) {
       ignoreFields.push('openstack_use_current_user')
     }
 

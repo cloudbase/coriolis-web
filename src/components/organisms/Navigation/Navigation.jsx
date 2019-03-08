@@ -22,9 +22,9 @@ import autobind from 'autobind-decorator'
 
 import Logo from '../../atoms/Logo'
 import userStore from '../../../stores/UserStore'
+import configLoader from '../../../utils/Config'
 
-import { navigationMenu } from '../../../config'
-
+import { navigationMenu } from '../../../constants'
 import backgroundImage from './images/star-bg.jpg'
 import cbsImage from './images/cbsl-logo.svg'
 import cbsImageSmall from './images/cbsl-logo-small.svg'
@@ -237,6 +237,12 @@ class Navigation extends React.Component<Props> {
 
   isCollapsed: boolean = false
 
+  get filteredMenu() {
+    const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
+    const isDisabled = (page: string) => configLoader.config ? configLoader.config.disabledPages.find(p => p === page) : false
+    return navigationMenu.filter(i => !isDisabled(i.value) && (!i.requiresAdmin || isAdmin))
+  }
+
   componentDidMount() {
     if (this.props.collapsed) {
       return
@@ -321,11 +327,10 @@ class Navigation extends React.Component<Props> {
   }
 
   renderMenu() {
-    const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     return (
       <Menu innerRef={ref => { this.menu = ref }} collapsed={this.props.collapsed}>
         {
-          navigationMenu.filter(i => i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true).map(item => {
+          this.filteredMenu.map(item => {
             return (
               <MenuItem
                 key={item.value}
@@ -340,11 +345,10 @@ class Navigation extends React.Component<Props> {
   }
 
   renderSmallMenu() {
-    const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     return (
       <SmallMenu innerRef={ref => { this.smallMenu = ref }} collapsed={this.props.collapsed}>
         {
-          navigationMenu.filter(i => i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true).map(item => {
+          this.filteredMenu.map(item => {
             let menuImage
             let bullet
             switch (item.value) {

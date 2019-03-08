@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action } from 'mobx'
 
 import ProviderSource from '../sources/ProviderSource'
-import { providersWithExtraOptions } from '../config.js'
+import configLoader from '../utils/Config'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 import type { DestinationOption } from '../types/Endpoint'
 import type { Field } from '../types/Field'
@@ -30,7 +30,8 @@ export const getFieldChangeDestOptions = (options: {
   field: ?Field,
 }) => {
   let { provider, destSchema, data, field } = options
-  let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p !== 'string' && p.name === provider)
+  let providerWithExtraOptions = configLoader.config.providersWithExtraOptions
+    .find(p => typeof p !== 'string' && p.name === provider)
   if (!provider || !providerWithExtraOptions || typeof providerWithExtraOptions === 'string' || !providerWithExtraOptions.envRequiredFields) {
     return null
   }
@@ -135,7 +136,8 @@ class ProviderStore {
   cache: { key: string, data: DestinationOption[] }[] = []
 
   @action getDestinationOptions(endpointId: string, provider: string, envData?: { [string]: mixed }, useCache?: boolean): Promise<DestinationOption[]> {
-    let providerWithExtraOptions = providersWithExtraOptions.find(p => typeof p === 'string' ? p === provider : p.name === provider)
+    let providerWithExtraOptions = configLoader.config.providersWithExtraOptions
+      .find(p => typeof p === 'string' ? p === provider : p.name === provider)
     if (!providerWithExtraOptions) {
       return Promise.resolve([])
     }

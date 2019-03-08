@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 
 import UserSource from './UserSource'
-import { servicesUrl, coriolisUrl } from '../config'
+import { servicesUrl, coriolisUrl } from '../constants'
 import type { Project, Role, RoleAssignment } from '../types/Project'
 import type { User } from '../types/User'
 

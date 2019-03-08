@@ -22,11 +22,12 @@ import autobind from 'autobind-decorator'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-import { navigationMenu } from '../../../config'
+import { navigationMenu } from '../../../constants'
 import type { User } from '../../../types/User'
 
 import userImage from './images/user.svg'
 import userWhiteImage from './images/user-white.svg'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div`
   position: relative;
@@ -161,7 +162,8 @@ class UserDropdown extends React.Component<Props, State> {
 
     let href: ?string
     let isAdmin = this.props.user.isAdmin
-    if (isAdmin && navigationMenu.find(m => m.value === 'users' && !m.disabled && (!m.requiresAdmin || isAdmin))) {
+    if (isAdmin && navigationMenu.find(m => m.value === 'users'
+      && !configLoader.config.disabledPages.find(p => p === 'users') && (!m.requiresAdmin || isAdmin))) {
       href = `/user/${this.props.user.id}`
     }
 

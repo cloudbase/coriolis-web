@@ -37,9 +37,10 @@ import UserDetailsPage from './pages/UserDetailsPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailsPage from './pages/ProjectDetailsPage'
 
-import { navigationMenu } from '../config'
+import { navigationMenu } from '../constants'
 import Palette from './styleUtils/Palette'
 import StyleProps from './styleUtils/StyleProps'
+import configLoader from '../utils/Config'
 
 injectGlobal`
   ${Fonts}
@@ -63,16 +64,31 @@ const Wrapper = styled.div`
   }
 `
 
-class App extends React.Component<{}> {
+type State = {
+  isConfigReady: boolean,
+}
+
+class App extends React.Component<{}, State> {
+  state = {
+    isConfigReady: false,
+  }
+
   componentWillMount() {
     userStore.tokenLogin()
+    configLoader.load().then(() => {
+      this.setState({ isConfigReady: true })
+    })
   }
 
   render() {
+    if (!this.state.isConfigReady) {
+      return null
+    }
+
     let renderOptionalPage = (name: string, component: any, path?: string, exact?: boolean) => {
       const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : true
-      // $FlowIgnore
-      if (navigationMenu.find(m => m.value === name && !m.disabled && (!m.requiresAdmin || isAdmin))) {
+      let isDisabled = configLoader.config.disabledPages.find(p => p === name)
+      if (navigationMenu.find(m => m.value === name && !isDisabled && (!m.requiresAdmin || isAdmin))) {
         return <Route path={`${path || `/${name}`}`} component={component} exact={exact} />
       }
       return null
@@ -101,7 +117,7 @@ class App extends React.Component<{}> {
           <Route component={NotFoundPage} />
         </Switch>
         <Notifications />
-      </Wrapper>
+      </Wrapper >
     )
   }
 }

@@ -18,7 +18,7 @@ import Api from '../utils/ApiCaller'
 import notificationStore from '../stores/NotificationStore'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 import type { WizardData } from '../types/WizardData'
 import type { StorageMap } from '../types/Endpoint'
 import type { MainItem } from '../types/MainItem'

@@ -19,7 +19,7 @@ import styled, { css } from 'styled-components'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
-import { loginButtons } from '../../../config'
+import { loginButtons } from '../../../constants'
 import googleLogo from './images/google-logo.svg'
 import microsoftLogo from './images/microsoft-logo.svg'
 import facebookLogo from './images/facebook-logo.svg'
@@ -95,7 +95,7 @@ const Logo = styled.div`
   ${props => buttonStyle(props.id, true)}
 `
 type Props = {
-  buttons?: {name: string, id: string}[]
+  buttons?: { name: string, id: string }[]
 }
 const LoginOptions = (props: Props) => {
   const buttons = props.buttons || loginButtons

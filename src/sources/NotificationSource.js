@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 import Api from '../utils/ApiCaller'
 import type { NotificationItemData, NotificationItem } from '../types/NotificationItem'
 

@@ -23,7 +23,7 @@ import WizardOptionsField from '../../molecules/WizardOptionsField'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import { executionOptions } from '../../../config'
+import { executionOptions } from '../../../constants'
 import type { Field } from '../../../types/Field'
 
 import executionImage from './images/execution.svg'

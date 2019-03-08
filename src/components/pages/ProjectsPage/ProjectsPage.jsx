@@ -28,7 +28,7 @@ import type { Project } from '../../../types/Project'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
-import { requestPollTimeout } from '../../../config.js'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div``
 
@@ -92,7 +92,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
     }
 
     Promise.all([projectStore.getProjects(showLoading), projectStore.getRoleAssignments()]).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 

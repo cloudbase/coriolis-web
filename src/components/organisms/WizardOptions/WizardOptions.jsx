@@ -28,7 +28,7 @@ import type { Field } from '../../../types/Field'
 import type { Instance } from '../../../types/Instance'
 import type { StorageBackend } from '../../../types/Endpoint'
 
-import { executionOptions } from '../../../config'
+import { executionOptions } from '../../../constants'
 
 const Wrapper = styled.div`
   display: flex;

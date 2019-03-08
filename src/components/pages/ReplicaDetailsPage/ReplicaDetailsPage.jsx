@@ -40,7 +40,7 @@ import endpointStore from '../../../stores/EndpointStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import instanceStore from '../../../stores/InstanceStore'
 import networkStore from '../../../stores/NetworkStore'
-import { requestPollTimeout } from '../../../config'
+import configLoader from '../../../utils/Config'
 
 import replicaImage from './images/replica.svg'
 import Palette from '../../styleUtils/Palette'
@@ -281,7 +281,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
 
     replicaStore.getReplicaExecutions(this.props.match.params.id, showLoading).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData(false) }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
     })
   }
 
