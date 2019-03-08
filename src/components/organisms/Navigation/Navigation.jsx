@@ -36,7 +36,7 @@ import planningImage from './images/planning-menu.svg'
 import projectImage from './images/project-menu.svg'
 import userImage from './images/user-menu.svg'
 
-const MENU_MAX_WIDTH_TOGGLE = 900
+const MENU_MAX_WIDTH_TOGGLE = 1350
 
 const isCollapsed = (props: any) => props.collapsed || (window.outerWidth < MENU_MAX_WIDTH_TOGGLE)
 
