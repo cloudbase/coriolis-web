@@ -28,12 +28,12 @@ const wrap = props => new TW(shallow(
 describe('LoginForm Component', () => {
   it('renders incorrect credentials', () => {
     let wrapper = wrap({ loginFailedResponse: { status: 401 } })
-    expect(wrapper.findText('errorText')).toBe('The username or password did not match. Please try again.')
+    expect(wrapper.find('errorText').prop('dangerouslySetInnerHTML').__html).toBe('Incorrect credentials.<br />Please try again.') // eslint-disable-line
   })
 
   it('renders server error', () => {
     let wrapper = wrap({ loginFailedResponse: {} })
-    expect(wrapper.findText('errorText')).toBe('Request failed, there might be a problem with the connection to the server.')
+    expect(wrapper.find('errorText').prop('dangerouslySetInnerHTML').__html).toBe('Request failed, there might be a problem with the connection to the server.') // eslint-disable-line
   })
 
   it('submits correct info', () => {

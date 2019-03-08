@@ -42,5 +42,5 @@ app.use((req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Express server is up on port ${PORT}`) // eslint-disable-line no-console
+  console.log(`Express server is up on port ${PORT}`)
 })
