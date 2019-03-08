@@ -30,6 +30,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-width: 785px;
 `
 const Separator = styled.div`
   height: 1px;
