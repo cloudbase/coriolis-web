@@ -18,7 +18,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import SideMenu from '../../molecules/SideMenu'
+import NavigationMini from '../../molecules/NavigationMini'
 import NotificationDropdown from '../../molecules/NotificationDropdown'
 import UserDropdown from '../../molecules/UserDropdown'
 import AboutModal from '../../organisms/AboutModal'
@@ -35,7 +35,7 @@ const Wrapper = styled.div`
   height: 64px;
   background: url('${backgroundImage}');
   align-items: center;
-  padding: 0 22px;
+  padding-right: 22px;
   justify-content: space-between;
 `
 const Logo = styled.a`
@@ -114,7 +114,7 @@ class DetailsPageHeader extends React.Component<Props, State> {
     return (
       <Wrapper>
         <Menu>
-          <SideMenu />
+          <NavigationMini />
           <Logo href="/#/replicas" />
         </Menu>
         <User>

@@ -12,25 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// @flow
-
 import React from 'react'
-import { shallow } from 'enzyme'
-import TW from '../../../utils/TestWrapper'
-import SideMenu from '.'
+import { storiesOf } from '@storybook/react'
+import NavigationMini from '.'
 
-const wrap = props => new TW(shallow(<SideMenu {...props} />), 'sideMenu')
-
-describe('SideMenu Component', () => {
-  it('opens menu on click', () => {
-    let wrapper = wrap()
-    expect(wrapper.find('menu').prop('open')).toBe(false)
-    wrapper.find('toggle').simulate('click')
-    expect(wrapper.find('menu').prop('open')).toBe(true)
-  })
-
-  it('renders at least one item in the list', () => {
-    let wrapper = wrap()
-    expect(wrapper.find('item-', true).length).toBeGreaterThan(0)
-  })
-})
+storiesOf('NavigationMini', module)
+  .add('default', () => (
+    <NavigationMini />
+  ))

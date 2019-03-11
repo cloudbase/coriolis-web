@@ -46,7 +46,7 @@ const StyleProps = {
 
   media: {
     handheld: (...args: any) => css`
-      @media (max-height: 760px) { 
+      @media (max-height: 760px) {
         ${css(...args)}
       }
     `,
