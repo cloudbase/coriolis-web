@@ -60,7 +60,7 @@ type State = {
   duplicating: boolean,
 }
 @observer
-class EndpointsPage extends React.Component<{}, State> {
+class EndpointsPage extends React.Component<{ history: any }, State> {
   state = {
     showDeleteEndpointsConfirmation: false,
     confirmationItems: null,
@@ -124,7 +124,7 @@ class EndpointsPage extends React.Component<{}, State> {
   }
 
   handleItemClick(item: EndpointType) {
-    window.location.href = `/#/endpoint/${item.id}`
+    this.props.history.push(`/endpoint/${item.id}`)
   }
 
   handleActionChange(items: EndpointType[], action: string) {

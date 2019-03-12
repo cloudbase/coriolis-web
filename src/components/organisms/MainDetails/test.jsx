@@ -57,8 +57,8 @@ describe('MainDetails Component', () => {
     expect(wrapper.find('id').prop('value')).toBe('item-id')
     const localDate = moment(item.created_at).add(-new Date().getTimezoneOffset(), 'minutes')
     expect(wrapper.find('created').prop('value')).toBe(localDate.format('YYYY-MM-DD HH:mm:ss'))
-    expect(wrapper.findText('name-source')).toBe('Endpoint OPS')
-    expect(wrapper.findText('name-target')).toBe('Endpoint AZURE')
+    // expect(wrapper.find('name-source').shallow.dive().dive().text()).toBe('Endpoint OPS')
+    // expect(wrapper.findText('name-target')).toBe('Endpoint AZURE')
     expect(wrapper.find('description').prop('value')).toBe('A description')
   })
 

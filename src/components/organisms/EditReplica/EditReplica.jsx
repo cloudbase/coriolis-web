@@ -70,6 +70,7 @@ type Props = {
   type?: 'replica' | 'migration',
   isOpen: boolean,
   onRequestClose: () => void,
+  onUpdateComplete: (redirectTo: string) => void,
   replica: MainItem,
   destinationEndpoint: Endpoint,
   sourceEndpoint: Endpoint,
@@ -210,15 +211,15 @@ class EditReplica extends React.Component<Props, State> {
     }
     if (this.props.type === 'replica') {
       replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData).then(() => {
-        window.location.href = `/#/replica/executions/${this.props.replica.id}`
         this.props.onRequestClose()
+        this.props.onUpdateComplete(`/replica/executions/${this.props.replica.id}`)
       })
     } else {
       migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData)
         .then((migration: MainItem) => {
           migrationStore.clearDetails()
-          window.location.href = `/#/migration/tasks/${migration.id}`
           this.props.onRequestClose()
+          this.props.onUpdateComplete(`/migration/tasks/${migration.id}`)
         })
     }
   }

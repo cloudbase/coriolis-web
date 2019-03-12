@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Execution } from '../../../types/Execution'
@@ -37,7 +38,7 @@ const Wrapper = styled.div`
   justify-content: center;
   margin-left: -72px;
 `
-const BackButton = styled.div`
+const BackButton = styled(Link)`
   ${StyleProps.exactSize('33px')}
   background: url('${backArrowImage}') no-repeat center;
   cursor: pointer;
@@ -82,8 +83,8 @@ const MockButton = styled.div`
 `
 
 type Props = {
-  onBackButonClick: () => void,
   dropdownActions?: DropdownAction[],
+  backLink: string,
   typeImage?: string,
   statusLabel?: string,
   item: ?any,
@@ -166,7 +167,7 @@ class DetailsContentHeader extends React.Component<Props> {
 
     return (
       <Wrapper>
-        <BackButton onClick={this.props.onBackButonClick} data-test-id="dcHeader-backButton" />
+        <BackButton to={this.props.backLink} data-test-id="dcHeader-backButton" />
         <TypeImage image={this.props.typeImage} />
         <Title>
           <Status>

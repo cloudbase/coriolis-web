@@ -50,12 +50,12 @@ describe('DetailsContentHeader Component', () => {
     expect(wrapper.find('actionButton').length).toBe(1)
   })
 
-  it('dispatches back button click', () => {
-    let onBackButonClick = sinon.spy()
-    let wrapper = wrap({ item, onBackButonClick })
-    wrapper.find('backButton').click()
-    expect(onBackButonClick.called).toBe(true)
-  })
+  // it('dispatches back button click', () => {
+  //   let onBackButonClick = sinon.spy()
+  //   let wrapper = wrap({ item, onBackButonClick })
+  //   wrapper.find('backButton').click()
+  //   expect(onBackButonClick.called).toBe(true)
+  // })
 
   it('renders correct INFO pill', () => {
     let wrapper = wrap({ item, primaryInfoPill: true })

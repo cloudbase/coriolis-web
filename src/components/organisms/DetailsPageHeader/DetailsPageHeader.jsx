@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
@@ -38,7 +39,7 @@ const Wrapper = styled.div`
   padding-right: 22px;
   justify-content: space-between;
 `
-const Logo = styled.a`
+const Logo = styled(Link)`
   width: 240px;
   height: 48px;
   background: url('${logoImage}') no-repeat;
@@ -115,7 +116,7 @@ class DetailsPageHeader extends React.Component<Props, State> {
       <Wrapper>
         <Menu>
           <NavigationMini />
-          <Logo href="/#/replicas" />
+          <Logo to="/replicas" />
         </Menu>
         <User>
           <NotificationDropdown

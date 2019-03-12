@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
@@ -73,7 +74,7 @@ const Buttons = styled.div`
 const UserColumn = styled.div`
   ${props => props.disabled ? css`color: ${Palette.grayscale[3]};` : ''}
 `
-const UserName = styled.a`
+const UserName = styled(Link)`
   ${props => props.disabled ? css`opacity: 0.7;` : ''}
   color: ${Palette.primary};
   text-decoration: none;
@@ -236,7 +237,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         <UserName
           data-test-id={`pdContent-users-${user.name}`}
           disabled={!user.enabled}
-          href={`#/user/${user.id}`}
+          to={`/user/${user.id}`}
         >{user.name}</UserName>,
         <DropdownLink
           data-test-id={`${testName}-roles-${user.name}`}

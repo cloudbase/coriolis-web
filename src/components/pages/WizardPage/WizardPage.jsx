@@ -49,7 +49,8 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
-  location: { search: string }
+  location: { search: string },
+  history: any,
 }
 type WizardType = 'migration' | 'replica'
 type State = {
@@ -140,17 +141,17 @@ class WizardPage extends React.Component<Props, State> {
     }
 
     if (items.length === 1) {
-      let location = `/#/${this.state.type}/`
+      let location = `/${this.state.type}/`
       if (this.state.type === 'replica') {
         location += 'executions/'
       } else {
         location += 'tasks/'
       }
       schedulePromise.then(() => {
-        window.location.href = location + items[0].id
+        this.props.history.push(location + items[0].id)
       })
     } else {
-      window.location.href = `/#/${this.state.type}s`
+      this.props.history.push(`/${this.state.type}s`)
     }
   }
 
@@ -158,9 +159,6 @@ class WizardPage extends React.Component<Props, State> {
     switch (item.value) {
       case 'signout':
         userStore.logout()
-        return
-      case 'profile':
-        window.location.href = '/#/profile'
         break
       default:
     }

@@ -48,6 +48,7 @@ const Wrapper = styled.div``
 
 type Props = {
   match: any,
+  history: any,
 }
 type State = {
   selectedNetworks: NetworkMap[],
@@ -219,16 +220,9 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     switch (item.value) {
       case 'signout':
         userStore.logout()
-        return
-      case 'profile':
-        window.location.href = '/#/profile'
         break
       default:
     }
-  }
-
-  handleBackButtonClick() {
-    window.location.href = '/#/planning'
   }
 
   handleNetworkChange(sourceNic: Nic, targetNetwork: Network) {
@@ -429,7 +423,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
         })
       }
 
-      window.location.href = `/#/${type.toLowerCase()}s`
+      this.props.history.push(`/${type.toLowerCase()}s`)
     })
   }
 
@@ -457,7 +451,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
               }
             }
             statusLabel={statusLabel}
-            onBackButonClick={() => { this.handleBackButtonClick() }}
+            backLink="/planning"
             typeImage={assessmentImage}
           />}
           contentComponent={(

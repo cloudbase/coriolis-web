@@ -20,6 +20,7 @@ import type { Project } from '../types/Project'
 import UserSource from '../sources/UserSource'
 import projectStore from './ProjectStore'
 import notificationStore from '../stores/NotificationStore'
+import DomUtils from '../utils/DomUtils'
 
 /**
  * This is the authentication / authorization flow:
@@ -175,8 +176,8 @@ class UserStore {
         this.loggedUser.isAdmin = isAdmin
       }
     }).catch(() => {
-      if (window.location.href.indexOf('#/project') > -1 || window.location.href.indexOf('#/user') > -1) {
-        window.location.href = '#/'
+      if (window.location.href.indexOf(`${DomUtils.urlHashPrefix}project`) > -1 || window.location.href.indexOf(`${DomUtils.urlHashPrefix}user`) > -1) {
+        window.location.href = `${DomUtils.urlHashPrefix}`
       }
     })
   }

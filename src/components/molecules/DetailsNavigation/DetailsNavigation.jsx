@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
@@ -26,7 +27,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `
-const Item = styled.a`
+const Item = styled(Link)`
   font-size: 16px;
   color: ${props => props.selected ? Palette.primary : Palette.grayscale[4]};
   cursor: pointer;
@@ -39,7 +40,7 @@ type Props = {
   selectedValue?: string,
   itemId?: string,
   itemType?: string,
-  customHref?: (item: ItemType) => ?string,
+  customHref?: (item: ItemType) =>?string,
 }
 @observer
 class DetailsNavigation extends React.Component<Props> {
@@ -50,7 +51,7 @@ class DetailsNavigation extends React.Component<Props> {
           data-test-id={`detailsNavigation-${item.value}`}
           selected={item.value === this.props.selectedValue}
           key={item.value || item.label}
-          href={this.props.customHref ? this.props.customHref(item) : `/#/${this.props.itemType || ''}${(item.value && '/') || ''}${item.value}/${this.props.itemId || ''}`}
+          to={this.props.customHref ? this.props.customHref(item) : `/${this.props.itemType || ''}${(item.value && '/') || ''}${item.value}/${this.props.itemId || ''}`}
         >{item.label}</Item>
       ))
     )

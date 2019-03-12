@@ -48,7 +48,7 @@ type State = {
   modalIsOpen: boolean,
 }
 @observer
-class ReplicasPage extends React.Component<{}, State> {
+class ReplicasPage extends React.Component<{ history: any }, State> {
   state = {
     showDeleteReplicaConfirmation: false,
     confirmationItems: null,
@@ -107,9 +107,9 @@ class ReplicasPage extends React.Component<{}, State> {
   handleItemClick(item: MainItem) {
     let lastExecution = this.getLastExecution(item)
     if (lastExecution && lastExecution.status === 'RUNNING') {
-      window.location.href = `/#/replica/executions/${item.id}`
+      this.props.history.push(`/replica/executions/${item.id}`)
     } else {
-      window.location.href = `/#/replica/${item.id}`
+      this.props.history.push(`/replica/${item.id}`)
     }
   }
 
@@ -145,7 +145,7 @@ class ReplicasPage extends React.Component<{}, State> {
   }
 
   handleEmptyListButtonClick() {
-    window.location.href = '/#/wizard/replica'
+    this.props.history.push('/wizard/replica')
   }
 
   handleModalOpen() {

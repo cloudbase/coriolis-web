@@ -105,6 +105,10 @@ class DomUtils {
     }
     return successful
   }
+
+  static get urlHashPrefix() {
+    return window.env.ENV === 'development' ? '#/' : ''
+  }
 }
 
 export default DomUtils

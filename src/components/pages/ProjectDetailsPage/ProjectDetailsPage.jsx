@@ -39,7 +39,8 @@ import projectImage from './images/project.svg'
 const Wrapper = styled.div``
 
 type Props = {
-  match: { params: { id: string } }
+  match: { params: { id: string } },
+  history: any,
 }
 type State = {
   showProjectModal: boolean,
@@ -73,10 +74,6 @@ class ProjectDetailsPage extends React.Component<Props, State> {
         break
       default:
     }
-  }
-
-  handleBackButtonClick() {
-    window.location.href = '/#/projects'
   }
 
   handleEnableUser(user: User) {
@@ -133,10 +130,10 @@ class ProjectDetailsPage extends React.Component<Props, State> {
       ) {
         userStore.switchProject(projectStore.projects[0].id).then(() => {
           projectStore.getProjects()
-          window.location.href = '#/projects'
+          this.props.history.push('/projects')
         })
       } else {
-        window.location.href = '#/projects'
+        this.props.history.push('/projects')
       }
     })
   }
@@ -210,7 +207,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
           />}
           contentHeaderComponent={<DetailsContentHeader
             item={{ ...projectStore.projectDetails, description: '' }}
-            onBackButonClick={() => { this.handleBackButtonClick() }}
+            backLink="/projects"
             dropdownActions={dropdownActions}
             typeImage={projectImage}
             description={''}

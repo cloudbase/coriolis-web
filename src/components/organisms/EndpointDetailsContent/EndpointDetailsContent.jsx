@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
@@ -69,7 +70,7 @@ const LoadingWrapper = styled.div`
   width: 100%;
   margin: 32px 0 64px 0;
 `
-const Link = styled.a`
+const LinkStyled = styled(Link)`
   color: ${Palette.primary};
   text-decoration: none;
   cursor: pointer;
@@ -167,12 +168,12 @@ class EndpointDetailsContent extends React.Component<Props> {
   renderUsage(items: MainItem[]) {
     return items.map(item => (
       <span>
-        <Link
+        <LinkStyled
           key={item.id}
-          href={`#/${item.type}/${item.id}`}
+          to={`/${item.type}/${item.id}`}
         >
           {item.instances[0]}
-        </Link>
+        </LinkStyled>
         <br />
       </span>
     ))

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
@@ -71,7 +72,7 @@ const List = styled.div`
   top: 45px;
   z-index: 10;
 `
-const ListItem = styled.a`
+const ListItem = styled(Link)`
   display: flex;
   border-bottom: 1px solid ${Palette.grayscale[0]};
   padding: 8px;
@@ -250,7 +251,7 @@ class NotificationDropdown extends React.Component<Props, State> {
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
               onClick={() => { this.handleItemClick() }}
-              href={`/#/${item.type}${executionsHref}/${item.id}`}
+              to={`/${item.type}${executionsHref}/${item.id}`}
               data-test-id={`${testId}-${item.id}-item`}
             >
               <InfoColumn>

@@ -70,25 +70,18 @@ class WizardSource {
   }
 
   static setPermalink(data: WizardData) {
-    let hashExp = /(#\/wizard\/.*?)(?:\?|$)/
-
-    if (!hashExp.test(window.location.hash)) {
+    // window.history.replaceState({}, null, `${window.location.href}?d=${btoa(JSON.stringify(data))}`)
+    let exp = /.*?(?:\?|$)/.exec(window.location.href)
+    if (!exp) {
       return
     }
-    let hashExpExec = hashExp.exec(window.location.hash)
-    let hash = hashExpExec ? hashExpExec[1] : 'undefined'
-    window.history.replaceState({}, null, `${hash}?d=${btoa(JSON.stringify(data))}`)
+    let location = exp[0].replace('?', '')
+    window.history.replaceState({}, null, `${location}?d=${btoa(JSON.stringify(data))}`)
   }
 
   static getDataFromPermalink() {
-    let dataExp = /\?d=(.*)/
-
-    if (!dataExp.test(window.location.hash)) {
-      return null
-    }
-
-    let dataExpExec = dataExp.exec(window.location.hash)
-    return JSON.parse(atob(dataExpExec ? dataExpExec[1] : 'undefined'))
+    let dataExpExec = /\?d=(.*)/.exec(window.location.href)
+    return dataExpExec && JSON.parse(atob(dataExpExec[1]))
   }
 }
 

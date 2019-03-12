@@ -49,7 +49,7 @@ type State = {
   modalIsOpen: boolean,
 }
 @observer
-class MigrationsPage extends React.Component<{}, State> {
+class MigrationsPage extends React.Component<{ history: any }, State> {
   state = {
     showDeleteMigrationConfirmation: false,
     showCancelMigrationConfirmation: false,
@@ -101,9 +101,9 @@ class MigrationsPage extends React.Component<{}, State> {
 
   handleItemClick(item: MainItem) {
     if (item.status === 'RUNNING') {
-      window.location.href = `/#/migration/tasks/${item.id}`
+      this.props.history.push(`/migration/tasks/${item.id}`)
     } else {
-      window.location.href = `/#/migration/${item.id}`
+      this.props.history.push(`/migration/${item.id}`)
     }
   }
 
@@ -157,7 +157,7 @@ class MigrationsPage extends React.Component<{}, State> {
   }
 
   handleEmptyListButtonClick() {
-    window.location.href = '/#/wizard/migration'
+    this.props.history.push('/wizard/migration')
   }
 
   handleModalOpen() {

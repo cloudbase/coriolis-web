@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
@@ -46,7 +47,7 @@ const List = styled.div`
   top: 45px;
   z-index: 10;
 `
-const ListItem = styled.a`
+const ListItem = styled(Link)`
   display: flex;
   align-items: center;
   border-bottom: 1px solid white;
@@ -177,12 +178,12 @@ class NewItemDropdown extends React.Component<Props, State> {
     const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     let items: ItemType[] = [{
       title: 'Migration',
-      href: '/#/wizard/migration',
+      href: '/wizard/migration',
       description: 'Migrate VMs between two clouds',
       icon: { migration: true },
     }, {
       title: 'Replica',
-      href: '/#/wizard/replica',
+      href: '/wizard/replica',
       description: 'Incrementally replicate VMs between two clouds',
       icon: { replica: true },
     }, {
@@ -214,7 +215,7 @@ class NewItemDropdown extends React.Component<Props, State> {
                 key={item.title}
                 onMouseDown={() => { this.itemMouseDown = true }}
                 onMouseUp={() => { this.itemMouseDown = false }}
-                href={item.href}
+                to={item.href || '#'}
                 onClick={() => { this.handleItemClick(item) }}
               >
                 <Icon {...item.icon} />

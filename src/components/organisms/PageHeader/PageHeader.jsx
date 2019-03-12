@@ -115,9 +115,6 @@ class PageHeader extends React.Component<Props, State> {
         return
       case 'signout':
         userStore.logout()
-        return
-      case 'profile':
-        window.location.href = '/#/profile'
         break
       default:
     }

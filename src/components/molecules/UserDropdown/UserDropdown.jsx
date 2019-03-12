@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
@@ -23,6 +24,7 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import { navigationMenu } from '../../../config'
 import type { User } from '../../../types/User'
+
 import userImage from './images/user.svg'
 import userWhiteImage from './images/user-white.svg'
 
@@ -84,13 +86,12 @@ const ListHeader = styled.div`
     transition: all ${StyleProps.animations.swift};
   }
 `
-const Username = styled.a`
+const Username = styled(Link)`
   font-size: 16px;
   color: ${Palette.black};
   text-decoration: none;
-  &:hover {
-    color: ${props => props.href ? Palette.primary : 'inherit'};
-  }
+  ${props => props.to === '' ? 'pointer-events: none;' : ''}
+  &:hover {color: ${Palette.primary};}
 `
 const Email = styled.div`
   font-size: 10px;
@@ -161,7 +162,7 @@ class UserDropdown extends React.Component<Props, State> {
     let href: ?string
     let isAdmin = this.props.user.isAdmin
     if (isAdmin && navigationMenu.find(m => m.value === 'users' && !m.disabled && (!m.requiresAdmin || isAdmin))) {
-      href = `#/user/${this.props.user.id}`
+      href = `/user/${this.props.user.id}`
     }
 
     return (
@@ -171,7 +172,7 @@ class UserDropdown extends React.Component<Props, State> {
       >
         <Username
           data-test-id="userDropdown-username"
-          href={href}
+          to={href || ''}
         >{this.props.user.name}</Username>
         <Email>{this.props.user.email}</Email>
       </ListHeader>

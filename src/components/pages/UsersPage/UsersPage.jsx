@@ -36,7 +36,7 @@ type State = {
   modalIsOpen: boolean,
 }
 @observer
-class UsersPage extends React.Component<{}, State> {
+class UsersPage extends React.Component<{ history: any }, State> {
   state = {
     modalIsOpen: false,
   }
@@ -121,7 +121,7 @@ class UsersPage extends React.Component<{}, State> {
               selectionLabel="user"
               loading={userStore.allUsersLoading}
               items={userStore.users}
-              onItemClick={(user: User) => { window.location.href = `#/user/${user.id}` }}
+              onItemClick={(user: User) => { this.props.history.push(`/user/${user.id}`) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={component => (

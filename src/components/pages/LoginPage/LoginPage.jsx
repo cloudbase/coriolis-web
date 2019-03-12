@@ -82,12 +82,16 @@ const CbsLogo = styled.a`
   cursor: pointer;
 `
 
+type Props = {
+  history: any,
+}
+
 type State = {
   domain: string,
 }
 
 @observer
-class LoginPage extends React.Component<{}, State> {
+class LoginPage extends React.Component<Props, State> {
   state = {
     domain: '',
   }
@@ -115,7 +119,7 @@ class LoginPage extends React.Component<{}, State> {
 
   render() {
     if (userStore.loggedIn) {
-      window.location.href = '/#/replicas'
+      this.props.history.push('/replicas')
     }
 
     return (

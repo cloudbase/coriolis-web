@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import config from '../../config'
+import DomUtils from '../../../../src/utils/DomUtils'
 
 declare var expect: any
 
@@ -29,7 +30,7 @@ describe('Delete the Openstack and VmWare endpoints created for e2e testing', ()
 
   it('Goes to endpoints page', () => {
     cy.get('#app').should('contain', 'Coriolis Replicas')
-    cy.visit(`${config.nodeServer}#/endpoints`)
+    cy.visit(`${config.nodeServer}${DomUtils.urlHashPrefix}endpoints`)
     cy.get('#app').should('contain', 'Coriolis Endpoints')
   })
 
