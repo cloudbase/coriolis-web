@@ -26,8 +26,8 @@ import userStore from '../../../stores/UserStore'
 import { navigationMenu } from '../../../config'
 
 import backgroundImage from './images/star-bg.jpg'
-import cbsImage from './images/cbs-logo.svg'
-import cbsImageSmall from './images/cbs-logo-small.svg'
+import cbsImage from './images/cbsl-logo.svg'
+import cbsImageSmall from './images/cbsl-logo-small.svg'
 import tinyLogo from './images/logo-small.svg'
 
 import replicaImage from './images/replica-menu.svg'

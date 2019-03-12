@@ -26,7 +26,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import userStore from '../../../stores/UserStore'
 
 import backgroundImage from './images/star-bg.jpg'
-import cbsImage from './images/cbs-logo.svg'
+import cbsImage from './images/cbsl-logo.svg'
 
 const Wrapper = styled.div`
   background-image: url('${backgroundImage}');
