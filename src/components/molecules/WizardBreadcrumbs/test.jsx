@@ -18,35 +18,16 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import WizardBreadcrumbs from '.'
 import TW from '../../../utils/TestWrapper'
-import { wizardConfig } from '../../../config'
+import { wizardPages } from '../../../constants'
 
 const wrap = props => new TW(
-  shallow(<WizardBreadcrumbs destinationProvider="oci" sourceProvider="vmware_vsphere" {...props} />),
+  shallow(<WizardBreadcrumbs pages={wizardPages} destinationProvider="oci" sourceProvider="vmware_vsphere" {...props} />),
   'wBreadCrumbs'
 )
 
 describe('WizardBreadcrumbs Component', () => {
-  it('renders correct number of crumbs for replica', () => {
-    let wrapper = wrap({ selected: wizardConfig.pages[2], wizardType: 'replica' })
-    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'replica')
-    expect(wrapper.find('name-', true).length).toBe(pages.length - 2)
-  })
-
-  it('renders correct number of crumbs for migration', () => {
-    let wrapper = wrap({ selected: wizardConfig.pages[2], wizardType: 'migration' })
-    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'migration')
-    expect(wrapper.find('name-', true).length).toBe(pages.length - 2)
-  })
-
   it('has correct page selected', () => {
-    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'migration')
-    let wrapper = wrap({ selected: pages[1], wizardType: 'migration' })
-    expect(wrapper.findText(`name-${pages[1].id}`)).toBe(pages[1].breadcrumb)
-  })
-
-  it('renders correct number of crumbs for Openstack', () => {
-    let wrapper = wrap({ selected: wizardConfig.pages[2], wizardType: 'migration', destinationProvider: 'openstack' })
-    let pages = wizardConfig.pages.filter(p => !p.excludeFrom || p.excludeFrom !== 'migration')
-    expect(wrapper.find('name-', true).length).toBe(pages.length - 1)
+    let wrapper = wrap({ selected: wizardPages[3] })
+    expect(wrapper.findText(`name-${wizardPages[3].id}`)).toBe(wizardPages[3].breadcrumb)
   })
 })

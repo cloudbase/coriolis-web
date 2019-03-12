@@ -35,7 +35,8 @@ import notificationStore from '../../../stores/NotificationStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import { wizardConfig, executionOptions } from '../../../config'
+import { wizardPages, executionOptions } from '../../../constants'
+import configLoader from '../../../utils/Config'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType, StorageBackend } from '../../../types/Endpoint'
@@ -80,10 +81,17 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   get pages() {
-    return wizardConfig.pages
+    let sourceProvider = wizardStore.data.source ? wizardStore.data.source.type : ''
+    let destProvider = wizardStore.data.target ? wizardStore.data.target.type : ''
+    let pages = wizardPages
+    let sourceOptionsProviders = configLoader.config.sourceOptionsProviders
+    let storageOptionsProviders = configLoader.config.storageProviders
+    return pages
       .filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
-      .filter(p => !p.targetFilter || (wizardStore.data.target && p.targetFilter(wizardStore.data.target.type)))
-      .filter(p => !p.sourceFilter || (wizardStore.data.source && p.sourceFilter(wizardStore.data.source.type)))
+      .filter(p => p.id !== 'storage'
+        || storageOptionsProviders.find(p => p === destProvider))
+      .filter(p => p.id !== 'source-options'
+        || sourceOptionsProviders.find(p => p === sourceProvider))
   }
 
   componentWillMount() {
@@ -491,6 +499,7 @@ class WizardPage extends React.Component<Props, State> {
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           pageContentComponent={<WizardPageContent
+            pages={this.pages}
             page={wizardStore.currentPage}
             providerStore={providerStore}
             instanceStore={instanceStore}

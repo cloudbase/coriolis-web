@@ -31,7 +31,7 @@ import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import networkStore from '../../../stores/NetworkStore'
 import instanceStore from '../../../stores/InstanceStore'
-import { requestPollTimeout } from '../../../config'
+import configLoader from '../../../utils/Config'
 
 import migrationImage from './images/migration.svg'
 import Palette from '../../styleUtils/Palette'
@@ -156,7 +156,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       return
     }
     migrationStore.getMigration(this.props.match.params.id, false).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 

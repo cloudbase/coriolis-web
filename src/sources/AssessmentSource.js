@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { MigrationInfo } from '../types/Assessment'
 import type { MainItem } from '../types/MainItem'
 import Api from '../utils/ApiCaller'
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 import notificationStore from '../stores/NotificationStore'
 
 class AssessmentSourceUtils {

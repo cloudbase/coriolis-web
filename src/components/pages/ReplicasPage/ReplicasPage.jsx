@@ -33,7 +33,7 @@ import projectStore from '../../../stores/ProjectStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
-import { requestPollTimeout } from '../../../config'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div``
 
@@ -164,7 +164,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     }
 
     Promise.all([replicaStore.getReplicas(), endpointStore.getEndpoints()]).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 

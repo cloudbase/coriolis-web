@@ -27,7 +27,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 
 import errorIcon from './images/error.svg'
 
-import { loginButtons, showUserDomainInput } from '../../../config'
+import { loginButtons } from '../../../constants'
 import notificationStore from '../../../stores/NotificationStore'
 
 const Form = styled.form`
@@ -85,6 +85,7 @@ const LoginErrorText = styled.div`
 
 type Props = {
   className: string,
+  showUserDomainInput: boolean,
   loading: boolean,
   loginFailedResponse: { status: string, message?: string },
   domain: string,
@@ -182,7 +183,7 @@ class LoginForm extends React.Component<Props, State> {
         <LoginOptions />
         {loginSeparator}
         <FormFields>
-          {showUserDomainInput ? (
+          {this.props.showUserDomainInput ? (
             <LoginFormField
               label="Domain Name"
               value={this.props.domain}

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Field } from '../../../types/Field'
 import type { DestinationOption, StorageMap } from '../../../types/Endpoint'
 import type { NetworkMap } from '../../../types/Network'
-import { executionOptions } from '../../../config'
+import { executionOptions } from '../../../constants'
 
 const migrationImageOsTypes = ['windows', 'linux']
 

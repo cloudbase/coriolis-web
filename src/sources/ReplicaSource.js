@@ -19,7 +19,7 @@ import moment from 'moment'
 import Api from '../utils/ApiCaller'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Execution } from '../types/Execution'
 import type { Endpoint } from '../types/Endpoint'

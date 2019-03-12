@@ -33,7 +33,7 @@ import projectStore from '../../../stores/ProjectStore'
 import migrationStore from '../../../stores/MigrationStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
-import { requestPollTimeout } from '../../../config'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div``
 
@@ -203,7 +203,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     }
 
     Promise.all([migrationStore.getMigrations(), endpointStore.getEndpoints()]).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 

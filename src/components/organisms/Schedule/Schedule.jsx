@@ -32,7 +32,7 @@ import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import type { Schedule as ScheduleType } from '../../../types/Schedule'
 import type { Field } from '../../../types/Field'
-import { executionOptions } from '../../../config'
+import { executionOptions } from '../../../constants'
 
 import scheduleImage from './images/schedule.svg'
 

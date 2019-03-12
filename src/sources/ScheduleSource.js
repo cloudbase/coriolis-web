@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 import DateUtils from '../utils/DateUtils'
 import type { Schedule } from '../types/Schedule'
 

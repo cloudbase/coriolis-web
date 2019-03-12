@@ -20,8 +20,8 @@ import styled from 'styled-components'
 
 import Arrow from '../../atoms/Arrow'
 
-import { wizardConfig } from '../../../config'
 import Palette from '../../styleUtils/Palette'
+import type { WizardPage } from '../../../types/WizardData'
 
 const Wrapper = styled.div`
   display: flex;
@@ -43,21 +43,14 @@ const Name = styled.div`
 
 type Props = {
   selected: { id: string },
-  wizardType: 'migration' | 'replica',
-  destinationProvider: ?string,
-  sourceProvider: ?string,
+  pages: WizardPage[],
 }
 @observer
 class WizardBreadcrumbs extends React.Component<Props> {
   render() {
-    let pages = wizardConfig.pages
-      .filter(p => !p.excludeFrom || p.excludeFrom !== this.props.wizardType)
-      .filter(p => !p.targetFilter || (this.props.destinationProvider && p.targetFilter(this.props.destinationProvider)))
-      .filter(p => !p.sourceFilter || (this.props.sourceProvider && p.sourceFilter(this.props.sourceProvider)))
-
     return (
       <Wrapper>
-        {pages.map(page => {
+        {this.props.pages.map(page => {
           return (
             <Breadcrumb key={page.id}>
               <Name selected={this.props.selected.id === page.id} data-test-id={`wBreadCrumbs-name-${page.id}`}>{page.breadcrumb}</Name>

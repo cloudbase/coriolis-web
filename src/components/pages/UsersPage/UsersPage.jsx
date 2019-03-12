@@ -28,7 +28,7 @@ import type { User } from '../../../types/User'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
-import { requestPollTimeout } from '../../../config.js'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div``
 
@@ -88,7 +88,7 @@ class UsersPage extends React.Component<{ history: any }, State> {
     }
 
     userStore.getAllUsers(showLoading).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, requestPollTimeout)
+      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 

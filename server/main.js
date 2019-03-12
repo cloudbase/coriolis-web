@@ -12,9 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
+import requireWithoutCache from 'require-without-cache'
 
 import packageJson from '../package.json'
 
@@ -41,21 +44,29 @@ app.use(express.static('dist'))
 
 require('./proxy')(app)
 
+// $FlowIgnore
 app.get('/version', (req, res) => { res.send({ version: packageJson.version }) })
 
+// $FlowIgnore
+app.get('/config', (req, res) => {
+  res.send(requireWithoutCache('../config.js', require).config)
+})
+
 if (isDev) {
+  // $FlowIgnore
   app.use((req, res) => {
     res.redirect(`${req.baseUrl}/#${req.url}`)
   })
 } else {
+  // $FlowIgnore
   app.get('*/env.js', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../dist', 'env.js'))
   })
+  // $FlowIgnore
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../dist', 'index.html'))
   })
 }
-
 
 app.listen(PORT, () => {
   console.log(`Express server is up on port ${PORT}`)

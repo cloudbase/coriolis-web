@@ -39,8 +39,8 @@ import type { Field } from '../../../types/Field'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Network, NetworkMap } from '../../../types/Network'
 
-import { storageProviders } from '../../../config'
 import StyleProps from '../../styleUtils/StyleProps'
+import configLoader from '../../../utils/Config'
 
 const PanelContent = styled.div`
   padding: 32px;
@@ -117,7 +117,7 @@ class EditReplica extends React.Component<Props, State> {
       return false
     }
 
-    return Boolean(storageProviders.find(p => p === this.props.destinationEndpoint.type))
+    return Boolean(configLoader.config.storageProviders.find(p => p === this.props.destinationEndpoint.type))
   }
 
   isUpdateDisabled() {

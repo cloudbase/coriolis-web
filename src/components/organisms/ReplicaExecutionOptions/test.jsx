@@ -20,7 +20,7 @@ import sinon from 'sinon'
 import TW from '../../../utils/TestWrapper'
 import ReplicaExecutionOptions from '.'
 
-import { executionOptions } from '../../../config'
+import { executionOptions } from '../../../constants'
 
 const wrap = props => new TW(shallow(<ReplicaExecutionOptions {...props} />), 'reOptions')
 

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 import type { Instance } from '../types/Instance'
 
-import { servicesUrl } from '../config'
+import { servicesUrl } from '../constants'
 
 class InstanceSource {
   static loadInstancesChunk(

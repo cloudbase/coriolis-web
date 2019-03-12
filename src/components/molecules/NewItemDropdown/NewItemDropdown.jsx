@@ -25,6 +25,7 @@ import DropdownButton from '../../atoms/DropdownButton'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import userStore from '../../../stores/UserStore'
+import configLoader from '../../../utils/Config'
 
 import migrationImage from './images/migration.svg'
 import replicaImage from './images/replica.svg'
@@ -32,7 +33,7 @@ import endpointImage from './images/endpoint.svg'
 import userImage from './images/user.svg'
 import projectImage from './images/project.svg'
 
-import { navigationMenu } from '../../../config'
+import { navigationMenu } from '../../../constants'
 
 const Wrapper = styled.div`
   position: relative;
@@ -176,6 +177,7 @@ class NewItemDropdown extends React.Component<Props, State> {
     }
 
     const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
+    const disabledPages = configLoader.config ? configLoader.config.disabledPages : []
     let items: ItemType[] = [{
       title: 'Migration',
       href: '/wizard/migration',
@@ -196,13 +198,15 @@ class NewItemDropdown extends React.Component<Props, State> {
       value: 'user',
       description: 'Create a new Coriolis user',
       icon: { user: true },
-      disabled: Boolean(navigationMenu.find(i => i.value === 'users' && (i.disabled || (i.requiresAdmin && !isAdmin)))),
+      disabled: Boolean(navigationMenu.find(i => i.value === 'users'
+        && (disabledPages.find(p => p === 'users') || (i.requiresAdmin && !isAdmin)))),
     }, {
       title: 'Project',
       value: 'project',
       description: 'Create a new Coriolis project',
       icon: { project: true },
-      disabled: Boolean(navigationMenu.find(i => i.value === 'projects' && (i.disabled || (i.requiresAdmin && !isAdmin)))),
+      disabled: Boolean(navigationMenu.find(i => i.value === 'projects'
+        && (disabledPages.find(p => p === 'users') || (i.requiresAdmin && !isAdmin)))),
     }]
 
     let list = (

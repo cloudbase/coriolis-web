@@ -24,6 +24,7 @@ import LoginForm from '../../organisms/LoginForm'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import userStore from '../../../stores/UserStore'
+import configStore from '../../../utils/Config'
 
 import backgroundImage from './images/star-bg.jpg'
 import cbsImage from './images/cbsl-logo.svg'
@@ -134,6 +135,7 @@ class LoginPage extends React.Component<Props, State> {
                 onFormSubmit={data => this.handleFormSubmit(data)}
                 loading={userStore.loading}
                 loginFailedResponse={userStore.loginFailedResponse}
+                showUserDomainInput={configStore.config.showUserDomainInput}
               />
             </Top>
             <Footer>
