@@ -29,7 +29,7 @@ const conf: Config = {
   requestPollTimeout: 5000,
 
   // The list of providers which offer storage listing
-  storageProviders: ['openstack', 'azure'],
+  storageProviders: ['openstack', 'azure', 'oracle_vm'],
 
   // The list of providers which offer source options
   sourceOptionsProviders: ['aws'],
