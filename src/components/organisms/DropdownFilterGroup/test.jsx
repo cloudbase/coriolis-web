@@ -38,7 +38,7 @@ const wrap = props => new TW(shallow(
 describe('DropdownFilterGroup Component', () => {
   it('renders correct dropdowns', () => {
     let wrapper = wrap()
-    expect(wrapper.find('dropdown-', true).length).toBe(dropdowns.length)
+    expect(wrapper.findPartialId('dropdown-').length).toBe(dropdowns.length)
     dropdowns.forEach(dropdown => {
       expect(wrapper.find(`dropdown-${dropdown.key}`).prop('items')[0].value).toBe(dropdown.items[0].value)
       expect(wrapper.find(`dropdown-${dropdown.key}`).prop('selectedItem')).toBe(dropdown.selectedItem || undefined)

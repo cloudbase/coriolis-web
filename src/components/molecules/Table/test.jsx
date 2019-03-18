@@ -35,7 +35,7 @@ describe('TTable Component', () => {
 
   it('renders header', () => {
     let wrapper = wrap({ items, header: headerItems })
-    expect(wrapper.find('header-', true).length).toBe(headerItems.length)
+    expect(wrapper.findPartialId('header-').length).toBe(headerItems.length)
     headerItems.forEach((headerItem, i) => {
       expect(wrapper.findText(`header-${i}`)).toBe(headerItem)
     })
@@ -43,6 +43,6 @@ describe('TTable Component', () => {
 
   it('renders header with calculated widths', () => {
     let wrapper = wrap({ items, header: headerItems })
-    expect(wrapper.find('header-', true).at(3).prop('width')).toBe('20%')
+    expect(wrapper.findPartialId('header-').at(3).prop('width')).toBe('20%')
   })
 })

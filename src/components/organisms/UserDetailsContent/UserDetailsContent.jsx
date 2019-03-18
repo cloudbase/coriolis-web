@@ -80,7 +80,9 @@ const ButtonsColumn = styled.div`
   }
 `
 
-type Props = {
+export const TEST_ID = 'userDetailsContent'
+
+export type Props = {
   user: ?User,
   loading: boolean,
   projects: Project[],
@@ -89,7 +91,7 @@ type Props = {
   onUpdatePasswordClick: () => void,
   onDeleteClick: () => void,
 }
-const testName = 'udContent'
+
 @observer
 class UserDetailsContent extends React.Component<Props> {
   renderLoading() {
@@ -110,7 +112,11 @@ class UserDetailsContent extends React.Component<Props> {
     return (
       <Buttons>
         <ButtonsColumn>
-          <Button hollow onClick={this.props.onUpdatePasswordClick}>Change password</Button>
+          <Button
+            hollow
+            onClick={this.props.onUpdatePasswordClick}
+            data-test-id={`${TEST_ID}-updateButton`}
+          >Change password</Button>
         </ButtonsColumn>
         <ButtonsColumn>
           <Button
@@ -118,6 +124,7 @@ class UserDetailsContent extends React.Component<Props> {
             hollow
             onClick={() => { this.props.onDeleteClick() }}
             disabled={this.props.isLoggedUser}
+            data-test-id={`${TEST_ID}-deleteUserButton`}
           >Delete user</Button>
         </ButtonsColumn>
       </Buttons>
@@ -128,7 +135,7 @@ class UserDetailsContent extends React.Component<Props> {
     return projects.map((project, i) => (
       <span key={project.id}>
         {project.label ? (
-          <LinkStyled data-test-id={`${testName}-project-${project.id}`} to={`/project/${project.id}`}>
+          <LinkStyled data-test-id={`${TEST_ID}-project-${project.id}`} to={`/project/${project.id}`}>
             {project.label}
           </LinkStyled>
         ) : project.id}
@@ -169,11 +176,11 @@ class UserDetailsContent extends React.Component<Props> {
         </Field>
         <Field>
           <Label>Email</Label>
-          {this.renderValue(user.email || '-')}
+          {this.renderValue(user.email || '-', 'email')}
         </Field>
         <Field>
           <Label>Primary Project</Label>
-          {this.renderValue(primaryProjectName || '-')}
+          {this.renderValue(primaryProjectName || '-', 'primaryProject')}
         </Field>
         <Field>
           <Label>Project Membership</Label>
@@ -181,7 +188,7 @@ class UserDetailsContent extends React.Component<Props> {
         </Field>
         <Field>
           <Label>Enabled</Label>
-          <Value>{user.enabled ? 'Yes' : 'No'}</Value>
+          <Value data-test-id={`${TEST_ID}-enabled`}>{user.enabled ? 'Yes' : 'No'}</Value>
         </Field>
       </Info>
     )
@@ -190,7 +197,7 @@ class UserDetailsContent extends React.Component<Props> {
   renderValue(value: string, dataTestId?: string) {
     return value !== '-' ? (
       <CopyValue
-        data-test-id={`${testName}-${dataTestId || ''}`}
+        data-test-id={`${TEST_ID}-${dataTestId || ''}`}
         value={value}
         maxWidth="90%"
       />

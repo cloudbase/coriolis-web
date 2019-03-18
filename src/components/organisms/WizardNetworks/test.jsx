@@ -54,7 +54,7 @@ let selectedNetworks = [
 describe('WizardNetworks Component', () => {
   it('renders correct number of instance details', () => {
     let wrapper = wrap({ networks, instancesDetails })
-    expect(wrapper.find('dropdown-', true).length).toBe(instancesDetails.length)
+    expect(wrapper.findPartialId('dropdown-').length).toBe(instancesDetails.length)
   })
 
   it('renders correct info for instance details', () => {

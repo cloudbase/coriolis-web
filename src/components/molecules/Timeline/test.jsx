@@ -35,7 +35,7 @@ let items = [
 describe('Timeline Component', () => {
   it('renders with correct dates', () => {
     let wrapper = wrap({ items, selectedItem: items[2] })
-    expect(wrapper.find('label-', true).length).toBe(items.length)
+    expect(wrapper.findPartialId('label-').length).toBe(items.length)
     items.forEach(item => {
       expect(wrapper.findText(`label-${item.id}`)).toBe(moment(item.created_at).format('DD MMM YYYY'))
     })

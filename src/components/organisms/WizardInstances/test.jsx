@@ -33,7 +33,7 @@ let instances = [
 describe('WizardInstances Component', () => {
   it('has correct number of instances', () => {
     let wrapper = wrap({ instances, currentPage: 1 })
-    expect(wrapper.find('item-', true).length).toBe(instances.length)
+    expect(wrapper.findPartialId('item-').length).toBe(instances.length)
   })
 
   it('has correct instances info', () => {
