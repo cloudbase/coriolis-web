@@ -49,7 +49,9 @@ const CircleProgressBar = styled.circle`
   transition: stroke-dashoffset ${StyleProps.animations.swift};
 `
 
-type Props = {
+export const TEST_ID = 'smallLoading'
+
+export type Props = {
   loadingProgress: number,
 }
 
@@ -97,7 +99,9 @@ class SmallLoading extends React.Component<Props> {
     }
 
     return (
-      <ProgressText>{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%</ProgressText>
+      <ProgressText
+        data-test-id={`${TEST_ID}-progressText`}
+      >{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%</ProgressText>
     )
   }
 

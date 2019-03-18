@@ -41,7 +41,7 @@ let selectionInfo = { selected: 2, total: 7, label: 'items' }
 describe('MainListFilter Component', () => {
   it('renders given items', () => {
     let wrapper = wrap({ items, actions, selectionInfo })
-    expect(wrapper.find('filterItem', true).length).toBe(items.length)
+    expect(wrapper.findPartialId('filterItem').length).toBe(items.length)
     items.forEach(item => {
       expect(wrapper.findText(`filterItem-${item.value}`)).toBe(item.label)
     })

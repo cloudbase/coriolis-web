@@ -57,6 +57,8 @@ const NavigationStyled = styled(Navigation)`
   transition: left ${StyleProps.animations.swift};
 `
 
+export const TEST_ID = 'navigationMini'
+
 type State = {
   open: boolean,
 }
@@ -77,7 +79,7 @@ class NavigationMini extends React.Component<{}, State> {
           open={this.state.open}
           onClick={() => { this.handleMenuToggleClick() }}
           dangerouslySetInnerHTML={{ __html: menuImage() }}
-          data-test-id="sideMenu-toggle"
+          data-test-id={`${TEST_ID}-toggleButton`}
         />
         {this.state.open ? <Stub /> : null}
         <NavigationStyled

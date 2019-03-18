@@ -58,7 +58,7 @@ let fields = [
 describe('WizardOptions Component', () => {
   it('has description and required field in simple tab', () => {
     let wrapper = wrap({ fields, selectedInstances: [], wizardType: 'migration' })
-    expect(wrapper.find('field-', true).length).toBe(3)
+    expect(wrapper.findPartialId('field-').length).toBe(3)
     expect(wrapper.find('field-description').length).toBe(1)
     expect(wrapper.find('field-required_string_field').length).toBe(1)
   })
@@ -81,7 +81,7 @@ describe('WizardOptions Component', () => {
 
   it('renders correct number of fields in advanced tab', () => {
     let wrapper = wrap({ fields, selectedInstances: [], useAdvancedOptions: true, wizardType: 'migration' })
-    expect(wrapper.find('field-', true).length).toBe(fields.length + 2)
+    expect(wrapper.findPartialId('field-').length).toBe(fields.length + 2)
   })
 
   it('renders correct field info', () => {

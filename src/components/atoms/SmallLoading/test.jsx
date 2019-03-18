@@ -14,31 +14,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-export type Project = {
-  id: string,
-  name: string,
-  enabled?: boolean,
-  description?: string,
-}
+import React from 'react'
+import { shallow } from 'enzyme'
 
-export type Role = {
-  id: string,
-  name: string,
-}
+import TW from '../../../utils/TestWrapper'
+import Component, { TEST_ID } from '.'
+import type { Props } from '.'
 
-export type RoleAssignment = {
-  scope: {
-    project: {
-      id: string,
-      name: string,
-    },
-  },
-  role: {
-    id: string,
-    name: string,
-  },
-  user: {
-    id: string,
-    name: string,
-  },
+const defaultProps: Props = {
+  loadingProgress: 33,
 }
+const wrap = (props: Props) => new TW(shallow(<Component {...props} />), TEST_ID)
+
+describe('SmallLoading Component', () => {
+  it('renders', () => {
+    let wrapper = wrap(defaultProps)
+    expect(wrapper.findText('progressText')).toBe('33%')
+  })
+})

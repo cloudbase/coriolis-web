@@ -16,25 +16,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import sinon from 'sinon'
+
 import TW from '../../../utils/TestWrapper'
-import NewItemDropdown from '.'
+import NavigationMini, { TEST_ID } from '.'
 
-const wrap = props => new TW(shallow(<NewItemDropdown onChange={() => { }} {...props} />), 'newItemDropdown')
+const wrap = () => new TW(shallow(
+  <NavigationMini />
+), TEST_ID)
 
-describe('NewItemDropdown Component', () => {
-  it('opens list on click', () => {
+describe('NavigationMini Component', () => {
+  it('toggles the navigation state', () => {
     let wrapper = wrap()
-    expect(wrapper.findPartialId('listItem').length).toBe(0)
-    wrapper.find('button').simulate('click')
-    expect(wrapper.findPartialId('listItem').length).toBe(3)
-  })
-
-  it('dispatches change on item click with correct args', () => {
-    let onChange = sinon.spy()
-    let wrapper = wrap({ onChange })
-    wrapper.find('button').simulate('click')
-    wrapper.find('listItem-Endpoint').simulate('click')
-    expect(onChange.args[0][0].value).toBe('endpoint')
+    let button = () => wrapper.find('toggleButton')
+    expect(button().prop('open')).toBe(false)
+    button().simulate('click')
+    expect(button().prop('open')).toBe(true)
   })
 })

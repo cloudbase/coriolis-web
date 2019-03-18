@@ -47,7 +47,7 @@ let buttons = [
 describe('LoginOptions Component', () => {
   it('renders with all buttons', () => {
     let wrapper = wrap({ buttons })
-    expect(wrapper.find('button', true).length).toBe(4)
+    expect(wrapper.findPartialId('button').length).toBe(4)
     buttons.forEach(button => {
       expect(wrapper.findText(`button-${button.id}`)).toBe(`<styled.div />Sign in with ${button.name}`)
       expect(wrapper.find(`logo-${button.id}`).prop('id')).toBe(button.id)

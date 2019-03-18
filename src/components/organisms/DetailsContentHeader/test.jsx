@@ -16,7 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import sinon from 'sinon'
 import TW from '../../../utils/TestWrapper'
 import DetailsContentHeader from '.'
 
@@ -69,11 +68,11 @@ describe('DetailsContentHeader Component', () => {
 
   it('renders correct STATUS pill', () => {
     let wrapper = wrap({ item })
-    expect(wrapper.find('statusPill-', true).prop('status')).toBe('COMPLETED')
+    expect(wrapper.findPartialId('statusPill-').prop('status')).toBe('COMPLETED')
     let newItem = { ...item, executions: [...item.executions] }
     newItem.executions.push({ status: 'RUNNING', created_at: new Date() })
     wrapper = wrap({ item: newItem })
-    expect(wrapper.find('statusPill-', true).prop('status')).toBe('RUNNING')
+    expect(wrapper.findPartialId('statusPill-').prop('status')).toBe('RUNNING')
   })
 
   it('renders item description', () => {

@@ -37,8 +37,8 @@ const valueCallback = prop => {
 describe('PropertiesTable Component', () => {
   it('renders all properties', () => {
     const wrapper = wrap({ properties, valueCallback })
-    expect(wrapper.find('row-', true).length).toBe(properties.length)
-    expect(wrapper.find(`row-${properties[3].name}`).findText('header')).toBe('Prop 3a')
+    expect(wrapper.findPartialId('row-').length).toBe(properties.length)
+    expect(wrapper.findPartialId(`row-${properties[3].name}`).findText('header')).toBe('Prop 3a')
   })
 
   it('renders boolean properties', () => {

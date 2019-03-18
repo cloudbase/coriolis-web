@@ -55,13 +55,15 @@ export type NavigationItem = {
   value: string,
 }
 
-type Props = {
+export type Props = {
   navigationItems: NavigationItem[],
   content: React.Node,
   selectedValue: string,
   onChange: (item: NavigationItem) => void,
   style?: any,
 }
+
+export const TEST_ID = 'panel'
 
 @observer
 class Panel extends React.Component<Props> {
@@ -79,9 +81,10 @@ class Panel extends React.Component<Props> {
             key={item.value}
             selected={this.props.selectedValue === item.value}
             onClick={() => { this.handleItemClick(item) }}
+            data-test-id={`${TEST_ID}-navItem-${item.value}`}
           >{item.label}</NavigationItemDiv>
         ))}</Navigation>
-        <Content>{this.props.content}</Content>
+        <Content data-test-id={`${TEST_ID}-content`}>{this.props.content}</Content>
       </Wrapper>
     )
   }

@@ -51,6 +51,11 @@ const ListItem = styled.div`
     border-bottom-right-radius: ${StyleProps.borderRadius};
   }
 `
+const ListStyle = css`
+  box-shadow: 0 0 8px 0px rgba(111, 114, 118, 0.51);
+  border: none;
+`
+export const TEST_ID = 'actionDropdown'
 export type Action = {
   label: string,
   color?: string,
@@ -58,14 +63,10 @@ export type Action = {
   disabled?: boolean,
   hidden?: boolean,
 }
-const ListStyle = css`
-  box-shadow: 0 0 8px 0px rgba(111, 114, 118, 0.51);
-  border: none;
-`
-type Props = {
+export type Props = {
   label: string,
   actions: Action[],
-  style: any,
+  style?: any,
   'data-test-id'?: string,
 }
 
@@ -157,6 +158,7 @@ class ActionDropdown extends React.Component<Props, State> {
             onClick={() => { this.handleItemClick(action) }}
             color={action.color}
             disabled={action.disabled}
+            data-test-id={`${TEST_ID}-listItem-${action.label}`}
           >
             {action.label}
           </ListItem>
@@ -177,6 +179,7 @@ class ActionDropdown extends React.Component<Props, State> {
         width={`${StyleProps.inputSizes.regular.width}px`}
         padding={0}
         customStyle={ListStyle}
+        data-test-id={`${TEST_ID}-list`}
       >
         <Tip innerRef={ref => { this.tipRef = ref }} borderColor={'rgba(111, 114, 118, 0.2)'} />
         {this.renderListItems()}
@@ -193,6 +196,7 @@ class ActionDropdown extends React.Component<Props, State> {
           value={this.props.label}
           customRef={ref => { this.buttonRef = ref }}
           onClick={() => { this.handleButtonClick() }}
+          data-test-id={`${TEST_ID}-dropdownButton`}
         />
         {this.renderList()}
       </Wrapper>

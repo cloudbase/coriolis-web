@@ -36,7 +36,7 @@ let endpointType = id => id
 describe('MainListItem Component', () => {
   it('renders with given status', () => {
     let wrapper = wrap({ item, endpointType })
-    expect(wrapper.find('statusPill', true).at(0).prop('status')).toBe('COMPLETED')
+    expect(wrapper.findPartialId('statusPill').at(0).prop('status')).toBe('COMPLETED')
   })
 
   it('renders with given endpoints', () => {

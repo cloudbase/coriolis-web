@@ -14,14 +14,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import type { ShallowWrapper } from 'enzyme'
+import type { ShallowWrapper, ReactWrapper } from 'enzyme'
 
 export default class TestWrapper {
-  shallow: ShallowWrapper<any>
+  shallow: ShallowWrapper<any> | ReactWrapper<any>
   baseId: ?string
   length: number
 
-  constructor(wrapper: ShallowWrapper<any>, baseId?: ?string) {
+  constructor(wrapper: ShallowWrapper<any> | ReactWrapper<any>, baseId?: ?string) {
     this.shallow = wrapper
     this.baseId = baseId
   }
@@ -46,13 +46,30 @@ export default class TestWrapper {
     return render ? this.shallow.render().text() : this.shallow.text()
   }
 
-  find(id: string, isPartialId?: boolean) {
+  find(id: string, opts?: {
+    isPartialId?: boolean,
+    name?: string,
+  }) {
     const actualId = this.baseId ? `${this.baseId}-${id}` : id
+    let o = opts || {}
     let tw = new TestWrapper(this.shallow.findWhere(w =>
-      isPartialId ? w.prop('data-test-id') && w.prop('data-test-id').indexOf(actualId) > -1 : w.prop('data-test-id') === actualId
+      (
+        o.isPartialId ? w.prop('data-test-id') && w.prop('data-test-id').indexOf(actualId) > -1
+          : w.prop('data-test-id') === actualId
+      )
+      &&
+      (o.name ? w.name() === o.name : true)
     ), this.baseId)
     tw.length = tw.shallow.length
     return tw
+  }
+
+  findPartialId(partialId: string) {
+    return this.find(partialId, { isPartialId: true })
+  }
+
+  findDiv(id: string) {
+    return this.find(id, { name: 'div' })
   }
 
   findText(id: string, isHostComponent?: boolean, render?: boolean) {

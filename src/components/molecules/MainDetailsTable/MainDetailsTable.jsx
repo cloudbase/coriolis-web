@@ -133,8 +133,9 @@ const ArrowIcon = styled.div`
   background: url('${arrowIcon}') center no-repeat;
   margin-left: 16px;
 `
+export const TEST_ID = 'mainDetailsTable'
 
-type Props = {
+export type Props = {
   item: ?MainItem,
   instancesDetails: Instance[],
   networks?: Network[],
@@ -193,11 +194,11 @@ class MainDetailsTable extends React.Component<Props, State> {
         <RowHeader>
           <RowHeaderColumn>
             <HeaderIcon icon={icon} />
-            <HeaderName source>{sourceName}</HeaderName>
+            <HeaderName source data-test-id={`${TEST_ID}-source-${icon}`}>{sourceName}</HeaderName>
             {destinationName ? <ArrowIcon /> : null}
           </RowHeaderColumn>
           <RowHeaderColumn>
-            <HeaderName>{destinationName}</HeaderName>
+            <HeaderName data-test-id={`${TEST_ID}-destination-${icon}`}>{destinationName}</HeaderName>
           </RowHeaderColumn>
         </RowHeader>
         <Collapse isOpened={isOpened} springConfig={{ stiffness: 100, damping: 20 }}>
@@ -347,8 +348,8 @@ class MainDetailsTable extends React.Component<Props, State> {
     return this.renderRow(
       instance.instance_name,
       'instance',
-      `${instance.instance_name}`,
-      `${destinationName}`,
+      instance.instance_name,
+      destinationName,
       sourceBody,
       destinationBody
     )
@@ -367,7 +368,7 @@ class MainDetailsTable extends React.Component<Props, State> {
         </Header>
         {this.props.instancesDetails.map(instance => (
           <InstanceInfo key={instance.name}>
-            <InstanceName>{instance.name}</InstanceName>
+            <InstanceName data-test-id={`${TEST_ID}-instanceName-${instance.name}`}>{instance.name}</InstanceName>
             <InstanceBody>
               {this.renderInstanceDetails(instance)}
               {this.renderNetworks(instance)}

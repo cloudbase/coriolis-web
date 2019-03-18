@@ -35,7 +35,7 @@ let endpoints = [
 describe('WizardEndpointList Component', () => {
   it('renders correct number of providers', () => {
     let wrapper = wrap({ endpoints, providers })
-    expect(wrapper.find('logo-', true).length).toBe(providers.length)
+    expect(wrapper.findPartialId('logo-').length).toBe(providers.length)
   })
 
   it('renders correct providers type', () => {

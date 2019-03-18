@@ -67,6 +67,6 @@ export type MainItem = {
     [string]: {
       source_network: string,
       destination_network: string,
-    } | 'string'
+    } | string
   }
 }

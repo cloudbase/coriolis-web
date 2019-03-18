@@ -136,7 +136,9 @@ export const getDisks = (instancesDetails: Instance[], type: 'backend' | 'disk')
   return disks
 }
 
-type Props = {
+export const TEST_ID = 'wizardStorage'
+
+export type Props = {
   storageBackends: StorageBackend[],
   instancesDetails: Instance[],
   storageMap: ?StorageMap[],
@@ -147,7 +149,7 @@ type Props = {
 class WizardStorage extends React.Component<Props> {
   renderNoStorage() {
     return (
-      <NoStorageMessage>
+      <NoStorageMessage data-test-id={`${TEST_ID}-noStorage`}>
         <BigStorageImage />
         <NoStorageTitle>No storage backends were found</NoStorageTitle>
         <NoStorageSubtitle>We could not find any storage backends. Coriolis will skip this step.</NoStorageSubtitle>
@@ -187,8 +189,10 @@ class WizardStorage extends React.Component<Props> {
               <StorageItem key={disk[diskFieldName]}>
                 <StorageImage backend={type === 'backend'} />
                 <StorageTitle>
-                  <StorageName>{disk[diskFieldName]}</StorageName>
-                  <StorageSubtitle>{`Connected to ${connectedTo.join(', ')}`}</StorageSubtitle>
+                  <StorageName data-test-id={`${TEST_ID}-${type}-source`}>{disk[diskFieldName]}</StorageName>
+                  <StorageSubtitle
+                    data-test-id={`${TEST_ID}-${type}-connectedTo`}
+                  >{`Connected to ${connectedTo.join(', ')}`}</StorageSubtitle>
                 </StorageTitle>
                 <ArrowImage />
                 <Dropdown
@@ -201,6 +205,7 @@ class WizardStorage extends React.Component<Props> {
                   labelField="name"
                   valueField="id"
                   onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
+                  data-test-id={`${TEST_ID}-${type}-destination`}
                 />
               </StorageItem>
             )
