@@ -117,8 +117,10 @@ class EdnpointSource {
   static update(endpoint: Endpoint): Promise<Endpoint> {
     let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
 
-    if (parsedEndpoint.connectionInfo && Object.keys(parsedEndpoint.connectionInfo).length > 0 && parsedEndpoint.connection_info.secret_ref) {
+    if (parsedEndpoint.connection_info && Object.keys(parsedEndpoint.connection_info).length > 0 && parsedEndpoint.connection_info.secret_ref) {
+      // $FlowIgnore
       let uuidIndex = parsedEndpoint.connection_info.secret_ref.lastIndexOf('/')
+      // $FlowIgnore
       let uuid = parsedEndpoint.connection_info.secret_ref.substr(uuidIndex + 1)
       let newEndpoint: any = {}
       let connectionInfo = {}
@@ -178,7 +180,7 @@ class EdnpointSource {
     let newEndpoint: any = {}
     let connectionInfo = {}
     if (configLoader.config.useBarbicanSecrets
-      && parsedEndpoint.connectionInfo && Object.keys(parsedEndpoint.connectionInfo).length > 0) {
+      && parsedEndpoint.connection_info && Object.keys(parsedEndpoint.connection_info).length > 0) {
       return Api.send({
         url: `${servicesUrl.barbican}/v1/secrets`,
         method: 'POST',
