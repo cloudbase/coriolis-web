@@ -20,7 +20,6 @@ import cookie from 'js-cookie'
 
 import logger from './ApiLogger'
 import notificationStore from '../stores/NotificationStore'
-import DomUtils from '../utils/DomUtils'
 
 type Cancelable = {
   requestId: string,
@@ -46,6 +45,13 @@ const addCancelable = (cancelable: Cancelable) => {
   if (cancelables.length > 100) {
     cancelables.pop()
   }
+}
+
+const isOnLoginPage = (): boolean => {
+  if (window.env.ENV === 'development') {
+    return window.location.hash === '#/' || window.location.hash === '#/login'
+  }
+  return window.location.pathname === '/' || window.location.pathname === '/login'
 }
 
 class ApiCaller {
@@ -107,13 +113,11 @@ class ApiCaller {
         }
         resolve(response)
       }).catch(error => {
-        const loginUrl = `${DomUtils.urlHashPrefix}`
-
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
           if (
-            (error.response.status !== 401 || window.location.hash !== loginUrl) &&
+            (error.response.status !== 401 || !isOnLoginPage()) &&
             !options.quietError &&
             error.response.data) {
             let data = error.response.data
@@ -123,7 +127,7 @@ class ApiCaller {
             }
           }
 
-          if (error.response.status === 401 && window.location.hash !== loginUrl && error.request.responseURL.indexOf('/proxy/') === -1) {
+          if (error.response.status === 401 && !isOnLoginPage() && error.request.responseURL.indexOf('/proxy/') === -1) {
             window.location.href = '/'
           }
 
@@ -138,7 +142,7 @@ class ApiCaller {
         } else if (error.request) {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
-          if (window.location.hash !== loginUrl) {
+          if (!isOnLoginPage()) {
             notificationStore.alert('Request failed, there might be a problem with the connection to the server.', 'error')
           }
           logger.log({
