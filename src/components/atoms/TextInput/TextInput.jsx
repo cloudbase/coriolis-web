@@ -39,7 +39,7 @@ const borderColor = (props, defaultColor = Palette.grayscale[3]) => props.highli
 const Input = styled.input`
   width: ${props => getInputWidth(props)};
   height: ${props => props.height || `${StyleProps.inputSizes.regular.height}px`};
-  line-height: ${props => props.lineHeight || `${StyleProps.inputSizes.regular.height}px`};
+  line-height: ${props => props.lineHeight || 'normal'};
   border-radius: ${StyleProps.borderRadius};
   background-color: #FFF;
   border: ${props => props.embedded ? 0 : css`1px solid ${props => borderColor(props)}`};
