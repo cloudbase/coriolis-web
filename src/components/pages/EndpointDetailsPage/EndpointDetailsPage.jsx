@@ -119,11 +119,11 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   handleDeleteEndpointConfirmation() {
     this.setState({ showDeleteEndpointConfirmation: false })
-    this.props.history.push('/endpoints')
     let endpoint = this.getEndpoint()
     if (endpoint) {
       endpointStore.delete(endpoint)
     }
+    this.props.history.push('/endpoints')
   }
 
   handleCloseDeleteEndpointConfirmation() {

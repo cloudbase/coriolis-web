@@ -12,74 +12,61 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { navigationMenu } from '../../../../src/config'
-
-const isEnabled: () => boolean = () => {
-  let usersEnabled = navigationMenu.find(i => i.value === 'users' && i.disabled === false)
-  let projectsEnabled = navigationMenu.find(i => i.value === 'projects' && i.disabled === false)
-  return Boolean(usersEnabled && projectsEnabled)
-}
+// @flow
 
 describe('Adds a new user as a member to the project', () => {
   before(() => {
-    if (isEnabled()) {
-      cy.login()
-    }
+    cy.login()
   })
 
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
-  if (!isEnabled()) {
-    it('Users and projects management is disabled!', () => { })
-    return
-  }
-
   it('Shows projects details page', () => {
-    cy.get('a[data-test-id="navigation-item-projects"]').click()
-    cy.get('div[data-test-id="plItem-content"]').contains('cypress-project').click()
+    cy.getById('navigation-smallMenuItem-projects').click()
+    cy.getById('plItem-content').contains('cypress-project').click()
     cy.title().should('eq', 'Project Details')
   })
 
   it('Opens add member modal', () => {
     cy.get('button').contains('Add Member').click()
-    cy.get('div[data-test-id="modal-title"]').should('contain', 'Add Project Member')
+    cy.getById('modal-title').should('contain', 'Add Project Member')
   })
 
   it('Creates new user', () => {
-    cy.get('div[data-test-id="toggleButtonBar-new"]').click()
-    cy.get('input[data-test-id="endpointField-textInput-username"]').type('cypress-member-user')
-    cy.get('input[data-test-id="endpointField-textInput-description"]').type('User created by Cypress in Add Project Member modal')
-    cy.get('div[data-test-id="endpointField-dropdown-Primary Project"]').click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains('cypress-project').click()
-    cy.get('div[data-test-id="endpointField-multidropdown-role(s)"]').click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains('_member_').click()
-    cy.get('input[data-test-id="endpointField-textInput-password"]').type('cypress-member-user')
-    cy.get('input[data-test-id="endpointField-textInput-confirm_password"]').type('cypress-member-user')
+    cy.getById('toggleButtonBar-new').click()
+    cy.getById('endpointField-textInput-username').last().type('cypress-member-user')
+    cy.getById('endpointField-textInput-description').last().type('User created by Cypress in Add Project Member modal')
+    cy.getById('endpointField-dropdown-Primary Project').click()
+    cy.getById('dropdownListItem').contains('cypress-project').click()
+    cy.getById('endpointField-multidropdown-role(s)').click()
+    cy.getById('dropdownListItem').contains('_member_').click()
+    cy.getById('endpointField-textInput-password').last().type('cypress-member-user')
+    cy.getById('endpointField-textInput-confirm_password').last().type('cypress-member-user')
     cy.server()
     cy.route({ url: '**/users', method: 'POST' }).as('addUser')
     cy.route({ url: '**/roles/**', method: 'PUT' }).as('addRole')
     cy.route({ url: '**/role_assignments**', method: 'GET' }).as('getRoles')
-    cy.get('button[data-test-id="pmModal-addButton"]').contains('Add Member').click()
+    cy.getById('pmModal-addButton').contains('Add Member').click()
     cy.wait(['@addUser', '@addRole', '@getRoles'])
-    cy.get('a[data-test-id="pdContent-users-cypress-member-user"]').its('length').should('eq', 1)
-    cy.get('div[data-test-id="pdContent-roles-cypress-member-user"]').should('contain', '_member_')
+    cy.getById('pdContent-users-cypress-member-user').its('length').should('eq', 1)
+    cy.getById('pdContent-roles-cypress-member-user').should('contain', '_member_')
   })
 
   it('Adds admin as its role', () => {
-    cy.get('div[data-test-id="pdContent-roles-cypress-member-user"]').click()
-    cy.get('div[data-test-id="dropdownLink-listItem"]').contains('admin').click()
-    cy.get('div[data-test-id="pdContent-roles-cypress-member-user"]').should('contain', '_member_, admin')
+    cy.getById('pdContent-roles-cypress-member-user').click()
+    cy.getById('dropdownLink-listItem').contains('admin').click()
+    cy.getById('pdContent-roles-cypress-member-user').should('contain', '_member_, admin')
   })
 
   it('Removes user from project', () => {
-    cy.get('div[data-test-id="pdContent-actions-cypress-member-user"]').click()
-    cy.get('div[data-test-id="dropdownLink-listItem"]').contains('Remove').click()
+    cy.getById('pdContent-actions-cypress-member-user').click()
+    cy.getById('dropdownLink-listItem').contains('Remove').click()
     cy.server()
     cy.route({ url: '**/roles/**', method: 'DELETE' }).as('deleteRole')
-    cy.get('button[data-test-id="aModal-yesButton"]').click()
+    cy.getById('aModal-yesButton').click()
     cy.wait('@deleteRole')
-    cy.get('a[data-test-id="pdContent-users-cypress-member-user"]').should('not.exist')
+    cy.getById('pdContent-users-cypress-member-user').should('not.exist')
   })
 })

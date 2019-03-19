@@ -20,8 +20,6 @@ const identityUrl = `${config.coriolisUrl}identity/auth/tokens`
 const projectsUrl = `${config.coriolisUrl}identity/auth/projects`
 const coriolisUrl = `${config.coriolisUrl}coriolis`
 
-declare var expect: any
-
 Cypress.Commands.add('login', () => {
   let unscopedBody = {
     auth: {
@@ -45,6 +43,8 @@ Cypress.Commands.add('login', () => {
     body: unscopedBody,
   }).then(unscopedResponse => {
     let unscopedToken = unscopedResponse.headers['x-subject-token']
+
+    // $FlowIssue
     expect(unscopedToken).to.exist
 
     cy.request({
@@ -56,6 +56,7 @@ Cypress.Commands.add('login', () => {
       let cypressProject = projects.find(p => p.name === 'cypress')
       let projectId = cypressProject ? cypressProject.id : projects[0].id
 
+      // $FlowIssue
       expect(projectId).to.exist
 
       let scopedBody = {
@@ -80,6 +81,7 @@ Cypress.Commands.add('login', () => {
         body: scopedBody,
       }).then(scopedResponse => {
         let scopedToken = scopedResponse.headers['x-subject-token']
+        // $FlowIssue
         expect(scopedToken).to.exist
 
         cy.setCookie('token', scopedToken)
@@ -185,5 +187,18 @@ Cypress.Commands.add('cleanup', () => {
       url: `${config.coriolisUrl}identity/projects/${project.id}`,
       headers: { 'X-Auth-Token': token },
     }))))
+  })
+})
+
+Cypress.Commands.add('getById', (id, type) => {
+  return cy.get(`${type || ''}[data-test-id="${id}"]`)
+})
+
+Cypress.Commands.add('getServerConfig', () => {
+  return cy.request({
+    url: `${config.nodeServer}config`,
+    method: 'GET',
+  }).then(response => {
+    return response.body
   })
 })

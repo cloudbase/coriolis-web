@@ -215,7 +215,7 @@ const CbsLogoSmall = styled.a`
   display: flex;
   transition: opacity ${ANIMATION};
 `
-
+export const TEST_ID = 'navigation'
 type Props = {
   currentPage?: string,
   className?: string,
@@ -380,6 +380,7 @@ class Navigation extends React.Component<Props> {
                 key={item.value}
                 selected={this.props.currentPage === item.value}
                 to={`/${item.value}`}
+                data-test-id={`${TEST_ID}-smallMenuItem-${item.value}`}
               >
                 <SmallMenuBackground />
                 {bullet ? <SmallMenuItemBullet bullet={bullet} /> : null}

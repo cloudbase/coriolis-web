@@ -16,8 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import config from '../../config'
 
-declare var cy: any
-
 describe('Coriolis Login Failed', () => {
   before(() => {
     cy.logout()
@@ -38,6 +36,6 @@ describe('Coriolis Login Failed', () => {
     cy.get('button').click()
     cy.wait('@login')
 
-    cy.get('#app').should('contain', 'The username or password did not match.')
+    cy.get('#app').should('contain', 'Incorrect credentials.')
   })
 })

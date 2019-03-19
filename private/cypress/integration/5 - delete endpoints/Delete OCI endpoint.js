@@ -14,9 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import config from '../../config'
-import DomUtils from '../../../../src/utils/DomUtils'
-
 describe('Delete the OCI endpoint created for e2e testing', () => {
   before(() => {
     cy.login()
@@ -27,20 +24,21 @@ describe('Delete the OCI endpoint created for e2e testing', () => {
   })
 
   it('Goes to endpoints page', () => {
-    cy.get('#app').should('contain', 'Coriolis Replicas')
-    cy.visit(`${config.nodeServer}${DomUtils.urlHashPrefix}endpoints`)
+    cy.getById('navigation-smallMenuItem-endpoints').click()
     cy.get('#app').should('contain', 'Coriolis Endpoints')
   })
 
   it('Delete e2e OCI endpoint', () => {
-    cy.get('div[data-test-id="endpointListItem-content-e2e-oci-test"]').should('contain', 'e2e-oci-test')
-    cy.get('div[data-test-id="endpointListItem-content-e2e-oci-test"]').first().click()
+    cy.getById('endpointListItem-content-e2e-oci-test').should('contain', 'e2e-oci-test')
+    cy.getById('endpointListItem-content-e2e-oci-test').first().click()
     cy.server()
     cy.route({ url: '**/migrations/**', method: 'GET' }).as('migrations')
     cy.route({ url: '**/replicas/**', method: 'GET' }).as('replicas')
     cy.get('button').contains('Delete Endpoint').click()
     cy.wait(['@migrations', '@replicas'])
+    cy.route({ url: '**/endpoints/**', method: 'DELETE' }).as('delete')
     cy.get('button').contains('Yes').click()
+    cy.wait('@delete')
   })
 })
 

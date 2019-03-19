@@ -24,7 +24,7 @@ describe('Cleaning up Cypress environment', () => {
   })
 
   it('Loaded the UI', () => {
-    cy.get('[data-test-id="navigation-item-replicas"]').should('exist')
+    cy.getById('navigation-item-replicas').should('exist')
     cy.cleanup()
   })
 

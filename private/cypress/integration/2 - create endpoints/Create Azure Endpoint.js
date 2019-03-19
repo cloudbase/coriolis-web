@@ -27,13 +27,13 @@ describe('Create Azure Endpoint', () => {
 
   it('Shows new Azure endpoint dialog', () => {
     cy.get('div').contains('New').click()
-    cy.get('a').contains('Endpoint').click()
-    cy.get('div[data-test-id="cProvider-endpointLogo-azure"]').click()
+    cy.getById('newItemDropdown-listItem-Endpoint').click()
+    cy.getById('cProvider-endpointLogo-azure').click()
   })
 
   it('Fills Azure connection info', () => {
     cy.get('input[placeholder="Name"]').type('e2e-azure-test')
-    cy.get('div[data-test-id="endpointField-switch-allow_untrusted"]').click()
+    cy.getById('endpointField-switch-allow_untrusted').click()
     cy.get('input[placeholder="Username"]').type(config.endpoints.azure.username)
     cy.get('input[placeholder="Password"]').type(config.endpoints.azure.password)
     cy.get('input[placeholder="Subscription ID"]').type(config.endpoints.azure.subscriptionId)
@@ -42,11 +42,11 @@ describe('Create Azure Endpoint', () => {
     cy.route({ url: '**/actions', method: 'POST' }).as('validate')
     cy.get('button').contains('Validate and save').click()
     cy.wait('@validate')
-    cy.get('div[data-test-id="endpointStatus"]').should('contain', 'Endpoint is Valid')
+    cy.getById('endpointStatus').should('contain', 'Endpoint is Valid')
   })
 
   it('Added Endpoint to endpoint list', () => {
-    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
-    cy.get('div[data-test-id="endpointListItem-content-e2e-azure-test"]').should('contain', 'e2e-azure-test')
+    cy.getById('navigation-smallMenuItem-endpoints').click()
+    cy.getById('endpointListItem-content-e2e-azure-test').should('contain', 'e2e-azure-test')
   })
 })

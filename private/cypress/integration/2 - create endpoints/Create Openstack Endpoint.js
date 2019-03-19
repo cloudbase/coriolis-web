@@ -27,8 +27,8 @@ describe('Create Openstack Endpoint', () => {
 
   it('Shows new Openstack endpoint dialog', () => {
     cy.get('div').contains('New').click()
-    cy.get('a').contains('Endpoint').click()
-    cy.get('div[data-test-id="cProvider-endpointLogo-openstack"]').click()
+    cy.getById('newItemDropdown-listItem-Endpoint').click()
+    cy.getById('cProvider-endpointLogo-openstack').click()
   })
 
   it('Fills Openstack connection info', () => {
@@ -36,24 +36,31 @@ describe('Create Openstack Endpoint', () => {
     cy.get('input[placeholder="Name"]').type('e2e-openstack-test')
     cy.get('input[placeholder="Username"]').type(config.endpoints.openstack.username)
     cy.get('input[placeholder="Password"]').type(config.endpoints.openstack.password)
-    cy.get('input[placeholder="Auth URL"]').type(config.endpoints.openstack.authUrl)
+    cy.get('input[placeholder="Authentication URL"]').type(config.endpoints.openstack.authUrl)
     cy.get('input[placeholder="Project Name"]').type(config.endpoints.openstack.projectName)
-    cy.get('div[data-test-id="endpointField-dropdown-glance_api_version"]').first().click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains('2').click()
-    cy.get('div[data-test-id="endpointField-dropdown-identity_api_version"]').first().click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains('3').click()
+    cy.getById('endpointField-dropdown-glance_api_version').first().click()
+    cy.getById('dropdownListItem').contains('2').click()
+    cy.getById('endpointField-dropdown-identity_api_version').first().click()
+    cy.getById('dropdownListItem').contains('3').click()
     cy.get('input[placeholder="Project Domain Name"]').type(config.endpoints.openstack.projectDomainName)
     cy.get('input[placeholder="User Domain Name"]').type(config.endpoints.openstack.userDomainName)
+
+    if (config.endpoints.openstack.allowUntrusted) {
+      cy.getById('endpointField-switch-allow_untrusted').click()
+    }
+    if (config.endpoints.openstack.allowUntrustedSwift) {
+      cy.getById('endpointField-switch-allow_untrusted_swift').click()
+    }
 
     cy.server()
     cy.route({ url: '**/actions', method: 'POST' }).as('validate')
     cy.get('button').contains('Validate and save').click()
     cy.wait('@validate')
-    cy.get('div[data-test-id="endpointStatus"]').should('contain', 'Endpoint is Valid')
+    cy.getById('endpointStatus').should('contain', 'Endpoint is Valid')
   })
 
   it('Added Openstack to endpoint list', () => {
-    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
-    cy.get('div[data-test-id="endpointListItem-content-e2e-openstack-test"]').should('contain', 'e2e-openstack-test')
+    cy.getById('navigation-smallMenuItem-endpoints').click()
+    cy.getById('endpointListItem-content-e2e-openstack-test').should('contain', 'e2e-openstack-test')
   })
 })
