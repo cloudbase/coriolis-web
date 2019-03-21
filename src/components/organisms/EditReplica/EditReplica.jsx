@@ -38,9 +38,9 @@ import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoi
 import type { Field } from '../../../types/Field'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Network, NetworkMap } from '../../../types/Network'
+import { providerTypes } from '../../../constants'
 
 import StyleProps from '../../styleUtils/StyleProps'
-import configLoader from '../../../utils/Config'
 
 const PanelContent = styled.div`
   padding: 32px;
@@ -100,9 +100,11 @@ class EditReplica extends React.Component<Props, State> {
   scrollableRef: HTMLElement
 
   componentWillMount() {
-    if (this.hasStorageMap()) {
-      endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
-    }
+    providerStore.loadProviders().then(() => {
+      if (this.hasStorageMap()) {
+        endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
+      }
+    })
 
     providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica').then(() => {
       return providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type, undefined, true)
@@ -111,13 +113,15 @@ class EditReplica extends React.Component<Props, State> {
     })
   }
 
-  hasStorageMap() {
+  hasStorageMap(): boolean {
     if (this.props.type === 'replica') {
       // storage mapping edit is not currently supported by the API
       return false
     }
 
-    return Boolean(configLoader.config.storageProviders.find(p => p === this.props.destinationEndpoint.type))
+    return providerStore.providers && providerStore.providers[this.props.destinationEndpoint.type] ?
+      !!providerStore.providers[this.props.destinationEndpoint.type].types.find(t => t === providerTypes.STORAGE)
+      : false
   }
 
   isUpdateDisabled() {
