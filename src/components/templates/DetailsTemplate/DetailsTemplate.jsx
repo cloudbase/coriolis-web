@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 const PageHeader = styled.div``
 const ContentHeader = styled.div``
 const Content = styled.div`
-  margin: 32px 0;
+  padding: 32px 0;
 `
 type Props = {
   pageHeaderComponent: React.Node,
