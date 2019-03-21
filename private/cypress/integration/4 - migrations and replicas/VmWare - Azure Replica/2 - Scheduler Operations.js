@@ -23,57 +23,52 @@ describe('Scheduler Operations', () => {
     Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
-  it('Goes to scheduler\'s page', () => {
-    cy.server()
-    cy.route('GET', '**/executions/detail').as('execution')
-    cy.get('div[data-test-id="mainListItem-content"]').first().click()
-    cy.wait('@execution')
-    cy.get('a').contains('Schedule').click()
-    cy.get('button').should('contain', 'Add Schedule')
-  })
-
   it('Creates a schedule', () => {
     cy.server()
+    cy.route('GET', '**/executions/detail').as('execution')
+    cy.getById('mainListItem-content').first().click()
+    cy.wait('@execution')
+    cy.getById('detailsNavigation-schedule').click()
     cy.route('POST', '**/schedules').as('schedule')
-    cy.get('button').contains('Add Schedule').click()
+    cy.getById('schedule-noScheduleAddButton').click()
     cy.wait('@schedule')
-    cy.get('div[data-test-id="scheduleItem-saveButton"]').should('not.be.visible')
+    cy.getById('scheduleItem-saveButton').should('not.be.visible')
   })
 
   it('Changes the month', () => {
-    cy.get('div[data-test-id="scheduleItem-monthDropdown"]').last().click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains('October').click()
-    cy.get('div[data-test-id="scheduleItem-monthDropdown"]').last().should('contain', 'October')
-    cy.get('div[data-test-id="scheduleItem-saveButton"]').should('be.visible')
+    cy.getById('scheduleItem-monthDropdown').last().click()
+    cy.getById('dropdownListItem').contains('October').click()
+    cy.getById('scheduleItem-monthDropdown').last().should('contain', 'October')
+    cy.getById('scheduleItem-saveButton').should('be.visible')
   })
 
   it('Changes the hour', () => {
-    cy.get('div[data-test-id="scheduleItem-hourDropdown"]').last().click()
-    cy.get('div[data-test-id="dropdownListItem"]').contains('04').click()
-    cy.get('div[data-test-id="scheduleItem-hourDropdown"]').last().should('contain', '04')
+    cy.getById('scheduleItem-hourDropdown').last().click()
+    cy.getById('dropdownListItem').contains('04').click()
+    cy.getById('scheduleItem-hourDropdown').last().should('contain', '04')
   })
 
   it('Changes timezone', () => {
-    cy.get('[data-test-id="schedule-timezoneDropdown"]').click()
+    cy.getById('schedule-timezoneDropdown').click()
     cy.get('div').contains('UTC').click()
     let utcTime = 4 + (new Date().getTimezoneOffset() / 60)
     if (utcTime < 10) {
       utcTime = `0${utcTime}`
     }
     utcTime = utcTime.toString()
-    cy.get('div[data-test-id="scheduleItem-hourDropdown"]').last().should('contain', utcTime)
+    cy.getById('scheduleItem-hourDropdown').last().should('contain', utcTime)
   })
 
   it('Saves the changes', () => {
     cy.server()
     cy.route('PUT', '**/schedules/**').as('schedule')
-    cy.get('div[data-test-id="scheduleItem-saveButton"]').should('be.visible').last().click()
+    cy.getById('scheduleItem-saveButton').should('be.visible').last().click()
     cy.wait('@schedule')
-    cy.get('div[data-test-id="scheduleItem-saveButton"]').should('not.be.visible')
+    cy.getById('scheduleItem-saveButton').should('not.be.visible')
   })
 
   it('Deletes the last schedule', () => {
-    cy.get('div[data-test-id="scheduleItem-deleteButton"]').last().click()
+    cy.getById('scheduleItem-deleteButton').last().click()
     cy.server()
     cy.route('DELETE', '**/schedules/**').as('schedule')
     cy.get('button').contains('Yes').click()

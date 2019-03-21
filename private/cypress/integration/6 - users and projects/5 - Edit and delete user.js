@@ -12,54 +12,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { navigationMenu } from '../../../../src/config'
-
-const isEnabled: () => boolean = () => {
-  let usersEnabled = navigationMenu.find(i => i.value === 'users' && i.disabled === false)
-  let projectsEnabled = navigationMenu.find(i => i.value === 'projects' && i.disabled === false)
-  return Boolean(usersEnabled && projectsEnabled)
-}
+// @flow
 
 describe('Edit created user', () => {
   before(() => {
-    if (isEnabled()) {
-      cy.login()
-    }
+    cy.login()
   })
 
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('token', 'projectId')
   })
 
-  if (!isEnabled()) {
-    it('Users and projects management is disabled!', () => { })
-    return
-  }
-
   it('Shows user details page', () => {
-    cy.get('a[data-test-id="navigation-item-users"]').click()
+    cy.getById('navigation-smallMenuItem-users').click()
     cy.server()
     cy.route({ url: '**/role_assignments**', method: 'GET' }).as('getRoles')
-    cy.get('div[data-test-id="ulItem-name"]').contains('cypress-user').click()
+    cy.getById('ulItem-name').contains('cypress-user').click()
     cy.wait('@getRoles')
     cy.title().should('eq', 'User Details')
-    cy.get('div[data-test-id="dcHeader-title"]').should('contain', 'cypress-user')
+    cy.getById('dcHeader-title').should('contain', 'cypress-user')
   })
 
   it('Opens user edit modal', () => {
-    cy.get('button').contains('Edit user').click()
-    cy.get('div[data-test-id="modal-title"]').should('contain', 'Update User')
+    cy.getById('dcHeader-actionButton').click()
+    cy.getById('actionDropdown-listItem-Edit user').click()
+    cy.getById('modal-title').should('contain', 'Update User')
   })
 
   it('Edits user', () => {
-    cy.get('input[data-test-id="endpointField-textInput-username"]').clear()
-    cy.get('input[data-test-id="endpointField-textInput-username"]').type('user-cypress')
+    cy.getById('endpointField-textInput-username').last().clear()
+    cy.getById('endpointField-textInput-username').last().type('user-cypress')
     cy.server()
     cy.route({ url: '**/users/**', method: 'PATCH' }).as('updateUser')
     cy.route({ url: '**/role_assignments**', method: 'GET' }).as('getRoles')
     cy.get('button').contains('Update User').click()
     cy.wait(['@updateUser', '@getRoles'])
-    cy.get('div[data-test-id="dcHeader-title"]').should('contain', 'user-cypress')
+    cy.getById('dcHeader-title').should('contain', 'user-cypress')
   })
 
   it('Deletes the user', () => {
@@ -67,8 +55,8 @@ describe('Edit created user', () => {
     cy.get('button').contains('Delete user').click()
     cy.route({ url: '**/users/**', method: 'DELETE' }).as('deleteUser')
     cy.route({ url: '**/users', method: 'GET' }).as('getUsers')
-    cy.get('button[data-test-id="aModal-yesButton"]').click()
+    cy.getById('aModal-yesButton').click()
     cy.wait(['@deleteUser', '@getUsers'])
-    cy.get('div[data-test-id="ulItem-name"]').contains('user-cypress').should('not.exist')
+    cy.getById('ulItem-name').contains('user-cypress').should('not.exist')
   })
 })

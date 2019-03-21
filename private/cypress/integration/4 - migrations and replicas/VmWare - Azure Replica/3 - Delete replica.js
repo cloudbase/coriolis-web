@@ -26,13 +26,13 @@ describe('Delete replica', () => {
   it('Goes to replica page', () => {
     cy.server()
     cy.route('GET', '**/executions/detail').as('execution')
-    cy.get('div[data-test-id="mainListItem-content"]').first().click()
+    cy.getById('mainListItem-content').first().click()
     cy.wait('@execution')
   })
 
   it('Deletes replica', () => {
     cy.server()
-    cy.get('button[data-test-id="rdContent-deleteButton"]').click()
+    cy.getById('rdContent-deleteButton').click()
     cy.route({ url: '**/replicas/**', method: 'DELETE' }).as('delete')
     cy.get('button').contains('Yes').click()
     cy.wait('@delete')

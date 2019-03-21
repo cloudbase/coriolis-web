@@ -27,8 +27,8 @@ describe('Create VmWare Endpoint', () => {
 
   it('Shows new VmWare endpoint dialog', () => {
     cy.get('div').contains('New').click()
-    cy.get('a').contains('Endpoint').click()
-    cy.get('div[data-test-id="cProvider-endpointLogo-vmware_vsphere"]').click()
+    cy.getById('newItemDropdown-listItem-Endpoint').click()
+    cy.getById('cProvider-endpointLogo-vmware_vsphere').click()
   })
 
   it('Fills VmWare connection info', () => {
@@ -41,11 +41,11 @@ describe('Create VmWare Endpoint', () => {
     cy.route({ url: '**/actions', method: 'POST' }).as('validate')
     cy.get('button').contains('Validate and save').click()
     cy.wait('@validate')
-    cy.get('div[data-test-id="endpointStatus"]').should('contain', 'Endpoint is Valid')
+    cy.getById('endpointStatus').should('contain', 'Endpoint is Valid')
   })
 
   it('Added Endpoint to endpoint list', () => {
-    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
-    cy.get('div[data-test-id="endpointListItem-content-e2e-vmware-test"]').should('contain', 'e2e-vmware-test')
+    cy.getById('navigation-smallMenuItem-endpoints').click()
+    cy.getById('endpointListItem-content-e2e-vmware-test').should('contain', 'e2e-vmware-test')
   })
 })

@@ -18,7 +18,7 @@ export default {
   nodeServer: 'http://localhost:3000/',
   coriolisUrl: '',
   username: 'cypress',
-  password: '',
+  password: 'cypress',
   endpoints: {
     azure: {
       username: '',
@@ -31,14 +31,16 @@ export default {
       host: '',
     },
     openstack: {
-      userDomainName: 'Default',
+      userDomainName: '',
       authUrl: '',
-      projectName: 'admin',
+      projectName: '',
       projectDomainName: '',
       password: '',
-      username: 'admin',
+      username: '',
       glanceApiVersion: 2,
       identityVersion: 3,
+      allowUntrusted: true,
+      allowUntrustedSwift: true,
     },
     oci: {
       privateKeyData: '',
@@ -50,25 +52,18 @@ export default {
   },
   wizard: {
     azure: {
-      resourceGroup: { label: '', value: '' },
-    },
-    openstack: {
-      network: '',
+      resourceGroup: { label: 'Coriolis', value: 'coriolis' },
     },
     oci: {
-      compartment: {
-        label: '', value: '',
-      },
-      migrSubnetId: {
-        label: '', value: '',
-      },
+      compartment: '',
+      migrSubnetId: '',
       availabilityDomain: '',
     },
     instancesSearch: {
-      vmwareSearchText: 'ubuntu 14.04',
-      vmwareItemIndex: 1,
-      ociSearchText: 'ubuntu',
-      ociItemIndex: 0,
+      vmwareSearchText: '',
+      vmwareItemIndex: 0,
+      openstackSearchText: '',
+      openstackItemIndex: 0,
     },
   },
 }

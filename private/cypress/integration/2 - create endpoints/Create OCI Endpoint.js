@@ -27,26 +27,27 @@ describe('Create OCI Endpoint', () => {
 
   it('Shows new OCI endpoint dialog', () => {
     cy.get('div').contains('New').click()
-    cy.get('a').contains('Endpoint').click()
-    cy.get('div[data-test-id="cProvider-endpointLogo-oci"]').click()
+    cy.getById('newItemDropdown-listItem-Endpoint').click()
+    cy.getById('cProvider-endpointLogo-oci').click()
   })
 
   it('Fills OCI connection info', () => {
-    cy.get('input[data-test-id="endpointField-textInput-name"]').type('e2e-oci-test')
-    cy.get('textarea[data-test-id="endpointField-textArea-private_key_data"]').type(config.endpoints.oci.privateKeyData, { delay: 0 })
-    cy.get('input[data-test-id="endpointField-textInput-region"]').type(config.endpoints.oci.region)
-    cy.get('input[data-test-id="endpointField-textInput-tenancy"]').type(config.endpoints.oci.tenancy)
-    cy.get('input[data-test-id="endpointField-textInput-user"]').type(config.endpoints.oci.user)
-    cy.get('input[data-test-id="endpointField-textInput-private_key_passphrase"]').type(config.endpoints.oci.privateKeyPassphrase)
+    cy.getById('endpointField-textInput-name', 'input').type('e2e-oci-test')
+    cy.getById('endpointField-textArea-private_key_data', 'textarea')
+      .type(config.endpoints.oci.privateKeyData, { delay: 0 })
+    cy.getById('endpointField-textInput-region', 'input').type(config.endpoints.oci.region)
+    cy.getById('endpointField-textInput-tenancy', 'input').type(config.endpoints.oci.tenancy)
+    cy.getById('endpointField-textInput-user', 'input').type(config.endpoints.oci.user)
+    cy.getById('endpointField-textInput-private_key_passphrase', 'input').type(config.endpoints.oci.privateKeyPassphrase)
     cy.server()
     cy.route({ url: '**/actions', method: 'POST' }).as('validate')
     cy.get('button').contains('Validate and save').click()
     cy.wait('@validate')
-    cy.get('div[data-test-id="endpointStatus"]').should('contain', 'Endpoint is Valid')
+    cy.getById('endpointStatus').should('contain', 'Endpoint is Valid')
   })
 
   it('Added Endpoint to endpoint list', () => {
-    cy.get('a[data-test-id="navigation-item-endpoints"]').click()
-    cy.get('div[data-test-id="endpointListItem-content-e2e-oci-test"]').should('contain', 'e2e-oci-test')
+    cy.getById('navigation-smallMenuItem-endpoints').click()
+    cy.getById('endpointListItem-content-e2e-oci-test').should('contain', 'e2e-oci-test')
   })
 })
