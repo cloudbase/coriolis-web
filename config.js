@@ -28,9 +28,6 @@ const conf: Config = {
   // The timeout between polling requests
   requestPollTimeout: 5000,
 
-  // The list of providers which offer storage listing
-  storageProviders: ['openstack', 'azure', 'oracle_vm'],
-
   // The list of providers which offer source options
   sourceOptionsProviders: ['aws'],
 

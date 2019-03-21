@@ -35,7 +35,7 @@ import notificationStore from '../../../stores/NotificationStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import { wizardPages, executionOptions } from '../../../constants'
+import { wizardPages, executionOptions, providerTypes } from '../../../constants'
 import configLoader from '../../../utils/Config'
 
 import type { MainItem } from '../../../types/MainItem'
@@ -82,14 +82,15 @@ class WizardPage extends React.Component<Props, State> {
 
   get pages() {
     let sourceProvider = wizardStore.data.source ? wizardStore.data.source.type : ''
-    let destProvider = wizardStore.data.target ? wizardStore.data.target.type : ''
+    let destProvider = wizardStore.data.target ? wizardStore.data.target.type || '' : ''
     let pages = wizardPages
     let sourceOptionsProviders = configLoader.config.sourceOptionsProviders
-    let storageOptionsProviders = configLoader.config.storageProviders
+    let hasStorageMapping = () => providerStore.providers && providerStore.providers[destProvider]
+      ? !!providerStore.providers[destProvider].types.find(t => t === providerTypes.STORAGE) : false
+
     return pages
       .filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
-      .filter(p => p.id !== 'storage'
-        || storageOptionsProviders.find(p => p === destProvider))
+      .filter(p => p.id !== 'storage' || hasStorageMapping())
       .filter(p => p.id !== 'source-options'
         || sourceOptionsProviders.find(p => p === sourceProvider))
   }

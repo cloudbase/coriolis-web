@@ -51,6 +51,7 @@ export const providerTypes = {
   TARGET_REPLICA: 4,
   SOURCE_REPLICA: 8,
   CONNECTION: 16,
+  STORAGE: 32768,
 }
 
 export const loginButtons = [
