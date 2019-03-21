@@ -139,7 +139,7 @@ class LoginPage extends React.Component<Props, State> {
               />
             </Top>
             <Footer>
-              <FooterText>Coriolis® is a service offered by</FooterText>
+              <FooterText>Coriolis® is a service created by</FooterText>
               <CbsLogo href="https://cloudbase.it" target="_blank" />
             </Footer>
           </Content>
