@@ -144,11 +144,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
 
   migrateSelectedReplicas(fields: Field[]) {
     notificationStore.alert('Creating migrations from selected replicas')
-    Promise.all(this.state.selectedReplicas.map(replica => migrationStore.migrateReplica(replica.id, fields))).then(() => {
-      notificationStore.alert('Migrations successfully created from replicas.', 'success')
-      this.props.history.push('/migrations')
-    })
+    this.migrate(fields)
     this.setState({ showCreateMigrationsModal: false })
+  }
+
+  async migrate(fields: Field[]) {
+    await Promise.all(this.state.selectedReplicas.map(replica => migrationStore.migrateReplica(replica.id, fields)))
+    notificationStore.alert('Migrations successfully created from replicas.', 'success')
+    this.props.history.push('/migrations')
   }
 
   deleteSelectedReplicasDisks() {
@@ -212,32 +215,27 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     })
   }
 
-  pollData() {
+  async pollData() {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
 
-    Promise.all([
-      replicaStore.getReplicas({ skipLog: true }),
-      endpointStore.getEndpoints({ skipLog: true }),
-    ]).then(() => {
-      if (!this.schedulePolling) {
-        this.pollSchedule()
-      }
-      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
-    })
+    await Promise.all([replicaStore.getReplicas({ skipLog: true }), endpointStore.getEndpoints({ skipLog: true })])
+    if (!this.schedulePolling) {
+      this.pollSchedule()
+    }
+    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
-  pollSchedule() {
+  async pollSchedule() {
     if (this.state.modalIsOpen || this.stopPolling || replicaStore.replicas.length === 0) {
       return
     }
     this.schedulePolling = true
-    scheduleStore.getSchedulesBulk(replicaStore.replicas.map(r => r.id)).then(() => {
-      this.schedulePollTimeout = setTimeout(() => {
-        this.pollSchedule()
-      }, SCHEDULE_POLL_TIMEOUT)
-    })
+    await scheduleStore.getSchedulesBulk(replicaStore.replicas.map(r => r.id))
+    this.schedulePollTimeout = setTimeout(() => {
+      this.pollSchedule()
+    }, SCHEDULE_POLL_TIMEOUT)
   }
 
   searchText(item: MainItem, text: ?string) {

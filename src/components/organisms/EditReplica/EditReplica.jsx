@@ -110,31 +110,38 @@ class EditReplica extends React.Component<Props, State> {
     this.setState({ selectedPanel: this.hasSourceOptions() ? 'source_options' : 'dest_options' })
   }
 
-  loadData(useCache: boolean) {
-    providerStore.loadProviders().then(() => {
-      if (this.hasStorageMap()) {
-        endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
-      }
-      providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica', useCache)
-        .then(() => providerStore.getOptionsValues({
-          optionsType: 'destination',
-          endpointId: this.props.destinationEndpoint.id,
-          provider: this.props.destinationEndpoint.type,
-          useCache,
-        })).then(() => {
-          this.loadEnvDestinationOptions()
-        })
+  async loadData(useCache: boolean) {
+    await providerStore.loadProviders()
 
-      if (!this.hasSourceOptions()) {
-        return
-      }
-      providerStore.loadSourceSchema(this.props.sourceEndpoint.type, this.props.type || 'replica', useCache)
-        .then(() => providerStore.getOptionsValues({
-          optionsType: 'source',
-          endpointId: this.props.sourceEndpoint.id,
-          provider: this.props.sourceEndpoint.type,
-          useCache,
-        }))
+    if (this.hasStorageMap()) {
+      endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
+    }
+
+    this.loadDestinationOptions(useCache)
+
+    if (!this.hasSourceOptions()) {
+      return
+    }
+    this.loadOptions(this.props.sourceEndpoint, 'source', useCache)
+  }
+
+  async loadDestinationOptions(useCache: boolean) {
+    await this.loadOptions(this.props.destinationEndpoint, 'destination', useCache)
+    this.loadEnvDestinationOptions()
+  }
+
+  async loadOptions(endpoint: Endpoint, optionsType: 'source' | 'destination', useCache: boolean) {
+    await providerStore.loadOptionsSchema({
+      providerName: endpoint.type,
+      schemaType: this.props.type || 'replica',
+      optionsType,
+      useCache,
+    })
+    await providerStore.getOptionsValues({
+      optionsType,
+      endpointId: endpoint.id,
+      providerName: endpoint.type,
+      useCache,
     })
   }
 
@@ -182,7 +189,7 @@ class EditReplica extends React.Component<Props, State> {
 
   loadEnvDestinationOptions(field?: Field) {
     let envData = getFieldChangeOptions({
-      provider: this.props.destinationEndpoint.type,
+      providerName: this.props.destinationEndpoint.type,
       schema: providerStore.destinationSchema,
       data: {
         ...this.parseReplicaData(this.props.replica.destination_environment),
@@ -196,7 +203,7 @@ class EditReplica extends React.Component<Props, State> {
       providerStore.getOptionsValues({
         optionsType: 'destination',
         endpointId: this.props.destinationEndpoint.id,
-        provider: this.props.destinationEndpoint.type,
+        providerName: this.props.destinationEndpoint.type,
         useCache: true,
         envData,
       })
@@ -252,7 +259,7 @@ class EditReplica extends React.Component<Props, State> {
     }
   }
 
-  handleUpdateClick() {
+  async handleUpdateClick() {
     this.setState({ updateDisabled: true })
 
     let updateData: UpdateData = {
@@ -263,21 +270,22 @@ class EditReplica extends React.Component<Props, State> {
     }
     if (this.props.type === 'replica') {
       let storageConfigDefault = this.getFieldValue('destination', 'default_storage') || endpointStore.storageConfigDefault
-      replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData, storageConfigDefault).then(() => {
+      try {
+        await replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData, storageConfigDefault)
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/replica/executions/${this.props.replica.id}`)
-      }).catch(() => {
+      } catch (err) {
         this.setState({ updateDisabled: false })
-      })
+      }
     } else {
-      migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData)
-        .then((migration: MainItem) => {
-          migrationStore.clearDetails()
-          this.props.onRequestClose()
-          this.props.onUpdateComplete(`/migration/tasks/${migration.id}`)
-        }).catch(() => {
-          this.setState({ updateDisabled: false })
-        })
+      try {
+        let migration: MainItem = await migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData)
+        migrationStore.clearDetails()
+        this.props.onRequestClose()
+        this.props.onUpdateComplete(`/migration/tasks/${migration.id}`)
+      } catch (err) {
+        this.setState({ updateDisabled: false })
+      }
     }
   }
 

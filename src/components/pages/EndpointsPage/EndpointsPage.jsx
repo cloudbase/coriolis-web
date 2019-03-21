@@ -124,22 +124,22 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     this.props.history.push(`/endpoint/${item.id}`)
   }
 
-  duplicate(projectId: string) {
+  async duplicate(projectId: string) {
     this.setState({ modalIsOpen: false, duplicating: true })
 
     let shouldSwitchProject = projectId !== (userStore.loggedUser ? userStore.loggedUser.project.id : '')
     let endpoints = endpointStore.endpoints.filter(e => this.state.selectedEndpoints.find(se => se.id === e.id))
 
-    endpointStore.duplicate({
+    await endpointStore.duplicate({
       shouldSwitchProject,
       endpoints,
-      onSwitchProject: () => userStore.switchProject(projectId).then(() => {
+      onSwitchProject: async () => {
+        await userStore.switchProject(projectId)
         this.handleProjectChange()
-      }),
-    }).then(() => {
-      this.pollData(true)
-      this.setState({ showDuplicateModal: false, duplicating: false })
+      },
     })
+    this.pollData(true)
+    this.setState({ showDuplicateModal: false, duplicating: false })
   }
 
   deleteSelectedEndpoints() {
@@ -193,18 +193,17 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     }
   }
 
-  pollData(showLoading?: boolean = false) {
+  async pollData(showLoading?: boolean = false) {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
 
-    Promise.all([
+    await Promise.all([
       endpointStore.getEndpoints({ showLoading, skipLog: true }),
       migrationStore.getMigrations({ skipLog: true }),
       replicaStore.getReplicas({ skipLog: true }),
-    ]).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
-    })
+    ])
+    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: any, filterItem?: ?string, filterText?: string) {

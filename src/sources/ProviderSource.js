@@ -22,39 +22,31 @@ import type { Providers } from '../types/Providers'
 import type { OptionValues } from '../types/Endpoint'
 
 class ProviderSource {
-  static getConnectionInfoSchema(providerName: string): Promise<Field[]> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`).then(response => {
-      let schema = response.data.schemas.connection_info_schema
-      schema = SchemaParser.connectionSchemaToFields(providerName, schema)
-      return schema
-    })
+  async getConnectionInfoSchema(providerName: string): Promise<Field[]> {
+    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`)
+    let schema = response.data.schemas.connection_info_schema
+    schema = SchemaParser.connectionSchemaToFields(providerName, schema)
+    return schema
   }
 
-  static loadProviders(): Promise<Providers> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers`).then(response => response.data.providers)
+  async loadProviders(): Promise<Providers> {
+    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers`)
+    return response.data.providers
   }
 
-  static loadDestinationSchema(providerName: string, schemaType: string): Promise<Field[]> {
-    let schemaTypeInt = schemaType === 'migration' ? providerTypes.TARGET_MIGRATION : providerTypes.TARGET_REPLICA
+  async loadOptionsSchema(providerName: string, schemaType: 'migration' | 'replica', optionsType: 'source' | 'destination'): Promise<Field[]> {
+    let schemaTypeInt = schemaType === 'migration' ?
+      optionsType === 'source' ? providerTypes.SOURCE_MIGRATION : providerTypes.TARGET_MIGRATION :
+      optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
 
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
-      let schema = response.data.schemas.destination_environment_schema
-      let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
-      return fields
-    })
+    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`)
+    let schema = optionsType === 'source' ?
+      { oneOf: [response.data.schemas.source_environment_schema] } : response.data.schemas.destination_environment_schema
+    let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
+    return fields
   }
 
-  static loadSourceSchema(providerName: string, schemaType: string): Promise<Field[]> {
-    let schemaTypeInt = schemaType === 'replica' ? providerTypes.SOURCE_REPLICA : providerTypes.SOURCE_MIGRATION
-
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
-      let schema = { oneOf: [response.data.schemas.source_environment_schema] }
-      let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
-      return fields
-    })
-  }
-
-  static getOptionsValues(optionsType: 'source' | 'destination', endpointId: string, envData: ?{ [string]: mixed }): Promise<OptionValues[]> {
+  async getOptionsValues(optionsType: 'source' | 'destination', endpointId: string, envData: ?{ [string]: mixed }): Promise<OptionValues[]> {
     let envString = ''
     if (envData) {
       envString = `?env=${btoa(JSON.stringify(envData))}`
@@ -62,9 +54,9 @@ class ProviderSource {
     let callName = optionsType === 'source' ? 'source-options' : 'destination-options'
     let fieldName = optionsType === 'source' ? 'source_options' : 'destination_options'
 
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/${callName}${envString}`)
-      .then(response => response.data[fieldName])
+    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/${callName}${envString}`)
+    return response.data[fieldName]
   }
 }
 
-export default ProviderSource
+export default new ProviderSource()

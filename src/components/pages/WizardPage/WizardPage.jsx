@@ -137,7 +137,7 @@ class WizardPage extends React.Component<Props, State> {
     this.handleBackClick()
   }
 
-  handleCreationSuccess(items: MainItem[]) {
+  async handleCreationSuccess(items: MainItem[]) {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`${typeLabel} was succesfully created`, 'success')
     let schedulePromise = Promise.resolve()
@@ -156,9 +156,8 @@ class WizardPage extends React.Component<Props, State> {
       } else {
         location += 'tasks/'
       }
-      schedulePromise.then(() => {
-        this.props.history.push(location + items[0].id)
-      })
+      await schedulePromise
+      this.props.history.push(location + items[0].id)
     } else {
       this.props.history.push(`/${this.state.type}s`)
     }
@@ -213,50 +212,62 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.setCurrentPage(page)
   }
 
-  handleSourceEndpointChange(source: ?EndpointType) {
+  async handleSourceEndpointChange(source: ?EndpointType) {
     wizardStore.updateData({ source, selectedInstances: null, networks: null, sourceOptions: null })
     wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
 
+    let getConnectionInfo = async () => {
+      if (!source) {
+        return
+      }
+      // Check if user has permission for this endpoint
+      try {
+        await endpointStore.getConnectionInfo(source)
+        if (source) {
+          // Preload instances for 'vms' page
+          instanceStore.loadInstancesInChunks(source, this.instancesPerPage)
+        }
+      } catch (err) {
+        this.handleSourceEndpointChange(null)
+      }
+    }
+    getConnectionInfo()
+
     if (!source) {
       return
     }
-
-    // Check if user has permission for this endpoint
-    endpointStore.getConnectionInfo(source).then(() => {
-      if (source) {
-        // Preload instances for 'vms' page
-        instanceStore.loadInstancesInChunks(source, this.instancesPerPage)
-      }
-    }).catch(() => {
-      this.handleSourceEndpointChange(null)
+    await providerStore.loadOptionsSchema({
+      providerName: source.type,
+      schemaType: this.state.type,
+      optionsType: 'source',
     })
-
-    providerStore.loadSourceSchema(source.type, this.state.type).then(() => {
-      source && providerStore.getOptionsValues({
-        optionsType: 'source',
-        endpointId: source.id,
-        provider: source.type,
-      })
+    source && providerStore.getOptionsValues({
+      optionsType: 'source',
+      endpointId: source.id,
+      providerName: source.type,
     })
   }
 
-  handleTargetEndpointChange(target: EndpointType) {
+  async handleTargetEndpointChange(target: EndpointType) {
     wizardStore.updateData({ target, networks: null, destOptions: null })
     wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
-    // Preload destination options schema
-    providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
-      // Preload destination options values
-      providerStore.getOptionsValues({
-        optionsType: 'destination',
-        endpointId: target.id,
-        provider: target.type,
-      })
-    })
     if (this.pages.find(p => p.id === 'storage')) {
       endpointStore.loadStorage(target.id, {})
     }
+    // Preload destination options schema
+    await providerStore.loadOptionsSchema({
+      providerName: target.type,
+      schemaType: this.state.type,
+      optionsType: 'destination',
+    })
+    // Preload destination options values
+    providerStore.getOptionsValues({
+      optionsType: 'destination',
+      endpointId: target.id,
+      providerName: target.type,
+    })
   }
 
   handleAddEndpoint(newEndpointType: string, newEndpointFromSource: boolean) {
@@ -352,26 +363,26 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   loadEnvDestinationOptions(field?: Field) {
-    let provider = wizardStore.data.target && wizardStore.data.target.type
+    let providerName = wizardStore.data.target && wizardStore.data.target.type
     let envData = getFieldChangeOptions({
-      provider: wizardStore.data.target && wizardStore.data.target.type,
+      providerName: wizardStore.data.target && wizardStore.data.target.type,
       schema: providerStore.destinationSchema,
       data: wizardStore.data.destOptions,
       field,
       type: 'destination',
     })
 
-    if (provider && envData && wizardStore.data.target) {
+    if (providerName && envData && wizardStore.data.target) {
       providerStore.getOptionsValues({
         optionsType: 'destination',
         endpointId: wizardStore.data.target.id,
-        provider,
+        providerName,
         envData,
       })
     }
   }
 
-  loadDataForPage(page: WizardPageType) {
+  async loadDataForPage(page: WizardPageType) {
     switch (page.id) {
       case 'source': {
         providerStore.loadProviders()
@@ -383,26 +394,33 @@ class WizardPage extends React.Component<Props, State> {
         }
 
         if (providerStore.sourceSchema.length === 0 && source) {
-          providerStore.loadSourceSchema(source.type, this.state.type).then(() => {
+          let loadOptionsSchema = async () => {
+            await providerStore.loadOptionsSchema({
+              providerName: source.type,
+              schemaType: this.state.type,
+              optionsType: 'source',
+            })
             // Preload source options if data is set from 'Permalink'
             if (providerStore.sourceOptions.length === 0 && source) {
               providerStore.getOptionsValues({
                 optionsType: 'source',
                 endpointId: source.id,
-                provider: source.type,
+                providerName: source.type,
               })
             }
-          })
+          }
+          loadOptionsSchema()
         }
 
         if (instanceStore.instances.length === 0) {
-          // Check if user has permission for this endpoint
-          endpointStore.getConnectionInfo(source).then(() => {
+          try {
+            // Check if user has permission for this endpoint
+            await endpointStore.getConnectionInfo(source)
             // Preload instances for 'vms' page
             instanceStore.loadInstancesInChunks(source, this.instancesPerPage)
-          }).catch(() => {
+          } catch (err) {
             this.handleSourceEndpointChange(null)
-          })
+          }
         }
         break
       }
@@ -414,18 +432,20 @@ class WizardPage extends React.Component<Props, State> {
         }
         // Preload destination options schema
         if (providerStore.destinationSchema.length === 0 && target) {
-          providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
-            // Preload destination options if data is set from 'Permalink'
-            if (providerStore.destinationOptions.length === 0 && target) {
-              providerStore.getOptionsValues({
-                optionsType: 'destination',
-                endpointId: target.id,
-                provider: target.type,
-              }).then(() => {
-                this.loadEnvDestinationOptions()
-              })
-            }
+          await providerStore.loadOptionsSchema({
+            providerName: target.type,
+            schemaType: this.state.type,
+            optionsType: 'destination',
           })
+          // Preload destination options if data is set from 'Permalink'
+          if (providerStore.destinationOptions.length === 0 && target) {
+            await providerStore.getOptionsValues({
+              optionsType: 'destination',
+              endpointId: target.id,
+              providerName: target.type,
+            })
+            this.loadEnvDestinationOptions()
+          }
         }
         break
       }
@@ -442,24 +462,24 @@ class WizardPage extends React.Component<Props, State> {
     }
   }
 
-  createMultiple() {
+  async createMultiple() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel}s ...`)
-    wizardStore.createMultiple(this.state.type, wizardStore.data, wizardStore.storageMap).then(() => {
-      let items = wizardStore.createdItems
-      if (!items) {
-        notificationStore.alert(`${typeLabel}s couldn't be created`, 'error')
-        this.setState({ nextButtonDisabled: false })
-        return
-      }
-      this.handleCreationSuccess(items)
-    })
+    await wizardStore.createMultiple(this.state.type, wizardStore.data, wizardStore.storageMap)
+    let items = wizardStore.createdItems
+    if (!items) {
+      notificationStore.alert(`${typeLabel}s couldn't be created`, 'error')
+      this.setState({ nextButtonDisabled: false })
+      return
+    }
+    this.handleCreationSuccess(items)
   }
 
-  createSingle() {
+  async createSingle() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel} ...`)
-    wizardStore.create(this.state.type, wizardStore.data, wizardStore.storageMap).then(() => {
+    try {
+      await wizardStore.create(this.state.type, wizardStore.data, wizardStore.storageMap)
       let item = wizardStore.createdItem
       if (!item) {
         notificationStore.alert(`${typeLabel} couldn't be created`, 'error')
@@ -467,9 +487,9 @@ class WizardPage extends React.Component<Props, State> {
         return
       }
       this.handleCreationSuccess([item])
-    }).catch(() => {
+    } catch (err) {
       this.setState({ nextButtonDisabled: false })
-    })
+    }
   }
 
   separateVms() {

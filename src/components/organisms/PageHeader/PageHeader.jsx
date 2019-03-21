@@ -179,15 +179,14 @@ class PageHeader extends React.Component<Props, State> {
     this.setState({ showChooseProviderModal: !options || !options.autoClose, showEndpointModal: false })
   }
 
-  handleProjectChange(project: Project) {
-    userStore.switchProject(project.id).then(() => {
-      projectStore.getProjects()
-      notificationStore.loadData()
+  async handleProjectChange(project: Project) {
+    await userStore.switchProject(project.id)
+    projectStore.getProjects()
+    notificationStore.loadData()
 
-      if (this.props.onProjectChange) {
-        this.props.onProjectChange(project)
-      }
-    })
+    if (this.props.onProjectChange) {
+      this.props.onProjectChange(project)
+    }
   }
 
   handleUserModalClose() {
@@ -197,13 +196,12 @@ class PageHeader extends React.Component<Props, State> {
     this.setState({ showUserModal: false })
   }
 
-  handleUserUpdateClick(user: User) {
-    userStore.add(user).then(() => {
-      if (this.props.onModalClose) {
-        this.props.onModalClose()
-      }
-      this.setState({ showUserModal: false })
-    })
+  async handleUserUpdateClick(user: User) {
+    await userStore.add(user)
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
+    this.setState({ showUserModal: false })
   }
 
   handleProjectModalClose() {
@@ -213,16 +211,15 @@ class PageHeader extends React.Component<Props, State> {
     this.setState({ showProjectModal: false })
   }
 
-  handleProjectModalUpdateClick(project: Project) {
-    projectStore.add(project).then(() => {
-      if (this.props.onModalClose) {
-        this.props.onModalClose()
-      }
-      this.setState({ showProjectModal: false })
-    })
+  async handleProjectModalUpdateClick(project: Project) {
+    await projectStore.add(project)
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
+    this.setState({ showProjectModal: false })
   }
 
-  pollData() {
+  async pollData() {
     if (
       this.stopPolling ||
       this.state.showChooseProviderModal ||
@@ -234,9 +231,8 @@ class PageHeader extends React.Component<Props, State> {
       return
     }
 
-    notificationStore.loadData().then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
-    })
+    await notificationStore.loadData()
+    this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
   }
 
   render() {

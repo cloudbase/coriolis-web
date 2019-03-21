@@ -97,7 +97,7 @@ type Props = {
   onClick: () => void,
   getMembers: (projectId: string) => number,
   isCurrentProject: (projectId: string) => boolean,
-  onSwitchProjectClick: (projectId: string) => void,
+  onSwitchProjectClick: (projectId: string) => void | Promise<void>,
 }
 const testName = 'plItem'
 @observer

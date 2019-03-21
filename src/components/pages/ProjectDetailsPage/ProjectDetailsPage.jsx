@@ -76,25 +76,21 @@ class ProjectDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  handleEnableUser(user: User) {
+  async handleEnableUser(user: User) {
     let enabled = !user.enabled
     // $FlowIgnore
-    userStore.update(user.id, { enabled }).then(() => {
-      projectStore.getUsers(this.props.match.params.id)
-    })
+    await userStore.update(user.id, { enabled })
+    projectStore.getUsers(this.props.match.params.id)
   }
 
-  handleUserRoleChange(user: User, roleId: string, toggled: boolean) {
+  async handleUserRoleChange(user: User, roleId: string, toggled: boolean) {
     let projectId = this.props.match.params.id
-    let operation: Promise<void>
     if (toggled) {
-      operation = projectStore.assignUserRole(projectId, user.id, roleId)
+      await projectStore.assignUserRole(projectId, user.id, roleId)
     } else {
-      operation = projectStore.removeUserRole(projectId, user.id, roleId)
+      await projectStore.removeUserRole(projectId, user.id, roleId)
     }
-    operation.then(() => {
-      projectStore.getRoleAssignments()
-    })
+    projectStore.getRoleAssignments()
   }
 
   handleRemoveUser(user: User) {
@@ -113,48 +109,45 @@ class ProjectDetailsPage extends React.Component<Props, State> {
     this.setState({ showProjectModal: false })
   }
 
-  handleProjectUpdateClick(project: Project) {
-    projectStore.update(this.props.match.params.id, project).then(() => {
-      this.setState({ showProjectModal: false })
-    })
+  async handleProjectUpdateClick(project: Project) {
+    await projectStore.update(this.props.match.params.id, project)
+    this.setState({ showProjectModal: false })
   }
 
-  handleDeleteConfirmation() {
+  async handleDeleteConfirmation() {
     this.setState({ showDeleteProjectAlert: false })
 
-    projectStore.delete(this.props.match.params.id).then(() => {
-      if (
-        userStore.loggedUser &&
-        this.props.match.params.id === userStore.loggedUser.project.id &&
-        projectStore.projects.length > 0
-      ) {
-        userStore.switchProject(projectStore.projects[0].id).then(() => {
-          projectStore.getProjects()
-          this.props.history.push('/projects')
-        })
-      } else {
-        this.props.history.push('/projects')
-      }
-    })
+    await projectStore.delete(this.props.match.params.id)
+    if (
+      userStore.loggedUser &&
+      this.props.match.params.id === userStore.loggedUser.project.id &&
+      projectStore.projects.length > 0
+    ) {
+      await userStore.switchProject(projectStore.projects[0].id)
+      projectStore.getProjects()
+      this.props.history.push('/projects')
+    } else {
+      this.props.history.push('/projects')
+    }
   }
 
-  handleAddMemberClick() {
-    userStore.getAllUsers().then(() => {
-      this.setState({ showAddMemberModal: true })
-    })
+  async handleAddMemberClick() {
+    await userStore.getAllUsers()
+    this.setState({ showAddMemberModal: true })
   }
 
-  handleAddMember(user: User, isNew: boolean, roles: Role[]) {
-    const assign = (userId: string) => {
-      Promise.all(roles.map(r => {
-        return userStore.assignUserToProjectWithRole(userId, this.props.match.params.id, r.id)
-      })).catch(e => {
-        notificationStore.alert('Error while assigning role to user', 'error')
-        console.error(e)
-      }).then(() => {
+  async handleAddMember(user: User, isNew: boolean, roles: Role[]) {
+    const assign = async (userId: string) => {
+      try {
+        await Promise.all(roles.map(async r => {
+          await userStore.assignUserToProjectWithRole(userId, this.props.match.params.id, r.id)
+        }))
         this.loadData()
         this.setState({ addingMember: false, showAddMemberModal: false })
-      })
+      } catch (err) {
+        notificationStore.alert('Error while assigning role to user', 'error')
+        console.error(err)
+      }
     }
 
     this.setState({ addingMember: true })
@@ -164,11 +157,10 @@ class ProjectDetailsPage extends React.Component<Props, State> {
       return
     }
 
-    userStore.add(user).then((addedUser: ?User) => {
-      if (addedUser) {
-        assign(addedUser.id)
-      }
-    })
+    let addedUser: ?User = await userStore.add(user)
+    if (addedUser) {
+      assign(addedUser.id)
+    }
   }
 
   handleDeleteProjectClick() {

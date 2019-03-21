@@ -85,24 +85,23 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     this.stopPolling = true
   }
 
-  loadMigrationWithInstances(migrationId: string, cache: boolean) {
-    migrationStore.getMigration(migrationId, { showLoading: true }).then(() => {
-      let details = migrationStore.migrationDetails
-      if (!details) {
-        return
-      }
+  async loadMigrationWithInstances(migrationId: string, cache: boolean) {
+    await migrationStore.getMigration(migrationId, { showLoading: true })
+    let details = migrationStore.migrationDetails
+    if (!details) {
+      return
+    }
 
-      networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
-        quietError: true,
-        useLocalStorage: cache,
-      })
-      instanceStore.loadInstancesDetails(
-        details.origin_endpoint_id,
-        // $FlowIgnore
-        details.instances.map(n => { return { instance_name: n } }),
-        false, cache
-      )
+    networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
+      quietError: true,
+      useLocalStorage: cache,
     })
+    instanceStore.loadInstancesDetails(
+      details.origin_endpoint_id,
+      // $FlowIgnore
+      details.instances.map(n => { return { instance_name: n } }),
+      false, cache
+    )
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -151,39 +150,40 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     this.setState({ showCancelConfirmation: false })
   }
 
-  handleCancelConfirmation() {
+  async handleCancelConfirmation() {
     this.setState({ showCancelConfirmation: false })
     if (!migrationStore.migrationDetails) {
       return
     }
-    migrationStore.cancel(migrationStore.migrationDetails.id).then(() => {
-      if (migrationStore.canceling === false) {
-        notificationStore.alert('Canceled', 'success')
-      } else {
-        notificationStore.alert('The migration couldn\'t be canceled', 'error')
-      }
-    })
+    await migrationStore.cancel(migrationStore.migrationDetails.id)
+    if (migrationStore.canceling === false) {
+      notificationStore.alert('Canceled', 'success')
+    } else {
+      notificationStore.alert('The migration couldn\'t be canceled', 'error')
+    }
   }
 
-  recreateFromReplica(options: Field[]) {
+  async recreateFromReplica(options: Field[]) {
     let replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
     if (!replicaId) {
       return
     }
 
-    migrationStore.migrateReplica(replicaId, options).then(migration => {
-      this.props.history.push(`/migration/tasks/${migration.id}`)
-    })
+    this.migrate(replicaId, options)
     this.handleCloseFromReplicaModal()
   }
 
-  pollData() {
+  async migrate(replicaId: string, options: Field[]) {
+    let migration = await migrationStore.migrateReplica(replicaId, options)
+    this.props.history.push(`/migration/tasks/${migration.id}`)
+  }
+
+  async pollData() {
     if (this.state.showEditModal || this.stopPolling) {
       return
     }
-    migrationStore.getMigration(this.props.match.params.id, { showLoading: false, skipLog: true }).then(() => {
-      setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
-    })
+    await migrationStore.getMigration(this.props.match.params.id, { showLoading: false, skipLog: true })
+    setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   getStatus() {

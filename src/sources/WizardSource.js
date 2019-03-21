@@ -24,7 +24,7 @@ import type { StorageMap } from '../types/Endpoint'
 import type { MainItem } from '../types/MainItem'
 
 class WizardSource {
-  static create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem> {
+  async create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem> {
     const sourceParser = data.source ? OptionsSchemaPlugin[data.source.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     const destParser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     let payload = {}
@@ -47,29 +47,33 @@ class WizardSource {
       payload[type].source_environment = sourceParser.getDestinationEnv(data.sourceOptions)
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,
       method: 'POST',
       data: payload,
-    }).then(response => response.data[type])
+    })
+    return response.data[type]
   }
 
-  static createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem[]> {
+  async createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem[]> {
     if (!data.selectedInstances) {
-      return Promise.reject('No selected instances')
+      throw new Error('No selected instances')
     }
-
-    return Promise.all(data.selectedInstances.map(instance => {
+    let mainItems = await Promise.all(data.selectedInstances.map(async instance => {
       let newData = { ...data }
       newData.selectedInstances = [instance]
-      return WizardSource.create(type, newData, storageMap).catch(() => {
+      try {
+        let mainItem: MainItem = await this.create(type, newData, storageMap)
+        return mainItem
+      } catch (err) {
         notificationStore.alert(`Error while creating ${type} for instance ${instance.name}`, 'error')
         return null
-      })
-    })).then(mainItems => mainItems.filter(Boolean).map(i => i))
+      }
+    }))
+    return mainItems.filter(Boolean).map(i => i)
   }
 
-  static setPermalink(data: WizardData) {
+  setPermalink(data: WizardData) {
     // window.history.replaceState({}, null, `${window.location.href}?d=${btoa(JSON.stringify(data))}`)
     let exp = /.*?(?:\?|$)/.exec(window.location.href)
     if (!exp) {
@@ -79,10 +83,10 @@ class WizardSource {
     window.history.replaceState({}, null, `${location}?d=${btoa(JSON.stringify(data))}`)
   }
 
-  static getDataFromPermalink() {
+  getDataFromPermalink() {
     let dataExpExec = /\?d=(.*)/.exec(window.location.href)
     return dataExpExec && JSON.parse(atob(dataExpExec[1]))
   }
 }
 
-export default WizardSource
+export default new WizardSource()

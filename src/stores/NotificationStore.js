@@ -25,7 +25,7 @@ class NotificationStore {
 
   visibleErrors: string[] = []
 
-  @action alert(message: string, level?: $PropertyType<AlertInfo, 'level'>, options?: $PropertyType<AlertInfo, 'options'>): Promise<void> {
+  @action alert(message: string, level?: $PropertyType<AlertInfo, 'level'>, options?: $PropertyType<AlertInfo, 'options'>) {
     if (!this.visibleErrors.find(e => e === message)) {
       this.alerts.push({ message, level, options })
 
@@ -34,14 +34,11 @@ class NotificationStore {
         setTimeout(() => { this.visibleErrors = this.visibleErrors.filter(e => e !== message) }, 10000)
       }
     }
-
-    return Promise.resolve()
   }
 
-  @action loadData(): Promise<void> {
-    return NotificationSource.loadData().then(data => {
-      this.notificationItems = data
-    })
+  @action async loadData() {
+    let data = await NotificationSource.loadData()
+    this.notificationItems = data
   }
 
   @action saveSeen() {

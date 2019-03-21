@@ -103,18 +103,17 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  handleDeleteEndpointClick() {
+  async handleDeleteEndpointClick() {
     this.setState({ showEndpointInUseLoadingModal: true })
 
-    Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()]).then(() => {
-      const endpointUsage = this.getEndpointUsage()
+    await Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()])
+    const endpointUsage = this.getEndpointUsage()
 
-      if (endpointUsage.migrations.length === 0 && endpointUsage.replicas.length === 0) {
-        this.setState({ showDeleteEndpointConfirmation: true, showEndpointInUseLoadingModal: false })
-      } else {
-        this.setState({ showEndpointInUseModal: true, showEndpointInUseLoadingModal: false })
-      }
-    })
+    if (endpointUsage.migrations.length === 0 && endpointUsage.replicas.length === 0) {
+      this.setState({ showDeleteEndpointConfirmation: true, showEndpointInUseLoadingModal: false })
+    } else {
+      this.setState({ showEndpointInUseModal: true, showEndpointInUseLoadingModal: false })
+    }
   }
 
   handleDeleteEndpointConfirmation() {
@@ -170,7 +169,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     this.setState({ showDuplicateModal: true })
   }
 
-  handleDuplicate(projectId: string) {
+  async handleDuplicate(projectId: string) {
     let endpoint = this.getEndpoint()
     if (!endpoint) {
       return
@@ -180,31 +179,32 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
     let shouldSwitchProject = projectId !== (userStore.loggedUser ? userStore.loggedUser.project.id : '')
 
-    endpointStore.duplicate({
+    await endpointStore.duplicate({
       shouldSwitchProject,
       endpoints: [endpoint],
       onSwitchProject: () => userStore.switchProject(projectId),
-    }).then(() => {
-      this.props.history.push('/endpoints')
     })
+    this.props.history.push('/endpoints')
   }
 
-  loadData() {
+  async loadData() {
     projectStore.getProjects()
 
-    endpointStore.getEndpoints().then(() => {
-      let endpoint = this.getEndpoint()
+    this.loadEndpoints()
 
-      if (endpoint && endpoint.connection_info && endpoint.connection_info.secret_ref) {
-        endpointStore.getConnectionInfo(endpoint)
-      } else if (endpoint && endpoint.connection_info) {
-        endpointStore.setConnectionInfo(endpoint.connection_info)
-      }
-    })
+    await Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()])
+    this.setState({ endpointUsage: this.getEndpointUsage() })
+  }
 
-    Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()]).then(() => {
-      this.setState({ endpointUsage: this.getEndpointUsage() })
-    })
+  async loadEndpoints() {
+    await endpointStore.getEndpoints()
+    let endpoint = this.getEndpoint()
+
+    if (endpoint && endpoint.connection_info && endpoint.connection_info.secret_ref) {
+      endpointStore.getConnectionInfo(endpoint)
+    } else if (endpoint && endpoint.connection_info) {
+      endpointStore.setConnectionInfo(endpoint.connection_info)
+    }
   }
 
   render() {

@@ -41,57 +41,55 @@ class ScheduleStore {
   @observable scheduling: boolean = false
   @observable adding: boolean = false
 
-  @action scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<void> {
+  @action async scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<void> {
     this.scheduling = true
 
-    return Source.scheduleMultiple(replicaId, schedules).then((schedules: Schedule[]) => {
-      this.scheduling = false
-      this.schedules = schedules
-    }).catch(() => {
-      this.scheduling = false
-    })
+    try {
+      let scheduledSchedules: Schedule[] = await Source.scheduleMultiple(replicaId, schedules)
+      runInAction(() => { this.schedules = scheduledSchedules })
+    } finally {
+      runInAction(() => { this.scheduling = false })
+    }
   }
 
-  @action getSchedules(replicaId: string): Promise<void> {
+  @action async getSchedules(replicaId: string): Promise<void> {
     this.loading = true
 
-    return Source.getSchedules(replicaId).then((schedules: Schedule[]) => {
-      this.loading = false
-      this.schedules = schedules
-    }).catch(() => {
-      this.loading = false
-    })
+    try {
+      let schedules: Schedule[] = await Source.getSchedules(replicaId)
+      runInAction(() => { this.schedules = schedules })
+    } finally {
+      runInAction(() => { this.loading = false })
+    }
   }
 
-  getSchedulesBulk(replicaIds: string[]): Promise<void> {
-    return Promise.all(replicaIds.map(replicaId => {
-      return Source.getSchedules(replicaId, { skipLog: true }).then(schedules => {
-        return { replicaId, schedules }
-      })
-    })).then(bulkSchedules => {
-      runInAction(() => { this.bulkSchedules = bulkSchedules })
-    })
+  async getSchedulesBulk(replicaIds: string[]): Promise<void> {
+    let bulkSchedules: ScheduleBulkItem[] = await Promise.all(replicaIds.map(async replicaId => {
+      let schedules: Schedule[] = await Source.getSchedules(replicaId, { skipLog: true })
+      return { replicaId, schedules }
+    }))
+    runInAction(() => { this.bulkSchedules = bulkSchedules })
   }
 
-  @action addSchedule(replicaId: string, schedule: Schedule): Promise<void> {
+  @action async addSchedule(replicaId: string, schedule: Schedule): Promise<void> {
     this.adding = true
 
-    return Source.addSchedule(replicaId, schedule).then((schedule: Schedule) => {
-      this.adding = false
-      this.schedules = [...this.schedules, schedule]
-    }).catch(() => {
-      this.adding = false
-    })
+    try {
+      let addedSchedule: Schedule = await Source.addSchedule(replicaId, schedule)
+      runInAction(() => { this.schedules = [...this.schedules, addedSchedule] })
+    } finally {
+      runInAction(() => { this.adding = false })
+    }
   }
 
-  @action removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
+  @action async removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
     this.schedules = this.schedules.filter(s => s.id !== scheduleId)
     this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== scheduleId)
 
-    return Source.removeSchedule(replicaId, scheduleId)
+    await Source.removeSchedule(replicaId, scheduleId)
   }
 
-  @action updateSchedule(
+  @action async updateSchedule(
     replicaId: string,
     scheduleId: string,
     data: Schedule,
@@ -108,10 +106,10 @@ class ScheduleStore {
       } else {
         this.unsavedSchedules.push({ id: scheduleId, ...data })
       }
-      return Promise.resolve()
+      return
     }
-
-    return Source.updateSchedule(replicaId, scheduleId, data, oldData, unsavedData).then((schedule: Schedule) => {
+    let schedule: Schedule = await Source.updateSchedule(replicaId, scheduleId, data, oldData, unsavedData)
+    runInAction(() => {
       this.schedules = this.schedules.map(s => {
         if (s.id === schedule.id) {
           return { ...schedule }

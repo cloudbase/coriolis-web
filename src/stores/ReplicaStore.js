@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, runInAction } from 'mobx'
 
 import notificationStore from '../stores/NotificationStore'
 import ReplicaSource from '../sources/ReplicaSource'
@@ -49,113 +49,132 @@ class ReplicaStore {
 
   replicasLoaded: boolean = false
 
-  @action getReplicas(options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+  @action async getReplicas(options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
     this.backgroundLoading = true
 
     if ((options && options.showLoading) || !this.replicasLoaded) {
       this.loading = true
     }
 
-    return ReplicaSource.getReplicas(options && options.skipLog).then(replicas => {
-      this.replicas = replicas
-      this.loading = false
-      this.backgroundLoading = false
-      this.replicasLoaded = true
-    }).catch(() => {
-      this.loading = false
-      this.backgroundLoading = false
-    })
+    try {
+      let replicas = await ReplicaSource.getReplicas(options && options.skipLog)
+      this.getReplicasSuccess(replicas)
+    } finally {
+      this.getReplicasDone()
+    }
   }
 
-  @action getReplicaExecutions(replicaId: string, options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+  @action getReplicasSuccess(replicas: MainItem[]) {
+    this.replicasLoaded = true
+    this.replicas = replicas
+  }
+
+  @action getReplicasDone() {
+    this.loading = false
+    this.backgroundLoading = false
+  }
+
+  @action async getReplicaExecutions(replicaId: string, options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
     if (options && options.showLoading) this.executionsLoading = true
 
-    return ReplicaSource.getReplicaExecutions(replicaId, options && options.skipLog).then(executions => {
-      let replica = this.replicas.find(replica => replica.id === replicaId)
-
-      if (replica) {
-        replica.executions = executions
-      }
-
-      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        this.replicaDetails = {
-          ...this.replicaDetails,
-          executions,
-        }
-      }
-
-      this.executionsLoading = false
-    }).catch(() => { this.executionsLoading = false })
+    try {
+      let executions = await ReplicaSource.getReplicaExecutions(replicaId, options && options.skipLog)
+      this.getReplicaExecutionsSuccess(replicaId, executions)
+    } finally {
+      runInAction(() => { this.executionsLoading = false })
+    }
   }
 
-  @action getReplica(replicaId: string, options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+  @action getReplicaExecutionsSuccess(replicaId: string, executions: Execution[]) {
+    let replica = this.replicas.find(replica => replica.id === replicaId)
+
+    if (replica) {
+      replica.executions = executions
+    }
+
+    if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+      this.replicaDetails = {
+        ...this.replicaDetails,
+        executions,
+      }
+    }
+  }
+
+  @action async getReplica(replicaId: string, options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
     this.detailsLoading = Boolean(options && options.showLoading)
 
-    return ReplicaSource.getReplica(replicaId, options && options.skipLog).then(replica => {
-      this.detailsLoading = false
-      this.replicaDetails = replica
-    }).catch(() => {
-      this.detailsLoading = false
-    })
+    try {
+      let replica = await ReplicaSource.getReplica(replicaId, options && options.skipLog)
+      runInAction(() => { this.replicaDetails = replica })
+    } finally {
+      runInAction(() => { this.detailsLoading = false })
+    }
   }
 
-  @action execute(replicaId: string, fields?: Field[]): Promise<void> {
-    return ReplicaSource.execute(replicaId, fields).then(execution => {
-      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
-      }
-
-      let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
-
-      if (replicasItemIndex > -1) {
-        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
-        this.replicas[replicasItemIndex] = updatedReplica
-      }
-    })
+  @action async execute(replicaId: string, fields?: Field[]): Promise<void> {
+    let execution = await ReplicaSource.execute(replicaId, fields)
+    this.executeSuccess(replicaId, execution)
   }
 
-  @action cancelExecution(replicaId: string, executionId: string): Promise<void> {
-    return ReplicaSource.cancelExecution(replicaId, executionId).then(() => {
-      notificationStore.alert('Cancelled', 'success')
-    })
+  @action executeSuccess(replicaId: string, execution: Execution) {
+    if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+      this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+    }
+
+    let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
+
+    if (replicasItemIndex > -1) {
+      const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+      this.replicas[replicasItemIndex] = updatedReplica
+    }
   }
 
-  @action deleteExecution(replicaId: string, executionId: string): Promise<void> {
-    return ReplicaSource.deleteExecution(replicaId, executionId).then(() => {
-      let executions = []
-
-      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        if (this.replicaDetails.executions) {
-          executions = [...this.replicaDetails.executions.filter(e => e.id !== executionId)]
-        }
-
-        this.replicaDetails = {
-          ...this.replicaDetails,
-          executions,
-        }
-      }
-    })
+  async cancelExecution(replicaId: string, executionId: string): Promise<void> {
+    await ReplicaSource.cancelExecution(replicaId, executionId)
+    notificationStore.alert('Cancelled', 'success')
   }
 
-  @action delete(replicaId: string) {
-    return ReplicaSource.delete(replicaId).then(() => {
-      this.replicas = this.replicas.filter(r => r.id !== replicaId)
-    })
+  async deleteExecution(replicaId: string, executionId: string): Promise<void> {
+    await ReplicaSource.deleteExecution(replicaId, executionId)
+    this.deleteExecutionSuccess(replicaId, executionId)
   }
 
-  @action deleteDisks(replicaId: string) {
-    return ReplicaSource.deleteDisks(replicaId).then(execution => {
-      if (this.replicaDetails && this.replicaDetails.id === replicaId) {
-        this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+  @action deleteExecutionSuccess(replicaId: string, executionId: string) {
+    let executions = []
+
+    if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+      if (this.replicaDetails.executions) {
+        executions = [...this.replicaDetails.executions.filter(e => e.id !== executionId)]
       }
 
-      let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
-
-      if (replicasItemIndex > -1) {
-        const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
-        this.replicas[replicasItemIndex] = updatedReplica
+      this.replicaDetails = {
+        ...this.replicaDetails,
+        executions,
       }
-    })
+    }
+  }
+
+  async delete(replicaId: string) {
+    await ReplicaSource.delete(replicaId)
+    runInAction(() => { this.replicas = this.replicas.filter(r => r.id !== replicaId) })
+  }
+
+  async deleteDisks(replicaId: string) {
+    let execution = await ReplicaSource.deleteDisks(replicaId)
+    this.deleteDisksSuccess(replicaId, execution)
+  }
+
+  @action deleteDisksSuccess(replicaId: string, execution: Execution) {
+    if (this.replicaDetails && this.replicaDetails.id === replicaId) {
+      this.replicaDetails = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
+    }
+
+    let replicasItemIndex = this.replicas ? this.replicas.findIndex(r => r.id === replicaId) : -1
+
+    if (replicasItemIndex > -1) {
+      const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicas[replicasItemIndex], execution)
+      this.replicas[replicasItemIndex] = updatedReplica
+    }
   }
 
   @action clearDetails() {
@@ -163,8 +182,8 @@ class ReplicaStore {
     this.replicaDetails = null
   }
 
-  @action update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string) {
-    return ReplicaSource.update(replica, destinationEndpoint, updateData, storageConfigDefault)
+  async update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string) {
+    await ReplicaSource.update(replica, destinationEndpoint, updateData, storageConfigDefault)
   }
 }
 

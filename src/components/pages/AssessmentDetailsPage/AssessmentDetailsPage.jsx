@@ -243,9 +243,17 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   handleMigrateClick() {
     let endpointType = this.getLocalData().endpoint.type
-    providerStore.loadDestinationSchema(endpointType, 'replica').then(() => {
+    providerStore.loadOptionsSchema({
+      providerName: endpointType,
+      schemaType: 'replica',
+      optionsType: 'destination',
+    }).then(() => {
       this.setState({ replicaSchema: providerStore.destinationSchema })
-      return providerStore.loadDestinationSchema(endpointType, 'migration')
+      return providerStore.loadOptionsSchema({
+        providerName: endpointType,
+        schemaType: 'migration',
+        optionsType: 'destination',
+      })
     }).then(() => {
       this.setState({ migrationSchema: providerStore.destinationSchema })
     })
@@ -317,7 +325,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     return providerStore.getOptionsValues({
       optionsType: 'destination',
       endpointId: localData.endpoint.id,
-      provider: localData.endpoint.type,
+      providerName: localData.endpoint.type,
     }).then(options => {
       let locations = options.find(o => o.name === 'location')
       if (locations && locations.values) {
@@ -345,7 +353,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     providerStore.getOptionsValues({
       optionsType: 'destination',
       endpointId: localData.endpoint.id,
-      provider: localData.endpoint.type,
+      providerName: localData.endpoint.type,
       envData: {
         location: localData.locationName,
         resource_group: localData.resourceGroupName,

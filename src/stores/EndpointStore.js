@@ -13,8 +13,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // @flow
-import { observable, action } from 'mobx'
-import type { Endpoint, Validation, StorageBackend } from '../types/Endpoint'
+import { observable, runInAction, action } from 'mobx'
+import type { Endpoint, Validation, StorageBackend, Storage } from '../types/Endpoint'
 import notificationStore from './NotificationStore'
 import EndpointSource from '../sources/EndpointSource'
 
@@ -43,84 +43,100 @@ class EndpointStore {
   @observable storageLoading: boolean = false
   @observable storageConfigDefault: string = ''
 
-  @action getEndpoints(options?: { showLoading?: boolean, skipLog?: boolean }) {
+  @action async getEndpoints(options?: { showLoading?: boolean, skipLog?: boolean }) {
     if (options && options.showLoading) {
       this.loading = true
     }
-
-    return EndpointSource.getEndpoints(options && options.skipLog).then(endpoints => {
-      this.endpoints = endpoints
-      this.loading = false
-    }).catch(() => {
-      this.loading = false
-    })
+    try {
+      let endpoints = await EndpointSource.getEndpoints(options && options.skipLog)
+      this.getEndpointsSuccess(endpoints)
+    } catch (ex) {
+      this.getEndpointsFailed()
+      throw ex
+    }
   }
 
-  @action delete(endpoint: Endpoint) {
-    return EndpointSource.delete(endpoint).then(() => {
-      this.endpoints = this.endpoints.filter(e => e.id !== endpoint.id)
-    })
+  @action getEndpointsSuccess(endpoints: Endpoint[]) {
+    this.endpoints = endpoints
+    this.loading = false
   }
 
-  @action getConnectionInfo(endpoint: Endpoint) {
+  @action getEndpointsFailed() {
+    this.loading = false
+  }
+
+  @action async delete(endpoint: Endpoint) {
+    await EndpointSource.delete(endpoint)
+    this.deleteSuccess(endpoint)
+  }
+
+  @action deleteSuccess(endpoint: Endpoint) {
+    this.endpoints = this.endpoints.filter(e => e.id !== endpoint.id)
+  }
+
+  @action async getConnectionInfo(endpoint: Endpoint) {
     this.connectionInfoLoading = true
 
-    return EndpointSource.getConnectionInfo(endpoint).then(connectionInfo => {
+    try {
+      let connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
       this.setConnectionInfo(connectionInfo)
-    }).catch(() => {
-      this.connectionInfoLoading = false
-      return Promise.reject()
-    })
+    } catch (ex) {
+      runInAction(() => { this.connectionInfoLoading = false })
+      throw ex
+    }
   }
 
-  @action getConnectionsInfo(endpointsData: Endpoint[]): Promise<void> {
+  @action async getConnectionsInfo(endpointsData: Endpoint[]): Promise<void> {
     this.connectionsInfoLoading = true
-    return EndpointSource.getConnectionsInfo(endpointsData).then(endpoints => {
-      this.connectionsInfoLoading = false
-      this.connectionsInfo = endpoints
-    }).catch(() => {
-      this.connectionsInfoLoading = false
-    })
+    try {
+      let endpoints = await EndpointSource.getConnectionsInfo(endpointsData)
+      this.getConnectionsInfoSuccess(endpoints)
+    } catch (ex) {
+      runInAction(() => { this.connectionsInfoLoading = false })
+      throw ex
+    }
   }
 
-  @action duplicate(opts: {
+  @action getConnectionsInfoSuccess(endpoints: Endpoint[]) {
+    this.connectionsInfoLoading = false
+    this.connectionsInfo = endpoints
+  }
+
+  async duplicate(opts: {
     shouldSwitchProject: boolean,
     onSwitchProject: () => Promise<void>,
     endpoints: Endpoint[],
   }): Promise<void> {
-    let endpoints = []
-    return Promise.all(opts.endpoints.map(endpoint => {
-      return EndpointSource.getConnectionInfo(endpoint).then(connectionInfo => {
-        endpoints.push({
+    try {
+      let endpoints: Endpoint[] = await Promise.all(opts.endpoints.map(async endpoint => {
+        let connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
+        return {
           ...endpoint,
           connection_info: connectionInfo,
           name: `${endpoint.name}${!opts.shouldSwitchProject ? ' (copy)' : ''}`,
-        })
-      })
-    })).then(() => {
+        }
+      }))
+
       if (opts.shouldSwitchProject) {
-        return opts.onSwitchProject()
+        await opts.onSwitchProject()
       }
-      return Promise.resolve()
-    }).then(() => {
-      return Promise.all(endpoints.map(endpoint => {
-        return EndpointSource.add(endpoint, true)
-      }).map((p: Promise<any>) => p.catch(e => e)))
-        .then((results: (Endpoint | { status: string, data?: { description: string } })[]) => {
-          let internalServerErrors = results.filter(r => r.status && r.status === 500)
-          if (internalServerErrors.length > 0) {
-            notificationStore.alert(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
-          }
-          let forbiddenErrors = results.filter(r => r.status && r.status === 403)
-          if (forbiddenErrors.length > 0 && forbiddenErrors[0].data && forbiddenErrors[0].data.description) {
-            notificationStore.alert(String(forbiddenErrors[0].data.description), 'error')
-          }
-        })
-    }).catch(e => {
-      if (e.data && e.data.description) {
-        notificationStore.alert(e.data.description, 'error')
+
+      let results: (Endpoint | { status: string, data?: { description: string } })[] =
+        await Promise.all(endpoints.map(endpoint => EndpointSource.add(endpoint, true)).map(p => p.catch(e => e)))
+
+      let internalServerErrors = results.filter(r => r.status && r.status === 500)
+      if (internalServerErrors.length > 0) {
+        notificationStore.alert(`There was a problem duplicating ${internalServerErrors.length} endpoint${internalServerErrors.length > 1 ? 's' : ''}`, 'error')
       }
-    })
+      let forbiddenErrors = results.filter(r => r.status && r.status === 403)
+      if (forbiddenErrors.length > 0 && forbiddenErrors[0].data && forbiddenErrors[0].data.description) {
+        notificationStore.alert(String(forbiddenErrors[0].data.description), 'error')
+      }
+    } catch (ex) {
+      if (ex.data && ex.data.description) {
+        notificationStore.alert(ex.data.description, 'error')
+      }
+    }
   }
 
   @action setConnectionInfo(connectionInfo: $PropertyType<Endpoint, 'connection_info'>) {
@@ -128,16 +144,26 @@ class EndpointStore {
     this.connectionInfoLoading = false
   }
 
-  @action validate(endpoint: Endpoint) {
+  @action async validate(endpoint: Endpoint) {
     this.validating = true
 
-    return EndpointSource.validate(endpoint).then(validation => {
-      this.validation = validation
-      this.validating = false
-    }).catch(() => {
-      this.validating = false
-      this.validation = { valid: false, message: '' }
-    })
+    try {
+      let validation = await EndpointSource.validate(endpoint)
+      this.validateSuccess(validation)
+    } catch (ex) {
+      this.validateFailed()
+      throw ex
+    }
+  }
+
+  @action validateSuccess(validation: Validation) {
+    this.validation = validation
+    this.validating = false
+  }
+
+  @action validateFailed() {
+    this.validating = false
+    this.validation = { valid: false, message: '' }
   }
 
   @action clearValidation() {
@@ -145,53 +171,68 @@ class EndpointStore {
     this.validation = null
   }
 
-  @action update(endpoint: Endpoint) {
+  @action async update(endpoint: Endpoint) {
     this.endpoints = updateEndpoint(endpoint, this.endpoints)
     this.connectionInfo = { ...endpoint.connection_info }
     this.updating = true
 
-    return EndpointSource.update(endpoint).then(updatedEndpoint => {
-      this.endpoints = updateEndpoint(updatedEndpoint, this.endpoints)
-      this.connectionInfo = { ...updatedEndpoint.connection_info }
-      this.updating = false
-    }).catch(e => {
-      this.updating = false
+    try {
+      let updatedEndpoint = await EndpointSource.update(endpoint)
+      this.updateSuccess(updatedEndpoint)
+    } catch (e) {
+      runInAction(() => { this.updating = false })
       throw e
-    })
+    }
+  }
+
+  @action updateSuccess(updatedEndpoint: Endpoint) {
+    this.endpoints = updateEndpoint(updatedEndpoint, this.endpoints)
+    this.connectionInfo = { ...updatedEndpoint.connection_info }
+    this.updating = false
   }
 
   @action clearConnectionInfo() {
     this.connectionInfo = null
   }
 
-  @action add(endpoint: Endpoint) {
+  @action async add(endpoint: Endpoint) {
     this.adding = true
 
-    return EndpointSource.add(endpoint).then(addedEndpoint => {
-      this.endpoints = [
-        addedEndpoint,
-        ...this.endpoints,
-      ]
-
-      this.connectionInfo = addedEndpoint.connection_info
-      this.adding = false
-    }).catch(e => {
-      this.adding = false
-      throw e
-    })
+    try {
+      let addedEndpoint = await EndpointSource.add(endpoint)
+      this.addSuccess(addedEndpoint)
+    } catch (ex) {
+      runInAction(() => { this.adding = false })
+      throw ex
+    }
   }
 
-  @action loadStorage(endpointId: string, data: any): Promise<void> {
+  @action addSuccess(addedEndpoint: Endpoint) {
+    this.endpoints = [
+      addedEndpoint,
+      ...this.endpoints,
+    ]
+    this.connectionInfo = addedEndpoint.connection_info
+    this.adding = false
+  }
+
+  @action async loadStorage(endpointId: string, data: any): Promise<void> {
     this.storageBackends = []
     this.storageLoading = true
-    return EndpointSource.loadStorage(endpointId, data).then(storage => {
-      this.storageBackends = storage.storage_backends
-      this.storageConfigDefault = storage.config_default || ''
-      this.storageLoading = false
-    }).catch(ex => {
-      this.storageLoading = false
+
+    try {
+      let storage = await EndpointSource.loadStorage(endpointId, data)
+      this.loadStorageSuccess(storage)
+    } catch (ex) {
+      runInAction(() => { this.storageLoading = false })
       throw ex
-    })
+    }
+  }
+
+  @action loadStorageSuccess(storage: Storage) {
+    this.storageBackends = storage.storage_backends
+    this.storageConfigDefault = storage.config_default || ''
+    this.storageLoading = false
   }
 }
 

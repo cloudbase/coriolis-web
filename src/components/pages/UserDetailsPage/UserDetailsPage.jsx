@@ -82,21 +82,19 @@ class UserDetailsPage extends React.Component<Props, State> {
     this.setState({ showUserModal: true })
   }
 
-  handleDeleteConfirmation() {
-    userStore.delete(this.props.match.params.id).then(() => {
-      this.props.history.push('/users')
-    })
+  async handleDeleteConfirmation() {
+    await userStore.delete(this.props.match.params.id)
+    this.props.history.push('/users')
   }
 
   handleUserEditModalClose() {
     this.setState({ showUserModal: false, editPassword: false })
   }
 
-  handleUserUpdateClick(user: User) {
-    userStore.update(this.props.match.params.id, user).then(() => {
-      userStore.getProjects(this.props.match.params.id)
-      this.setState({ showUserModal: false, editPassword: false })
-    })
+  async handleUserUpdateClick(user: User) {
+    await userStore.update(this.props.match.params.id, user)
+    userStore.getProjects(this.props.match.params.id)
+    this.setState({ showUserModal: false, editPassword: false })
   }
 
   handleUpdatePasswordClick() {

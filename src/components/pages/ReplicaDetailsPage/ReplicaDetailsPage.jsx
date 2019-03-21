@@ -105,46 +105,43 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.stopPolling = true
   }
 
-  loadIsEditable(replicaDetails: MainItem) {
+  async loadIsEditable(replicaDetails: MainItem) {
     let targetEndpointId = replicaDetails.destination_endpoint_id
     let sourceEndpointId = replicaDetails.origin_endpoint_id
-    providerStore.loadProviders()
-      .then(() => utils.waitFor(() => endpointStore.endpoints.length > 0))
-      .then(() => {
-        let sourceEndpoint = endpointStore.endpoints.find(e => e.id === sourceEndpointId)
-        let targetEndpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
-        if (!sourceEndpoint || !targetEndpoint || !providerStore.providers) {
-          return
-        }
-        let sourceProviderTypes = providerStore.providers[sourceEndpoint.type]
-        let targetProviderTypes = providerStore.providers[targetEndpoint.type]
-        let isEditable = sourceProviderTypes && targetProviderTypes ?
-          !!sourceProviderTypes.types.find(t => t === providerTypes.SOURCE_UPDATE)
-          && !!targetProviderTypes.types.find(t => t === providerTypes.TARGET_UPDATE)
-          : false
+    await providerStore.loadProviders()
+    await utils.waitFor(() => endpointStore.endpoints.length > 0)
+    let sourceEndpoint = endpointStore.endpoints.find(e => e.id === sourceEndpointId)
+    let targetEndpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
+    if (!sourceEndpoint || !targetEndpoint || !providerStore.providers) {
+      return
+    }
+    let sourceProviderTypes = providerStore.providers[sourceEndpoint.type]
+    let targetProviderTypes = providerStore.providers[targetEndpoint.type]
+    let isEditable = sourceProviderTypes && targetProviderTypes ?
+      !!sourceProviderTypes.types.find(t => t === providerTypes.SOURCE_UPDATE)
+      && !!targetProviderTypes.types.find(t => t === providerTypes.TARGET_UPDATE)
+      : false
 
-        this.setState({ isEditable })
-      })
+    this.setState({ isEditable })
   }
 
-  loadReplicaWithInstances(replicaId: string, cache: boolean) {
-    replicaStore.getReplica(replicaId, { showLoading: true }).then(() => {
-      let details = replicaStore.replicaDetails
-      if (!details) {
-        return
-      }
-      this.loadIsEditable(details)
-      networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
-        quietError: true,
-        useLocalStorage: cache,
-      })
-      instanceStore.loadInstancesDetails(
-        details.origin_endpoint_id,
-        // $FlowIgnore
-        details.instances.map(n => { return { instance_name: n } }),
-        false, cache
-      )
+  async loadReplicaWithInstances(replicaId: string, cache: boolean) {
+    await replicaStore.getReplica(replicaId, { showLoading: true })
+    let details = replicaStore.replicaDetails
+    if (!details) {
+      return
+    }
+    this.loadIsEditable(details)
+    networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
+      quietError: true,
+      useLocalStorage: cache,
     })
+    instanceStore.loadInstancesDetails(
+      details.origin_endpoint_id,
+      // $FlowIgnore
+      details.instances.map(n => { return { instance_name: n } }),
+      false, cache
+    )
   }
 
   getLastExecution() {
@@ -292,17 +289,20 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   migrateReplica(options: Field[]) {
-    migrationStore.migrateReplica(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', options).then(migration => {
-      notificationStore.alert('Migration successfully created from replica.', 'success', {
-        action: {
-          label: 'View Migration Status',
-          callback: () => {
-            this.props.history.push(`/migration/tasks/${migration.id}`)
-          },
-        },
-      })
-    })
+    this.migrate(options)
     this.handleCloseMigrationModal()
+  }
+
+  async migrate(options: Field[]) {
+    let migration = await migrationStore.migrateReplica(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', options)
+    notificationStore.alert('Migration successfully created from replica.', 'success', {
+      action: {
+        label: 'View Migration Status',
+        callback: () => {
+          this.props.history.push(`/migration/tasks/${migration.id}`)
+        },
+      },
+    })
   }
 
   executeReplica(fields: Field[]) {
@@ -311,7 +311,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.props.history.push(`/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`)
   }
 
-  pollData(showLoading: boolean) {
+  async pollData(showLoading: boolean) {
     if (this.state.showEditModal || this.stopPolling) {
       return
     }
@@ -320,9 +320,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       replicaStore.getReplica(this.props.match.params.id, { showLoading, skipLog: true })
     }
 
-    replicaStore.getReplicaExecutions(this.props.match.params.id, { showLoading, skipLog: true }).then(() => {
-      setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
-    })
+    await replicaStore.getReplicaExecutions(this.props.match.params.id, { showLoading, skipLog: true })
+    setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
   }
 
   closeEditModal() {

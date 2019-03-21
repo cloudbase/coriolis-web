@@ -276,34 +276,32 @@ class Endpoint extends React.Component<Props, State> {
     return invalidFields.length > 0
   }
 
-  update() {
+  async update() {
     if (!this.state.endpoint) {
       return
     }
 
-    endpointStore.update(this.state.endpoint).then(() => {
-      let endpoint = endpointStore.endpoints.find(e => this.state.endpoint && e.id === this.state.endpoint.id)
-      if (!endpoint) {
-        throw new Error('endpoint not found')
-      }
+    await endpointStore.update(this.state.endpoint)
+    let endpoint = endpointStore.endpoints.find(e => this.state.endpoint && e.id === this.state.endpoint.id)
+    if (!endpoint) {
+      throw new Error('endpoint not found')
+    }
 
-      this.setState({ endpoint: ObjectUtils.flatten(endpoint) })
-      notificationStore.alert('Validating endpoint ...')
-      endpointStore.validate(endpoint)
-    })
+    this.setState({ endpoint: ObjectUtils.flatten(endpoint) })
+    notificationStore.alert('Validating endpoint ...')
+    endpointStore.validate(endpoint)
   }
 
-  add() {
+  async add() {
     if (!this.state.endpoint) {
       return
     }
 
-    endpointStore.add(this.state.endpoint).then(() => {
-      let endpoint = endpointStore.endpoints[0]
-      this.setState({ isNew: false, endpoint: ObjectUtils.flatten(endpoint) })
-      notificationStore.alert('Validating endpoint ...')
-      endpointStore.validate(endpoint)
-    })
+    await endpointStore.add(this.state.endpoint)
+    let endpoint = endpointStore.endpoints[0]
+    this.setState({ isNew: false, endpoint: ObjectUtils.flatten(endpoint) })
+    notificationStore.alert('Validating endpoint ...')
+    endpointStore.validate(endpoint)
   }
 
   renderEndpointStatus() {

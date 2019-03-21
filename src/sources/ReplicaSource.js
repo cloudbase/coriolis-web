@@ -119,91 +119,91 @@ class ReplicaSourceUtils {
 }
 
 class ReplicaSource {
-  static getReplicas(skipLog?: boolean): Promise<MainItem[]> {
-    return Api.send({
+  async getReplicas(skipLog?: boolean): Promise<MainItem[]> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`,
       skipLog,
-    }).then(response => {
-      let replicas = response.data.replicas
-      replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
-      ReplicaSourceUtils.sortReplicas(replicas)
-      return replicas
     })
+    let replicas = response.data.replicas
+    replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
+    ReplicaSourceUtils.sortReplicas(replicas)
+    return replicas
   }
 
-  static getReplicaExecutions(replicaId: string, skipLog?: boolean): Promise<Execution[]> {
-    return Api.send({
+  async getReplicaExecutions(replicaId: string, skipLog?: boolean): Promise<Execution[]> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`,
       skipLog,
-    }).then((response) => {
-      let executions = response.data.executions
-      ReplicaSourceUtils.sortExecutionsAndTasks(executions)
-
-      return executions
     })
+    let executions = response.data.executions
+    ReplicaSourceUtils.sortExecutionsAndTasks(executions)
+
+    return executions
   }
 
-  static getReplica(replicaId: string, skipLog?: boolean): Promise<MainItem> {
-    return Api.send({
+  async getReplica(replicaId: string, skipLog?: boolean): Promise<MainItem> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`,
       skipLog,
-    }).then(response => {
-      let replica = response.data.replica
-      replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
-      ReplicaSourceUtils.sortExecutions(replica.executions)
-      return replica
     })
+    let replica = response.data.replica
+    replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
+    ReplicaSourceUtils.sortExecutions(replica.executions)
+    return replica
   }
 
-  static execute(replicaId: string, fields?: Field[]): Promise<Execution> {
+  async execute(replicaId: string, fields?: Field[]): Promise<Execution> {
     let payload = { execution: { shutdown_instances: false } }
     if (fields) {
       fields.forEach(f => {
         payload.execution[f.name] = f.value || false
       })
     }
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions`,
       method: 'POST',
       data: payload,
-    }).then((response) => {
-      let execution = response.data.execution
-      sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
-      return execution
     })
+    let execution = response.data.execution
+    sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
+    return execution
   }
 
-  static cancelExecution(replicaId: string, executionId: string): Promise<string> {
-    return Api.send({
+  async cancelExecution(replicaId: string, executionId: string): Promise<string> {
+    await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
       method: 'POST',
       data: { cancel: null },
-    }).then(() => replicaId)
+    })
+    return replicaId
   }
 
-  static deleteExecution(replicaId: string, executionId: string): Promise<string> {
-    return Api.send({
+  async deleteExecution(replicaId: string, executionId: string): Promise<string> {
+    await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}`,
       method: 'DELETE',
-    }).then(() => replicaId)
+    })
+    return replicaId
   }
 
-  static delete(replicaId: string): Promise<string> {
-    return Api.send({
+  async delete(replicaId: string): Promise<string> {
+    await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`,
       method: 'DELETE',
-    }).then(() => replicaId)
+    })
+    return replicaId
   }
 
-  static deleteDisks(replicaId: string): Promise<Execution> {
-    return Api.send({
+  async deleteDisks(replicaId: string): Promise<Execution> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/actions`,
       method: 'POST',
       data: { 'delete-disks': null },
-    }).then(response => response.data.execution)
+    })
+    return response.data.execution
   }
 
-  static update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string): Promise<Execution> {
+  async update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string): Promise<Execution> {
     const parser = OptionsSchemaPlugin[destinationEndpoint.type] || OptionsSchemaPlugin.default
     let payload = { replica: {} }
 
@@ -228,13 +228,14 @@ class ReplicaSource {
       payload.replica.storage_mappings = parser.getStorageMap(defaultStorage, updateData.storage, storageConfigDefault)
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replica.id}`,
       method: 'PUT',
       data: payload,
-    }).then(response => response.data)
+    })
+    return response.data
   }
 }
 
-export default ReplicaSource
+export default new ReplicaSource()
 

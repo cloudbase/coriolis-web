@@ -51,29 +51,27 @@ class MigrationSourceUtils {
 }
 
 class MigrationSource {
-  static getMigrations(skipLog?: boolean): Promise<MainItem[]> {
-    return Api.send({
+  async getMigrations(skipLog?: boolean): Promise<MainItem[]> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/detail`,
       skipLog,
-    }).then(response => {
-      let migrations = response.data.migrations
-      MigrationSourceUtils.sortMigrations(migrations)
-      return migrations
     })
+    let migrations = response.data.migrations
+    MigrationSourceUtils.sortMigrations(migrations)
+    return migrations
   }
 
-  static getMigration(migrationId: string, skipLog?: boolean): Promise<MainItem> {
-    return Api.send({
+  async getMigration(migrationId: string, skipLog?: boolean): Promise<MainItem> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       skipLog,
-    }).then(response => {
-      let migration = response.data.migration
-      sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)
-      return migration
     })
+    let migration = response.data.migration
+    sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)
+    return migration
   }
 
-  static recreate(opts: {
+  async recreate(opts: {
     sourceEndpoint: Endpoint,
     destEndpoint: Endpoint,
     instanceNames: string[],
@@ -132,29 +130,32 @@ class MigrationSource {
       }
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`,
       method: 'POST',
       data: payload,
-    }).then(response => response.data.migration)
+    })
+    return response.data.migration
   }
 
-  static cancel(migrationId: string): Promise<string> {
-    return Api.send({
+  async cancel(migrationId: string): Promise<string> {
+    await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}/actions`,
       method: 'POST',
       data: { cancel: null },
-    }).then(() => migrationId)
+    })
+    return migrationId
   }
 
-  static delete(migrationId: string): Promise<string> {
-    return Api.send({
+  async delete(migrationId: string): Promise<string> {
+    await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       method: 'DELETE',
-    }).then(() => migrationId)
+    })
+    return migrationId
   }
 
-  static migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
+  async migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
     let payload = {
       migration: {
         replica_id: replicaId,
@@ -164,13 +165,14 @@ class MigrationSource {
       payload.migration[o.name] = o.value || false
     })
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`,
       method: 'POST',
       data: payload,
-    }).then(response => response.data.migration)
+    })
+    return response.data.migration
   }
 }
 
-export default MigrationSource
+export default new MigrationSource()
 

@@ -113,52 +113,52 @@ class DataUtils {
 }
 
 class NotificationSource {
-  static loadData(): Promise<NotificationItemData[]> {
-    return Promise.all([
+  async loadData(): Promise<NotificationItemData[]> {
+    let [migrationsResponse, replicasResponse] = await Promise.all([
       Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`, skipLog: true, quietError: true }),
       Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`, skipLog: true, quietError: true }),
-    ]).then(([migrationsResponse, replicasResponse]) => {
-      let migrations = migrationsResponse.data.migrations
-      let replicas = replicasResponse.data.replicas
-      let apiData = [...migrations, ...replicas]
-      apiData.sort((a, b) => moment(DataUtils.getUpdatedAt(b)).diff(DataUtils.getUpdatedAt(a)))
+    ])
 
-      let notificationItems: NotificationItemData[] = apiData.map(item => {
-        let mainInfo = DataUtils.getMainInfo(item)
+    let migrations = migrationsResponse.data.migrations
+    let replicas = replicasResponse.data.replicas
+    let apiData = [...migrations, ...replicas]
+    apiData.sort((a, b) => moment(DataUtils.getUpdatedAt(b)).diff(DataUtils.getUpdatedAt(a)))
 
-        let newItem: NotificationItemData = {
-          id: item.id,
-          status: mainInfo.status,
-          type: item.type,
-          name: item.instances[0],
-          updatedAt: mainInfo.updated_at,
-          description: DataUtils.getItemDescription(item),
-        }
-        return newItem
-      }).filter(item => item.status).filter((item, i) => i < 10)
+    let notificationItems: NotificationItemData[] = apiData.map(item => {
+      let mainInfo = DataUtils.getMainInfo(item)
 
-      let storageData = NotificationStorage.loadSeen()
-      if (!storageData) {
-        NotificationStorage.saveSeen(notificationItems)
-        storageData = NotificationStorage.loadSeen() || []
+      let newItem: NotificationItemData = {
+        id: item.id,
+        status: mainInfo.status,
+        type: item.type,
+        name: item.instances[0],
+        updatedAt: mainInfo.updated_at,
+        description: DataUtils.getItemDescription(item),
       }
-      notificationItems.forEach(item => {
-        item.unseen = true
-        // $FlowIgnore
-        storageData.forEach(storageItem => {
-          if (storageItem.id === item.id && storageItem.status === item.status && storageItem.updatedAt === item.updatedAt) {
-            item.unseen = false
-          }
-        })
+      return newItem
+    }).filter(item => item.status).filter((item, i) => i < 10)
+
+    let storageData = NotificationStorage.loadSeen()
+    if (!storageData) {
+      NotificationStorage.saveSeen(notificationItems)
+      storageData = NotificationStorage.loadSeen() || []
+    }
+    notificationItems.forEach(item => {
+      item.unseen = true
+      // $FlowIgnore
+      storageData.forEach(storageItem => {
+        if (storageItem.id === item.id && storageItem.status === item.status && storageItem.updatedAt === item.updatedAt) {
+          item.unseen = false
+        }
       })
-      NotificationStorage.clean(notificationItems)
-      return notificationItems
     })
+    NotificationStorage.clean(notificationItems)
+    return notificationItems
   }
 
-  static saveSeen(notificationItems: NotificationItemData[]) {
+  saveSeen(notificationItems: NotificationItemData[]) {
     NotificationStorage.saveSeen(notificationItems)
   }
 }
 
-export default NotificationSource
+export default new NotificationSource()

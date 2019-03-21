@@ -101,14 +101,13 @@ class DetailsPageHeader extends React.Component<Props, State> {
     }
   }
 
-  pollData() {
+  async pollData() {
     if (this.stopPolling) {
       return
     }
 
-    notificationStore.loadData().then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
-    })
+    await notificationStore.loadData()
+    this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
   }
 
   render() {
