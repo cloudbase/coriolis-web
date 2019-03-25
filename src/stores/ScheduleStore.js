@@ -14,9 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, runInAction } from 'mobx'
 
-import type { Schedule } from '../types/Schedule'
+import type { Schedule, ScheduleBulkItem } from '../types/Schedule'
 import Source from '../sources/ScheduleSource'
 
 const updateSchedule = (schedules, id, data) => {
@@ -36,6 +36,7 @@ const updateSchedule = (schedules, id, data) => {
 class ScheduleStore {
   @observable loading: boolean = false
   @observable schedules: Schedule[] = []
+  @observable bulkSchedules: ScheduleBulkItem[] = []
   @observable unsavedSchedules: Schedule[] = []
   @observable scheduling: boolean = false
   @observable adding: boolean = false
@@ -59,6 +60,16 @@ class ScheduleStore {
       this.schedules = schedules
     }).catch(() => {
       this.loading = false
+    })
+  }
+
+  getSchedulesBulk(replicaIds: string[]): Promise<void> {
+    return Promise.all(replicaIds.map(replicaId => {
+      return Source.getSchedules(replicaId, { skipLog: true }).then(schedules => {
+        return { replicaId, schedules }
+      })
+    })).then(bulkSchedules => {
+      runInAction(() => { this.bulkSchedules = bulkSchedules })
     })
   }
 
