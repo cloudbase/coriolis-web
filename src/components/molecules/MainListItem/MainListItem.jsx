@@ -28,6 +28,7 @@ import type { MainItem } from '../../../types/MainItem'
 import type { Execution } from '../../../types/Execution'
 
 import arrowImage from './images/arrow.svg'
+import scheduleImage from './images/schedule.svg'
 
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => props.checked ? 1 : 0};
@@ -79,6 +80,14 @@ const TitleLabel = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
 `
+const StatusWrapper = styled.div`
+  display: flex;
+  margin-top: 8px;
+`
+const ScheduleImage = styled.div`
+  ${StyleProps.exactSize('16px')}
+  background: url('${scheduleImage}') center no-repeat;
+`
 const EndpointsImages = styled.div`
   display: flex;
   align-items: center;
@@ -111,6 +120,7 @@ type Props = {
   selected: boolean,
   useTasksRemaining?: boolean,
   image: string,
+  showScheduleIcon?: boolean,
   endpointType: (endpointId: string) => string,
   onSelectedChange: (value: boolean) => void,
 }
@@ -205,7 +215,18 @@ class MainListItem extends React.Component<Props> {
           <Image image={this.props.image} />
           <Title>
             <TitleLabel>{this.props.item.instances[0]}</TitleLabel>
-            {status ? <StatusPill data-test-id={`mainListItem-statusPill-${status}`} status={status} /> : null}
+            <StatusWrapper>
+              {status ? <StatusPill
+                status={status}
+                style={{ marginRight: '8px' }}
+                data-test-id={`mainListItem-statusPill-${status}`}
+              /> : null}
+              {this.props.showScheduleIcon ? (
+                <ScheduleImage
+                  data-tip="The Replica has scheduling enabled and will execute automatically"
+                />
+              ) : null}
+            </StatusWrapper>
           </Title>
           {endpointImages}
           {this.renderLastExecution()}

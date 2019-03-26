@@ -56,8 +56,11 @@ class ScheduleSource {
     }))
   }
 
-  static getSchedules(replicaId: string): Promise<Schedule[]> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`).then(response => {
+  static getSchedules(replicaId: string, opts?: { skipLog?: boolean }): Promise<Schedule[]> {
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
+      skipLog: opts && opts.skipLog,
+    }).then(response => {
       let schedules = [...response.data.schedules]
       schedules.forEach(s => {
         if (s.expiration_date) {

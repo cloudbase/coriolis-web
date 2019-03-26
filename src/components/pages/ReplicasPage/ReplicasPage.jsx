@@ -31,11 +31,14 @@ import replicaLargeImage from './images/replica-large.svg'
 
 import projectStore from '../../../stores/ProjectStore'
 import replicaStore from '../../../stores/ReplicaStore'
+import scheduleStore from '../../../stores/ScheduleStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div``
+
+const SCHEDULE_POLL_TIMEOUT = 10000
 
 const BulkActions = [
   { label: 'Execute', value: 'execute' },
@@ -57,6 +60,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
 
   pollTimeout: TimeoutID
   stopPolling: boolean
+  schedulePolling: boolean
+  schedulePollTimeout: TimeoutID
 
   componentDidMount() {
     document.title = 'Coriolis Replicas'
@@ -70,6 +75,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
 
   componentWillUnmount() {
     clearTimeout(this.pollTimeout)
+    clearTimeout(this.schedulePollTimeout)
     this.stopPolling = true
   }
 
@@ -164,7 +170,22 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     }
 
     Promise.all([replicaStore.getReplicas(), endpointStore.getEndpoints()]).then(() => {
+      if (!this.schedulePolling) {
+        this.pollSchedule()
+      }
       this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    })
+  }
+
+  pollSchedule() {
+    if (this.state.modalIsOpen || this.stopPolling || replicaStore.replicas.length === 0) {
+      return
+    }
+    this.schedulePolling = true
+    scheduleStore.getSchedulesBulk(replicaStore.replicas.map(r => r.id)).then(() => {
+      this.schedulePollTimeout = setTimeout(() => {
+        this.pollSchedule()
+      }, SCHEDULE_POLL_TIMEOUT)
     })
   }
 
@@ -196,6 +217,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     return true
   }
 
+  isReplicaScheduled(replicaId: string): boolean {
+    let bulkScheduleItem = scheduleStore.bulkSchedules.find(b => b.replicaId === replicaId)
+    if (!bulkScheduleItem) {
+      return false
+    }
+    return Boolean(bulkScheduleItem.schedules.find(s => s.enabled))
+  }
+
   render() {
     return (
       <Wrapper>
@@ -216,6 +245,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
                 (<MainListItem
                   {...options}
                   image={replicaItemImage}
+                  showScheduleIcon={this.isReplicaScheduled(options.item.id)}
                   endpointType={id => {
                     let endpoint = this.getEndpoint(id)
                     if (endpoint) {

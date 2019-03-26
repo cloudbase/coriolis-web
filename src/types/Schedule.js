@@ -29,3 +29,8 @@ export type Schedule = {
   expiration_date?: Date,
   shutdown_instances?: boolean,
 }
+
+export type ScheduleBulkItem = {
+  replicaId: string,
+  schedules: Schedule[],
+}
