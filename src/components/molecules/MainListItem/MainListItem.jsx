@@ -221,7 +221,11 @@ class MainListItem extends React.Component<Props> {
                 style={{ marginRight: '8px' }}
                 data-test-id={`mainListItem-statusPill-${status}`}
               /> : null}
-              {this.props.showScheduleIcon ? <ScheduleImage /> : null}
+              {this.props.showScheduleIcon ? (
+                <ScheduleImage
+                  data-tip="The Replica has scheduling enabled and will execute automatically"
+                />
+              ) : null}
             </StatusWrapper>
           </Title>
           {endpointImages}

@@ -20,6 +20,7 @@ import styled from 'styled-components'
 
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
+import Tooltip from '../../atoms/Tooltip'
 
 import type { MainItem } from '../../../types/MainItem'
 import Palette from '../../styleUtils/Palette'
@@ -184,6 +185,8 @@ class MainList extends React.Component<Props> {
       <Wrapper>
         {this.props.loading || this.props.items.length === 0 || this.props.showEmptyList ? <Separator /> : null}
         {renderContent()}
+        <Tooltip />
+        {setTimeout(() => { Tooltip.rebuild() }, 500)}
       </Wrapper>
     )
   }
