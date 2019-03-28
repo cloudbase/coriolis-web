@@ -181,12 +181,16 @@ class MainList extends React.Component<Props> {
       return this.renderList()
     }
 
+    let rebuildTooltip = () => {
+      setTimeout(() => { Tooltip.rebuild() }, 500)
+    }
+
     return (
       <Wrapper>
         {this.props.loading || this.props.items.length === 0 || this.props.showEmptyList ? <Separator /> : null}
         {renderContent()}
         <Tooltip />
-        {setTimeout(() => { Tooltip.rebuild() }, 500)}
+        {rebuildTooltip()}
       </Wrapper>
     )
   }
