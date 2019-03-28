@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
@@ -170,6 +170,15 @@ class Switch extends React.Component<Props, State> {
     }
   }
 
+  handleKeyDown(evt: KeyboardEvent) {
+    if (evt.which !== 32) {
+      return
+    }
+    evt.preventDefault()
+
+    this.handleInputChange()
+  }
+
   renderInput() {
     return (
       <InputWrapper
@@ -179,6 +188,8 @@ class Switch extends React.Component<Props, State> {
         secondary={this.props.secondary}
         disabled={this.props.disabled}
         onClick={() => { this.handleInputChange() }}
+        tabIndex={0}
+        onKeyDown={evt => { this.handleKeyDown(evt) }}
         data-test-id={this.props['data-test-id'] || 'switch-input'}
       >
         <InputBackground
