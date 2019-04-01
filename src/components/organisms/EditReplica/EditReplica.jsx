@@ -48,6 +48,7 @@ const PanelContent = styled.div`
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
+  min-height: 0;
 `
 const LoadingWrapper = styled.div`
   display: flex;
