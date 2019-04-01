@@ -23,7 +23,7 @@ const wrap = props => new TestWrapper(shallow(<RadioInput {...props} />), 'radio
 
 describe('RadioInput Component', () => {
   it('renders the given label', () => {
-    const wrapper = wrap({ label: 'the_value' })
+    const wrapper = wrap({ label: 'the_value', onChange: () => { } })
     expect(wrapper.findText('label')).toBe('the_value')
   })
 })

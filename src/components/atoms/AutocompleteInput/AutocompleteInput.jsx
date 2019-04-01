@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import styled, { css } from 'styled-components'
 
 import arrowImage from './images/arrow'
@@ -75,12 +75,13 @@ type Props = {
   customRef?: (ref: HTMLElement) => void,
   innerRef?: (ref: HTMLElement) => void,
   onChange: (value: string) => void,
-  onClick?: () => void,
   disabled?: boolean,
   disabledLoading?: boolean,
   width?: number,
   large?: boolean,
   onFocus?: () => void,
+  onBlur?: () => void,
+  onInputKeyDown?: (e: SyntheticKeyboardEvent<HTMLInputElement>) => void,
   highlight?: boolean,
   embedded?: boolean,
 }
@@ -91,6 +92,8 @@ class AutocompleteInput extends React.Component<Props, State> {
   state = {
     textInputFocus: false,
   }
+
+  textInputRef: HTMLElement
 
   render() {
     let disabled = this.props.disabled || this.props.disabledLoading
@@ -126,13 +129,15 @@ class AutocompleteInput extends React.Component<Props, State> {
           lineHeight="30px"
           placeholder="Type to search ..."
           onFocus={() => { if (this.props.onFocus) { this.props.onFocus() } this.setState({ textInputFocus: true }) }}
-          onBlur={() => { this.setState({ textInputFocus: false }) }}
+          onBlur={() => { if (this.props.onBlur) { this.props.onBlur() } this.setState({ textInputFocus: false }) }}
+          innerRef={ref => { this.textInputRef = ref }}
+          onInputKeyDown={this.props.onInputKeyDown}
         />
         <Arrow
           data-test-id="acInput-arrow"
           disabled={disabled}
           dangerouslySetInnerHTML={{ __html: arrowImage }}
-          onClick={this.props.onClick}
+          onClick={() => { this.textInputRef.focus() }}
         />
       </Wrapper>
     )

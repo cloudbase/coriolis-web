@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
@@ -34,6 +34,9 @@ const pageStyle = css`
   justify-content: center;
   align-items: center;
   background: ${Palette.grayscale[1]};
+  :focus {
+    ${props => props.disabled ? css`outline: none;` : ''}
+  }
 `
 const pageButtonStyle = css`
   width: 32px;
@@ -76,6 +79,23 @@ type Props = {
 
 @observer
 class Pagination extends React.Component<Props> {
+  goTo(type: 'previous' | 'next') {
+    if (type === 'previous' && !this.props.previousDisabled) {
+      this.props.onPreviousClick()
+    }
+    if (type === 'next' && !this.props.nextDisabled) {
+      this.props.onNextClick()
+    }
+  }
+
+  handleKeyDown(e: SyntheticKeyboardEvent<HTMLDivElement>, type: 'previous' | 'next') {
+    if (e.key !== ' ') {
+      return
+    }
+    e.preventDefault()
+    this.goTo(type)
+  }
+
   render() {
     return (
       <Wrapper
@@ -85,7 +105,9 @@ class Pagination extends React.Component<Props> {
       >
         <PagePrevious
           disabled={this.props.previousDisabled}
-          onClick={() => { if (!this.props.previousDisabled) { this.props.onPreviousClick() } }}
+          tabIndex={0}
+          onClick={() => { this.goTo('previous') }}
+          onKeyDown={e => { this.handleKeyDown(e, 'previous') }}
         >
           <Arrow orientation="left" disabled={this.props.previousDisabled} color={Palette.black} thick />
         </PagePrevious>
@@ -96,8 +118,10 @@ class Pagination extends React.Component<Props> {
           ) : null}
         </PageNumber>
         <PageNext
-          onClick={() => { if (!this.props.nextDisabled) { this.props.onNextClick() } }}
           disabled={this.props.nextDisabled}
+          tabIndex={0}
+          onClick={() => { this.goTo('next') }}
+          onKeyDown={e => { this.handleKeyDown(e, 'next') }}
         >
           <Arrow disabled={this.props.nextDisabled} color={Palette.black} thick />
         </PageNext>

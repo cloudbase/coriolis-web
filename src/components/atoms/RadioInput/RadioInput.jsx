@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
@@ -56,15 +56,38 @@ type Props = {
   label: string,
   disabledLoading?: boolean,
   disabled?: boolean,
+  onChange: (checked: boolean) => void,
 }
 @observer
 class RadioInput extends React.Component<Props> {
+  handleKeyDown(evt: SyntheticKeyboardEvent<HTMLDivElement>) {
+    if (evt.key !== ' ') {
+      return
+    }
+    evt.preventDefault()
+
+    this.props.onChange(true)
+  }
+
   render() {
+    let { onChange, ...props } = this.props
     let disabled = this.props.disabled || this.props.disabledLoading
     return (
-      <Wrapper {...this.props} disabled={disabled} disabledLoading={this.props.disabledLoading}>
+      <Wrapper
+        {...props}
+        disabled={disabled}
+        disabledLoading={this.props.disabledLoading}
+        tabIndex={0}
+        onKeyDown={evt => { this.handleKeyDown(evt) }}
+      >
         <LabelStyled>
-          <InputStyled type="radio" {...this.props} disabled={disabled} data-test-id="radioInput-input" />
+          <InputStyled
+            type="radio"
+            {...props}
+            disabled={disabled}
+            data-test-id="radioInput-input"
+            onChange={e => { this.props.onChange(e.target.checked) }}
+          />
           <Text data-test-id="radioInput-label">{this.props.label}</Text>
         </LabelStyled>
       </Wrapper>

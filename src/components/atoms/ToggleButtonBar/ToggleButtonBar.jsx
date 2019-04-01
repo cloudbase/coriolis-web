@@ -14,9 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -49,6 +49,10 @@ const Item = styled.div`
     border-bottom-right-radius: ${StyleProps.borderRadius};
     border-right: 1px solid ${Palette.primary};
   }
+  outline: none;
+  :focus {
+    ${props => !props.selected ? css`background: ${Palette.primary}44;` : ''}
+  }
 `
 
 type ItemType = { value: string, label: string }
@@ -62,6 +66,20 @@ type Props = {
 }
 @observer
 class ToggleButtonBar extends React.Component<Props> {
+  change(item: ItemType) {
+    if (this.props.onChange) {
+      this.props.onChange(item)
+    }
+  }
+
+  handleKeyPress(e: SyntheticKeyboardEvent<HTMLDivElement>, item: ItemType) {
+    if (e.key !== ' ') {
+      return
+    }
+    e.preventDefault()
+    this.change(item)
+  }
+
   render() {
     if (!this.props.items) {
       return null
@@ -79,7 +97,9 @@ class ToggleButtonBar extends React.Component<Props> {
               data-test-id={`toggleButtonBar-${item.value}`}
               key={item.value}
               selected={this.props.selectedValue === item.value}
-              onClick={() => { if (this.props.onChange) this.props.onChange(item) }}
+              onClick={() => { this.change(item) }}
+              tabIndex={0}
+              onKeyPress={e => { this.handleKeyPress(e, item) }}
             >{item.label}</Item>
           )
         })}
