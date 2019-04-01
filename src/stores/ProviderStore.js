@@ -119,8 +119,9 @@ class ProviderStore {
     return ProviderSource.loadDestinationSchema(providerName, schemaType).then((fields: Field[]) => {
       this.destinationSchemaLoading = false
       this.destinationSchema = fields
-    }).catch(() => {
+    }).catch(err => {
       this.destinationSchemaLoading = false
+      throw err
     })
   }
 
