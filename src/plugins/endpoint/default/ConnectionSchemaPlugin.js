@@ -22,13 +22,19 @@ export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinition
   let fields = Object.keys(schema.properties).map(fieldName => {
     let properties: any = schema.properties[fieldName]
 
-    if (typeof schema.properties[fieldName].$ref === 'string' && schemaDefinitions) {
-      const definitionName = schema.properties[fieldName].$ref.substr(schema.properties[fieldName].$ref.lastIndexOf('/') + 1)
+    if (typeof properties.$ref === 'string' && schemaDefinitions) {
+      const definitionName = properties.$ref.substr(properties.$ref.lastIndexOf('/') + 1)
       properties = schemaDefinitions[definitionName]
       return {
         name: fieldName,
         type: properties.type ? properties.type : '',
         properties: properties.properties ? defaultSchemaToFields(properties, null, fieldName) : [],
+      }
+    } else if (properties.type === 'object' && properties.properties && Object.keys(properties.properties).length) {
+      return {
+        name: fieldName,
+        type: 'object',
+        properties: defaultSchemaToFields(properties, null, fieldName),
       }
     }
 
