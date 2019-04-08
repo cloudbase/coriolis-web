@@ -222,7 +222,7 @@ class TaskItem extends React.Component<Props> {
           let messageProgress = this.getMessageProgress(update.message)
 
           return (
-            <ProgressUpdate key={i} secondary={i > 0 || this.props.item.status !== 'RUNNING'}>
+            <ProgressUpdate key={i} secondary={i < this.props.item.progress_updates.length - 1 || this.props.item.status !== 'RUNNING'}>
               <ProgressUpdateDate width={this.props.columnWidths[0]}>
                 <span>{DateUtils.getLocalTime(update.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
               </ProgressUpdateDate>
