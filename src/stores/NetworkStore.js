@@ -66,6 +66,7 @@ class NetworkStore {
       }
     }
 
+    this.networks = []
     return NetworkSource.loadNetworks(endpointId, environment, options).then((networks: Network[]) => {
       this.loading = false
       this.networks = networks
