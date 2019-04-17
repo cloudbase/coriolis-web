@@ -153,6 +153,9 @@ class EndpointStore {
       this.endpoints = updateEndpoint(updatedEndpoint, this.endpoints)
       this.connectionInfo = { ...updatedEndpoint.connection_info }
       this.updating = false
+    }).catch(e => {
+      this.updating = false
+      throw e
     })
   }
 
@@ -171,8 +174,9 @@ class EndpointStore {
 
       this.connectionInfo = addedEndpoint.connection_info
       this.adding = false
-    }).catch(() => {
+    }).catch(e => {
       this.adding = false
+      throw e
     })
   }
 

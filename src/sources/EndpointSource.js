@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
+import notificationStore from '../stores/NotificationStore'
 import { SchemaParser } from './Schemas'
 import ObjectUtils from '../utils/ObjectUtils'
 import type { Endpoint, Validation, Storage } from '../types/Endpoint'
@@ -87,6 +88,27 @@ class EdnpointSource {
     })
   }
 
+  static getSecretPayload(uuid: string, count: number = 0) {
+    let delay = () => new Promise(r => { setTimeout(() => { r() }, 2000) })
+
+    if (count >= 10) {
+      return Promise.reject({ secretCustomError: `The secret '${uuid}' is not active after ${count} retries.` })
+    }
+
+    return Api.send({
+      url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
+      headers: { Accept: 'application/json' },
+    }).then(response => {
+      if (response.data.status === 'ACTIVE') {
+        return Api.send({
+          url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
+          headers: { Accept: 'text/plain' },
+        })
+      }
+      return delay().then(() => this.getSecretPayload(uuid, count + 1))
+    })
+  }
+
   static getConnectionsInfo(endpoints: Endpoint[]): Promise<Endpoint[]> {
     return Promise.all(endpoints.map(endpoint => {
       let index = endpoint.connection_info.secret_ref ? endpoint.connection_info.secret_ref.lastIndexOf('/') : ''
@@ -151,18 +173,18 @@ class EdnpointSource {
         uuidIndex = connectionInfo.secret_ref.lastIndexOf('/')
         uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
         newEndpoint = putResponse.data.endpoint
-        return Api.send({
-          url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
-          method: 'GET',
-          responseType: 'text',
-          headers: { Accept: 'text/plain' },
-        })
+        return this.getSecretPayload(uuid)
       }).then(conInfoResponse => {
         newEndpoint.connection_info = {
           ...newEndpoint.connection_info,
           ...conInfoResponse.data,
         }
         return newEndpoint
+      }).catch(e => {
+        if (e.secretCustomError) {
+          notificationStore.alert(e.secretCustomError, 'error')
+        }
+        throw e
       })
     }
 
@@ -205,17 +227,18 @@ class EdnpointSource {
         let uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
         newEndpoint = postResponse.data.endpoint
 
-        return Api.send({
-          url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
-          responseType: 'text',
-          headers: { Accept: 'text/plain' },
-        })
+        return this.getSecretPayload(uuid)
       }).then(conInfoResponse => {
         newEndpoint.connection_info = {
           ...newEndpoint.connection_info,
           ...conInfoResponse.data,
         }
         return newEndpoint
+      }).catch(e => {
+        if (e.secretCustomError) {
+          notificationStore.alert(e.secretCustomError, 'error')
+        }
+        throw e
       })
     }
 
