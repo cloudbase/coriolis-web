@@ -155,7 +155,9 @@ class Endpoint extends React.Component<Props, State> {
 
   componentDidMount() {
     providerStore.getConnectionInfoSchema(this.getEndpointType())
-    KeyboardManager.onEnter('endpoint', () => { if (this.isValidateButtonEnabled) this.handleValidateClick() }, 2)
+    KeyboardManager.onEnter('endpoint', () => {
+      if (this.isValidateButtonEnabled) this.handleValidateClick()
+    }, 2)
   }
 
   componentWillReceiveProps(props: Props) {
@@ -281,9 +283,14 @@ class Endpoint extends React.Component<Props, State> {
     }
 
     endpointStore.update(this.state.endpoint).then(() => {
+      let endpoint = endpointStore.endpoints.find(e => this.state.endpoint && e.id === this.state.endpoint.id)
+      if (!endpoint) {
+        throw new Error('endpoint not found')
+      }
+
+      this.setState({ endpoint: ObjectUtils.flatten(endpoint) })
       notificationStore.alert('Validating endpoint ...')
-      // $FlowIssue
-      endpointStore.validate(this.state.endpoint)
+      endpointStore.validate(endpoint)
     })
   }
 
@@ -386,7 +393,9 @@ class Endpoint extends React.Component<Props, State> {
           passwordFields,
           getFieldValue: field => this.getFieldValue(field),
           highlightRequired: () => this.highlightRequired(),
-          handleFieldChange: (field, value) => { if (field) this.handleFieldsChange([{ field, value }]) },
+          handleFieldChange: (field, value) => {
+            if (field) this.handleFieldsChange([{ field, value }])
+          },
           handleFieldsChange: fields => { this.handleFieldsChange(fields) },
           handleValidateClick: () => { this.handleValidateClick() },
           handleCancelClick: () => { this.handleCancelClick() },
