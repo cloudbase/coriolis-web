@@ -60,12 +60,20 @@ const Input = styled.textarea`
     color: ${Palette.grayscale[3]};
   }
 `
-
 @observer
-class TextArea extends React.Component<{}> {
+class TextArea extends React.Component<any> {
   render() {
     return (
-      <Input {...this.props} />
+      <Input
+        {...this.props}
+        innerRef={r => {
+          if (this.props.innerRef) {
+            this.props.innerRef(r)
+          } else if (this.props.customRef) {
+            this.props.customRef(r)
+          }
+        }}
+      />
     )
   }
 }

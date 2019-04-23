@@ -14,6 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import 'babel-polyfill'
 import 'react-hot-loader/patch'
 import React from 'react'
 import { render } from 'react-dom'

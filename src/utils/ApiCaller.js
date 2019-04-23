@@ -118,10 +118,10 @@ class ApiCaller {
           // that falls out of the range of 2xx
           if (
             (error.response.status !== 401 || !isOnLoginPage()) &&
-            !options.quietError &&
-            error.response.data) {
+            !options.quietError) {
             let data = error.response.data
-            let message = (data.error && data.error.message) || data.description
+            let message = (data && data.error && data.error.message) || (data && data.description)
+            message = message || `${error.response.statusText || error.response.status} ${options.url}`
             if (message) {
               notificationStore.alert(message, 'error')
             }
@@ -143,7 +143,7 @@ class ApiCaller {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
           if (!isOnLoginPage()) {
-            notificationStore.alert('Request failed, there might be a problem with the connection to the server.', 'error')
+            notificationStore.alert(`Request failed, there might be a problem with the connection to the server. ${options.url}`, 'error')
           }
           logger.log({
             url: axiosOptions.url,

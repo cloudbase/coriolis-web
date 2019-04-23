@@ -21,10 +21,13 @@ import styled from 'styled-components'
 import apiCaller from '../../../utils/ApiCaller'
 import logger from '../../../utils/ApiLogger'
 
-import Button from '../../atoms/Button'
 import Modal from '../../molecules/Modal/Modal'
+import LicenceComponent from '../../organisms/Licence'
 
 import Palette from '../../styleUtils/Palette'
+import StyleProps from '../../styleUtils/StyleProps'
+
+import licenceStore from '../../../stores/LicenceStore'
 
 import logoImage from './images/coriolis-logo.svg'
 
@@ -35,6 +38,8 @@ const Wrapper = styled.div`
   justify-content: center;
   padding: 60px 0 32px 0;
   position: relative;
+  height: 100%;
+  min-height: 0;
 `
 const Gradient = styled.div`
   position: absolute;
@@ -49,10 +54,14 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 `
+const AboutContentWrapper = styled.div``
 const Logo = styled.div`
   width: 362px;
-  height: 71px;
+  ${StyleProps.exactHeight('71px')}
   background: url('${logoImage}') center no-repeat;
 `
 const Text = styled.div`
@@ -86,18 +95,27 @@ type Props = {
 
 type State = {
   version: string,
+  licenceAddMode: boolean,
 }
 
 @observer
 class AboutModal extends React.Component<Props, State> {
   state = {
     version: '-',
+    licenceAddMode: false,
   }
 
   componentWillMount() {
     apiCaller.get('/version').then(res => {
       this.setState({ version: res.data.version })
     })
+    licenceStore.loadLicenceInfo()
+  }
+
+  async handleAddLicence(licence: string) {
+    await licenceStore.addLicence(licence)
+    licenceStore.loadLicenceInfo()
+    this.setState({ licenceAddMode: false })
   }
 
   render() {
@@ -108,22 +126,34 @@ class AboutModal extends React.Component<Props, State> {
         onRequestClose={() => { this.props.onRequestClose() }}
       >
         <Wrapper>
-          <Gradient />
+          {!this.state.licenceAddMode ? <Gradient /> : null}
           <Content>
-            <Logo />
-            <Text>
-              <TextLine>
-                <span>Version {this.state.version}</span>
-                <span>|</span>
-                <Link href="https://github.com/cloudbase/coriolis/issues" target="_blank">Report an Issue</Link>
-                <span>|</span>
-                <LinkMock onClick={() => { logger.download() }} >Download Log</LinkMock>
-              </TextLine>
-              <TextLine>
-                © {new Date().getFullYear()} Cloudbase Solutions. All Rights Reserved.
-              </TextLine>
-            </Text>
-            <Button secondary large onClick={() => { this.props.onRequestClose() }}>Close</Button>
+            {!this.state.licenceAddMode ? (
+              <AboutContentWrapper>
+                <Logo />
+                <Text>
+                  <TextLine>
+                    <span>Version {this.state.version}</span>
+                    <span>|</span>
+                    <Link href="https://github.com/cloudbase/coriolis/issues" target="_blank">Report an Issue</Link>
+                    <span>|</span>
+                    <LinkMock onClick={() => { logger.download() }} >Download Log</LinkMock>
+                  </TextLine>
+                  <TextLine>
+                    © {new Date().getFullYear()} Cloudbase Solutions. All Rights Reserved.
+                  </TextLine>
+                </Text>
+              </AboutContentWrapper>
+            ) : null}
+            <LicenceComponent
+              licenceInfo={licenceStore.licenceInfo}
+              loadingLicenceInfo={licenceStore.loadingLicenceInfo}
+              onRequestClose={this.props.onRequestClose}
+              addMode={this.state.licenceAddMode}
+              onAddModeChange={licenceAddMode => { this.setState({ licenceAddMode }) }}
+              onAddLicence={licence => { this.handleAddLicence(licence) }}
+              addingLicence={licenceStore.addingLicence}
+            />
           </Content>
         </Wrapper>
       </Modal>
