@@ -22,7 +22,7 @@ import { observer } from 'mobx-react'
 import NavigationMini from '../../molecules/NavigationMini'
 import NotificationDropdown from '../../molecules/NotificationDropdown'
 import UserDropdown from '../../molecules/UserDropdown'
-import AboutModal from '../../organisms/AboutModal'
+import AboutModal from '../../pages/AboutModal'
 
 import type { User as UserType } from '../../../types/User'
 

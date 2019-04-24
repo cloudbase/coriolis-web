@@ -30,7 +30,7 @@ import ChooseProvider from '../../organisms/ChooseProvider'
 import Endpoint from '../../organisms/Endpoint'
 import UserModal from '../../organisms/UserModal'
 import ProjectModal from '../../organisms/ProjectModal'
-import AboutModal from '../../organisms/AboutModal'
+import AboutModal from '../../pages/AboutModal'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
@@ -112,6 +112,9 @@ class PageHeader extends React.Component<Props, State> {
     switch (item.value) {
       case 'about':
         this.setState({ showAbout: true })
+        if (this.props.onModalOpen) {
+          this.props.onModalOpen()
+        }
         return
       case 'signout':
         userStore.logout()
@@ -225,7 +228,8 @@ class PageHeader extends React.Component<Props, State> {
       this.state.showChooseProviderModal ||
       this.state.showEndpointModal ||
       this.state.showProjectModal ||
-      this.state.showUserModal
+      this.state.showUserModal ||
+      this.state.showAbout
     ) {
       return
     }
@@ -295,7 +299,13 @@ class PageHeader extends React.Component<Props, State> {
           />
         ) : null}
         {this.state.showAbout ? (
-          <AboutModal onRequestClose={() => { this.setState({ showAbout: false }) }} />
+          <AboutModal onRequestClose={() => {
+            this.setState({ showAbout: false })
+            if (this.props.onModalClose) {
+              this.props.onModalClose()
+            }
+          }}
+          />
         ) : null}
       </Wrapper>
     )
