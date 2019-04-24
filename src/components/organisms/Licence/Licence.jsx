@@ -143,36 +143,64 @@ class LicenceC extends React.Component<Props, State> {
 
   fileInput: HTMLElement
 
-  dragDropAdded: boolean = false
+  dragDropListeners: { type: string, listener: (e: any) => any }[] = []
 
-  addDragAndDrop() {
-    if (this.dragDropAdded) {
+  componentWillReceiveProps(newProps: Props) {
+    if (newProps.addMode === this.props.addMode) {
       return
     }
 
-    window.addEventListener('dragenter', e => {
-      this.setState({ highlightDropzone: true })
-      e.dataTransfer.dropEffect = 'copy'
-      e.preventDefault()
-    })
-    window.addEventListener('dragover', e => {
-      e.dataTransfer.dropEffect = 'copy'
-      e.preventDefault()
-    })
-    window.addEventListener('dragleave', e => {
-      if (!e.clientX && !e.clientY) {
+    if (newProps.addMode) {
+      setTimeout(() => { this.addDragAndDrop() }, 1000)
+    } else {
+      this.setState({ licence: '' })
+      this.removeDragDrop()
+    }
+  }
+
+  addDragAndDrop() {
+    this.dragDropListeners = [{
+      type: 'dragenter',
+      listener: e => {
+        this.setState({ highlightDropzone: true })
+        e.dataTransfer.dropEffect = 'copy'
+        e.preventDefault()
+      },
+    }, {
+      type: 'dragover',
+      listener: e => {
+        e.dataTransfer.dropEffect = 'copy'
+        e.preventDefault()
+      },
+    }, {
+      type: 'dragleave',
+      listener: e => {
+        if (!e.clientX && !e.clientY) {
+          this.setState({ highlightDropzone: false })
+        }
+      },
+    }, {
+      type: 'drop',
+      listener: async e => {
+        e.preventDefault()
         this.setState({ highlightDropzone: false })
-      }
+        let text = await readFromFileList(e.dataTransfer.files)
+        if (text) {
+          this.handleLicenceChange(text)
+        }
+      },
+    }]
+
+    this.dragDropListeners.forEach(l => {
+      window.addEventListener(l.type, l.listener)
     })
-    window.addEventListener('drop', async e => {
-      e.preventDefault()
-      this.setState({ highlightDropzone: false })
-      let text = await readFromFileList(e.dataTransfer.files)
-      if (text) {
-        this.handleLicenceChange(text)
-      }
+  }
+
+  removeDragDrop() {
+    this.dragDropListeners.forEach(l => {
+      window.removeEventListener(l.type, l.listener)
     })
-    this.dragDropAdded = true
+    this.dragDropListeners = []
   }
 
   validate() {
@@ -187,9 +215,7 @@ class LicenceC extends React.Component<Props, State> {
   }
 
   handleAddLicenceClick() {
-    this.setState({ licence: '' })
     this.props.onAddModeChange(true)
-    setTimeout(() => { this.addDragAndDrop() }, 1000)
   }
 
   handleAddButtonClick() {
@@ -260,11 +286,20 @@ class LicenceC extends React.Component<Props, State> {
   renderButtons() {
     return (
       <ButtonsWrapper spaceBetween={this.props.addMode}>
-        <Button
-          secondary
-          large
-          onClick={() => { this.props.onRequestClose() }}
-        >Close</Button>
+        {this.props.addMode ? (
+          <Button
+            secondary
+            large
+            onClick={() => { this.props.onAddModeChange(false) }}
+          >Back</Button>
+        )
+          : (
+            <Button
+              secondary
+              large
+              onClick={() => { this.props.onRequestClose() }}
+            >Close</Button>
+          )}
         {(this.props.addMode && !this.props.addingLicence) ? (
           <Button
             large
