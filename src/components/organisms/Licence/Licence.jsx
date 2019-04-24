@@ -233,8 +233,8 @@ class LicenceC extends React.Component<Props, State> {
               >Add Licence</LicenceLink>
             </LicenceRowLabel>
             <LicenceRowDescription>
-              Coriolis® Licence is active until
-              &nbsp;{moment(info.currentPeriodEnd).format('DD MMM YYYY')}
+              Coriolis® Licence is active until&nbsp;
+              {moment(info.currentPeriodEnd).format('DD MMM YYYY')}
               &nbsp;({moment(info.currentPeriodEnd).diff(new Date(), 'days')} days from now).
             </LicenceRowDescription>
           </LicenceRowContent>
