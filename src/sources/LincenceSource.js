@@ -22,7 +22,7 @@ import type { Licence } from '../types/Licence'
 class LicenceSource {
   async loadLicenceInfo(): Promise<Licence> {
     let url = `${servicesUrl.licence}/licence-status`
-    let response = await Api.send({ url })
+    let response = await Api.send({ url, quietError: true })
     let root = response.data.licence_status
     return ({
       currentPeriodStart: new Date(root.current_period_start),

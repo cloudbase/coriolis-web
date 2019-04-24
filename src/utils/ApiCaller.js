@@ -142,7 +142,7 @@ class ApiCaller {
         } else if (error.request) {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
-          if (!isOnLoginPage()) {
+          if (!isOnLoginPage() && !options.quietError) {
             notificationStore.alert(`Request failed, there might be a problem with the connection to the server. ${options.url}`, 'error')
           }
           logger.log({
@@ -175,7 +175,7 @@ class ApiCaller {
             description: 'Something happened in setting up the request',
             requestStatus: 500,
           })
-          notificationStore.alert('Request failed, there might be a problem with the connection to the server.', 'error')
+          notificationStore.alert(`Request failed, there might be a problem with the connection to the server. ${options.url}`, 'error')
         }
       })
     })
