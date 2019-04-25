@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export const coriolisUrl = (window.env && window.env.CORIOLIS_URL) || '/'
 
-let licenceUrl = (window.env && window.env.CORIOLIS_LICENSING_BASE_URL) || ''
+let licenceUrl = (window.env && window.env.CORIOLIS_LICENSING_BASE_URL) || '/licensing'
 
 if (!licenceUrl) {
   let coriolisBaseUrlExp = /http(?:s?):\/\/(.*?)(?:\/|$)/.exec(coriolisUrl)
