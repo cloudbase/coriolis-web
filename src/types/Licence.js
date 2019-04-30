@@ -21,4 +21,5 @@ export type Licence = {
   performedReplicas: number,
   totalMigations: number,
   totalReplicas: number,
+  applianceId: string,
 }

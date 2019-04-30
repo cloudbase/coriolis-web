@@ -31,6 +31,7 @@ class LicenceSource {
       performedReplicas: root.performed_replicas,
       totalMigations: root.total_migrations,
       totalReplicas: root.total_replicas,
+      applianceId: root.appliance_id,
     })
   }
 
