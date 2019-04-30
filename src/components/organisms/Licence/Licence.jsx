@@ -23,6 +23,7 @@ import Button from '../../atoms/Button'
 import LoadingButton from '../../molecules/LoadingButton'
 import StatusImage from '../../atoms/StatusImage'
 import TextArea from '../../atoms/TextArea'
+import CopyValue from '../../atoms/CopyValue'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
@@ -276,6 +277,14 @@ class LicenceC extends React.Component<Props, State> {
             <LicenceRowLabel>VM Migrations</LicenceRowLabel>
             <LicenceRowDescription>
               {info.totalMigations - info.performedMigrations} VM Migrations remaining.
+            </LicenceRowDescription>
+          </LicenceRowContent>
+        </LicenceRow>
+        <LicenceRow>
+          <LicenceRowContent>
+            <LicenceRowLabel>Appliance ID</LicenceRowLabel>
+            <LicenceRowDescription>
+              <CopyValue value={info.applianceId} />
             </LicenceRowDescription>
           </LicenceRowContent>
         </LicenceRow>
