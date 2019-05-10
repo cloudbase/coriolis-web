@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import moment from 'moment'
@@ -247,6 +247,21 @@ class LicenceC extends React.Component<Props, State> {
     )
   }
 
+  renderLicenceStatusText(info: Licence): React.Node {
+    let currentPeriod = moment(info.currentPeriodEnd)
+    let days = currentPeriod.diff(new Date(), 'days')
+    if (days < 0) {
+      return 'Please contact Cloudbase with you Appliance ID in order to obtain a Coriolis licence'
+    }
+    return (
+      <LicenceRowDescription>
+        Coriolis® Licence is active until&nbsp;
+        {currentPeriod.format('DD MMM YYYY')}
+        &nbsp;({days} days from now).
+      </LicenceRowDescription>
+    )
+  }
+
   renderLicenceInfo(info: Licence) {
     return (
       <LicenceInfoWrapper>
@@ -259,11 +274,7 @@ class LicenceC extends React.Component<Props, State> {
                 onClick={() => { this.handleAddLicenceClick() }}
               >Add Licence</LicenceLink>
             </LicenceRowLabel>
-            <LicenceRowDescription>
-              Coriolis® Licence is active until&nbsp;
-              {moment(info.currentPeriodEnd).format('DD MMM YYYY')}
-              &nbsp;({moment(info.currentPeriodEnd).diff(new Date(), 'days')} days from now).
-            </LicenceRowDescription>
+            {this.renderLicenceStatusText(info)}
           </LicenceRowContent>
         </LicenceRow>
         <LicenceRow>
