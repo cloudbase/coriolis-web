@@ -251,7 +251,7 @@ class LicenceC extends React.Component<Props, State> {
     let currentPeriod = moment(info.currentPeriodEnd)
     let days = currentPeriod.diff(new Date(), 'days')
     if (days < 0) {
-      return 'Please contact Cloudbase with you Appliance ID in order to obtain a Coriolis licence'
+      return 'Please contact Cloudbase Solutions with you Appliance ID in order to obtain a Coriolis® licence'
     }
     return (
       <LicenceRowDescription>
