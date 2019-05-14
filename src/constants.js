@@ -16,14 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export const coriolisUrl = (window.env && window.env.CORIOLIS_URL) || '/'
 
-let licenceUrl = (window.env && window.env.CORIOLIS_LICENSING_BASE_URL) || ''
-
-if (!licenceUrl) {
-  let coriolisBaseUrlExp = /http(?:s?):\/\/(.*?)(?:\/|$)/.exec(coriolisUrl)
-  if (coriolisBaseUrlExp && coriolisBaseUrlExp.length) {
-    licenceUrl = `http://${coriolisBaseUrlExp[1]}:37667/licensing/v1`
-  }
-}
+let licenceUrl = (window.env && window.env.CORIOLIS_LICENSING_BASE_URL) || '/licensing'
 
 export const servicesUrl = {
   identity: `${coriolisUrl}identity/auth/tokens`,
