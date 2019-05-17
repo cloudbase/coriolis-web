@@ -45,6 +45,7 @@ export type MainItem = {
   tasks: Task[],
   created_at: Date,
   updated_at: Date,
+  replica_id?: string,
   origin_endpoint_id: string,
   destination_endpoint_id: string,
   instances: string[],
