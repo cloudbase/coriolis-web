@@ -19,9 +19,7 @@ import { observable, action } from 'mobx'
 import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Field } from '../types/Field'
 import type { Endpoint } from '../types/Endpoint'
-import notificationStore from '../stores/NotificationStore'
 import MigrationSource from '../sources/MigrationSource'
-import DomUtils from '../utils/DomUtils'
 
 class MigrationStore {
   @observable migrations: MainItem[] = []
@@ -93,21 +91,13 @@ class MigrationStore {
     })
   }
 
-  @action migrateReplica(replicaId: string, options: Field[]) {
+  @action migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
     return MigrationSource.migrateReplica(replicaId, options).then(migration => {
       this.migrations = [
         migration,
         ...this.migrations,
       ]
-
-      notificationStore.alert('Migration successfully created from replica.', 'success', {
-        action: {
-          label: 'View Migration Status',
-          callback: () => {
-            window.location.href = `/${DomUtils.urlHashPrefix}migration/tasks/${migration.id}`
-          },
-        },
-      })
+      return migration
     })
   }
 

@@ -24,6 +24,8 @@ import DetailsContentHeader from '../../organisms/DetailsContentHeader'
 import MigrationDetailsContent from '../../organisms/MigrationDetailsContent'
 import AlertModal from '../../organisms/AlertModal'
 import EditReplica from '../../organisms/EditReplica'
+import Modal from '../../molecules/Modal'
+import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
 
 import migrationStore from '../../../stores/MigrationStore'
 import userStore from '../../../stores/UserStore'
@@ -36,6 +38,8 @@ import configLoader from '../../../utils/Config'
 import migrationImage from './images/migration.svg'
 import Palette from '../../styleUtils/Palette'
 
+import type { Field } from '../../../types/Field'
+
 const Wrapper = styled.div``
 
 type Props = {
@@ -46,6 +50,7 @@ type State = {
   showDeleteMigrationConfirmation: boolean,
   showCancelConfirmation: boolean,
   showEditModal: boolean,
+  showFromReplicaModal: boolean,
 }
 @observer
 class MigrationDetailsPage extends React.Component<Props, State> {
@@ -53,6 +58,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     showDeleteMigrationConfirmation: false,
     showCancelConfirmation: false,
     showEditModal: false,
+    showFromReplicaModal: false,
   }
 
   pollTimeout: TimeoutID
@@ -128,9 +134,16 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   handleRecreateClick() {
-    this.setState({
-      showEditModal: true,
-    })
+    let replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
+    if (!replicaId) {
+      this.setState({ showEditModal: true })
+      return
+    }
+    this.setState({ showFromReplicaModal: true })
+  }
+
+  handleCloseFromReplicaModal() {
+    this.setState({ showFromReplicaModal: false })
   }
 
   handleCloseCancelConfirmation() {
@@ -149,6 +162,18 @@ class MigrationDetailsPage extends React.Component<Props, State> {
         notificationStore.alert('The migration couldn\'t be canceled', 'error')
       }
     })
+  }
+
+  recreateFromReplica(options: Field[]) {
+    let replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
+    if (!replicaId) {
+      return
+    }
+
+    migrationStore.migrateReplica(replicaId, options).then(migration => {
+      this.props.history.push(`/migration/tasks/${migration.id}`)
+    })
+    this.handleCloseFromReplicaModal()
   }
 
   pollData() {
@@ -256,7 +281,20 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           onConfirmation={() => { this.handleCancelConfirmation() }}
           onRequestClose={() => { this.handleCloseCancelConfirmation() }}
         />
+        {this.state.showFromReplicaModal ? (
+          <Modal
+            isOpen
+            title="Recreate Migration from Replica"
+            onRequestClose={() => { this.handleCloseFromReplicaModal() }}
+          >
+            <ReplicaMigrationOptions
+              onCancelClick={() => { this.handleCloseFromReplicaModal() }}
+              onMigrateClick={options => { this.recreateFromReplica(options) }}
+            />
+          </Modal>
+        ) : null}
         {this.renderEditModal()}
+
       </Wrapper>
     )
   }

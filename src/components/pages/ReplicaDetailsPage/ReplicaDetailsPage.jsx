@@ -40,6 +40,7 @@ import endpointStore from '../../../stores/EndpointStore'
 import scheduleStore from '../../../stores/ScheduleStore'
 import instanceStore from '../../../stores/InstanceStore'
 import networkStore from '../../../stores/NetworkStore'
+import notificationStore from '../../../stores/NotificationStore'
 import configLoader from '../../../utils/Config'
 
 import replicaImage from './images/replica.svg'
@@ -261,7 +262,16 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   migrateReplica(options: Field[]) {
-    migrationStore.migrateReplica(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', options)
+    migrationStore.migrateReplica(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', options).then(migration => {
+      notificationStore.alert('Migration successfully created from replica.', 'success', {
+        action: {
+          label: 'View Migration Status',
+          callback: () => {
+            this.props.history.push(`/migration/tasks/${migration.id}`)
+          },
+        },
+      })
+    })
     this.handleCloseMigrationModal()
   }
 

@@ -338,6 +338,14 @@ class MainDetails extends React.Component<Props> {
               </Field>
             </Row>
           ) : null}
+          {this.props.item && this.props.item.replica_id ? (
+            <Row>
+              <Field>
+                <Label>Created from Replica</Label>
+                <ValueLink to={`/replica/${this.props.item.replica_id}`}>{this.props.item.replica_id}</ValueLink>
+              </Field>
+            </Row>
+          ) : null}
         </Column>
         <Column width="9.5%">
           <Arrow />
