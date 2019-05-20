@@ -43,6 +43,7 @@ const conf: Config = {
   providersWithExtraOptions: [
     'openstack',
     'oracle_vm',
+    'aws',
     {
       name: 'azure',
       envRequiredFields: ['location', 'resource_group'],
