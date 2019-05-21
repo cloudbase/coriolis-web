@@ -88,9 +88,19 @@ class ActionDropdown extends React.Component<Props, State> {
   listRef: HTMLElement
   tipRef: HTMLElement
   buttonRef: HTMLElement
+  buttonRect: ClientRect
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
+    if (this.buttonRef) {
+      this.buttonRect = this.buttonRef.getBoundingClientRect()
+    }
+  }
+
+  componentWillUpdate() {
+    if (this.buttonRef) {
+      this.buttonRect = this.buttonRef.getBoundingClientRect()
+    }
   }
 
   componentDidUpdate() {
@@ -107,7 +117,6 @@ class ActionDropdown extends React.Component<Props, State> {
     }
     let tipHeight = this.tipRef.offsetHeight / 2
     let topOffset = 6
-    let buttonRect = this.buttonRef.getBoundingClientRect()
 
     // If a modal is opened, body scroll is removed and body top is set to replicate scroll position
     let scrollOffset = 0
@@ -115,8 +124,8 @@ class ActionDropdown extends React.Component<Props, State> {
       scrollOffset = -parseInt(document.body && document.body.style.top, 10)
     }
 
-    this.listRef.style.top = `${buttonRect.top + buttonRect.height + tipHeight + topOffset + (window.pageYOffset || scrollOffset)}px`
-    this.listRef.style.left = `${buttonRect.left + window.pageXOffset}px`
+    this.listRef.style.top = `${this.buttonRect.top + this.buttonRect.height + tipHeight + topOffset + (window.pageYOffset || scrollOffset)}px`
+    this.listRef.style.left = `${this.buttonRect.left + window.pageXOffset}px`
   }
 
   @autobind

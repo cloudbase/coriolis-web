@@ -31,45 +31,32 @@ let items = [
   { label: 'Item 3', value: 'item-3' },
 ]
 
-let actions = [
-  { label: 'Action 1', value: 'action-1' },
-  { label: 'Action 2', value: 'action-2' },
-]
-
 let selectionInfo = { selected: 2, total: 7, label: 'items' }
 
 describe('MainListFilter Component', () => {
   it('renders given items', () => {
-    let wrapper = wrap({ items, actions, selectionInfo })
+    let wrapper = wrap({ items, selectionInfo })
     expect(wrapper.findPartialId('filterItem').length).toBe(items.length)
     items.forEach(item => {
       expect(wrapper.findText(`filterItem-${item.value}`)).toBe(item.label)
     })
   })
 
-  it('renders given actions', () => {
-    let wrapper = wrap({ items, actions, selectionInfo })
-    expect(wrapper.find('dropdown').prop('items').length).toBe(actions.length)
-    actions.forEach((action, i) => {
-      expect(wrapper.find('dropdown').prop('items')[i].value).toBe(action.value)
-    })
-  })
-
   it('renders selection info', () => {
-    let wrapper = wrap({ items, actions, selectionInfo })
+    let wrapper = wrap({ items, selectionInfo })
     expect(wrapper.findText('selectionText')).toBe('2 of 7 items(s) selected')
   })
 
   it('handles reload click', () => {
     let onReloadButtonClick = sinon.spy()
-    let wrapper = wrap({ items, actions, selectionInfo, onReloadButtonClick })
+    let wrapper = wrap({ items, selectionInfo, onReloadButtonClick })
     wrapper.find('reloadButton').simulate('click')
     expect(onReloadButtonClick.calledOnce).toBe(true)
   })
 
   it('handles item click with correct args', () => {
     let onFilterItemClick = sinon.spy()
-    let wrapper = wrap({ items, actions, selectionInfo, onFilterItemClick })
+    let wrapper = wrap({ items, selectionInfo, onFilterItemClick })
     wrapper.find(`filterItem-${items[2].value}`).simulate('click')
     expect(onFilterItemClick.args[0][0].value).toBe(items[2].value)
   })

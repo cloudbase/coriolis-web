@@ -37,33 +37,28 @@ import endpointStore from '../../../stores/EndpointStore'
 import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import providerStore from '../../../stores/ProviderStore'
+import EndpointDuplicateOptions from '../../organisms/EndpointDuplicateOptions'
+
 import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
-import EndpointDuplicateOptions from '../../organisms/EndpointDuplicateOptions'
+import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div``
 
-const BulkActions = [
-  { label: 'Delete', value: 'delete' },
-  { label: 'Duplicate', value: 'duplicate' },
-]
-
 type State = {
-  showDeleteEndpointsConfirmation: boolean,
-  confirmationItems: ?EndpointType[],
+  selectedEndpoints: EndpointType[],
   showChooseProviderModal: boolean,
   showEndpointModal: boolean,
   providerType: ?string,
   showEndpointsInUseModal: boolean,
   modalIsOpen: boolean,
+  showDeleteEndpointsModal: boolean,
   showDuplicateModal: boolean,
   duplicating: boolean,
 }
 @observer
 class EndpointsPage extends React.Component<{ history: any }, State> {
   state = {
-    showDeleteEndpointsConfirmation: false,
-    confirmationItems: null,
     showChooseProviderModal: false,
     showEndpointModal: false,
     providerType: null,
@@ -71,6 +66,8 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     modalIsOpen: false,
     showDuplicateModal: false,
     duplicating: false,
+    showDeleteEndpointsModal: false,
+    selectedEndpoints: [],
   }
 
   pollTimeout: TimeoutID
@@ -101,11 +98,11 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     return types
   }
 
-  getEndpointUsage(endpoint: EndpointType) {
+  getEndpointUsage(endpointId: string) {
     let replicasCount = replicaStore.replicas.filter(
-      r => r.origin_endpoint_id === endpoint.id || r.destination_endpoint_id === endpoint.id).length
+      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId).length
     let migrationsCount = migrationStore.migrations.filter(
-      r => r.origin_endpoint_id === endpoint.id || r.destination_endpoint_id === endpoint.id).length
+      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId).length
 
     return { migrationsCount, replicasCount }
   }
@@ -127,41 +124,11 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     this.props.history.push(`/endpoint/${item.id}`)
   }
 
-  handleActionChange(items: EndpointType[], action: string) {
-    switch (action) {
-      case 'delete': {
-        let endpointsInUse = items.filter(endpoint => {
-          const endpointUsage = this.getEndpointUsage(endpoint)
-          return endpointUsage.migrationsCount > 0 || endpointUsage.replicasCount > 0
-        })
-
-        if (endpointsInUse.length > 0) {
-          this.setState({ showEndpointsInUseModal: true })
-        } else {
-          this.setState({
-            showDeleteEndpointsConfirmation: true,
-            confirmationItems: items,
-          })
-        }
-        break
-      }
-      case 'duplicate': {
-        this.setState({
-          confirmationItems: items,
-          showDuplicateModal: true,
-          modalIsOpen: true,
-        })
-        break
-      }
-      default: break
-    }
-  }
-
-  handleDuplicate(projectId: string) {
+  duplicate(projectId: string) {
     this.setState({ modalIsOpen: false, duplicating: true })
 
     let shouldSwitchProject = projectId !== (userStore.loggedUser ? userStore.loggedUser.project.id : '')
-    let endpoints = this.state.confirmationItems || []
+    let endpoints = endpointStore.endpoints.filter(e => this.state.selectedEndpoints.find(se => se.id === e.id))
 
     endpointStore.duplicate({
       shouldSwitchProject,
@@ -175,20 +142,11 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     })
   }
 
-  handleCloseDeleteEndpointsConfirmation() {
-    this.setState({
-      showDeleteEndpointsConfirmation: false,
-      confirmationItems: null,
+  deleteSelectedEndpoints() {
+    this.state.selectedEndpoints.forEach(endpoint => {
+      endpointStore.delete(endpoint)
     })
-  }
-
-  handleDeleteEndpointsConfirmation() {
-    if (this.state.confirmationItems) {
-      this.state.confirmationItems.forEach(endpoint => {
-        endpointStore.delete(endpoint)
-      })
-    }
-    this.handleCloseDeleteEndpointsConfirmation()
+    this.setState({ showDeleteEndpointsModal: false })
   }
 
   handleEmptyListButtonClick() {
@@ -222,6 +180,19 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     })
   }
 
+  handleDeleteAction() {
+    let endpointsInUse = this.state.selectedEndpoints.filter(endpoint => {
+      const endpointUsage = this.getEndpointUsage(endpoint.id)
+      return endpointUsage.migrationsCount > 0 || endpointUsage.replicasCount > 0
+    })
+
+    if (endpointsInUse.length > 0) {
+      this.setState({ showEndpointsInUseModal: true })
+    } else {
+      this.setState({ showDeleteEndpointsModal: true })
+    }
+  }
+
   pollData(showLoading?: boolean = false) {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
@@ -248,6 +219,16 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   render() {
     let items: any = endpointStore.endpoints
     let selectedProjectId = userStore.loggedUser ? userStore.loggedUser.project.id : ''
+    const BulkActions = [{
+      label: 'Duplicate',
+      action: () => { this.setState({ showDuplicateModal: true, modalIsOpen: true }) },
+
+    }, {
+      label: 'Delete Endpoint',
+      color: Palette.alert,
+      action: () => { this.handleDeleteAction() },
+    }]
+
     return (
       <Wrapper>
         <MainTemplate
@@ -263,18 +244,14 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
                 let endpoint: EndpointType = anyItem
                 this.handleItemClick(endpoint)
               }}
+              dropdownActions={BulkActions}
+              onSelectedItemsChange={selectedEndpoints => { this.setState({ selectedEndpoints }) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
-              actions={BulkActions}
-              onActionChange={(items, action) => {
-                let anyItems: any = items
-                let endpoints: EndpointType[] = anyItems
-                this.handleActionChange(endpoints, action)
-              }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={options =>
                 (<EndpointListItem
                   {...options}
-                  getUsage={endpoint => this.getEndpointUsage(endpoint)}
+                  getUsage={endpoint => this.getEndpointUsage(endpoint.id)}
                 />)
               }
               emptyListImage={endpointImage}
@@ -293,14 +270,16 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
             />
           }
         />
-        <AlertModal
-          isOpen={this.state.showDeleteEndpointsConfirmation}
-          title="Delete Endpoints?"
-          message="Are you sure you want to delete the selected endpoints?"
-          extraMessage="Deleting a Coriolis Cloud Endpoint is permanent!"
-          onConfirmation={() => { this.handleDeleteEndpointsConfirmation() }}
-          onRequestClose={() => { this.handleCloseDeleteEndpointsConfirmation() }}
-        />
+        {this.state.showDeleteEndpointsModal ? (
+          <AlertModal
+            isOpen
+            title="Delete Endpoints?"
+            message="Are you sure you want to delete the selected endpoints?"
+            extraMessage="Deleting a Coriolis Cloud Endpoint is permanent!"
+            onConfirmation={() => { this.deleteSelectedEndpoints() }}
+            onRequestClose={() => { this.setState({ showDeleteEndpointsModal: false }) }}
+          />
+        ) : null}
         <Modal
           isOpen={this.state.showChooseProviderModal}
           title="New Cloud Endpoint"
@@ -342,7 +321,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
               projects={projectStore.projects}
               selectedProjectId={selectedProjectId}
               onCancelClick={() => { this.setState({ showDuplicateModal: false }) }}
-              onDuplicateClick={projectId => { this.handleDuplicate(projectId) }}
+              onDuplicateClick={projectId => { this.duplicate(projectId) }}
             />
           </Modal>
         ) : null}
