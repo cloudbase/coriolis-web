@@ -18,7 +18,7 @@ import type { Endpoint, Validation, StorageBackend } from '../types/Endpoint'
 import notificationStore from './NotificationStore'
 import EndpointSource from '../sources/EndpointSource'
 
-export const passwordFields = ['password', 'private_key_passphrase']
+export const passwordFields = ['password', 'private_key_passphrase', 'secret_access_key']
 
 const updateEndpoint = (endpoint, endpoints) => endpoints.map(e => {
   if (e.id === endpoint.id) {
