@@ -70,6 +70,7 @@ type Props = {
   enum: string[],
   required: boolean,
   width?: number,
+  label?: string,
   skipNullValue?: boolean,
   'data-test-id'?: string,
   style?: { [string]: mixed },
@@ -223,7 +224,7 @@ class WizardOptionsField extends React.Component<Props> {
     return (
       <Label>
         <LabelText data-test-id="wOptionsField-label" noMargin={!description && !this.props.required}>
-          {LabelDictionary.get(this.props.name)}
+          {this.props.label || LabelDictionary.get(this.props.name)}
         </LabelText>
         {description ? <InfoIcon text={description} marginLeft={-20} /> : null}
         {this.props.required ? <Asterisk data-test-id="wOptionsField-required" marginLeft={description ? '4px' : '-16px'} /> : null}

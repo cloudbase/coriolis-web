@@ -29,6 +29,7 @@ import type { Instance } from '../../../types/Instance'
 import type { StorageBackend } from '../../../types/Endpoint'
 
 import { executionOptions } from '../../../constants'
+import LabelDictionary from '../../../utils/LabelDictionary'
 
 const Wrapper = styled.div`
   display: flex;
@@ -127,7 +128,9 @@ class WizardOptions extends React.Component<Props> {
     }
 
     if (this.props.selectedInstances && this.props.selectedInstances.length > 1) {
-      fieldsSchema.unshift({ name: 'separate_vm', type: 'strict-boolean', default: true })
+      let dictionaryLabel = LabelDictionary.get('separate_vm')
+      let label = this.props.wizardType === 'migration' ? dictionaryLabel : dictionaryLabel.replace('Migration', 'Replica')
+      fieldsSchema.unshift({ name: 'separate_vm', label, type: 'strict-boolean', default: true })
     }
 
     if (this.props.wizardType === 'replica') {
@@ -180,6 +183,7 @@ class WizardOptions extends React.Component<Props> {
         required={field.required}
         data-test-id={`wOptions-field-${field.name}`}
         width={this.props.fieldWidth}
+        label={field.label}
         {...additionalProps}
       />
     )
