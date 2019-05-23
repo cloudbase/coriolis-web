@@ -18,6 +18,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
+import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import Dropdown from '../../molecules/Dropdown'
 
 import Palette from '../../styleUtils/Palette'
@@ -195,18 +196,30 @@ class WizardStorage extends React.Component<Props> {
                   >{`Connected to ${connectedTo.join(', ')}`}</StorageSubtitle>
                 </StorageTitle>
                 <ArrowImage />
-                <Dropdown
-                  large
-                  centered
-                  noSelectionMessage="Default"
-                  noItemsMessage="No storage found"
-                  selectedItem={selectedItem}
-                  items={storageItems}
-                  labelField="name"
-                  valueField="id"
-                  onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
-                  data-test-id={`${TEST_ID}-${type}-destination`}
-                />
+                {storageItems.length > 10 ? (
+                  <AutocompleteDropdown
+                    width={StyleProps.inputSizes.large.width}
+                    selectedItem={selectedItem}
+                    items={storageItems}
+                    onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
+                    labelField="name"
+                    valueField="id"
+                  />
+                ) :
+                  (
+                    <Dropdown
+                      large
+                      centered
+                      noSelectionMessage="Default"
+                      noItemsMessage="No storage found"
+                      selectedItem={selectedItem}
+                      items={storageItems}
+                      labelField="name"
+                      valueField="id"
+                      onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
+                      data-test-id={`${TEST_ID}-${type}-destination`}
+                    />
+                  )}
               </StorageItem>
             )
           })}

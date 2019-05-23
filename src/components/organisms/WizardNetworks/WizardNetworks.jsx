@@ -18,6 +18,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
+import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import StatusImage from '../../atoms/StatusImage'
 import Dropdown from '../../molecules/Dropdown'
 
@@ -183,18 +184,30 @@ class WizardNetworks extends React.Component<Props> {
                 <NetworkSubtitle data-test-id={`wNetworks-connectedTo-${nic.id}`}>{`Connected to ${connectedTo.join(', ')}`}</NetworkSubtitle>
               </NetworkTitle>
               <ArrowImage />
-              <Dropdown
-                large
-                centered
-                noSelectionMessage="Select ..."
-                noItemsMessage={this.props.loading ? 'Loading ...' : 'No networks found'}
-                selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
-                items={this.props.networks}
-                labelField="name"
-                valueField="id"
-                onChange={(item: Network) => { this.props.onChange(nic, item) }}
-                data-test-id={`wNetworks-dropdown-${nic.id}`}
-              />
+              {this.props.networks.length > 10 ? (
+                <AutocompleteDropdown
+                  width={StyleProps.inputSizes.large.width}
+                  selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
+                  items={this.props.networks}
+                  onChange={(item: Network) => { this.props.onChange(nic, item) }}
+                  labelField="name"
+                  valueField="id"
+                />
+              ) :
+                (
+                  <Dropdown
+                    large
+                    centered
+                    noSelectionMessage="Select ..."
+                    noItemsMessage={this.props.loading ? 'Loading ...' : 'No networks found'}
+                    selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
+                    items={this.props.networks}
+                    labelField="name"
+                    valueField="id"
+                    onChange={(item: Network) => { this.props.onChange(nic, item) }}
+                    data-test-id={`wNetworks-dropdown-${nic.id}`}
+                  />
+                )}
             </Nic>
           )
         })}
