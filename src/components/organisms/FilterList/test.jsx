@@ -16,7 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import sinon from 'sinon'
 import TW from '../../../utils/TestWrapper'
 import FilterList from '.'
 
@@ -43,9 +42,7 @@ let actions = [{ label: 'action', value: 'action' }]
 
 let itemFilterFunction = (item, filterStatus, filterText) => {
   if (
-    // $FlowIgnore
     (filterStatus !== 'all' && item.id.indexOf(filterStatus) === -1) ||
-    // $FlowIgnore
     (item.label.toLowerCase().indexOf(filterText) === -1)
   ) {
     return false
@@ -73,14 +70,5 @@ describe('FilterList Component', () => {
     expect(wrapper.find('mainList').prop('items').length).toBe(2)
     expect(wrapper.find('mainList').prop('items')[0].id).toBe('item-3')
     expect(wrapper.find('mainList').prop('items')[1].id).toBe('item-3-a')
-  })
-
-  it('dispaches action for all selected items', () => {
-    let onActionChange = sinon.spy()
-    let wrapper = wrap({ items, filterItems, itemFilterFunction, actions, onActionChange })
-    wrapper.find('filter').simulate('selectAllChange', true)
-    wrapper.find('filter').simulate('actionChange', { ...actions[0] })
-    expect(onActionChange.args[0][0].length).toBe(4)
-    expect(onActionChange.args[0][1].value).toBe('action')
   })
 })

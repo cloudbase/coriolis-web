@@ -20,6 +20,8 @@ import styled from 'styled-components'
 
 import type { MainItem } from '../../../types/MainItem'
 import MainListFilter from '../../molecules/MainListFilter'
+
+import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 import type { ItemComponentProps } from '../../organisms/MainList'
 import MainList from '../../organisms/MainList'
 
@@ -33,14 +35,14 @@ const Wrapper = styled.div`
 type DictItem = { value: string, label: string }
 type Props = {
   items: any[],
-  actions?: DictItem[],
+  dropdownActions?: DropdownAction[],
   loading: boolean,
   onReloadButtonClick: () => void,
   onItemClick: (item: any) => void,
-  onActionChange?: (selectedItems: any[], actionValue: string) => void,
   selectionLabel: string,
   renderItemComponent: (componentProps: ItemComponentProps) => React.Node,
   itemFilterFunction: (item: any, filterStatus?: ?string, filterState?: string) => boolean,
+  onSelectedItemsChange?: (items: any[]) => void,
   filterItems: DictItem[],
   emptyListImage?: ?string,
   emptyListMessage?: string,
@@ -78,6 +80,7 @@ class FilterList extends React.Component<Props, State> {
         filterText: '',
         selectedItems: [],
       })
+      this.props.onSelectedItemsChange && this.props.onSelectedItemsChange([])
       return
     }
 
@@ -101,6 +104,7 @@ class FilterList extends React.Component<Props, State> {
       filterStatus: item.value,
       items,
     })
+    this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
   }
 
   handleSearchChange(text: string) {
@@ -118,6 +122,7 @@ class FilterList extends React.Component<Props, State> {
     }
 
     this.setState({ selectedItems, selectAllSelected: false })
+    this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
   }
 
   handleSelectAllChange(selected: boolean) {
@@ -127,10 +132,7 @@ class FilterList extends React.Component<Props, State> {
     }
 
     this.setState({ selectedItems, selectAllSelected: selected })
-  }
-
-  handleActionChange(actionValue: string) {
-    if (this.props.onActionChange) this.props.onActionChange(this.state.selectedItems, actionValue)
+    this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
   }
 
   filterItems(items: MainItem[], filterStatus?: ?string, filterText?: string): MainItem[] {
@@ -161,8 +163,7 @@ class FilterList extends React.Component<Props, State> {
             label: this.props.selectionLabel,
           }}
           items={this.props.filterItems}
-          actions={this.props.actions}
-          onActionChange={action => { this.handleActionChange(action) }}
+          dropdownActions={this.props.dropdownActions || []}
           data-test-id="filterList-filter"
         />
         <MainList

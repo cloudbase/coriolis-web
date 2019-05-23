@@ -35,25 +35,22 @@ import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import configLoader from '../../../utils/Config'
 
+import Palette from '../../styleUtils/Palette'
+
 const Wrapper = styled.div``
 
-const BulkActions = [
-  { label: 'Cancel', value: 'cancel' },
-  { label: 'Delete', value: 'delete' },
-]
-
 type State = {
-  showDeleteMigrationConfirmation: boolean,
-  showCancelMigrationConfirmation: boolean,
-  confirmationItems: ?MainItem[],
+  selectedMigrations: MainItem[],
   modalIsOpen: boolean,
+  showDeleteMigrationModal: boolean,
+  showCancelMigrationModal: boolean,
 }
 @observer
 class MigrationsPage extends React.Component<{ history: any }, State> {
   state = {
-    showDeleteMigrationConfirmation: false,
-    showCancelMigrationConfirmation: false,
-    confirmationItems: null,
+    showDeleteMigrationModal: false,
+    showCancelMigrationModal: false,
+    selectedMigrations: [],
     modalIsOpen: false,
   }
 
@@ -107,53 +104,26 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     }
   }
 
-  handleActionChange(confirmationItems: MainItem[], action: string) {
-    if (action === 'cancel') {
-      this.setState({
-        showCancelMigrationConfirmation: true,
-        confirmationItems,
-      })
-    } else if (action === 'delete') {
-      this.setState({
-        showDeleteMigrationConfirmation: true,
-        confirmationItems,
-      })
-    }
+  getStatus(migrationId: string): string {
+    let migration = migrationStore.migrations.find(m => m.id === migrationId)
+    return migration ? migration.status : ''
   }
 
-  handleCancelMigrationConfirmation() {
-    if (!this.state.confirmationItems) {
-      return
-    }
-    this.state.confirmationItems.forEach(migration => {
-      migrationStore.cancel(migration.id)
-    })
-    notificationStore.alert('Canceling migrations')
-    this.handleCloseCancelMigration()
-  }
-
-  handleCloseCancelMigration() {
-    this.setState({
-      showCancelMigrationConfirmation: false,
-      confirmationItems: null,
-    })
-  }
-
-  handleCloseDeleteMigrationConfirmation() {
-    this.setState({
-      showDeleteMigrationConfirmation: false,
-      confirmationItems: null,
-    })
-  }
-
-  handleDeleteMigrationConfirmation() {
-    if (!this.state.confirmationItems) {
-      return
-    }
-    this.state.confirmationItems.forEach(migration => {
+  deleteSelectedMigrations() {
+    this.state.selectedMigrations.forEach(migration => {
       migrationStore.delete(migration.id)
     })
-    this.handleCloseDeleteMigrationConfirmation()
+    this.setState({ showDeleteMigrationModal: false })
+  }
+
+  cancelSelectedMigrations() {
+    this.state.selectedMigrations.forEach(migration => {
+      if (this.getStatus(migration.id) === 'RUNNING') {
+        migrationStore.cancel(migration.id)
+      }
+    })
+    notificationStore.alert('Canceling migrations')
+    this.setState({ showCancelMigrationModal: false })
   }
 
   handleEmptyListButtonClick() {
@@ -208,19 +178,19 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
   }
 
   render() {
-    const renderAlert = () => {
-      const isDelete = this.state.showDeleteMigrationConfirmation
-      const props = {
-        isOpen: this.state.showCancelMigrationConfirmation || this.state.showDeleteMigrationConfirmation,
-        title: `${isDelete ? 'Delete' : 'Cancel'} Migrations?`,
-        message: `Are you sure you want to ${isDelete ? 'delete' : 'cancel'} the selected migrations?`,
-        extraMessage: `${isDelete ? 'Deleting' : 'Canceling'} a Coriolis Migration is permanent!`,
-        onConfirmation: () => { isDelete ? this.handleDeleteMigrationConfirmation() : this.handleCancelMigrationConfirmation() },
-        onRequestClose: () => { isDelete ? this.handleCloseDeleteMigrationConfirmation() : this.handleCloseCancelMigration() },
-      }
-
-      return <AlertModal {...props} />
-    }
+    let atLeaseOneIsRunning = false
+    this.state.selectedMigrations.forEach(migration => {
+      atLeaseOneIsRunning = atLeaseOneIsRunning || this.getStatus(migration.id) === 'RUNNING'
+    })
+    const BulkActions = [{
+      label: 'Cancel',
+      disabled: !atLeaseOneIsRunning,
+      action: () => { this.setState({ showCancelMigrationModal: true }) },
+    }, {
+      label: 'Delete Migration',
+      color: Palette.alert,
+      action: () => { this.setState({ showDeleteMigrationModal: true }) },
+    }]
 
     return (
       <Wrapper>
@@ -234,9 +204,9 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
               items={migrationStore.migrations}
               onItemClick={item => { this.handleItemClick(item) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
-              actions={BulkActions}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
-              onActionChange={(items, action) => { this.handleActionChange(items, action) }}
+              onSelectedItemsChange={selectedMigrations => { this.setState({ selectedMigrations }) }}
+              dropdownActions={BulkActions}
               renderItemComponent={options =>
                 (<MainListItem
                   {...options}
@@ -270,7 +240,26 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
             />
           }
         />
-        {renderAlert()}
+        {this.state.showDeleteMigrationModal ? (
+          <AlertModal
+            isOpen
+            title="Delete Selected Migrations?"
+            message="Are you sure you want to delete the selected migrations?"
+            extraMessage="Deleting a Coriolis Migration is permanent!"
+            onConfirmation={() => { this.deleteSelectedMigrations() }}
+            onRequestClose={() => { this.setState({ showDeleteMigrationModal: false }) }}
+          />
+        ) : null}
+        {this.state.showCancelMigrationModal ? (
+          <AlertModal
+            isOpen
+            title="Cancel Selected Migrations?"
+            message="Are you sure you want to cancel the selected migrations?"
+            extraMessage="Canceling a Coriolis Migration is permanent!"
+            onConfirmation={() => { this.cancelSelectedMigrations() }}
+            onRequestClose={() => { this.setState({ showCancelMigrationModal: false }) }}
+          />
+        ) : null}
       </Wrapper>
     )
   }

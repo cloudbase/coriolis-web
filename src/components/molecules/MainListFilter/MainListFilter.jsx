@@ -20,11 +20,13 @@ import styled from 'styled-components'
 
 import Checkbox from '../../atoms/Checkbox'
 import SearchInput from '../SearchInput'
-import Dropdown from '../Dropdown'
+import ActionDropdown from '../../molecules/ActionDropdown'
 import ReloadButton from '../../atoms/ReloadButton'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
+
+import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 
 const Wrapper = styled.div`
   display: flex;
@@ -82,14 +84,13 @@ type Props = {
   onSearchChange: (value: string) => void,
   searchValue: string,
   onSelectAllChange: (checked: boolean) => void,
-  onActionChange: (action: string) => void,
-  actions?: DictItem[],
   selectedValue: string,
   selectionInfo: { total: number, selected: number, label: string },
   selectAllSelected: ?boolean,
   items: DictItem[],
   customFilterComponent?: React.Node,
   searchValue?: string,
+  dropdownActions: ?DropdownAction[],
 }
 @observer
 class MainListFilter extends React.Component<Props> {
@@ -102,7 +103,7 @@ class MainListFilter extends React.Component<Props> {
     }
 
     return (
-      <FilterGroup noMargin={!this.props.actions || this.props.actions.length === 0}>
+      <FilterGroup noMargin={!this.props.dropdownActions || this.props.dropdownActions.length === 0}>
         {renderCustomComponent()}
         {this.props.items.map(item => {
           return (
@@ -130,19 +131,20 @@ class MainListFilter extends React.Component<Props> {
           {this.props.selectionInfo.selected} of {this.props.selectionInfo.total}&nbsp;
           {this.props.selectionInfo.label}(s) selected
         </SelectionText>
-        <Dropdown
-          data-test-id="mainListFilter-dropdown"
-          noSelectionMessage="Select an action"
-          items={this.props.actions}
-          onChange={item => { this.props.onActionChange(item.value) }}
-        />
+        {this.props.dropdownActions && this.props.dropdownActions.length ? (
+          <ActionDropdown
+            actions={this.props.dropdownActions}
+            style={{ marginLeft: '8px' }}
+            data-test-id="mainListFilter-actionButton"
+          />
+        ) : null}
       </Selection>
     )
   }
 
   render() {
     let renderCheckbox = () => {
-      if (this.props.actions && this.props.actions.length > 0) {
+      if (this.props.dropdownActions && this.props.dropdownActions.length > 0) {
         return (
           <Checkbox
             onChange={checked => { this.props.onSelectAllChange(checked) }}

@@ -26,8 +26,8 @@ import Modal from '../../molecules/Modal'
 import ReplicaExecutionOptions from '../../organisms/ReplicaExecutionOptions'
 import AlertModal from '../../organisms/AlertModal'
 import EditReplica from '../../organisms/EditReplica'
-
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
+
 import type { MainItem } from '../../../types/MainItem'
 import type { Execution } from '../../../types/Execution'
 import type { Schedule } from '../../../types/Schedule'
