@@ -34,7 +34,7 @@ class ProjectsSource {
   }
 
   static getProjectDetails(projectId: string): Promise<Project> {
-    return Api.get(`${coriolisUrl}/identity/projects/${projectId}`).then(response => {
+    return Api.get(`${coriolisUrl}identity/projects/${projectId}`).then(response => {
       return response.data.project
     })
   }
