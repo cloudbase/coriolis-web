@@ -262,7 +262,6 @@ class ProjectMemberModal extends React.Component<Props, State> {
         disabled={this.props.loading}
         enum={field.enum}
         password={field.name === 'password' || field.name === 'confirm_password'}
-        // $FlowIssue
         required={field.required}
         highlight={Boolean(this.state.highlightFieldNames.find(n => n === field.name))}
         noSelectionMessage="Choose a project"

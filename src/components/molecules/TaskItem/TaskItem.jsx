@@ -110,6 +110,8 @@ const Value = styled.div`
 `
 const ExceptionText = styled.div`
   cursor: pointer;
+  text-overflow: ellipsis;
+  overflow: hidden;
   &:hover > span {
     opacity: 1;
   }
