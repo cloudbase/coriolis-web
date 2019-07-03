@@ -34,7 +34,7 @@ export type Endpoint = {
   },
 }
 
-export type DestinationOption = {
+export type OptionValues = {
   name: string,
   // $FlowIssue
   values: string[] | { name: string, id: string, [string]: mixed }[],

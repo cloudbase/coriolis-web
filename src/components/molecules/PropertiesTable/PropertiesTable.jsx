@@ -34,9 +34,9 @@ const Wrapper = styled.div`
   border-radius: ${StyleProps.borderRadius};
 `
 const Column = styled.div`
-  ${StyleProps.exactWidth('calc(50% - 32px)')}
+  ${StyleProps.exactWidth('calc(50% - 24px)')}
   height: 32px;
-  padding: 0 16px;
+  padding: 0 8px 0 16px;
   display: flex;
   align-items: center;
   ${props => props.header ? css`

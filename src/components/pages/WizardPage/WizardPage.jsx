@@ -232,7 +232,13 @@ class WizardPage extends React.Component<Props, State> {
       this.handleSourceEndpointChange(null)
     })
 
-    providerStore.loadSourceSchema(source.type, this.state.type === 'replica')
+    providerStore.loadSourceSchema(source.type, this.state.type).then(() => {
+      source && providerStore.getOptionsValues({
+        optionsType: 'source',
+        endpointId: source.id,
+        provider: source.type,
+      })
+    })
   }
 
   handleTargetEndpointChange(target: EndpointType) {
@@ -242,7 +248,7 @@ class WizardPage extends React.Component<Props, State> {
     // Preload destination options schema
     providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
       // Preload destination options values
-      return providerStore.getDestinationOptions(target.id, target.type)
+      providerStore.getOptionsValues({ optionsType: 'destination', endpointId: target.id, provider: target.type })
     })
     if (this.pages.find(p => p.id === 'storage')) {
       endpointStore.loadStorage(target.id, {})
@@ -299,6 +305,8 @@ class WizardPage extends React.Component<Props, State> {
     // If the field is a string and doesn't have an enum property,
     // we can't call destination options on "change" since too many calls will be made,
     // it also means a potential problem with the server not populating the "enum" prop.
+    // Otherwise, the field has enum property, which there potentially other destination options for the new
+    // chosen value from the enum
     if (field.type !== 'string' || field.enum) {
       this.loadEnvDestinationOptions(field)
     }
@@ -349,7 +357,12 @@ class WizardPage extends React.Component<Props, State> {
     })
 
     if (provider && envData && wizardStore.data.target) {
-      providerStore.getDestinationOptions(wizardStore.data.target.id, provider, envData)
+      providerStore.getOptionsValues({
+        optionsType: 'destination',
+        endpointId: wizardStore.data.target.id,
+        provider,
+        envData,
+      })
     }
   }
 
@@ -364,7 +377,14 @@ class WizardPage extends React.Component<Props, State> {
           return
         }
 
-        providerStore.loadSourceSchema(source.type, this.state.type === 'replica')
+        if (providerStore.sourceSchema.length === 0 && source) {
+          providerStore.loadSourceSchema(source.type, this.state.type).then(() => {
+            // Preload source options if data is set from 'Permalink'
+            if (providerStore.sourceOptions.length === 0 && source) {
+              providerStore.getOptionsValues({ optionsType: 'source', endpointId: source.id, provider: source.type })
+            }
+          })
+        }
 
         if (instanceStore.instances.length === 0) {
           // Check if user has permission for this endpoint
@@ -388,7 +408,11 @@ class WizardPage extends React.Component<Props, State> {
           providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
             // Preload destination options if data is set from 'Permalink'
             if (providerStore.destinationOptions.length === 0 && target) {
-              providerStore.getDestinationOptions(target.id, target.type).then(() => {
+              providerStore.getOptionsValues({
+                optionsType: 'destination',
+                endpointId: target.id,
+                provider: target.type,
+              }).then(() => {
                 this.loadEnvDestinationOptions()
               })
             }

@@ -108,7 +108,12 @@ class EditReplica extends React.Component<Props, State> {
     })
 
     providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica').then(() => {
-      return providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type, undefined, true)
+      return providerStore.getOptionsValues({
+        optionsType: 'destination',
+        endpointId: this.props.destinationEndpoint.id,
+        provider: this.props.destinationEndpoint.type,
+        useCache: true,
+      })
     }).then(() => {
       this.loadEnvDestinationOptions()
     })
@@ -167,7 +172,13 @@ class EditReplica extends React.Component<Props, State> {
     })
 
     if (envData) {
-      providerStore.getDestinationOptions(this.props.destinationEndpoint.id, this.props.destinationEndpoint.type, envData, true)
+      providerStore.getOptionsValues({
+        optionsType: 'destination',
+        endpointId: this.props.destinationEndpoint.id,
+        provider: this.props.destinationEndpoint.type,
+        useCache: true,
+        envData,
+      })
     }
   }
 

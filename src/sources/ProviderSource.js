@@ -19,7 +19,7 @@ import { servicesUrl, providerTypes } from '../constants'
 import { SchemaParser } from './Schemas'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
-import type { DestinationOption } from '../types/Endpoint'
+import type { OptionValues } from '../types/Endpoint'
 
 class ProviderSource {
   static getConnectionInfoSchema(providerName: string): Promise<Field[]> {
@@ -44,8 +44,8 @@ class ProviderSource {
     })
   }
 
-  static loadSourceSchema(providerName: string, isReplica: boolean): Promise<Field[]> {
-    let schemaTypeInt = isReplica ? providerTypes.SOURCE_REPLICA : providerTypes.SOURCE_MIGRATION
+  static loadSourceSchema(providerName: string, schemaType: string): Promise<Field[]> {
+    let schemaTypeInt = schemaType === 'replica' ? providerTypes.SOURCE_REPLICA : providerTypes.SOURCE_MIGRATION
 
     return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`).then(response => {
       let schema = { oneOf: [response.data.schemas.source_environment_schema] }
@@ -54,14 +54,16 @@ class ProviderSource {
     })
   }
 
-  static getDestinationOptions(endpointId: string, envData: ?{ [string]: mixed }): Promise<DestinationOption[]> {
+  static getOptionsValues(optionsType: 'source' | 'destination', endpointId: string, envData: ?{ [string]: mixed }): Promise<OptionValues[]> {
     let envString = ''
     if (envData) {
       envString = `?env=${btoa(JSON.stringify(envData))}`
     }
+    let callName = optionsType === 'source' ? 'source-options' : 'destination-options'
+    let fieldName = optionsType === 'source' ? 'source_options' : 'destination_options'
 
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/destination-options${envString}`)
-      .then(response => response.data.destination_options)
+    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/${callName}${envString}`)
+      .then(response => response.data[fieldName])
   }
 }
 
