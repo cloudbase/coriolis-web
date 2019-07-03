@@ -167,7 +167,7 @@ class ReplicaSource {
     if (updateData.network.length > 0) {
       let networkMap = {}
       updateData.network.forEach(mapping => {
-        networkMap[mapping.sourceNic.network_name] = mapping.targetNetwork.name
+        networkMap[mapping.sourceNic.network_name] = mapping.targetNetwork.id
       })
       payload.replica.network_map = networkMap
     }
