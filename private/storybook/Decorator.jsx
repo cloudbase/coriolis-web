@@ -14,6 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import 'babel-polyfill'
+
 import * as React from 'react'
 import styled, { injectGlobal } from 'styled-components'
 import Palette from '../../src/components/styleUtils/Palette'
