@@ -77,7 +77,7 @@ class ReplicaSourceUtils {
     if (execution.tasks) {
       execution.tasks.forEach(task => {
         if (task.progress_updates) {
-          task.progress_updates.sort((a, b) => moment(b.created_at).isBefore(moment(a.created_at)))
+          task.progress_updates.sort((a, b) => moment(a.created_at).toDate().getTime() - moment(b.created_at).toDate().getTime())
         }
       })
     }
