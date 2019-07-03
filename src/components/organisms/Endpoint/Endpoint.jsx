@@ -22,7 +22,6 @@ import { observe } from 'mobx'
 import EndpointLogos from '../../atoms/EndpointLogos'
 import StatusIcon from '../../atoms/StatusIcon'
 import CopyButton from '../../atoms/CopyButton'
-import Tooltip from '../../atoms/Tooltip'
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
 import LoadingButton from '../../molecules/LoadingButton'
@@ -404,8 +403,6 @@ class Endpoint extends React.Component<Props, State> {
           onResizeUpdate: (scrollOffset: number) => { this.props.onResizeUpdate(this.scrollableRef, scrollOffset) },
         })}
         {this.renderButtons()}
-        <Tooltip />
-        {Tooltip.rebuild()}
       </Content>
     )
   }

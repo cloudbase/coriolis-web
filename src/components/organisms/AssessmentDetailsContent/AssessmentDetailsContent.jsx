@@ -26,7 +26,6 @@ import DropdownLink from '../../molecules/DropdownLink'
 import Table from '../../molecules/Table'
 import AssessedVmListItem from '../../molecules/AssessedVmListItem'
 import DropdownFilter from '../../molecules/DropdownFilter'
-import Tooltip from '../../atoms/Tooltip'
 import Checkbox from '../../atoms/Checkbox'
 import SmallLoading from '../../atoms/SmallLoading'
 
@@ -212,10 +211,6 @@ type Props = {
 class AssessmentDetailsContent extends React.Component<Props> {
   static defaultProps: $Shape<Props> = {
     page: '',
-  }
-
-  componentDidUpdate() {
-    Tooltip.rebuild()
   }
 
   doesVmMatchSource(vm: VmItem) {
@@ -513,7 +508,6 @@ class AssessmentDetailsContent extends React.Component<Props> {
           {this.props.detailsLoading ? null : this.renderVmsTable()}
           {this.props.detailsLoading || this.props.instancesLoading ? null : this.renderNetworkTable()}
           {this.props.detailsLoading ? null : this.renderButtons()}
-          <Tooltip />
         </DetailsBody>
       </Wrapper>
     )

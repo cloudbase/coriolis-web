@@ -36,6 +36,7 @@ import UsersPage from './pages/UsersPage'
 import UserDetailsPage from './pages/UserDetailsPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailsPage from './pages/ProjectDetailsPage'
+import Tooltip from './atoms/Tooltip/Tooltip'
 
 import { navigationMenu } from '../constants'
 import Palette from './styleUtils/Palette'
@@ -117,6 +118,7 @@ class App extends React.Component<{}, State> {
           <Route component={NotFoundPage} />
         </Switch>
         <Notifications />
+        <Tooltip />
       </Wrapper >
     )
   }
