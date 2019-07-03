@@ -36,7 +36,7 @@ class MigrationSourceUtils {
             if (sortNull !== false) {
               return sortNull
             }
-            return moment(b.created_at).isBefore(moment(a.created_at))
+            return moment(a.created_at).toDate().getTime() - moment(b.created_at).toDate().getTime()
           })
         }
       })
