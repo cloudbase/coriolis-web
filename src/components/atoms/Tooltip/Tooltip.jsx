@@ -20,6 +20,7 @@ import { injectGlobal } from 'styled-components'
 import ReactTooltip from 'react-tooltip'
 
 import Palette from '../../styleUtils/Palette'
+import StyleProps from '../../styleUtils/StyleProps'
 
 injectGlobal`
   .reactTooltip {
@@ -30,6 +31,8 @@ injectGlobal`
     box-shadow: 0 0 9px 1px rgba(32, 34, 52, 0.1);
     margin-left: 12px !important;
     opacity: 1 !important;
+    z-index: 999999;
+    transition: opacity ${StyleProps.animations.swift};
     &:after {
       border-right-color: ${Palette.grayscale[1]} !important;
       border-right-width: 8px !important;
@@ -43,14 +46,19 @@ injectGlobal`
 
 @observer
 class Tooltip extends React.Component<{}> {
-  static rebuild = () => {
-    ReactTooltip.rebuild()
+  intervalId: IntervalID
+
+  componentWillMount() {
+    if (this.intervalId) {
+      return
+    }
+    this.intervalId = setInterval(() => {
+      ReactTooltip.rebuild()
+    }, 1000)
   }
 
   render() {
-    return (
-      <ReactTooltip place="right" effect="solid" className="reactTooltip" />
-    )
+    return <ReactTooltip place="right" effect="solid" className="reactTooltip" />
   }
 }
 

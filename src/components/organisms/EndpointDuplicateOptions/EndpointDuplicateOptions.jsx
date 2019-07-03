@@ -27,7 +27,6 @@ import type { Project } from '../../../types/Project'
 import Palette from '../../styleUtils/Palette'
 
 import duplicateImage from './images/duplicate.svg'
-import Tooltip from '../../atoms/Tooltip'
 
 const Wrapper = styled.div`
   display: flex;
@@ -131,8 +130,6 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
             onChange={projectId => { this.setState({ selectedProjectId: projectId }) }}
             width={318}
           />
-          <Tooltip />
-          {Tooltip.rebuild()}
         </Form>
         <Buttons>
           <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>

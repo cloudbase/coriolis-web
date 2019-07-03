@@ -19,7 +19,6 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 import autobind from 'autobind-decorator'
 
-import Tooltip from '../../atoms/Tooltip'
 import StyleProps from '../../styleUtils/StyleProps'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
 import WizardOptionsField from '../../molecules/WizardOptionsField'
@@ -94,10 +93,6 @@ type Props = {
 class WizardOptions extends React.Component<Props> {
   componentDidMount() {
     window.addEventListener('resize', this.handleResize)
-  }
-
-  componentDidUpdate() {
-    Tooltip.rebuild()
   }
 
   componentWillUnmount() {
@@ -222,7 +217,6 @@ class WizardOptions extends React.Component<Props> {
           <OneColumn>
             {fields.map(f => f.component)}
           </OneColumn>
-          <Tooltip />
         </Fields>
       )
     }
@@ -235,7 +229,6 @@ class WizardOptions extends React.Component<Props> {
         <Column right>
           {fields.map(f => f.column === 'right' && f.component)}
         </Column>
-        <Tooltip />
       </Fields>
     )
   }

@@ -21,7 +21,6 @@ import styled from 'styled-components'
 import Button from '../../atoms/Button'
 import EndpointField from '../../molecules/EndpointField'
 import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
-import Tooltip from '../../atoms/Tooltip'
 
 import type { Field } from '../../../types/Field'
 
@@ -122,7 +121,6 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     if (prevState.showAdvancedOptions !== this.state.showAdvancedOptions && this.props.onResizeUpdate) {
       this.props.onResizeUpdate(this.scrollableRef)
     }
-    Tooltip.rebuild()
   }
 
   handleValueChange(fieldName: string, value: any) {
@@ -237,7 +235,6 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     return (
       <Fields innerRef={ref => { this.scrollableRef = ref }}>
         {rows}
-        <Tooltip />
       </Fields>
     )
   }
