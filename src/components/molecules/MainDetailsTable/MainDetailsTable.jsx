@@ -280,7 +280,7 @@ class MainDetailsTable extends React.Component<Props, State> {
     instance.devices.nics.forEach(nic => {
       if (destinationNetworkMap && destinationNetworkMap[nic.network_name]) {
         let getBody = (n: Nic): string[] => {
-          let body: string[] = []
+          let body: string[] = [`Name: ${n.network_name}`]
           let ipv4 = n.ip_addresses ? n.ip_addresses.find(ip => /(?:\d+?\.){3}\d+/g.exec(ip)) : null
           let ipv6 = n.ip_addresses ? n.ip_addresses.find(ip => /\w*:\w*/g.exec(ip)) : null
           if (ipv4) {
@@ -289,7 +289,6 @@ class MainDetailsTable extends React.Component<Props, State> {
           if (ipv6) {
             body.push(`IP Address (IPv6): ${ipv6}`)
           }
-          body.push(`MAC Address: ${n.mac_address}`)
           return body
         }
         let sourceBody = getBody(nic)
@@ -315,7 +314,7 @@ class MainDetailsTable extends React.Component<Props, State> {
         rows.push(this.renderRow(
           `${instance.instance_name}-${nic.network_name}`,
           'network',
-          nic.network_name,
+          nic.mac_address,
           destinationNetworkName,
           sourceBody,
           destinationBody
