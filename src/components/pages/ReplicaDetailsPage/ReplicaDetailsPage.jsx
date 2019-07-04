@@ -80,7 +80,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = 'Replica Details'
 
-    this.loadReplicaWithInstances(this.props.match.params.id)
+    this.loadReplicaWithInstances(this.props.match.params.id, true)
     endpointStore.getEndpoints()
     scheduleStore.getSchedules(this.props.match.params.id)
     this.pollData(true)
@@ -88,7 +88,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   componentWillReceiveProps(newProps: Props) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadReplicaWithInstances(newProps.match.params.id)
+      this.loadReplicaWithInstances(newProps.match.params.id, true)
       scheduleStore.getSchedules(newProps.match.params.id)
     }
   }
@@ -99,7 +99,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     clearTimeout(this.pollTimeout)
   }
 
-  loadReplicaWithInstances(replicaId: string) {
+  loadReplicaWithInstances(replicaId: string, cache: boolean) {
     replicaStore.getReplica(replicaId).then(() => {
       let details = replicaStore.replicaDetails
       if (!details) {
@@ -107,12 +107,13 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       }
       networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
         quietError: true,
+        useLocalStorage: cache,
       })
       instanceStore.loadInstancesDetails(
         details.origin_endpoint_id,
         // $FlowIgnore
         details.instances.map(n => { return { instance_name: n } }),
-        false, true
+        false, cache
       )
     })
   }
@@ -301,6 +302,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     })
   }
 
+  handleEditReplicaReload() {
+    this.loadReplicaWithInstances(this.props.match.params.id, false)
+  }
+
   handleUpdateComplete(redirectTo: string) {
     if (!replicaStore.replicaDetails) {
       return
@@ -333,6 +338,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
         networks={networkStore.networks}
         networksLoading={networkStore.loading}
+        onReloadClick={() => { this.handleEditReplicaReload() }}
       />
     )
   }

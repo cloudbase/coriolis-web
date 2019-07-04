@@ -23,13 +23,13 @@ import type { OptionValues } from '../types/Endpoint'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
 
-export const getFieldChangeDestOptions = (options: {
+export const getFieldChangeDestOptions = (config: {
   provider: ?string,
   destSchema: Field[],
   data: any,
   field: ?Field,
 }) => {
-  let { provider, destSchema, data, field } = options
+  let { provider, destSchema, data, field } = config
   let providerWithExtraOptions = configLoader.config.destinationProvidersWithExtraOptions
     .find(p => typeof p !== 'string' && p.name === provider)
   if (!provider || !providerWithExtraOptions || typeof providerWithExtraOptions === 'string' || !providerWithExtraOptions.envRequiredFields) {
@@ -115,13 +115,23 @@ class ProviderStore {
     })
   }
 
-  @action loadDestinationSchema(providerName: string, schemaType: string): Promise<void> {
-    this.destinationSchemaLoading = true
+  destinationSchemaCache: { [string]: Field[] } = {}
+  @action loadDestinationSchema(providerName: string, schemaType: string, cache?: boolean): Promise<void> {
     this.lastDestinationSchemaType = schemaType
+
+    let cacheKey = `${providerName}-${schemaType}`
+    let cacheData = this.destinationSchemaCache[cacheKey]
+    if (cache && cacheData) {
+      this.destinationSchema = [...cacheData]
+      return Promise.resolve()
+    }
+
+    this.destinationSchemaLoading = true
 
     return ProviderSource.loadDestinationSchema(providerName, schemaType).then((fields: Field[]) => {
       this.destinationSchemaLoading = false
       this.destinationSchema = fields
+      this.destinationSchemaCache[cacheKey] = fields
     }).catch(err => {
       this.destinationSchemaLoading = false
       throw err

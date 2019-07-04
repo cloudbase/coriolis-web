@@ -262,7 +262,7 @@ class InstanceStore {
 
     instancesInfo.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
     let hash = i => `${i.instance_name}-${i.id || endpointId}`
-    if (this.instancesDetails.map(hash).join('_') === instancesInfo.map(hash).join('_')) {
+    if (useLocalStorage && this.instancesDetails.map(hash).join('_') === instancesInfo.map(hash).join('_')) {
       return Promise.resolve()
     }
 

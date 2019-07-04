@@ -35,27 +35,52 @@ const wrap = (props: Props) => new TW(shallow(
 
 describe('Panel Component', () => {
   it('renders navigation items', () => {
-    let wrapper = wrap({ navigationItems, content, onChange: () => { }, selectedValue: 'navigation2' })
+    let wrapper = wrap({
+      navigationItems,
+      content,
+      onChange: () => { },
+      selectedValue: 'navigation2',
+      onReloadClick: () => { },
+    })
     navigationItems.forEach(i => {
       expect(wrapper.findText(`navItem-${i.value}`)).toBe(i.label)
     })
   })
 
   it('selects the selected value', () => {
-    let wrapper = wrap({ navigationItems, content, onChange: () => { }, selectedValue: 'navigation2' })
+    let wrapper = wrap({
+      navigationItems,
+      content,
+      onChange: () => { },
+      selectedValue: 'navigation2',
+      onReloadClick: () => { },
+
+    })
     expect(wrapper.find('navItem-navigation1').prop('selected')).toBeFalsy()
     expect(wrapper.find('navItem-navigation2').prop('selected')).toBe(true)
   })
 
   it('dispatches onChange', () => {
     let onChange = sinon.spy()
-    let wrapper = wrap({ navigationItems, content, onChange, selectedValue: 'navigation2' })
+    let wrapper = wrap({
+      navigationItems,
+      content,
+      onChange,
+      selectedValue: 'navigation2',
+      onReloadClick: () => { },
+    })
     wrapper.find('navItem-navigation1').simulate('click')
     expect(onChange.called).toBe(true)
   })
 
   it('renders content', () => {
-    let wrapper = wrap({ navigationItems, content, onChange: () => { }, selectedValue: 'navigation2' })
+    let wrapper = wrap({
+      navigationItems,
+      content,
+      onChange: () => { },
+      selectedValue: 'navigation2',
+      onReloadClick: () => { },
+    })
     expect(wrapper.findText('content')).toBe(content)
   })
 })

@@ -32,6 +32,7 @@ storiesOf('Panel', module)
         navigationItems={navigationItems}
         selectedValue="network"
         onChange={item => console.log(item, 'clicked')}
+        onReloadClick={() => { }}
       />
     </div>
   ))

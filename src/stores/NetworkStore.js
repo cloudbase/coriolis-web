@@ -50,7 +50,7 @@ class NetworkStore {
     quietError?: boolean,
   }): Promise<void> {
     let id = `${endpointId}-${btoa(JSON.stringify(environment))}`
-    if (this.cachedId === id) {
+    if (this.cachedId === id && options && options.useLocalStorage) {
       return Promise.resolve()
     }
 

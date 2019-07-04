@@ -79,6 +79,7 @@ type Props = {
   instancesDetailsLoading: boolean,
   networks: Network[],
   networksLoading: boolean,
+  onReloadClick: () => void,
 }
 type State = {
   selectedPanel: string,
@@ -101,18 +102,22 @@ class EditReplica extends React.Component<Props, State> {
   scrollableRef: HTMLElement
 
   componentWillMount() {
+    this.loadData(true)
+  }
+
+  loadData(useCache: boolean) {
     providerStore.loadProviders().then(() => {
       if (this.hasStorageMap()) {
         endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
       }
     })
 
-    providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica').then(() => {
+    providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica', useCache).then(() => {
       return providerStore.getOptionsValues({
         optionsType: 'destination',
         endpointId: this.props.destinationEndpoint.id,
         provider: this.props.destinationEndpoint.type,
-        useCache: true,
+        useCache,
       })
     }).then(() => {
       this.loadEnvDestinationOptions()
@@ -193,6 +198,11 @@ class EditReplica extends React.Component<Props, State> {
 
   handlePanelChange(panel: string) {
     this.setState({ selectedPanel: panel })
+  }
+
+  handleReload() {
+    this.props.onReloadClick()
+    this.loadData(false)
   }
 
   handleDestinationFieldChange(field: Field, value: any) {
@@ -452,6 +462,7 @@ class EditReplica extends React.Component<Props, State> {
           content={this.renderContent()}
           onChange={navItem => { this.handlePanelChange(navItem.value) }}
           selectedValue={this.state.selectedPanel}
+          onReloadClick={() => { this.handleReload() }}
         />
       </Modal>
     )

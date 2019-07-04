@@ -23,6 +23,7 @@ const Wrapper = styled.div`
   display: flex;
   min-height: 0;
   flex-grow: 1;
+  position: relative;
 `
 const Navigation = styled.div`
   width: 224px;
@@ -49,6 +50,14 @@ const Content = styled.div`
   flex-direction: column;
   min-height: 0;
 `
+const ReloadButton = styled.div`
+  font-size: 10px;
+  color: ${Palette.primary};
+  cursor: pointer;
+  position: absolute;
+  bottom: 42px;
+  left: 32px;
+`
 
 export type NavigationItem = {
   label: string,
@@ -61,6 +70,7 @@ export type Props = {
   selectedValue: string,
   onChange: (item: NavigationItem) => void,
   style?: any,
+  onReloadClick: () => void,
 }
 
 export const TEST_ID = 'panel'
@@ -76,15 +86,18 @@ class Panel extends React.Component<Props> {
   render() {
     return (
       <Wrapper style={this.props.style}>
-        <Navigation>{this.props.navigationItems.map(item => (
-          <NavigationItemDiv
-            key={item.value}
-            selected={this.props.selectedValue === item.value}
-            onClick={() => { this.handleItemClick(item) }}
-            data-test-id={`${TEST_ID}-navItem-${item.value}`}
-          >{item.label}</NavigationItemDiv>
-        ))}</Navigation>
+        <Navigation>
+          {this.props.navigationItems.map(item => (
+            <NavigationItemDiv
+              key={item.value}
+              selected={this.props.selectedValue === item.value}
+              onClick={() => { this.handleItemClick(item) }}
+              data-test-id={`${TEST_ID}-navItem-${item.value}`}
+            >{item.label}</NavigationItemDiv>
+          ))}
+        </Navigation>
         <Content data-test-id={`${TEST_ID}-content`}>{this.props.content}</Content>
+        <ReloadButton onClick={() => { this.props.onReloadClick() }}>Reload All Replica Options</ReloadButton>
       </Wrapper>
     )
   }
