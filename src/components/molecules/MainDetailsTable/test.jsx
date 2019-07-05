@@ -99,7 +99,7 @@ describe('MainDetailsTable Component', () => {
     expect(wrapper.findText('source-instance')).toBe('instance1')
     expect(wrapper.findText('destination-instance')).toBe('instance1')
 
-    expect(wrapper.findText('source-network')).toBe('network1')
+    expect(wrapper.findText('source-network')).toBe('instance1macaddress')
     expect(wrapper.findText('destination-network')).toBe('network2')
 
     expect(wrapper.findText('source-storage')).toBe('instance1disk1')
