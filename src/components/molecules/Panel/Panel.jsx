@@ -52,7 +52,10 @@ const Content = styled.div`
 `
 const ReloadButton = styled.div`
   font-size: 10px;
-  color: ${Palette.primary};
+  color: ${Palette.grayscale[4]};
+  &:hover {
+    color: ${Palette.primary};
+  }
   cursor: pointer;
   position: absolute;
   bottom: 42px;
