@@ -35,7 +35,7 @@ const getLabelColor = props => {
 }
 const Label = styled.div`
   color: ${props => getLabelColor(props)};
-  margin: 0 32px 0 16px;
+  margin: 0 32px 0 ${props => props.embedded ? 0 : 16}px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -119,7 +119,6 @@ const Wrapper = styled.div`
   ${props => props.embedded ? css`
     border: 0;
     width: calc(100% + 8px);
-    margin-left: -16px;
   ` : ''}
 
   #dropdown-arrow-image {stroke: ${props => getArrowColor(props)};}

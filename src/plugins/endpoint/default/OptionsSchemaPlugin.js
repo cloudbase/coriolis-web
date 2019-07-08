@@ -15,13 +15,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import type { Field } from '../../../types/Field'
-import type { DestinationOption, StorageMap } from '../../../types/Endpoint'
+import type { OptionValues, StorageMap } from '../../../types/Endpoint'
 import type { NetworkMap } from '../../../types/Network'
 import { executionOptions } from '../../../constants'
 
 const migrationImageOsTypes = ['windows', 'linux']
 
-export const defaultFillFieldValues = (field: Field, option: DestinationOption) => {
+export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
   if (field.type === 'string') {
     field.enum = [...option.values]
     if (option.config_default) {
@@ -33,7 +33,7 @@ export const defaultFillFieldValues = (field: Field, option: DestinationOption) 
   }
 }
 
-export const defaultFillMigrationImageMapValues = (field: Field, option: DestinationOption): boolean => {
+export const defaultFillMigrationImageMapValues = (field: Field, option: OptionValues): boolean => {
   if (field.name === 'migr_image_map') {
     field.properties = migrationImageOsTypes.map(os => {
       let values = option.values
@@ -109,7 +109,7 @@ export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }) => {
 }
 
 export default class OptionsSchemaParser {
-  static fillFieldValues(field: Field, options: DestinationOption[]) {
+  static fillFieldValues(field: Field, options: OptionValues[]) {
     let option = options.find(f => f.name === field.name)
     if (!option) {
       return

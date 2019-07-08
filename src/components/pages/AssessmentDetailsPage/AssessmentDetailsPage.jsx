@@ -314,7 +314,11 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   loadTargetOptions(): Promise<void> {
     let localData = this.getLocalData()
-    return providerStore.getDestinationOptions(localData.endpoint.id, localData.endpoint.type).then(options => {
+    return providerStore.getOptionsValues({
+      optionsType: 'destination',
+      endpointId: localData.endpoint.id,
+      provider: localData.endpoint.type,
+    }).then(options => {
       let locations = options.find(o => o.name === 'location')
       if (locations && locations.values) {
         let localDataFind = locations.values.find(l => l.id === localData.locationName)
@@ -338,9 +342,14 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   loadTargetVmSizes() {
     let localData = this.getLocalData()
     this.setState({ loadingTargetVmSizes: true })
-    providerStore.getDestinationOptions(localData.endpoint.id, localData.endpoint.type, {
-      location: localData.locationName,
-      resource_group: localData.resourceGroupName,
+    providerStore.getOptionsValues({
+      optionsType: 'destination',
+      endpointId: localData.endpoint.id,
+      provider: localData.endpoint.type,
+      envData: {
+        location: localData.locationName,
+        resource_group: localData.resourceGroupName,
+      },
     }).then(options => {
       let vmSizes = options.find(o => o.name === 'vm_size')
       if (vmSizes && vmSizes.values) {

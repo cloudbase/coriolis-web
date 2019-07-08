@@ -335,7 +335,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'source-options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.sourceSchemaLoading}
+            loading={this.props.providerStore.sourceSchemaLoading || this.props.providerStore.sourceOptionsLoading}
             fields={this.props.providerStore.sourceSchema}
             onChange={this.props.onSourceOptionsChange}
             data={this.props.wizardData.sourceOptions}
