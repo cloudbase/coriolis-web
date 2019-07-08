@@ -81,9 +81,6 @@ const TextLine = styled.div`
     margin-left: 6px;
   }
 `
-const Link = styled.a`
-  color: inherit;
-`
 const LinkMock = styled.span`
   text-decoration: underline;
   cursor: pointer;
@@ -134,8 +131,6 @@ class AboutModal extends React.Component<Props, State> {
                 <Text>
                   <TextLine>
                     <span>Version {this.state.version}</span>
-                    <span>|</span>
-                    <Link href="https://github.com/cloudbase/coriolis/issues" target="_blank">Report an Issue</Link>
                     <span>|</span>
                     <LinkMock onClick={() => { logger.download() }} >Download Log</LinkMock>
                   </TextLine>
