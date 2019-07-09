@@ -99,6 +99,7 @@
     "react-notification-system": "^0.2.15",
     "react-router-dom": "^4.2.2",
     "react-tooltip": "^3.10.0",
+    "request": "^2.88.0",
     "require-without-cache": "^0.0.6",
     "rimraf": "^2.6.2",
     "styled-components": "2.2.0",
