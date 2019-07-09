@@ -67,7 +67,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     document.title = 'Migration Details'
 
     endpointStore.getEndpoints()
-    this.loadMigrationWithInstances(this.props.match.params.id)
+    this.loadMigrationWithInstances(this.props.match.params.id, true)
     this.pollData()
   }
 
@@ -77,7 +77,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     }
 
     endpointStore.getEndpoints()
-    this.loadMigrationWithInstances(newProps.match.params.id)
+    this.loadMigrationWithInstances(newProps.match.params.id, true)
   }
 
   componentWillUnmount() {
@@ -85,7 +85,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     clearTimeout(this.pollTimeout)
   }
 
-  loadMigrationWithInstances(migrationId: string) {
+  loadMigrationWithInstances(migrationId: string, cache: boolean) {
     migrationStore.getMigration(migrationId, true).then(() => {
       let details = migrationStore.migrationDetails
       if (!details) {
@@ -94,12 +94,13 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
       networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
         quietError: true,
+        useLocalStorage: cache,
       })
       instanceStore.loadInstancesDetails(
         details.origin_endpoint_id,
         // $FlowIgnore
         details.instances.map(n => { return { instance_name: n } }),
-        false, true
+        false, cache
       )
     })
   }
@@ -195,6 +196,10 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     })
   }
 
+  handleEditReplicaReload() {
+    this.loadMigrationWithInstances(this.props.match.params.id, false)
+  }
+
   handleUpdateComplete(redirectTo: string) {
     this.props.history.push(redirectTo)
   }
@@ -222,6 +227,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
         networks={networkStore.networks}
         networksLoading={networkStore.loading}
+        onReloadClick={() => { this.handleEditReplicaReload() }}
       />
     )
   }
