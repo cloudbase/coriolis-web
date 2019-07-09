@@ -54,6 +54,19 @@ class ObjectUtils {
 
     return result
   }
+
+  static waitFor(predicate: () => boolean): Promise<void> {
+    let test = () => new Promise((resolve) => {
+      if (predicate()) {
+        resolve()
+        return
+      }
+      setTimeout(() => {
+        test()
+      }, 1000)
+    })
+    return test()
+  }
 }
 
 export default ObjectUtils

@@ -32,6 +32,7 @@ import type { MainItem } from '../../../types/MainItem'
 import type { Execution } from '../../../types/Execution'
 import type { Schedule } from '../../../types/Schedule'
 import type { Field } from '../../../types/Field'
+import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 
 import replicaStore from '../../../stores/ReplicaStore'
 import migrationStore from '../../../stores/MigrationStore'
@@ -41,7 +42,10 @@ import scheduleStore from '../../../stores/ScheduleStore'
 import instanceStore from '../../../stores/InstanceStore'
 import networkStore from '../../../stores/NetworkStore'
 import notificationStore from '../../../stores/NotificationStore'
+import providerStore from '../../../stores/ProviderStore'
 import configLoader from '../../../utils/Config'
+import utils from '../../../utils/ObjectUtils'
+import { providerTypes } from '../../../constants'
 
 import replicaImage from './images/replica.svg'
 import Palette from '../../styleUtils/Palette'
@@ -61,6 +65,7 @@ type State = {
   showDeleteReplicaDisksConfirmation: boolean,
   confirmationItem: ?MainItem | ?Execution,
   showCancelConfirmation: boolean,
+  isEditable: boolean,
 }
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
@@ -73,6 +78,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     showDeleteReplicaDisksConfirmation: false,
     confirmationItem: null,
     showCancelConfirmation: false,
+    isEditable: false,
   }
 
   pollTimeout: TimeoutID
@@ -99,12 +105,29 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     clearTimeout(this.pollTimeout)
   }
 
+  loadIsEditable(replicaDetails: MainItem) {
+    let targetEndpointId = replicaDetails.destination_endpoint_id
+    providerStore.loadProviders()
+      .then(() => utils.waitFor(() => endpointStore.endpoints.length > 0))
+      .then(() => {
+        let endpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
+        if (!endpoint) {
+          return
+        }
+        let isEditable = providerStore.providers && providerStore.providers[endpoint.type] ?
+          !!providerStore.providers[endpoint.type].types.find(t => t === providerTypes.UPDATE)
+          : false
+        this.setState({ isEditable })
+      })
+  }
+
   loadReplicaWithInstances(replicaId: string, cache: boolean) {
     replicaStore.getReplica(replicaId).then(() => {
       let details = replicaStore.replicaDetails
       if (!details) {
         return
       }
+      this.loadIsEditable(details)
       networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
         quietError: true,
         useLocalStorage: cache,
@@ -344,7 +367,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
-    let dropdownActions = [{
+    let dropdownActions: DropdownAction[] = [{
       label: 'Execute',
       action: () => { this.handleExecuteClick() },
       hidden: this.isExecuteDisabled(),
@@ -359,6 +382,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }, {
       label: 'Edit',
       action: () => { this.handleReplicaEditClick() },
+      disabled: !this.state.isEditable,
     }, {
       label: 'Delete Disks',
       action: () => { this.handleDeleteReplicaDisksClick() },

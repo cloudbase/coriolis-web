@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 export type Providers = {
-  [string]: {
+  [provider: string]: {
     types: number[],
   },
 }
