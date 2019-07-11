@@ -38,8 +38,9 @@ import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoi
 import type { Field } from '../../../types/Field'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Network, NetworkMap } from '../../../types/Network'
-import { providerTypes } from '../../../constants'
 
+import { providerTypes } from '../../../constants'
+import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
 
 const PanelContent = styled.div`
@@ -82,8 +83,9 @@ type Props = {
   onReloadClick: () => void,
 }
 type State = {
-  selectedPanel: string,
+  selectedPanel: ?string,
   destinationData: any,
+  sourceData: any,
   updateDisabled: boolean,
   selectedNetworks: NetworkMap[],
   storageMap: StorageMap[],
@@ -92,8 +94,9 @@ type State = {
 @observer
 class EditReplica extends React.Component<Props, State> {
   state = {
-    selectedPanel: 'dest_options',
+    selectedPanel: null,
     destinationData: {},
+    sourceData: {},
     updateDisabled: false,
     selectedNetworks: [],
     storageMap: [],
@@ -103,6 +106,8 @@ class EditReplica extends React.Component<Props, State> {
 
   componentWillMount() {
     this.loadData(true)
+
+    this.setState({ selectedPanel: this.hasSourceOptions() ? 'source_options' : 'dest_options' })
   }
 
   loadData(useCache: boolean) {
@@ -112,16 +117,26 @@ class EditReplica extends React.Component<Props, State> {
       }
     })
 
-    providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica', useCache).then(() => {
-      return providerStore.getOptionsValues({
+    providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica', useCache)
+      .then(() => providerStore.getOptionsValues({
         optionsType: 'destination',
         endpointId: this.props.destinationEndpoint.id,
         provider: this.props.destinationEndpoint.type,
         useCache,
+      })).then(() => {
+        this.loadEnvDestinationOptions()
       })
-    }).then(() => {
-      this.loadEnvDestinationOptions()
-    })
+
+    if (!this.hasSourceOptions()) {
+      return
+    }
+    providerStore.loadSourceSchema(this.props.sourceEndpoint.type, this.props.type || 'replica', useCache)
+      .then(() => providerStore.getOptionsValues({
+        optionsType: 'source',
+        endpointId: this.props.sourceEndpoint.id,
+        provider: this.props.sourceEndpoint.type,
+        useCache,
+      }))
   }
 
   hasStorageMap(): boolean {
@@ -135,31 +150,37 @@ class EditReplica extends React.Component<Props, State> {
       : false
   }
 
+  hasSourceOptions(): boolean {
+    return Boolean(configLoader.config.sourceOptionsProviders.find(p => p === this.props.sourceEndpoint.type))
+  }
+
   isUpdateDisabled() {
     let isLoadingDestOptions = this.state.selectedPanel === 'dest_options'
       && (providerStore.destinationSchemaLoading || providerStore.destinationOptionsLoading)
+    let isLoadingSourceOptions = this.state.selectedPanel === 'source_options'
+      && (providerStore.sourceSchemaLoading || providerStore.sourceOptionsLoading)
     let isLoadingNetwork = this.state.selectedPanel === 'network_mapping' && this.props.instancesDetailsLoading
     let isLoadingStorage = this.state.selectedPanel === 'storage_mapping'
       && (this.props.instancesDetailsLoading || endpointStore.storageLoading)
-    return this.state.updateDisabled || isLoadingDestOptions || isLoadingNetwork || isLoadingStorage
+    return this.state.updateDisabled || isLoadingSourceOptions || isLoadingDestOptions || isLoadingNetwork || isLoadingStorage
   }
 
-  parseReplicaData() {
+  parseReplicaData(environment: ?{ [string]: mixed }) {
     let data = {}
-    let destEnv = this.props.replica.destination_environment
-    if (!destEnv) {
+    let env = environment
+    if (!env) {
       return data
     }
-    Object.keys(destEnv).forEach(key => {
-      if (destEnv[key] && typeof destEnv[key] === 'object') {
-        Object.keys(destEnv[key]).forEach(subkey => {
-          let destParent: any = destEnv[key]
+    Object.keys(env).forEach(key => {
+      if (env[key] && typeof env[key] === 'object') {
+        Object.keys(env[key]).forEach(subkey => {
+          let destParent: any = env[key]
           if (destParent[subkey]) {
             data[`${key}/${subkey}`] = destParent[subkey]
           }
         })
       } else {
-        data[key] = destEnv[key]
+        data[key] = env[key]
       }
     })
     return data
@@ -170,7 +191,7 @@ class EditReplica extends React.Component<Props, State> {
       provider: this.props.destinationEndpoint.type,
       destSchema: providerStore.destinationSchema,
       data: {
-        ...this.parseReplicaData(),
+        ...this.parseReplicaData(this.props.replica.destination_environment),
         ...this.state.destinationData,
       },
       field,
@@ -187,11 +208,14 @@ class EditReplica extends React.Component<Props, State> {
     }
   }
 
-  validateDestinationOptions() {
+  validateOptions(type: 'source' | 'destination') {
+    let env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
+    let data = type === 'source' ? this.state.sourceData : this.state.destinationData
+    let schema = type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
     let isValid = isOptionsPageValid({
-      ...this.parseReplicaData(),
-      ...this.state.destinationData,
-    }, providerStore.destinationSchema)
+      ...this.parseReplicaData(env),
+      ...data,
+    }, schema)
 
     this.setState({ updateDisabled: !isValid })
   }
@@ -205,32 +229,39 @@ class EditReplica extends React.Component<Props, State> {
     this.loadData(false)
   }
 
-  handleDestinationFieldChange(field: Field, value: any) {
-    let destinationData = { ...this.state.destinationData }
+  handleFieldChange(type: 'source' | 'destination', field: Field, value: any) {
+    let data = type === 'source' ? { ...this.state.sourceData } : { ...this.state.destinationData }
     if (field.type === 'array') {
-      let oldValues: string[] = destinationData[field.name] || []
+      let oldValues: string[] = data[field.name] || []
       if (oldValues.find(v => v === value)) {
-        destinationData[field.name] = oldValues.filter(v => v !== value)
+        data[field.name] = oldValues.filter(v => v !== value)
       } else {
-        destinationData[field.name] = [...oldValues, value]
+        data[field.name] = [...oldValues, value]
       }
     } else {
-      destinationData[field.name] = value
+      data[field.name] = value
     }
 
-    this.setState({ destinationData }, () => {
-      if (field.type !== 'string' || field.enum) {
-        this.loadEnvDestinationOptions(field)
-      }
+    if (type === 'source') {
+      this.setState({ sourceData: data }, () => {
+        this.validateOptions('source')
+      })
+    } else {
+      this.setState({ destinationData: data }, () => {
+        if (field.type !== 'string' || field.enum) {
+          this.loadEnvDestinationOptions(field)
+        }
 
-      this.validateDestinationOptions()
-    })
+        this.validateOptions('destination')
+      })
+    }
   }
 
   handleUpdateClick() {
     this.setState({ updateDisabled: true })
 
     let updateData: UpdateData = {
+      source: this.state.sourceData,
       destination: this.state.destinationData,
       network: this.state.selectedNetworks.length > 0 ? this.getSelectedNetworks() : [],
       storage: this.state.destinationData.default_storage || this.state.storageMap.length > 0 ? this.getStorageMap() : [],
@@ -266,15 +297,22 @@ class EditReplica extends React.Component<Props, State> {
     this.setState({ storageMap })
   }
 
-  getFieldValue(fieldName: string, defaultValue: any) {
-    if (this.state.destinationData[fieldName] === undefined) {
-      let replicaData = this.parseReplicaData()
+  getFieldValue(type: 'source' | 'destination', fieldName: string, defaultValue: any) {
+    let currentData = type === 'source' ? this.state.sourceData : this.state.destinationData
+    if (currentData[fieldName] === undefined) {
+      let replicaData = this.parseReplicaData(type === 'source' ? this.props.replica.source_environment
+        : this.props.replica.destination_environment)
       if (replicaData[fieldName] !== undefined) {
         return replicaData[fieldName]
       }
+      let osMapping = /^(windows|linux)_os_image$/.exec(fieldName)
+      if (osMapping) {
+        let osData = replicaData[`migr_image_map/${osMapping[1]}`]
+        return osData
+      }
       return defaultValue
     }
-    return this.state.destinationData[fieldName]
+    return currentData[fieldName]
   }
 
   getSelectedNetworks(): NetworkMap[] {
@@ -335,26 +373,28 @@ class EditReplica extends React.Component<Props, State> {
     return storageMap
   }
 
-  renderDestinationOptions() {
-    if (providerStore.destinationSchemaLoading || providerStore.destinationOptionsLoading) {
-      return this.renderLoading('Loading target options ...')
+  renderOptions(type: 'source' | 'destination') {
+    let loading = type === 'source' ? (providerStore.sourceSchemaLoading || providerStore.sourceOptionsLoading) :
+      providerStore.destinationSchemaLoading || providerStore.destinationOptionsLoading
+    if (loading) {
+      return this.renderLoading(`Loading ${type === 'source' ? 'source' : 'target'} options ...`)
     }
-    let fields = this.props.type === 'replica' ? providerStore.destinationSchema.filter(f => !f.readOnly) :
-      providerStore.destinationSchema
+    let schema = type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
+    let fields = this.props.type === 'replica' ? schema.filter(f => !f.readOnly) : schema
 
     return (
       <WizardOptions
-        wizardType="replica-dest-options-edit"
-        getFieldValue={(f, d) => this.getFieldValue(f, d)}
+        wizardType={`replica-${type}-options-edit`}
+        getFieldValue={(f, d) => this.getFieldValue(type, f, d)}
         fields={fields}
-        hasStorageMap={this.hasStorageMap()}
-        onChange={(f, v) => { this.handleDestinationFieldChange(f, v) }}
-        storageBackends={endpointStore.storageBackends}
-        useAdvancedOptions
+        hasStorageMap={type === 'source' ? false : this.hasStorageMap()}
+        onChange={(f, v) => { this.handleFieldChange(type, f, v) }}
+        oneColumnStyle={{ marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
         columnStyle={{ marginRight: 0 }}
         fieldWidth={StyleProps.inputSizes.large.width}
         onScrollableRef={ref => { this.scrollableRef = ref }}
         availableHeight={384}
+        useAdvancedOptions
       />
     )
   }
@@ -372,7 +412,7 @@ class EditReplica extends React.Component<Props, State> {
         storageBackends={endpointStore.storageBackends}
         instancesDetails={this.props.instancesDetails}
         storageMap={this.getStorageMap()}
-        defaultStorage={this.getFieldValue('default_storage')}
+        defaultStorage={this.getFieldValue('destination', 'default_storage')}
         onChange={(s, t, type) => { this.handleStorageChange(s, t, type) }}
       />
     )
@@ -394,8 +434,11 @@ class EditReplica extends React.Component<Props, State> {
   renderContent() {
     let content = null
     switch (this.state.selectedPanel) {
+      case 'source_options':
+        content = this.renderOptions('source')
+        break
       case 'dest_options':
-        content = this.renderDestinationOptions()
+        content = this.renderOptions('destination')
         break
       case 'network_mapping':
         content = this.renderNetworkMapping()
@@ -439,13 +482,17 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   render() {
-    const navigationItems: NavigationItem[] = [
+    let navigationItems: NavigationItem[] = [
       { value: 'dest_options', label: 'Target Options' },
       { value: 'network_mapping', label: 'Network Mapping' },
     ]
 
     if (this.hasStorageMap()) {
       navigationItems.push({ value: 'storage_mapping', label: 'Storage Mapping' })
+    }
+
+    if (this.hasSourceOptions()) {
+      navigationItems.splice(0, 0, { value: 'source_options', label: 'Source Options' })
     }
 
     return (

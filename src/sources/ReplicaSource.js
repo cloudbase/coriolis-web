@@ -176,6 +176,10 @@ class ReplicaSource {
       payload.replica.destination_environment = parser.getDestinationEnv(updateData.destination, replica.destination_environment)
     }
 
+    if (Object.keys(updateData.source).length > 0) {
+      payload.replica.source_environment = parser.getDestinationEnv(updateData.source, replica.source_environment)
+    }
+
     if (updateData.storage.length > 0) {
       payload.replica.storage_mappings = parser.getStorageMap(updateData.destination, updateData.storage)
     }

@@ -85,6 +85,7 @@ type Props = {
   wizardType: string,
   loading?: boolean,
   columnStyle?: { [string]: mixed },
+  oneColumnStyle?: { [string]: mixed },
   fieldWidth?: number,
   onScrollableRef?: (ref: HTMLElement) => void,
   availableHeight?: number,
@@ -214,7 +215,7 @@ class WizardOptions extends React.Component<Props> {
     if (fields.length * 96 < availableHeight) {
       return (
         <Fields>
-          <OneColumn>
+          <OneColumn style={this.props.oneColumnStyle}>
             {fields.map(f => f.component)}
           </OneColumn>
         </Fields>

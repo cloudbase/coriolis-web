@@ -70,7 +70,7 @@ export type NavigationItem = {
 export type Props = {
   navigationItems: NavigationItem[],
   content: React.Node,
-  selectedValue: string,
+  selectedValue: ?string,
   onChange: (item: NavigationItem) => void,
   style?: any,
   onReloadClick: () => void,
@@ -90,10 +90,10 @@ class Panel extends React.Component<Props> {
     return (
       <Wrapper style={this.props.style}>
         <Navigation>
-          {this.props.navigationItems.map(item => (
+          {this.props.navigationItems.map((item, i) => (
             <NavigationItemDiv
               key={item.value}
-              selected={this.props.selectedValue === item.value}
+              selected={this.props.selectedValue ? this.props.selectedValue === item.value : i === 0}
               onClick={() => { this.handleItemClick(item) }}
               data-test-id={`${TEST_ID}-navItem-${item.value}`}
             >{item.label}</NavigationItemDiv>
