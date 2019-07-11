@@ -500,7 +500,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
           items={NavigationItems}
           selectedValue={this.props.page}
           itemId={this.props.item ? this.props.item.id : ''}
-          customHref={() => null}
+          customHref={() => '#'}
         />
         <DetailsBody>
           {this.props.detailsLoading ? null : this.renderMainDetails()}

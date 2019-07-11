@@ -23,7 +23,7 @@ import type { User } from '../../../types/User'
 import type { Project, Role } from '../../../types/Project'
 import Button from '../../atoms/Button'
 import Modal from '../../molecules/Modal'
-import Field, { Asterisk } from '../../molecules/EndpointField'
+import Field from '../../molecules/EndpointField'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -33,13 +33,13 @@ import userImage from './images/user.svg'
 import KeyboardManager from '../../../utils/KeyboardManager'
 
 const Wrapper = styled.div`
-  padding: 48px 32px 32px 32px;
+  padding: 48px 0 32px 0;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 `
 const Image = styled.div`
-  width: 96px;
-  height: 96px;
+  ${StyleProps.exactSize('96px')}
   background: url('${userImage}') center no-repeat;
   margin: 0 auto;
 `
@@ -52,6 +52,7 @@ const Form = styled.div`
   flex-wrap: wrap;
   margin-top: 32px;
   overflow: auto;
+  padding: 0 32px;
 
   > div {
     margin-top: 16px;
@@ -74,6 +75,7 @@ const Buttons = styled.div`
   margin-top: 32px;
   display: flex;
   justify-content: space-between;
+  padding: 0 32px;
 `
 
 type Props = {
@@ -330,7 +332,6 @@ class ProjectMemberModal extends React.Component<Props, State> {
         <FormField>
           <FormLabel>
             Username
-            <Asterisk marginLeft="8px" />
           </FormLabel>
           <AutocompleteDropdown
             data-test-id={`${testName}-users`}
@@ -341,6 +342,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
             onChange={item => {
               this.setState({ selectedUser: this.props.users.find(u => u.id === item.value) })
             }}
+            required
           />
         </FormField>
         {this.renderRolesField()}

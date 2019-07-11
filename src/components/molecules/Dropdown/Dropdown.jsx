@@ -28,6 +28,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 
 import checkmarkImage from './images/checkmark'
 import tipImage from './images/tip'
+import requiredImage from './images/required.svg'
 
 const getWidth = props => {
   if (props.large) {
@@ -43,6 +44,14 @@ const getWidth = props => {
 const Wrapper = styled.div`
   position: relative;
   ${props => props.embedded ? 'width: 100%;' : ''}
+`
+const Required = styled.div`
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  right: -16px;
+  top: 12px;
+  background: url('${requiredImage}') center no-repeat;
 `
 const List = styled.div`
   position: absolute;
@@ -196,6 +205,7 @@ type Props = {
   multipleSelection?: boolean,
   selectedItems?: string[],
   highlight?: boolean,
+  required?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -473,6 +483,7 @@ class Dropdown extends React.Component<Props, State> {
           value={buttonValue()}
           onClick={() => this.handleButtonClick()}
         />
+        {this.props.required ? <Required /> : null}
         {this.renderList()}
       </Wrapper>
     )

@@ -29,7 +29,7 @@ import userImage from './images/user.svg'
 import KeyboardManager from '../../../utils/KeyboardManager'
 
 const Wrapper = styled.div`
-  padding: 48px 32px 32px 32px;
+  padding: 48px 0 32px 0;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -46,6 +46,7 @@ const Form = styled.div`
   flex-wrap: wrap;
   margin-top: 64px;
   overflow: auto;
+  padding: 0 32px;
 
   > div {
     margin-top: 16px;
@@ -55,6 +56,7 @@ const Buttons = styled.div`
   margin-top: 32px;
   display: flex;
   justify-content: space-between;
+  padding: 0 32px;
 `
 
 type Props = {
@@ -182,7 +184,6 @@ class UserModal extends React.Component<Props, State> {
         disabled={disabled}
         enum={field.enum}
         password={field.name === 'new_password' || field.name === 'confirm_password'}
-        // $FlowIssue
         required={field.required}
         highlight={Boolean(this.state.highlightFieldNames.find(n => n === field.name))}
         noSelectionMessage="Choose a project"

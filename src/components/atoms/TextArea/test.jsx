@@ -17,16 +17,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+
+import TestWrapper from '../../../utils/TestWrapper'
 import TextArea from '.'
 
-const wrap = props => shallow(<TextArea {...props} />)
+const wrap = props => new TestWrapper(shallow(<TextArea {...props} />), 'textArea')
 
 describe('TextArea Component', () => {
   it('dispatches change', () => {
     const onChange = sinon.spy()
-    const wrapper = wrap({ value: 'the_value', onChange })
-    expect(wrapper.prop('value')).toBe('the_value')
-    wrapper.simulate('change', { value: 'A' })
+    const wrapper = wrap({
+      value: 'the_value',
+      onChange,
+    })
+    let input = wrapper.find('input')
+    expect(input.prop('value')).toBe('the_value')
+    input.simulate('change', { value: 'A' })
     expect(onChange.args[0][0].value).toBe('A')
   })
 })

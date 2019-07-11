@@ -141,7 +141,8 @@ type Props = {
   itemStyle?: (item: ItemType) => string,
   style?: { [mixed]: any },
   labelStyle?: any,
-  getLabel?: () => string
+  getLabel?: () => string,
+  required?: boolean,
 }
 type State = {
   showDropdownList: boolean,

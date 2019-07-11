@@ -33,8 +33,6 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 
-import asteriskImage from './images/asterisk.svg'
-
 const Wrapper = styled.div``
 const Label = styled.div`
   font-size: 10px;
@@ -47,14 +45,6 @@ const Label = styled.div`
 `
 const LabelText = styled.span`
   margin-right: 24px;
-`
-export const Asterisk = styled.div`
-  ${StyleProps.exactSize('12px')}
-  display: inline-block;
-  background: url('${asteriskImage}') center no-repeat;
-  margin-bottom: 2px;
-  margin-left: ${props => props.marginLeft || '0px'};
-  opacity: 0.8;
 `
 
 type Props = {
@@ -108,6 +98,7 @@ class Field extends React.Component<Props> {
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
+        required={this.props.required}
       />
     )
   }
@@ -159,6 +150,7 @@ class Field extends React.Component<Props> {
         onChange={e => { console.log('changing', e); if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
+        required={this.props.required}
       />
     )
   }
@@ -190,6 +182,7 @@ class Field extends React.Component<Props> {
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
         highlight={this.props.highlight}
+        required={this.props.required}
       />
     )
   }
@@ -207,6 +200,7 @@ class Field extends React.Component<Props> {
         selectedItems={this.props.selectedItems}
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         highlight={this.props.highlight}
+        required={this.props.required}
       />
     )
   }
@@ -234,6 +228,7 @@ class Field extends React.Component<Props> {
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
         highlight={this.props.highlight}
+        required={this.props.required}
       />
     )
   }
@@ -273,6 +268,7 @@ class Field extends React.Component<Props> {
         placeholder={LabelDictionary.get(fieldName)}
         highlight={this.props.highlight}
         disabled={this.props.disabled}
+        required={this.props.required}
       />
     )
   }
@@ -324,7 +320,6 @@ class Field extends React.Component<Props> {
       <Label>
         <LabelText data-test-id="endpointField-label">{LabelDictionary.get(this.props.name)}</LabelText>
         {infoIcon}
-        {this.props.required ? <Asterisk data-test-id="endpointField-required" marginLeft={description ? '4px' : '-16px'} /> : null}
       </Label>
     )
   }
