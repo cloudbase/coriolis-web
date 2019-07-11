@@ -2,7 +2,7 @@ const filter = color => `
 <?xml version="1.0" encoding="UTF-8"?>
 <svg data-test-id="searchButton-filterIcon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-    <title>Search</title>
+
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="AM-Long-List" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-327.000000, -562.000000)" stroke-linecap="round" stroke-linejoin="round">
