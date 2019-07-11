@@ -197,7 +197,7 @@ class WizardPageContent extends React.Component<Props, State> {
   }
 
   getProviders(type: string): string[] {
-    let providers = []
+    let validProviders = {}
     let providerType = this.getProvidersType(type)
     let providersObject = this.props.providerStore.providers
 
@@ -207,12 +207,11 @@ class WizardPageContent extends React.Component<Props, State> {
 
     Object.keys(providersObject).forEach(provider => {
       if (providersObject[provider].types.findIndex(t => t === providerType) > -1) {
-        providers.push(provider)
+        validProviders[provider] = true
       }
     })
 
-    providers.sort((a, b) => a.localeCompare(b))
-    return providers
+    return this.props.providerStore.providerNames.filter(p => validProviders[p])
   }
 
   isNetworksPageValid() {

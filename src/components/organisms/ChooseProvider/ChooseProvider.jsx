@@ -21,7 +21,6 @@ import styled from 'styled-components'
 import EndpointLogos from '../../atoms/EndpointLogos'
 import Button from '../../atoms/Button'
 import StatusImage from '../../atoms/StatusImage'
-import type { Providers as ProvidersType } from '../../../types/Providers'
 
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -55,7 +54,7 @@ const LoadingText = styled.div`
 `
 
 type Props = {
-  providers: ?ProvidersType,
+  providers: string[],
   onCancelClick: () => void,
   onProviderClick: (provider: string) => void,
   loading: boolean,
@@ -76,16 +75,14 @@ class ChooseProvider extends React.Component<Props> {
   }
 
   renderProviders() {
-    if (!this.props.providers || this.props.loading) {
+    if (this.props.loading) {
       return null
     }
-
-    let providersArray = Object.keys(this.props.providers).sort((a, b) => a.localeCompare(b))
 
     return (
       <Providers>
         <Logos>
-          {providersArray.map(k => {
+          {this.props.providers.map(k => {
             return (
               <EndpointLogosStyled
                 height={128}
