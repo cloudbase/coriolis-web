@@ -78,6 +78,10 @@ const conf: Config = {
     opc: 3,
     oracle_vm: 3,
   },
+
+  // The list of the users to hide in the UI
+  hiddenUsers: ['barbican', 'coriolis'],
+
 }
 
 export const config = conf

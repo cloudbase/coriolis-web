@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const arrow = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="14px" height="8px" viewBox="0 0 14 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
-    <title>Chevron-Grey</title>
+
     <desc>Created with Sketch.</desc>
     <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
         <g id="dropdown-arrow-image" transform="translate(-1161.000000, -300.000000)" stroke-width="1.5">

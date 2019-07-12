@@ -1,7 +1,7 @@
 export default color => `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="12px" height="17px" viewBox="0 0 12 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
-    <title>Bell</title>
+
     <desc>Created with Sketch.</desc>
     <defs>
         <rect id="path-1" x="3" y="14.0434783" width="6" height="2.95652174"></rect>

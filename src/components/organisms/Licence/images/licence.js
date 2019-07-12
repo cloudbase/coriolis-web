@@ -2,7 +2,7 @@ export default color => `
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="68px" height="95px" viewBox="0 0 68 95" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
-    <title>Main Icon</title>
+
     <desc>Created with Sketch.</desc>
     <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="About/Add-Licence-Validated" transform="translate(-254.000000, -97.000000)" stroke="${color}">

@@ -16,7 +16,7 @@ export default `
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="96px" height="84px" viewBox="0 0 96 84" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
-    <title>Icon-Migration-VL</title>
+
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
