@@ -40,9 +40,7 @@ const conf: Config = {
   // A list of providers for which `source-options` API call(s) will be made
   // If the item is just a string with the provider name, only one API call will be made
   // If the item has `envRequiredFields`, an additional API call will be made once the specified fields are filled
-  sourceProvidersWithExtraOptions: [
-    'aws',
-  ],
+  sourceProvidersWithExtraOptions: ['aws'],
 
   // A list of providers for which `destination-options` API call(s) will be made
   // If the item is just a string with the provider name, only one API call will be made

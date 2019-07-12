@@ -32,6 +32,7 @@ export type MainItemInfo = {
 
 export type UpdateData = {
   destination: any,
+  source: any,
   network: NetworkMap[],
   storage: StorageMap[],
 }
@@ -52,6 +53,7 @@ export type MainItem = {
   type: string,
   info: { [string]: MainItemInfo },
   destination_environment: { [string]: mixed },
+  source_environment: { [string]: mixed },
   transfer_result: ?{ [string]: Instance },
   storage_mappings?: ?{
     backend_mappings: ?{

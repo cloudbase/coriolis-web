@@ -56,6 +56,8 @@ class MigrationStore {
       sourceEndpoint,
       destEndpoint,
       instanceNames: migration.instances,
+      sourceEnv: migration.source_environment,
+      updatedSourceEnv: updateData.source,
       destEnv: migration.destination_environment,
       updatedDestEnv: updateData.destination,
       storageMappings: migration.storage_mappings,

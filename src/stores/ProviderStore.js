@@ -157,13 +157,23 @@ class ProviderStore {
     })
   }
 
-  @action loadSourceSchema(providerName: string, schemaType: string): Promise<void> {
-    this.sourceSchemaLoading = true
+  sourceSchemaCache: { [string]: Field[] } = {}
+  @action loadSourceSchema(providerName: string, schemaType: string, useCache?: boolean): Promise<void> {
     this.lastSourceSchemaType = schemaType
+
+    let cacheKey = `${providerName}-${schemaType}`
+    let cacheData = this.sourceSchemaCache[cacheKey]
+    if (useCache && cacheData) {
+      this.sourceSchema = [...cacheData]
+      return Promise.resolve()
+    }
+
+    this.sourceSchemaLoading = true
 
     return ProviderSource.loadSourceSchema(providerName, schemaType).then((fields: Field[]) => {
       this.sourceSchemaLoading = false
       this.sourceSchema = fields
+      this.sourceSchemaCache[cacheKey] = fields
     }).catch(err => {
       this.sourceSchemaLoading = false
       throw err

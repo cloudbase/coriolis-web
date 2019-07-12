@@ -65,6 +65,7 @@ const defaultItem: MainItem = {
     },
   },
   destination_environment: { option1: 'value1' },
+  source_environment: { option1: 'value1' },
   transfer_result: {
     instance1: defaultInstance,
   },
