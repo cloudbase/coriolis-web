@@ -51,6 +51,8 @@ const dictionary = {
   storage_endpoint: 'Storage Endpoint Suffix',
   preserve_nic_ips: 'Preserve NIC IPs',
   openstack_use_current_user: 'Use Current User/Project/Domain for Authentification',
+  windows_os_image: 'Windows OS',
+  linux_os_image: 'Linux OS',
 }
 
 const cache: { name: string, label: ?string, description: ?string }[] = []

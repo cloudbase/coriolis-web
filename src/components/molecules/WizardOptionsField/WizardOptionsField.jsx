@@ -115,6 +115,7 @@ class WizardOptionsField extends React.Component<Props> {
         properties={this.props.properties}
         valueCallback={this.props.valueCallback}
         onChange={this.props.onChange}
+        hideRequiredSymbol
         data-test-id="wOptionsField-propertiesTable"
       />
     )
