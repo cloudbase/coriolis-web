@@ -63,6 +63,7 @@ type Props = {
   properties: Field[],
   onChange: (property: Field, value: any) => void,
   valueCallback: (property: Field) => any,
+  hideRequiredSymbol?: boolean,
 }
 @observer
 class PropertiesTable extends React.Component<Props> {
@@ -95,7 +96,7 @@ class PropertiesTable extends React.Component<Props> {
         value={this.props.valueCallback(prop)}
         onChange={e => { this.props.onChange(prop, e.target.value) }}
         placeholder={this.getName(prop.name)}
-        required={typeof prop.required === 'boolean' ? prop.required : false}
+        required={typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false}
       />
     )
   }
@@ -135,6 +136,7 @@ class PropertiesTable extends React.Component<Props> {
         selectedItem={selectedItem}
         items={items}
         onChange={item => this.props.onChange(prop, item.value)}
+        required={typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false}
       />
     )
   }
