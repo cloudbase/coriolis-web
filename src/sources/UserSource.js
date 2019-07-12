@@ -21,6 +21,7 @@ import { servicesUrl, coriolisUrl } from '../constants'
 import configLoader from '../utils/Config'
 import type { Credentials, User } from '../types/User'
 import type { Role, Project, RoleAssignment } from '../types/Project'
+import utils from '../utils/ObjectUtils'
 
 class UserModel {
   static parseUserData(data: any) {
@@ -177,8 +178,16 @@ class UserSource {
   }
 
   static getAllUsers(): Promise<User[]> {
+    let users: User[] = []
     return Api.get(`${servicesUrl.users}`)
-      .then(response => response.data.users.sort((u1, u2) => u1.name.localeCompare(u2.name)))
+      .then(response => {
+        users = response.data.users
+        return utils.waitFor(() => Boolean(configLoader.config))
+      }).then(() => {
+        users = users.filter(u => !configLoader.config.hiddenUsers.find(hu => hu === u.name))
+          .sort((u1, u2) => u1.name.localeCompare(u2.name))
+        return users
+      })
   }
 
   static update(userId: string, user: User, oldUser: ?User): Promise<User> {
