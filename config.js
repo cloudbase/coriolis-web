@@ -61,8 +61,27 @@ const conf: Config = {
     },
   ],
 
+  /*
+  Lower number means that the provider will appear sooner in the list.
+  Equal number means alphabetical order within the same group number.
+  If the provider is not in the list, it will appear later and alphabetically sorted
+  with all the other providers not in the list.
+  */
+  providerSortPriority: {
+    aws: 1,
+    openstack: 1,
+    vmware_vsphere: 1,
+    azure: 2,
+    'hyper-v': 2,
+    scvmm: 2,
+    oci: 3,
+    opc: 3,
+    oracle_vm: 3,
+  },
+
   // The list of the users to hide in the UI
   hiddenUsers: ['barbican', 'coriolis'],
+
 }
 
 export const config = conf

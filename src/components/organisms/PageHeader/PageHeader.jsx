@@ -265,7 +265,7 @@ class PageHeader extends React.Component<Props, State> {
         >
           <ChooseProvider
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
-            providers={providerStore.providers}
+            providers={providerStore.providerNames}
             loading={providerStore.providersLoading}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
           />

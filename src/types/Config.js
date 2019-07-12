@@ -11,5 +11,6 @@ export type Config = {
   instancesListBackgroundLoading: { default: number, [string]: number },
   sourceProvidersWithExtraOptions: Array<string | { name: string, envRequiredFields: string[] }>,
   destinationProvidersWithExtraOptions: Array<string | { name: string, envRequiredFields: string[] }>,
+  providerSortPriority: { [providerName: string]: number }
   hiddenUsers: string[],
 }

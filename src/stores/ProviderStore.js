@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, computed } from 'mobx'
 
 import ProviderSource from '../sources/ProviderSource'
 import configLoader from '../utils/Config'
@@ -87,6 +87,25 @@ class ProviderStore {
 
   lastDestinationSchemaType: string = ''
   lastSourceSchemaType: string = ''
+
+  @computed
+  get providerNames(): string[] {
+    let sortPriority = configLoader.config.providerSortPriority
+
+    let array = Object.keys(this.providers || {}).sort((a, b) => {
+      if (sortPriority[a] && sortPriority[b]) {
+        return (sortPriority[a] - sortPriority[b]) || a.localeCompare(b)
+      }
+      if (sortPriority[a]) {
+        return -1
+      }
+      if (sortPriority[b]) {
+        return 1
+      }
+      return a.localeCompare(b)
+    })
+    return array
+  }
 
   @action getConnectionInfoSchema(providerName: string): Promise<void> {
     this.connectionSchemaLoading = true
