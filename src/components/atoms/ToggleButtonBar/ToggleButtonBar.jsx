@@ -27,13 +27,13 @@ const Wrapper = styled.div`
 `
 const Item = styled.div`
   width: 112px;
-  height: 18px;
+  height: 14px;
   background: ${props => props.selected ? Palette.primary : 'white'};
   color: ${props => props.selected ? 'white' : Palette.primary};
   border: 1px solid ${Palette.primary};
   border-right: 1px solid white;
   text-align: center;
-  line-height: 19px;
+  line-height: 15px;
   text-transform: uppercase;
   font-size: 9px;
   font-weight: ${StyleProps.fontWeights.medium};
