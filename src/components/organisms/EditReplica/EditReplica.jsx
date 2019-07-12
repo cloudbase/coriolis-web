@@ -140,11 +140,6 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   hasStorageMap(): boolean {
-    if (this.props.type === 'replica') {
-      // storage mapping edit is not currently supported by the API
-      return false
-    }
-
     return providerStore.providers && providerStore.providers[this.props.destinationEndpoint.type] ?
       !!providerStore.providers[this.props.destinationEndpoint.type].types.find(t => t === providerTypes.STORAGE)
       : false

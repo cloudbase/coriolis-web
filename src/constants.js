@@ -43,12 +43,13 @@ export const navigationMenu = [
   { label: 'Users', value: 'users', requiresAdmin: true },
 ]
 
-// https://github.com/cloudbase/coriolis/blob/master/coriolis/constants.py
-// PROVIDER_TYPE_IMPORT = 1 // migration target schema
-// PROVIDER_TYPE_EXPORT = 2 // migration source schema
-// PROVIDER_TYPE_REPLICA_IMPORT = 4 // replica target schema
-// PROVIDER_TYPE_REPLICA_EXPORT = 8 // replica source schema
-// PROVIDER_TYPE_REPLICA_UPDATE = 65536 // the replica can be updated if provider is target
+/* https://github.com/cloudbase/coriolis/blob/master/coriolis/constants.py
+PROVIDER_TYPE_IMPORT = 1 // migration target schema
+PROVIDER_TYPE_EXPORT = 2 // migration source schema
+PROVIDER_TYPE_REPLICA_IMPORT = 4 // replica target schema
+PROVIDER_TYPE_REPLICA_EXPORT = 8 // replica source schema
+PROVIDER_TYPE_ENDPOINT_STORAGE = 32768
+PROVIDER_TYPE_REPLICA_UPDATE = 65536 // the replica can be updated if provider is target */
 export const providerTypes = {
   TARGET_MIGRATION: 1,
   SOURCE_MIGRATION: 2,
