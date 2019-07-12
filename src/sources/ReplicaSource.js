@@ -181,7 +181,8 @@ class ReplicaSource {
     }
 
     if (updateData.storage.length > 0) {
-      payload.replica.storage_mappings = parser.getStorageMap(updateData.destination, updateData.storage)
+      payload.replica.storage_mappings = parser.getStorageMap(
+        updateData.destination && updateData.destination.default_storage, updateData.storage)
     }
 
     return Api.send({
