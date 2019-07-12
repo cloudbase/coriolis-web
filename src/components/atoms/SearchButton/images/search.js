@@ -13,10 +13,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const search = color => `<?xml version="1.0" encoding="UTF-8"?>
-<svg data-test-id="searchButton-searchIcon" width="14px" height="14px" viewBox="0 0 14 14" version="1.1" 
+<svg data-test-id="searchButton-searchIcon" width="14px" height="14px" viewBox="0 0 14 14" version="1.1"
 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
-    <title>Search</title>
+
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="Coriolis" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
