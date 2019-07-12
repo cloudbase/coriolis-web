@@ -20,9 +20,18 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import closeImage from './images/close.svg'
+import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div`
   position: relative;
+`
+const Required = styled.div`
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  right: -16px;
+  top: 12px;
+  background: url('${requiredImage}') center no-repeat;
 `
 const getInputWidth = props => {
   if (props.width) {
@@ -93,6 +102,7 @@ type Props = {
   embedded?: boolean,
   height?: string,
   'data-test-id'?: string,
+  required?: boolean,
 }
 const TextInput = (props: Props) => {
   const { _ref, value, onChange, showClose, onCloseClick } = props
@@ -107,6 +117,7 @@ const TextInput = (props: Props) => {
         data-test-id="textInput-input"
         {...props}
       />
+      {props.required ? <Required /> : null}
       <Close
         data-test-id="textInput-close"
         show={showClose && value !== '' && value !== undefined}

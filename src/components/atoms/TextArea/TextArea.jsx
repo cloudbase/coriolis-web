@@ -20,6 +20,20 @@ import styled from 'styled-components'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
+import requiredImage from './images/required.svg'
+
+const Wrapper = styled.div`
+  position: relative;
+`
+const Required = styled.div`
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  right: -16px;
+  top: 12px;
+  background: url('${requiredImage}') center no-repeat;
+`
+
 const getInputWidth = props => {
   if (props.width) {
     return props.width
@@ -64,16 +78,20 @@ const Input = styled.textarea`
 class TextArea extends React.Component<any> {
   render() {
     return (
-      <Input
-        {...this.props}
-        innerRef={r => {
-          if (this.props.innerRef) {
-            this.props.innerRef(r)
-          } else if (this.props.customRef) {
-            this.props.customRef(r)
-          }
-        }}
-      />
+      <Wrapper>
+        <Input
+          {...this.props}
+          innerRef={r => {
+            if (this.props.innerRef) {
+              this.props.innerRef(r)
+            } else if (this.props.customRef) {
+              this.props.customRef(r)
+            }
+          }}
+          data-test-id="textArea-input"
+        />
+        {this.props.required ? <Required /> : null}
+      </Wrapper>
     )
   }
 }

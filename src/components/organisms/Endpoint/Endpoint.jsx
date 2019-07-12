@@ -39,7 +39,7 @@ import DefaultContentPlugin from '../../../plugins/endpoint/default/ContentPlugi
 import KeyboardManager from '../../../utils/KeyboardManager'
 
 const Wrapper = styled.div`
-  padding: 48px 32px 32px 32px;
+  padding: 48px 0 32px 0;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -101,9 +101,9 @@ const LoadingText = styled.div`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
   margin-top: 32px;
   flex-shrink: 0;
+  padding: 0 32px;
 `
 
 type Props = {

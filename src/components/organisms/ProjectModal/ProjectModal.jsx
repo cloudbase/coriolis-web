@@ -125,7 +125,6 @@ class ProjectModal extends React.Component<Props, State> {
         onChange={onChange}
         large
         disabled={this.props.loading}
-        // $FlowIssue
         required={field.required}
         highlight={Boolean(this.state.highlightFieldNames.find(n => n === field.name))}
       />

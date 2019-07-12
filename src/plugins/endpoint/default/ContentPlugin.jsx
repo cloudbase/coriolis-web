@@ -28,6 +28,7 @@ export const Wrapper = styled.div`
 export const Fields = styled.div`
   display: flex;
   margin-top: 32px;
+  padding: 0 32px;
   flex-direction: column;
   overflow: auto;
 `

@@ -19,7 +19,6 @@ import { shallow } from 'enzyme'
 import TestWrapper from '../../../utils/TestWrapper'
 import EndpointField from '.'
 
-// $FlowIgnore
 const wrap = props => new TestWrapper(shallow(<EndpointField {...props} />), 'endpointField')
 
 describe('EndpointField Component', () => {
@@ -62,23 +61,7 @@ describe('EndpointField Component', () => {
     expect(textInput.prop('large')).toBe(true)
     expect(textInput.prop('disabled')).toBe(true)
     expect(textInput.prop('highlight')).toBe(true)
-  })
-
-  it('renders required', () => {
-    let wrapper = wrap({
-      type: 'boolean',
-      value: true,
-      name: 'the_name',
-      required: true,
-    })
-    expect(wrapper.find('required').length).toBe(1)
-    wrapper = wrap({
-      type: 'boolean',
-      value: true,
-      name: 'the_name',
-      required: false,
-    })
-    expect(wrapper.find('required').length).toBe(0)
+    expect(textInput.prop('required')).toBe(true)
   })
 
   it('renders integer dropdown field with correct items', () => {

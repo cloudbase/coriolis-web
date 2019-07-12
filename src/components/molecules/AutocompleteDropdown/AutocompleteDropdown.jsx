@@ -28,6 +28,8 @@ import Palette from '../../styleUtils/Palette'
 import DomUtils from '../../../utils/DomUtils'
 import StyleProps from '../../styleUtils/StyleProps'
 
+import requiredImage from './images/required.svg'
+
 const getWidth = props => {
   if (props.width) {
     return props.width - 2
@@ -42,6 +44,14 @@ const getWidth = props => {
 const Wrapper = styled.div`
   position: relative;
   ${props => props.width ? css`width: ${props.width}px;` : ''}
+`
+const Required = styled.div`
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  right: -16px;
+  top: 12px;
+  background: url('${requiredImage}') center no-repeat;
 `
 const List = styled.div`
   position: absolute;
@@ -108,6 +118,7 @@ type Props = {
   dimNullValue?: boolean,
   highlight?: boolean,
   'data-test-id'?: string,
+  required?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -429,6 +440,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           highlight={this.props.highlight}
           disabled={this.props.disabled}
         />
+        {this.props.required ? <Required /> : null}
         {this.renderList()}
       </Wrapper>
     )

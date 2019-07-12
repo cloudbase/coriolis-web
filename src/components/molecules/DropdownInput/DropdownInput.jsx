@@ -25,6 +25,7 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import arrowImage from './images/arrow'
+import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,6 +33,15 @@ const Wrapper = styled.div`
   border: 1px solid ${props => props.disabled ? Palette.grayscale[0] : props.highlight ? Palette.alert : Palette.grayscale[3]};
   border-radius: ${StyleProps.borderRadius};
   height: ${StyleProps.inputSizes.regular.height - 2}px;
+  position: relative;
+`
+const Required = styled.div`
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  right: -16px;
+  top: 12px;
+  background: url('${requiredImage}') center no-repeat;
 `
 const linkButtonStyle = props => {
   return {
@@ -58,6 +68,7 @@ type Props = {
   placeholder?: string,
   highlight?: boolean,
   disabled?: boolean,
+  required?: boolean,
 }
 type State = {}
 @observer
@@ -86,6 +97,7 @@ class DropdownInput extends React.Component<Props, State> {
           disabled={this.props.disabled}
           data-test-id="ddInput-text"
         />
+        {this.props.required ? <Required /> : null}
       </Wrapper>
     )
   }
