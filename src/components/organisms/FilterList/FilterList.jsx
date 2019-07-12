@@ -103,8 +103,9 @@ class FilterList extends React.Component<Props, State> {
       selectAllSelected,
       filterStatus: item.value,
       items,
+    }, () => {
+      this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
     })
-    this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
   }
 
   handleSearchChange(text: string) {
@@ -121,8 +122,9 @@ class FilterList extends React.Component<Props, State> {
       selectedItems.push(item)
     }
 
-    this.setState({ selectedItems, selectAllSelected: false })
-    this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
+    this.setState({ selectedItems, selectAllSelected: false }, () => {
+      this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
+    })
   }
 
   handleSelectAllChange(selected: boolean) {
@@ -131,16 +133,17 @@ class FilterList extends React.Component<Props, State> {
       selectedItems = this.state.items.slice(0)
     }
 
-    this.setState({ selectedItems, selectAllSelected: selected })
-    this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
+    this.setState({ selectedItems, selectAllSelected: selected }, () => {
+      this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
+    })
   }
 
   filterItems(items: MainItem[], filterStatus?: ?string, filterText?: string): MainItem[] {
     filterStatus = filterStatus || this.state.filterStatus
     filterText = typeof filterText === 'undefined' ? this.state.filterText : filterText
-    let filteredItems = items.filter(item => {
-      return this.props.itemFilterFunction(item, filterStatus, filterText)
-    })
+    let filteredItems = items.filter(item =>
+      this.props.itemFilterFunction(item, filterStatus, filterText)
+    )
 
     return filteredItems
   }
