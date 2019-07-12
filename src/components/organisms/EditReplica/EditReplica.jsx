@@ -265,6 +265,8 @@ class EditReplica extends React.Component<Props, State> {
       replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData).then(() => {
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/replica/executions/${this.props.replica.id}`)
+      }).catch(() => {
+        this.setState({ updateDisabled: false })
       })
     } else {
       migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData)
@@ -272,6 +274,8 @@ class EditReplica extends React.Component<Props, State> {
           migrationStore.clearDetails()
           this.props.onRequestClose()
           this.props.onUpdateComplete(`/migration/tasks/${migration.id}`)
+        }).catch(() => {
+          this.setState({ updateDisabled: false })
         })
     }
   }
@@ -383,6 +387,7 @@ class EditReplica extends React.Component<Props, State> {
         getFieldValue={(f, d) => this.getFieldValue(type, f, d)}
         fields={fields}
         hasStorageMap={type === 'source' ? false : this.hasStorageMap()}
+        storageBackends={endpointStore.storageBackends}
         onChange={(f, v) => { this.handleFieldChange(type, f, v) }}
         oneColumnStyle={{ marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
         columnStyle={{ marginRight: 0 }}
