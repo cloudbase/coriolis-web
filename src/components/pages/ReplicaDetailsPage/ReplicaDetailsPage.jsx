@@ -81,7 +81,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     isEditable: false,
   }
 
-  pollTimeout: TimeoutID
+  stopPolling: ?boolean
 
   componentDidMount() {
     document.title = 'Replica Details'
@@ -102,7 +102,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   componentWillUnmount() {
     replicaStore.clearDetails()
     scheduleStore.clearUnsavedSchedules()
-    clearTimeout(this.pollTimeout)
+    this.stopPolling = true
   }
 
   loadIsEditable(replicaDetails: MainItem) {
@@ -306,7 +306,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   pollData(showLoading: boolean) {
-    if (this.state.showEditModal) {
+    if (this.state.showEditModal || this.stopPolling) {
       return
     }
 
@@ -315,7 +315,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
 
     replicaStore.getReplicaExecutions(this.props.match.params.id, showLoading).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
+      setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
     })
   }
 

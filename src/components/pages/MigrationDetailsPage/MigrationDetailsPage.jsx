@@ -61,7 +61,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     showFromReplicaModal: false,
   }
 
-  pollTimeout: TimeoutID
+  stopPolling: ?boolean
 
   componentDidMount() {
     document.title = 'Migration Details'
@@ -82,7 +82,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
   componentWillUnmount() {
     migrationStore.clearDetails()
-    clearTimeout(this.pollTimeout)
+    this.stopPolling = true
   }
 
   loadMigrationWithInstances(migrationId: string, cache: boolean) {
@@ -178,11 +178,11 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   pollData() {
-    if (this.state.showEditModal) {
+    if (this.state.showEditModal || this.stopPolling) {
       return
     }
     migrationStore.getMigration(this.props.match.params.id, false).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+      setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }
 
