@@ -55,22 +55,19 @@ class ObjectUtils {
     return result
   }
 
-  static waitFor(predicate: () => boolean, timeout?: number = 15000): Promise<void> {
-    let start = new Date().getTime()
-    let test = () => new Promise((resolve, reject) => {
+  static waitFor(predicate: () => boolean, timeoutMs?: number = 15000): Promise<void> {
+    let wait = (ms: number) => new Promise(resolve => { setTimeout(() => { resolve() }, ms) })
+    let startTime = new Date().getTime()
+    let testLoop = (): Promise<void> => {
       if (predicate()) {
-        resolve()
-        return
+        return Promise.resolve()
       }
-      setTimeout(() => {
-        if (new Date().getTime() - start < timeout) {
-          test()
-        } else {
-          reject(`Timeout: waiting for more than ${timeout} ms`)
-        }
-      }, 1000)
-    })
-    return test()
+      if (new Date().getTime() - startTime > timeoutMs) {
+        return Promise.reject(`Timeout: waiting for more than ${timeoutMs} ms`)
+      }
+      return wait(1000).then(() => testLoop())
+    }
+    return testLoop()
   }
 }
 
