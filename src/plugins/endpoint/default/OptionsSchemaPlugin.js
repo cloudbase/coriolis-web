@@ -137,7 +137,7 @@ export default class OptionsSchemaParser {
     return payload
   }
 
-  static getStorageMap(defaultStorage: ?string, storageMap: ?StorageMap[]) {
+  static getStorageMap(defaultStorage: ?string, storageMap: ?StorageMap[], configDefault?: ?string) {
     if (!defaultStorage && !storageMap) {
       return null
     }
@@ -152,7 +152,7 @@ export default class OptionsSchemaParser {
     }
 
     storageMap.forEach(mapping => {
-      if (mapping.target.id === null) {
+      if (mapping.target.id === null && !configDefault) {
         return
       }
 
@@ -162,7 +162,7 @@ export default class OptionsSchemaParser {
         }
         payload.backend_mappings.push({
           source: mapping.source.storage_backend_identifier,
-          destination: mapping.target.name,
+          destination: mapping.target.id === null ? configDefault : mapping.target.name,
         })
       } else {
         if (!payload.disk_mappings) {
@@ -170,7 +170,7 @@ export default class OptionsSchemaParser {
         }
         payload.disk_mappings.push({
           disk_id: mapping.source.id.toString(),
-          destination: mapping.target.name,
+          destination: mapping.target.id === null ? configDefault : mapping.target.name,
         })
       }
     })

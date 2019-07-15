@@ -160,7 +160,7 @@ class ReplicaSource {
     }).then(response => response.data.execution)
   }
 
-  static update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData): Promise<Execution> {
+  static update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string): Promise<Execution> {
     const parser = OptionsSchemaPlugin[destinationEndpoint.type] || OptionsSchemaPlugin.default
     let payload = { replica: {} }
 
@@ -180,9 +180,9 @@ class ReplicaSource {
       payload.replica.source_environment = parser.getDestinationEnv(updateData.source, replica.source_environment)
     }
 
-    if (updateData.storage.length > 0) {
-      payload.replica.storage_mappings = parser.getStorageMap(
-        updateData.destination && updateData.destination.default_storage, updateData.storage)
+    let defaultStorage = updateData.destination && updateData.destination.default_storage
+    if (defaultStorage || updateData.storage.length > 0) {
+      payload.replica.storage_mappings = parser.getStorageMap(defaultStorage, updateData.storage, storageConfigDefault)
     }
 
     return Api.send({

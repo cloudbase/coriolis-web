@@ -259,10 +259,11 @@ class EditReplica extends React.Component<Props, State> {
       source: this.state.sourceData,
       destination: this.state.destinationData,
       network: this.state.selectedNetworks.length > 0 ? this.getSelectedNetworks() : [],
-      storage: this.state.destinationData.default_storage || this.state.storageMap.length > 0 ? this.getStorageMap() : [],
+      storage: this.state.storageMap,
     }
     if (this.props.type === 'replica') {
-      replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData).then(() => {
+      let storageConfigDefault = this.getFieldValue('destination', 'default_storage') || endpointStore.storageConfigDefault
+      replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData, storageConfigDefault).then(() => {
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/replica/executions/${this.props.replica.id}`)
       }).catch(() => {
@@ -360,7 +361,7 @@ class EditReplica extends React.Component<Props, State> {
     this.state.storageMap.forEach(mapping => {
       let fieldName = mapping.type === 'backend' ? 'storage_backend_identifier' : 'id'
       let existingMapping = storageMap.find(m => m.type === mapping.type &&
-        m.source[fieldName] === mapping.source[fieldName]
+        m.source[fieldName] === String(mapping.source[fieldName])
       )
       if (existingMapping) {
         existingMapping.target = mapping.target
@@ -388,6 +389,7 @@ class EditReplica extends React.Component<Props, State> {
         fields={fields}
         hasStorageMap={type === 'source' ? false : this.hasStorageMap()}
         storageBackends={endpointStore.storageBackends}
+        storageConfigDefault={endpointStore.storageConfigDefault}
         onChange={(f, v) => { this.handleFieldChange(type, f, v) }}
         oneColumnStyle={{ marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
         columnStyle={{ marginRight: 0 }}
@@ -412,7 +414,6 @@ class EditReplica extends React.Component<Props, State> {
         storageBackends={endpointStore.storageBackends}
         instancesDetails={this.props.instancesDetails}
         storageMap={this.getStorageMap()}
-        defaultStorage={this.getFieldValue('destination', 'default_storage')}
         onChange={(s, t, type) => { this.handleStorageChange(s, t, type) }}
       />
     )

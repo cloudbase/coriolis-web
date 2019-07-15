@@ -143,7 +143,6 @@ export type Props = {
   storageBackends: StorageBackend[],
   instancesDetails: Instance[],
   storageMap: ?StorageMap[],
-  defaultStorage: ?string,
   onChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
 }
 @observer
@@ -184,8 +183,8 @@ class WizardStorage extends React.Component<Props> {
               }
               return false
             }).map(i => i.instance_name)
-            let selectedItem = storageMap && storageMap.find(s => s.type === type && s.source[diskFieldName] === disk[diskFieldName])
-            selectedItem = selectedItem ? selectedItem.target : storageItems.find(i => i.name === this.props.defaultStorage)
+            let selectedItem = storageMap && storageMap.find(s => s.type === type && String(s.source[diskFieldName]) === String(disk[diskFieldName]))
+            selectedItem = selectedItem ? selectedItem.target : null
             return (
               <StorageItem key={disk[diskFieldName]}>
                 <StorageImage backend={type === 'backend'} />
