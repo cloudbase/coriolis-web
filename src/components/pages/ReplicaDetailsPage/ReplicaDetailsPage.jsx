@@ -107,16 +107,22 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   loadIsEditable(replicaDetails: MainItem) {
     let targetEndpointId = replicaDetails.destination_endpoint_id
+    let sourceEndpointId = replicaDetails.origin_endpoint_id
     providerStore.loadProviders()
       .then(() => utils.waitFor(() => endpointStore.endpoints.length > 0))
       .then(() => {
-        let endpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
-        if (!endpoint) {
+        let sourceEndpoint = endpointStore.endpoints.find(e => e.id === sourceEndpointId)
+        let targetEndpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
+        if (!sourceEndpoint || !targetEndpoint || !providerStore.providers) {
           return
         }
-        let isEditable = providerStore.providers && providerStore.providers[endpoint.type] ?
-          !!providerStore.providers[endpoint.type].types.find(t => t === providerTypes.UPDATE)
+        let sourceProviderTypes = providerStore.providers[sourceEndpoint.type]
+        let targetProviderTypes = providerStore.providers[targetEndpoint.type]
+        let isEditable = sourceProviderTypes && targetProviderTypes ?
+          !!sourceProviderTypes.types.find(t => t === providerTypes.SOURCE_UPDATE)
+          && !!targetProviderTypes.types.find(t => t === providerTypes.TARGET_UPDATE)
           : false
+
         this.setState({ isEditable })
       })
   }

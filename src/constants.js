@@ -49,7 +49,8 @@ PROVIDER_TYPE_EXPORT = 2 // migration source schema
 PROVIDER_TYPE_REPLICA_IMPORT = 4 // replica target schema
 PROVIDER_TYPE_REPLICA_EXPORT = 8 // replica source schema
 PROVIDER_TYPE_ENDPOINT_STORAGE = 32768
-PROVIDER_TYPE_REPLICA_UPDATE = 65536 // the replica can be updated if provider is target */
+PROVIDER_TYPE_SOURCE_REPLICA_UPDATE = 65536 // the replica can be updated if provider is source
+PROVIDER_TYPE_DESTINATION_REPLICA_UPDATE = 262144 // the replica can be updated if provider is source */
 export const providerTypes = {
   TARGET_MIGRATION: 1,
   SOURCE_MIGRATION: 2,
@@ -57,7 +58,8 @@ export const providerTypes = {
   SOURCE_REPLICA: 8,
   CONNECTION: 16,
   STORAGE: 32768,
-  UPDATE: 65536,
+  SOURCE_UPDATE: 65536,
+  TARGET_UPDATE: 262144,
 }
 
 export const loginButtons = [
