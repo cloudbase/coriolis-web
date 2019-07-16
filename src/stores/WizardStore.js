@@ -101,7 +101,7 @@ class WizardStore {
   @action updateStorage(storage: StorageMap) {
     let diskFieldName = storage.type === 'backend' ? 'storage_backend_identifier' : 'id'
     this.storageMap = this.storageMap
-      .filter(n => n.type !== storage.type || n.source[diskFieldName] !== storage.source[diskFieldName])
+      .filter(n => n.type !== storage.type || String(n.source[diskFieldName]) !== String(storage.source[diskFieldName]))
     this.storageMap.push(storage)
   }
 

@@ -41,6 +41,7 @@ class EndpointStore {
   @observable connectionsInfoLoading = false
   @observable storageBackends: StorageBackend[] = []
   @observable storageLoading: boolean = false
+  @observable storageConfigDefault: string = ''
 
   @action getEndpoints(options?: { showLoading: boolean }) {
     if (options && options.showLoading) {
@@ -185,6 +186,7 @@ class EndpointStore {
     this.storageLoading = true
     return EndpointSource.loadStorage(endpointId, data).then(storage => {
       this.storageBackends = storage.storage_backends
+      this.storageConfigDefault = storage.config_default || ''
       this.storageLoading = false
     }).catch(ex => {
       this.storageLoading = false

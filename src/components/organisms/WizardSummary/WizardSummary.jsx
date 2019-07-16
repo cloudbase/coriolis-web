@@ -144,7 +144,6 @@ type Props = {
   schedules: Schedule[],
   storageMap: StorageMap[],
   instancesDetails: Instance[],
-  defaultStorage: ?StorageBackend,
 }
 @observer
 class WizardSummary extends React.Component<Props> {
@@ -297,7 +296,6 @@ class WizardSummary extends React.Component<Props> {
             if (
               optionName === 'execute_now' ||
               optionName === 'separate_vm' ||
-              optionName === 'default_storage' ||
               !data.destOptions || data.destOptions[optionName] == null
             ) {
               return null
@@ -323,7 +321,7 @@ class WizardSummary extends React.Component<Props> {
     let storageMap = this.props.storageMap.filter(mapping => mapping.type === type)
     let disks = getDisks(this.props.instancesDetails, type)
 
-    if (disks.length === 0 || (storageMap.length === 0 && !this.props.defaultStorage)) {
+    if (disks.length === 0 || storageMap.length === 0) {
       return null
     }
     let fieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
@@ -333,11 +331,16 @@ class WizardSummary extends React.Component<Props> {
       if (diskMapped) {
         return { source: diskMapped.source, target: diskMapped.target }
       }
-      return { source: disk, target: this.props.defaultStorage }
+      return { source: disk, target: null }
     })
 
     fullStorageMap.sort((m1, m2) => String(m1.source[fieldName]).localeCompare(String(m2.source[fieldName])))
+    fullStorageMap = fullStorageMap.filter(fsm => fsm.target && fsm.target.id)
     let title = type === 'backend' ? 'Storage Backend Mapping' : 'Disk Mapping'
+
+    if (fullStorageMap.length === 0) {
+      return null
+    }
 
     return (
       <Section>

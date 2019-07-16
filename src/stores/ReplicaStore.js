@@ -163,8 +163,8 @@ class ReplicaStore {
     this.replicaDetails = null
   }
 
-  @action update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData) {
-    return ReplicaSource.update(replica, destinationEndpoint, updateData)
+  @action update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string) {
+    return ReplicaSource.update(replica, destinationEndpoint, updateData, storageConfigDefault)
   }
 }
 

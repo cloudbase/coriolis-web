@@ -355,6 +355,7 @@ class WizardPageContent extends React.Component<Props, State> {
             useAdvancedOptions={this.state.useAdvancedOptions}
             hasStorageMap={this.props.hasStorageMap}
             storageBackends={this.props.endpointStore.storageBackends}
+            storageConfigDefault={this.props.endpointStore.storageConfigDefault}
             wizardType={this.props.type}
             onAdvancedOptionsToggle={useAdvancedOptions => { this.handleAdvancedOptionsToggle(useAdvancedOptions) }}
           />
@@ -378,7 +379,6 @@ class WizardPageContent extends React.Component<Props, State> {
             storageBackends={this.props.endpointStore.storageBackends}
             instancesDetails={this.props.instanceStore.instancesDetails}
             storageMap={this.props.storageMap}
-            defaultStorage={String(this.props.wizardData.destOptions ? this.props.wizardData.destOptions.default_storage : '')}
             onChange={this.props.onStorageChange}
           />
         )
@@ -404,13 +404,6 @@ class WizardPageContent extends React.Component<Props, State> {
             storageMap={this.props.storageMap}
             wizardType={this.props.type}
             instancesDetails={this.props.instanceStore.instancesDetails}
-            defaultStorage={
-              this.props.endpointStore.storageBackends.find(
-                s => this.props.wizardData.destOptions ?
-                  s.name === this.props.wizardData.destOptions.default_storage :
-                  false
-              )
-            }
           />
         )
         break
