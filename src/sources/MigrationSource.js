@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import moment from 'moment'
 
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
+import { sortTasks } from './ReplicaSource'
 
 import Api from '../utils/ApiCaller'
 import type { MainItem } from '../types/MainItem'
@@ -27,27 +28,24 @@ import type { Endpoint, StorageMap } from '../types/Endpoint'
 import { servicesUrl } from '../constants'
 
 class MigrationSourceUtils {
-  static sortTaskUpdates(migration) {
-    if (migration && migration.tasks) {
-      migration.tasks.forEach(task => {
-        if (task && task.progress_updates) {
-          task.progress_updates.sort((a, b) => {
-            let sortNull = !a && b ? 1 : a && !b ? -1 : !a && !b ? 0 : false
-            if (sortNull !== false) {
-              return sortNull
-            }
-            return moment(a.created_at).toDate().getTime() - moment(b.created_at).toDate().getTime()
-          })
-        }
-      })
+  static sortTaskUpdates(updates) {
+    if (!updates) {
+      return
     }
+    updates.sort((a, b) => {
+      let sortNull = !a && b ? 1 : a && !b ? -1 : !a && !b ? 0 : false
+      if (sortNull !== false) {
+        return sortNull
+      }
+      return moment(a.created_at).toDate().getTime() - moment(b.created_at).toDate().getTime()
+    })
   }
 
   static sortMigrations(migrations) {
     migrations.sort((a, b) => moment(b.created_at).diff(moment(a.created_at)))
 
     migrations.forEach(migration => {
-      MigrationSourceUtils.sortTaskUpdates(migration)
+      sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)
     })
   }
 }
@@ -64,7 +62,7 @@ class MigrationSource {
   static getMigration(migrationId: string): Promise<MainItem> {
     return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`).then(response => {
       let migration = response.data.migration
-      MigrationSourceUtils.sortTaskUpdates(migration)
+      sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)
       return migration
     })
   }

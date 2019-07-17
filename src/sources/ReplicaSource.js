@@ -23,7 +23,44 @@ import { servicesUrl } from '../constants'
 import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Execution } from '../types/Execution'
 import type { Endpoint } from '../types/Endpoint'
+import type { Task, ProgressUpdate } from '../types/Task'
 import type { Field } from '../types/Field'
+
+export const sortTasks = (tasks: Task[], taskUpdatesSortFunction: (updates: ProgressUpdate[]) => void) => {
+  if (!tasks) {
+    return
+  }
+  let sortedTasks = []
+  let buffer = []
+  let runningBuffer = []
+  let completedBuffer = []
+  tasks.forEach(task => {
+    taskUpdatesSortFunction(task.progress_updates)
+    buffer.push(task)
+    if (task.status === 'RUNNING') {
+      runningBuffer.push(task)
+    } else if (task.status === 'COMPLETED' || task.status === 'ERROR') {
+      completedBuffer.push(task)
+    } else {
+      if (runningBuffer.length >= 2) {
+        sortedTasks = sortedTasks.concat([...completedBuffer, ...runningBuffer, task])
+      } else {
+        sortedTasks = sortedTasks.concat([...buffer])
+      }
+      buffer = []
+      runningBuffer = []
+      completedBuffer = []
+    }
+  })
+  if (buffer.length) {
+    if (runningBuffer.length >= 2) {
+      sortedTasks = sortedTasks.concat([...completedBuffer, ...runningBuffer])
+    } else {
+      sortedTasks = sortedTasks.concat([...buffer])
+    }
+  }
+  tasks.splice(0, tasks.length, ...sortedTasks)
+}
 
 class ReplicaSourceUtils {
   static filterDeletedExecutionsInReplicas(replicas) {
@@ -66,21 +103,18 @@ class ReplicaSourceUtils {
     }
   }
 
-  static sortExecutionsAndTaskUpdates(executions) {
+  static sortExecutionsAndTasks(executions) {
     this.sortExecutions(executions)
     executions.forEach(execution => {
-      this.sortTaskUpdates(execution)
+      sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
     })
   }
 
-  static sortTaskUpdates(execution) {
-    if (execution.tasks) {
-      execution.tasks.forEach(task => {
-        if (task.progress_updates) {
-          task.progress_updates.sort((a, b) => moment(a.created_at).toDate().getTime() - moment(b.created_at).toDate().getTime())
-        }
-      })
+  static sortTaskUpdates(updates) {
+    if (!updates) {
+      return
     }
+    updates.sort((a, b) => moment(a.created_at).toDate().getTime() - moment(b.created_at).toDate().getTime())
   }
 }
 
@@ -97,7 +131,7 @@ class ReplicaSource {
   static getReplicaExecutions(replicaId: string): Promise<Execution[]> {
     return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`).then((response) => {
       let executions = response.data.executions
-      ReplicaSourceUtils.sortExecutionsAndTaskUpdates(executions)
+      ReplicaSourceUtils.sortExecutionsAndTasks(executions)
 
       return executions
     })
@@ -125,7 +159,7 @@ class ReplicaSource {
       data: payload,
     }).then((response) => {
       let execution = response.data.execution
-      ReplicaSourceUtils.sortTaskUpdates(execution)
+      sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
       return execution
     })
   }
