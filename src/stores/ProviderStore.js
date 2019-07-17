@@ -18,27 +18,30 @@ import { observable, action, computed } from 'mobx'
 
 import ProviderSource from '../sources/ProviderSource'
 import configLoader from '../utils/Config'
+import { providerTypes } from '../constants'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 import type { OptionValues } from '../types/Endpoint'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
 
-export const getFieldChangeDestOptions = (config: {
+export const getFieldChangeOptions = (config: {
   provider: ?string,
-  destSchema: Field[],
+  schema: Field[],
   data: any,
   field: ?Field,
+  type: 'source' | 'destination',
 }) => {
-  let { provider, destSchema, data, field } = config
-  let providerWithExtraOptions = configLoader.config.destinationProvidersWithExtraOptions
-    .find(p => typeof p !== 'string' && p.name === provider)
-  if (!provider || !providerWithExtraOptions || typeof providerWithExtraOptions === 'string' || !providerWithExtraOptions.envRequiredFields) {
+  let { provider, schema, data, field, type } = config
+  let providerWithEnvOptions = configLoader.config.providersWithEnvOptions.find(p => p.name === provider && p.type === type)
+
+  if (!provider || !providerWithEnvOptions) {
     return null
   }
+  let envRequiredFields = providerWithEnvOptions.envRequiredFields
 
-  let findFieldInSchema = (name: string) => destSchema.find(f => f.name === name)
+  let findFieldInSchema = (name: string) => schema.find(f => f.name === name)
 
-  let validFields = providerWithExtraOptions.envRequiredFields.filter(fn => {
+  let validFields = envRequiredFields.filter(fn => {
     let schemaField = findFieldInSchema(fn)
     if (data) {
       if (data[fn] === null) {
@@ -53,7 +56,7 @@ export const getFieldChangeDestOptions = (config: {
   })
 
   let isCurrentFieldValid = field ? validFields.find(fn => field ? fn === field.name : false) : true
-  if (validFields.length !== providerWithExtraOptions.envRequiredFields.length || !isCurrentFieldValid) {
+  if (validFields.length !== envRequiredFields.length || !isCurrentFieldValid) {
     return null
   }
 
@@ -123,7 +126,10 @@ class ProviderStore {
   }
 
   @action loadProviders(): Promise<void> {
-    this.providers = null
+    if (this.providers) {
+      return Promise.resolve()
+    }
+
     this.providersLoading = true
 
     return ProviderSource.loadProviders().then((providers: Providers) => {
@@ -189,56 +195,59 @@ class ProviderStore {
     envData?: { [string]: mixed },
     useCache?: boolean,
   }): Promise<OptionValues[]> {
-    let { provider, optionsType, endpointId, envData, useCache } = config
-    let providers = optionsType === 'source' ?
-      configLoader.config.sourceProvidersWithExtraOptions :
-      configLoader.config.destinationProvidersWithExtraOptions
-    let providerWithExtraOptions = providers.find(p => typeof p === 'string' ? p === provider : p.name === provider)
-    if (!providerWithExtraOptions) {
-      return Promise.resolve([])
-    }
-
-    if (useCache) {
-      let key = `${endpointId}-${provider}-${optionsType}-${JSON.stringify(envData)}`
-      let cacheItem = this.cache.find(c => c.key === key)
-      if (cacheItem) {
-        this.getOptionsValuesSuccess(optionsType, provider, cacheItem.data)
-        this.getOptionsValuesDone(optionsType)
-        return Promise.resolve(cacheItem.data)
+    return this.loadProviders().then(() => {
+      let { provider, optionsType, endpointId, envData, useCache } = config
+      let providerType = optionsType === 'source' ? providerTypes.SOURCE_OPTIONS : providerTypes.DESTINATION_OPTIONS
+      if (!this.providers) {
+        return Promise.resolve([])
       }
-    }
+      let providerWithExtraOptions = this.providers[provider].types.find(t => t === providerType)
+      if (!providerWithExtraOptions) {
+        return Promise.resolve([])
+      }
 
-    if (optionsType === 'source') {
-      this.sourceOptionsLoading = true
-      this.sourceOptions = []
-    } else {
-      this.destinationOptionsLoading = true
-      this.destinationOptions = []
-    }
-
-    let optionsValues = []
-
-    return ProviderSource.getOptionsValues(optionsType, endpointId, envData).then(options => {
-      this.getOptionsValuesSuccess(optionsType, provider, options)
-      optionsValues = options
       if (useCache) {
         let key = `${endpointId}-${provider}-${optionsType}-${JSON.stringify(envData)}`
-        if (this.cache.length > 20) {
-          this.cache.splice(0)
+        let cacheItem = this.cache.find(c => c.key === key)
+        if (cacheItem) {
+          this.getOptionsValuesSuccess(optionsType, provider, cacheItem.data)
+          this.getOptionsValuesDone(optionsType)
+          return Promise.resolve(cacheItem.data)
         }
-        this.cache.push({ key, data: options })
       }
-    }).catch(err => {
-      console.error(err)
+
       if (optionsType === 'source') {
-        return this.loadSourceSchema(provider, this.lastSourceSchemaType)
-          .then(() => envData ? this.getOptionsValues({ endpointId, provider, optionsType }) : null)
+        this.sourceOptionsLoading = true
+        this.sourceOptions = []
+      } else {
+        this.destinationOptionsLoading = true
+        this.destinationOptions = []
       }
-      return this.loadDestinationSchema(provider, this.lastDestinationSchemaType)
-        .then(() => envData ? this.getOptionsValues({ endpointId, provider, optionsType }) : null)
-    }).then(() => {
-      this.getOptionsValuesDone(optionsType)
-      return optionsValues
+
+      let optionsValues = []
+
+      return ProviderSource.getOptionsValues(optionsType, endpointId, envData).then(options => {
+        this.getOptionsValuesSuccess(optionsType, provider, options)
+        optionsValues = options
+        if (useCache) {
+          let key = `${endpointId}-${provider}-${optionsType}-${JSON.stringify(envData)}`
+          if (this.cache.length > 20) {
+            this.cache.splice(0)
+          }
+          this.cache.push({ key, data: options })
+        }
+      }).catch(err => {
+        console.error(err)
+        if (optionsType === 'source') {
+          return this.loadSourceSchema(provider, this.lastSourceSchemaType)
+            .then(() => envData ? this.getOptionsValues({ endpointId, provider, optionsType }) : null)
+        }
+        return this.loadDestinationSchema(provider, this.lastDestinationSchemaType)
+          .then(() => envData ? this.getOptionsValues({ endpointId, provider, optionsType }) : null)
+      }).then(() => {
+        this.getOptionsValuesDone(optionsType)
+        return optionsValues
+      })
     })
   }
 

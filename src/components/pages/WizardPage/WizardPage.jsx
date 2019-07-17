@@ -26,7 +26,7 @@ import Modal from '../../molecules/Modal'
 import Endpoint from '../../organisms/Endpoint'
 
 import userStore from '../../../stores/UserStore'
-import providerStore, { getFieldChangeDestOptions } from '../../../stores/ProviderStore'
+import providerStore, { getFieldChangeOptions } from '../../../stores/ProviderStore'
 import endpointStore from '../../../stores/EndpointStore'
 import wizardStore from '../../../stores/WizardStore'
 import instanceStore from '../../../stores/InstanceStore'
@@ -248,7 +248,11 @@ class WizardPage extends React.Component<Props, State> {
     // Preload destination options schema
     providerStore.loadDestinationSchema(target.type, this.state.type).then(() => {
       // Preload destination options values
-      providerStore.getOptionsValues({ optionsType: 'destination', endpointId: target.id, provider: target.type })
+      providerStore.getOptionsValues({
+        optionsType: 'destination',
+        endpointId: target.id,
+        provider: target.type,
+      })
     })
     if (this.pages.find(p => p.id === 'storage')) {
       endpointStore.loadStorage(target.id, {})
@@ -349,11 +353,12 @@ class WizardPage extends React.Component<Props, State> {
 
   loadEnvDestinationOptions(field?: Field) {
     let provider = wizardStore.data.target && wizardStore.data.target.type
-    let envData = getFieldChangeDestOptions({
+    let envData = getFieldChangeOptions({
       provider: wizardStore.data.target && wizardStore.data.target.type,
-      destSchema: providerStore.destinationSchema,
+      schema: providerStore.destinationSchema,
       data: wizardStore.data.destOptions,
       field,
+      type: 'destination',
     })
 
     if (provider && envData && wizardStore.data.target) {
@@ -381,7 +386,11 @@ class WizardPage extends React.Component<Props, State> {
           providerStore.loadSourceSchema(source.type, this.state.type).then(() => {
             // Preload source options if data is set from 'Permalink'
             if (providerStore.sourceOptions.length === 0 && source) {
-              providerStore.getOptionsValues({ optionsType: 'source', endpointId: source.id, provider: source.type })
+              providerStore.getOptionsValues({
+                optionsType: 'source',
+                endpointId: source.id,
+                provider: source.type,
+              })
             }
           })
         }

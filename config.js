@@ -37,24 +37,16 @@ const conf: Config = {
   // - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
   instancesListBackgroundLoading: { default: 10, ovm: Infinity },
 
-  // A list of providers for which `source-options` API call(s) will be made
-  // If the item is just a string with the provider name, only one API call will be made
-  // If the item has `envRequiredFields`, an additional API call will be made once the specified fields are filled
-  sourceProvidersWithExtraOptions: ['aws'],
-
-  // A list of providers for which `destination-options` API call(s) will be made
-  // If the item is just a string with the provider name, only one API call will be made
-  // If the item has `envRequiredFields`, an additional API call will be made once the specified fields are filled
-  destinationProvidersWithExtraOptions: [
-    'openstack',
-    'oracle_vm',
-    'aws',
+  // The providers for which an extra `source` or `destination options` call can be made with a set of field values
+  providersWithEnvOptions: [
     {
       name: 'azure',
+      type: 'destination',
       envRequiredFields: ['location', 'resource_group'],
     },
     {
       name: 'oci',
+      type: 'destination',
       envRequiredFields: ['compartment', 'availability_domain'],
     },
   ],

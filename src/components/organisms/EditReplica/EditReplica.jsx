@@ -18,7 +18,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import providerStore, { getFieldChangeDestOptions } from '../../../stores/ProviderStore'
+import providerStore, { getFieldChangeOptions } from '../../../stores/ProviderStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import migrationStore from '../../../stores/MigrationStore'
 import endpointStore from '../../../stores/EndpointStore'
@@ -115,28 +115,27 @@ class EditReplica extends React.Component<Props, State> {
       if (this.hasStorageMap()) {
         endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
       }
+      providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica', useCache)
+        .then(() => providerStore.getOptionsValues({
+          optionsType: 'destination',
+          endpointId: this.props.destinationEndpoint.id,
+          provider: this.props.destinationEndpoint.type,
+          useCache,
+        })).then(() => {
+          this.loadEnvDestinationOptions()
+        })
+
+      if (!this.hasSourceOptions()) {
+        return
+      }
+      providerStore.loadSourceSchema(this.props.sourceEndpoint.type, this.props.type || 'replica', useCache)
+        .then(() => providerStore.getOptionsValues({
+          optionsType: 'source',
+          endpointId: this.props.sourceEndpoint.id,
+          provider: this.props.sourceEndpoint.type,
+          useCache,
+        }))
     })
-
-    providerStore.loadDestinationSchema(this.props.destinationEndpoint.type, this.props.type || 'replica', useCache)
-      .then(() => providerStore.getOptionsValues({
-        optionsType: 'destination',
-        endpointId: this.props.destinationEndpoint.id,
-        provider: this.props.destinationEndpoint.type,
-        useCache,
-      })).then(() => {
-        this.loadEnvDestinationOptions()
-      })
-
-    if (!this.hasSourceOptions()) {
-      return
-    }
-    providerStore.loadSourceSchema(this.props.sourceEndpoint.type, this.props.type || 'replica', useCache)
-      .then(() => providerStore.getOptionsValues({
-        optionsType: 'source',
-        endpointId: this.props.sourceEndpoint.id,
-        provider: this.props.sourceEndpoint.type,
-        useCache,
-      }))
   }
 
   hasStorageMap(): boolean {
@@ -182,14 +181,15 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   loadEnvDestinationOptions(field?: Field) {
-    let envData = getFieldChangeDestOptions({
+    let envData = getFieldChangeOptions({
       provider: this.props.destinationEndpoint.type,
-      destSchema: providerStore.destinationSchema,
+      schema: providerStore.destinationSchema,
       data: {
         ...this.parseReplicaData(this.props.replica.destination_environment),
         ...this.state.destinationData,
       },
       field,
+      type: 'destination',
     })
 
     if (envData) {
