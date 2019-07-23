@@ -20,7 +20,7 @@ import styled from 'styled-components'
 
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
-import WizardOptionsField from '../../molecules/WizardOptionsField'
+import FieldInput from '../../molecules/FieldInput'
 
 import KeyboardManager from '../../../utils/KeyboardManager'
 import type { Project } from '../../../types/Project'
@@ -72,7 +72,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField)`
+const FieldInputStyled = styled(FieldInput)`
   width: 319px;
   justify-content: space-between;
 `
@@ -120,15 +120,15 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
       <Options>
         <Image />
         <Form>
-          <WizardOptionsFieldStyled
+          <FieldInputStyled
             data-test-id={`${testName}-field-project`}
             name="duplicate_to_project"
             type="string"
             enum={this.props.projects}
-            skipNullValue
             value={this.state.selectedProjectId}
             onChange={projectId => { this.setState({ selectedProjectId: projectId }) }}
             width={318}
+            layout="page"
           />
         </Form>
         <Buttons>

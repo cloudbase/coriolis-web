@@ -31,10 +31,9 @@ const Wrapper = styled.div`
 `
 type Props = {
   text: string,
-  marginLeft?: number,
-  marginBottom?: number,
+  marginLeft?: ?number,
+  marginBottom?: ?number,
   className?: string,
-  marginLeft?: number,
   warning?: boolean,
 }
 @observer

@@ -22,10 +22,11 @@ import type { Project } from '../../../types/Project'
 import type { Field as FieldType } from '../../../types/Field'
 import Button from '../../atoms/Button'
 import Modal from '../../molecules/Modal'
-import Field from '../../molecules/EndpointField'
+import FieldInput from '../../molecules/FieldInput'
 
 import projectImage from './images/project.svg'
 import KeyboardManager from '../../../utils/KeyboardManager'
+import StyleProps from '../../styleUtils/StyleProps'
 
 const Wrapper = styled.div`
   padding: 48px 32px 32px 32px;
@@ -116,14 +117,15 @@ class ProjectModal extends React.Component<Props, State> {
 
   renderField(field: FieldType, value: any, onChange: (value: any) => void) {
     return (
-      <Field
+      <FieldInput
+        layout="modal"
         data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
         type={field.type || 'string'}
         value={value}
         onChange={onChange}
-        large
+        width={StyleProps.inputSizes.large.width}
         disabled={this.props.loading}
         required={field.required}
         highlight={Boolean(this.state.highlightFieldNames.find(n => n === field.name))}

@@ -145,10 +145,7 @@ class PropertiesTable extends React.Component<Props> {
     let input = null
     switch (prop.type) {
       case 'boolean':
-        input = this.renderSwitch(prop, { triState: true })
-        break
-      case 'strict-boolean':
-        input = this.renderSwitch(prop, { triState: false })
+        input = this.renderSwitch(prop, { triState: Boolean(prop.nullableBoolean) })
         break
       case 'string':
         if (prop.enum) {

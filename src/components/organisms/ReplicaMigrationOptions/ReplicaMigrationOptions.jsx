@@ -19,7 +19,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Button from '../../atoms/Button'
-import WizardOptionsField from '../../molecules/WizardOptionsField'
+import FieldInput from '../../molecules/FieldInput'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import KeyboardManager from '../../../utils/KeyboardManager'
@@ -50,7 +50,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField)`
+const FieldInputStyled = styled(FieldInput)`
   width: 319px;
   justify-content: space-between;
   margin-bottom: 32px;
@@ -66,16 +66,16 @@ type State = {
 let defaultFields: Field[] = [
   {
     name: 'clone_disks',
-    type: 'strict-boolean',
+    type: 'boolean',
     value: true,
   },
   {
     name: 'force',
-    type: 'strict-boolean',
+    type: 'boolean',
   },
   {
     name: 'skip_os_morphing',
-    type: 'strict-boolean',
+    type: 'boolean',
   },
 ]
 @observer
@@ -109,11 +109,12 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
         <Form>
           {this.state.fields.map(field => {
             return (
-              <WizardOptionsFieldStyled
+              <FieldInputStyled
                 key={field.name}
                 name={field.name}
                 type={field.type}
                 value={field.value}
+                layout="page"
                 label={LabelDictionary.get(field.name)}
                 onChange={value => this.handleValueChange(field, value)}
               />

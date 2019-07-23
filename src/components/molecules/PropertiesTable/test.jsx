@@ -22,8 +22,8 @@ import PropertiesTable from '.'
 const wrap = props => new TW(shallow(<PropertiesTable onChange={() => { }} {...props} />), 'propertiesTable')
 
 let properties = [
-  { type: 'boolean', name: 'prop_1', label: 'Boolean', value: true },
-  { type: 'strict-boolean', name: 'prop_2', label: 'Strict Boolean', value: false },
+  { type: 'boolean', name: 'prop_1', label: 'Nullabel Boolean', value: true, nullableBoolean: true },
+  { type: 'boolean', name: 'prop_2', label: 'Boolean', value: false },
   { type: 'string', name: 'prop_3', label: 'String', value: 'value-3' },
   { type: 'string', name: 'prop_3a', label: 'String', required: true, value: 'value-4' },
   // $FlowIgnore

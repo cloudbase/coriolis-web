@@ -55,7 +55,7 @@ describe('ProjectMemberModal Component', () => {
       onAddClick: () => { },
     })
     expect(wrapper.find('users').prop('items')[1].value).toBe(users[1].id)
-    expect(wrapper.find('roles').prop('items')[1].value).toBe(roles[1].id)
+    expect(wrapper.find('roles').prop('enum')[1].id).toBe(roles[1].id)
     expect(wrapper.find('users').prop('highlight')).toBe(false)
     expect(wrapper.find('roles').prop('highlight')).toBe(false)
     expect(wrapper.find('users').prop('disabled')).toBe(false)

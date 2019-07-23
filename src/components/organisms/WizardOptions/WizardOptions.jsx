@@ -21,7 +21,7 @@ import autobind from 'autobind-decorator'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
-import WizardOptionsField from '../../molecules/WizardOptionsField'
+import FieldInput from '../../molecules/FieldInput'
 import StatusImage from '../../atoms/StatusImage'
 import type { Field } from '../../../types/Field'
 import type { Instance } from '../../../types/Instance'
@@ -50,7 +50,7 @@ const Column = styled.div`
   ${props => props.left ? 'margin-right: 160px;' : ''}
   margin-top: -16px;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField)`
+const FieldInputStyled = styled(FieldInput)`
   width: ${props => props.width || StyleProps.inputSizes.wizard.width}px;
   justify-content: space-between;
   margin-top: 16px;
@@ -121,17 +121,17 @@ class WizardOptions extends React.Component<Props> {
     }
 
     if (this.props.wizardType === 'migration') {
-      fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'strict-boolean', default: false })
+      fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'boolean', default: false })
     }
 
     if (this.props.selectedInstances && this.props.selectedInstances.length > 1) {
       let dictionaryLabel = LabelDictionary.get('separate_vm')
       let label = this.props.wizardType === 'migration' ? dictionaryLabel : dictionaryLabel.replace('Migration', 'Replica')
-      fieldsSchema.unshift({ name: 'separate_vm', label, type: 'strict-boolean', default: true })
+      fieldsSchema.unshift({ name: 'separate_vm', label, type: 'boolean', default: true })
     }
 
     if (this.props.wizardType === 'replica') {
-      fieldsSchema.push({ name: 'execute_now', type: 'strict-boolean', default: true })
+      fieldsSchema.push({ name: 'execute_now', type: 'boolean', default: true })
       let executeNowValue = this.getFieldValue('execute_now', true)
       if (executeNowValue) {
         fieldsSchema = [
@@ -167,7 +167,7 @@ class WizardOptions extends React.Component<Props> {
     if (field.type === 'object' && field.properties) {
       additionalProps = {
         valueCallback: f => this.getFieldValue(f.name, f.default),
-        onChange: (f, value) => { this.props.onChange(f, value) },
+        onChange: (value, f) => { this.props.onChange(f, value) },
         properties: field.properties,
       }
     } else {
@@ -177,22 +177,26 @@ class WizardOptions extends React.Component<Props> {
       }
     }
     return (
-      <WizardOptionsFieldStyled
+      <FieldInputStyled
+        layout="page"
         key={field.name}
         name={field.name}
         type={field.type}
         enum={field.enum}
+        addNullValue
         required={field.required}
         data-test-id={`wOptions-field-${field.name}`}
-        width={this.props.fieldWidth}
+        width={this.props.fieldWidth || StyleProps.inputSizes.wizard.width}
         label={field.label}
+        nullableBoolean={field.nullableBoolean}
         {...additionalProps}
       />
     )
   }
 
   renderOptionsFields() {
-    let fieldsSchema = this.getDefaultFieldsSchema()
+    let fieldsSchema: Field[] = this.getDefaultFieldsSchema()
+    let nonNullableBooleans: string[] = fieldsSchema.filter(f => f.type === 'boolean').map(f => f.name)
 
     fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => f.required))
 
@@ -208,6 +212,9 @@ class WizardOptions extends React.Component<Props> {
       }
       if (field.name === 'execute_now_options') {
         column = executeNowColumn
+      }
+      if (field.type === 'boolean' && !nonNullableBooleans.find(name => name === field.name)) {
+        field.nullableBoolean = true
       }
 
       return {

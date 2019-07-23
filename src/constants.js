@@ -79,7 +79,7 @@ export const env = {
 export const executionOptions = [
   {
     name: 'shutdown_instances',
-    type: 'strict-boolean',
+    type: 'boolean',
     defaultValue: false,
   },
 ]

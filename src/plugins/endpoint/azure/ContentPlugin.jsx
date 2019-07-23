@@ -210,7 +210,7 @@ class ContentPlugin extends React.Component<Props, State> {
     return (
       <FieldStyled
         {...field}
-        large
+        width={StyleProps.inputSizes.large.width}
         disabled={this.props.disabled}
         key={field.name}
         password={field.name === 'password'}

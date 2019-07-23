@@ -23,6 +23,8 @@ import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 import { Wrapper, Fields, FieldStyled, Row } from '../default/ContentPlugin'
 
+import StyleProps from '../../../components/styleUtils/StyleProps'
+
 const ToggleButtonBarStyled = styled(ToggleButtonBar)`
   margin-top: 16px;
 `
@@ -169,7 +171,7 @@ class ContentPlugin extends React.Component<Props, State> {
         <FieldStyled
           {...field}
           required={required}
-          large
+          width={StyleProps.inputSizes.large.width}
           disabled={disabled}
           password={field.name === 'password'}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}

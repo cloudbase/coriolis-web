@@ -207,7 +207,7 @@ class WizardStorage extends React.Component<Props> {
                 ) :
                   (
                     <Dropdown
-                      large
+                      width={StyleProps.inputSizes.large.width}
                       centered
                       noSelectionMessage="Default"
                       noItemsMessage="No storage found"

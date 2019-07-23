@@ -22,6 +22,7 @@ export type Field = {
   // $FlowIssue
   enum?: string[] | { id: string, name: string, [string]: mixed }[],
   default?: any,
+  nullableBoolean?: boolean,
   items?: Field[],
   fields?: Field[],
   minimum?: number,
