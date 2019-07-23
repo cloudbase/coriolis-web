@@ -248,7 +248,7 @@ class WizardSummary extends React.Component<Props> {
         <SectionTitle>{type} Source Options</SectionTitle>
         <OptionsList>
           {data.sourceOptions ? Object.keys(data.sourceOptions).map(optionName => {
-            if (!data.sourceOptions || data.sourceOptions[optionName] == null) {
+            if (!data.sourceOptions || data.sourceOptions[optionName] == null || data.sourceOptions[optionName] === '') {
               return null
             }
 
@@ -296,7 +296,7 @@ class WizardSummary extends React.Component<Props> {
             if (
               optionName === 'execute_now' ||
               optionName === 'separate_vm' ||
-              !data.destOptions || data.destOptions[optionName] == null
+              !data.destOptions || data.destOptions[optionName] == null || data.destOptions[optionName] === ''
             ) {
               return null
             }
