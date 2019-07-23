@@ -25,6 +25,7 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import Dropdown from '../../molecules/Dropdown'
+import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import type { Field } from '../../../types/Field'
 
 const Wrapper = styled.div`
@@ -127,16 +128,28 @@ class PropertiesTable extends React.Component<Props> {
 
     let selectedItem = items.find(i => !i.separator && i.value === this.props.valueCallback(prop))
 
+    let commonProps = {
+      embedded: true,
+      width: 320,
+      selectedItem,
+      items,
+      onChange: item => this.props.onChange(prop, item.value),
+      required: typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false,
+    }
+    if (items.length < 10) {
+      return (
+        <Dropdown
+          data-test-id={`${baseId}-dropdown-${prop.name}`}
+          noSelectionMessage="Choose a value"
+          dimFirstItem
+          {...commonProps}
+        />
+      )
+    }
     return (
-      <Dropdown
-        embedded
-        data-test-id={`${baseId}-dropdown-${prop.name}`}
-        width={320}
-        noSelectionMessage="Choose a value"
-        selectedItem={selectedItem}
-        items={items}
-        onChange={item => this.props.onChange(prop, item.value)}
-        required={typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false}
+      <AutocompleteDropdown
+        dimNullValue
+        {...commonProps}
       />
     )
   }

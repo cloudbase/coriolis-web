@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-import arrowImage from './images/arrow.js'
+import arrowImage from './images/arrow'
 
 import TextInput from '../TextInput'
 import Palette from '../../styleUtils/Palette'
@@ -35,28 +35,35 @@ const getWidth = props => {
   return StyleProps.inputSizes.regular.width - 2
 }
 
+const getBorder = props => {
+  if (props.embedded) {
+    return css`border: none;`
+  }
+  return css`border: 1px solid ${props.highlight ? Palette.alert : props.disabled ? Palette.grayscale[0] : Palette.grayscale[3]};`
+}
+
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  width: ${props => getWidth(props)}px;
+  width: ${props => props.embedded ? 'calc(100% + 8px)' : `${getWidth(props)}px`};
   height: ${props => props.large ? StyleProps.inputSizes.large.height - 2
     : StyleProps.inputSizes.regular.height - 2}px;
-  border: 1px solid ${props => props.highlight ? Palette.alert : props.disabled ? Palette.grayscale[0] : Palette.grayscale[3]};
+  ${props => getBorder(props)}
   border-radius: ${StyleProps.borderRadius};
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
   transition: all ${StyleProps.animations.swift};
   background: ${props => props.disabled ? Palette.grayscale[0] : 'white'};
 
-  #dropdown-arrow-image {stroke: ${props => props.disabled ? Palette.grayscale[0] : Palette.grayscale[4]};}
+  #dropdown-arrow-image {stroke: ${props => props.disabled ? Palette.grayscale[3] : Palette.black};}
   ${props => props.focus ? css`border-color: ${Palette.primary};` : ''}
 `
 const Arrow = styled.div`
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
+  top: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,6 +79,7 @@ type Props = {
   large?: boolean,
   onFocus?: () => void,
   highlight?: boolean,
+  embedded?: boolean,
 }
 type State = {
   textInputFocus: boolean,
@@ -89,6 +97,7 @@ class AutocompleteInput extends React.Component<Props, State> {
         focus={this.state.textInputFocus}
         highlight={this.props.highlight}
         disabled={this.props.disabled}
+        embedded={this.props.embedded}
         innerRef={e => {
           if (this.props.customRef) {
             this.props.customRef(e)
@@ -103,8 +112,11 @@ class AutocompleteInput extends React.Component<Props, State> {
           value={this.props.value}
           onChange={e => { this.props.onChange(e.target.value) }}
           embedded
-          width={this.props.width ? `${this.props.width - 40}px` : '180px'}
-          style={{ marginLeft: '16px' }}
+          width={this.props.embedded ? '100%' : this.props.width ? `${this.props.width - 40}px` : '180px'}
+          style={{
+            marginLeft: this.props.embedded ? 0 : '16px',
+            paddingRight: this.props.embedded ? '32px' : '8px',
+          }}
           height="29px"
           lineHeight="30px"
           placeholder="Type to search ..."
