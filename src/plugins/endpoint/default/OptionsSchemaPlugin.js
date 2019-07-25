@@ -34,32 +34,32 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
 }
 
 export const defaultFillMigrationImageMapValues = (field: Field, option: OptionValues): boolean => {
-  if (field.name === 'migr_image_map') {
-    field.properties = migrationImageOsTypes.map(os => {
-      let values = option.values
-        .filter(v => v.os_type === os || v.os_type === 'unknown')
-        .sort((v1, v2) => {
-          if (v1.os_type === 'unknown' && v2.os_type !== 'unknown') {
-            return 1
-          } else if (v1.os_type !== 'unknown' && v2.os_type === 'unknown') {
-            return -1
-          }
-          return 0
-        })
-      let unknownIndex = values.findIndex(v => v.os_type === 'unknown')
-      if (unknownIndex > -1 && values.filter(v => v.os_type === 'unknown').length < values.length) {
-        values.splice(unknownIndex, 0, { separator: true })
-      }
-
-      return {
-        name: `${os}_os_image`,
-        type: 'string',
-        enum: values,
-      }
-    })
-    return true
+  if (field.name !== 'migr_image_map') {
+    return false
   }
-  return false
+  field.properties = migrationImageOsTypes.map(os => {
+    let values = option.values
+      .filter(v => v.os_type === os || v.os_type === 'unknown')
+      .sort((v1, v2) => {
+        if (v1.os_type === 'unknown' && v2.os_type !== 'unknown') {
+          return 1
+        } else if (v1.os_type !== 'unknown' && v2.os_type === 'unknown') {
+          return -1
+        }
+        return 0
+      })
+    let unknownIndex = values.findIndex(v => v.os_type === 'unknown')
+    if (unknownIndex > -1 && values.filter(v => v.os_type === 'unknown').length < values.length) {
+      values.splice(unknownIndex, 0, { separator: true })
+    }
+
+    return {
+      name: `${os}_os_image`,
+      type: 'string',
+      enum: values,
+    }
+  })
+  return true
 }
 
 export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptions?: ?{ [string]: mixed }): any => {
@@ -68,12 +68,12 @@ export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptio
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes.map(o => `${o}_os_image`))
 
-
   if (!options) {
     return env
   }
+
   Object.keys(options).forEach(optionName => {
-    if (specialOptions.find(o => o === optionName) || !options || options[optionName] == null) {
+    if (specialOptions.find(o => o === optionName) || !options || options[optionName] == null || options[optionName] === '') {
       return
     }
 
@@ -92,18 +92,19 @@ export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptio
 
 export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }) => {
   let env = {}
-  if (options) {
-    migrationImageOsTypes.forEach(os => {
-      if (!options || !options[`${os}_os_image`]) {
-        return
-      }
-      if (!env.migr_image_map) {
-        env.migr_image_map = {}
-      }
-
-      env.migr_image_map[os] = options[`${os}_os_image`]
-    })
+  if (!options) {
+    return env
   }
+  migrationImageOsTypes.forEach(os => {
+    if (!options || !options[`${os}_os_image`]) {
+      return
+    }
+    if (!env.migr_image_map) {
+      env.migr_image_map = {}
+    }
+
+    env.migr_image_map[os] = options[`${os}_os_image`]
+  })
 
   return env
 }
