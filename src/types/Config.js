@@ -9,8 +9,7 @@ export type Config = {
   requestPollTimeout: number,
   sourceOptionsProviders: string[],
   instancesListBackgroundLoading: { default: number, [string]: number },
-  sourceProvidersWithExtraOptions: Array<string | { name: string, envRequiredFields: string[] }>,
-  destinationProvidersWithExtraOptions: Array<string | { name: string, envRequiredFields: string[] }>,
+  providersWithEnvOptions: Array<{ name: string, type: 'source' | 'destination', envRequiredFields: string[] }>,
   providerSortPriority: { [providerName: string]: number },
   hiddenUsers: string[],
 }
