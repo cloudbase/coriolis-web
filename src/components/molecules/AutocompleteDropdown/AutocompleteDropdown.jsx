@@ -43,7 +43,7 @@ const getWidth = props => {
 }
 const Wrapper = styled.div`
   position: relative;
-  ${props => props.width ? css`width: ${props.width}px;` : ''}
+  ${props => props.embedded ? css`width: 100%;` : props.width ? css`width: ${props.width}px;` : ''}
 `
 const Required = styled.div`
   position: absolute;
@@ -119,6 +119,7 @@ type Props = {
   highlight?: boolean,
   'data-test-id'?: string,
   required?: boolean,
+  embedded?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -322,8 +323,9 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       scrollOffset = -parseInt(document.body && document.body.style.top, 10)
     }
 
+    let widthDiff = this.listRef.offsetWidth - this.buttonRef.offsetWidth
     this.listRef.style.top = `${listTop + (window.pageYOffset || scrollOffset)}px`
-    this.listRef.style.left = `${this.buttonRect.left + window.pageXOffset}px`
+    this.listRef.style.left = `${(this.buttonRect.left + window.pageXOffset) - widthDiff}px`
 
     if (this.listItemsRef) {
       this.listItemsRef.style.maxHeight = `${listHeight}px`
@@ -427,6 +429,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         width={this.props.width}
+        embedded={this.props.embedded}
       >
         <AutocompleteInput
           width={this.props.width}
@@ -439,6 +442,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           onFocus={() => { this.handleSearchInputChange(this.state.searchValue, true) }}
           highlight={this.props.highlight}
           disabled={this.props.disabled}
+          embedded={this.props.embedded}
         />
         {this.props.required ? <Required /> : null}
         {this.renderList()}
