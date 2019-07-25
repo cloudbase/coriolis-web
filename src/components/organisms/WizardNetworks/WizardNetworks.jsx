@@ -196,7 +196,7 @@ class WizardNetworks extends React.Component<Props> {
               ) :
                 (
                   <Dropdown
-                    large
+                    width={StyleProps.inputSizes.large.width}
                     centered
                     noSelectionMessage="Select ..."
                     noItemsMessage={this.props.loading ? 'Loading ...' : 'No networks found'}

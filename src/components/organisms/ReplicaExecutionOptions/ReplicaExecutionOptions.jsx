@@ -19,7 +19,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Button from '../../atoms/Button'
-import WizardOptionsField from '../../molecules/WizardOptionsField'
+import FieldInput from '../../molecules/FieldInput'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import KeyboardManager from '../../../utils/KeyboardManager'
@@ -49,7 +49,7 @@ const Buttons = styled.div`
   justify-content: space-between;
   width: 100%;
 `
-const WizardOptionsFieldStyled = styled(WizardOptionsField)`
+const FieldInputStyled = styled(FieldInput)`
   width: 319px;
   justify-content: space-between;
 `
@@ -110,10 +110,11 @@ class ReplicaExecutionOptions extends React.Component<Props, State> {
         <Form>
           {this.state.fields.map(field => {
             return (
-              <WizardOptionsFieldStyled
+              <FieldInputStyled
                 key={field.name}
                 name={field.name}
-                type="strict-boolean"
+                type="boolean"
+                layout="page"
                 value={this.getFieldValue(field)}
                 label={LabelDictionary.get(field.name)}
                 onChange={value => this.handleValueChange(field, value)}

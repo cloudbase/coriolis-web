@@ -23,10 +23,11 @@ import type { Project } from '../../../types/Project'
 import type { Field as FieldType } from '../../../types/Field'
 import Button from '../../atoms/Button'
 import Modal from '../../molecules/Modal'
-import Field from '../../molecules/EndpointField'
+import FieldInput from '../../molecules/FieldInput'
 
 import userImage from './images/user.svg'
 import KeyboardManager from '../../../utils/KeyboardManager'
+import StyleProps from '../../styleUtils/StyleProps'
 
 const Wrapper = styled.div`
   padding: 48px 0 32px 0;
@@ -173,14 +174,15 @@ class UserModal extends React.Component<Props, State> {
     let disabled = this.props.loading || (this.props.isLoggedUser && field.name === 'enabled')
 
     return (
-      <Field
+      <FieldInput
+        layout="modal"
         data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
         type={field.type || 'string'}
         value={value}
         onChange={onChange}
-        large
+        width={StyleProps.inputSizes.large.width}
         disabled={disabled}
         enum={field.enum}
         password={field.name === 'new_password' || field.name === 'confirm_password'}
@@ -193,8 +195,6 @@ class UserModal extends React.Component<Props, State> {
 
   renderForm() {
     let fields
-    const userProjects = this.props.projects.map(p => { return { label: p.name, value: p.id } })
-
     const passwordFields = [
       this.renderField(
         { name: 'new_password', required: true },
@@ -227,7 +227,7 @@ class UserModal extends React.Component<Props, State> {
         {
           name: 'Primary Project',
           // $FlowIssue
-          enum: [{ label: 'Choose a project', value: null }].concat(userProjects),
+          enum: [{ name: 'Choose a project', id: null }].concat(this.props.projects.concat([])),
         },
         this.state.projectId,
         projectId => { this.setState({ projectId }) },

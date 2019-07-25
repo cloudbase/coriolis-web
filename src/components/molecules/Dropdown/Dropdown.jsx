@@ -31,10 +31,6 @@ import tipImage from './images/tip'
 import requiredImage from './images/required.svg'
 
 const getWidth = props => {
-  if (props.large) {
-    return StyleProps.inputSizes.large.width - 2
-  }
-
   if (props.width) {
     return props.width - 2
   }

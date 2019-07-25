@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 
-import EndpointField from '../../../components/molecules/EndpointField'
+import FieldInput from '../../../components/molecules/FieldInput'
 import type { Field } from '../../../types/Field'
+
+import StyleProps from '../../../components/styleUtils/StyleProps'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -32,9 +34,9 @@ export const Fields = styled.div`
   flex-direction: column;
   overflow: auto;
 `
-export const FieldStyled = styled(EndpointField)`
+export const FieldStyled = styled(FieldInput)`
   min-width: ${props => props.useTextArea ? '100%' : '224px'};
-  max-width: 224px;
+  max-width: ${StyleProps.inputSizes.large.width}px;
   margin-bottom: 16px;
 `
 export const Row = styled.div`
@@ -85,7 +87,7 @@ class ContentPlugin extends React.Component<Props> {
       const currentField = (
         <FieldStyled
           {...field}
-          large
+          width={StyleProps.inputSizes.large.width}
           disabled={this.props.disabled}
           password={isPassword}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}

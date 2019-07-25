@@ -25,19 +25,12 @@ const wrap = props => new TW(shallow(
   <ChooseProvider {...props} />
 ), 'cProvider')
 
-let providers = {
-  azure: {},
-  openstack: {},
-  opc: {},
-  oracle_vm: {},
-  vmware_vsphere: {},
-  aws: {},
-}
+let providers = ['azure', 'openstack', 'opc', 'oracle_vm', 'vmware_vsphere', 'aws']
 
 describe('ChooseProvider Component', () => {
   it('renders all given providers', () => {
     let wrapper = wrap({ providers })
-    Object.keys(providers).forEach(key => {
+    providers.forEach(key => {
       expect(wrapper.find(`endpointLogo-${key}`).prop('endpoint')).toBe(key)
     })
   })

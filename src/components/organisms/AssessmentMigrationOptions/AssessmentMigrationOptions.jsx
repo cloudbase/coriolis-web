@@ -19,7 +19,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import Button from '../../atoms/Button'
-import EndpointField from '../../molecules/EndpointField'
+import FieldInput from '../../molecules/FieldInput'
 import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 
 import type { Field } from '../../../types/Field'
@@ -51,8 +51,8 @@ const Fields = styled.div`
   width: 100%;
   min-height: 0;
 `
-const FieldStyled = styled(EndpointField)`
-  ${StyleProps.exactWidth('224px')}
+const FieldStyled = styled(FieldInput)`
+  ${StyleProps.exactWidth(`${StyleProps.inputSizes.large.width}px`)}
   margin-bottom: 16px;
 `
 const Row = styled.div`
@@ -71,23 +71,23 @@ const Buttons = styled.div`
 const generalFields = [
   {
     name: 'use_replica',
-    type: 'strict-boolean',
+    type: 'boolean',
   },
   {
     name: 'separate_vm',
-    type: 'strict-boolean',
+    type: 'boolean',
   },
 ]
 const replicaFields = [
   {
     name: 'shutdown_instances',
-    type: 'strict-boolean',
+    type: 'boolean',
   },
 ]
 const migrationFields = [
   {
     name: 'skip_os_morphing',
-    type: 'strict-boolean',
+    type: 'boolean',
   },
 ]
 
@@ -157,24 +157,35 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     let fields = generalFields
     let useReplica = this.getFieldValue('use_replica')
     let skipFields = ['location', 'resource_group', 'network_map', 'storage_map', 'vm_size', 'worker_size']
+    let cleanup = fields => fields.filter(f => !skipFields.find(n => n === f.name)).map(f => {
+      if (f.type === 'boolean') {
+        f.nullableBoolean = true
+      }
+      return { ...f }
+    })
 
     if (useReplica) {
       fields = [...fields, ...replicaFields]
       if (this.state.showAdvancedOptions) {
-        fields = [...fields, ...this.props.replicaSchema.filter(f => !skipFields.find(n => n === f.name))]
+        fields = [
+          ...fields,
+          ...cleanup(this.props.replicaSchema),
+        ]
       }
     } else {
       fields = [...fields, ...migrationFields]
       if (this.state.showAdvancedOptions) {
-        fields = [...fields, ...this.props.migrationSchema.filter(f => !skipFields.find(n => n === f.name))]
+        fields = [
+          ...fields,
+          ...cleanup(this.props.migrationSchema),
+        ]
       }
     }
 
     const sortPriority: any = {
-      'strict-boolean': 1,
-      boolean: 2,
-      string: 3,
-      object: 4,
+      boolean: 1,
+      string: 2,
+      object: 3,
     }
     fields.sort((a, b) => {
       if (sortPriority[a.type] && sortPriority[b.type]) {
@@ -195,22 +206,25 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
       let additionalProps
       if (field.type === 'object' && field.properties) {
         additionalProps = {
-          valueCallback: propName => this.getObjectFieldValue(field.name, propName),
-          onChange: (value, propName) => { this.handleObjectValueChange(field.name, propName, value) },
-          properties: field.properties,
+          valueCallback: callbackField => this.getObjectFieldValue(field.name, callbackField.name),
+          onChange: (value, callbackField) => {
+            let propName = callbackField.name.substr(callbackField.name.lastIndexOf('/') + 1)
+            this.handleObjectValueChange(field.name, propName, value)
+          },
+          properties: field.properties.map(p => ({ ...p, required: false })),
         }
       } else {
         let value = this.getFieldValue(field.name)
         additionalProps = {
           value,
           onChange: value => { this.handleValueChange(field.name, value) },
-          type: field.type === 'strict-boolean' ? 'boolean' : field.type === 'boolean' ? 'optional-boolean' : field.type,
+          type: field.type,
         }
       }
 
       const currentField = (
         <FieldStyled
-          large
+          width={StyleProps.inputSizes.large.width}
           {...field}
           {...additionalProps}
         />

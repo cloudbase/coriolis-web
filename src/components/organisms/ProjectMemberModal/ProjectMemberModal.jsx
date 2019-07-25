@@ -23,7 +23,7 @@ import type { User } from '../../../types/User'
 import type { Project, Role } from '../../../types/Project'
 import Button from '../../atoms/Button'
 import Modal from '../../molecules/Modal'
-import Field from '../../molecules/EndpointField'
+import FieldInput from '../../molecules/FieldInput'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -58,8 +58,8 @@ const Form = styled.div`
     margin-top: 16px;
   }
 `
-const FieldStyled = styled(Field)`
-  ${StyleProps.exactWidth('224px')}
+const FieldStyled = styled(FieldInput)`
+  ${StyleProps.exactWidth(`${StyleProps.inputSizes.large.width}px`)}
 `
 const FormField = styled.div``
 const FormLabel = styled.div`
@@ -226,7 +226,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
     let highlighFieldName = this.state.isNew ? 'rolesNew' : 'rolesExisting'
 
     return (
-      <Field
+      <FieldInput
         data-test-id={`${testName}-roles`}
         key="roles"
         name="role(s)"
@@ -238,11 +238,11 @@ class ProjectMemberModal extends React.Component<Props, State> {
             setSelectedRoles([...selectedRoles, roleId])
           }
         }}
-        selectedItems={selectedRoles}
-        value={null}
-        large
+        value={selectedRoles}
+        width={StyleProps.inputSizes.large.width}
+        layout="modal"
         disabled={this.props.loading}
-        items={this.props.roles.filter(r => r.name !== 'key-manager:service-admin').map(r => { return { label: r.name, value: r.id } })}
+        enum={this.props.roles.filter(r => r.name !== 'key-manager:service-admin').map(r => { return { name: r.name, id: r.id } })}
         required
         highlight={Boolean(this.state.highlightFieldNames.find(n => n === highlighFieldName))}
         noSelectionMessage="Choose role(s)"
@@ -260,7 +260,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         type={field.type || 'string'}
         value={value}
         onChange={onChange}
-        large
+        width={StyleProps.inputSizes.large.width}
         disabled={this.props.loading}
         enum={field.enum}
         password={field.name === 'password' || field.name === 'confirm_password'}
@@ -273,7 +273,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
   }
 
   renderNewForm() {
-    const userProjects = this.props.projects.map(p => { return { label: p.name, value: p.id } })
+    const userProjects = this.props.projects.map(p => ({ name: p.name, id: p.id }))
     const fields = [
       this.renderField(
         { name: 'username', required: true },
@@ -289,7 +289,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         {
           name: 'Primary Project',
           // $FlowIssue
-          enum: [{ label: 'Choose a project', value: null }].concat(userProjects),
+          enum: [{ name: 'Choose a project', id: null }].concat(userProjects),
         },
         this.state.projectId,
         projectId => { this.setState({ projectId }) },

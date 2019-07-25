@@ -16,73 +16,99 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-import Switch from '../../atoms/Switch'
-import TextInput from '../../atoms/TextInput'
-import RadioInput from '../../atoms/RadioInput'
-import InfoIcon from '../../atoms/InfoIcon'
-import Dropdown from '../../molecules/Dropdown'
-import DropdownInput from '../../molecules/DropdownInput'
-import TextArea from '../../atoms/TextArea'
-import PropertiesTable from '../../molecules/PropertiesTable'
+import Switch from '../../atoms/Switch/Switch'
+import TextInput from '../../atoms/TextInput/TextInput'
+import RadioInput from '../../atoms/RadioInput/RadioInput'
+import InfoIcon from '../../atoms/InfoIcon/InfoIcon'
+import Dropdown from '../Dropdown/Dropdown'
+import DropdownInput from '../DropdownInput/DropdownInput'
+import TextArea from '../../atoms/TextArea/TextArea'
+import PropertiesTable from '../PropertiesTable/PropertiesTable'
+import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 
-import type { Field as FieldType } from '../../../types/Field'
+import type { Field } from '../../../types/Field'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 
-const Wrapper = styled.div``
-const Label = styled.div`
-  font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[3]};
-  text-transform: uppercase;
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
+import asteriskImage from './images/asterisk.svg'
+
+const Wrapper = styled.div`
+  ${props => props.layout === 'page' ? css`
+    display: flex;
+    flex-direction: ${props.inline ? 'row' : 'column'};
+    ${props.inline ? '' : css`justify-content: center;`}
+  ` : ''}
 `
-const LabelText = styled.span`
-  margin-right: 24px;
+
+const Label = styled.div`
+  font-weight: ${StyleProps.fontWeights.medium};
+  ${props => props.layout === 'page' ? css`
+    margin-bottom: 8px;
+  ` : css`
+    margin-bottom: 2px;
+    font-size: 10px;
+    color: ${Palette.grayscale[3]};
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+  `}
+`
+const LabelText = styled.span``
+const Asterisk = styled.div`
+  ${StyleProps.exactSize('16px')}
+  display: inline-block;
+  background: url('${asteriskImage}') center no-repeat;
+  margin-bottom: -3px;
+  margin-left: ${props => props.marginLeft || '0px'};
 `
 
 type Props = {
   name: string,
   type: string,
   value: any,
-  onChange?: (value: any, fieldName?: string) => void,
-  valueCallback?: (fieldName: string) => void,
+  onChange?: (value: any, field?: Field) => void,
+  valueCallback?: (field: Field) => any,
   getFieldValue?: (fieldName: string) => string,
   onFieldChange?: (fieldName: string, fieldValue: string) => void,
   className?: string,
+  properties?: Field[],
+  // $FlowIgnore
+  enum?: string[] | { label: string, value: string }[] | { name: string, id: string }[],
+  required?: boolean,
   minimum?: number,
   maximum?: number,
   password?: boolean,
-  required?: boolean,
-  large?: boolean,
   highlight?: boolean,
-  properties?: FieldType[],
   disabled?: boolean,
-  // $FlowIssue
-  enum?: string[] | { label: string, value: string }[],
   items?: any[],
   useTextArea?: boolean,
   noSelectionMessage?: string,
   noItemsMessage?: string,
-  selectedItems?: string[],
-  'data-test-id'?: string,
+  layout: 'modal' | 'page',
+  width?: number,
+  label?: string,
+  addNullValue?: boolean,
+  nullableBoolean?: boolean,
+  style?: { [string]: mixed },
 }
 @observer
-class Field extends React.Component<Props> {
+class FieldInput extends React.Component<Props> {
   renderSwitch(propss: { triState: boolean }) {
     return (
       <Switch
-        data-test-id={`endpointField-switch-${this.props.name}`}
+        width={this.props.layout === 'page' ? '112px' : ''}
+        height={this.props.layout === 'page' ? 16 : 24}
+        justifyContent={this.props.layout === 'page' ? 'flex-end' : ''}
         disabled={this.props.disabled}
         triState={propss.triState}
         checked={this.props.value}
         onChange={checked => { if (this.props.onChange) this.props.onChange(checked) }}
+        leftLabel={this.props.layout === 'page'}
+        style={this.props.layout === 'page' ? { marginTop: '-8px' } : {}}
       />
     )
   }
@@ -90,15 +116,14 @@ class Field extends React.Component<Props> {
   renderTextInput() {
     return (
       <TextInput
-        data-test-id={`endpointField-textInput-${this.props.name}`}
+        width={this.props.width}
         highlight={this.props.highlight}
         type={this.props.password ? 'password' : 'text'}
-        large={this.props.large}
         value={this.props.value}
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
-        required={this.props.required}
+        required={this.props.layout === 'page' ? false : this.props.required}
       />
     )
   }
@@ -107,7 +132,7 @@ class Field extends React.Component<Props> {
     return (
       <TextInput
         highlight={this.props.highlight}
-        large={this.props.large}
+        width={this.props.width}
         value={this.props.value}
         onChange={e => {
           let value = Number(e.target.value.replace(/\D/g, '')) || ''
@@ -129,13 +154,13 @@ class Field extends React.Component<Props> {
     return (
       <PropertiesTable
         properties={this.props.properties}
-        valueCallback={field => { if (this.props.valueCallback) { this.props.valueCallback(field.name) } }}
+        valueCallback={field => this.props.valueCallback && this.props.valueCallback(field)}
         onChange={(field, value) => {
-          let fieldName = field.name.substr(field.name.lastIndexOf('/') + 1)
           if (this.props.onChange) {
-            this.props.onChange(value, fieldName)
+            this.props.onChange(value, field)
           }
         }}
+        hideRequiredSymbol={this.props.layout === 'page'}
       />
     )
   }
@@ -143,7 +168,6 @@ class Field extends React.Component<Props> {
   renderTextArea() {
     return (
       <TextArea
-        data-test-id={`endpointField-textArea-${this.props.name}`}
         style={{ width: '100%' }}
         highlight={this.props.highlight}
         value={this.props.value}
@@ -156,51 +180,73 @@ class Field extends React.Component<Props> {
   }
 
   renderEnumDropdown() {
-    if (!this.props.enum) {
-      return null
+    const useDictionary = LabelDictionary.enumFields.find(f => f === this.props.name)
+    let items = this.props.enum.map(e => {
+      if (typeof e !== 'string' && e.separator === true) {
+        return e
+      }
+
+      return {
+        label: typeof e === 'string' ? (useDictionary ? LabelDictionary.get(e) : e) : e.name || e.label,
+        value: typeof e === 'string' ? e : e.id || e.value,
+      }
+    })
+    if (this.props.addNullValue) {
+      items = [
+        { label: 'Choose a value', value: null },
+        ...items,
+      ]
     }
 
-    let items = this.props.enum.map(e => {
-      if (typeof e === 'string') {
-        return {
-          label: LabelDictionary.get(e),
-          value: e,
-        }
-      }
-      return e
-    })
     let selectedItem = items.find(i => i.value === this.props.value)
+    let commonProps = {
+      width: this.props.width,
+      selectedItem,
+      items,
+      onChange: item => this.props.onChange && this.props.onChange(item.value),
+    }
 
+    if (items.length < 10) {
+      return (
+        <Dropdown
+          {...commonProps}
+          noSelectionMessage="Choose a value"
+          dimFirstItem={this.props.addNullValue}
+        />
+      )
+    }
     return (
-      <Dropdown
-        data-test-id={`endpointField-dropdown-${this.props.name}`}
-        large={this.props.large}
-        selectedItem={selectedItem}
-        noSelectionMessage={this.props.noSelectionMessage}
-        noItemsMessage={this.props.noItemsMessage}
-        items={items}
-        onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
-        disabled={this.props.disabled}
-        highlight={this.props.highlight}
-        required={this.props.required}
+      <AutocompleteDropdown
+        {...commonProps}
+        dimNullValue
       />
     )
   }
 
   renderArrayDropdown() {
+    let items = this.props.enum.map(e => {
+      if (typeof e !== 'string' && e.separator === true) {
+        return e
+      }
+
+      return {
+        label: typeof e === 'string' ? LabelDictionary.get(e) : e.name || e.label,
+        value: typeof e === 'string' ? e : e.id || e.value,
+      }
+    })
+    let selectedItems = this.props.value || []
     return (
       <Dropdown
-        data-test-id={`endpointField-multidropdown-${this.props.name}`}
         multipleSelection
-        large={this.props.large}
+        width={this.props.width}
         disabled={this.props.disabled}
-        noSelectionMessage={this.props.noSelectionMessage}
+        noSelectionMessage="Choose values"
         noItemsMessage={this.props.noItemsMessage}
-        items={this.props.items}
-        selectedItems={this.props.selectedItems}
+        items={items}
+        selectedItems={selectedItems}
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         highlight={this.props.highlight}
-        required={this.props.required}
+        required={this.props.layout === 'page' ? false : this.props.required}
       />
     )
   }
@@ -221,8 +267,7 @@ class Field extends React.Component<Props> {
 
     return (
       <Dropdown
-        data-test-id={`endpointField-dropdown-${this.props.name}`}
-        large={this.props.large}
+        width={this.props.width}
         selectedItem={this.props.value}
         items={items}
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
@@ -236,7 +281,6 @@ class Field extends React.Component<Props> {
   renderRadioInput() {
     return (
       <RadioInput
-        data-test-id={`endpointField-radioInput-${this.props.name}`}
         checked={this.props.value}
         label={LabelDictionary.get(this.props.name)}
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.checked) }}
@@ -278,11 +322,9 @@ class Field extends React.Component<Props> {
       case 'input-choice':
         return this.renderDropdownInput()
       case 'boolean':
-        return this.renderSwitch({ triState: false })
-      case 'optional-boolean':
-        return this.renderSwitch({ triState: true })
+        return this.renderSwitch({ triState: Boolean(this.props.nullableBoolean) })
       case 'string':
-        if (this.props.enum) {
+        if (this.props.enum && this.props.enum.length) {
           return this.renderEnumDropdown()
         }
         if (this.props.useTextArea) {
@@ -311,22 +353,27 @@ class Field extends React.Component<Props> {
     }
 
     let description = LabelDictionary.getDescription(this.props.name)
-    let infoIcon = null
-    if (description) {
-      infoIcon = <InfoIcon text={description} marginLeft={-20} marginBottom={0} />
-    }
+    let marginRight = this.props.layout === 'modal' || description || this.props.required ? '24px' : 0
 
     return (
-      <Label>
-        <LabelText data-test-id="endpointField-label">{LabelDictionary.get(this.props.name)}</LabelText>
-        {infoIcon}
+      <Label layout={this.props.layout}>
+        <LabelText style={{ marginRight }}>
+          {this.props.label || LabelDictionary.get(this.props.name)}
+        </LabelText>
+        {description ? <InfoIcon text={description} marginLeft={-20} marginBottom={this.props.layout === 'page' ? null : 0} /> : null}
+        {this.props.layout === 'page' && Boolean(this.props.required) ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}
       </Label>
     )
   }
 
   render() {
     return (
-      <Wrapper data-test-id={this.props['data-test-id'] || 'endpointField-wrapper'} className={this.props.className}>
+      <Wrapper
+        className={this.props.className}
+        inline={this.props.type === 'boolean'}
+        style={this.props.style}
+        layout={this.props.layout}
+      >
         {this.renderLabel()}
         {this.renderInput()}
       </Wrapper>
@@ -334,4 +381,4 @@ class Field extends React.Component<Props> {
   }
 }
 
-export default Field
+export default FieldInput

@@ -35,7 +35,7 @@ const Required = styled.div`
 `
 const getInputWidth = props => {
   if (props.width) {
-    return props.width
+    return typeof props.width === 'number' ? `${props.width}px` : props.width
   }
 
   if (props.large) {
