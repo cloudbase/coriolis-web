@@ -90,6 +90,7 @@ type Props = {
   fieldWidth?: number,
   onScrollableRef?: (ref: HTMLElement) => void,
   availableHeight?: number,
+  layout?: 'page' | 'modal',
 }
 @observer
 class WizardOptions extends React.Component<Props> {
@@ -178,7 +179,7 @@ class WizardOptions extends React.Component<Props> {
     }
     return (
       <FieldInputStyled
-        layout="page"
+        layout={this.props.layout || 'page'}
         key={field.name}
         name={field.name}
         type={field.type}
