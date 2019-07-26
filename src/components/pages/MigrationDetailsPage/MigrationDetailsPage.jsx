@@ -86,7 +86,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   loadMigrationWithInstances(migrationId: string, cache: boolean) {
-    migrationStore.getMigration(migrationId, true).then(() => {
+    migrationStore.getMigration(migrationId, { showLoading: true }).then(() => {
       let details = migrationStore.migrationDetails
       if (!details) {
         return
@@ -181,7 +181,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     if (this.state.showEditModal || this.stopPolling) {
       return
     }
-    migrationStore.getMigration(this.props.match.params.id, false).then(() => {
+    migrationStore.getMigration(this.props.match.params.id, { showLoading: false, skipLog: true }).then(() => {
       setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }

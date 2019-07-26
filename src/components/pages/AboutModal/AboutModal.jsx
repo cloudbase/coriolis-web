@@ -18,7 +18,6 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import apiCaller from '../../../utils/ApiCaller'
 import logger from '../../../utils/ApiLogger'
 
 import Modal from '../../molecules/Modal/Modal'
@@ -91,21 +90,17 @@ type Props = {
 }
 
 type State = {
-  version: string,
   licenceAddMode: boolean,
 }
 
 @observer
 class AboutModal extends React.Component<Props, State> {
   state = {
-    version: '-',
     licenceAddMode: false,
   }
 
   componentWillMount() {
-    apiCaller.get('/version').then(res => {
-      this.setState({ version: res.data.version })
-    })
+    licenceStore.loadVersion()
     licenceStore.loadLicenceInfo()
   }
 
@@ -130,7 +125,7 @@ class AboutModal extends React.Component<Props, State> {
                 <Logo />
                 <Text>
                   <TextLine>
-                    <span>Version {this.state.version}</span>
+                    <span>Version {licenceStore.version || '-'}</span>
                     <span>|</span>
                     <LinkMock onClick={() => { logger.download() }} >Download Log</LinkMock>
                   </TextLine>

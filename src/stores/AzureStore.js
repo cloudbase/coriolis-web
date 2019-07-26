@@ -181,7 +181,7 @@ class AzureStore {
     subscriptionId: string,
     resourceGroupName: string,
     projectId: string,
-    options?: { backgroundLoading: boolean },
+    options?: { backgroundLoading: boolean, skipLog?: boolean },
   ): Promise<void> {
     let cookieProjectId = cookie.get('projectId') || 'null'
     if (projectId !== cookieProjectId) {
@@ -191,7 +191,7 @@ class AzureStore {
     if (!options || !options.backgroundLoading) {
       this.loadingAssessments = true
     }
-    return AzureSource.getAssessments(subscriptionId, resourceGroupName).then((assessments: Assessment[]) => {
+    return AzureSource.getAssessments(subscriptionId, resourceGroupName, options && options.skipLog).then((assessments: Assessment[]) => {
       this.loadingAssessments = false
 
       cookieProjectId = cookie.get('projectId') || 'null'

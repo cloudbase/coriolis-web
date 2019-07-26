@@ -177,9 +177,9 @@ class UserSource {
     return Api.get(`${servicesUrl.users}/${userId}`).then(response => response.data.user)
   }
 
-  static getAllUsers(): Promise<User[]> {
+  static getAllUsers(skipLog?: boolean): Promise<User[]> {
     let users: User[] = []
-    return Api.get(`${servicesUrl.users}`)
+    return Api.send({ url: `${servicesUrl.users}`, skipLog })
       .then(response => {
         users = response.data.users
         return utils.waitFor(() => Boolean(configLoader.config))

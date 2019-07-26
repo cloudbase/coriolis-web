@@ -186,7 +186,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       connectionInfo.subscription_id,
       selectedResourceGroup.name,
       userStore.loggedUser ? userStore.loggedUser.project.id : '',
-      { backgroundLoading: true }
+      { backgroundLoading: true, skipLog: true }
     ).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })

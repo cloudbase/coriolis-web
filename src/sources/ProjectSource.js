@@ -22,8 +22,11 @@ import type { Project, Role, RoleAssignment } from '../types/Project'
 import type { User } from '../types/User'
 
 class ProjectsSource {
-  static getProjects(): Promise<Project[]> {
-    return Api.get(servicesUrl.projects).then((response) => {
+  static getProjects(skipLog?: boolean): Promise<Project[]> {
+    return Api.send({
+      url: servicesUrl.projects,
+      skipLog,
+    }).then((response) => {
       if (response.data.projects) {
         let projects: Project[] = response.data.projects
         projects.sort((a, b) => a.name.localeCompare(b.name))
@@ -39,8 +42,11 @@ class ProjectsSource {
     })
   }
 
-  static getRoleAssignments(): Promise<RoleAssignment[]> {
-    return Api.get(`${coriolisUrl}identity/role_assignments?include_names`).then(response => {
+  static getRoleAssignments(skipLog?: boolean): Promise<RoleAssignment[]> {
+    return Api.send({
+      url: `${coriolisUrl}identity/role_assignments?include_names`,
+      skipLog,
+    }).then(response => {
       let assignments: RoleAssignment[] = response.data.role_assignments
       assignments.sort((a1, a2) => a1.role.name.localeCompare(a2.role.name))
       return assignments

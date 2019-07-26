@@ -16,13 +16,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from 'mobx'
 
+import apiCaller from '../utils/ApiCaller'
 import licenceSource from '../sources/LincenceSource'
+
 import type { Licence } from '../types/Licence'
 
 class LicenceStore {
   @observable loadingLicenceInfo: boolean = false
   @observable licenceInfo: ?Licence = null
   @observable addingLicence: boolean = false
+  @observable version: ?string = null
+
+  async loadVersion(): Promise<string> {
+    if (this.version) {
+      return this.version
+    }
+
+    let response = await apiCaller.get('/version')
+    runInAction(() => {
+      this.version = response.data.version
+    })
+    return this.version || ''
+  }
 
   @action async loadLicenceInfo() {
     this.loadingLicenceInfo = true

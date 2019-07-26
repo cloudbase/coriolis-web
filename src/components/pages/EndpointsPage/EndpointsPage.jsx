@@ -198,7 +198,11 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       return
     }
 
-    Promise.all([endpointStore.getEndpoints({ showLoading }), migrationStore.getMigrations(), replicaStore.getReplicas()]).then(() => {
+    Promise.all([
+      endpointStore.getEndpoints({ showLoading, skipLog: true }),
+      migrationStore.getMigrations({ skipLog: true }),
+      replicaStore.getReplicas({ skipLog: true }),
+    ]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }

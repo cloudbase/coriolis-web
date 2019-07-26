@@ -96,7 +96,7 @@ class AzureSource {
 
   static previousReqId: string
 
-  static getAssessments(subscriptionId: string, resourceGroupName: string): Promise<Assessment[]> {
+  static getAssessments(subscriptionId: string, resourceGroupName: string, skipLog?: ?boolean): Promise<Assessment[]> {
     let cancelId = subscriptionId + resourceGroupName
     if (this.previousReqId) {
       Api.cancelRequests(this.previousReqId)
@@ -107,6 +107,7 @@ class AzureSource {
     return Api.send({
       url: Util.buildUrl(projectsUrl({ resourceGroupName, subscriptionId })),
       cancelId,
+      skipLog,
     }).then(projectsResponse => {
       if (!Util.isResponseValid(projectsResponse)) {
         return []
