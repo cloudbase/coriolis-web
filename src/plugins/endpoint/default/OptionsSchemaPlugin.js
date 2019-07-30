@@ -14,8 +14,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import { defaultSchemaToFields } from './ConnectionSchemaPlugin'
+
 import type { Field } from '../../../types/Field'
 import type { OptionValues, StorageMap } from '../../../types/Endpoint'
+import type { SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { NetworkMap } from '../../../types/Network'
 import { executionOptions } from '../../../constants'
 
@@ -110,6 +113,10 @@ export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }) => {
 }
 
 export default class OptionsSchemaParser {
+  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
+    return defaultSchemaToFields(schema, schemaDefinitions)
+  }
+
   static fillFieldValues(field: Field, options: OptionValues[]) {
     let option = options.find(f => f.name === field.name)
     if (!option) {

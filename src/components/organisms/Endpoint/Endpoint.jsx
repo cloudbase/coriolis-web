@@ -69,7 +69,7 @@ const ShowErrorButton = styled.span`
 `
 const StatusError = styled.div`
   max-width: 100%;
-  margin-top: 16px;
+  margin: 16px 16px 0 16px;
   max-height: 140px;
   overflow: auto;
   cursor: pointer;

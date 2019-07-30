@@ -14,8 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { ConnectionSchemaPlugin } from '../plugins/endpoint'
-import { defaultSchemaToFields } from '../plugins/endpoint/default/ConnectionSchemaPlugin'
+import { ConnectionSchemaPlugin, OptionsSchemaPlugin } from '../plugins/endpoint'
 import type { Schema } from '../types/Schema'
 import type { Endpoint } from '../types/Endpoint'
 
@@ -34,7 +33,8 @@ class SchemaParser {
   }
 
   static optionsSchemaToFields(provider: string, schema: Schema) {
-    let fields = defaultSchemaToFields(schema.oneOf[0], schema.definitions)
+    let parser = OptionsSchemaPlugin[provider] || OptionsSchemaPlugin.default
+    let fields = parser.parseSchemaToFields(schema.oneOf[0], schema.definitions)
     fields.sort((a, b) => {
       if (a.required && !b.required) {
         return -1
