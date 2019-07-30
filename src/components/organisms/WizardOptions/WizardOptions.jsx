@@ -157,6 +157,11 @@ class WizardOptions extends React.Component<Props> {
     return fieldsSchema
   }
 
+  isPassword(field: Field): boolean {
+    return field.type === 'string' && (!field.enum || field.enum.length === 0) &&
+      field.name.indexOf('password') > -1
+  }
+
   @autobind
   handleResize() {
     this.setState({})
@@ -182,6 +187,7 @@ class WizardOptions extends React.Component<Props> {
         key={field.name}
         name={field.name}
         type={field.type}
+        password={this.isPassword(field)}
         enum={field.enum}
         addNullValue
         required={field.required}
@@ -282,6 +288,7 @@ class WizardOptions extends React.Component<Props> {
   render() {
     return (
       <Wrapper>
+        <input type="password" style={{ position: 'absolute', top: '-99999px', left: '-99999px' }} />
         {this.renderOptions()}
         {this.renderLoading()}
       </Wrapper>
