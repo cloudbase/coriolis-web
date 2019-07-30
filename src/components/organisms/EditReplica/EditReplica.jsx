@@ -166,7 +166,7 @@ class EditReplica extends React.Component<Props, State> {
       return data
     }
     Object.keys(env).forEach(key => {
-      if (env[key] && typeof env[key] === 'object') {
+      if (env[key] && typeof env[key] === 'object' && !Array.isArray(JSON.parse(JSON.stringify(env[key])))) {
         Object.keys(env[key]).forEach(subkey => {
           let destParent: any = env[key]
           if (destParent[subkey]) {
@@ -397,6 +397,7 @@ class EditReplica extends React.Component<Props, State> {
         onScrollableRef={ref => { this.scrollableRef = ref }}
         availableHeight={384}
         useAdvancedOptions
+        layout="modal"
       />
     )
   }
