@@ -94,6 +94,7 @@ class PropertiesTable extends React.Component<Props> {
         data-test-id={`${baseId}-textInput-${prop.name}`}
         width="100%"
         embedded
+        type={prop.password ? 'password' : 'text'}
         value={this.props.valueCallback(prop)}
         onChange={e => { this.props.onChange(prop, e.target.value) }}
         placeholder={this.getName(prop.name)}
