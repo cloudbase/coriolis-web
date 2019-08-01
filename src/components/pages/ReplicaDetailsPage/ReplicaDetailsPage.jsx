@@ -128,7 +128,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   loadReplicaWithInstances(replicaId: string, cache: boolean) {
-    replicaStore.getReplica(replicaId).then(() => {
+    replicaStore.getReplica(replicaId, { showLoading: true }).then(() => {
       let details = replicaStore.replicaDetails
       if (!details) {
         return
@@ -317,10 +317,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
 
     if (!this.props.match.params.page) {
-      replicaStore.getReplica(this.props.match.params.id, showLoading)
+      replicaStore.getReplica(this.props.match.params.id, { showLoading, skipLog: true })
     }
 
-    replicaStore.getReplicaExecutions(this.props.match.params.id, showLoading).then(() => {
+    replicaStore.getReplicaExecutions(this.props.match.params.id, { showLoading, skipLog: true }).then(() => {
       setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
     })
   }

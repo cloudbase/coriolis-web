@@ -76,7 +76,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
   }
 
   handleReloadButtonClick() {
-    projectStore.getProjects(true)
+    projectStore.getProjects({ showLoading: true })
     projectStore.getRoleAssignments()
   }
 
@@ -91,7 +91,10 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
       return
     }
 
-    Promise.all([projectStore.getProjects(showLoading), projectStore.getRoleAssignments()]).then(() => {
+    Promise.all([
+      projectStore.getProjects({ showLoading, skipLog: true }),
+      projectStore.getRoleAssignments({ skipLog: true }),
+    ]).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }

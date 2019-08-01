@@ -34,7 +34,7 @@ type RequestOptions = {
   data?: any,
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream',
   quietError?: boolean,
-  skipLog?: boolean,
+  skipLog?: ?boolean,
 }
 
 let cancelables: Cancelable[] = []

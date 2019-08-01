@@ -119,8 +119,11 @@ class ReplicaSourceUtils {
 }
 
 class ReplicaSource {
-  static getReplicas(): Promise<MainItem[]> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`).then(response => {
+  static getReplicas(skipLog?: boolean): Promise<MainItem[]> {
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`,
+      skipLog,
+    }).then(response => {
       let replicas = response.data.replicas
       replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
       ReplicaSourceUtils.sortReplicas(replicas)
@@ -128,8 +131,11 @@ class ReplicaSource {
     })
   }
 
-  static getReplicaExecutions(replicaId: string): Promise<Execution[]> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`).then((response) => {
+  static getReplicaExecutions(replicaId: string, skipLog?: boolean): Promise<Execution[]> {
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`,
+      skipLog,
+    }).then((response) => {
       let executions = response.data.executions
       ReplicaSourceUtils.sortExecutionsAndTasks(executions)
 
@@ -137,8 +143,11 @@ class ReplicaSource {
     })
   }
 
-  static getReplica(replicaId: string): Promise<MainItem> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`).then(response => {
+  static getReplica(replicaId: string, skipLog?: boolean): Promise<MainItem> {
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`,
+      skipLog,
+    }).then(response => {
       let replica = response.data.replica
       replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
       ReplicaSourceUtils.sortExecutions(replica.executions)

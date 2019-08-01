@@ -43,12 +43,12 @@ class EndpointStore {
   @observable storageLoading: boolean = false
   @observable storageConfigDefault: string = ''
 
-  @action getEndpoints(options?: { showLoading: boolean }) {
+  @action getEndpoints(options?: { showLoading?: boolean, skipLog?: boolean }) {
     if (options && options.showLoading) {
       this.loading = true
     }
 
-    return EndpointSource.getEndpoints().then(endpoints => {
+    return EndpointSource.getEndpoints(options && options.skipLog).then(endpoints => {
       this.endpoints = endpoints
       this.loading = false
     }).catch(() => {

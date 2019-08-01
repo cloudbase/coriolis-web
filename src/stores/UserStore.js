@@ -144,10 +144,10 @@ class UserStore {
     })
   }
 
-  @action getAllUsers(showLoading?: boolean): Promise<void> {
-    if (showLoading) this.allUsersLoading = true
+  @action getAllUsers(options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+    if (options && options.showLoading) this.allUsersLoading = true
 
-    return UserSource.getAllUsers().then(users => {
+    return UserSource.getAllUsers(options && options.skipLog).then(users => {
       this.users = users
       this.allUsersLoading = false
     }).catch(() => {

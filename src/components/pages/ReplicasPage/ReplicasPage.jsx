@@ -217,7 +217,10 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       return
     }
 
-    Promise.all([replicaStore.getReplicas(), endpointStore.getEndpoints()]).then(() => {
+    Promise.all([
+      replicaStore.getReplicas({ skipLog: true }),
+      endpointStore.getEndpoints({ skipLog: true }),
+    ]).then(() => {
       if (!this.schedulePolling) {
         this.pollSchedule()
       }

@@ -14,6 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import licenceStore from '../stores/LicenceStore'
+
 type LogType = 'REQUEST' | 'RESPONSE'
 
 type LogOptions = {
@@ -23,36 +25,61 @@ type LogOptions = {
   description?: string,
   requestStatus?: number | 'canceled',
   requestError?: any,
+  windowPath?: string,
+  stack?: string,
 }
 
-type Log = LogOptions & {
+type RequestLog = LogOptions & {
   date: Date,
 }
-const MAX_LOGS = 3000
+
+type Log = {
+  requests: RequestLog[],
+  userAgent: string,
+  platform: string,
+  version: string,
+}
+
+const MAX_LOGS = 1000
+
+const validateLog = (logs: RequestLog[]): boolean => {
+  if (logs.length && !logs[0].windowPath) {
+    return false
+  }
+  return true
+}
+
 class Storage {
   static NAME = 'apiLog'
+  static EMPTY = '[]'
 
   static getLogRaw(): string {
-    return localStorage.getItem(this.NAME) || '[]'
-  }
-
-  static getLog(): Log[] {
-    let logs: Log[] = JSON.parse(localStorage.getItem(this.NAME) || '[]')
-    return logs
+    return localStorage.getItem(this.NAME) || this.EMPTY
   }
 
   static saveLog(options: LogOptions) {
-    let logs: Log[] = JSON.parse(localStorage.getItem(this.NAME) || '[]')
-    let newLog: Log = {
+    let logs: RequestLog[] = JSON.parse(localStorage.getItem(this.NAME) || this.EMPTY)
+    if (!validateLog(logs)) {
+      localStorage.setItem(this.NAME, this.EMPTY)
+      logs = JSON.parse(this.EMPTY)
+    }
+
+    let newRequest: RequestLog = {
       date: new Date(),
+      windowPath: window.location.href.replace(`${window.location.protocol}//${window.location.host}`, ''),
       ...options,
+    }
+
+    if (options.type === 'REQUEST') {
+      let err = new Error()
+      newRequest.stack = err.stack
     }
 
     if (logs.length > MAX_LOGS) {
       logs.splice(0, logs.length - MAX_LOGS)
     }
 
-    logs.push(newLog)
+    logs.push(newRequest)
     localStorage.setItem(this.NAME, JSON.stringify(logs))
   }
 }
@@ -77,7 +104,15 @@ class ApiLogger {
   }
 
   download() {
-    let href: string = `data:text/json;charset=utf-8,${encodeURIComponent(Storage.getLogRaw())}`
+    let requests: RequestLog[] = JSON.parse(Storage.getLogRaw())
+    let log: Log = {
+      requests,
+      userAgent: window.navigator.userAgent,
+      platform: window.navigator.platform,
+      version: licenceStore.version || '-',
+    }
+
+    let href: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(log))}`
     let downloadAnchorNode = document.createElement('a')
     downloadAnchorNode.setAttribute('href', href)
     downloadAnchorNode.setAttribute('download', 'coriolis-log.json')

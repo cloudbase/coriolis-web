@@ -31,9 +31,9 @@ class ProjectStore {
   @observable usersLoading: boolean = false
   @observable updating: boolean = false
 
-  @action getProjects(showLoading?: boolean): Promise<void> {
-    if (showLoading) this.loading = true
-    return ProjectSource.getProjects().then((projects: Project[]) => {
+  @action getProjects(options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+    if (options && options.showLoading) this.loading = true
+    return ProjectSource.getProjects(options && options.skipLog).then((projects: Project[]) => {
       this.loading = false
       this.projects = projects
     }).catch(() => {
@@ -41,8 +41,8 @@ class ProjectStore {
     })
   }
 
-  @action getRoleAssignments(): Promise<void> {
-    return ProjectSource.getRoleAssignments().then((assignments: RoleAssignment[]) => {
+  @action getRoleAssignments(options?: { skipLog?: boolean }): Promise<void> {
+    return ProjectSource.getRoleAssignments(options && options.skipLog).then((assignments: RoleAssignment[]) => {
       this.roleAssignments = assignments
     })
   }

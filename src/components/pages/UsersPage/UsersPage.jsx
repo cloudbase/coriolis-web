@@ -79,7 +79,7 @@ class UsersPage extends React.Component<{ history: any }, State> {
 
   handleReloadButtonClick() {
     projectStore.getProjects()
-    userStore.getAllUsers(true)
+    userStore.getAllUsers({ showLoading: true })
   }
 
   pollData(showLoading?: boolean) {
@@ -87,7 +87,7 @@ class UsersPage extends React.Component<{ history: any }, State> {
       return
     }
 
-    userStore.getAllUsers(showLoading).then(() => {
+    userStore.getAllUsers({ showLoading, skipLog: true }).then(() => {
       this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
     })
   }

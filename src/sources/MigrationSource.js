@@ -51,16 +51,22 @@ class MigrationSourceUtils {
 }
 
 class MigrationSource {
-  static getMigrations(): Promise<MainItem[]> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/migrations/detail`).then(response => {
+  static getMigrations(skipLog?: boolean): Promise<MainItem[]> {
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/detail`,
+      skipLog,
+    }).then(response => {
       let migrations = response.data.migrations
       MigrationSourceUtils.sortMigrations(migrations)
       return migrations
     })
   }
 
-  static getMigration(migrationId: string): Promise<MainItem> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`).then(response => {
+  static getMigration(migrationId: string, skipLog?: boolean): Promise<MainItem> {
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`,
+      skipLog,
+    }).then(response => {
       let migration = response.data.migration
       sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)
       return migration

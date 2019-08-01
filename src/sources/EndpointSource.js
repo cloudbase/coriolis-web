@@ -40,8 +40,11 @@ let getBarbicanPayload = data => {
 }
 
 class EdnpointSource {
-  static getEndpoints(): Promise<Endpoint[]> {
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints`).then(response => {
+  static getEndpoints(skipLog?: boolean): Promise<Endpoint[]> {
+    return Api.send({
+      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
+      skipLog,
+    }).then(response => {
       let connections = []
       if (response.data.endpoints.length) {
         response.data.endpoints.forEach(endpoint => {

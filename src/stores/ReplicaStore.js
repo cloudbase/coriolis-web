@@ -49,14 +49,14 @@ class ReplicaStore {
 
   replicasLoaded: boolean = false
 
-  @action getReplicas(options?: { showLoading: boolean }): Promise<void> {
+  @action getReplicas(options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
     this.backgroundLoading = true
 
     if ((options && options.showLoading) || !this.replicasLoaded) {
       this.loading = true
     }
 
-    return ReplicaSource.getReplicas().then(replicas => {
+    return ReplicaSource.getReplicas(options && options.skipLog).then(replicas => {
       this.replicas = replicas
       this.loading = false
       this.backgroundLoading = false
@@ -67,10 +67,10 @@ class ReplicaStore {
     })
   }
 
-  @action getReplicaExecutions(replicaId: string, showLoading: boolean = false): Promise<void> {
-    if (showLoading) this.executionsLoading = true
+  @action getReplicaExecutions(replicaId: string, options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+    if (options && options.showLoading) this.executionsLoading = true
 
-    return ReplicaSource.getReplicaExecutions(replicaId).then(executions => {
+    return ReplicaSource.getReplicaExecutions(replicaId, options && options.skipLog).then(executions => {
       let replica = this.replicas.find(replica => replica.id === replicaId)
 
       if (replica) {
@@ -88,10 +88,10 @@ class ReplicaStore {
     }).catch(() => { this.executionsLoading = false })
   }
 
-  @action getReplica(replicaId: string, showLoading: boolean = true): Promise<void> {
-    this.detailsLoading = showLoading
+  @action getReplica(replicaId: string, options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+    this.detailsLoading = Boolean(options && options.showLoading)
 
-    return ReplicaSource.getReplica(replicaId).then(replica => {
+    return ReplicaSource.getReplica(replicaId, options && options.skipLog).then(replica => {
       this.detailsLoading = false
       this.replicaDetails = replica
     }).catch(() => {

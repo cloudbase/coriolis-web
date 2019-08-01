@@ -30,12 +30,12 @@ class MigrationStore {
 
   migrationsLoaded: boolean = false
 
-  @action getMigrations(options?: { showLoading: boolean }) {
+  @action getMigrations(options?: { showLoading?: boolean, skipLog?: boolean }) {
     if ((options && options.showLoading) || !this.migrationsLoaded) {
       this.loading = true
     }
 
-    return MigrationSource.getMigrations().then(migrations => {
+    return MigrationSource.getMigrations(options && options.skipLog).then(migrations => {
       this.migrations = migrations.map(migration => {
         let oldMigration = this.migrations.find(r => r.id === migration.id)
         if (oldMigration) {
@@ -67,10 +67,10 @@ class MigrationStore {
     })
   }
 
-  @action getMigration(migrationId: string, showLoading: boolean) {
-    this.detailsLoading = showLoading
+  @action getMigration(migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean }) {
+    this.detailsLoading = Boolean(options && options.showLoading)
 
-    return MigrationSource.getMigration(migrationId).then(migration => {
+    return MigrationSource.getMigration(migrationId, options && options.skipLog).then(migration => {
       this.detailsLoading = false
       this.migrationDetails = migration
     }).catch(() => {
