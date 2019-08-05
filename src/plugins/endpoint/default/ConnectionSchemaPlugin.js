@@ -19,6 +19,10 @@ import type { Schema, SchemaProperties, SchemaDefinitions } from '../../../types
 import type { Field } from '../../../types/Field'
 
 export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, parent?: string): any[] => {
+  if (!schema.properties) {
+    return []
+  }
+
   let fields = Object.keys(schema.properties).map(fieldName => {
     let properties: any = schema.properties[fieldName]
 

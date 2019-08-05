@@ -55,6 +55,7 @@ const NavigationStyled = styled(Navigation)`
   top: 0;
   padding-top: 24px;
   transition: left ${StyleProps.animations.swift};
+  z-index: 9;
 `
 
 export const TEST_ID = 'navigationMini'
