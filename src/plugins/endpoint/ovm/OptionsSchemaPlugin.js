@@ -25,7 +25,11 @@ export default class OptionsSchemaParser {
   static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
     let fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions)
     fields.forEach(f => {
-      if (f.name !== 'migr_template_username_map' && f.name !== 'migr_template_password_map') {
+      if (
+        f.name !== 'migr_template_username_map'
+        && f.name !== 'migr_template_password_map'
+        && f.name !== 'migr_template_name_map'
+      ) {
         return
       }
       f.properties = [
