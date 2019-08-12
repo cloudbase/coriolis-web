@@ -20,7 +20,7 @@ import type { Instance } from '../types/Instance'
 import { servicesUrl } from '../constants'
 
 class InstanceSource {
-  static loadInstancesChunk(
+  async loadInstancesChunk(
     endpointId: string,
     chunkSize: number,
     lastInstanceId?: string,
@@ -53,32 +53,29 @@ class InstanceSource {
     let keys = Object.keys(queryParams)
     url = `${url}${keys.length > 0 ? '?' : ''}${keys.map(p => `${p}=${queryParams[p]}`).join('&')}`
 
-    return Api.send({ url, cancelId }).then(response => {
-      return response.data.instances
-    })
+    let response = await Api.send({ url, cancelId })
+    return response.data.instances
   }
 
-  static loadInstances(endpointId: string): Promise<Instance[]> {
+  async loadInstances(endpointId: string): Promise<Instance[]> {
     Api.cancelRequests(endpointId)
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
-    return Api.send({ url, cancelId: endpointId }).then(response => {
-      return response.data.instances
-    })
+    let response = await Api.send({ url, cancelId: endpointId })
+    return response.data.instances
   }
 
-  static loadInstanceDetails(endpointId: string, instanceName: string, reqId: number, quietError?: boolean): Promise<{ instance: Instance, reqId: number }> {
-    return Api.send({
+  async loadInstanceDetails(endpointId: string, instanceName: string, reqId: number, quietError?: boolean): Promise<{ instance: Instance, reqId: number }> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
       cancelId: `instanceDetail-${reqId}`,
       quietError,
-    }).then(response => {
-      return { instance: response.data.instance, reqId }
     })
+    return { instance: response.data.instance, reqId }
   }
 
-  static cancelInstancesDetailsRequests(reqId: number) {
+  cancelInstancesDetailsRequests(reqId: number) {
     Api.cancelRequests(`instanceDetail-${reqId}`)
   }
 }
 
-export default InstanceSource
+export default new InstanceSource()

@@ -167,17 +167,13 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     return true
   }
 
-  pollData() {
+  async pollData() {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
 
-    Promise.all([
-      migrationStore.getMigrations({ skipLog: true }),
-      endpointStore.getEndpoints({ skipLog: true }),
-    ]).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
-    })
+    await Promise.all([migrationStore.getMigrations({ skipLog: true }), endpointStore.getEndpoints({ skipLog: true })])
+    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   render() {

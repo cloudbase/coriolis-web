@@ -28,6 +28,7 @@ export type User = {
   domain_id?: string,
   isAdmin?: boolean,
   password?: string,
+  extra?: any,
 }
 
 export type Credentials = {

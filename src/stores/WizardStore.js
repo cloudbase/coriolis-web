@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, runInAction } from 'mobx'
 
 import type { WizardData, WizardPage } from '../types/WizardData'
 import type { MainItem } from '../types/MainItem'
@@ -137,30 +137,31 @@ class WizardStore {
     this.schedules = this.schedules.filter(s => s.id !== scheduleId)
   }
 
-  @action create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
+  @action async create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
     this.creatingItem = true
 
-    return Source.create(type, data, storageMap).then((item: MainItem) => {
-      this.createdItem = item
-      this.creatingItem = false
-    }).catch(() => {
-      this.creatingItem = false
-      return Promise.reject()
-    })
+    try {
+      let item: MainItem = await Source.create(type, data, storageMap)
+      runInAction(() => { this.createdItem = item })
+    } catch (err) {
+      throw err
+    } finally {
+      runInAction(() => { this.creatingItem = false })
+    }
   }
 
-  @action createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
+  @action async createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
     this.creatingItems = true
 
-    return Source.createMultiple(type, data, storageMap).then((items: MainItem[]) => {
-      this.createdItems = items
-      this.creatingItems = false
-    }).catch(() => {
-      this.creatingItems = false
-    })
+    try {
+      let items: MainItem[] = await Source.createMultiple(type, data, storageMap)
+      runInAction(() => { this.createdItems = items })
+    } finally {
+      runInAction(() => { this.creatingItems = false })
+    }
   }
 
-  @action setPermalink(data: WizardData) {
+  setPermalink(data: WizardData) {
     Source.setPermalink(data)
   }
 

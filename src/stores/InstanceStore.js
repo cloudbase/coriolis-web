@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action, computed } from 'mobx'
+import { observable, runInAction, computed, action } from 'mobx'
 
 import type { Instance } from '../types/Instance'
 import type { Endpoint } from '../types/Endpoint'
@@ -117,7 +117,7 @@ class InstanceStore {
   lastEndpointId: string
   reqId: number
 
-  @action loadInstancesInChunks(endpoint: Endpoint, vmsPerPage?: number = 6, reload?: boolean) {
+  @action async loadInstancesInChunks(endpoint: Endpoint, vmsPerPage?: number = 6, reload?: boolean) {
     ApiCaller.cancelRequests(`${endpoint.id}-chunk`)
 
     this.backgroundInstances = []
@@ -131,31 +131,35 @@ class InstanceStore {
     let chunkSize = configLoader.config.instancesListBackgroundLoading
     let chunkCount = Math.max(chunkSize[endpoint.type] || chunkSize.default, vmsPerPage)
 
-    let loadNextChunk = (lastEndpointId?: string) => {
+    let loadNextChunk = async (lastEndpointId?: string) => {
       let currentEndpointId = endpoint.id
-      InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`)
-        .then(instances => {
-          if (currentEndpointId !== this.lastEndpointId) {
-            return
-          }
-
-          this.backgroundInstances = [...this.backgroundInstances, ...instances]
-          if (reload) {
-            this.reloading = false
-          }
-          this.instancesLoading = false
-
-          if (instances.length < chunkCount) {
-            this.backgroundChunksLoading = false
-            return
-          }
-          loadNextChunk(instances[instances.length - 1].id)
-        })
+      let instances = await InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`)
+      if (currentEndpointId !== this.lastEndpointId) {
+        return
+      }
+      let shouldContinue = this.loadInstancesInChunksSuccess(instances, chunkCount, reload)
+      if (shouldContinue) {
+        loadNextChunk(instances[instances.length - 1].id)
+      }
     }
     loadNextChunk()
   }
 
-  @action loadInstances(endpointId: string): Promise<void> {
+  @action loadInstancesInChunksSuccess(instances: Instance[], chunkCount: number, reload?: boolean): boolean {
+    this.backgroundInstances = [...this.backgroundInstances, ...instances]
+    if (reload) {
+      this.reloading = false
+    }
+    this.instancesLoading = false
+
+    if (instances.length < chunkCount) {
+      this.backgroundChunksLoading = false
+      return false
+    }
+    return true
+  }
+
+  @action async loadInstances(endpointId: string): Promise<void> {
     this.instancesLoading = true
     this.lastEndpointId = endpointId
 
@@ -163,25 +167,31 @@ class InstanceStore {
     if (endpointInstances) {
       this.backgroundInstances = endpointInstances
       this.instancesLoading = false
-      return Promise.resolve()
+      return
     }
 
-    return InstanceSource.loadInstances(endpointId).then(instances => {
+    try {
+      let instances = await InstanceSource.loadInstances(endpointId)
       if (endpointId !== this.lastEndpointId) {
         return
       }
-      this.backgroundInstances = instances
-      this.instancesLoading = false
+      this.loadInstancesSuccess(instances)
       InstanceLocalStorage.saveInstancesToLocalStorage(endpointId, instances)
-    }).catch(() => {
+    } catch (ex) {
       if (endpointId !== this.lastEndpointId) {
         return
       }
-      this.instancesLoading = false
-    })
+      runInAction(() => { this.instancesLoading = false })
+      throw ex
+    }
   }
 
-  @action searchInstances(endpoint: Endpoint, searchText: string) {
+  @action loadInstancesSuccess(instances: Instance[]) {
+    this.backgroundInstances = instances
+    this.instancesLoading = false
+  }
+
+  @action async searchInstances(endpoint: Endpoint, searchText: string) {
     ApiCaller.cancelRequests(`${endpoint.id}-chunk-search`)
 
     this.searchText = searchText
@@ -203,32 +213,41 @@ class InstanceStore {
 
     this.searching = true
     this.searchChunksLoading = true
+
     let chunkSize = configLoader.config.instancesListBackgroundLoading
     let chunkCount = Math.max(chunkSize[endpoint.type] || chunkSize.default, this.instancesPerPage)
 
-    let loadNextChunk = (lastEndpointId?: string) => {
-      InstanceSource.loadInstancesChunk(
+    let loadNextChunk = async (lastEndpointId?: string) => {
+      let instances = await InstanceSource.loadInstancesChunk(
         endpoint.id,
         chunkCount,
         lastEndpointId,
         `${endpoint.id}-chunk-search`,
         searchText
-      ).then(instances => {
-        if (this.searching) {
+      )
+      if (this.searching) {
+        runInAction(() => {
           this.currentPage = 1
           this.searchedInstances = []
-        }
-
-        this.searchedInstances = [...this.searchedInstances, ...instances]
-        this.searching = false
-        this.searchNotFound = Boolean(this.searchedInstances.length === 0)
-        if (instances.length < chunkCount) {
-          this.searchChunksLoading = false
-        }
-        return loadNextChunk(instances[instances.length - 1].id)
-      })
+        })
+      }
+      let shouldContinue = this.searchInstancesSuccess(instances, chunkCount)
+      if (shouldContinue) {
+        loadNextChunk(instances[instances.length - 1].id)
+      }
     }
     loadNextChunk()
+  }
+
+  @action searchInstancesSuccess(instances: Instance[], chunkCount: number): boolean {
+    this.searchedInstances = [...this.searchedInstances, ...instances]
+    this.searching = false
+    this.searchNotFound = Boolean(this.searchedInstances.length === 0)
+    if (instances.length < chunkCount) {
+      this.searchChunksLoading = false
+      return false
+    }
+    return true
   }
 
   @action reloadInstances(endpoint: Endpoint, chunkSize?: number) {
@@ -255,7 +274,7 @@ class InstanceStore {
     this.instancesPerPage = instancesPerPage
   }
 
-  @action loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean, quietError?: boolean): Promise<void> {
+  @action async loadInstancesDetails(endpointId: string, instancesInfo: Instance[], useLocalStorage?: boolean, quietError?: boolean): Promise<void> {
     // Use reqId to be able to uniquely identify the request so all but the latest request can be igonred and canceled
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
@@ -263,7 +282,7 @@ class InstanceStore {
     instancesInfo.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
     let hash = i => `${i.instance_name}-${i.id || endpointId}`
     if (useLocalStorage && this.instancesDetails.map(hash).join('_') === instancesInfo.map(hash).join('_')) {
-      return Promise.resolve()
+      return
     }
 
     let count = instancesInfo.length
@@ -280,48 +299,54 @@ class InstanceStore {
         this.instancesDetails = storageInstances
         this.loadingInstancesDetails = false
         this.instancesDetailsRemaining = 0
-        return Promise.resolve()
+        return
       }
     }
-
-    return new Promise((resolve) => {
-      instancesInfo.forEach(instanceInfo => {
-        InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name, this.reqId, quietError).then((resp: { instance: Instance, reqId: number }) => {
+    await new Promise(resolve => {
+      Promise.all(instancesInfo.map(async instanceInfo => {
+        try {
+          let resp: { instance: Instance, reqId: number } =
+            await InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name, this.reqId, quietError)
           if (resp.reqId !== this.reqId) {
             return
           }
 
-          this.instancesDetailsRemaining -= 1
-          this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
+          runInAction(() => {
+            this.instancesDetailsRemaining -= 1
+            this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
 
-          if (this.instancesDetails.find(i => i.id === resp.instance.id)) {
-            this.instancesDetails = this.instancesDetails.filter(i => i.id !== resp.instance.id)
-          }
+            if (this.instancesDetails.find(i => i.id === resp.instance.id)) {
+              this.instancesDetails = this.instancesDetails.filter(i => i.id !== resp.instance.id)
+            }
+          })
 
           InstanceLocalStorage.saveDetailsToLocalStorage(endpointId, resp.instance)
 
-          this.instancesDetails = [
-            ...this.instancesDetails,
-            resp.instance,
-          ]
-          this.instancesDetails.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
-
+          runInAction(() => {
+            this.instancesDetails = [
+              ...this.instancesDetails,
+              resp.instance,
+            ]
+            this.instancesDetails.sort((a, b) => a.instance_name.localeCompare(b.instance_name))
+          })
           if (this.instancesDetailsRemaining === 0) {
             resolve()
           }
-        }).catch((resp?: { reqId: number }) => {
-          this.instancesDetailsRemaining -= 1
-          this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
+        } catch (err) {
+          runInAction(() => {
+            this.instancesDetailsRemaining -= 1
+            this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
+          })
 
-          if (!resp || resp.reqId !== this.reqId) {
+          if (!err || err.reqId !== this.reqId) {
             return
           }
 
           if (count === 0) {
             resolve()
           }
-        })
-      })
+        }
+      }))
     })
   }
 

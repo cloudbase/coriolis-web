@@ -20,19 +20,18 @@ import type { Network } from '../types/Network'
 import { servicesUrl } from '../constants'
 
 class NetworkSource {
-  static loadNetworks(enpointId: string, environment: ?{ [string]: mixed }, options?: {
+  async loadNetworks(enpointId: string, environment: ?{ [string]: mixed }, options?: {
     quietError?: boolean,
   }): Promise<Network[]> {
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`
     if (environment) {
       url = `${url}?env=${btoa(JSON.stringify(environment))}`
     }
-    return Api.send({ url, quietError: options && options.quietError }).then(response => {
-      let networks = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
-      networks.sort((a, b) => a.name.localeCompare(b.name))
-      return networks
-    })
+    let response = await Api.send({ url, quietError: options && options.quietError })
+    let networks = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
+    networks.sort((a, b) => a.name.localeCompare(b.name))
+    return networks
   }
 }
 
-export default NetworkSource
+export default new NetworkSource()

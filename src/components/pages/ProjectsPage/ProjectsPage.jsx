@@ -80,23 +80,21 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
     projectStore.getRoleAssignments()
   }
 
-  handleSwitchProjectClick(projectId: string) {
-    userStore.switchProject(projectId).then(() => {
-      projectStore.getProjects()
-    })
+  async handleSwitchProjectClick(projectId: string) {
+    await userStore.switchProject(projectId)
+    projectStore.getProjects()
   }
 
-  pollData(showLoading?: boolean) {
+  async pollData(showLoading?: boolean) {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
     }
 
-    Promise.all([
+    await Promise.all([
       projectStore.getProjects({ showLoading, skipLog: true }),
       projectStore.getRoleAssignments({ skipLog: true }),
-    ]).then(() => {
-      this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
-    })
+    ])
+    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: Project, filterItem?: ?string, filterText?: string): boolean {

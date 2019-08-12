@@ -7,10 +7,9 @@ import type { Config } from '../types/Config'
 class ConfigLoader {
   config: Config
 
-  load() {
-    return apiCaller.get('/config').then(res => {
-      this.config = res.data
-    })
+  async load() {
+    let res = await apiCaller.get('/config')
+    this.config = res.data
   }
 }
 

@@ -22,7 +22,7 @@ import DateUtils from '../utils/DateUtils'
 import type { Schedule } from '../types/Schedule'
 
 class ScheduleSource {
-  static scheduleSinge(replicaId: string, scheduleData: Schedule): Promise<Schedule> {
+  async scheduleSinge(replicaId: string, scheduleData: Schedule): Promise<Schedule> {
     let payload = {
       schedule: {},
       expiration_date: null,
@@ -43,39 +43,41 @@ class ScheduleSource {
       })
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       method: 'POST',
       data: payload,
-    }).then(response => response.data.schedule)
+    })
+    return response.data.schedule
   }
 
-  static scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<Schedule[]> {
-    return Promise.all(schedules.map(schedule => {
-      return ScheduleSource.scheduleSinge(replicaId, schedule)
+  async scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<Schedule[]> {
+    let scheduledSchedules: Schedule[] = await Promise.all(schedules.map(async schedule => {
+      let scheduledSchedule: Schedule = await this.scheduleSinge(replicaId, schedule)
+      return scheduledSchedule
     }))
+    return scheduledSchedules
   }
 
-  static getSchedules(replicaId: string, opts?: { skipLog?: boolean }): Promise<Schedule[]> {
-    return Api.send({
+  async getSchedules(replicaId: string, opts?: { skipLog?: boolean }): Promise<Schedule[]> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       skipLog: opts && opts.skipLog,
-    }).then(response => {
-      let schedules = [...response.data.schedules]
-      schedules.forEach(s => {
-        if (s.expiration_date) {
-          s.expiration_date = DateUtils.getLocalTime(s.expiration_date)
-        }
-        if (s.shutdown_instance) {
-          s.shutdown_instances = s.shutdown_instance
-        }
-      })
-      schedules.sort((a, b) => moment(a.created_at).diff(b.created_at))
-      return schedules
     })
+    let schedules = [...response.data.schedules]
+    schedules.forEach(s => {
+      if (s.expiration_date) {
+        s.expiration_date = DateUtils.getLocalTime(s.expiration_date)
+      }
+      if (s.shutdown_instance) {
+        s.shutdown_instances = s.shutdown_instance
+      }
+    })
+    schedules.sort((a, b) => moment(a.created_at).diff(b.created_at))
+    return schedules
   }
 
-  static addSchedule(replicaId: string, schedule: Schedule): Promise<Schedule> {
+  async addSchedule(replicaId: string, schedule: Schedule): Promise<Schedule> {
     let payload = {
       schedule: { hour: 0, minute: 0 },
       enabled: false,
@@ -84,21 +86,22 @@ class ScheduleSource {
       payload.schedule = { ...schedule.schedule }
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       method: 'POST',
       data: payload,
-    }).then(response => response.data.schedule)
+    })
+    return response.data.schedule
   }
 
-  static removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
-    return Api.send({
+  async removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
+    await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
       method: 'DELETE',
-    }).then(() => { })
+    })
   }
 
-  static updateSchedule(
+  async updateSchedule(
     replicaId: string,
     scheduleId: string,
     scheduleData: Schedule,
@@ -128,21 +131,20 @@ class ScheduleSource {
       })
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
       method: 'PUT',
       data: payload,
-    }).then(response => {
-      let s = { ...response.data.schedule }
-      if (s.expiration_date) {
-        s.expiration_date = DateUtils.getLocalTime(s.expiration_date)
-      }
-      if (s.shutdown_instance) {
-        s.shutdown_instances = s.shutdown_instance
-      }
-      return s
     })
+    let s = { ...response.data.schedule }
+    if (s.expiration_date) {
+      s.expiration_date = DateUtils.getLocalTime(s.expiration_date)
+    }
+    if (s.shutdown_instance) {
+      s.shutdown_instances = s.shutdown_instance
+    }
+    return s
   }
 }
 
-export default ScheduleSource
+export default new ScheduleSource()

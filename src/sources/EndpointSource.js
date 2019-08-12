@@ -39,107 +39,108 @@ let getBarbicanPayload = data => {
   }
 }
 
-class EdnpointSource {
-  static getEndpoints(skipLog?: boolean): Promise<Endpoint[]> {
-    return Api.send({
+class EndpointSource {
+  async getEndpoints(skipLog?: boolean): Promise<Endpoint[]> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
       skipLog,
-    }).then(response => {
-      let connections = []
-      if (response.data.endpoints.length) {
-        response.data.endpoints.forEach(endpoint => {
-          connections.push(SchemaParser.parseConnectionResponse(endpoint))
-        })
-      }
-
-      connections.sort((c1, c2) => moment(c2.created_at).diff(moment(c1.created_at)))
-      return connections
     })
+    let connections = []
+    if (response.data.endpoints.length) {
+      response.data.endpoints.forEach(endpoint => {
+        connections.push(SchemaParser.parseConnectionResponse(endpoint))
+      })
+    }
+
+    connections.sort((c1, c2) => moment(c2.created_at).diff(moment(c1.created_at)))
+    return connections
   }
-  static delete(endpoint: Endpoint): Promise<string> {
-    return Api.send({
+
+  async delete(endpoint: Endpoint): Promise<string> {
+    await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
       method: 'DELETE',
-    }).then(() => {
-      if (endpoint.connection_info && endpoint.connection_info.secret_ref) {
-        let uuidIndex = endpoint.connection_info.secret_ref.lastIndexOf('/')
-        // $FlowIssue
-        let uuid = endpoint.connection_info.secret_ref.substr(uuidIndex + 1)
-        return Api.send({
-          url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
-          method: 'DELETE',
-        }).then(() => { return endpoint.id })
-      }
-      return endpoint.id
     })
+    if (endpoint.connection_info && endpoint.connection_info.secret_ref) {
+      let uuidIndex = endpoint.connection_info.secret_ref.lastIndexOf('/')
+      // $FlowIssue
+      let uuid = endpoint.connection_info.secret_ref.substr(uuidIndex + 1)
+      await Api.send({
+        url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
+        method: 'DELETE',
+      })
+      return endpoint.id
+    }
+    return endpoint.id
   }
 
-  static getConnectionInfo(endpoint: Endpoint): Promise<$PropertyType<Endpoint, 'connection_info'>> {
+  async getConnectionInfo(endpoint: Endpoint): Promise<$PropertyType<Endpoint, 'connection_info'>> {
     let index = endpoint.connection_info.secret_ref && endpoint.connection_info.secret_ref.lastIndexOf('/')
     let uuid = index && endpoint.connection_info.secret_ref && endpoint.connection_info.secret_ref.substr(index + 1)
 
     if (!uuid) {
-      return Promise.resolve(endpoint.connection_info)
+      return endpoint.connection_info
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.barbican}/v1/secrets/${uuid || 'undefined'}/payload`,
       responseType: 'text',
       headers: { Accept: 'text/plain' },
-    }).then((response) => {
-      return response.data
     })
+    return response.data
   }
 
-  static getSecretPayload(uuid: string, count: number = 0) {
+  async getSecretPayload(uuid: string, count: number = 0) {
     let delay = () => new Promise(r => { setTimeout(() => { r() }, 2000) })
 
     if (count >= 10) {
       return Promise.reject({ secretCustomError: `The secret '${uuid}' is not active after ${count} retries.` })
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
       headers: { Accept: 'application/json' },
-    }).then(response => {
-      if (response.data.status === 'ACTIVE') {
-        return Api.send({
-          url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
-          headers: { Accept: 'text/plain' },
-        })
-      }
-      return delay().then(() => this.getSecretPayload(uuid, count + 1))
     })
+
+    if (response.data.status === 'ACTIVE') {
+      let payload = await Api.send({
+        url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
+        headers: { Accept: 'text/plain' },
+      })
+      return payload
+    }
+    await delay()
+    let payload = await this.getSecretPayload(uuid, count + 1)
+    return payload
   }
 
-  static getConnectionsInfo(endpoints: Endpoint[]): Promise<Endpoint[]> {
-    return Promise.all(endpoints.map(endpoint => {
+  async getConnectionsInfo(endpoints: Endpoint[]): Promise<Endpoint[]> {
+    let result: Endpoint[] = await Promise.all(endpoints.map(async endpoint => {
       let index = endpoint.connection_info.secret_ref ? endpoint.connection_info.secret_ref.lastIndexOf('/') : ''
       let uuid = endpoint.connection_info.secret_ref && index ? endpoint.connection_info.secret_ref.substr(index + 1) : ''
       if (!uuid) {
-        return Promise.resolve({ ...endpoint })
+        return { ...endpoint }
       }
-      return Api.send({
+      let response = await Api.send({
         url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
         responseType: 'text',
         headers: { Accept: 'text/plain' },
-      }).then(response => {
-        return { ...endpoint, connection_info: response.data }
       })
+      return { ...endpoint, connection_info: response.data }
     }))
+    return result
   }
 
-  static validate(endpoint: Endpoint): Promise<Validation> {
-    return Api.send({
+  async validate(endpoint: Endpoint): Promise<Validation> {
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}/actions`,
       method: 'POST',
       data: { 'validate-connection': null },
-    }).then(response => {
-      return response.data['validate-connection']
     })
+    return response.data['validate-connection']
   }
 
-  static update(endpoint: Endpoint): Promise<Endpoint> {
+  async update(endpoint: Endpoint): Promise<Endpoint> {
     let parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
 
     if (parsedEndpoint.connection_info && Object.keys(parsedEndpoint.connection_info).length > 0 && parsedEndpoint.connection_info.secret_ref) {
@@ -149,103 +150,105 @@ class EdnpointSource {
       let uuid = parsedEndpoint.connection_info.secret_ref.substr(uuidIndex + 1)
       let newEndpoint: any = {}
       let connectionInfo = {}
-      return Api.send({
+
+      await Api.send({
         url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
         method: 'DELETE',
-      }).then(() => {
-        return Api.send({
-          url: `${servicesUrl.barbican}/v1/secrets`,
-          method: 'POST',
-          data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
-        })
-      }).then(response => {
-        connectionInfo = { secret_ref: response.data.secret_ref }
-        let newPayload = {
-          endpoint: {
-            name: parsedEndpoint.name,
-            description: parsedEndpoint.description,
-            connection_info: connectionInfo,
-          },
-        }
-        return Api.send({
-          url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
-          method: 'PUT',
-          data: newPayload,
-        })
-      }).then(putResponse => {
-        uuidIndex = connectionInfo.secret_ref.lastIndexOf('/')
-        uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
-        newEndpoint = putResponse.data.endpoint
-        return this.getSecretPayload(uuid)
-      }).then(conInfoResponse => {
+      })
+
+      let response = await Api.send({
+        url: `${servicesUrl.barbican}/v1/secrets`,
+        method: 'POST',
+        data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
+      })
+
+      connectionInfo = { secret_ref: response.data.secret_ref }
+      let newPayload = {
+        endpoint: {
+          name: parsedEndpoint.name,
+          description: parsedEndpoint.description,
+          connection_info: connectionInfo,
+        },
+      }
+      let putResponse = await Api.send({
+        url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
+        method: 'PUT',
+        data: newPayload,
+      })
+
+      uuidIndex = connectionInfo.secret_ref.lastIndexOf('/')
+      uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
+      newEndpoint = putResponse.data.endpoint
+      try {
+        let conInfoResponse = await this.getSecretPayload(uuid)
         newEndpoint.connection_info = {
           ...newEndpoint.connection_info,
           ...conInfoResponse.data,
         }
         return newEndpoint
-      }).catch(e => {
+      } catch (e) {
         if (e.secretCustomError) {
           notificationStore.alert(e.secretCustomError, 'error')
         }
         throw e
-      })
+      }
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
       method: 'PUT',
       data: { endpoint: parsedEndpoint },
-    }).then(response => {
-      return SchemaParser.parseConnectionResponse(response.data.endpoint)
     })
+    return SchemaParser.parseConnectionResponse(response.data.endpoint)
   }
 
-  static add(endpoint: Endpoint, skipSchemaParser: boolean = false): Promise<Endpoint> {
+  async add(endpoint: Endpoint, skipSchemaParser: boolean = false): Promise<Endpoint> {
     let parsedEndpoint: any = skipSchemaParser ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
     let newEndpoint: any = {}
     let connectionInfo = {}
     if (configLoader.config.useBarbicanSecrets
       && parsedEndpoint.connection_info && Object.keys(parsedEndpoint.connection_info).length > 0) {
-      return Api.send({
+      let response = await Api.send({
         url: `${servicesUrl.barbican}/v1/secrets`,
         method: 'POST',
         data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
-      }).then(response => {
-        connectionInfo = { secret_ref: response.data.secret_ref }
-        let newPayload = {
-          endpoint: {
-            name: parsedEndpoint.name,
-            description: parsedEndpoint.description,
-            type: endpoint.type,
-            connection_info: connectionInfo,
-          },
-        }
-        return Api.send({
-          url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
-          method: 'POST',
-          data: newPayload,
-        })
-      }).then(postResponse => {
-        let uuidIndex = connectionInfo.secret_ref.lastIndexOf('/')
-        let uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
-        newEndpoint = postResponse.data.endpoint
+      })
 
-        return this.getSecretPayload(uuid)
-      }).then(conInfoResponse => {
+      connectionInfo = { secret_ref: response.data.secret_ref }
+      let newPayload = {
+        endpoint: {
+          name: parsedEndpoint.name,
+          description: parsedEndpoint.description,
+          type: endpoint.type,
+          connection_info: connectionInfo,
+        },
+      }
+      let postResponse = await Api.send({
+        url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
+        method: 'POST',
+        data: newPayload,
+      })
+
+      let uuidIndex = connectionInfo.secret_ref.lastIndexOf('/')
+      let uuid = connectionInfo.secret_ref.substr(uuidIndex + 1)
+      newEndpoint = postResponse.data.endpoint
+
+      try {
+        let conInfoResponse = await this.getSecretPayload(uuid)
         newEndpoint.connection_info = {
           ...newEndpoint.connection_info,
           ...conInfoResponse.data,
         }
         return newEndpoint
-      }).catch(e => {
+      } catch (e) {
         if (e.secretCustomError) {
           notificationStore.alert(e.secretCustomError, 'error')
         }
         throw e
-      })
+      }
     }
 
-    return Api.send({
+    let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
       method: 'POST',
       data: {
@@ -254,17 +257,15 @@ class EdnpointSource {
           type: endpoint.type,
         },
       },
-    }).then(response => {
-      return SchemaParser.parseConnectionResponse(response.data.endpoint)
     })
+    return SchemaParser.parseConnectionResponse(response.data.endpoint)
   }
 
-  static loadStorage(endpointId: string, data: any): Promise<Storage> {
+  async loadStorage(endpointId: string, data: any): Promise<Storage> {
     let env = btoa(JSON.stringify(data))
-    return Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`).then(response => {
-      return response.data.storage
-    })
+    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`)
+    return response.data.storage
   }
 }
 
-export default EdnpointSource
+export default new EndpointSource()

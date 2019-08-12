@@ -74,11 +74,10 @@ class App extends React.Component<{}, State> {
     isConfigReady: false,
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     userStore.tokenLogin()
-    configLoader.load().then(() => {
-      this.setState({ isConfigReady: true })
-    })
+    await configLoader.load()
+    this.setState({ isConfigReady: true })
   }
 
   render() {

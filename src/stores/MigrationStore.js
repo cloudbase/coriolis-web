@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, runInAction } from 'mobx'
 
 import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Field } from '../types/Field'
@@ -30,29 +30,38 @@ class MigrationStore {
 
   migrationsLoaded: boolean = false
 
-  @action getMigrations(options?: { showLoading?: boolean, skipLog?: boolean }) {
+  @action async getMigrations(options?: { showLoading?: boolean, skipLog?: boolean }) {
     if ((options && options.showLoading) || !this.migrationsLoaded) {
       this.loading = true
     }
 
-    return MigrationSource.getMigrations(options && options.skipLog).then(migrations => {
-      this.migrations = migrations.map(migration => {
-        let oldMigration = this.migrations.find(r => r.id === migration.id)
-        if (oldMigration) {
-          migration.executions = oldMigration.executions
-        }
+    try {
+      let migrations = await MigrationSource.getMigrations(options && options.skipLog)
+      runInAction(() => {
+        this.migrations = migrations.map(migration => {
+          let oldMigration = this.migrations.find(r => r.id === migration.id)
+          if (oldMigration) {
+            migration.executions = oldMigration.executions
+          }
 
-        return migration
+          return migration
+        })
+        this.loading = false
+        this.migrationsLoaded = true
       })
-      this.loading = false
-      this.migrationsLoaded = true
-    }).catch(() => {
-      this.loading = false
-    })
+    } catch (ex) {
+      runInAction(() => { this.loading = false })
+      throw ex
+    }
   }
 
-  @action recreate(migration: MainItem, sourceEndpoint: Endpoint, destEndpoint: Endpoint, updateData: UpdateData): Promise<MainItem> {
-    return MigrationSource.recreate({
+  @action async recreate(
+    migration: MainItem,
+    sourceEndpoint: Endpoint,
+    destEndpoint: Endpoint,
+    updateData: UpdateData
+  ): Promise<MainItem> {
+    let migrationResult = await MigrationSource.recreate({
       sourceEndpoint,
       destEndpoint,
       instanceNames: migration.instances,
@@ -65,42 +74,44 @@ class MigrationStore {
       networkMappings: migration.network_map,
       updatedNetworkMappings: updateData.network,
     })
+    return migrationResult
   }
 
-  @action getMigration(migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean }) {
+  @action async getMigration(migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean }) {
     this.detailsLoading = Boolean(options && options.showLoading)
 
-    return MigrationSource.getMigration(migrationId, options && options.skipLog).then(migration => {
-      this.detailsLoading = false
-      this.migrationDetails = migration
-    }).catch(() => {
-      this.detailsLoading = false
-    })
+    try {
+      let migration = await MigrationSource.getMigration(migrationId, options && options.skipLog)
+      runInAction(() => { this.migrationDetails = migration })
+    } finally {
+      runInAction(() => { this.detailsLoading = false })
+    }
   }
 
-  @action cancel(migrationId: string) {
+  @action async cancel(migrationId: string) {
     this.canceling = true
-    return MigrationSource.cancel(migrationId).then(() => {
-      this.canceling = false
-    }).catch(() => {
-      this.canceling = { failed: true }
-    })
+    try {
+      await MigrationSource.cancel(migrationId)
+      runInAction(() => { this.canceling = false })
+    } catch (ex) {
+      runInAction(() => { this.canceling = { failed: true } })
+    }
   }
 
-  @action delete(migrationId: string) {
-    return MigrationSource.delete(migrationId).then(() => {
-      this.migrations = this.migrations.filter(r => r.id !== migrationId)
-    })
+  @action async delete(migrationId: string) {
+    await MigrationSource.delete(migrationId)
+    runInAction(() => { this.migrations = this.migrations.filter(r => r.id !== migrationId) })
   }
 
-  @action migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
-    return MigrationSource.migrateReplica(replicaId, options).then(migration => {
+  @action async migrateReplica(replicaId: string, options: Field[]) {
+    let migration = await MigrationSource.migrateReplica(replicaId, options)
+    runInAction(() => {
       this.migrations = [
         migration,
         ...this.migrations,
       ]
-      return migration
     })
+    return migration
   }
 
   @action clearDetails() {

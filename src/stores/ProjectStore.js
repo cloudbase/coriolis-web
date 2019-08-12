@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, runInAction } from 'mobx'
 import type { Project, RoleAssignment, Role } from '../types/Project'
 import type { User } from '../types/User'
 
@@ -31,46 +31,55 @@ class ProjectStore {
   @observable usersLoading: boolean = false
   @observable updating: boolean = false
 
-  @action getProjects(options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
+  @action async getProjects(options?: { showLoading?: boolean, skipLog?: boolean }) {
     if (options && options.showLoading) this.loading = true
-    return ProjectSource.getProjects(options && options.skipLog).then((projects: Project[]) => {
-      this.loading = false
-      this.projects = projects
-    }).catch(() => {
-      this.loading = false
-    })
+    try {
+      let projects = await ProjectSource.getProjects(options && options.skipLog)
+      runInAction(() => {
+        this.loading = false
+        this.projects = projects
+      })
+    } catch (e) {
+      runInAction(() => { this.loading = false })
+    }
   }
 
-  @action getRoleAssignments(options?: { skipLog?: boolean }): Promise<void> {
-    return ProjectSource.getRoleAssignments(options && options.skipLog).then((assignments: RoleAssignment[]) => {
+  @action async getRoleAssignments(options?: { skipLog?: boolean }) {
+    let assignments = await ProjectSource.getRoleAssignments(options && options.skipLog)
+    runInAction(() => {
       this.roleAssignments = assignments
     })
   }
 
-  @action getRoles(): Promise<void> {
-    return ProjectSource.getRoles().then((roles: Role[]) => {
-      this.roles = roles
-    })
+  @action async getRoles() {
+    let roles = await ProjectSource.getRoles()
+    runInAction(() => { this.roles = roles })
   }
 
-  @action getProjectDetails(projectId: string): Promise<void> {
+  @action async getProjectDetails(projectId: string) {
     this.loading = true
-    return ProjectSource.getProjectDetails(projectId).then((project: Project) => {
-      this.projectDetails = project
-      this.loading = false
-    }).catch(() => {
-      this.loading = false
-    })
+    try {
+      let project = await ProjectSource.getProjectDetails(projectId)
+      runInAction(() => {
+        this.projectDetails = project
+        this.loading = false
+      })
+    } catch (e) {
+      runInAction(() => { this.loading = false })
+    }
   }
 
-  @action getUsers(projectId: string, showLoading?: boolean): Promise<void> {
+  @action async getUsers(projectId: string, showLoading?: boolean) {
     if (showLoading) this.usersLoading = true
-    return ProjectSource.getUsers(projectId).then((users: User[]) => {
-      this.usersLoading = false
-      this.users = users
-    }).catch(() => {
-      this.usersLoading = false
-    })
+    try {
+      let users = await ProjectSource.getUsers(projectId)
+      runInAction(() => {
+        this.usersLoading = false
+        this.users = users
+      })
+    } catch (e) {
+      runInAction(() => { this.usersLoading = false })
+    }
   }
 
   @action clearProjectDetails() {
@@ -78,51 +87,56 @@ class ProjectStore {
     this.users = []
   }
 
-  @action removeUser(projectId: string, userId: string, roleIds: string[]): Promise<void> {
-    return ProjectSource.removeUser(projectId, userId, roleIds).then(() => {
-      this.users = this.users.filter(u => u.id !== userId)
-    })
+  @action async removeUser(projectId: string, userId: string, roleIds: string[]) {
+    await ProjectSource.removeUser(projectId, userId, roleIds)
+    runInAction(() => { this.users = this.users.filter(u => u.id !== userId) })
   }
 
-  @action assignUserRole(projectId: string, userId: string, roleId: string): Promise<void> {
-    return ProjectSource.assignUser(projectId, userId, roleId)
+  @action async assignUserRole(projectId: string, userId: string, roleId: string) {
+    await ProjectSource.assignUser(projectId, userId, roleId)
   }
 
-  @action removeUserRole(projectId: string, userId: string, roleId: string): Promise<void> {
-    return ProjectSource.removeUser(projectId, userId, [roleId])
+  @action async removeUserRole(projectId: string, userId: string, roleId: string) {
+    await ProjectSource.removeUser(projectId, userId, [roleId])
   }
 
-  @action update(projectId: string, project: Project): Promise<void> {
+  @action async update(projectId: string, project: Project) {
     this.updating = true
-    return ProjectSource.update(projectId, project).then((project: Project) => {
-      this.projectDetails = project
-      this.updating = false
-    }).catch(() => {
-      this.updating = false
-    })
+    try {
+      let updatedProject = await ProjectSource.update(projectId, project)
+      runInAction(() => {
+        this.projectDetails = updatedProject
+        this.updating = false
+      })
+    } catch (e) {
+      runInAction(() => { this.updating = false })
+    }
   }
 
-  @action delete(projectId: string): Promise<void> {
-    return ProjectSource.delete(projectId)
+  @action async delete(projectId: string) {
+    await ProjectSource.delete(projectId)
   }
 
-  @action add(project: Project): Promise<void> {
+  @action async add(project: Project) {
     this.updating = true
     let userId = userStore.loggedUser ? userStore.loggedUser.id : 'undefined'
-    return ProjectSource.add(project, userId).then((addedProject: Project) => {
-      if (!this.projects.find(p => p.id === addedProject.id)) {
-        let projects = this.projects
-        projects = [
-          ...projects,
-          addedProject,
-        ]
-        projects.sort((a, b) => a.name.localeCompare(b.name))
-        this.projects = [...projects]
-      }
-      this.updating = false
-    }).catch(() => {
-      this.updating = false
-    })
+    try {
+      let addedProject = await ProjectSource.add(project, userId)
+      runInAction(() => {
+        if (!this.projects.find(p => p.id === addedProject.id)) {
+          let projects = this.projects
+          projects = [
+            ...projects,
+            addedProject,
+          ]
+          projects.sort((a, b) => a.name.localeCompare(b.name))
+          this.projects = [...projects]
+        }
+        this.updating = false
+      })
+    } catch (e) {
+      runInAction(() => { this.updating = false })
+    }
   }
 }
 

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import { observable, action } from 'mobx'
+import { observable, action, runInAction } from 'mobx'
 import type { Network } from '../types/Network'
 import NetworkSource from '../sources/NetworkSource'
 
@@ -45,13 +45,13 @@ class NetworkStore {
 
   cachedId: string = ''
 
-  @action loadNetworks(endpointId: string, environment: any, options?: {
+  @action async loadNetworks(endpointId: string, environment: any, options?: {
     useLocalStorage?: boolean,
     quietError?: boolean,
-  }): Promise<void> {
+  }) {
     let id = `${endpointId}-${btoa(JSON.stringify(environment))}`
     if (this.cachedId === id && options && options.useLocalStorage) {
-      return Promise.resolve()
+      return
     }
 
     this.loading = true
@@ -62,20 +62,22 @@ class NetworkStore {
         this.loading = false
         this.networks = networkStorage
         this.cachedId = id
-        return Promise.resolve()
+        return
       }
     }
 
     this.networks = []
-    return NetworkSource.loadNetworks(endpointId, environment, options).then((networks: Network[]) => {
-      this.loading = false
-      this.networks = networks
-      this.cachedId = id
-
+    try {
+      let networks = await NetworkSource.loadNetworks(endpointId, environment, options)
+      runInAction(() => {
+        this.loading = false
+        this.networks = networks
+        this.cachedId = id
+      })
       NetworkLocalStorage.saveNetworksToLocalStorage(id, networks)
-    }).catch(() => {
+    } catch (e) {
       this.loading = false
-    })
+    }
   }
 }
 
