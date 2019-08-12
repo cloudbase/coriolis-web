@@ -8,8 +8,9 @@ const conf: Config = {
   // Remove or comment to enable them
   disabledPages: [
     'planning',
-    'users',
-    'projects',
+  // Enabling users and projects page by default
+  // 'users',
+  // 'projects',
   ],
 
   // Whether to show the user domain name input when logging in
