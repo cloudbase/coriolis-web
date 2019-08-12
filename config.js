@@ -35,7 +35,7 @@ const conf: Config = {
   // - If the provider is not in this list, the 'default' value will be used.
   // - If the `default` value is lower than the number of instances that fit into a page, the latter number will be used.
   // - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
-  instancesListBackgroundLoading: { default: 10, ovm: Infinity },
+  instancesListBackgroundLoading: { default: 10, ovm: Infinity, 'hyper-v': Infinity },
 
   // The providers for which an extra `source` or `destination options` call can be made with a set of field values
   providersWithEnvOptions: [
