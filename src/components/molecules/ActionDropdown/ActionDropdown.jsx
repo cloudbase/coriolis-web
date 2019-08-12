@@ -62,6 +62,7 @@ export type Action = {
   action: () => void,
   disabled?: boolean,
   hidden?: boolean,
+  title?: ?string,
 }
 export type Props = {
   label: string,
@@ -168,6 +169,7 @@ class ActionDropdown extends React.Component<Props, State> {
             color={action.color}
             disabled={action.disabled}
             data-test-id={`${TEST_ID}-listItem-${action.label}`}
+            title={action.title}
           >
             {action.label}
           </ListItem>
