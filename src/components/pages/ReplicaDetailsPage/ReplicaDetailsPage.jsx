@@ -386,6 +386,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       action: () => { this.handleCreateMigrationClick() },
     }, {
       label: 'Edit',
+      title: !this.state.isEditable ? 'At least one of the providers doesn\'t support editing' : null,
       action: () => { this.handleReplicaEditClick() },
       disabled: !this.state.isEditable,
     }, {
