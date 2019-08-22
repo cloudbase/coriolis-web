@@ -20,9 +20,9 @@ import { servicesUrl } from '../constants'
 import type { Licence } from '../types/Licence'
 
 class LicenceSource {
-  async loadLicenceInfo(): Promise<Licence> {
+  async loadLicenceInfo(skipLog?: ?boolean): Promise<Licence> {
     let url = `${servicesUrl.licence}/licence-status`
-    let response = await Api.send({ url, quietError: true })
+    let response = await Api.send({ url, quietError: true, skipLog })
     let root = response.data.licence_status
     return ({
       currentPeriodStart: new Date(root.current_period_start),

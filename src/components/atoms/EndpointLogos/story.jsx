@@ -24,13 +24,14 @@ const Wrapper = styled.div`
   flex-wrap: wrap;
   margin-left: -32px;
   margin-top: -32px;
+  ${props => props.background ? `background: ${props.background};` : ''}
 
   > div {
     margin-left: 32px;
     margin-top: 32px;
   }
 `
-const wrap = (endpoint, height, disabled = false) => <EndpointLogos endpoint={endpoint} height={height} disabled={disabled} />
+const wrap = (endpoint, height, disabled = false, white = false) => <EndpointLogos endpoint={endpoint} height={height} disabled={disabled} white={white} />
 let providers = [
   'aws',
   'azure',
@@ -50,6 +51,14 @@ storiesOf('EndpointLogos', module)
     return (
       <Wrapper>
         {providers.map(p => wrap(p, height))}
+      </Wrapper>
+    )
+  })
+  .add('32px - white', () => {
+    let height = 32
+    return (
+      <Wrapper background="#202134">
+        {providers.map(p => wrap(p, height, false, true))}
       </Wrapper>
     )
   })

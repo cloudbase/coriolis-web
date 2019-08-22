@@ -39,10 +39,10 @@ class LicenceStore {
     return this.version || ''
   }
 
-  @action async loadLicenceInfo() {
-    this.loadingLicenceInfo = true
+  @action async loadLicenceInfo(opts?: { skipLog?: boolean, showLoading?: boolean }) {
+    if (opts && opts.showLoading) this.loadingLicenceInfo = true
     try {
-      let licence = await licenceSource.loadLicenceInfo()
+      let licence = await licenceSource.loadLicenceInfo(opts && opts.skipLog)
       runInAction(() => {
         this.licenceInfo = licence
         this.loadingLicenceInfo = false

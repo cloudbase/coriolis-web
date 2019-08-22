@@ -20,6 +20,7 @@ import RubikRegular from './Rubik-Regular.woff'
 import RubikItalic from './Rubik-Italic.woff'
 import RubikBold from './Rubik-Bold.woff'
 import RubikLight from './Rubik-Light.woff'
+import RubikExtraLight from './Rubik-ExtraLight.woff'
 import RubikLightItalic from './Rubik-LightItalic.woff'
 import RubikMedium from './Rubik-Medium.woff'
 import RubikMediumItalic from './Rubik-MediumItalic.woff'
@@ -72,6 +73,13 @@ const Fonts = css`
     src: url('${RubikMediumItalic}') format('woff');
     font-weight: 500;
     font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'Rubik';
+    src: url('${RubikExtraLight}') format('woff');
+    font-weight: 200;
+    font-style: normal;
   }
 `
 

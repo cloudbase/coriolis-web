@@ -22,17 +22,18 @@ import Palette from '../../styleUtils/Palette'
 
 import errorImage from './images/error'
 import successImage from './images/success'
-import loadingImage from './images/loading.svg'
+import loadingImage from './images/loading'
 import questionImage from './images/question'
 
 type Props = {
   status?: string,
   loading?: boolean,
   loadingProgress?: number,
+  size?: number,
 }
 const Wrapper = styled.div`
   position: relative;
-  ${StyleProps.exactSize('96px')}
+  ${props => StyleProps.exactSize(`${props.size}px`)}
   background-repeat: no-repeat;
   background-position: center;
 `
@@ -77,7 +78,7 @@ const dashAnimationStyle = css`
   }
 `
 const loadingAnimationStyle = css`
-  background: url(${loadingImage}) center no-repeat;
+  /* background: url(${loadingImage}) center no-repeat; */
   animation: rotate 1s linear infinite;
   @keyframes rotate {
     0% {transform: rotate(0deg);}
@@ -85,7 +86,7 @@ const loadingAnimationStyle = css`
   }
 `
 const Image = styled.div`
-  ${StyleProps.exactSize('96px')}
+  ${props => StyleProps.exactSize(`${props.size}px`)}
   ${props => props.cssStyle}
 `
 const Images = {
@@ -99,7 +100,7 @@ const Images = {
   },
   RUNNING: {
     style: loadingAnimationStyle,
-    image: '',
+    image: loadingImage,
   },
   QUESTION: {
     image: questionImage,
@@ -157,14 +158,18 @@ class StatusImage extends React.Component<Props> {
         status = 'PROGRESS'
       }
     }
-
+    let image = status !== 'PROGRESS' ? Images[status].image : null
+    if (image instanceof Function) {
+      image = image(this.props.size || 96)
+    }
     return (
-      <Wrapper>
+      <Wrapper size={this.props.size || 96}>
         {status !== 'PROGRESS' ? (
           <Image
             data-test-id="statusImage-image"
-            dangerouslySetInnerHTML={{ __html: Images[status].image }}
+            dangerouslySetInnerHTML={{ __html: image }}
             cssStyle={Images[status].style}
+            size={this.props.size || 96}
           />
         ) : null}
         {status === 'PROGRESS' ? this.renderProgressImage() : null}

@@ -16,12 +16,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled, { css } from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import coriolisLargeImage from './images/coriolis-large.svg'
 import coriolisSmallImage from './images/coriolis-small.svg'
 import coriolisSmallBlackImage from './images/coriolis-small-black.svg'
-
 
 const largeProps = css`
   width: 256px;
@@ -40,8 +40,7 @@ const smallblackProps = css`
   height: 48px;
   background: url('${coriolisSmallBlackImage}') center no-repeat;
 `
-
-const Wrapper = styled.a`
+const Wrapper = styled(Link)`
   transition: all ${StyleProps.animations.swift};
 `
 const Coriolis = styled.div`
@@ -58,14 +57,21 @@ type Props = {
   smallblack?: boolean,
   large?: boolean,
   customRef?: (ref: HTMLElement) => void,
+  to?: string,
+  className?: string,
 }
 
-const Logo = (props: Props) => {
-  return (
-    <Wrapper {...props} innerRef={ref => { if (props.customRef) props.customRef(ref) }}>
-      <Coriolis large={props.large} small={props.small} smallblack={props.smallblack} />
-    </Wrapper>
-  )
+class Logo extends React.Component<Props> {
+  render() {
+    let to = this.props.to || ''
+    return (
+      <div style={{ transition: `all ${StyleProps.animations.swift}` }} className={this.props.className} ref={ref => { this.props.customRef && ref && this.props.customRef(ref) }}>
+        <Wrapper to={to} >
+          <Coriolis large={this.props.large} small={this.props.small} smallblack={this.props.smallblack} />
+        </Wrapper>
+      </div>
+    )
+  }
 }
 
 export default Logo

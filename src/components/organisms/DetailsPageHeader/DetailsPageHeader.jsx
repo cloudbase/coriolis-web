@@ -79,7 +79,7 @@ class DetailsPageHeader extends React.Component<Props, State> {
       return
     }
     this.stopPolling = false
-    this.pollData()
+    this.pollData(true)
   }
 
   componentWillUnmount() {
@@ -101,12 +101,12 @@ class DetailsPageHeader extends React.Component<Props, State> {
     }
   }
 
-  async pollData() {
+  async pollData(showLoading?: boolean) {
     if (this.stopPolling) {
       return
     }
 
-    await notificationStore.loadData()
+    await notificationStore.loadData(showLoading)
     this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
   }
 
@@ -115,7 +115,7 @@ class DetailsPageHeader extends React.Component<Props, State> {
       <Wrapper>
         <Menu>
           <NavigationMini />
-          <Logo to="/replicas" />
+          <Logo to="/" />
         </Menu>
         <User>
           <NotificationDropdown

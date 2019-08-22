@@ -24,6 +24,8 @@ import Logo from '../../atoms/Logo'
 import userStore from '../../../stores/UserStore'
 import configLoader from '../../../utils/Config'
 
+import StyleProps from '../../styleUtils/StyleProps'
+
 import { navigationMenu } from '../../../constants'
 import backgroundImage from './images/star-bg.jpg'
 import cbsImage from './images/cbsl-logo.svg'
@@ -69,7 +71,16 @@ const LogoStyled = styled(Logo)`
   display: flex;
 `
 
-const TinyLogo = styled.a`
+const WrappedLink = (props: any) => (
+  <div
+    style={{ transition: `all ${StyleProps.animations.swift}` }}
+    className={props.className}
+    ref={r => { props.customRef && props.customRef(r) }}
+  >
+    <Link to={props.to} style={{ display: 'flex', width: '100%' }} />
+  </div>
+)
+const TinyLogo = styled(WrappedLink)`
   position: absolute;
   top: 0;
   opacity: ${props => isCollapsed(props) ? 1 : 0};
@@ -240,7 +251,7 @@ class Navigation extends React.Component<Props> {
   get filteredMenu() {
     const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     const isDisabled = (page: string) => configLoader.config ? configLoader.config.disabledPages.find(p => p === page) : false
-    return navigationMenu.filter(i => !isDisabled(i.value) && (!i.requiresAdmin || isAdmin))
+    return navigationMenu.filter(i => !i.hidden && !isDisabled(i.value) && (!i.requiresAdmin || isAdmin))
   }
 
   componentDidMount() {
@@ -405,13 +416,13 @@ class Navigation extends React.Component<Props> {
             <LogoStyled
               small
               collapsed={this.props.collapsed}
-              href={navigationMenu[0].value}
+              to={navigationMenu[0].value}
               customRef={ref => { this.coriolisLogo = ref }}
             />
             <TinyLogo
               collapsed={this.props.collapsed}
-              innerRef={ref => { this.coriolisLogoSmall = ref }}
-              href={navigationMenu[0].value}
+              customRef={ref => { this.coriolisLogoSmall = ref }}
+              to={navigationMenu[0].value}
             />
           </LogoWrapper>
         )}

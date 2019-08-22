@@ -22,7 +22,6 @@ import type { User } from '../../../types/User'
 import type { Project } from '../../../types/Project'
 import Dropdown from '../../molecules/Dropdown'
 import NewItemDropdown from '../../molecules/NewItemDropdown'
-import type { ItemType } from '../../molecules/NewItemDropdown'
 import NotificationDropdown from '../../molecules/NotificationDropdown'
 import UserDropdown from '../../molecules/UserDropdown'
 import Modal from '../../molecules/Modal'
@@ -41,8 +40,9 @@ import StyleProps from '../../styleUtils/StyleProps'
 
 const Wrapper = styled.div`
   display: flex;
-  margin: 48px 0;
+  margin: 32px 0 48px 0;
   align-items: center;
+  flex-wrap: wrap;
 `
 const Title = styled.div`
   color: ${Palette.black};
@@ -52,9 +52,13 @@ const Title = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin-top: 16px;
+  margin-right: 16px;
 `
 const Controls = styled.div`
   display: flex;
+  margin-top: 16px;
+  margin-left: -16px;
 
   & > div {
     margin-left: 16px;
@@ -66,6 +70,7 @@ type Props = {
   onProjectChange?: (project: Project) => void,
   onModalOpen?: () => void,
   onModalClose?: () => void,
+  componentRef?: (ref: any) => void
 }
 type State = {
   showChooseProviderModal: boolean,
@@ -91,7 +96,10 @@ class PageHeader extends React.Component<Props, State> {
 
   componentWillMount() {
     this.stopPolling = false
-    this.pollData()
+    this.pollData(true)
+    if (this.props.componentRef) {
+      this.props.componentRef(this)
+    }
   }
 
   componentWillUnmount() {
@@ -123,8 +131,8 @@ class PageHeader extends React.Component<Props, State> {
     }
   }
 
-  handleNewItem(item: ItemType) {
-    switch (item.value) {
+  handleNewItem(item: ?string) {
+    switch (item) {
       case 'endpoint':
         providerStore.loadProviders()
         if (this.props.onModalOpen) {
@@ -219,7 +227,7 @@ class PageHeader extends React.Component<Props, State> {
     this.setState({ showProjectModal: false })
   }
 
-  async pollData() {
+  async pollData(showLoading?: boolean) {
     if (
       this.stopPolling ||
       this.state.showChooseProviderModal ||
@@ -231,7 +239,7 @@ class PageHeader extends React.Component<Props, State> {
       return
     }
 
-    await notificationStore.loadData()
+    await notificationStore.loadData(showLoading)
     this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
   }
 
@@ -247,7 +255,7 @@ class PageHeader extends React.Component<Props, State> {
             noItemsMessage="Loading..."
             labelField="name"
           />
-          <NewItemDropdown onChange={item => { this.handleNewItem(item) }} />
+          <NewItemDropdown onChange={item => { this.handleNewItem(item.value) }} />
           <NotificationDropdown
             items={notificationStore.notificationItems}
             onClose={() => this.handleNotificationsClose()}

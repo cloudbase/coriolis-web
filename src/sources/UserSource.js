@@ -159,7 +159,7 @@ class UserSource {
     let token = cookie.get('token')
     let clear = () => {
       cookie.remove('token')
-      window.location.href = '/'
+      window.location.href = '/login'
       Api.setDefaultHeader('X-Auth-Token', null)
     }
 

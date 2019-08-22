@@ -44,6 +44,12 @@ storiesOf('StatusImage', module)
   .add('running', () => (
     <StatusImage status="RUNNING" />
   ))
+  .add('running - custom size', () => (
+    <StatusImage
+      status="RUNNING"
+      size={48}
+    />
+  ))
   .add('loading progress', () => (
     <StatusImage loading loadingProgress={45} />
   ))

@@ -40,15 +40,16 @@ const Logo = styled.div`
 
 type Props = {
   name: string,
-  size: {w: number, h: number},
+  size: { w: number, h: number },
   disabled: ?boolean,
+  white: ?boolean,
 }
 class Generic extends React.Component<Props> {
-  render32Generic() {
+  render32Generic(white: ?boolean) {
     return (
       <Wrapper style={{
         fontSize: '14px',
-        color: Palette.grayscale[4],
+        color: white ? 'white' : Palette.grayscale[4],
       }}
       >
         {this.props.name}
@@ -105,7 +106,7 @@ class Generic extends React.Component<Props> {
   render() {
     switch (this.props.size.h) {
       case 32:
-        return this.render32Generic()
+        return this.render32Generic(this.props.white)
       case 42:
         return this.render42Generic()
       case 64:

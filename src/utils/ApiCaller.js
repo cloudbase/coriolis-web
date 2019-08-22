@@ -49,9 +49,9 @@ const addCancelable = (cancelable: Cancelable) => {
 
 const isOnLoginPage = (): boolean => {
   if (window.env.ENV === 'development') {
-    return window.location.hash === '#/' || window.location.hash === '#/login'
+    return window.location.hash === '#/login'
   }
-  return window.location.pathname === '/' || window.location.pathname === '/login'
+  return window.location.pathname === '/login'
 }
 
 class ApiCaller {
@@ -128,7 +128,7 @@ class ApiCaller {
           }
 
           if (error.response.status === 401 && !isOnLoginPage() && error.request.responseURL.indexOf('/proxy/') === -1) {
-            window.location.href = '/'
+            window.location.href = '/login'
           }
 
           logger.log({

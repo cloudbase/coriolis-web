@@ -30,6 +30,16 @@ import oci32Image from './images/oci-32.svg'
 import hyperv32Image from './images/hyperv-32.svg'
 import scvmm32Image from './images/scvmm-32.svg'
 
+import aws32WhiteImage from './images/aws-32-white.svg'
+import azure32WhiteImage from './images/azure-32-white.svg'
+import opc32WhiteImage from './images/opc-32-white.svg'
+import openstack32WhiteImage from './images/openstack-32-white.svg'
+import oraclevm32WhiteImage from './images/oraclevm-32-white.svg'
+import vmware32WhiteImage from './images/vmware-32-white.svg'
+import oci32WhiteImage from './images/oci-32-white.svg'
+import hyperv32WhiteImage from './images/hyperv-32-white.svg'
+import scvmm32WhiteImage from './images/scvmm-32-white.svg'
+
 import aws42Image from './images/aws-42.svg'
 import azure42Image from './images/azure-42.svg'
 import opc42Image from './images/opc-42.svg'
@@ -73,6 +83,7 @@ import scvmm128DisabledImage from './images/scvmm-128-disabled.svg'
 const endpointImages = {
   azure: [
     { h: 32, image: azure32Image },
+    { h: 32, image: azure32WhiteImage, white: true },
     { h: 42, image: azure42Image },
     { h: 64, image: azure64Image },
     { h: 128, image: azure128Image },
@@ -80,6 +91,7 @@ const endpointImages = {
   ],
   openstack: [
     { h: 32, image: openstack32Image },
+    { h: 32, image: openstack32WhiteImage, white: true },
     { h: 42, image: openstack42Image },
     { h: 64, image: openstack64Image },
     { h: 128, image: openstack128Image },
@@ -87,6 +99,7 @@ const endpointImages = {
   ],
   opc: [
     { h: 32, image: opc32Image },
+    { h: 32, image: opc32WhiteImage, white: true },
     { h: 42, image: opc42Image },
     { h: 64, image: opc64Image },
     { h: 128, image: opc128Image },
@@ -94,6 +107,7 @@ const endpointImages = {
   ],
   oracle_vm: [
     { h: 32, image: oraclevm32Image },
+    { h: 32, image: oraclevm32WhiteImage, white: true },
     { h: 42, image: oraclevm42Image },
     { h: 64, image: oraclevm64Image },
     { h: 128, image: oraclevm128Image },
@@ -101,6 +115,7 @@ const endpointImages = {
   ],
   vmware_vsphere: [
     { h: 32, image: vmware32Image },
+    { h: 32, image: vmware32WhiteImage, white: true },
     { h: 42, image: vmware42Image },
     { h: 64, image: vmware64Image },
     { h: 128, image: vmware128Image },
@@ -108,6 +123,7 @@ const endpointImages = {
   ],
   aws: [
     { h: 32, image: aws32Image },
+    { h: 32, image: aws32WhiteImage, white: true },
     { h: 42, image: aws42Image },
     { h: 64, image: aws64Image },
     { h: 128, image: aws128Image },
@@ -115,6 +131,7 @@ const endpointImages = {
   ],
   oci: [
     { h: 32, image: oci32Image },
+    { h: 32, image: oci32WhiteImage, white: true },
     { h: 42, image: oci42Image },
     { h: 64, image: oci64Image },
     { h: 128, image: oci128Image },
@@ -122,6 +139,7 @@ const endpointImages = {
   ],
   'hyper-v': [
     { h: 32, image: hyperv32Image },
+    { h: 32, image: hyperv32WhiteImage, white: true },
     { h: 42, image: hyperv42Image },
     { h: 64, image: hyperv64Image },
     { h: 128, image: hyperv128Image },
@@ -129,6 +147,7 @@ const endpointImages = {
   ],
   scvmm: [
     { h: 32, image: scvmm32Image },
+    { h: 32, image: scvmm32WhiteImage, white: true },
     { h: 42, image: scvmm42Image },
     { h: 64, image: scvmm64Image },
     { h: 128, image: scvmm128Image },
@@ -155,6 +174,7 @@ type Props = {
   endpoint?: ?string,
   height: number,
   disabled?: boolean,
+  white?: boolean,
   'data-test-id'?: string,
 }
 @observer
@@ -167,7 +187,8 @@ class EndpointLogos extends React.Component<Props> {
     let imageInfo = null
 
     if (this.props.endpoint && endpointImages[this.props.endpoint]) {
-      imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true))
+      imageInfo = endpointImages[this.props.endpoint].find(
+        i => i.h === size.h && (!this.props.disabled || i.disabled === true) && (!this.props.white || i.white === true))
     } else {
       return null
     }
@@ -192,6 +213,7 @@ class EndpointLogos extends React.Component<Props> {
         size={size}
         name={this.props.endpoint || ''}
         disabled={this.props.disabled}
+        white={this.props.white}
       />
     )
   }
@@ -206,7 +228,8 @@ class EndpointLogos extends React.Component<Props> {
     let imageInfo = null
 
     if (this.props.endpoint && endpointImages[this.props.endpoint]) {
-      imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true))
+      imageInfo = endpointImages[this.props.endpoint].find(i => i.h === size.h && (!this.props.disabled || i.disabled === true)
+        && (!this.props.white || i.white === true))
     }
 
     return (

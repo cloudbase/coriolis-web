@@ -19,6 +19,7 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
+import DomUtils from '../../../utils/DomUtils'
 
 import SearchInput from '../../molecules/SearchInput'
 
@@ -142,7 +143,6 @@ type Props = {
   style?: { [mixed]: any },
   labelStyle?: any,
   getLabel?: () => string,
-  required?: boolean,
 }
 type State = {
   showDropdownList: boolean,
@@ -160,6 +160,7 @@ class DropdownLink extends React.Component<Props, State> {
     searchText: '',
   }
 
+  scrollableParent: HTMLElement
   itemMouseDown: boolean
   labelRef: HTMLElement
   listItemsRef: HTMLElement
@@ -170,6 +171,11 @@ class DropdownLink extends React.Component<Props, State> {
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
+    if (this.arrowRef) {
+      this.scrollableParent = DomUtils.getScrollableParent(this.arrowRef)
+      this.scrollableParent.addEventListener('scroll', this.handleScroll)
+      window.addEventListener('resize', this.handleScroll)
+    }
     this.setLabelWidth()
   }
 
@@ -212,6 +218,17 @@ class DropdownLink extends React.Component<Props, State> {
   }
 
   @autobind
+  handleScroll() {
+    if (this.arrowRef) {
+      if (DomUtils.isElementInViewport(this.arrowRef, this.scrollableParent)) {
+        this.updateListPosition()
+      } else if (this.state.showDropdownList) {
+        this.setState({ showDropdownList: false })
+      }
+    }
+  }
+
+  @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })
@@ -224,6 +241,7 @@ class DropdownLink extends React.Component<Props, State> {
     }
 
     this.setState({ showDropdownList: !this.state.showDropdownList }, () => {
+      this.updateListPosition()
       this.scrollIntoView()
     })
   }
@@ -265,7 +283,7 @@ class DropdownLink extends React.Component<Props, State> {
     let arrowWidth = this.arrowRef.offsetWidth
     let arrowHeight = this.arrowRef.offsetHeight
     let tipHeight = this.tipRef.offsetHeight
-    const tipOffset = 7
+    const tipOffset = 9
     let arrowOffset = this.arrowRef.getBoundingClientRect()
 
     // If a modal is opened, body scroll is removed and body top is set to replicate scroll position

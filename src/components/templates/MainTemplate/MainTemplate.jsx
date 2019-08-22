@@ -39,9 +39,7 @@ const List = styled.div`
   flex-direction: column;
   min-height: 0;
 `
-const Header = styled.div`
-  min-width: 800px;
-`
+const Header = styled.div``
 const Footer = styled.div`
   flex-shrink: 0;
 `

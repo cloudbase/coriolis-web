@@ -36,6 +36,8 @@ import UsersPage from './pages/UsersPage'
 import UserDetailsPage from './pages/UserDetailsPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailsPage from './pages/ProjectDetailsPage'
+import DashboardPage from './pages/DashboardPage'
+
 import Tooltip from './atoms/Tooltip/Tooltip'
 
 import { navigationMenu } from '../constants'
@@ -97,8 +99,9 @@ class App extends React.Component<{}, State> {
     return (
       <Wrapper>
         <Switch>
-          <Route path="/" component={LoginPage} exact />
+          <Route path="/" component={DashboardPage} exact />
           <Route path="/login" component={LoginPage} />
+          <Route path="/dashboard" component={DashboardPage} />
           <Route path="/replicas" component={ReplicasPage} />
           <Route path="/replica/:id" component={ReplicaDetailsPage} exact />
           <Route path="/replica/:page/:id" component={ReplicaDetailsPage} />

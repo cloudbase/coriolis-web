@@ -116,16 +116,16 @@ const ListItem = styled(Link)`
     border-bottom-right-radius: ${StyleProps.borderRadius};
   }
 `
-const InfoColumn = styled.div`
+export const InfoColumn = styled.div`
   display: flex;
   flex-direction: column;
 `
-const BadgeColumn = styled.div`
+export const BadgeColumn = styled.div`
   display: flex;
   align-items: center;
   margin: 0 8px;
 `
-const MainItemInfo = styled.div`
+export const MainItemInfo = styled.div`
   display: flex;
   align-items: center;
   margin-right: -8px;
@@ -134,7 +134,7 @@ const MainItemInfo = styled.div`
     margin-right: 8px;
   }
 `
-const ItemReplicaBadge = styled.div`
+export const ItemReplicaBadge = styled.div`
   background: 'white';
   color: #7F8795;
   font-size: 9px;
@@ -147,8 +147,12 @@ const ItemReplicaBadge = styled.div`
   border-radius: 2px;
   border: 1px solid #7F8795;
 `
-const ItemTitle = styled.div``
-const ItemDescription = styled.div`
+export const ItemTitle = styled.div`
+  ${props => props.nowrap ? 'white-space: nowrap;' : ''}
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+export const ItemDescription = styled.div`
   color: ${Palette.grayscale[5]};
   font-size: 10px;
   margin-top: 8px;

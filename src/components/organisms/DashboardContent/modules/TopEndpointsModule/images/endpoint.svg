@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="106px" height="106px" viewBox="0 0 106 106" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M40,80 C62.09139,80 80,62.09139 80,40 C80,17.90861 62.09139,0 40,0 C17.90861,0 0,17.90861 0,40 C0,62.09139 17.90861,80 40,80 Z" id="path-1"></path>
+        <filter x="-25.6%" y="-23.1%" width="151.2%" height="151.2%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="6.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0753114073 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Migrations" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="01-Dashboard/Start" transform="translate(-835.000000, -390.000000)">
+            <g id="Group-7" transform="translate(400.000000, 320.000000)">
+                <g id="Widget-Empty" transform="translate(336.000000, 1.000000)">
+                    <g id="Group" transform="translate(112.000000, 80.000000)">
+                        <g id="Pat-Benetar">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                        <g id="Icon/Endpoint/Item-80" stroke="#0044CA" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M34.25,17.5 C26.82215,17.5 20.87435,23.6937517 20.5581,31.4389715 C15.1784,32.9855913 11.25,38.1017999 11.25,44.1670707 C11.25,51.4941214 16.94825,57.5 23.9,57.5 L58.4,57.5 C64.08675,57.5 68.75,52.5849974 68.75,46.5912397 C68.75,41.8641102 65.76,37.8545347 61.7419,36.43882 C61.4981,29.3323687 55.9988,23.5604224 49.2,23.5604224 C48.00515,23.5604224 46.8931,23.870716 45.78565,24.2052514 C43.3143,20.2417351 39.09955,17.5 34.25,17.5 L34.25,17.5 Z" id="Path" stroke-width="1.5" transform="translate(40.000000, 37.500000) scale(-1, 1) translate(-40.000000, -37.500000) "></path>
+                            <g id="Group" stroke-width="1" fill-rule="evenodd" transform="translate(26.200000, 36.928571)">
+                                <path d="M9.55284091,5.66502463 L19.613299,5.66502463" id="Stroke-7" stroke-width="1.5"></path>
+                                <path d="M11.9418679,8.59344737 C11.1340476,9.89591322 9.76275019,10.7524631 8.20741226,10.7524631 L4.70790194,10.7524631 C2.22335533,10.7524631 0.209090909,8.56624181 0.209090909,5.86864119 L0.209090909,5.46183316 C0.209090909,2.76423253 2.22335533,0.577586207 4.70790194,0.577586207 L8.20741226,0.577586207 C9.76157546,0.577586207 11.1313066,1.43243569 11.9395184,2.7332012" id="Stroke-9" stroke-width="1.5"></path>
+                                <path d="M29.0897727,8.59344737 C28.2819525,9.89591322 26.910655,10.7524631 25.3553171,10.7524631 L21.8558068,10.7524631 C19.3712602,10.7524631 17.3569957,8.56624181 17.3569957,5.86864119 L17.3569957,5.46183316 C17.3569957,2.76423253 19.3712602,0.577586207 21.8558068,0.577586207 L25.3553171,0.577586207 C26.9094803,0.577586207 28.2792114,1.43243569 29.0874233,2.7332012" id="Stroke-9-Copy" stroke-width="1.5" transform="translate(23.223384, 5.665025) scale(-1, 1) translate(-23.223384, -5.665025) "></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

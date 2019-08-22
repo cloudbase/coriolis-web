@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="879px" height="146px" viewBox="0 0 879 146" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Group 6</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Migrations" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.183640253">
+        <g id="01-Dashboard/Start" transform="translate(-441.000000, -770.000000)">
+            <g id="Group-6" transform="translate(441.000000, 770.000000)">
+                <g id="Lines-Copy" transform="translate(0.000000, 0.000000)" fill="#FFFFFF">
+                    <rect id="Graph-Lines" x="-4.54747351e-13" y="145" width="879" height="1"></rect>
+                    <rect id="Graph-Lines" x="-4.54747351e-13" y="88" width="879" height="1"></rect>
+                    <rect id="Graph-Lines" x="-4.54747351e-13" y="116" width="879" height="1"></rect>
+                    <rect id="Graph-Lines" x="-4.54747351e-13" y="29" width="879" height="1"></rect>
+                    <rect id="Graph-Lines" x="-4.54747351e-13" y="0" width="879" height="1"></rect>
+                </g>
+                <g id="Graph-Copy-17" transform="translate(16.000000, 21.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,1.99796811 C0,0.894520794 0.894513756,3.63797881e-12 1.99406028,3.63797881e-12 L14.0059397,3.63797881e-12 C15.1072288,3.63797881e-12 16,0.89211043 16,1.99796811 L16,124 L0,124 L0,1.99796811 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-18" transform="translate(96.000000, 52.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,2.00713962 C0,0.898627015 0.894513756,1.8189894e-12 1.99406028,1.8189894e-12 L14.0059397,1.8189894e-12 C15.1072288,1.8189894e-12 16,0.89063056 16,2.00713962 L16,93 L0,93 L0,2.00713962 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-19" transform="translate(176.000000, 41.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,2.00767737 C0,0.898867775 0.894513756,0 1.99406028,0 L14.0059397,0 C15.1072288,0 16,0.899085999 16,2.00767737 L16,104 L0,104 L0,2.00767737 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-20" transform="translate(256.000000, 3.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,2.00735664 C0,0.898724182 0.894513756,0 1.99406028,0 L14.0059397,0 C15.1072288,0 16,0.8882895 16,2.00735664 L16,142 L0,142 L0,2.00735664 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-21" transform="translate(336.000000, 37.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,1.99010877 C0,0.891002048 0.894513756,0 1.99406028,0 L14.0059397,0 C15.1072288,0 16,0.901227258 16,1.99010877 L16,108 L0,108 L0,1.99010877 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-22" transform="translate(416.000000, 21.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,1.99796811 C0,0.894520794 0.894513756,3.63797881e-12 1.99406028,3.63797881e-12 L14.0059397,3.63797881e-12 C15.1072288,3.63797881e-12 16,0.89211043 16,1.99796811 L16,124 L0,124 L0,1.99796811 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-23" transform="translate(496.000000, 21.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,1.99796811 C0,0.894520794 0.894513756,3.63797881e-12 1.99406028,3.63797881e-12 L14.0059397,3.63797881e-12 C15.1072288,3.63797881e-12 16,0.89211043 16,1.99796811 L16,124 L0,124 L0,1.99796811 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-24" transform="translate(576.000000, 54.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,2.00671997 C0,0.898439133 0.894513756,3.63797881e-12 1.99406028,3.63797881e-12 L14.0059397,3.63797881e-12 C15.1072288,3.63797881e-12 16,0.900658965 16,2.00671997 L16,91 L0,91 L0,2.00671997 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-25" transform="translate(656.000000, 70.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,2.00606883 C0,0.898147606 0.894513756,0 1.99406028,0 L14.0059397,0 C15.1072288,0 16,0.89453347 16,2.00606883 L16,75 L0,75 L0,2.00606883 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-26" transform="translate(736.000000, 21.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,1.99796811 C0,0.894520794 0.894513756,3.63797881e-12 1.99406028,3.63797881e-12 L14.0059397,3.63797881e-12 C15.1072288,3.63797881e-12 16,0.89211043 16,1.99796811 L16,124 L0,124 L0,1.99796811 Z" id="Income"></path>
+                </g>
+                <g id="Graph-Copy-27" transform="translate(816.000000, 33.000000)" fill="#777A8B" opacity="0.36546689">
+                    <path d="M0,1.99150398 C0,0.891626704 0.894513756,3.63797881e-12 1.99406028,3.63797881e-12 L14.0059397,3.63797881e-12 C15.1072288,3.63797881e-12 16,0.901537657 16,1.99150398 L16,112 L0,112 L0,1.99150398 Z" id="Income"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
