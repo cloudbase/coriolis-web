@@ -28,7 +28,7 @@ export type Role = {
 
 export type RoleAssignment = {
   scope: {
-    project: {
+    project?: {
       id: string,
       name: string,
     },

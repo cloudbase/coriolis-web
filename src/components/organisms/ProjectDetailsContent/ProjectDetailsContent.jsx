@@ -221,7 +221,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
     let getUserRoles = user => {
       let projectId = this.props.project ? this.props.project.id : ''
       let roles = this.props.roleAssignments
-        .filter(a => a.scope.project.id === projectId)
+        .filter(a => a.scope.project && a.scope.project.id === projectId)
         .filter(a => a.user.id === user.id)
         .map(a => { return { value: a.role.id, label: a.role.name } })
       return roles
