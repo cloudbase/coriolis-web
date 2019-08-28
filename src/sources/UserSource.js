@@ -320,7 +320,8 @@ class UserSource {
     let assignments: RoleAssignment[] = response.data.role_assignments
     let projects: $Shape<Project>[] = assignments
       .filter(a => a.user.id === userId)
-      .filter((a, i, arr) => arr.findIndex(e => e.scope.project.id === a.scope.project.id) === i)
+      .filter((a, i, arr) =>
+        arr.findIndex(e => e.scope.project && a.scope.project && e.scope.project.id === a.scope.project.id) === i)
       .map(a => a.scope.project)
 
     return projects

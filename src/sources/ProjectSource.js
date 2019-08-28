@@ -53,7 +53,7 @@ class ProjectsSource {
   async getUsers(projectId: string): Promise<User[]> {
     let assignments = await this.getRoleAssignments()
     const userIds: string[] = assignments
-      .filter(a => a.scope.project.id === projectId)
+      .filter(a => a.scope.project && a.scope.project.id === projectId)
       .filter((a, i, arr) => arr.findIndex(e => a.user.id === e.user.id) === i)
       .map(a => a.user.id)
     let users: User[] = await Promise.all(userIds.map(async id => {

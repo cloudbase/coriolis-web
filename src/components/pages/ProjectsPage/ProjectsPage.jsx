@@ -57,7 +57,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
   }
 
   getMembers(projectId: string): number {
-    return projectStore.roleAssignments.filter(a => a.scope.project.id === projectId).length
+    return projectStore.roleAssignments.filter(a => a.scope.project && a.scope.project.id === projectId).length
   }
 
   isCurrentProject(projectId: string): boolean {
