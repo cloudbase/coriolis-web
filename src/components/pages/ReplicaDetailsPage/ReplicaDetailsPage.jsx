@@ -140,7 +140,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       details.origin_endpoint_id,
       // $FlowIgnore
       details.instances.map(n => { return { instance_name: n } }),
-      false, cache
+      cache, false
     )
   }
 

@@ -199,7 +199,7 @@ type Props = {
   embedded?: boolean,
   dimFirstItem?: boolean,
   multipleSelection?: boolean,
-  selectedItems?: string[],
+  selectedItems?: ?any[],
   highlight?: boolean,
   required?: boolean,
 }
@@ -334,7 +334,8 @@ class Dropdown extends React.Component<Props, State> {
     if (!item || !checkmarkRef) {
       return
     }
-    let multipleSelected = this.props.selectedItems && this.props.selectedItems.find(i => i === this.getValue(item))
+    let multipleSelected = this.props.selectedItems && this.props.selectedItems.find(i =>
+      this.getValue(i) === this.getValue(item))
     let symbol = checkmarkRef.querySelector('#symbol')
     if (symbol) {
       symbol.style.animationName = multipleSelected ? 'dashOff' : 'dashOn'
@@ -404,13 +405,14 @@ class Dropdown extends React.Component<Props, State> {
         <ListItems innerRef={ref => { this.listItemsRef = ref }}>
           {this.props.items.map((item, i) => {
             if (item.separator === true) {
-              return <Separator />
+              return <Separator key={`sep-${i}`} />
             }
 
             let label = this.getLabel(item)
             let value = this.getValue(item)
             let duplicatedLabel = duplicatedLabels.find(l => l === label)
-            let multipleSelected = this.props.selectedItems && this.props.selectedItems.find(i => i === value)
+            let multipleSelected = this.props.selectedItems && this.props.selectedItems
+              .find(i => this.getValue(i) === value)
             let checkmarkRef
             let listItem = (
               <ListItem
@@ -454,7 +456,8 @@ class Dropdown extends React.Component<Props, State> {
     let buttonValue = () => {
       if (this.props.items && this.props.items.length) {
         if (this.props.multipleSelection && this.props.selectedItems && this.props.selectedItems.length > 0) {
-          return this.props.selectedItems.map(i => this.getLabel(this.props.items.find(item => this.getValue(item) === i))).join(', ')
+          return this.props.selectedItems.map(i => this.getLabel(this.props.items.find(item =>
+            this.getValue(item) === this.getValue(i)))).join(', ')
         }
         return this.getLabel(this.props.selectedItem)
       }

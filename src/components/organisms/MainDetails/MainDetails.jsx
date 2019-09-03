@@ -162,36 +162,6 @@ class MainDetails extends React.Component<Props> {
     return vms.length === 0 ? 'Failed to read network configuration for the original instance' : vms.map(vm => <div data-test-id={`vm-${vm}`} style={{ marginBottom: '8px' }}>{vm}<br /></div>)
   }
 
-  getNetworks() {
-    let networkMap = this.props.item && this.props.item.network_map
-    if (!networkMap) {
-      return null
-    }
-    let networks = []
-    Object.keys(networkMap).forEach(key => {
-      let newItem
-      if (typeof networkMap[key] === 'string') {
-        newItem = [
-          key,
-          this.getConnectedVms(key),
-          networkMap[key],
-          'Existing network',
-        ]
-      } else {
-        newItem = [
-          networkMap[key].source_network,
-          this.getConnectedVms(key),
-          // $FlowIssue
-          networkMap[key].destination_network,
-          'Existing network',
-        ]
-      }
-      networks.push(newItem)
-    })
-
-    return networks
-  }
-
   renderLastExecutionTime() {
     let lastExecution = this.getLastExecution()
     let lastUpdate = lastExecution.updated_at || lastExecution.created_at

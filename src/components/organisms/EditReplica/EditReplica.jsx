@@ -37,7 +37,7 @@ import type { NavigationItem } from '../../molecules/Panel'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoint'
 import type { Field } from '../../../types/Field'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
-import type { Network, NetworkMap } from '../../../types/Network'
+import type { Network, NetworkMap, SecurityGroup } from '../../../types/Network'
 
 import { providerTypes } from '../../../constants'
 import configLoader from '../../../utils/Config'
@@ -289,10 +289,10 @@ class EditReplica extends React.Component<Props, State> {
     }
   }
 
-  handleNetworkChange(sourceNic: Nic, targetNetwork: Network) {
+  handleNetworkChange(sourceNic: Nic, targetNetwork: Network, targetSecurityGroups: ?SecurityGroup[]) {
     let networkMap = this.state.selectedNetworks.filter(n => n.sourceNic.network_name !== sourceNic.network_name)
     this.setState({
-      selectedNetworks: [...networkMap, { sourceNic, targetNetwork }],
+      selectedNetworks: [...networkMap, { sourceNic, targetNetwork, targetSecurityGroups }],
     })
   }
 
@@ -329,14 +329,27 @@ class EditReplica extends React.Component<Props, State> {
 
     if (networkMap) {
       Object.keys(networkMap).forEach(sourceNetworkName => {
-        let network = this.props.networks.find(n => n.name === networkMap[sourceNetworkName] || n.id === networkMap[sourceNetworkName])
+        let destNetObj: any = networkMap[sourceNetworkName]
+        let destNetId = String(typeof destNetObj === 'string' || !destNetObj
+          || !destNetObj.id ? destNetObj : destNetObj.id)
+
+        let network = this.props.networks.find(n => n.name === destNetId || n.id === destNetId)
         if (!network) {
           return
         }
-        selectedNetworks.push({
+        let mapping: NetworkMap = {
           sourceNic: { id: '', network_name: sourceNetworkName, mac_address: '', network_id: '' },
           targetNetwork: network,
-        })
+        }
+        if (destNetObj.security_groups) {
+          let destSecGroupsInfo = (network && network.security_groups) || []
+          let secInfo = destNetObj.security_groups.map(s => {
+            let foundSecGroupInfo = destSecGroupsInfo.find(si => si.id ? si.id === s : si === s)
+            return foundSecGroupInfo || { id: s, name: s }
+          })
+          mapping.targetSecurityGroups = secInfo
+        }
+        selectedNetworks.push(mapping)
       })
     }
     selectedNetworks = selectedNetworks.map(mapping => {
@@ -435,7 +448,7 @@ class EditReplica extends React.Component<Props, State> {
         loadingInstancesDetails={this.props.instancesDetailsLoading}
         networks={this.props.networks}
         loading={this.props.networksLoading}
-        onChange={(nic, network) => { this.handleNetworkChange(nic, network) }}
+        onChange={(nic, network, secGroups) => { this.handleNetworkChange(nic, network, secGroups) }}
         selectedNetworks={this.getSelectedNetworks()}
       />
     )

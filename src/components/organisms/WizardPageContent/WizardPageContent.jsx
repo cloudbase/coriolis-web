@@ -37,7 +37,7 @@ import type { WizardData, WizardPage } from '../../../types/WizardData'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
-import type { Network } from '../../../types/Network'
+import type { Network, SecurityGroup } from '../../../types/Network'
 import type { Schedule as ScheduleType } from '../../../types/Schedule'
 import instanceStore from '../../../stores/InstanceStore'
 import providerStore from '../../../stores/ProviderStore'
@@ -154,7 +154,7 @@ type Props = {
   onInstancePageClick: (page: number) => void,
   onDestOptionsChange: (field: Field, value: any) => void,
   onSourceOptionsChange: (field: Field, value: any) => void,
-  onNetworkChange: (nic: Nic, network: Network) => void,
+  onNetworkChange: (nic: Nic, network: Network, secGroups: ?SecurityGroup[]) => void,
   onStorageChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void,
