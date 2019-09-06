@@ -107,9 +107,16 @@ const RowBody = styled.div`
   margin-top: 4px;
 `
 const RowBodyColumn = styled.div`
-  width: 50%;
-  &:first-child { margin-left: 32px; }
-  &:last-child { margin-left: 6px; }
+  &:first-child {
+    ${StyleProps.exactWidth('calc(50% - 70px)')}
+    margin-right: 88px;
+  }
+  &:last-child {
+    ${StyleProps.exactWidth('calc(50% - 16px)')}
+  }
+`
+const RowBodyColumnValue = styled.div`
+  overflow-wrap: break-word;
 `
 const getHeaderIcon = (icon: 'instance' | 'network' | 'storage'): string => {
   switch (icon) {
@@ -203,8 +210,8 @@ class MainDetailsTable extends React.Component<Props, State> {
         </RowHeader>
         <Collapse isOpened={isOpened} springConfig={{ stiffness: 100, damping: 20 }}>
           <RowBody>
-            <RowBodyColumn>{sourceBody.map(l => <div key={l}>{l}</div>)}</RowBodyColumn>
-            <RowBodyColumn>{destinationBody.map(l => <div key={l}>{l}</div>)}</RowBodyColumn>
+            <RowBodyColumn>{sourceBody.map(l => <RowBodyColumnValue key={l}>{l}</RowBodyColumnValue>)}</RowBodyColumn>
+            <RowBodyColumn>{destinationBody.map(l => <RowBodyColumnValue key={l}>{l}</RowBodyColumnValue>)}</RowBodyColumn>
           </RowBody>
         </Collapse>
       </Row>
@@ -291,12 +298,25 @@ class MainDetailsTable extends React.Component<Props, State> {
           }
           return body
         }
-        let sourceBody = getBody(nic)
-        let destinationBody = []
-
-        let destinationNetworkId = String(destinationNetworkMap[nic.network_name])
-        let destinationNetworkName = destinationNetworkId
+        let destNetMapObj = destinationNetworkMap[nic.network_name]
+        let destinationNetworkId = String(typeof destNetMapObj === 'string' || !destNetMapObj
+          || !destNetMapObj.id ? destNetMapObj : destNetMapObj.id)
         let destinationNetwork = this.props.networks && this.props.networks.find(n => n.id === destinationNetworkId)
+
+        let sourceBody = getBody(nic)
+
+        let destinationBody = []
+        if (destNetMapObj.security_groups && destNetMapObj.security_groups.length) {
+          let destSecGroupsInfo = (destinationNetwork && destinationNetwork.security_groups) || []
+          // $FlowIgnore
+          let secNames = destNetMapObj.security_groups.map(s => {
+            let foundSecGroupInfo = destSecGroupsInfo.find(si => si.id ? si.id === s : si === s)
+            return foundSecGroupInfo && foundSecGroupInfo.name ? foundSecGroupInfo.name : s
+          })
+          destinationBody = [`Security Groups: ${secNames.join(', ')}`]
+        }
+
+        let destinationNetworkName = destinationNetworkId
         if (destinationNetwork) {
           destinationNetworkName = destinationNetwork.name
         }

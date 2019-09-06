@@ -112,12 +112,26 @@ const NetworkArrow = styled.div`
   height: 16px;
   background: url('${networkArrowImage}') center no-repeat;
 `
-const TargetNetwork = styled.div`
+const StorageTarget = styled.div`
   width: 50%;
   text-align: right;
   margin-left: 20px;
   text-overflow: ellipsis;
   overflow: hidden;
+`
+const TargetNetwork = styled.div`
+  width: 50%;
+  text-align: right;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  margin-top: -16px;
+`
+const TargetNetworkName = styled.div`
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-top: 16px;
 `
 const OptionsList = styled.div``
 const Option = styled.div`
@@ -354,7 +368,7 @@ class WizardSummary extends React.Component<Props> {
               >
                 <SourceNetwork>{mapping.source[fieldName]}</SourceNetwork>
                 <NetworkArrow />
-                <TargetNetwork>{mapping.target ? mapping.target.name : 'Default'}</TargetNetwork>
+                <StorageTarget>{mapping.target ? mapping.target.name : 'Default'}</StorageTarget>
               </Row>
             )
           })}
@@ -379,7 +393,12 @@ class WizardSummary extends React.Component<Props> {
               <Row key={mapping.sourceNic.network_name} direction="row">
                 <SourceNetwork data-test-id="wSummary-networkSource">{mapping.sourceNic.network_name}</SourceNetwork>
                 <NetworkArrow />
-                <TargetNetwork data-test-id="wSummary-networkTarget">{mapping.targetNetwork.name}</TargetNetwork>
+                <TargetNetwork>
+                  <TargetNetworkName data-test-id="wSummary-networkTarget">{mapping.targetNetwork.name}</TargetNetworkName>
+                  {mapping.targetSecurityGroups && mapping.targetSecurityGroups.length ? (
+                    <TargetNetworkName>Security Groups: {mapping.targetSecurityGroups.map(s => s.name ? s.name : s).join(', ')}</TargetNetworkName>
+                  ) : null}
+                </TargetNetwork>
               </Row>
             )
           })}

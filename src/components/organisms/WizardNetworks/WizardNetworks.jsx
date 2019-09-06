@@ -25,7 +25,7 @@ import Dropdown from '../../molecules/Dropdown'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import type { Instance, Nic as NicType } from '../../../types/Instance'
-import type { Network, NetworkMap } from '../../../types/Network'
+import type { Network, NetworkMap, SecurityGroup } from '../../../types/Network'
 
 import networkImage from './images/network.svg'
 import bigNetworkImage from './images/network-big.svg'
@@ -55,7 +55,7 @@ const Nic = styled.div`
   display: flex;
   align-items: center;
   border-top: 1px solid ${Palette.grayscale[1]};
-  padding: 8px 0;
+  padding: 16px 0;
 
   &:last-child {
     border-bottom: 1px solid ${Palette.grayscale[1]};
@@ -104,6 +104,14 @@ const NoNicsSubtitle = styled.div`
   color: ${Palette.grayscale[4]};
   text-align: center;
 `
+const Dropdowns = styled.div`
+  > div {
+    margin-bottom: 16px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+`
 
 type Props = {
   loading: boolean,
@@ -111,7 +119,7 @@ type Props = {
   networks: Network[],
   instancesDetails: Instance[],
   selectedNetworks: ?NetworkMap[],
-  onChange: (nic: NicType, network: Network) => void,
+  onChange: (nic: NicType, network: Network, securityGroups?: SecurityGroup[]) => void,
 }
 @observer
 class WizardNetworks extends React.Component<Props> {
@@ -140,6 +148,64 @@ class WizardNetworks extends React.Component<Props> {
         <NoNicsSubtitle>We could not find any Networks attached to the selected Instances. Coriolis will skip this step.</NoNicsSubtitle>
       </NoNicsMessage>
     )
+  }
+
+  renderNetworksDropdown(selectedNetwork: ?NetworkMap, nic: NicType) {
+    return this.props.networks.length > 10 ? (
+      <AutocompleteDropdown
+        width={StyleProps.inputSizes.large.width}
+        selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
+        items={this.props.networks}
+        onChange={(item: Network) => { this.props.onChange(nic, item) }}
+        labelField="name"
+        valueField="id"
+      />
+    ) :
+      (
+        <Dropdown
+          width={StyleProps.inputSizes.large.width}
+          centered
+          noSelectionMessage="Select Network"
+          noItemsMessage={this.props.loading ? 'Loading ...' : 'No networks found'}
+          selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
+          items={this.props.networks}
+          labelField="name"
+          valueField="id"
+          onChange={(item: Network) => { this.props.onChange(nic, item) }}
+          data-test-id={`wNetworks-dropdown-${nic.id}`}
+        />
+      )
+  }
+
+  renderSecGroupsDropdown(selectedNetwork: ?NetworkMap, nic: NicType) {
+    let hasSecurityGroups: boolean = Boolean(this.props.networks.find(n => n.security_groups && n.security_groups.length))
+    let securityGroups = selectedNetwork && selectedNetwork.targetNetwork && selectedNetwork.targetNetwork.security_groups
+    let selectedSecGroups: SecurityGroup[] = (selectedNetwork && selectedNetwork.targetSecurityGroups) || []
+    return hasSecurityGroups && this.props.networks.length ? (
+      <Dropdown
+        width={StyleProps.inputSizes.large.width}
+        noSelectionMessage="Select Security Groups"
+        noItemsMessage="Select Security Groups"
+        multipleSelection
+        centered
+        disabled={!securityGroups || securityGroups.length === 0}
+        items={securityGroups || []}
+        selectedItems={selectedSecGroups}
+        labelField="name"
+        valueField="id"
+        onChange={(item: SecurityGroup) => {
+          if (selectedSecGroups.find(i => i.id && item.id ? i.id === item.id : i === item)) {
+            selectedSecGroups = selectedSecGroups.filter(i => i.id && item.id ? i.id !== item.id : i !== item)
+          } else {
+            selectedSecGroups = [...selectedSecGroups, item]
+          }
+          if (!selectedNetwork) {
+            return
+          }
+          this.props.onChange(nic, selectedNetwork.targetNetwork, selectedSecGroups)
+        }}
+      />
+    ) : null
   }
 
   renderNics() {
@@ -184,30 +250,10 @@ class WizardNetworks extends React.Component<Props> {
                 <NetworkSubtitle data-test-id={`wNetworks-connectedTo-${nic.id}`}>{`Connected to ${connectedTo.join(', ')}`}</NetworkSubtitle>
               </NetworkTitle>
               <ArrowImage />
-              {this.props.networks.length > 10 ? (
-                <AutocompleteDropdown
-                  width={StyleProps.inputSizes.large.width}
-                  selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
-                  items={this.props.networks}
-                  onChange={(item: Network) => { this.props.onChange(nic, item) }}
-                  labelField="name"
-                  valueField="id"
-                />
-              ) :
-                (
-                  <Dropdown
-                    width={StyleProps.inputSizes.large.width}
-                    centered
-                    noSelectionMessage="Select ..."
-                    noItemsMessage={this.props.loading ? 'Loading ...' : 'No networks found'}
-                    selectedItem={selectedNetwork ? selectedNetwork.targetNetwork : null}
-                    items={this.props.networks}
-                    labelField="name"
-                    valueField="id"
-                    onChange={(item: Network) => { this.props.onChange(nic, item) }}
-                    data-test-id={`wNetworks-dropdown-${nic.id}`}
-                  />
-                )}
+              <Dropdowns>
+                {this.renderNetworksDropdown(selectedNetwork, nic)}
+                {this.renderSecGroupsDropdown(selectedNetwork, nic)}
+              </Dropdowns>
             </Nic>
           )
         })}

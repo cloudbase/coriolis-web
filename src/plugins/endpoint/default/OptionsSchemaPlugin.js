@@ -138,8 +138,18 @@ export default class OptionsSchemaParser {
   static getNetworkMap(networkMappings: ?NetworkMap[]) {
     let payload = {}
     if (networkMappings && networkMappings.length) {
+      let hasSecurityGroups = Boolean(networkMappings.find(nm => nm.targetNetwork.security_groups))
       networkMappings.forEach(mapping => {
-        payload[mapping.sourceNic.network_name] = mapping.targetNetwork.id
+        let target
+        if (hasSecurityGroups) {
+          target = {
+            id: mapping.targetNetwork.id,
+            security_groups: mapping.targetSecurityGroups ? mapping.targetSecurityGroups.map(s => s.id ? s.id : s) : [],
+          }
+        } else {
+          target = mapping.targetNetwork.id
+        }
+        payload[mapping.sourceNic.network_name] = target
       })
     }
     return payload

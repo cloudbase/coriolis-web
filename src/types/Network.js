@@ -16,12 +16,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { Nic } from './Instance'
 
+export type SecurityGroup = string | {
+  id: string,
+  name: string,
+}
+
 export type Network = {
   name: string,
   id: string,
+  security_groups?: SecurityGroup[],
 }
 
 export type NetworkMap = {
   sourceNic: Nic,
   targetNetwork: Network,
+  targetSecurityGroups?: ?SecurityGroup[],
 }

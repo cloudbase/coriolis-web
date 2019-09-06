@@ -28,7 +28,7 @@ class NetworkSource {
       url = `${url}?env=${btoa(JSON.stringify(environment))}`
     }
     let response = await Api.send({ url, quietError: options && options.quietError })
-    let networks = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
+    let networks: Network[] = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
     networks.sort((a, b) => a.name.localeCompare(b.name))
     return networks
   }

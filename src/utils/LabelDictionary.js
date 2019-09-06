@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Field } from '../types/Field'
 
 // The word will be uppercased
-const acronyms = ['id', 'api', 'url', 'vm', 'os', 'dhcp', 'sql', 'oci', 'aws']
+const acronyms = ['id', 'api', 'url', 'vm', 'os', 'dhcp', 'sql', 'oci', 'aws', 'vcn']
 
 // The word will be replaced
 const abbreviations = {

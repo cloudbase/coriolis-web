@@ -62,6 +62,12 @@ const List = styled.div`
   border-radius: ${StyleProps.borderRadius};
   z-index: 1000;
 `
+const Separator = styled.div`
+  width: calc(100% - 32px);
+  height: 1px;
+  margin: 8px 16px;
+  background: ${Palette.grayscale[3]};
+`
 const ListItems = styled.div`
   max-height: 400px;
   overflow: auto;
@@ -352,6 +358,9 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     return (
       <ListItems innerRef={ref => { this.listItemsRef = ref }}>
         {this.state.filteredItems.map((item, i) => {
+          if (item.separator === true) {
+            return <Separator key={`sep-${i}`} />
+          }
           let label = this.getLabel(item)
           let value = this.getValue(item)
           let duplicatedLabel = duplicatedLabels.find(l => l === label)

@@ -42,7 +42,7 @@ import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType, StorageBackend } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
-import type { Network } from '../../../types/Network'
+import type { Network, SecurityGroup } from '../../../types/Network'
 import type { Schedule } from '../../../types/Schedule'
 import type { WizardPage as WizardPageType } from '../../../types/WizardData'
 
@@ -333,8 +333,8 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.setPermalink(wizardStore.data)
   }
 
-  handleNetworkChange(sourceNic: Nic, targetNetwork: Network) {
-    wizardStore.updateNetworks({ sourceNic, targetNetwork })
+  handleNetworkChange(sourceNic: Nic, targetNetwork: Network, targetSecurityGroups: ?SecurityGroup[]) {
+    wizardStore.updateNetworks({ sourceNic, targetNetwork, targetSecurityGroups })
     wizardStore.setPermalink(wizardStore.data)
   }
 
@@ -577,7 +577,7 @@ class WizardPage extends React.Component<Props, State> {
             onInstancePageClick={page => { this.handleInstancePageClick(page) }}
             onDestOptionsChange={(field, value) => { this.handleDestOptionsChange(field, value) }}
             onSourceOptionsChange={(field, value) => { this.handleSourceOptionsChange(field, value) }}
-            onNetworkChange={(sourceNic, targetNetwork) => { this.handleNetworkChange(sourceNic, targetNetwork) }}
+            onNetworkChange={(sourceNic, targetNetwork, secGroups) => { this.handleNetworkChange(sourceNic, targetNetwork, secGroups) }}
             onStorageChange={(source, target, type) => { this.handleStorageChange(source, target, type) }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
             onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
