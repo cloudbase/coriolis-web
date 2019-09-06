@@ -8,9 +8,9 @@ const conf: Config = {
   // Remove or comment to enable them
   disabledPages: [
     'planning',
-  // Enabling users and projects page by default
-  // 'users',
-  // 'projects',
+    // Enabling users and projects page by default
+    // 'users',
+    // 'projects',
   ],
 
   // Whether to show the user domain name input when logging in
@@ -48,7 +48,7 @@ const conf: Config = {
     {
       name: 'oci',
       type: 'destination',
-      envRequiredFields: ['compartment', 'availability_domain'],
+      envRequiredFields: ['compartment', 'availability_domain', 'vcn_compartment'],
     },
   ],
 
