@@ -194,6 +194,7 @@ type Props = {
   noItemsMessage: string,
   noSelectionMessage: string,
   disabled: boolean,
+  disabledLoading: boolean,
   width: number,
   'data-test-id'?: string,
   embedded?: boolean,

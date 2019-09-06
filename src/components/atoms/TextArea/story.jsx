@@ -20,3 +20,4 @@ import TextArea from '.'
 
 storiesOf('TextArea', module)
   .add('default', () => <TextArea />)
+  .add('disabled loading', () => <TextArea disabledLoading />)

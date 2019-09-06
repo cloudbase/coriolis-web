@@ -18,5 +18,8 @@ import RadioInput from '.'
 
 storiesOf('RadioInput', module)
   .add('default', () => (
-    <RadioInput label="Radio input" onChange={() => {}} />
+    <RadioInput label="Radio input" onChange={() => { }} />
+  ))
+  .add('disabled loading', () => (
+    <RadioInput label="Radio input" onChange={() => { }} disabledLoading />
   ))

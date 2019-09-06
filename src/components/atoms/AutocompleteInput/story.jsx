@@ -21,7 +21,7 @@ import AutocompleteInput from '.'
 type State = {
   value: string,
 }
-class Wrapper extends React.Component<{}, State> {
+class Wrapper extends React.Component<any, State> {
   state = {
     value: '',
   }
@@ -30,6 +30,7 @@ class Wrapper extends React.Component<{}, State> {
     return (
       <AutocompleteInput
         large
+        disabledLoading={this.props.disabledLoading}
         value={this.state.value}
         onChange={value => { this.setState({ value }) }}
       />
@@ -40,4 +41,7 @@ class Wrapper extends React.Component<{}, State> {
 storiesOf('AutocompleteInput', module)
   .add('default', () => (
     <Wrapper />
+  ))
+  .add('disabled loading', () => (
+    <Wrapper disabledLoading />
   ))

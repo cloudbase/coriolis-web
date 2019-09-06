@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import PropertiesTable from '.'
@@ -24,7 +26,7 @@ let properties = [
   { type: 'string', enum: ['a', 'b', 'c'], name: 'prop-4', label: 'String enum' },
 ]
 
-class Wrapper extends React.Component {
+class Wrapper extends React.Component<any, any> {
   constructor() {
     super()
     this.state = {}
@@ -47,6 +49,7 @@ class Wrapper extends React.Component {
           properties={properties}
           valueCallback={prop => this.valueCallback(prop)}
           onChange={(prop, value) => { this.handleChange(prop, value) }}
+          disabledLoading={this.props.disabledLoading}
         />
       </div>
     )
@@ -56,4 +59,7 @@ class Wrapper extends React.Component {
 storiesOf('PropertiesTable', module)
   .add('default', () => (
     <Wrapper />
+  ))
+  .add('disabled loading', () => (
+    <Wrapper disabledLoading />
   ))

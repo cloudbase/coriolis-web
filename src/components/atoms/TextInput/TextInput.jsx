@@ -24,6 +24,7 @@ import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div`
   position: relative;
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const Required = styled.div`
   position: absolute;
@@ -69,9 +70,9 @@ const Input = styled.input`
     outline: none;
   }
   &:disabled {
-    color: ${Palette.grayscale[3]};
-    border-color: ${Palette.grayscale[0]};
-    background-color: ${Palette.grayscale[0]};
+    color: ${props => !props.embedded ? Palette.grayscale[3] : 'inherit'};
+    border-color: ${props => !props.embedded ? Palette.grayscale[0] : 'inherit'};
+    background-color: ${props => !props.embedded ? Palette.grayscale[0] : 'inherit'};
   }
   &::placeholder {
     color: ${Palette.grayscale[3]};
@@ -103,12 +104,14 @@ type Props = {
   height?: string,
   'data-test-id'?: string,
   required?: boolean,
+  disabledLoading?: boolean,
 }
 const TextInput = (props: Props) => {
-  const { _ref, value, onChange, showClose, onCloseClick } = props
+  const { _ref, value, onChange, showClose, onCloseClick, disabled, disabledLoading } = props
+  let actualDisabled = disabled || disabledLoading
   let input
   return (
-    <Wrapper data-test-id={props['data-test-id'] || 'textInput'}>
+    <Wrapper data-test-id={props['data-test-id'] || 'textInput'} disabledLoading={disabledLoading}>
       <Input
         innerRef={ref => { input = ref; if (_ref) _ref(ref) }}
         type="text"
@@ -116,6 +119,7 @@ const TextInput = (props: Props) => {
         onChange={onChange}
         data-test-id="textInput-input"
         {...props}
+        disabled={actualDisabled}
       />
       {props.required ? <Required /> : null}
       <Close

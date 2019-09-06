@@ -45,6 +45,10 @@ const Label = styled.div`
 `
 
 const getBackgroundColor = props => {
+  if (props.embedded) {
+    return 'white'
+  }
+
   if (props.disabled) {
     return Palette.grayscale[0]
   }
@@ -130,6 +134,7 @@ const Wrapper = styled.div`
   &:hover ${Label} {
     color: ${props => props.disabled ? '' : props.embedded ? '' : 'white'};
   }
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const Arrow = styled.div`
   position: absolute;
@@ -149,6 +154,7 @@ type Props = {
   arrowRef?: (ref: HTMLElement) => void,
   className?: string,
   disabled?: boolean,
+  disabledLoading?: boolean,
   'data-test-id'?: string,
   embedded?: boolean,
   highlight?: boolean,
@@ -157,10 +163,13 @@ type Props = {
 }
 class DropdownButton extends React.Component<Props> {
   render() {
+    let disabled = this.props.disabled || this.props.disabledLoading
     return (
       <Wrapper
         data-test-id={this.props['data-test-id'] || 'dropdownButton'}
         {...this.props}
+        disabled={disabled}
+        disabledLoading={this.props.disabledLoading}
         innerRef={e => {
           if (this.props.customRef) {
             this.props.customRef(e)
@@ -168,14 +177,16 @@ class DropdownButton extends React.Component<Props> {
             this.props.innerRef(e)
           }
         }}
-        onClick={e => { if (!this.props.disabled && this.props.onClick) this.props.onClick(e) }}
+        onClick={e => {
+          if (!disabled && this.props.onClick) this.props.onClick(e)
+        }}
       >
         <Label
           {...this.props}
           onClick={() => { }}
           innerRef={() => { }}
           data-test-id="dropdownButton-value"
-          disabled={this.props.disabled}
+          disabled={disabled}
         >
           {this.props.value}
         </Label>
@@ -184,7 +195,7 @@ class DropdownButton extends React.Component<Props> {
           innerRef={ref => { if (this.props.arrowRef) this.props.arrowRef(ref) }}
           onClick={() => { }}
           data-test-id=""
-          disabled={this.props.disabled}
+          disabled={disabled}
           dangerouslySetInnerHTML={{ __html: arrowImage }}
         />
       </Wrapper>

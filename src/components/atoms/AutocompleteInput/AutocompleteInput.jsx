@@ -53,10 +53,12 @@ const Wrapper = styled.div`
   border-radius: ${StyleProps.borderRadius};
   cursor: ${props => props.disabled ? 'default' : 'pointer'};
   transition: all ${StyleProps.animations.swift};
-  background: ${props => props.disabled ? Palette.grayscale[0] : 'white'};
+  background: ${props => props.disabled && !props.embedded ? Palette.grayscale[0] : 'white'};
 
   #dropdown-arrow-image {stroke: ${props => props.disabled ? Palette.grayscale[3] : Palette.black};}
   ${props => props.focus ? css`border-color: ${Palette.primary};` : ''}
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
+
 `
 const Arrow = styled.div`
   position: absolute;
@@ -75,6 +77,7 @@ type Props = {
   onChange: (value: string) => void,
   onClick?: () => void,
   disabled?: boolean,
+  disabledLoading?: boolean,
   width?: number,
   large?: boolean,
   onFocus?: () => void,
@@ -90,13 +93,15 @@ class AutocompleteInput extends React.Component<Props, State> {
   }
 
   render() {
+    let disabled = this.props.disabled || this.props.disabledLoading
     return (
       <Wrapper
         large={this.props.large}
         width={this.props.width}
         focus={this.state.textInputFocus}
         highlight={this.props.highlight}
-        disabled={this.props.disabled}
+        disabled={disabled}
+        disabledLoading={this.props.disabledLoading}
         embedded={this.props.embedded}
         innerRef={e => {
           if (this.props.customRef) {
@@ -108,7 +113,7 @@ class AutocompleteInput extends React.Component<Props, State> {
       >
         <TextInput
           data-test-id="acInput-text"
-          disabled={this.props.disabled}
+          disabled={disabled}
           value={this.props.value}
           onChange={e => { this.props.onChange(e.target.value) }}
           embedded
@@ -125,7 +130,7 @@ class AutocompleteInput extends React.Component<Props, State> {
         />
         <Arrow
           data-test-id="acInput-arrow"
-          disabled={this.props.disabled}
+          disabled={disabled}
           dangerouslySetInnerHTML={{ __html: arrowImage }}
           onClick={this.props.onClick}
         />
