@@ -334,7 +334,8 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'source-options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.sourceSchemaLoading || this.props.providerStore.sourceOptionsLoading}
+            loading={this.props.providerStore.sourceSchemaLoading}
+            optionsLoading={this.props.providerStore.sourceOptionsLoading}
             fields={this.props.providerStore.sourceSchema}
             onChange={this.props.onSourceOptionsChange}
             data={this.props.wizardData.sourceOptions}
@@ -347,7 +348,8 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'dest-options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.destinationSchemaLoading || this.props.providerStore.destinationOptionsLoading}
+            loading={this.props.providerStore.destinationSchemaLoading}
+            optionsLoading={this.props.providerStore.destinationOptionsLoading}
             selectedInstances={this.props.wizardData.selectedInstances}
             fields={this.props.providerStore.destinationSchema}
             onChange={this.props.onDestOptionsChange}

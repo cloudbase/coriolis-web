@@ -38,6 +38,12 @@ storiesOf('TextInput', module)
   .add('default', () => (
     <Wrapper><TextInput /></Wrapper>
   ))
+  .add('disabled', () => (
+    <Wrapper><TextInput disabled /></Wrapper>
+  ))
+  .add('disabled loading', () => (
+    <Wrapper><TextInput disabledLoading /></Wrapper>
+  ))
   .add('required', () => (
     <Wrapper><TextInput required /></Wrapper>
   ))

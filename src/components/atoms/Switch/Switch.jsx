@@ -28,6 +28,7 @@ const Wrapper = styled.div`
   ${props => props.disabled ? 'opacity: 0.5;' : ''}
   ${props => props.justifyContent ? `justify-content: ${props.justifyContent};` : ''}
   ${props => props.width ? `width: ${props.width};` : ''}
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const InputWrapper = styled.div`
   position: relative;
@@ -116,6 +117,7 @@ type Props = {
   onChange: (checked: ?boolean) => void,
   checked: boolean,
   disabled: boolean,
+  disabledLoading: boolean,
   triState: boolean,
   leftLabel: boolean,
   secondary: boolean,
@@ -154,7 +156,7 @@ class Switch extends React.Component<Props, State> {
   }
 
   handleInputChange() {
-    if (this.props.disabled) {
+    if (this.props.disabled || this.props.disabledLoading) {
       return
     }
 
@@ -186,7 +188,7 @@ class Switch extends React.Component<Props, State> {
         big={this.props.big}
         height={this.props.height}
         secondary={this.props.secondary}
-        disabled={this.props.disabled}
+        disabled={this.props.disabled || this.props.disabledLoading}
         onClick={() => { this.handleInputChange() }}
         tabIndex={0}
         onKeyDown={evt => { this.handleKeyDown(evt) }}
@@ -235,6 +237,7 @@ class Switch extends React.Component<Props, State> {
     return (
       <Wrapper
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
         style={this.props.style}
         width={this.props.width}
         justifyContent={this.props.justifyContent}

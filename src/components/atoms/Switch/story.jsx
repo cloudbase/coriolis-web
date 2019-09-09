@@ -42,6 +42,7 @@ class Wrapper extends React.Component {
 storiesOf('Switch', module)
   .add('default', () => <Wrapper />)
   .add('disabled', () => <Wrapper disabled />)
+  .add('disabled loading', () => <Wrapper disabledLoading />)
   .add('secondary', () => <Wrapper secondary />)
   .add('tri-state', () => <Wrapper triState />)
   .add('colored', () => <Wrapper big />)

@@ -33,6 +33,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   border: 1px solid ${Palette.grayscale[2]};
   border-radius: ${StyleProps.borderRadius};
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const Column = styled.div`
   ${StyleProps.exactWidth('calc(50% - 24px)')}
@@ -65,6 +66,7 @@ type Props = {
   onChange: (property: Field, value: any) => void,
   valueCallback: (property: Field) => any,
   hideRequiredSymbol?: boolean,
+  disabledLoading?: boolean,
 }
 @observer
 class PropertiesTable extends React.Component<Props> {
@@ -80,6 +82,7 @@ class PropertiesTable extends React.Component<Props> {
       <Switch
         data-test-id={`${baseId}-switch-${prop.name}`}
         secondary
+        disabled={this.props.disabledLoading}
         triState={opts.triState}
         height={16}
         checked={this.props.valueCallback(prop)}
@@ -99,6 +102,7 @@ class PropertiesTable extends React.Component<Props> {
         onChange={e => { this.props.onChange(prop, e.target.value) }}
         placeholder={this.getName(prop.name)}
         required={typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false}
+        disabled={this.props.disabledLoading}
       />
     )
   }
@@ -134,6 +138,7 @@ class PropertiesTable extends React.Component<Props> {
       width: 320,
       selectedItem,
       items,
+      disabled: this.props.disabledLoading,
       onChange: item => this.props.onChange(prop, item.value),
       required: typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false,
     }
@@ -176,7 +181,7 @@ class PropertiesTable extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper>
+      <Wrapper disabledLoading={this.props.disabledLoading}>
         {this.props.properties.map(prop => {
           return (
             <Row key={prop.name} data-test-id={`${baseId}-row-${prop.name}`}>

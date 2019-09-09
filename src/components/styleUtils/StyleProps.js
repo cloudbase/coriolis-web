@@ -42,6 +42,13 @@ const StyleProps = {
         to {transform: rotate(360deg);}
       }
     `,
+    disabledLoading: css`
+      animation: opacityToggle 750ms linear infinite alternate-reverse;
+      @keyframes opacityToggle {
+        0% {opacity: 1;}
+        100% {opacity: 0.3;}
+      }
+    `,
   },
 
   media: {

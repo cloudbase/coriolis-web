@@ -120,6 +120,7 @@ type Props = {
   onInputChange?: (value: string, filteredItems: any[]) => void,
   noItemsMessage?: string,
   disabled?: boolean,
+  disabledLoading?: boolean,
   width?: number,
   dimNullValue?: boolean,
   highlight?: boolean,
@@ -451,6 +452,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           onFocus={() => { this.handleSearchInputChange(this.state.searchValue, true) }}
           highlight={this.props.highlight}
           disabled={this.props.disabled}
+          disabledLoading={this.props.disabledLoading}
           embedded={this.props.embedded}
         />
         {this.props.required ? <Required /> : null}

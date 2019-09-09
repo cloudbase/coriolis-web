@@ -25,6 +25,7 @@ import checkedImage from './images/checked.svg'
 
 const Wrapper = styled.div`
   ${props => props.disabled ? 'opacity: 0.5;' : ''}
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const LabelStyled = styled.label`
   display: flex;
@@ -53,14 +54,17 @@ const InputStyled = styled.input`
 
 type Props = {
   label: string,
+  disabledLoading?: boolean,
+  disabled?: boolean,
 }
 @observer
 class RadioInput extends React.Component<Props> {
   render() {
+    let disabled = this.props.disabled || this.props.disabledLoading
     return (
-      <Wrapper {...this.props}>
+      <Wrapper {...this.props} disabled={disabled} disabledLoading={this.props.disabledLoading}>
         <LabelStyled>
-          <InputStyled type="radio" {...this.props} data-test-id="radioInput-input" />
+          <InputStyled type="radio" {...this.props} disabled={disabled} data-test-id="radioInput-input" />
           <Text data-test-id="radioInput-label">{this.props.label}</Text>
         </LabelStyled>
       </Wrapper>

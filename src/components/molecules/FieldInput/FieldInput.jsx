@@ -56,6 +56,7 @@ const Label = styled.div`
     display: flex;
     align-items: center;
   `}
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const LabelText = styled.span``
 const Asterisk = styled.div`
@@ -84,6 +85,7 @@ type Props = {
   password?: boolean,
   highlight?: boolean,
   disabled?: boolean,
+  disabledLoading?: boolean,
   items?: any[],
   useTextArea?: boolean,
   noSelectionMessage?: string,
@@ -104,6 +106,7 @@ class FieldInput extends React.Component<Props> {
         height={this.props.layout === 'page' ? 16 : 24}
         justifyContent={this.props.layout === 'page' ? 'flex-end' : ''}
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
         triState={propss.triState}
         checked={this.props.value}
         onChange={checked => { if (this.props.onChange) this.props.onChange(checked) }}
@@ -124,6 +127,7 @@ class FieldInput extends React.Component<Props> {
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
         required={this.props.layout === 'page' ? false : this.props.required}
+        disabledLoading={this.props.disabledLoading}
       />
     )
   }
@@ -142,6 +146,7 @@ class FieldInput extends React.Component<Props> {
         }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
       />
     )
   }
@@ -161,6 +166,7 @@ class FieldInput extends React.Component<Props> {
           }
         }}
         hideRequiredSymbol={this.props.layout === 'page'}
+        disabledLoading={this.props.disabledLoading}
       />
     )
   }
@@ -174,6 +180,7 @@ class FieldInput extends React.Component<Props> {
         onChange={e => { console.log('changing', e); if (this.props.onChange) this.props.onChange(e.target.value) }}
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
         required={this.props.required}
       />
     )
@@ -203,6 +210,7 @@ class FieldInput extends React.Component<Props> {
       width: this.props.width,
       selectedItem,
       items,
+      disabledLoading: this.props.disabledLoading,
       onChange: item => this.props.onChange && this.props.onChange(item.value),
     }
 
@@ -240,6 +248,7 @@ class FieldInput extends React.Component<Props> {
         multipleSelection
         width={this.props.width}
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
         noSelectionMessage="Choose values"
         noItemsMessage={this.props.noItemsMessage}
         items={items}
@@ -272,6 +281,7 @@ class FieldInput extends React.Component<Props> {
         items={items}
         onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
         highlight={this.props.highlight}
         required={this.props.required}
       />
@@ -285,6 +295,7 @@ class FieldInput extends React.Component<Props> {
         label={LabelDictionary.get(this.props.name)}
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.checked) }}
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
       />
     )
   }
@@ -312,6 +323,7 @@ class FieldInput extends React.Component<Props> {
         placeholder={LabelDictionary.get(fieldName)}
         highlight={this.props.highlight}
         disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
         required={this.props.required}
       />
     )
@@ -356,7 +368,7 @@ class FieldInput extends React.Component<Props> {
     let marginRight = this.props.layout === 'modal' || description || this.props.required ? '24px' : 0
 
     return (
-      <Label layout={this.props.layout}>
+      <Label layout={this.props.layout} disabledLoading={this.props.disabledLoading}>
         <LabelText style={{ marginRight }}>
           {this.props.label || LabelDictionary.get(this.props.name)}
         </LabelText>

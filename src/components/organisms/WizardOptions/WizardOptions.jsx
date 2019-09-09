@@ -91,6 +91,7 @@ type Props = {
   onScrollableRef?: (ref: HTMLElement) => void,
   availableHeight?: number,
   layout?: 'page' | 'modal',
+  optionsLoading?: boolean,
 }
 @observer
 class WizardOptions extends React.Component<Props> {
@@ -196,6 +197,7 @@ class WizardOptions extends React.Component<Props> {
         width={this.props.fieldWidth || StyleProps.inputSizes.wizard.width}
         label={field.label}
         nullableBoolean={field.nullableBoolean}
+        disabledLoading={this.props.optionsLoading}
         {...additionalProps}
       />
     )

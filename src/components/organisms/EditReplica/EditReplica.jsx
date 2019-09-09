@@ -395,11 +395,11 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   renderOptions(type: 'source' | 'destination') {
-    let loading = type === 'source' ? (providerStore.sourceSchemaLoading || providerStore.sourceOptionsLoading) :
-      providerStore.destinationSchemaLoading || providerStore.destinationOptionsLoading
+    let loading = type === 'source' ? providerStore.sourceSchemaLoading : providerStore.destinationSchemaLoading
     if (loading) {
       return this.renderLoading(`Loading ${type === 'source' ? 'source' : 'target'} options ...`)
     }
+    let optionsLoading = type === 'source' ? providerStore.sourceOptionsLoading : providerStore.destinationOptionsLoading
     let schema = type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
     let fields = this.props.type === 'replica' ? schema.filter(f => !f.readOnly) : schema
 
@@ -419,6 +419,7 @@ class EditReplica extends React.Component<Props, State> {
         availableHeight={384}
         useAdvancedOptions
         layout="modal"
+        optionsLoading={optionsLoading}
       />
     )
   }

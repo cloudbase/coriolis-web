@@ -24,6 +24,7 @@ import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div`
   position: relative;
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const Required = styled.div`
   position: absolute;
@@ -81,6 +82,8 @@ class TextArea extends React.Component<any> {
       <Wrapper>
         <Input
           {...this.props}
+          disabled={this.props.disabled || this.props.disabledLoading}
+          disabledLoading={this.props.disabledLoading}
           innerRef={r => {
             if (this.props.innerRef) {
               this.props.innerRef(r)
