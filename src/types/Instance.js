@@ -35,7 +35,7 @@ export type Instance = {
   id: string,
   name: string,
   flavor_name: string,
-  instance_name: string,
+  instance_name?: ?string,
   num_cpu: number,
   memory_mb: number,
   os_type: string,

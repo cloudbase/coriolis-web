@@ -262,7 +262,7 @@ class MainDetailsTable extends React.Component<Props, State> {
       }
 
       rows.push(this.renderRow(
-        `${instance.instance_name}-${sourceName}-${destinationName}`,
+        `${instance.instance_name || instance.name}-${sourceName}-${destinationName}`,
         'storage',
         sourceName,
         destinationName,
@@ -332,7 +332,7 @@ class MainDetailsTable extends React.Component<Props, State> {
         }
 
         rows.push(this.renderRow(
-          `${instance.instance_name}-${nic.network_name}`,
+          `${instance.instance_name || instance.name}-${nic.network_name}`,
           'network',
           nic.mac_address,
           destinationNetworkName,
@@ -358,16 +358,16 @@ class MainDetailsTable extends React.Component<Props, State> {
     let destinationName: string = ''
     let transferResult = this.getTransferResult(instance)
     if (transferResult) {
-      destinationName = transferResult.instance_name
+      destinationName = transferResult.instance_name || transferResult.name
       destinationBody = getBody(transferResult)
     } else if (this.props.item && this.props.item.status === 'RUNNING' && this.props.item.type === 'migration') {
       destinationName = 'Waiting for migration to finish'
     }
-
+    let instanceName = instance.instance_name || instance.name
     return this.renderRow(
-      instance.instance_name,
+      instanceName,
       'instance',
-      instance.instance_name,
+      instanceName,
       destinationName,
       sourceBody,
       destinationBody

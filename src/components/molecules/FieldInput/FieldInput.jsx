@@ -181,7 +181,7 @@ class FieldInput extends React.Component<Props> {
         placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
-        required={this.props.required}
+        required={this.props.layout === 'page' ? false : this.props.required}
       />
     )
   }
@@ -208,6 +208,7 @@ class FieldInput extends React.Component<Props> {
     let selectedItem = items.find(i => i.value === this.props.value)
     let commonProps = {
       width: this.props.width,
+      required: this.props.layout === 'page' ? false : this.props.required,
       selectedItem,
       items,
       disabledLoading: this.props.disabledLoading,
@@ -283,7 +284,7 @@ class FieldInput extends React.Component<Props> {
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
         highlight={this.props.highlight}
-        required={this.props.required}
+        required={this.props.layout === 'page' ? false : this.props.required}
       />
     )
   }
@@ -324,7 +325,7 @@ class FieldInput extends React.Component<Props> {
         highlight={this.props.highlight}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
-        required={this.props.required}
+        required={this.props.layout === 'page' ? false : this.props.required}
       />
     )
   }

@@ -398,10 +398,19 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   loadInstancesDetails() {
-    let selectedVms = this.getLocalData().selectedVms
-    let instances = instanceStore.instances.filter(i => selectedVms.find(m => i.id === m))
+    let localData = this.getLocalData()
+    let selectedVms = localData.selectedVms
+    let instancesInfo = instanceStore.instances.filter(i => selectedVms.find(m => i.id === m))
     instanceStore.clearInstancesDetails()
-    instanceStore.loadInstancesDetails(this.getSourceEndpointId(), instances, true)
+    instanceStore.loadInstancesDetails({
+      endpointId: this.getSourceEndpointId(),
+      instancesInfo,
+      useLocalStorage: true,
+      env: {
+        location: localData.locationName,
+        resource_group: localData.resourceGroupName,
+      },
+    })
   }
 
   handleMigrationExecute(fieldValues: { [string]: any }) {
@@ -413,7 +422,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
       let vm = selectedVms.find(m => i.id === m)
       let selectedVmSize = localData.selectedVmSizes[i.id]
       if (vm && azureStore.vmSizes.find(s => s === selectedVmSize)) {
-        vmSizes[i.instance_name] = selectedVmSize
+        vmSizes[i.instance_name || i.name] = selectedVmSize
       }
     })
 

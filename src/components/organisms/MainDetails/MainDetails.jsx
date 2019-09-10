@@ -155,7 +155,7 @@ class MainDetails extends React.Component<Props> {
         instanceDet.devices && instanceDet.devices.nics && instanceDet.devices.nics.find &&
         instanceDet.devices.nics.find(n => n.network_name === networkId)
       ) {
-        vms.push(instanceDet.instance_name)
+        vms.push(instanceDet.instance_name || instanceDet.name)
       }
     })
 
