@@ -15,9 +15,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import axios from 'axios'
-import type { AxiosXHRConfig, $AxiosXHR } from 'axios'
+import type { AxiosXHRConfig } from 'axios'
 import cookie from 'js-cookie'
 
+import cacher from './Cacher'
 import logger from './ApiLogger'
 import notificationStore from '../stores/NotificationStore'
 
@@ -35,6 +36,8 @@ type RequestOptions = {
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream',
   quietError?: boolean,
   skipLog?: ?boolean,
+  cache?: ?boolean,
+  cacheFor?: ?number,
 }
 
 let cancelables: Cancelable[] = []
@@ -71,11 +74,16 @@ class ApiCaller {
     cancelables = cancelables.filter(r => r.requestId !== cancelRequestId)
   }
 
-  get(url: string): Promise<$AxiosXHR<any>> {
+  get(url: string): Promise<any> {
     return this.send({ url })
   }
 
-  send(options: RequestOptions): Promise<$AxiosXHR<any>> {
+  send(options: RequestOptions): Promise<any> {
+    let cachedData = options.cache ? cacher.load({ key: options.url, maxAge: options.cacheFor }) : null
+    if (cachedData) {
+      return Promise.resolve({ data: cachedData })
+    }
+
     return new Promise((resolve, reject) => {
       const axiosOptions: AxiosXHRConfig<any> = {
         url: options.url,
@@ -110,6 +118,9 @@ class ApiCaller {
             type: 'RESPONSE',
             requestStatus: 200,
           })
+        }
+        if (options.cache) {
+          cacher.save({ key: options.url, data: response.data })
         }
         resolve(response)
       }).catch(error => {

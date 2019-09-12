@@ -65,10 +65,10 @@ class InstanceSource {
     return response.data.instances
   }
 
-  async loadInstances(endpointId: string): Promise<Instance[]> {
+  async loadInstances(endpointId: string, cache?: ?boolean): Promise<Instance[]> {
     Api.cancelRequests(endpointId)
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
-    let response = await Api.send({ url, cancelId: endpointId })
+    let response = await Api.send({ url, cancelId: endpointId, cache })
     return response.data.instances
   }
 
@@ -77,7 +77,8 @@ class InstanceSource {
     instanceName: string,
     reqId: number,
     quietError?: boolean,
-    env?: any
+    env?: any,
+    cache?: ?boolean,
   ): Promise<{ instance: Instance, reqId: number }> {
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`
     if (env) {
@@ -87,6 +88,7 @@ class InstanceSource {
       url,
       cancelId: `instanceDetail-${reqId}`,
       quietError,
+      cache,
     })
     return { instance: response.data.instance, reqId }
   }

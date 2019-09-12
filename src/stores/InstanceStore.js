@@ -22,66 +22,6 @@ import InstanceSource from '../sources/InstanceSource'
 import ApiCaller from '../utils/ApiCaller'
 import configLoader from '../utils/Config'
 
-class InstanceLocalStorage {
-  static saveInstancesToLocalStorage(endpointId: string, instances: Instance[]) {
-    let instancesLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instances') || '[]')
-    let endpointIndex = instancesLocalStorage.findIndex(i => i.endpointId === endpointId)
-    if (endpointIndex > -1) {
-      instancesLocalStorage.splice(endpointIndex, 1)
-    }
-    instancesLocalStorage.push({ endpointId, instances })
-    localStorage.setItem('instances', JSON.stringify(instancesLocalStorage))
-  }
-
-  static loadInstancesFromLocalStorage(endpointId: string): ?Instance[] {
-    let instancesLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instances') || '[]')
-    let endpointInstances = instancesLocalStorage.find(i => i.endpointId === endpointId)
-    if (!endpointInstances) {
-      return null
-    }
-    return endpointInstances.instances
-  }
-
-  static saveDetailsToLocalStorage(endpointId: string, instance: Instance) {
-    let instancesDetailsLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instancesDetails') || '[]')
-    let endpointInstancesIndex = instancesDetailsLocalStorage.findIndex(i => i.endpointId === endpointId)
-    let endpointDetails = { endpointId, instances: [] }
-    if (endpointInstancesIndex > -1) {
-      endpointDetails = instancesDetailsLocalStorage[endpointInstancesIndex]
-      instancesDetailsLocalStorage.splice(endpointInstancesIndex, 1)
-    }
-
-    let localInstanceIndex = endpointDetails.instances.findIndex(i => i.id === instance.id)
-    if (localInstanceIndex > -1) {
-      endpointDetails.instances.splice(localInstanceIndex, 1)
-    }
-    endpointDetails.instances.push(instance)
-    instancesDetailsLocalStorage.push(endpointDetails)
-    localStorage.setItem('instancesDetails', JSON.stringify(instancesDetailsLocalStorage))
-  }
-
-  static loadDetailsFromLocalStorage(endpointId: string, instancesInfo: Instance[]): ?Instance[] {
-    let instancesDetailsLocalStorage: { endpointId: string, instances: Instance[] }[] = JSON.parse(localStorage.getItem('instancesDetails') || '[]')
-    let endpointStorage = instancesDetailsLocalStorage.find(i => i.endpointId === endpointId)
-    if (!endpointStorage || !endpointStorage.instances) {
-      return null
-    }
-    let isValid = true
-    let instances: Instance[] = []
-    instancesInfo.forEach(instance => {
-      let storageInstance = endpointStorage.instances.find(i => instance.id === i.id)
-      if (storageInstance) {
-        instances.push(storageInstance)
-      } else {
-        isValid = false
-      }
-    })
-    if (isValid) {
-      return instances
-    }
-    return null
-  }
-}
 
 class InstanceStore {
   @observable instancesLoading = false
@@ -163,20 +103,12 @@ class InstanceStore {
     this.instancesLoading = true
     this.lastEndpointId = endpointId
 
-    let endpointInstances = InstanceLocalStorage.loadInstancesFromLocalStorage(endpointId)
-    if (endpointInstances) {
-      this.backgroundInstances = endpointInstances
-      this.instancesLoading = false
-      return
-    }
-
     try {
-      let instances = await InstanceSource.loadInstances(endpointId)
+      let instances = await InstanceSource.loadInstances(endpointId, true)
       if (endpointId !== this.lastEndpointId) {
         return
       }
       this.loadInstancesSuccess(instances)
-      InstanceLocalStorage.saveInstancesToLocalStorage(endpointId, instances)
     } catch (ex) {
       if (endpointId !== this.lastEndpointId) {
         return
@@ -287,10 +219,6 @@ class InstanceStore {
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
 
     instancesInfo.sort((a, b) => (a.instance_name || a.name).localeCompare(b.instance_name || b.name))
-    let hash = i => `${i.instance_name || i.name}-${i.id || endpointId}`
-    if (useLocalStorage && this.instancesDetails.map(hash).join('_') === instancesInfo.map(hash).join('_')) {
-      return
-    }
 
     let count = instancesInfo.length
     this.loadingInstancesDetails = true
@@ -299,22 +227,12 @@ class InstanceStore {
     this.instancesDetailsCount = count
     this.instancesDetailsRemaining = count
 
-    if (useLocalStorage) {
-      let storageInstances = InstanceLocalStorage.loadDetailsFromLocalStorage(endpointId, instancesInfo)
-      if (storageInstances) {
-        this.loadingInstancesDetails = false
-        this.instancesDetails = storageInstances
-        this.loadingInstancesDetails = false
-        this.instancesDetailsRemaining = 0
-        return
-      }
-    }
     await new Promise(resolve => {
       Promise.all(instancesInfo.map(async instanceInfo => {
         try {
           let resp: { instance: Instance, reqId: number } =
             await InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name || instanceInfo.name,
-              this.reqId, quietError, env)
+              this.reqId, quietError, env, useLocalStorage)
           if (resp.reqId !== this.reqId) {
             return
           }
@@ -327,8 +245,6 @@ class InstanceStore {
               this.instancesDetails = this.instancesDetails.filter(i => i.id !== resp.instance.id)
             }
           })
-
-          InstanceLocalStorage.saveDetailsToLocalStorage(endpointId, resp.instance)
 
           runInAction(() => {
             this.instancesDetails = [
@@ -345,11 +261,9 @@ class InstanceStore {
             this.instancesDetailsRemaining -= 1
             this.loadingInstancesDetails = this.instancesDetailsRemaining > 0
           })
-
           if (!err || err.reqId !== this.reqId) {
             return
           }
-
           if (count === 0) {
             resolve()
           }
