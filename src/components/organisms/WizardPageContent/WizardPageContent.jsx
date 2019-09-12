@@ -141,6 +141,7 @@ type Props = {
   schedules: ScheduleType[],
   storageMap: StorageMap[],
   hasStorageMap: boolean,
+  hasSourceOptions: boolean,
   pages: WizardPage[],
   onTypeChange: (isReplicaChecked: ?boolean) => void,
   onBackClick: () => void,
@@ -330,6 +331,7 @@ class WizardPageContent extends React.Component<Props, State> {
             onInstanceClick={this.props.onInstanceClick}
             onPageClick={this.props.onInstancePageClick}
             selectedInstances={this.props.wizardData.selectedInstances}
+            hasSourceOptions={this.props.hasSourceOptions}
           />
         )
         break

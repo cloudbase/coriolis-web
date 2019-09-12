@@ -566,6 +566,7 @@ class WizardPage extends React.Component<Props, State> {
             endpointStore={endpointStore}
             wizardData={wizardStore.data}
             hasStorageMap={Boolean(this.pages.find(p => p.id === 'storage'))}
+            hasSourceOptions={Boolean(this.pages.find(p => p.id === 'source-options'))}
             storageMap={wizardStore.storageMap}
             schedules={wizardStore.schedules}
             nextButtonDisabled={this.state.nextButtonDisabled}

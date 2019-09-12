@@ -25,6 +25,7 @@ import HorizontalLoading from '../../atoms/HorizontalLoading'
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
 import SearchInput from '../../molecules/SearchInput'
+import InfoIcon from '../../atoms/InfoIcon'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -111,6 +112,10 @@ const FiltersWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `
+const SearchInputInfo = styled.div`
+  display: flex;
+  align-items: center;
+`
 const FilterInfo = styled.div`
   display: flex;
   color: ${Palette.grayscale[4]};
@@ -196,6 +201,7 @@ type Props = {
   searching: boolean,
   searchNotFound: boolean,
   reloading: boolean,
+  hasSourceOptions: boolean,
   onSearchInputChange: (value: string) => void,
   onReloadClick: () => void,
   onInstanceClick: (instance: InstanceType) => void,
@@ -334,14 +340,24 @@ class WizardInstances extends React.Component<Props, State> {
 
     return (
       <FiltersWrapper>
-        <SearchInput
-          alwaysOpen
-          onChange={searchText => { this.handleSeachInputChange(searchText) }}
-          value={this.state.searchText}
-          loading={this.props.searching}
-          placeholder="Search VMs"
-          data-test-id="wInstances-searchInput"
-        />
+        <SearchInputInfo>
+          <SearchInput
+            alwaysOpen
+            onChange={searchText => { this.handleSeachInputChange(searchText) }}
+            value={this.state.searchText}
+            loading={this.props.searching}
+            placeholder="Search VMs"
+            data-test-id="wInstances-searchInput"
+          />
+          {this.props.hasSourceOptions ? (
+            <InfoIcon
+              text="Some platforms require pre-inputting parameters like location or resource containers for listing instances. Please check that all of the options from the previous screen are correct."
+              marginBottom={0}
+              marginLeft={8}
+              filled
+            />
+          ) : null}
+        </SearchInputInfo>
         <FilterInfo>
           <SelectionInfo data-test-id="wInstances-selInfo">{count} instance{plural} selected</SelectionInfo>
           <FilterSeparator>|</FilterSeparator>
