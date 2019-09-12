@@ -1,5 +1,7 @@
 // @flow
 
+type Type = 'source' | 'destination'
+
 export type Config = {
   disabledPages: string[],
   showUserDomainInput: boolean,
@@ -9,7 +11,7 @@ export type Config = {
   requestPollTimeout: number,
   sourceOptionsProviders: string[],
   instancesListBackgroundLoading: { default: number, [string]: number },
-  providersWithEnvOptions: Array<{ name: string, type: 'source' | 'destination', envRequiredFields: string[] }>,
+  extraOptionsApiCalls: Array<{ name: string, types: Type[], requiredFields: string[] }>,
   providerSortPriority: { [providerName: string]: number },
   hiddenUsers: string[],
 }

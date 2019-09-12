@@ -246,6 +246,8 @@ class WizardPageContent extends React.Component<Props, State> {
         return !this.props.wizardData.target
       case 'vms':
         return !this.props.wizardData.selectedInstances || !this.props.wizardData.selectedInstances.length
+      case 'source-options':
+        return !isOptionsPageValid(this.props.wizardData.sourceOptions, this.props.providerStore.sourceSchema)
       case 'dest-options':
         return !isOptionsPageValid(this.props.wizardData.destOptions, this.props.providerStore.destinationSchema)
       case 'networks':

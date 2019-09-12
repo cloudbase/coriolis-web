@@ -40,8 +40,7 @@ class ProviderSource {
       optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
 
     let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`)
-    let schema = optionsType === 'source' ?
-      { oneOf: [response.data.schemas.source_environment_schema] } : response.data.schemas.destination_environment_schema
+    let schema = optionsType === 'source' ? response.data.schemas.source_environment_schema : response.data.schemas.destination_environment_schema
     let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
     return fields
   }

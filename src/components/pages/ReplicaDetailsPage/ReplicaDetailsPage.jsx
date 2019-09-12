@@ -136,12 +136,14 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       quietError: true,
       useLocalStorage: cache,
     })
-    instanceStore.loadInstancesDetails(
-      details.origin_endpoint_id,
+    instanceStore.loadInstancesDetails({
+      endpointId: details.origin_endpoint_id,
       // $FlowIgnore
-      details.instances.map(n => { return { instance_name: n } }),
-      cache, false
-    )
+      instancesInfo: details.instances.map(n => ({ instance_name: n })),
+      useLocalStorage: cache,
+      quietError: false,
+      env: details.source_environment,
+    })
   }
 
   getLastExecution() {

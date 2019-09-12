@@ -25,7 +25,8 @@ class InstanceSource {
     chunkSize: number,
     lastInstanceId?: string,
     cancelId?: string,
-    searchText?: string
+    searchText?: string,
+    env?: any,
   ): Promise<Instance[]> {
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let queryParams: { [string]: string | number } = {}
@@ -50,6 +51,13 @@ class InstanceSource {
       }
     }
 
+    if (env) {
+      queryParams = {
+        ...queryParams,
+        env: btoa(JSON.stringify(env)),
+      }
+    }
+
     let keys = Object.keys(queryParams)
     url = `${url}${keys.length > 0 ? '?' : ''}${keys.map(p => `${p}=${queryParams[p]}`).join('&')}`
 
@@ -64,9 +72,19 @@ class InstanceSource {
     return response.data.instances
   }
 
-  async loadInstanceDetails(endpointId: string, instanceName: string, reqId: number, quietError?: boolean): Promise<{ instance: Instance, reqId: number }> {
+  async loadInstanceDetails(
+    endpointId: string,
+    instanceName: string,
+    reqId: number,
+    quietError?: boolean,
+    env?: any
+  ): Promise<{ instance: Instance, reqId: number }> {
+    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`
+    if (env) {
+      url += `?env=${btoa(JSON.stringify(env))}`
+    }
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`,
+      url,
       cancelId: `instanceDetail-${reqId}`,
       quietError,
     })

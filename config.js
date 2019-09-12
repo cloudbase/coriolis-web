@@ -30,7 +30,7 @@ const conf: Config = {
   requestPollTimeout: 5000,
 
   // The list of providers which offer source options
-  sourceOptionsProviders: ['aws'],
+  sourceOptionsProviders: ['aws', 'azure', 'openstack'],
 
   // - Specifies the `limit` for each provider when listing all its VMs for pagination.
   // - If the provider is not in this list, the 'default' value will be used.
@@ -38,17 +38,17 @@ const conf: Config = {
   // - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
   instancesListBackgroundLoading: { default: 10, ovm: Infinity, 'hyper-v': Infinity },
 
-  // The providers for which an extra `source` or `destination options` call can be made with a set of field values
-  providersWithEnvOptions: [
+  // The providers for which an extra `source options` or `destination options` call can be made with a set of field values
+  extraOptionsApiCalls: [
     {
       name: 'azure',
-      type: 'destination',
-      envRequiredFields: ['location', 'resource_group'],
+      types: ['source', 'destination'],
+      requiredFields: ['location', 'resource_group'],
     },
     {
       name: 'oci',
-      type: 'destination',
-      envRequiredFields: ['compartment', 'availability_domain', 'vcn_compartment'],
+      types: ['destination'],
+      requiredFields: ['compartment', 'availability_domain', 'vcn_compartment'],
     },
   ],
 

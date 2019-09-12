@@ -41,6 +41,7 @@ const Options = styled.div`
   min-height: 0;
 `
 const Fields = styled.div`
+  ${props => props.padding ? `padding: ${props.padding}px;` : ''}
   display: flex;
   overflow: auto;
   justify-content: space-between;
@@ -236,7 +237,7 @@ class WizardOptions extends React.Component<Props> {
 
     if (fields.length * 96 < availableHeight) {
       return (
-        <Fields>
+        <Fields padding={this.props.layout === 'page' ? null : 32}>
           <OneColumn style={this.props.oneColumnStyle}>
             {fields.map(f => f.component)}
           </OneColumn>
@@ -245,7 +246,7 @@ class WizardOptions extends React.Component<Props> {
     }
 
     return (
-      <Fields innerRef={this.props.onScrollableRef}>
+      <Fields innerRef={this.props.onScrollableRef} padding={this.props.layout === 'page' ? null : 32}>
         <Column left style={this.props.columnStyle}>
           {fields.map(f => f.column === 'left' && f.component)}
         </Column>

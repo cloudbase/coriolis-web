@@ -32,16 +32,17 @@ export const getFieldChangeOptions = (config: {
   type: 'source' | 'destination',
 }) => {
   let { providerName, schema, data, field, type } = config
-  let providerWithEnvOptions = configLoader.config.providersWithEnvOptions.find(p => p.name === providerName && p.type === type)
+  let providerWithEnvOptions = configLoader.config.extraOptionsApiCalls
+    .find(p => p.name === providerName && p.types.find(t => t === type))
 
   if (!providerName || !providerWithEnvOptions) {
     return null
   }
-  let envRequiredFields = providerWithEnvOptions.envRequiredFields
+  let requiredFields = providerWithEnvOptions.requiredFields
 
   let findFieldInSchema = (name: string) => schema.find(f => f.name === name)
 
-  let validFields = envRequiredFields.filter(fn => {
+  let validFields = requiredFields.filter(fn => {
     let schemaField = findFieldInSchema(fn)
     if (data) {
       if (data[fn] === null) {
@@ -56,7 +57,7 @@ export const getFieldChangeOptions = (config: {
   })
 
   let isCurrentFieldValid = field ? validFields.find(fn => field ? fn === field.name : false) : true
-  if (validFields.length !== envRequiredFields.length || !isCurrentFieldValid) {
+  if (validFields.length !== requiredFields.length || !isCurrentFieldValid) {
     return null
   }
 

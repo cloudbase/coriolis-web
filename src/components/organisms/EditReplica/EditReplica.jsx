@@ -44,7 +44,6 @@ import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
 
 const PanelContent = styled.div`
-  padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -62,7 +61,7 @@ const LoadingText = styled.div`
   margin-top: 32px;
 `
 const Buttons = styled.div`
-  margin-top: 32px;
+  padding: 32px;
   display: flex;
   flex-shrink: 0;
   justify-content: space-between;
@@ -117,17 +116,15 @@ class EditReplica extends React.Component<Props, State> {
       endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
     }
 
-    this.loadDestinationOptions(useCache)
-
-    if (!this.hasSourceOptions()) {
-      return
+    let loadAllOptions = async (type: 'source' | 'destination') => {
+      let endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
+      await this.loadOptions(endpoint, type, useCache)
+      this.loadExtraOptions(null, type)
     }
-    this.loadOptions(this.props.sourceEndpoint, 'source', useCache)
-  }
-
-  async loadDestinationOptions(useCache: boolean) {
-    await this.loadOptions(this.props.destinationEndpoint, 'destination', useCache)
-    this.loadEnvDestinationOptions()
+    if (this.hasSourceOptions()) {
+      loadAllOptions('source')
+    }
+    loadAllOptions('destination')
   }
 
   async loadOptions(endpoint: Endpoint, optionsType: 'source' | 'destination', useCache: boolean) {
@@ -142,6 +139,34 @@ class EditReplica extends React.Component<Props, State> {
       endpointId: endpoint.id,
       providerName: endpoint.type,
       useCache,
+    })
+  }
+
+  loadExtraOptions(field?: ?Field, type: 'source' | 'destination') {
+    let endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
+    let env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
+    let stateEnv = type === 'source' ? this.state.sourceData : this.state.destinationData
+
+    let envData = getFieldChangeOptions({
+      providerName: endpoint.type,
+      schema: type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema,
+      data: {
+        ...this.parseReplicaData(env),
+        ...stateEnv,
+      },
+      field,
+      type,
+    })
+
+    if (!envData) {
+      return
+    }
+    providerStore.getOptionsValues({
+      optionsType: type,
+      endpointId: endpoint.id,
+      providerName: endpoint.type,
+      useCache: true,
+      envData,
     })
   }
 
@@ -187,29 +212,6 @@ class EditReplica extends React.Component<Props, State> {
     return data
   }
 
-  loadEnvDestinationOptions(field?: Field) {
-    let envData = getFieldChangeOptions({
-      providerName: this.props.destinationEndpoint.type,
-      schema: providerStore.destinationSchema,
-      data: {
-        ...this.parseReplicaData(this.props.replica.destination_environment),
-        ...this.state.destinationData,
-      },
-      field,
-      type: 'destination',
-    })
-
-    if (envData) {
-      providerStore.getOptionsValues({
-        optionsType: 'destination',
-        endpointId: this.props.destinationEndpoint.id,
-        providerName: this.props.destinationEndpoint.type,
-        useCache: true,
-        envData,
-      })
-    }
-  }
-
   validateOptions(type: 'source' | 'destination') {
     let env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
     let data = type === 'source' ? this.state.sourceData : this.state.destinationData
@@ -244,18 +246,16 @@ class EditReplica extends React.Component<Props, State> {
       data[field.name] = value
     }
 
+    let handleStateUpdate = () => {
+      if (field.type !== 'string' || field.enum) {
+        this.loadExtraOptions(field, type)
+      }
+      this.validateOptions(type)
+    }
     if (type === 'source') {
-      this.setState({ sourceData: data }, () => {
-        this.validateOptions('source')
-      })
+      this.setState({ sourceData: data }, () => { handleStateUpdate() })
     } else {
-      this.setState({ destinationData: data }, () => {
-        if (field.type !== 'string' || field.enum) {
-          this.loadEnvDestinationOptions(field)
-        }
-
-        this.validateOptions('destination')
-      })
+      this.setState({ destinationData: data }, () => { handleStateUpdate() })
     }
   }
 

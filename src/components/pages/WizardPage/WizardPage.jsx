@@ -224,16 +224,11 @@ class WizardPage extends React.Component<Props, State> {
       // Check if user has permission for this endpoint
       try {
         await endpointStore.getConnectionInfo(source)
-        if (source) {
-          // Preload instances for 'vms' page
-          instanceStore.loadInstancesInChunks(source, this.instancesPerPage)
-        }
       } catch (err) {
         this.handleSourceEndpointChange(null)
       }
     }
     getConnectionInfo()
-
     if (!source) {
       return
     }
@@ -298,7 +293,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstancesReloadClick() {
     if (wizardStore.data.source) {
-      instanceStore.reloadInstances(wizardStore.data.source, this.instancesPerPage)
+      instanceStore.reloadInstances(wizardStore.data.source, this.instancesPerPage, wizardStore.data.sourceOptions)
     }
   }
 
@@ -323,13 +318,17 @@ class WizardPage extends React.Component<Props, State> {
     // Otherwise, the field has enum property, which there potentially other destination options for the new
     // chosen value from the enum
     if (field.type !== 'string' || field.enum) {
-      this.loadEnvDestinationOptions(field)
+      this.loadExtraOptions(field, 'destination')
     }
     wizardStore.setPermalink(wizardStore.data)
   }
 
   handleSourceOptionsChange(field: Field, value: any) {
+    wizardStore.updateData({ selectedInstances: [] })
     wizardStore.updateSourceOptions({ field, value })
+    if (field.type !== 'string' || field.enum) {
+      this.loadExtraOptions(field, 'source')
+    }
     wizardStore.setPermalink(wizardStore.data)
   }
 
@@ -362,27 +361,52 @@ class WizardPage extends React.Component<Props, State> {
     }
   }
 
-  loadEnvDestinationOptions(field?: Field) {
-    let providerName = wizardStore.data.target && wizardStore.data.target.type
-    let envData = getFieldChangeOptions({
-      providerName: wizardStore.data.target && wizardStore.data.target.type,
-      schema: providerStore.destinationSchema,
-      data: wizardStore.data.destOptions,
-      field,
-      type: 'destination',
-    })
-
-    if (providerName && envData && wizardStore.data.target) {
-      providerStore.getOptionsValues({
-        optionsType: 'destination',
-        endpointId: wizardStore.data.target.id,
-        providerName,
-        envData,
-      })
+  loadExtraOptions(field?: Field, type: 'source' | 'destination') {
+    let endpoint = type === 'source' ? wizardStore.data.source : wizardStore.data.target
+    if (!endpoint) {
+      return
     }
+    let envData = getFieldChangeOptions({
+      providerName: endpoint.type,
+      schema: type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema,
+      data: type === 'source' ? wizardStore.data.sourceOptions : wizardStore.data.destOptions,
+      field,
+      type,
+    })
+    if (!envData) {
+      return
+    }
+    providerStore.getOptionsValues({
+      optionsType: type,
+      endpointId: endpoint.id,
+      providerName: endpoint.type,
+      envData,
+    })
   }
 
   async loadDataForPage(page: WizardPageType) {
+    const loadOptions = async (endpoint: EndpointType, optionsType: 'source' | 'destination') => {
+      let schema = optionsType === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
+      if (schema.length > 0) {
+        return
+      }
+      await providerStore.loadOptionsSchema({
+        providerName: endpoint.type,
+        schemaType: this.state.type,
+        optionsType,
+      })
+
+      // Preload source options if data is set from 'Permalink'
+      if (providerStore.sourceOptions.length === 0) {
+        await providerStore.getOptionsValues({
+          optionsType,
+          endpointId: endpoint.id,
+          providerName: endpoint.type,
+        })
+        await this.loadExtraOptions(undefined, optionsType)
+      }
+    }
+
     switch (page.id) {
       case 'source': {
         providerStore.loadProviders()
@@ -392,66 +416,47 @@ class WizardPage extends React.Component<Props, State> {
         if (!source) {
           return
         }
+        // Preload source options schema
+        loadOptions(source, 'source')
 
-        if (providerStore.sourceSchema.length === 0 && source) {
-          let loadOptionsSchema = async () => {
-            await providerStore.loadOptionsSchema({
-              providerName: source.type,
-              schemaType: this.state.type,
-              optionsType: 'source',
-            })
-            // Preload source options if data is set from 'Permalink'
-            if (providerStore.sourceOptions.length === 0 && source) {
-              providerStore.getOptionsValues({
-                optionsType: 'source',
-                endpointId: source.id,
-                providerName: source.type,
-              })
-            }
-          }
-          loadOptionsSchema()
+        if (instanceStore.instances.length > 0) {
+          return
         }
-
-        if (instanceStore.instances.length === 0) {
-          try {
-            // Check if user has permission for this endpoint
-            await endpointStore.getConnectionInfo(source)
-            // Preload instances for 'vms' page
-            instanceStore.loadInstancesInChunks(source, this.instancesPerPage)
-          } catch (err) {
-            this.handleSourceEndpointChange(null)
-          }
+        try {
+          // Check if user has permission for this endpoint
+          await endpointStore.getConnectionInfo(source)
+        } catch (err) {
+          this.handleSourceEndpointChange(null)
         }
+        break
+      }
+      case 'vms': {
+        if (!wizardStore.data.source) {
+          return
+        }
+        instanceStore.loadInstancesInChunks(wizardStore.data.source, this.instancesPerPage, false, wizardStore.data.sourceOptions)
         break
       }
       case 'target': {
         let target = wizardStore.data.target
+        if (!target) {
+          return
+        }
         // Preload Storage Mapping
-        if (this.pages.find(p => p.id === 'storage') && target) {
+        if (this.pages.find(p => p.id === 'storage')) {
           endpointStore.loadStorage(target.id, {})
         }
         // Preload destination options schema
-        if (providerStore.destinationSchema.length === 0 && target) {
-          await providerStore.loadOptionsSchema({
-            providerName: target.type,
-            schemaType: this.state.type,
-            optionsType: 'destination',
-          })
-          // Preload destination options if data is set from 'Permalink'
-          if (providerStore.destinationOptions.length === 0 && target) {
-            await providerStore.getOptionsValues({
-              optionsType: 'destination',
-              endpointId: target.id,
-              providerName: target.type,
-            })
-            this.loadEnvDestinationOptions()
-          }
-        }
+        loadOptions(target, 'destination')
         break
       }
       case 'networks':
         if (wizardStore.data.source && wizardStore.data.selectedInstances) {
-          instanceStore.loadInstancesDetails(wizardStore.data.source.id, wizardStore.data.selectedInstances)
+          instanceStore.loadInstancesDetails({
+            endpointId: wizardStore.data.source.id,
+            instancesInfo: wizardStore.data.selectedInstances,
+            env: wizardStore.data.sourceOptions,
+          })
         }
         if (wizardStore.data.target) {
           let id = wizardStore.data.target.id
