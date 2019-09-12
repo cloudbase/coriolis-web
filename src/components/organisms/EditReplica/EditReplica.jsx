@@ -438,6 +438,7 @@ class EditReplica extends React.Component<Props, State> {
         instancesDetails={this.props.instancesDetails}
         storageMap={this.getStorageMap()}
         onChange={(s, t, type) => { this.handleStorageChange(s, t, type) }}
+        style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}
       />
     )
   }
@@ -451,6 +452,7 @@ class EditReplica extends React.Component<Props, State> {
         loading={this.props.networksLoading}
         onChange={(nic, network, secGroups) => { this.handleNetworkChange(nic, network, secGroups) }}
         selectedNetworks={this.getSelectedNetworks()}
+        style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}
       />
     )
   }
