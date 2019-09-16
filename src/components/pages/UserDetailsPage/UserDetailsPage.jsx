@@ -113,7 +113,7 @@ class UserDetailsPage extends React.Component<Props, State> {
 
   render() {
     let dropdownActions = [{
-      label: 'Change passowrd',
+      label: 'Change password',
       color: Palette.primary,
       action: () => { this.handleUpdatePasswordClick() },
     }, {
