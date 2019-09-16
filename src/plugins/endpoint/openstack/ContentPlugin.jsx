@@ -166,14 +166,15 @@ class ContentPlugin extends React.Component<Props, State> {
         || (this.useCurrentUser && field.name !== 'name' && field.name !== 'description' && field.name !== 'openstack_use_current_user')
       let required = this.isFieldRequired(field)
         || (this.getApiVersion() > 2 ? field.name === 'user_domain' || field.name === 'project_domain' : false)
-
+      let isPassword = Boolean(configLoader.config.passwordFields.find(fn => field.name === fn))
+        || field.name.indexOf('password') > -1
       const currentField = (
         <FieldStyled
           {...field}
           required={required}
+          password={isPassword}
           width={StyleProps.inputSizes.large.width}
           disabled={disabled}
-          password={field.name === 'password'}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
           value={this.getFieldValue(field)}
           onChange={value => { this.props.handleFieldChange(field, value) }}
