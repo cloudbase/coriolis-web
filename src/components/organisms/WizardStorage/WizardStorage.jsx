@@ -144,6 +144,7 @@ export type Props = {
   instancesDetails: Instance[],
   storageMap: ?StorageMap[],
   onChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
+  style?: any,
 }
 @observer
 class WizardStorage extends React.Component<Props> {
@@ -249,7 +250,7 @@ class WizardStorage extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper>
+      <Wrapper style={this.props.style}>
         <Mapping>
           {this.renderBackendMapping()}
           {this.renderDiskMapping()}

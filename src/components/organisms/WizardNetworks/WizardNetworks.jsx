@@ -120,6 +120,7 @@ type Props = {
   instancesDetails: Instance[],
   selectedNetworks: ?NetworkMap[],
   onChange: (nic: NicType, network: Network, securityGroups?: SecurityGroup[]) => void,
+  style?: any,
 }
 @observer
 class WizardNetworks extends React.Component<Props> {
@@ -263,7 +264,7 @@ class WizardNetworks extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper>
+      <Wrapper style={this.props.style}>
         {this.renderLoading()}
         {this.renderNics()}
       </Wrapper>
