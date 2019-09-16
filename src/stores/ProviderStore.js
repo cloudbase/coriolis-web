@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action, computed, runInAction } from 'mobx'
 
 import ProviderSource from '../sources/ProviderSource'
+import apiCaller from '../utils/ApiCaller'
+
 import configLoader from '../utils/Config'
 import { providerTypes } from '../constants'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
@@ -83,9 +85,15 @@ class ProviderStore {
   @observable destinationSchema: Field[] = []
   @observable destinationSchemaLoading: boolean = false
   @observable destinationOptions: OptionValues[] = []
-  @observable destinationOptionsLoading: boolean = false
+  // Set to true while loading the options call for the first set of options
+  @observable destinationOptionsPrimaryLoading: boolean = false
+  // Set to true while loading the options call with a set of values in the 'env' parameter
+  @observable destinationOptionsSecondaryLoading: boolean = false
   @observable sourceOptions: OptionValues[] = []
-  @observable sourceOptionsLoading: boolean = false
+  // Set to true while loading the options call for the first set of options
+  @observable sourceOptionsPrimaryLoading: boolean = false
+  // Set to true while loading the options call with a set of values in the 'env' parameter
+  @observable sourceOptionsSecondaryLoading: boolean = false
   @observable sourceSchema: Field[] = []
   @observable sourceSchemaLoading: boolean = false
 
@@ -203,7 +211,9 @@ class ProviderStore {
       return []
     }
 
-    this.getOptionsValuesStart(optionsType)
+    let canceled = false
+    apiCaller.cancelRequests(endpointId)
+    this.getOptionsValuesStart(optionsType, !envData)
 
     try {
       let options = await ProviderSource.getOptionsValues(optionsType, endpointId, envData, useCache)
@@ -211,6 +221,10 @@ class ProviderStore {
       return options
     } catch (err) {
       console.error(err)
+      canceled = err ? err.canceled : false
+      if (canceled) {
+        return optionsType === 'source' ? [...this.sourceOptions] : [...this.destinationOptions]
+      }
       let schemaType = optionsType === 'source' ? this.lastSourceSchemaType : this.lastDestinationSchemaType
       if (!envData) {
         return []
@@ -218,25 +232,39 @@ class ProviderStore {
       let newOptions = await this.loadOptionsSchema({ providerName, schemaType, optionsType })
       return newOptions
     } finally {
-      this.getOptionsValuesDone(optionsType)
+      if (!canceled) {
+        this.getOptionsValuesDone(optionsType, !envData)
+      }
     }
   }
 
-  @action getOptionsValuesStart(optionsType: 'source' | 'destination') {
+  @action getOptionsValuesStart(optionsType: 'source' | 'destination', isPrimary: boolean) {
     if (optionsType === 'source') {
-      this.sourceOptionsLoading = true
-      this.sourceOptions = []
-    } else {
-      this.destinationOptionsLoading = true
+      if (isPrimary) {
+        this.sourceOptions = []
+        this.sourceOptionsPrimaryLoading = true
+      } else {
+        this.sourceOptionsSecondaryLoading = true
+      }
+    } else if (isPrimary) {
       this.destinationOptions = []
+      this.destinationOptionsPrimaryLoading = true
+    } else {
+      this.destinationOptionsSecondaryLoading = true
     }
   }
 
-  @action getOptionsValuesDone(optionsType: 'source' | 'destination') {
+  @action getOptionsValuesDone(optionsType: 'source' | 'destination', isPrimary: boolean) {
     if (optionsType === 'source') {
-      this.sourceOptionsLoading = false
+      if (isPrimary) {
+        this.sourceOptionsPrimaryLoading = false
+      } else {
+        this.sourceOptionsSecondaryLoading = false
+      }
+    } else if (isPrimary) {
+      this.destinationOptionsPrimaryLoading = false
     } else {
-      this.destinationOptionsLoading = false
+      this.destinationOptionsSecondaryLoading = false
     }
   }
 

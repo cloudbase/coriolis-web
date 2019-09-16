@@ -59,6 +59,7 @@ class ProviderSource {
     let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/${callName}${envString}`,
       cache,
+      cancelId: endpointId,
     })
     return response.data[fieldName]
   }

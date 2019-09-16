@@ -33,6 +33,8 @@ import WizardSummary from '../WizardSummary'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import { providerTypes, wizardPages } from '../../../constants'
+import configLoader from '../../../utils/Config'
+
 import type { WizardData, WizardPage } from '../../../types/WizardData'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoint'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
@@ -279,6 +281,19 @@ class WizardPageContent extends React.Component<Props, State> {
   renderBody() {
     let body = null
 
+    let getOptionsLoadingSkipFields = (type: 'source' | 'destination') => {
+      let extraOptionsConfig = configLoader.config.extraOptionsApiCalls.find(o => {
+        let provider = type === 'source' ? this.props.wizardData.source && this.props.wizardData.source.type
+          : this.props.wizardData.target && this.props.wizardData.target.type
+        return o.name === provider && o.types.find(t => t === type)
+      })
+      let optionsLoadingRequiredFields = []
+      if (extraOptionsConfig) {
+        optionsLoadingRequiredFields = extraOptionsConfig.requiredFields
+      }
+      return optionsLoadingRequiredFields
+    }
+
     switch (this.props.page.id) {
       case 'type':
         body = (
@@ -338,8 +353,9 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'source-options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.sourceSchemaLoading}
-            optionsLoading={this.props.providerStore.sourceOptionsLoading}
+            loading={this.props.providerStore.sourceSchemaLoading || this.props.providerStore.sourceOptionsPrimaryLoading}
+            optionsLoading={this.props.providerStore.sourceOptionsSecondaryLoading}
+            optionsLoadingSkipFields={getOptionsLoadingSkipFields('source')}
             fields={this.props.providerStore.sourceSchema}
             onChange={this.props.onSourceOptionsChange}
             data={this.props.wizardData.sourceOptions}
@@ -352,8 +368,9 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'dest-options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.destinationSchemaLoading}
-            optionsLoading={this.props.providerStore.destinationOptionsLoading}
+            loading={this.props.providerStore.destinationSchemaLoading || this.props.providerStore.destinationOptionsPrimaryLoading}
+            optionsLoading={this.props.providerStore.destinationOptionsSecondaryLoading}
+            optionsLoadingSkipFields={[...getOptionsLoadingSkipFields('destination'), 'description', 'execute_now', 'execute_now_options', 'default_storage']}
             selectedInstances={this.props.wizardData.selectedInstances}
             fields={this.props.providerStore.destinationSchema}
             onChange={this.props.onDestOptionsChange}

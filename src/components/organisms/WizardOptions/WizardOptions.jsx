@@ -86,14 +86,15 @@ type Props = {
   storageConfigDefault?: string,
   onAdvancedOptionsToggle?: (showAdvanced: boolean) => void,
   wizardType: string,
-  loading?: boolean,
   columnStyle?: { [string]: mixed },
   oneColumnStyle?: { [string]: mixed },
   fieldWidth?: number,
   onScrollableRef?: (ref: HTMLElement) => void,
   availableHeight?: number,
   layout?: 'page' | 'modal',
+  loading?: boolean,
   optionsLoading?: boolean,
+  optionsLoadingSkipFields?: string[],
 }
 @observer
 class WizardOptions extends React.Component<Props> {
@@ -184,6 +185,7 @@ class WizardOptions extends React.Component<Props> {
         onChange: value => { this.props.onChange(field, value) },
       }
     }
+    let optionsLoadingReqFields = this.props.optionsLoadingSkipFields || []
     return (
       <FieldInputStyled
         layout={this.props.layout || 'page'}
@@ -198,7 +200,7 @@ class WizardOptions extends React.Component<Props> {
         width={this.props.fieldWidth || StyleProps.inputSizes.wizard.width}
         label={field.label}
         nullableBoolean={field.nullableBoolean}
-        disabledLoading={this.props.optionsLoading}
+        disabledLoading={this.props.optionsLoading && !optionsLoadingReqFields.find(fn => fn === field.name)}
         {...additionalProps}
       />
     )
