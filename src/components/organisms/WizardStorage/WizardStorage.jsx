@@ -169,6 +169,17 @@ class WizardStorage extends React.Component<Props> {
 
     disks = disks.filter(d => d[diskFieldName])
     disks.sort((d1, d2) => String(d1[diskFieldName]).localeCompare(String(d2[diskFieldName])))
+    let parseDiskName = (name: ?string): [?string, boolean] => {
+      if (!name) {
+        return [null, false]
+      }
+      let paths = name.split('/')
+      if (paths.length < 4) {
+        return [name, false]
+      }
+      return [`.../${paths.filter((_, i) => i > paths.length - 4).join('/')}`, true]
+    }
+
 
     return (
       <StorageWrapper>
@@ -186,11 +197,17 @@ class WizardStorage extends React.Component<Props> {
             }).map(i => i.instance_name || i.name)
             let selectedItem = storageMap && storageMap.find(s => s.type === type && String(s.source[diskFieldName]) === String(disk[diskFieldName]))
             selectedItem = selectedItem ? selectedItem.target : null
+            let diskNameParsed = parseDiskName(disk[diskFieldName])
             return (
               <StorageItem key={disk[diskFieldName]}>
                 <StorageImage backend={type === 'backend'} />
                 <StorageTitle>
-                  <StorageName data-test-id={`${TEST_ID}-${type}-source`}>{disk[diskFieldName]}</StorageName>
+                  <StorageName
+                    data-test-id={`${TEST_ID}-${type}-source`}
+                    title={diskNameParsed[1] ? disk[diskFieldName] : null}
+                  >
+                    {diskNameParsed[0]}
+                  </StorageName>
                   <StorageSubtitle
                     data-test-id={`${TEST_ID}-${type}-connectedTo`}
                   >{`Connected to ${connectedTo.join(', ')}`}</StorageSubtitle>
