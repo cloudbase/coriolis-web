@@ -172,11 +172,8 @@ const SearchNotFound = styled.div`
   flex-direction: column;
   align-items: center;
   ${props => props.marginTop ? 'margin-top: 64px;' : ''}
-  * {
+  > * {
     margin-bottom: 42px;
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 `
 const SearchNotFoundText = styled.div`
@@ -185,6 +182,7 @@ const SearchNotFoundText = styled.div`
 const SearchNotFoundSubtitle = styled.div`
   color: ${Palette.grayscale[4]};
   margin-top: -32px;
+  text-align: center;
 `
 const BigInstanceImage = styled.div`
   ${StyleProps.exactSize('96px')}
@@ -248,11 +246,24 @@ class WizardInstances extends React.Component<Props, State> {
       return null
     }
 
+    let subtitle
+
+    if (this.props.hasSourceOptions) {
+      subtitle = (
+        <SearchNotFoundSubtitle>
+          Some platforms require pre-inputting parameters like location or resource containers for listing instances.
+          <br />Please check that all of the options from the previous screen are correct.
+        </SearchNotFoundSubtitle>
+      )
+    } else {
+      subtitle = <SearchNotFoundSubtitle>You can retry the search or choose another Endpoint</SearchNotFoundSubtitle>
+    }
+
     return (
       <SearchNotFound marginTop>
         <BigInstanceImage />
         <SearchNotFoundText>It seems like you don’t have any Instances in this Endpoint</SearchNotFoundText>
-        <SearchNotFoundSubtitle>You can retry the search or choose another Endpoint</SearchNotFoundSubtitle>
+        {subtitle}
         <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry Search</Button>
       </SearchNotFound>
     )
@@ -263,10 +274,21 @@ class WizardInstances extends React.Component<Props, State> {
       return null
     }
 
+    let subtitle = null
+    if (this.props.hasSourceOptions) {
+      subtitle = (
+        <SearchNotFoundSubtitle>
+          Some platforms require pre-inputting parameters like location or resource containers for
+          <br />listing instances. Please check that all of the options from the previous screen are correct.
+        </SearchNotFoundSubtitle>
+      )
+    }
+
     return (
       <SearchNotFound>
         <StatusImage status="ERROR" />
         <SearchNotFoundText data-test-id="wInstances-notFoundText">Your search returned no results</SearchNotFoundText>
+        {subtitle}
         <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry</Button>
       </SearchNotFound>
     )
