@@ -18,10 +18,11 @@ import { css } from 'styled-components'
 
 const StyleProps = {
   fontWeights: {
-    light: '300',
-    regular: '400',
-    medium: '500',
-    bold: '600',
+    extraLight: 200,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    bold: 600,
   },
 
   inputSizes: {
@@ -32,6 +33,7 @@ const StyleProps = {
 
   borderRadius: '4px',
   contentWidth: '928px',
+  boxShadow: 'box-shadow: rgba(0, 0, 0, 0.1) 0 0 6px 2px;',
 
   animations: {
     swift: '.45s cubic-bezier(0.3, 1, 0.4, 1) 0s',

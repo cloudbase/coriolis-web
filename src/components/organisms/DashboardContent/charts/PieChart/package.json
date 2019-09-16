@@ -1,0 +1,6 @@
+{
+  "name": "PieChart",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./PieChart.jsx"
+}

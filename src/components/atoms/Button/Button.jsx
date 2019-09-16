@@ -22,6 +22,9 @@ import StyleProps from '../../styleUtils/StyleProps'
 
 const backgroundColor = (props) => {
   if (props.hollow) {
+    if (props.transparent) {
+      return 'transparent'
+    }
     return 'white'
   }
   if (props.secondary) {

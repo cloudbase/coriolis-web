@@ -22,6 +22,7 @@ import NotificationSource from '../sources/NotificationSource'
 class NotificationStore {
   @observable alerts: AlertInfo[] = []
   @observable notificationItems: NotificationItemData[] = []
+  @observable loading: boolean = false
 
   visibleErrors: string[] = []
 
@@ -36,8 +37,10 @@ class NotificationStore {
     }
   }
 
-  @action async loadData() {
+  @action async loadData(showLoading?: boolean) {
+    this.loading = Boolean(showLoading)
     let data = await NotificationSource.loadData()
+    this.loading = false
     this.notificationItems = data
   }
 

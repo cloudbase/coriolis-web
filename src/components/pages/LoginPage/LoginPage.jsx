@@ -120,7 +120,7 @@ class LoginPage extends React.Component<Props, State> {
 
   render() {
     if (userStore.loggedIn) {
-      this.props.history.push('/replicas')
+      this.props.history.push('/')
     }
 
     return (

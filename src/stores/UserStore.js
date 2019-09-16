@@ -116,7 +116,7 @@ class UserStore {
       await this.isAdmin()
       runInAction(() => { this.loggedIn = true })
     } finally {
-      this.loading = false
+      runInAction(() => { this.loading = false })
     }
   }
 
