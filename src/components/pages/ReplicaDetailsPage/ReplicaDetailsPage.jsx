@@ -83,11 +83,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   stopPolling: ?boolean
 
-  componentDidMount() {
+  componentWillMount() {
     document.title = 'Replica Details'
 
     this.loadReplicaWithInstances(this.props.match.params.id, true)
-    endpointStore.getEndpoints()
+    endpointStore.getEndpoints({ showLoading: true })
     scheduleStore.getSchedules(this.props.match.params.id)
     this.pollData(true)
   }

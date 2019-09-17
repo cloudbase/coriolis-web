@@ -63,10 +63,10 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
   stopPolling: ?boolean
 
-  componentDidMount() {
+  componentWillMount() {
     document.title = 'Migration Details'
 
-    endpointStore.getEndpoints()
+    endpointStore.getEndpoints({ showLoading: true })
     this.loadMigrationWithInstances(this.props.match.params.id, true)
     this.pollData()
   }

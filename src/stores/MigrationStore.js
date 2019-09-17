@@ -78,7 +78,9 @@ class MigrationStore {
   }
 
   @action async getMigration(migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean }) {
-    this.detailsLoading = Boolean(options && options.showLoading)
+    if (options && options.showLoading) {
+      this.detailsLoading = true
+    }
 
     try {
       let migration = await MigrationSource.getMigration(migrationId, options && options.skipLog)
