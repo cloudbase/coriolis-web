@@ -491,7 +491,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
               targetEndpointsLoading={endpointStore.loading}
               loadingVmSizes={this.state.loadingTargetVmSizes}
               sourceEndpointsLoading={endpointsLoading}
-              targetOptionsLoading={providerStore.destinationOptionsLoading}
+              targetOptionsLoading={providerStore.destinationOptionsPrimaryLoading || providerStore.destinationOptionsSecondaryLoading}
               targetEndpoints={this.getTargetEndpoints()}
               targetEndpoint={localData.endpoint}
               onTargetEndpointChange={endpoint => { this.handleTargetEndpointChange(endpoint) }}

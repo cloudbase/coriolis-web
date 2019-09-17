@@ -182,9 +182,9 @@ class EditReplica extends React.Component<Props, State> {
 
   isUpdateDisabled() {
     let isLoadingDestOptions = this.state.selectedPanel === 'dest_options'
-      && (providerStore.destinationSchemaLoading || providerStore.destinationOptionsLoading)
+      && (providerStore.destinationSchemaLoading || providerStore.destinationOptionsPrimaryLoading)
     let isLoadingSourceOptions = this.state.selectedPanel === 'source_options'
-      && (providerStore.sourceSchemaLoading || providerStore.sourceOptionsLoading)
+      && (providerStore.sourceSchemaLoading || providerStore.sourceOptionsPrimaryLoading)
     let isLoadingNetwork = this.state.selectedPanel === 'network_mapping' && this.props.instancesDetailsLoading
     let isLoadingStorage = this.state.selectedPanel === 'storage_mapping'
       && (this.props.instancesDetailsLoading || endpointStore.storageLoading)
@@ -395,14 +395,23 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   renderOptions(type: 'source' | 'destination') {
-    let loading = type === 'source' ? providerStore.sourceSchemaLoading : providerStore.destinationSchemaLoading
+    let loading = type === 'source' ? (providerStore.sourceSchemaLoading || providerStore.sourceOptionsPrimaryLoading)
+      : (providerStore.destinationSchemaLoading || providerStore.destinationOptionsPrimaryLoading)
     if (loading) {
       return this.renderLoading(`Loading ${type === 'source' ? 'source' : 'target'} options ...`)
     }
-    let optionsLoading = type === 'source' ? providerStore.sourceOptionsLoading : providerStore.destinationOptionsLoading
+    let optionsLoading = type === 'source' ? providerStore.sourceOptionsSecondaryLoading
+      : providerStore.destinationOptionsSecondaryLoading
     let schema = type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
     let fields = this.props.type === 'replica' ? schema.filter(f => !f.readOnly) : schema
-
+    let extraOptionsConfig = configLoader.config.extraOptionsApiCalls.find(o => {
+      let provider = type === 'source' ? this.props.sourceEndpoint.type : this.props.destinationEndpoint.type
+      return o.name === provider && o.types.find(t => t === type)
+    })
+    let optionsLoadingSkipFields = []
+    if (extraOptionsConfig) {
+      optionsLoadingSkipFields = extraOptionsConfig.requiredFields
+    }
     return (
       <WizardOptions
         wizardType={`replica-${type}-options-edit`}
@@ -420,6 +429,7 @@ class EditReplica extends React.Component<Props, State> {
         useAdvancedOptions
         layout="modal"
         optionsLoading={optionsLoading}
+        optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now', 'execute_now_options', 'default_storage']}
       />
     )
   }
