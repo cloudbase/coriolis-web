@@ -20,11 +20,12 @@ import styled from 'styled-components'
 
 import questionImage from './images/question.svg'
 import warningImage from './images/warning.svg'
+import questionFilledImage from './images/question-filled.svg'
 
 const Wrapper = styled.div`
   width: 16px;
   height: 16px;
-  background: url('${props => props.warning ? warningImage : questionImage}') center no-repeat;
+  background: url('${props => props.warning ? warningImage : props.filled ? questionFilledImage : questionImage}') center no-repeat;
   display: inline-block;
   margin-left: ${props => props.marginLeft != null ? `${props.marginLeft}px` : '4px'};
   margin-bottom: ${props => props.marginBottom != null ? `${props.marginBottom}px` : '-4px'};
@@ -35,6 +36,7 @@ type Props = {
   marginBottom?: ?number,
   className?: string,
   warning?: boolean,
+  filled?: boolean,
 }
 @observer
 class InfoIcon extends React.Component<Props> {
@@ -46,6 +48,7 @@ class InfoIcon extends React.Component<Props> {
         marginBottom={this.props.marginBottom}
         className={this.props.className}
         warning={this.props.warning}
+        filled={this.props.filled}
       />
     )
   }

@@ -25,6 +25,7 @@ import HorizontalLoading from '../../atoms/HorizontalLoading'
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
 import SearchInput from '../../molecules/SearchInput'
+import InfoIcon from '../../atoms/InfoIcon'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -111,6 +112,10 @@ const FiltersWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `
+const SearchInputInfo = styled.div`
+  display: flex;
+  align-items: center;
+`
 const FilterInfo = styled.div`
   display: flex;
   color: ${Palette.grayscale[4]};
@@ -167,11 +172,8 @@ const SearchNotFound = styled.div`
   flex-direction: column;
   align-items: center;
   ${props => props.marginTop ? 'margin-top: 64px;' : ''}
-  * {
+  > * {
     margin-bottom: 42px;
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 `
 const SearchNotFoundText = styled.div`
@@ -180,6 +182,7 @@ const SearchNotFoundText = styled.div`
 const SearchNotFoundSubtitle = styled.div`
   color: ${Palette.grayscale[4]};
   margin-top: -32px;
+  text-align: center;
 `
 const BigInstanceImage = styled.div`
   ${StyleProps.exactSize('96px')}
@@ -196,6 +199,7 @@ type Props = {
   searching: boolean,
   searchNotFound: boolean,
   reloading: boolean,
+  hasSourceOptions: boolean,
   onSearchInputChange: (value: string) => void,
   onReloadClick: () => void,
   onInstanceClick: (instance: InstanceType) => void,
@@ -242,11 +246,24 @@ class WizardInstances extends React.Component<Props, State> {
       return null
     }
 
+    let subtitle
+
+    if (this.props.hasSourceOptions) {
+      subtitle = (
+        <SearchNotFoundSubtitle>
+          Some platforms require pre-inputting parameters like location or resource containers for listing instances.
+          <br />Please check that all of the options from the previous screen are correct.
+        </SearchNotFoundSubtitle>
+      )
+    } else {
+      subtitle = <SearchNotFoundSubtitle>You can retry the search or choose another Endpoint</SearchNotFoundSubtitle>
+    }
+
     return (
       <SearchNotFound marginTop>
         <BigInstanceImage />
         <SearchNotFoundText>It seems like you don’t have any Instances in this Endpoint</SearchNotFoundText>
-        <SearchNotFoundSubtitle>You can retry the search or choose another Endpoint</SearchNotFoundSubtitle>
+        {subtitle}
         <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry Search</Button>
       </SearchNotFound>
     )
@@ -257,10 +274,21 @@ class WizardInstances extends React.Component<Props, State> {
       return null
     }
 
+    let subtitle = null
+    if (this.props.hasSourceOptions) {
+      subtitle = (
+        <SearchNotFoundSubtitle>
+          Some platforms require pre-inputting parameters like location or resource containers for
+          <br />listing instances. Please check that all of the options from the previous screen are correct.
+        </SearchNotFoundSubtitle>
+      )
+    }
+
     return (
       <SearchNotFound>
         <StatusImage status="ERROR" />
         <SearchNotFoundText data-test-id="wInstances-notFoundText">Your search returned no results</SearchNotFoundText>
+        {subtitle}
         <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry</Button>
       </SearchNotFound>
     )
@@ -334,14 +362,24 @@ class WizardInstances extends React.Component<Props, State> {
 
     return (
       <FiltersWrapper>
-        <SearchInput
-          alwaysOpen
-          onChange={searchText => { this.handleSeachInputChange(searchText) }}
-          value={this.state.searchText}
-          loading={this.props.searching}
-          placeholder="Search VMs"
-          data-test-id="wInstances-searchInput"
-        />
+        <SearchInputInfo>
+          <SearchInput
+            alwaysOpen
+            onChange={searchText => { this.handleSeachInputChange(searchText) }}
+            value={this.state.searchText}
+            loading={this.props.searching}
+            placeholder="Search VMs"
+            data-test-id="wInstances-searchInput"
+          />
+          {this.props.hasSourceOptions ? (
+            <InfoIcon
+              text="Some platforms require pre-inputting parameters like location or resource containers for listing instances. Please check that all of the options from the previous screen are correct."
+              marginBottom={0}
+              marginLeft={8}
+              filled
+            />
+          ) : null}
+        </SearchInputInfo>
         <FilterInfo>
           <SelectionInfo data-test-id="wInstances-selInfo">{count} instance{plural} selected</SelectionInfo>
           <FilterSeparator>|</FilterSeparator>
