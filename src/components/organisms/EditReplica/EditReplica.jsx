@@ -119,7 +119,7 @@ class EditReplica extends React.Component<Props, State> {
     let loadAllOptions = async (type: 'source' | 'destination') => {
       let endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
       await this.loadOptions(endpoint, type, useCache)
-      this.loadExtraOptions(null, type)
+      this.loadExtraOptions(null, type, useCache)
     }
     if (this.hasSourceOptions()) {
       loadAllOptions('source')
@@ -142,7 +142,7 @@ class EditReplica extends React.Component<Props, State> {
     })
   }
 
-  loadExtraOptions(field?: ?Field, type: 'source' | 'destination') {
+  loadExtraOptions(field?: ?Field, type: 'source' | 'destination', useCache?: boolean) {
     let endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
     let env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
     let stateEnv = type === 'source' ? this.state.sourceData : this.state.destinationData
@@ -165,7 +165,7 @@ class EditReplica extends React.Component<Props, State> {
       optionsType: type,
       endpointId: endpoint.id,
       providerName: endpoint.type,
-      useCache: true,
+      useCache,
       envData,
     })
   }

@@ -18,27 +18,6 @@ import { observable, action, runInAction } from 'mobx'
 import type { Network } from '../types/Network'
 import NetworkSource from '../sources/NetworkSource'
 
-class NetworkLocalStorage {
-  static loadNetworksFromStorage(id: string): ?Network[] {
-    let networkStorage: { id: string, networks: Network[] }[] = JSON.parse(localStorage.getItem('networks') || '[]')
-    let endpointNetworks = networkStorage.find(n => n.id === id)
-    if (!endpointNetworks) {
-      return null
-    }
-    return endpointNetworks.networks
-  }
-
-  static saveNetworksToLocalStorage(id: string, networks: Network[]) {
-    let networkStorage: { id: string, networks: Network[] }[] = JSON.parse(localStorage.getItem('networks') || '[]')
-    let endpointNetworksIndex = networkStorage.findIndex(n => n.id === id)
-    if (endpointNetworksIndex > -1) {
-      networkStorage.splice(endpointNetworksIndex, 1)
-    }
-    networkStorage.push({ id, networks })
-    localStorage.setItem('networks', JSON.stringify(networkStorage))
-  }
-}
-
 class NetworkStore {
   @observable networks: Network[] = []
   @observable loading: boolean = false
@@ -49,32 +28,15 @@ class NetworkStore {
     useLocalStorage?: boolean,
     quietError?: boolean,
   }) {
-    let id = `${endpointId}-${btoa(JSON.stringify(environment))}`
-    if (this.cachedId === id && options && options.useLocalStorage) {
-      return
-    }
-
     this.loading = true
-
-    if (options && options.useLocalStorage) {
-      let networkStorage = NetworkLocalStorage.loadNetworksFromStorage(id)
-      if (networkStorage) {
-        this.loading = false
-        this.networks = networkStorage
-        this.cachedId = id
-        return
-      }
-    }
-
     this.networks = []
+
     try {
       let networks = await NetworkSource.loadNetworks(endpointId, environment, options)
       runInAction(() => {
         this.loading = false
         this.networks = networks
-        this.cachedId = id
       })
-      NetworkLocalStorage.saveNetworksToLocalStorage(id, networks)
     } catch (e) {
       this.loading = false
     }

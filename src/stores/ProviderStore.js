@@ -139,9 +139,6 @@ class ProviderStore {
     }
   }
 
-  destinationSchemaCache: { [string]: Field[] } = {}
-  sourceSchemaCache: { [string]: Field[] } = {}
-
   @action async loadOptionsSchema(options: {
     providerName: string,
     schemaType: 'migration' | 'replica',
@@ -149,23 +146,10 @@ class ProviderStore {
     useCache?: boolean,
   }): Promise<void> {
     let { schemaType, providerName, optionsType, useCache } = options
-    let cacheData: any
-
-    let cacheKey = `${providerName}-${schemaType}`
     if (optionsType === 'source') {
-      cacheData = this.sourceSchemaCache[cacheKey]
       this.lastSourceSchemaType = schemaType
     } else {
-      cacheData = this.destinationSchemaCache[cacheKey]
       this.lastDestinationSchemaType = schemaType
-    }
-    if (useCache && cacheData) {
-      if (optionsType === 'source') {
-        this.sourceSchema = [...cacheData]
-      } else {
-        this.destinationSchema = [...cacheData]
-      }
-      return
     }
 
     if (optionsType === 'source') {
@@ -175,8 +159,8 @@ class ProviderStore {
     }
 
     try {
-      let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, schemaType, optionsType)
-      this.loadOptionsSchemaSuccess(fields, cacheKey, optionsType)
+      let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, schemaType, optionsType, useCache)
+      this.loadOptionsSchemaSuccess(fields, optionsType)
     } catch (err) {
       throw err
     } finally {
@@ -184,13 +168,11 @@ class ProviderStore {
     }
   }
 
-  @action loadOptionsSchemaSuccess(fields: Field[], cacheKey: string, optionsType: 'source' | 'destination') {
+  @action loadOptionsSchemaSuccess(fields: Field[], optionsType: 'source' | 'destination') {
     if (optionsType === 'source') {
       this.sourceSchema = fields
-      this.sourceSchemaCache[cacheKey] = fields
     } else {
       this.destinationSchema = fields
-      this.destinationSchemaCache[cacheKey] = fields
     }
   }
 
@@ -201,8 +183,6 @@ class ProviderStore {
       this.destinationSchemaLoading = false
     }
   }
-
-  cache: { key: string, data: OptionValues[] }[] = []
 
   async getOptionsValues(config: {
     optionsType: 'source' | 'destination',
@@ -223,28 +203,11 @@ class ProviderStore {
       return []
     }
 
-    if (useCache) {
-      let key = `${endpointId}-${providerName}-${optionsType}-${JSON.stringify(envData)}`
-      let cacheItem = this.cache.find(c => c.key === key)
-      if (cacheItem) {
-        this.getOptionsValuesSuccess(optionsType, providerName, cacheItem.data)
-        this.getOptionsValuesDone(optionsType)
-        return cacheItem.data
-      }
-    }
-
     this.getOptionsValuesStart(optionsType)
 
     try {
-      let options = await ProviderSource.getOptionsValues(optionsType, endpointId, envData)
+      let options = await ProviderSource.getOptionsValues(optionsType, endpointId, envData, useCache)
       this.getOptionsValuesSuccess(optionsType, providerName, options)
-      if (useCache) {
-        let key = `${endpointId}-${providerName}-${optionsType}-${JSON.stringify(envData)}`
-        if (this.cache.length > 20) {
-          this.cache.splice(0)
-        }
-        this.cache.push({ key, data: options })
-      }
       return options
     } catch (err) {
       console.error(err)
