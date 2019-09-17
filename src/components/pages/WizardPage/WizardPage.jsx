@@ -217,18 +217,6 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.clearStorageMap()
     wizardStore.setPermalink(wizardStore.data)
 
-    let getConnectionInfo = async () => {
-      if (!source) {
-        return
-      }
-      // Check if user has permission for this endpoint
-      try {
-        await endpointStore.getConnectionInfo(source)
-      } catch (err) {
-        this.handleSourceEndpointChange(null)
-      }
-    }
-    getConnectionInfo()
     if (!source) {
       return
     }
@@ -418,16 +406,6 @@ class WizardPage extends React.Component<Props, State> {
         }
         // Preload source options schema
         loadOptions(source, 'source')
-
-        if (instanceStore.instances.length > 0) {
-          return
-        }
-        try {
-          // Check if user has permission for this endpoint
-          await endpointStore.getConnectionInfo(source)
-        } catch (err) {
-          this.handleSourceEndpointChange(null)
-        }
         break
       }
       case 'vms': {
