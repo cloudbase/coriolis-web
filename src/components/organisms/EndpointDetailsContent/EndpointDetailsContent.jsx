@@ -32,6 +32,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div`
   ${StyleProps.exactWidth(StyleProps.contentWidth)}
@@ -83,7 +84,6 @@ type Props = {
   usage: { migrations: MainItem[], replicas: MainItem[] },
   onDeleteClick: () => void,
   onValidateClick: () => void,
-  passwordFields?: string[],
 }
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
@@ -133,7 +133,7 @@ class EndpointDetailsContent extends React.Component<Props> {
 
       let valueClass = null
 
-      if (this.props.passwordFields && this.props.passwordFields.find(fn => fn === key)) {
+      if (configLoader.config.passwordFields.find(fn => fn === key) || key.indexOf('password') > -1) {
         valueClass = <PasswordValue value={value} data-test-id="edContent-connPassword" />
       } else {
         valueClass = this.renderValue(value, `connValue-${key}`)

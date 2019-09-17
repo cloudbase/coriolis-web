@@ -29,7 +29,7 @@ import LoadingButton from '../../molecules/LoadingButton'
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 import type { Field } from '../../../types/Field'
 import notificationStore from '../../../stores/NotificationStore'
-import endpointStore, { passwordFields } from '../../../stores/EndpointStore'
+import endpointStore from '../../../stores/EndpointStore'
 import providerStore from '../../../stores/ProviderStore'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import Palette from '../../styleUtils/Palette'
@@ -387,7 +387,6 @@ class Endpoint extends React.Component<Props, State> {
           validating: this.state.validating,
           disabled: this.state.validating,
           cancelButtonText: this.props.cancelButtonText,
-          passwordFields,
           getFieldValue: field => this.getFieldValue(field),
           highlightRequired: () => this.highlightRequired(),
           handleFieldChange: (field, value) => {

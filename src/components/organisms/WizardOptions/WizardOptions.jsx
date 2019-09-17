@@ -19,6 +19,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 import autobind from 'autobind-decorator'
 
+import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
 import FieldInput from '../../molecules/FieldInput'
@@ -160,9 +161,8 @@ class WizardOptions extends React.Component<Props> {
     return fieldsSchema
   }
 
-  isPassword(field: Field): boolean {
-    return field.type === 'string' && (!field.enum || field.enum.length === 0) &&
-      field.name.indexOf('password') > -1
+  isPassword(fieldName: string): boolean {
+    return fieldName.indexOf('password') > -1 || Boolean(configLoader.config.passwordFields.find(f => f === fieldName))
   }
 
   @autobind
@@ -190,7 +190,7 @@ class WizardOptions extends React.Component<Props> {
         key={field.name}
         name={field.name}
         type={field.type}
-        password={this.isPassword(field)}
+        password={this.isPassword(field.name)}
         enum={field.enum}
         addNullValue
         required={field.required}

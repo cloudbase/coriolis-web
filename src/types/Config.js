@@ -14,4 +14,5 @@ export type Config = {
   extraOptionsApiCalls: Array<{ name: string, types: Type[], requiredFields: string[] }>,
   providerSortPriority: { [providerName: string]: number },
   hiddenUsers: string[],
+  passwordFields: string[],
 }

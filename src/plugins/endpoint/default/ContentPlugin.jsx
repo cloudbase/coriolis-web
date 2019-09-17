@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 
+import configLoader from '../../../utils/Config'
+
 import FieldInput from '../../../components/molecules/FieldInput'
 import type { Field } from '../../../types/Field'
 
@@ -55,7 +57,6 @@ type Props = {
   cancelButtonText: string,
   validating: boolean,
   onRef: (contentPlugin: any) => void,
-  passwordFields?: string[],
 }
 class ContentPlugin extends React.Component<Props> {
   componentDidMount() {
@@ -83,7 +84,8 @@ class ContentPlugin extends React.Component<Props> {
     let lastField
     let i = 0
     this.props.connectionInfoSchema.forEach((field, schemaIndex) => {
-      let isPassword = this.props.passwordFields && this.props.passwordFields.find(fn => fn === field.name)
+      let isPassword = Boolean(configLoader.config.passwordFields.find(fn => field.name === fn))
+        || field.name.indexOf('password') > -1
       const currentField = (
         <FieldStyled
           {...field}

@@ -21,6 +21,7 @@ import TextArea from '../../../components/atoms/TextArea'
 import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 
+import configLoader from '../../../utils/Config'
 import Palette from '../../../components/styleUtils/Palette'
 import StyleProps from '../../../components/styleUtils/StyleProps'
 import KeyboardManager from '../../../utils/KeyboardManager'
@@ -207,13 +208,15 @@ class ContentPlugin extends React.Component<Props, State> {
   }
 
   renderField(field: Field, customProps?: { value: any, onChange: (value: any) => void }) {
+    let isPassword = Boolean(configLoader.config.passwordFields.find(fn => field.name === fn))
+      || field.name.indexOf('password') > -1
     return (
       <FieldStyled
         {...field}
         width={StyleProps.inputSizes.large.width}
         disabled={this.props.disabled}
         key={field.name}
-        password={field.name === 'password'}
+        password={isPassword}
         highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
         value={this.props.getFieldValue(field)}
         onChange={value => { this.handleFieldChange(field, value) }}
