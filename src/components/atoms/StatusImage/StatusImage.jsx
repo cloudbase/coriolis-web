@@ -78,7 +78,6 @@ const dashAnimationStyle = css`
   }
 `
 const loadingAnimationStyle = css`
-  /* background: url(${loadingImage}) center no-repeat; */
   animation: rotate 1s linear infinite;
   @keyframes rotate {
     0% {transform: rotate(0deg);}
