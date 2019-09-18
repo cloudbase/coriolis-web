@@ -122,13 +122,14 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseFieldsToPayload(data: { [string]: mixed }, schema: Schema) {
+  static parseFieldsToPayload(data: { [string]: mixed }, schema: any) {
     let payload = {}
 
     payload.name = data.name
     payload.description = data.description
 
-    payload.connection_info = fieldsToPayload(data, schema.oneOf[0])
+    let schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
+    payload.connection_info = fieldsToPayload(data, schemaRoot)
 
     if (data.secret_ref) {
       payload.connection_info.secret_ref = data.secret_ref
