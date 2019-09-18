@@ -35,6 +35,7 @@ const Wrapper = styled.div`
   display: flex;
   min-height: 0;
   flex-direction: column;
+  width: 100%;
 `
 const Options = styled.div`
   display: flex;
@@ -49,7 +50,6 @@ const Fields = styled.div`
 `
 const OneColumn = styled.div``
 const Column = styled.div`
-  ${props => props.left ? 'margin-right: 160px;' : ''}
   margin-top: -16px;
 `
 const FieldInputStyled = styled(FieldInput)`
@@ -86,7 +86,6 @@ type Props = {
   storageConfigDefault?: string,
   onAdvancedOptionsToggle?: (showAdvanced: boolean) => void,
   wizardType: string,
-  columnStyle?: { [string]: mixed },
   oneColumnStyle?: { [string]: mixed },
   fieldWidth?: number,
   onScrollableRef?: (ref: HTMLElement) => void,
@@ -239,7 +238,7 @@ class WizardOptions extends React.Component<Props> {
 
     if (fields.length * 96 < availableHeight) {
       return (
-        <Fields padding={this.props.layout === 'page' ? null : 32}>
+        <Fields padding={this.props.layout === 'page' ? null : 32} style={{ justifyContent: 'center' }}>
           <OneColumn style={this.props.oneColumnStyle}>
             {fields.map(f => f.component)}
           </OneColumn>
@@ -249,7 +248,7 @@ class WizardOptions extends React.Component<Props> {
 
     return (
       <Fields innerRef={this.props.onScrollableRef} padding={this.props.layout === 'page' ? null : 32}>
-        <Column left style={this.props.columnStyle}>
+        <Column left>
           {fields.map(f => f.column === 'left' && f.component)}
         </Column>
         <Column right>
