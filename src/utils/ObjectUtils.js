@@ -14,6 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import configLoader from './Config'
+
 class ObjectUtils {
   static flatten(object: any): any {
     let result = {}
@@ -69,6 +71,12 @@ class ObjectUtils {
       await testLoop()
     }
     await testLoop()
+  }
+
+  static trim(fieldName: string, value: any): any {
+    let isPassword = configLoader.config.passwordFields.find(p => p === fieldName)
+      || fieldName.toLowerCase().indexOf('password') > -1
+    return typeof value === 'string' && !isPassword ? value.trim() : value
   }
 }
 
