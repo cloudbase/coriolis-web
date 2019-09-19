@@ -422,7 +422,6 @@ class EditReplica extends React.Component<Props, State> {
         storageConfigDefault={endpointStore.storageConfigDefault}
         onChange={(f, v) => { this.handleFieldChange(type, f, v) }}
         oneColumnStyle={{ marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}
-        columnStyle={{ marginRight: 0 }}
         fieldWidth={StyleProps.inputSizes.large.width}
         onScrollableRef={ref => { this.scrollableRef = ref }}
         availableHeight={384}

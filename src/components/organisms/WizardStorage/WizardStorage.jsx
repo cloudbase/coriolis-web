@@ -35,6 +35,7 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  overflow: auto;
 `
 const Mapping = styled.div`
   display: flex;
@@ -47,8 +48,6 @@ const StorageWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 32px;
-  max-height: 100%;
-  min-height: 100px;
 
   &:last-child {
     margin-bottom: 0;
@@ -62,7 +61,6 @@ const StorageSection = styled.div`
 const StorageItems = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: auto;
 `
 const StorageItem = styled.div`
   display: flex;

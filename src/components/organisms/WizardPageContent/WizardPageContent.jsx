@@ -362,6 +362,7 @@ class WizardPageContent extends React.Component<Props, State> {
             useAdvancedOptions
             hasStorageMap={false}
             wizardType={`${this.props.type}-source-options`}
+            layout="page"
           />
         )
         break
@@ -381,6 +382,7 @@ class WizardPageContent extends React.Component<Props, State> {
             storageConfigDefault={this.props.endpointStore.storageConfigDefault}
             wizardType={this.props.type}
             onAdvancedOptionsToggle={useAdvancedOptions => { this.handleAdvancedOptionsToggle(useAdvancedOptions) }}
+            layout="page"
           />
         )
         break
