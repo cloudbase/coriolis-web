@@ -32,12 +32,12 @@ const Navigation = styled.div`
 const NavigationItemDiv = styled.div`
   height: 47px;
   border-bottom: 1px solid ${Palette.grayscale[2]};
-  color: black;
+  color: ${props => props.disabled ? Palette.grayscale[3] : 'black'};
   display: flex;
   align-items: center;
   padding: 0 24px;
   font-size: 18px;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   ${props => props.selected ? css`
     color: ${Palette.primary};
     background: ${Palette.grayscale[2]};
@@ -65,6 +65,8 @@ const ReloadButton = styled.div`
 export type NavigationItem = {
   label: string,
   value: string,
+  disabled?: boolean,
+  title?: string,
 }
 
 export type Props = {
@@ -81,6 +83,9 @@ export const TEST_ID = 'panel'
 @observer
 class Panel extends React.Component<Props> {
   handleItemClick(item: NavigationItem) {
+    if (item.disabled) {
+      return
+    }
     if (item.value !== this.props.selectedValue) {
       this.props.onChange(item)
     }
@@ -96,6 +101,8 @@ class Panel extends React.Component<Props> {
               selected={this.props.selectedValue ? this.props.selectedValue === item.value : i === 0}
               onClick={() => { this.handleItemClick(item) }}
               data-test-id={`${TEST_ID}-navItem-${item.value}`}
+              disabled={item.disabled}
+              title={item.title}
             >{item.label}</NavigationItemDiv>
           ))}
         </Navigation>

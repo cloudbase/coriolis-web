@@ -41,6 +41,7 @@ const Wrapper = styled.div`
 const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 24px;
 `
 const ButtonColumn = styled.div`
   display: flex;

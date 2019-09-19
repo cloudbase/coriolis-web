@@ -35,6 +35,7 @@ const Wrapper = styled.div`
 `
 
 const Buttons = styled.div`
+  margin-top: 24px;
   & > button:last-child {
     float: right;
   }

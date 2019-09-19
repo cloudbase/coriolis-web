@@ -230,6 +230,10 @@ class WizardNetworks extends React.Component<Props> {
       })
     })
 
+    if (nics.length === 0 && this.props.selectedNetworks && this.props.selectedNetworks.length) {
+      nics = this.props.selectedNetworks.map(n => n.sourceNic)
+    }
+
     if (nics.length === 0) {
       return this.renderNoNics()
     }
@@ -252,7 +256,11 @@ class WizardNetworks extends React.Component<Props> {
               <NetworkImage />
               <NetworkTitle>
                 <NetworkName data-test-id={`wNetworks-networkName-${nic.id}`}>{nic.network_name}</NetworkName>
-                <NetworkSubtitle data-test-id={`wNetworks-connectedTo-${nic.id}`}>{`Connected to ${connectedTo.join(', ')}`}</NetworkSubtitle>
+                {connectedTo.length ? (
+                  <NetworkSubtitle data-test-id={`wNetworks-connectedTo-${nic.id}`}>
+                    {`Connected to ${connectedTo.join(', ')}`}
+                  </NetworkSubtitle>
+                ) : null}
               </NetworkTitle>
               <ArrowImage />
               <Dropdowns>

@@ -33,8 +33,7 @@ import storageIcon from './images/storage.svg'
 import arrowIcon from './images/arrow.svg'
 
 const Wrapper = styled.div`
-  margin-top: 24px;
-  margin-bottom: 48px;
+  margin: 24px 0;
 `
 const ArrowStyled = styled(Arrow)`
   position: absolute;

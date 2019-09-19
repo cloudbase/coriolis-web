@@ -118,7 +118,7 @@ const NoStorageSubtitle = styled.div`
   text-align: center;
 `
 
-export const getDisks = (instancesDetails: Instance[], type: 'backend' | 'disk'): Disk[] => {
+export const getDisks = (instancesDetails: Instance[], type: 'backend' | 'disk', storageMap?: ?StorageMap[]): Disk[] => {
   let fieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
 
   let disks = []
@@ -133,6 +133,9 @@ export const getDisks = (instancesDetails: Instance[], type: 'backend' | 'disk')
       disks.push(disk)
     })
   })
+  if (disks.length === 0 && storageMap && storageMap.length) {
+    disks = storageMap.map(sm => sm.source)
+  }
   return disks
 }
 
@@ -207,9 +210,13 @@ class WizardStorage extends React.Component<Props> {
                   >
                     {diskNameParsed[0]}
                   </StorageName>
-                  <StorageSubtitle
-                    data-test-id={`${TEST_ID}-${type}-connectedTo`}
-                  >{`Connected to ${connectedTo.join(', ')}`}</StorageSubtitle>
+                  {connectedTo.length ? (
+                    <StorageSubtitle
+                      data-test-id={`${TEST_ID}-${type}-connectedTo`}
+                    >
+                      {`Connected to ${connectedTo.join(', ')}`}
+                    </StorageSubtitle>
+                  ) : null}
                 </StorageTitle>
                 <ArrowImage />
                 {storageItems.length > 10 ? (
@@ -245,7 +252,7 @@ class WizardStorage extends React.Component<Props> {
   }
 
   renderBackendMapping() {
-    let disks = getDisks(this.props.instancesDetails, 'backend')
+    let disks = getDisks(this.props.instancesDetails, 'backend', this.props.storageMap)
 
     if (disks.length === 0 || this.props.storageBackends.length === 0) {
       return null
@@ -255,7 +262,7 @@ class WizardStorage extends React.Component<Props> {
   }
 
   renderDiskMapping() {
-    let disks = getDisks(this.props.instancesDetails, 'disk')
+    let disks = getDisks(this.props.instancesDetails, 'disk', this.props.storageMap)
 
     if (disks.length === 0 || this.props.storageBackends.length === 0) {
       return this.renderNoStorage()
