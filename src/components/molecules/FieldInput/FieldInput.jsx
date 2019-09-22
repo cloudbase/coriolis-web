@@ -46,6 +46,7 @@ const Wrapper = styled.div`
 
 const Label = styled.div`
   font-weight: ${StyleProps.fontWeights.medium};
+  flex-grow: 1;
   ${props => props.layout === 'page' ? css`
     margin-bottom: 8px;
   ` : css`
