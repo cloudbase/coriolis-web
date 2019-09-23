@@ -16,6 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { defaultSchemaToFields } from './ConnectionSchemaPlugin'
 
+import Utils from '../../../utils/ObjectUtils'
+
 import type { Field } from '../../../types/Field'
 import type { OptionValues, StorageMap } from '../../../types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
@@ -82,15 +84,15 @@ export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptio
     if (specialOptions.find(o => o === optionName) || !options || options[optionName] == null || options[optionName] === '') {
       return
     }
-
     if (optionName.indexOf('/') > 0) {
       let parentName = optionName.substr(0, optionName.lastIndexOf('/'))
       if (!env[parentName]) {
         env[parentName] = oldOptions ? oldOptions[parentName] || {} : {}
       }
-      env[parentName][optionName.substr(optionName.lastIndexOf('/') + 1)] = options ? options[optionName] : null
+      env[parentName][optionName.substr(optionName.lastIndexOf('/') + 1)] = options
+        ? Utils.trim(optionName, options[optionName]) : null
     } else {
-      env[optionName] = options ? options[optionName] : null
+      env[optionName] = options ? Utils.trim(optionName, options[optionName]) : null
     }
   })
   return env

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import LabelDictionary from '../../../utils/LabelDictionary'
+import Utils from '../../../utils/ObjectUtils'
 import type { Schema, SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { Field } from '../../../types/Field'
 
@@ -96,7 +97,7 @@ export const fieldsToPayload = (data: { [string]: mixed }, schema: SchemaPropert
 
   Object.keys(schema.properties).forEach(fieldName => {
     if (data[fieldName] && typeof data[fieldName] !== 'object') {
-      info[fieldName] = data[fieldName]
+      info[fieldName] = Utils.trim(fieldName, data[fieldName])
     } else if (
       !data[fieldName] &&
       schema.required && schema.required.find(f => f === fieldName) &&
