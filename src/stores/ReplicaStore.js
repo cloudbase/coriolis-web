@@ -105,7 +105,10 @@ class ReplicaStore {
 
     try {
       let replica = await ReplicaSource.getReplica(replicaId, options && options.skipLog)
-      runInAction(() => { this.replicaDetails = replica })
+      runInAction(() => {
+        this.replicaDetails = replica
+        this.replicas = this.replicas.map(r => r.id === replica.id ? replica : r)
+      })
     } finally {
       runInAction(() => { this.detailsLoading = false })
     }

@@ -84,7 +84,10 @@ class MigrationStore {
 
     try {
       let migration = await MigrationSource.getMigration(migrationId, options && options.skipLog)
-      runInAction(() => { this.migrationDetails = migration })
+      runInAction(() => {
+        this.migrationDetails = migration
+        this.migrations = this.migrations.map(m => m.id === migration.id ? migration : m)
+      })
     } finally {
       runInAction(() => { this.detailsLoading = false })
     }
