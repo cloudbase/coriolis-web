@@ -228,6 +228,7 @@ class Dropdown extends React.Component<Props, State> {
   scrollableParent: HTMLElement
   buttonRect: ClientRect
   itemMouseDown: boolean
+  checkmarkRefs: { [string]: HTMLElement } = {}
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
@@ -237,6 +238,20 @@ class Dropdown extends React.Component<Props, State> {
       window.addEventListener('resize', this.handleScroll)
       this.buttonRect = this.buttonRef.getBoundingClientRect()
     }
+  }
+
+  componentWillReceiveProps(newProps: Props) {
+    if (!this.props.multipleSelection) {
+      return
+    }
+    // Clear checkmark if items are removed in newProps
+    let newSelectedItems = newProps.selectedItems || []
+    let oldSelectedItems = this.props.selectedItems || []
+    let hash = item => `${this.getLabel(item)}-${this.getValue(item) || ''}`
+    let needsCheckmarkClear = oldSelectedItems.filter(oldItem => !newSelectedItems.find(newItem => hash(oldItem) === hash(newItem)))
+    needsCheckmarkClear.forEach(clearItem => {
+      this.toggleCheckmarkAnimation(clearItem, this.checkmarkRefs[hash(clearItem)], true)
+    })
   }
 
   componentWillUpdate() {
@@ -308,11 +323,17 @@ class Dropdown extends React.Component<Props, State> {
     })
   }
 
-  handleItemClick(item: any, checkmarkRef: HTMLElement) {
+  handleItemClick(item: any) {
     if (!this.props.multipleSelection) {
       this.setState({ showDropdownList: false, firstItemHover: false })
     } else {
-      this.toggleCheckmarkAnimation(item, checkmarkRef)
+      let selected = Boolean(this.props.selectedItems && this.props.selectedItems.find(i =>
+        this.getValue(i) === this.getValue(item)))
+      this.toggleCheckmarkAnimation(
+        item,
+        this.checkmarkRefs[`${this.getLabel(item)}-${this.getValue(item) || ''}`],
+        selected
+      )
     }
 
     if (this.props.onChange) {
@@ -332,15 +353,13 @@ class Dropdown extends React.Component<Props, State> {
     }
   }
 
-  toggleCheckmarkAnimation(item: any, checkmarkRef: HTMLElement) {
+  toggleCheckmarkAnimation(item: any, checkmarkRef: HTMLElement, selected: boolean) {
     if (!item || !checkmarkRef) {
       return
     }
-    let multipleSelected = this.props.selectedItems && this.props.selectedItems.find(i =>
-      this.getValue(i) === this.getValue(item))
     let symbol = checkmarkRef.querySelector('#symbol')
     if (symbol) {
-      symbol.style.animationName = multipleSelected ? 'dashOff' : 'dashOn'
+      symbol.style.animationName = selected ? 'dashOff' : 'dashOn'
     }
   }
 
@@ -415,7 +434,6 @@ class Dropdown extends React.Component<Props, State> {
             let duplicatedLabel = duplicatedLabels.find(l => l === label)
             let multipleSelected = this.props.selectedItems && this.props.selectedItems
               .find(i => this.getValue(i) === value)
-            let checkmarkRef
             let listItem = (
               <ListItem
                 data-test-id="dropdownListItem"
@@ -425,7 +443,7 @@ class Dropdown extends React.Component<Props, State> {
                 onMouseUp={() => { this.itemMouseDown = false }}
                 onMouseEnter={() => { this.handleItemMouseEnter(i) }}
                 onMouseLeave={() => { this.handleItemMouseLeave(i) }}
-                onClick={() => { this.handleItemClick(item, checkmarkRef) }}
+                onClick={() => { this.handleItemClick(item) }}
                 selected={!this.props.multipleSelection && value === selectedValue}
                 multipleSelected={this.props.multipleSelection && multipleSelected}
                 dim={this.props.dimFirstItem && i === 0}
@@ -433,7 +451,7 @@ class Dropdown extends React.Component<Props, State> {
               >
                 {this.props.multipleSelection ? (
                   <Checkmark
-                    innerRef={ref => { checkmarkRef = ref }}
+                    innerRef={ref => { this.checkmarkRefs[`${label}-${value || ''}`] = ref }}
                     dangerouslySetInnerHTML={{ __html: checkmarkImage }}
                     show={multipleSelected}
                   />
