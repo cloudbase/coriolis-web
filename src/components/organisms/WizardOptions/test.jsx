@@ -19,6 +19,8 @@ import { shallow } from 'enzyme'
 import TW from '../../../utils/TestWrapper'
 import WizardOptions from '.'
 
+import configLoader from '../../../utils/Config'
+
 const wrap = props => new TW(shallow(
   // $FlowIgnore
   <WizardOptions {...props} />
@@ -56,6 +58,11 @@ let fields = [
 ]
 
 describe('WizardOptions Component', () => {
+  beforeAll(() => {
+    // $FlowIgnore
+    configLoader.config = { passwordFields: [] }
+  })
+
   it('has description and required field in simple tab', () => {
     let wrapper = wrap({ fields, selectedInstances: [], wizardType: 'migration' })
     expect(wrapper.findPartialId('field-').length).toBe(3)
