@@ -21,6 +21,8 @@ import moment from 'moment'
 import TW from '../../../utils/TestWrapper'
 import EndpointDetailsContent from '.'
 
+import configLoader from '../../../utils/Config'
+
 const wrap = props => new TW(shallow(
   // $FlowIgnore
   <EndpointDetailsContent usage={{ replicas: [], migrations: [] }}{...props} />
@@ -46,6 +48,11 @@ let connectionInfo = {
 }
 
 describe('EndpointDetailsContent Component', () => {
+  beforeAll(() => {
+    // $FlowIgnore
+    configLoader.config = { passwordFields: [] }
+  })
+
   it('renders endpoint details', () => {
     let wrapper = wrap({ item })
     expect(wrapper.find('name').prop('value')).toBe(item.name)
