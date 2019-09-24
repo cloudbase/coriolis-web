@@ -179,6 +179,7 @@ class WizardNetworks extends React.Component<Props> {
   }
 
   renderSecGroupsDropdown(selectedNetwork: ?NetworkMap, nic: NicType) {
+    const MAX_SELECTED_GROUPS = 5
     let hasSecurityGroups: boolean = Boolean(this.props.networks.find(n => n.security_groups && n.security_groups.length))
     let securityGroups = selectedNetwork && selectedNetwork.targetNetwork && selectedNetwork.targetNetwork.security_groups
     let selectedSecGroups: SecurityGroup[] = (selectedNetwork && selectedNetwork.targetSecurityGroups) || []
@@ -202,6 +203,9 @@ class WizardNetworks extends React.Component<Props> {
           }
           if (!selectedNetwork) {
             return
+          }
+          if (selectedSecGroups.length > MAX_SELECTED_GROUPS) {
+            selectedSecGroups.splice(MAX_SELECTED_GROUPS - 1, 1)
           }
           this.props.onChange(nic, selectedNetwork.targetNetwork, selectedSecGroups)
         }}
