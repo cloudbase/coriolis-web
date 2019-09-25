@@ -22,6 +22,10 @@ import Button from '.'
 const wrap = props => shallow(<Button {...props} />)
 
 describe('Button Component', () => {
+  it('shoud fail', () => {
+    expect(1).toBe(2)
+  })
+
   it('renders with different combination of props', () => {
     let wrapper = wrap({ disabled: true })
     expect(wrapper.prop('disabled')).toBe(true)
