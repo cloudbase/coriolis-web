@@ -2,7 +2,7 @@
 
 Web  GUI for [coriolis](https://github.com/cloudbase/coriolis)
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![](https://github.com/cloudbase/coriolis-web/workflows/Master/badge.svg) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
    
 ### Install instructions
 - [node](https://nodejs.org/en/download/package-manager/) >=6.x and [yarn](https://yarnpkg.com/lang/en/docs/install/) are required
