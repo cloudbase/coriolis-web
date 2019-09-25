@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 import autobind from 'autobind-decorator'
@@ -30,6 +30,7 @@ import type { StorageBackend } from '../../../types/Endpoint'
 
 import { executionOptions } from '../../../constants'
 import LabelDictionary from '../../../utils/LabelDictionary'
+import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div`
   display: flex;
@@ -45,7 +46,29 @@ const Options = styled.div`
 const Fields = styled.div`
   ${props => props.padding ? `padding: ${props.padding}px;` : ''}
   display: flex;
+  flex-direction: column;
   overflow: auto;
+`
+const Group = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+const GroupName = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 48px 0 24px 0;
+`
+const GroupNameText = styled.div`
+  margin: 0 32px;
+  font-size: 16px;
+`
+const GroupNameBar = styled.div`
+  flex-grow: 1;
+  background: ${Palette.grayscale[3]};
+  height: 1px;
+`
+const GroupFields = styled.div`
+  display: flex;
   justify-content: space-between;
 `
 const OneColumn = styled.div``
@@ -73,7 +96,11 @@ export const shouldRenderField = (field: Field) => {
     (field.type !== 'integer' || (field.minimum && field.maximum)) &&
     (field.type !== 'object' || field.properties)
 }
-
+type FieldRender = {
+  field: Field,
+  component: React.Node,
+  column: number,
+}
 type Props = {
   fields: Field[],
   selectedInstances?: ?Instance[],
@@ -170,6 +197,17 @@ class WizardOptions extends React.Component<Props> {
     this.setState({})
   }
 
+  generateGroups(fields: FieldRender[]) {
+    let workerFields = fields.filter(f => f.field.name.indexOf('migr_') === 0)
+    if (workerFields.length > 1) {
+      return [
+        { fields: fields.filter(f => f.field.name.indexOf('migr_') === -1) },
+        { name: 'Temporary Migration Worker Options', fields: workerFields.map((f, i) => ({ ...f, column: i % 2 })) },
+      ]
+    }
+    return [{ fields }]
+  }
+
   renderOptionsField(field: Field) {
     let additionalProps
     if (field.type === 'object' && field.properties) {
@@ -216,8 +254,8 @@ class WizardOptions extends React.Component<Props> {
     }
 
     let executeNowColumn
-    let fields = fieldsSchema.filter(f => shouldRenderField(f)).map((field, i) => {
-      let column = i % 2 === 0 ? 'left' : 'right'
+    let fields: FieldRender[] = fieldsSchema.filter(f => shouldRenderField(f)).map((field, i) => {
+      let column: number = i % 2
       if (field.name === 'execute_now') {
         executeNowColumn = column
       }
@@ -231,6 +269,7 @@ class WizardOptions extends React.Component<Props> {
       return {
         column,
         component: this.renderOptionsField(field),
+        field,
       }
     })
 
@@ -238,22 +277,41 @@ class WizardOptions extends React.Component<Props> {
 
     if (fields.length * 96 < availableHeight) {
       return (
-        <Fields padding={this.props.layout === 'page' ? null : 32} style={{ justifyContent: 'center' }}>
-          <OneColumn style={this.props.oneColumnStyle}>
-            {fields.map(f => f.component)}
-          </OneColumn>
+        <Fields padding={this.props.layout === 'page' ? null : 32}>
+          <Group>
+            <GroupFields style={{ justifyContent: 'center' }}>
+              <OneColumn style={this.props.oneColumnStyle}>
+                {fields.map(f => f.component)}
+              </OneColumn>
+            </GroupFields>
+          </Group>
         </Fields>
       )
     }
 
+    let groups = this.generateGroups(fields)
+
     return (
       <Fields innerRef={this.props.onScrollableRef} padding={this.props.layout === 'page' ? null : 32}>
-        <Column left>
-          {fields.map(f => f.column === 'left' && f.component)}
-        </Column>
-        <Column right>
-          {fields.map(f => f.column === 'right' && f.component)}
-        </Column>
+        {groups.map(g => (
+          <Group key={g.name || 0}>
+            {g.name ? (
+              <GroupName>
+                <GroupNameBar />
+                <GroupNameText>{g.name}</GroupNameText>
+                <GroupNameBar />
+              </GroupName>
+            ) : null}
+            <GroupFields>
+              <Column left>
+                {g.fields.map(f => f.column === 0 && f.component)}
+              </Column>
+              <Column right>
+                {g.fields.map(f => f.column === 1 && f.component)}
+              </Column>
+            </GroupFields>
+          </Group>
+        ))}
       </Fields>
     )
   }
