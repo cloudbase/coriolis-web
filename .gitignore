@@ -3,7 +3,6 @@
 dist
 *.log
 node_modules
-.vscode
 flow-typed/npm/*
 !flow-typed/npm/module_vx.x.x.js
 private/cypress/config.js
