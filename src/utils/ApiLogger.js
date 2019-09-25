@@ -16,6 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import licenceStore from '../stores/LicenceStore'
 
+import DomUtils from './DomUtils'
+
 type LogType = 'REQUEST' | 'RESPONSE'
 
 type LogOptions = {
@@ -112,15 +114,7 @@ class ApiLogger {
       version: licenceStore.version || '-',
     }
 
-    let href: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(log))}`
-    let downloadAnchorNode = document.createElement('a')
-    downloadAnchorNode.setAttribute('href', href)
-    downloadAnchorNode.setAttribute('download', 'coriolis-log.json')
-    if (document.body) {
-      document.body.appendChild(downloadAnchorNode) // required for firefox
-    }
-    downloadAnchorNode.click()
-    downloadAnchorNode.remove()
+    DomUtils.download(JSON.stringify(log), 'coriolis-log.json')
   }
 }
 

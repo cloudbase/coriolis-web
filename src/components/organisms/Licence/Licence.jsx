@@ -27,6 +27,7 @@ import CopyValue from '../../atoms/CopyValue'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
+import ObjectUtils from '../../../utils/ObjectUtils'
 
 import type { Licence } from '../../../types/Licence'
 
@@ -121,19 +122,6 @@ type State = {
   highlightDropzone: boolean,
 }
 
-const readFromFileList = async (fileList: FileList): Promise<?string> => {
-  if (!fileList.length) {
-    return null
-  }
-  let file = fileList[0]
-  let reader = new FileReader()
-  return new Promise((resolve, reject) => {
-    reader.onload = e => { resolve(e.target.result) }
-    reader.onerror = e => { reject(e) }
-    reader.readAsText(file)
-  })
-}
-
 @observer
 class LicenceC extends React.Component<Props, State> {
   state = {
@@ -185,7 +173,7 @@ class LicenceC extends React.Component<Props, State> {
       listener: async e => {
         e.preventDefault()
         this.setState({ highlightDropzone: false })
-        let text = await readFromFileList(e.dataTransfer.files)
+        let text = await ObjectUtils.readFromFileList(e.dataTransfer.files)
         if (text) {
           this.handleLicenceChange(text)
         }
@@ -232,7 +220,7 @@ class LicenceC extends React.Component<Props, State> {
   }
 
   async handleFileUpload(files: FileList) {
-    let text = await readFromFileList(files)
+    let text = await ObjectUtils.readFromFileList(files)
     if (text) {
       this.handleLicenceChange(text)
     }

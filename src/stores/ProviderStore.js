@@ -125,6 +125,8 @@ class ProviderStore {
     try {
       let fields: Field[] = await ProviderSource.getConnectionInfoSchema(providerName)
       runInAction(() => { this.connectionInfoSchema = fields })
+    } catch (err) {
+      throw err
     } finally {
       runInAction(() => { this.connectionSchemaLoading = false })
     }

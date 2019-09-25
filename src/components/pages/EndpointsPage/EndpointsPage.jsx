@@ -55,6 +55,7 @@ type State = {
   showDeleteEndpointsModal: boolean,
   showDuplicateModal: boolean,
   duplicating: boolean,
+  uploadedEndpoint: ?EndpointType,
 }
 @observer
 class EndpointsPage extends React.Component<{ history: any }, State> {
@@ -68,6 +69,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     duplicating: false,
     showDeleteEndpointsModal: false,
     selectedEndpoints: [],
+    uploadedEndpoint: null,
   }
 
   pollTimeout: TimeoutID
@@ -162,7 +164,18 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     this.setState({
       showChooseProviderModal: false,
       showEndpointModal: true,
+      uploadedEndpoint: null,
       providerType,
+    })
+  }
+
+  handleUploadEndpoint(endpoint: EndpointType) {
+    endpointStore.setConnectionInfo(endpoint.connection_info)
+    this.setState({
+      showChooseProviderModal: false,
+      showEndpointModal: true,
+      providerType: endpoint.type,
+      uploadedEndpoint: endpoint,
     })
   }
 
@@ -177,6 +190,12 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   handleModalClose() {
     this.setState({ modalIsOpen: false }, () => {
       this.pollData()
+    })
+  }
+
+  handleExportToJson() {
+    this.state.selectedEndpoints.forEach(endpoint => {
+      endpointStore.exportToJson(endpoint)
     })
   }
 
@@ -226,6 +245,9 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       label: 'Duplicate',
       action: () => { this.setState({ showDuplicateModal: true, modalIsOpen: true }) },
 
+    }, {
+      label: 'Export to JSON',
+      action: () => { this.handleExportToJson() },
     }, {
       label: 'Delete Endpoint',
       color: Palette.alert,
@@ -292,6 +314,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
             providers={providerStore.providerNames}
             loading={providerStore.providersLoading}
+            onUploadEndpoint={endpoint => { this.handleUploadEndpoint(endpoint) }}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
           />
         </Modal>
@@ -303,6 +326,8 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
           <Endpoint
             type={this.state.providerType}
             onCancelClick={() => { this.handleCloseEndpointModal() }}
+            endpoint={this.state.uploadedEndpoint}
+            isNewEndpoint={Boolean(this.state.uploadedEndpoint)}
           />
         </Modal>
         <AlertModal

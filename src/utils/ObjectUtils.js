@@ -78,6 +78,19 @@ class ObjectUtils {
       || fieldName.toLowerCase().indexOf('password') > -1
     return typeof value === 'string' && !isPassword ? value.trim() : value
   }
+
+  static readFromFileList(fileList: FileList): Promise<?string> {
+    if (!fileList.length) {
+      return Promise.resolve(null)
+    }
+    let file = fileList[0]
+    let reader = new FileReader()
+    return new Promise((resolve, reject) => {
+      reader.onload = e => { resolve(e.target.result) }
+      reader.onerror = e => { reject(e) }
+      reader.readAsText(file)
+    })
+  }
 }
 
 export default ObjectUtils

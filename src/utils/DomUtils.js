@@ -109,6 +109,18 @@ class DomUtils {
   static get urlHashPrefix() {
     return window.env.ENV === 'development' ? '#/' : ''
   }
+
+  static download(text: string, fileName: string) {
+    let href: string = `data:text/json;charset=utf-8,${encodeURIComponent(text)}`
+    let downloadAnchorNode = document.createElement('a')
+    downloadAnchorNode.setAttribute('href', href)
+    downloadAnchorNode.setAttribute('download', fileName)
+    if (document.body) {
+      document.body.appendChild(downloadAnchorNode) // required for firefox
+    }
+    downloadAnchorNode.click()
+    downloadAnchorNode.remove()
+  }
 }
 
 export default DomUtils

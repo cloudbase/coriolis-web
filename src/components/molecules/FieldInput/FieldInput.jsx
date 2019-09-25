@@ -213,6 +213,7 @@ class FieldInput extends React.Component<Props> {
       selectedItem,
       items,
       disabledLoading: this.props.disabledLoading,
+      disabled: this.props.disabled,
       onChange: item => this.props.onChange && this.props.onChange(item.value),
     }
 

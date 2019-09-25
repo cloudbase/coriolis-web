@@ -57,7 +57,6 @@ const azureConnectionParse = schema => {
 
   let radioGroup = {
     name: 'login_type',
-    default: 'user_credentials',
     type: 'radio-group',
     items: [getOption('user_credentials'), getOption('service_principal_credentials')],
   }

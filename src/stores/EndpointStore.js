@@ -13,10 +13,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // @flow
+
 import { observable, runInAction, action } from 'mobx'
+
 import type { Endpoint, Validation, StorageBackend, Storage } from '../types/Endpoint'
+
 import notificationStore from './NotificationStore'
 import EndpointSource from '../sources/EndpointSource'
+
+import DomUtils from '../utils/DomUtils'
 
 const updateEndpoint = (endpoint, endpoints) => endpoints.map(e => {
   if (e.id === endpoint.id) {
@@ -135,6 +140,12 @@ class EndpointStore {
         notificationStore.alert(ex.data.description, 'error')
       }
     }
+  }
+
+  @action async exportToJson(endpoint: Endpoint): Promise<void> {
+    let connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
+    endpoint.connection_info = connectionInfo
+    DomUtils.download(JSON.stringify(endpoint), `${endpoint.name}.json`)
   }
 
   @action setConnectionInfo(connectionInfo: $PropertyType<Endpoint, 'connection_info'>) {
