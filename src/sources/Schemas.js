@@ -35,7 +35,7 @@ class SchemaParser {
   static optionsSchemaToFields(provider: string, schema: any) {
     let parser = OptionsSchemaPlugin[provider] || OptionsSchemaPlugin.default
     let schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
-    let fields = parser.parseSchemaToFields(schemaRoot, schemaRoot.definitions)
+    let fields = parser.parseSchemaToFields(schemaRoot, schema.definitions)
     fields.sort((a, b) => {
       if (a.required && !b.required) {
         return -1
