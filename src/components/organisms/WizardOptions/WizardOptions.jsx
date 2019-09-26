@@ -52,6 +52,7 @@ const Fields = styled.div`
 const Group = styled.div`
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 `
 const GroupName = styled.div`
   display: flex;
