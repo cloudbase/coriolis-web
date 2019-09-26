@@ -148,7 +148,7 @@ export const ItemReplicaBadge = styled.div`
   border: 1px solid #7F8795;
 `
 export const ItemTitle = styled.div`
-  ${props => props.nowrap ? 'white-space: nowrap;' : ''}
+  ${props => props.nowrap ? 'white-space: nowrap;' : 'word-break: break-word;'}
   overflow: hidden;
   text-overflow: ellipsis;
 `
