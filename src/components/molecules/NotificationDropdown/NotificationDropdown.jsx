@@ -72,7 +72,7 @@ const List = styled.div`
   top: 45px;
   z-index: 10;
 `
-const ListItem = styled(Link)`
+const ListItemCss = css`
   display: flex;
   border-bottom: 1px solid ${Palette.grayscale[0]};
   padding: 8px;
@@ -81,19 +81,10 @@ const ListItem = styled(Link)`
   text-decoration: none;
   color: inherit;
 
-  &:hover {
-    background: ${Palette.grayscale[0]};
-  }
-
   &:first-child {
     position: relative;
     border-top-left-radius: ${StyleProps.borderRadius};
     border-top-right-radius: ${StyleProps.borderRadius};
-
-    &:hover:after {
-      background: ${Palette.grayscale[0]};
-      border-color: transparent transparent ${Palette.grayscale[0]} ${Palette.grayscale[0]};
-    }
 
     &:after {
       content: ' ';
@@ -114,6 +105,25 @@ const ListItem = styled(Link)`
     border-color: transparent;
     border-bottom-left-radius: ${StyleProps.borderRadius};
     border-bottom-right-radius: ${StyleProps.borderRadius};
+  }
+`
+const ListItemNoLink = styled.div`
+  ${ListItemCss}
+
+  cursor: default;
+`
+const ListItem = styled(Link)`
+  ${ListItemCss}
+
+  &:hover {
+    background: ${Palette.grayscale[0]};
+  }
+
+  &:first-child {
+     &:hover:after {
+      background: ${Palette.grayscale[0]};
+      border-color: transparent transparent ${Palette.grayscale[0]} ${Palette.grayscale[0]};
+    }
   }
 `
 export const InfoColumn = styled.div`
@@ -229,12 +239,12 @@ class NotificationDropdown extends React.Component<Props, State> {
 
     return (
       <List>
-        <ListItem
+        <ListItemNoLink
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
         >
           <NoItems data-test-id={`${testId}-noItems`}>There are no notifications</NoItems>
-        </ListItem>
+        </ListItemNoLink>
       </List>
     )
   }
