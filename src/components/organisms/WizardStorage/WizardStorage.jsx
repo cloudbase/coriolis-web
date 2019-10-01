@@ -83,6 +83,7 @@ const StorageTitle = styled.div`
 `
 const StorageName = styled.div`
   font-size: 16px;
+  word-break: break-word;
 `
 const StorageSubtitle = styled.div`
   font-size: 12px;
