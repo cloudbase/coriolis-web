@@ -30,6 +30,9 @@ import type { Instance } from '../../../types/Instance'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
 import type { Network } from '../../../types/Network'
+import type { Field as FieldType } from '../../../types/Field'
+import fieldHelper from '../../../types/Field'
+
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
@@ -69,6 +72,11 @@ const Label = styled.div`
   color: ${Palette.grayscale[3]};
   font-weight: ${StyleProps.fontWeights.medium};
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+`
+const StatusIconStub = styled.div`
+  ${StyleProps.exactSize('16px')}
 `
 const Value = styled.div`
   display: ${props => props.flex ? 'flex' : props.block ? 'block' : 'inline-table'};
@@ -112,6 +120,8 @@ const PropertyValue = styled.div`
 
 type Props = {
   item: ?MainItem,
+  destinationSchema: FieldType[],
+  destinationSchemaLoading: boolean,
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
   endpoints: Endpoint[],
@@ -193,17 +203,11 @@ class MainDetails extends React.Component<Props> {
   }
 
   renderPropertiesTable(propertyNames: string[]) {
-    let getValue = (value: any) => {
-      if (value === true) {
-        return 'Yes'
-      }
-      if (value === false) {
-        return 'No'
-      }
+    let getValue = (name: string, value: any) => {
       if (value.join && value.length && value[0].destination && value[0].source) {
         return value.map(v => `${v.source}=${v.destination}`).join(', ')
       }
-      return value.toString()
+      return fieldHelper.getValueAlias(name, value, this.props.destinationSchema)
     }
 
     let properties = []
@@ -222,13 +226,17 @@ class MainDetails extends React.Component<Props> {
           if (p === 'disk_mappings') {
             return null
           }
+          let fieldName = pn
+          if (fieldName === 'migr_image_map') {
+            fieldName = `${p}_os_image`
+          }
           return {
             label: `${label} - ${LabelDictionary.get(p)}`,
-            value: getValue(value[p]),
+            value: getValue(fieldName, value[p]),
           }
         }))
       } else {
-        properties.push({ label, value: getValue(value) })
+        properties.push({ label, value: getValue(pn, value) })
       }
     })
 
@@ -336,7 +344,10 @@ class MainDetails extends React.Component<Props> {
           {propertyNames.length > 0 ? (
             <Row>
               <Field>
-                <Label>Properties</Label>
+                <Label>Properties{this.props.destinationSchemaLoading ? (
+                  <StatusIcon status="RUNNING" style={{ marginLeft: '8px' }} />
+                ) : <StatusIconStub />
+                }</Label>
                 <Value block>{this.renderPropertiesTable(propertyNames)}</Value>
               </Field>
             </Row>

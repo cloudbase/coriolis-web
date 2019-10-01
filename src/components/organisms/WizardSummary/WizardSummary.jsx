@@ -29,7 +29,9 @@ import type { Schedule } from '../../../types/Schedule'
 import type { WizardData } from '../../../types/WizardData'
 import type { StorageMap, StorageBackend } from '../../../types/Endpoint'
 import type { Instance, Disk } from '../../../types/Instance'
+import type { Field } from '../../../types/Field'
 
+import fieldHelper from '../../../types/Field'
 import { getDisks } from '../WizardStorage'
 
 import networkArrowImage from './images/network-arrow.svg'
@@ -158,10 +160,12 @@ type Props = {
   schedules: Schedule[],
   storageMap: StorageMap[],
   instancesDetails: Instance[],
+  sourceSchema: Field[],
+  destinationSchema: Field[],
 }
 @observer
 class WizardSummary extends React.Component<Props> {
-  getDefaultOption(fieldName: string) {
+  getDefaultOption(fieldName: string): boolean {
     if (this.props.data.destOptions && this.props.data.destOptions[fieldName] === false) {
       return false
     }
@@ -237,19 +241,6 @@ class WizardSummary extends React.Component<Props> {
     )
   }
 
-  renderOptionValue(value: any) {
-    if (value === true) {
-      return 'Yes'
-    }
-    if (value === false) {
-      return 'No'
-    }
-    if (value.join) {
-      return value.join(', ')
-    }
-    return value
-  }
-
   renderSourceOptionsSection() {
     let data = this.props.data
     let type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
@@ -272,7 +263,7 @@ class WizardSummary extends React.Component<Props> {
                   {optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}
                 </OptionLabel>
                 <OptionValue>{
-                  this.renderOptionValue(data.sourceOptions && data.sourceOptions[optionName])
+                  fieldHelper.getValueAlias(optionName, data.sourceOptions && data.sourceOptions[optionName], this.props.sourceSchema)
                 }</OptionValue>
               </Option>
             )
@@ -289,14 +280,14 @@ class WizardSummary extends React.Component<Props> {
     let executeNowOption = (
       <Option>
         <OptionLabel>Execute now?</OptionLabel>
-        <OptionValue>{this.renderOptionValue(this.getDefaultOption('execute_now'))}</OptionValue>
+        <OptionValue>{this.getDefaultOption('execute_now') ? 'Yes' : 'No'}</OptionValue>
       </Option>
     )
 
     let separateVmOption = (
       <Option>
         <OptionLabel>Separate {type}/VM?</OptionLabel>
-        <OptionValue>{this.renderOptionValue(this.getDefaultOption('separate_vm'))}</OptionValue>
+        <OptionValue>{this.getDefaultOption('separate_vm') ? 'Yes' : 'No'}</OptionValue>
       </Option>
     )
 
@@ -321,7 +312,7 @@ class WizardSummary extends React.Component<Props> {
                   {optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}
                 </OptionLabel>
                 <OptionValue data-test-id={`wSummary-optionValue-${optionName}`}>{
-                  this.renderOptionValue(data.destOptions && data.destOptions[optionName])
+                  fieldHelper.getValueAlias(optionName, data.destOptions && data.destOptions[optionName], this.props.destinationSchema)
                 }</OptionValue>
               </Option>
             )

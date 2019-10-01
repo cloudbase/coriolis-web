@@ -86,8 +86,38 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   componentWillMount() {
     document.title = 'Replica Details'
 
-    this.loadReplicaWithInstances(this.props.match.params.id, true)
-    endpointStore.getEndpoints({ showLoading: true })
+    let loadReplica = async () => {
+      await Promise.all([
+        this.loadReplicaWithInstances(this.props.match.params.id, true),
+        endpointStore.getEndpoints({ showLoading: true }),
+      ])
+      let details = replicaStore.replicaDetails
+      if (!details) {
+        return
+      }
+      let endpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
+      if (!endpoint) {
+        return
+      }
+      // This allows the values to be displayed with their allocated names instead of their IDs
+      await providerStore.loadOptionsSchema({
+        providerName: endpoint.type,
+        schemaType: details.type,
+        optionsType: 'destination',
+        useCache: true,
+        quietError: true,
+      })
+      await providerStore.getOptionsValues({
+        optionsType: 'destination',
+        endpointId: details.destination_endpoint_id,
+        providerName: endpoint.type,
+        envData: details.destination_environment,
+        useCache: true,
+        quietError: true,
+      })
+    }
+    loadReplica()
+
     scheduleStore.getSchedules(this.props.match.params.id)
     this.pollData(true)
   }
@@ -422,6 +452,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             scheduleStore={scheduleStore}
             networks={networkStore.networks}
             detailsLoading={replicaStore.detailsLoading || endpointStore.loading}
+            destinationSchema={providerStore.destinationSchema}
+            destinationSchemaLoading={providerStore.destinationSchemaLoading
+              || providerStore.destinationOptionsPrimaryLoading
+              || providerStore.destinationOptionsSecondaryLoading}
             executionsLoading={replicaStore.executionsLoading}
             page={this.props.match.params.page || ''}
             onCancelExecutionClick={execution => { this.handleCancelExecution(execution) }}

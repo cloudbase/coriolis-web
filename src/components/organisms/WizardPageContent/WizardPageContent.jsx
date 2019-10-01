@@ -429,6 +429,8 @@ class WizardPageContent extends React.Component<Props, State> {
             storageMap={this.props.storageMap}
             wizardType={this.props.type}
             instancesDetails={this.props.instanceStore.instancesDetails}
+            sourceSchema={this.props.providerStore.sourceSchema}
+            destinationSchema={this.props.providerStore.destinationSchema}
           />
         )
         break

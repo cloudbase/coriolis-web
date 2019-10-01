@@ -21,7 +21,7 @@ import WizardSummary from '.'
 
 const wrap = props => new TW(shallow(
   // $FlowIgnore
-  <WizardSummary storageMap={[]} instancesDetails={[]} {...props} />
+  <WizardSummary storageMap={[]} instancesDetails={[]} sourceSchema={[]} destinationSchema={[]} {...props} />
 ), 'wSummary')
 
 let schedules = [

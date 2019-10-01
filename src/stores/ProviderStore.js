@@ -152,8 +152,9 @@ class ProviderStore {
     schemaType: 'migration' | 'replica',
     optionsType: 'source' | 'destination',
     useCache?: boolean,
+    quietError?: boolean,
   }): Promise<void> {
-    let { schemaType, providerName, optionsType, useCache } = options
+    let { schemaType, providerName, optionsType, useCache, quietError } = options
     if (optionsType === 'source') {
       this.lastSourceSchemaType = schemaType
     } else {
@@ -167,7 +168,7 @@ class ProviderStore {
     }
 
     try {
-      let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, schemaType, optionsType, useCache)
+      let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, schemaType, optionsType, useCache, quietError)
       this.loadOptionsSchemaSuccess(fields, optionsType)
     } catch (err) {
       throw err
@@ -198,8 +199,9 @@ class ProviderStore {
     providerName: string,
     envData?: { [string]: mixed },
     useCache?: boolean,
+    quietError?: boolean,
   }): Promise<OptionValues[]> {
-    let { providerName, optionsType, endpointId, envData, useCache } = config
+    let { providerName, optionsType, endpointId, envData, useCache, quietError } = config
     let providerType = optionsType === 'source' ? providerTypes.SOURCE_OPTIONS : providerTypes.DESTINATION_OPTIONS
 
     await this.loadProviders()
@@ -216,7 +218,7 @@ class ProviderStore {
     this.getOptionsValuesStart(optionsType, !envData)
 
     try {
-      let options = await ProviderSource.getOptionsValues(optionsType, endpointId, envData, useCache)
+      let options = await ProviderSource.getOptionsValues(optionsType, endpointId, envData, useCache, quietError)
       this.getOptionsValuesSuccess(optionsType, providerName, options)
       return options
     } catch (err) {

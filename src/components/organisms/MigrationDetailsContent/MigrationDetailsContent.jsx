@@ -27,6 +27,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import type { Instance } from '../../../types/Instance'
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
+import type { Field } from '../../../types/Field'
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,6 +58,8 @@ type Props = {
   detailsLoading: boolean,
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
+  destinationSchema: Field[],
+  destinationSchemaLoading: boolean,
   endpoints: Endpoint[],
   page: string,
   onDeleteMigrationClick: () => void,
@@ -85,6 +88,8 @@ class MigrationDetailsContent extends React.Component<Props> {
         item={this.props.item}
         instancesDetails={this.props.instancesDetails}
         instancesDetailsLoading={this.props.instancesDetailsLoading}
+        destinationSchema={this.props.destinationSchema}
+        destinationSchemaLoading={this.props.destinationSchemaLoading}
         endpoints={this.props.endpoints}
         bottomControls={this.renderBottomControls()}
         loading={this.props.detailsLoading}

@@ -34,7 +34,7 @@ type RequestOptions = {
   headers?: { [string]: string },
   data?: any,
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream',
-  quietError?: boolean,
+  quietError?: ?boolean,
   skipLog?: ?boolean,
   cache?: ?boolean,
   cacheFor?: ?number,

@@ -29,6 +29,7 @@ import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint } from '../../../types/Endpoint'
 import type { Execution } from '../../../types/Execution'
 import type { Network } from '../../../types/Network'
+import type { Field } from '../../../types/Field'
 import type { Schedule as ScheduleType } from '../../../types/Schedule'
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -72,6 +73,8 @@ type TimezoneValue = 'utc' | 'local'
 type Props = {
   item: ?MainItem,
   endpoints: Endpoint[],
+  destinationSchema: Field[],
+  destinationSchemaLoading: boolean,
   networks: Network[],
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
@@ -155,6 +158,8 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
     return (
       <MainDetails
         item={this.props.item}
+        destinationSchema={this.props.destinationSchema}
+        destinationSchemaLoading={this.props.destinationSchemaLoading}
         instancesDetails={this.props.instancesDetails}
         instancesDetailsLoading={this.props.instancesDetailsLoading}
         loading={this.props.detailsLoading}
