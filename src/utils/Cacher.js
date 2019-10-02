@@ -2,6 +2,8 @@
 
 import type { Cache } from '../types/Cache'
 
+const MAX_ITEMS = 100
+
 const DEFAULT_MAX_AGE = 15 * 60 * 1000 // 15 minutes
 const STORE = 'api-cacher'
 
@@ -33,6 +35,13 @@ class Cacher {
   }) {
     let { key, data } = options
     let storage: Cache = JSON.parse(localStorage.getItem(STORE) || '{}')
+    let keys = Object.keys(storage)
+    if (keys.length >= MAX_ITEMS + 10) {
+      keys.sort((a, b) => new Date(storage[a].createdAt).getTime() - new Date(storage[b].createdAt).getTime())
+      for (let i = 0; i <= keys.length - MAX_ITEMS; i += 1) {
+        delete storage[keys[i]]
+      }
+    }
     storage[key] = {
       data,
       createdAt: new Date().toISOString(),
