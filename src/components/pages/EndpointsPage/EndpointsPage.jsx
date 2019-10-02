@@ -246,7 +246,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       action: () => { this.setState({ showDuplicateModal: true, modalIsOpen: true }) },
 
     }, {
-      label: 'Export to JSON',
+      label: 'Download .endpoint files',
       action: () => { this.handleExportToJson() },
     }, {
       label: 'Delete Endpoint',

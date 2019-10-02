@@ -207,13 +207,13 @@ class ChooseProvider extends React.Component<Props, State> {
           <UploadMessage>
             You can
             &nbsp;<UploadMessageButton onClick={() => { this.fileInput.click() }}>upload</UploadMessageButton>&nbsp;
-            or drop an endpoint JSON file.
+            or drop a .endpoint file.
           </UploadMessage>
         </Upload>
         <FakeFileInput
           type="file"
           innerRef={r => { this.fileInput = r }}
-          accept=".json"
+          accept=".endpoint"
           onChange={e => { this.handleFileUpload(e.target.files) }}
         />
         <Button secondary onClick={this.props.onCancelClick} data-test-id="cProvider-cancelButton">Cancel</Button>

@@ -227,7 +227,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
       label: 'Duplicate',
       action: () => { this.handleDuplicateClick() },
     }, {
-      label: 'Export to JSON',
+      label: 'Download .endpoint file',
       action: () => { this.handleExportToJsonClick() },
     }, {
       label: 'Delete Endpoint',

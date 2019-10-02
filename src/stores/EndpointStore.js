@@ -145,7 +145,7 @@ class EndpointStore {
   @action async exportToJson(endpoint: Endpoint): Promise<void> {
     let connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
     endpoint.connection_info = connectionInfo
-    DomUtils.download(JSON.stringify(endpoint), `${endpoint.name}.json`)
+    DomUtils.download(JSON.stringify(endpoint), `${endpoint.name}.endpoint`)
   }
 
   @action setConnectionInfo(connectionInfo: $PropertyType<Endpoint, 'connection_info'>) {
