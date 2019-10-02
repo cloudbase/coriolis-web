@@ -21,6 +21,7 @@ import { observer } from 'mobx-react'
 import EndpointLogos from '../../atoms/EndpointLogos'
 import WizardType from '../../molecules/WizardType'
 import Button from '../../atoms/Button'
+import InfoIcon from '../../atoms/InfoIcon'
 import WizardBreadcrumbs from '../../molecules/WizardBreadcrumbs'
 import WizardEndpointList from '../WizardEndpointList'
 import WizardInstances from '../WizardInstances'
@@ -60,11 +61,31 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 const Header = styled.div`
+  display: flex;
+  position: relative;
+  margin-bottom: 32px;
+  align-items: center;
+`
+const HeaderLabel = styled.div`
   text-align: center;
   font-size: 32px;
   font-weight: ${StyleProps.fontWeights.light};
   color: ${Palette.primary};
-  margin-bottom: 32px;
+  width: 100%;
+`
+const HeaderReload = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+`
+const HeaderReloadLabel = styled.div`
+  font-size: 10px;
+  color: ${Palette.grayscale[4]};
+  &:hover {
+    color: ${Palette.primary};
+  }
+  cursor: pointer;
 `
 const Body = styled.div`
   flex-grow: 1;
@@ -163,6 +184,7 @@ type Props = {
   onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void,
   onScheduleRemove: (scheudleId: string) => void,
   onContentRef: (ref: any) => void,
+  onReloadOptionsClick: () => void,
 }
 type TimezoneValue = 'local' | 'utc'
 type State = {
@@ -270,12 +292,27 @@ class WizardPageContent extends React.Component<Props, State> {
 
   renderHeader() {
     let title = this.props.page.title
-
-    if (this.props.page.id === 'type') {
+    let pageId = this.props.page.id
+    if (pageId === 'type') {
       title += ` ${this.props.type.charAt(0).toUpperCase() + this.props.type.substr(1)}`
     }
 
-    return <Header data-test-id={`${testName}-header`}>{title}</Header>
+    return (
+      <Header>
+        <HeaderLabel data-test-id={`${testName}-header`}>{title}</HeaderLabel>
+        {pageId === 'source-options' || pageId === 'dest-options' ? (
+          <HeaderReload>
+            <HeaderReloadLabel onClick={() => { this.props.onReloadOptionsClick() }}>Reload Options</HeaderReloadLabel>
+            <InfoIcon
+              text="Options may be cached by the UI. Here you can reload them from the API."
+              marginBottom={0}
+              marginLeft={8}
+              filled
+            />
+          </HeaderReload>
+        ) : null}
+      </Header>
+    )
   }
 
   renderBody() {
