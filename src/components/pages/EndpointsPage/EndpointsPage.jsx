@@ -194,9 +194,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 
   handleExportToJson() {
-    this.state.selectedEndpoints.forEach(endpoint => {
-      endpointStore.exportToJson(endpoint)
-    })
+    endpointStore.exportToZip(this.state.selectedEndpoints)
   }
 
   handleDeleteAction() {

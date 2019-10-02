@@ -17,12 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
-import requireWithoutCache from 'require-without-cache'
 
-import packageJson from '../package.json'
+import router from './router'
 
 // Create our app
 const app = express()
+
 const PORT = process.env.PORT || 3000
 const isDev = process.argv.find(a => a === '--dev')
 const CORIOLIS_URL = process.env.CORIOLIS_URL || '/'
@@ -47,13 +47,7 @@ app.use(express.static('dist'))
 
 require('./proxy')(app)
 
-// $FlowIgnore
-app.get('/version', (req, res) => { res.send({ version: packageJson.version }) })
-
-// $FlowIgnore
-app.get('/config', (req, res) => {
-  res.send(requireWithoutCache('../config.js', require).config)
-})
+app.use('/api', router)
 
 if (isDev) {
   // $FlowIgnore

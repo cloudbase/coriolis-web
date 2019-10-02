@@ -17,7 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, runInAction, action } from 'mobx'
 
 import type { Endpoint, Validation, StorageBackend, Storage } from '../types/Endpoint'
+import type { ZipContent } from '../types/ZipContent'
 
+import apiCaller from '../utils/ApiCaller'
 import notificationStore from './NotificationStore'
 import EndpointSource from '../sources/EndpointSource'
 
@@ -146,6 +148,32 @@ class EndpointStore {
     let connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
     endpoint.connection_info = connectionInfo
     DomUtils.download(JSON.stringify(endpoint), `${endpoint.name}.endpoint`)
+  }
+
+  @action async exportToZip(endpoints: Endpoint[]): Promise<void> {
+    await Promise.all(endpoints.map(async endpoint => {
+      let connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
+      endpoint.connection_info = connectionInfo
+    }))
+    let zipContents: ZipContent[] = endpoints.map(endpoint => ({
+      filename: `${endpoint.name}.endpoint`,
+      content: JSON.stringify(endpoint),
+    }))
+    let response = await apiCaller.send({
+      url: '/api/download-zip',
+      data: { contents: zipContents },
+      method: 'POST',
+      responseType: 'blob',
+    })
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'coriolis-endpoints.zip')
+    if (document.body) {
+      document.body.appendChild(link)
+    }
+    link.click()
+    link.remove()
   }
 
   @action setConnectionInfo(connectionInfo: $PropertyType<Endpoint, 'connection_info'>) {

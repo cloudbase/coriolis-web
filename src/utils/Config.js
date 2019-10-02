@@ -8,7 +8,7 @@ class ConfigLoader {
   config: Config
 
   async load() {
-    let res = await apiCaller.get('/config')
+    let res = await apiCaller.get('/api/config')
     this.config = res.data
   }
 }
