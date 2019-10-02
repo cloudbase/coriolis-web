@@ -151,13 +151,13 @@ class ChooseProvider extends React.Component<Props, State> {
     }
     try {
       let endpoint: Endpoint = JSON.parse(content)
-      if (!endpoint.name || !endpoint.type) {
-        throw new Error('Invalid endpoint')
+      if (!endpoint.name || !endpoint.type || !this.props.providers.find(p => p === endpoint.type)) {
+        throw new Error()
       }
       delete endpoint.id
       this.chooseEndpoint(endpoint)
     } catch (err) {
-      notificationStore.alert('The endpoint could not be parsed', 'error')
+      notificationStore.alert('Invalid .endpoint file', 'error')
     }
   }
 
