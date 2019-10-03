@@ -33,6 +33,7 @@ import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import networkStore from '../../../stores/NetworkStore'
 import instanceStore from '../../../stores/InstanceStore'
+import providerStore from '../../../stores/ProviderStore'
 import configLoader from '../../../utils/Config'
 
 import migrationImage from './images/migration.svg'
@@ -66,8 +67,38 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   componentWillMount() {
     document.title = 'Migration Details'
 
-    endpointStore.getEndpoints({ showLoading: true })
-    this.loadMigrationWithInstances(this.props.match.params.id, true)
+    let loadMigration = async () => {
+      await Promise.all([
+        endpointStore.getEndpoints({ showLoading: true }),
+        this.loadMigrationWithInstances(this.props.match.params.id, true),
+      ])
+      let details = migrationStore.migrationDetails
+      if (!details) {
+        return
+      }
+      let endpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
+      if (!endpoint) {
+        return
+      }
+      // This allows the values to be displayed with their allocated names instead of their IDs
+      await providerStore.loadOptionsSchema({
+        providerName: endpoint.type,
+        schemaType: details.type,
+        optionsType: 'destination',
+        useCache: true,
+        quietError: true,
+      })
+      await providerStore.getOptionsValues({
+        optionsType: 'destination',
+        endpointId: details.destination_endpoint_id,
+        providerName: endpoint.type,
+        envData: details.destination_environment,
+        useCache: true,
+        quietError: true,
+      })
+    }
+    loadMigration()
+
     this.pollData()
   }
 
@@ -266,6 +297,10 @@ class MigrationDetailsPage extends React.Component<Props, State> {
             item={migrationStore.migrationDetails}
             instancesDetails={instanceStore.instancesDetails}
             instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+            destinationSchema={providerStore.destinationSchema}
+            destinationSchemaLoading={providerStore.destinationSchemaLoading
+              || providerStore.destinationOptionsPrimaryLoading
+              || providerStore.destinationOptionsSecondaryLoading}
             endpoints={endpointStore.endpoints}
             page={this.props.match.params.page || ''}
             detailsLoading={endpointStore.loading || migrationStore.detailsLoading}
@@ -302,7 +337,6 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           </Modal>
         ) : null}
         {this.renderEditModal()}
-
       </Wrapper>
     )
   }

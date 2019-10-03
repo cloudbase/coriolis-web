@@ -46,6 +46,7 @@ class Cacher {
       data,
       createdAt: new Date().toISOString(),
     }
+
     localStorage.setItem(STORE, JSON.stringify(storage))
   }
 }

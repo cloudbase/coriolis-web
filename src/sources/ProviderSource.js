@@ -34,7 +34,7 @@ class ProviderSource {
     return response.data.providers
   }
 
-  async loadOptionsSchema(providerName: string, schemaType: 'migration' | 'replica', optionsType: 'source' | 'destination', useCache?: ?boolean): Promise<Field[]> {
+  async loadOptionsSchema(providerName: string, schemaType: 'migration' | 'replica', optionsType: 'source' | 'destination', useCache?: ?boolean, quietError?: ?boolean): Promise<Field[]> {
     let schemaTypeInt = schemaType === 'migration' ?
       optionsType === 'source' ? providerTypes.SOURCE_MIGRATION : providerTypes.TARGET_MIGRATION :
       optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
@@ -42,13 +42,14 @@ class ProviderSource {
     let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`,
       cache: useCache,
+      quietError,
     })
     let schema = optionsType === 'source' ? response.data.schemas.source_environment_schema : response.data.schemas.destination_environment_schema
     let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
     return fields
   }
 
-  async getOptionsValues(optionsType: 'source' | 'destination', endpointId: string, envData: ?{ [string]: mixed }, cache?: ?boolean): Promise<OptionValues[]> {
+  async getOptionsValues(optionsType: 'source' | 'destination', endpointId: string, envData: ?{ [string]: mixed }, cache?: ?boolean, quietError?: boolean): Promise<OptionValues[]> {
     let envString = ''
     if (envData) {
       envString = `?env=${btoa(JSON.stringify(envData))}`
@@ -60,6 +61,7 @@ class ProviderSource {
       url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/${callName}${envString}`,
       cache,
       cancelId: endpointId,
+      quietError,
     })
     return response.data[fieldName]
   }

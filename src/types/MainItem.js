@@ -50,7 +50,7 @@ export type MainItem = {
   origin_endpoint_id: string,
   destination_endpoint_id: string,
   instances: string[],
-  type: string,
+  type: 'replica' | 'migration',
   info: { [string]: MainItemInfo },
   destination_environment: { [string]: mixed },
   source_environment: { [string]: mixed },
