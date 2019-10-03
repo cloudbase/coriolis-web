@@ -51,10 +51,20 @@ const addCancelable = (cancelable: Cancelable) => {
 }
 
 const isOnLoginPage = (): boolean => {
-  if (window.env.ENV === 'development') {
-    return window.location.hash === '#/login'
+  return window.location.hash.indexOf('login') > -1 || window.location.pathname.indexOf('login') > -1
+}
+
+const redirect = (statusCode: number) => {
+  if (statusCode !== 401 || isOnLoginPage()) {
+    return
   }
-  return window.location.pathname === '/login'
+  let currentPath = '?prev=/'
+  if (window.location.pathname !== '/') {
+    currentPath = `?prev=${window.location.pathname}${window.location.search}`
+  } else if (window.location.hash) {
+    currentPath = `?prev=${window.location.hash.replace('#', '')}`
+  }
+  window.location.href = `/login${currentPath}`
 }
 
 class ApiCaller {
@@ -138,8 +148,8 @@ class ApiCaller {
             }
           }
 
-          if (error.response.status === 401 && !isOnLoginPage() && error.request.responseURL.indexOf('/proxy/') === -1) {
-            window.location.href = '/login'
+          if (error.request.responseURL.indexOf('/proxy/') === -1) {
+            redirect(error.response.status)
           }
 
           logger.log({

@@ -107,22 +107,28 @@ class LoginPage extends React.Component<Props, State> {
     document.title = 'Log In'
   }
 
-  handleFormSubmit(data: {
+  async handleFormSubmit(data: {
     username: string,
     password: string,
   }) {
-    userStore.login({
+    await userStore.login({
       name: data.username,
       password: data.password,
       domain: this.state.domain,
     })
+    if (!userStore.loggedIn) {
+      return
+    }
+    let prevExp = /\?prev=(.*)/
+    let prevMatch = prevExp.exec(window.location.hash) || prevExp.exec(window.location.search)
+    if (prevMatch) {
+      this.props.history.push(prevMatch[1])
+    } else {
+      this.props.history.push('/')
+    }
   }
 
   render() {
-    if (userStore.loggedIn) {
-      this.props.history.push('/')
-    }
-
     return (
       <EmptyTemplate>
         <Wrapper>
