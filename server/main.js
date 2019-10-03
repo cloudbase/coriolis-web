@@ -18,7 +18,7 @@ import express from 'express'
 import fs from 'fs'
 import path from 'path'
 
-import router from './router'
+import router from './api/router'
 
 // Create our app
 const app = express()

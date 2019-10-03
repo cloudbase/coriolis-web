@@ -31,7 +31,15 @@ const Wrapper = styled.div`
     margin-top: 32px;
   }
 `
-const wrap = (endpoint, height, disabled = false, white = false) => <EndpointLogos endpoint={endpoint} height={height} disabled={disabled} white={white} />
+const wrap = (endpoint, height, disabled = false, white = false) => (
+  <EndpointLogos
+    endpoint={endpoint}
+    height={height}
+    disabled={disabled}
+    white={white}
+    baseUrl="http://localhost:3000"
+  />
+)
 let providers = [
   'aws',
   'azure',

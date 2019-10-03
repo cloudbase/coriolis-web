@@ -25,17 +25,13 @@ describe('EndpointLogos Component', () => {
   it('renders 32px aws', () => {
     const wrapper = wrap({ height: 32, endpoint: 'aws' })
     const logo = wrapper.find('logo')
-    expect(logo.prop('imageInfo').h).toBe(32)
-    expect(logo.prop('imageInfo').image).toBe('file')
-    expect(wrapper.prop('endpoint')).toBe('aws')
+    expect(logo.prop('url')).toBe('/api/logos/aws/32')
   })
 
   it('renders 128px azure disabled', () => {
     const wrapper = wrap({ height: 128, endpoint: 'azure', disabled: true })
     const logo = wrapper.find('logo')
-    expect(logo.prop('imageInfo').h).toBe(128)
-    expect(logo.prop('imageInfo').disabled).toBe(true)
-    expect(wrapper.prop('endpoint')).toBe('azure')
+    expect(logo.prop('url')).toBe('/api/logos/azure/128/disabled')
   })
 
   it('renders 64px generic logo', () => {

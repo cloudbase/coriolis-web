@@ -17,12 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import requireWithoutCache from 'require-without-cache'
 import express from 'express'
 import bodyParser from 'body-parser'
-import AdmZip from 'adm-zip'
-import stream from 'stream'
 
-import packageJson from '../package.json'
+import LogosApi from './LogosApi'
+import DownloadZipApi from './DownloadZipApi'
 
-import type { ZipContent } from '../src/types/ZipContent'
+import packageJson from '../../package.json'
 
 const router = express.Router()
 
@@ -35,30 +34,10 @@ router.get('/version', (req, res) => {
 
 // $FlowIgnore
 router.get('/config', (req, res) => {
-  res.send(requireWithoutCache('../config.js', require).config)
+  res.send(requireWithoutCache('../../config.js', require).config)
 })
 
-// $FlowIgnore
-router.post('/download-zip', (req, res) => {
-  try {
-    let contents: ZipContent[] = req.body.contents
-    if (!contents || !contents.length || !contents[0].filename || typeof contents[0].content !== 'string') {
-      throw new Error()
-    }
-    let zip = new AdmZip()
-    contents.forEach(content => {
-      zip.addFile(content.filename, Buffer.alloc(content.content.length, content.content))
-    })
-    let zipBuffer = zip.toBuffer()
-    let readStream = new stream.PassThrough()
-    readStream.end(zipBuffer)
-    res.set('Content-Disposition', 'attachment; filename=contents.zip')
-    res.set('Content-Type', 'text/plain')
-    readStream.pipe(res)
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: { message: 'Invalid request body for download zip API' } })
-  }
-})
+DownloadZipApi(router)
+LogosApi(router)
 
 export default router
