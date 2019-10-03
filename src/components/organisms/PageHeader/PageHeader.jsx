@@ -20,6 +20,8 @@ import { observer } from 'mobx-react'
 
 import type { User } from '../../../types/User'
 import type { Project } from '../../../types/Project'
+import type { Endpoint as EndpointType } from '../../../types/Endpoint'
+
 import Dropdown from '../../molecules/Dropdown'
 import NewItemDropdown from '../../molecules/NewItemDropdown'
 import NotificationDropdown from '../../molecules/NotificationDropdown'
@@ -33,6 +35,7 @@ import AboutModal from '../../pages/AboutModal'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
+import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import providerStore from '../../../stores/ProviderStore'
 import Palette from '../../styleUtils/Palette'
@@ -79,6 +82,7 @@ type State = {
   showProjectModal: boolean,
   showAbout: boolean,
   providerType: ?string,
+  uploadedEndpoint: ?EndpointType,
 }
 @observer
 class PageHeader extends React.Component<Props, State> {
@@ -88,6 +92,7 @@ class PageHeader extends React.Component<Props, State> {
     showUserModal: false,
     showProjectModal: false,
     providerType: null,
+    uploadedEndpoint: null,
     showAbout: false,
   }
 
@@ -172,7 +177,18 @@ class PageHeader extends React.Component<Props, State> {
     this.setState({
       showChooseProviderModal: false,
       showEndpointModal: true,
+      uploadedEndpoint: null,
       providerType,
+    })
+  }
+
+  handleUploadEndpoint(endpoint: EndpointType) {
+    endpointStore.setConnectionInfo(endpoint.connection_info)
+    this.setState({
+      showChooseProviderModal: false,
+      showEndpointModal: true,
+      providerType: endpoint.type,
+      uploadedEndpoint: endpoint,
     })
   }
 
@@ -272,6 +288,7 @@ class PageHeader extends React.Component<Props, State> {
             providers={providerStore.providerNames}
             loading={providerStore.providersLoading}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
+            onUploadEndpoint={endpoint => { this.handleUploadEndpoint(endpoint) }}
           />
         </Modal>
         <Modal
@@ -283,6 +300,8 @@ class PageHeader extends React.Component<Props, State> {
             type={this.state.providerType}
             cancelButtonText="Back"
             onCancelClick={options => { this.handleBackEndpointModal(options) }}
+            endpoint={this.state.uploadedEndpoint}
+            isNewEndpoint={Boolean(this.state.uploadedEndpoint)}
           />
         </Modal>
         {this.state.showUserModal ? (

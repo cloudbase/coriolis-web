@@ -70,6 +70,10 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     endpointUsage: { replicas: [], migrations: [] },
   }
 
+  get endpoint(): ?EndpointType {
+    return endpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
+  }
+
   componentDidMount() {
     document.title = 'Endpoint Details'
 
@@ -78,10 +82,6 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   componentWillUnmount() {
     endpointStore.clearConnectionInfo()
-  }
-
-  getEndpoint(): ?EndpointType {
-    return endpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
   }
 
   getEndpointUsage(): { migrations: MainItem[], replicas: MainItem[] } {
@@ -118,9 +118,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   handleDeleteEndpointConfirmation() {
     this.setState({ showDeleteEndpointConfirmation: false })
-    let endpoint = this.getEndpoint()
-    if (endpoint) {
-      endpointStore.delete(endpoint)
+    if (this.endpoint) {
+      endpointStore.delete(this.endpoint)
     }
     this.props.history.push('/endpoints')
   }
@@ -130,17 +129,15 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   handleValidateClick() {
-    let endpoint = this.getEndpoint()
-    if (endpoint) {
-      endpointStore.validate(endpoint)
+    if (this.endpoint) {
+      endpointStore.validate(this.endpoint)
     }
     this.setState({ showValidationModal: true })
   }
 
   handleRetryValidation() {
-    let endpoint = this.getEndpoint()
-    if (endpoint) {
-      endpointStore.validate(endpoint)
+    if (this.endpoint) {
+      endpointStore.validate(this.endpoint)
     }
   }
 
@@ -170,7 +167,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   async handleDuplicate(projectId: string) {
-    let endpoint = this.getEndpoint()
+    let endpoint = this.endpoint
     if (!endpoint) {
       return
     }
@@ -187,6 +184,13 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     this.props.history.push('/endpoints')
   }
 
+  handleExportToJsonClick() {
+    if (!this.endpoint) {
+      return
+    }
+    endpointStore.exportToJson(this.endpoint)
+  }
+
   async loadData() {
     projectStore.getProjects()
 
@@ -198,7 +202,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   async loadEndpoints() {
     await endpointStore.getEndpoints()
-    let endpoint = this.getEndpoint()
+    let endpoint = this.endpoint
 
     if (endpoint && endpoint.connection_info && endpoint.connection_info.secret_ref) {
       endpointStore.getConnectionInfo(endpoint)
@@ -210,7 +214,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   render() {
     let selectedProjectId = userStore.loggedUser ? userStore.loggedUser.project.id : ''
 
-    let endpoint = this.getEndpoint()
+    let endpoint = this.endpoint
     let dropdownActions = [{
       label: 'Validate',
       color: Palette.primary,
@@ -222,7 +226,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     }, {
       label: 'Duplicate',
       action: () => { this.handleDuplicateClick() },
-
+    }, {
+      label: 'Download .endpoint file',
+      action: () => { this.handleExportToJsonClick() },
     }, {
       label: 'Delete Endpoint',
       color: Palette.alert,
@@ -291,7 +297,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           onRequestClose={() => { this.handleCloseEndpointModal() }}
         >
           <Endpoint
-            endpoint={this.getEndpoint()}
+            endpoint={this.endpoint}
             onValidateClick={endpoint => this.handleEditValidateClick(endpoint)}
             onCancelClick={() => { this.handleCloseEndpointModal() }}
           />

@@ -32,7 +32,7 @@ class LicenceStore {
       return this.version
     }
 
-    let response = await apiCaller.get('/version')
+    let response = await apiCaller.get('/api/version')
     runInAction(() => {
       this.version = response.data.version
     })

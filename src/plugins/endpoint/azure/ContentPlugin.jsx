@@ -78,6 +78,7 @@ type Props = {
   disabled: boolean,
   cancelButtonText: string,
   validating: boolean,
+  originalConnectionInfo: ?any,
   onRef: (contentPlugin: any) => void,
   onResizeUpdate: (scrollOfset: number) => void,
   scrollableRef: (ref: HTMLElement) => void,
@@ -168,14 +169,31 @@ class ContentPlugin extends React.Component<Props, State> {
     this.setState({ showAdvancedOptions })
   }
 
+  getLoginTypeValue() {
+    let loginTypeField = this.props.connectionInfoSchema.find(f => f.name === 'login_type')
+    let value = this.props.getFieldValue(loginTypeField)
+    if (!value) {
+      value = 'user_credentials'
+      let conn = this.props.originalConnectionInfo
+      if (conn && conn.service_principal_credentials) {
+        value = 'service_principal_credentials'
+        let loginFieldType = this.props.connectionInfoSchema.find(f => f.name === 'login_type')
+        if (loginFieldType) {
+          this.props.handleFieldChange(loginFieldType, value)
+        }
+      }
+    }
+    return value
+  }
+
   getSelectedLoginTypeField() {
     let loginTypeField = this.props.connectionInfoSchema.find(f => f.name === 'login_type')
-    return loginTypeField && loginTypeField.items ? loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField)) : null
+    return loginTypeField && loginTypeField.items ?
+      loginTypeField.items.find(f => f.name === this.getLoginTypeValue()) : null
   }
 
   isServicePrincipalLogin() {
-    let selectedLoginTypeField = this.getSelectedLoginTypeField()
-    return selectedLoginTypeField && selectedLoginTypeField.name === 'service_principal_credentials'
+    return this.getLoginTypeValue() === 'service_principal_credentials'
   }
 
   findInvalidFields = () => {
@@ -292,7 +310,7 @@ class ContentPlugin extends React.Component<Props, State> {
     if (!loginTypeField || !loginTypeField.items) {
       return null
     }
-    let loginTypeFieldItems = loginTypeField.items.find(f => f.name === this.props.getFieldValue(loginTypeField))
+    let loginTypeFieldItems = loginTypeField.items.find(f => f.name === this.getLoginTypeValue())
     if (!loginTypeFieldItems || !loginTypeFieldItems.fields || !cloudProfileField) {
       return null
     }
@@ -305,7 +323,7 @@ class ContentPlugin extends React.Component<Props, State> {
         <RadioGroup key="radio-group">
           {loginTypeField.items && loginTypeField.items.map(field =>
             this.renderField(field, {
-              value: this.props.getFieldValue(loginTypeField) === field.name,
+              value: this.getLoginTypeValue() === field.name,
               onChange: value => { if (value) this.props.handleFieldChange(loginTypeField, field.name) },
             })
           )}

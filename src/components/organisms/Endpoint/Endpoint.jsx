@@ -111,6 +111,7 @@ type Props = {
   cancelButtonText: string,
   deleteOnCancel: boolean,
   endpoint: ?EndpointType,
+  isNewEndpoint?: boolean,
   onCancelClick: (opts?: { autoClose?: boolean }) => void,
   onResizeUpdate: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
 }
@@ -168,7 +169,9 @@ class Endpoint extends React.Component<Props, State> {
 
     if (props.endpoint && endpointStore.connectionInfo) {
       this.setState({
+        isNew: this.props.isNewEndpoint ? (this.state.isNew === null || this.state.isNew) : this.state.isNew,
         endpoint: {
+          ...this.state.endpoint,
           ...ObjectUtils.flatten(props.endpoint || {}),
           ...ObjectUtils.flatten(endpointStore.connectionInfo || {}),
         },
@@ -277,15 +280,15 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   async update() {
-    if (!this.state.endpoint) {
+    let stateEndpoint = this.state.endpoint
+    if (!stateEndpoint) {
       return
     }
-
-    await endpointStore.update(this.state.endpoint)
-    let endpoint = endpointStore.endpoints.find(e => this.state.endpoint && e.id === this.state.endpoint.id)
+    let endpoint = endpointStore.endpoints.find(e => e.id === stateEndpoint.id)
     if (!endpoint) {
-      throw new Error('endpoint not found')
+      throw new Error('Endpoint not found in store')
     }
+    await endpointStore.update(stateEndpoint)
 
     this.setState({ endpoint: ObjectUtils.flatten(endpoint) })
     notificationStore.alert('Validating endpoint ...')
@@ -387,6 +390,7 @@ class Endpoint extends React.Component<Props, State> {
           validating: this.state.validating,
           disabled: this.state.validating,
           cancelButtonText: this.props.cancelButtonText,
+          originalConnectionInfo: endpointStore.connectionInfo,
           getFieldValue: field => this.getFieldValue(field),
           highlightRequired: () => this.highlightRequired(),
           handleFieldChange: (field, value) => {
