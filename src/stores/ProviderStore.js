@@ -98,7 +98,6 @@ class ProviderStore {
   @observable sourceSchemaLoading: boolean = false
 
   lastDestinationSchemaType: 'replica' | 'migration' = 'replica'
-  lastSourceSchemaType: 'replica' | 'migration' = 'replica'
 
   @computed
   get providerNames(): string[] {
@@ -155,13 +154,8 @@ class ProviderStore {
     optionsType: 'source' | 'destination',
     useCache?: boolean,
     quietError?: boolean,
-  }): Promise<void> {
+  }): Promise<Field[]> {
     let { schemaType, providerName, optionsType, useCache, quietError } = options
-    if (optionsType === 'source') {
-      this.lastSourceSchemaType = schemaType
-    } else {
-      this.lastDestinationSchemaType = schemaType
-    }
 
     if (optionsType === 'source') {
       this.sourceSchemaLoading = true
@@ -172,6 +166,7 @@ class ProviderStore {
     try {
       let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, schemaType, optionsType, useCache, quietError)
       this.loadOptionsSchemaSuccess(fields, optionsType)
+      return fields
     } catch (err) {
       throw err
     } finally {
@@ -229,12 +224,7 @@ class ProviderStore {
       if (canceled) {
         return optionsType === 'source' ? [...this.sourceOptions] : [...this.destinationOptions]
       }
-      let schemaType = optionsType === 'source' ? this.lastSourceSchemaType : this.lastDestinationSchemaType
-      if (!envData) {
-        return []
-      }
-      let newOptions = await this.loadOptionsSchema({ providerName, schemaType, optionsType })
-      return newOptions
+      throw err
     } finally {
       if (!canceled) {
         this.getOptionsValuesDone(optionsType, !envData)

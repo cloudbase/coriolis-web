@@ -88,6 +88,7 @@ type State = {
   updateDisabled: boolean,
   selectedNetworks: NetworkMap[],
   storageMap: StorageMap[],
+  sourceFailed: boolean,
 }
 
 @observer
@@ -99,6 +100,7 @@ class EditReplica extends React.Component<Props, State> {
     updateDisabled: false,
     selectedNetworks: [],
     storageMap: [],
+    sourceFailed: false,
   }
 
   scrollableRef: HTMLElement
@@ -118,8 +120,18 @@ class EditReplica extends React.Component<Props, State> {
 
     let loadAllOptions = async (type: 'source' | 'destination') => {
       let endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
-      await this.loadOptions(endpoint, type, useCache)
-      this.loadExtraOptions(null, type, useCache)
+      try {
+        await this.loadOptions(endpoint, type, useCache)
+        this.loadExtraOptions(null, type, useCache)
+      } catch (err) {
+        if (type === 'source') {
+          let selectedPanel = this.state.selectedPanel
+          if (selectedPanel === 'source_options') {
+            selectedPanel = 'dest_options'
+          }
+          this.setState({ sourceFailed: true, selectedPanel })
+        }
+      }
     }
     if (this.hasSourceOptions()) {
       loadAllOptions('source')
@@ -359,14 +371,15 @@ class EditReplica extends React.Component<Props, State> {
     return selectedNetworks
   }
 
-  getStorageMap(): StorageMap[] {
+  getStorageMap(storageBackends: StorageBackend[]): StorageMap[] {
     let storageMap: StorageMap[] = []
     let currentStorage = this.props.replica.storage_mappings || {}
     let buildStorageMap = (type: 'backend' | 'disk', mapping: any) => {
+      let backend = storageBackends.find(b => b.name === mapping.destination)
       return {
         type,
         source: { storage_backend_identifier: mapping.source, id: mapping.disk_id },
-        target: { name: mapping.destination, id: mapping.destination },
+        target: { name: mapping.destination, id: backend ? backend.id : mapping.destination },
       }
     }
     let backendMappings = currentStorage.backend_mappings || []
@@ -445,7 +458,7 @@ class EditReplica extends React.Component<Props, State> {
       <WizardStorage
         storageBackends={endpointStore.storageBackends}
         instancesDetails={this.props.instancesDetails}
-        storageMap={this.getStorageMap()}
+        storageMap={this.getStorageMap(endpointStore.storageBackends)}
         onChange={(s, t, type) => { this.handleStorageChange(s, t, type) }}
         style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}
       />
@@ -527,7 +540,12 @@ class EditReplica extends React.Component<Props, State> {
     }
 
     if (this.hasSourceOptions()) {
-      navigationItems.splice(0, 0, { value: 'source_options', label: 'Source Options' })
+      navigationItems.splice(0, 0, {
+        value: 'source_options',
+        label: 'Source Options',
+        disabled: this.state.sourceFailed,
+        title: this.state.sourceFailed ? 'There are source platform errors, source options can\'t be updated' : '',
+      })
     }
 
     return (
