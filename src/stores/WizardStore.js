@@ -24,7 +24,7 @@ import type { NetworkMap } from '../types/Network'
 import type { StorageMap } from '../types/Endpoint'
 import type { Schedule } from '../types/Schedule'
 import { wizardPages } from '../constants'
-import Source from '../sources/WizardSource'
+import source from '../sources/WizardSource'
 
 const updateOptions = (oldOptions: ?{ [string]: mixed }, data: { field: Field, value: any }) => {
   let options = { ...oldOptions }
@@ -141,7 +141,7 @@ class WizardStore {
     this.creatingItem = true
 
     try {
-      let item: MainItem = await Source.create(type, data, storageMap)
+      let item: MainItem = await source.create(type, data, storageMap)
       runInAction(() => { this.createdItem = item })
     } catch (err) {
       throw err
@@ -154,27 +154,25 @@ class WizardStore {
     this.creatingItems = true
 
     try {
-      let items: MainItem[] = await Source.createMultiple(type, data, storageMap)
+      let items: MainItem[] = await source.createMultiple(type, data, storageMap)
       runInAction(() => { this.createdItems = items })
     } finally {
       runInAction(() => { this.creatingItems = false })
     }
   }
 
-  setPermalink(data: WizardData) {
-    Source.setPermalink(data)
+  updateUrlState() {
+    source.setUrlState({ data: this.data, schedules: this.schedules, storageMap: this.storageMap })
   }
 
-  @action getDataFromPermalink() {
-    let data = Source.getDataFromPermalink()
-    if (!data) {
+  @action getUrlState() {
+    let state = source.getUrlState()
+    if (!state) {
       return
     }
-
-    this.data = {
-      ...this.data,
-      ...data,
-    }
+    this.data = state.data
+    this.schedules = state.schedules
+    this.storageMap = state.storageMap
   }
 }
 
