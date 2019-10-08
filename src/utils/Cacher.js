@@ -3,8 +3,7 @@
 import type { Cache } from '../types/Cache'
 
 const MAX_ITEMS = 100
-
-const DEFAULT_MAX_AGE = 15 * 60 * 1000 // 15 minutes
+const DEFAULT_MAX_AGE = 30 * 60 * 1000 // 30 minutes
 const STORE = 'api-cacher'
 
 class Cacher {

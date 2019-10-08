@@ -224,11 +224,13 @@ class WizardPage extends React.Component<Props, State> {
       providerName: source.type,
       schemaType: this.state.type,
       optionsType: 'source',
+      useCache: true,
     })
     source && providerStore.getOptionsValues({
       optionsType: 'source',
       endpointId: source.id,
       providerName: source.type,
+      useCache: true,
     })
   }
 
@@ -244,12 +246,14 @@ class WizardPage extends React.Component<Props, State> {
       providerName: target.type,
       schemaType: this.state.type,
       optionsType: 'destination',
+      useCache: true,
     })
     // Preload destination options values
     providerStore.getOptionsValues({
       optionsType: 'destination',
       endpointId: target.id,
       providerName: target.type,
+      useCache: true,
     })
   }
 
@@ -341,6 +345,25 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.removeSchedule(scheduleId)
   }
 
+  async handleReloadOptionsClick() {
+    let optionsType: 'source' | 'destination' = wizardStore.currentPage.id === 'source-options' ? 'source' : 'destination'
+    let endpoint = optionsType === 'source' ? wizardStore.data.source : wizardStore.data.target
+    if (!endpoint) {
+      return
+    }
+    await providerStore.loadOptionsSchema({
+      providerName: endpoint.type,
+      schemaType: this.state.type,
+      optionsType,
+    })
+    await providerStore.getOptionsValues({
+      optionsType,
+      endpointId: endpoint.id,
+      providerName: endpoint.type,
+    })
+    await this.loadExtraOptions(undefined, optionsType, false)
+  }
+
   initializeState() {
     wizardStore.getDataFromPermalink()
     let type = this.props.match && this.props.match.params.type
@@ -349,7 +372,7 @@ class WizardPage extends React.Component<Props, State> {
     }
   }
 
-  loadExtraOptions(field?: Field, type: 'source' | 'destination') {
+  loadExtraOptions(field?: Field, type: 'source' | 'destination', useCache: boolean = true) {
     let endpoint = type === 'source' ? wizardStore.data.source : wizardStore.data.target
     if (!endpoint) {
       return
@@ -369,6 +392,7 @@ class WizardPage extends React.Component<Props, State> {
       endpointId: endpoint.id,
       providerName: endpoint.type,
       envData,
+      useCache,
     })
   }
 
@@ -382,6 +406,7 @@ class WizardPage extends React.Component<Props, State> {
         providerName: endpoint.type,
         schemaType: this.state.type,
         optionsType,
+        useCache: true,
       })
 
       // Preload source options if data is set from 'Permalink'
@@ -390,6 +415,7 @@ class WizardPage extends React.Component<Props, State> {
           optionsType,
           endpointId: endpoint.id,
           providerName: endpoint.type,
+          useCache: true,
         })
         await this.loadExtraOptions(undefined, optionsType)
       }
@@ -567,6 +593,7 @@ class WizardPage extends React.Component<Props, State> {
             onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
             onContentRef={ref => { this.contentRef = ref }}
+            onReloadOptionsClick={() => { this.handleReloadOptionsClick() }}
           />}
         />
         <Modal
