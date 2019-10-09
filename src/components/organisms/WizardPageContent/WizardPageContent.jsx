@@ -185,6 +185,7 @@ type Props = {
   onScheduleRemove: (scheudleId: string) => void,
   onContentRef: (ref: any) => void,
   onReloadOptionsClick: () => void,
+  onReloadNetworksClick: () => void,
 }
 type TimezoneValue = 'local' | 'utc'
 type State = {
@@ -296,15 +297,30 @@ class WizardPageContent extends React.Component<Props, State> {
     if (pageId === 'type') {
       title += ` ${this.props.type.charAt(0).toUpperCase() + this.props.type.substr(1)}`
     }
-
+    let optionsReload = {
+      label: 'Reload Options',
+      action: () => { this.props.onReloadOptionsClick() },
+      tip: 'Options may be cached by the UI. Here you can reload them from the API.',
+    }
+    let reloadPages = {
+      'source-options': optionsReload,
+      'dest-options': optionsReload,
+      networks: {
+        label: 'Reload Networks',
+        action: () => { this.props.onReloadNetworksClick() },
+        tip: 'Networks and instances info may be cached by the UI. Here you can reload them from the API.',
+      },
+    }
     return (
       <Header>
         <HeaderLabel data-test-id={`${testName}-header`}>{title}</HeaderLabel>
-        {pageId === 'source-options' || pageId === 'dest-options' ? (
+        {reloadPages[pageId] ? (
           <HeaderReload>
-            <HeaderReloadLabel onClick={() => { this.props.onReloadOptionsClick() }}>Reload Options</HeaderReloadLabel>
+            <HeaderReloadLabel onClick={() => { reloadPages[pageId].action() }}>
+              {reloadPages[pageId].label}
+            </HeaderReloadLabel>
             <InfoIcon
-              text="Options may be cached by the UI. Here you can reload them from the API."
+              text={reloadPages[pageId].tip}
               marginBottom={0}
               marginLeft={8}
               filled

@@ -125,13 +125,13 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
     networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
       quietError: true,
-      useLocalStorage: cache,
+      cache,
     })
     instanceStore.loadInstancesDetails({
       endpointId: details.origin_endpoint_id,
       // $FlowIgnore
       instancesInfo: details.instances.map(n => ({ instance_name: n })),
-      useLocalStorage: cache,
+      cache,
       quietError: false,
       env: details.source_environment,
     })

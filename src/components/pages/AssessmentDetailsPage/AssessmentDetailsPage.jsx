@@ -394,7 +394,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     networkStore.loadNetworks(localData.endpoint.id, {
       location: localData.locationName,
       resource_group: localData.resourceGroupName,
-    }, { useLocalStorage: true })
+    }, { cache: true })
   }
 
   loadInstancesDetails() {
@@ -405,7 +405,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     instanceStore.loadInstancesDetails({
       endpointId: this.getSourceEndpointId(),
       instancesInfo,
-      useLocalStorage: true,
+      cache: true,
       env: {
         location: localData.locationName,
         resource_group: localData.resourceGroupName,

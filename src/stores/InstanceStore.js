@@ -57,7 +57,16 @@ class InstanceStore {
   lastEndpointId: string
   reqId: number
 
-  @action async loadInstancesInChunks(endpoint: Endpoint, vmsPerPage?: number = 6, reload?: boolean, env?: any) {
+  @action async loadInstancesInChunks(options: {
+    endpoint: Endpoint,
+    vmsPerPage?: number,
+    reload?: boolean,
+    env?: any,
+    useCache?: boolean,
+  }) {
+    let { endpoint, vmsPerPage, reload, env, useCache } = options
+    vmsPerPage = vmsPerPage || 6
+
     ApiCaller.cancelRequests(`${endpoint.id}-chunk`)
 
     this.backgroundInstances = []
@@ -73,7 +82,7 @@ class InstanceStore {
 
     let loadNextChunk = async (lastEndpointId?: string) => {
       let currentEndpointId = endpoint.id
-      let instances = await InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`, undefined, env)
+      let instances = await InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`, undefined, env, useCache)
       if (currentEndpointId !== this.lastEndpointId) {
         return
       }
@@ -186,7 +195,7 @@ class InstanceStore {
     this.searchNotFound = false
     this.searchText = ''
     this.currentPage = 1
-    this.loadInstancesInChunks(endpoint, chunkSize, true, env)
+    this.loadInstancesInChunks({ endpoint, vmsPerPage: chunkSize, reload: true, env })
   }
 
   @action cancelIntancesChunksLoading() {
@@ -209,11 +218,11 @@ class InstanceStore {
   @action async loadInstancesDetails(opts: {
     endpointId: string,
     instancesInfo: Instance[],
-    useLocalStorage?: boolean,
+    cache?: boolean,
     quietError?: boolean,
     env?: any,
   }): Promise<void> {
-    let { endpointId, instancesInfo, useLocalStorage, quietError, env } = opts
+    let { endpointId, instancesInfo, cache, quietError, env } = opts
     // Use reqId to be able to uniquely identify the request so all but the latest request can be igonred and canceled
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
@@ -232,7 +241,7 @@ class InstanceStore {
         try {
           let resp: { instance: Instance, reqId: number } =
             await InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name || instanceInfo.name,
-              this.reqId, quietError, env, useLocalStorage)
+              this.reqId, quietError, env, cache)
           if (resp.reqId !== this.reqId) {
             return
           }

@@ -22,7 +22,7 @@ import { servicesUrl } from '../constants'
 class NetworkSource {
   async loadNetworks(enpointId: string, environment: ?{ [string]: mixed }, options?: {
     quietError?: boolean,
-    useLocalStorage?: boolean,
+    cache?: boolean,
   }): Promise<Network[]> {
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`
     if (environment) {
@@ -31,7 +31,7 @@ class NetworkSource {
     let response = await Api.send({
       url,
       quietError: options && options.quietError,
-      cache: options && options.useLocalStorage,
+      cache: options && options.cache,
     })
     let networks: Network[] = response.data.networks.filter(n => n.name.indexOf('coriolis-migrnet') === -1)
     networks.sort((a, b) => a.name.localeCompare(b.name))
