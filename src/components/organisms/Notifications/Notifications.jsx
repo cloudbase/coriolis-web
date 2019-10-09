@@ -31,10 +31,13 @@ injectGlobal`
 
 const Wrapper = styled.div``
 
+const MAX_NOTIFICATIONS = 3
+
 @observer
 class Notifications extends React.Component<{}> {
   notificationSystem: NotificationSystem
   notificationsCount = 0
+  activeNotifications: any[] = []
 
   componentDidMount() {
     observe(notificationStore.alerts, change => {
@@ -55,6 +58,15 @@ class Notifications extends React.Component<{}> {
       position: 'br',
       autoDismiss: lastNotification.message.length < 150 ? 10 : 30,
       action: lastNotification.options ? lastNotification.options.action : null,
+      onAdd: notification => {
+        this.activeNotifications.push(notification)
+        for (let i = 0; i < this.activeNotifications.length - MAX_NOTIFICATIONS; i += 1) {
+          this.notificationSystem.removeNotification(this.activeNotifications[i].uid)
+        }
+      },
+      onRemove: notification => {
+        this.activeNotifications = this.activeNotifications.filter(n => n.uid !== notification.uid)
+      },
     })
 
     this.notificationsCount = alerts.length
