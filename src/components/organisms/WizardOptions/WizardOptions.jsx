@@ -94,7 +94,6 @@ const LoadingText = styled.div`
 
 export const shouldRenderField = (field: Field) => {
   return (field.type !== 'array' || (field.enum && field.enum.length && field.enum.length > 0)) &&
-    (field.type !== 'integer' || (field.minimum && field.maximum)) &&
     (field.type !== 'object' || field.properties)
 }
 type FieldRender = {
