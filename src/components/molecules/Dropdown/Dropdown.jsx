@@ -114,6 +114,7 @@ const ListItem = styled.div`
   padding: 8px 16px;
   transition: all ${StyleProps.animations.swift};
   padding-left: ${props => props.paddingLeft}px;
+  word-break: break-word;
 
   &:first-child {
     border-top-left-radius: ${StyleProps.borderRadius};
