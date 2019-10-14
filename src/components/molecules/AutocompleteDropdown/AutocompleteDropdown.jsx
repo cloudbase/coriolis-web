@@ -81,9 +81,9 @@ const ListItem = styled.div`
   color: ${props => props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
   ${props => props.selected ? css`background: ${Palette.primary};` : ''}
   ${props => props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : ''}
-
   padding: 8px 16px;
   transition: all ${StyleProps.animations.swift};
+  word-break: break-word;
 
   &:first-child {
     border-top-left-radius: ${StyleProps.borderRadius};
