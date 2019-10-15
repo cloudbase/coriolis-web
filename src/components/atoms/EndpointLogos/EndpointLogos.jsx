@@ -28,6 +28,7 @@ const Logo = styled.div`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
   ${props => props.url ? css`background: url('${props.url}') no-repeat center;` : ''}
+  background-size: contain;
 `
 const widthHeights = [
   { w: 80, h: 32 },

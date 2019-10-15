@@ -14,12 +14,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import requireWithoutCache from 'require-without-cache'
 import express from 'express'
 import bodyParser from 'body-parser'
 
 import LogosApi from './LogosApi'
 import DownloadZipApi from './DownloadZipApi'
+import ConfigApi from './ConfigApi'
 
 import packageJson from '../../package.json'
 
@@ -32,11 +32,7 @@ router.get('/version', (req, res) => {
   res.json({ version: packageJson.version })
 })
 
-// $FlowIgnore
-router.get('/config', (req, res) => {
-  res.send(requireWithoutCache('../../config.js', require).config)
-})
-
+ConfigApi(router)
 DownloadZipApi(router)
 LogosApi(router)
 

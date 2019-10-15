@@ -104,7 +104,7 @@ export default (router: express$Router) => {
       res.sendFile(modLogoPath)
     } catch (err) {
       console.error(err)
-      res.status(500).json({ error: { message: 'Invalid Mod JSON file' } })
+      res.status(400).json({ error: { message: 'Invalid Mod JSON file' } })
     }
   })
 }

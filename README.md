@@ -42,3 +42,5 @@ The path to the .json mod file needs to be set in `MOD_JSON` environment variabl
 Any provider logos can be replaced using local logo images. The local image file paths need to be absolute.
 
 You can specify one logo, in which case it will be scaled to all sizes. You can also specify logos for just a couple of the sizes, in which case the closest size to the one required will be used. Open [`ui-mod-sample.json`](ui-mod-sample.json) for more details.
+
+Any option from [`config.js`](config.js) can be modified by adding the `config` field to the [`ui-mod-sample.json`](ui-mod-sample.json) file.
