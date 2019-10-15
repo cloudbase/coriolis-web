@@ -194,7 +194,7 @@ class ProviderStore {
     optionsType: 'source' | 'destination',
     endpointId: string,
     providerName: string,
-    envData?: { [string]: mixed },
+    envData?: ?{ [string]: mixed },
     useCache?: boolean,
     quietError?: boolean,
   }): Promise<OptionValues[]> {
