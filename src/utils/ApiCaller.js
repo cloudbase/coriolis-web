@@ -152,10 +152,16 @@ class ApiCaller {
             !options.quietError) {
             let data = error.response.data
             let message = (data && data.error && data.error.message) || (data && data.description)
-            message = message || `${error.response.statusText || error.response.status} ${truncateUrl(options.url)}`
-            if (message) {
-              notificationStore.alert(message, 'error')
-            }
+            let alertMessage = message || `${error.response.statusText || error.response.status} ${truncateUrl(options.url)}`
+            let status = error.response.status && error.response.statusText
+              ? `${error.response.status} - ${error.response.statusText}`
+              : error.response.statusText || error.response.status
+            notificationStore.alert(alertMessage, 'error', {
+              action: {
+                label: 'View details',
+                callback: () => ({ request: axiosOptions, error: { status, message } }),
+              },
+            })
           }
 
           if (error.request.responseURL.indexOf('/proxy/') === -1) {
@@ -174,8 +180,19 @@ class ApiCaller {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
           if (!isOnLoginPage() && !options.quietError) {
-            notificationStore.alert(`Request failed, there might be a problem with the connection to the server.
-              ${truncateUrl(options.url)}`, 'error')
+            notificationStore.alert(
+              `Request failed, there might be a problem with the connection to the server. ${truncateUrl(options.url)}`,
+              'error',
+              {
+                action: {
+                  label: 'View details',
+                  callback: () => ({
+                    request: axiosOptions,
+                    error: { message: 'Request was made but no response was received' },
+                  }),
+                },
+              }
+            )
           }
           logger.log({
             url: axiosOptions.url,
@@ -207,8 +224,19 @@ class ApiCaller {
             description: 'Something happened in setting up the request',
             requestStatus: 500,
           })
-          notificationStore.alert(`Request failed, there might be a problem with the connection to the server.
-            ${options.url}`, 'error')
+          notificationStore.alert(
+            `Request failed, there might be a problem with the connection to the server. ${truncateUrl(options.url)}`,
+            'error',
+            {
+              action: {
+                label: 'View details',
+                callback: () => ({
+                  request: axiosOptions,
+                  error: { message: 'Something happened in setting up the request' },
+                }),
+              },
+            }
+          )
         }
       })
     })

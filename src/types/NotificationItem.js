@@ -14,17 +14,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+export type AlertInfoLevel = 'success' | 'error' | 'info'
+
+export type AlertInfoOptions = {
+  action?: {
+    label: string,
+    callback: () => any,
+  }
+}
+
 export type AlertInfo = {
-  options?: {
-    action?: {
-      label: string,
-      callback: () => void,
-    }
-  },
+  options?: AlertInfoOptions,
   message: string,
   title?: string,
   id?: string,
-  level?: 'success' | 'error' | 'info',
+  level?: AlertInfoLevel,
 }
 
 export type NotificationItemData = {

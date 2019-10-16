@@ -36,6 +36,9 @@ const NotificationsStyle = css`
     cursor: pointer;
     margin-left: 25px !important;
   }
+  .notification-error .notification-action-button {
+    background: ${Palette.secondaryLight} !important;
+  }
   .notification {
     border-radius: ${StyleProps.borderRadius} !important;
     background-color: ${Palette.grayscale[1]} !important;
