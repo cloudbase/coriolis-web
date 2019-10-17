@@ -112,18 +112,25 @@ class StatusPill extends React.Component<Props> {
 
   render() {
     const dataTestId = this.props['data-test-id'] ? this.props['data-test-id'] : `statusPill-${this.props.status || 'null'}`
+    let label = this.props.label || this.props.status
+    let status = this.props.status
+
+    if (status === 'CANCELED_FOR_DEBUGGING') {
+      status = 'ERROR'
+      label = 'DEBUG'
+    }
 
     return (
       <Wrapper
         {...this.props}
-        status={this.props.status}
+        status={status}
         primary={this.props.primary}
         secondary={this.props.secondary}
         alert={this.props.alert}
         small={this.props.small}
         data-test-id={dataTestId}
       >
-        {this.props.label || this.props.status}
+        {label}
       </Wrapper>
     )
   }

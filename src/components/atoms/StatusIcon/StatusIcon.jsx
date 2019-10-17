@@ -83,8 +83,12 @@ const Wrapper = styled.div`
 @observer
 class StatusIcon extends React.Component<Props> {
   render() {
+    let status = this.props.status
+    if (status === 'CANCELED_FOR_DEBUGGING') {
+      status = 'ERROR'
+    }
     return (
-      <Wrapper {...this.props} />
+      <Wrapper {...this.props} status={status} />
     )
   }
 }
