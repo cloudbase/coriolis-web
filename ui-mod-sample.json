@@ -1,0 +1,51 @@
+{
+  "config": {
+    "_comment": "Add any `config.js` property here to override it.",
+    "disabledPages": [
+      "planning",
+      "users",
+      "projects"
+    ]
+  },
+  "providers": {
+    "openstack": {
+      "logos": {
+        "height32": {
+          "_comment": "As seen in Wizard page breadcrumbs and Replicas page list item.",
+          "path": "/tmp/logos/logo.svg"
+        },
+        "height32white": {
+          "_comment": "As seen in Dashboard page, Top Endpoints chart tooltip.",
+          "path": "/tmp/logos/logo-white.svg"
+        },
+        "height42": {
+          "_comment": "As seen in Endpoints page list item.",
+          "path": "/tmp/logos/logo.svg"
+        },
+        "height64": {
+          "_comment": "As seen in Replica Details page and Endpoint Details page.",
+          "path": "/tmp/logos/logo.svg"
+        },
+        "height128": {
+          "_comment": "As seen in New Endpoint modal and Wizard endpoint selection page.",
+          "path": "/tmp/logos/logo.svg"
+        },
+        "height128disabled": {
+          "_comment": "As seen in Wizard endpoint selection page when there's no endpoint for that provider.",
+          "path": "/tmp/logos/logo-disabled.svg"
+        }
+      }
+    },
+    "oci": {
+      "_comment": "Specifying all heights is not required, it will scale to the closest one provided. If there's a no height properties in 'logos', the logo will be scaled to all heights",
+      "logos": {
+        "default": {
+          "path": "/tmp/logos/one-logo.svg"
+        },
+        "disabled": {
+          "path": "/tmp/logos/one-logo-disabled.svg"
+        }
+      }
+    }
+  }
+}
