@@ -60,6 +60,18 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
+const ErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+`
+const ErrorMessage = styled.div`
+  margin-top: 16px;
+  text-align: center;
+`
 const Buttons = styled.div`
   padding: 32px;
   display: flex;
@@ -89,6 +101,7 @@ type State = {
   selectedNetworks: NetworkMap[],
   storageMap: StorageMap[],
   sourceFailed: boolean,
+  destinationFailedMessage: ?string,
 }
 
 @observer
@@ -101,6 +114,7 @@ class EditReplica extends React.Component<Props, State> {
     selectedNetworks: [],
     storageMap: [],
     sourceFailed: false,
+    destinationFailedMessage: null,
   }
 
   scrollableRef: HTMLElement
@@ -141,11 +155,22 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   async loadOptions(endpoint: Endpoint, optionsType: 'source' | 'destination', useCache: boolean, envData: ?{ [string]: mixed }) {
-    await providerStore.loadOptionsSchema({
-      providerName: endpoint.type,
-      optionsType,
-      useCache,
-    })
+    try {
+      await providerStore.loadOptionsSchema({
+        providerName: endpoint.type,
+        schemaType: this.props.type || 'replica',
+        optionsType,
+        useCache,
+      })
+    } catch (err) {
+      if (optionsType === 'destination' || this.props.type === 'migration') {
+        let destinationFailedMessage = this.props.type === 'replica'
+          ? 'An error has occurred during the loading of the Replica\'s options for editing. There could be connection issues with the destination platform. Please retry the operation.'
+          : 'An error has occurred during loading of the source or destination platforms\' environment options for editing of the Migration\'s parameters. You may still recreate the Migration with the same parameters as the original one by clicking "Create".'
+        this.setState({ destinationFailedMessage })
+      }
+      throw err
+    }
     await providerStore.getOptionsValues({
       optionsType,
       endpointId: endpoint.id,
@@ -201,7 +226,9 @@ class EditReplica extends React.Component<Props, State> {
     let isLoadingNetwork = this.state.selectedPanel === 'network_mapping' && this.props.instancesDetailsLoading
     let isLoadingStorage = this.state.selectedPanel === 'storage_mapping'
       && (this.props.instancesDetailsLoading || endpointStore.storageLoading)
-    return this.state.updateDisabled || isLoadingSourceOptions || isLoadingDestOptions || isLoadingNetwork || isLoadingStorage
+    let isDestFailed = this.props.type === 'replica' && this.state.destinationFailedMessage
+    return this.state.updateDisabled || isLoadingSourceOptions || isLoadingDestOptions || isLoadingNetwork
+      || isLoadingStorage || isDestFailed
   }
 
   parseReplicaData(environment: ?{ [string]: mixed }) {
@@ -411,9 +438,21 @@ class EditReplica extends React.Component<Props, State> {
     return storageMap
   }
 
+  renderDestinationFailedMessage() {
+    return (
+      <ErrorWrapper>
+        <StatusImage status="ERROR" />
+        <ErrorMessage>{this.state.destinationFailedMessage}</ErrorMessage>
+      </ErrorWrapper>
+    )
+  }
+
   renderOptions(type: 'source' | 'destination') {
     let loading = type === 'source' ? (providerStore.sourceSchemaLoading || providerStore.sourceOptionsPrimaryLoading)
       : (providerStore.destinationSchemaLoading || providerStore.destinationOptionsPrimaryLoading)
+    if (this.state.destinationFailedMessage) {
+      return this.renderDestinationFailedMessage()
+    }
     if (loading) {
       return this.renderLoading(`Loading ${type === 'source' ? 'source' : 'target'} options ...`)
     }
