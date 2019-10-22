@@ -96,6 +96,7 @@ type Props = {
   label?: string,
   addNullValue?: boolean,
   nullableBoolean?: boolean,
+  description?: string,
   style?: { [string]: mixed },
 }
 @observer
@@ -367,7 +368,7 @@ class FieldInput extends React.Component<Props> {
       return null
     }
 
-    let description = LabelDictionary.getDescription(this.props.name)
+    let description = LabelDictionary.getDescription(this.props.name) || this.props.description
     let marginRight = this.props.layout === 'modal' || description || this.props.required ? '24px' : 0
 
     return (

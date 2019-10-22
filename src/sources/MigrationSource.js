@@ -100,6 +100,8 @@ class MigrationSource {
         ...opts.destEnv,
         ...destParser.getDestinationEnv(opts.updatedDestEnv),
       },
+      shutdown_instances: Boolean(opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances),
+      replication_count: (opts.updatedDestEnv && opts.updatedDestEnv.replication_count) || 2,
       instances: opts.instanceNames,
       notes: getValue('description') || '',
     }
@@ -162,7 +164,7 @@ class MigrationSource {
       },
     }
     options.forEach(o => {
-      payload.migration[o.name] = o.value || false
+      payload.migration[o.name] = o.value || o.default || false
     })
 
     let response = await Api.send({

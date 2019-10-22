@@ -22,7 +22,7 @@ import type { Field } from '../../../types/Field'
 import type { OptionValues, StorageMap } from '../../../types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { NetworkMap } from '../../../types/Network'
-import { executionOptions } from '../../../constants'
+import { executionOptions, migrationFields } from '../../../constants'
 
 const migrationImageOsTypes = ['windows', 'linux']
 
@@ -73,6 +73,7 @@ export const defaultFillMigrationImageMapValues = (field: Field, option: OptionV
 export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptions?: ?{ [string]: mixed }): any => {
   let env = {}
   let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'default_storage', 'description']
+    .concat(migrationFields.map(f => f.name))
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes.map(o => `${o}_os_image`))
 

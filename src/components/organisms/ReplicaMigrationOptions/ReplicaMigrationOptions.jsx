@@ -42,7 +42,7 @@ const Form = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-left: -64px;
-  width: 300px;
+  justify-content: space-between;
   margin: 0 auto 46px auto;
 `
 const Buttons = styled.div`
@@ -51,7 +51,7 @@ const Buttons = styled.div`
   width: 100%;
 `
 const FieldInputStyled = styled(FieldInput)`
-  width: 319px;
+  width: 200px;
   justify-content: space-between;
   margin-bottom: 32px;
 `
@@ -81,7 +81,7 @@ let defaultFields: Field[] = [
 @observer
 class ReplicaMigrationOptions extends React.Component<Props, State> {
   state = {
-    fields: defaultFields,
+    fields: [...defaultFields],
   }
 
   componentDidMount() {
@@ -93,13 +93,15 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
   }
 
   handleValueChange(field: Field, value: boolean) {
-    let foundField = this.state.fields.find(f => f.name === field.name)
-    if (!foundField) {
-      return
-    }
-    foundField.value = value
+    let fields = this.state.fields.map(f => {
+      let newField = { ...f }
+      if (f.name === field.name) {
+        newField.value = value
+      }
+      return newField
+    })
 
-    this.setState({ fields: [...this.state.fields] })
+    this.setState({ fields })
   }
 
   render() {
@@ -110,10 +112,13 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
           {this.state.fields.map(field => {
             return (
               <FieldInputStyled
+                width={200}
                 key={field.name}
                 name={field.name}
                 type={field.type}
-                value={field.value}
+                value={field.value || field.default}
+                minimum={field.minimum}
+                maximum={field.maximum}
                 layout="page"
                 label={LabelDictionary.get(field.name)}
                 onChange={value => this.handleValueChange(field, value)}

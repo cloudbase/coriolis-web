@@ -245,13 +245,11 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     let endpointType = this.getLocalData().endpoint.type
     providerStore.loadOptionsSchema({
       providerName: endpointType,
-      schemaType: 'replica',
       optionsType: 'destination',
     }).then(() => {
       this.setState({ replicaSchema: providerStore.destinationSchema })
       return providerStore.loadOptionsSchema({
         providerName: endpointType,
-        schemaType: 'migration',
         optionsType: 'destination',
       })
     }).then(() => {

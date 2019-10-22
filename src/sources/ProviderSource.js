@@ -34,10 +34,8 @@ class ProviderSource {
     return response.data.providers
   }
 
-  async loadOptionsSchema(providerName: string, schemaType: 'migration' | 'replica', optionsType: 'source' | 'destination', useCache?: ?boolean, quietError?: ?boolean): Promise<Field[]> {
-    let schemaTypeInt = schemaType === 'migration' ?
-      optionsType === 'source' ? providerTypes.SOURCE_MIGRATION : providerTypes.TARGET_MIGRATION :
-      optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
+  async loadOptionsSchema(providerName: string, optionsType: 'source' | 'destination', useCache?: ?boolean, quietError?: ?boolean): Promise<Field[]> {
+    let schemaTypeInt = optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
 
     let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`,

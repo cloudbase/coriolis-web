@@ -46,8 +46,6 @@ export const navigationMenu = [
 
 // https://github.com/cloudbase/coriolis/blob/master/coriolis/constants.py
 export const providerTypes = {
-  TARGET_MIGRATION: 1,
-  SOURCE_MIGRATION: 2,
   TARGET_REPLICA: 4,
   SOURCE_REPLICA: 8,
   CONNECTION: 16,
@@ -77,6 +75,23 @@ export const executionOptions = [
     name: 'shutdown_instances',
     type: 'boolean',
     defaultValue: false,
+  },
+]
+
+export const migrationFields = [
+  {
+    name: 'shutdown_instances',
+    type: 'boolean',
+    default: false,
+    description: 'Whether or not Coriolis should power off the source VM before performing the final incremental sync. This guarantees consistency of the exported VM\'s filesystems, but implies downtime for the source VM during the final sync.',
+  },
+  {
+    name: 'replication_count',
+    type: 'integer',
+    minimum: 1,
+    maximum: 10,
+    default: 2,
+    description: 'The number of times to incrementally sync the disks of the source VM. This can be paired with "Shutdown Instances" to allow for the live syncing of the source VM, and shutting it off before the final incremental sync.',
   },
 ]
 

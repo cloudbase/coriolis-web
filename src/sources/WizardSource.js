@@ -47,6 +47,11 @@ class WizardSource {
       payload[type].source_environment = sourceParser.getDestinationEnv(data.sourceOptions)
     }
 
+    if (type === 'migration') {
+      payload[type].shutdown_instances = Boolean(data.destOptions && data.destOptions.shutdown_instances)
+      payload[type].replication_count = (data.destOptions && data.destOptions.replication_count) || 2
+    }
+
     let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,
       method: 'POST',

@@ -33,7 +33,7 @@ import WizardSummary from '../WizardSummary'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
-import { providerTypes, wizardPages } from '../../../constants'
+import { providerTypes, wizardPages, migrationFields } from '../../../constants'
 import configLoader from '../../../utils/Config'
 
 import type { WizardData, WizardPage } from '../../../types/WizardData'
@@ -208,17 +208,7 @@ class WizardPageContent extends React.Component<Props, State> {
   }
 
   getProvidersType(type: string) {
-    if (this.props.type === 'replica') {
-      if (type === 'source') {
-        return providerTypes.SOURCE_REPLICA
-      }
-      return providerTypes.TARGET_REPLICA
-    }
-
-    if (type === 'source') {
-      return providerTypes.SOURCE_MIGRATION
-    }
-    return providerTypes.TARGET_MIGRATION
+    return type === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
   }
 
   getProviders(type: string): string[] {
@@ -408,7 +398,9 @@ class WizardPageContent extends React.Component<Props, State> {
           <WizardOptions
             loading={this.props.providerStore.destinationSchemaLoading || this.props.providerStore.destinationOptionsPrimaryLoading}
             optionsLoading={this.props.providerStore.destinationOptionsSecondaryLoading}
-            optionsLoadingSkipFields={[...getOptionsLoadingSkipFields('destination'), 'description', 'execute_now', 'execute_now_options', 'default_storage']}
+            optionsLoadingSkipFields={[
+              ...getOptionsLoadingSkipFields('destination'), 'description', 'execute_now',
+              'execute_now_options', 'default_storage', ...migrationFields.map(f => f.name)]}
             selectedInstances={this.props.wizardData.selectedInstances}
             fields={this.props.providerStore.destinationSchema}
             onChange={this.props.onDestOptionsChange}
