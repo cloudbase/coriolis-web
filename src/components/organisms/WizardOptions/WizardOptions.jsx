@@ -28,7 +28,7 @@ import type { Field } from '../../../types/Field'
 import type { Instance } from '../../../types/Instance'
 import type { StorageBackend } from '../../../types/Endpoint'
 
-import { executionOptions } from '../../../constants'
+import { executionOptions, migrationFields } from '../../../constants'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import Palette from '../../styleUtils/Palette'
 
@@ -165,15 +165,14 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema.push({ name: 'execute_now', type: 'boolean', default: true })
       let executeNowValue = this.getFieldValue('execute_now', true)
       if (executeNowValue) {
-        fieldsSchema = [
-          ...fieldsSchema,
-          {
-            name: 'execute_now_options',
-            type: 'object',
-            properties: executionOptions,
-          },
-        ]
+        fieldsSchema.push({
+          name: 'execute_now_options',
+          type: 'object',
+          properties: executionOptions,
+        })
       }
+    } else if (this.props.wizardType === 'migration' || this.props.wizardType === 'migration-destination-options-edit') {
+      fieldsSchema = [...fieldsSchema, ...migrationFields]
     }
 
     if (this.props.hasStorageMap && this.props.useAdvancedOptions && this.props.storageBackends && this.props.storageBackends.length > 0) {
@@ -229,6 +228,9 @@ class WizardOptions extends React.Component<Props> {
         key={field.name}
         name={field.name}
         type={field.type}
+        minimum={field.minimum}
+        maximum={field.maximum}
+        description={field.description}
         password={this.isPassword(field.name)}
         enum={field.enum}
         addNullValue

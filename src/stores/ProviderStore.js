@@ -150,12 +150,11 @@ class ProviderStore {
 
   @action async loadOptionsSchema(options: {
     providerName: string,
-    schemaType: 'migration' | 'replica',
     optionsType: 'source' | 'destination',
     useCache?: boolean,
     quietError?: boolean,
   }): Promise<Field[]> {
-    let { schemaType, providerName, optionsType, useCache, quietError } = options
+    let { providerName, optionsType, useCache, quietError } = options
 
     if (optionsType === 'source') {
       this.sourceSchemaLoading = true
@@ -164,7 +163,7 @@ class ProviderStore {
     }
 
     try {
-      let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, schemaType, optionsType, useCache, quietError)
+      let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, optionsType, useCache, quietError)
       this.loadOptionsSchemaSuccess(fields, optionsType)
       return fields
     } catch (err) {

@@ -222,7 +222,6 @@ class WizardPage extends React.Component<Props, State> {
     }
     await providerStore.loadOptionsSchema({
       providerName: source.type,
-      schemaType: this.state.type,
       optionsType: 'source',
       useCache: true,
     })
@@ -244,7 +243,6 @@ class WizardPage extends React.Component<Props, State> {
     // Preload destination options schema
     await providerStore.loadOptionsSchema({
       providerName: target.type,
-      schemaType: this.state.type,
       optionsType: 'destination',
       useCache: true,
     })
@@ -353,7 +351,6 @@ class WizardPage extends React.Component<Props, State> {
     }
     await providerStore.loadOptionsSchema({
       providerName: endpoint.type,
-      schemaType: this.state.type,
       optionsType,
     })
     await providerStore.getOptionsValues({
@@ -404,7 +401,6 @@ class WizardPage extends React.Component<Props, State> {
       }
       await providerStore.loadOptionsSchema({
         providerName: endpoint.type,
-        schemaType: this.state.type,
         optionsType,
         useCache: true,
       })

@@ -25,6 +25,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import DateUtils from '../../../utils/DateUtils'
+import { migrationFields } from '../../../constants'
 import type { Schedule } from '../../../types/Schedule'
 import type { WizardData } from '../../../types/WizardData'
 import type { StorageMap, StorageBackend } from '../../../types/Endpoint'
@@ -291,16 +292,33 @@ class WizardSummary extends React.Component<Props> {
       </Option>
     )
 
+    let migrationOptions = [
+      (
+        <Option>
+          <OptionLabel>Shutdown Instances</OptionLabel>
+          <OptionValue>{this.getDefaultOption('shutdown_instances') ? 'Yes' : 'No'}</OptionValue>
+        </Option>
+      ),
+      (
+        <Option>
+          <OptionLabel>Replication Count</OptionLabel>
+          <OptionValue>{(this.props.data.destOptions && this.props.data.destOptions.replication_count) || 2}</OptionValue>
+        </Option>
+      ),
+    ]
+
     return (
       <Section>
         <SectionTitle>{type} Target Options</SectionTitle>
         <OptionsList>
           {this.props.wizardType === 'replica' ? executeNowOption : null}
+          {this.props.wizardType === 'migration' ? migrationOptions : null}
           {this.props.data.selectedInstances && this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
           {data.destOptions ? Object.keys(data.destOptions).map(optionName => {
             if (
               optionName === 'execute_now' ||
               optionName === 'separate_vm' ||
+              migrationFields.find(f => f.name === optionName) ||
               !data.destOptions || data.destOptions[optionName] == null || data.destOptions[optionName] === ''
             ) {
               return null

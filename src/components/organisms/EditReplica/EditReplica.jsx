@@ -39,7 +39,7 @@ import type { Field } from '../../../types/Field'
 import type { Instance, Nic, Disk } from '../../../types/Instance'
 import type { Network, NetworkMap, SecurityGroup } from '../../../types/Network'
 
-import { providerTypes } from '../../../constants'
+import { providerTypes, migrationFields } from '../../../constants'
 import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -143,7 +143,6 @@ class EditReplica extends React.Component<Props, State> {
   async loadOptions(endpoint: Endpoint, optionsType: 'source' | 'destination', useCache: boolean, envData: ?{ [string]: mixed }) {
     await providerStore.loadOptionsSchema({
       providerName: endpoint.type,
-      schemaType: this.props.type || 'replica',
       optionsType,
       useCache,
     })
@@ -321,20 +320,23 @@ class EditReplica extends React.Component<Props, State> {
 
   getFieldValue(type: 'source' | 'destination', fieldName: string, defaultValue: any) {
     let currentData = type === 'source' ? this.state.sourceData : this.state.destinationData
-    if (currentData[fieldName] === undefined) {
-      let replicaData = this.parseReplicaData(type === 'source' ? this.props.replica.source_environment
-        : this.props.replica.destination_environment)
-      if (replicaData[fieldName] !== undefined) {
-        return replicaData[fieldName]
-      }
-      let osMapping = /^(windows|linux)_os_image$/.exec(fieldName)
-      if (osMapping) {
-        let osData = replicaData[`migr_image_map/${osMapping[1]}`]
-        return osData
-      }
-      return defaultValue
+    if (currentData[fieldName] !== undefined) {
+      return currentData[fieldName]
     }
-    return currentData[fieldName]
+    let replicaData = this.parseReplicaData(type === 'source' ? this.props.replica.source_environment
+      : this.props.replica.destination_environment)
+    if (replicaData[fieldName] !== undefined) {
+      return replicaData[fieldName]
+    }
+    let osMapping = /^(windows|linux)_os_image$/.exec(fieldName)
+    if (osMapping) {
+      let osData = replicaData[`migr_image_map/${osMapping[1]}`]
+      return osData
+    }
+    if (migrationFields.find(f => f.name === fieldName) && this.props.replica[fieldName]) {
+      return this.props.replica[fieldName]
+    }
+    return defaultValue
   }
 
   getSelectedNetworks(): NetworkMap[] {
@@ -429,7 +431,7 @@ class EditReplica extends React.Component<Props, State> {
     }
     return (
       <WizardOptions
-        wizardType={`replica-${type}-options-edit`}
+        wizardType={`${this.props.type || 'replica'}-${type}-options-edit`}
         getFieldValue={(f, d) => this.getFieldValue(type, f, d)}
         fields={fields}
         hasStorageMap={type === 'source' ? false : this.hasStorageMap()}
@@ -443,7 +445,8 @@ class EditReplica extends React.Component<Props, State> {
         useAdvancedOptions
         layout="modal"
         optionsLoading={optionsLoading}
-        optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now', 'execute_now_options', 'default_storage']}
+        optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now', 'execute_now_options',
+          'default_storage', ...migrationFields.map(f => f.name)]}
       />
     )
   }

@@ -83,7 +83,6 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       // This allows the values to be displayed with their allocated names instead of their IDs
       await providerStore.loadOptionsSchema({
         providerName: endpoint.type,
-        schemaType: details.type,
         optionsType: 'destination',
         useCache: true,
         quietError: true,
