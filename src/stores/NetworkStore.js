@@ -25,7 +25,7 @@ class NetworkStore {
   cachedId: string = ''
 
   @action async loadNetworks(endpointId: string, environment: any, options?: {
-    useLocalStorage?: boolean,
+    cache?: boolean,
     quietError?: boolean,
   }) {
     this.loading = true

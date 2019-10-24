@@ -27,6 +27,7 @@ class InstanceSource {
     cancelId?: string,
     searchText?: string,
     env?: any,
+    cache?: boolean
   ): Promise<Instance[]> {
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let queryParams: { [string]: string | number } = {}
@@ -61,7 +62,7 @@ class InstanceSource {
     let keys = Object.keys(queryParams)
     url = `${url}${keys.length > 0 ? '?' : ''}${keys.map(p => `${p}=${queryParams[p]}`).join('&')}`
 
-    let response = await Api.send({ url, cancelId })
+    let response = await Api.send({ url, cancelId, cache })
     return response.data.instances
   }
 

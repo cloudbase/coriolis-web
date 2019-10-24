@@ -435,7 +435,12 @@ class WizardPage extends React.Component<Props, State> {
         if (!wizardStore.data.source) {
           return
         }
-        instanceStore.loadInstancesInChunks(wizardStore.data.source, this.instancesPerPage, false, wizardStore.data.sourceOptions)
+        instanceStore.loadInstancesInChunks({
+          endpoint: wizardStore.data.source,
+          vmsPerPage: this.instancesPerPage,
+          env: wizardStore.data.sourceOptions,
+          useCache: true,
+        })
         break
       }
       case 'target': {
@@ -452,19 +457,24 @@ class WizardPage extends React.Component<Props, State> {
         break
       }
       case 'networks':
-        if (wizardStore.data.source && wizardStore.data.selectedInstances) {
-          instanceStore.loadInstancesDetails({
-            endpointId: wizardStore.data.source.id,
-            instancesInfo: wizardStore.data.selectedInstances,
-            env: wizardStore.data.sourceOptions,
-          })
-        }
-        if (wizardStore.data.target) {
-          let id = wizardStore.data.target.id
-          networkStore.loadNetworks(id, wizardStore.data.destOptions)
-        }
+        this.loadNetworks(true)
         break
       default:
+    }
+  }
+
+  loadNetworks(cache: boolean) {
+    if (wizardStore.data.source && wizardStore.data.selectedInstances) {
+      instanceStore.loadInstancesDetails({
+        endpointId: wizardStore.data.source.id,
+        instancesInfo: wizardStore.data.selectedInstances,
+        env: wizardStore.data.sourceOptions,
+        cache,
+      })
+    }
+    if (wizardStore.data.target) {
+      let id = wizardStore.data.target.id
+      networkStore.loadNetworks(id, wizardStore.data.destOptions, { cache })
     }
   }
 
@@ -591,6 +601,7 @@ class WizardPage extends React.Component<Props, State> {
             onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
             onContentRef={ref => { this.contentRef = ref }}
             onReloadOptionsClick={() => { this.handleReloadOptionsClick() }}
+            onReloadNetworksClick={() => { this.loadNetworks(false) }}
           />}
         />
         <Modal

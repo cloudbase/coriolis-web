@@ -98,20 +98,12 @@ export const migrationFields = [
 export const wizardPages = [
   { id: 'type', title: 'New', breadcrumb: 'Type' },
   { id: 'source', title: 'Select your source cloud', breadcrumb: 'Source Cloud' },
-  {
-    id: 'source-options',
-    title: 'Source options',
-    breadcrumb: 'Source Options',
-  },
+  { id: 'source-options', title: 'Source options', breadcrumb: 'Source Options' },
   { id: 'vms', title: 'Select instances', breadcrumb: 'Select VMs' },
   { id: 'target', title: 'Select your target cloud', breadcrumb: 'Target Cloud' },
   { id: 'dest-options', title: 'Target options', breadcrumb: 'Target Options' },
   { id: 'networks', title: 'Networks', breadcrumb: 'Networks' },
-  {
-    id: 'storage',
-    title: 'Storage Mapping',
-    breadcrumb: 'Storage',
-  },
+  { id: 'storage', title: 'Storage Mapping', breadcrumb: 'Storage' },
   { id: 'schedule', title: 'Schedule', breadcrumb: 'Schedule', excludeFrom: 'migration' },
   { id: 'summary', title: 'Summary', breadcrumb: 'Summary' },
 ]
