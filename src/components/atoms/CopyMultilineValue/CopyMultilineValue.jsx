@@ -28,6 +28,7 @@ const CopyButtonStyled = styled(CopyButton)`
 `
 const Wrapper = styled.div`
   cursor: pointer;
+  word-break: break-word;
 
   &:hover ${CopyButtonStyled} {
     opacity: 1;
