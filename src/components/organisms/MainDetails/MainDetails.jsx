@@ -25,6 +25,7 @@ import StatusIcon from '../../atoms/StatusIcon'
 import StatusImage from '../../atoms/StatusImage'
 import MainDetailsTable from '../../molecules/MainDetailsTable'
 import CopyMultilineValue from '../../atoms/CopyMultilineValue'
+import PasswordValue from '../../atoms/PasswordValue'
 
 import type { Instance } from '../../../types/Instance'
 import type { MainItem } from '../../../types/MainItem'
@@ -242,14 +243,15 @@ class MainDetails extends React.Component<Props> {
 
     return (
       <PropertiesTable>
-        {properties.filter(Boolean).filter(p => p.value != null && p.value !== '').map(prop => {
-          return (
-            <PropertyRow key={prop.label}>
-              <PropertyName>{prop.label}</PropertyName>
-              <PropertyValue><CopyValue value={prop.value} /></PropertyValue>
-            </PropertyRow>
-          )
-        })}
+        {properties.filter(Boolean).filter(p => p.value != null && p.value !== '').map(prop => (
+          <PropertyRow key={prop.label}>
+            <PropertyName>{prop.label}</PropertyName>
+            <PropertyValue>
+              {prop.label.toLowerCase().indexOf('password') > -1
+                ? <PasswordValue value={prop.value} /> : <CopyValue value={prop.value} />}
+            </PropertyValue>
+          </PropertyRow>
+        ))}
       </PropertiesTable>
     )
   }
