@@ -67,6 +67,16 @@ const redirect = (statusCode: number) => {
   window.location.href = `/login${currentPath}`
 }
 
+const truncateUrl = (url: string): string => {
+  const MAX_LENGTH = 100
+  let relativePath = url.replace(/http(s)?:\/\/.*?\//, '/')
+  relativePath += relativePath
+  if (relativePath.length > MAX_LENGTH) {
+    relativePath = `${relativePath.substr(0, MAX_LENGTH)}...`
+  }
+  return relativePath
+}
+
 class ApiCaller {
   constructor() {
     axios.defaults.headers.common['Content-Type'] = 'application/json'
@@ -142,7 +152,7 @@ class ApiCaller {
             !options.quietError) {
             let data = error.response.data
             let message = (data && data.error && data.error.message) || (data && data.description)
-            message = message || `${error.response.statusText || error.response.status} ${options.url}`
+            message = message || `${error.response.statusText || error.response.status} ${truncateUrl(options.url)}`
             if (message) {
               notificationStore.alert(message, 'error')
             }
@@ -164,7 +174,8 @@ class ApiCaller {
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest
           if (!isOnLoginPage() && !options.quietError) {
-            notificationStore.alert(`Request failed, there might be a problem with the connection to the server. ${options.url}`, 'error')
+            notificationStore.alert(`Request failed, there might be a problem with the connection to the server.
+              ${truncateUrl(options.url)}`, 'error')
           }
           logger.log({
             url: axiosOptions.url,
@@ -196,7 +207,8 @@ class ApiCaller {
             description: 'Something happened in setting up the request',
             requestStatus: 500,
           })
-          notificationStore.alert(`Request failed, there might be a problem with the connection to the server. ${options.url}`, 'error')
+          notificationStore.alert(`Request failed, there might be a problem with the connection to the server.
+            ${options.url}`, 'error')
         }
       })
     })

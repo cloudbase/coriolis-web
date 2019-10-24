@@ -27,13 +27,15 @@ class NotificationStore {
   visibleErrors: string[] = []
 
   @action alert(message: string, level?: $PropertyType<AlertInfo, 'level'>, options?: $PropertyType<AlertInfo, 'options'>) {
-    if (!this.visibleErrors.find(e => e === message)) {
-      this.alerts.push({ message, level, options })
+    if (this.visibleErrors.find(e => e === message)) {
+      return
+    }
 
-      if (level === 'error') {
-        this.visibleErrors.push(message)
-        setTimeout(() => { this.visibleErrors = this.visibleErrors.filter(e => e !== message) }, 10000)
-      }
+    this.alerts.push({ message, level, options })
+
+    if (level === 'error') {
+      this.visibleErrors.push(message)
+      setTimeout(() => { this.visibleErrors = this.visibleErrors.filter(e => e !== message) }, 10000)
     }
   }
 
