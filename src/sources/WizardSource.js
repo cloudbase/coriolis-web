@@ -78,19 +78,24 @@ class WizardSource {
     return mainItems.filter(Boolean).map(i => i)
   }
 
-  setPermalink(data: WizardData) {
-    // window.history.replaceState({}, null, `${window.location.href}?d=${btoa(JSON.stringify(data))}`)
-    let exp = /.*?(?:\?|$)/.exec(window.location.href)
-    if (!exp) {
+  setUrlState(data: any) {
+    let locationExp = /.*?(?:\?|$)/.exec(window.location.href)
+    if (!locationExp) {
       return
     }
-    let location = exp[0].replace('?', '')
+    let location = locationExp[0].replace('?', '')
     window.history.replaceState({}, null, `${location}?d=${btoa(JSON.stringify(data))}`)
   }
 
-  getDataFromPermalink() {
+  getUrlState() {
     let dataExpExec = /\?d=(.*)/.exec(window.location.href)
-    return dataExpExec && JSON.parse(atob(dataExpExec[1]))
+    let result = null
+    try {
+      result = dataExpExec && JSON.parse(atob(dataExpExec[1]))
+    } catch (err) {
+      console.error(err)
+    }
+    return result
   }
 }
 

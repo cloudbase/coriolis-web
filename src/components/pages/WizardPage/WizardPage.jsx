@@ -96,7 +96,7 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    this.initializeState()
+    this.initializeState(this.props.match)
     this.handleResize()
   }
 
@@ -108,11 +108,11 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(newProps: Props) {
-    if (newProps.location.search === this.props.location.search) {
+    if (newProps.location === this.props.location) {
       return
     }
     wizardStore.clearData()
-    this.initializeState()
+    this.initializeState(newProps.match)
   }
 
   componentWillUnmount() {
@@ -182,8 +182,8 @@ class WizardPage extends React.Component<Props, State> {
       source: null,
     })
     wizardStore.clearStorageMap()
-    wizardStore.setPermalink(wizardStore.data)
-    this.setState({ type: isReplica ? 'replica' : 'migration' })
+    let type = isReplica ? 'replica' : 'migration'
+    this.props.history.replace(`/wizard/${type}`)
   }
 
   handleBackClick() {
@@ -215,7 +215,7 @@ class WizardPage extends React.Component<Props, State> {
   async handleSourceEndpointChange(source: ?EndpointType) {
     wizardStore.updateData({ source, selectedInstances: null, networks: null, sourceOptions: null })
     wizardStore.clearStorageMap()
-    wizardStore.setPermalink(wizardStore.data)
+    wizardStore.updateUrlState()
 
     if (!source) {
       return
@@ -236,7 +236,7 @@ class WizardPage extends React.Component<Props, State> {
   async handleTargetEndpointChange(target: EndpointType) {
     wizardStore.updateData({ target, networks: null, destOptions: null })
     wizardStore.clearStorageMap()
-    wizardStore.setPermalink(wizardStore.data)
+    wizardStore.updateUrlState()
     if (this.pages.find(p => p.id === 'storage')) {
       endpointStore.loadStorage(target.id, {})
     }
@@ -271,7 +271,7 @@ class WizardPage extends React.Component<Props, State> {
         wizardStore.updateData({ target: endpointStore.endpoints[0] })
       }
     }
-    wizardStore.setPermalink(wizardStore.data)
+    wizardStore.updateUrlState()
     this.setState({ showNewEndpointModal: false })
   }
 
@@ -291,7 +291,7 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.updateData({ networks: null })
     wizardStore.clearStorageMap()
     wizardStore.toggleInstanceSelection(instance)
-    wizardStore.setPermalink(wizardStore.data)
+    wizardStore.updateUrlState()
   }
 
   handleInstancePageClick(page: number) {
@@ -310,7 +310,7 @@ class WizardPage extends React.Component<Props, State> {
     if (field.type !== 'string' || field.enum) {
       this.loadExtraOptions(field, 'destination')
     }
-    wizardStore.setPermalink(wizardStore.data)
+    wizardStore.updateUrlState()
   }
 
   handleSourceOptionsChange(field: Field, value: any) {
@@ -319,28 +319,32 @@ class WizardPage extends React.Component<Props, State> {
     if (field.type !== 'string' || field.enum) {
       this.loadExtraOptions(field, 'source')
     }
-    wizardStore.setPermalink(wizardStore.data)
+    wizardStore.updateUrlState()
   }
 
   handleNetworkChange(sourceNic: Nic, targetNetwork: Network, targetSecurityGroups: ?SecurityGroup[]) {
     wizardStore.updateNetworks({ sourceNic, targetNetwork, targetSecurityGroups })
-    wizardStore.setPermalink(wizardStore.data)
+    wizardStore.updateUrlState()
   }
 
   handleStorageChange(source: Disk, target: StorageBackend, type: 'backend' | 'disk') {
     wizardStore.updateStorage({ source, target, type })
+    wizardStore.updateUrlState()
   }
 
   handleAddScheduleClick(schedule: Schedule) {
     wizardStore.addSchedule(schedule)
+    wizardStore.updateUrlState()
   }
 
   handleScheduleChange(scheduleId: string, data: Schedule) {
     wizardStore.updateSchedule(scheduleId, data)
+    wizardStore.updateUrlState()
   }
 
   handleScheduleRemove(scheduleId: string) {
     wizardStore.removeSchedule(scheduleId)
+    wizardStore.updateUrlState()
   }
 
   async handleReloadOptionsClick() {
@@ -361,9 +365,9 @@ class WizardPage extends React.Component<Props, State> {
     await this.loadExtraOptions(undefined, optionsType, false)
   }
 
-  initializeState() {
-    wizardStore.getDataFromPermalink()
-    let type = this.props.match && this.props.match.params.type
+  initializeState(match: any) {
+    wizardStore.getUrlState()
+    let type = match && match.params && match.params.type
     if (type === 'migration' || type === 'replica') {
       this.setState({ type })
     }
@@ -405,16 +409,13 @@ class WizardPage extends React.Component<Props, State> {
         useCache: true,
       })
 
-      // Preload source options if data is set from 'Permalink'
-      if (providerStore.sourceOptions.length === 0) {
-        await providerStore.getOptionsValues({
-          optionsType,
-          endpointId: endpoint.id,
-          providerName: endpoint.type,
-          useCache: true,
-        })
-        await this.loadExtraOptions(undefined, optionsType)
-      }
+      await providerStore.getOptionsValues({
+        optionsType,
+        endpointId: endpoint.id,
+        providerName: endpoint.type,
+        useCache: true,
+      })
+      await this.loadExtraOptions(undefined, optionsType)
     }
 
     switch (page.id) {
