@@ -48,6 +48,10 @@ class DateUtils {
         return `${number}th`
     }
   }
+
+  static toUnix(date: Date): number {
+    return parseInt((date.getTime() / 1000).toFixed(0), 10)
+  }
 }
 
 export default DateUtils

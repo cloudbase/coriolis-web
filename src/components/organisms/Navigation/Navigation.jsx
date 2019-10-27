@@ -37,6 +37,7 @@ import endpointImage from './images/endpoint-menu.svg'
 import planningImage from './images/planning-menu.svg'
 import projectImage from './images/project-menu.svg'
 import userImage from './images/user-menu.svg'
+import logsImage from './images/logs-menu.svg'
 
 const MENU_MAX_WIDTH_TOGGLE = 1350
 
@@ -184,6 +185,7 @@ const MenuImage = styled.div`
   width: 24px;
   height: 24px;
   background: url('${props => props.image}') center no-repeat;
+  background-size: contain;
 `
 
 const Footer = styled.div`
@@ -382,6 +384,9 @@ class Navigation extends React.Component<Props> {
                 break
               case 'users':
                 menuImage = userImage
+                break
+              case 'logging':
+                menuImage = logsImage
                 break
               default:
             }

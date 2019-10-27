@@ -57,6 +57,7 @@ type Props = {
   isValidDate?: (currentDate: Date, selectedDate: Date) => boolean,
   timezone: 'utc' | 'local',
   useBold?: boolean,
+  dispatchChangeContinously?: boolean,
 }
 type State = {
   showPicker: boolean,
@@ -86,6 +87,10 @@ class DatetimePicker extends React.Component<Props, State> {
       this.scrollableParent = DomUtils.getScrollableParent(this.buttonRef)
       this.scrollableParent.addEventListener('scroll', this.handleScroll)
     }
+  }
+
+  componentWillReceiveProps(newProps: Props) {
+    this.setState({ date: newProps.value && moment(newProps.value) })
   }
 
   componentDidUpdate() {
@@ -159,7 +164,11 @@ class DatetimePicker extends React.Component<Props, State> {
       date = DateUtils.getLocalTime(newDate)
     }
 
-    this.setState({ date })
+    this.setState({ date }, () => {
+      if (this.props.dispatchChangeContinously) {
+        this.dispatchChange()
+      }
+    })
   }
 
   dispatchChange() {

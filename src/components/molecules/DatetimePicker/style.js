@@ -43,7 +43,7 @@ const style = css`
     table {
       display: flex;
       flex-direction: column;
-      
+
       thead {
         display: flex;
         flex-direction: column;
@@ -163,7 +163,7 @@ const style = css`
       > div {
         margin-right: 0px;
 
-        &:last-child { 
+        &:last-child {
           margin-right: 0;
           margin-left: 6px;
         }
@@ -205,6 +205,7 @@ const style = css`
         height: 16px;
         background: url('${arrowImage}') center no-repeat;
         margin: auto;
+        user-select: none;
 
         &:first-child {
           transform: rotate(90deg);

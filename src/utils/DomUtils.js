@@ -121,6 +121,17 @@ class DomUtils {
     downloadAnchorNode.click()
     downloadAnchorNode.remove()
   }
+
+  static executeDownloadLink(href: string) {
+    let downloadAnchorNode = document.createElement('a')
+    downloadAnchorNode.setAttribute('href', href)
+    if (document.body) {
+      document.body.appendChild(downloadAnchorNode) // required for firefox
+    }
+    downloadAnchorNode.click()
+    downloadAnchorNode.remove()
+  }
+
   static jsonSyntaxHighlight(json: any) {
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g, (match) => {

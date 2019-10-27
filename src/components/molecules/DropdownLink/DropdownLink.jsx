@@ -117,11 +117,11 @@ const EmptySearch = styled.div`
 
 type ItemType = {
   label: string,
-  value: string,
+  value: any,
   [string]: any,
 }
 type Props = {
-  selectedItem?: string,
+  selectedItem?: any,
   items: ItemType[],
   onChange?: (item: ItemType) => void,
   highlightedItem?: string,
@@ -212,8 +212,10 @@ class DropdownLink extends React.Component<Props, State> {
     let items = this.props.items
 
     return items.filter(item =>
-      item.value.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1 ||
-      item.label.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1
+      typeof item.value === 'string'
+        ? item.value.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1
+        : item.value === Number(this.state.searchText)
+        || item.label.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1
     )
   }
 
@@ -393,7 +395,7 @@ class DropdownLink extends React.Component<Props, State> {
       if (this.props.getLabel) {
         return this.props.getLabel()
       }
-      if (this.props.items && this.props.items.length && this.props.selectedItem) {
+      if (this.props.items && this.props.items.length && this.props.selectedItem != null) {
         let item = this.props.items.find(i => i.value === this.props.selectedItem)
         if (item && item.label) {
           return item.label
