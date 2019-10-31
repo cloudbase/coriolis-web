@@ -38,6 +38,7 @@ import planningImage from './images/planning-menu.svg'
 import projectImage from './images/project-menu.svg'
 import userImage from './images/user-menu.svg'
 import logsImage from './images/logs-menu.svg'
+import dashboardImage from './images/dashboard-menu.svg'
 
 const MENU_MAX_WIDTH_TOGGLE = 1350
 
@@ -253,7 +254,7 @@ class Navigation extends React.Component<Props> {
   get filteredMenu() {
     const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     const isDisabled = (page: string) => configLoader.config ? configLoader.config.disabledPages.find(p => p === page) : false
-    return navigationMenu.filter(i => !i.hidden && !isDisabled(i.value) && (!i.requiresAdmin || isAdmin))
+    return navigationMenu.filter(i => !isDisabled(i.value) && (!i.requiresAdmin || isAdmin))
   }
 
   componentDidMount() {
@@ -364,7 +365,12 @@ class Navigation extends React.Component<Props> {
           this.filteredMenu.map(item => {
             let menuImage
             let bullet
+            let style = null
             switch (item.value) {
+              case 'dashboard':
+                menuImage = dashboardImage
+                style = { width: '19px', height: '19px' }
+                break
               case 'replicas':
                 bullet = 'replica'
                 menuImage = replicaImage
@@ -400,7 +406,7 @@ class Navigation extends React.Component<Props> {
               >
                 <SmallMenuBackground />
                 {bullet ? <SmallMenuItemBullet bullet={bullet} /> : null}
-                <MenuImage image={menuImage} />
+                <MenuImage image={menuImage} style={style} />
                 <MenuTooltip>{item.label}</MenuTooltip>
               </SmallMenuItem>
             )
