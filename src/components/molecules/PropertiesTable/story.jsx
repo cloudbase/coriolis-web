@@ -23,7 +23,8 @@ let properties = [
   { type: 'strict-boolean', name: 'prop-2', label: 'Strict Boolean' },
   { type: 'string', name: 'prop-3', label: 'String' },
   { type: 'string', name: 'prop-3a', label: 'String', required: true },
-  { type: 'string', enum: ['a', 'b', 'c'], name: 'prop-4', label: 'String enum' },
+  { type: 'string', enum: ['a', 'b', 'c'], name: 'prop-4', label: 'String enum', required: true },
+  { type: 'string', enum: ['a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a'], name: 'prop-5', label: 'String enum', required: true },
 ]
 
 class Wrapper extends React.Component<any, any> {

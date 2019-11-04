@@ -67,7 +67,7 @@ const NetworkImage = styled.div`
   margin-right: 16px;
 `
 const NetworkTitle = styled.div`
-  width: 320px;
+  width: ${props => props.width}px;
 `
 const NetworkName = styled.div`
   font-size: 16px;
@@ -76,6 +76,7 @@ const NetworkSubtitle = styled.div`
   font-size: 12px;
   color: ${Palette.grayscale[5]};
   margin-top: 1px;
+  word-break: break-word;
 `
 const ArrowImage = styled.div`
   min-width: 32px;
@@ -121,6 +122,7 @@ type Props = {
   selectedNetworks: ?NetworkMap[],
   onChange: (nic: NicType, network: Network, securityGroups?: SecurityGroup[]) => void,
   style?: any,
+  titleWidth?: number,
 }
 @observer
 class WizardNetworks extends React.Component<Props> {
@@ -254,7 +256,7 @@ class WizardNetworks extends React.Component<Props> {
           return (
             <Nic key={nic.id} data-test-id="networkItem">
               <NetworkImage />
-              <NetworkTitle>
+              <NetworkTitle width={this.props.titleWidth || 320}>
                 <NetworkName data-test-id={`wNetworks-networkName-${nic.id}`}>{nic.network_name}</NetworkName>
                 {connectedTo.length ? (
                   <NetworkSubtitle data-test-id={`wNetworks-connectedTo-${nic.id}`}>

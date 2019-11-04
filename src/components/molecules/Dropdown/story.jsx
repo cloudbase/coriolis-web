@@ -82,6 +82,7 @@ class MultipleSelectionWrapper extends React.Component<Props, State> {
           }
         }}
         items={this.props.items}
+        {...this.props}
       />
     )
   }
@@ -91,6 +92,9 @@ class MultipleSelectionWrapper extends React.Component<Props, State> {
 storiesOf('Dropdown', module)
   .add('default', () => (
     <Wrapper />
+  ))
+  .add('required', () => (
+    <Wrapper required />
   ))
   .add('disabled', () => (
     <Wrapper disabled />
