@@ -26,7 +26,7 @@ export type User = {
   enabled?: boolean,
   project_id?: string,
   domain_id?: string,
-  isAdmin?: boolean,
+  isAdmin?: ?boolean,
   password?: string,
   extra?: any,
 }
