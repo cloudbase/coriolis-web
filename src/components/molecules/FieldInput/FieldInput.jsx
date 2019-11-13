@@ -242,7 +242,7 @@ class FieldInput extends React.Component<Props> {
       }
 
       return {
-        label: typeof e === 'string' ? LabelDictionary.get(e) : e.name || e.label,
+        label: typeof e === 'string' ? e : e.name || e.label,
         value: typeof e === 'string' ? e : e.id || e.value,
       }
     })
