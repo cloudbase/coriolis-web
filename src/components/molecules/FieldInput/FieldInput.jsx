@@ -27,6 +27,7 @@ import DropdownInput from '../DropdownInput/DropdownInput'
 import TextArea from '../../atoms/TextArea/TextArea'
 import PropertiesTable from '../PropertiesTable/PropertiesTable'
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
+import Stepper from '../../atoms/Stepper'
 
 import type { Field } from '../../../types/Field'
 
@@ -135,20 +136,40 @@ class FieldInput extends React.Component<Props> {
   }
 
   renderIntInput() {
+    if (this.props.minimum && this.props.maximum && this.props.maximum - this.props.minimum <= 10) {
+      let items = []
+
+      for (let i = this.props.minimum; i <= this.props.maximum; i += 1) {
+        items.push({
+          label: i.toString(),
+          value: i,
+        })
+      }
+      return (
+        <Dropdown
+          width={this.props.width}
+          selectedItem={this.props.value}
+          items={items}
+          onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
+          disabled={this.props.disabled}
+          disabledLoading={this.props.disabledLoading}
+          highlight={this.props.highlight}
+          required={this.props.layout === 'page' ? false : this.props.required}
+        />
+      )
+    }
+
     return (
-      <TextInput
-        highlight={this.props.highlight}
-        width={this.props.width}
+      <Stepper
+        highlight={Boolean(this.props.highlight)}
+        width={this.props.width ? `${this.props.width}px` : undefined}
         value={this.props.value}
-        onChange={e => {
-          let value = Number(e.target.value.replace(/\D/g, '')) || ''
-          if (this.props.onChange) {
-            this.props.onChange(value)
-          }
-        }}
-        placeholder={LabelDictionary.get(this.props.name)}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
+        required={this.props.layout === 'page' ? false : this.props.required}
+        onChange={value => { if (this.props.onChange) this.props.onChange(value) }}
+        minimum={this.props.minimum}
+        maximum={this.props.maximum}
       />
     )
   }
@@ -264,34 +285,6 @@ class FieldInput extends React.Component<Props> {
     )
   }
 
-  renderIntDropdown() {
-    if (!this.props.minimum || !this.props.maximum) {
-      return null
-    }
-
-    let items = []
-
-    for (let i = this.props.minimum; i <= this.props.maximum; i += 1) {
-      items.push({
-        label: i.toString(),
-        value: i,
-      })
-    }
-
-    return (
-      <Dropdown
-        width={this.props.width}
-        selectedItem={this.props.value}
-        items={items}
-        onChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
-        disabled={this.props.disabled}
-        disabledLoading={this.props.disabledLoading}
-        highlight={this.props.highlight}
-        required={this.props.layout === 'page' ? false : this.props.required}
-      />
-    )
-  }
-
   renderRadioInput() {
     return (
       <RadioInput
@@ -348,9 +341,6 @@ class FieldInput extends React.Component<Props> {
         }
         return this.renderTextInput()
       case 'integer':
-        if (this.props.minimum || this.props.maximum) {
-          return this.renderIntDropdown()
-        }
         return this.renderIntInput()
       case 'radio':
         return this.renderRadioInput()
