@@ -31,7 +31,7 @@ export const servicesUrl = {
 }
 
 export const navigationMenu = [
-  { label: 'Dashboard', value: 'dashboard', hidden: true },
+  { label: 'Dashboard', value: 'dashboard' },
   { label: 'Replicas', value: 'replicas' },
   { label: 'Migrations', value: 'migrations' },
   { label: 'Cloud Endpoints', value: 'endpoints' },
