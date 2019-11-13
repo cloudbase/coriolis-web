@@ -14,9 +14,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+
+import configLoader from '../../../utils/Config'
+
 import WizardOptions from '.'
 
 let fields = [
+  {
+    name: 'integer with small min max',
+    type: 'integer',
+    minimum: 10,
+    maximum: 20,
+  },
+  {
+    name: 'integer with min',
+    type: 'integer',
+    minimum: 10,
+  },
+  {
+    name: 'integer with max',
+    type: 'integer',
+    maximum: 20,
+  },
   {
     name: 'list_all_destination_networks',
     type: 'boolean',
@@ -57,6 +76,7 @@ let fields = [
     type: 'strict-boolean',
   },
 ]
+configLoader.config = { passwordFields: [] }
 
 class Wrapper extends React.Component {
   constructor() {
@@ -75,7 +95,7 @@ class Wrapper extends React.Component {
 
   render() {
     return (
-      <div style={{ width: '800px', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: '1000px', display: 'flex', justifyContent: 'center' }}>
         <WizardOptions
           {...this.props}
           data={this.state.data}
