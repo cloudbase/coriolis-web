@@ -127,7 +127,7 @@ class AboutModal extends React.Component<Props, State> {
                   <TextLine>
                     <span>Version {licenceStore.version || '-'}</span>
                     <span>|</span>
-                    <LinkMock onClick={() => { logger.download() }} >Download Log</LinkMock>
+                    <LinkMock onClick={() => { logger.download() }} >Download API Log</LinkMock>
                   </TextLine>
                   <TextLine>
                     © {new Date().getFullYear()} Cloudbase Solutions. All Rights Reserved.

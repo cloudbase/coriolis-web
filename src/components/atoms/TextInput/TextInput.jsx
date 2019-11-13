@@ -78,7 +78,7 @@ const Input = styled.input`
     color: ${Palette.grayscale[3]};
   }
 `
-const Close = styled.div`
+export const Close = styled.div`
   display: ${props => props.show ? 'block' : 'none'};
   width: 16px;
   height: 16px;

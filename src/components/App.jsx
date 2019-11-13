@@ -37,6 +37,8 @@ import UserDetailsPage from './pages/UserDetailsPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailsPage from './pages/ProjectDetailsPage'
 import DashboardPage from './pages/DashboardPage'
+import LogsPage from './pages/LogsPage'
+import LogStreamPage from './pages/LogStreamPage'
 
 import Tooltip from './atoms/Tooltip/Tooltip'
 
@@ -49,6 +51,9 @@ injectGlobal`
   ${Fonts}
   html, body, main {
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
   body {
     margin: 0;
@@ -62,6 +67,9 @@ injectGlobal`
 `
 const Wrapper = styled.div`
   height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   > div:first-child {
     height: 100%;
   }
@@ -88,7 +96,8 @@ class App extends React.Component<{}, State> {
     }
 
     let renderOptionalPage = (name: string, component: any, path?: string, exact?: boolean) => {
-      const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : true
+      const isAdmin = userStore.loggedUser && typeof userStore.loggedUser.isAdmin === 'boolean'
+        ? userStore.loggedUser.isAdmin : true
       let isDisabled = configLoader.config.disabledPages.find(p => p === name)
       if (navigationMenu.find(m => m.value === name && !isDisabled && (!m.requiresAdmin || isAdmin))) {
         return <Route path={`${path || `/${name}`}`} component={component} exact={exact} />
@@ -117,6 +126,8 @@ class App extends React.Component<{}, State> {
           {renderOptionalPage('users', UserDetailsPage, '/user/:id', true)}
           {renderOptionalPage('projects', ProjectsPage)}
           {renderOptionalPage('projects', ProjectDetailsPage, '/project/:id', true)}
+          {renderOptionalPage('logging', LogsPage)}
+          <Route path="/streamlog" component={LogStreamPage} />
           <Route component={NotFoundPage} />
         </Switch>
         <Notifications />

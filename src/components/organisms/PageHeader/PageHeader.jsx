@@ -256,7 +256,7 @@ class PageHeader extends React.Component<Props, State> {
     }
 
     await notificationStore.loadData(showLoading)
-    this.pollTimeout = setTimeout(() => { this.pollData() }, 5000)
+    this.pollTimeout = setTimeout(() => { this.pollData() }, 15000)
   }
 
   render() {

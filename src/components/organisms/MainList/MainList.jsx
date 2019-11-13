@@ -70,6 +70,7 @@ const EmptyListImage = styled.div`
   width: 96px;
   height: 96px;
   background: url('${props => props.source}') center no-repeat;
+  background-size: contain;
   margin-bottom: 46px;
 `
 const EmptyListMessage = styled.div`

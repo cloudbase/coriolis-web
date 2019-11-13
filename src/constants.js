@@ -42,6 +42,7 @@ export const navigationMenu = [
   // User management pages
   { label: 'Projects', value: 'projects', requiresAdmin: true },
   { label: 'Users', value: 'users', requiresAdmin: true },
+  { label: 'Logs', value: 'logging', requiresAdmin: true },
 ]
 
 // https://github.com/cloudbase/coriolis/blob/master/coriolis/constants.py

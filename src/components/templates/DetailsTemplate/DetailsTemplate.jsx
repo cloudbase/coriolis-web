@@ -19,23 +19,29 @@ import styled from 'styled-components'
 
 const Wrapper = styled.div`
   min-width: 1100px;
+  min-height: 0;
 `
 const PageHeader = styled.div``
 const ContentHeader = styled.div``
 const Content = styled.div`
   padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 `
 type Props = {
   pageHeaderComponent: React.Node,
   contentHeaderComponent: React.Node,
   contentComponent: React.Node,
+  style?: any,
+  contentStyle?: any,
 }
 const DetailsTemplate = (props: Props) => {
   return (
-    <Wrapper>
+    <Wrapper style={props.style}>
       <PageHeader>{props.pageHeaderComponent}</PageHeader>
       <ContentHeader>{props.contentHeaderComponent}</ContentHeader>
-      <Content>{props.contentComponent}</Content>
+      <Content style={props.contentStyle}>{props.contentComponent}</Content>
     </Wrapper>
   )
 }
