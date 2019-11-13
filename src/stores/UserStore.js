@@ -20,7 +20,6 @@ import type { Project } from '../types/Project'
 import UserSource from '../sources/UserSource'
 import projectStore from './ProjectStore'
 import notificationStore from '../stores/NotificationStore'
-import DomUtils from '../utils/DomUtils'
 
 /**
  * This is the authentication / authorization flow:
@@ -101,7 +100,7 @@ class UserStore {
     }
 
     let userData: User = await UserSource.getUserInfo(this.loggedUser.id)
-    runInAction(() => { this.loggedUser = { ...this.loggedUser, ...userData, isAdmin: false } })
+    runInAction(() => { this.loggedUser = { ...this.loggedUser, ...userData, isAdmin: null } })
   }
 
   @action async tokenLogin(): Promise<void> {
@@ -169,18 +168,20 @@ class UserStore {
     if (!this.loggedUser) {
       return
     }
-    this.loggedUser.isAdmin = false
+    this.loggedUser = { ...this.loggedUser, isAdmin: null }
     try {
       let isAdmin = await UserSource.isAdmin(this.loggedUser.id)
       runInAction(() => {
         if (this.loggedUser) {
-          this.loggedUser.isAdmin = isAdmin
+          this.loggedUser = { ...this.loggedUser, isAdmin }
         }
       })
     } catch (err) {
-      if (window.location.href.indexOf(`${DomUtils.urlHashPrefix}project`) > -1 || window.location.href.indexOf(`${DomUtils.urlHashPrefix}user`) > -1) {
-        window.location.href = `${DomUtils.urlHashPrefix}`
-      }
+      runInAction(() => {
+        if (this.loggedUser) {
+          this.loggedUser = { ...this.loggedUser, isAdmin: false }
+        }
+      })
     }
   }
 

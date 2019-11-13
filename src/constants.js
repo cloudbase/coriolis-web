@@ -30,7 +30,8 @@ export const servicesUrl = {
   licence: licenceUrl,
 }
 
-export const navigationMenu = [
+export type NavigationMenuType = { label: string, value: string, hidden?: boolean, requiresAdmin?: boolean }
+export const navigationMenu: NavigationMenuType[] = [
   { label: 'Dashboard', value: 'dashboard' },
   { label: 'Replicas', value: 'replicas' },
   { label: 'Migrations', value: 'migrations' },

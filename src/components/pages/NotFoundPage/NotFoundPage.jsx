@@ -39,13 +39,16 @@ const Message = styled.div`
   margin-top: 16px;
   color: ${Palette.grayscale[8]};
 `
-
-const NotFoundPage = () => {
+type Props = {
+  title?: string,
+  subtitle?: string,
+}
+const NotFoundPage = (props: Props) => {
   return (
     <EmptyTemplate>
       <Wrapper>
-        <Title>Page Not Found</Title>
-        <Message>Sorry, but the page you are trying to view does not exist.</Message>
+        <Title>{props.title || 'Page Not Found'}</Title>
+        <Message>{props.subtitle || 'Sorry, but the page you are trying to view does not exist.'}</Message>
       </Wrapper>
     </EmptyTemplate>
   )

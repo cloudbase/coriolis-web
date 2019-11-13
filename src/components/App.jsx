@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import styled, { injectGlobal } from 'styled-components'
+import { observe } from 'mobx'
 
 import Fonts from './atoms/Fonts'
 import Notifications from './organisms/Notifications'
@@ -85,6 +86,7 @@ class App extends React.Component<{}, State> {
   }
 
   async componentWillMount() {
+    observe(userStore, 'loggedUser', () => { this.setState({}) })
     userStore.tokenLogin()
     await configLoader.load()
     this.setState({ isConfigReady: true })
@@ -96,11 +98,28 @@ class App extends React.Component<{}, State> {
     }
 
     let renderOptionalPage = (name: string, component: any, path?: string, exact?: boolean) => {
-      const isAdmin = userStore.loggedUser && typeof userStore.loggedUser.isAdmin === 'boolean'
-        ? userStore.loggedUser.isAdmin : true
-      let isDisabled = configLoader.config.disabledPages.find(p => p === name)
-      if (navigationMenu.find(m => m.value === name && !isDisabled && (!m.requiresAdmin || isAdmin))) {
+      if (configLoader.config.disabledPages.find(p => p === name)) {
+        return null
+      }
+      let requiresAdmin = Boolean(navigationMenu.find(n => n.value === name && n.requiresAdmin))
+      if (!requiresAdmin) {
         return <Route path={`${path || `/${name}`}`} component={component} exact={exact} />
+      }
+      const renderNotFound = (title: string, subtitle: string) => (
+        <Route
+          path={`${path || `/${name}`}`}
+          exact={exact}
+          render={() => <NotFoundPage title={title} subtitle={subtitle} />}
+        />
+      )
+      if (!userStore.loggedUser || userStore.loggedUser.isAdmin == null) {
+        return renderNotFound('Checking permissions...', 'Please wait while checking user\'s permissions.')
+      }
+      if (userStore.loggedUser && userStore.loggedUser.isAdmin === false) {
+        return renderNotFound('User doesn\'t have permissions to view this page', 'Please login in with an administrator acount to view this page.')
+      }
+      if (userStore.loggedUser && userStore.loggedUser.isAdmin) {
+        return <Route path={`${path || `/${name}`}`} exact={exact} component={component} />
       }
       return null
     }
