@@ -45,7 +45,7 @@ const Required = styled.div`
   position: absolute;
   width: 8px;
   height: 8px;
-  right: -16px;
+  right: ${props => props.right}px;
   top: 12px;
   background: url('${requiredImage}') center no-repeat;
   ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
@@ -503,7 +503,12 @@ class Dropdown extends React.Component<Props, State> {
           value={buttonValue()}
           onClick={() => this.handleButtonClick()}
         />
-        {this.props.required ? <Required disabledLoading={this.props.disabledLoading} /> : null}
+        {this.props.required ? (
+          <Required
+            disabledLoading={this.props.disabledLoading}
+            right={this.props.embedded ? -24 : -16}
+          />
+        ) : null}
         {this.renderList()}
       </Wrapper>
     )

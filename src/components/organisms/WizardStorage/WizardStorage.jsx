@@ -79,7 +79,7 @@ const StorageImage = styled.div`
   margin-right: 16px;
 `
 const StorageTitle = styled.div`
-  width: 320px;
+  width: ${props => props.width}px;
 `
 const StorageName = styled.div`
   font-size: 16px;
@@ -89,6 +89,7 @@ const StorageSubtitle = styled.div`
   font-size: 12px;
   color: ${Palette.grayscale[5]};
   margin-top: 1px;
+  word-break: break-word;
 `
 const ArrowImage = styled.div`
   min-width: 32px;
@@ -147,6 +148,7 @@ export type Props = {
   storageMap: ?StorageMap[],
   onChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
   style?: any,
+  titleWidth?: number,
 }
 @observer
 class WizardStorage extends React.Component<Props> {
@@ -203,7 +205,7 @@ class WizardStorage extends React.Component<Props> {
             return (
               <StorageItem key={disk[diskFieldName]}>
                 <StorageImage backend={type === 'backend'} />
-                <StorageTitle>
+                <StorageTitle width={this.props.titleWidth || 320}>
                   <StorageName
                     data-test-id={`${TEST_ID}-${type}-source`}
                     title={diskNameParsed[1] ? disk[diskFieldName] : null}

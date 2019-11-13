@@ -30,7 +30,7 @@ const Required = styled.div`
   position: absolute;
   width: 8px;
   height: 8px;
-  right: -16px;
+  right: ${props => props.right}px;
   top: 12px;
   background: url('${requiredImage}') center no-repeat;
 `
@@ -107,7 +107,7 @@ type Props = {
   disabledLoading?: boolean,
 }
 const TextInput = (props: Props) => {
-  const { _ref, value, onChange, showClose, onCloseClick, disabled, disabledLoading } = props
+  const { _ref, value, onChange, showClose, onCloseClick, disabled, disabledLoading, embedded } = props
   let actualDisabled = disabled || disabledLoading
   let input
   return (
@@ -121,7 +121,7 @@ const TextInput = (props: Props) => {
         {...props}
         disabled={actualDisabled}
       />
-      {props.required ? <Required /> : null}
+      {props.required ? <Required right={embedded ? -24 : -16} /> : null}
       <Close
         data-test-id="textInput-close"
         show={showClose && value !== '' && value !== undefined}

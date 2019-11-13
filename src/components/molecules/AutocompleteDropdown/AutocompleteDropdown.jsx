@@ -49,7 +49,7 @@ const Required = styled.div`
   position: absolute;
   width: 8px;
   height: 8px;
-  right: -16px;
+  right: ${props => props.right}px;
   top: 12px;
   background: url('${requiredImage}') center no-repeat;
 `
@@ -455,7 +455,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           disabledLoading={this.props.disabledLoading}
           embedded={this.props.embedded}
         />
-        {this.props.required ? <Required /> : null}
+        {this.props.required ? <Required right={this.props.embedded ? -24 : -16} /> : null}
         {this.renderList()}
       </Wrapper>
     )

@@ -60,6 +60,7 @@ type State = {
 }
 type Props = {
   items: { value: string, label: string }[],
+  required?: boolean,
 }
 class Wrapper extends React.Component<Props, State> {
   state = {
@@ -72,6 +73,7 @@ class Wrapper extends React.Component<Props, State> {
         items={this.props.items}
         selectedItem={this.state.selectedItem}
         onChange={selectedItem => { this.setState({ selectedItem }) }}
+        required={this.props.required}
         onInputChange={(value, filteredItems) => {
           if (filteredItems.length === 0) {
             console.log('input value', value)
@@ -88,4 +90,7 @@ storiesOf('AutocompleteDropdown', module)
   ))
   .add('short list', () => (
     <Wrapper items={itemsShort} />
+  ))
+  .add('required', () => (
+    <Wrapper items={itemsShort} required />
   ))
