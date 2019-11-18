@@ -188,11 +188,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       return
     }
     await migrationStore.cancel(migrationStore.migrationDetails.id)
-    if (migrationStore.canceling === false) {
-      notificationStore.alert('Canceled', 'success')
-    } else {
-      notificationStore.alert('The migration couldn\'t be canceled', 'error')
-    }
+    notificationStore.alert('Canceled', 'success')
   }
 
   async recreateFromReplica(options: Field[]) {
