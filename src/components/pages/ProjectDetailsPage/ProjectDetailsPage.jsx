@@ -30,7 +30,6 @@ import AlertModal from '../../organisms/AlertModal'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
-import notificationStore from '../../../stores/NotificationStore'
 
 import Palette from '../../styleUtils/Palette'
 
@@ -138,16 +137,11 @@ class ProjectDetailsPage extends React.Component<Props, State> {
 
   async handleAddMember(user: User, isNew: boolean, roles: Role[]) {
     const assign = async (userId: string) => {
-      try {
-        await Promise.all(roles.map(async r => {
-          await userStore.assignUserToProjectWithRole(userId, this.props.match.params.id, r.id)
-        }))
-        this.loadData()
-        this.setState({ addingMember: false, showAddMemberModal: false })
-      } catch (err) {
-        notificationStore.alert('Error while assigning role to user', 'error')
-        console.error(err)
-      }
+      await Promise.all(roles.map(async r => {
+        await userStore.assignUserToProjectWithRole(userId, this.props.match.params.id, r.id)
+      }))
+      this.loadData()
+      this.setState({ addingMember: false, showAddMemberModal: false })
     }
 
     this.setState({ addingMember: true })

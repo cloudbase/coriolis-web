@@ -25,7 +25,6 @@ class MigrationStore {
   @observable migrations: MainItem[] = []
   @observable migrationDetails: ?MainItem = null
   @observable loading: boolean = true
-  @observable canceling: boolean | { failed: boolean } = true
   @observable detailsLoading: boolean = true
 
   migrationsLoaded: boolean = false
@@ -94,13 +93,7 @@ class MigrationStore {
   }
 
   @action async cancel(migrationId: string) {
-    this.canceling = true
-    try {
-      await MigrationSource.cancel(migrationId)
-      runInAction(() => { this.canceling = false })
-    } catch (ex) {
-      runInAction(() => { this.canceling = { failed: true } })
-    }
+    await MigrationSource.cancel(migrationId)
   }
 
   @action async delete(migrationId: string) {
