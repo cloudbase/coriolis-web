@@ -99,7 +99,7 @@ class LogStore {
   @action addToLiveFeed(feed: { message: string }) {
     this.liveFeed = [...this.liveFeed, feed.message]
     if (this.liveFeed.length > MAX_STREAM_LINES) {
-      this.liveFeed = this.liveFeed.filter((f, i) => i > this.liveFeed.length - MAX_STREAM_LINES)
+      this.liveFeed = [...this.liveFeed.filter((f, i) => i > this.liveFeed.length - MAX_STREAM_LINES)]
     }
   }
 
