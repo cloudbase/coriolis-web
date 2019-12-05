@@ -24,6 +24,7 @@ import OpenstackContentPlugin from './openstack/ContentPlugin'
 
 import DefaultOptionsSchemaPlugin from './default/OptionsSchemaPlugin'
 import OvmOptionsSchemaPlugin from './ovm/OptionsSchemaPlugin'
+import OpenstackOptionsSchemaPlugin from './openstack/OptionsSchemaPlugin'
 
 export const ConnectionSchemaPlugin = {
   default: DefaultConnectionSchemaPlugin,
@@ -35,6 +36,7 @@ export const ConnectionSchemaPlugin = {
 export const OptionsSchemaPlugin = {
   default: DefaultOptionsSchemaPlugin,
   oracle_vm: OvmOptionsSchemaPlugin,
+  openstack: OpenstackOptionsSchemaPlugin,
 }
 
 export const ContentPlugin = {

@@ -123,8 +123,8 @@ export default class OptionsSchemaParser {
     return defaultSchemaToFields(schema, schemaDefinitions)
   }
 
-  static fillFieldValues(field: Field, options: OptionValues[]) {
-    let option = options.find(f => f.name === field.name)
+  static fillFieldValues(field: Field, options: OptionValues[], customFieldName?: string) {
+    let option = options.find(f => customFieldName ? f.name === customFieldName : f.name === field.name)
     if (!option) {
       return
     }

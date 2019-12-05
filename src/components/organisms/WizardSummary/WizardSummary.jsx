@@ -143,14 +143,14 @@ const Option = styled.div`
 `
 const OptionLabel = styled.div`
   color: ${Palette.grayscale[4]};
-  flex-grow: 1;
+  ${StyleProps.exactWidth('50%')}
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `
 const OptionValue = styled.div`
   text-align: right;
-  max-width: 50%;
+  ${StyleProps.exactWidth('50%')}
   text-overflow: ellipsis;
   overflow: hidden;
 `
@@ -257,15 +257,16 @@ class WizardSummary extends React.Component<Props> {
             if (!data.sourceOptions || data.sourceOptions[optionName] == null || data.sourceOptions[optionName] === '') {
               return null
             }
-
+            let optionLabel = optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')
+            let optionValue = fieldHelper.getValueAlias(optionName, data.sourceOptions && data.sourceOptions[optionName], this.props.sourceSchema)
             return (
               <Option key={optionName}>
-                <OptionLabel>
-                  {optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}
+                <OptionLabel title={optionLabel}>
+                  {optionLabel}
                 </OptionLabel>
-                <OptionValue>{
-                  fieldHelper.getValueAlias(optionName, data.sourceOptions && data.sourceOptions[optionName], this.props.sourceSchema)
-                }</OptionValue>
+                <OptionValue title={optionValue}>
+                  {optionValue}
+                </OptionValue>
               </Option>
             )
           }) : null}
@@ -324,14 +325,16 @@ class WizardSummary extends React.Component<Props> {
               return null
             }
 
+            let optionLabel = optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')
+            let optionValue = fieldHelper.getValueAlias(optionName, data.destOptions && data.destOptions[optionName], this.props.destinationSchema)
             return (
               <Option key={optionName}>
-                <OptionLabel data-test-id={`wSummary-optionLabel-${optionName}`}>
-                  {optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')}
+                <OptionLabel data-test-id={`wSummary-optionLabel-${optionName}`} title={optionLabel}>
+                  {optionLabel}
                 </OptionLabel>
-                <OptionValue data-test-id={`wSummary-optionValue-${optionName}`}>{
-                  fieldHelper.getValueAlias(optionName, data.destOptions && data.destOptions[optionName], this.props.destinationSchema)
-                }</OptionValue>
+                <OptionValue data-test-id={`wSummary-optionValue-${optionName}`} title={optionValue}>
+                  {optionValue}
+                </OptionValue>
               </Option>
             )
           }) : null}

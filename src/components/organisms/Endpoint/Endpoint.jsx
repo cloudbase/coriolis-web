@@ -168,12 +168,13 @@ class Endpoint extends React.Component<Props, State> {
     }
 
     if (props.endpoint && endpointStore.connectionInfo) {
+      let plugin: any = ContentPlugin[props.endpoint.type] || ContentPlugin.default
       this.setState({
         isNew: this.props.isNewEndpoint ? (this.state.isNew === null || this.state.isNew) : this.state.isNew,
         endpoint: {
           ...this.state.endpoint,
-          ...ObjectUtils.flatten(props.endpoint || {}),
-          ...ObjectUtils.flatten(endpointStore.connectionInfo || {}),
+          ...ObjectUtils.flatten(props.endpoint || {}, plugin.REQUIRES_PARENT_OBJECT_PATH),
+          ...ObjectUtils.flatten(endpointStore.connectionInfo || {}, plugin.REQUIRES_PARENT_OBJECT_PATH),
         },
       })
     } else {
@@ -218,6 +219,9 @@ class Endpoint extends React.Component<Props, State> {
       return field.default
     }
 
+    if (field.type === 'integer') {
+      return null
+    }
     return ''
   }
 

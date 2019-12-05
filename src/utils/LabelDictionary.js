@@ -60,7 +60,7 @@ const cache: { name: string, label: ?string, description: ?string }[] = []
 class LabelDictionary {
   // Fields which have enums for which dictionary labels should be used.
   // If a field has enums and is not in this array, their values will be used as labels
-  static enumFields = ['port_reuse_policy']
+  static enumFields = ['port_reuse_policy', 'replica_export_mechanism']
 
   static get(fieldName: ?string): string {
     if (!fieldName) {

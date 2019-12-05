@@ -197,14 +197,33 @@ class WizardOptions extends React.Component<Props> {
   }
 
   generateGroups(fields: FieldRender[]) {
+    let groups: Array<{ fields: FieldRender[], name?: string }> = [{ fields }]
+
     let workerFields = fields.filter(f => f.field.name.indexOf('migr_') === 0)
     if (workerFields.length > 1) {
-      return [
+      groups = [
         { fields: fields.filter(f => f.field.name.indexOf('migr_') === -1) },
         { name: 'Temporary Migration Worker Options', fields: workerFields.map((f, i) => ({ ...f, column: i % 2 })) },
       ]
     }
-    return [{ fields }]
+
+    fields.forEach(f => {
+      if (f.field.groupName) {
+        groups[0].fields = groups[0].fields ? groups[0].fields.filter(gf => gf.field.name !== f.field.name) : []
+
+        let group = groups.find(g => g.name && g.name === f.field.groupName)
+        if (!group) {
+          groups.push({
+            name: f.field.groupName,
+            fields: [f],
+          })
+        } else {
+          group.fields.push(f)
+        }
+      }
+    })
+
+    return groups
   }
 
   renderOptionsField(field: Field) {
@@ -254,6 +273,23 @@ class WizardOptions extends React.Component<Props> {
     if (this.props.useAdvancedOptions) {
       fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => !f.required))
     }
+
+    // Add subfields for enums which have them
+    let subFields = []
+    fieldsSchema.forEach(f => {
+      if (!f.enum || !f.subFields) {
+        return
+      }
+      let value = this.getFieldValue(f.name, f.default)
+      if (!f.subFields) {
+        return
+      }
+      let subField = f.subFields.find(f => f.name === `${String(value)}_options`)
+      if (subField && subField.properties) {
+        subFields = [...subFields, ...subField.properties]
+      }
+    })
+    fieldsSchema = [...fieldsSchema, ...subFields]
 
     let executeNowColumn
     let fields: FieldRender[] = fieldsSchema.filter(f => shouldRenderField(f)).map((field, i) => {

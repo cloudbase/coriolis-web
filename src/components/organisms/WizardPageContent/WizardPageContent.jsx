@@ -136,6 +136,14 @@ export const isOptionsPageValid = (data: ?any, schema: Field[]) => {
       if (f.type === 'object' && f.properties && f.properties.filter && f.properties.filter(p => isValid(p)).length > 0) {
         required = required.concat(f.properties.filter(p => p.required))
       }
+
+      if (f.enum && f.subFields) {
+        let value = data && data[f.name]
+        let subField = f.subFields.find(f => f.name === `${String(value)}_options`)
+        if (subField && subField.properties) {
+          required = required.concat(subField.properties.filter(p => p.required))
+        }
+      }
     })
 
     let validFieldsCount = 0

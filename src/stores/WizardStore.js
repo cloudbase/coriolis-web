@@ -38,6 +38,16 @@ const updateOptions = (oldOptions: ?{ [string]: mixed }, data: { field: Field, v
   } else {
     options[data.field.name] = data.value
   }
+
+  if (data.field.enum && data.field.subFields) {
+    data.field.subFields.forEach(subField => {
+      let subFieldKeys = Object.keys(options).filter(k => k.indexOf(`${subField.name}/`) > -1)
+      subFieldKeys.forEach(k => {
+        delete options[k]
+      })
+    })
+  }
+
   return options
 }
 
