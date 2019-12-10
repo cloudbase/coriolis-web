@@ -40,7 +40,7 @@ import configLoader from '../../../utils/Config'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType, StorageBackend } from '../../../types/Endpoint'
-import type { Instance, Nic, Disk } from '../../../types/Instance'
+import type { Instance, Nic, Disk, InstanceScript } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { Network, SecurityGroup } from '../../../types/Network'
 import type { Schedule } from '../../../types/Schedule'
@@ -289,6 +289,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstanceClick(instance: Instance) {
     wizardStore.updateData({ networks: null })
+    wizardStore.clearUploadedUserScripts()
     wizardStore.clearStorageMap()
     wizardStore.toggleInstanceSelection(instance)
     wizardStore.updateUrlState()
@@ -481,7 +482,12 @@ class WizardPage extends React.Component<Props, State> {
   async createMultiple() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel}s ...`)
-    await wizardStore.createMultiple(this.state.type, wizardStore.data, wizardStore.storageMap)
+    await wizardStore.createMultiple(
+      this.state.type,
+      wizardStore.data,
+      wizardStore.storageMap,
+      wizardStore.uploadedUserScripts,
+    )
     let items = wizardStore.createdItems
     if (!items) {
       notificationStore.alert(`${typeLabel}s couldn't be created`, 'error')
@@ -495,7 +501,12 @@ class WizardPage extends React.Component<Props, State> {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel} ...`)
     try {
-      await wizardStore.create(this.state.type, wizardStore.data, wizardStore.storageMap)
+      await wizardStore.create(
+        this.state.type,
+        wizardStore.data,
+        wizardStore.storageMap,
+        wizardStore.uploadedUserScripts,
+      )
       let item = wizardStore.createdItem
       if (!item) {
         notificationStore.alert(`${typeLabel} couldn't be created`, 'error')
@@ -560,6 +571,14 @@ class WizardPage extends React.Component<Props, State> {
     replicaStore.execute(replica.id, executeNowOptions)
   }
 
+  handleCancelUploadedScript(global: ?string, instanceName: ?string) {
+    wizardStore.cancelUploadedScript(global, instanceName)
+  }
+
+  handleUserScriptUpload(instanceScript: InstanceScript) {
+    wizardStore.uploadUserScript(instanceScript)
+  }
+
   render() {
     return (
       <Wrapper>
@@ -602,6 +621,9 @@ class WizardPage extends React.Component<Props, State> {
             onContentRef={ref => { this.contentRef = ref }}
             onReloadOptionsClick={() => { this.handleReloadOptionsClick() }}
             onReloadNetworksClick={() => { this.loadNetworks(false) }}
+            uploadedUserScripts={wizardStore.uploadedUserScripts}
+            onCancelUploadedScript={(g, i) => { this.handleCancelUploadedScript(g, i) }}
+            onUserScriptUpload={s => { this.handleUserScriptUpload(s) }}
           />}
         />
         <Modal

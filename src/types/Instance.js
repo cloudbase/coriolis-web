@@ -44,3 +44,10 @@ export type Instance = {
     disks: Disk[],
   },
 }
+
+export type InstanceScript = {
+  global?: ?string,
+  instanceName?: ?string,
+  scriptContent: string,
+  fileName: string,
+}

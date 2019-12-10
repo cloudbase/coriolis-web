@@ -40,6 +40,7 @@ import migrationImage from './images/migration.svg'
 import Palette from '../../styleUtils/Palette'
 
 import type { Field } from '../../../types/Field'
+import type { InstanceScript } from '../../../types/Instance'
 
 const Wrapper = styled.div``
 
@@ -52,6 +53,7 @@ type State = {
   showCancelConfirmation: boolean,
   showEditModal: boolean,
   showFromReplicaModal: boolean,
+  pausePolling: boolean,
 }
 @observer
 class MigrationDetailsPage extends React.Component<Props, State> {
@@ -60,6 +62,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     showCancelConfirmation: false,
     showEditModal: false,
     showFromReplicaModal: false,
+    pausePolling: false,
   }
 
   stopPolling: ?boolean
@@ -168,14 +171,14 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   handleRecreateClick() {
     let replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
     if (!replicaId) {
-      this.setState({ showEditModal: true })
+      this.setState({ showEditModal: true, pausePolling: true })
       return
     }
-    this.setState({ showFromReplicaModal: true })
+    this.setState({ showFromReplicaModal: true, pausePolling: true })
   }
 
   handleCloseFromReplicaModal() {
-    this.setState({ showFromReplicaModal: false })
+    this.setState({ showFromReplicaModal: false, pausePolling: false })
   }
 
   handleCloseCancelConfirmation() {
@@ -191,23 +194,23 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     notificationStore.alert('Canceled', 'success')
   }
 
-  async recreateFromReplica(options: Field[]) {
+  async recreateFromReplica(options: Field[], userScripts: InstanceScript[]) {
     let replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
     if (!replicaId) {
       return
     }
 
-    this.migrate(replicaId, options)
+    this.migrate(replicaId, options, userScripts)
     this.handleCloseFromReplicaModal()
   }
 
-  async migrate(replicaId: string, options: Field[]) {
-    let migration = await migrationStore.migrateReplica(replicaId, options)
+  async migrate(replicaId: string, options: Field[], userScripts: InstanceScript[]) {
+    let migration = await migrationStore.migrateReplica(replicaId, options, userScripts)
     this.props.history.push(`/migration/tasks/${migration.id}`)
   }
 
   async pollData() {
-    if (this.state.showEditModal || this.stopPolling) {
+    if (this.state.pausePolling || this.stopPolling) {
       return
     }
     await migrationStore.getMigration(this.props.match.params.id, { showLoading: false, skipLog: true })
@@ -219,7 +222,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   closeEditModal() {
-    this.setState({ showEditModal: false }, () => {
+    this.setState({ showEditModal: false, pausePolling: false }, () => {
       this.pollData()
     })
   }
@@ -327,7 +330,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           >
             <ReplicaMigrationOptions
               onCancelClick={() => { this.handleCloseFromReplicaModal() }}
-              onMigrateClick={options => { this.recreateFromReplica(options) }}
+              onMigrateClick={(o, s) => { this.recreateFromReplica(o, s) }}
+              instances={instanceStore.instancesDetails}
+              loadingInstances={instanceStore.loadingInstancesDetails}
             />
           </Modal>
         ) : null}

@@ -106,6 +106,7 @@ export const wizardPages = [
   { id: 'dest-options', title: 'Target options', breadcrumb: 'Target Options' },
   { id: 'networks', title: 'Networks', breadcrumb: 'Networks' },
   { id: 'storage', title: 'Storage Mapping', breadcrumb: 'Storage' },
+  { id: 'scripts', title: 'User Scripts', breadcrumb: 'Scripts', excludeFrom: 'replica' },
   { id: 'schedule', title: 'Schedule', breadcrumb: 'Schedule', excludeFrom: 'migration' },
   { id: 'summary', title: 'Summary', breadcrumb: 'Summary' },
 ]

@@ -36,6 +36,7 @@ type Props = {
   marginLeft?: ?number,
   marginBottom?: ?number,
   className?: string,
+  style?: any,
   warning?: boolean,
   filled?: boolean,
 }
@@ -50,6 +51,7 @@ class InfoIcon extends React.Component<Props> {
         className={this.props.className}
         warning={this.props.warning}
         filled={this.props.filled}
+        style={this.props.style}
       />
     )
   }

@@ -20,23 +20,42 @@ import styled from 'styled-components'
 
 import Button from '../../atoms/Button'
 import FieldInput from '../../molecules/FieldInput'
+import ToggleButtonBar from '../../atoms/ToggleButtonBar'
+import WizardScripts from '../../organisms/WizardScripts'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
 import KeyboardManager from '../../../utils/KeyboardManager'
+import StyleProps from '../../styleUtils/StyleProps'
+
 import replicaMigrationImage from './images/replica-migration.svg'
+
 import type { Field } from '../../../types/Field'
+import type { Instance, InstanceScript } from '../../../types/Instance'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 32px 32px 32px;
+  min-height: 0;
 `
 const Image = styled.div`
-  width: 288px;
-  height: 96px;
+  ${StyleProps.exactWidth('288px')}
+  ${StyleProps.exactHeight('96px')}
   background: url('${replicaMigrationImage}') center no-repeat;
   margin: 80px 0;
+`
+const OptionsBody = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+const ScriptsBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
+  min-height: 0;
+  margin-bottom: 32px;
 `
 const Form = styled.div`
   display: flex;
@@ -57,11 +76,16 @@ const FieldInputStyled = styled(FieldInput)`
 `
 
 type Props = {
+  instances: Instance[],
+  loadingInstances: boolean,
   onCancelClick: () => void,
-  onMigrateClick: (fields: Field[]) => void,
+  onMigrateClick: (fields: Field[], uploadedScripts: InstanceScript[]) => void,
+  onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
 }
 type State = {
   fields: Field[],
+  selectedBarButton: string,
+  uploadedScripts: InstanceScript[],
 }
 let defaultFields: Field[] = [
   {
@@ -82,14 +106,30 @@ let defaultFields: Field[] = [
 class ReplicaMigrationOptions extends React.Component<Props, State> {
   state = {
     fields: [...defaultFields],
+    selectedBarButton: 'options',
+    uploadedScripts: [],
   }
 
+  scrollableRef: HTMLElement
+
   componentDidMount() {
-    KeyboardManager.onEnter('migration-options', () => { this.props.onMigrateClick(this.state.fields) }, 2)
+    KeyboardManager.onEnter('migration-options', () => { this.migrate() }, 2)
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevState.selectedBarButton !== this.state.selectedBarButton) {
+      if (this.props.onResizeUpdate) {
+        this.props.onResizeUpdate(this.scrollableRef, 0)
+      }
+    }
   }
 
   componentWillUnmount() {
     KeyboardManager.removeKeyDown('migration-options')
+  }
+
+  migrate() {
+    this.props.onMigrateClick(this.state.fields, this.state.uploadedScripts)
   }
 
   handleValueChange(field: Field, value: boolean) {
@@ -104,31 +144,82 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     this.setState({ fields })
   }
 
+  handleCanceScript(global: ?string, instanceName: ?string) {
+    this.setState({
+      uploadedScripts: this.state.uploadedScripts.filter(s => global ? s.global !== global : s.instanceName !== instanceName),
+    })
+  }
+
+  handleScriptUpload(script: InstanceScript) {
+    this.setState({
+      uploadedScripts: [
+        ...this.state.uploadedScripts,
+        script,
+      ],
+    })
+  }
+
+  renderOptions() {
+    return (
+      <Form>
+        {this.state.fields.map(field => {
+          return (
+            <FieldInputStyled
+              width={200}
+              key={field.name}
+              name={field.name}
+              type={field.type}
+              value={field.value || field.default}
+              minimum={field.minimum}
+              maximum={field.maximum}
+              layout="page"
+              label={LabelDictionary.get(field.name)}
+              onChange={value => this.handleValueChange(field, value)}
+            />
+          )
+        })}
+      </Form>
+    )
+  }
+
+  renderScripts() {
+    return (
+      <WizardScripts
+        instances={this.props.instances}
+        loadingInstances={this.props.loadingInstances}
+        onScriptUpload={s => { this.handleScriptUpload(s) }}
+        onCancelScript={(g, i) => { this.handleCanceScript(g, i) }}
+        uploadedScripts={this.state.uploadedScripts}
+        scrollableRef={r => { this.scrollableRef = r }}
+        layout="modal"
+      />
+    )
+  }
+
+  renderBody() {
+    let Body = this.state.selectedBarButton === 'options' ? OptionsBody : ScriptsBody
+
+    return (
+      <Body>
+        <ToggleButtonBar
+          items={[{ label: 'Options', value: 'options' }, { label: 'User Scripts', value: 'script' }]}
+          selectedValue={this.state.selectedBarButton}
+          onChange={item => { this.setState({ selectedBarButton: item.value }) }}
+          style={{ marginBottom: '32px' }}
+        />
+        {this.state.selectedBarButton === 'options' ? this.renderOptions() : this.renderScripts()}
+      </Body>
+    )
+  }
+
   render() {
     return (
       <Wrapper>
         <Image />
-        <Form>
-          {this.state.fields.map(field => {
-            return (
-              <FieldInputStyled
-                width={200}
-                key={field.name}
-                name={field.name}
-                type={field.type}
-                value={field.value || field.default}
-                minimum={field.minimum}
-                maximum={field.maximum}
-                layout="page"
-                label={LabelDictionary.get(field.name)}
-                onChange={value => this.handleValueChange(field, value)}
-              />
-            )
-          })}
-        </Form>
+        {this.renderBody()}
         <Buttons>
           <Button secondary onClick={this.props.onCancelClick} data-test-id="rmOptions-cancelButton">Cancel</Button>
-          <Button onClick={() => { this.props.onMigrateClick(this.state.fields) }} data-test-id="rmOptions-execButton">Migrate</Button>
+          <Button onClick={() => { this.migrate() }} data-test-id="rmOptions-execButton">Migrate</Button>
         </Buttons>
       </Wrapper>
     )

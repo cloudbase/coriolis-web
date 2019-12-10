@@ -31,6 +31,7 @@ import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
 import type { MainItem } from '../../../types/MainItem'
 import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 import type { Field } from '../../../types/Field'
+import type { InstanceScript } from '../../../types/Instance'
 
 import replicaItemImage from './images/replica.svg'
 import replicaLargeImage from './images/replica-large.svg'
@@ -39,6 +40,7 @@ import projectStore from '../../../stores/ProjectStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import migrationStore from '../../../stores/MigrationStore'
 import scheduleStore from '../../../stores/ScheduleStore'
+import instanceStore from '../../../stores/InstanceStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 
@@ -142,14 +144,17 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     this.setState({ showExecutionOptionsModal: false })
   }
 
-  migrateSelectedReplicas(fields: Field[]) {
+  migrateSelectedReplicas(fields: Field[], uploadedScripts: InstanceScript[]) {
     notificationStore.alert('Creating migrations from selected replicas')
-    this.migrate(fields)
-    this.setState({ showCreateMigrationsModal: false })
+    this.migrate(fields, uploadedScripts)
+    this.setState({ showCreateMigrationsModal: false, modalIsOpen: false })
   }
 
-  async migrate(fields: Field[]) {
-    await Promise.all(this.state.selectedReplicas.map(replica => migrationStore.migrateReplica(replica.id, fields)))
+  async migrate(fields: Field[], uploadedScripts: InstanceScript[]) {
+    await Promise.all(this.state.selectedReplicas.map(replica =>
+      migrationStore.migrateReplica(replica.id, fields,
+        uploadedScripts.filter(s => !s.instanceName || replica.instances.find(i => i === s.instanceName))
+      )))
     notificationStore.alert('Migrations successfully created from replicas.', 'success')
     this.props.history.push('/migrations')
   }
@@ -213,6 +218,16 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     this.setState({ modalIsOpen: false }, () => {
       this.pollData()
     })
+  }
+
+  handleShowCreateMigrationsModal() {
+    instanceStore.loadInstancesDetailsBulk(replicaStore.replicas.map(r => ({
+      endpointId: r.origin_endpoint_id,
+      instanceNames: r.instances,
+      env: r.source_environment,
+    })))
+
+    this.setState({ showCreateMigrationsModal: true, modalIsOpen: true })
   }
 
   async pollData() {
@@ -294,7 +309,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     }, {
       label: 'Create Migrations',
       color: Palette.primary,
-      action: () => { this.setState({ showCreateMigrationsModal: true }) },
+      action: () => { this.handleShowCreateMigrationsModal() },
     }, {
       label: 'Delete Disks',
       action: () => { this.setState({ showDeleteDisksModal: true }) },
@@ -388,11 +403,15 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
           <Modal
             isOpen
             title="Create Migrations from Selected Replicas"
-            onRequestClose={() => { this.setState({ showCreateMigrationsModal: false }) }}
+            onRequestClose={() => { this.setState({ showCreateMigrationsModal: false, modalIsOpen: false }) }}
           >
             <ReplicaMigrationOptions
-              onCancelClick={() => { this.setState({ showCreateMigrationsModal: false }) }}
-              onMigrateClick={options => { this.migrateSelectedReplicas(options) }}
+              instances={instanceStore.instancesDetails}
+              loadingInstances={instanceStore.loadingInstancesDetails}
+              onCancelClick={() => {
+                this.setState({ showCreateMigrationsModal: false, modalIsOpen: false })
+              }}
+              onMigrateClick={(options, s) => { this.migrateSelectedReplicas(options, s) }}
             />
           </Modal>
         ) : null}

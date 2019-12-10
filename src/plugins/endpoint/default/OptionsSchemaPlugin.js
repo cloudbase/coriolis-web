@@ -22,6 +22,7 @@ import type { Field } from '../../../types/Field'
 import type { OptionValues, StorageMap } from '../../../types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { NetworkMap } from '../../../types/Network'
+import type { InstanceScript } from '../../../types/Instance'
 import { executionOptions, migrationFields } from '../../../constants'
 
 const migrationImageOsTypes = ['windows', 'linux']
@@ -198,6 +199,25 @@ export default class OptionsSchemaParser {
         })
       }
     })
+    return payload
+  }
+
+  static getUserScripts(uploadedUserScripts: InstanceScript[]) {
+    let payload = {}
+    let globalScripts = uploadedUserScripts.filter(s => s.global)
+    if (globalScripts.length) {
+      payload.global = {}
+      globalScripts.forEach(script => {
+        payload.global[script.global || ''] = script.scriptContent
+      })
+    }
+    let instanceScripts = uploadedUserScripts.filter(s => s.instanceName)
+    if (instanceScripts.length) {
+      payload.instances = {}
+      instanceScripts.forEach(script => {
+        payload.instances[script.instanceName || ''] = script.scriptContent
+      })
+    }
     return payload
   }
 }

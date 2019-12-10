@@ -215,6 +215,35 @@ class InstanceStore {
     this.instancesPerPage = instancesPerPage
   }
 
+  @action async loadInstancesDetailsBulk(
+    instanceInfos: {
+      endpointId: string,
+      instanceNames: string[],
+      env?: ?any,
+    }[]
+  ) {
+    this.reqId = !this.reqId ? 1 : this.reqId + 1
+    this.instancesDetails = []
+    this.loadingInstancesDetails = true
+    InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
+    try {
+      await Promise.all(instanceInfos.map(async i => {
+        await Promise.all(i.instanceNames.map(async name => {
+          let instanceDetails = await InstanceSource.loadInstanceDetails(i.endpointId, name, this.reqId, false,
+            i.env, true)
+          runInAction(() => {
+            this.instancesDetails = this.instancesDetails.filter(i => (i.name || i.instance_name || '') !== name)
+            this.instancesDetails.push(instanceDetails.instance)
+            this.instancesDetails.sort(n => (n.name || n.instance_name || '')
+              .localeCompare(n.name || n.instance_name || ''))
+          })
+        }))
+      }))
+    } finally {
+      this.loadingInstancesDetails = false
+    }
+  }
+
   @action async loadInstancesDetails(opts: {
     endpointId: string,
     instancesInfo: Instance[],

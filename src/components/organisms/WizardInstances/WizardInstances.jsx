@@ -89,9 +89,8 @@ const LoadingText = styled.div`
   margin-top: 38px;
   font-size: 18px;
 `
-const Image = styled.div`
-  width: 48px;
-  height: 48px;
+export const Image = styled.div`
+  ${StyleProps.exactSize('48px')}
   background: url('${instanceImage}') center no-repeat;
 `
 const Label = styled.div`
