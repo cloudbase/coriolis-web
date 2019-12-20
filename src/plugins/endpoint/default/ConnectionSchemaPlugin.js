@@ -98,6 +98,20 @@ export const fieldsToPayload = (data: { [string]: mixed }, schema: SchemaPropert
   Object.keys(schema.properties).forEach(fieldName => {
     if (data[fieldName] && typeof data[fieldName] !== 'object') {
       info[fieldName] = Utils.trim(fieldName, data[fieldName])
+    } else if (typeof schema.properties[fieldName] === 'object') {
+      // $FlowIgnore
+      let properties = schema.properties[fieldName] && schema.properties[fieldName].properties
+      if (properties) {
+        Object.keys(properties).forEach(fn => {
+          let fullFn = `${fieldName}/${fn}`
+          if (data[fullFn] != null) {
+            if (!info[fieldName]) {
+              info[fieldName] = {}
+            }
+            info[fieldName][fn] = Utils.trim(fn, data[fullFn])
+          }
+        })
+      }
     } else if (
       !data[fieldName] &&
       schema.required && schema.required.find(f => f === fieldName) &&

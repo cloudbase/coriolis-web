@@ -35,6 +35,8 @@ export type Field = {
   readOnly?: boolean,
   title?: string,
   description?: string,
+  subFields?: Field[],
+  groupName?: string,
 }
 
 const migrationImageOsTypes = ['windows', 'linux']
@@ -47,7 +49,26 @@ class FieldHelper {
     if (value === false) {
       return 'No'
     }
-    let field = fields.find(f => f.name === name)
+    let findField = (f: Field[]) => f.find(f1 => f1.name === name)
+    let field = findField(fields)
+    if (!field) {
+      fields.forEach(f => {
+        if (f.properties && !field) {
+          field = findField(f.properties)
+        }
+
+        if (f.subFields && !field) {
+          field = findField(f.subFields)
+          if (f.subFields && !field) {
+            f.subFields.forEach(sf => {
+              if (!field && sf.properties) {
+                field = findField(sf.properties)
+              }
+            })
+          }
+        }
+      })
+    }
     let findInEnum = (v: any) => {
       let valueName = v
       if (field && field.enum) {

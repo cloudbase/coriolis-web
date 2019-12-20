@@ -17,16 +17,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import configLoader from './Config'
 
 class ObjectUtils {
-  static flatten(object: any): any {
+  static flatten(object: any, appendParentPath?: boolean, parent?: string): any {
     let result = {}
 
     Object.keys(object).forEach(k => {
       if (typeof object[k] === 'object') {
         if (object[k]) {
-          result = { ...result, ...this.flatten(object[k]) }
+          result = {
+            ...result,
+            ...this.flatten(object[k], appendParentPath, k),
+          }
         }
       } else {
-        result[k] = object[k]
+        let key = k
+        if (appendParentPath && parent) {
+          key = `${parent}/${k}`
+        }
+        result[key] = object[k]
       }
     })
 

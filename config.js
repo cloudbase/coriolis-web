@@ -41,6 +41,11 @@ const conf: Config = {
   // The providers for which an extra `source options` or `destination options` call can be made with a set of field values
   extraOptionsApiCalls: [
     {
+      name: 'openstack',
+      types: ['source'],
+      requiredFields: ['replica_export_mechanism'],
+    },
+    {
       name: 'azure',
       types: ['source', 'destination'],
       requiredFields: ['location', 'resource_group'],

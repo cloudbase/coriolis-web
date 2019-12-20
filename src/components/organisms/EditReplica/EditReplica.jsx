@@ -286,6 +286,15 @@ class EditReplica extends React.Component<Props, State> {
       data[field.name] = value
     }
 
+    if (field.enum && field.subFields) {
+      field.subFields.forEach(subField => {
+        let subFieldKeys = Object.keys(data).filter(k => k.indexOf(`${subField.name}/`) > -1)
+        subFieldKeys.forEach(k => {
+          delete data[k]
+        })
+      })
+    }
+
     let handleStateUpdate = () => {
       if (field.type !== 'string' || field.enum) {
         this.loadExtraOptions(field, type)

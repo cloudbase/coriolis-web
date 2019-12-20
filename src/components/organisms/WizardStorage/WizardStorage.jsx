@@ -177,11 +177,15 @@ class WizardStorage extends React.Component<Props> {
       if (!name) {
         return [null, false]
       }
-      let paths = name.split('/')
-      if (paths.length < 4) {
+      let slashPaths = name.split('/')
+      let dashPaths = name.split('-')
+      if (slashPaths.length < 4 && dashPaths.length < 4) {
         return [name, false]
       }
-      return [`.../${paths.filter((_, i) => i > paths.length - 4).join('/')}`, true]
+      if (slashPaths.length >= 4) {
+        return [`.../${slashPaths.filter((_, i) => i > slashPaths.length - 4).join('/')}`, true]
+      }
+      return [`${dashPaths[0]}-...-${dashPaths[1]}`, true]
     }
 
 

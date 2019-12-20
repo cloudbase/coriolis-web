@@ -34,7 +34,7 @@ export type SchemaProperties = {
     } | {
       type: string,
       enum?: string[],
-      default?: string,
+      default?: any,
     } | {
       $ref: string,
     },
