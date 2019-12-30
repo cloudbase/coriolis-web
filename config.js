@@ -38,12 +38,23 @@ const conf: Config = {
   // - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
   instancesListBackgroundLoading: { default: 10, ovm: Infinity, 'hyper-v': Infinity },
 
-  // The providers for which an extra `source options` or `destination options` call can be made with a set of field values
+  /**
+   * The list of providers for which and extra source or destination options API call will be made,
+   * if the required fields have any value set.
+   * If `requiredValues` is provided, the field specified there needs to have a certain value (specified in values)
+   * in order to make the options API call.
+   */
   extraOptionsApiCalls: [
     {
       name: 'openstack',
       types: ['source'],
       requiredFields: ['replica_export_mechanism'],
+      requiredValues: [
+        {
+          field: 'replica_export_mechanism',
+          values: ['swift_backups', 'ceph_backups', 'coriolis_backups'],
+        },
+      ],
     },
     {
       name: 'azure',

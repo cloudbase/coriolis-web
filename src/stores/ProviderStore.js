@@ -41,6 +41,7 @@ export const getFieldChangeOptions = (config: {
     return null
   }
   let requiredFields = providerWithEnvOptions.requiredFields
+  let requiredValues = providerWithEnvOptions.requiredValues
 
   let findFieldInSchema = (name: string) => schema.find(f => f.name === name)
 
@@ -50,8 +51,16 @@ export const getFieldChangeOptions = (config: {
       if (data[fn] === null) {
         return false
       }
-      if (data[fn] === undefined && schemaField && schemaField.default) {
+      let defaultValue = data[fn] === undefined && schemaField && schemaField.default
+      let requiredValue = requiredValues && requiredValues.find(f => f.field === fn)
+      if (defaultValue) {
+        if (requiredValue) {
+          return Boolean(requiredValue.values.find(v => v === defaultValue))
+        }
         return true
+      }
+      if (requiredValue) {
+        return Boolean(requiredValue.values.find(v => v === data[fn]))
       }
       return data[fn]
     }
