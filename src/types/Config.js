@@ -2,6 +2,16 @@
 
 type Type = 'source' | 'destination'
 
+type ExtraOption = {
+  name: string,
+  types: Type[],
+  requiredFields: string[],
+  requiredValues?: {
+    field: string,
+    values: string[],
+  }[]
+}
+
 export type Config = {
   disabledPages: string[],
   showUserDomainInput: boolean,
@@ -11,7 +21,7 @@ export type Config = {
   requestPollTimeout: number,
   sourceOptionsProviders: string[],
   instancesListBackgroundLoading: { default: number, [string]: number },
-  extraOptionsApiCalls: Array<{ name: string, types: Type[], requiredFields: string[] }>,
+  extraOptionsApiCalls: ExtraOption[],
   providerSortPriority: { [providerName: string]: number },
   hiddenUsers: string[],
   passwordFields: string[],
