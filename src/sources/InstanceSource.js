@@ -75,15 +75,16 @@ class InstanceSource {
     return response.data.instances
   }
 
-  async loadInstanceDetails(
+  async loadInstanceDetails(opts: {
     endpointId: string,
     instanceName: string,
-    targetProvider: string,
+    targetProvider?: string,
     reqId: number,
     quietError?: boolean,
     env?: any,
     cache?: ?boolean,
-  ): Promise<{ instance: Instance, reqId: number }> {
+  }): Promise<{ instance: Instance, reqId: number }> {
+    let { endpointId, instanceName, targetProvider, reqId, quietError, env, cache } = opts
     let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`
     if (env) {
       url += `?env=${btoa(JSON.stringify(env))}`
@@ -95,8 +96,7 @@ class InstanceSource {
       cache,
     })
 
-
-    let instanceInfoParser = InstanceInfoPlugin[targetProvider] || InstanceInfoPlugin.default
+    let instanceInfoParser = (targetProvider && InstanceInfoPlugin[targetProvider]) || InstanceInfoPlugin.default
     let instance = instanceInfoParser.parseInstance(response.data.instance)
 
     return { instance, reqId }

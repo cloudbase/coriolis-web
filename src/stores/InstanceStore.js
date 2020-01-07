@@ -229,8 +229,14 @@ class InstanceStore {
     try {
       await Promise.all(instanceInfos.map(async i => {
         await Promise.all(i.instanceNames.map(async name => {
-          let instanceDetails = await InstanceSource.loadInstanceDetails(i.endpointId, name, this.reqId, false,
-            i.env, true)
+          let instanceDetails = await InstanceSource.loadInstanceDetails({
+            endpointId: i.endpointId,
+            instanceName: name,
+            reqId: this.reqId,
+            quietError: false,
+            env: i.env,
+            cache: true,
+          })
           runInAction(() => {
             this.instancesDetails = this.instancesDetails.filter(i => (i.name || i.instance_name || '') !== name)
             this.instancesDetails.push(instanceDetails.instance)
@@ -270,8 +276,15 @@ class InstanceStore {
       Promise.all(instancesInfo.map(async instanceInfo => {
         try {
           let resp: { instance: Instance, reqId: number } =
-            await InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name || instanceInfo.name,
-              targetProvider, this.reqId, quietError, env, cache)
+            await InstanceSource.loadInstanceDetails({
+              endpointId,
+              instanceName: instanceInfo.instance_name || instanceInfo.name,
+              targetProvider,
+              reqId: this.reqId,
+              quietError,
+              env,
+              cache,
+            })
           if (resp.reqId !== this.reqId) {
             return
           }
