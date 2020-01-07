@@ -21,6 +21,7 @@ import { sortTasks } from './ReplicaSource'
 
 import Api from '../utils/ApiCaller'
 import type { MainItem } from '../types/MainItem'
+import type { InstanceScript } from '../types/Instance'
 import type { Field } from '../types/Field'
 import type { NetworkMap } from '../types/Network'
 import type { Endpoint, StorageMap } from '../types/Endpoint'
@@ -157,8 +158,8 @@ class MigrationSource {
     return migrationId
   }
 
-  async migrateReplica(replicaId: string, options: Field[]): Promise<MainItem> {
-    let payload = {
+  async migrateReplica(replicaId: string, options: Field[], userScripts: InstanceScript[]): Promise<MainItem> {
+    let payload: any = {
       migration: {
         replica_id: replicaId,
       },
@@ -166,6 +167,10 @@ class MigrationSource {
     options.forEach(o => {
       payload.migration[o.name] = o.value || o.default || false
     })
+
+    if (userScripts.length) {
+      payload.migration.user_scripts = OptionsSchemaPlugin.default.getUserScripts(userScripts)
+    }
 
     let response = await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`,

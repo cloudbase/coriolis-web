@@ -29,6 +29,7 @@ import EditReplica from '../../organisms/EditReplica'
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
 
 import type { MainItem } from '../../../types/MainItem'
+import type { InstanceScript } from '../../../types/Instance'
 import type { Execution } from '../../../types/Execution'
 import type { Schedule } from '../../../types/Schedule'
 import type { Field } from '../../../types/Field'
@@ -66,6 +67,7 @@ type State = {
   confirmationItem: ?MainItem | ?Execution,
   showCancelConfirmation: boolean,
   isEditable: boolean,
+  pausePolling: boolean,
 }
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
@@ -79,6 +81,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     confirmationItem: null,
     showCancelConfirmation: false,
     isEditable: false,
+    pausePolling: false,
   }
 
   stopPolling: ?boolean
@@ -263,15 +266,15 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   handleCloseMigrationModal() {
-    this.setState({ showMigrationModal: false })
+    this.setState({ showMigrationModal: false, pausePolling: false })
   }
 
   handleCreateMigrationClick() {
-    this.setState({ showMigrationModal: true })
+    this.setState({ showMigrationModal: true, pausePolling: true })
   }
 
   handleReplicaEditClick() {
-    this.setState({ showEditModal: true })
+    this.setState({ showEditModal: true, pausePolling: true })
   }
 
   handleAddScheduleClick(schedule: Schedule) {
@@ -319,13 +322,17 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.setState({ showCancelConfirmation: false })
   }
 
-  migrateReplica(options: Field[]) {
-    this.migrate(options)
+  migrateReplica(options: Field[], uploadedScripts: InstanceScript[]) {
+    this.migrate(options, uploadedScripts)
     this.handleCloseMigrationModal()
   }
 
-  async migrate(options: Field[]) {
-    let migration = await migrationStore.migrateReplica(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', options)
+  async migrate(options: Field[], uploadedScripts: InstanceScript[]) {
+    let migration = await migrationStore.migrateReplica(
+      replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '',
+      options,
+      uploadedScripts
+    )
     notificationStore.alert('Migration successfully created from replica.', 'success', {
       action: {
         label: 'View Migration Status',
@@ -343,7 +350,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   async pollData(showLoading: boolean) {
-    if (this.state.showEditModal || this.stopPolling) {
+    if (this.state.pausePolling || this.stopPolling) {
       return
     }
 
@@ -356,7 +363,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   closeEditModal() {
-    this.setState({ showEditModal: false }, () => {
+    this.setState({ showEditModal: false, pausePolling: false }, () => {
       this.pollData(false)
     })
   }
@@ -478,16 +485,20 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             onExecuteClick={fields => { this.executeReplica(fields) }}
           />
         </Modal>
-        <Modal
-          isOpen={this.state.showMigrationModal}
-          title="Create Migration from Replica"
-          onRequestClose={() => { this.handleCloseMigrationModal() }}
-        >
-          <ReplicaMigrationOptions
-            onCancelClick={() => { this.handleCloseMigrationModal() }}
-            onMigrateClick={options => { this.migrateReplica(options) }}
-          />
-        </Modal>
+        {this.state.showMigrationModal ? (
+          <Modal
+            isOpen
+            title="Create Migration from Replica"
+            onRequestClose={() => { this.handleCloseMigrationModal() }}
+          >
+            <ReplicaMigrationOptions
+              loadingInstances={instanceStore.loadingInstancesDetails}
+              instances={instanceStore.instancesDetails}
+              onCancelClick={() => { this.handleCloseMigrationModal() }}
+              onMigrateClick={(o, s) => { this.migrateReplica(o, s) }}
+            />
+          </Modal>
+        ) : null}
         <AlertModal
           isOpen={this.state.showDeleteExecutionConfirmation}
           title="Delete Execution?"

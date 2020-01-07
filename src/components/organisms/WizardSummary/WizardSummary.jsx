@@ -29,7 +29,7 @@ import { migrationFields } from '../../../constants'
 import type { Schedule } from '../../../types/Schedule'
 import type { WizardData } from '../../../types/WizardData'
 import type { StorageMap, StorageBackend } from '../../../types/Endpoint'
-import type { Instance, Disk } from '../../../types/Instance'
+import type { Instance, Disk, InstanceScript } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 
 import fieldHelper from '../../../types/Field'
@@ -99,6 +99,14 @@ const Row = styled.div`
     border-bottom: 1px solid ${Palette.grayscale[1]};
   }
 `
+const ScriptFileName = styled.div`
+  max-width: 124px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-left: 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+`
 const InstanceRowTitle = styled.div`
   margin-bottom: 4px;
 `
@@ -163,6 +171,7 @@ type Props = {
   instancesDetails: Instance[],
   sourceSchema: Field[],
   destinationSchema: Field[],
+  uploadedUserScripts: InstanceScript[],
 }
 @observer
 class WizardSummary extends React.Component<Props> {
@@ -440,6 +449,36 @@ class WizardSummary extends React.Component<Props> {
     )
   }
 
+  renderUserScripts() {
+    if (this.props.uploadedUserScripts.length === 0) {
+      return null
+    }
+
+    return (
+      <Section>
+        <SectionTitle>Uploaded User Scripts</SectionTitle>
+        <Table>
+          {this.props.uploadedUserScripts.map(s => (
+            <Row
+              key={s.instanceName || s.global}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                flexShrink: 0,
+                alignItems: 'center',
+              }}
+            >
+              <InstanceRowTitle>{
+                s.global ? s.global === 'windows' ? 'Global Windows Script' : 'Global Linux Script' : s.instanceName
+              }</InstanceRowTitle>
+              <ScriptFileName title={s.fileName}>{s.fileName}</ScriptFileName>
+            </Row>
+          ))}
+        </Table>
+      </Section>
+    )
+  }
+
   renderOverviewSection() {
     let data = this.props.data
     let type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
@@ -495,6 +534,7 @@ class WizardSummary extends React.Component<Props> {
           {this.renderOverviewSection()}
           {this.renderInstancesSection()}
           {this.renderNetworksSection()}
+          {this.renderUserScripts()}
         </Column>
         <Column>
           {this.renderSourceOptionsSection()}

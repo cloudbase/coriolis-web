@@ -18,7 +18,7 @@ import { observable, action, runInAction } from 'mobx'
 
 import type { WizardData, WizardPage } from '../types/WizardData'
 import type { MainItem } from '../types/MainItem'
-import type { Instance } from '../types/Instance'
+import type { Instance, InstanceScript } from '../types/Instance'
 import type { Field } from '../types/Field'
 import type { NetworkMap } from '../types/Network'
 import type { StorageMap } from '../types/Endpoint'
@@ -60,6 +60,7 @@ class WizardStore {
   @observable creatingItem: boolean = false
   @observable createdItems: ?MainItem[] = null
   @observable creatingItems: boolean = false
+  @observable uploadedUserScripts: InstanceScript[] = []
 
   @action updateData(data: WizardData) {
     this.data = { ...this.data, ...data }
@@ -147,11 +148,16 @@ class WizardStore {
     this.schedules = this.schedules.filter(s => s.id !== scheduleId)
   }
 
-  @action async create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
+  @action async create(
+    type: string,
+    data: WizardData,
+    storageMap: StorageMap[],
+    uploadedUserScripts: InstanceScript[]
+  ): Promise<void> {
     this.creatingItem = true
 
     try {
-      let item: MainItem = await source.create(type, data, storageMap)
+      let item: MainItem = await source.create(type, data, storageMap, uploadedUserScripts)
       runInAction(() => { this.createdItem = item })
     } catch (err) {
       throw err
@@ -160,11 +166,16 @@ class WizardStore {
     }
   }
 
-  @action async createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<void> {
+  @action async createMultiple(
+    type: string,
+    data: WizardData,
+    storageMap: StorageMap[],
+    uploadedUserScripts: InstanceScript[]
+  ): Promise<void> {
     this.creatingItems = true
 
     try {
-      let items: MainItem[] = await source.createMultiple(type, data, storageMap)
+      let items: MainItem[] = await source.createMultiple(type, data, storageMap, uploadedUserScripts)
       runInAction(() => { this.createdItems = items })
     } finally {
       runInAction(() => { this.creatingItems = false })
@@ -183,6 +194,21 @@ class WizardStore {
     this.data = state.data
     this.schedules = state.schedules
     this.storageMap = state.storageMap
+  }
+
+  @action cancelUploadedScript(global: ?string, instanceName: ?string) {
+    this.uploadedUserScripts = this.uploadedUserScripts.filter(s => global ? s.global !== global : s.instanceName !== instanceName)
+  }
+
+  @action uploadUserScript(instanceScript: InstanceScript) {
+    this.uploadedUserScripts = [
+      ...this.uploadedUserScripts,
+      instanceScript,
+    ]
+  }
+
+  @action clearUploadedUserScripts() {
+    this.uploadedUserScripts = []
   }
 }
 

@@ -19,6 +19,7 @@ import { observable, action, runInAction } from 'mobx'
 import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Field } from '../types/Field'
 import type { Endpoint } from '../types/Endpoint'
+import type { InstanceScript } from '../types/Instance'
 import MigrationSource from '../sources/MigrationSource'
 
 class MigrationStore {
@@ -101,8 +102,8 @@ class MigrationStore {
     runInAction(() => { this.migrations = this.migrations.filter(r => r.id !== migrationId) })
   }
 
-  @action async migrateReplica(replicaId: string, options: Field[]) {
-    let migration = await MigrationSource.migrateReplica(replicaId, options)
+  @action async migrateReplica(replicaId: string, options: Field[], userScripts: InstanceScript[]) {
+    let migration = await MigrationSource.migrateReplica(replicaId, options, userScripts)
     runInAction(() => {
       this.migrations = [
         migration,

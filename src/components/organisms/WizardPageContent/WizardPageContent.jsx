@@ -28,6 +28,7 @@ import WizardInstances from '../WizardInstances'
 import WizardNetworks from '../WizardNetworks'
 import WizardStorage from '../WizardStorage'
 import WizardOptions from '../WizardOptions'
+import WizardScripts from '../WizardScripts'
 import Schedule from '../Schedule'
 import WizardSummary from '../WizardSummary'
 
@@ -38,7 +39,7 @@ import configLoader from '../../../utils/Config'
 
 import type { WizardData, WizardPage } from '../../../types/WizardData'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../types/Endpoint'
-import type { Instance, Nic, Disk } from '../../../types/Instance'
+import type { Instance, Nic, Disk, InstanceScript } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { Network, SecurityGroup } from '../../../types/Network'
 import type { Schedule as ScheduleType } from '../../../types/Schedule'
@@ -174,6 +175,7 @@ type Props = {
   hasStorageMap: boolean,
   hasSourceOptions: boolean,
   pages: WizardPage[],
+  uploadedUserScripts: InstanceScript[],
   onTypeChange: (isReplicaChecked: ?boolean) => void,
   onBackClick: () => void,
   onNextClick: () => void,
@@ -194,6 +196,8 @@ type Props = {
   onContentRef: (ref: any) => void,
   onReloadOptionsClick: () => void,
   onReloadNetworksClick: () => void,
+  onUserScriptUpload: (instanceScript: InstanceScript) => void,
+  onCancelUploadedScript: (global: ?string, instanceName: ?string) => void,
 }
 type TimezoneValue = 'local' | 'utc'
 type State = {
@@ -461,6 +465,16 @@ class WizardPageContent extends React.Component<Props, State> {
           />
         )
         break
+      case 'scripts':
+        body = (
+          <WizardScripts
+            instances={this.props.instanceStore.instancesDetails}
+            onScriptUpload={this.props.onUserScriptUpload}
+            onCancelScript={this.props.onCancelUploadedScript}
+            uploadedScripts={this.props.uploadedUserScripts}
+          />
+        )
+        break
       case 'schedule':
         body = (
           <Schedule
@@ -484,6 +498,7 @@ class WizardPageContent extends React.Component<Props, State> {
             instancesDetails={this.props.instanceStore.instancesDetails}
             sourceSchema={this.props.providerStore.sourceSchema}
             destinationSchema={this.props.providerStore.destinationSchema}
+            uploadedUserScripts={this.props.uploadedUserScripts}
           />
         )
         break

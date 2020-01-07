@@ -22,9 +22,15 @@ import { servicesUrl } from '../constants'
 import type { WizardData } from '../types/WizardData'
 import type { StorageMap } from '../types/Endpoint'
 import type { MainItem } from '../types/MainItem'
+import type { InstanceScript } from '../types/Instance'
 
 class WizardSource {
-  async create(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem> {
+  async create(
+    type: string,
+    data: WizardData,
+    storageMap: StorageMap[],
+    uploadedUserScripts: InstanceScript[]
+  ): Promise<MainItem> {
     const sourceParser = data.source ? OptionsSchemaPlugin[data.source.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     const destParser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     let payload = {}
@@ -50,6 +56,9 @@ class WizardSource {
     if (type === 'migration') {
       payload[type].shutdown_instances = Boolean(data.destOptions && data.destOptions.shutdown_instances)
       payload[type].replication_count = (data.destOptions && data.destOptions.replication_count) || 2
+      if (uploadedUserScripts.length) {
+        payload[type].user_scripts = destParser.getUserScripts(uploadedUserScripts)
+      }
     }
 
     let response = await Api.send({
@@ -60,7 +69,12 @@ class WizardSource {
     return response.data[type]
   }
 
-  async createMultiple(type: string, data: WizardData, storageMap: StorageMap[]): Promise<MainItem[]> {
+  async createMultiple(
+    type: string,
+    data: WizardData,
+    storageMap: StorageMap[],
+    uploadedUserScripts: InstanceScript[]
+  ): Promise<MainItem[]> {
     if (!data.selectedInstances) {
       throw new Error('No selected instances')
     }
@@ -68,7 +82,7 @@ class WizardSource {
       let newData = { ...data }
       newData.selectedInstances = [instance]
       try {
-        let mainItem: MainItem = await this.create(type, newData, storageMap)
+        let mainItem: MainItem = await this.create(type, newData, storageMap, uploadedUserScripts)
         return mainItem
       } catch (err) {
         notificationStore.alert(`Error while creating ${type} for instance ${instance.name}`, 'error')
