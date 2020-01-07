@@ -250,8 +250,9 @@ class InstanceStore {
     cache?: boolean,
     quietError?: boolean,
     env?: any,
+    targetProvider: string,
   }): Promise<void> {
-    let { endpointId, instancesInfo, cache, quietError, env } = opts
+    let { endpointId, instancesInfo, cache, quietError, env, targetProvider } = opts
     // Use reqId to be able to uniquely identify the request so all but the latest request can be igonred and canceled
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
@@ -270,7 +271,7 @@ class InstanceStore {
         try {
           let resp: { instance: Instance, reqId: number } =
             await InstanceSource.loadInstanceDetails(endpointId, instanceInfo.instance_name || instanceInfo.name,
-              this.reqId, quietError, env, cache)
+              targetProvider, this.reqId, quietError, env, cache)
           if (resp.reqId !== this.reqId) {
             return
           }

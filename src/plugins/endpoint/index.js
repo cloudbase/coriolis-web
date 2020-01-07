@@ -26,6 +26,9 @@ import DefaultOptionsSchemaPlugin from './default/OptionsSchemaPlugin'
 import OvmOptionsSchemaPlugin from './ovm/OptionsSchemaPlugin'
 import OpenstackOptionsSchemaPlugin from './openstack/OptionsSchemaPlugin'
 
+import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
+import OciInstanceInfoPlugin from './oci/InstanceInfoPlugin'
+
 export const ConnectionSchemaPlugin = {
   default: DefaultConnectionSchemaPlugin,
   azure: AzureConnectionSchemaPlugin,
@@ -43,4 +46,9 @@ export const ContentPlugin = {
   default: DefaultContentPlugin,
   azure: AzureContentPlugin,
   openstack: OpenstackContentPlugin,
+}
+
+export const InstanceInfoPlugin = {
+  default: DefaultInstanceInfoPlugin,
+  oci: OciInstanceInfoPlugin,
 }

@@ -19,6 +19,8 @@ import type { Instance } from '../types/Instance'
 
 import { servicesUrl } from '../constants'
 
+import { InstanceInfoPlugin } from '../plugins/endpoint'
+
 class InstanceSource {
   async loadInstancesChunk(
     endpointId: string,
@@ -76,6 +78,7 @@ class InstanceSource {
   async loadInstanceDetails(
     endpointId: string,
     instanceName: string,
+    targetProvider: string,
     reqId: number,
     quietError?: boolean,
     env?: any,
@@ -91,7 +94,12 @@ class InstanceSource {
       quietError,
       cache,
     })
-    return { instance: response.data.instance, reqId }
+
+
+    let instanceInfoParser = InstanceInfoPlugin[targetProvider] || InstanceInfoPlugin.default
+    let instance = instanceInfoParser.parseInstance(response.data.instance)
+
+    return { instance, reqId }
   }
 
   cancelInstancesDetailsRequests(reqId: number) {
