@@ -118,6 +118,11 @@ const NoStorageSubtitle = styled.div`
   color: ${Palette.grayscale[4]};
   text-align: center;
 `
+const DiskDisabledMessage = styled.div`
+  width: 224px;
+  text-align: center;
+  color: gray;
+`
 
 export const getDisks = (instancesDetails: Instance[], type: 'backend' | 'disk', storageMap?: ?StorageMap[]): Disk[] => {
   let fieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
@@ -162,6 +167,42 @@ class WizardStorage extends React.Component<Props> {
     )
   }
 
+  renderStorageDropdown(
+    storageItems: Array<StorageBackend | { id: ?string, name: string }>,
+    selectedItem: ?StorageBackend,
+    disk: Disk,
+    type: 'backend' | 'disk'
+  ) {
+    if (disk.disabled && type === 'disk') {
+      return <DiskDisabledMessage>{disk.disabled}</DiskDisabledMessage>
+    }
+
+    return storageItems.length > 10 ? (
+      <AutocompleteDropdown
+        width={StyleProps.inputSizes.large.width}
+        selectedItem={selectedItem}
+        items={storageItems}
+        onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
+        labelField="name"
+        valueField="id"
+      />
+    ) :
+      (
+        <Dropdown
+          width={StyleProps.inputSizes.large.width}
+          centered
+          noSelectionMessage="Default"
+          noItemsMessage="No storage found"
+          selectedItem={selectedItem}
+          items={storageItems}
+          labelField="name"
+          valueField="id"
+          onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
+          data-test-id={`${TEST_ID}-${type}-destination`}
+        />
+      )
+  }
+
   renderStorageWrapper(disks: Disk[], type: 'backend' | 'disk') {
     let title = type === 'backend' ? 'Storage Backend Mapping' : 'Disk Mapping'
     let diskFieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
@@ -172,7 +213,7 @@ class WizardStorage extends React.Component<Props> {
     ]
 
     disks = disks.filter(d => d[diskFieldName])
-    disks.sort((d1, d2) => String(d1[diskFieldName]).localeCompare(String(d2[diskFieldName])))
+
     let parseDiskName = (name: ?string): [?string, boolean] => {
       if (!name) {
         return [null, false]
@@ -225,30 +266,7 @@ class WizardStorage extends React.Component<Props> {
                   ) : null}
                 </StorageTitle>
                 <ArrowImage />
-                {storageItems.length > 10 ? (
-                  <AutocompleteDropdown
-                    width={StyleProps.inputSizes.large.width}
-                    selectedItem={selectedItem}
-                    items={storageItems}
-                    onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
-                    labelField="name"
-                    valueField="id"
-                  />
-                ) :
-                  (
-                    <Dropdown
-                      width={StyleProps.inputSizes.large.width}
-                      centered
-                      noSelectionMessage="Default"
-                      noItemsMessage="No storage found"
-                      selectedItem={selectedItem}
-                      items={storageItems}
-                      labelField="name"
-                      valueField="id"
-                      onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
-                      data-test-id={`${TEST_ID}-${type}-destination`}
-                    />
-                  )}
+                {this.renderStorageDropdown(storageItems, selectedItem, disk, type)}
               </StorageItem>
             )
           })}

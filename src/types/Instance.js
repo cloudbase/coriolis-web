@@ -29,6 +29,7 @@ export type Disk = {
   format?: string,
   guest_device?: string,
   size_bytes?: number,
+  disabled?: string,
 }
 
 export type Instance = {

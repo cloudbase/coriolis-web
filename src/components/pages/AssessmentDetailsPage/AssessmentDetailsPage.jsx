@@ -408,6 +408,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
         location: localData.locationName,
         resource_group: localData.resourceGroupName,
       },
+      targetProvider: 'azure',
     })
   }
 
