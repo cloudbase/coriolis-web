@@ -464,12 +464,13 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   loadNetworks(cache: boolean) {
-    if (wizardStore.data.source && wizardStore.data.selectedInstances) {
+    if (wizardStore.data.source && wizardStore.data.selectedInstances && wizardStore.data.target) {
       instanceStore.loadInstancesDetails({
         endpointId: wizardStore.data.source.id,
         instancesInfo: wizardStore.data.selectedInstances,
         env: wizardStore.data.sourceOptions,
         cache,
+        targetProvider: wizardStore.data.target.type,
       })
     }
     if (wizardStore.data.target) {

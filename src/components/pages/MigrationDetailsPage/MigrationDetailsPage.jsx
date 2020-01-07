@@ -126,6 +126,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       quietError: true,
       cache,
     })
+
+    let targetEndpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
     instanceStore.loadInstancesDetails({
       endpointId: details.origin_endpoint_id,
       // $FlowIgnore
@@ -133,6 +135,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       cache,
       quietError: false,
       env: details.source_environment,
+      targetProvider: targetEndpoint ? targetEndpoint.type : '',
     })
   }
 
