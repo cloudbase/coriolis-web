@@ -96,7 +96,6 @@ class ContentPlugin extends React.Component<Props, State> {
   }
 
   get hasCephOptionsSet(): boolean {
-    console.log('schema', JSON.parse(JSON.stringify(this.props.connectionInfoSchema)))
     let cephOptionsField = this.props.connectionInfoSchema.find(n => n.name === 'ceph_options')
     if (!cephOptionsField || !cephOptionsField.properties) {
       return false
