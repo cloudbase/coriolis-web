@@ -25,4 +25,5 @@ export type Config = {
   providerSortPriority: { [providerName: string]: number },
   hiddenUsers: string[],
   passwordFields: string[],
+  mainListItemsPerPage: number,
 }
