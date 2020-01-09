@@ -93,6 +93,8 @@ const conf: Config = {
   // If the field doesn't contain `password` in its name, the following list will be used instead
   passwordFields: ['private_key_passphrase', 'secret_access_key'],
 
+  // The number of items per page applicable to main lists: replicas, migrations, endpoints, users etc.
+  mainListItemsPerPage: 20,
 }
 
 export const config = conf

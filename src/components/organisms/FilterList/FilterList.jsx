@@ -18,12 +18,15 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import type { MainItem } from '../../../types/MainItem'
 import MainListFilter from '../../molecules/MainListFilter'
-
+import Pagination from '../../atoms/Pagination'
 import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 import type { ItemComponentProps } from '../../organisms/MainList'
 import MainList from '../../organisms/MainList'
+
+import type { MainItem } from '../../../types/MainItem'
+
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,6 +60,7 @@ type State = {
   filterText: string,
   selectedItems: any[],
   selectAllSelected: boolean,
+  currentPage: number,
 }
 @observer
 class FilterList extends React.Component<Props, State> {
@@ -66,6 +70,18 @@ class FilterList extends React.Component<Props, State> {
     filterText: '',
     selectedItems: [],
     selectAllSelected: false,
+    currentPage: 1,
+  }
+
+  get paginatedItems() {
+    let paginatedItems = this.state.items
+    if (paginatedItems.length > configLoader.config.mainListItemsPerPage) {
+      paginatedItems = this.state.items.filter((_, i) =>
+        i < (configLoader.config.mainListItemsPerPage * this.state.currentPage) &&
+        i >= (configLoader.config.mainListItemsPerPage * (this.state.currentPage - 1))
+      )
+    }
+    return paginatedItems
   }
 
   componentWillMount() {
@@ -79,12 +95,15 @@ class FilterList extends React.Component<Props, State> {
         filterStatus: 'all',
         filterText: '',
         selectedItems: [],
+        currentPage: 1,
       })
       this.props.onSelectedItemsChange && this.props.onSelectedItemsChange([])
       return
     }
 
-    this.setState({ items: this.filterItems(props.items) })
+    this.setState({
+      items: this.filterItems(props.items),
+    })
   }
 
   handleFilterItemClick(item: DictItem) {
@@ -103,6 +122,7 @@ class FilterList extends React.Component<Props, State> {
       selectAllSelected,
       filterStatus: item.value,
       items,
+      currentPage: 1,
     }, () => {
       this.props.onSelectedItemsChange && this.props.onSelectedItemsChange(selectedItems)
     })
@@ -112,8 +132,10 @@ class FilterList extends React.Component<Props, State> {
     this.setState({
       filterText: text,
       items: this.filterItems(this.props.items, null, text),
+      currentPage: 1,
     })
   }
+
   handleItemSelectedChange(item: MainItem, selected: boolean) {
     let items = this.state.selectedItems.slice(0)
     let selectedItems = items.filter(i => item.id !== i.id) || []
@@ -130,7 +152,7 @@ class FilterList extends React.Component<Props, State> {
   handleSelectAllChange(selected: boolean) {
     let selectedItems = []
     if (selected) {
-      selectedItems = this.state.items.slice(0)
+      selectedItems = this.paginatedItems.slice(0)
     }
 
     this.setState({ selectedItems, selectAllSelected: selected }, () => {
@@ -146,6 +168,30 @@ class FilterList extends React.Component<Props, State> {
     )
 
     return filteredItems
+  }
+
+  handlePageClick(page: number) {
+    this.setState({ currentPage: page })
+  }
+
+  renderPagination() {
+    let itemsCount = this.state.items.length
+    let totalPages = Math.ceil(itemsCount / configLoader.config.mainListItemsPerPage)
+    let hasNextPage = this.state.currentPage * configLoader.config.mainListItemsPerPage < itemsCount
+    let isPreviousDisabled = this.state.currentPage === 1
+    let isNextDisabled = !hasNextPage
+
+    return itemsCount > configLoader.config.mainListItemsPerPage ? (
+      <Pagination
+        currentPage={this.state.currentPage}
+        totalPages={totalPages}
+        nextDisabled={isNextDisabled}
+        previousDisabled={isPreviousDisabled}
+        onNextClick={() => { this.handlePageClick(this.state.currentPage + 1) }}
+        onPreviousClick={() => { this.handlePageClick(this.state.currentPage - 1) }}
+        style={{ margin: '32px 0 16px 0' }}
+      />
+    ) : null
   }
 
   render() {
@@ -171,7 +217,7 @@ class FilterList extends React.Component<Props, State> {
         />
         <MainList
           loading={this.props.loading}
-          items={this.state.items}
+          items={this.paginatedItems}
           selectedItems={this.state.selectedItems}
           onSelectedChange={(item, selected) => { this.handleItemSelectedChange(item, selected) }}
           onItemClick={this.props.onItemClick}
@@ -184,6 +230,7 @@ class FilterList extends React.Component<Props, State> {
           onEmptyListButtonClick={this.props.onEmptyListButtonClick}
           data-test-id="filterList-mainList"
         />
+        {this.renderPagination()}
       </Wrapper>
     )
   }
