@@ -16,16 +16,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import Checkbox from '../../atoms/Checkbox'
 import ReloadButton from '../../atoms/ReloadButton'
-import Arrow from '../../atoms/Arrow'
-import HorizontalLoading from '../../atoms/HorizontalLoading'
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
 import SearchInput from '../../molecules/SearchInput'
 import InfoIcon from '../../atoms/InfoIcon'
+import Pagination from '../../atoms/Pagination'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -122,45 +121,6 @@ const FilterInfo = styled.div`
 const SelectionInfo = styled.div``
 const FilterSeparator = styled.div`
   margin: 0 14px 0 16px;
-`
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 32px 0 16px 0;
-  flex-shrink: 0;
-`
-const pageStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${Palette.grayscale[1]};
-`
-const pageButtonStyle = css`
-  width: 32px;
-  height: 30px;
-  cursor: ${props => props.disabled ? 'default' : 'pointer'};
-  padding-top: 2px;
-`
-
-const PagePrevious = styled.div`
-  border-top-left-radius: ${StyleProps.borderRadius};
-  border-bottom-left-radius: ${StyleProps.borderRadius};
-  ${pageStyle}
-  ${pageButtonStyle}
-`
-const PageNext = styled.div`
-  border-top-right-radius: ${StyleProps.borderRadius};
-  border-bottom-right-radius: ${StyleProps.borderRadius};
-  ${pageStyle}
-  ${pageButtonStyle}
-`
-const PageNumber = styled.div`
-  width: 64px;
-  height: 29px;
-  flex-direction: column;
-  margin: 0 1px;
-  padding-top: 3px;
-  ${pageStyle}
 `
 const Reloading = styled.div`
   margin: 32px auto 0 auto;
@@ -402,28 +362,16 @@ class WizardInstances extends React.Component<Props, State> {
     let isNextDisabled = !hasNextPage || areAllDisabled
 
     return (
-      <Pagination onMouseDown={e => { e.preventDefault() }}>
-        <PagePrevious
-          disabled={isPreviousDisabled}
-          onClick={() => { if (!isPreviousDisabled) { this.handlePreviousPageClick() } }}
-          data-test-id="wInstances-prevPageButton"
-        >
-          <Arrow orientation="left" disabled={isPreviousDisabled} color={Palette.black} thick />
-        </PagePrevious>
-        <PageNumber data-test-id="wInstances-currentPage">
-          {this.props.currentPage} of {Math.ceil(this.props.instances.length / this.props.instancesPerPage)}
-          {this.props.chunksLoading ? (
-            <HorizontalLoading style={{ width: '100%', top: '3px' }} data-test-id="wInstances-loadingChunks" />
-          ) : null}
-        </PageNumber>
-        <PageNext
-          onClick={() => { if (!isNextDisabled) { this.handleNextPageClick() } }}
-          disabled={isNextDisabled}
-          data-test-id="wInstances-nextPageButton"
-        >
-          <Arrow disabled={isNextDisabled} color={Palette.black} thick />
-        </PageNext>
-      </Pagination>
+      <Pagination
+        style={{ margin: '32px 0 16px 0' }}
+        previousDisabled={isPreviousDisabled}
+        onPreviousClick={() => { this.handlePreviousPageClick() }}
+        currentPage={this.props.currentPage}
+        totalPages={Math.ceil(this.props.instances.length / this.props.instancesPerPage)}
+        loading={this.props.chunksLoading}
+        nextDisabled={isNextDisabled}
+        onNextClick={() => { this.handleNextPageClick() }}
+      />
     )
   }
 
