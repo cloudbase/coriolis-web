@@ -393,6 +393,7 @@ class Navigation extends React.Component<Props> {
                 break
               case 'logging':
                 menuImage = logsImage
+                style = { width: '22px', height: '22px' }
                 break
               default:
             }
