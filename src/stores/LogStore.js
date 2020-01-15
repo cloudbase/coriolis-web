@@ -19,9 +19,10 @@ import cookie from 'js-cookie'
 
 import type { Log } from '../types/Log'
 
-import { coriolisUrl } from '../constants'
+import { coriolisUrl, servicesUrl } from '../constants'
 
 import notificationStore from '../stores/NotificationStore'
+import userStore from '../stores/UserStore'
 
 import apiCaller from '../utils/ApiCaller'
 import DateUtils from '../utils/DateUtils'
@@ -63,6 +64,16 @@ class LogStore {
     }
 
     DomUtils.executeDownloadLink(url)
+  }
+
+  async downloadDiagnostics() {
+    let loggedUser = userStore.loggedUser
+    if (!loggedUser) {
+      throw new Error('No logged user!')
+    }
+    let projectId = loggedUser.project.id
+    let response = await apiCaller.send({ url: `${servicesUrl.coriolis}/${projectId}/diagnostics` })
+    DomUtils.download(JSON.stringify(response.data), 'diagnostics.json')
   }
 
   socket: WebSocket
