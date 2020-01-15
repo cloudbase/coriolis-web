@@ -19,7 +19,6 @@ export type Config = {
   showOpenstackCurrentUserSwitch: boolean,
   useBarbicanSecrets: boolean,
   requestPollTimeout: number,
-  sourceOptionsProviders: string[],
   instancesListBackgroundLoading: { default: number, [string]: number },
   extraOptionsApiCalls: ExtraOption[],
   providerSortPriority: { [providerName: string]: number },
