@@ -149,6 +149,14 @@ class DownloadsContent extends React.Component<Props, State> {
   renderLogs() {
     return (
       <Logs>
+        <Log>
+          <LogDownload
+            onClick={() => {
+              this.props.onDownloadClick('__diagnostics__')
+            }}
+          />
+          <LogName>diagnostics</LogName>
+        </Log>
         {this.props.logs.map(log => (
           <Log key={log.log_name}>
             <LogDownload

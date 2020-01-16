@@ -124,6 +124,11 @@ class LogsPage extends React.Component<{}, State> {
   }
 
   handleDownloadClick(logName: string, startDate: ?Date, endDate: ?Date) {
+    if (logName === '__diagnostics__') {
+      logStore.downloadDiagnostics()
+      return
+    }
+
     if (startDate && endDate && endDate.getTime() < startDate.getTime()) {
       notificationStore.alert('End time must be greater than start time', 'error')
       return
