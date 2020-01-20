@@ -29,6 +29,7 @@ import StreamText from './StreamText'
 import logStore from '../../../stores/LogStore'
 import notificationStore from '../../../stores/NotificationStore'
 import projectStore from '../../../stores/ProjectStore'
+import apiLogger from '../../../utils/ApiLogger'
 
 const TAB_ITEMS = [
   { label: 'Download', value: 'downloads' },
@@ -126,6 +127,11 @@ class LogsPage extends React.Component<{}, State> {
   handleDownloadClick(logName: string, startDate: ?Date, endDate: ?Date) {
     if (logName === '__diagnostics__') {
       logStore.downloadDiagnostics()
+      return
+    }
+
+    if (logName === '__ui__') {
+      apiLogger.download()
       return
     }
 
