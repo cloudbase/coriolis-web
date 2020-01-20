@@ -131,32 +131,34 @@ export const isOptionsPageValid = (data: ?any, schema: Field[]) => {
     return field.default != null
   }
 
-  if (schema && schema.length > 0) {
-    let required = schema.filter(f => f.required && f.type !== 'object')
-    schema.forEach(f => {
-      if (f.type === 'object' && f.properties && f.properties.filter && f.properties.filter(p => isValid(p)).length > 0) {
-        required = required.concat(f.properties.filter(p => p.required))
-      }
+  if (!schema || schema.length === 0) {
+    return true
+  }
 
-      if (f.enum && f.subFields) {
-        let value = data && data[f.name]
-        let subField = f.subFields.find(f => f.name === `${String(value)}_options`)
-        if (subField && subField.properties) {
-          required = required.concat(subField.properties.filter(p => p.required))
-        }
-      }
-    })
-
-    let validFieldsCount = 0
-    required.forEach(f => {
-      if (isValid(f)) {
-        validFieldsCount += 1
-      }
-    })
-
-    if (validFieldsCount === required.length) {
-      return true
+  let required = schema.filter(f => f.required && f.type !== 'object')
+  schema.forEach(f => {
+    if (f.type === 'object' && f.properties && f.properties.filter && f.properties.filter(p => isValid(p)).length > 0) {
+      required = required.concat(f.properties.filter(p => p.required))
     }
+
+    if (f.enum && f.subFields) {
+      let value = data && data[f.name]
+      let subField = f.subFields.find(f => f.name === `${String(value)}_options`)
+      if (subField && subField.properties) {
+        required = required.concat(subField.properties.filter(p => p.required))
+      }
+    }
+  })
+
+  let validFieldsCount = 0
+  required.forEach(f => {
+    if (isValid(f)) {
+      validFieldsCount += 1
+    }
+  })
+
+  if (validFieldsCount === required.length) {
+    return true
   }
 
   return false
@@ -418,6 +420,7 @@ class WizardPageContent extends React.Component<Props, State> {
             hasStorageMap={false}
             wizardType={`${this.props.type}-source-options`}
             layout="page"
+            isSource
           />
         )
         break

@@ -539,6 +539,20 @@ class WizardPage extends React.Component<Props, State> {
     this.separateVms()
   }
 
+  isNextButtonDisabled() {
+    let state = this.state.nextButtonDisabled
+
+    if (wizardStore.currentPage.id === 'dest-options') {
+      return providerStore.destinationSchemaLoading || state
+    }
+
+    if (wizardStore.currentPage.id === 'source-options') {
+      return providerStore.sourceSchemaLoading || state
+    }
+
+    return state
+  }
+
   scheduleReplica(replica: MainItem): Promise<void> {
     if (wizardStore.schedules.length === 0) {
       return Promise.resolve()
@@ -595,7 +609,7 @@ class WizardPage extends React.Component<Props, State> {
             hasSourceOptions={Boolean(this.pages.find(p => p.id === 'source-options'))}
             storageMap={wizardStore.storageMap}
             schedules={wizardStore.schedules}
-            nextButtonDisabled={this.state.nextButtonDisabled}
+            nextButtonDisabled={this.isNextButtonDisabled()}
             type={this.state.type}
             onTypeChange={isReplica => { this.handleTypeChange(isReplica) }}
             onBackClick={() => { this.handleBackClick() }}

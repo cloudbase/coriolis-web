@@ -485,6 +485,7 @@ class EditReplica extends React.Component<Props, State> {
         availableHeight={384}
         useAdvancedOptions
         layout="modal"
+        isSource={type === 'source'}
         optionsLoading={optionsLoading}
         optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now', 'execute_now_options',
           'default_storage', ...migrationFields.map(f => f.name)]}
