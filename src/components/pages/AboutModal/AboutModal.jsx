@@ -18,8 +18,6 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import logger from '../../../utils/ApiLogger'
-
 import Modal from '../../molecules/Modal/Modal'
 import LicenceComponent from '../../organisms/Licence'
 
@@ -80,10 +78,6 @@ const TextLine = styled.div`
     margin-left: 6px;
   }
 `
-const LinkMock = styled.span`
-  text-decoration: underline;
-  cursor: pointer;
-`
 
 type Props = {
   onRequestClose: () => void,
@@ -124,9 +118,6 @@ class AboutModal extends React.Component<Props, State> {
               <AboutContentWrapper>
                 <Logo />
                 <Text>
-                  <TextLine>
-                    <LinkMock onClick={() => { logger.download() }} >Download Web UI Log</LinkMock>
-                  </TextLine>
                   <TextLine>
                     © {new Date().getFullYear()} Cloudbase Solutions. All Rights Reserved.
                   </TextLine>

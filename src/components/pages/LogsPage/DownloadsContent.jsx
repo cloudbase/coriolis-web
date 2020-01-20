@@ -81,6 +81,12 @@ const LogDownload = styled.div`
   cursor: pointer;
   margin-right: 16px;
 `
+const Seperator = styled.div`
+  width: 465px;
+  height: 1px;
+  background: #d6d6d6;
+  margin-top: 16px;
+`
 
 type State = {
   startDate: ?Date,
@@ -157,6 +163,15 @@ class DownloadsContent extends React.Component<Props, State> {
           />
           <LogName>diagnostics</LogName>
         </Log>
+        <Log>
+          <LogDownload
+            onClick={() => {
+              this.props.onDownloadClick('__ui__')
+            }}
+          />
+          <LogName>web-requests</LogName>
+        </Log>
+        <Seperator />
         {this.props.logs.map(log => (
           <Log key={log.log_name}>
             <LogDownload
