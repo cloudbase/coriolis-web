@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 
+import StyleProps from '../../styleUtils/StyleProps'
+
 const Wrapper = styled.div`
   display: flex;
   height: 100%;
@@ -30,9 +32,13 @@ const Content = styled.div`
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
+
+  @media (max-width: ${StyleProps.mobileMaxWidth}px) {
+    padding: 0 32px 0 48px;
+  }
 `
 const List = styled.div`
-  padding-bottom: 32px;
+  padding-bottom: 0;
   margin-left: ${props => props.noMargin ? 0 : '-32px'};
   flex-grow: 1;
   display: flex;

@@ -40,9 +40,7 @@ import userImage from './images/user-menu.svg'
 import logsImage from './images/logs-menu.svg'
 import dashboardImage from './images/dashboard-menu.svg'
 
-const MENU_MAX_WIDTH_TOGGLE = 1350
-
-const isCollapsed = (props: any) => props.collapsed || (window.outerWidth < MENU_MAX_WIDTH_TOGGLE)
+const isCollapsed = (props: any) => props.collapsed || (window.outerWidth <= StyleProps.mobileMaxWidth)
 
 const ANIMATION = '200ms'
 
@@ -302,7 +300,7 @@ class Navigation extends React.Component<Props> {
 
     this.resizeTimeout = setTimeout(() => {
       this.resizeTimeout = null
-      this.toggleMenu(window.outerWidth < MENU_MAX_WIDTH_TOGGLE)
+      this.toggleMenu(window.outerWidth <= StyleProps.mobileMaxWidth)
     }, 100)
   }
 

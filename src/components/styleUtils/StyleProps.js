@@ -53,6 +53,8 @@ const StyleProps = {
     `,
   },
 
+  mobileMaxWidth: 1350,
+
   media: {
     handheld: (...args: any) => css`
       @media (max-height: 760px) {
