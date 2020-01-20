@@ -36,7 +36,6 @@ import scheduleStore from '../../../stores/ScheduleStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardPages, executionOptions, providerTypes } from '../../../constants'
-import configLoader from '../../../utils/Config'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Endpoint as EndpointType, StorageBackend } from '../../../types/Endpoint'
@@ -81,18 +80,14 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   get pages() {
-    let sourceProvider = wizardStore.data.source ? wizardStore.data.source.type : ''
     let destProvider = wizardStore.data.target ? wizardStore.data.target.type || '' : ''
     let pages = wizardPages
-    let sourceOptionsProviders = configLoader.config.sourceOptionsProviders
     let hasStorageMapping = () => providerStore.providers && providerStore.providers[destProvider]
       ? !!providerStore.providers[destProvider].types.find(t => t === providerTypes.STORAGE) : false
 
     return pages
       .filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
       .filter(p => p.id !== 'storage' || hasStorageMapping())
-      .filter(p => p.id !== 'source-options'
-        || sourceOptionsProviders.find(p => p === sourceProvider))
   }
 
   componentWillMount() {
@@ -544,6 +539,20 @@ class WizardPage extends React.Component<Props, State> {
     this.separateVms()
   }
 
+  isNextButtonDisabled() {
+    let state = this.state.nextButtonDisabled
+
+    if (wizardStore.currentPage.id === 'dest-options') {
+      return providerStore.destinationSchemaLoading || state
+    }
+
+    if (wizardStore.currentPage.id === 'source-options') {
+      return providerStore.sourceSchemaLoading || state
+    }
+
+    return state
+  }
+
   scheduleReplica(replica: MainItem): Promise<void> {
     if (wizardStore.schedules.length === 0) {
       return Promise.resolve()
@@ -600,7 +609,7 @@ class WizardPage extends React.Component<Props, State> {
             hasSourceOptions={Boolean(this.pages.find(p => p.id === 'source-options'))}
             storageMap={wizardStore.storageMap}
             schedules={wizardStore.schedules}
-            nextButtonDisabled={this.state.nextButtonDisabled}
+            nextButtonDisabled={this.isNextButtonDisabled()}
             type={this.state.type}
             onTypeChange={isReplica => { this.handleTypeChange(isReplica) }}
             onBackClick={() => { this.handleBackClick() }}

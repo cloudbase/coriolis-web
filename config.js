@@ -29,9 +29,6 @@ const conf: Config = {
   // The timeout between polling requests
   requestPollTimeout: 5000,
 
-  // The list of providers which offer source options
-  sourceOptionsProviders: ['aws', 'azure', 'opc', 'openstack', 'oracle_vm', 'vmware_vsphere'],
-
   // - Specifies the `limit` for each provider when listing all its VMs for pagination.
   // - If the provider is not in this list, the 'default' value will be used.
   // - If the `default` value is lower than the number of instances that fit into a page, the latter number will be used.

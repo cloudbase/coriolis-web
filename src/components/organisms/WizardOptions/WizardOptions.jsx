@@ -32,6 +32,8 @@ import { executionOptions, migrationFields } from '../../../constants'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import Palette from '../../styleUtils/Palette'
 
+import endpointImage from './images/endpoint.svg'
+
 const Wrapper = styled.div`
   display: flex;
   min-height: 0;
@@ -91,6 +93,24 @@ const LoadingText = styled.div`
   margin-top: 38px;
   font-size: 18px;
 `
+const EndpointImage = styled.div`
+  ${StyleProps.exactSize('96px')};
+  background: url('${endpointImage}') center no-repeat;
+`
+const NoSourceFieldsWrapper = styled.div`
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+const NoSourceFieldsMessage = styled.div`
+  font-size: 18px;
+  margin-top: 16px;
+`
+const NoSourceFieldsSubMessage = styled.div`
+  margin-top: 16px;
+  color: ${Palette.grayscale[4]};
+`
 
 export const shouldRenderField = (field: Field) => {
   return (field.type !== 'array' || (field.enum && field.enum.length && field.enum.length > 0)) &&
@@ -103,6 +123,7 @@ type FieldRender = {
 }
 type Props = {
   fields: Field[],
+  isSource?: boolean,
   selectedInstances?: ?Instance[],
   data?: ?{ [string]: mixed },
   getFieldValue?: (fieldName: string, defaultValue: any) => any,
@@ -264,7 +285,21 @@ class WizardOptions extends React.Component<Props> {
     )
   }
 
+  renderNoFieldsMessage() {
+    return (
+      <NoSourceFieldsWrapper>
+        <EndpointImage />
+        <NoSourceFieldsMessage>No Source Options</NoSourceFieldsMessage>
+        <NoSourceFieldsSubMessage>There are no options for the specified source cloud provider.</NoSourceFieldsSubMessage>
+      </NoSourceFieldsWrapper>
+    )
+  }
+
   renderOptionsFields() {
+    if (this.props.fields.length === 0 && this.props.isSource) {
+      return this.renderNoFieldsMessage()
+    }
+
     let fieldsSchema: Field[] = this.getDefaultFieldsSchema()
     let nonNullableBooleans: string[] = fieldsSchema.filter(f => f.type === 'boolean').map(f => f.name)
 

@@ -107,7 +107,7 @@ type State = {
 @observer
 class EditReplica extends React.Component<Props, State> {
   state = {
-    selectedPanel: null,
+    selectedPanel: 'source_options',
     destinationData: {},
     sourceData: {},
     updateDisabled: false,
@@ -121,8 +121,6 @@ class EditReplica extends React.Component<Props, State> {
 
   componentWillMount() {
     this.loadData(true)
-
-    this.setState({ selectedPanel: this.hasSourceOptions() ? 'source_options' : 'dest_options' })
   }
 
   async loadData(useCache: boolean) {
@@ -148,9 +146,8 @@ class EditReplica extends React.Component<Props, State> {
         }
       }
     }
-    if (this.hasSourceOptions()) {
-      loadAllOptions('source')
-    }
+
+    loadAllOptions('source')
     loadAllOptions('destination')
   }
 
@@ -212,10 +209,6 @@ class EditReplica extends React.Component<Props, State> {
     return providerStore.providers && providerStore.providers[this.props.destinationEndpoint.type] ?
       !!providerStore.providers[this.props.destinationEndpoint.type].types.find(t => t === providerTypes.STORAGE)
       : false
-  }
-
-  hasSourceOptions(): boolean {
-    return Boolean(configLoader.config.sourceOptionsProviders.find(p => p === this.props.sourceEndpoint.type))
   }
 
   isUpdateDisabled() {
@@ -492,6 +485,7 @@ class EditReplica extends React.Component<Props, State> {
         availableHeight={384}
         useAdvancedOptions
         layout="modal"
+        isSource={type === 'source'}
         optionsLoading={optionsLoading}
         optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now', 'execute_now_options',
           'default_storage', ...migrationFields.map(f => f.name)]}
@@ -586,21 +580,18 @@ class EditReplica extends React.Component<Props, State> {
 
   render() {
     let navigationItems: NavigationItem[] = [
+      {
+        value: 'source_options',
+        label: 'Source Options',
+        disabled: this.state.sourceFailed,
+        title: this.state.sourceFailed ? 'There are source platform errors, source options can\'t be updated' : '',
+      },
       { value: 'dest_options', label: 'Target Options' },
       { value: 'network_mapping', label: 'Network Mapping' },
     ]
 
     if (this.hasStorageMap()) {
       navigationItems.push({ value: 'storage_mapping', label: 'Storage Mapping' })
-    }
-
-    if (this.hasSourceOptions()) {
-      navigationItems.splice(0, 0, {
-        value: 'source_options',
-        label: 'Source Options',
-        disabled: this.state.sourceFailed,
-        title: this.state.sourceFailed ? 'There are source platform errors, source options can\'t be updated' : '',
-      })
     }
 
     return (

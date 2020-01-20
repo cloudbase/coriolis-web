@@ -64,8 +64,11 @@ class ObjectUtils {
     return result
   }
 
+  static async wait(ms: number) {
+    return new Promise(r => setTimeout(() => r(), ms))
+  }
+
   static async waitFor(predicate: () => boolean, timeoutMs?: number = 15000, tryEvery?: number = 1000) {
-    let wait = (ms: number) => new Promise(resolve => { setTimeout(() => { resolve() }, ms) })
     let startTime = new Date().getTime()
     let testLoop = async () => {
       if (predicate()) {
@@ -74,7 +77,7 @@ class ObjectUtils {
       if (new Date().getTime() - startTime > timeoutMs) {
         throw new Error(`Timeout: waiting for more than ${timeoutMs} ms`)
       }
-      await wait(tryEvery)
+      await this.wait(tryEvery)
       await testLoop()
     }
     await testLoop()

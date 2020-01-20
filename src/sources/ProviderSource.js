@@ -37,14 +37,23 @@ class ProviderSource {
   async loadOptionsSchema(providerName: string, optionsType: 'source' | 'destination', useCache?: ?boolean, quietError?: ?boolean): Promise<Field[]> {
     let schemaTypeInt = optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
 
-    let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`,
-      cache: useCache,
-      quietError,
-    })
-    let schema = optionsType === 'source' ? response.data.schemas.source_environment_schema : response.data.schemas.destination_environment_schema
-    let fields = SchemaParser.optionsSchemaToFields(providerName, schema)
-    return fields
+    try {
+      let response = await Api.send({
+        url: `${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`,
+        cache: useCache,
+        quietError,
+      })
+      let schemas = (response && response.data && response.data.schemas) || {}
+      let schema = optionsType === 'source' ? schemas.source_environment_schema : schemas.destination_environment_schema
+      let fields = []
+      if (schema) {
+        fields = SchemaParser.optionsSchemaToFields(providerName, schema)
+      }
+      return fields
+    } catch (err) {
+      console.error(err)
+      return []
+    }
   }
 
   async getOptionsValues(optionsType: 'source' | 'destination', endpointId: string, envData: ?{ [string]: mixed }, cache?: ?boolean, quietError?: boolean): Promise<OptionValues[]> {
