@@ -60,7 +60,7 @@ const cache: { name: string, label: ?string, description: ?string }[] = []
 class LabelDictionary {
   // Fields which have enums for which dictionary labels should be used.
   // If a field has enums and is not in this array, their values will be used as labels
-  static enumFields = ['port_reuse_policy', 'replica_export_mechanism']
+  static enumFields = ['port_reuse_policy', 'replica_export_mechanism', 'virtual_disk_clone_type']
 
   static get(fieldName: ?string): string {
     if (!fieldName) {
@@ -85,7 +85,7 @@ class LabelDictionary {
     let words = fieldName.split('_')
     words = words.map(word => {
       let acronym = acronyms.find(a => a === word)
-      let newWord = acronym ? acronym.toUpperCase() : (abbreviations[word] || word)
+      let newWord = acronym ? acronym.toUpperCase() : (abbreviations[word] || word.toLowerCase())
       return newWord.charAt(0).toUpperCase() + newWord.substr(1)
     })
     return words.join(' ')
