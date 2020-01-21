@@ -167,6 +167,7 @@ type Props = {
   data: WizardData,
   wizardType: 'replica' | 'migration',
   schedules: Schedule[],
+  defaultStorage: ?string,
   storageMap: StorageMap[],
   instancesDetails: Instance[],
   sourceSchema: Field[],
@@ -317,6 +318,13 @@ class WizardSummary extends React.Component<Props> {
       ),
     ]
 
+    let defaultStorageOption = (
+      <Option>
+        <OptionLabel>Default Storage</OptionLabel>
+        <OptionValue>{this.props.defaultStorage}</OptionValue>
+      </Option>
+    )
+
     return (
       <Section>
         <SectionTitle>{type} Target Options</SectionTitle>
@@ -324,6 +332,7 @@ class WizardSummary extends React.Component<Props> {
           {this.props.wizardType === 'replica' ? executeNowOption : null}
           {this.props.wizardType === 'migration' ? migrationOptions : null}
           {this.props.data.selectedInstances && this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
+          {this.props.defaultStorage ? defaultStorageOption : null}
           {data.destOptions ? Object.keys(data.destOptions).map(optionName => {
             if (
               optionName === 'execute_now' ||

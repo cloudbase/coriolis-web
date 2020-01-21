@@ -54,6 +54,7 @@ const updateOptions = (oldOptions: ?{ [string]: mixed }, data: { field: Field, v
 class WizardStore {
   @observable data: WizardData = {}
   @observable schedules: Schedule[] = []
+  @observable defaultStorage: ?string = null
   @observable storageMap: StorageMap[] = []
   @observable currentPage: WizardPage = wizardPages[0]
   @observable createdItem: ?MainItem = null
@@ -84,6 +85,7 @@ class WizardStore {
   @action clearData() {
     this.data = {}
     this.currentPage = wizardPages[0]
+    this.clearStorageMap()
   }
 
   @action setCurrentPage(page: WizardPage) {
@@ -109,6 +111,10 @@ class WizardStore {
     this.data.networks.push(network)
   }
 
+  @action updateDefaultStorage(value: ?string) {
+    this.defaultStorage = value
+  }
+
   @action updateStorage(storage: StorageMap) {
     let diskFieldName = storage.type === 'backend' ? 'storage_backend_identifier' : 'id'
     this.storageMap = this.storageMap
@@ -118,6 +124,7 @@ class WizardStore {
 
   @action clearStorageMap() {
     this.storageMap = []
+    this.defaultStorage = null
   }
 
   @action addSchedule(schedule: Schedule) {
@@ -151,13 +158,14 @@ class WizardStore {
   @action async create(
     type: string,
     data: WizardData,
+    defaultStorage: ?string,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[]
   ): Promise<void> {
     this.creatingItem = true
 
     try {
-      let item: MainItem = await source.create(type, data, storageMap, uploadedUserScripts)
+      let item: MainItem = await source.create(type, data, defaultStorage, storageMap, uploadedUserScripts)
       runInAction(() => { this.createdItem = item })
     } catch (err) {
       throw err
@@ -169,13 +177,14 @@ class WizardStore {
   @action async createMultiple(
     type: string,
     data: WizardData,
+    defaultStorage: ?string,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[]
   ): Promise<void> {
     this.creatingItems = true
 
     try {
-      let items: MainItem[] = await source.createMultiple(type, data, storageMap, uploadedUserScripts)
+      let items: MainItem[] = await source.createMultiple(type, data, defaultStorage, storageMap, uploadedUserScripts)
       runInAction(() => { this.createdItems = items })
     } finally {
       runInAction(() => { this.creatingItems = false })
@@ -183,7 +192,12 @@ class WizardStore {
   }
 
   updateUrlState() {
-    source.setUrlState({ data: this.data, schedules: this.schedules, storageMap: this.storageMap })
+    source.setUrlState({
+      data: this.data,
+      schedules: this.schedules,
+      storageMap: this.storageMap,
+      defaultStorage: this.defaultStorage,
+    })
   }
 
   @action getUrlState() {
@@ -194,6 +208,7 @@ class WizardStore {
     this.data = state.data
     this.schedules = state.schedules
     this.storageMap = state.storageMap
+    this.defaultStorage = state.defaultStorage
   }
 
   @action cancelUploadedScript(global: ?string, instanceName: ?string) {

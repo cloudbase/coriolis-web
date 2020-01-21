@@ -323,6 +323,11 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.updateUrlState()
   }
 
+  handleDefaultStorageChange(value: ?string) {
+    wizardStore.updateDefaultStorage(value)
+    wizardStore.updateUrlState()
+  }
+
   handleStorageChange(source: Disk, target: StorageBackend, type: 'backend' | 'disk') {
     wizardStore.updateStorage({ source, target, type })
     wizardStore.updateUrlState()
@@ -481,6 +486,7 @@ class WizardPage extends React.Component<Props, State> {
     await wizardStore.createMultiple(
       this.state.type,
       wizardStore.data,
+      wizardStore.defaultStorage,
       wizardStore.storageMap,
       wizardStore.uploadedUserScripts,
     )
@@ -500,6 +506,7 @@ class WizardPage extends React.Component<Props, State> {
       await wizardStore.create(
         this.state.type,
         wizardStore.data,
+        wizardStore.defaultStorage,
         wizardStore.storageMap,
         wizardStore.uploadedUserScripts,
       )
@@ -607,6 +614,7 @@ class WizardPage extends React.Component<Props, State> {
             wizardData={wizardStore.data}
             hasStorageMap={Boolean(this.pages.find(p => p.id === 'storage'))}
             hasSourceOptions={Boolean(this.pages.find(p => p.id === 'source-options'))}
+            defaultStorage={wizardStore.defaultStorage}
             storageMap={wizardStore.storageMap}
             schedules={wizardStore.schedules}
             nextButtonDisabled={this.isNextButtonDisabled()}
@@ -624,6 +632,7 @@ class WizardPage extends React.Component<Props, State> {
             onDestOptionsChange={(field, value) => { this.handleDestOptionsChange(field, value) }}
             onSourceOptionsChange={(field, value) => { this.handleSourceOptionsChange(field, value) }}
             onNetworkChange={(sourceNic, targetNetwork, secGroups) => { this.handleNetworkChange(sourceNic, targetNetwork, secGroups) }}
+            onDefaultStorageChange={value => { this.handleDefaultStorageChange(value) }}
             onStorageChange={(source, target, type) => { this.handleStorageChange(source, target, type) }}
             onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
             onScheduleChange={(scheduleId, data) => { this.handleScheduleChange(scheduleId, data) }}
