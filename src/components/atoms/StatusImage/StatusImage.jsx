@@ -30,6 +30,7 @@ type Props = {
   loading?: boolean,
   loadingProgress?: number,
   size?: number,
+  style?: any,
 }
 const Wrapper = styled.div`
   position: relative;
@@ -162,7 +163,7 @@ class StatusImage extends React.Component<Props> {
       image = image(this.props.size || 96)
     }
     return (
-      <Wrapper size={this.props.size || 96}>
+      <Wrapper size={this.props.size || 96} style={this.props.style}>
         {status !== 'PROGRESS' ? (
           <Image
             data-test-id="statusImage-image"

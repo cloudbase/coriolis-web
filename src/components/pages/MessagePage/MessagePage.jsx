@@ -17,8 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
+import StatusImage from '../../atoms/StatusImage'
+
 import Palette from '../../styleUtils/Palette'
 import EmptyTemplate from '../../templates/EmptyTemplate'
+import fingerprintImage from './images/fingerprint'
 
 const Wrapper = styled.div`
   position: absolute;
@@ -31,6 +34,28 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 `
+const FingerPrintAnimation = styled.div`
+  margin-bottom: 32px;
+  --animation-delay: 150ms;
+
+  path {
+    animation-name: show;
+    animation-duration: calc(18 * var(--animation-delay));
+    animation-delay: calc(var(--animation-order) * var(--animation-delay));
+    animation-fill-mode: forwards;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes show {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+`
 const Title = styled.div`
   font-size: 21px;
   color: ${Palette.grayscale[4]};
@@ -42,11 +67,21 @@ const Message = styled.div`
 type Props = {
   title?: string,
   subtitle?: string,
+  showAuthAnimation?: boolean,
+  showDenied?: boolean,
 }
 const NotFoundPage = (props: Props) => {
   return (
     <EmptyTemplate>
       <Wrapper>
+        {props.showAuthAnimation ? (
+          <FingerPrintAnimation
+            dangerouslySetInnerHTML={{ __html: fingerprintImage }}
+          />
+        ) : null}
+        {props.showDenied ? (
+          <StatusImage status="ERROR" style={{ marginBottom: '32px' }} />
+        ) : null}
         <Title>{props.title || 'Page Not Found'}</Title>
         <Message>{props.subtitle || 'Sorry, but the page you are trying to view does not exist.'}</Message>
       </Wrapper>

@@ -121,14 +121,9 @@ class UserSource {
   }
 
   async tokenLogin(): Promise<User> {
-    let token = cookie.get('token')
-    let projectId = cookie.get('projectId')
+    let token = cookie.get('token') || ''
     if (token) {
       Api.setDefaultHeader('X-Auth-Token', token)
-    }
-
-    if (!token || !projectId) {
-      return Promise.reject()
     }
 
     try {
