@@ -99,6 +99,7 @@ type State = {
   sourceData: any,
   updateDisabled: boolean,
   selectedNetworks: NetworkMap[],
+  defaultStorage: ?string,
   storageMap: StorageMap[],
   sourceFailed: boolean,
   destinationFailedMessage: ?string,
@@ -112,6 +113,7 @@ class EditReplica extends React.Component<Props, State> {
     sourceData: {},
     updateDisabled: false,
     selectedNetworks: [],
+    defaultStorage: undefined,
     storageMap: [],
     sourceFailed: false,
     destinationFailedMessage: null,
@@ -311,9 +313,8 @@ class EditReplica extends React.Component<Props, State> {
       storage: this.state.storageMap,
     }
     if (this.props.type === 'replica') {
-      let storageConfigDefault = this.getFieldValue('destination', 'default_storage') || endpointStore.storageConfigDefault
       try {
-        await replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData, storageConfigDefault)
+        await replicaStore.update(this.props.replica, this.props.destinationEndpoint, updateData, this.getDefaultStorage(), endpointStore.storageConfigDefault)
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/replica/executions/${this.props.replica.id}`)
       } catch (err) {
@@ -321,7 +322,8 @@ class EditReplica extends React.Component<Props, State> {
       }
     } else {
       try {
-        let migration: MainItem = await migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData)
+        let replicaDefaultStorage = this.props.replica.storage_mappings && this.props.replica.storage_mappings.default
+        let migration: MainItem = await migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData, replicaDefaultStorage, this.state.defaultStorage)
         migrationStore.clearDetails()
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/migration/tasks/${migration.id}`)
@@ -345,6 +347,12 @@ class EditReplica extends React.Component<Props, State> {
     storageMap.push({ source, target, type })
 
     this.setState({ storageMap })
+  }
+
+  getDefaultStorage() {
+    let storageMappings = this.props.replica.storage_mappings
+    let replicaDefaultStorage = storageMappings && storageMappings.default
+    return this.state.defaultStorage !== undefined ? this.state.defaultStorage : replicaDefaultStorage
   }
 
   getFieldValue(type: 'source' | 'destination', fieldName: string, defaultValue: any) {
@@ -487,8 +495,8 @@ class EditReplica extends React.Component<Props, State> {
         layout="modal"
         isSource={type === 'source'}
         optionsLoading={optionsLoading}
-        optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now', 'execute_now_options',
-          'default_storage', ...migrationFields.map(f => f.name)]}
+        optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now',
+          'execute_now_options', ...migrationFields.map(f => f.name)]}
       />
     )
   }
@@ -503,6 +511,10 @@ class EditReplica extends React.Component<Props, State> {
 
     return (
       <WizardStorage
+        defaultStorage={this.getDefaultStorage()}
+        onDefaultStorageChange={defaultStorage => { this.setState({ defaultStorage }) }}
+        storageConfigDefault={endpointStore.storageConfigDefault}
+        defaultStorageLayout="modal"
         storageBackends={endpointStore.storageBackends}
         instancesDetails={this.props.instancesDetails}
         storageMap={this.getStorageMap(endpointStore.storageBackends)}

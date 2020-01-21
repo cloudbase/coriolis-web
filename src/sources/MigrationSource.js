@@ -82,6 +82,8 @@ class MigrationSource {
     updatedSourceEnv?: ?{ [string]: any },
     storageMappings: ?{ [string]: any },
     updatedStorageMappings: ?StorageMap[],
+    defaultStorage: ?string,
+    updatedDefaultStorage: ?string,
     networkMappings: ?{ [string]: any },
     updatedNetworkMappings: ?NetworkMap[],
   }): Promise<MainItem> {
@@ -122,7 +124,7 @@ class MigrationSource {
       || (opts.updatedStorageMappings && opts.updatedStorageMappings.length)) {
       payload.migration.storage_mappings = {
         ...opts.storageMappings,
-        ...destParser.getStorageMap(getValue('default_storage'), opts.updatedStorageMappings),
+        ...destParser.getStorageMap(opts.updatedDefaultStorage || opts.defaultStorage, opts.updatedStorageMappings),
       }
     }
 

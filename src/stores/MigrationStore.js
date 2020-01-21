@@ -59,7 +59,9 @@ class MigrationStore {
     migration: MainItem,
     sourceEndpoint: Endpoint,
     destEndpoint: Endpoint,
-    updateData: UpdateData
+    updateData: UpdateData,
+    defaultStorage: ?string,
+    updatedDefaultStorage: ?string
   ): Promise<MainItem> {
     let migrationResult = await MigrationSource.recreate({
       sourceEndpoint,
@@ -71,6 +73,8 @@ class MigrationStore {
       updatedDestEnv: updateData.destination,
       storageMappings: migration.storage_mappings,
       updatedStorageMappings: updateData.storage,
+      defaultStorage,
+      updatedDefaultStorage,
       networkMappings: migration.network_map,
       updatedNetworkMappings: updateData.network,
     })

@@ -174,6 +174,7 @@ type Props = {
   wizardData: WizardData,
   schedules: ScheduleType[],
   storageMap: StorageMap[],
+  defaultStorage: ?string,
   hasStorageMap: boolean,
   hasSourceOptions: boolean,
   pages: WizardPage[],
@@ -192,6 +193,7 @@ type Props = {
   onSourceOptionsChange: (field: Field, value: any) => void,
   onNetworkChange: (nic: Nic, network: Network, secGroups: ?SecurityGroup[]) => void,
   onStorageChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
+  onDefaultStorageChange: (value: ?string) => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void,
   onScheduleRemove: (scheudleId: string) => void,
@@ -431,7 +433,7 @@ class WizardPageContent extends React.Component<Props, State> {
             optionsLoading={this.props.providerStore.destinationOptionsSecondaryLoading}
             optionsLoadingSkipFields={[
               ...getOptionsLoadingSkipFields('destination'), 'description', 'execute_now',
-              'execute_now_options', 'default_storage', ...migrationFields.map(f => f.name)]}
+              'execute_now_options', ...migrationFields.map(f => f.name)]}
             selectedInstances={this.props.wizardData.selectedInstances}
             fields={this.props.providerStore.destinationSchema}
             onChange={this.props.onDestOptionsChange}
@@ -465,6 +467,10 @@ class WizardPageContent extends React.Component<Props, State> {
             instancesDetails={this.props.instanceStore.instancesDetails}
             storageMap={this.props.storageMap}
             onChange={this.props.onStorageChange}
+            storageConfigDefault={this.props.endpointStore.storageConfigDefault}
+            defaultStorage={this.props.defaultStorage}
+            onDefaultStorageChange={this.props.onDefaultStorageChange}
+            defaultStorageLayout="page"
           />
         )
         break
@@ -496,6 +502,7 @@ class WizardPageContent extends React.Component<Props, State> {
           <WizardSummary
             data={this.props.wizardData}
             schedules={this.props.schedules}
+            defaultStorage={this.props.defaultStorage}
             storageMap={this.props.storageMap}
             wizardType={this.props.type}
             instancesDetails={this.props.instanceStore.instancesDetails}

@@ -203,7 +203,7 @@ class ReplicaSource {
     return response.data.execution
   }
 
-  async update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string): Promise<Execution> {
+  async update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, defaultStorage: ?string, storageConfigDefault: string): Promise<Execution> {
     const parser = OptionsSchemaPlugin[destinationEndpoint.type] || OptionsSchemaPlugin.default
     let payload = { replica: {} }
 
@@ -219,7 +219,6 @@ class ReplicaSource {
       payload.replica.source_environment = parser.getDestinationEnv(updateData.source, replica.source_environment)
     }
 
-    let defaultStorage = updateData.destination && updateData.destination.default_storage
     if (defaultStorage || updateData.storage.length > 0) {
       payload.replica.storage_mappings = parser.getStorageMap(defaultStorage, updateData.storage, storageConfigDefault)
     }

@@ -66,6 +66,9 @@ const defaultProps: Props = {
   }],
   defaultStorage: 'sback1',
   onChange: () => { },
+  defaultStorageLayout: 'page',
+  onDefaultStorageChange: () => { },
+  storageConfigDefault: null,
 }
 const wrap = (props: Props) => new TW(shallow(<Component {...props} />), TEST_ID)
 

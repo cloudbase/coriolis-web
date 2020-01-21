@@ -196,15 +196,6 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema = [...fieldsSchema, ...migrationFields]
     }
 
-    if (this.props.hasStorageMap && this.props.useAdvancedOptions && this.props.storageBackends && this.props.storageBackends.length > 0) {
-      fieldsSchema.push({
-        name: 'default_storage',
-        type: 'string',
-        enum: this.props.storageBackends.map(s => s.name),
-        default: this.props.storageConfigDefault,
-      })
-    }
-
     return fieldsSchema
   }
 

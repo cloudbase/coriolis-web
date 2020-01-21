@@ -185,8 +185,8 @@ class ReplicaStore {
     this.replicaDetails = null
   }
 
-  async update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, storageConfigDefault: string) {
-    await ReplicaSource.update(replica, destinationEndpoint, updateData, storageConfigDefault)
+  async update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, defaultStorage: ?string, storageConfigDefault: string) {
+    await ReplicaSource.update(replica, destinationEndpoint, updateData, defaultStorage, storageConfigDefault)
   }
 }
 

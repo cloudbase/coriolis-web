@@ -73,7 +73,7 @@ export const defaultFillMigrationImageMapValues = (field: Field, option: OptionV
 
 export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptions?: ?{ [string]: mixed }): any => {
   let env = {}
-  let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'default_storage', 'description']
+  let specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'description']
     .concat(migrationFields.map(f => f.name))
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes.map(o => `${o}_os_image`))

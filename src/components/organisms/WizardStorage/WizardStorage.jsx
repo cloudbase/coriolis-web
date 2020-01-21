@@ -20,6 +20,7 @@ import styled from 'styled-components'
 
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import Dropdown from '../../molecules/Dropdown'
+import FieldInput from '../../molecules/FieldInput'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -34,8 +35,11 @@ import arrowImage from './images/arrow.svg'
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   overflow: auto;
+`
+const DefaultStorageWrapper = styled.div`
+  margin-bottom: 32px;
 `
 const Mapping = styled.div`
   display: flex;
@@ -151,6 +155,10 @@ export type Props = {
   storageBackends: StorageBackend[],
   instancesDetails: Instance[],
   storageMap: ?StorageMap[],
+  defaultStorageLayout: 'modal' | 'page',
+  defaultStorage: ?string,
+  storageConfigDefault: ?string,
+  onDefaultStorageChange: (value: ?string) => void,
   onChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
   style?: any,
   titleWidth?: number,
@@ -295,9 +303,34 @@ class WizardStorage extends React.Component<Props> {
     return this.renderStorageWrapper(disks, 'disk')
   }
 
+  renderDefaultStorage() {
+    let disks = getDisks(this.props.instancesDetails, 'disk', this.props.storageMap)
+
+    if (disks.length === 0 || this.props.storageBackends.length === 0) {
+      return null
+    }
+
+    return (
+      <DefaultStorageWrapper>
+        <FieldInput
+          layout={this.props.defaultStorageLayout}
+          name="default_storage"
+          type="string"
+          description="Storage type on the destination to default to"
+          enum={this.props.storageBackends.map(s => s.name)}
+          addNullValue
+          width={StyleProps.inputSizes.regular.width}
+          value={this.props.defaultStorage !== undefined ? this.props.defaultStorage : this.props.storageConfigDefault}
+          onChange={value => { this.props.onDefaultStorageChange(value) }}
+        />
+      </DefaultStorageWrapper>
+    )
+  }
+
   render() {
     return (
       <Wrapper style={this.props.style}>
+        {this.renderDefaultStorage()}
         <Mapping>
           {this.renderBackendMapping()}
           {this.renderDiskMapping()}

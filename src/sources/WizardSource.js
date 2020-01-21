@@ -28,13 +28,13 @@ class WizardSource {
   async create(
     type: string,
     data: WizardData,
+    defaultStorage: ?string,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[]
   ): Promise<MainItem> {
     const sourceParser = data.source ? OptionsSchemaPlugin[data.source.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     const destParser = data.target ? OptionsSchemaPlugin[data.target.type] || OptionsSchemaPlugin.default : OptionsSchemaPlugin.default
     let payload = {}
-    let defaultStorage: ?string = data.destOptions && data.destOptions.default_storage
     payload[type] = {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target ? data.target.id : 'null',
@@ -72,6 +72,7 @@ class WizardSource {
   async createMultiple(
     type: string,
     data: WizardData,
+    defaultStorage: ?string,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[]
   ): Promise<MainItem[]> {
@@ -82,7 +83,7 @@ class WizardSource {
       let newData = { ...data }
       newData.selectedInstances = [instance]
       try {
-        let mainItem: MainItem = await this.create(type, newData, storageMap, uploadedUserScripts)
+        let mainItem: MainItem = await this.create(type, newData, defaultStorage, storageMap, uploadedUserScripts)
         return mainItem
       } catch (err) {
         notificationStore.alert(`Error while creating ${type} for instance ${instance.name}`, 'error')
