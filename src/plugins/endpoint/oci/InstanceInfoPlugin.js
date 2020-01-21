@@ -20,7 +20,10 @@ export default class InstanceInfoPlugin {
   static parseInstance(instance: Instance): Instance {
     let rootDisk = instance.devices.disks[0]
     if (rootDisk) {
-      rootDisk.disabled = 'Storage types cannot be selected for root disks on OCI'
+      rootDisk.disabled = {
+        message: 'Storage types cannot be selected for root disks on OCI',
+        info: 'The storage type of the root disk on OCI depends on the launch mode of the new VM. Coriolis determines a launch mode depending on the source VM\'s firmware and the target environment configuration.',
+      }
     }
     return instance
   }

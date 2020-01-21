@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import styled from 'styled-components'
 import { Collapse } from 'react-collapse'
 
@@ -183,7 +183,7 @@ class MainDetailsTable extends React.Component<Props, State> {
     id: string,
     icon: 'instance' | 'network' | 'storage',
     sourceName: string,
-    destinationName: string,
+    destinationName: React.Node,
     sourceBody: string[],
     destinationBody: string[]
   ) {
@@ -225,12 +225,23 @@ class MainDetailsTable extends React.Component<Props, State> {
       let sourceName = disk.id
       let mappedDisk = storageMapping && storageMapping.disk_mappings &&
         storageMapping.disk_mappings.find(m => String(m.disk_id) === String(disk.id))
-      let destinationName: string = (
-        this.props.item && this.props.item.storage_mappings
-        && this.props.item.storage_mappings.default
-      ) || 'Default'
+      let destinationName: React.Node
+      let destinationKey: string
+
+      if (disk.disabled) {
+        destinationKey = disk.disabled.info || disk.disabled.message
+        destinationName = <span style={{ color: Palette.grayscale[5] }}>{destinationKey}</span>
+      } else {
+        destinationName = (
+          this.props.item && this.props.item.storage_mappings
+          && this.props.item.storage_mappings.default
+        ) || 'Default'
+        destinationKey = destinationName
+      }
+
       if (mappedDisk) {
         destinationName = mappedDisk.destination
+        destinationKey = destinationName
       }
       let getBody = (d: Disk): string[] => {
         let body: string[] = []
@@ -254,6 +265,7 @@ class MainDetailsTable extends React.Component<Props, State> {
         let transferDisk = transferResult.devices.disks.find(d => d.storage_backend_identifier === destinationName)
         if (transferDisk) {
           destinationName = transferDisk.name || transferDisk.id
+          destinationKey = destinationName
           destinationBody = getBody(transferDisk)
         }
       } else if (this.props.item && this.props.item.status === 'RUNNING' && this.props.item.type === 'migration') {
@@ -261,7 +273,7 @@ class MainDetailsTable extends React.Component<Props, State> {
       }
 
       rows.push(this.renderRow(
-        `${instance.instance_name || instance.name}-${sourceName}-${destinationName}`,
+        `${instance.instance_name || instance.name}-${sourceName}-${destinationKey}`,
         'storage',
         sourceName,
         destinationName,
