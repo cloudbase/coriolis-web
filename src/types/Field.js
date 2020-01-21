@@ -14,6 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
+import { OptionsSchemaPlugin } from '../plugins/endpoint'
+
 export type Field = {
   name: string,
   type?: string,
@@ -42,7 +44,9 @@ export type Field = {
 const migrationImageOsTypes = ['windows', 'linux']
 
 class FieldHelper {
-  getValueAlias(name: string, value: any, fields: Field[]): string {
+  getValueAlias(name: string, value: any, fields: Field[], targetProvider: ?string): string {
+    let plugin = targetProvider && (OptionsSchemaPlugin[targetProvider] || OptionsSchemaPlugin.default)
+
     if (value === true) {
       return 'Yes'
     }
@@ -85,7 +89,7 @@ class FieldHelper {
 
     let isImageMapField = migrationImageOsTypes.find(os => `${os}_os_image` === name)
     if (isImageMapField) {
-      let migrImageField = fields.find(f => f.name === 'migr_image_map')
+      let migrImageField = plugin && fields.find(f => f.name === plugin.migrationImageMapFieldName)
       if (migrImageField && migrImageField.properties) {
         let imageField = migrImageField.properties.find(p => p.name === name)
         if (imageField && imageField.enum) {

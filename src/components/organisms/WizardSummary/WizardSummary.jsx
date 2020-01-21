@@ -254,6 +254,8 @@ class WizardSummary extends React.Component<Props> {
   renderSourceOptionsSection() {
     let data = this.props.data
     let type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
+    let provider = this.props.data && this.props.data.source && this.props.data.source.type
+
     if (!data.sourceOptions) {
       return null
     }
@@ -267,7 +269,7 @@ class WizardSummary extends React.Component<Props> {
               return null
             }
             let optionLabel = optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')
-            let optionValue = fieldHelper.getValueAlias(optionName, data.sourceOptions && data.sourceOptions[optionName], this.props.sourceSchema)
+            let optionValue = fieldHelper.getValueAlias(optionName, data.sourceOptions && data.sourceOptions[optionName], this.props.sourceSchema, provider)
             return (
               <Option key={optionName}>
                 <OptionLabel title={optionLabel}>
@@ -286,6 +288,7 @@ class WizardSummary extends React.Component<Props> {
 
   renderTargetOptionsSection() {
     let data = this.props.data
+    let provider = this.props.data && this.props.data.target && this.props.data.target.type
     let type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
 
     let executeNowOption = (
@@ -335,7 +338,7 @@ class WizardSummary extends React.Component<Props> {
             }
 
             let optionLabel = optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')
-            let optionValue = fieldHelper.getValueAlias(optionName, data.destOptions && data.destOptions[optionName], this.props.destinationSchema)
+            let optionValue = fieldHelper.getValueAlias(optionName, data.destOptions && data.destOptions[optionName], this.props.destinationSchema, provider)
             return (
               <Option key={optionName}>
                 <OptionLabel data-test-id={`wSummary-optionLabel-${optionName}`} title={optionLabel}>

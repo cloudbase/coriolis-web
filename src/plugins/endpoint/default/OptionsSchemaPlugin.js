@@ -42,8 +42,8 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
   }
 }
 
-export const defaultFillMigrationImageMapValues = (field: Field, option: OptionValues): boolean => {
-  if (field.name !== 'migr_image_map') {
+export const defaultFillMigrationImageMapValues = (field: Field, option: OptionValues, migrationImageMapFieldName: string): boolean => {
+  if (field.name !== migrationImageMapFieldName) {
     return false
   }
   field.properties = migrationImageOsTypes.map(os => {
@@ -100,7 +100,7 @@ export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptio
   return env
 }
 
-export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }) => {
+export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }, migrationImageMapFieldName: string) => {
   let env = {}
   if (!options) {
     return env
@@ -109,17 +109,19 @@ export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }) => {
     if (!options || !options[`${os}_os_image`]) {
       return
     }
-    if (!env.migr_image_map) {
-      env.migr_image_map = {}
+    if (!env[migrationImageMapFieldName]) {
+      env[migrationImageMapFieldName] = {}
     }
 
-    env.migr_image_map[os] = options[`${os}_os_image`]
+    env[migrationImageMapFieldName][os] = options[`${os}_os_image`]
   })
 
   return env
 }
 
 export default class OptionsSchemaParser {
+  static migrationImageMapFieldName = 'migr_image_map'
+
   static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
     return defaultSchemaToFields(schema, schemaDefinitions)
   }
@@ -129,7 +131,7 @@ export default class OptionsSchemaParser {
     if (!option) {
       return
     }
-    if (!defaultFillMigrationImageMapValues(field, option)) {
+    if (!defaultFillMigrationImageMapValues(field, option, this.migrationImageMapFieldName)) {
       defaultFillFieldValues(field, option)
     }
   }
@@ -137,7 +139,7 @@ export default class OptionsSchemaParser {
   static getDestinationEnv(options: ?{ [string]: mixed }, oldOptions?: any) {
     let env = {
       ...defaultGetDestinationEnv(options, oldOptions),
-      ...defaultGetMigrationImageMap(options),
+      ...defaultGetMigrationImageMap(options, this.migrationImageMapFieldName),
     }
     return env
   }

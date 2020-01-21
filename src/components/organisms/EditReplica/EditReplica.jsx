@@ -22,6 +22,7 @@ import providerStore, { getFieldChangeOptions } from '../../../stores/ProviderSt
 import replicaStore from '../../../stores/ReplicaStore'
 import migrationStore from '../../../stores/MigrationStore'
 import endpointStore from '../../../stores/EndpointStore'
+import { OptionsSchemaPlugin } from '../../../plugins/endpoint'
 
 import Button from '../../atoms/Button'
 import StatusImage from '../../atoms/StatusImage'
@@ -359,7 +360,9 @@ class EditReplica extends React.Component<Props, State> {
     }
     let osMapping = /^(windows|linux)_os_image$/.exec(fieldName)
     if (osMapping) {
-      let osData = replicaData[`migr_image_map/${osMapping[1]}`]
+      let endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
+      let plugin = OptionsSchemaPlugin[endpoint.type] || OptionsSchemaPlugin.default
+      let osData = replicaData[`${plugin.migrationImageMapFieldName}/${osMapping[1]}`]
       return osData
     }
     if (migrationFields.find(f => f.name === fieldName) && this.props.replica[fieldName]) {

@@ -38,6 +38,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
+import { OptionsSchemaPlugin } from '../../../plugins/endpoint'
 
 import arrowImage from './images/arrow.svg'
 
@@ -204,14 +205,19 @@ class MainDetails extends React.Component<Props> {
   }
 
   renderPropertiesTable(propertyNames: string[]) {
+    let endpoint = this.getDestinationEndpoint()
+
     let getValue = (name: string, value: any) => {
       if (value.join && value.length && value[0].destination && value[0].source) {
         return value.map(v => `${v.source}=${v.destination}`).join(', ')
       }
-      return fieldHelper.getValueAlias(name, value, this.props.destinationSchema)
+      return fieldHelper.getValueAlias(name, value, this.props.destinationSchema, endpoint && endpoint.type)
     }
 
     let properties = []
+    let plugin = endpoint && (OptionsSchemaPlugin[endpoint.type] || OptionsSchemaPlugin.default)
+    let migrationImageMapFieldName = plugin && plugin.migrationImageMapFieldName
+
     propertyNames.forEach(pn => {
       let value = this.props.item ? this.props.item.destination_environment[pn] : ''
       let label = LabelDictionary.get(pn)
@@ -228,7 +234,7 @@ class MainDetails extends React.Component<Props> {
             return null
           }
           let fieldName = pn
-          if (fieldName === 'migr_image_map') {
+          if (migrationImageMapFieldName && fieldName === migrationImageMapFieldName) {
             fieldName = `${p}_os_image`
           }
           return {

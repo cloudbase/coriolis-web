@@ -17,12 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import DefaultOptionsSchemaPlugin from '../default/OptionsSchemaPlugin'
 import LabelDictionary from '../../../utils/LabelDictionary'
 
+import type { InstanceScript } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { OptionValues, StorageMap } from '../../../types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { NetworkMap } from '../../../types/Network'
 
 export default class OptionsSchemaParser {
+  static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
+
   static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
     let fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions)
     let exportMechField = fields.find(f => f.name === 'replica_export_mechanism')
@@ -67,6 +70,10 @@ export default class OptionsSchemaParser {
 
   static getStorageMap(defaultStorage: ?string, storageMap: ?StorageMap[], configDefault?: ?string) {
     return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)
+  }
+
+  static getUserScripts(uploadedUserScripts: InstanceScript[]) {
+    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts)
   }
 }
 

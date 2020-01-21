@@ -14,14 +14,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import DefaultOptionsSchemaPlugin from '../default/OptionsSchemaPlugin'
+import DefaultOptionsSchemaPlugin, {
+  defaultFillMigrationImageMapValues,
+  defaultFillFieldValues,
+  defaultGetDestinationEnv,
+  defaultGetMigrationImageMap,
+} from '../default/OptionsSchemaPlugin'
 
+import type { InstanceScript } from '../../../types/Instance'
 import type { Field } from '../../../types/Field'
 import type { OptionValues, StorageMap } from '../../../types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { NetworkMap } from '../../../types/Network'
 
 export default class OptionsSchemaParser {
+  static migrationImageMapFieldName = 'migr_template_map'
+
   static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
     let fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions)
     fields.forEach(f => {
@@ -50,11 +58,21 @@ export default class OptionsSchemaParser {
   }
 
   static fillFieldValues(field: Field, options: OptionValues[]) {
-    DefaultOptionsSchemaPlugin.fillFieldValues(field, options)
+    let option = options.find(f => f.name === field.name)
+    if (!option) {
+      return
+    }
+    if (!defaultFillMigrationImageMapValues(field, option, this.migrationImageMapFieldName)) {
+      defaultFillFieldValues(field, option)
+    }
   }
 
   static getDestinationEnv(options: ?{ [string]: mixed }, oldOptions?: any) {
-    return DefaultOptionsSchemaPlugin.getDestinationEnv(options, oldOptions)
+    let env = {
+      ...defaultGetDestinationEnv(options, oldOptions),
+      ...defaultGetMigrationImageMap(options, this.migrationImageMapFieldName),
+    }
+    return env
   }
 
   static getNetworkMap(networkMappings: ?NetworkMap[]) {
@@ -63,6 +81,10 @@ export default class OptionsSchemaParser {
 
   static getStorageMap(defaultStorage: ?string, storageMap: ?StorageMap[], configDefault?: ?string) {
     return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)
+  }
+
+  static getUserScripts(uploadedUserScripts: InstanceScript[]) {
+    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts)
   }
 }
 
