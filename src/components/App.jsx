@@ -23,7 +23,7 @@ import Fonts from './atoms/Fonts'
 import Notifications from './organisms/Notifications'
 import LoginPage from './pages/LoginPage'
 import ReplicasPage from './pages/ReplicasPage'
-import NotFoundPage from './pages/NotFoundPage'
+import MessagePage from './pages/MessagePage'
 import ReplicaDetailsPage from './pages/ReplicaDetailsPage'
 import MigrationsPage from './pages/MigrationsPage'
 import MigrationDetailsPage from './pages/MigrationDetailsPage'
@@ -47,6 +47,7 @@ import { navigationMenu } from '../constants'
 import Palette from './styleUtils/Palette'
 import StyleProps from './styleUtils/StyleProps'
 import configLoader from '../utils/Config'
+import ObjectUtils from '../utils/ObjectUtils'
 
 injectGlobal`
   ${Fonts}
@@ -79,17 +80,31 @@ const Wrapper = styled.div`
 type State = {
   isConfigReady: boolean,
 }
+const MIN_WAIT_MS = 2000
 
 class App extends React.Component<{}, State> {
   state = {
     isConfigReady: false,
   }
+  awaitingRefresh: boolean = false
 
   async componentWillMount() {
-    observe(userStore, 'loggedUser', () => { this.setState({}) })
+    let startTime = new Date().getTime()
+    observe(userStore, 'loggedUser', () => { this.refreshState(startTime) })
     userStore.tokenLogin()
     await configLoader.load()
     this.setState({ isConfigReady: true })
+  }
+
+  async refreshState(startTime: number) {
+    if (this.awaitingRefresh) {
+      return
+    }
+    this.awaitingRefresh = true
+    if (new Date().getTime() - startTime < MIN_WAIT_MS) {
+      await ObjectUtils.wait(MIN_WAIT_MS)
+    }
+    this.setState({})
   }
 
   render() {
@@ -97,29 +112,68 @@ class App extends React.Component<{}, State> {
       return null
     }
 
-    let renderOptionalPage = (name: string, component: any, path?: string, exact?: boolean) => {
+    const renderMessagePage = (options: {
+      path: string,
+      exact?: boolean,
+      title: string,
+      subtitle: string,
+      showAuthAnimation?: boolean,
+      showDenied?: boolean,
+    }) => (<Route
+      path={options.path}
+      exact={options.exact}
+      render={() => (
+        <MessagePage
+          title={options.title}
+          subtitle={options.subtitle}
+          showAuthAnimation={options.showAuthAnimation}
+          showDenied={options.showDenied}
+        />
+      )}
+    />)
+
+    let renderRoute = (path: string, component: any, exact?: boolean) => {
+      if (!userStore.loggedUser) {
+        return renderMessagePage({
+          path,
+          exact,
+          title: 'Authenticating...',
+          subtitle: 'Please wait while authenticating user.',
+          showAuthAnimation: true,
+        })
+      }
+      return <Route path={path} component={component} exact={exact} />
+    }
+
+    let renderOptionalRoute = (name: string, component: any, path?: string, exact?: boolean) => {
       if (configLoader.config.disabledPages.find(p => p === name)) {
         return null
       }
+      let actualPath = `${path || `/${name}`}`
       let requiresAdmin = Boolean(navigationMenu.find(n => n.value === name && n.requiresAdmin))
       if (!requiresAdmin) {
-        return <Route path={`${path || `/${name}`}`} component={component} exact={exact} />
+        return renderRoute(actualPath, component, exact)
       }
-      const renderNotFound = (title: string, subtitle: string) => (
-        <Route
-          path={`${path || `/${name}`}`}
-          exact={exact}
-          render={() => <NotFoundPage title={title} subtitle={subtitle} />}
-        />
-      )
       if (!userStore.loggedUser || userStore.loggedUser.isAdmin == null) {
-        return renderNotFound('Checking permissions...', 'Please wait while checking user\'s permissions.')
+        return renderMessagePage({
+          path: actualPath,
+          exact,
+          title: 'Checking permissions...',
+          subtitle: 'Please wait while checking user\'s permissions.',
+          showAuthAnimation: true,
+        })
       }
       if (userStore.loggedUser && userStore.loggedUser.isAdmin === false) {
-        return renderNotFound('User doesn\'t have permissions to view this page', 'Please login in with an administrator acount to view this page.')
+        return renderMessagePage({
+          path: actualPath,
+          exact,
+          title: 'User doesn\'t have permissions to view this page',
+          subtitle: 'Please login in with an administrator acount to view this page.',
+          showDenied: true,
+        })
       }
       if (userStore.loggedUser && userStore.loggedUser.isAdmin) {
-        return <Route path={`${path || `/${name}`}`} exact={exact} component={component} />
+        return <Route path={actualPath} exact={exact} component={component} />
       }
       return null
     }
@@ -127,27 +181,27 @@ class App extends React.Component<{}, State> {
     return (
       <Wrapper>
         <Switch>
-          <Route path="/" component={DashboardPage} exact />
+          {renderRoute('/', DashboardPage, true)}
           <Route path="/login" component={LoginPage} />
-          <Route path="/dashboard" component={DashboardPage} />
-          <Route path="/replicas" component={ReplicasPage} />
-          <Route path="/replica/:id" component={ReplicaDetailsPage} exact />
-          <Route path="/replica/:page/:id" component={ReplicaDetailsPage} />
-          <Route path="/migrations" component={MigrationsPage} />
-          <Route path="/migration/:id" component={MigrationDetailsPage} exact />
-          <Route path="/migration/:page/:id" component={MigrationDetailsPage} />
-          <Route path="/endpoints" component={EndpointsPage} />
-          <Route path="/endpoint/:id" component={EndpointDetailsPage} />
-          <Route path="/wizard/:type" component={WizardPage} />
-          {renderOptionalPage('planning', AssessmentsPage)}
-          {renderOptionalPage('planning', AssessmentDetailsPage, '/assessment/:info')}
-          {renderOptionalPage('users', UsersPage)}
-          {renderOptionalPage('users', UserDetailsPage, '/user/:id', true)}
-          {renderOptionalPage('projects', ProjectsPage)}
-          {renderOptionalPage('projects', ProjectDetailsPage, '/project/:id', true)}
-          {renderOptionalPage('logging', LogsPage)}
-          <Route path="/streamlog" component={LogStreamPage} />
-          <Route component={NotFoundPage} />
+          {renderRoute('/dashboard', DashboardPage)}
+          {renderRoute('/replicas', ReplicasPage)}
+          {renderRoute('/replica/:id', ReplicaDetailsPage, true)}
+          {renderRoute('/replica/:page/:id', ReplicaDetailsPage)}
+          {renderRoute('/migrations', MigrationsPage)}
+          {renderRoute('/migration/:id', MigrationDetailsPage, true)}
+          {renderRoute('/migration/:page/:id', MigrationDetailsPage)}
+          {renderRoute('/endpoints', EndpointsPage)}
+          {renderRoute('/endpoint/:id', EndpointDetailsPage)}
+          {renderRoute('/wizard/:type', WizardPage)}
+          {renderOptionalRoute('planning', AssessmentsPage)}
+          {renderOptionalRoute('planning', AssessmentDetailsPage, '/assessment/:info')}
+          {renderOptionalRoute('users', UsersPage)}
+          {renderOptionalRoute('users', UserDetailsPage, '/user/:id', true)}
+          {renderOptionalRoute('projects', ProjectsPage)}
+          {renderOptionalRoute('projects', ProjectDetailsPage, '/project/:id', true)}
+          {renderOptionalRoute('logging', LogsPage)}
+          {renderRoute('/streamlog', LogStreamPage)}
+          <Route component={MessagePage} />
         </Switch>
         <Notifications />
         <Tooltip />
