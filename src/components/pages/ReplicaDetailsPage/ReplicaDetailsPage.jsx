@@ -90,10 +90,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     document.title = 'Replica Details'
 
     let loadReplica = async () => {
-      await Promise.all([
-        this.loadReplicaWithInstances(this.props.match.params.id, true),
-        endpointStore.getEndpoints({ showLoading: true }),
-      ])
+      await endpointStore.getEndpoints({ showLoading: true })
+      await this.loadReplicaWithInstances(this.props.match.params.id, true)
       let details = replicaStore.replicaDetails
       if (!details) {
         return

@@ -21,6 +21,7 @@ import styled from 'styled-components'
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import Dropdown from '../../molecules/Dropdown'
 import FieldInput from '../../molecules/FieldInput'
+import InfoIcon from '../../atoms/InfoIcon'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -182,7 +183,11 @@ class WizardStorage extends React.Component<Props> {
     type: 'backend' | 'disk'
   ) {
     if (disk.disabled && type === 'disk') {
-      return <DiskDisabledMessage>{disk.disabled}</DiskDisabledMessage>
+      return (
+        <DiskDisabledMessage>
+          {disk.disabled.message}{disk.disabled.info ? <InfoIcon text={disk.disabled.info} /> : null}
+        </DiskDisabledMessage>
+      )
     }
 
     return storageItems.length > 10 ? (
