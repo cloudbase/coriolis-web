@@ -70,7 +70,7 @@ const Buttons = styled.div`
   width: 100%;
 `
 const FieldInputStyled = styled(FieldInput)`
-  width: 200px;
+  width: 224px;
   justify-content: space-between;
   margin-bottom: 32px;
 `
@@ -92,14 +92,23 @@ let defaultFields: Field[] = [
     name: 'clone_disks',
     type: 'boolean',
     value: true,
+    description: `Whether or not Coriolis should clone the Replica disks on the destination platforms before optionally performing the OSMorphing process and booting the final VM.
+    Skipping disk cloning leads to a shorter deployment time, but means that the Replica disks will be allocated to the new VM, and thus the next Replica Execution will have to sync the disks from scratch.`,
   },
   {
     name: 'force',
     type: 'boolean',
+    description: `Whether or not Coriolis should forcibly attempt the Replica Deployment process despite the Replica not having any successful Executions.
+    This is only recommended if it is known that the Replica disks were successfully synced but some latter cleanup steps failed (e.g: deleting source-side temporary resources).
+    This will not help if the Replica disks were never successfully synced.`,
   },
   {
     name: 'skip_os_morphing',
     type: 'boolean',
+    description: `Whether or not to skip the OSMorphing process.
+    This process is recommended when migrating VMs between platforms with different underlying virtualization technologies or initialization agents, as Coriolis will adapt the offline OS installation by automatically installing any additional drivers/configurations required by the destination platform.
+    This can be safely skipped if the source and destination platforms are identical (e.g: migrating between two separate regions of the same Public Cloud), or if the two platforms share the same virtualization technology.
+    (e.g: migrating between two KVM-based OpenStacks from different vendors)`,
   },
 ]
 @observer
@@ -165,7 +174,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
         {this.state.fields.map(field => {
           return (
             <FieldInputStyled
-              width={200}
+              width={224}
               key={field.name}
               name={field.name}
               type={field.type}
@@ -175,6 +184,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
               layout="page"
               label={LabelDictionary.get(field.name)}
               onChange={value => this.handleValueChange(field, value)}
+              description={field.description}
             />
           )
         })}
