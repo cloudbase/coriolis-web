@@ -49,7 +49,9 @@ const Portal = styled.div`
     }
   }
 `
-const DatetimeStyled = styled(Datetime)``
+const DatetimeStyled = styled(Datetime)`
+  ${StyleProps.boxShadow}
+`
 
 type Props = {
   value: ?Date,

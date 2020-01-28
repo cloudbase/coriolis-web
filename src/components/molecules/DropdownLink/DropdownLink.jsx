@@ -51,6 +51,7 @@ export const List = styled.div`
     max-width: 160px;
   `}
   ${props => props.customStyle || ''}
+  ${StyleProps.boxShadow}
 `
 export const Tip = styled.div`
   position: absolute;

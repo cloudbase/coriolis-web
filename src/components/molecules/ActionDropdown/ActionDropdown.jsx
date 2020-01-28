@@ -52,7 +52,7 @@ const ListItem = styled.div`
   }
 `
 const ListStyle = css`
-  box-shadow: 0 0 8px 0px rgba(111, 114, 118, 0.51);
+  ${StyleProps.boxShadow}
   border: none;
 `
 export const TEST_ID = 'actionDropdown'

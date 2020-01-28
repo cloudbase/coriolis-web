@@ -54,6 +54,7 @@ const List = styled.div`
   display: flex;
   flex-direction: column;
   z-index: 10;
+  ${StyleProps.boxShadow}
 `
 const ListItem = styled.div`
   padding-top: 8px;
