@@ -25,7 +25,7 @@ import StatusIcon from '../../atoms/StatusIcon'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
-import ObjectUtils from '../../../utils/ObjectUtils'
+import FileUtils from '../../../utils/FileUtils'
 
 import scriptItemImage from './images/script-item.svg'
 
@@ -151,7 +151,7 @@ class WizardScripts extends React.Component<Props> {
       return
     }
     let fileName = files[0].name
-    let scriptContent = await ObjectUtils.readFromFileList(files)
+    let scriptContent = await FileUtils.readTextFromFirstFile(files)
     this.props.onScriptUpload({
       instanceName,
       global,

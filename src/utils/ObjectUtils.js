@@ -16,6 +16,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import configLoader from './Config'
 
+export type FileContent = {
+  name: string,
+  content: string,
+}
+
 class ObjectUtils {
   static flatten(object: any, appendParentPath?: boolean, parent?: string): any {
     let result = {}
@@ -87,19 +92,6 @@ class ObjectUtils {
     let isPassword = configLoader.config.passwordFields.find(p => p === fieldName)
       || fieldName.toLowerCase().indexOf('password') > -1
     return typeof value === 'string' && !isPassword ? value.trim() : value
-  }
-
-  static readFromFileList(fileList: FileList): Promise<?string> {
-    if (!fileList.length) {
-      return Promise.resolve(null)
-    }
-    let file = fileList[0]
-    let reader = new FileReader()
-    return new Promise((resolve, reject) => {
-      reader.onload = e => { resolve(e.target.result) }
-      reader.onerror = e => { reject(e) }
-      reader.readAsText(file)
-    })
   }
 }
 

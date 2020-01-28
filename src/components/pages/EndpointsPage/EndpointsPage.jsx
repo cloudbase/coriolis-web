@@ -56,6 +56,7 @@ type State = {
   showDuplicateModal: boolean,
   duplicating: boolean,
   uploadedEndpoint: ?EndpointType,
+  multiValidating: boolean,
 }
 @observer
 class EndpointsPage extends React.Component<{ history: any }, State> {
@@ -70,6 +71,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     showDeleteEndpointsModal: false,
     selectedEndpoints: [],
     uploadedEndpoint: null,
+    multiValidating: false,
   }
 
   pollTimeout: TimeoutID
@@ -154,6 +156,21 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   handleEmptyListButtonClick() {
     providerStore.loadProviders()
     this.setState({ showChooseProviderModal: true })
+  }
+
+  handleRemoveEndpoint(endpoint: EndpointType) {
+    endpointStore.delete(endpoint)
+  }
+
+  async handleValidateMultipleEndpoints(endpoints: EndpointType[]) {
+    this.setState({ multiValidating: true })
+    let addedEndpoints = await endpointStore.addMultiple(endpoints)
+    await endpointStore.validateMultiple(addedEndpoints)
+    this.setState({ multiValidating: false })
+  }
+
+  handleResetValidation() {
+    endpointStore.resetMultiValidation()
   }
 
   handleCloseChooseProviderModal() {
@@ -318,6 +335,11 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
             loading={providerStore.providersLoading}
             onUploadEndpoint={endpoint => { this.handleUploadEndpoint(endpoint) }}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
+            multiValidating={this.state.multiValidating}
+            onValidateMultipleEndpoints={endpoints => { this.handleValidateMultipleEndpoints(endpoints) }}
+            multiValidation={endpointStore.multiValidation}
+            onRemoveEndpoint={e => { this.handleRemoveEndpoint(e) }}
+            onResetValidation={() => { this.handleResetValidation() }}
           />
         </Modal>
         <Modal

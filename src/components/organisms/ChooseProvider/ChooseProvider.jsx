@@ -26,11 +26,16 @@ import StatusImage from '../../atoms/StatusImage'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
-import ObjectUtils from '../../../utils/ObjectUtils'
+import FileUtils from '../../../utils/FileUtils'
+import configLoader from '../../../utils/Config'
 
-import type { Endpoint } from '../../../types/Endpoint'
+import type { FileContent } from '../../../utils/FileUtils'
+import type { Endpoint, MultiValidationItem } from '../../../types/Endpoint'
+
+import MultipleUploadedEndpoints from './MultipleUploadedEndpoints'
 
 const Wrapper = styled.div`
+  min-height: 0;
   padding: 22px 0 32px 0;
   text-align: center;
 `
@@ -74,21 +79,28 @@ const LoadingText = styled.div`
   font-size: 18px;
   margin-top: 32px;
 `
-
 type Props = {
   providers: string[],
   onCancelClick: () => void,
   onProviderClick: (provider: string) => void,
   onUploadEndpoint: (endpoint: Endpoint) => void,
   loading: boolean,
+  onValidateMultipleEndpoints: (endpoints: Endpoint[]) => void,
+  onResizeUpdate?: () => void,
+  multiValidating: boolean,
+  multiValidation: MultiValidationItem[],
+  onRemoveEndpoint: (endpoint: Endpoint) => void,
+  onResetValidation: () => void,
 }
 type State = {
   highlightDropzone: boolean,
+  multipleUploadedEndpoints: (Endpoint | string)[],
 }
 @observer
 class ChooseProvider extends React.Component<Props, State> {
   state = {
     highlightDropzone: false,
+    multipleUploadedEndpoints: [],
   }
 
   fileInput: HTMLElement
@@ -96,6 +108,13 @@ class ChooseProvider extends React.Component<Props, State> {
 
   componentWillMount() {
     setTimeout(() => { this.addDragAndDrop() }, 1000)
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevState.multipleUploadedEndpoints.length !== this.state.multipleUploadedEndpoints.length
+      && this.props.onResizeUpdate) {
+      this.props.onResizeUpdate()
+    }
   }
 
   componentWillUnmount() {
@@ -128,8 +147,12 @@ class ChooseProvider extends React.Component<Props, State> {
       listener: async e => {
         e.preventDefault()
         this.setState({ highlightDropzone: false })
-        let text = await ObjectUtils.readFromFileList(e.dataTransfer.files)
-        this.processFileContent(text)
+        let filesContents = await FileUtils.readContentFromFileList(e.dataTransfer.files)
+        if (filesContents.length === 1) {
+          this.processOneFileContent(filesContents[0].content)
+        } else {
+          this.processMultipleFilesContents(filesContents)
+        }
       },
     }]
 
@@ -145,20 +168,68 @@ class ChooseProvider extends React.Component<Props, State> {
     this.dragDropListeners = []
   }
 
-  processFileContent(content: ?string) {
-    if (!content) {
-      return
+  parseEndpoint(content: string): Endpoint {
+    let endpoint: Endpoint = JSON.parse(content)
+    if (!endpoint.name || !endpoint.type || !this.props.providers.find(p => p === endpoint.type)) {
+      throw new Error()
     }
+    delete endpoint.id
+    return endpoint
+  }
+
+  processOneFileContent(content: string) {
+    this.props.onResetValidation()
     try {
-      let endpoint: Endpoint = JSON.parse(content)
-      if (!endpoint.name || !endpoint.type || !this.props.providers.find(p => p === endpoint.type)) {
-        throw new Error()
-      }
-      delete endpoint.id
+      let endpoint = this.parseEndpoint(content)
       this.chooseEndpoint(endpoint)
     } catch (err) {
       notificationStore.alert('Invalid .endpoint file', 'error')
     }
+  }
+
+  processMultipleFilesContents(filesContents: FileContent[]) {
+    this.props.onResetValidation()
+    let uniqueNames: { [string]: number } = {}
+    let endpoints = filesContents.map(fileContent => {
+      try {
+        let endpoint = this.parseEndpoint(fileContent.content)
+        let key = `${endpoint.type}${endpoint.name}`
+        if (uniqueNames[key] === undefined) {
+          uniqueNames[key] = 0
+        } else {
+          uniqueNames[key] += 1
+          endpoint.name = `${endpoint.name} (${uniqueNames[key]})`
+        }
+        return endpoint
+      } catch (err) {
+        return fileContent.name
+      }
+    })
+
+    let sortPriority = configLoader.config.providerSortPriority
+    endpoints.sort((a, b) => {
+      if (typeof a === 'string' && typeof b === 'string') {
+        return a.localeCompare(b)
+      }
+      if (typeof a === 'string') {
+        return 1
+      }
+      if (typeof b === 'string') {
+        return -1
+      }
+      if (sortPriority[a.type] && sortPriority[b.type]) {
+        return (sortPriority[a.type] - sortPriority[b.type]) || a.type.localeCompare(b.type)
+      }
+      if (sortPriority[a.type]) {
+        return -1
+      }
+      if (sortPriority[b.type]) {
+        return 1
+      }
+      return a.type.localeCompare(b.type)
+    })
+
+    this.setState({ multipleUploadedEndpoints: endpoints })
   }
 
   chooseEndpoint(endpoint: Endpoint) {
@@ -166,8 +237,45 @@ class ChooseProvider extends React.Component<Props, State> {
   }
 
   async handleFileUpload(files: FileList) {
-    let text = await ObjectUtils.readFromFileList(files)
-    this.processFileContent(text)
+    let filesContents = await FileUtils.readContentFromFileList(files)
+    if (filesContents.length === 1) {
+      this.processOneFileContent(filesContents[0].content)
+    } else {
+      this.processMultipleFilesContents(filesContents)
+    }
+  }
+
+  handleRemoveUploadedEndpoint(endpoint: Endpoint | string, isAdded: boolean) {
+    let multipleUploadedEndpoints = this.state.multipleUploadedEndpoints.filter(e => {
+      if (typeof e === 'string' && typeof endpoint === 'string') {
+        return e !== endpoint
+      }
+      if (typeof e !== 'string' && typeof endpoint !== 'string') {
+        return e.name !== endpoint.name || e.type !== endpoint.type
+      }
+      return true
+    })
+    if (isAdded && typeof endpoint !== 'string') {
+      this.props.onRemoveEndpoint(endpoint)
+    }
+    this.setState({ multipleUploadedEndpoints })
+  }
+
+  renderMultipleUploadedEndpoints() {
+    return (
+      <MultipleUploadedEndpoints
+        endpoints={this.state.multipleUploadedEndpoints}
+        onBackClick={() => { this.setState({ multipleUploadedEndpoints: [] }) }}
+        onRemove={(e, isAdded) => { this.handleRemoveUploadedEndpoint(e, isAdded) }}
+        validating={this.props.multiValidating}
+        multiValidation={this.props.multiValidation}
+        onValidateClick={() => {
+          // $FlowIgnore
+          this.props.onValidateMultipleEndpoints(this.state.multipleUploadedEndpoints.filter(e => typeof e !== 'string'))
+        }}
+        onDone={this.props.onCancelClick}
+      />
+    )
   }
 
   renderLoading() {
@@ -207,13 +315,14 @@ class ChooseProvider extends React.Component<Props, State> {
           <UploadMessage>
             You can
             &nbsp;<UploadMessageButton onClick={() => { this.fileInput.click() }}>upload</UploadMessageButton>&nbsp;
-            or drop a .endpoint file.
+            or drop multiple .endpoint and zipped .endpoint files.
           </UploadMessage>
         </Upload>
         <FakeFileInput
           type="file"
           innerRef={r => { this.fileInput = r }}
-          accept=".endpoint"
+          accept=".endpoint,.zip"
+          multiple
           onChange={e => { this.handleFileUpload(e.target.files) }}
         />
         <Button secondary onClick={this.props.onCancelClick} data-test-id="cProvider-cancelButton">Cancel</Button>
@@ -224,8 +333,9 @@ class ChooseProvider extends React.Component<Props, State> {
   render() {
     return (
       <Wrapper>
-        {this.renderProviders()}
+        {this.state.multipleUploadedEndpoints.length === 0 ? this.renderProviders() : null}
         {this.renderLoading()}
+        {this.state.multipleUploadedEndpoints.length > 0 ? this.renderMultipleUploadedEndpoints() : null}
       </Wrapper>
     )
   }

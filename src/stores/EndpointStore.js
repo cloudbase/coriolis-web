@@ -18,7 +18,7 @@ import { observable, runInAction, action } from 'mobx'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 
-import type { Endpoint, Validation, StorageBackend, Storage } from '../types/Endpoint'
+import type { Endpoint, Validation, StorageBackend, Storage, MultiValidationItem } from '../types/Endpoint'
 
 import notificationStore from './NotificationStore'
 import EndpointSource from '../sources/EndpointSource'
@@ -47,6 +47,7 @@ class EndpointStore {
   @observable storageBackends: StorageBackend[] = []
   @observable storageLoading: boolean = false
   @observable storageConfigDefault: string = ''
+  @observable multiValidation: MultiValidationItem[] = []
 
   @action async getEndpoints(options?: { showLoading?: boolean, skipLog?: boolean }) {
     if (options && options.showLoading) {
@@ -168,12 +169,49 @@ class EndpointStore {
     this.connectionInfoLoading = false
   }
 
+  @action resetMultiValidation() {
+    this.multiValidation = []
+  }
+
+  @action async validateMultiple(endpoints: Endpoint[]) {
+    this.multiValidation = endpoints.map(endpoint => ({
+      endpoint,
+      validating: true,
+    }))
+
+    await Promise.all(endpoints.map(async endpoint => {
+      try {
+        let validation = await EndpointSource.validate(endpoint)
+        runInAction(() => {
+          this.multiValidation = this.multiValidation.filter(mv => mv.endpoint.name !== endpoint.name
+            || mv.endpoint.type !== endpoint.type)
+          this.multiValidation = [...this.multiValidation, {
+            endpoint,
+            validation,
+            validating: false,
+          }]
+        })
+      } catch (ex) {
+        runInAction(() => {
+          this.multiValidation = this.multiValidation.filter(mv => mv.endpoint.name !== endpoint.name
+            || mv.endpoint.type !== endpoint.type)
+          this.multiValidation = [...this.multiValidation, {
+            endpoint,
+            validation: { valid: false, message: 'Validation request failed' },
+            validating: false,
+          }]
+        })
+      }
+    }))
+  }
+
   @action async validate(endpoint: Endpoint) {
     this.validating = true
 
     try {
       let validation = await EndpointSource.validate(endpoint)
       this.validateSuccess(validation)
+      return validation
     } catch (ex) {
       this.validateFailed()
       throw ex
@@ -225,10 +263,24 @@ class EndpointStore {
     try {
       let addedEndpoint = await EndpointSource.add(endpoint)
       this.addSuccess(addedEndpoint)
+      return addedEndpoint
     } catch (ex) {
       runInAction(() => { this.adding = false })
       throw ex
     }
+  }
+
+  async addMultiple(endpoints: Endpoint[]) {
+    let addedEndpoints: Endpoint[] = []
+    await Promise.all(endpoints.map(async endpoint => {
+      try {
+        let addedEndpoint = await EndpointSource.add(endpoint, true)
+        this.addSuccess(addedEndpoint)
+        addedEndpoints.push(addedEndpoint)
+        // eslint-disable-next-line no-empty
+      } catch (err) { }
+    }))
+    return addedEndpoints
   }
 
   @action addSuccess(addedEndpoint: Endpoint) {
