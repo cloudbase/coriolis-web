@@ -16,13 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, runInAction, action } from 'mobx'
 import cookie from 'js-cookie'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 import type { Log } from '../types/Log'
 
 import { coriolisUrl, servicesUrl } from '../constants'
 
 import notificationStore from '../stores/NotificationStore'
-import userStore from '../stores/UserStore'
 
 import apiCaller from '../utils/ApiCaller'
 import DateUtils from '../utils/DateUtils'
@@ -67,13 +68,19 @@ class LogStore {
   }
 
   async downloadDiagnostics() {
-    let loggedUser = userStore.loggedUser
-    if (!loggedUser) {
-      throw new Error('No logged user!')
-    }
-    let projectId = loggedUser.project.id
-    let response = await apiCaller.send({ url: `${servicesUrl.coriolis}/${projectId}/diagnostics` })
-    DomUtils.download(JSON.stringify(response.data), 'diagnostics.json')
+    let baseUrl = `${servicesUrl.coriolis}/${apiCaller.projectId}`
+    let [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
+      apiCaller.send({ url: `${baseUrl}/diagnostics` }),
+      apiCaller.send({ url: `${baseUrl}/replicas/detail?show_deleted=true` }),
+      apiCaller.send({ url: `${baseUrl}/migrations/detail?show_deleted=true` }),
+    ])
+
+    const zip = new JSZip()
+    zip.file('diagnostics.json', JSON.stringify(diagnosticsResp.data))
+    zip.file('replicas.json', JSON.stringify(replicasResp.data))
+    zip.file('migrations.json', JSON.stringify(migrationsResp.data))
+    let zipContent = await zip.generateAsync({ type: 'blob' })
+    saveAs(zipContent, 'diagnostics.zip')
   }
 
   socket: WebSocket
