@@ -168,6 +168,7 @@ class LogsPage extends React.Component<{}, State> {
             <DownloadContent
               logs={logStore.logs}
               onDownloadClick={(l, s, e) => { this.handleDownloadClick(l, s, e) }}
+              generatingDiagnostics={logStore.generatingDiagnostics}
             />
           </TabContent>
         )
