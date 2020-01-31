@@ -18,7 +18,6 @@ import express from 'express'
 import bodyParser from 'body-parser'
 
 import LogosApi from './LogosApi'
-import DownloadZipApi from './DownloadZipApi'
 import ConfigApi from './ConfigApi'
 
 import packageJson from '../../package.json'
@@ -33,7 +32,6 @@ router.get('/version', (req, res) => {
 })
 
 ConfigApi(router)
-DownloadZipApi(router)
 LogosApi(router)
 
 export default router
