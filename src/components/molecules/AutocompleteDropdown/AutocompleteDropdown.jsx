@@ -61,6 +61,7 @@ const List = styled.div`
   border: 1px solid ${Palette.grayscale[3]};
   border-radius: ${StyleProps.borderRadius};
   z-index: 1000;
+  ${StyleProps.boxShadow}
 `
 const Separator = styled.div`
   width: calc(100% - 32px);

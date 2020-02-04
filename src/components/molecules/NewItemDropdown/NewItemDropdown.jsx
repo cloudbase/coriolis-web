@@ -47,6 +47,7 @@ const List = styled.div`
   right: 0;
   top: 45px;
   z-index: 10;
+  ${StyleProps.boxShadow}
 `
 const ListItem = styled(Link)`
   display: flex;
