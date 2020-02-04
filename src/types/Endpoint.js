@@ -34,6 +34,12 @@ export type Endpoint = {
   },
 }
 
+export type MultiValidationItem = {
+  endpoint: Endpoint,
+  validation?: Validation,
+  validating: boolean,
+}
+
 export type OptionValues = {
   name: string,
   // $FlowIssue

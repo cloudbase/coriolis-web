@@ -83,6 +83,7 @@ type State = {
   showAbout: boolean,
   providerType: ?string,
   uploadedEndpoint: ?EndpointType,
+  multiValidating: boolean,
 }
 @observer
 class PageHeader extends React.Component<Props, State> {
@@ -94,6 +95,7 @@ class PageHeader extends React.Component<Props, State> {
     providerType: null,
     uploadedEndpoint: null,
     showAbout: false,
+    multiValidating: false,
   }
 
   pollTimeout: TimeoutID
@@ -190,6 +192,21 @@ class PageHeader extends React.Component<Props, State> {
       providerType: endpoint.type,
       uploadedEndpoint: endpoint,
     })
+  }
+
+  handleRemoveEndpoint(endpoint: EndpointType) {
+    endpointStore.delete(endpoint)
+  }
+
+  async handleValidateMultipleEndpoints(endpoints: EndpointType[]) {
+    this.setState({ multiValidating: true })
+    let addedEndpoints = await endpointStore.addMultiple(endpoints)
+    await endpointStore.validateMultiple(addedEndpoints)
+    this.setState({ multiValidating: false })
+  }
+
+  handleResetValidation() {
+    endpointStore.resetMultiValidation()
   }
 
   handleCloseEndpointModal() {
@@ -289,6 +306,11 @@ class PageHeader extends React.Component<Props, State> {
             loading={providerStore.providersLoading}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
             onUploadEndpoint={endpoint => { this.handleUploadEndpoint(endpoint) }}
+            multiValidating={this.state.multiValidating}
+            onValidateMultipleEndpoints={endpoints => { this.handleValidateMultipleEndpoints(endpoints) }}
+            multiValidation={endpointStore.multiValidation}
+            onRemoveEndpoint={e => { this.handleRemoveEndpoint(e) }}
+            onResetValidation={() => { this.handleResetValidation() }}
           />
         </Modal>
         <Modal
