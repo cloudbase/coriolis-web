@@ -23,6 +23,7 @@ import type { Log as LogType } from '../../../types/Log'
 
 import { Close } from '../../atoms/TextInput'
 import DatetimePicker from '../../molecules/DatetimePicker'
+import StatusIcon from '../../atoms/StatusIcon'
 
 import StyleProps from '../../styleUtils/StyleProps'
 
@@ -73,13 +74,14 @@ const Log = styled.div`
     margin-top: 0;
   }
 `
-const LogName = styled.div``
+const LogName = styled.div`
+  margin-left: 16px;
+`
 const LogDownload = styled.div`
   ${StyleProps.exactSize('16px')}
   background: url('${downloadImage}') center no-repeat;
   background-size: contain;
   cursor: pointer;
-  margin-right: 16px;
 `
 const Seperator = styled.div`
   width: 465px;
@@ -95,6 +97,7 @@ type State = {
 type Props = {
   logs: LogType[],
   onDownloadClick: (logName: string, startDate: ?Date, endDate: ?Date) => void,
+  generatingDiagnostics: boolean,
 }
 @observer
 class DownloadsContent extends React.Component<Props, State> {
@@ -156,11 +159,16 @@ class DownloadsContent extends React.Component<Props, State> {
     return (
       <Logs>
         <Log>
-          <LogDownload
-            onClick={() => {
-              this.props.onDownloadClick('__diagnostics__')
-            }}
-          />
+          {this.props.generatingDiagnostics ? (
+            <StatusIcon status="RUNNING" />
+          ) :
+            (
+              <LogDownload
+                onClick={() => {
+                  this.props.onDownloadClick('__diagnostics__')
+                }}
+              />
+            )}
           <LogName>diagnostics</LogName>
         </Log>
         <Log>

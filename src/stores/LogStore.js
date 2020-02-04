@@ -36,6 +36,7 @@ class LogStore {
   @observable logs: Log[] = []
   @observable loading: boolean = false
   @observable liveFeed: string[] = []
+  @observable generatingDiagnostics: boolean = false
 
   @action async getLogs(options?: { showLoading?: boolean }) {
     if (options && options.showLoading) {
@@ -67,7 +68,8 @@ class LogStore {
     DomUtils.executeDownloadLink(url)
   }
 
-  async downloadDiagnostics() {
+  @action async downloadDiagnostics() {
+    this.generatingDiagnostics = true
     let baseUrl = `${servicesUrl.coriolis}/${apiCaller.projectId}`
     let [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
       apiCaller.send({ url: `${baseUrl}/diagnostics` }),
@@ -81,6 +83,9 @@ class LogStore {
     zip.file('migrations.json', JSON.stringify(migrationsResp.data))
     let zipContent = await zip.generateAsync({ type: 'blob' })
     saveAs(zipContent, 'diagnostics.zip')
+    runInAction(() => {
+      this.generatingDiagnostics = false
+    })
   }
 
   socket: WebSocket
