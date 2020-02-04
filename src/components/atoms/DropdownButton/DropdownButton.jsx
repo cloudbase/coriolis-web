@@ -72,6 +72,10 @@ const getArrowColor = props => {
     return 'white'
   }
 
+  if (props.outline) {
+    return Palette.primary
+  }
+
   return Palette.black
 }
 const getWidth = props => {
@@ -95,6 +99,9 @@ const borderColor = props => {
   }
   if (props.secondary) {
     return Palette.secondaryLight
+  }
+  if (props.outline) {
+    return Palette.primary
   }
   return Palette.grayscale[3]
 }
@@ -160,6 +167,7 @@ type Props = {
   highlight?: boolean,
   secondary?: boolean,
   centered?: boolean,
+  outline?: boolean,
 }
 class DropdownButton extends React.Component<Props> {
   render() {

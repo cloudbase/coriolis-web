@@ -21,7 +21,7 @@ const keyDownHandler = evt => {
   listeners.forEach(l => { maxPriority = Math.max(l.priority, maxPriority) })
   let prioritizedListeners = listeners.filter(l => l.priority === maxPriority)
   prioritizedListeners.forEach(listener => {
-    if (listener.callback) listener.callback(evt)
+    if (listener.callback && !window.handlingEnterKey) listener.callback(evt)
   })
 }
 export default class KeyboardManager {

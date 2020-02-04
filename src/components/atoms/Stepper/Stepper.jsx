@@ -12,6 +12,7 @@ import downSvg from './images/down.svg'
 
 const Wrapper = styled.div`
   position: relative;
+  ${props => props.disabledLoading ? StyleProps.animations.disabledLoading : ''}
 `
 const getInputWidth = (props: any) => {
   if (props.width) {
@@ -109,8 +110,9 @@ type Props = {
   name?: string,
   minimum?: ?number,
   maximum?: ?number,
+  disabledLoading?: ?boolean,
 }
-
+const INCREMENT = 1
 class Stepper extends React.Component<Props, State> {
   state = {
     inputValue: null,
@@ -148,6 +150,27 @@ class Stepper extends React.Component<Props, State> {
     this.setState({ inputValue: null })
   }
 
+  handleKeyDown(e: SyntheticKeyboardEvent<HTMLInputElement>) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') {
+      return
+    }
+    e.preventDefault()
+    if (e.key === 'ArrowUp') {
+      this.increment()
+    }
+    if (e.key === 'ArrowDown') {
+      this.decrement()
+    }
+  }
+
+  increment() {
+    this.commitChange(`${(this.props.value || 0) + INCREMENT}`)
+  }
+
+  decrement() {
+    this.commitChange(`${this.props.value && this.props.value > 0 ? this.props.value - INCREMENT : 0}`)
+  }
+
   render() {
     const { _ref, value, type } = this.props
     let downImageRef: ?HTMLElement
@@ -160,9 +183,11 @@ class Stepper extends React.Component<Props, State> {
     }
 
     return (
-      <Wrapper>
+      <Wrapper disabledLoading={this.props.disabledLoading}>
         <Input
           {...this.props}
+          onKeyDown={e => { this.handleKeyDown(e) }}
+          disabled={this.props.disabled || this.props.disabledLoading}
           type={type || 'text'}
           innerRef={ref => {
             if (_ref && ref) { _ref(ref) }
@@ -173,7 +198,7 @@ class Stepper extends React.Component<Props, State> {
         />
         <StepsButtons embedded={this.props.embedded}>
           <StepButtonUp
-            onClick={() => { this.commitChange(`${(value || 0) + 1}`) }}
+            onClick={() => { this.increment() }}
             onMouseDown={() => { scale(upImageRef, 'down') }}
             onMouseUp={() => { scale(upImageRef, 'up') }}
             onMouseLeave={() => { scale(upImageRef, 'up') }}
@@ -184,7 +209,7 @@ class Stepper extends React.Component<Props, State> {
             />
           </StepButtonUp>
           <StepButtonDown
-            onClick={() => { this.commitChange(`${value && value > 0 ? value - 1 : 0}`) }}
+            onClick={() => { this.decrement() }}
             onMouseDown={() => { scale(downImageRef, 'down') }}
             onMouseUp={() => { scale(downImageRef, 'up') }}
             onMouseLeave={() => { scale(downImageRef, 'up') }}

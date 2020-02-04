@@ -65,6 +65,10 @@ const InstanceContent = styled.div`
 const CheckboxStyled = styled(Checkbox)`
   opacity: 0;
   transition: all ${StyleProps.animations.swift};
+
+  :focus {
+    opacity: 1;
+  }
 `
 const Instance = styled.div`
   display: flex;
@@ -174,6 +178,7 @@ class WizardInstances extends React.Component<Props, State> {
     searchText: '',
   }
   timeout: TimeoutID
+  isCheckboxMouseDown: boolean
 
   componentWillUnmount() {
     this.props.onSearchInputChange('')
@@ -294,11 +299,16 @@ class WizardInstances extends React.Component<Props, State> {
           return (
             <Instance
               key={instance.id}
-              onClick={() => { this.props.onInstanceClick(instance) }}
+              onMouseDown={() => { if (!this.isCheckboxMouseDown) this.props.onInstanceClick(instance) }}
               selected={selected}
               data-test-id={`wInstances-item-${instance.id}`}
             >
-              <CheckboxStyled checked={selected} onChange={() => { }} />
+              <CheckboxStyled
+                checked={selected}
+                onChange={() => { this.props.onInstanceClick(instance) }}
+                onMouseDown={() => { this.isCheckboxMouseDown = true }}
+                onMouseUp={() => { this.isCheckboxMouseDown = false }}
+              />
               <InstanceContent data-test-id="wInstances-instanceItem">
                 <Image />
                 <Label data-test-id="wInstances-itemName">{instance.instance_name || instance.name}</Label>

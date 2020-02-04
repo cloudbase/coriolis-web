@@ -290,7 +290,7 @@ class FieldInput extends React.Component<Props> {
       <RadioInput
         checked={this.props.value}
         label={LabelDictionary.get(this.props.name)}
-        onChange={e => { if (this.props.onChange) this.props.onChange(e.target.checked) }}
+        onChange={checked => { if (this.props.onChange) this.props.onChange(checked) }}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
       />

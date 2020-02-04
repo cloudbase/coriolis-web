@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
@@ -48,6 +48,10 @@ const Wrapper = styled.div`
       transform: scale(1);
     }
   ` : ''}
+  :focus {
+    border: 1px solid ${Palette.primary};
+    outline: none;
+  }
 `
 
 type Props = {
@@ -56,6 +60,8 @@ type Props = {
   disabled?: boolean,
   onChange?: (checked: boolean) => void,
   'data-test-id'?: string,
+  onMouseDown?: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
+  onMouseUp?: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
 }
 @observer
 class Checkbox extends React.Component<Props> {
@@ -67,6 +73,14 @@ class Checkbox extends React.Component<Props> {
     this.props.onChange(!this.props.checked)
   }
 
+  handleKeyDown(e: SyntheticKeyboardEvent<HTMLDivElement>) {
+    if (e.key !== ' ') {
+      return
+    }
+    e.preventDefault()
+    this.handleClick()
+  }
+
   render() {
     return (
       <Wrapper
@@ -75,6 +89,10 @@ class Checkbox extends React.Component<Props> {
         onClick={() => { this.handleClick() }}
         checked={this.props.checked}
         disabled={this.props.disabled}
+        tabIndex={0}
+        onKeyDown={e => { this.handleKeyDown(e) }}
+        onMouseDown={this.props.onMouseDown}
+        onMouseUp={this.props.onMouseUp}
       >
         <CheckmarkImage />
       </Wrapper>

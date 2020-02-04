@@ -105,9 +105,10 @@ type Props = {
   'data-test-id'?: string,
   required?: boolean,
   disabledLoading?: boolean,
+  onInputKeyDown?: (e: SyntheticKeyboardEvent<HTMLInputElement>) => void,
 }
 const TextInput = (props: Props) => {
-  const { _ref, value, onChange, showClose, onCloseClick, disabled, disabledLoading, embedded } = props
+  const { _ref, value, onChange, showClose, onCloseClick, disabled, disabledLoading, embedded, onInputKeyDown } = props
   let actualDisabled = disabled || disabledLoading
   let input
   return (
@@ -119,6 +120,7 @@ const TextInput = (props: Props) => {
         onChange={onChange}
         data-test-id="textInput-input"
         {...props}
+        onKeyDown={onInputKeyDown}
         disabled={actualDisabled}
       />
       {props.required ? <Required right={embedded ? -24 : -16} /> : null}

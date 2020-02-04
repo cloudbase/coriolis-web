@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -35,6 +35,9 @@ const InputWrapper = styled.div`
   width: ${props => props.height * 2}px;
   height: ${props => props.height}px;
   ${props => !props.disabled ? 'cursor: pointer;' : ''};
+  :focus {
+    ${props => (props.disabled || props.disabledLoading) ? css`outline: none;` : ''}
+  }
 `
 const inputBackground = props => {
   if (props.big) {

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
@@ -40,6 +40,9 @@ const getWidth = props => {
 const Wrapper = styled.div`
   position: relative;
   ${props => props.embedded ? 'width: 100%;' : ''}
+  &:focus {
+    outline: none;
+  }
 `
 const Required = styled.div`
   position: absolute;
@@ -110,6 +113,7 @@ const ListItem = styled.div`
   position: relative;
   display: flex;
   color: ${props => props.multipleSelected ? Palette.primary : props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
+  ${props => props.arrowSelected ? css`background: ${Palette.primary}44;` : ''}
   ${props => props.selected ? css`background: ${Palette.primary};` : ''}
   ${props => props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : ''}
   padding: 8px 16px;
@@ -187,6 +191,47 @@ export const scrollItemIntoView = (
   listItemsRef.children[itemIndex].parentNode.scrollTop = listItemsRef.children[itemIndex].offsetTop - listItemsRef.children[itemIndex].parentNode.offsetTop - 32
 }
 
+export const handleKeyNavigation = (options: {
+  submitKeys: string[],
+  keyboardEvent: SyntheticKeyboardEvent<HTMLInputElement | HTMLDivElement>,
+  arrowSelection: ?number,
+  items: any[],
+  selectedItem: any,
+  onSubmit: (item: any) => void,
+  onGetValue: (item: any) => any,
+  onSelection: (arrowSelection: number) => void,
+}) => {
+  let { submitKeys, keyboardEvent, arrowSelection, items, onSubmit, onGetValue, selectedItem, onSelection } = options
+  if (submitKeys.find(k => k === keyboardEvent.key)) {
+    keyboardEvent.preventDefault()
+    if (arrowSelection == null) {
+      return
+    }
+    window.handlingEnterKey = true // Needed for KeyboardManager conflict resolution
+    let arrowSelectedItem = items[arrowSelection]
+    if (arrowSelectedItem) {
+      onSubmit(arrowSelectedItem)
+    }
+    setTimeout(() => { window.handlingEnterKey = false }, 100)
+    return
+  }
+  if (keyboardEvent.key !== 'ArrowUp' && keyboardEvent.key !== 'ArrowDown') {
+    return
+  }
+  keyboardEvent.preventDefault()
+  let itemIndex = items.findIndex(i => onGetValue(i) === onGetValue(selectedItem))
+  let currentIndex = arrowSelection == null ? itemIndex : arrowSelection
+  let maxIndex = items.length - 1
+
+  if (keyboardEvent.key === 'ArrowUp') {
+    onSelection(currentIndex === 0 ? maxIndex : currentIndex - 1)
+  }
+
+  if (keyboardEvent.key === 'ArrowDown') {
+    onSelection(currentIndex === maxIndex ? 0 : currentIndex + 1)
+  }
+}
+
 type Props = {
   selectedItem: any,
   items: any[],
@@ -209,7 +254,8 @@ type Props = {
 }
 type State = {
   showDropdownList: boolean,
-  firstItemHover: boolean
+  firstItemHover: boolean,
+  arrowSelection: ?number,
 }
 @observer
 class Dropdown extends React.Component<Props, State> {
@@ -220,6 +266,7 @@ class Dropdown extends React.Component<Props, State> {
   state = {
     showDropdownList: false,
     firstItemHover: false,
+    arrowSelection: null,
   }
 
   buttonRef: HTMLElement
@@ -228,12 +275,14 @@ class Dropdown extends React.Component<Props, State> {
   firstItemRef: HTMLElement
   tipRef: HTMLElement
   scrollableParent: HTMLElement
+  wrapperRef: HTMLElement
   buttonRect: ClientRect
   itemMouseDown: boolean
+  justFocused: boolean
+  ignoreFocusHandler: boolean
   checkmarkRefs: { [string]: HTMLElement } = {}
 
   componentDidMount() {
-    window.addEventListener('mousedown', this.handlePageClick, false)
     if (this.buttonRef) {
       this.scrollableParent = DomUtils.getScrollableParent(this.buttonRef)
       this.scrollableParent.addEventListener('scroll', this.handleScroll)
@@ -265,7 +314,6 @@ class Dropdown extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('mousedown', this.handlePageClick, false)
     window.removeEventListener('resize', this.handleScroll, false)
     this.scrollableParent.removeEventListener('scroll', this.handleScroll, false)
   }
@@ -308,26 +356,66 @@ class Dropdown extends React.Component<Props, State> {
     }
   }
 
-  @autobind
-  handlePageClick() {
+  toggleDropdownList(show: boolean = true) {
+    if (this.props.disabled && show) {
+      return
+    }
+
+    this.setState({ showDropdownList: show }, () => {
+      this.scrollIntoView()
+    })
+  }
+
+  handleFocus() {
+    if (this.ignoreFocusHandler || this.props.disabled || this.props.disabledLoading) {
+      return
+    }
+
+    this.justFocused = true
+    this.toggleDropdownList(true)
+    setTimeout(() => { this.justFocused = false }, 100)
+  }
+
+  handleBlur() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })
     }
   }
 
-  handleButtonClick() {
-    if (this.props.disabled) {
+  handleKeyPress(e: SyntheticKeyboardEvent<HTMLDivElement>) {
+    if (!this.state.showDropdownList) {
       return
     }
-
-    this.setState({ showDropdownList: !this.state.showDropdownList }, () => {
-      this.scrollIntoView()
+    handleKeyNavigation({
+      submitKeys: ['Enter', ' '],
+      keyboardEvent: e,
+      arrowSelection: this.state.arrowSelection,
+      items: this.props.items,
+      selectedItem: this.props.selectedItem,
+      onSubmit: item => { this.handleItemClick(item) },
+      onGetValue: item => this.getValue(item),
+      onSelection: arrowSelection => {
+        this.setState({ arrowSelection }, () => {
+          this.scrollIntoView(arrowSelection)
+        })
+      },
     })
+  }
+
+  handleButtonClick() {
+    if (this.justFocused) {
+      return
+    }
+    this.toggleDropdownList(!this.state.showDropdownList)
   }
 
   handleItemClick(item: any) {
     if (!this.props.multipleSelection) {
-      this.setState({ showDropdownList: false, firstItemHover: false })
+      this.setState({ showDropdownList: false, firstItemHover: false }, () => {
+        this.ignoreFocusHandler = true
+        this.wrapperRef.focus()
+        setTimeout(() => { this.ignoreFocusHandler = false }, 100)
+      })
     } else {
       let selected = Boolean(this.props.selectedItems && this.props.selectedItems.find(i =>
         this.getValue(i) === this.getValue(item)))
@@ -394,9 +482,11 @@ class Dropdown extends React.Component<Props, State> {
     updateTipStyle(this.listItemsRef, this.tipRef, this.firstItemRef)
   }
 
-  scrollIntoView() {
-    let itemIndex = this.props.items.findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
-    scrollItemIntoView(this.listRef, this.listItemsRef, itemIndex)
+  scrollIntoView(itemIndex?: number) {
+    let selectedItemIndex = this.props.items
+      .findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
+    let actualItemIndex = itemIndex != null ? itemIndex : selectedItemIndex
+    scrollItemIntoView(this.listRef, this.listItemsRef, actualItemIndex)
   }
 
   renderList() {
@@ -419,7 +509,10 @@ class Dropdown extends React.Component<Props, State> {
     const isFirstItemSelected = selectedValue === firstItemValue
 
     let list = ReactDOM.createPortal((
-      <List {...this.props} innerRef={ref => { this.listRef = ref }}>
+      <List
+        {...this.props}
+        innerRef={ref => { this.listRef = ref }}
+      >
         <Tip
           innerRef={ref => { this.tipRef = ref }}
           primary={this.state.firstItemHover || isFirstItemSelected}
@@ -450,6 +543,7 @@ class Dropdown extends React.Component<Props, State> {
                 multipleSelected={this.props.multipleSelection && multipleSelected}
                 dim={this.props.dimFirstItem && i === 0}
                 paddingLeft={this.props.multipleSelection ? 8 : 16}
+                arrowSelected={i === this.state.arrowSelection}
               >
                 {this.props.multipleSelection ? (
                   <Checkmark
@@ -490,19 +584,21 @@ class Dropdown extends React.Component<Props, State> {
     return (
       <Wrapper
         className={this.props.className}
-        onMouseDown={() => { this.itemMouseDown = true }}
-        onMouseUp={() => { this.itemMouseDown = false }}
         data-test-id={this.props['data-test-id'] || 'dropdown'}
         embedded={this.props.embedded}
+        tabIndex={0}
+        innerRef={ref => { this.wrapperRef = ref }}
+        onFocus={() => { this.handleFocus() }}
+        onBlur={() => { this.handleBlur() }}
+        onKeyDown={e => { this.handleKeyPress(e) }}
       >
         <DropdownButton
           {...this.props}
           data-test-id="dropdown-dropdownButton"
           innerRef={ref => { this.buttonRef = ref }}
-          onMouseDown={() => { this.itemMouseDown = true }}
-          onMouseUp={() => { this.itemMouseDown = false }}
           value={buttonValue()}
-          onClick={() => this.handleButtonClick()}
+          onClick={() => { this.handleButtonClick() }}
+          outline={this.state.showDropdownList}
         />
         {this.props.required ? (
           <Required

@@ -49,6 +49,21 @@ let fields = [
     type: 'boolean',
   },
   {
+    name: 'enum_field',
+    type: 'string',
+    enum: ['enum 1', 'enum 2', 'enum 3'],
+  },
+  {
+    name: 'long list',
+    type: 'string',
+    enum: ['enum 1', 'enum 2', 'enum 3', 'enum 4', 'enum 5', 'enum 6', 'enum 7', 'enum 8'],
+  },
+  {
+    name: 'enum_field_autocomplete',
+    type: 'string',
+    enum: ['enum 1', 'enum 2', 'enum 3', 'enum 4', 'enum 5', 'enum 6', 'enum 7', 'enum 8', 'enum 9', 'enum 10'],
+  },
+  {
     name: 'string_field_with_default',
     type: 'string',
     default: 'default',
@@ -57,11 +72,6 @@ let fields = [
     required: true,
     name: 'required_string_field',
     type: 'string',
-  },
-  {
-    name: 'enum_field',
-    type: 'string',
-    enum: ['enum 1', 'enum 2', 'enum 3'],
   },
   {
     name: 'boolean_field',
@@ -95,7 +105,7 @@ class Wrapper extends React.Component {
 
   render() {
     return (
-      <div style={{ width: '1000px', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: '1024px', display: 'flex', justifyContent: 'center' }}>
         <WizardOptions
           {...this.props}
           data={this.state.data}
@@ -127,5 +137,13 @@ storiesOf('WizardOptions', module)
     <Wrapper
       fields={fields}
       selectedInstances={[{}, {}]}
+    />
+  ))
+  .add('loading', () => (
+    <Wrapper
+      fields={fields}
+      selectedInstances={[]}
+      wizardType="replica"
+      optionsLoading
     />
   ))

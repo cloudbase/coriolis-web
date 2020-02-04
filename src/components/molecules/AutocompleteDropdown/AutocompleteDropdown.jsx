@@ -14,14 +14,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-import React from 'react'
+import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
 
 import AutocompleteInput from '../../atoms/AutocompleteInput'
-import { Tip, updateTipStyle, scrollItemIntoView } from '../Dropdown'
+import { Tip, updateTipStyle, scrollItemIntoView, handleKeyNavigation } from '../Dropdown'
 import tipImage from '../Dropdown/images/tip'
 
 import Palette from '../../styleUtils/Palette'
@@ -80,6 +80,7 @@ const SearchNotFound = styled.div`
 const ListItem = styled.div`
   position: relative;
   color: ${props => props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4]};
+  ${props => props.arrowSelected ? css`background: ${Palette.primary}44;` : ''}
   ${props => props.selected ? css`background: ${Palette.primary};` : ''}
   ${props => props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : ''}
   padding: 8px 16px;
@@ -134,6 +135,7 @@ type State = {
   firstItemHover: boolean,
   searchValue: string,
   filteredItems: any[],
+  arrowSelection: ?number,
 }
 @observer
 class AutocompleteDropdown extends React.Component<Props, State> {
@@ -146,6 +148,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     firstItemHover: false,
     searchValue: '',
     filteredItems: [],
+    arrowSelection: null,
   }
 
   buttonRef: HTMLElement
@@ -165,7 +168,6 @@ class AutocompleteDropdown extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    window.addEventListener('mousedown', this.handlePageClick, false)
     if (this.buttonRef) {
       this.scrollableParent = DomUtils.getScrollableParent(this.buttonRef)
       this.scrollableParent.addEventListener('scroll', this.handleScroll)
@@ -187,7 +189,6 @@ class AutocompleteDropdown extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('mousedown', this.handlePageClick, false)
     window.removeEventListener('resize', this.handleScroll, false)
     this.scrollableParent.removeEventListener('scroll', this.handleScroll, false)
   }
@@ -241,24 +242,10 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     }
   }
 
-  @autobind
-  handlePageClick() {
+  closeDropdownList() {
     if (!this.itemMouseDown) {
       this.setState({ showDropdownList: false })
     }
-  }
-
-  handleButtonClick() {
-    if (this.props.disabled) {
-      return
-    }
-
-    this.setState({
-      showDropdownList: !this.state.showDropdownList,
-      filteredItems: this.props.items,
-    }, () => {
-      this.scrollIntoView()
-    })
   }
 
   handleItemClick(item: any) {
@@ -286,6 +273,26 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     }
   }
 
+  handleInputKeyDown(e: SyntheticKeyboardEvent<HTMLInputElement>) {
+    if (!this.state.showDropdownList) {
+      return
+    }
+    handleKeyNavigation({
+      submitKeys: ['Enter'],
+      keyboardEvent: e,
+      arrowSelection: this.state.arrowSelection,
+      items: this.state.filteredItems,
+      selectedItem: this.props.selectedItem,
+      onSubmit: item => { this.handleItemClick(item) },
+      onGetValue: item => this.getValue(item),
+      onSelection: arrowSelection => {
+        this.setState({ arrowSelection }, () => {
+          this.scrollIntoView(arrowSelection)
+        })
+      },
+    })
+  }
+
   handleSearchInputChange(searchValue: string, isFocus?: boolean) {
     let filteredItems = isFocus ? this.props.items || [] : this.getFilteredItems(null, searchValue)
 
@@ -293,6 +300,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       searchValue,
       filteredItems,
       showDropdownList: true,
+      arrowSelection: null,
     }, () => {
       if (isFocus) {
         this.scrollIntoView()
@@ -304,9 +312,11 @@ class AutocompleteDropdown extends React.Component<Props, State> {
     }
   }
 
-  scrollIntoView() {
-    let itemIndex = this.state.filteredItems.findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
-    scrollItemIntoView(this.listRef, this.listItemsRef, itemIndex)
+  scrollIntoView(itemIndex?: number) {
+    let selectedItemIndex = this.state.filteredItems
+      .findIndex(i => this.getValue(i) === this.getValue(this.props.selectedItem))
+    let actualItemIndex = itemIndex != null ? itemIndex : selectedItemIndex
+    scrollItemIntoView(this.listRef, this.listItemsRef, actualItemIndex)
   }
 
   updateListPosition() {
@@ -378,6 +388,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
               onClick={() => { this.handleItemClick(item) }}
               selected={value !== null && value === selectedValue}
               dim={this.props.dimNullValue && value == null}
+              arrowSelected={i === this.state.arrowSelection}
             >
               {label}
               {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
@@ -437,24 +448,21 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       <Wrapper
         data-test-id={this.props['data-test-id'] || 'acDropdown-wrapper'}
         className={this.props.className}
-        onMouseDown={() => { this.itemMouseDown = true }}
-        onMouseUp={() => { this.itemMouseDown = false }}
         width={this.props.width}
         embedded={this.props.embedded}
       >
         <AutocompleteInput
           width={this.props.width}
           innerRef={ref => { this.buttonRef = ref }}
-          onMouseDown={() => { this.itemMouseDown = true }}
-          onMouseUp={() => { this.itemMouseDown = false }}
+          onBlur={() => { this.closeDropdownList() }}
           value={inputValue}
-          onClick={() => this.handleButtonClick()}
           onChange={searchValue => { this.handleSearchInputChange(searchValue) }}
           onFocus={() => { this.handleSearchInputChange(this.state.searchValue, true) }}
           highlight={this.props.highlight}
           disabled={this.props.disabled}
           disabledLoading={this.props.disabledLoading}
           embedded={this.props.embedded}
+          onInputKeyDown={e => { this.handleInputKeyDown(e) }}
         />
         {this.props.required ? <Required right={this.props.embedded ? -24 : -16} /> : null}
         {this.renderList()}
