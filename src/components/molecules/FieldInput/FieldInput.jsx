@@ -25,6 +25,7 @@ import InfoIcon from '../../atoms/InfoIcon/InfoIcon'
 import Dropdown from '../Dropdown/Dropdown'
 import DropdownInput from '../DropdownInput/DropdownInput'
 import TextArea from '../../atoms/TextArea/TextArea'
+import FileInput from '../../atoms/FileInput'
 import PropertiesTable from '../PropertiesTable/PropertiesTable'
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import Stepper from '../../atoms/Stepper'
@@ -90,6 +91,7 @@ type Props = {
   disabledLoading?: boolean,
   items?: any[],
   useTextArea?: boolean,
+  useFile?: boolean,
   noSelectionMessage?: string,
   noItemsMessage?: string,
   layout: 'modal' | 'page',
@@ -205,6 +207,19 @@ class FieldInput extends React.Component<Props> {
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
         required={this.props.layout === 'page' ? false : this.props.required}
+      />
+    )
+  }
+
+  renderFileInput() {
+    return (
+      <FileInput
+        width={this.props.width}
+        disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
+        required={this.props.layout === 'page' ? false : this.props.required}
+        highlight={this.props.highlight}
+        onUpload={c => { if (this.props.onChange) this.props.onChange(c) }}
       />
     )
   }
@@ -338,6 +353,9 @@ class FieldInput extends React.Component<Props> {
         }
         if (this.props.useTextArea) {
           return this.renderTextArea()
+        }
+        if (this.props.useFile) {
+          return this.renderFileInput()
         }
         return this.renderTextInput()
       case 'integer':

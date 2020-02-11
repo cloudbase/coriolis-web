@@ -87,6 +87,7 @@ const conf: Config = {
     vmware_vsphere: 1,
     azure: 2,
     'hyper-v': 2,
+    kubevirt: 2,
     scvmm: 2,
     oci: 3,
     opc: 3,

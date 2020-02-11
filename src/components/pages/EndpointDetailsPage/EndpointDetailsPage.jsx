@@ -33,6 +33,7 @@ import migrationStore from '../../../stores/MigrationStore'
 import replicaStore from '../../../stores/ReplicaStore'
 import userStore from '../../../stores/UserStore'
 import projectStore from '../../../stores/ProjectStore'
+import providerStore from '../../../stores/ProviderStore'
 
 import type { Endpoint as EndpointType } from '../../../types/Endpoint'
 import type { MainItem } from '../../../types/MainItem'
@@ -156,6 +157,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   handleCloseEndpointModal() {
     this.setState({ showEndpointModal: false })
+    if (this.endpoint) {
+      providerStore.getConnectionInfoSchema(this.endpoint.type)
+    }
   }
 
   handleCloseEndpointInUseModal() {
@@ -194,7 +198,15 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   async loadData() {
     projectStore.getProjects()
 
-    this.loadEndpoints()
+    const loadEndpoints = async () => {
+      await this.loadEndpoints()
+      let endpointType = this.endpoint && this.endpoint.type
+      if (endpointType) {
+        providerStore.getConnectionInfoSchema(endpointType)
+      }
+    }
+
+    loadEndpoints()
 
     await Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()])
     this.setState({ endpointUsage: this.getEndpointUsage() })
@@ -252,8 +264,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           contentComponent={<EndpointDetailsContent
             item={endpoint}
             usage={this.state.endpointUsage}
-            loading={endpointStore.connectionInfoLoading || endpointStore.loading}
+            loading={endpointStore.connectionInfoLoading || endpointStore.loading || providerStore.connectionSchemaLoading}
             connectionInfo={endpointStore.connectionInfo}
+            connectionInfoSchema={providerStore.connectionInfoSchema}
             onDeleteClick={() => { this.handleDeleteEndpointClick() }}
             onValidateClick={() => { this.handleValidateClick() }}
           />}

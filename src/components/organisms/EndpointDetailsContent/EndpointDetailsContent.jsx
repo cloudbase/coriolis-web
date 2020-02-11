@@ -28,11 +28,13 @@ import StatusImage from '../../atoms/StatusImage'
 
 import type { Endpoint } from '../../../types/Endpoint'
 import type { MainItem } from '../../../types/MainItem'
+import type { Field as FieldType } from '../../../types/Field'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
+import DomUtils from '../../../utils/DomUtils'
 
 const Wrapper = styled.div`
   ${StyleProps.exactWidth(StyleProps.contentWidth)}
@@ -76,18 +78,40 @@ const LinkStyled = styled(Link)`
   text-decoration: none;
   cursor: pointer;
 `
+const DownloadLink = styled.div`
+  display: inline-block;
+  color: ${Palette.primary};
+  cursor: pointer;
+  :hover {
+    text-decoration: underline;
+  }
+`
 
 type Props = {
   item: ?Endpoint,
   connectionInfo: ?$PropertyType<Endpoint, 'connection_info'>,
   loading: boolean,
   usage: { migrations: MainItem[], replicas: MainItem[] },
+  connectionInfoSchema: FieldType[],
   onDeleteClick: () => void,
   onValidateClick: () => void,
 }
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
   renderedKeys: { [string]: boolean }
+
+  renderDownloadValue(value: string, fieldName: string) {
+    let endpoint = this.props.item
+    if (!endpoint) {
+      return null
+    }
+    return (
+      <DownloadLink onClick={() => {
+        DomUtils.download(value, `${fieldName}`)
+      }}
+      >Download</DownloadLink>
+    )
+  }
 
   renderConnectionInfoLoading() {
     if (!this.props.loading) {
@@ -131,18 +155,20 @@ class EndpointDetailsContent extends React.Component<Props> {
         value = '-'
       }
 
-      let valueClass = null
-
+      let valueElement = null
+      let schemaField = this.props.connectionInfoSchema.find(f => f.name === key)
       if (configLoader.config.passwordFields.find(fn => fn === key) || key.indexOf('password') > -1) {
-        valueClass = <PasswordValue value={value} data-test-id="edContent-connPassword" />
+        valueElement = <PasswordValue value={value} data-test-id="edContent-connPassword" />
+      } else if (schemaField && schemaField.useFile) {
+        valueElement = this.renderDownloadValue(value, key)
       } else {
-        valueClass = this.renderValue(value, `connValue-${key}`)
+        valueElement = this.renderValue(value, `connValue-${key}`)
       }
 
       return (
         <Field key={key}>
           <Label>{LabelDictionary.get(key)}</Label>
-          {valueClass}
+          {valueElement}
         </Field>
       )
     })

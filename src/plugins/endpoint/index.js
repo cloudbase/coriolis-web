@@ -18,6 +18,9 @@ import DefaultConnectionSchemaPlugin from './default/ConnectionSchemaPlugin'
 import AzureConnectionSchemaPlugin from './azure/ConnectionSchemaPlugin'
 import OpenstackConnectionSchemaPlugin from './openstack/ConnectionSchemaPlugin'
 import OciConnectionSchemaPlugin from './oci/ConnectionSchemaPlugin'
+import KubevirtConnectionSchemaPlugin from './kubevirt/ConnectionSchemaPlugin'
+
+
 import DefaultContentPlugin from './default/ContentPlugin'
 import AzureContentPlugin from './azure/ContentPlugin'
 import OpenstackContentPlugin from './openstack/ContentPlugin'
@@ -34,6 +37,7 @@ export const ConnectionSchemaPlugin = {
   azure: AzureConnectionSchemaPlugin,
   openstack: OpenstackConnectionSchemaPlugin,
   oci: OciConnectionSchemaPlugin,
+  kubevirt: KubevirtConnectionSchemaPlugin,
 }
 
 export const OptionsSchemaPlugin = {

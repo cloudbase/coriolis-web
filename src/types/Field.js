@@ -40,6 +40,7 @@ export type Field = {
   description?: string,
   subFields?: Field[],
   groupName?: string,
+  useFile?: boolean,
 }
 
 const migrationImageOsTypes = ['windows', 'linux']
