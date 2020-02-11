@@ -35,14 +35,23 @@ import type { Endpoint, MultiValidationItem } from '../../../types/Endpoint'
 import MultipleUploadedEndpoints from './MultipleUploadedEndpoints'
 
 const Wrapper = styled.div`
+  display: flex;
   min-height: 0;
   padding: 22px 0 32px 0;
   text-align: center;
 `
-const Providers = styled.div``
+const Providers = styled.div`
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 const Logos = styled.div`
   display: flex;
   flex-wrap: wrap;
+  overflow: auto;
+  min-height: 0;
+  flex-grow: 1;
 `
 const Upload = styled.div`
   border: 1px dashed ${props => props.highlight ? Palette.primary : 'white'};
@@ -74,6 +83,7 @@ const LoadingWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 32px 0;
+  flex-grow: 1;
 `
 const LoadingText = styled.div`
   font-size: 18px;
