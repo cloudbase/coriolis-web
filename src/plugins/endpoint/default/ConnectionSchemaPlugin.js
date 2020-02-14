@@ -19,7 +19,7 @@ import Utils from '../../../utils/ObjectUtils'
 import type { Schema, SchemaProperties, SchemaDefinitions } from '../../../types/Schema'
 import type { Field } from '../../../types/Field'
 
-export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, parent?: string): any[] => {
+export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, parent?: ?string, dictionaryKey?: string): any[] => {
   if (!schema.properties) {
     return []
   }
@@ -33,18 +33,18 @@ export const defaultSchemaToFields = (schema: SchemaProperties, schemaDefinition
       return {
         name: fieldName,
         type: properties.type ? properties.type : '',
-        properties: properties.properties ? defaultSchemaToFields(properties, null, fieldName) : [],
+        properties: properties.properties ? defaultSchemaToFields(properties, null, fieldName, dictionaryKey) : [],
       }
     } else if (properties.type === 'object' && properties.properties && Object.keys(properties.properties).length) {
       return {
         name: fieldName,
         type: 'object',
-        properties: defaultSchemaToFields(properties, null, fieldName),
+        properties: defaultSchemaToFields(properties, null, fieldName, dictionaryKey),
       }
     }
 
     const name = parent ? `${parent}/${fieldName}` : fieldName
-    LabelDictionary.pushToCache({ name, title: properties.title, description: properties.description })
+    LabelDictionary.pushToCache({ name, title: properties.title, description: properties.description }, dictionaryKey || '')
 
     return {
       ...properties,

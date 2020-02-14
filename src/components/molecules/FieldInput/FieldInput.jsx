@@ -95,9 +95,9 @@ type Props = {
   layout: 'modal' | 'page',
   width?: number,
   label?: string,
+  description?: string,
   addNullValue?: boolean,
   nullableBoolean?: boolean,
-  description?: string,
   style?: { [string]: mixed },
 }
 @observer
@@ -127,7 +127,7 @@ class FieldInput extends React.Component<Props> {
         type={this.props.password ? 'password' : 'text'}
         value={this.props.value}
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
-        placeholder={LabelDictionary.get(this.props.name)}
+        placeholder={this.props.label}
         disabled={this.props.disabled}
         required={this.props.layout === 'page' ? false : this.props.required}
         disabledLoading={this.props.disabledLoading}
@@ -201,7 +201,7 @@ class FieldInput extends React.Component<Props> {
         highlight={this.props.highlight}
         value={this.props.value}
         onChange={e => { if (this.props.onChange) this.props.onChange(e.target.value) }}
-        placeholder={LabelDictionary.get(this.props.name)}
+        placeholder={this.props.label}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
         required={this.props.layout === 'page' ? false : this.props.required}
@@ -289,7 +289,7 @@ class FieldInput extends React.Component<Props> {
     return (
       <RadioInput
         checked={this.props.value}
-        label={LabelDictionary.get(this.props.name)}
+        label={this.props.label || ''}
         onChange={checked => { if (this.props.onChange) this.props.onChange(checked) }}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
@@ -317,7 +317,7 @@ class FieldInput extends React.Component<Props> {
         onItemChange={item => { if (this.props.onChange) this.props.onChange(item.value) }}
         inputValue={this.props.getFieldValue ? this.props.getFieldValue(fieldName) : ''}
         onInputChange={value => { if (this.props.onFieldChange) this.props.onFieldChange(fieldName, value) }}
-        placeholder={LabelDictionary.get(fieldName)}
+        placeholder={this.props.label}
         highlight={this.props.highlight}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
@@ -358,13 +358,13 @@ class FieldInput extends React.Component<Props> {
       return null
     }
 
-    let description = LabelDictionary.getDescription(this.props.name) || this.props.description
+    let description = this.props.description
     let marginRight = this.props.layout === 'modal' || description || this.props.required ? '24px' : 0
 
     return (
       <Label layout={this.props.layout} disabledLoading={this.props.disabledLoading}>
         <LabelText style={{ marginRight }}>
-          {this.props.label || LabelDictionary.get(this.props.name)}
+          {this.props.label}
         </LabelText>
         {description ? <InfoIcon text={description} marginLeft={-20} marginBottom={this.props.layout === 'page' ? null : 0} /> : null}
         {this.props.layout === 'page' && Boolean(this.props.required) ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}

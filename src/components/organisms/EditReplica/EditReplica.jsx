@@ -481,6 +481,11 @@ class EditReplica extends React.Component<Props, State> {
     if (extraOptionsConfig) {
       optionsLoadingSkipFields = extraOptionsConfig.requiredFields
     }
+    let endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
+    let dictionaryKey = ''
+    if (endpoint) {
+      dictionaryKey = `${endpoint.type}-${type}`
+    }
     return (
       <WizardOptions
         wizardType={`${this.props.type || 'replica'}-${type}-options-edit`}
@@ -500,6 +505,7 @@ class EditReplica extends React.Component<Props, State> {
         optionsLoading={optionsLoading}
         optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now',
           'execute_now_options', ...migrationFields.map(f => f.name)]}
+        dictionaryKey={dictionaryKey}
       />
     )
   }

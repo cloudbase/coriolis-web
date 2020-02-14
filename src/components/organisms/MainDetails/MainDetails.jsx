@@ -217,10 +217,13 @@ class MainDetails extends React.Component<Props> {
     let properties = []
     let plugin = endpoint && (OptionsSchemaPlugin[endpoint.type] || OptionsSchemaPlugin.default)
     let migrationImageMapFieldName = plugin && plugin.migrationImageMapFieldName
-
+    let dictionaryKey = ''
+    if (endpoint) {
+      dictionaryKey = `${endpoint.type}-destination`
+    }
     propertyNames.forEach(pn => {
       let value = this.props.item ? this.props.item.destination_environment[pn] : ''
-      let label = LabelDictionary.get(pn)
+      let label = LabelDictionary.get(pn, dictionaryKey)
 
       if (value && value.join) {
         // $FlowIgnore

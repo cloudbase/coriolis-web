@@ -26,8 +26,8 @@ import type { NetworkMap } from '../../../types/Network'
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
 
-  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
-    let fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions)
+  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, dictionaryKey: string) {
+    let fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
     let exportMechField = fields.find(f => f.name === 'replica_export_mechanism')
     if (exportMechField) {
       exportMechField.subFields = []
