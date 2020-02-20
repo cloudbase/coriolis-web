@@ -19,6 +19,8 @@ import notificationStore from '../stores/NotificationStore'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
 import { servicesUrl } from '../constants'
+import DomUtils from '../utils/DomUtils'
+
 import type { WizardData } from '../types/WizardData'
 import type { StorageMap } from '../types/Endpoint'
 import type { MainItem } from '../types/MainItem'
@@ -95,7 +97,7 @@ class WizardSource {
 
   setUrlState(data: any) {
     let locationExp = /.*?(?:\?|$)/.exec(window.location.href)
-    if (!locationExp) {
+    if (!locationExp || DomUtils.isSafari()) {
       return
     }
     let location = locationExp[0].replace('?', '')

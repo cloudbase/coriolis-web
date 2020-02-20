@@ -150,6 +150,10 @@ class DomUtils {
       return `<span class="${cls}">${match}</span>`
     })
   }
+
+  static isSafari() {
+    return navigator.userAgent.indexOf('Chrome') === -1 && navigator.userAgent.indexOf('Safari') > -1
+  }
 }
 
 export default DomUtils
