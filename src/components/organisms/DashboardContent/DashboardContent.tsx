@@ -32,7 +32,7 @@ import type { Licence } from '../../../@types/Licence'
 import type { NotificationItemData } from '../../../@types/NotificationItem'
 import { ReplicaItem, MigrationItem } from '../../../@types/MainItem'
 
-const MIDDLE_WIDTHS = ['264px', '264px', '264px']
+const MIDDLE_WIDTHS = ['264px', '264px', '450px']
 
 const Wrapper = styled.div<any>`
   margin-bottom: 64px;
@@ -65,6 +65,7 @@ type Props = {
   notificationItemsLoading: boolean,
   users: User[],
   licence: Licence | null,
+  licenceError: string | null,
   notificationItems: NotificationItemData[],
   isAdmin: boolean,
   onNewReplicaClick: () => void,
@@ -111,8 +112,8 @@ class DashboardContent extends React.Component<Props, State> {
         notificationItems={this.props.notificationItems}
         loading={this.props.notificationItemsLoading}
         style={this.state.useMobileLayout ? null : {
-          minWidth: MIDDLE_WIDTHS[1],
-          width: MIDDLE_WIDTHS[1],
+          minWidth: MIDDLE_WIDTHS[0],
+          width: MIDDLE_WIDTHS[0],
         }}
         onNewClick={this.props.onNewReplicaClick}
       />,
@@ -123,17 +124,18 @@ class DashboardContent extends React.Component<Props, State> {
         loading={this.props.replicasLoading
           || this.props.migrationsLoading || this.props.endpointsLoading}
         style={{
-          minWidth: MIDDLE_WIDTHS[2],
-          width: MIDDLE_WIDTHS[2],
+          minWidth: MIDDLE_WIDTHS[1],
+          width: MIDDLE_WIDTHS[1],
         }}
         onNewClick={this.props.onNewEndpointClick}
       />,
       <LicenceModule
         licence={this.props.licence}
         loading={this.props.licenceLoading}
+        licenceError={this.props.licenceError}
         style={{
-          minWidth: MIDDLE_WIDTHS[0],
-          width: MIDDLE_WIDTHS[0],
+          minWidth: MIDDLE_WIDTHS[2],
+          width: MIDDLE_WIDTHS[2],
         }}
       />,
     ]

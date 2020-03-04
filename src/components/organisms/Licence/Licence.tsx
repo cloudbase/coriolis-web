@@ -77,10 +77,6 @@ const LoadingWrapper = styled.div<any>`
   flex-direction: column;
   align-items: center;
 `
-const LoadingText = styled.div<any>`
-  font-size: 18px;
-  margin-top: 32px;
-`
 const ButtonsWrapper = styled.div<any>`
   display: flex;
   margin-top: 48px;
@@ -107,6 +103,7 @@ const FakeFileInput = styled.input`
 
 type Props = {
   licenceInfo: Licence | null,
+  licenceError: string | null,
   loadingLicenceInfo: boolean,
   onRequestClose: () => void,
   onAddModeChange: (addMode: boolean) => void,
@@ -228,24 +225,38 @@ class LicenceC extends React.Component<Props, State> {
     return (
       <LoadingWrapper>
         <StatusImage loading />
-        <LoadingText>Loading licence info ...</LoadingText>
       </LoadingWrapper>
     )
   }
 
+  renderExpiration(date: Date) {
+    const dateMoment = moment(date)
+    const days = dateMoment.diff(new Date(), 'days')
+    if (days === 0) {
+      return (
+        <span>today at <b>{dateMoment.utc().format('HH:mm')} UTC</b></span>
+      )
+    }
+    return (
+      <span>on <b>{dateMoment.format('DD MMM YYYY')} ({days} days from now)</b></span>
+    )
+  }
+
   renderLicenceStatusText(info: Licence): React.ReactNode {
-    const currentPeriod = moment(info.currentPeriodEnd)
-    const days = currentPeriod.diff(new Date(), 'days')
-    if (days < 0) {
+    if (new Date(info.earliestLicenceExpiryDate).getTime() < new Date().getTime()) {
       return 'Please contact Cloudbase Solutions with your Appliance ID in order to obtain a Coriolis® licence'
     }
     return (
       <LicenceRowDescription>
-        Coriolis® Licence is active until&nbsp;
-        {currentPeriod.format('DD MMM YYYY')}
-        &nbsp;({days} days from now).
+        Earliest Coriolis® Licence expires&nbsp;
+        {this.renderExpiration(info.earliestLicenceExpiryDate)}.<br />
+        Latest Coriolis® Licence expires {this.renderExpiration(info.latestLicenceExpiryDate)}.
       </LicenceRowDescription>
     )
+  }
+
+  renderLicenceError(error: string) {
+    return <LicenceInfoWrapper>{error}</LicenceInfoWrapper>
   }
 
   renderLicenceInfo(info: Licence) {
@@ -262,20 +273,6 @@ class LicenceC extends React.Component<Props, State> {
               </LicenceLink>
             </LicenceRowLabel>
             {this.renderLicenceStatusText(info)}
-          </LicenceRowContent>
-        </LicenceRow>
-        <LicenceRow>
-          <LicenceRowContent width="50%" style={{ marginRight: '32px' }}>
-            <LicenceRowLabel>VM Replicas</LicenceRowLabel>
-            <LicenceRowDescription>
-              {info.totalReplicas - info.performedReplicas} VM Replicas remaining.
-            </LicenceRowDescription>
-          </LicenceRowContent>
-          <LicenceRowContent width="50%">
-            <LicenceRowLabel>VM Migrations</LicenceRowLabel>
-            <LicenceRowDescription>
-              {info.totalMigations - info.performedMigrations} VM Migrations remaining.
-            </LicenceRowDescription>
           </LicenceRowContent>
         </LicenceRow>
         <LicenceRow>
@@ -371,10 +368,15 @@ class LicenceC extends React.Component<Props, State> {
   }
 
   render() {
-    const showInfo = !this.props.loadingLicenceInfo && !this.props.addMode
+    const showInfo = !this.props.loadingLicenceInfo
+      && !this.props.addMode && !this.props.licenceError
+    const showError = !this.props.loadingLicenceInfo && !this.props.addMode
+
     return (
       <Wrapper>
         {showInfo && this.props.licenceInfo ? this.renderLicenceInfo(this.props.licenceInfo) : null}
+        {showError && this.props.licenceError
+          ? this.renderLicenceError(this.props.licenceError) : null}
         {this.props.addMode ? this.renderLicenceAdd() : null}
         {this.props.loadingLicenceInfo ? this.renderLicenceInfoLoading() : null}
         {this.renderButtons()}

@@ -101,7 +101,6 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
       migrationStore.getMigrations({ skipLog: true, showLoading }),
       endpointStore.getEndpoints({ skipLog: true, showLoading }),
       projectStore.getProjects({ skipLog: true, showLoading }),
-      licenceStore.loadLicenceInfo({ skipLog: true, showLoading }),
     ])
   }
 
@@ -109,7 +108,8 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
     await Utils.waitFor(() => Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin),
       30000, 100)
     if (userStore.loggedUser && userStore.loggedUser.isAdmin) {
-      await userStore.getAllUsers({ skipLog: true, showLoading })
+      userStore.getAllUsers({ skipLog: true, showLoading })
+      licenceStore.loadLicenceInfo({ skipLog: true, showLoading })
     }
   }
 
@@ -135,6 +135,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               projectsLoading={projectStore.projects.length === 0}
               usersLoading={userStore.users.length === 0}
               licenceLoading={licenceStore.loadingLicenceInfo}
+              licenceError={licenceStore.licenceInfoError}
               replicasLoading={replicaStore.loading}
               onNewReplicaClick={() => { this.props.history.push('/wizard/replica') }}
               onNewEndpointClick={() => { this.handleNewEndpointClick() }}

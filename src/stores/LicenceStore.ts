@@ -28,6 +28,8 @@ class LicenceStore {
 
   @observable version: string | null = null
 
+  @observable licenceInfoError: string | null = null
+
   async loadVersion(): Promise<string> {
     if (this.version) {
       return this.version
@@ -43,23 +45,33 @@ class LicenceStore {
   @action async loadLicenceInfo(opts?: { skipLog?: boolean, showLoading?: boolean }) {
     if (opts && opts.showLoading) this.loadingLicenceInfo = true
     try {
-      const licence = await licenceSource.loadLicenceInfo(opts && opts.skipLog)
+      const ids = await licenceSource.loadAppliancesIds(opts && opts.skipLog)
+      if (!ids.length || ids.length > 1) {
+        runInAction(() => {
+          if (ids.length > 1) {
+            this.licenceInfoError = 'There appears to be multiple Coriolis appliances defined within the licensing server. This is most likely due to a deployment error or failed cleanup, so please contact Cloudbase Support with this information to resolve the issue.'
+          }
+          this.loadingLicenceInfo = false
+        })
+      }
+      this.licenceInfoError = null
+      const applianceId = ids[0]
+      const licenceInfo = await licenceSource.loadLicenceInfo(applianceId, opts && opts.skipLog)
       runInAction(() => {
-        this.licenceInfo = licence
+        this.licenceInfo = licenceInfo
         this.loadingLicenceInfo = false
       })
-    } catch (ex) {
+    } finally {
       runInAction(() => {
         this.loadingLicenceInfo = false
       })
-      throw ex
     }
   }
 
-  @action async addLicence(licence: string) {
+  @action async addLicence(licence: string, applianceId: string) {
     this.addingLicence = true
     try {
-      await licenceSource.addLicence(licence)
+      await licenceSource.addLicence(licence, applianceId)
       runInAction(() => {
         this.addingLicence = false
       })
