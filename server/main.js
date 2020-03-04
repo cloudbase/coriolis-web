@@ -25,16 +25,12 @@ const app = express()
 
 const PORT = process.env.PORT || 3000
 const isDev = process.argv.find(a => a === '--dev')
-const CORIOLIS_URL = process.env.CORIOLIS_URL || '/'
-let CORIOLIS_LICENSING_BASE_URL = process.env.CORIOLIS_LICENSING_BASE_URL || ''
 
 // Write file to disk with process env variables, so that the client code can read
 if (!fs.existsSync('./dist')) {
   fs.mkdirSync('./dist')
 }
 fs.writeFileSync('./dist/env.js', `window.env = {
-  CORIOLIS_URL: '${CORIOLIS_URL}',
-  CORIOLIS_LICENSING_BASE_URL: '${(CORIOLIS_LICENSING_BASE_URL)}',
   ENV: '${isDev ? 'development' : 'production'}',
 }
 `)

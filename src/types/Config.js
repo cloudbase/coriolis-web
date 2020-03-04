@@ -12,6 +12,15 @@ type ExtraOption = {
   }[]
 }
 
+export type Services = {
+  keystone: string,
+  barbican: string,
+  coriolis: string,
+  coriolisLogs: string,
+  coriolisLogStreamBaseUrl: string,
+  coriolisLicensing: string,
+}
+
 export type Config = {
   disabledPages: string[],
   showUserDomainInput: boolean,
@@ -25,4 +34,5 @@ export type Config = {
   hiddenUsers: string[],
   passwordFields: string[],
   mainListItemsPerPage: number,
+  servicesUrls: Services,
 }

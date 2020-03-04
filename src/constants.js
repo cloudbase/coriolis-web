@@ -14,22 +14,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // @flow
 
-export const coriolisUrl = (window.env && window.env.CORIOLIS_URL) || '/'
-
-let licenceUrl = (window.env && window.env.CORIOLIS_LICENSING_BASE_URL) || '/licensing'
-
-export const servicesUrl = {
-  identity: `${coriolisUrl}identity/auth/tokens`,
-  projects: `${coriolisUrl}identity/auth/projects`,
-  users: `${coriolisUrl}identity/users`,
-  endpoints: `${coriolisUrl}coriolis/endpoints`,
-  coriolis: `${coriolisUrl}coriolis`,
-  migrations: `${coriolisUrl}coriolis/migrations`,
-  barbican: `${coriolisUrl}barbican`,
-  openId: `${coriolisUrl}identity/OS-FEDERATION/identity_providers/google/protocols/openid/auth`,
-  licence: licenceUrl,
-}
-
 export type NavigationMenuType = { label: string, value: string, hidden?: boolean, requiresAdmin?: boolean }
 export const navigationMenu: NavigationMenuType[] = [
   { label: 'Dashboard', value: 'dashboard' },

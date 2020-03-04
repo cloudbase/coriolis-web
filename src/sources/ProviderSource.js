@@ -15,7 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl, providerTypes } from '../constants'
+import { providerTypes } from '../constants'
+import configLoader from '../utils/Config'
 import { SchemaParser } from './Schemas'
 import type { Field } from '../types/Field'
 import type { Providers } from '../types/Providers'
@@ -23,14 +24,14 @@ import type { OptionValues } from '../types/Endpoint'
 
 class ProviderSource {
   async getConnectionInfoSchema(providerName: string): Promise<Field[]> {
-    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`)
+    let response = await Api.get(`${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`)
     let schema = response.data.schemas.connection_info_schema
     schema = SchemaParser.connectionSchemaToFields(providerName, schema)
     return schema
   }
 
   async loadProviders(): Promise<Providers> {
-    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/providers`)
+    let response = await Api.get(`${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/providers`)
     return response.data.providers
   }
 
@@ -39,7 +40,7 @@ class ProviderSource {
 
     try {
       let response = await Api.send({
-        url: `${servicesUrl.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`,
+        url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${schemaTypeInt}`,
         cache: useCache,
         quietError,
       })
@@ -65,7 +66,7 @@ class ProviderSource {
     let fieldName = optionsType === 'source' ? 'source_options' : 'destination_options'
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/${callName}${envString}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/${callName}${envString}`,
       cache,
       cancelId: endpointId,
       quietError,

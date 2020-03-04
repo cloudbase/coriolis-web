@@ -26,7 +26,7 @@ import type { Field } from '../types/Field'
 import type { NetworkMap } from '../types/Network'
 import type { Endpoint, StorageMap } from '../types/Endpoint'
 
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates) {
@@ -54,7 +54,7 @@ class MigrationSourceUtils {
 class MigrationSource {
   async getMigrations(skipLog?: boolean): Promise<MainItem[]> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/detail`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/detail`,
       skipLog,
     })
     let migrations = response.data.migrations
@@ -64,7 +64,7 @@ class MigrationSource {
 
   async getMigration(migrationId: string, skipLog?: boolean): Promise<MainItem> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       skipLog,
     })
     let migration = response.data.migration
@@ -136,7 +136,7 @@ class MigrationSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
       method: 'POST',
       data: payload,
     })
@@ -149,7 +149,7 @@ class MigrationSource {
       data.cancel = { force: true }
     }
     await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}/actions`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}/actions`,
       method: 'POST',
       data,
     })
@@ -158,7 +158,7 @@ class MigrationSource {
 
   async delete(migrationId: string): Promise<string> {
     await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       method: 'DELETE',
     })
     return migrationId
@@ -179,7 +179,7 @@ class MigrationSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
       method: 'POST',
       data: payload,
     })

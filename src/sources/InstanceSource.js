@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 import type { Instance } from '../types/Instance'
 
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 
 import { InstanceInfoPlugin } from '../plugins/endpoint'
 
@@ -31,7 +31,7 @@ class InstanceSource {
     env?: any,
     cache?: boolean
   ): Promise<Instance[]> {
-    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let queryParams: { [string]: string | number } = {}
 
     if (chunkSize !== Infinity) {
@@ -70,7 +70,7 @@ class InstanceSource {
 
   async loadInstances(endpointId: string, cache?: ?boolean): Promise<Instance[]> {
     Api.cancelRequests(endpointId)
-    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let response = await Api.send({ url, cancelId: endpointId, cache })
     return response.data.instances
   }
@@ -85,7 +85,7 @@ class InstanceSource {
     cache?: ?boolean,
   }): Promise<{ instance: Instance, reqId: number }> {
     let { endpointId, instanceName, targetProvider, reqId, quietError, env, cache } = opts
-    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`
     if (env) {
       url += `?env=${btoa(JSON.stringify(env))}`
     }

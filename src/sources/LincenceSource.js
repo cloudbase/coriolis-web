@@ -15,13 +15,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 import Api from '../utils/ApiCaller'
 
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 
 import type { Licence } from '../types/Licence'
 
 class LicenceSource {
   async loadLicenceInfo(skipLog?: ?boolean): Promise<Licence> {
-    let url = `${servicesUrl.licence}/licence-status`
+    let url = `${configLoader.config.servicesUrls.coriolisLicensing}/licence-status`
     let response = await Api.send({ url, quietError: true, skipLog })
     let root = response.data.licence_status
     return ({
@@ -36,7 +36,7 @@ class LicenceSource {
   }
 
   async addLicence(licence: string) {
-    let url = `${servicesUrl.licence}/licences`
+    let url = `${configLoader.config.servicesUrls.coriolisLicensing}/licences`
     await Api.send({
       url,
       method: 'POST',

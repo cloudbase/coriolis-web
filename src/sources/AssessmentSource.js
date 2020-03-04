@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { MigrationInfo } from '../types/Assessment'
 import type { MainItem } from '../types/MainItem'
 import Api from '../utils/ApiCaller'
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 import notificationStore from '../stores/NotificationStore'
 
 class AssessmentSourceUtils {
@@ -62,7 +62,7 @@ class AssessmentSource {
     }
 
     return Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/${type}s`,
       method: 'POST',
       data: payload,
     }).then(response => {

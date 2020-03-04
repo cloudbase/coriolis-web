@@ -18,7 +18,28 @@ import path from 'path'
 import fs from 'fs'
 import requireWithoutCache from 'require-without-cache'
 
-import type { Config } from '../../src/types/Config'
+import type { Config, Services } from '../../src/types/Config'
+
+const getBaseUrl = () => {
+  let BASE_URL = process.env.CORIOLIS_URL || ''
+  return BASE_URL.trim().replace(/\/$/, '')
+}
+
+const setDefaultServicesUrls = (config: Config): Config => {
+  Object.keys(config.servicesUrls).forEach(key => {
+    config.servicesUrls[key] = config.servicesUrls[key].replace('{BASE_URL}', getBaseUrl())
+  })
+  return config
+}
+
+const modServicesUrls = (config: Config, servicesMod: Services): Services => {
+  let services: Services = { ...config.servicesUrls }
+  Object.keys(services).forEach(key => {
+    services[key] = (servicesMod[key] ? servicesMod[key] : services[key])
+      .replace('{BASE_URL}', getBaseUrl())
+  })
+  return services
+}
 
 export default (router: express$Router) => {
   // $FlowIgnore
@@ -27,13 +48,20 @@ export default (router: express$Router) => {
     let config: Config = requireWithoutCache(configPath, require).config
     let modJsonPath: ?string = process.env.MOD_JSON
     if (!modJsonPath) {
+      setDefaultServicesUrls(config)
       res.send(config)
       return
     }
     try {
       let jsonContent = fs.readFileSync(modJsonPath)
       let configMod = JSON.parse(jsonContent).config
-      Object.keys(configMod).forEach(key => { config[key] = configMod[key] })
+      Object.keys(configMod).forEach(key => {
+        if (key === 'servicesUrls') {
+          config[key] = modServicesUrls(config, configMod[key])
+        } else {
+          config[key] = configMod[key]
+        }
+      })
       res.send(config)
     } catch (err) {
       console.error(err)

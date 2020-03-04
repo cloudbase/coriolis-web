@@ -21,15 +21,13 @@ import { saveAs } from 'file-saver'
 
 import type { Log } from '../types/Log'
 
-import { coriolisUrl, servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 
 import notificationStore from '../stores/NotificationStore'
 
 import apiCaller from '../utils/ApiCaller'
 import DateUtils from '../utils/DateUtils'
 import DomUtils from '../utils/DomUtils'
-
-const BASE_URL = `${coriolisUrl}logs`
 
 const MAX_STREAM_LINES = 200
 class LogStore {
@@ -43,7 +41,7 @@ class LogStore {
       this.loading = true
     }
     try {
-      let response = await apiCaller.send({ url: BASE_URL })
+      let response = await apiCaller.send({ url: configLoader.config.servicesUrls.coriolisLogs })
       runInAction(() => {
         this.logs = response.data.logs
         this.loading = false
@@ -57,7 +55,7 @@ class LogStore {
 
   @action download(logName: string, startDate: ?Date, endDate: ?Date) {
     let token = cookie.get('token') || 'null'
-    let url = `${BASE_URL}/${logName}?auth_type=keystone&auth_token=${token}`
+    let url = `${configLoader.config.servicesUrls.coriolisLogs}/${logName}?auth_type=keystone&auth_token=${token}`
     if (startDate) {
       url += `&start_date=${DateUtils.toUnix(startDate)}`
     }
@@ -70,7 +68,7 @@ class LogStore {
 
   @action async downloadDiagnostics() {
     this.generatingDiagnostics = true
-    let baseUrl = `${servicesUrl.coriolis}/${apiCaller.projectId}`
+    let baseUrl = `${configLoader.config.servicesUrls.coriolis}/${apiCaller.projectId}`
     let [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
       apiCaller.send({ url: `${baseUrl}/diagnostics` }),
       apiCaller.send({ url: `${baseUrl}/replicas/detail?show_deleted=true` }),
@@ -93,13 +91,13 @@ class LogStore {
     let { logName, severityLevel } = options
     let token = cookie.get('token') || 'null'
     let wsUrl
-    if (coriolisUrl === '/') {
-      wsUrl = `wss://${window.location.host}/`
+    if (configLoader.config.servicesUrls.coriolisLogStreamBaseUrl === '') {
+      wsUrl = `wss://${window.location.host}`
     } else {
-      wsUrl = coriolisUrl.replace('https', 'wss')
+      wsUrl = configLoader.config.servicesUrls.coriolisLogStreamBaseUrl.replace('https', 'wss')
     }
 
-    let url = `${wsUrl}log-stream?auth_type=keystone`
+    let url = `${wsUrl}/log-stream?auth_type=keystone`
     url += `&auth_token=${token}&severity=${severityLevel}`
 
     if (logName !== 'All Logs') {

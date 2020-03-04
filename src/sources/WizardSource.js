@@ -18,8 +18,8 @@ import Api from '../utils/ApiCaller'
 import notificationStore from '../stores/NotificationStore'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
-import { servicesUrl } from '../constants'
 import DomUtils from '../utils/DomUtils'
+import configLoader from '../utils/Config'
 
 import type { WizardData } from '../types/WizardData'
 import type { StorageMap } from '../types/Endpoint'
@@ -64,7 +64,7 @@ class WizardSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/${type}s`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/${type}s`,
       method: 'POST',
       data: payload,
     })

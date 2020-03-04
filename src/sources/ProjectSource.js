@@ -17,14 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 
 import UserSource from './UserSource'
-import { servicesUrl, coriolisUrl } from '../constants'
+import configLoader from '../utils/Config'
 import type { Project, Role, RoleAssignment } from '../types/Project'
 import type { User } from '../types/User'
 
 class ProjectsSource {
   async getProjects(skipLog?: boolean): Promise<Project[]> {
     let response = await Api.send({
-      url: servicesUrl.projects,
+      url: `${configLoader.config.servicesUrls.keystone}/auth/projects`,
       skipLog,
     })
     if (response.data.projects) {
@@ -36,13 +36,13 @@ class ProjectsSource {
   }
 
   async getProjectDetails(projectId: string): Promise<Project> {
-    let response = await Api.get(`${coriolisUrl}identity/projects/${projectId}`)
+    let response = await Api.get(`${configLoader.config.servicesUrls.keystone}/projects/${projectId}`)
     return response.data.project
   }
 
   async getRoleAssignments(skipLog?: boolean): Promise<RoleAssignment[]> {
     let response = await Api.send({
-      url: `${coriolisUrl}identity/role_assignments?include_names`,
+      url: `${configLoader.config.servicesUrls.keystone}/role_assignments?include_names`,
       skipLog,
     })
     let assignments: RoleAssignment[] = response.data.role_assignments
@@ -67,7 +67,7 @@ class ProjectsSource {
   async removeUser(projectId: string, userId: string, roleIds: string[]): Promise<void> {
     await Promise.all(roleIds.map(async id => {
       await Api.send({
-        url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${id}`,
+        url: `${configLoader.config.servicesUrls.keystone}/projects/${projectId}/users/${userId}/roles/${id}`,
         method: 'DELETE',
       })
     }))
@@ -75,7 +75,7 @@ class ProjectsSource {
 
   async assignUser(projectId: string, userId: string, roleId: string): Promise<void> {
     await Api.send({
-      url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${roleId}`,
+      url: `${configLoader.config.servicesUrls.keystone}/projects/${projectId}/users/${userId}/roles/${roleId}`,
       method: 'PUT',
     })
   }
@@ -98,7 +98,7 @@ class ProjectsSource {
     }
 
     let response = await Api.send({
-      url: `${coriolisUrl}identity/projects/${projectId}`,
+      url: `${configLoader.config.servicesUrls.keystone}/projects/${projectId}`,
       method: 'PATCH',
       data,
     })
@@ -107,7 +107,7 @@ class ProjectsSource {
 
   async delete(projectId: string): Promise<void> {
     await Api.send({
-      url: `${coriolisUrl}identity/projects/${projectId}`,
+      url: `${configLoader.config.servicesUrls.keystone}/projects/${projectId}`,
       method: 'DELETE',
     })
   }
@@ -123,7 +123,7 @@ class ProjectsSource {
       data.project.description = project.description
     }
     let response = await Api.send({
-      url: `${coriolisUrl}identity/projects/`,
+      url: `${configLoader.config.servicesUrls.keystone}/projects/`,
       method: 'POST',
       data,
     })
