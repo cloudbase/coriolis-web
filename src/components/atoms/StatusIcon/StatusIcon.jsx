@@ -25,7 +25,7 @@ import errorImage from './images/error.svg'
 import progressWithBackgroundImage from './images/progress-background.svg'
 import progressImage from './images/progress.js'
 import successImage from './images/success.svg'
-import warningImage from './images/warning.svg'
+import warningImage from './images/warning.js'
 import pendingImage from './images/pending.svg'
 import successHollowImage from './images/success-hollow.svg'
 import errorHollowImage from './images/error-hollow.svg'
@@ -37,37 +37,68 @@ type Props = {
   secondary?: boolean,
 }
 
-const getRunningImageUrl = (props: Props) => {
-  const smallCircleColor = props.secondary ? Palette.grayscale[0] : Palette.primary
+const getSpinnerUrl = (smallCircleColor: string) => {
+  return css`url('data:image/svg+xml;utf8,${encodeURIComponent(progressImage(Palette.grayscale[3], smallCircleColor))}')`
+}
 
+const getRunningImageUrl = (props: Props) => {
   if (props.useBackground) {
     return css`url('${progressWithBackgroundImage}')`
   }
 
-  return css`url('data:image/svg+xml;utf8,${encodeURIComponent(progressImage(Palette.grayscale[3], smallCircleColor))}')`
+  const smallCircleColor = props.secondary ? Palette.grayscale[0] : Palette.primary
+  return getSpinnerUrl(smallCircleColor)
 }
 
-const statuses = props => {
-  return {
-    COMPLETED: css`
+const getWarningUrl = (background: string) => {
+  return css`url('data:image/svg+xml;utf8,${encodeURIComponent(warningImage(background))}')`
+}
+
+const statuses = (status, props) => {
+  switch (status) {
+    case 'COMPLETED':
+      return css`
       background-image: url('${props.hollow ? successHollowImage : successImage}');
-    `,
-    RUNNING: css`
-      background-image: ${getRunningImageUrl(props)};
-      ${StyleProps.animations.rotation}
-    `,
-    ERROR: css`
-      background-image: url('${props.hollow ? errorHollowImage : errorImage}');
-    `,
-    WARNING: css`
-      background-image: url('${warningImage}');
-    `,
-    CANCELED: css`
-      background-image: url('${warningImage}');
-    `,
-    PENDING: css`
-      background-image: url('${pendingImage}');
-    `,
+    `
+    case 'RUNNING':
+    case 'PENDING':
+      return css`
+        background-image: ${getRunningImageUrl(props)};
+        ${StyleProps.animations.rotation}
+      `
+    case 'CANCELLING':
+    case 'CANCELLING_AFTER_COMPLETION':
+      return css`
+        background-image: ${getSpinnerUrl(Palette.warning)};
+        ${StyleProps.animations.rotation}
+      `
+    case 'SCHEDULED':
+      return css`
+        background-image: url('${pendingImage}');
+      `
+    case 'ERROR':
+      return css`
+        background-image: url('${props.hollow ? errorHollowImage : errorImage}');
+      `
+    case 'WARNING':
+    case 'CANCELED':
+    case 'CANCELED_AFTER_COMPLETION':
+    case 'CANCELED_FOR_DEBUGGING':
+    case 'FORCE_CANCELED':
+      return css`
+        background-image: ${getWarningUrl(Palette.warning)};
+      `
+    case 'DEADLOCKED':
+    case 'STRANDED_AFTER_DEADLOCK':
+      return css`
+        background-image: ${getWarningUrl('#424242')};
+      `
+    case 'UNSCHEDULED':
+      return css`
+        background-image: ${getWarningUrl(Palette.grayscale[2])};
+      `
+    default:
+      return null
   }
 }
 
@@ -77,16 +108,13 @@ const Wrapper = styled.div`
   height: 16px;
   background-repeat: no-repeat;
   background-position: center;
-  ${props => statuses(props)[props.status]}
+  ${props => statuses(props.status, props)}
 `
 
 @observer
 class StatusIcon extends React.Component<Props> {
   render() {
     let status = this.props.status
-    if (status === 'CANCELED_FOR_DEBUGGING') {
-      status = 'ERROR'
-    }
     return (
       <Wrapper {...this.props} status={status} />
     )
