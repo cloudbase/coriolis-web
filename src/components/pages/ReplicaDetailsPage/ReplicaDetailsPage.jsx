@@ -62,6 +62,7 @@ type State = {
   showMigrationModal: boolean,
   showEditModal: boolean,
   showDeleteExecutionConfirmation: boolean,
+  showForceCancelConfirmation: boolean,
   showDeleteReplicaConfirmation: boolean,
   showDeleteReplicaDisksConfirmation: boolean,
   confirmationItem: ?MainItem | ?Execution,
@@ -80,6 +81,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     showDeleteReplicaDisksConfirmation: false,
     confirmationItem: null,
     showCancelConfirmation: false,
+    showForceCancelConfirmation: false,
     isEditable: false,
     pausePolling: false,
   }
@@ -196,7 +198,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     let originEndpoint = endpointStore.endpoints.find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.origin_endpoint_id)
     let targetEndpoint = endpointStore.endpoints.find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.destination_endpoint_id)
 
-    return Boolean(!originEndpoint || !targetEndpoint || this.getStatus() === 'RUNNING')
+    return Boolean(!originEndpoint || !targetEndpoint || this.getStatus() === 'RUNNING' || this.getStatus() === 'CANCELLING')
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -303,24 +305,38 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  handleCancelLastExecutionClick() {
-    this.handleCancelExecution(this.getLastExecution())
+  handleCancelLastExecutionClick(force?: boolean) {
+    this.handleCancelExecution(this.getLastExecution(), force)
   }
 
-  handleCancelExecution(confirmationItem: ?Execution) {
-    this.setState({ confirmationItem, showCancelConfirmation: true })
+  handleCancelExecution(confirmationItem: ?Execution, force: ?boolean) {
+    if (force) {
+      this.setState({ confirmationItem, showForceCancelConfirmation: true })
+    } else {
+      this.setState({ confirmationItem, showCancelConfirmation: true })
+    }
   }
 
   handleCloseCancelConfirmation() {
-    this.setState({ showCancelConfirmation: false })
+    this.setState({
+      showForceCancelConfirmation: false,
+      showCancelConfirmation: false,
+    })
   }
 
-  handleCancelConfirmation() {
+  handleCancelConfirmation(force?: boolean) {
     if (!this.state.confirmationItem) {
       return
     }
-    replicaStore.cancelExecution(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', this.state.confirmationItem.id)
-    this.setState({ showCancelConfirmation: false })
+    replicaStore.cancelExecution(
+      replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '',
+      this.state.confirmationItem.id,
+      force
+    )
+    this.setState({
+      showForceCancelConfirmation: false,
+      showCancelConfirmation: false,
+    })
   }
 
   migrateReplica(options: Field[], uploadedScripts: InstanceScript[]) {
@@ -411,31 +427,43 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
-    let dropdownActions: DropdownAction[] = [{
-      label: 'Execute',
-      action: () => { this.handleExecuteClick() },
-      hidden: this.isExecuteDisabled(),
-    }, {
-      label: 'Cancel',
-      hidden: this.getStatus() !== 'RUNNING',
-      action: () => { this.handleCancelLastExecutionClick() },
-    }, {
-      label: 'Create Migration',
-      color: Palette.primary,
-      action: () => { this.handleCreateMigrationClick() },
-    }, {
-      label: 'Edit',
-      title: !this.state.isEditable ? 'At least one of the providers doesn\'t support editing' : null,
-      action: () => { this.handleReplicaEditClick() },
-      disabled: !this.state.isEditable,
-    }, {
-      label: 'Delete Disks',
-      action: () => { this.handleDeleteReplicaDisksClick() },
-    }, {
-      label: 'Delete Replica',
-      color: Palette.alert,
-      action: () => { this.handleDeleteReplicaClick() },
-    }]
+    let dropdownActions: DropdownAction[] = [
+      {
+        label: 'Execute',
+        action: () => { this.handleExecuteClick() },
+        hidden: this.isExecuteDisabled(),
+      },
+      {
+        label: 'Cancel',
+        hidden: this.getStatus() !== 'RUNNING',
+        action: () => { this.handleCancelLastExecutionClick() },
+      },
+      {
+        label: 'Force Cancel',
+        hidden: this.getStatus() !== 'CANCELLING',
+        action: () => { this.handleCancelLastExecutionClick(true) },
+      },
+      {
+        label: 'Create Migration',
+        color: Palette.primary,
+        action: () => { this.handleCreateMigrationClick() },
+      },
+      {
+        label: 'Edit',
+        title: !this.state.isEditable ? 'At least one of the providers doesn\'t support editing' : null,
+        action: () => { this.handleReplicaEditClick() },
+        disabled: !this.state.isEditable,
+      },
+      {
+        label: 'Delete Disks',
+        action: () => { this.handleDeleteReplicaDisksClick() },
+      },
+      {
+        label: 'Delete Replica',
+        color: Palette.alert,
+        action: () => { this.handleDeleteReplicaClick() },
+      },
+    ]
 
     return (
       <Wrapper>
@@ -465,7 +493,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               || providerStore.destinationOptionsSecondaryLoading}
             executionsLoading={replicaStore.executionsLoading}
             page={this.props.match.params.page || ''}
-            onCancelExecutionClick={execution => { this.handleCancelExecution(execution) }}
+            onCancelExecutionClick={(e, f) => { this.handleCancelExecution(e, f) }}
             onDeleteExecutionClick={execution => { this.handleDeleteExecutionClick(execution) }}
             onExecuteClick={() => { this.handleExecuteClick() }}
             onCreateMigrationClick={() => { this.handleCreateMigrationClick() }}
@@ -530,6 +558,18 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           message="Are you sure you want to cancel the current execution?"
           extraMessage=" "
           onConfirmation={() => { this.handleCancelConfirmation() }}
+          onRequestClose={() => { this.handleCloseCancelConfirmation() }}
+        />
+        <AlertModal
+          isOpen={this.state.showForceCancelConfirmation}
+          title="Force Cancel Execution?"
+          message="Are you sure you want to force cancel the current execution?"
+          extraMessage={`
+The execution is currently being cancelled.
+Would you like to force its cancellation?
+Note that this may lead to scheduled cleanup tasks being forcibly skipped, and thus manual cleanup of temporary resources on the source/destination platforms may be required.`
+          }
+          onConfirmation={() => { this.handleCancelConfirmation(true) }}
           onRequestClose={() => { this.handleCloseCancelConfirmation() }}
         />
         {this.renderEditReplica()}

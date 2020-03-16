@@ -89,7 +89,7 @@ const NoExecutionText = styled.div`
 type Props = {
   item: ?MainItem,
   loading: boolean,
-  onCancelExecutionClick: (execution: ?Execution) => void,
+  onCancelExecutionClick: (execution: ?Execution, force?: boolean) => void,
   onDeleteExecutionClick: (execution: ?Execution) => void,
   onExecuteClick: () => void,
 }
@@ -192,6 +192,10 @@ class Executions extends React.Component<Props, State> {
     this.props.onCancelExecutionClick(this.state.selectedExecution)
   }
 
+  handleForceCancelExecutionClick() {
+    this.props.onCancelExecutionClick(this.state.selectedExecution, true)
+  }
+
   renderLoading() {
     if (!this.props.loading) {
       return null
@@ -234,7 +238,18 @@ class Executions extends React.Component<Props, State> {
           hollow
           onClick={() => { this.handleCancelExecutionClick() }}
           data-test-id="executions-cancelButton"
-        >Cancel Execution</Button>)
+        >Cancel Execution</Button>
+      )
+    }
+
+    if (this.state.selectedExecution.status === 'CANCELLING') {
+      return (
+        <Button
+          secondary
+          hollow
+          onClick={() => { this.handleForceCancelExecutionClick() }}
+        >Force Cancel Execution</Button>
+      )
     }
 
     return (

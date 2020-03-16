@@ -83,7 +83,7 @@ type Props = {
   page: string,
   detailsLoading: boolean,
   executionsLoading: boolean,
-  onCancelExecutionClick: (execution: ?Execution) => void,
+  onCancelExecutionClick: (execution: ?Execution, force?: boolean) => void,
   onDeleteExecutionClick: (execution: ?Execution) => void,
   onExecuteClick: () => void,
   onCreateMigrationClick: () => void,

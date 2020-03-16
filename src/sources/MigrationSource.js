@@ -143,11 +143,15 @@ class MigrationSource {
     return response.data.migration
   }
 
-  async cancel(migrationId: string): Promise<string> {
+  async cancel(migrationId: string, force: ?boolean): Promise<string> {
+    let data: any = { cancel: null }
+    if (force) {
+      data.cancel = { force: true }
+    }
     await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/migrations/${migrationId}/actions`,
       method: 'POST',
-      data: { cancel: null },
+      data,
     })
     return migrationId
   }

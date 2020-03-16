@@ -97,8 +97,8 @@ class MigrationStore {
     }
   }
 
-  @action async cancel(migrationId: string) {
-    await MigrationSource.cancel(migrationId)
+  @action async cancel(migrationId: string, force: ?boolean) {
+    await MigrationSource.cancel(migrationId, force)
   }
 
   @action async delete(migrationId: string) {
