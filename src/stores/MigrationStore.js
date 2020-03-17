@@ -55,6 +55,14 @@ class MigrationStore {
     }
   }
 
+  getDefaultSkipOsMorphing(migration: ?MainItem) {
+    let tasks = migration && migration.tasks
+    if (tasks && !tasks.find(t => t.task_type === 'OS_MORPHING')) {
+      return true
+    }
+    return null
+  }
+
   @action async recreate(
     migration: MainItem,
     sourceEndpoint: Endpoint,
@@ -77,6 +85,7 @@ class MigrationStore {
       updatedDefaultStorage,
       networkMappings: migration.network_map,
       updatedNetworkMappings: updateData.network,
+      defaultSkipOsMorphing: this.getDefaultSkipOsMorphing(migration),
     })
     return migrationResult
   }

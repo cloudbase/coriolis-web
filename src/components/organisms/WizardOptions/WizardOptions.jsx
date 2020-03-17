@@ -173,7 +173,7 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema.push({ name: 'description', type: 'string' })
     }
 
-    if (this.props.wizardType === 'migration') {
+    if (this.props.wizardType === 'migration' || this.props.wizardType === 'migration-destination-options-edit') {
       fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'boolean', default: false })
     }
 

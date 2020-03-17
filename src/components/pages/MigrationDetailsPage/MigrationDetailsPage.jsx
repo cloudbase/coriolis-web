@@ -336,6 +336,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
               onMigrateClick={(o, s) => { this.recreateFromReplica(o, s) }}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
+              defaultSkipOsMorphing={migrationStore.getDefaultSkipOsMorphing(migrationStore.migrationDetails)}
             />
           </Modal>
         ) : null}

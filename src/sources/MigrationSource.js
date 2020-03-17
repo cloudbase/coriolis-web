@@ -86,9 +86,11 @@ class MigrationSource {
     updatedDefaultStorage: ?string,
     networkMappings: ?{ [string]: any },
     updatedNetworkMappings: ?NetworkMap[],
+    defaultSkipOsMorphing: ?boolean,
   }): Promise<MainItem> {
     const getValue = (fieldName: string): ?string => {
-      return (opts.updatedDestEnv && opts.updatedDestEnv[fieldName]) ||
+      let updatedDestEnv = opts.updatedDestEnv && opts.updatedDestEnv[fieldName]
+      return updatedDestEnv != null ? updatedDestEnv :
         (opts.destEnv && opts.destEnv[fieldName])
     }
 
@@ -109,8 +111,11 @@ class MigrationSource {
       notes: getValue('description') || '',
     }
 
-    if (getValue('skip_os_morphing') != null) {
-      payload.migration.skip_os_morphing = getValue('skip_os_morphing')
+    let skipOsMorphingValue = getValue('skip_os_morphing')
+    if (skipOsMorphingValue != null) {
+      payload.migration.skip_os_morphing = skipOsMorphingValue
+    } else if (opts.defaultSkipOsMorphing != null) {
+      payload.migration.skip_os_morphing = opts.defaultSkipOsMorphing
     }
 
     if (opts.networkMappings || (opts.updatedNetworkMappings && opts.updatedNetworkMappings.length)) {
