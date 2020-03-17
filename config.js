@@ -54,6 +54,11 @@ const conf: Config = {
       ],
     },
     {
+      name: 'aws',
+      types: ['source', 'destination'],
+      requiredFields: ['region'],
+    },
+    {
       name: 'azure',
       types: ['source', 'destination'],
       requiredFields: ['location', 'resource_group'],

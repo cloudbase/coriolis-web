@@ -30,8 +30,8 @@ import type { NetworkMap } from '../../../types/Network'
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_template_map'
 
-  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
-    let fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions)
+  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, dictionaryKey: string) {
+    let fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
     fields.forEach(f => {
       if (
         f.name !== 'migr_template_username_map'

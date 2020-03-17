@@ -69,19 +69,25 @@ const dictionary = {
   },
 }
 
-const cache: { name: string, label: ?string, description: ?string }[] = []
+const cache: { name: string, label: ?string, description: ?string, key: string }[] = []
 
 class LabelDictionary {
   // Fields which have enums for which dictionary labels should be used.
   // If a field has enums and is not in this array, their values will be used as labels
   static enumFields = ['port_reuse_policy', 'replica_export_mechanism', 'virtual_disk_clone_type']
 
-  static get(fieldName: ?string): string {
+  /**
+   *
+   * @param {string} fieldName The name of the field
+   * @param {string} dictionaryKey Optional key to more uniquely identify the field added to schema cache.
+   * The `dictionaryKey` is composed by `${provider}-${direction}.
+   * Direction is 'destination' or 'source'.
+   */
+  static get(fieldName: ?string, dictionaryKey?: string): string {
     if (!fieldName) {
       return ''
     }
-
-    let cachItem = cache.find(i => i.name === fieldName)
+    let cachItem = cache.find(i => i.key === dictionaryKey && i.name === fieldName)
     if (cachItem && cachItem.label) {
       return cachItem.label
     }
@@ -105,8 +111,8 @@ class LabelDictionary {
     return words.join(' ')
   }
 
-  static getDescription(fieldName: string): string {
-    let cachItem = cache.find(i => i.name === fieldName)
+  static getDescription(fieldName: string, dictionaryKey?: string): string {
+    let cachItem = cache.find(i => i.key === dictionaryKey && i.name === fieldName)
     if (cachItem && cachItem.description) {
       return cachItem.description
     }
@@ -120,9 +126,14 @@ class LabelDictionary {
     return ''
   }
 
-  static pushToCache(field: Field) {
-    if ((field.title || field.description) && !cache.find(i => i.name === field.name)) {
-      cache.push({ label: field.title, description: field.description, name: field.name })
+  static pushToCache(field: Field, dictionaryKey: string) {
+    if ((field.title || field.description) && !cache.find(i => i.key === dictionaryKey && i.name === field.name)) {
+      cache.push({
+        label: field.title,
+        description: field.description,
+        name: field.name,
+        key: dictionaryKey,
+      })
     }
   }
 }

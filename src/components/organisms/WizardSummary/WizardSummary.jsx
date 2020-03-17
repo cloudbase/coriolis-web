@@ -260,7 +260,6 @@ class WizardSummary extends React.Component<Props> {
     if (!data.sourceOptions) {
       return null
     }
-
     return (
       <Section>
         <SectionTitle>{type} Source Options</SectionTitle>
@@ -269,7 +268,8 @@ class WizardSummary extends React.Component<Props> {
             if (!data.sourceOptions || data.sourceOptions[optionName] == null || data.sourceOptions[optionName] === '') {
               return null
             }
-            let optionLabel = optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')
+            let optionLabel = optionName.split('/')
+              .map(n => LabelDictionary.get(n, `${data.source ? data.source.type : ''}-source`)).join(' - ')
             let optionValue = fieldHelper.getValueAlias(optionName, data.sourceOptions && data.sourceOptions[optionName], this.props.sourceSchema, provider)
             return (
               <Option key={optionName}>
@@ -346,7 +346,8 @@ class WizardSummary extends React.Component<Props> {
               return null
             }
 
-            let optionLabel = optionName.split('/').map(n => LabelDictionary.get(n)).join(' - ')
+            let optionLabel = optionName.split('/')
+              .map(n => LabelDictionary.get(n, `${data.target ? data.target.type : ''}-destination`)).join(' - ')
             let optionValue = fieldHelper.getValueAlias(optionName, data.destOptions && data.destOptions[optionName], this.props.destinationSchema, provider)
             return (
               <Option key={optionName}>

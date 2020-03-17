@@ -122,8 +122,8 @@ export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }, migra
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_image_map'
 
-  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions) {
-    return defaultSchemaToFields(schema, schemaDefinitions)
+  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: ?SchemaDefinitions, dictionaryKey: string) {
+    return defaultSchemaToFields(schema, schemaDefinitions, null, dictionaryKey)
   }
 
   static fillFieldValues(field: Field, options: OptionValues[], customFieldName?: string) {

@@ -47,7 +47,7 @@ class ProviderSource {
       let schema = optionsType === 'source' ? schemas.source_environment_schema : schemas.destination_environment_schema
       let fields = []
       if (schema) {
-        fields = SchemaParser.optionsSchemaToFields(providerName, schema)
+        fields = SchemaParser.optionsSchemaToFields(providerName, schema, `${providerName}-${optionsType}`)
       }
       return fields
     } catch (err) {

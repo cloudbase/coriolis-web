@@ -142,6 +142,7 @@ type Props = {
   loading?: boolean,
   optionsLoading?: boolean,
   optionsLoadingSkipFields?: string[],
+  dictionaryKey: string,
 }
 @observer
 class WizardOptions extends React.Component<Props> {
@@ -261,14 +262,14 @@ class WizardOptions extends React.Component<Props> {
         type={field.type}
         minimum={field.minimum}
         maximum={field.maximum}
-        description={field.description}
+        label={field.label || LabelDictionary.get(field.name, this.props.dictionaryKey)}
+        description={field.description || LabelDictionary.getDescription(field.name, this.props.dictionaryKey)}
         password={this.isPassword(field.name)}
         enum={field.enum}
         addNullValue
         required={field.required}
         data-test-id={`wOptions-field-${field.name}`}
         width={this.props.fieldWidth || StyleProps.inputSizes.wizard.width}
-        label={field.label}
         nullableBoolean={field.nullableBoolean}
         disabledLoading={this.props.optionsLoading && !optionsLoadingReqFields.find(fn => fn === field.name)}
         {...additionalProps}

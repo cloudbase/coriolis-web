@@ -423,6 +423,7 @@ class WizardPageContent extends React.Component<Props, State> {
             wizardType={`${this.props.type}-source-options`}
             layout="page"
             isSource
+            dictionaryKey={`${this.props.wizardData.source ? this.props.wizardData.source.type : ''}-source`}
           />
         )
         break
@@ -445,6 +446,7 @@ class WizardPageContent extends React.Component<Props, State> {
             wizardType={this.props.type}
             onAdvancedOptionsToggle={useAdvancedOptions => { this.handleAdvancedOptionsToggle(useAdvancedOptions) }}
             layout="page"
+            dictionaryKey={`${this.props.wizardData.target ? this.props.wizardData.target.type : ''}-destination`}
           />
         )
         break
