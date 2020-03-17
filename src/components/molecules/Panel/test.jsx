@@ -38,6 +38,7 @@ describe('Panel Component', () => {
     let wrapper = wrap({
       navigationItems,
       content,
+      reloadLabel: '',
       onChange: () => { },
       selectedValue: 'navigation2',
       onReloadClick: () => { },
@@ -51,6 +52,7 @@ describe('Panel Component', () => {
     let wrapper = wrap({
       navigationItems,
       content,
+      reloadLabel: '',
       onChange: () => { },
       selectedValue: 'navigation2',
       onReloadClick: () => { },
@@ -66,6 +68,7 @@ describe('Panel Component', () => {
       navigationItems,
       content,
       onChange,
+      reloadLabel: '',
       selectedValue: 'navigation2',
       onReloadClick: () => { },
     })
@@ -77,6 +80,7 @@ describe('Panel Component', () => {
     let wrapper = wrap({
       navigationItems,
       content,
+      reloadLabel: '',
       onChange: () => { },
       selectedValue: 'navigation2',
       onReloadClick: () => { },
