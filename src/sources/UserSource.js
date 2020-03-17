@@ -298,7 +298,7 @@ class UserSource {
 
   async getAdminRoleId(): Promise<string> {
     let roles: { id: string, name: string }[] = await this.getRoles()
-    const role = roles.find(r => r.name === 'admin')
+    const role = roles.find(r => r.name.toLowerCase() === 'admin')
     const roleId = role ? role.id : ''
     return roleId
   }
@@ -327,8 +327,11 @@ class UserSource {
       url: `${coriolisUrl}identity/role_assignments?include_names`,
       quietError: true,
     })
+
     let roleAssignments: RoleAssignment[] = response.data.role_assignments
-    return roleAssignments.filter(a => a.user.id === userId).filter(a => a.role.name === 'admin').length > 0
+    return roleAssignments
+      .filter(a => a && a.user && a.user.id === userId)
+      .filter(a => a && a.role && a.role.name && a.role.name.toLowerCase() === 'admin').length > 0
   }
 }
 
