@@ -20,7 +20,6 @@ import styled from 'styled-components'
 
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
 import Dropdown from '../../molecules/Dropdown'
-import FieldInput from '../../molecules/FieldInput'
 import InfoIcon from '../../atoms/InfoIcon'
 
 import Palette from '../../styleUtils/Palette'
@@ -38,9 +37,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
-`
-const DefaultStorageWrapper = styled.div`
-  margin-bottom: 32px;
 `
 const Mapping = styled.div`
   display: flex;
@@ -161,6 +157,7 @@ export type Props = {
   storageConfigDefault: ?string,
   onDefaultStorageChange: (value: ?string) => void,
   onChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
+  onScrollableRef?: (ref: HTMLElement) => void,
   style?: any,
   titleWidth?: number,
 }
@@ -315,28 +312,68 @@ class WizardStorage extends React.Component<Props> {
       return null
     }
 
-    return (
-      <DefaultStorageWrapper>
-        <FieldInput
-          layout={this.props.defaultStorageLayout}
-          name="default_storage"
-          type="string"
-          description="Storage type on the destination to default to"
-          enum={this.props.storageBackends.map(s => s.name)}
-          addNullValue
-          width={StyleProps.inputSizes.regular.width}
-          value={this.props.defaultStorage !== undefined ? this.props.defaultStorage : this.props.storageConfigDefault}
-          onChange={value => { this.props.onDefaultStorageChange(value) }}
+    const renderDropdown = () => {
+      let items = this.props.storageBackends.map(s => ({
+        label: s.name,
+        value: s.name,
+      }))
+      items = [
+        { label: 'Choose a value', value: null },
+        ...items,
+      ]
+      let selectedItem = items.find(i => i.value === (
+        this.props.defaultStorage !== undefined ? this.props.defaultStorage : this.props.storageConfigDefault
+      ))
+      let commonProps = {
+        width: StyleProps.inputSizes.regular.width,
+        selectedItem,
+        items,
+        onChange: item => this.props.onDefaultStorageChange(item.value),
+      }
+      return items.length > 10 ? (
+        <AutocompleteDropdown
+          {...commonProps}
+          dimNullValue
         />
-      </DefaultStorageWrapper>
+      ) :
+        (
+          <Dropdown
+            {...commonProps}
+            noSelectionMessage="Choose a value"
+            dimFirstItem
+          />
+        )
+    }
+
+    return (
+      <StorageWrapper>
+        <StorageSection>
+          Default Storage
+          <InfoIcon
+            text="Storage type on the destination to default to"
+            marginLeft={8}
+            marginBottom={0}
+          />
+        </StorageSection>
+        <StorageItems>
+          <StorageItem>
+            <StorageImage backend="backend" />
+            <StorageTitle width={this.props.titleWidth || 320}>
+              <StorageName>
+                {renderDropdown()}
+              </StorageName>
+            </StorageTitle>
+          </StorageItem>
+        </StorageItems>
+      </StorageWrapper>
     )
   }
 
   render() {
     return (
-      <Wrapper style={this.props.style}>
-        {this.renderDefaultStorage()}
+      <Wrapper style={this.props.style} innerRef={this.props.onScrollableRef}>
         <Mapping>
+          {this.renderDefaultStorage()}
           {this.renderBackendMapping()}
           {this.renderDiskMapping()}
         </Mapping>
