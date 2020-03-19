@@ -77,19 +77,25 @@ const Body = styled.div`
   flex-direction: column;
   padding: 24px 8px;
 `
+const Columns = styled.div`
+  display: flex;
+`
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 const Row = styled.div`
   display: flex;
   margin-bottom: 24px;
-  &:last-child {
-    margin-bottom: 0;
-  }
 `
 const RowData = styled.div`
-  ${props => props.width ? css`width: ${props.width};` : ''}
-  &:first-child {
-    padding-left: 24px;
-    ${props => css`width: calc(${props.width} - 24px);`}
-  }
+  ${props => props.width ? css`min-width: ${props.width};` : ''}
+  ${props => !props.skipPaddingLeft ? css`
+    &:first-child {
+      padding-left: 24px;
+      ${props => css`min-width: calc(${props.width} + 21px);`}
+    }
+  ` : ''}
 `
 const Label = styled.div`
   text-transform: uppercase;
@@ -107,6 +113,10 @@ const Value = styled.div`
   &:hover {
     ${props => props.primaryOnHover ? css`color: ${Palette.primary};` : ''}
   }
+`
+const DependsOnIds = styled.div`
+  display: flex;
+  flex-direction: column;
 `
 const ExceptionText = styled.div`
   cursor: pointer;
@@ -194,19 +204,26 @@ class TaskItem extends React.Component<Props> {
   }
 
   renderDependsOnValue() {
-    if (this.props.item.depends_on && this.props.item.depends_on.length > 0 && this.props.item.depends_on[0]) {
-      return (
-        <Value
-          width="calc(100% - 16px)"
-          primaryOnHover
-          textEllipsis
-          onClick={e => { e.stopPropagation(); this.props.onDependsOnClick(this.props.item.depends_on[0]) }}
-          onMouseDown={e => { e.stopPropagation() }}
-          onMouseUp={e => { e.stopPropagation() }}
-        >{this.props.item.depends_on[0]}</Value>)
+    const { depends_on: dependsOn } = this.props.item
+    if (!dependsOn || !dependsOn.length || !dependsOn.find(Boolean)) {
+      return <Value>N/A</Value>
     }
 
-    return <Value>N/A</Value>
+    return (
+      <DependsOnIds>
+        {dependsOn.map(id => id ? (
+          <Value
+            key={id}
+            width="140px"
+            primaryOnHover
+            textEllipsis
+            onClick={e => { e.stopPropagation(); this.props.onDependsOnClick(id) }}
+            onMouseDown={e => { e.stopPropagation() }}
+            onMouseUp={e => { e.stopPropagation() }}
+          >{id}</Value>
+        ) : null)}
+      </DependsOnIds>
+    )
   }
 
   renderProgressUpdates() {
@@ -259,29 +276,40 @@ class TaskItem extends React.Component<Props> {
   }
 
   renderBody() {
+    let { columnWidths } = this.props
     return (
       <Collapse isOpened={this.props.open} springConfig={{ stiffness: 100, damping: 20 }}>
         <Body>
-          <Row>
-            <RowData width={this.props.columnWidths[0]}>
-              <Label>Status</Label>
-              <StatusPill small status={this.props.item.status} />
-            </RowData>
-            <RowData width={`${parseInt(this.props.columnWidths[1], 10) + parseInt(this.props.columnWidths[2], 10)}%`}>
-              <Label>ID</Label>
-              <CopyValue value={this.props.item.id} width="auto" />
-            </RowData>
-            <RowData width={this.props.columnWidths[3]}>
-              <Label>Depends on</Label>
-              {this.renderDependsOnValue()}
-            </RowData>
-          </Row>
-          <Row>
-            <RowData width="100%">
-              <Label>Exception Details</Label>
-              {this.renderExceptionDetails()}
-            </RowData>
-          </Row>
+          <Columns>
+            <Column style={{
+              minWidth: `calc(${columnWidths[0]} + ${columnWidths[1]} + ${columnWidths[2]} - 16px)`,
+              paddingRight: '16px',
+            }}
+            >
+              <Row>
+                <RowData width={columnWidths[0]}>
+                  <Label>Status</Label>
+                  <StatusPill small status={this.props.item.status} />
+                </RowData>
+                <RowData width={`calc(${columnWidths[1]} + ${columnWidths[2]})`}>
+                  <Label>ID</Label>
+                  <CopyValue value={this.props.item.id} width="auto" />
+                </RowData>
+              </Row>
+              <Row>
+                <RowData style={{ width: 'calc(100% - 24px)' }}>
+                  <Label>Exception Details</Label>
+                  {this.renderExceptionDetails()}
+                </RowData>
+              </Row>
+            </Column>
+            <Column style={{ minWidth: columnWidths[3] }}>
+              <RowData skipPaddingLeft>
+                <Label>Depends on</Label>
+                {this.renderDependsOnValue()}
+              </RowData>
+            </Column>
+          </Columns>
           <Row style={{ marginBottom: 0 }}>
             <RowData width="100%">
               <Label>Progress Updates</Label>
