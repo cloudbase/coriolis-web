@@ -43,7 +43,7 @@ const List = styled.div`
   position: absolute;
   top: 24px;
   right: -7px;
-  z-index: 20;
+  z-index: 9999;
   padding: 8px;
   background: ${Palette.grayscale[1]};
   border-radius: 4px;

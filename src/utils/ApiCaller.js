@@ -164,7 +164,8 @@ class ApiCaller {
             })
           }
 
-          if (error.request.responseURL.indexOf('/proxy/') === -1) {
+          if (error.request.responseURL.indexOf('/proxy/') === -1
+            && error.request.responseURL.indexOf('/azure-login') === -1) {
             redirect(error.response.status)
           }
 

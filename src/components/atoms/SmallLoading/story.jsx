@@ -20,7 +20,7 @@ import SmallLoading from '.'
 
 storiesOf('SmallLoading', module)
   .add('default', () => (
-    <SmallLoading loadingProgress={75} />
+    <SmallLoading loadingProgress={8} />
   ))
   .add('spinning', () => (
     <SmallLoading loadingProgress={-1} />

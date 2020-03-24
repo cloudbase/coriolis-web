@@ -222,8 +222,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       if (!connectionInfo) {
         return
       }
-      // $FlowIgnore
-      azureStore.authenticate(connectionInfo.user_credentials.username, connectionInfo.user_credentials.password).then(() => {
+      azureStore.authenticate(connectionInfo).then(() => {
         // $FlowIgnore
         azureStore.getResourceGroups(connectionInfo.subscription_id).then(() => {
           let groups = azureStore.assessmentResourceGroups

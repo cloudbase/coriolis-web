@@ -21,14 +21,18 @@ import configLoader from '../utils/Config'
 import notificationStore from '../stores/NotificationStore'
 
 class AssessmentSourceUtils {
-  static getDestinationEnv(data: MigrationInfo) {
-    let env = {}
+  static getNetworkMap(data: MigrationInfo) {
+    let networkMap = {}
     if (data.networks && data.networks.length) {
-      env.network_map = {}
       data.networks.forEach(mapping => {
-        env.network_map[mapping.sourceNic.network_name] = mapping.targetNetwork.name
+        networkMap[mapping.sourceNic.network_name] = mapping.targetNetwork.name
       })
     }
+    return networkMap
+  }
+
+  static getDestinationEnv(data: MigrationInfo) {
+    let env = {}
     let vmSize = data.vmSizes[Object.keys(data.vmSizes).filter(k => k === data.selectedInstances[0].instance_name)[0]]
     if (vmSize) {
       env.vm_size = vmSize
@@ -53,14 +57,14 @@ class AssessmentSource {
       destination_endpoint_id: data.target.id,
       destination_environment: AssessmentSourceUtils.getDestinationEnv(data),
       instances: data.selectedInstances.map(i => i.instance_name),
+      network_map: AssessmentSourceUtils.getNetworkMap(data),
       notes: '',
-      security_groups: ['testgroup'],
+      replication_count: 2,
     }
 
     if (type === 'migration') {
       payload[type].skip_os_morphing = data.fieldValues.skip_os_morphing
     }
-
     return Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/${type}s`,
       method: 'POST',

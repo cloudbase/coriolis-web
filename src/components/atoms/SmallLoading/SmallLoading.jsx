@@ -45,9 +45,7 @@ const ProgressText = styled.div`
   width: 100%;
   text-align: center;
 `
-const CircleProgressBar = styled.circle`
-  transition: stroke-dashoffset ${StyleProps.animations.swift};
-`
+const CircleProgressBar = styled.circle``
 
 export const TEST_ID = 'smallLoading'
 
