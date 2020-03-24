@@ -18,6 +18,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 import configLoader from '../../../utils/Config'
+import LabelDictionary from '../../../utils/LabelDictionary'
 
 import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
@@ -262,6 +263,7 @@ class ContentPlugin extends React.Component<Props, State> {
       return (
         <FieldStyled
           {...field}
+          label={field.title || LabelDictionary.get(field.name)}
           required={required}
           password={isPassword}
           width={StyleProps.inputSizes.large.width}
