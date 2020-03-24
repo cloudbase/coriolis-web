@@ -204,6 +204,12 @@ class MainListItem extends React.Component<Props> {
       </EndpointsImages>
     )
     const status = this.getStatus()
+    let { instances } = this.props.item
+    let title = instances[0]
+    if (instances.length > 1) {
+      title += ` (+${instances.length - 1} more)`
+    }
+
     return (
       <Wrapper>
         <CheckboxStyled
@@ -214,7 +220,7 @@ class MainListItem extends React.Component<Props> {
         <Content onClick={this.props.onClick} data-test-id="mainListItem-content">
           <Image image={this.props.image} />
           <Title>
-            <TitleLabel>{this.props.item.instances[0]}</TitleLabel>
+            <TitleLabel>{title}</TitleLabel>
             <StatusWrapper>
               {status ? <StatusPill
                 status={status}

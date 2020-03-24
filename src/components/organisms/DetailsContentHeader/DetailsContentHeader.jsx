@@ -163,7 +163,18 @@ class DetailsContentHeader extends React.Component<Props> {
   }
 
   render() {
-    let title = this.props.item ? (this.props.item.instances && this.props.item.instances[0]) || this.props.item.name : ''
+    let title = null
+    if (this.props.item) {
+      let { instances } = this.props.item
+      if (instances) {
+        title = instances[0]
+        if (instances.length > 1) {
+          title += ` (+${instances.length - 1} more)`
+        }
+      } else {
+        title = this.props.item.name
+      }
+    }
 
     return (
       <Wrapper>
@@ -171,7 +182,7 @@ class DetailsContentHeader extends React.Component<Props> {
         <TypeImage image={this.props.typeImage} />
         <Title>
           <Status>
-            <Text data-test-id="dcHeader-title">{title}</Text>
+            <Text title={title} data-test-id="dcHeader-title">{title}</Text>
             {this.renderStatusPill()}
             {this.renderDescription()}
           </Status>
