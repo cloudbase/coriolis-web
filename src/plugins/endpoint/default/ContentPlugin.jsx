@@ -18,6 +18,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 import configLoader from '../../../utils/Config'
+import LabelDictionary from '../../../utils/LabelDictionary'
 
 import FieldInput from '../../../components/molecules/FieldInput'
 import type { Field } from '../../../types/Field'
@@ -89,6 +90,7 @@ class ContentPlugin extends React.Component<Props> {
       const currentField = (
         <FieldStyled
           {...field}
+          label={field.title || LabelDictionary.get(field.name)}
           width={StyleProps.inputSizes.large.width}
           disabled={this.props.disabled}
           password={isPassword}

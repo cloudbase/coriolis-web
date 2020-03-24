@@ -22,6 +22,7 @@ import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 
 import configLoader from '../../../utils/Config'
+import LabelDictionary from '../../../utils/LabelDictionary'
 import Palette from '../../../components/styleUtils/Palette'
 import StyleProps from '../../../components/styleUtils/StyleProps'
 import KeyboardManager from '../../../utils/KeyboardManager'
@@ -231,6 +232,7 @@ class ContentPlugin extends React.Component<Props, State> {
     return (
       <FieldStyled
         {...field}
+        label={field.title || LabelDictionary.get(field.name)}
         width={StyleProps.inputSizes.large.width}
         disabled={this.props.disabled}
         key={field.name}
