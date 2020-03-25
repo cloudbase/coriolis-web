@@ -132,9 +132,13 @@ class ReplicaStore {
     }
   }
 
-  async cancelExecution(replicaId: string, executionId: string): Promise<void> {
-    await ReplicaSource.cancelExecution(replicaId, executionId)
-    notificationStore.alert('Cancelled', 'success')
+  async cancelExecution(replicaId: string, executionId: string, force: ?boolean): Promise<void> {
+    await ReplicaSource.cancelExecution(replicaId, executionId, force)
+    if (force) {
+      notificationStore.alert('Force cancelled', 'success')
+    } else {
+      notificationStore.alert('Cancelled', 'success')
+    }
   }
 
   async deleteExecution(replicaId: string, executionId: string): Promise<void> {

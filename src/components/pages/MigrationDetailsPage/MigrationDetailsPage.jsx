@@ -51,6 +51,7 @@ type Props = {
 type State = {
   showDeleteMigrationConfirmation: boolean,
   showCancelConfirmation: boolean,
+  showForceCancelConfirmation: boolean,
   showEditModal: boolean,
   showFromReplicaModal: boolean,
   pausePolling: boolean,
@@ -60,6 +61,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   state = {
     showDeleteMigrationConfirmation: false,
     showCancelConfirmation: false,
+    showForceCancelConfirmation: false,
     showEditModal: false,
     showFromReplicaModal: false,
     pausePolling: false,
@@ -167,8 +169,12 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     this.setState({ showDeleteMigrationConfirmation: false })
   }
 
-  handleCancelMigrationClick() {
-    this.setState({ showCancelConfirmation: true })
+  handleCancelMigrationClick(force?: boolean) {
+    if (force) {
+      this.setState({ showForceCancelConfirmation: true })
+    } else {
+      this.setState({ showCancelConfirmation: true })
+    }
   }
 
   handleRecreateClick() {
@@ -185,16 +191,20 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   handleCloseCancelConfirmation() {
-    this.setState({ showCancelConfirmation: false })
+    this.setState({ showCancelConfirmation: false, showForceCancelConfirmation: false })
   }
 
-  async handleCancelConfirmation() {
-    this.setState({ showCancelConfirmation: false })
+  async handleCancelConfirmation(force?: boolean) {
+    this.setState({ showCancelConfirmation: false, showForceCancelConfirmation: false })
     if (!migrationStore.migrationDetails) {
       return
     }
-    await migrationStore.cancel(migrationStore.migrationDetails.id)
-    notificationStore.alert('Canceled', 'success')
+    await migrationStore.cancel(migrationStore.migrationDetails.id, force)
+    if (force) {
+      notificationStore.alert('Force Canceled', 'success')
+    } else {
+      notificationStore.alert('Canceled', 'success')
+    }
   }
 
   async recreateFromReplica(options: Field[], userScripts: InstanceScript[]) {
@@ -267,18 +277,28 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
-    let dropdownActions = [{
-      label: 'Cancel',
-      disabled: this.getStatus() !== 'RUNNING',
-      action: () => { this.handleCancelMigrationClick() },
-    }, {
-      label: 'Recreate Migration',
-      action: () => { this.handleRecreateClick() },
-    }, {
-      label: 'Delete Migration',
-      color: Palette.alert,
-      action: () => { this.handleDeleteMigrationClick() },
-    }]
+    let dropdownActions = [
+      {
+        label: 'Cancel',
+        disabled: this.getStatus() !== 'RUNNING',
+        hidden: this.getStatus() === 'CANCELLING',
+        action: () => { this.handleCancelMigrationClick() },
+      },
+      {
+        label: 'Force Cancel',
+        hidden: this.getStatus() !== 'CANCELLING',
+        action: () => { this.handleCancelMigrationClick(true) },
+      },
+      {
+        label: 'Recreate Migration',
+        action: () => { this.handleRecreateClick() },
+      },
+      {
+        label: 'Delete Migration',
+        color: Palette.alert,
+        action: () => { this.handleDeleteMigrationClick() },
+      },
+    ]
 
     return (
       <Wrapper>
@@ -316,13 +336,24 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           onConfirmation={() => { this.handleDeleteMigrationConfirmation() }}
           onRequestClose={() => { this.handleCloseDeleteMigrationConfirmation() }}
         />
-
         <AlertModal
           isOpen={this.state.showCancelConfirmation}
           title="Cancel Migration?"
           message="Are you sure you want to cancel the migration?"
           extraMessage=" "
           onConfirmation={() => { this.handleCancelConfirmation() }}
+          onRequestClose={() => { this.handleCloseCancelConfirmation() }}
+        />
+        <AlertModal
+          isOpen={this.state.showForceCancelConfirmation}
+          title="Force Cancel Migration?"
+          message="Are you sure you want to force cancel the migration?"
+          extraMessage={`
+The migration is currently being cancelled.
+Would you like to force its cancellation?
+Note that this may lead to scheduled cleanup tasks being forcibly skipped, and thus manual cleanup of temporary resources on the source/destination platforms may be required.`
+          }
+          onConfirmation={() => { this.handleCancelConfirmation(true) }}
           onRequestClose={() => { this.handleCloseCancelConfirmation() }}
         />
         {this.state.showFromReplicaModal ? (

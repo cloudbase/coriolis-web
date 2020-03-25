@@ -169,11 +169,15 @@ class ReplicaSource {
     return execution
   }
 
-  async cancelExecution(replicaId: string, executionId: string): Promise<string> {
+  async cancelExecution(replicaId: string, executionId: string, force: ?boolean): Promise<string> {
+    let data: any = { cancel: null }
+    if (force) {
+      data.cancel = { force: true }
+    }
     await Api.send({
       url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
       method: 'POST',
-      data: { cancel: null },
+      data,
     })
     return replicaId
   }
