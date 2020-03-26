@@ -12,30 +12,56 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// @flow
+
 import React from 'react'
+import styled from 'styled-components'
 import { storiesOf } from '@storybook/react'
 import StatusPill from '.'
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+const STATUSES = [
+  'SCHEDULED',
+  'UNSCHEDULED',
+  'COMPLETED',
+  'RUNNING',
+  'PENDING',
+  'CANCELLING',
+  'CANCELLING_AFTER_COMPLETION',
+  'CANCELED',
+  'CANCELED_AFTER_COMPLETION',
+  'CANCELED_FOR_DEBUGGING',
+  'FORCE_CANCELED',
+  'ERROR',
+  'DEADLOCKED',
+  'STRANDED_AFTER_DEADLOCK',
+]
+
+const renderAllStatuses = (small: ?boolean) => (
+  <Wrapper>
+    {STATUSES.map(status => (
+      <span style={{ marginLeft: '16px', marginBottom: '16px' }} key={status}>
+        {status}
+        <StatusPill
+          key={status}
+          status={status}
+          small={small || false}
+        />
+      </span>
+    ))}
+  </Wrapper>
+)
+
 storiesOf('StatusPill', module)
-  .add('completed', () => (
-    <StatusPill status="COMPLETED" />
-  ))
-  .add('completed small', () => (
-    <StatusPill status="COMPLETED" small />
-  ))
-  .add('running', () => (
-    <StatusPill status="RUNNING" />
-  ))
-  .add('error', () => (
-    <StatusPill status="ERROR" />
-  ))
-  .add('canceled', () => (
-    <StatusPill status="CANCELED" />
-  ))
+  .add('all statuses', () => renderAllStatuses())
+  .add('all statuses small', () => renderAllStatuses(true))
   .add('paused', () => (
     <StatusPill status="PAUSED" />
   ))
-  .add('info primary', () => (
+  .add('info', () => (
     <StatusPill status="INFO" />
   ))
   .add('info secondary', () => (

@@ -21,39 +21,88 @@ import styled, { css } from 'styled-components'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import runningImage from './images/running.svg'
+import cancellingImage from './images/cancelling.svg'
 
-const statuses = {
-  COMPLETED: css`
-    background: ${Palette.success};
-    color: white;
-    border-color: transparent;
-  `,
-  ERROR: css`
-    background: ${Palette.alert};
-    color: white;
-    border-color: transparent;
-  `,
-  CANCELED: css`
-    background: ${Palette.warning};
-    color: ${Palette.black};
-    border-color: transparent;
-  `,
-  PAUSED: css`
-    background: white;
-    color: ${Palette.primary};
-    border-color: ${Palette.primary};
-  `,
-  RUNNING: css`
-    background: url('${runningImage}');
-    animation: bgMotion 1s infinite linear;
-    color: white;
-    border-color: transparent;
-    @keyframes bgMotion {
-      0% { background-position: -12px -1px; }
-      100% { background-position: 0 -1px; }
-    }
-  `,
-  INFO: css``,
+const LABEL_MAP: { [string]: string } = {
+  CANCELED_FOR_DEBUGGING: 'DEBUG',
+  FORCE_CANCELED: 'CANCELED',
+  STRANDED_AFTER_DEADLOCK: 'DEADLOCKED',
+  CANCELED_AFTER_COMPLETION: 'CANCELED',
+  CANCELLING_AFTER_COMPLETION: 'CANCELLING',
+}
+
+const statuses = status => {
+  switch (status) {
+    case 'COMPLETED':
+      return css`
+        background: ${Palette.success};
+        color: white;
+        border-color: transparent;
+      `
+    case 'ERROR':
+      return css`
+        background: ${Palette.alert};
+        color: white;
+        border-color: transparent;
+      `
+    case 'CANCELED':
+    case 'CANCELED_FOR_DEBUGGING':
+    case 'CANCELED_AFTER_COMPLETION':
+    case 'FORCE_CANCELED':
+      return css`
+        background: ${Palette.warning};
+        color: ${Palette.black};
+        border-color: transparent;
+      `
+    case 'PAUSED':
+      return css`
+        background: white;
+        color: ${Palette.primary};
+        border-color: ${Palette.primary};
+      `
+    case 'RUNNING':
+    case 'PENDING':
+      return css`
+        background: url('${runningImage}');
+        animation: bgMotion 1s infinite linear;
+        color: white;
+        border-color: transparent;
+        @keyframes bgMotion {
+          0% { background-position: -12px -1px; }
+          100% { background-position: 0 -1px; }
+        }
+      `
+    case 'CANCELLING':
+    case 'CANCELLING_AFTER_COMPLETION':
+      return css`
+        background: url('${cancellingImage}');
+        animation: bgMotion 1s infinite linear;
+        color: ${Palette.black};
+        border-color: transparent;
+        @keyframes bgMotion {
+          0% { background-position: -12px -1px; }
+          100% { background-position: 0 -1px; }
+        }
+      `
+    case 'STRANDED_AFTER_DEADLOCK':
+    case 'DEADLOCKED':
+      return css`
+        background: #424242;
+        color: white;
+        border-color: transparent;
+      `
+    case 'UNSCHEDULED':
+      return css`
+        background: ${Palette.grayscale[2]};
+        color: ${Palette.black};
+        border-color: transparent;
+      `
+    case 'INFO':
+    case 'SCHEDULED':
+      return null
+    default:
+      return null
+  }
 }
 
 const primaryColors = css`
@@ -91,7 +140,7 @@ const Wrapper = styled.div`
   font-weight: ${StyleProps.fontWeights.medium};
   text-align: center;
   border-radius: 4px;
-  ${props => statuses[props.status]}
+  ${props => statuses(props.status)}
   ${props => props.status === 'INFO' ? getInfoStatusColor(props) : ''}
 `
 
@@ -115,10 +164,7 @@ class StatusPill extends React.Component<Props> {
     let label = this.props.label || this.props.status
     let status = this.props.status
 
-    if (status === 'CANCELED_FOR_DEBUGGING') {
-      status = 'ERROR'
-      label = 'DEBUG'
-    }
+    label = LABEL_MAP[label || ''] || label
 
     return (
       <Wrapper
