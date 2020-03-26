@@ -633,6 +633,7 @@ class EditReplica extends React.Component<Props, State> {
           onChange={navItem => { this.handlePanelChange(navItem.value) }}
           selectedValue={this.state.selectedPanel}
           onReloadClick={() => { this.handleReload() }}
+          reloadLabel={this.props.type === 'replica' ? 'Reload All Replica Options' : 'Reload All Migration Options'}
         />
       </Modal>
     )

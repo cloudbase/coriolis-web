@@ -75,6 +75,7 @@ export type Props = {
   selectedValue: ?string,
   onChange: (item: NavigationItem) => void,
   style?: any,
+  reloadLabel: string,
   onReloadClick: () => void,
 }
 
@@ -107,7 +108,9 @@ class Panel extends React.Component<Props> {
           ))}
         </Navigation>
         <Content data-test-id={`${TEST_ID}-content`}>{this.props.content}</Content>
-        <ReloadButton onClick={() => { this.props.onReloadClick() }}>Reload All Replica Options</ReloadButton>
+        <ReloadButton onClick={() => { this.props.onReloadClick() }}>
+          {this.props.reloadLabel}
+        </ReloadButton>
       </Wrapper>
     )
   }

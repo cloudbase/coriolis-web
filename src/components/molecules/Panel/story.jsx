@@ -33,6 +33,7 @@ storiesOf('Panel', module)
         selectedValue="network"
         onChange={item => console.log(item, 'clicked')}
         onReloadClick={() => { }}
+        reloadLabel=""
       />
     </div>
   ))
