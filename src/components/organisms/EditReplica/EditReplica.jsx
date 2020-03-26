@@ -533,6 +533,7 @@ class EditReplica extends React.Component<Props, State> {
         onChange={(s, t, type) => { this.handleStorageChange(s, t, type) }}
         style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}
         titleWidth={160}
+        onScrollableRef={ref => { this.scrollableRef = ref }}
       />
     )
   }
