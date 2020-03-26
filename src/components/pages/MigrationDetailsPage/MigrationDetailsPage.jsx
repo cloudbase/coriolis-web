@@ -367,6 +367,7 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
               onMigrateClick={(o, s) => { this.recreateFromReplica(o, s) }}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
+              defaultSkipOsMorphing={migrationStore.getDefaultSkipOsMorphing(migrationStore.migrationDetails)}
             />
           </Modal>
         ) : null}

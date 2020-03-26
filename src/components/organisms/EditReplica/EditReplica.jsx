@@ -376,6 +376,9 @@ class EditReplica extends React.Component<Props, State> {
     if (migrationFields.find(f => f.name === fieldName) && this.props.replica[fieldName]) {
       return this.props.replica[fieldName]
     }
+    if (fieldName === 'skip_os_morphing' && this.props.type === 'migration') {
+      return migrationStore.getDefaultSkipOsMorphing(this.props.replica)
+    }
     return defaultValue
   }
 

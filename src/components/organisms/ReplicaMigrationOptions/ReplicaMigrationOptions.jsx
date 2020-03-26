@@ -78,6 +78,7 @@ const FieldInputStyled = styled(FieldInput)`
 type Props = {
   instances: Instance[],
   loadingInstances: boolean,
+  defaultSkipOsMorphing?: ?boolean,
   onCancelClick: () => void,
   onMigrateClick: (fields: Field[], uploadedScripts: InstanceScript[]) => void,
   onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
@@ -105,12 +106,20 @@ let defaultFields: Field[] = [
 @observer
 class ReplicaMigrationOptions extends React.Component<Props, State> {
   state = {
-    fields: [...defaultFields],
+    fields: [],
     selectedBarButton: 'options',
     uploadedScripts: [],
   }
 
   scrollableRef: HTMLElement
+
+  componentWillMount() {
+    this.setState({
+      fields: defaultFields.map(f => f.name === 'skip_os_morphing' ? (
+        { ...f, value: this.props.defaultSkipOsMorphing || null }
+      ) : f),
+    })
+  }
 
   componentDidMount() {
     KeyboardManager.onEnter('migration-options', () => { this.migrate() }, 2)

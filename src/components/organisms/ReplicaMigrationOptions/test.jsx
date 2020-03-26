@@ -25,6 +25,7 @@ const wrap = props => new TW(shallow(
     instances={[]}
     onMigrateClick={() => { }}
     loadingInstances={false}
+    defaultSkipOsMorphing={false}
     {...props}
   />), 'rmOptions')
 
