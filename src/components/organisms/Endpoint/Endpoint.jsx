@@ -154,7 +154,11 @@ class Endpoint extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    providerStore.getConnectionInfoSchema(this.getEndpointType())
+    const loadSchema = async () => {
+      await providerStore.getConnectionInfoSchema(this.getEndpointType())
+      this.fillRequiredDefaults()
+    }
+    loadSchema()
     KeyboardManager.onEnter('endpoint', () => {
       if (this.isValidateButtonEnabled) this.handleValidateClick()
     }, 2)
@@ -223,6 +227,17 @@ class Endpoint extends React.Component<Props, State> {
       return null
     }
     return ''
+  }
+
+  fillRequiredDefaults() {
+    let endpoint = { ...this.state.endpoint }
+    let requiredFieldsDefaults = providerStore.connectionInfoSchema.filter(f => f.required && f.default != null)
+    requiredFieldsDefaults.forEach(f => {
+      if (endpoint[f.name] == null) {
+        endpoint[f.name] = f.default
+      }
+    })
+    this.setState({ endpoint })
   }
 
   handleFieldsChange(items: { field: Field, value: any }[]) {
