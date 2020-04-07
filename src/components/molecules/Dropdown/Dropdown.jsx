@@ -410,11 +410,14 @@ class Dropdown extends React.Component<Props, State> {
   }
 
   handleItemClick(item: any) {
+    const resetFocus = () => {
+      this.ignoreFocusHandler = true
+      this.wrapperRef.focus()
+      setTimeout(() => { this.ignoreFocusHandler = false }, 100)
+    }
     if (!this.props.multipleSelection) {
       this.setState({ showDropdownList: false, firstItemHover: false }, () => {
-        this.ignoreFocusHandler = true
-        this.wrapperRef.focus()
-        setTimeout(() => { this.ignoreFocusHandler = false }, 100)
+        resetFocus()
       })
     } else {
       let selected = Boolean(this.props.selectedItems && this.props.selectedItems.find(i =>
@@ -424,6 +427,7 @@ class Dropdown extends React.Component<Props, State> {
         this.checkmarkRefs[`${this.getLabel(item)}-${this.getValue(item) || ''}`],
         selected
       )
+      resetFocus()
     }
 
     if (this.props.onChange) {
