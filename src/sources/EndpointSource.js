@@ -22,8 +22,6 @@ import { SchemaParser } from './Schemas'
 import ObjectUtils from '../utils/ObjectUtils'
 import type { Endpoint, Validation, Storage } from '../types/Endpoint'
 
-import { servicesUrl } from '../constants'
-
 import configLoader from '../utils/Config'
 
 let getBarbicanPayload = data => {
@@ -42,7 +40,7 @@ let getBarbicanPayload = data => {
 class EndpointSource {
   async getEndpoints(skipLog?: boolean): Promise<Endpoint[]> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints`,
       skipLog,
     })
     let connections = []
@@ -58,7 +56,7 @@ class EndpointSource {
 
   async delete(endpoint: Endpoint): Promise<string> {
     await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
       method: 'DELETE',
     })
     if (endpoint.connection_info && endpoint.connection_info.secret_ref) {
@@ -66,7 +64,7 @@ class EndpointSource {
       // $FlowIssue
       let uuid = endpoint.connection_info.secret_ref.substr(uuidIndex + 1)
       await Api.send({
-        url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
+        url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${uuid}`,
         method: 'DELETE',
       })
       return endpoint.id
@@ -83,7 +81,7 @@ class EndpointSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.barbican}/v1/secrets/${uuid || 'undefined'}/payload`,
+      url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${uuid || 'undefined'}/payload`,
       responseType: 'text',
       headers: { Accept: 'text/plain' },
     })
@@ -98,13 +96,13 @@ class EndpointSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
+      url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${uuid}`,
       headers: { Accept: 'application/json' },
     })
 
     if (response.data.status === 'ACTIVE') {
       let payload = await Api.send({
-        url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
+        url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${uuid}/payload`,
         headers: { Accept: 'text/plain' },
       })
       return payload
@@ -122,7 +120,7 @@ class EndpointSource {
         return { ...endpoint }
       }
       let response = await Api.send({
-        url: `${servicesUrl.barbican}/v1/secrets/${uuid}/payload`,
+        url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${uuid}/payload`,
         responseType: 'text',
         headers: { Accept: 'text/plain' },
       })
@@ -133,7 +131,7 @@ class EndpointSource {
 
   async validate(endpoint: Endpoint): Promise<Validation> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}/actions`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}/actions`,
       method: 'POST',
       data: { 'validate-connection': null },
     })
@@ -152,12 +150,12 @@ class EndpointSource {
       let connectionInfo = {}
 
       await Api.send({
-        url: `${servicesUrl.barbican}/v1/secrets/${uuid}`,
+        url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${uuid}`,
         method: 'DELETE',
       })
 
       let response = await Api.send({
-        url: `${servicesUrl.barbican}/v1/secrets`,
+        url: `${configLoader.config.servicesUrls.barbican}/v1/secrets`,
         method: 'POST',
         data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
       })
@@ -171,7 +169,7 @@ class EndpointSource {
         },
       }
       let putResponse = await Api.send({
-        url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
+        url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
         method: 'PUT',
         data: newPayload,
       })
@@ -195,7 +193,7 @@ class EndpointSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
       method: 'PUT',
       data: { endpoint: parsedEndpoint },
     })
@@ -209,7 +207,7 @@ class EndpointSource {
     if (configLoader.config.useBarbicanSecrets
       && parsedEndpoint.connection_info && Object.keys(parsedEndpoint.connection_info).length > 0) {
       let response = await Api.send({
-        url: `${servicesUrl.barbican}/v1/secrets`,
+        url: `${configLoader.config.servicesUrls.barbican}/v1/secrets`,
         method: 'POST',
         data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
       })
@@ -224,7 +222,7 @@ class EndpointSource {
         },
       }
       let postResponse = await Api.send({
-        url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
+        url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints`,
         method: 'POST',
         data: newPayload,
       })
@@ -249,7 +247,7 @@ class EndpointSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/endpoints`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints`,
       method: 'POST',
       data: {
         endpoint: {
@@ -263,7 +261,7 @@ class EndpointSource {
 
   async loadStorage(endpointId: string, data: any): Promise<Storage> {
     let env = btoa(JSON.stringify(data))
-    let response = await Api.get(`${servicesUrl.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`)
+    let response = await Api.get(`${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`)
     return response.data.storage
   }
 }

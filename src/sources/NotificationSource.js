@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 import Api from '../utils/ApiCaller'
 import type { NotificationItemData, NotificationItem } from '../types/NotificationItem'
 
@@ -115,8 +115,8 @@ class DataUtils {
 class NotificationSource {
   async loadData(): Promise<NotificationItemData[]> {
     let [migrationsResponse, replicasResponse] = await Promise.all([
-      Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/migrations`, skipLog: true, quietError: true }),
-      Api.send({ url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`, skipLog: true, quietError: true }),
+      Api.send({ url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`, skipLog: true, quietError: true }),
+      Api.send({ url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/detail`, skipLog: true, quietError: true }),
     ])
 
     let migrations = migrationsResponse.data.migrations

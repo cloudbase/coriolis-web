@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 import DateUtils from '../utils/DateUtils'
 import type { Schedule } from '../types/Schedule'
 
@@ -44,7 +44,7 @@ class ScheduleSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       method: 'POST',
       data: payload,
     })
@@ -61,7 +61,7 @@ class ScheduleSource {
 
   async getSchedules(replicaId: string, opts?: { skipLog?: boolean }): Promise<Schedule[]> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       skipLog: opts && opts.skipLog,
     })
     let schedules = [...response.data.schedules]
@@ -87,7 +87,7 @@ class ScheduleSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       method: 'POST',
       data: payload,
     })
@@ -96,7 +96,7 @@ class ScheduleSource {
 
   async removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
     await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
       method: 'DELETE',
     })
   }
@@ -132,7 +132,7 @@ class ScheduleSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
       method: 'PUT',
       data: payload,
     })

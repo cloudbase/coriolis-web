@@ -17,14 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from '../utils/ApiCaller'
 import type { Network } from '../types/Network'
 
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 
 class NetworkSource {
   async loadNetworks(enpointId: string, environment: ?{ [string]: mixed }, options?: {
     quietError?: boolean,
     cache?: boolean,
   }): Promise<Network[]> {
-    let url = `${servicesUrl.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`
     if (environment) {
       url = `${url}?env=${btoa(JSON.stringify(environment))}`
     }

@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import cookie from 'js-cookie'
 
 import Api from '../utils/ApiCaller'
-import { servicesUrl, coriolisUrl } from '../constants'
 import configLoader from '../utils/Config'
 import type { Credentials, User } from '../types/User'
 import type { Role, Project, RoleAssignment } from '../types/Project'
@@ -65,7 +64,7 @@ class UserSource {
     Api.setDefaultHeader('X-Auth-Token', null)
 
     let response = await Api.send({
-      url: servicesUrl.identity,
+      url: `${configLoader.config.servicesUrls.keystone}/auth/tokens`,
       method: 'POST',
       data: auth,
     })
@@ -99,7 +98,7 @@ class UserSource {
 
     try {
       let response = await Api.send({
-        url: servicesUrl.identity,
+        url: `${configLoader.config.servicesUrls.keystone}/auth/tokens`,
         method: 'POST',
         data: auth,
       })
@@ -128,7 +127,7 @@ class UserSource {
 
     try {
       let response = await Api.send({
-        url: servicesUrl.identity,
+        url: `${configLoader.config.servicesUrls.keystone}/auth/tokens`,
         headers: { 'X-Subject-Token': token },
       })
       let data = UserModel.parseUserData(response.data)
@@ -160,7 +159,7 @@ class UserSource {
 
     try {
       await Api.send({
-        url: servicesUrl.identity,
+        url: `${configLoader.config.servicesUrls.keystone}/auth/tokens`,
         method: 'DELETE',
         headers: { 'X-Subject-Token': token || '' },
       })
@@ -172,12 +171,12 @@ class UserSource {
   }
 
   async getUserInfo(userId: string): Promise<User> {
-    let response = await Api.get(`${servicesUrl.users}/${userId}`)
+    let response = await Api.get(`${configLoader.config.servicesUrls.keystone}/users/${userId}`)
     return response.data.user
   }
 
   async getAllUsers(skipLog?: boolean): Promise<User[]> {
-    let response = await Api.send({ url: `${servicesUrl.users}`, skipLog })
+    let response = await Api.send({ url: `${configLoader.config.servicesUrls.keystone}/users`, skipLog })
     let users: User[] = response.data.users
     await utils.waitFor(() => Boolean(configLoader.config))
     users = users.filter(u => !configLoader.config.hiddenUsers.find(hu => hu === u.name))
@@ -209,7 +208,7 @@ class UserSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.users}/${userId}`,
+      url: `${configLoader.config.servicesUrls.keystone}/users/${userId}`,
       method: 'PATCH',
       data,
     })
@@ -251,7 +250,7 @@ class UserSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.users}`,
+      url: `${configLoader.config.servicesUrls.keystone}/users`,
       method: 'POST',
       data,
     })
@@ -272,7 +271,7 @@ class UserSource {
 
   async delete(userId: string): Promise<void> {
     await Api.send({
-      url: `${coriolisUrl}identity/users/${userId}`,
+      url: `${configLoader.config.servicesUrls.keystone}/users/${userId}`,
       method: 'DELETE',
     })
   }
@@ -284,7 +283,7 @@ class UserSource {
 
   async assignUserToProjectWithRole(userId: string, projectId: string, roleId: string): Promise<void> {
     await Api.send({
-      url: `${coriolisUrl}identity/projects/${projectId}/users/${userId}/roles/${roleId}`,
+      url: `${configLoader.config.servicesUrls.keystone}/projects/${projectId}/users/${userId}/roles/${roleId}`,
       method: 'PUT',
     })
   }
@@ -304,14 +303,14 @@ class UserSource {
   }
 
   async getRoles(): Promise<Role[]> {
-    let response = await Api.get(`${coriolisUrl}identity/roles`)
+    let response = await Api.get(`${configLoader.config.servicesUrls.keystone}/roles`)
     let roles: Role[] = response.data.roles
     roles.sort((r1, r2) => r1.name.localeCompare(r2.name))
     return roles
   }
 
   async getProjects(userId: string): Promise<Project[]> {
-    let response = await Api.get(`${coriolisUrl}identity/role_assignments?include_names`)
+    let response = await Api.get(`${configLoader.config.servicesUrls.keystone}/role_assignments?include_names`)
     let assignments: RoleAssignment[] = response.data.role_assignments
     let projects: $Shape<Project>[] = assignments
       .filter(a => a.user.id === userId)
@@ -324,7 +323,7 @@ class UserSource {
 
   async isAdmin(userId: string): Promise<boolean> {
     let response = await Api.send({
-      url: `${coriolisUrl}identity/role_assignments?include_names`,
+      url: `${configLoader.config.servicesUrls.keystone}/role_assignments?include_names`,
       quietError: true,
     })
 

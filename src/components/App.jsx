@@ -91,8 +91,8 @@ class App extends React.Component<{}, State> {
   async componentWillMount() {
     let startTime = new Date().getTime()
     observe(userStore, 'loggedUser', () => { this.refreshState(startTime) })
-    userStore.tokenLogin()
     await configLoader.load()
+    userStore.tokenLogin()
     this.setState({ isConfigReady: true })
   }
 

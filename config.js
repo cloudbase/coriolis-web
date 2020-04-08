@@ -97,6 +97,15 @@ const conf: Config = {
 
   // The number of items per page applicable to main lists: replicas, migrations, endpoints, users etc.
   mainListItemsPerPage: 20,
+
+  servicesUrls: {
+    keystone: '{BASE_URL}/identity',
+    barbican: '{BASE_URL}/barbican',
+    coriolis: '{BASE_URL}/coriolis',
+    coriolisLogs: '{BASE_URL}/logs',
+    coriolisLogStreamBaseUrl: '{BASE_URL}',
+    coriolisLicensing: '{BASE_URL}/licensing',
+  },
 }
 
 export const config = conf

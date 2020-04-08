@@ -19,7 +19,7 @@ import moment from 'moment'
 import Api from '../utils/ApiCaller'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
-import { servicesUrl } from '../constants'
+import configLoader from '../utils/Config'
 import type { MainItem, UpdateData } from '../types/MainItem'
 import type { Execution } from '../types/Execution'
 import type { Endpoint } from '../types/Endpoint'
@@ -121,7 +121,7 @@ class ReplicaSourceUtils {
 class ReplicaSource {
   async getReplicas(skipLog?: boolean): Promise<MainItem[]> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/detail`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/detail`,
       skipLog,
     })
     let replicas = response.data.replicas
@@ -132,7 +132,7 @@ class ReplicaSource {
 
   async getReplicaExecutions(replicaId: string, skipLog?: boolean): Promise<Execution[]> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`,
       skipLog,
     })
     let executions = response.data.executions
@@ -143,7 +143,7 @@ class ReplicaSource {
 
   async getReplica(replicaId: string, skipLog?: boolean): Promise<MainItem> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}`,
       skipLog,
     })
     let replica = response.data.replica
@@ -160,7 +160,7 @@ class ReplicaSource {
       })
     }
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions`,
       method: 'POST',
       data: payload,
     })
@@ -175,7 +175,7 @@ class ReplicaSource {
       data.cancel = { force: true }
     }
     await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
       method: 'POST',
       data,
     })
@@ -184,7 +184,7 @@ class ReplicaSource {
 
   async deleteExecution(replicaId: string, executionId: string): Promise<string> {
     await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}`,
       method: 'DELETE',
     })
     return replicaId
@@ -192,7 +192,7 @@ class ReplicaSource {
 
   async delete(replicaId: string): Promise<string> {
     await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}`,
       method: 'DELETE',
     })
     return replicaId
@@ -200,7 +200,7 @@ class ReplicaSource {
 
   async deleteDisks(replicaId: string): Promise<Execution> {
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replicaId}/actions`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/actions`,
       method: 'POST',
       data: { 'delete-disks': null },
     })
@@ -228,7 +228,7 @@ class ReplicaSource {
     }
 
     let response = await Api.send({
-      url: `${servicesUrl.coriolis}/${Api.projectId}/replicas/${replica.id}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replica.id}`,
       method: 'PUT',
       data: payload,
     })

@@ -5,7 +5,15 @@
       "planning",
       "users",
       "projects"
-    ]
+    ],
+    "servicesUrls": {
+      "keystone": "{BASE_URL}/identity",
+      "barbican": "{BASE_URL}/barbican",
+      "coriolis": "{BASE_URL}/coriolis",
+      "coriolisLogs": "{BASE_URL}/logs",
+      "coriolisLogStreamBaseUrl": "{BASE_URL}",
+      "coriolisLicensing": "{BASE_URL}/licensing"
+    }
   },
   "providers": {
     "openstack": {
