@@ -144,6 +144,7 @@ const ProgressUpdateDate = styled.div`
 const ProgressUpdateValue = styled.div`
   width: 100%;
   margin-right: 32px;
+  word-break: break-word;
 `
 
 type Props = {
@@ -156,8 +157,9 @@ type Props = {
 class TaskItem extends React.Component<Props> {
   getLastMessage() {
     let message
-    if (this.props.item.progress_updates.length) {
-      message = this.props.item.progress_updates[0].message
+    let progressUpdates = this.props.item.progress_updates
+    if (progressUpdates.length) {
+      message = progressUpdates[progressUpdates.length - 1].message
     } else {
       message = '-'
     }
