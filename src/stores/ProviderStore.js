@@ -205,8 +205,9 @@ class ProviderStore {
     envData?: ?{ [string]: mixed },
     useCache?: boolean,
     quietError?: boolean,
+    allowMultiple?: boolean,
   }): Promise<OptionValues[]> {
-    let { providerName, optionsType, endpointId, envData, useCache, quietError } = config
+    let { providerName, optionsType, endpointId, envData, useCache, quietError, allowMultiple } = config
     let providerType = optionsType === 'source' ? providerTypes.SOURCE_OPTIONS : providerTypes.DESTINATION_OPTIONS
 
     await this.loadProviders()
@@ -219,7 +220,9 @@ class ProviderStore {
     }
 
     let canceled = false
-    apiCaller.cancelRequests(endpointId)
+    if (!allowMultiple) {
+      apiCaller.cancelRequests(endpointId)
+    }
     this.getOptionsValuesStart(optionsType, !envData)
 
     try {
