@@ -70,7 +70,7 @@ export default class OptionsSchemaParser {
   static getDestinationEnv(options: ?{ [string]: mixed }, oldOptions?: any) {
     let env = {
       ...defaultGetDestinationEnv(options, oldOptions),
-      ...defaultGetMigrationImageMap(options, this.migrationImageMapFieldName),
+      ...defaultGetMigrationImageMap(options, oldOptions, this.migrationImageMapFieldName),
     }
     return env
   }
