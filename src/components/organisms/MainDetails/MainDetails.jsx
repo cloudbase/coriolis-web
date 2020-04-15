@@ -117,13 +117,16 @@ const PropertyValue = styled.div`
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 50%;
+  max-width: calc(50% + 16px);
+  margin-right: -16px;
 `
 
 type Props = {
   item: ?MainItem,
   destinationSchema: FieldType[],
   destinationSchemaLoading: boolean,
+  sourceSchema: FieldType[],
+  sourceSchemaLoading: boolean,
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
   endpoints: Endpoint[],
@@ -131,8 +134,15 @@ type Props = {
   bottomControls: React.Node,
   loading: boolean,
 }
+type State = {
+  showPassword: string[]
+}
 @observer
-class MainDetails extends React.Component<Props> {
+class MainDetails extends React.Component<Props, State> {
+  state = {
+    showPassword: [],
+  }
+
   getSourceEndpoint(): ?Endpoint {
     let endpoint = this.props.endpoints.find(e => this.props.item && e.id === this.props.item.origin_endpoint_id)
     return endpoint
@@ -204,14 +214,15 @@ class MainDetails extends React.Component<Props> {
     return endpointIsMissing
   }
 
-  renderPropertiesTable(propertyNames: string[]) {
-    let endpoint = this.getDestinationEndpoint()
+  renderPropertiesTable(propertyNames: string[], type: 'source' | 'destination') {
+    let endpoint = type === 'source' ? this.getSourceEndpoint() : this.getDestinationEndpoint()
 
     let getValue = (name: string, value: any) => {
       if (value.join && value.length && value[0].destination && value[0].source) {
         return value.map(v => `${v.source}=${v.destination}`).join(', ')
       }
-      return fieldHelper.getValueAlias(name, value, this.props.destinationSchema, endpoint && endpoint.type)
+      let schema = type === 'source' ? this.props.sourceSchema : this.props.destinationSchema
+      return fieldHelper.getValueAlias(name, value, schema, endpoint && endpoint.type)
     }
 
     let properties = []
@@ -219,10 +230,11 @@ class MainDetails extends React.Component<Props> {
     let migrationImageMapFieldName = plugin && plugin.migrationImageMapFieldName
     let dictionaryKey = ''
     if (endpoint) {
-      dictionaryKey = `${endpoint.type}-destination`
+      dictionaryKey = `${endpoint.type}-${type}`
     }
+    let environment = this.props.item && (type === 'source' ? this.props.item.source_environment : this.props.item.destination_environment)
     propertyNames.forEach(pn => {
-      let value = this.props.item ? this.props.item.destination_environment[pn] : ''
+      let value = environment ? environment[pn] : ''
       let label = LabelDictionary.get(pn, dictionaryKey)
 
       if (value && value.join) {
@@ -256,8 +268,12 @@ class MainDetails extends React.Component<Props> {
           <PropertyRow key={prop.label}>
             <PropertyName>{prop.label}</PropertyName>
             <PropertyValue>
-              {prop.label.toLowerCase().indexOf('password') > -1
-                ? <PasswordValue value={prop.value} /> : <CopyValue value={prop.value} />}
+              {prop.label.toLowerCase().indexOf('password') > -1 && !this.state.showPassword.find(f => f === `${prop.label}-${type}`)
+                ? (
+                  <PasswordValue
+                    value={prop.value}
+                    onShow={() => this.setState({ showPassword: [...this.state.showPassword, `${prop.label}-${type}`] })}
+                  />) : <CopyValue value={prop.value} />}
             </PropertyValue>
           </PropertyRow>
         ))}
@@ -273,14 +289,15 @@ class MainDetails extends React.Component<Props> {
     const destinationEndpoint = this.getDestinationEndpoint()
     const lastUpdated = this.renderLastExecutionTime()
 
-    const destEnv = this.props.item && this.props.item.destination_environment
-    const propertyNames = destEnv ?
-      Object.keys(destEnv).filter(k =>
+    const getPropertyNames = (type: 'source' | 'destination') => {
+      let env = this.props.item && (type === 'source' ? this.props.item.source_environment : this.props.item.destination_environment)
+      return env ? Object.keys(env).filter(k =>
         k !== 'network_map' && (
           k !== 'storage_mappings' ||
-          (destEnv[k] != null && typeof destEnv[k] === 'object' && Object.keys(destEnv[k]).length > 0)
+          (env[k] != null && typeof env[k] === 'object' && Object.keys(env[k]).length > 0)
         )
       ) : []
+    }
 
     return (
       <ColumnsLayout>
@@ -297,6 +314,17 @@ class MainDetails extends React.Component<Props> {
               data-test-id="mainDetails-sourceLogo"
             />
           </Row>
+          {getPropertyNames('source').length > 0 ? (
+            <Row>
+              <Field>
+                <Label>Properties{this.props.sourceSchemaLoading ? (
+                  <StatusIcon status="RUNNING" style={{ marginLeft: '8px' }} />
+                ) : <StatusIconStub />
+                }</Label>
+                <Value block>{this.renderPropertiesTable(getPropertyNames('source'), 'source')}</Value>
+              </Field>
+            </Row>
+          ) : null}
           <Row>
             <Field>
               <Label>Id</Label>
@@ -352,14 +380,14 @@ class MainDetails extends React.Component<Props> {
               data-test-id="mainDetails-targetLogo"
             />
           </Row>
-          {propertyNames.length > 0 ? (
+          {getPropertyNames('destination').length > 0 ? (
             <Row>
               <Field>
                 <Label>Properties{this.props.destinationSchemaLoading ? (
                   <StatusIcon status="RUNNING" style={{ marginLeft: '8px' }} />
                 ) : <StatusIconStub />
                 }</Label>
-                <Value block>{this.renderPropertiesTable(propertyNames)}</Value>
+                <Value block>{this.renderPropertiesTable(getPropertyNames('destination'), 'destination')}</Value>
               </Field>
             </Row>
           ) : null}

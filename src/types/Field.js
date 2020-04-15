@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
+import LabelDictionary from '../utils/LabelDictionary'
 
 export type Field = {
   name: string,
@@ -79,6 +80,8 @@ class FieldHelper {
         let enumObject = field.enum.find(e => e.id ? e.id === v : false)
         if (enumObject && enumObject.name) {
           valueName = enumObject.name
+        } else if (field && LabelDictionary.enumFields.find(f => field && f === field.name)) {
+          valueName = LabelDictionary.get(v)
         }
       }
       return valueName

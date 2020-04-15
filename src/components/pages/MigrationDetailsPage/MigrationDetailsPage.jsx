@@ -81,33 +81,40 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       if (!details) {
         return
       }
-      let endpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
-      if (!endpoint) {
+      let sourceEndpoint = endpointStore.endpoints.find(e => e.id === details.origin_endpoint_id)
+      let destinationEndpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
+      if (!sourceEndpoint || !destinationEndpoint) {
         return
       }
-      // This allows the values to be displayed with their allocated names instead of their IDs
-      await providerStore.loadOptionsSchema({
-        providerName: endpoint.type,
-        optionsType: 'destination',
-        useCache: true,
-        quietError: true,
-      })
-      let getOptionsValuesConfig = {
-        optionsType: 'destination',
-        endpointId: details.destination_endpoint_id,
-        providerName: endpoint.type,
-        useCache: true,
-        quietError: true,
-        allowMultiple: true,
+      const loadOptions = async (optionsType: 'source' | 'destination') => {
+        let providerName = optionsType === 'source' ? sourceEndpoint.type : destinationEndpoint.type
+        // This allows the values to be displayed with their allocated names instead of their IDs
+        await providerStore.loadOptionsSchema({
+          providerName,
+          optionsType,
+          useCache: true,
+          quietError: true,
+        })
+        let getOptionsValuesConfig = {
+          optionsType,
+          endpointId: optionsType === 'source' ? details.origin_endpoint_id : details.destination_endpoint_id,
+          providerName,
+          useCache: true,
+          quietError: true,
+          allowMultiple: true,
+        }
+        // For some providers, the API doesn't return the required fields values
+        // if those required fields are sent in env data,
+        // so to retrieve those values a request without env data must be made
+        await providerStore.getOptionsValues(getOptionsValuesConfig)
+        await providerStore.getOptionsValues({
+          ...getOptionsValuesConfig,
+          envData: optionsType === 'source' ? details.source_environment : details.destination_environment,
+        })
       }
-      // For some providers, the API doesn't return the required fields values
-      // if those required fields are sent in env data,
-      // so to retrieve those values a request without env data must be made
-      await providerStore.getOptionsValues(getOptionsValuesConfig)
-      await providerStore.getOptionsValues({
-        ...getOptionsValuesConfig,
-        envData: details.destination_environment,
-      })
+
+      loadOptions('source')
+      loadOptions('destination')
     }
     loadMigration()
 
@@ -326,6 +333,10 @@ class MigrationDetailsPage extends React.Component<Props, State> {
             item={migrationStore.migrationDetails}
             instancesDetails={instanceStore.instancesDetails}
             instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+            sourceSchema={providerStore.sourceSchema}
+            sourceSchemaLoading={providerStore.sourceSchemaLoading
+              || providerStore.sourceOptionsPrimaryLoading
+              || providerStore.sourceOptionsSecondaryLoading}
             destinationSchema={providerStore.destinationSchema}
             destinationSchemaLoading={providerStore.destinationSchemaLoading
               || providerStore.destinationOptionsPrimaryLoading

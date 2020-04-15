@@ -48,6 +48,7 @@ const Value = styled.span`
 
 type Props = {
   value: string,
+  onShow?: () => void,
 }
 type State = {
   show: boolean,
@@ -59,6 +60,9 @@ class PasswordValue extends React.Component<Props, State> {
   }
 
   handleShowClick() {
+    if (this.props.onShow) {
+      this.props.onShow()
+    }
     this.setState({ show: true })
   }
 
