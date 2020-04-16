@@ -48,12 +48,16 @@ export const getFieldChangeOptions = (config: {
   let validFields = requiredFields.filter(fn => {
     let schemaField = findFieldInSchema(fn)
     if (data) {
+      // This is for 'list_all_networks' field, which requires options calls after each value change
+      if (schemaField && schemaField.type === 'boolean') {
+        return true
+      }
       if (data[fn] === null) {
         return false
       }
       let defaultValue = data[fn] === undefined && schemaField && schemaField.default
       let requiredValue = requiredValues && requiredValues.find(f => f.field === fn)
-      if (defaultValue) {
+      if (defaultValue != null) {
         if (requiredValue) {
           return Boolean(requiredValue.values.find(v => v === defaultValue))
         }
