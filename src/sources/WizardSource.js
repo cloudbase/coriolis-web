@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // @flow
 
 import Api from '../utils/ApiCaller'
-import notificationStore from '../stores/NotificationStore'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
 import DomUtils from '../utils/DomUtils'
@@ -77,22 +76,23 @@ class WizardSource {
     defaultStorage: ?string,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[]
-  ): Promise<MainItem[]> {
+  ) {
     if (!data.selectedInstances) {
       throw new Error('No selected instances')
     }
     let mainItems = await Promise.all(data.selectedInstances.map(async instance => {
       let newData = { ...data }
       newData.selectedInstances = [instance]
+      let mainItem: ?MainItem = null
       try {
-        let mainItem: MainItem = await this.create(type, newData, defaultStorage, storageMap, uploadedUserScripts)
+        mainItem = await this.create(type, newData, defaultStorage, storageMap, uploadedUserScripts)
+      } finally {
+        // If an there's an error with the request, return null, don't break the loop.
+        // eslint-disable-next-line no-unsafe-finally
         return mainItem
-      } catch (err) {
-        notificationStore.alert(`Error while creating ${type} for instance ${instance.name}`, 'error')
-        return null
       }
     }))
-    return mainItems.filter(Boolean).map(i => i)
+    return mainItems
   }
 
   setUrlState(data: any) {

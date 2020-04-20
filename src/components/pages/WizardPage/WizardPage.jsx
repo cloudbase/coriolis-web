@@ -134,7 +134,7 @@ class WizardPage extends React.Component<Props, State> {
 
   async handleCreationSuccess(items: MainItem[]) {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
-    notificationStore.alert(`${typeLabel} was succesfully created`, 'success')
+    notificationStore.alert(`${typeLabel}${items.length > 1 ? 's' : ''} was succesfully created`, 'success')
     let schedulePromise = Promise.resolve()
 
     if (this.state.type === 'replica') {
@@ -483,20 +483,18 @@ class WizardPage extends React.Component<Props, State> {
   async createMultiple() {
     let typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel}s ...`)
-    await wizardStore.createMultiple(
+    let success = await wizardStore.createMultiple(
       this.state.type,
       wizardStore.data,
       wizardStore.defaultStorage,
       wizardStore.storageMap,
       wizardStore.uploadedUserScripts,
     )
-    let items = wizardStore.createdItems
-    if (!items) {
-      notificationStore.alert(`${typeLabel}s couldn't be created`, 'error')
+    if (success && wizardStore.createdItems) {
+      this.handleCreationSuccess(wizardStore.createdItems.filter(Boolean))
+    } else {
       this.setState({ nextButtonDisabled: false })
-      return
     }
-    this.handleCreationSuccess(items)
   }
 
   async createSingle() {

@@ -24,7 +24,7 @@ export type AlertInfoOptions = {
 }
 
 export type AlertInfo = {
-  options?: AlertInfoOptions,
+  options?: ?AlertInfoOptions,
   message: string,
   title?: string,
   id?: string,
