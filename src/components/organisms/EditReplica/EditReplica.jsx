@@ -322,7 +322,15 @@ class EditReplica extends React.Component<Props, State> {
     } else {
       try {
         let replicaDefaultStorage = this.props.replica.storage_mappings && this.props.replica.storage_mappings.default
-        let migration: MainItem = await migrationStore.recreate(this.props.replica, this.props.sourceEndpoint, this.props.destinationEndpoint, updateData, replicaDefaultStorage, this.state.defaultStorage)
+        let migration: MainItem = await migrationStore.recreate(
+          this.props.replica,
+          this.props.sourceEndpoint,
+          this.props.destinationEndpoint,
+          updateData,
+          replicaDefaultStorage,
+          this.state.defaultStorage,
+          this.props.replica.replication_count
+        )
         migrationStore.clearDetails()
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/migration/tasks/${migration.id}`)

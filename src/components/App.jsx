@@ -80,7 +80,7 @@ const Wrapper = styled.div`
 type State = {
   isConfigReady: boolean,
 }
-const MIN_WAIT_MS = 2000
+const MIN_WAIT_MS = 0
 
 class App extends React.Component<{}, State> {
   state = {
