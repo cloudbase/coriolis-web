@@ -100,20 +100,33 @@ export const defaultGetDestinationEnv = (options: ?{ [string]: mixed }, oldOptio
   return env
 }
 
-export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }, migrationImageMapFieldName: string) => {
+export const defaultGetMigrationImageMap = (options: ?{ [string]: mixed }, oldOptions: any, migrationImageMapFieldName: string) => {
   let env = {}
-  if (!options) {
+  let usableOptions = options
+  if (!usableOptions) {
+    return env
+  }
+  let hasMigrationMap = Object.keys(usableOptions).find(k => migrationImageOsTypes.find(os => `${os}_os_image` === k))
+  if (!hasMigrationMap) {
     return env
   }
   migrationImageOsTypes.forEach(os => {
-    if (!options || !options[`${os}_os_image`]) {
-      return
+    let value = usableOptions[`${os}_os_image`]
+
+    // Make sure the migr. image mapping has all the OSes filled, even if only one OS mapping was updated,
+    // ie. don't send just the updated OS map to the server, send them all if one was updated.
+    if (!value) {
+      value = oldOptions && oldOptions[migrationImageMapFieldName] && oldOptions[migrationImageMapFieldName][os]
+      if (!value) {
+        return
+      }
     }
+
     if (!env[migrationImageMapFieldName]) {
       env[migrationImageMapFieldName] = {}
     }
 
-    env[migrationImageMapFieldName][os] = options[`${os}_os_image`]
+    env[migrationImageMapFieldName][os] = value
   })
 
   return env
@@ -139,7 +152,7 @@ export default class OptionsSchemaParser {
   static getDestinationEnv(options: ?{ [string]: mixed }, oldOptions?: any) {
     let env = {
       ...defaultGetDestinationEnv(options, oldOptions),
-      ...defaultGetMigrationImageMap(options, this.migrationImageMapFieldName),
+      ...defaultGetMigrationImageMap(options, oldOptions, this.migrationImageMapFieldName),
     }
     return env
   }
