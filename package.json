@@ -113,6 +113,9 @@
     "webpack-blocks-split-vendor": "^0.2.1"
   },
   "resolutions": {
-    "mem": "^4.0.0"
+    "acorn": "^5.7.4",
+    "https-proxy-agent": "^2.2.3",
+    "mem": "^4.0.0",
+    "minimist": "^0.2.1"
   }
 }
