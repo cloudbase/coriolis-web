@@ -87,6 +87,7 @@ class MigrationSource {
     networkMappings: ?{ [string]: any },
     updatedNetworkMappings: ?NetworkMap[],
     defaultSkipOsMorphing: ?boolean,
+    replicationCount: ?number,
   }): Promise<MainItem> {
     const getValue = (fieldName: string): ?string => {
       let updatedDestEnv = opts.updatedDestEnv && opts.updatedDestEnv[fieldName]
@@ -106,7 +107,7 @@ class MigrationSource {
         ...destParser.getDestinationEnv(opts.updatedDestEnv),
       },
       shutdown_instances: Boolean(opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances),
-      replication_count: (opts.updatedDestEnv && opts.updatedDestEnv.replication_count) || 2,
+      replication_count: (opts.updatedDestEnv && opts.updatedDestEnv.replication_count) || opts.replicationCount || 2,
       instances: opts.instanceNames,
       notes: getValue('description') || '',
     }

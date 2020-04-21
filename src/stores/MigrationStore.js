@@ -69,7 +69,8 @@ class MigrationStore {
     destEndpoint: Endpoint,
     updateData: UpdateData,
     defaultStorage: ?string,
-    updatedDefaultStorage: ?string
+    updatedDefaultStorage: ?string,
+    replicationCount: ?number
   ): Promise<MainItem> {
     let migrationResult = await MigrationSource.recreate({
       sourceEndpoint,
@@ -86,6 +87,7 @@ class MigrationStore {
       networkMappings: migration.network_map,
       updatedNetworkMappings: updateData.network,
       defaultSkipOsMorphing: this.getDefaultSkipOsMorphing(migration),
+      replicationCount,
     })
     return migrationResult
   }

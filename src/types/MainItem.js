@@ -55,6 +55,7 @@ export type MainItem = {
   destination_environment: { [string]: mixed },
   source_environment: { [string]: mixed },
   transfer_result: ?{ [string]: Instance },
+  replication_count?: number,
   storage_mappings?: ?{
     backend_mappings: ?{
       destination: string,
