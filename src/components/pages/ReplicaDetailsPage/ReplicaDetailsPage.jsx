@@ -109,13 +109,21 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         useCache: true,
         quietError: true,
       })
-      await providerStore.getOptionsValues({
+      let getOptionsValuesConfig = {
         optionsType: 'destination',
         endpointId: details.destination_endpoint_id,
         providerName: endpoint.type,
-        envData: details.destination_environment,
         useCache: true,
         quietError: true,
+        allowMultiple: true,
+      }
+      // For some providers, the API doesn't return the required fields values
+      // if those required fields are sent in env data,
+      // so to retrieve those values a request without env data must be made
+      await providerStore.getOptionsValues(getOptionsValuesConfig)
+      await providerStore.getOptionsValues({
+        ...getOptionsValuesConfig,
+        envData: details.destination_environment,
       })
     }
     loadReplica()
