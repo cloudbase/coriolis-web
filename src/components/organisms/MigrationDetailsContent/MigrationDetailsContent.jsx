@@ -59,6 +59,8 @@ type Props = {
   detailsLoading: boolean,
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
+  sourceSchema: Field[],
+  sourceSchemaLoading: boolean,
   destinationSchema: Field[],
   destinationSchemaLoading: boolean,
   endpoints: Endpoint[],
@@ -89,6 +91,8 @@ class MigrationDetailsContent extends React.Component<Props> {
         item={this.props.item}
         instancesDetails={this.props.instancesDetails}
         instancesDetailsLoading={this.props.instancesDetailsLoading}
+        sourceSchema={this.props.sourceSchema}
+        sourceSchemaLoading={this.props.sourceSchemaLoading}
         destinationSchema={this.props.destinationSchema}
         destinationSchemaLoading={this.props.destinationSchemaLoading}
         endpoints={this.props.endpoints}

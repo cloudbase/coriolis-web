@@ -394,7 +394,7 @@ class MainDetailsTable extends React.Component<Props, State> {
       <Wrapper>
         <Header>
           <HeaderLabel>Source</HeaderLabel>
-          <HeaderLabel>Destination</HeaderLabel>
+          <HeaderLabel>Target</HeaderLabel>
         </Header>
         {this.props.instancesDetails.map(instance => (
           <InstanceInfo key={instance.name}>

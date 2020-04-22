@@ -74,6 +74,8 @@ type TimezoneValue = 'utc' | 'local'
 type Props = {
   item: ?MainItem,
   endpoints: Endpoint[],
+  sourceSchema: Field[],
+  sourceSchemaLoading: boolean,
   destinationSchema: Field[],
   destinationSchemaLoading: boolean,
   networks: Network[],
@@ -159,6 +161,8 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
     return (
       <MainDetails
         item={this.props.item}
+        sourceSchema={this.props.sourceSchema}
+        sourceSchemaLoading={this.props.sourceSchemaLoading}
         destinationSchema={this.props.destinationSchema}
         destinationSchemaLoading={this.props.destinationSchemaLoading}
         instancesDetails={this.props.instancesDetails}
