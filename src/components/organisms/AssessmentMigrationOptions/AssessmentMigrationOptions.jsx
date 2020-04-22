@@ -25,6 +25,7 @@ import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
 import type { Field } from '../../../types/Field'
 
 import StyleProps from '../../styleUtils/StyleProps'
+import LabelDictionary from '../../../utils/LabelDictionary'
 
 import assessmentImage from './images/assessment.svg'
 
@@ -227,6 +228,7 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
           width={StyleProps.inputSizes.large.width}
           {...field}
           {...additionalProps}
+          label={field.label || LabelDictionary.get(field.name)}
         />
       )
       const pushRow = (field1: React.Node, field2?: React.Node) => {

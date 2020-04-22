@@ -83,8 +83,9 @@ class InstanceSource {
     quietError?: boolean,
     env?: any,
     cache?: ?boolean,
+    skipLog?: ?boolean,
   }): Promise<{ instance: Instance, reqId: number }> {
-    let { endpointId, instanceName, targetProvider, reqId, quietError, env, cache } = opts
+    let { endpointId, instanceName, targetProvider, reqId, quietError, env, cache, skipLog } = opts
     let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`
     if (env) {
       url += `?env=${btoa(JSON.stringify(env))}`
@@ -94,6 +95,7 @@ class InstanceSource {
       cancelId: `instanceDetail-${reqId}`,
       quietError,
       cache,
+      skipLog,
     })
 
     let instanceInfoParser = (targetProvider && InstanceInfoPlugin[targetProvider]) || InstanceInfoPlugin.default

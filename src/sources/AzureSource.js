@@ -20,10 +20,10 @@ import Api from '../utils/ApiCaller'
 import type { Assessment, VmItem, VmSize } from '../types/Assessment'
 
 const azureUrl = 'https://management.azure.com/'
-const defaultApiVersion = '2017-11-11-preview'
+const defaultApiVersion = '2019-10-01'
 
 const resourceGroupsUrl = (opts: { subscriptionId: string }) => `/subscriptions/${opts.subscriptionId}/resourceGroups`
-const projectsUrl = ({ resourceGroupName, ...other }) => `${resourceGroupsUrl({ ...other })}/${resourceGroupName}/providers/Microsoft.Migrate/projects`
+const projectsUrl = ({ resourceGroupName, ...other }) => `${resourceGroupsUrl({ ...other })}/${resourceGroupName}/providers/Microsoft.Migrate/assessmentprojects`
 const groupsUrl = ({ projectName, ...other }) => `${projectsUrl({ ...other })}/${projectName}/groups`
 const assessmentsUrl = ({ groupName, ...other }) => `${groupsUrl({ ...other })}/${groupName}/assessments`
 const assessmentDetailsUrl = ({ assessmentName, ...other }) => `${assessmentsUrl({ ...other })}/${assessmentName}`
@@ -31,7 +31,7 @@ const assessedVmsUrl = ({ ...other }) => `${assessmentDetailsUrl({ ...other })}/
 
 class Util {
   static buildUrl(baseUrl: string, apiVersion?: string): string {
-    const url = `/proxy/${azureUrl + baseUrl}?api-version=${apiVersion || defaultApiVersion}`
+    const url = `/proxy/${btoa(`${azureUrl + baseUrl}?api-version=${apiVersion || defaultApiVersion}`)}`
     return url
   }
 
@@ -75,11 +75,11 @@ class Util {
 }
 
 class AzureSource {
-  static authenticate(username: string, password: string): Promise<any> {
+  static authenticate(connectionInfo: any): Promise<any> {
     return Api.send({
       url: '/azure-login',
       method: 'POST',
-      data: { username, password },
+      data: connectionInfo,
     }).then(response => {
       let entries = Object.keys(response.data.tokenCache)[0]
       let accessToken = response.data.tokenCache[entries][0].accessToken
@@ -112,7 +112,7 @@ class AzureSource {
       if (!Util.isResponseValid(projectsResponse)) {
         return []
       }
-      let projects = projectsResponse.data.value.filter(p => p.type === 'Microsoft.Migrate/projects')
+      let projects = projectsResponse.data.value.filter(p => p.type === 'Microsoft.Migrate/assessmentprojects')
 
       // Load groups for each project
       return Promise.all(projects.map(project => {
@@ -142,7 +142,15 @@ class AzureSource {
           if (!Util.isResponseValid(assessmentResponse)) {
             return null
           }
-          return assessmentResponse.data.value.map(assessment => { return { ...assessment, group, project: group.project } })
+          return assessmentResponse.data.value.map((assessment: Assessment) => ({
+            ...assessment,
+            group,
+            project: group.project,
+            properies: {
+              ...assessment.properties,
+              azureLocation: assessment.properties.azureLocation.toLowerCase(),
+            },
+          }))
         })
       }))
     }).then(assessementsResponses => {
@@ -154,10 +162,11 @@ class AzureSource {
     })
   }
 
-  static getAssessmentDetails(info: Assessment): Promise<Assessment> {
-    return Api.get(Util.buildUrl(assessmentDetailsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id }))).then(response => {
-      return Util.validateResponse(response, { ...response.data, ...info })
-    })
+  static async getAssessmentDetails(info: Assessment): Promise<Assessment> {
+    const response = await Api.get(Util.buildUrl(assessmentDetailsUrl({ ...info, subscriptionId: info.connectionInfo.subscription_id })))
+    let assessment: Assessment = await Util.validateResponse(response, { ...response.data, ...info })
+    assessment.properties.azureLocation = assessment.properties.azureLocation.toLowerCase()
+    return assessment
   }
 
   static getAssessedVms(info: Assessment): Promise<VmItem[]> {
@@ -168,7 +177,7 @@ class AzureSource {
 
       let vms = response.data.value
       vms.sort((a, b) => {
-        let getLabel = item => `${item.properties.datacenterContainer}/${item.properties.displayName}`
+        let getLabel = item => item.properties.displayName
         return getLabel(a).localeCompare(getLabel(b))
       })
       return vms

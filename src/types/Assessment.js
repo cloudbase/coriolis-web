@@ -42,11 +42,10 @@ export type VmItem = {
         recommendedDiskType: string,
       },
     },
-    datacenterContainer: string,
-    datacenterManagementServer: string,
-    datacenterMachineId: string,
+    datacenterManagementServerName: string,
+    datacenterMachineArmId: string,
     displayName: string,
-    operatingSystem: string,
+    operatingSystemName: string,
   },
 }
 

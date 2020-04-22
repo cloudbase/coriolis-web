@@ -219,11 +219,11 @@ class AssessmentDetailsContent extends React.Component<Props> {
     }
 
     if (this.props.instances.length > 0 &&
-      !this.props.instances.find(i => i.id === `${vm.properties.datacenterMachineId}`)) {
+      !this.props.instances.find(i => i.name === `${vm.properties.displayName}`)) {
       return false
     }
 
-    return this.props.sourceEndpoint.connection_info.host === vm.properties.datacenterManagementServer
+    return this.props.sourceEndpoint.connection_info.host === vm.properties.datacenterManagementServerName
   }
 
   renderBottomControls() {
@@ -246,7 +246,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
     let status = this.props.item ?
       this.props.item.properties.status === 'Completed' ? 'Ready for Migration' : this.props.item.properties.status : ''
 
-    let locationItem: ?Location = this.props.locations.find(l => l.id.toLowerCase() === (this.props.selectedLocation ? this.props.selectedLocation.toLowerCase() : null))
+    let locationItem: ?Location = this.props.locations.find(l => l.id === this.props.selectedLocation)
 
     return (
       <Columns>
@@ -348,14 +348,14 @@ class AssessmentDetailsContent extends React.Component<Props> {
       return (
         <AssessedVmListItem
           item={vm}
-          selected={this.props.selectedVms.filter(m => m === vm.properties.datacenterMachineId).length > 0}
+          selected={this.props.selectedVms.filter(m => m === vm.properties.displayName).length > 0}
           onSelectedChange={(vm, selected) => { this.props.onVmSelectedChange(vm, selected) }}
           disabled={!this.doesVmMatchSource(vm)}
           loadingVmSizes={this.props.loadingVmSizes}
           recommendedVmSize={vm.properties.recommendedSize}
           vmSizes={this.props.vmSizes}
           selectedVmSize={this.props.onGetSelectedVmSize(vm)}
-          onVmSizeChange={size => { this.props.onVmSizeChange(vm.properties.datacenterMachineId, size) }}
+          onVmSizeChange={size => { this.props.onVmSizeChange(vm.properties.displayName, size) }}
         />
       )
     })

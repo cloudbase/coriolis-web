@@ -72,6 +72,7 @@ const AssessmentType = styled.div`
   justify-content: center;
   align-items: center;
   margin-right: 46px;
+  ${StyleProps.exactWidth('180px')}
 `
 const AssessmentImage = styled.div`
   width: 48px;
@@ -89,7 +90,7 @@ const TotalVms = styled.div`
   margin-right: 48px;
 `
 const Project = styled.div`
-  ${StyleProps.exactWidth('132px')}
+  ${StyleProps.exactWidth('175px')}
   margin-right: 48px;
 `
 const ItemLabel = styled.div`

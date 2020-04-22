@@ -35,7 +35,7 @@ class InstanceStore {
   @observable searchNotFound = false
   @observable reloading = false
   @observable instancesDetails: Instance[] = []
-  @observable loadingInstancesDetails = true
+  @observable loadingInstancesDetails = false
   @observable instancesDetailsCount = 0
   @observable instancesDetailsRemaining = 0
   @observable searchText = ''
@@ -250,15 +250,54 @@ class InstanceStore {
     }
   }
 
+  @action async addInstanceDetails(opts: {
+    endpointId: string,
+    instanceInfo: Instance,
+    cache?: boolean,
+    quietError?: boolean,
+    env?: any,
+    targetProvider: string,
+  }) {
+    let { endpointId, instanceInfo, cache, quietError, env, targetProvider } = opts
+    this.loadingInstancesDetails = true
+    let resp: { instance: Instance, reqId: number } =
+      await InstanceSource.loadInstanceDetails({
+        endpointId,
+        instanceName: instanceInfo.instance_name || instanceInfo.name,
+        targetProvider,
+        reqId: this.reqId,
+        quietError,
+        env,
+        cache,
+      })
+
+    runInAction(() => {
+      this.loadingInstancesDetails = false
+      if (this.instancesDetails.find(i => i.id === resp.instance.id)) {
+        this.instancesDetails = this.instancesDetails.filter(i => i.id !== resp.instance.id)
+      }
+      this.instancesDetails = [
+        ...this.instancesDetails,
+        resp.instance,
+      ]
+      this.instancesDetails.sort((a, b) => (a.instance_name || a.name).localeCompare((b.instance_name || b.name)))
+    })
+  }
+
+  @action removeInstanceDetails(instance: Instance) {
+    this.instancesDetails = this.instancesDetails.filter(i => i.id !== instance.id)
+  }
+
   @action async loadInstancesDetails(opts: {
     endpointId: string,
     instancesInfo: Instance[],
     cache?: boolean,
     quietError?: boolean,
+    skipLog?: boolean,
     env?: any,
     targetProvider: string,
   }): Promise<void> {
-    let { endpointId, instancesInfo, cache, quietError, env, targetProvider } = opts
+    let { endpointId, instancesInfo, cache, quietError, env, targetProvider, skipLog } = opts
     // Use reqId to be able to uniquely identify the request so all but the latest request can be igonred and canceled
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
@@ -266,9 +305,11 @@ class InstanceStore {
     instancesInfo.sort((a, b) => (a.instance_name || a.name).localeCompare(b.instance_name || b.name))
 
     let count = instancesInfo.length
+    if (count === 0) {
+      return
+    }
     this.loadingInstancesDetails = true
     this.instancesDetails = []
-    this.loadingInstancesDetails = true
     this.instancesDetailsCount = count
     this.instancesDetailsRemaining = count
 
@@ -284,6 +325,7 @@ class InstanceStore {
               quietError,
               env,
               cache,
+              skipLog,
             })
           if (resp.reqId !== this.reqId) {
             return
@@ -296,16 +338,13 @@ class InstanceStore {
             if (this.instancesDetails.find(i => i.id === resp.instance.id)) {
               this.instancesDetails = this.instancesDetails.filter(i => i.id !== resp.instance.id)
             }
-          })
-
-          runInAction(() => {
             this.instancesDetails = [
               ...this.instancesDetails,
               resp.instance,
             ]
-            this.instancesDetails.sort((a, b) => (a.instance_name || a.name).localeCompare((b.instance_name || b.name)))
           })
           if (this.instancesDetailsRemaining === 0) {
+            this.instancesDetails.sort((a, b) => (a.instance_name || a.name).localeCompare((b.instance_name || b.name)))
             resolve()
           }
         } catch (err) {

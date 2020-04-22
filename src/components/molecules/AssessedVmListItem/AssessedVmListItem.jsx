@@ -106,10 +106,10 @@ class AssessedVmListItem extends React.Component<Props> {
               onChange={checked => { this.props.onSelectedChange(this.props.item, checked) }}
               disabled={this.props.disabled}
             />
-            <DisplayNameLabel>{`${this.props.item.properties.datacenterContainer}/${this.props.item.properties.displayName}`}</DisplayNameLabel>
+            <DisplayNameLabel>{`${this.props.item.properties.displayName}`}</DisplayNameLabel>
           </DisplayName>
           <Value width="25%">
-            {this.props.item.properties.operatingSystem}
+            {this.props.item.properties.operatingSystemName}
           </Value>
           <Value width="25%">
             {standardCount} Standard, {premiumCount} Premium

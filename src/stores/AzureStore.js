@@ -152,9 +152,9 @@ class AzureStore {
     AzureLocalStorage.setLocalData(this.localData)
   }
 
-  @action authenticate(username: string, password: string): Promise<void> {
+  @action authenticate(connectionInfo: any): Promise<void> {
     this.authenticating = true
-    return AzureSource.authenticate(username, password).then(() => {
+    return AzureSource.authenticate(connectionInfo).then(() => {
       this.authenticating = false
     }).catch(() => {
       this.authenticating = false
