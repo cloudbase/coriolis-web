@@ -27,6 +27,7 @@ import ReplicaExecutionOptions from '../../organisms/ReplicaExecutionOptions'
 import AlertModal from '../../organisms/AlertModal'
 import EditReplica from '../../organisms/EditReplica'
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
+import DeleteReplicaModal from '../../molecules/DeleteReplicaModal'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { InstanceScript } from '../../../types/Instance'
@@ -274,7 +275,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   handleDeleteReplicaDisksConfirmation() {
-    this.setState({ showDeleteReplicaDisksConfirmation: false })
+    this.setState({ showDeleteReplicaDisksConfirmation: false, showDeleteReplicaConfirmation: false })
     replicaStore.deleteDisks(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '')
     this.props.history.push(`/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`)
   }
@@ -555,14 +556,14 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           onConfirmation={() => { this.handleDeleteExecutionConfirmation() }}
           onRequestClose={() => { this.handleCloseExecutionConfirmation() }}
         />
-        <AlertModal
-          isOpen={this.state.showDeleteReplicaConfirmation}
-          title="Delete Replica?"
-          message="Are you sure you want to delete this replica?"
-          extraMessage="Deleting a Coriolis Replica is permanent!"
-          onConfirmation={() => { this.handleDeleteReplicaConfirmation() }}
-          onRequestClose={() => { this.handleCloseDeleteReplicaConfirmation() }}
-        />
+        {this.state.showDeleteReplicaConfirmation ? (
+          <DeleteReplicaModal
+            hasDisks={replicaStore.hasReplicaDisks(replicaStore.replicaDetails)}
+            onRequestClose={() => this.handleCloseDeleteReplicaConfirmation()}
+            onDeleteReplica={() => { this.handleDeleteReplicaConfirmation() }}
+            onDeleteDisks={() => { this.handleDeleteReplicaDisksConfirmation() }}
+          />
+        ) : null}
         <AlertModal
           isOpen={this.state.showDeleteReplicaDisksConfirmation}
           title="Delete Replica Disks?"

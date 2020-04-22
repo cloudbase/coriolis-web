@@ -27,6 +27,7 @@ import MainListItem from '../../molecules/MainListItem'
 import Modal from '../../molecules/Modal'
 import ReplicaExecutionOptions from '../../organisms/ReplicaExecutionOptions'
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
+import DeleteReplicaModal from '../../molecules/DeleteReplicaModal'
 
 import type { MainItem } from '../../../types/MainItem'
 import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
@@ -159,11 +160,11 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     this.props.history.push('/migrations')
   }
 
-  deleteSelectedReplicasDisks() {
-    this.state.selectedReplicas.forEach(replica => {
+  deleteReplicasDisks(replicas: MainItem[]) {
+    replicas.forEach(replica => {
       replicaStore.deleteDisks(replica.id)
     })
-    this.setState({ showDeleteDisksModal: false })
+    this.setState({ showDeleteDisksModal: false, showDeleteReplicasModal: false })
     notificationStore.alert('Deleting selected replicas\' disks')
   }
 
@@ -368,13 +369,12 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
           }
         />
         {this.state.showDeleteReplicasModal ? (
-          <AlertModal
-            isOpen
-            title="Delete Selected Replicas?"
-            message="Are you sure you want to delete the selected replicas?"
-            extraMessage="Deleting a Coriolis Replica is permanent!"
-            onConfirmation={() => { this.deleteSelectedReplicas() }}
+          <DeleteReplicaModal
+            hasDisks={replicaStore.getReplicasWithDisks(this.state.selectedReplicas).length > 0}
+            isMultiReplicaSelection
             onRequestClose={() => { this.setState({ showDeleteReplicasModal: false }) }}
+            onDeleteReplica={() => { this.deleteSelectedReplicas() }}
+            onDeleteDisks={() => { this.deleteReplicasDisks(replicaStore.getReplicasWithDisks(this.state.selectedReplicas)) }}
           />
         ) : null}
         {this.state.showCancelExecutionModal ? (
@@ -421,7 +421,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
             title="Delete Selected Replicas Disks?"
             message="Are you sure you want to delete the selected replicas' disks?"
             extraMessage="Deleting Coriolis Replica Disks is permanent!"
-            onConfirmation={() => { this.deleteSelectedReplicasDisks() }}
+            onConfirmation={() => { this.deleteReplicasDisks(this.state.selectedReplicas) }}
             onRequestClose={() => { this.setState({ showDeleteDisksModal: false }) }}
           />
         ) : null}
