@@ -54,6 +54,11 @@ const conf: Config = {
       ],
     },
     {
+      name: 'openstack',
+      types: ['destination'],
+      requiredFields: ['list_all_destination_networks'],
+    },
+    {
       name: 'aws',
       types: ['source', 'destination'],
       requiredFields: ['region'],
