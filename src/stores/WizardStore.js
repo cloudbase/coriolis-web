@@ -25,6 +25,7 @@ import type { StorageMap } from '../types/Endpoint'
 import type { Schedule } from '../types/Schedule'
 import { wizardPages } from '../constants'
 import source from '../sources/WizardSource'
+import notificationStore from './NotificationStore'
 
 const updateOptions = (oldOptions: ?{ [string]: mixed }, data: { field: Field, value: any }) => {
   let options = { ...oldOptions }
@@ -59,7 +60,7 @@ class WizardStore {
   @observable currentPage: WizardPage = wizardPages[0]
   @observable createdItem: ?MainItem = null
   @observable creatingItem: boolean = false
-  @observable createdItems: ?MainItem[] = null
+  @observable createdItems: ?Array<?MainItem> = null
   @observable creatingItems: boolean = false
   @observable uploadedUserScripts: InstanceScript[] = []
 
@@ -180,12 +181,42 @@ class WizardStore {
     defaultStorage: ?string,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[]
-  ): Promise<void> {
+  ): Promise<boolean> {
     this.creatingItems = true
 
     try {
-      let items: MainItem[] = await source.createMultiple(type, data, defaultStorage, storageMap, uploadedUserScripts)
-      runInAction(() => { this.createdItems = items })
+      let items = await source.createMultiple(type, data, defaultStorage, storageMap, uploadedUserScripts)
+      let nullItemsCount = items.filter(i => i === null).length
+      if (items && nullItemsCount === 0) {
+        runInAction(() => { this.createdItems = items })
+        return true
+      }
+      let errorMessage = null
+      let alertOptions = null
+      if (!items || nullItemsCount === items.length) {
+        errorMessage = `No ${type}s could be created`
+      } else {
+        errorMessage = `Some ${type}s couldn't be created.`
+        alertOptions = {
+          action: {
+            label: 'View details',
+            callback: () => ({
+              request: {
+                url: '[MULTIPLE]',
+                method: 'POST',
+                message: `Error creating some ${type}s`,
+                data: {
+                  created: items.filter(Boolean).length,
+                  failed: nullItemsCount,
+                },
+              },
+              error: { status, message: errorMessage },
+            }),
+          },
+        }
+      }
+      notificationStore.alert(errorMessage, 'error', alertOptions)
+      return false
     } finally {
       runInAction(() => { this.creatingItems = false })
     }
