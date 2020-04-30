@@ -172,7 +172,7 @@ class PageHeader extends React.Component<Props, State> {
     if (this.props.onModalClose) {
       this.props.onModalClose()
     }
-    this.setState({ showChooseProviderModal: false })
+    this.setState({ showChooseProviderModal: false }, () => { this.pollData() })
   }
 
   handleProviderClick(providerType: string) {
@@ -213,17 +213,22 @@ class PageHeader extends React.Component<Props, State> {
     if (this.props.onModalClose) {
       this.props.onModalClose()
     }
-    this.setState({ showEndpointModal: false })
+    this.setState({ showEndpointModal: false }, () => { this.pollData() })
   }
 
   handleBackEndpointModal(options?: { autoClose?: boolean }) {
-    this.setState({ showChooseProviderModal: !options || !options.autoClose, showEndpointModal: false })
+    let showChooseProviderModal = !options || !options.autoClose
+    this.setState({ showChooseProviderModal, showEndpointModal: false }, () => {
+      if (!showChooseProviderModal) {
+        this.pollData()
+      }
+    })
   }
 
   async handleProjectChange(project: Project) {
     await userStore.switchProject(project.id)
     projectStore.getProjects()
-    notificationStore.loadData()
+    notificationStore.loadData(true)
 
     if (this.props.onProjectChange) {
       this.props.onProjectChange(project)
@@ -234,7 +239,7 @@ class PageHeader extends React.Component<Props, State> {
     if (this.props.onModalClose) {
       this.props.onModalClose()
     }
-    this.setState({ showUserModal: false })
+    this.setState({ showUserModal: false }, () => { this.pollData() })
   }
 
   async handleUserUpdateClick(user: User) {
@@ -242,14 +247,14 @@ class PageHeader extends React.Component<Props, State> {
     if (this.props.onModalClose) {
       this.props.onModalClose()
     }
-    this.setState({ showUserModal: false })
+    this.setState({ showUserModal: false }, () => { this.pollData() })
   }
 
   handleProjectModalClose() {
     if (this.props.onModalClose) {
       this.props.onModalClose()
     }
-    this.setState({ showProjectModal: false })
+    this.setState({ showProjectModal: false }, () => { this.pollData() })
   }
 
   async handleProjectModalUpdateClick(project: Project) {
@@ -257,7 +262,7 @@ class PageHeader extends React.Component<Props, State> {
     if (this.props.onModalClose) {
       this.props.onModalClose()
     }
-    this.setState({ showProjectModal: false })
+    this.setState({ showProjectModal: false }, () => { this.pollData() })
   }
 
   async pollData(showLoading?: boolean) {

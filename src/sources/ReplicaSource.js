@@ -85,8 +85,8 @@ class ReplicaSourceUtils {
     }
 
     replicas.sort((a, b) => {
-      ReplicaSourceUtils.sortExecutions(a.executions)
-      ReplicaSourceUtils.sortExecutions(b.executions)
+      ReplicaSourceUtils.sortExecutionsAndTasks(a.executions)
+      ReplicaSourceUtils.sortExecutionsAndTasks(b.executions)
       let aLastExecution = a.executions && a.executions.length ? a.executions[a.executions.length - 1] : null
       let bLastExecution = b.executions && b.executions.length ? b.executions[b.executions.length - 1] : null
       let aLastTime = aLastExecution ? aLastExecution.updated_at || aLastExecution.created_at : null
@@ -119,37 +119,16 @@ class ReplicaSourceUtils {
 }
 
 class ReplicaSource {
-  async getReplicas(skipLog?: boolean): Promise<MainItem[]> {
+  async getReplicas(skipLog?: boolean, quietError?: boolean): Promise<MainItem[]> {
     let response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/detail`,
       skipLog,
+      quietError,
     })
     let replicas = response.data.replicas
     replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
     ReplicaSourceUtils.sortReplicas(replicas)
     return replicas
-  }
-
-  async getReplicaExecutions(replicaId: string, skipLog?: boolean): Promise<Execution[]> {
-    let response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/detail`,
-      skipLog,
-    })
-    let executions = response.data.executions
-    ReplicaSourceUtils.sortExecutionsAndTasks(executions)
-
-    return executions
-  }
-
-  async getReplica(replicaId: string, skipLog?: boolean): Promise<MainItem> {
-    let response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}`,
-      skipLog,
-    })
-    let replica = response.data.replica
-    replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
-    ReplicaSourceUtils.sortExecutions(replica.executions)
-    return replica
   }
 
   async execute(replicaId: string, fields?: Field[]): Promise<Execution> {
