@@ -26,11 +26,12 @@ import Modal from '../../molecules/Modal'
 import FieldInput from '../../molecules/FieldInput'
 import ToggleButtonBar from '../../atoms/ToggleButtonBar'
 import AutocompleteDropdown from '../../molecules/AutocompleteDropdown'
+
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
+import KeyboardManager from '../../../utils/KeyboardManager'
 
 import userImage from './images/user.svg'
-import KeyboardManager from '../../../utils/KeyboardManager'
 
 const Wrapper = styled.div`
   padding: 48px 0 32px 0;
@@ -230,6 +231,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         data-test-id={`${testName}-roles`}
         key="roles"
         name="role(s)"
+        label="Role(s)"
         type="array"
         onChange={roleId => {
           if (selectedRoles.find(id => id === roleId)) {

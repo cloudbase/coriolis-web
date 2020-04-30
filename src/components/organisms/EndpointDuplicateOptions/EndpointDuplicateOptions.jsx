@@ -123,6 +123,7 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
           <FieldInputStyled
             data-test-id={`${testName}-field-project`}
             name="duplicate_to_project"
+            label="Duplicate To Project"
             type="string"
             enum={this.props.projects}
             value={this.state.selectedProjectId}
