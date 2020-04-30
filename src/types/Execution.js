@@ -23,4 +23,5 @@ export type Execution = {
   created_at: Date,
   updated_at: Date,
   tasks: Task[],
+  type: 'replica_execution' | 'replica_disks_delete' | 'replica_deploy' | 'replica_update'
 }

@@ -192,6 +192,25 @@ class ReplicaStore {
   async update(replica: MainItem, destinationEndpoint: Endpoint, updateData: UpdateData, defaultStorage: ?string, storageConfigDefault: string) {
     await ReplicaSource.update(replica, destinationEndpoint, updateData, defaultStorage, storageConfigDefault)
   }
+
+  getReplicasWithDisks(replicas: MainItem[]): MainItem[] {
+    let result = replicas.filter(r => this.hasReplicaDisks(r))
+    return result
+  }
+
+  hasReplicaDisks(replica: ?MainItem): boolean {
+    if (!replica || !replica.executions || replica.executions.length === 0) {
+      return false
+    }
+    if (!replica.executions.find(e => e.type === 'replica_execution')) {
+      return false
+    }
+    let lastExecution = replica.executions[replica.executions.length - 1]
+    if (lastExecution.type === 'replica_disks_delete' && lastExecution.status === 'COMPLETED') {
+      return false
+    }
+    return true
+  }
 }
 
 export default new ReplicaStore()
