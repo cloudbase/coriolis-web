@@ -220,12 +220,15 @@ class WizardPage extends React.Component<Props, State> {
       optionsType: 'source',
       useCache: true,
     })
-    source && providerStore.getOptionsValues({
+    wizardStore.fillWithDefaultValues('source', providerStore.sourceSchema)
+
+    await providerStore.getOptionsValues({
       optionsType: 'source',
       endpointId: source.id,
       providerName: source.type,
       useCache: true,
     })
+    wizardStore.fillWithDefaultValues('source', providerStore.sourceSchema)
   }
 
   async handleTargetEndpointChange(target: EndpointType) {
@@ -241,13 +244,15 @@ class WizardPage extends React.Component<Props, State> {
       optionsType: 'destination',
       useCache: true,
     })
+    wizardStore.fillWithDefaultValues('destination', providerStore.destinationSchema)
     // Preload destination options values
-    providerStore.getOptionsValues({
+    await providerStore.getOptionsValues({
       optionsType: 'destination',
       endpointId: target.id,
       providerName: target.type,
       useCache: true,
     })
+    wizardStore.fillWithDefaultValues('destination', providerStore.destinationSchema)
   }
 
   handleAddEndpoint(newEndpointType: string, newEndpointFromSource: boolean) {
@@ -358,11 +363,16 @@ class WizardPage extends React.Component<Props, State> {
       providerName: endpoint.type,
       optionsType,
     })
+    let getSchema = () => optionsType === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
+    wizardStore.fillWithDefaultValues(optionsType, getSchema())
+
     await providerStore.getOptionsValues({
       optionsType,
       endpointId: endpoint.id,
       providerName: endpoint.type,
     })
+    wizardStore.fillWithDefaultValues(optionsType, getSchema())
+
     await this.loadExtraOptions(undefined, optionsType, false)
   }
 
@@ -374,14 +384,15 @@ class WizardPage extends React.Component<Props, State> {
     }
   }
 
-  loadExtraOptions(field?: Field, type: 'source' | 'destination', useCache: boolean = true) {
+  async loadExtraOptions(field?: Field, type: 'source' | 'destination', useCache: boolean = true) {
     let endpoint = type === 'source' ? wizardStore.data.source : wizardStore.data.target
     if (!endpoint) {
       return
     }
+    const getSchema = () => type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
     let envData = getFieldChangeOptions({
       providerName: endpoint.type,
-      schema: type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema,
+      schema: getSchema(),
       data: type === 'source' ? wizardStore.data.sourceOptions : wizardStore.data.destOptions,
       field,
       type,
@@ -389,26 +400,25 @@ class WizardPage extends React.Component<Props, State> {
     if (!envData) {
       return
     }
-    providerStore.getOptionsValues({
+    await providerStore.getOptionsValues({
       optionsType: type,
       endpointId: endpoint.id,
       providerName: endpoint.type,
       envData,
       useCache,
     })
+    wizardStore.fillWithDefaultValues(type, getSchema())
   }
 
   async loadDataForPage(page: WizardPageType) {
     const loadOptions = async (endpoint: EndpointType, optionsType: 'source' | 'destination') => {
-      let schema = optionsType === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
-      if (schema.length > 0) {
-        return
-      }
       await providerStore.loadOptionsSchema({
         providerName: endpoint.type,
         optionsType,
         useCache: true,
       })
+      let getSchema = () => optionsType === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
+      wizardStore.fillWithDefaultValues(optionsType, getSchema())
 
       await providerStore.getOptionsValues({
         optionsType,
@@ -416,6 +426,8 @@ class WizardPage extends React.Component<Props, State> {
         providerName: endpoint.type,
         useCache: true,
       })
+      wizardStore.fillWithDefaultValues(optionsType, getSchema())
+
       await this.loadExtraOptions(undefined, optionsType)
     }
 
@@ -548,11 +560,11 @@ class WizardPage extends React.Component<Props, State> {
     let state = this.state.nextButtonDisabled
 
     if (wizardStore.currentPage.id === 'dest-options') {
-      return providerStore.destinationSchemaLoading || state
+      return providerStore.destinationSchemaLoading || providerStore.destinationOptionsPrimaryLoading || providerStore.destinationOptionsSecondaryLoading || state
     }
 
     if (wizardStore.currentPage.id === 'source-options') {
-      return providerStore.sourceSchemaLoading || state
+      return providerStore.sourceSchemaLoading || providerStore.sourceOptionsPrimaryLoading || providerStore.sourceOptionsSecondaryLoading || state
     }
 
     return state
