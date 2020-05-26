@@ -45,6 +45,7 @@ import instanceStore from '../../../stores/InstanceStore'
 import networkStore from '../../../stores/NetworkStore'
 import notificationStore from '../../../stores/NotificationStore'
 import providerStore from '../../../stores/ProviderStore'
+
 import configLoader from '../../../utils/Config'
 import utils from '../../../utils/ObjectUtils'
 import { providerTypes } from '../../../constants'
@@ -55,7 +56,7 @@ import Palette from '../../styleUtils/Palette'
 const Wrapper = styled.div``
 
 type Props = {
-  match: any,
+  match: { params: { id: string, page: ?string } },
   history: any,
 }
 type State = {
@@ -89,18 +90,29 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   stopPolling: ?boolean
 
+  get replicaId() {
+    if (!this.props.match || !this.props.match.params || !this.props.match.params.id) {
+      throw new Error('Invalid replica id')
+    }
+    return this.props.match.params.id
+  }
+
+  get replica() {
+    let replica = replicaStore.replicas.find(r => r.id === this.replicaId)
+    return replica
+  }
+
   componentWillMount() {
     document.title = 'Replica Details'
 
     let loadReplica = async () => {
       await endpointStore.getEndpoints({ showLoading: true })
-      await this.loadReplicaWithInstances(this.props.match.params.id, true)
-      let details = replicaStore.replicaDetails
-      if (!details) {
+      let replica = await this.loadReplicaWithInstances(this.replicaId, true)
+      if (!replica) {
         return
       }
-      let sourceEndpoint = endpointStore.endpoints.find(e => e.id === details.origin_endpoint_id)
-      let destinationEndpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
+      let sourceEndpoint = endpointStore.endpoints.find(e => e.id === replica.origin_endpoint_id)
+      let destinationEndpoint = endpointStore.endpoints.find(e => e.id === replica.destination_endpoint_id)
       if (!sourceEndpoint || !destinationEndpoint) {
         return
       }
@@ -115,7 +127,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         })
         let getOptionsValuesConfig = {
           optionsType,
-          endpointId: optionsType === 'source' ? details.origin_endpoint_id : details.destination_endpoint_id,
+          endpointId: optionsType === 'source' ? replica.origin_endpoint_id : replica.destination_endpoint_id,
           providerName,
           useCache: true,
           quietError: true,
@@ -127,7 +139,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         await providerStore.getOptionsValues(getOptionsValuesConfig)
         await providerStore.getOptionsValues({
           ...getOptionsValuesConfig,
-          envData: optionsType === 'source' ? details.source_environment : details.destination_environment,
+          envData: optionsType === 'source' ? replica.source_environment : replica.destination_environment,
         })
       }
 
@@ -136,7 +148,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
     loadReplica()
 
-    scheduleStore.getSchedules(this.props.match.params.id)
+    scheduleStore.getSchedules(this.replicaId)
     this.pollData(true)
   }
 
@@ -148,7 +160,6 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    replicaStore.clearDetails()
     scheduleStore.clearUnsavedSchedules()
     this.stopPolling = true
   }
@@ -174,34 +185,35 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   async loadReplicaWithInstances(replicaId: string, cache: boolean) {
-    await replicaStore.getReplica(replicaId, { showLoading: true })
-    let details = replicaStore.replicaDetails
-    if (!details) {
-      return
+    await replicaStore.getReplicas({ showLoading: true })
+    let replica = this.replica
+    if (!replica) {
+      return null
     }
-    this.loadIsEditable(details)
-    networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
+    this.loadIsEditable(replica)
+    networkStore.loadNetworks(replica.destination_endpoint_id, replica.destination_environment, {
       quietError: true,
       cache,
     })
 
-    let targetEndpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
+    let targetEndpoint = endpointStore.endpoints.find(e => e.id === replica.destination_endpoint_id)
     instanceStore.loadInstancesDetails({
-      endpointId: details.origin_endpoint_id,
+      endpointId: replica.origin_endpoint_id,
       // $FlowIgnore
-      instancesInfo: details.instances.map(n => ({ instance_name: n })),
+      instancesInfo: replica.instances.map(n => ({ instance_name: n })),
       cache,
       quietError: false,
-      env: details.source_environment,
+      env: replica.source_environment,
       targetProvider: targetEndpoint ? targetEndpoint.type : '',
     })
+    return replica
   }
 
   getLastExecution() {
-    if (replicaStore.replicaDetails && replicaStore.replicaDetails.executions && replicaStore.replicaDetails.executions.length) {
-      return replicaStore.replicaDetails.executions[replicaStore.replicaDetails.executions.length - 1]
+    let replica = this.replica
+    if (replica && replica.executions && replica.executions.length) {
+      return replica.executions[replica.executions.length - 1]
     }
-
     return null
   }
 
@@ -211,8 +223,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   isExecuteDisabled() {
-    let originEndpoint = endpointStore.endpoints.find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.origin_endpoint_id)
-    let targetEndpoint = endpointStore.endpoints.find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.destination_endpoint_id)
+    let replica = this.replica
+    if (!replica) {
+      return true
+    }
+    let originEndpoint = endpointStore.endpoints.find(e => e.id === replica.origin_endpoint_id)
+    let targetEndpoint = endpointStore.endpoints.find(e => e.id === replica.destination_endpoint_id)
 
     return Boolean(!originEndpoint || !targetEndpoint || this.getStatus() === 'RUNNING' || this.getStatus() === 'CANCELLING')
   }
@@ -235,10 +251,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   handleDeleteExecutionConfirmation() {
-    if (!this.state.confirmationItem) {
+    let replica = this.replica
+    if (!this.state.confirmationItem || !replica) {
       return
     }
-    replicaStore.deleteExecution(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', this.state.confirmationItem.id)
+    replicaStore.deleteExecution(replica.id, this.state.confirmationItem.id)
     this.handleCloseExecutionConfirmation()
   }
 
@@ -266,8 +283,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   handleDeleteReplicaConfirmation() {
     this.setState({ showDeleteReplicaConfirmation: false })
+    let replica = this.replica
+    if (!replica) {
+      return
+    }
     this.props.history.push('/replicas')
-    replicaStore.delete(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '')
+    replicaStore.delete(replica.id)
   }
 
   handleCloseDeleteReplicaConfirmation() {
@@ -276,8 +297,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   handleDeleteReplicaDisksConfirmation() {
     this.setState({ showDeleteReplicaDisksConfirmation: false, showDeleteReplicaConfirmation: false })
-    replicaStore.deleteDisks(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '')
-    this.props.history.push(`/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`)
+    let replica = this.replica
+    if (!replica) {
+      return
+    }
+    replicaStore.deleteDisks(replica.id)
+    this.props.history.push(`/replica/executions/${replica.id}`)
   }
 
   handleCloseDeleteReplicaDisksConfirmation() {
@@ -297,7 +322,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   handleAddScheduleClick(schedule: Schedule) {
-    scheduleStore.addSchedule(this.props.match.params.id, schedule)
+    scheduleStore.addSchedule(this.replicaId, schedule)
   }
 
   handleScheduleChange(scheduleId: ?string, data: Schedule, forceSave?: boolean) {
@@ -305,19 +330,19 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     let unsavedData = scheduleStore.unsavedSchedules.find(s => s.id === scheduleId)
 
     if (scheduleId) {
-      scheduleStore.updateSchedule(this.props.match.params.id, scheduleId, data, oldData, unsavedData, forceSave)
+      scheduleStore.updateSchedule(this.replicaId, scheduleId, data, oldData, unsavedData, forceSave)
     }
   }
 
   handleScheduleSave(schedule: Schedule) {
     if (schedule.id) {
-      scheduleStore.updateSchedule(this.props.match.params.id, schedule.id, schedule, schedule, schedule, true)
+      scheduleStore.updateSchedule(this.replicaId, schedule.id, schedule, schedule, schedule, true)
     }
   }
 
   handleScheduleRemove(scheduleId: ?string) {
     if (scheduleId) {
-      scheduleStore.removeSchedule(this.props.match.params.id, scheduleId)
+      scheduleStore.removeSchedule(this.replicaId, scheduleId)
     }
   }
 
@@ -341,11 +366,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   handleCancelConfirmation(force?: boolean) {
-    if (!this.state.confirmationItem) {
+    let replica = this.replica
+    if (!this.state.confirmationItem || !replica) {
       return
     }
     replicaStore.cancelExecution(
-      replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '',
+      replica.id,
       this.state.confirmationItem.id,
       force
     )
@@ -361,8 +387,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   async migrate(options: Field[], uploadedScripts: InstanceScript[]) {
+    let replica = this.replica
+    if (!replica) {
+      return
+    }
     let migration = await migrationStore.migrateReplica(
-      replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '',
+      replica.id,
       options,
       uploadedScripts
     )
@@ -377,9 +407,13 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   executeReplica(fields: Field[]) {
-    replicaStore.execute(replicaStore.replicaDetails ? replicaStore.replicaDetails.id : '', fields)
+    let replica = this.replica
+    if (!replica) {
+      return
+    }
+    replicaStore.execute(replica.id, fields)
     this.handleCloseOptionsModal()
-    this.props.history.push(`/replica/executions/${replicaStore.replicaDetails ? replicaStore.replicaDetails.id : ''}`)
+    this.props.history.push(`/replica/executions/${replica.id}`)
   }
 
   async pollData(showLoading: boolean) {
@@ -387,11 +421,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       return
     }
 
-    if (!this.props.match.params.page) {
-      replicaStore.getReplica(this.props.match.params.id, { showLoading, skipLog: true })
-    }
+    await replicaStore.getReplicas({ showLoading, skipLog: true })
 
-    await replicaStore.getReplicaExecutions(this.props.match.params.id, { showLoading, skipLog: true })
     setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
   }
 
@@ -402,25 +433,25 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   handleEditReplicaReload() {
-    this.loadReplicaWithInstances(this.props.match.params.id, false)
+    this.loadReplicaWithInstances(this.replicaId, false)
   }
 
   handleUpdateComplete(redirectTo: string) {
-    if (!replicaStore.replicaDetails) {
-      return
-    }
-
     this.props.history.push(redirectTo)
     this.closeEditModal()
   }
 
   renderEditReplica() {
+    let replica = this.replica
+    if (!replica) {
+      return null
+    }
     let sourceEndpoint = endpointStore.endpoints
-      .find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.origin_endpoint_id)
+      .find(e => e.id === replica.origin_endpoint_id)
     let destinationEndpoint = endpointStore.endpoints
-      .find(e => replicaStore.replicaDetails && e.id === replicaStore.replicaDetails.destination_endpoint_id)
+      .find(e => e.id === replica.destination_endpoint_id)
 
-    if (!this.state.showEditModal || !replicaStore.replicaDetails || !destinationEndpoint || !sourceEndpoint) {
+    if (!this.state.showEditModal || !destinationEndpoint || !sourceEndpoint) {
       return null
     }
 
@@ -431,7 +462,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         sourceEndpoint={sourceEndpoint}
         onUpdateComplete={url => { this.handleUpdateComplete(url) }}
         onRequestClose={() => { this.closeEditModal() }}
-        replica={replicaStore.replicaDetails}
+        replica={replica}
         destinationEndpoint={destinationEndpoint}
         instancesDetails={instanceStore.instancesDetails}
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
@@ -480,6 +511,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         action: () => { this.handleDeleteReplicaClick() },
       },
     ]
+    let replica = this.replica
 
     return (
       <Wrapper>
@@ -489,20 +521,20 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             onUserItemClick={item => { this.handleUserItemClick(item) }}
           />}
           contentHeaderComponent={<DetailsContentHeader
-            item={replicaStore.replicaDetails}
+            item={replica}
             dropdownActions={dropdownActions}
             backLink="/replicas"
             typeImage={replicaImage}
             alertInfoPill
           />}
           contentComponent={<ReplicaDetailsContent
-            item={replicaStore.replicaDetails}
+            item={replica}
             instancesDetails={instanceStore.instancesDetails}
             instancesDetailsLoading={instanceStore.loadingInstancesDetails}
             endpoints={endpointStore.endpoints}
             scheduleStore={scheduleStore}
             networks={networkStore.networks}
-            detailsLoading={replicaStore.detailsLoading || endpointStore.loading}
+            detailsLoading={replicaStore.loading || endpointStore.loading}
             sourceSchema={providerStore.sourceSchema}
             sourceSchemaLoading={providerStore.sourceSchemaLoading
               || providerStore.sourceOptionsPrimaryLoading
@@ -511,7 +543,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             destinationSchemaLoading={providerStore.destinationSchemaLoading
               || providerStore.destinationOptionsPrimaryLoading
               || providerStore.destinationOptionsSecondaryLoading}
-            executionsLoading={replicaStore.executionsLoading}
+            executionsLoading={replicaStore.startingExecution}
             page={this.props.match.params.page || ''}
             onCancelExecutionClick={(e, f) => { this.handleCancelExecution(e, f) }}
             onDeleteExecutionClick={execution => { this.handleDeleteExecutionClick(execution) }}
@@ -558,7 +590,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         />
         {this.state.showDeleteReplicaConfirmation ? (
           <DeleteReplicaModal
-            hasDisks={replicaStore.hasReplicaDisks(replicaStore.replicaDetails)}
+            hasDisks={replicaStore.hasReplicaDisks(this.replica)}
             onRequestClose={() => this.handleCloseDeleteReplicaConfirmation()}
             onDeleteReplica={() => { this.handleDeleteReplicaConfirmation() }}
             onDeleteDisks={() => { this.handleDeleteReplicaDisksConfirmation() }}

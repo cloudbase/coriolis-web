@@ -22,7 +22,6 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import errorImage from './images/error.svg'
-import progressWithBackgroundImage from './images/progress-background.svg'
 import progressImage from './images/progress.js'
 import successImage from './images/success.svg'
 import warningImage from './images/warning.js'
@@ -37,17 +36,13 @@ type Props = {
   secondary?: boolean,
 }
 
-const getSpinnerUrl = (smallCircleColor: string) => {
-  return css`url('data:image/svg+xml;utf8,${encodeURIComponent(progressImage(Palette.grayscale[3], smallCircleColor))}')`
+const getSpinnerUrl = (smallCircleColor: string, useWhiteBackground: ?boolean) => {
+  return css`url('data:image/svg+xml;utf8,${encodeURIComponent(progressImage(Palette.grayscale[3], smallCircleColor, useWhiteBackground))}')`
 }
 
 const getRunningImageUrl = (props: Props) => {
-  if (props.useBackground) {
-    return css`url('${progressWithBackgroundImage}')`
-  }
-
   const smallCircleColor = props.secondary ? Palette.grayscale[0] : Palette.primary
-  return getSpinnerUrl(smallCircleColor)
+  return getSpinnerUrl(smallCircleColor, props.useBackground)
 }
 
 const getWarningUrl = (background: string) => {
@@ -69,7 +64,7 @@ const statuses = (status, props) => {
     case 'CANCELLING':
     case 'CANCELLING_AFTER_COMPLETION':
       return css`
-        background-image: ${getSpinnerUrl(Palette.warning)};
+        background-image: ${getSpinnerUrl(Palette.warning, props.useBackground)};
         ${StyleProps.animations.rotation}
       `
     case 'SCHEDULED':

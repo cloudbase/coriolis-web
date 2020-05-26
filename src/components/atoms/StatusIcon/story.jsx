@@ -62,3 +62,9 @@ storiesOf('StatusIcon', module)
   .add('error hollow', () => (
     <StatusIcon status="ERROR" hollow />
   ))
+  .add('running white background', () => (
+    <Wrapper>
+      <StatusIcon status="RUNNING" useBackground />
+      <StatusIcon status="CANCELLING" useBackground />
+    </Wrapper>
+  ))
