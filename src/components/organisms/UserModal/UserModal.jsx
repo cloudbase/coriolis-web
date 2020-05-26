@@ -25,9 +25,11 @@ import Button from '../../atoms/Button'
 import Modal from '../../molecules/Modal'
 import FieldInput from '../../molecules/FieldInput'
 
-import userImage from './images/user.svg'
+import LabelDictionary from '../../../utils/LabelDictionary'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import StyleProps from '../../styleUtils/StyleProps'
+
+import userImage from './images/user.svg'
 
 const Wrapper = styled.div`
   padding: 48px 0 32px 0;
@@ -179,6 +181,7 @@ class UserModal extends React.Component<Props, State> {
         data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
+        label={LabelDictionary.get(field.name)}
         type={field.type || 'string'}
         value={value}
         onChange={onChange}
