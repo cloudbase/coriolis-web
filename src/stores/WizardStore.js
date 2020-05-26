@@ -68,6 +68,41 @@ class WizardStore {
     this.data = { ...this.data, ...data }
   }
 
+  @action fillWithDefaultValues(direction: 'source' | 'destination', schema: Field[]) {
+    let data: { [string]: any } = (direction === 'source' ? this.data.sourceOptions : this.data.destOptions) || {}
+
+    schema.forEach(field => {
+      if (data[field.name] !== undefined) {
+        return
+      }
+      let fieldDefault = field.default
+      if (fieldDefault == null) {
+        return
+      }
+      if (field.enum) {
+        let isDefaultInEnum = field.enum.find(enumItem => {
+          if (fieldDefault.id != null) {
+            return enumItem.id != null ? enumItem.id === fieldDefault.id : enumItem === fieldDefault.id
+          }
+          return enumItem.id != null ? (enumItem.id === fieldDefault || enumItem.name === fieldDefault) : enumItem === fieldDefault
+        })
+
+        // Don't use the default if it can't be found in the enum list.
+        if (isDefaultInEnum) {
+          data[field.name] = field.default
+        }
+      } else {
+        data[field.name] = field.default
+      }
+    })
+
+    if (direction === 'source') {
+      this.data.sourceOptions = data
+    } else {
+      this.data.destOptions = data
+    }
+  }
+
   @action toggleInstanceSelection(instance: Instance) {
     if (!this.data.selectedInstances) {
       this.data.selectedInstances = [instance]
