@@ -79,14 +79,11 @@ class ReplicaSourceUtils {
   }
 
   static sortReplicas(replicas) {
-    if (replicas.length === 1) {
-      ReplicaSourceUtils.sortExecutions(replicas[0].executions)
-      return
-    }
+    replicas.forEach(replica => {
+      ReplicaSourceUtils.sortExecutionsAndTasks(replica.executions)
+    })
 
     replicas.sort((a, b) => {
-      ReplicaSourceUtils.sortExecutionsAndTasks(a.executions)
-      ReplicaSourceUtils.sortExecutionsAndTasks(b.executions)
       let aLastExecution = a.executions && a.executions.length ? a.executions[a.executions.length - 1] : null
       let bLastExecution = b.executions && b.executions.length ? b.executions[b.executions.length - 1] : null
       let aLastTime = aLastExecution ? aLastExecution.updated_at || aLastExecution.created_at : null
