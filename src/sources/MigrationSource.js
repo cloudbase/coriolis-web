@@ -54,7 +54,7 @@ class MigrationSourceUtils {
 class MigrationSource {
   async getMigrations(skipLog?: boolean): Promise<MainItem[]> {
     let response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/detail`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
       skipLog,
     })
     let migrations = response.data.migrations
