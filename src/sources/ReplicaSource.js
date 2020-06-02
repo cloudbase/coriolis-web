@@ -118,7 +118,7 @@ class ReplicaSourceUtils {
 class ReplicaSource {
   async getReplicas(skipLog?: boolean, quietError?: boolean): Promise<MainItem[]> {
     let response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/detail`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas`,
       skipLog,
       quietError,
     })

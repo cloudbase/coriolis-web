@@ -71,8 +71,8 @@ class LogStore {
     let baseUrl = `${configLoader.config.servicesUrls.coriolis}/${apiCaller.projectId}`
     let [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
       apiCaller.send({ url: `${baseUrl}/diagnostics` }),
-      apiCaller.send({ url: `${baseUrl}/replicas/detail?show_deleted=true` }),
-      apiCaller.send({ url: `${baseUrl}/migrations/detail?show_deleted=true` }),
+      apiCaller.send({ url: `${baseUrl}/replicas?show_deleted=true` }),
+      apiCaller.send({ url: `${baseUrl}/migrations?show_deleted=true` }),
     ])
 
     const zip = new JSZip()

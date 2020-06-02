@@ -116,7 +116,7 @@ class NotificationSource {
   async loadData(): Promise<NotificationItemData[]> {
     let [migrationsResponse, replicasResponse] = await Promise.all([
       Api.send({ url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`, skipLog: true, quietError: true }),
-      Api.send({ url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/detail`, skipLog: true, quietError: true }),
+      Api.send({ url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas`, skipLog: true, quietError: true }),
     ])
 
     let migrations = migrationsResponse.data.migrations
