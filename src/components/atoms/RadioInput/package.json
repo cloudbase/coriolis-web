@@ -2,5 +2,6 @@
   "name": "RadioInput",
   "version": "0.0.0",
   "private": true,
-  "main":"./RadioInput.jsx"
+  "main":"./RadioInput.tsx"
 }
+

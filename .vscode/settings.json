@@ -1,5 +1,21 @@
 {
-  "flow.useNPMPackagedFlow": true,
-  "javascript.validate.enable": false,
-  "files.eol": "\n",
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false,
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": false,
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false,
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": false,
+  },
+  "debug.node.autoAttach": "on",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.enable": true,
+  "files.eol": "\n"
 }

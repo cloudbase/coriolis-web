@@ -2,5 +2,6 @@
   "name": "MainDetailsTable",
   "version": "0.0.0",
   "private": true,
-  "main": "./MainDetailsTable.jsx"
+  "main": "./MainDetailsTable.tsx"
 }
+

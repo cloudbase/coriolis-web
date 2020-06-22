@@ -2,5 +2,6 @@
   "name": "ChooseProvider",
   "version": "0.0.0",
   "private": true,
-  "main":"./ChooseProvider.jsx"
+  "main":"./ChooseProvider.tsx"
 }
+

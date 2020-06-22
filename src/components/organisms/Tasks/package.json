@@ -2,5 +2,6 @@
   "name": "Tasks",
   "version": "0.0.0",
   "private": true,
-  "main":"./Tasks.jsx"
+  "main":"./Tasks.tsx"
 }
+

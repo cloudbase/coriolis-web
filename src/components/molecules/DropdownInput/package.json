@@ -2,5 +2,6 @@
   "name": "DropdownInput",
   "version": "0.0.0",
   "private": true,
-  "main":"./DropdownInput.jsx"
+  "main":"./DropdownInput.tsx"
 }
+

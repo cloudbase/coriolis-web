@@ -2,5 +2,6 @@
   "name": "ProjectModal",
   "version": "0.0.0",
   "private": true,
-  "main":"./ProjectModal.jsx"
+  "main":"./ProjectModal.tsx"
 }
+

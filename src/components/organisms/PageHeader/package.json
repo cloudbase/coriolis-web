@@ -2,5 +2,6 @@
   "name": "PageHeader",
   "version": "0.0.0",
   "private": true,
-  "main":"./PageHeader.jsx"
+  "main":"./PageHeader.tsx"
 }
+

@@ -2,5 +2,6 @@
   "name": "AlertModal",
   "version": "0.0.0",
   "private": true,
-  "main":"./AlertModal.jsx"
+  "main":"./AlertModal.tsx"
 }
+

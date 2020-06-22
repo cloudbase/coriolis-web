@@ -2,5 +2,6 @@
   "name": "AssessedVmListItem",
   "version": "0.0.0",
   "private": true,
-  "main":"./AssessedVmListItem.jsx"
+  "main":"./AssessedVmListItem.tsx"
 }
+

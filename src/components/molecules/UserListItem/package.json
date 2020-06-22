@@ -2,5 +2,6 @@
   "name": "UserListItem",
   "version": "0.0.0",
   "private": true,
-  "main":"./UserListItem.jsx"
+  "main":"./UserListItem.tsx"
 }
+

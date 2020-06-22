@@ -2,5 +2,6 @@
   "name": "ActivityModule",
   "version": "0.0.0",
   "private": true,
-  "main": "./ActivityModule.jsx"
+  "main": "./ActivityModule.tsx"
 }
+

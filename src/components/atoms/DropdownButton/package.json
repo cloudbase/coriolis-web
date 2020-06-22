@@ -2,5 +2,6 @@
   "name": "DropdownButton",
   "version": "0.0.0",
   "private": true,
-  "main":"./DropdownButton.jsx"
+  "main":"./DropdownButton.tsx"
 }
+
