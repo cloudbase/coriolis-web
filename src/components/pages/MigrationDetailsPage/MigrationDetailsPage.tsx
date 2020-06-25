@@ -310,6 +310,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Recreate Migration',
+        color: Palette.primary,
         action: () => { this.handleRecreateClick() },
       },
       {
