@@ -161,6 +161,8 @@ class ProviderStore {
     }
   }
 
+  loadOptionsSchemaLastReqId: string = ''
+
   @action async loadOptionsSchema(options: {
     providerName: string,
     optionsType: 'source' | 'destination',
@@ -175,18 +177,28 @@ class ProviderStore {
       this.destinationSchemaLoading = true
     }
 
+    const reqId = `${providerName}-${optionsType}`
+    this.loadOptionsSchemaLastReqId = reqId
+
     try {
       let fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, optionsType, useCache, quietError)
-      this.loadOptionsSchemaSuccess(fields, optionsType)
+      this.loadOptionsSchemaSuccess(fields, optionsType, this.loadOptionsSchemaLastReqId === reqId)
       return fields
     } catch (err) {
       throw err
     } finally {
-      this.loadOptionsSchemaDone(optionsType)
+      this.loadOptionsSchemaDone(optionsType, this.loadOptionsSchemaLastReqId === reqId)
     }
   }
 
-  @action loadOptionsSchemaSuccess(fields: Field[], optionsType: 'source' | 'destination') {
+  @action loadOptionsSchemaSuccess(
+    fields: Field[],
+    optionsType: 'source' | 'destination',
+    isValid: boolean,
+  ) {
+    if (!isValid) {
+      return
+    }
     if (optionsType === 'source') {
       this.sourceSchema = fields
     } else {
@@ -194,13 +206,18 @@ class ProviderStore {
     }
   }
 
-  @action loadOptionsSchemaDone(optionsType: 'source' | 'destination') {
+  @action loadOptionsSchemaDone(optionsType: 'source' | 'destination', isValid: boolean) {
+    if (!isValid) {
+      return
+    }
     if (optionsType === 'source') {
       this.sourceSchemaLoading = false
     } else {
       this.destinationSchemaLoading = false
     }
   }
+
+  getOptionsValuesLastReqId: string = ''
 
   async getOptionsValues(config: {
     optionsType: 'source' | 'destination',
@@ -229,9 +246,17 @@ class ProviderStore {
     }
     this.getOptionsValuesStart(optionsType, !envData)
 
+    const reqId = `${endpointId}-${providerType}`
+    this.getOptionsValuesLastReqId = reqId
+
     try {
       let options = await ProviderSource.getOptionsValues(optionsType, endpointId, envData, useCache, quietError)
-      this.getOptionsValuesSuccess(optionsType, providerName, options)
+      this.getOptionsValuesSuccess(
+        optionsType,
+        providerName,
+        options,
+        this.getOptionsValuesLastReqId === reqId,
+      )
       return options
     } catch (err) {
       console.error(err)
@@ -242,7 +267,11 @@ class ProviderStore {
       throw err
     } finally {
       if (!canceled) {
-        this.getOptionsValuesDone(optionsType, !envData)
+        this.getOptionsValuesDone(
+          optionsType,
+          !envData,
+          this.getOptionsValuesLastReqId === reqId,
+        )
       }
     }
   }
@@ -252,18 +281,30 @@ class ProviderStore {
       if (isPrimary) {
         this.sourceOptions = []
         this.sourceOptionsPrimaryLoading = true
+        this.sourceOptionsSecondaryLoading = false
       } else {
+        this.sourceOptionsPrimaryLoading = false
         this.sourceOptionsSecondaryLoading = true
       }
     } else if (isPrimary) {
       this.destinationOptions = []
       this.destinationOptionsPrimaryLoading = true
+      this.destinationOptionsSecondaryLoading = false
     } else {
+      this.destinationOptionsPrimaryLoading = false
       this.destinationOptionsSecondaryLoading = true
     }
   }
 
-  @action getOptionsValuesDone(optionsType: 'source' | 'destination', isPrimary: boolean) {
+  @action getOptionsValuesDone(
+    optionsType: 'source' | 'destination',
+    isPrimary: boolean,
+    isValid: boolean,
+  ) {
+    if (!isValid) {
+      return
+    }
+
     if (optionsType === 'source') {
       if (isPrimary) {
         this.sourceOptionsPrimaryLoading = false
@@ -277,7 +318,15 @@ class ProviderStore {
     }
   }
 
-  @action getOptionsValuesSuccess(optionsType: 'source' | 'destination', provider: string, options: OptionValues[]) {
+  @action getOptionsValuesSuccess(
+    optionsType: 'source' | 'destination',
+    provider: string,
+    options: OptionValues[],
+    isValid: boolean,
+  ) {
+    if (!isValid) {
+      return
+    }
     let schema = optionsType === 'source' ? this.sourceSchema : this.destinationSchema
     schema.forEach(field => {
       const parser = OptionsSchemaPlugin[provider] || OptionsSchemaPlugin.default
