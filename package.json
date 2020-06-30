@@ -6,7 +6,7 @@
     "start": "node ./server",
     "build": "webpack --config webpack.prod.js",
     "ui-dev": "webpack-dev-server --config webpack.dev.js",
-    "server-dev": "nodemon -e ts,js -w server/**",
+    "server-dev": "nodemon -e ts,js -w server/**/",
     "server-debug": "node --inspect server",
     "tsc": "npx tsc --skipLibCheck",
     "eslint": "npx eslint -c .eslintrc \"src/**\" \"server/**\"",
