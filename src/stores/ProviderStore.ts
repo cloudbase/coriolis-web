@@ -176,6 +176,7 @@ class ProviderStore {
   }
 
   loadOptionsSchemaLastReqId: string = ''
+  loadOptionsSchemaLastDirection: 'source' | 'destination' | '' = ''
 
   @action async loadOptionsSchema(options: {
     providerName: ProviderTypes,
@@ -193,16 +194,26 @@ class ProviderStore {
       this.destinationSchemaLoading = true
     }
 
-    const reqId = `${providerName}-${optionsType}`
+    const reqId = providerName
     this.loadOptionsSchemaLastReqId = reqId
+    this.loadOptionsSchemaLastDirection = optionsType
+
+    const isValid = () => {
+      const isSameRequest = this.loadOptionsSchemaLastReqId === reqId
+      const isSameDirection = this.loadOptionsSchemaLastDirection === optionsType
+      if (!isSameDirection) {
+        return true
+      }
+      return isSameRequest
+    }
 
     try {
       const fields: Field[] = await ProviderSource
         .loadOptionsSchema(providerName, optionsType, useCache, quietError)
-      this.loadOptionsSchemaSuccess(fields, optionsType, this.loadOptionsSchemaLastReqId === reqId)
+      this.loadOptionsSchemaSuccess(fields, optionsType, isValid())
       return fields
     } finally {
-      this.loadOptionsSchemaDone(optionsType, this.loadOptionsSchemaLastReqId === reqId)
+      this.loadOptionsSchemaDone(optionsType, isValid())
     }
   }
 
@@ -233,6 +244,7 @@ class ProviderStore {
   }
 
   getOptionsValuesLastReqId: string = ''
+  getOptionsValuesLastDirection: 'source' | 'destination' | '' = ''
 
   async getOptionsValues(config: {
     optionsType: 'source' | 'destination',
@@ -266,6 +278,16 @@ class ProviderStore {
 
     const reqId = `${endpointId}-${providerType}`
     this.getOptionsValuesLastReqId = reqId
+    this.getOptionsValuesLastDirection = optionsType
+
+    const isValid = () => {
+      const isSameRequest = this.getOptionsValuesLastReqId === reqId
+      const isSameDirection = this.getOptionsValuesLastDirection === optionsType
+      if (!isSameDirection) {
+        return true
+      }
+      return isSameRequest
+    }
 
     try {
       const options = await ProviderSource
@@ -274,7 +296,7 @@ class ProviderStore {
         optionsType,
         providerName,
         options,
-        this.getOptionsValuesLastReqId === reqId,
+        isValid(),
       )
       return options
     } catch (err) {
@@ -289,7 +311,7 @@ class ProviderStore {
         this.getOptionsValuesDone(
           optionsType,
           !envData,
-          this.getOptionsValuesLastReqId === reqId,
+          isValid(),
         )
       }
     }
