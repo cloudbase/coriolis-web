@@ -109,19 +109,19 @@ class App extends React.Component<{}, State> {
       showAuthAnimation?: boolean,
       showDenied?: boolean,
     }) => (
-        <Route
-          path={options.path}
-          exact={options.exact}
-          render={() => (
-            <MessagePage
-              title={options.title}
-              subtitle={options.subtitle}
-              showAuthAnimation={options.showAuthAnimation}
-              showDenied={options.showDenied}
-            />
-          )}
-        />
-      )
+      <Route
+        path={options.path}
+        exact={options.exact}
+        render={() => (
+          <MessagePage
+            title={options.title}
+            subtitle={options.subtitle}
+            showAuthAnimation={options.showAuthAnimation}
+            showDenied={options.showDenied}
+          />
+        )}
+      />
+    )
 
     const renderRoute = (path: string, component: any, exact?: boolean) => {
       if (!userStore.loggedUser) {

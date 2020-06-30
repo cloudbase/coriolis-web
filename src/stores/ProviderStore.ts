@@ -176,6 +176,7 @@ class ProviderStore {
   }
 
   loadOptionsSchemaLastReqId: string = ''
+
   loadOptionsSchemaLastDirection: 'source' | 'destination' | '' = ''
 
   @action async loadOptionsSchema(options: {
@@ -244,6 +245,7 @@ class ProviderStore {
   }
 
   getOptionsValuesLastReqId: string = ''
+
   getOptionsValuesLastDirection: 'source' | 'destination' | '' = ''
 
   async getOptionsValues(config: {
