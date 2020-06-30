@@ -2,5 +2,6 @@
   "name": "ProjectDetailsContent",
   "version": "0.0.0",
   "private": true,
-  "main":"./ProjectDetailsContent.jsx"
+  "main":"./ProjectDetailsContent.tsx"
 }
+

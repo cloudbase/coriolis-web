@@ -2,5 +2,6 @@
   "name": "TopEndpointsModule",
   "version": "0.0.0",
   "private": true,
-  "main": "./TopEndpointsModule.jsx"
+  "main": "./TopEndpointsModule.tsx"
 }
+

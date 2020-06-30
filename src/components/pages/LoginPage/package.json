@@ -2,5 +2,6 @@
   "name": "LoginPage",
   "version": "0.0.0",
   "private": true,
-  "main":"./LoginPage.jsx"
+  "main":"./LoginPage.tsx"
 }
+

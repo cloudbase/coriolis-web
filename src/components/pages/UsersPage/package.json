@@ -2,5 +2,6 @@
   "name": "UsersPage",
   "version": "0.0.0",
   "private": true,
-  "main":"./UsersPage.jsx"
+  "main":"./UsersPage.tsx"
 }
+

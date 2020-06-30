@@ -2,5 +2,6 @@
   "name": "Executions",
   "version": "0.0.0",
   "private": true,
-  "main":"./Executions.jsx"
+  "main":"./Executions.tsx"
 }
+

@@ -2,5 +2,6 @@
   "name": "EndpointDetailsPage",
   "version": "0.0.0",
   "private": true,
-  "main":"./EndpointDetailsPage.jsx"
+  "main":"./EndpointDetailsPage.tsx"
 }
+

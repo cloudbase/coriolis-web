@@ -2,5 +2,6 @@
   "name": "ReplicaMigrationOptions",
   "version": "0.0.0",
   "private": true,
-  "main":"./ReplicaMigrationOptions.jsx"
+  "main":"./ReplicaMigrationOptions.tsx"
 }
+

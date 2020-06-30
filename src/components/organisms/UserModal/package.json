@@ -2,5 +2,6 @@
   "name": "UserModal",
   "version": "0.0.0",
   "private": true,
-  "main":"./UserModal.jsx"
+  "main":"./UserModal.tsx"
 }
+

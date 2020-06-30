@@ -2,5 +2,6 @@
   "name": "Checkbox",
   "version": "0.0.0",
   "private": true,
-  "main":"./Checkbox.jsx"
+  "main":"./Checkbox.tsx"
 }
+

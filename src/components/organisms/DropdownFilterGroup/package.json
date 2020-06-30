@@ -2,5 +2,6 @@
   "name": "DropdownFilterGroup",
   "version": "0.0.0",
   "private": true,
-  "main":"./DropdownFilterGroup.jsx"
+  "main":"./DropdownFilterGroup.tsx"
 }
+

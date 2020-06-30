@@ -2,5 +2,6 @@
   "name": "DashboardContent",
   "version": "0.0.0",
   "private": true,
-  "main": "./DashboardContent.jsx"
+  "main": "./DashboardContent.tsx"
 }
+

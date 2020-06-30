@@ -2,5 +2,6 @@
   "name": "StatusImage",
   "version": "0.0.0",
   "private": true,
-  "main":"./StatusImage.jsx"
+  "main":"./StatusImage.tsx"
 }
+

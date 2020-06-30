@@ -2,5 +2,6 @@
   "name": "LicenceModule",
   "version": "0.0.0",
   "private": true,
-  "main": "./LicenceModule.jsx"
+  "main": "./LicenceModule.tsx"
 }
+

@@ -2,5 +2,6 @@
   "name": "AssessmentMigrationOptions",
   "version": "0.0.0",
   "private": true,
-  "main":"./AssessmentMigrationOptions.jsx"
+  "main":"./AssessmentMigrationOptions.tsx"
 }
+

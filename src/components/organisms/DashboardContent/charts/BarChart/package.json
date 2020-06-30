@@ -2,5 +2,6 @@
   "name": "BarChart",
   "version": "0.0.0",
   "private": true,
-  "main": "./BarChart.jsx"
+  "main": "./BarChart.tsx"
 }
+

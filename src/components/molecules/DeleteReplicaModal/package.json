@@ -2,5 +2,6 @@
   "name": "DeleteReplicaModal",
   "version": "0.0.0",
   "private": true,
-  "main": "./DeleteReplicaModal.jsx"
+  "main": "./DeleteReplicaModal.tsx"
 }
+
