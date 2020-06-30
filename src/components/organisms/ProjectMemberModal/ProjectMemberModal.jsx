@@ -261,6 +261,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         name={field.name}
         type={field.type || 'string'}
         value={value}
+        label={field.label}
         onChange={onChange}
         width={StyleProps.inputSizes.large.width}
         disabled={this.props.loading}
@@ -278,18 +279,19 @@ class ProjectMemberModal extends React.Component<Props, State> {
     const userProjects = this.props.projects.map(p => ({ name: p.name, id: p.id }))
     const fields = [
       this.renderField(
-        { name: 'username', required: true },
+        { name: 'username', label: 'Username', required: true },
         this.state.username,
         username => { this.setState({ username }) }
       ),
       this.renderField(
-        { name: 'description' },
+        { name: 'description', label: 'Description' },
         this.state.description,
         description => { this.setState({ description }) }
       ),
       this.renderField(
         {
           name: 'Primary Project',
+          label: 'Primary Project',
           // $FlowIssue
           enum: [{ name: 'Choose a project', id: null }].concat(userProjects),
         },
@@ -298,22 +300,22 @@ class ProjectMemberModal extends React.Component<Props, State> {
       ),
       this.renderRolesField(),
       this.renderField(
-        { name: 'password', required: true },
+        { name: 'password', label: 'Password', required: true },
         this.state.password,
         password => { this.setState({ password }) }
       ),
       this.renderField(
-        { name: 'confirm_password', required: true },
+        { name: 'confirm_password', label: 'Confirm Password', required: true },
         this.state.confirmPassword,
         confirmPassword => { this.setState({ confirmPassword }) }
       ),
       this.renderField(
-        { name: 'Email' },
+        { name: 'Email', label: 'Email' },
         this.state.email,
         email => { this.setState({ email }) }
       ),
       this.renderField(
-        { name: 'Enabled', type: 'boolean' },
+        { name: 'Enabled', label: 'Enabled', type: 'boolean' },
         this.state.enabled,
         enabled => { this.setState({ enabled }) }
       ),
