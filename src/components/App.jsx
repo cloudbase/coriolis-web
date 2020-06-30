@@ -47,7 +47,6 @@ import { navigationMenu } from '../constants'
 import Palette from './styleUtils/Palette'
 import StyleProps from './styleUtils/StyleProps'
 import configLoader from '../utils/Config'
-import ObjectUtils from '../utils/ObjectUtils'
 
 injectGlobal`
   ${Fonts}
@@ -80,7 +79,6 @@ const Wrapper = styled.div`
 type State = {
   isConfigReady: boolean,
 }
-const MIN_WAIT_MS = 0
 
 class App extends React.Component<{}, State> {
   state = {
@@ -89,22 +87,10 @@ class App extends React.Component<{}, State> {
   awaitingRefresh: boolean = false
 
   async componentWillMount() {
-    let startTime = new Date().getTime()
-    observe(userStore, 'loggedUser', () => { this.refreshState(startTime) })
+    observe(userStore, 'loggedUser', () => { this.setState({}) })
     await configLoader.load()
     userStore.tokenLogin()
     this.setState({ isConfigReady: true })
-  }
-
-  async refreshState(startTime: number) {
-    if (this.awaitingRefresh) {
-      return
-    }
-    this.awaitingRefresh = true
-    if (new Date().getTime() - startTime < MIN_WAIT_MS) {
-      await ObjectUtils.wait(MIN_WAIT_MS)
-    }
-    this.setState({})
   }
 
   render() {
