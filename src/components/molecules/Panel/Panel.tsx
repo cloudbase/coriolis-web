@@ -16,6 +16,9 @@ import * as React from 'react'
 import styled, { css } from 'styled-components'
 import { observer } from 'mobx-react'
 import Palette from '../../styleUtils/Palette'
+import StyleProps from '../../styleUtils/StyleProps'
+
+import loadingImage from './images/loading.svg'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -28,6 +31,7 @@ const Navigation = styled.div<any>`
   background-image: linear-gradient(rgba(200, 204, 215, 0.54), rgba(164, 170, 181, 0.54));
 `
 const NavigationItemDiv = styled.div<any>`
+  position: relative;
   height: 47px;
   border-bottom: 1px solid ${Palette.grayscale[2]};
   color: ${props => (props.disabled ? Palette.grayscale[3] : 'black')};
@@ -59,12 +63,22 @@ const ReloadButton = styled.div<any>`
   bottom: 42px;
   left: 32px;
 `
+const Loading = styled.span`
+  position: absolute;
+  top: 15px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  background: url('${loadingImage}') center no-repeat;
+  ${StyleProps.animations.rotation}
+`
 
 export type NavigationItem = {
   label: string,
   value: string,
   disabled?: boolean,
   title?: string,
+  loading?: boolean,
 }
 
 export type Props = {
@@ -103,7 +117,7 @@ class Panel extends React.Component<Props> {
               data-test-id={`${TEST_ID}-navItem-${item.value}`}
               disabled={item.disabled}
               title={item.title}
-            >{item.label}
+            >{item.label}{item.loading ? <Loading /> : null}
             </NavigationItemDiv>
           ))}
         </Navigation>
