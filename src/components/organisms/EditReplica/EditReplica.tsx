@@ -41,6 +41,7 @@ import type { Network, NetworkMap, SecurityGroup } from '../../../@types/Network
 import { providerTypes, migrationFields } from '../../../constants'
 import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
+import LoadingButton from '../../molecules/LoadingButton/LoadingButton'
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -321,17 +322,32 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   isUpdateDisabled() {
-    const isLoadingDestOptions = this.state.selectedPanel === 'dest_options'
-      && (providerStore.destinationSchemaLoading || providerStore.destinationOptionsPrimaryLoading)
-    const isLoadingSourceOptions = this.state.selectedPanel === 'source_options'
-      && (providerStore.sourceSchemaLoading || providerStore.sourceOptionsPrimaryLoading)
-    const isLoadingNetwork = this.state.selectedPanel === 'network_mapping' && this.props.instancesDetailsLoading
-    const isLoadingStorage = this.state.selectedPanel === 'storage_mapping'
-      && (this.props.instancesDetailsLoading || endpointStore.storageLoading)
     const isDestFailed = this.props.type === 'replica' && this.state.destinationFailedMessage
-    return this.state.updateDisabled || isLoadingSourceOptions
-      || isLoadingDestOptions || isLoadingNetwork
-      || isLoadingStorage || isDestFailed
+    return this.state.updateDisabled || isDestFailed
+  }
+
+  isLoadingDestOptions() {
+    return providerStore.destinationSchemaLoading
+      || providerStore.destinationOptionsPrimaryLoading
+  }
+
+  isLoadingSourceOptions() {
+    return providerStore.sourceSchemaLoading
+      || providerStore.sourceOptionsPrimaryLoading
+  }
+
+  isLoadingNetwork() {
+    return this.props.instancesDetailsLoading
+  }
+
+  isLoadingStorage() {
+    return this.props.instancesDetailsLoading || endpointStore.storageLoading
+  }
+
+  isLoading() {
+    return this.isLoadingSourceOptions()
+      || this.isLoadingDestOptions() || this.isLoadingNetwork()
+      || this.isLoadingStorage()
   }
 
   parseReplicaData(environment: { [prop: string]: any } | null) {
@@ -608,13 +624,17 @@ class EditReplica extends React.Component<Props, State> {
             secondary
           >Cancel
           </Button>
-          <Button
-            large
-            onClick={() => { this.handleUpdateClick() }}
-            disabled={this.isUpdateDisabled()}
-          >
-            {this.props.type === 'replica' ? 'Update' : 'Create'}
-          </Button>
+          {this.isLoading() ? (
+            <LoadingButton>Loading ...</LoadingButton>
+          ) : (
+            <Button
+              large
+              onClick={() => { this.handleUpdateClick() }}
+              disabled={this.isUpdateDisabled()}
+            >
+              {this.props.type === 'replica' ? 'Update' : 'Create'}
+            </Button>
+          )}
         </Buttons>
       </PanelContent>
     )
@@ -638,13 +658,26 @@ class EditReplica extends React.Component<Props, State> {
         label: 'Source Options',
         disabled: this.state.sourceFailed,
         title: this.state.sourceFailed ? 'There are source platform errors, source options can\'t be updated' : '',
+        loading: this.isLoadingSourceOptions(),
       },
-      { value: 'dest_options', label: 'Target Options' },
-      { value: 'network_mapping', label: 'Network Mapping' },
+      {
+        value: 'dest_options',
+        label: 'Target Options',
+        loading: this.isLoadingDestOptions(),
+      },
+      {
+        value: 'network_mapping',
+        label: 'Network Mapping',
+        loading: this.isLoadingNetwork(),
+      },
     ]
 
     if (this.hasStorageMap()) {
-      navigationItems.push({ value: 'storage_mapping', label: 'Storage Mapping' })
+      navigationItems.push({
+        value: 'storage_mapping',
+        label: 'Storage Mapping',
+        loading: this.isLoadingStorage(),
+      })
     }
 
     return (
