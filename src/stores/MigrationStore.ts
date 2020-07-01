@@ -65,6 +65,10 @@ class MigrationStore {
     return null
   }
 
+  @action async recreateFullCopy(migration: MainItem) {
+    return MigrationSource.recreateFullCopy(migration)
+  }
+
   @action async recreate(
     migration: MainItem,
     sourceEndpoint: Endpoint,

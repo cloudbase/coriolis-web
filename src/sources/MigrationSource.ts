@@ -72,6 +72,43 @@ class MigrationSource {
     return migration
   }
 
+  async recreateFullCopy(migration: MainItem): Promise<MainItem> {
+    const {
+      origin_endpoint_id, destination_endpoint_id, destination_environment,
+      network_map, instances, storage_mappings, notes,
+    } = migration
+
+    const payload: any = {
+      migration: {
+        origin_endpoint_id,
+        destination_endpoint_id,
+        destination_environment,
+        network_map,
+        instances,
+        storage_mappings,
+        notes,
+      },
+    }
+
+    if (migration.skip_os_morphing != null) {
+      payload.migration.skip_os_morphing = migration.skip_os_morphing
+    }
+
+    if (migration.source_environment) {
+      payload.migration.source_environment = migration.source_environment
+    }
+
+    payload.migration.shutdown_instances = Boolean(migration.shutdown_instances)
+    payload.migration.replication_count = migration.replication_count || 2
+
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
+      method: 'POST',
+      data: payload,
+    })
+    return response.data.migration
+  }
+
   async recreate(opts: {
     sourceEndpoint: Endpoint,
     destEndpoint: Endpoint,

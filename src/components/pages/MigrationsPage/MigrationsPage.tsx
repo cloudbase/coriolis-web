@@ -34,6 +34,7 @@ import notificationStore from '../../../stores/NotificationStore'
 import configLoader from '../../../utils/Config'
 
 import Palette from '../../styleUtils/Palette'
+import replicaMigrationFields from '../../organisms/ReplicaMigrationOptions/replicaMigrationFields'
 
 const Wrapper = styled.div<any>``
 
@@ -42,12 +43,14 @@ type State = {
   modalIsOpen: boolean,
   showDeleteMigrationModal: boolean,
   showCancelMigrationModal: boolean,
+  showRecreateMigrationsModal: boolean,
 }
 @observer
 class MigrationsPage extends React.Component<{ history: any }, State> {
   state: State = {
     showDeleteMigrationModal: false,
     showCancelMigrationModal: false,
+    showRecreateMigrationsModal: false,
     selectedMigrations: [],
     modalIsOpen: false,
   }
@@ -81,6 +84,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
       { label: 'Running', value: 'RUNNING' },
       { label: 'Error', value: 'ERROR' },
       { label: 'Completed', value: 'COMPLETED' },
+      { label: 'Canceled', value: 'CANCELED' },
     ]
   }
 
@@ -123,6 +127,21 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     })
     notificationStore.alert('Canceling migrations')
     this.setState({ showCancelMigrationModal: false })
+  }
+
+  async recreateMigrations() {
+    notificationStore.alert('Recreating migrations')
+    this.setState({ showRecreateMigrationsModal: false })
+
+    await Promise.all(this.state.selectedMigrations.map(async migration => {
+      if (migration.replica_id) {
+        await migrationStore.migrateReplica(migration.replica_id, replicaMigrationFields, [])
+      } else {
+        await migrationStore.recreateFullCopy(migration)
+      }
+    }))
+
+    migrationStore.getMigrations()
   }
 
   handleEmptyListButtonClick() {
@@ -183,15 +202,24 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     this.state.selectedMigrations.forEach(migration => {
       atLeaseOneIsRunning = atLeaseOneIsRunning || this.getStatus(migration.id) === 'RUNNING'
     })
-    const BulkActions = [{
-      label: 'Cancel',
-      disabled: !atLeaseOneIsRunning,
-      action: () => { this.setState({ showCancelMigrationModal: true }) },
-    }, {
-      label: 'Delete Migration',
-      color: Palette.alert,
-      action: () => { this.setState({ showDeleteMigrationModal: true }) },
-    }]
+    const BulkActions = [
+      {
+        label: 'Cancel',
+        disabled: !atLeaseOneIsRunning,
+        action: () => { this.setState({ showCancelMigrationModal: true }) },
+      },
+      {
+        label: 'Recreate Migrations',
+        disabled: atLeaseOneIsRunning,
+        color: Palette.primary,
+        action: () => { this.setState({ showRecreateMigrationsModal: true }) },
+      },
+      {
+        label: 'Delete Migrations',
+        color: Palette.alert,
+        action: () => { this.setState({ showDeleteMigrationModal: true }) },
+      },
+    ]
 
     return (
       <Wrapper>
@@ -261,6 +289,16 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
             extraMessage="Canceling a Coriolis Migration is permanent!"
             onConfirmation={() => { this.cancelSelectedMigrations() }}
             onRequestClose={() => { this.setState({ showCancelMigrationModal: false }) }}
+          />
+        ) : null}
+        {this.state.showRecreateMigrationsModal ? (
+          <AlertModal
+            isOpen
+            title="Recreate Selected Migrations?"
+            message="Are you sure you want to recreate the selected migrations?"
+            extraMessage="Migrations created from replicas will be recreated using default options and regular migrations will be recreated using their original source and destination environment options."
+            onConfirmation={() => { this.recreateMigrations() }}
+            onRequestClose={() => { this.setState({ showRecreateMigrationsModal: false }) }}
           />
         ) : null}
       </Wrapper>

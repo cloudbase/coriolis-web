@@ -26,6 +26,7 @@ import KeyboardManager from '../../../utils/KeyboardManager'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import replicaMigrationImage from './images/replica-migration.svg'
+import replicaMigrationFields from './replicaMigrationFields'
 
 import type { Field } from '../../../@types/Field'
 import type { Instance, InstanceScript } from '../../../@types/Instance'
@@ -86,21 +87,7 @@ type State = {
   selectedBarButton: string,
   uploadedScripts: InstanceScript[],
 }
-const defaultFields: Field[] = [
-  {
-    name: 'clone_disks',
-    type: 'boolean',
-    value: true,
-  },
-  {
-    name: 'force',
-    type: 'boolean',
-  },
-  {
-    name: 'skip_os_morphing',
-    type: 'boolean',
-  },
-]
+
 @observer
 class ReplicaMigrationOptions extends React.Component<Props, State> {
   state: State = {
@@ -113,7 +100,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
 
   UNSAFE_componentWillMount() {
     this.setState({
-      fields: defaultFields.map(f => (f.name === 'skip_os_morphing' ? (
+      fields: replicaMigrationFields.map(f => (f.name === 'skip_os_morphing' ? (
         { ...f, value: this.props.defaultSkipOsMorphing || null }
       ) : f)),
     })
