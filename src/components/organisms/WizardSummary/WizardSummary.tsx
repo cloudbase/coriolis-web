@@ -174,12 +174,16 @@ type Props = {
 }
 @observer
 class WizardSummary extends React.Component<Props> {
-  getDefaultOption(fieldName: string): boolean {
-    if (this.props.data.destOptions && this.props.data.destOptions[fieldName] === false) {
-      return false
+  getDefaultBooleanOption(fieldName: string, defaultValue: boolean): boolean {
+    if (!this.props.data.destOptions) {
+      return defaultValue
     }
 
-    return true
+    if (this.props.data.destOptions[fieldName] != null) {
+      return this.props.data.destOptions[fieldName]
+    }
+
+    return defaultValue
   }
 
   renderScheduleLabel(schedule: Schedule) {
@@ -291,14 +295,14 @@ class WizardSummary extends React.Component<Props> {
     const executeNowOption = (
       <Option>
         <OptionLabel>Execute now?</OptionLabel>
-        <OptionValue>{this.getDefaultOption('execute_now') ? 'Yes' : 'No'}</OptionValue>
+        <OptionValue>{this.getDefaultBooleanOption('execute_now', true) ? 'Yes' : 'No'}</OptionValue>
       </Option>
     )
 
     const separateVmOption = (
       <Option>
         <OptionLabel>Separate {type}/VM?</OptionLabel>
-        <OptionValue>{this.getDefaultOption('separate_vm') ? 'Yes' : 'No'}</OptionValue>
+        <OptionValue>{this.getDefaultBooleanOption('separate_vm', true) ? 'Yes' : 'No'}</OptionValue>
       </Option>
     )
 
@@ -306,7 +310,7 @@ class WizardSummary extends React.Component<Props> {
       (
         <Option>
           <OptionLabel>Shutdown Instances</OptionLabel>
-          <OptionValue>{this.getDefaultOption('shutdown_instances') ? 'Yes' : 'No'}</OptionValue>
+          <OptionValue>{this.getDefaultBooleanOption('shutdown_instances', false) ? 'Yes' : 'No'}</OptionValue>
         </Option>
       ),
       (
