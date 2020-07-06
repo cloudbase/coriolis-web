@@ -339,7 +339,7 @@ class WizardOptions extends React.Component<Props> {
 
       return {
         column,
-        component: this.renderOptionsField(field),
+        component: this.renderOptionsField(usableField),
         field: usableField,
       }
     })
