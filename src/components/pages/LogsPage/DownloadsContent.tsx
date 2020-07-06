@@ -33,6 +33,15 @@ const Wrapper = styled.div<any>`
   min-height: 0;
 `
 const Info = styled.div<any>``
+const InfoUtc = styled.div`
+  display: flex;
+  font-size: 12px;
+  align-items: center;
+  margin-top: 16px;
+  > div {
+    margin-right: 8px;
+  }
+`
 const Dates = styled.div<any>`
   display: flex;
   align-items: flex-end;
@@ -199,6 +208,7 @@ class DownloadsContent extends React.Component<Props, State> {
           Optional time range for log download:
         </Info>
         {this.renderDates()}
+        <InfoUtc><StatusIcon status="UNSCHEDULED" />Start and End times must be set in UTC</InfoUtc>
         {this.renderLogs()}
       </Wrapper>
     )
