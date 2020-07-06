@@ -17,6 +17,10 @@ const conf: Config = {
   // The default user domain name used for logging in
   defaultUserDomain: 'default',
 
+  // The name of the admin role, used for checking
+  // if a user is allowed to do certain admin operations
+  adminRoleName: 'admin',
+
   // Shows the 'Use Current User/Project/Domain for Authentification' switch
   // when creating a new openstack endpoint
   showOpenstackCurrentUserSwitch: false,

@@ -295,7 +295,7 @@ class UserSource {
 
   async getAdminRoleId(): Promise<string> {
     const roles: { id: string, name: string }[] = await this.getRoles()
-    const role = roles.find(r => r.name.toLowerCase() === 'admin')
+    const role = roles.find(r => r.name.toLowerCase() === configLoader.config.adminRoleName)
     const roleId = role ? role.id : ''
     return roleId
   }
@@ -330,7 +330,9 @@ class UserSource {
     const roleAssignments: RoleAssignment[] = response.data.role_assignments
     return roleAssignments
       .filter(a => a && a.user && a.user.id === userId)
-      .filter(a => a && a.role && a.role.name && a.role.name.toLowerCase() === 'admin').length > 0
+      .filter(a => a && a.role && a.role.name
+        && a.role.name.toLowerCase() === configLoader.config.adminRoleName)
+      .length > 0
   }
 }
 

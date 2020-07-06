@@ -23,6 +23,7 @@ export type Config = {
   disabledPages: string[],
   showUserDomainInput: boolean,
   defaultUserDomain: string,
+  adminRoleName: string,
   showOpenstackCurrentUserSwitch: boolean,
   useBarbicanSecrets: boolean,
   requestPollTimeout: number,
