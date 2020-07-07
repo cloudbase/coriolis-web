@@ -208,7 +208,7 @@ class DownloadsContent extends React.Component<Props, State> {
           Optional time range for log download:
         </Info>
         {this.renderDates()}
-        <InfoUtc><StatusIcon status="UNSCHEDULED" />Start and End times must be set in UTC</InfoUtc>
+        <InfoUtc><StatusIcon status="UNSCHEDULED" />Start and End times must be set in server&apos;s timezone</InfoUtc>
         {this.renderLogs()}
       </Wrapper>
     )
