@@ -27,19 +27,43 @@ const GlobalStyle = createGlobalStyle`
     max-width: 192px;
     padding: 8px !important;
     box-shadow: 0 0 9px 1px rgba(32, 34, 52, 0.1);
-    margin-left: 12px !important;
     opacity: 1 !important;
     z-index: 999999 !important;
     transition: opacity ${StyleProps.animations.swift} !important;
-    &:after {
-      border-right-color: ${Palette.grayscale[1]} !important;
-      border-right-width: 8px !important;
-      left: -8px !important;
-      border-top-width: 8px !important;
-      border-bottom-width: 8px !important;
-      margin-top: -8px !important;
-    }
   }
+  .place-right.reactTooltip {
+    margin-left: 12px !important;
+  }
+  .place-bottom.reactTooltip {
+    margin-left: 1px !important;
+  }
+  .place-top.reactTooltip:after {
+    border-top-color: ${Palette.grayscale[1]} !important;
+    border-top-width: 8px !important;
+    bottom: -8px !important;
+  }
+  .place-bottom.reactTooltip:after {
+    border-bottom-color: ${Palette.grayscale[1]} !important;
+    border-bottom-width: 8px !important;
+    top: -8px !important;
+  }
+  .place-left.reactTooltip:after {
+    border-left-color: ${Palette.grayscale[1]} !important;
+    border-left-width: 8px !important;
+    border-bottom-width: 8px !important;
+    border-top-width: 8px !important;
+    right: -8px !important;
+    margin-top: -8px !important;
+  }
+  .place-right.reactTooltip:after {
+    border-right-color: ${Palette.grayscale[1]} !important;
+    border-right-width: 8px !important;
+    border-top-width: 8px !important;
+    border-bottom-width: 8px !important;
+    left: -8px !important;
+    margin-top: -8px !important;
+  }
+
 `
 
 @observer
