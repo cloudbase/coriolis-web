@@ -597,6 +597,11 @@ class WizardPage extends React.Component<Props, State> {
     return state
   }
 
+  shouldShowLoadingButton() {
+    return providerStore.destinationOptionsSecondaryLoading
+      || providerStore.sourceOptionsSecondaryLoading
+  }
+
   scheduleReplica(replica: ReplicaItem): Promise<void> {
     if (wizardStore.schedules.length === 0) {
       return Promise.resolve()
@@ -659,6 +664,7 @@ class WizardPage extends React.Component<Props, State> {
               storageMap={wizardStore.storageMap}
               schedules={wizardStore.schedules}
               nextButtonDisabled={this.isNextButtonDisabled()}
+              showLoadingButton={this.shouldShowLoadingButton()}
               type={this.state.type}
               onTypeChange={isReplica => { this.handleTypeChange(isReplica) }}
               onBackClick={() => { this.handleBackClick() }}

@@ -51,6 +51,7 @@ import networkStore from '../../../stores/NetworkStore'
 import migrationArrowImage from './images/migration'
 import { ProviderTypes } from '../../../@types/Providers'
 import minionPoolStore from '../../../stores/MinionPoolStore'
+import LoadingButton from '../../molecules/LoadingButton/LoadingButton'
 
 const Wrapper = styled.div<any>`
   ${StyleProps.exactWidth(`${parseInt(StyleProps.contentWidth, 10) + 64}px`)}
@@ -182,6 +183,7 @@ type Props = {
   hasSourceOptions: boolean,
   pages: WizardPage[],
   uploadedUserScripts: InstanceScript[],
+  showLoadingButton: boolean,
   onTypeChange: (isReplicaChecked: boolean | null) => void,
   onBackClick: () => void,
   onNextClick: () => void,
@@ -563,11 +565,15 @@ class WizardPageContent extends React.Component<Props, State> {
           />
           <EndpointLogos height={32} endpoint={targetEndpoint} />
         </IconRepresentation>
-        <Button
-          onClick={this.props.onNextClick}
-          disabled={this.isNextButtonDisabled()}
-        >{isLastPage ? 'Finish' : 'Next'}
-        </Button>
+        {this.props.showLoadingButton ? (
+          <LoadingButton>Loading ...</LoadingButton>
+        ) : (
+          <Button
+            onClick={this.props.onNextClick}
+            disabled={this.isNextButtonDisabled()}
+          >{isLastPage ? 'Finish' : 'Next'}
+          </Button>
+        )}
       </Navigation>
     )
   }
