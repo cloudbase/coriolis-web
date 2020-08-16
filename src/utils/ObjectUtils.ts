@@ -28,7 +28,7 @@ class ObjectUtils {
     let result: any = {}
 
     Object.keys(object).forEach(k => {
-      if (typeof object[k] === 'object') {
+      if (typeof object[k] === 'object' && !Array.isArray(object[k])) {
         if (object[k]) {
           result = {
             ...result,
@@ -51,7 +51,7 @@ class ObjectUtils {
     return result
   }
 
-  static skipField(object: any, fieldName: string) {
+  static skipFields(object: any, fieldNames: string[]) {
     const result: any = {}
 
     if (Object.keys(object).length === 0) {
@@ -59,7 +59,7 @@ class ObjectUtils {
     }
 
     Object.keys(object).forEach(k => {
-      if (k !== fieldName) {
+      if (!fieldNames.find(fn => fn === k)) {
         result[k] = object[k]
       }
     })

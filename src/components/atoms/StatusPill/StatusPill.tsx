@@ -27,6 +27,7 @@ const LABEL_MAP: { [status: string]: string } = {
   STRANDED_AFTER_DEADLOCK: 'DEADLOCKED',
   CANCELED_AFTER_COMPLETION: 'CANCELED',
   CANCELLING_AFTER_COMPLETION: 'CANCELLING',
+  FAILED_TO_SCHEDULE: 'UNSCHEDULABLE',
 }
 
 const statuses = (status: any) => {
@@ -37,6 +38,7 @@ const statuses = (status: any) => {
         color: white;
         border-color: transparent;
       `
+    case 'FAILED_TO_SCHEDULE':
     case 'ERROR':
       return css`
         background: ${Palette.alert};
@@ -58,6 +60,7 @@ const statuses = (status: any) => {
         color: ${Palette.primary};
         border-color: ${Palette.primary};
       `
+    case 'STARTING':
     case 'RUNNING':
     case 'PENDING':
       return css`

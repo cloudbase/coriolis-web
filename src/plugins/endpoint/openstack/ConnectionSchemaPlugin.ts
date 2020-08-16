@@ -21,6 +21,7 @@ import DefaultConnectionSchemaParser from '../default/ConnectionSchemaPlugin'
 const customSort = (fields: Field[]) => {
   const sortPriority: any = {
     name: 1,
+    mapped_regions: 1.5,
     description: 2,
     username: 3,
     password: 4,
@@ -80,19 +81,15 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseFieldsToPayload(data: { [prop: string]: any }, schema: Schema) {
+  static parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: Schema) {
     if (data.openstack_use_current_user) {
-      return {
-        name: data.name,
-        description: data.description,
-        connection_info: {},
-      }
+      return {}
     }
     // eslint-disable-next-line no-param-reassign
     delete data.project_domain
     // eslint-disable-next-line no-param-reassign
     delete data.user_domain
-    const payload = DefaultConnectionSchemaParser.parseFieldsToPayload(data, schema)
+    const payload = DefaultConnectionSchemaParser.parseConnectionInfoToPayload(data, schema)
     return payload
   }
 

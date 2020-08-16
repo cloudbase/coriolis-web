@@ -25,6 +25,7 @@ import { OptionsSchemaPlugin } from '../plugins/endpoint'
 import type { OptionValues } from '../@types/Endpoint'
 import type { Field } from '../@types/Field'
 import type { Providers, ProviderTypes } from '../@types/Providers'
+import regionStore from './RegionStore'
 
 export const getFieldChangeOptions = (config: {
   providerName: string | null,
@@ -147,11 +148,20 @@ class ProviderStore {
     return array
   }
 
+  private async setRegions(regionsField: Field | undefined) {
+    if (!regionsField) {
+      return
+    }
+    await regionStore.getRegions()
+    regionsField.enum = [...regionStore.regions]
+  }
+
   @action async getConnectionInfoSchema(providerName: ProviderTypes): Promise<void> {
     this.connectionSchemaLoading = true
 
     try {
       const fields: Field[] = await ProviderSource.getConnectionInfoSchema(providerName)
+      await this.setRegions(fields.find(f => f.name === 'mapped_regions'))
       runInAction(() => { this.connectionInfoSchema = fields })
     } finally {
       runInAction(() => { this.connectionSchemaLoading = false })

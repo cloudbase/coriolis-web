@@ -38,6 +38,7 @@ import type { MainItem } from '../../../@types/MainItem'
 import Palette from '../../styleUtils/Palette'
 
 import endpointImage from './images/endpoint.svg'
+import regionStore from '../../../stores/RegionStore'
 
 const Wrapper = styled.div<any>``
 
@@ -192,7 +193,11 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
     this.loadEndpoints()
 
-    await Promise.all([replicaStore.getReplicas(), migrationStore.getMigrations()])
+    await Promise.all([
+      replicaStore.getReplicas(),
+      migrationStore.getMigrations(),
+      regionStore.getRegions(),
+    ])
     this.setState({ endpointUsage: this.getEndpointUsage() })
   }
 
@@ -250,6 +255,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           contentComponent={(
             <EndpointDetailsContent
               item={endpoint}
+              regions={regionStore.regions}
               usage={this.state.endpointUsage}
               loading={endpointStore.connectionInfoLoading || endpointStore.loading}
               connectionInfo={endpointStore.connectionInfo}

@@ -158,7 +158,7 @@ class ContentPlugin extends React.Component<Props, State> {
     let invalidFields = this.props.connectionInfoSchema.filter(field => {
       if (this.isFieldRequired(field)) {
         const value = this.getFieldValue(field)
-        return !value
+        return !value || value.length === 0
       }
       const inputChoice = inputChoices.find(c => c === field.name)
       if (inputChoice && this.getApiVersion() > 2) {

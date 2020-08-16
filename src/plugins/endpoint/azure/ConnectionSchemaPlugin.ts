@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import {
   connectionSchemaToFields,
   defaultSchemaToFields,
-  generateField,
   fieldsToPayload,
+  generateBaseFields,
 } from '../default/ConnectionSchemaPlugin'
 import { Endpoint } from '../../../@types/Endpoint'
 
@@ -95,20 +95,14 @@ export default class ConnectionSchemaParser {
     let fields = azureConnectionParse(schema)
 
     fields = [
-      generateField('name', 'Endpoint Name', true),
-      generateField('description', 'Endpoint Description'),
+      ...generateBaseFields(),
       ...fields,
     ]
 
     return fields
   }
 
-  static parseFieldsToPayload(data: any, schema: any) {
-    const payload: any = {}
-
-    payload.name = data.name
-    payload.description = data.description
-
+  static parseConnectionInfoToPayload(data: any, schema: any) {
     const connectionInfo: any = fieldsToPayload(data, schema)
     const loginType = data.login_type || 'user_credentials'
     connectionInfo[loginType] = fieldsToPayload(data, schema.properties[loginType])
@@ -134,9 +128,7 @@ export default class ConnectionSchemaParser {
       connectionInfo.secret_ref = data.secret_ref
     }
 
-    payload.connection_info = connectionInfo
-
-    return payload
+    return connectionInfo
   }
 
   static parseConnectionResponse(endpoint: Endpoint) {

@@ -25,7 +25,7 @@ Your server will be running at `http://localhost:3000/` (the port is configurabl
 
 ## Development mode
 
-- set env. variable `ENV='development'`
+- set env. variable `NODE_MODE='development'`
 - run `yarn ui-dev` to start local development server (starts on port 3001)
 - run `yarn server-dev` to start the express server in development mode
 

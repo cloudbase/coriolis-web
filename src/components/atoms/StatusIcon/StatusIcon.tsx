@@ -54,6 +54,7 @@ const statuses = (status: any, props: any) => {
       return css`
       background-image: url('${props.hollow ? successHollowImage : successImage}');
     `
+    case 'STARTING':
     case 'RUNNING':
     case 'PENDING':
       return css`
@@ -70,6 +71,7 @@ const statuses = (status: any, props: any) => {
       return css`
         background-image: url('${pendingImage}');
       `
+    case 'FAILED_TO_SCHEDULE':
     case 'ERROR':
       return css`
         background-image: url('${props.hollow ? errorHollowImage : errorImage}');

@@ -49,11 +49,11 @@ class SchemaParser {
     return fields
   }
 
-  static fieldsToPayload(data: { [prop: string]: any }) {
+  static connectionInfoToPayload(data: { [prop: string]: any }) {
     const storedSchema = this.storedConnectionsSchemas[data.type]
       || this.storedConnectionsSchemas.general
     const parsers = ConnectionSchemaPlugin.for(data.type)
-    const payload = parsers.parseFieldsToPayload(data, storedSchema)
+    const payload = parsers.parseConnectionInfoToPayload(data, storedSchema)
 
     return payload
   }

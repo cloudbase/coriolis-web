@@ -158,7 +158,8 @@ class ContentPlugin extends React.Component<Props, State> {
       }
       fields.forEach((field: Field | null) => {
         if ((field?.name === 'tenant' && (isCustomCloud || this.isServicePrincipalLogin())) || field?.required) {
-          if (!this.props.getFieldValue(field)) {
+          const value = this.props.getFieldValue(field)
+          if (!value || value.length === 0) {
             invalidFields.push(field?.name)
           }
         }

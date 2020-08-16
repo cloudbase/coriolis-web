@@ -258,7 +258,14 @@ class Endpoint extends React.Component<Props, State> {
       const endpoint: any = { ...prevState.endpoint }
 
       items.forEach(item => {
-        endpoint[item.field.name] = item.value
+        let value = item.value
+        if (item.field.type === 'array') {
+          const arrayItems = endpoint[item.field.name] || []
+          value = arrayItems.find((v: any) => v === item.value)
+            ? arrayItems.filter((v: any) => v !== item.value) : [...arrayItems, item.value]
+        }
+
+        endpoint[item.field.name] = value
       })
 
       return { endpoint }
