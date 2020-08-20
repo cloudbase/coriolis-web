@@ -136,14 +136,14 @@ class EndpointSource {
   }
 
   async update(endpoint: Endpoint): Promise<Endpoint> {
-    const parsedEndpoint = SchemaParser.fieldsToPayload(endpoint)
+    const parsedConnectionInfo = SchemaParser.connectionInfoToPayload(endpoint)
 
-    if (parsedEndpoint.connection_info
-      && Object.keys(parsedEndpoint.connection_info).length > 0
-      && parsedEndpoint.connection_info.secret_ref) {
-      let uuidIndex = parsedEndpoint.connection_info.secret_ref.lastIndexOf('/')
+    if (parsedConnectionInfo
+      && Object.keys(parsedConnectionInfo).length > 0
+      && parsedConnectionInfo.secret_ref) {
+      let uuidIndex = parsedConnectionInfo.secret_ref.lastIndexOf('/')
 
-      let uuid = parsedEndpoint.connection_info.secret_ref.substr(uuidIndex + 1)
+      let uuid = parsedConnectionInfo.secret_ref.substr(uuidIndex + 1)
       let newEndpoint: any = {}
       let connectionInfo: any = {}
 
@@ -152,20 +152,23 @@ class EndpointSource {
         method: 'DELETE',
       })
 
+      const barbicanPayload = getBarbicanPayload(ObjectUtils.skipFields(parsedConnectionInfo, ['secret_ref']))
       const response = await Api.send({
         url: `${configLoader.config.servicesUrls.barbican}/v1/secrets`,
         method: 'POST',
-        data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
+        data: barbicanPayload,
       })
 
       connectionInfo = { secret_ref: response.data.secret_ref }
       const newPayload = {
         endpoint: {
-          name: parsedEndpoint.name,
-          description: parsedEndpoint.description,
+          name: endpoint.name,
+          mapped_regions: endpoint.mapped_regions,
+          description: endpoint.description,
           connection_info: connectionInfo,
         },
       }
+
       const putResponse = await Api.send({
         url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
         method: 'PUT',
@@ -193,29 +196,37 @@ class EndpointSource {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}`,
       method: 'PUT',
-      data: { endpoint: parsedEndpoint },
+      data: {
+        endpoint: {
+          name: endpoint.name,
+          mapped_regions: endpoint.mapped_regions,
+          description: endpoint.description,
+          connection_info: parsedConnectionInfo,
+        },
+      },
     })
     return SchemaParser.parseConnectionResponse(response.data.endpoint)
   }
 
   async add(endpoint: Endpoint, skipSchemaParser: boolean = false): Promise<Endpoint> {
-    const parsedEndpoint: any = skipSchemaParser
-      ? { ...endpoint } : SchemaParser.fieldsToPayload(endpoint)
+    const parsedConnectionInfo: any = skipSchemaParser
+      ? { ...endpoint } : SchemaParser.connectionInfoToPayload(endpoint)
     let newEndpoint: any = {}
     let connectionInfo: any = {}
     if (configLoader.config.useBarbicanSecrets
-      && parsedEndpoint.connection_info && Object.keys(parsedEndpoint.connection_info).length > 0) {
+      && parsedConnectionInfo && Object.keys(parsedConnectionInfo).length > 0) {
       const response = await Api.send({
         url: `${configLoader.config.servicesUrls.barbican}/v1/secrets`,
         method: 'POST',
-        data: getBarbicanPayload(ObjectUtils.skipField(parsedEndpoint.connection_info, 'secret_ref')),
+        data: getBarbicanPayload(ObjectUtils.skipFields(parsedConnectionInfo, ['secret_ref'])),
       })
 
       connectionInfo = { secret_ref: response.data.secret_ref }
       const newPayload = {
         endpoint: {
-          name: parsedEndpoint.name,
-          description: parsedEndpoint.description,
+          name: endpoint.name,
+          mapped_regions: endpoint.mapped_regions,
+          description: endpoint.description,
           type: endpoint.type,
           connection_info: connectionInfo,
         },
@@ -250,8 +261,11 @@ class EndpointSource {
       method: 'POST',
       data: {
         endpoint: {
-          ...parsedEndpoint,
+          name: endpoint.name,
+          mapped_regions: endpoint.mapped_regions,
+          description: endpoint.description,
           type: endpoint.type,
+          connection_info: parsedConnectionInfo,
         },
       },
     })

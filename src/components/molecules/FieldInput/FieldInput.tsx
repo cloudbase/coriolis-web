@@ -275,7 +275,7 @@ class FieldInput extends React.Component<Props> {
         width={this.props.width}
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
-        noSelectionMessage="Choose values"
+        noSelectionMessage={this.props.noSelectionMessage || 'Choose values'}
         noItemsMessage={this.props.noItemsMessage}
         items={items}
         selectedItems={selectedItems}

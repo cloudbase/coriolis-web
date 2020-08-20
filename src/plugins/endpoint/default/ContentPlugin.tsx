@@ -78,7 +78,7 @@ class ContentPlugin extends React.Component<Props> {
     const invalidFields = this.props.connectionInfoSchema.filter(field => {
       if (field.required) {
         const value = this.props.getFieldValue(field)
-        return !value
+        return !value || value.length === 0
       }
       return false
     }).map(f => f.name)

@@ -31,6 +31,7 @@ import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
+import { Region } from '../../../@types/Region'
 
 const Wrapper = styled.div<any>`
   ${StyleProps.exactWidth(StyleProps.contentWidth)}
@@ -77,6 +78,7 @@ const LinkStyled = styled(Link)`
 
 type Props = {
   item: Endpoint | null,
+  regions: Region[],
   connectionInfo: Endpoint['connection_info'] | null,
   loading: boolean,
   usage: { migrations: MainItem[], replicas: MainItem[] },
@@ -163,6 +165,15 @@ class EndpointDetailsContent extends React.Component<Props> {
     return <CopyValue data-test-id={dataTestId ? `edContent-${dataTestId}` : undefined} value={value} maxWidth="90%" />
   }
 
+  renderRegions() {
+    return (
+      <span>
+        {this.props.item?.mapped_regions
+          .map(regionId => this.props.regions.find(r => r.id === regionId)?.name).join(', ') || '-'}
+      </span>
+    )
+  }
+
   renderUsage(items: MainItem[]) {
     return items.map(item => (
       <span>
@@ -199,6 +210,10 @@ class EndpointDetailsContent extends React.Component<Props> {
           <Field>
             <Label>Type</Label>
             {this.renderValue(type || '', 'type')}
+          </Field>
+          <Field>
+            <Label>Coriolis Regions</Label>
+            {this.renderRegions()}
           </Field>
           <Field>
             <Label>Description</Label>

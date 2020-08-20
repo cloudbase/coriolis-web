@@ -81,21 +81,33 @@ export const connectionSchemaToFields = (schema: SchemaProperties) => {
   return fields
 }
 
-export const generateField = (name: string, label: string, required: boolean = false, type: string = 'string', defaultValue: any = null) => {
-  const field = {
-    name,
-    label,
-    type,
-    required,
-    default: undefined,
+export const generateField = (fieldBuilderProps: any) => {
+  const field = { ...fieldBuilderProps }
+
+  if (!field.type) {
+    field.type = 'string'
   }
 
-  if (defaultValue) {
-    field.default = defaultValue
+  if (!field.required) {
+    field.required = false
   }
+  field.default = undefined
 
   return field
 }
+
+export const generateBaseFields = () => [
+  generateField({ name: 'name', title: 'Name', required: true }),
+  generateField({
+    name: 'mapped_regions',
+    title: 'Coriolis Regions',
+    required: true,
+    type: 'array',
+    noItemsMessage: 'No regions available',
+    noSelectionMessage: 'Choose regions',
+  }),
+  generateField({ name: 'description', title: 'Description' }),
+]
 
 export const fieldsToPayload = (data: { [prop: string]: any }, schema: SchemaProperties) => {
   const info: any = {}
@@ -134,28 +146,22 @@ export default class ConnectionSchemaParser {
     let fields = connectionSchemaToFields(schema.oneOf[0])
 
     fields = [
-      generateField('name', 'Endpoint Name', true),
-      generateField('description', 'Endpoint Description'),
+      ...generateBaseFields(),
       ...fields,
     ]
 
     return fields
   }
 
-  static parseFieldsToPayload(data: { [prop: string]: any }, schema: any) {
-    const payload: any = {}
-
-    payload.name = data.name
-    payload.description = data.description
-
+  static parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: any) {
     const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
-    payload.connection_info = fieldsToPayload(data, schemaRoot)
+    const connection_info = fieldsToPayload(data, schemaRoot)
 
     if (data.secret_ref) {
-      payload.connection_info.secret_ref = data.secret_ref
+      connection_info.secret_ref = data.secret_ref
     }
 
-    return payload
+    return connection_info
   }
 
   static parseConnectionResponse(endpoint: Endpoint) {

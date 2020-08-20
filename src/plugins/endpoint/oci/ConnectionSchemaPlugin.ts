@@ -29,8 +29,8 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseFieldsToPayload(data: { [prop: string]: any }, schema: Schema) {
-    const payload = DefaultConnectionSchemaParser.parseFieldsToPayload(data, schema)
+  static parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: Schema) {
+    const payload = DefaultConnectionSchemaParser.parseConnectionInfoToPayload(data, schema)
     return payload
   }
 
