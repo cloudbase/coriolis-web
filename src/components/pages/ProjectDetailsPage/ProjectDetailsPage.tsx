@@ -193,7 +193,8 @@ class ProjectDetailsPage extends React.Component<Props, State> {
 )}
           contentHeaderComponent={(
             <DetailsContentHeader
-              item={{ ...projectStore.projectDetails, description: '' }}
+              itemTitle={projectStore.projectDetails?.name}
+              itemType="project"
               backLink="/projects"
               dropdownActions={dropdownActions}
               typeImage={projectImage}

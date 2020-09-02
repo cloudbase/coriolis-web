@@ -22,7 +22,6 @@ import FilterList from '../../organisms/FilterList'
 import PageHeader from '../../organisms/PageHeader'
 import AlertModal from '../../organisms/AlertModal'
 import MainListItem from '../../molecules/MainListItem'
-import type { MainItem } from '../../../@types/MainItem'
 
 import migrationItemImage from './images/migration.svg'
 import migrationLargeImage from './images/migration-large.svg'
@@ -35,11 +34,13 @@ import configLoader from '../../../utils/Config'
 
 import Palette from '../../styleUtils/Palette'
 import replicaMigrationFields from '../../organisms/ReplicaMigrationOptions/replicaMigrationFields'
+import { MigrationItem } from '../../../@types/MainItem'
+import userStore from '../../../stores/UserStore'
 
 const Wrapper = styled.div<any>``
 
 type State = {
-  selectedMigrations: MainItem[],
+  selectedMigrations: MigrationItem[],
   modalIsOpen: boolean,
   showDeleteMigrationModal: boolean,
   showCancelMigrationModal: boolean,
@@ -64,6 +65,10 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
 
     projectStore.getProjects()
     endpointStore.getEndpoints({ showLoading: true })
+    userStore.getAllUsers({
+      showLoading: userStore.users.length === 0,
+      quietError: true,
+    })
 
     this.stopPolling = false
     this.pollData()
@@ -90,7 +95,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
 
   getStatus(migrationId: string): string {
     const migration = migrationStore.migrations.find(m => m.id === migrationId)
-    return migration ? migration.status : ''
+    return migration ? migration.last_execution_status : ''
   }
 
   handleProjectChange() {
@@ -102,13 +107,14 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     projectStore.getProjects()
     endpointStore.getEndpoints({ showLoading: true })
     migrationStore.getMigrations({ showLoading: true })
+    userStore.getAllUsers({ showLoading: true, quietError: true })
   }
 
-  handleItemClick(item: MainItem) {
-    if (item.status === 'RUNNING') {
-      this.props.history.push(`/migration/tasks/${item.id}`)
+  handleItemClick(item: MigrationItem) {
+    if (item.last_execution_status === 'RUNNING') {
+      this.props.history.push(`/migrations/${item.id}/tasks`)
     } else {
-      this.props.history.push(`/migration/${item.id}`)
+      this.props.history.push(`/migrations/${item.id}`)
     }
   }
 
@@ -137,7 +143,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
       if (migration.replica_id) {
         await migrationStore.migrateReplica(migration.replica_id, replicaMigrationFields, [])
       } else {
-        await migrationStore.recreateFullCopy(migration)
+        await migrationStore.recreateFullCopy(migration as any)
       }
     }))
 
@@ -158,7 +164,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     })
   }
 
-  searchText(item: MainItem, text?: string) {
+  searchText(item: MigrationItem, text?: string) {
     let result = false
     if (item.instances[0].toLowerCase().indexOf(text || '') > -1) {
       return true
@@ -175,8 +181,8 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     return result
   }
 
-  itemFilterFunction(item: MainItem, filterStatus?: string | null, filterText?: string) {
-    if ((filterStatus !== 'all' && (item.status !== filterStatus))
+  itemFilterFunction(item: MigrationItem, filterStatus?: string | null, filterText?: string) {
+    if ((filterStatus !== 'all' && (item.last_execution_status !== filterStatus))
       || !this.searchText(item, filterText)
     ) {
       return false
@@ -193,6 +199,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     await Promise.all([
       migrationStore.getMigrations({ skipLog: true }),
       endpointStore.getEndpoints({ skipLog: true }),
+      userStore.getAllUsers({ skipLog: true, quietError: true }),
     ])
     this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
@@ -252,7 +259,8 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
                     }
                     return 'Not Found'
                   }}
-                  useTasksRemaining
+                  getUserName={id => userStore.users.find(u => u.id === id)?.name}
+                  userNameLoading={userStore.allUsersLoading}
                 />
               )}
               emptyListImage={migrationLargeImage}

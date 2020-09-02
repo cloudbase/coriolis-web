@@ -90,6 +90,7 @@ const statuses = (status: any, props: any) => {
         background-image: ${getWarningUrl('#424242')};
       `
     case 'UNSCHEDULED':
+    case 'UNEXECUTED':
       return css`
         background-image: ${getWarningUrl(Palette.grayscale[2])};
       `

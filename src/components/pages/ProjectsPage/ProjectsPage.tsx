@@ -118,7 +118,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               selectionLabel="user"
               loading={projectStore.loading}
               items={projectStore.projects}
-              onItemClick={(user: Project) => { this.props.history.push(`project/${user.id}`) }}
+              onItemClick={(user: Project) => { this.props.history.push(`/projects/${user.id}`) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={component => (

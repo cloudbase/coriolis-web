@@ -23,13 +23,13 @@ import MainDetails from '../MainDetails'
 import Executions from '../Executions'
 import Schedule from '../Schedule'
 import type { Instance } from '../../../@types/Instance'
-import type { MainItem } from '../../../@types/MainItem'
 import type { Endpoint } from '../../../@types/Endpoint'
-import type { Execution } from '../../../@types/Execution'
+import type { Execution, ExecutionTasks } from '../../../@types/Execution'
 import type { Network } from '../../../@types/Network'
 import type { Field } from '../../../@types/Field'
 import type { Schedule as ScheduleType } from '../../../@types/Schedule'
 import StyleProps from '../../styleUtils/StyleProps'
+import { ReplicaItemDetails } from '../../../@types/MainItem'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -70,7 +70,7 @@ const NavigationItems = [
 
 type TimezoneValue = 'utc' | 'local'
 type Props = {
-  item?: MainItem | null,
+  item?: ReplicaItemDetails | null,
   endpoints: Endpoint[],
   sourceSchema: Field[],
   sourceSchemaLoading: boolean,
@@ -82,7 +82,11 @@ type Props = {
   scheduleStore: typeof scheduleStore,
   page: string,
   detailsLoading: boolean,
+  executions: Execution[],
   executionsLoading: boolean,
+  executionsTasksLoading: boolean,
+  executionsTasks: ExecutionTasks[],
+  onExecutionChange: (executionId: string) => void,
   onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
   onDeleteExecutionClick: (execution: Execution | null) => void,
   onExecuteClick: () => void,
@@ -186,12 +190,14 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
 
     return (
       <Executions
-        item={this.props.item}
+        executions={this.props.executions}
+        executionsTasks={this.props.executionsTasks}
         onCancelExecutionClick={this.props.onCancelExecutionClick}
         onDeleteExecutionClick={this.props.onDeleteExecutionClick}
         onExecuteClick={this.props.onExecuteClick}
         loading={this.props.executionsLoading}
-        data-test-id="rdContent-executions"
+        onChange={this.props.onExecutionChange}
+        tasksLoading={this.props.executionsTasksLoading}
       />
     )
   }

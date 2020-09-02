@@ -18,14 +18,14 @@ import Api from '../utils/ApiCaller'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 
 import configLoader from '../utils/Config'
-import type { MainItem, UpdateData } from '../@types/MainItem'
-import type { Execution } from '../@types/Execution'
+import type { UpdateData, ReplicaItem, ReplicaItemDetails } from '../@types/MainItem'
+import type { Execution, ExecutionTasks } from '../@types/Execution'
 import type { Endpoint } from '../@types/Endpoint'
 import type { Task, ProgressUpdate } from '../@types/Task'
 import type { Field } from '../@types/Field'
 
 export const sortTasks = (
-  tasks: Task[], taskUpdatesSortFunction: (updates: ProgressUpdate[]) => void,
+  tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void,
 ) => {
   if (!tasks) {
     return
@@ -34,6 +34,9 @@ export const sortTasks = (
   let buffer: Task[] = []
   let runningBuffer: Task[] = []
   let completedBuffer: Task[] = []
+  if (!taskUpdatesSortFunction) {
+    return
+  }
   tasks.forEach(task => {
     taskUpdatesSortFunction(task.progress_updates)
     buffer.push(task)
@@ -63,82 +66,78 @@ export const sortTasks = (
 }
 
 class ReplicaSourceUtils {
-  static filterDeletedExecutionsInReplicas(replicas: any[]) {
-    return replicas.map((replica: { executions: any }) => {
-      // eslint-disable-next-line no-param-reassign
-      replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
-      return replica
-    })
-  }
-
-  static filterDeletedExecutions(executions: any[]) {
+  static filterDeletedExecutions(executions?: Execution[]) {
     if (!executions || !executions.length) {
-      return executions
+      return []
     }
 
-    return executions.filter((execution: { deleted_at: null }) => execution.deleted_at == null)
+    return executions.filter(execution => execution.deleted_at == null)
   }
 
-  static sortReplicas(replicas: any[]) {
-    replicas.forEach((replica: { executions: any }) => {
-      ReplicaSourceUtils.sortExecutionsAndTasks(replica.executions)
-    })
-
-    replicas.sort(
-      (a: { executions: string | any[]; updated_at: any; created_at: any },
-        b: { executions: string | any[]; updated_at: any; created_at: any }) => {
-        const aLastExecution = a.executions && a.executions.length
-          ? a.executions[a.executions.length - 1] : null
-        const bLastExecution = b.executions && b.executions.length
-          ? b.executions[b.executions.length - 1] : null
-        const aLastTime = aLastExecution
-          ? aLastExecution.updated_at || aLastExecution.created_at : null
-        const bLastTime = bLastExecution
-          ? bLastExecution.updated_at || bLastExecution.created_at : null
-        const aTime = aLastTime || a.updated_at || a.created_at
-        const bTime = bLastTime || b.updated_at || b.created_at
-        return moment(bTime).diff(moment(aTime))
-      },
-    )
+  static sortReplicas(replicas: ReplicaItem[]) {
+    replicas.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
   }
 
-  static sortExecutions(executions: any[]) {
-    if (executions) {
-      executions.sort((a: { number: number }, b: { number: number }) => a.number - b.number)
-    }
+  static sortExecutions(executions: Execution[]) {
+    executions.sort((a, b) => a.number - b.number)
   }
 
-  static sortExecutionsAndTasks(executions: any[]) {
-    this.sortExecutions(executions)
-    executions.forEach((execution: { tasks: Task[] }) => {
-      sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
-    })
-  }
-
-  static sortTaskUpdates(updates: any[]) {
+  static sortTaskUpdates(updates: ProgressUpdate[]) {
     if (!updates) {
       return
     }
     updates
-      .sort((a: any, b: any) => moment(a.created_at)
+      .sort((a, b) => moment(a.created_at)
         .toDate().getTime() - moment(b.created_at).toDate().getTime())
   }
 }
 
 class ReplicaSource {
-  async getReplicas(skipLog?: boolean, quietError?: boolean): Promise<MainItem[]> {
+  async getReplicas(skipLog?: boolean, quietError?: boolean): Promise<ReplicaItem[]> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas`,
       skipLog,
       quietError,
     })
-    let replicas = response.data.replicas
-    replicas = ReplicaSourceUtils.filterDeletedExecutionsInReplicas(replicas)
+    const replicas: ReplicaItem[] = response.data.replicas
     ReplicaSourceUtils.sortReplicas(replicas)
     return replicas
   }
 
-  async execute(replicaId: string, fields?: Field[]): Promise<Execution> {
+  async getReplicaDetails(options: {
+    replicaId: string, polling?: boolean
+  }): Promise<ReplicaItemDetails> {
+    const { replicaId, polling } = options
+
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}`,
+      skipLog: polling,
+    })
+    const replica: ReplicaItemDetails = response.data.replica
+    replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)
+    ReplicaSourceUtils.sortExecutions(replica.executions)
+    return replica
+  }
+
+  async getExecutionTasks(options: {
+    replicaId: string,
+    executionId?: string,
+    polling?: boolean,
+  }): Promise<ExecutionTasks> {
+    const {
+      replicaId, executionId, polling,
+    } = options
+
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}`,
+      skipLog: polling,
+    })
+    const execution: ExecutionTasks = response.data.execution
+    sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
+    return execution
+  }
+
+  async execute(replicaId: string, fields?: Field[]): Promise<ExecutionTasks> {
     const payload: any = { execution: { shutdown_instances: false } }
     if (fields) {
       fields.forEach(f => {
@@ -150,24 +149,36 @@ class ReplicaSource {
       method: 'POST',
       data: payload,
     })
-    const execution = response.data.execution
+    const execution: ExecutionTasks = response.data.execution
     sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
     return execution
   }
 
   async cancelExecution(
-    replicaId: string, executionId: string, force?: boolean | null,
+    options: { replicaId: string, executionId?: string, force?: boolean },
   ): Promise<string> {
     const data: any = { cancel: null }
-    if (force) {
+    if (options.force) {
       data.cancel = { force: true }
     }
+
+    let lastExecutionId = options.executionId
+
+    if (!lastExecutionId) {
+      const replicaDetails = await this.getReplicaDetails({ replicaId: options.replicaId })
+      const lastExecution = replicaDetails.executions[replicaDetails.executions.length - 1]
+      if (lastExecution.status !== 'RUNNING') {
+        return options.replicaId
+      }
+      lastExecutionId = lastExecution.id
+    }
+
     await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}/actions`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${options.replicaId}/executions/${lastExecutionId}/actions`,
       method: 'POST',
       data,
     })
-    return replicaId
+    return options.replicaId
   }
 
   async deleteExecution(replicaId: string, executionId: string): Promise<string> {
@@ -196,7 +207,7 @@ class ReplicaSource {
   }
 
   async update(
-    replica: MainItem,
+    replica: ReplicaItem,
     destinationEndpoint: Endpoint,
     updateData: UpdateData,
     defaultStorage: string | null | undefined,

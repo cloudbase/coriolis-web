@@ -267,7 +267,7 @@ class InstanceStore {
           runInAction(() => {
             this.instancesDetails = this.instancesDetails.filter(id => (id.name || id.instance_name || '') !== name)
             this.instancesDetails.push(instance)
-            this.instancesDetails.sort(n => (n.name || n.instance_name || '')
+            this.instancesDetails = this.instancesDetails.slice().sort(n => (n.name || n.instance_name || '')
               .localeCompare(n.name || n.instance_name || ''))
           })
         }))
@@ -312,7 +312,7 @@ class InstanceStore {
         ...this.instancesDetails,
         instance,
       ]
-      this.instancesDetails
+      this.instancesDetails = this.instancesDetails.slice()
         .sort((a, b) => (a.instance_name || a.name).localeCompare((b.instance_name || b.name)))
     })
   }
@@ -381,7 +381,7 @@ class InstanceStore {
             ]
           })
           if (this.instancesDetailsRemaining === 0) {
-            this.instancesDetails
+            this.instancesDetails = this.instancesDetails.slice()
               .sort((a, b) => (a.instance_name || a.name)
                 .localeCompare((b.instance_name || b.name)))
             resolve()

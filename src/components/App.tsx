@@ -177,21 +177,21 @@ class App extends React.Component<{}, State> {
             {renderRoute('/', DashboardPage, true)}
             <Route path="/login" component={LoginPage} />
             {renderRoute('/dashboard', DashboardPage)}
-            {renderRoute('/replicas', ReplicasPage)}
-            {renderRoute('/replica/:id', ReplicaDetailsPage, true)}
-            {renderRoute('/replica/:page/:id', ReplicaDetailsPage)}
-            {renderRoute('/migrations', MigrationsPage)}
-            {renderRoute('/migration/:id', MigrationDetailsPage, true)}
-            {renderRoute('/migration/:page/:id', MigrationDetailsPage)}
-            {renderRoute('/endpoints', EndpointsPage)}
-            {renderRoute('/endpoint/:id', EndpointDetailsPage)}
+            {renderRoute('/replicas', ReplicasPage, true)}
+            {renderRoute('/replicas/:id', ReplicaDetailsPage, true)}
+            {renderRoute('/replicas/:id/:page', ReplicaDetailsPage)}
+            {renderRoute('/migrations', MigrationsPage, true)}
+            {renderRoute('/migrations/:id', MigrationDetailsPage, true)}
+            {renderRoute('/migrations/:id/:page', MigrationDetailsPage)}
+            {renderRoute('/endpoints', EndpointsPage, true)}
+            {renderRoute('/endpoints/:id', EndpointDetailsPage)}
             {renderRoute('/wizard/:type', WizardPage)}
             {renderOptionalRoute('planning', AssessmentsPage)}
             {renderOptionalRoute('planning', AssessmentDetailsPage, '/assessment/:info')}
-            {renderOptionalRoute('users', UsersPage)}
-            {renderOptionalRoute('users', UserDetailsPage, '/user/:id', true)}
-            {renderOptionalRoute('projects', ProjectsPage)}
-            {renderOptionalRoute('projects', ProjectDetailsPage, '/project/:id', true)}
+            {renderOptionalRoute('users', UsersPage, undefined, true)}
+            {renderOptionalRoute('users', UserDetailsPage, '/users/:id')}
+            {renderOptionalRoute('projects', ProjectsPage, undefined, true)}
+            {renderOptionalRoute('projects', ProjectDetailsPage, '/projects/:id')}
             {renderOptionalRoute('logging', LogsPage)}
             {renderRoute('/streamlog', LogStreamPage)}
             <Route component={MessagePage} />

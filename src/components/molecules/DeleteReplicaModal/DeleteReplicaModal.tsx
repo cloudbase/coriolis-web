@@ -50,10 +50,30 @@ const ButtonsColumn = styled.div<any>`
   display: flex;
   flex-direction: column;
 `
+const Loading = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 64px;
+`
+const LoadingMessage = styled.div`
+  max-width: 100%;
+  overflow: auto;
+  margin-top: 48px;
+  text-align: center;
+`
+const LoadingTitle = styled.div`
+  font-size: 18px;
+  margin-bottom: 8px;
+`
+const LoadingSubtitle = styled.div<any>`
+  color: ${Palette.grayscale[4]};
+`
 
 type Props = {
   hasDisks: boolean,
   isMultiReplicaSelection?: boolean,
+  loading?: boolean
   onDeleteReplica: () => void,
   onDeleteDisks: () => void,
   onRequestClose: () => void,
@@ -93,41 +113,60 @@ class DeleteReplicaModal extends React.Component<Props> {
     )
   }
 
+  renderLoading() {
+    return (
+      <Loading>
+        <StatusImage loading />
+        <LoadingMessage>
+          <LoadingTitle>Validating Replicas Details</LoadingTitle>
+          <LoadingSubtitle>Please wait ...</LoadingSubtitle>
+        </LoadingMessage>
+      </Loading>
+    )
+  }
+
+  renderContent() {
+    const message = this.props.isMultiReplicaSelection ? 'Are you sure you want to delete the selected replicas?' : 'Are you sure you want to delete this replica?'
+
+    return (
+      <Wrapper>
+        <StatusImage status="QUESTION" />
+        <Message>{message}</Message>
+        { this.renderExtraMessage() }
+        <Buttons>
+          <Button secondary onClick={this.props.onRequestClose}>Cancel</Button>
+          <ButtonsColumn>
+            {this.props.hasDisks ? (
+              <Button
+                onClick={this.props.onDeleteDisks}
+                hollow
+                style={{ marginBottom: '16px' }}
+                alert
+              >
+                Delete Replica Disks
+              </Button>
+            ) : null}
+            <Button
+              onClick={this.props.onDeleteReplica}
+              alert
+            >
+              Delete Replica{this.props.isMultiReplicaSelection ? 's' : ''}
+            </Button>
+          </ButtonsColumn>
+        </Buttons>
+      </Wrapper>
+    )
+  }
+
   render() {
     const title = this.props.isMultiReplicaSelection ? 'Delete Selected Replicas?' : 'Delete Replica?'
-    const message = this.props.isMultiReplicaSelection ? 'Are you sure you want to delete the selected replicas?' : 'Are you sure you want to delete this replica?'
     return (
       <Modal
         isOpen
         title={title}
         onRequestClose={this.props.onRequestClose}
       >
-        <Wrapper>
-          <StatusImage status="QUESTION" />
-          <Message>{message}</Message>
-          {this.renderExtraMessage()}
-          <Buttons>
-            <Button secondary onClick={this.props.onRequestClose}>Cancel</Button>
-            <ButtonsColumn>
-              {this.props.hasDisks ? (
-                <Button
-                  onClick={this.props.onDeleteDisks}
-                  hollow
-                  style={{ marginBottom: '16px' }}
-                  alert
-                >
-                  Delete Replica Disks
-                </Button>
-              ) : null}
-              <Button
-                onClick={this.props.onDeleteReplica}
-                alert
-              >
-                Delete Replica{this.props.isMultiReplicaSelection ? 's' : ''}
-              </Button>
-            </ButtonsColumn>
-          </Buttons>
-        </Wrapper>
+        {this.props.loading ? this.renderLoading() : this.renderContent()}
       </Modal>
     )
   }

@@ -135,7 +135,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   getStatus() {
-    return migrationStore.migrationDetails && migrationStore.migrationDetails.status
+    return migrationStore.migrationDetails?.last_execution_status
   }
 
   async loadMigrationWithInstances(migrationId: string, cache: boolean) {
@@ -237,7 +237,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
   async migrate(replicaId: string, options: Field[], userScripts: InstanceScript[]) {
     const migration = await migrationStore.migrateReplica(replicaId, options, userScripts)
-    this.props.history.push(`/migration/tasks/${migration.id}`)
+    this.props.history.push(`/migrations/${migration.id}/tasks`)
   }
 
   async pollData() {
@@ -319,7 +319,19 @@ class MigrationDetailsPage extends React.Component<Props, State> {
         action: () => { this.handleDeleteMigrationClick() },
       },
     ]
-
+    let title = null
+    const migration = migrationStore.migrationDetails
+    if (migration) {
+      const { instances } = migration
+      if (instances) {
+        title = instances[0]
+        if (instances.length > 1) {
+          title += ` (+${instances.length - 1} more)`
+        }
+      } else {
+        title = migration.name
+      }
+    }
     return (
       <Wrapper>
         <DetailsTemplate
@@ -331,7 +343,10 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 )}
           contentHeaderComponent={(
             <DetailsContentHeader
-              item={migrationStore.migrationDetails}
+              statusPill={migrationStore.migrationDetails?.last_execution_status}
+              itemTitle={title}
+              itemType="migration"
+              itemDescription={migrationStore.migrationDetails?.description}
               backLink="/migrations"
               typeImage={migrationImage}
               dropdownActions={dropdownActions}

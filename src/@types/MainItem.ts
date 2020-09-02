@@ -13,10 +13,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { Execution } from './Execution'
-import type { Task } from './Task'
 import type { Instance } from './Instance'
 import type { NetworkMap } from './Network'
 import type { StorageMap } from './Endpoint'
+import { Task } from './Task'
 
 export type MainItemInfo = {
   export_info: {
@@ -55,26 +55,50 @@ export type StorageMapping = {
     disk_id: string,
   }[] | null,
 }
-export type MainItem = {
+
+type BaseItem = {
   id: string,
-  executions: Execution[],
   name: string,
+  description?: string
   notes: string,
-  status: string,
-  tasks: Task[],
-  created_at: Date,
-  updated_at: Date,
-  replica_id?: string,
+  created_at: string,
+  updated_at: string,
   origin_endpoint_id: string,
   destination_endpoint_id: string,
   instances: string[],
-  type: 'replica' | 'migration',
   info: { [prop: string]: MainItemInfo },
   destination_environment: { [prop: string]: any },
   source_environment: { [prop: string]: any },
   transfer_result: { [prop: string]: Instance } | null,
   replication_count?: number,
   storage_mappings?: StorageMapping | null,
-  network_map?: TransferNetworkMap
-  [prop: string]: any
+  network_map?: TransferNetworkMap,
+  last_execution_status: string
+  user_id: string
 }
+
+export type ReplicaItem = BaseItem & {
+  type: 'replica',
+}
+
+export type MigrationItem = BaseItem & {
+  type: 'migration',
+  replica_id?: string,
+}
+
+export type MigrationItemOptions = MigrationItem & {
+  skip_os_morphing: boolean,
+  shutdown_instances: boolean,
+}
+
+export type TransferItem = ReplicaItem | MigrationItem
+
+export type ReplicaItemDetails = ReplicaItem & {
+  executions: Execution[],
+}
+
+export type MigrationItemDetails = MigrationItem & {
+  tasks: Task[]
+}
+
+export type TransferItemDetails = ReplicaItemDetails | MigrationItemDetails

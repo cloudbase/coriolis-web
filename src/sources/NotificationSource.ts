@@ -17,6 +17,7 @@ import moment from 'moment'
 import configLoader from '../utils/Config'
 import Api from '../utils/ApiCaller'
 import type { NotificationItemData, NotificationItem } from '../@types/NotificationItem'
+import { TransferItem, MigrationItem, ReplicaItem } from '../@types/MainItem'
 
 class NotificationStorage {
   static storeName: string = 'seenNotifications'
@@ -69,45 +70,8 @@ class NotificationStorage {
 }
 
 class DataUtils {
-  static getMainInfo(item: any) {
-    if (item.type === 'migration') {
-      return item
-    }
-    if (item.executions && item.executions.length) {
-      const availableExecutions = item.executions.filter((i: any) => !i.deleted_at)
-      if (availableExecutions.length) {
-        availableExecutions.sort((a: any, b: any) => b.number - a.number)
-        return availableExecutions[0]
-      }
-    }
-
-    return item
-  }
-
-  static getUpdatedAt(item: any) {
-    const info = this.getMainInfo(item)
-    return info.updated_at || info.created_at
-  }
-
-  static getItemDescription(item: any) {
-    const type = item.type === 'replica' ? 'Replica' : 'Migration'
-    const mainInfo = this.getMainInfo(item)
-    let description = ''
-    const id = `${mainInfo.id.substr(0, 7)}...`
-    switch (mainInfo.status) {
-      case 'COMPLETED':
-        description = `${type} execution ${id} completed successfully`
-        break
-      case 'ERROR':
-        description = `${type} execution ${id} failed`
-        break
-      case 'RUNNING':
-        description = `${type} execution ${id} running`
-        break
-      default:
-        break
-    }
-    return description
+  static getItemDescription(item: TransferItem) {
+    return `New ${item.type} ${item.id.substr(0, 7)}... status: ${item.last_execution_status.toLowerCase().replace(/_/g, ' ')}`
   }
 }
 
@@ -118,20 +82,18 @@ class NotificationSource {
       Api.send({ url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas`, skipLog: true, quietError: true }),
     ])
 
-    const migrations = migrationsResponse.data.migrations
-    const replicas = replicasResponse.data.replicas
+    const migrations: MigrationItem[] = migrationsResponse.data.migrations
+    const replicas: ReplicaItem[] = replicasResponse.data.replicas
     const apiData = [...migrations, ...replicas]
-    apiData.sort((a, b) => moment(DataUtils.getUpdatedAt(b)).diff(DataUtils.getUpdatedAt(a)))
+    apiData.sort((a, b) => moment(b.updated_at).diff(a.updated_at))
 
     const notificationItems: NotificationItemData[] = apiData.map(item => {
-      const mainInfo = DataUtils.getMainInfo(item)
-
       const newItem: NotificationItemData = {
         id: item.id,
-        status: mainInfo.status,
+        status: item.last_execution_status,
         type: item.type,
         name: item.instances[0],
-        updatedAt: mainInfo.updated_at,
+        updatedAt: item.updated_at,
         description: DataUtils.getItemDescription(item),
       }
       return newItem
@@ -143,13 +105,11 @@ class NotificationSource {
       storageData = NotificationStorage.loadSeen() || []
     }
     notificationItems.forEach(item => {
-      // eslint-disable-next-line no-param-reassign
       item.unseen = true
 
       storageData?.forEach(storageItem => {
         if (storageItem.id === item.id
           && storageItem.status === item.status && storageItem.updatedAt === item.updatedAt) {
-          // eslint-disable-next-line no-param-reassign
           item.unseen = false
         }
       })

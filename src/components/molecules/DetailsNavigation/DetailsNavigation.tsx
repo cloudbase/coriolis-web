@@ -46,10 +46,9 @@ class DetailsNavigation extends React.Component<Props> {
     return (
       this.props.items.map(item => (
         <Item
-          data-test-id={`detailsNavigation-${item.value}`}
           selected={item.value === this.props.selectedValue}
           key={item.value || item.label}
-          to={this.props.customHref ? this.props.customHref(item) : `/${this.props.itemType || ''}${(item.value && '/') || ''}${item.value}/${this.props.itemId || ''}`}
+          to={this.props.customHref ? this.props.customHref(item) : `/${this.props.itemType || ''}s/${this.props.itemId || ''}${(item.value && '/') || ''}${item.value}`}
         >{item.label}
         </Item>
       ))

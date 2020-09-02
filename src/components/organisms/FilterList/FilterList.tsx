@@ -22,8 +22,6 @@ import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 import type { ItemComponentProps } from '../MainList'
 import MainList from '../MainList'
 
-import type { MainItem } from '../../../@types/MainItem'
-
 import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div<any>`
@@ -135,7 +133,7 @@ class FilterList extends React.Component<Props, State> {
     })
   }
 
-  handleItemSelectedChange(item: MainItem, selected: boolean) {
+  handleItemSelectedChange(item: any, selected: boolean) {
     const items = this.state.selectedItems.slice(0)
     const selectedItems = items.filter(i => item.id !== i.id) || []
 
@@ -159,7 +157,7 @@ class FilterList extends React.Component<Props, State> {
     })
   }
 
-  filterItems(items: MainItem[], filterStatus?: string | null, filterText?: string): MainItem[] {
+  filterItems(items: any[], filterStatus?: string | null, filterText?: string): any[] {
     const newFilterStatus = filterStatus || this.state.filterStatus
     const newFilterText = typeof filterText === 'undefined' ? this.state.filterText : filterText
     const filteredItems = items

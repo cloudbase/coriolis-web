@@ -38,7 +38,9 @@ storiesOf('MainListItem', module)
       selected={false}
       image="image"
       onSelectedChange={() => {}}
-      onClick={() => {}}
+      onClick={() => { }}
+      getUserName={id => id}
+      userNameLoading={false}
     />
   ))
   .add('running', () => (
@@ -49,5 +51,7 @@ storiesOf('MainListItem', module)
       image="image"
       onSelectedChange={() => { }}
       onClick={() => { }}
+      getUserName={id => id}
+      userNameLoading={false}
     />
   ))

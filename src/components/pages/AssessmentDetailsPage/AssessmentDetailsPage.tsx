@@ -514,14 +514,10 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 )}
           contentHeaderComponent={(
             <DetailsContentHeader
-              item={
-              {
-                ...details,
-                type: 'Azure Migrate',
-                status,
-              }
-            }
+              statusPill={status}
               statusLabel={statusLabel}
+              itemTitle={details?.name}
+              itemType="Azure Migrate"
               backLink="/planning"
               typeImage={assessmentImage}
             />

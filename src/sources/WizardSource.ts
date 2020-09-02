@@ -20,9 +20,9 @@ import configLoader from '../utils/Config'
 
 import type { WizardData } from '../@types/WizardData'
 import type { StorageMap } from '../@types/Endpoint'
-import type { MainItem } from '../@types/MainItem'
 import type { InstanceScript } from '../@types/Instance'
 import DefaultOptionsSchemaParser from '../plugins/endpoint/default/OptionsSchemaPlugin'
+import { TransferItem } from '../@types/MainItem'
 
 class WizardSource {
   async create(
@@ -31,7 +31,7 @@ class WizardSource {
     defaultStorage: string | null,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[],
-  ): Promise<MainItem> {
+  ): Promise<TransferItem> {
     const sourceParser = data.source
       ? OptionsSchemaPlugin.for(data.source.type) : DefaultOptionsSchemaParser
     const destParser = data.target
@@ -87,7 +87,7 @@ class WizardSource {
     const mainItems = await Promise.all(data.selectedInstances.map(async instance => {
       const newData = { ...data }
       newData.selectedInstances = [instance]
-      let mainItem: MainItem | null = null
+      let mainItem: TransferItem | null = null
       try {
         mainItem = await this.create(type, newData, defaultStorage, storageMap, uploadedUserScripts)
       } finally {

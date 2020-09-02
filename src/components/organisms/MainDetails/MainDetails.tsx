@@ -26,7 +26,6 @@ import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 import PasswordValue from '../../atoms/PasswordValue'
 
 import type { Instance } from '../../../@types/Instance'
-import type { MainItem } from '../../../@types/MainItem'
 import type { Endpoint } from '../../../@types/Endpoint'
 import type { Network } from '../../../@types/Network'
 import type { Field as FieldType } from '../../../@types/Field'
@@ -39,6 +38,7 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import { OptionsSchemaPlugin } from '../../../plugins/endpoint'
 
 import arrowImage from './images/arrow.svg'
+import { TransferItem } from '../../../@types/MainItem'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -120,7 +120,7 @@ const PropertyValue = styled.div<any>`
 `
 
 type Props = {
-  item?: MainItem | null,
+  item?: TransferItem | null,
   destinationSchema: FieldType[],
   destinationSchemaLoading: boolean,
   sourceSchema: FieldType[],
@@ -153,14 +153,6 @@ class MainDetails extends React.Component<Props, State> {
     return endpoint
   }
 
-  getLastExecution() {
-    if (this.props.item?.executions && this.props.item.executions.length) {
-      return this.props.item.executions[this.props.item.executions.length - 1]
-    }
-
-    return null
-  }
-
   getConnectedVms(networkId: string) {
     if (this.props.instancesDetailsLoading) {
       return 'Loading...'
@@ -185,13 +177,7 @@ class MainDetails extends React.Component<Props, State> {
   }
 
   renderLastExecutionTime() {
-    const lastExecution = this.getLastExecution()
-    const lastUpdate = lastExecution?.updated_at || lastExecution?.created_at
-    if (lastUpdate) {
-      return this.renderValue(DateUtils.getLocalTime(lastUpdate).format('YYYY-MM-DD HH:mm:ss'))
-    }
-
-    return null
+    return this.props.item ? this.renderValue(DateUtils.getLocalTime(this.props.item.updated_at).format('YYYY-MM-DD HH:mm:ss')) : '-'
   }
 
   renderValue(value: string, dateTestId?: string) {
@@ -208,7 +194,7 @@ class MainDetails extends React.Component<Props, State> {
     const endpoint = type === 'source' ? this.getSourceEndpoint() : this.getDestinationEndpoint()
 
     if (endpoint) {
-      return <ValueLink data-test-id={`mainDetails-name-${type}`} to={`/endpoint/${endpoint.id}`}>{endpoint.name}</ValueLink>
+      return <ValueLink to={`/endpoints/${endpoint.id}`}>{endpoint.name}</ValueLink>
     }
 
     return endpointIsMissing
@@ -353,11 +339,11 @@ class MainDetails extends React.Component<Props, State> {
               </Field>
             </Row>
           ) : null}
-          {this.props.item && this.props.item.replica_id ? (
+          {this.props.item?.type === 'migration' && this.props.item.replica_id ? (
             <Row>
               <Field>
                 <Label>Created from Replica</Label>
-                <ValueLink to={`/replica/${this.props.item.replica_id}`}>{this.props.item.replica_id}</ValueLink>
+                <ValueLink to={`/replicas/${this.props.item.replica_id}`}>{this.props.item.replica_id}</ValueLink>
               </Field>
             </Row>
           ) : null}

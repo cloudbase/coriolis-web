@@ -19,7 +19,6 @@ import DefaultOptionsSchemaPlugin from '../plugins/endpoint/default/OptionsSchem
 import { sortTasks } from './ReplicaSource'
 
 import Api from '../utils/ApiCaller'
-import type { MainItem } from '../@types/MainItem'
 import type { InstanceScript } from '../@types/Instance'
 import type { Field } from '../@types/Field'
 import type { NetworkMap } from '../@types/Network'
@@ -27,6 +26,7 @@ import type { Endpoint, StorageMap } from '../@types/Endpoint'
 
 import configLoader from '../utils/Config'
 import { Task } from '../@types/Task'
+import { MigrationItem, MigrationItemOptions, MigrationItemDetails } from '../@types/MainItem'
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates: any[]) {
@@ -52,7 +52,7 @@ class MigrationSourceUtils {
 }
 
 class MigrationSource {
-  async getMigrations(skipLog?: boolean): Promise<MainItem[]> {
+  async getMigrations(skipLog?: boolean): Promise<MigrationItem[]> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
       skipLog,
@@ -62,7 +62,7 @@ class MigrationSource {
     return migrations
   }
 
-  async getMigration(migrationId: string, skipLog?: boolean): Promise<MainItem> {
+  async getMigration(migrationId: string, skipLog?: boolean): Promise<MigrationItemDetails> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       skipLog,
@@ -72,7 +72,7 @@ class MigrationSource {
     return migration
   }
 
-  async recreateFullCopy(migration: MainItem): Promise<MainItem> {
+  async recreateFullCopy(migration: MigrationItemOptions): Promise<MigrationItem> {
     const {
       origin_endpoint_id, destination_endpoint_id, destination_environment,
       network_map, instances, storage_mappings, notes,
@@ -125,7 +125,7 @@ class MigrationSource {
     updatedNetworkMappings: NetworkMap[] | null,
     defaultSkipOsMorphing: boolean | null,
     replicationCount?: number | null,
-  }): Promise<MainItem> {
+  }): Promise<MigrationItemDetails> {
     const getValue = (fieldName: string): string | null => {
       const updatedDestEnv = opts.updatedDestEnv && opts.updatedDestEnv[fieldName]
       return updatedDestEnv != null ? updatedDestEnv
@@ -213,7 +213,7 @@ class MigrationSource {
 
   async migrateReplica(
     replicaId: string, options: Field[], userScripts: InstanceScript[],
-  ): Promise<MainItem> {
+  ): Promise<MigrationItem> {
     const payload: any = {
       migration: {
         replica_id: replicaId,

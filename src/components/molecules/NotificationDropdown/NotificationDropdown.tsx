@@ -264,8 +264,7 @@ class NotificationDropdown extends React.Component<Props, State> {
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
               onClick={() => { this.handleItemClick() }}
-              to={`/${item.type}${executionsHref}/${item.id}`}
-              data-test-id={`${testId}-${item.id}-item`}
+              to={`/${item.type}s/${item.id}/${executionsHref}`}
             >
               <InfoColumn>
                 <MainItemInfo>

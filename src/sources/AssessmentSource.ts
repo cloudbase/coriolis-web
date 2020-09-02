@@ -13,11 +13,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { MigrationInfo } from '../@types/Assessment'
-import type { MainItem } from '../@types/MainItem'
 import Api from '../utils/ApiCaller'
 import configLoader from '../utils/Config'
 import notificationStore from '../stores/NotificationStore'
 import ObjectUtils from '../utils/ObjectUtils'
+import { MigrationItem } from '../@types/MainItem'
 
 class AssessmentSourceUtils {
   static getNetworkMap(data: MigrationInfo) {
@@ -50,7 +50,7 @@ class AssessmentSourceUtils {
 }
 
 class AssessmentSource {
-  static migrate(data: MigrationInfo): Promise<MainItem> {
+  static migrate(data: MigrationInfo): Promise<MigrationItem> {
     const type = data.fieldValues.use_replica ? 'replica' : 'migration'
     const payload: any = {}
     payload[type] = {
@@ -73,7 +73,7 @@ class AssessmentSource {
     }).then(response => response.data[type])
   }
 
-  static migrateMultiple(data: MigrationInfo): Promise<MainItem[]> {
+  static migrateMultiple(data: MigrationInfo): Promise<MigrationItem[]> {
     return Promise.all(data.selectedInstances.map(async instance => {
       const newData = { ...data }
       newData.selectedInstances = [instance]

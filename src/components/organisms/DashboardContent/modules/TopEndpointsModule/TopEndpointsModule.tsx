@@ -25,10 +25,10 @@ import PieChart from '../../charts/PieChart'
 import Palette from '../../../../styleUtils/Palette'
 import StyleProps from '../../../../styleUtils/StyleProps'
 
-import type { MainItem } from '../../../../../@types/MainItem'
 import type { Endpoint } from '../../../../../@types/Endpoint'
 
 import endpointImage from './images/endpoint.svg'
+import { ReplicaItem, MigrationItem, TransferItem } from '../../../../../@types/MainItem'
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;
@@ -137,9 +137,9 @@ type GroupedEndpoint = {
 }
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
-  replicas: MainItem[],
+  replicas: ReplicaItem[],
   // eslint-disable-next-line react/no-unused-prop-types
-  migrations: MainItem[],
+  migrations: MigrationItem[],
   // eslint-disable-next-line react/no-unused-prop-types
   endpoints: Endpoint[],
   style: any,
@@ -172,7 +172,7 @@ class TopEndpointsModule extends React.Component<Props, State> {
 
   calculateGroupedEndpoints(props: Props) {
     const groupedEndpoints: GroupedEndpoint[] = []
-    const count = (mainItems: MainItem[], endpointId: string) => mainItems
+    const count = (mainItems: TransferItem[], endpointId: string) => mainItems
       .filter(r => r.destination_endpoint_id === endpointId
         || r.origin_endpoint_id === endpointId).length
 
@@ -214,7 +214,7 @@ class TopEndpointsModule extends React.Component<Props, State> {
         {topData.map((item, i) => (
           <LegendItem key={item.endpoint.id}>
             <LegendBullet color={COLORS[i % COLORS.length]} />
-            <LegendLabel to={`/endpoint/${item.endpoint.id}`}>{item.endpoint.name}</LegendLabel>
+            <LegendLabel to={`/endpoints/${item.endpoint.id}`}>{item.endpoint.name}</LegendLabel>
           </LegendItem>
         ))}
       </Legend>

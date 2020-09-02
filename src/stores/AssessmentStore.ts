@@ -17,7 +17,7 @@ import { observable, action } from 'mobx'
 import AssessmentSource from '../sources/AssessmentSource'
 import type { Endpoint } from '../@types/Endpoint'
 import type { Assessment, MigrationInfo } from '../@types/Assessment'
-import type { MainItem } from '../@types/MainItem'
+import { MigrationItem } from '../@types/MainItem'
 
 class AssessmentStore {
   @observable selectedEndpoint: Endpoint | null = null
@@ -26,7 +26,7 @@ class AssessmentStore {
 
   @observable migrating: boolean = false
 
-  @observable migrations: MainItem[] = []
+  @observable migrations: MigrationItem[] = []
 
   @action updateSelectedEndpoint(endpoint: Endpoint) {
     this.selectedEndpoint = endpoint

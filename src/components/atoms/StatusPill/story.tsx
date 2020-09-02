@@ -22,6 +22,7 @@ const Wrapper = styled.div<any>`
   flex-wrap: wrap;
 `
 const STATUSES = [
+  'UNEXECUTED',
   'SCHEDULED',
   'UNSCHEDULED',
   'COMPLETED',

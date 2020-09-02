@@ -163,7 +163,7 @@ class UserDropdown extends React.Component<Props, State> {
     const isAdmin = this.props.user.isAdmin
     if (isAdmin && navigationMenu.find(m => m.value === 'users'
       && !configLoader.config.disabledPages.find(p => p === 'users') && (!m.requiresAdmin || isAdmin))) {
-      href = `/user/${this.props.user.id}`
+      href = `/users/${this.props.user.id}`
     }
 
     return (

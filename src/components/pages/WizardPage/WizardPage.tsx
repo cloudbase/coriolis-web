@@ -35,7 +35,6 @@ import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardPages, executionOptions, providerTypes } from '../../../constants'
 
-import type { MainItem } from '../../../@types/MainItem'
 import type { Endpoint as EndpointType, StorageBackend } from '../../../@types/Endpoint'
 import type {
   Instance, Nic, Disk, InstanceScript,
@@ -46,6 +45,7 @@ import type { Schedule } from '../../../@types/Schedule'
 import type { WizardPage as WizardPageType } from '../../../@types/WizardData'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import { ProviderTypes } from '../../../@types/Providers'
+import { TransferItem, ReplicaItem } from '../../../@types/MainItem'
 
 const Wrapper = styled.div<any>``
 
@@ -141,27 +141,30 @@ class WizardPage extends React.Component<Props, State> {
     this.handleBackClick()
   }
 
-  async handleCreationSuccess(items: MainItem[]) {
+  async handleCreationSuccess(items: TransferItem[]) {
     const typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`${typeLabel}${items.length > 1 ? 's' : ''} was succesfully created`, 'success')
     let schedulePromise = Promise.resolve()
 
     if (this.state.type === 'replica') {
       items.forEach(replica => {
+        if (replica.type !== 'replica') {
+          return
+        }
         this.executeCreatedReplica(replica)
         schedulePromise = this.scheduleReplica(replica)
       })
     }
 
     if (items.length === 1) {
-      let location = `/${this.state.type}/`
+      let location = `/${this.state.type}s/${items[0].id}/`
       if (this.state.type === 'replica') {
-        location += 'executions/'
+        location += 'executions'
       } else {
-        location += 'tasks/'
+        location += 'tasks'
       }
       await schedulePromise
-      this.props.history.push(location + items[0].id)
+      this.props.history.push(location)
     } else {
       this.props.history.push(`/${this.state.type}s`)
     }
@@ -590,7 +593,7 @@ class WizardPage extends React.Component<Props, State> {
     return state
   }
 
-  scheduleReplica(replica: MainItem): Promise<void> {
+  scheduleReplica(replica: ReplicaItem): Promise<void> {
     if (wizardStore.schedules.length === 0) {
       return Promise.resolve()
     }
@@ -598,7 +601,7 @@ class WizardPage extends React.Component<Props, State> {
     return scheduleStore.scheduleMultiple(replica.id, wizardStore.schedules)
   }
 
-  executeCreatedReplica(replica: MainItem) {
+  executeCreatedReplica(replica: ReplicaItem) {
     const options = wizardStore.data.destOptions
     let executeNow = true
     if (options && options.execute_now != null) {

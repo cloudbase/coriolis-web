@@ -19,7 +19,6 @@ import styled from 'styled-components'
 import StatusImage from '../../atoms/StatusImage'
 import Button from '../../atoms/Button'
 
-import type { MainItem } from '../../../@types/MainItem'
 import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div<any>`
@@ -28,7 +27,7 @@ const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  min-width: 785px;
+  min-width: 900px;
 `
 const Separator = styled.div<any>`
   height: 1px;
@@ -89,8 +88,8 @@ type Props = {
   items: any[],
   selectedItems: any[],
   loading: boolean,
-  onSelectedChange: (item: MainItem, checked: boolean) => void,
-  onItemClick: (item: MainItem) => void,
+  onSelectedChange: (item: any, checked: boolean) => void,
+  onItemClick: (item: any) => void,
   renderItemComponent: (componentProps: ItemComponentProps) => React.ReactNode,
   showEmptyList: boolean,
   emptyListImage?: string | null,

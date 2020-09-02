@@ -15,12 +15,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import moment from 'moment'
 
 class DateUtils {
-  static getLocalTime(rawDate: Date | moment.Moment | undefined | null): moment.Moment {
+  static getLocalTime(rawDate: moment.MomentInput): moment.Moment {
     const usableRawDate = rawDate || undefined
     return moment(usableRawDate).add(-new Date().getTimezoneOffset(), 'minutes')
   }
 
-  static getUtcTime(rawDate: Date | moment.Moment | undefined | null): moment.Moment {
+  static getUtcTime(rawDate: moment.MomentInput): moment.Moment {
     const usableRawDate = rawDate || undefined
     return moment(usableRawDate).add(new Date().getTimezoneOffset(), 'minutes')
   }

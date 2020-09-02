@@ -14,16 +14,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from 'mobx'
 
-import type { MainItem, UpdateData } from '../@types/MainItem'
+import type {
+  UpdateData, MigrationItem, MigrationItemDetails, MigrationItemOptions,
+} from '../@types/MainItem'
 import type { Field } from '../@types/Field'
 import type { Endpoint } from '../@types/Endpoint'
 import type { InstanceScript } from '../@types/Instance'
 import MigrationSource from '../sources/MigrationSource'
 
 class MigrationStore {
-  @observable migrations: MainItem[] = []
+  @observable migrations: MigrationItem[] = []
 
-  @observable migrationDetails: MainItem | null = null
+  @observable migrationDetails: MigrationItemDetails | null = null
 
   @observable loading: boolean = true
 
@@ -39,15 +41,7 @@ class MigrationStore {
     try {
       const migrations = await MigrationSource.getMigrations(options && options.skipLog)
       runInAction(() => {
-        this.migrations = migrations.map(migration => {
-          const oldMigration = this.migrations.find(r => r.id === migration.id)
-          if (oldMigration) {
-            // eslint-disable-next-line no-param-reassign
-            migration.executions = oldMigration.executions
-          }
-
-          return migration
-        })
+        this.migrations = migrations
         this.loading = false
         this.migrationsLoaded = true
       })
@@ -57,7 +51,7 @@ class MigrationStore {
     }
   }
 
-  getDefaultSkipOsMorphing(migration: MainItem | null) {
+  getDefaultSkipOsMorphing(migration: MigrationItemDetails | null) {
     const tasks = migration && migration.tasks
     if (tasks && !tasks.find(t => t.task_type === 'OS_MORPHING')) {
       return true
@@ -65,19 +59,19 @@ class MigrationStore {
     return null
   }
 
-  @action async recreateFullCopy(migration: MainItem) {
+  @action async recreateFullCopy(migration: MigrationItemOptions) {
     return MigrationSource.recreateFullCopy(migration)
   }
 
   @action async recreate(
-    migration: MainItem,
+    migration: MigrationItemDetails,
     sourceEndpoint: Endpoint,
     destEndpoint: Endpoint,
     updateData: UpdateData,
     defaultStorage: string | null | undefined,
     updatedDefaultStorage: string | null | undefined,
     replicationCount: number | null | undefined,
-  ): Promise<MainItem> {
+  ): Promise<MigrationItemDetails> {
     const migrationResult = await MigrationSource.recreate({
       sourceEndpoint,
       destEndpoint,

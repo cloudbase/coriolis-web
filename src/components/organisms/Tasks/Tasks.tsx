@@ -21,11 +21,19 @@ import TaskItem from '../../molecules/TaskItem'
 import type { Task } from '../../../@types/Task'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
+import StatusImage from '../../atoms/StatusImage/StatusImage'
 
 const ColumnWidths = ['26%', '18%', '36%', '20%']
 
-const Wrapper = styled.div<any>`
+const Wrapper = styled.div<any>``
+const ContentWrapper = styled.div`
   background: ${Palette.grayscale[1]};
+`
+const LoadingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
 `
 const Header = styled.div<any>`
   display: flex;
@@ -43,6 +51,7 @@ const Body = styled.div<any>``
 
 type Props = {
   items: Task[],
+  loading?: boolean,
 }
 type State = {
   openedItems: Task[],
@@ -80,6 +89,10 @@ class Tasks extends React.Component<Props, State> {
     })
   }
 
+  get isLoading() {
+    return this.props.loading || this.props.items.length === 0
+  }
+
   handleItemMouseDown(e: React.MouseEvent<HTMLDivElement>) {
     this.dragStartPosition = { x: e.screenX, y: e.screenY }
   }
@@ -115,6 +128,14 @@ class Tasks extends React.Component<Props, State> {
     })
   }
 
+  renderLoading() {
+    return (
+      <LoadingWrapper>
+        <StatusImage loading />
+      </LoadingWrapper>
+    )
+  }
+
   renderHeader() {
     return (
       <Header>
@@ -145,11 +166,20 @@ class Tasks extends React.Component<Props, State> {
     )
   }
 
+  renderContent() {
+    return (
+      <ContentWrapper>
+        {this.renderHeader()}
+        {this.renderBody()}
+      </ContentWrapper>
+    )
+  }
+
   render() {
     return (
       <Wrapper>
-        {this.renderHeader()}
-        {this.renderBody()}
+        {!this.isLoading ? this.renderContent() : null}
+        {this.isLoading ? this.renderLoading() : null}
       </Wrapper>
     )
   }
