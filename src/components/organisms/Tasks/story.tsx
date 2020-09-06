@@ -80,5 +80,5 @@ const items: any = [
 
 storiesOf('Tasks', module)
   .add('default', () => (
-    <div style={{ width: '800px' }}><Tasks items={items} /></div>
+    <div style={{ width: '800px' }}><Tasks items={items} loading={false} /></div>
   ))

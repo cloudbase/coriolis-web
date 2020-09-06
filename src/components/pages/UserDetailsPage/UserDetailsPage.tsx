@@ -134,7 +134,8 @@ class UserDetailsPage extends React.Component<Props, State> {
 )}
           contentHeaderComponent={(
             <DetailsContentHeader
-              item={{ ...userStore.userDetails, description: '' }}
+              itemTitle={userStore.userDetails?.name}
+              itemType="user"
               backLink="/users"
               typeImage={userImage}
               dropdownActions={dropdownActions}

@@ -25,13 +25,13 @@ import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 import StatusImage from '../../atoms/StatusImage'
 
 import type { Endpoint } from '../../../@types/Endpoint'
-import type { MainItem } from '../../../@types/MainItem'
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
 import { Region } from '../../../@types/Region'
+import { MigrationItem, ReplicaItem, TransferItem } from '../../../@types/MainItem'
 
 const Wrapper = styled.div<any>`
   ${StyleProps.exactWidth(StyleProps.contentWidth)}
@@ -81,7 +81,7 @@ type Props = {
   regions: Region[],
   connectionInfo: Endpoint['connection_info'] | null,
   loading: boolean,
-  usage: { migrations: MainItem[], replicas: MainItem[] },
+  usage: { migrations: MigrationItem[], replicas: ReplicaItem[] },
   onDeleteClick: () => void,
   onValidateClick: () => void,
 }
@@ -174,7 +174,7 @@ class EndpointDetailsContent extends React.Component<Props> {
     )
   }
 
-  renderUsage(items: MainItem[]) {
+  renderUsage(items: TransferItem[]) {
     return items.map(item => (
       <span>
         <LinkStyled
@@ -193,7 +193,8 @@ class EndpointDetailsContent extends React.Component<Props> {
     const {
       type, name, description, created_at, id,
     } = this.props.item || {}
-    const usage = this.props.usage.replicas.concat(this.props.usage.migrations)
+    const usage: TransferItem[] = this.props.usage.replicas
+      .concat(this.props.usage.migrations as any[])
 
     return (
       <Wrapper>

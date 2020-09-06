@@ -31,7 +31,9 @@ import WizardNetworks from '../WizardNetworks'
 import WizardOptions from '../WizardOptions'
 import WizardStorage from '../WizardStorage/WizardStorage'
 
-import type { MainItem, UpdateData } from '../../../@types/MainItem'
+import type {
+  UpdateData, TransferItemDetails, MigrationItemDetails,
+} from '../../../@types/MainItem'
 import type { NavigationItem } from '../../molecules/Panel'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../@types/Endpoint'
 import type { Field } from '../../../@types/Field'
@@ -84,7 +86,7 @@ type Props = {
   isOpen: boolean,
   onRequestClose: () => void,
   onUpdateComplete: (redirectTo: string) => void,
-  replica: MainItem,
+  replica: TransferItemDetails,
   destinationEndpoint: Endpoint,
   sourceEndpoint: Endpoint,
   instancesDetails: Instance[],
@@ -224,11 +226,12 @@ class EditReplica extends React.Component<Props, State> {
       const osData = replicaData[`${plugin.migrationImageMapFieldName}/${osMapping[1]}`]
       return osData
     }
-    if (migrationFields.find(f => f.name === fieldName) && this.props.replica[fieldName]) {
-      return this.props.replica[fieldName]
+    const anyData = this.props.replica as any
+    if (migrationFields.find(f => f.name === fieldName) && anyData[fieldName]) {
+      return anyData[fieldName]
     }
     if (fieldName === 'skip_os_morphing' && this.props.type === 'migration') {
-      return migrationStore.getDefaultSkipOsMorphing(this.props.replica)
+      return migrationStore.getDefaultSkipOsMorphing(anyData)
     }
     return defaultValue
   }
@@ -439,12 +442,12 @@ class EditReplica extends React.Component<Props, State> {
     if (this.props.type === 'replica') {
       try {
         await replicaStore.update(
-          this.props.replica,
+          this.props.replica as any,
           this.props.destinationEndpoint,
           updateData, this.getDefaultStorage(), endpointStore.storageConfigDefault,
         )
         this.props.onRequestClose()
-        this.props.onUpdateComplete(`/replica/executions/${this.props.replica.id}`)
+        this.props.onUpdateComplete(`/replicas/${this.props.replica.id}/executions`)
       } catch (err) {
         this.setState({ updateDisabled: false })
       }
@@ -452,8 +455,8 @@ class EditReplica extends React.Component<Props, State> {
       try {
         const replicaDefaultStorage = this.props.replica.storage_mappings
           && this.props.replica.storage_mappings.default
-        const migration: MainItem = await migrationStore.recreate(
-          this.props.replica,
+        const migration: MigrationItemDetails = await migrationStore.recreate(
+          this.props.replica as any,
           this.props.sourceEndpoint,
           this.props.destinationEndpoint,
           updateData,
@@ -463,7 +466,7 @@ class EditReplica extends React.Component<Props, State> {
         )
         migrationStore.clearDetails()
         this.props.onRequestClose()
-        this.props.onUpdateComplete(`/migration/tasks/${migration.id}`)
+        this.props.onUpdateComplete(`/migrations/${migration.id}/tasks`)
       } catch (err) {
         this.setState({ updateDisabled: false })
       }

@@ -23,8 +23,7 @@ import Button from '../../atoms/Button'
 import Timeline from '../../molecules/Timeline'
 import Tasks from '../Tasks'
 
-import type { MainItem } from '../../../@types/MainItem'
-import type { Execution } from '../../../@types/Execution'
+import type { Execution, ExecutionTasks } from '../../../@types/Execution'
 import Palette from '../../styleUtils/Palette'
 import DateUtils from '../../../utils/DateUtils'
 
@@ -85,8 +84,11 @@ const NoExecutionText = styled.div<any>`
 `
 
 type Props = {
-  item?: MainItem | null,
+  executions: Execution[],
+  executionsTasks: ExecutionTasks[],
   loading: boolean,
+  tasksLoading: boolean,
+  onChange: (executionId: string) => void,
   onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
   onDeleteExecutionClick: (execution: Execution | null) => void,
   onExecuteClick: () => void,
@@ -110,27 +112,27 @@ class Executions extends React.Component<Props, State> {
 
   setSelectedExecution(props: Props) {
     const lastExecution = this.getLastExecution(props)
-    let selectExecution = null
+    let selectExecution: Execution | null | undefined = null
 
-    if (props.item && props.item.executions && this.props.item && this.props.item.executions) {
-      if (this.props.item.executions.length !== props.item.executions.length
+    if (props.executions && this.props.executions) {
+      if (this.props.executions.length !== props.executions.length
         && lastExecution && lastExecution.status === 'RUNNING') {
         selectExecution = lastExecution
       }
 
-      if (this.props.item.executions.length > props.item.executions.length) {
-        const isSelectedAvailable = props.item.executions.find(e => this.state.selectedExecution
+      if (this.props.executions.length > props.executions.length) {
+        const isSelectedAvailable = props.executions.find(e => this.state.selectedExecution
           && e.id === this.state.selectedExecution.id)
         if (!isSelectedAvailable) {
-          const lastIndex = this.props.item && this.props.item.executions
-            ? this.props.item.executions
+          const lastIndex = this.props.executions
+            ? this.props.executions
               .findIndex(e => this.state.selectedExecution
               && e.id === this.state.selectedExecution.id) : -1
-          if (props.item && props.item.executions.length) {
-            if (props.item.executions.length - 1 >= lastIndex) {
-              selectExecution = props.item.executions[lastIndex]
+          if (props.executions.length) {
+            if (props.executions.length - 1 >= lastIndex) {
+              selectExecution = props.executions[lastIndex]
             } else {
-              selectExecution = props.item.executions[lastIndex - 1]
+              selectExecution = props.executions[lastIndex - 1]
             }
           }
         }
@@ -140,16 +142,22 @@ class Executions extends React.Component<Props, State> {
     if (!currentSelectedExecution) {
       this.setState({
         selectedExecution: lastExecution || null,
+      }, () => {
+        this.handleChange(lastExecution)
       })
     } else if (selectExecution) {
       this.setState({
         selectedExecution: selectExecution,
+      }, () => {
+        this.handleChange(selectExecution)
       })
     } else if (this.hasExecutions(props)) {
-      selectExecution = (props.item && props.item.executions
+      selectExecution = (props.executions
         .find(e => e.id === currentSelectedExecution.id)) || lastExecution
       this.setState({
         selectedExecution: selectExecution || null,
+      }, () => {
+        this.handleChange(selectExecution)
       })
     } else {
       this.setState({ selectedExecution: null })
@@ -157,23 +165,31 @@ class Executions extends React.Component<Props, State> {
   }
 
   getLastExecution(props: Props) {
-    if (this.hasExecutions(props) && props.item) {
-      return props.item.executions[props.item.executions.length - 1]
+    if (this.hasExecutions(props)) {
+      return props.executions[props.executions.length - 1]
     }
     return null
   }
 
   hasExecutions(props: Props) {
-    return Boolean(props.item && props.item.executions && props.item.executions.length)
+    return Boolean(props.executions.length)
+  }
+
+  handleChange(execution?: Execution | null) {
+    if (!execution) {
+      return
+    }
+
+    this.props.onChange(execution.id)
   }
 
   handlePreviousExecutionClick() {
     const currentSelectedExecution = this.state.selectedExecution
-    if (!this.props.item || !currentSelectedExecution) {
+    if (!this.props.executions.length || !currentSelectedExecution) {
       return
     }
 
-    const selectedIndex = this.props.item
+    const selectedIndex = this.props
       .executions.findIndex(e => e.id === currentSelectedExecution.id)
 
     if (selectedIndex === 0) {
@@ -181,27 +197,33 @@ class Executions extends React.Component<Props, State> {
     }
 
     this.setState({
-      selectedExecution: this.props.item ? this.props.item.executions[selectedIndex - 1] : null,
+      selectedExecution: this.props.executions[selectedIndex - 1],
+    }, () => {
+      this.handleChange(this.props.executions[selectedIndex - 1])
     })
   }
 
   handleNextExecutionClick() {
     const currentSelectedExecution = this.state.selectedExecution
-    if (!this.props.item || !currentSelectedExecution) {
+    if (!this.props.executions.length || !currentSelectedExecution) {
       return
     }
-    const selectedIndex = this.props.item.executions
+    const selectedIndex = this.props.executions
       .findIndex(e => e.id === currentSelectedExecution.id)
 
-    if (!this.props.item || selectedIndex >= this.props.item.executions.length - 1) {
+    if (selectedIndex >= this.props.executions.length - 1) {
       return
     }
 
-    this.setState({ selectedExecution: this.props.item.executions[selectedIndex + 1] })
+    this.setState({ selectedExecution: this.props.executions[selectedIndex + 1] }, () => {
+      this.handleChange(this.props.executions[selectedIndex + 1])
+    })
   }
 
   handleTimelineItemClick(item: Execution) {
-    this.setState({ selectedExecution: item })
+    this.setState({ selectedExecution: item }, () => {
+      this.handleChange(item)
+    })
   }
 
   handleCancelExecutionClick() {
@@ -232,7 +254,7 @@ class Executions extends React.Component<Props, State> {
 
     return (
       <Timeline
-        items={this.props.item ? this.props.item.executions : null}
+        items={this.props.executions}
         selectedItem={this.state.selectedExecution}
         onPreviousClick={() => { this.handlePreviousExecutionClick() }}
         onNextClick={() => { this.handleNextExecutionClick() }}
@@ -305,14 +327,16 @@ class Executions extends React.Component<Props, State> {
   }
 
   renderTasks() {
-    if (!this.state.selectedExecution || !this.state.selectedExecution.tasks
-      || !this.state.selectedExecution.tasks.length
-      || this.props.loading) {
+    if (this.props.loading || this.props.executions.length === 0) {
       return null
     }
 
     return (
-      <Tasks items={this.state.selectedExecution.tasks} />
+      <Tasks
+        loading={this.props.tasksLoading}
+        items={this.props.executionsTasks
+          .find(e => e.id === this.state.selectedExecution?.id)?.tasks || []}
+      />
     )
   }
 

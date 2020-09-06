@@ -127,7 +127,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 
   handleItemClick(item: EndpointType) {
-    this.props.history.push(`/endpoint/${item.id}`)
+    this.props.history.push(`/endpoints/${item.id}`)
   }
 
   async duplicate(projectId: string) {

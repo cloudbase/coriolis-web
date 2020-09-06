@@ -17,8 +17,6 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import type { MainItem } from '../../../@types/MainItem'
-import type { Execution } from '../../../@types/Execution'
 import StatusPill from '../../atoms/StatusPill'
 import ActionDropdown from '../../molecules/ActionDropdown'
 import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
@@ -84,37 +82,21 @@ type Props = {
   dropdownActions?: DropdownAction[],
   backLink: string,
   typeImage?: string,
-  statusLabel?: string,
-  item: any,
   alertInfoPill?: boolean,
   primaryInfoPill?: boolean,
+  statusPill?: string,
+  statusLabel?: string,
+  itemTitle?: string | null
+  itemType?: string
+  itemDescription?: string
 }
 @observer
 class DetailsContentHeader extends React.Component<Props> {
-  getLastExecution(): MainItem | Execution | null | undefined {
-    if (this.props.item && this.props.item.executions && this.props.item.executions.length) {
-      return this.props.item.executions[this.props.item.executions.length - 1]
-    } if (this.props.item && typeof this.props.item.executions === 'undefined') {
-      return this.props.item
-    }
-
-    return null
-  }
-
-  getStatus() {
-    const lastExecution = this.getLastExecution()
-    if (lastExecution) {
-      return lastExecution.status
-    }
-
-    return null
-  }
-
   renderStatusPill() {
-    if (!this.getStatus()) {
+    if (!this.props.statusPill) {
       return null
     }
-    let statusLabel = this.getStatus()
+    let statusLabel = this.props.statusPill
     if (this.props.statusLabel) {
       statusLabel = this.props.statusLabel
     }
@@ -122,14 +104,12 @@ class DetailsContentHeader extends React.Component<Props> {
       <StatusPills>
         <StatusPill
           status="INFO"
-          label={this.props.item ? this.props.item.type && this.props.item.type.toUpperCase() : ''}
+          label={this.props.itemType}
           alert={this.props.alertInfoPill}
           primary={this.props.primaryInfoPill}
-          data-test-id="dcHeader-infoPill"
         />
         <StatusPill
-          data-test-id={`dcHeader-statusPill-${statusLabel || ''}`}
-          status={this.getStatus()}
+          status={this.props.statusPill}
           label={statusLabel || ''}
         />
       </StatusPills>
@@ -151,36 +131,23 @@ class DetailsContentHeader extends React.Component<Props> {
   }
 
   renderDescription() {
-    if (!this.props.item || !this.props.item.description) {
+    if (!this.props.itemDescription) {
       return null
     }
 
     return (
-      <Description data-test-id="dcHeader-description">{this.props.item.description}</Description>
+      <Description>{this.props.itemDescription}</Description>
     )
   }
 
   render() {
-    let title = null
-    if (this.props.item) {
-      const { instances } = this.props.item
-      if (instances) {
-        title = instances[0]
-        if (instances.length > 1) {
-          title += ` (+${instances.length - 1} more)`
-        }
-      } else {
-        title = this.props.item.name
-      }
-    }
-
     return (
       <Wrapper>
         <BackButton to={this.props.backLink} data-test-id="dcHeader-backButton" />
         <TypeImage image={this.props.typeImage} />
         <Title>
           <Status>
-            <Text title={title} data-test-id="dcHeader-title">{title}</Text>
+            <Text title={this.props.itemTitle}>{this.props.itemTitle}</Text>
             {this.renderStatusPill()}
             {this.renderDescription()}
           </Status>

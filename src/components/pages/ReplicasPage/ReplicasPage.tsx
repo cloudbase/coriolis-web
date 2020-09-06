@@ -27,7 +27,6 @@ import ReplicaExecutionOptions from '../../organisms/ReplicaExecutionOptions'
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
 import DeleteReplicaModal from '../../molecules/DeleteReplicaModal'
 
-import type { MainItem } from '../../../@types/MainItem'
 import type { Action as DropdownAction } from '../../molecules/ActionDropdown'
 import type { Field } from '../../../@types/Field'
 import type { InstanceScript } from '../../../@types/Instance'
@@ -45,6 +44,8 @@ import notificationStore from '../../../stores/NotificationStore'
 
 import Palette from '../../styleUtils/Palette'
 import configLoader from '../../../utils/Config'
+import { ReplicaItem } from '../../../@types/MainItem'
+import userStore from '../../../stores/UserStore'
 
 const Wrapper = styled.div<any>``
 
@@ -52,7 +53,7 @@ const SCHEDULE_POLL_TIMEOUT = 10000
 
 type State = {
   modalIsOpen: boolean,
-  selectedReplicas: MainItem[],
+  selectedReplicas: ReplicaItem[],
   showCancelExecutionModal: boolean,
   showExecutionOptionsModal: boolean,
   showCreateMigrationsModal: boolean,
@@ -84,6 +85,10 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
 
     projectStore.getProjects()
     endpointStore.getEndpoints({ showLoading: true })
+    userStore.getAllUsers({
+      showLoading: userStore.users.length === 0,
+      quietError: true,
+    })
 
     this.stopPolling = false
     this.pollData()
@@ -108,22 +113,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     ]
   }
 
-  getLastExecution(item: MainItem) {
-    const lastExecution = item.executions && item.executions.length
-      ? item.executions[item.executions.length - 1] : null
-
-    return lastExecution
-  }
-
-  getStatus(replica?: MainItem | null): string {
-    if (!replica) {
-      return ''
-    }
-    const usableReplica = replica
-    if (usableReplica.executions && usableReplica.executions.length) {
-      return usableReplica.executions[usableReplica.executions.length - 1].status
-    }
-    return ''
+  getStatus(replica?: ReplicaItem | null): string {
+    return replica?.last_execution_status || ''
   }
 
   handleProjectChange() {
@@ -135,14 +126,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     projectStore.getProjects()
     replicaStore.getReplicas({ showLoading: true })
     endpointStore.getEndpoints({ showLoading: true })
+    userStore.getAllUsers({ showLoading: true, quietError: true })
   }
 
-  handleItemClick(item: MainItem) {
-    const lastExecution = this.getLastExecution(item)
-    if (lastExecution && lastExecution.status === 'RUNNING') {
-      this.props.history.push(`/replica/executions/${item.id}`)
+  handleItemClick(item: ReplicaItem) {
+    if (item.last_execution_status === 'RUNNING') {
+      this.props.history.push(`/replicas/${item.id}/executions`)
     } else {
-      this.props.history.push(`/replica/${item.id}`)
+      this.props.history.push(`/replicas/${item.id}`)
     }
   }
 
@@ -175,7 +166,12 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     this.props.history.push('/migrations')
   }
 
-  deleteReplicasDisks(replicas: MainItem[]) {
+  handleShowDeleteReplicas() {
+    replicaStore.loadHaveReplicasDisks(this.state.selectedReplicas)
+    this.setState({ showDeleteReplicasModal: true })
+  }
+
+  deleteReplicasDisks(replicas: ReplicaItem[]) {
     replicas.forEach(replica => {
       replicaStore.deleteDisks(replica.id)
     })
@@ -186,16 +182,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
   cancelExecutions() {
     this.state.selectedReplicas.forEach(replica => {
       const actualReplica = replicaStore.replicas.find(r => r.id === replica.id)
-      const lastExecution = actualReplica
-        && actualReplica.executions[actualReplica.executions.length - 1]
-      if (actualReplica && lastExecution && lastExecution.status === 'RUNNING') {
-        replicaStore.cancelExecution(replica.id, lastExecution.id)
+      if (actualReplica?.last_execution_status === 'RUNNING') {
+        replicaStore.cancelExecution({ replicaId: replica.id })
       }
     })
     this.setState({ showCancelExecutionModal: false })
   }
 
-  isExecuteEnabled(replica?: MainItem | null): boolean {
+  isExecuteEnabled(replica?: ReplicaItem | null): boolean {
     if (!replica) {
       return false
     }
@@ -244,7 +238,9 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     }
 
     await Promise.all([
-      replicaStore.getReplicas({ skipLog: true }), endpointStore.getEndpoints({ skipLog: true }),
+      replicaStore.getReplicas({ skipLog: true }),
+      endpointStore.getEndpoints({ skipLog: true }),
+      userStore.getAllUsers({ skipLog: true, quietError: true }),
     ])
     if (!this.schedulePolling) {
       this.pollSchedule()
@@ -263,7 +259,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     }, SCHEDULE_POLL_TIMEOUT)
   }
 
-  searchText(item: MainItem, text?: string | null) {
+  searchText(item: ReplicaItem, text?: string | null) {
     let result = false
     if (item.instances[0].toLowerCase().indexOf(text || '') > -1) {
       return true
@@ -280,9 +276,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     return result
   }
 
-  itemFilterFunction(item: MainItem, filterStatus?: string | null, filterText?: string) {
-    const lastExecution = this.getLastExecution(item)
-    if ((filterStatus !== 'all' && (!lastExecution || lastExecution.status !== filterStatus))
+  itemFilterFunction(item: ReplicaItem, filterStatus?: string | null, filterText?: string) {
+    if ((filterStatus !== 'all' && item.last_execution_status !== filterStatus)
       || !this.searchText(item, filterText)
     ) {
       return false
@@ -327,7 +322,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     }, {
       label: 'Delete Replicas',
       color: Palette.alert,
-      action: () => { this.setState({ showDeleteReplicasModal: true }) },
+      action: () => { this.handleShowDeleteReplicas() },
     }]
 
     return (
@@ -360,6 +355,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
                     }
                     return 'Not Found'
                   }}
+                  getUserName={id => userStore.users.find(u => u.id === id)?.name}
+                  userNameLoading={userStore.allUsersLoading}
                 />
               )}
               emptyListImage={replicaLargeImage}
@@ -380,14 +377,13 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         />
         {this.state.showDeleteReplicasModal ? (
           <DeleteReplicaModal
-            hasDisks={replicaStore.getReplicasWithDisks(this.state.selectedReplicas).length > 0}
             isMultiReplicaSelection
+            hasDisks={replicaStore.replicasWithDisks.length > 0}
+            loading={replicaStore.replicasWithDisksLoading}
             onRequestClose={() => { this.setState({ showDeleteReplicasModal: false }) }}
             onDeleteReplica={() => { this.deleteSelectedReplicas() }}
             onDeleteDisks={() => {
-              this.deleteReplicasDisks(
-                replicaStore.getReplicasWithDisks(this.state.selectedReplicas),
-              )
+              this.deleteReplicasDisks(replicaStore.replicasWithDisks)
             }}
           />
         ) : null}

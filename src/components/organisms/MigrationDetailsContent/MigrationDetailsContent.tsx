@@ -23,9 +23,9 @@ import Tasks from '../Tasks'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import type { Instance } from '../../../@types/Instance'
-import type { MainItem } from '../../../@types/MainItem'
 import type { Endpoint } from '../../../@types/Endpoint'
 import type { Field } from '../../../@types/Field'
+import { MigrationItemDetails } from '../../../@types/MainItem'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -53,7 +53,7 @@ const NavigationItems = [
 ]
 
 type Props = {
-  item: MainItem | null,
+  item: MigrationItemDetails | null,
   detailsLoading: boolean,
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
@@ -110,7 +110,7 @@ class MigrationDetailsContent extends React.Component<Props> {
     return (
       <Tasks
         items={this.props.item.tasks}
-        data-test-id="mdContent-tasks"
+        loading={this.props.detailsLoading}
       />
     )
   }

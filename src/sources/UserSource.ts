@@ -171,8 +171,12 @@ class UserSource {
     return response.data.user
   }
 
-  async getAllUsers(skipLog?: boolean): Promise<User[]> {
-    const response = await Api.send({ url: `${configLoader.config.servicesUrls.keystone}/users`, skipLog })
+  async getAllUsers(skipLog?: boolean, quietError?: boolean): Promise<User[]> {
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.keystone}/users`,
+      skipLog,
+      quietError,
+    })
     let users: User[] = response.data.users
     await utils.waitFor(() => Boolean(configLoader.config))
     users = users.filter(u => !configLoader.config.hiddenUsers.find(hu => hu === u.name))

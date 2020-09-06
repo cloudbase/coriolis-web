@@ -241,7 +241,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         <UserName
           data-test-id={`pdContent-users-${user.name}`}
           disabled={!user.enabled}
-          to={`/user/${user.id}`}
+          to={`/users/${user.id}`}
         >{user.name}
         </UserName>,
         <DropdownLink

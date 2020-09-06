@@ -135,7 +135,7 @@ class UserDetailsContent extends React.Component<Props> {
     return projects.map((project, i) => (
       <span key={project.id}>
         {project.label ? (
-          <LinkStyled data-test-id={`${TEST_ID}-project-${project.id}`} to={`/project/${project.id}`}>
+          <LinkStyled to={`/projects/${project.id}`}>
             {project.label}
           </LinkStyled>
         ) : project.id}

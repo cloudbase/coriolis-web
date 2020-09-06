@@ -21,12 +21,11 @@ import StatusPill from '../../atoms/StatusPill'
 import EndpointLogos from '../../atoms/EndpointLogos'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-import DateUtils from '../../../utils/DateUtils'
-import type { MainItem } from '../../../@types/MainItem'
-import type { Execution } from '../../../@types/Execution'
+import type { TransferItem } from '../../../@types/MainItem'
 
 import arrowImage from './images/arrow.svg'
 import scheduleImage from './images/schedule.svg'
+import DateUtils from '../../../utils/DateUtils'
 
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => (props.checked ? 1 : 0)};
@@ -97,97 +96,74 @@ const EndpointImageArrow = styled.div<any>`
   margin: 0 16px;
   background: url('${arrowImage}') center no-repeat;
 `
-const LastExecution = styled.div<any>`
-  min-width: 175px;
-  margin-right: 25px;
-`
 const ItemLabel = styled.div<any>`
   color: ${Palette.grayscale[4]};
 `
 const ItemValue = styled.div<any>`
   color: ${Palette.primary};
 `
-
-const TasksRemaining = styled.div<any>`
-  min-width: 114px;
+const Column = styled.div`
+  align-self: start;
 `
 
 type Props = {
-  item: MainItem,
+  item: TransferItem,
   onClick: () => void,
   selected: boolean,
-  useTasksRemaining?: boolean,
   image: string,
   showScheduleIcon?: boolean,
   endpointType: (endpointId: string) => string,
+  getUserName: (userId: string) => string | undefined,
+  userNameLoading: boolean,
   onSelectedChange: (value: boolean) => void,
 }
 @observer
 class MainListItem extends React.Component<Props> {
-  getLastExecution(): Execution | MainItem | null | undefined {
-    if (this.props.item.executions && this.props.item.executions.length) {
-      return this.props.item.executions[this.props.item.executions.length - 1]
-    }
-
-    if (typeof this.props.item.executions === 'undefined') {
-      return this.props.item
-    }
-
-    return null
-  }
-
   getStatus() {
-    const lastExecution = this.getLastExecution()
-    if (lastExecution) {
-      return lastExecution.status
-    }
-
-    return null
+    return this.props.item.last_execution_status
   }
 
-  getTasksRemaining() {
-    const lastExecution = this.getLastExecution()
-
-    if (!lastExecution || !lastExecution.tasks || lastExecution.tasks.length === 0) {
-      return '-'
-    }
-
-    const unfinished = lastExecution.tasks.filter(task => task.status !== 'COMPLETED').length
-
-    if (unfinished === 0) {
-      return '-'
-    }
-
-    const total = lastExecution.tasks.length
-
-    return `${unfinished} of ${total}`
-  }
-
-  getTotalExecutions() {
-    return (this.props.item.executions && this.props.item.executions.length) || '-'
-  }
-
-  renderLastExecution() {
-    const lastExecution = this.getLastExecution()
-    let label = 'Last Execution'
-    let time = '-'
-
-    if (this.props.item.executions === undefined) {
-      label = 'Created'
-      time = DateUtils.getLocalTime(lastExecution && lastExecution.created_at).format('DD MMMM YYYY, HH:mm')
-    } else if (lastExecution && (lastExecution.created_at || lastExecution.updated_at)) {
-      time = DateUtils.getLocalTime(lastExecution.updated_at || lastExecution.created_at).format('DD MMMM YYYY, HH:mm')
-    }
-
+  renderCreationDate() {
     return (
-      <LastExecution>
+      <Column style={{ minWidth: '170px', maxWidth: '170px', marginRight: '25px' }}>
         <ItemLabel>
-          {label}
+          Created
         </ItemLabel>
         <ItemValue>
-          {time}
+          {DateUtils.getLocalTime(this.props.item.created_at).format('DD MMMM YYYY, HH:mm')}
         </ItemValue>
-      </LastExecution>
+      </Column>
+    )
+  }
+
+  renderUpdateDate() {
+    return (
+      <Column style={{ minWidth: '170px', maxWidth: '170px', marginRight: '25px' }}>
+        <ItemLabel>
+          Updated
+        </ItemLabel>
+        <ItemValue>
+          {this.props.item.updated_at ? DateUtils.getLocalTime(this.props.item.updated_at).format('DD MMMM YYYY, HH:mm') : '-'}
+        </ItemValue>
+      </Column>
+    )
+  }
+
+  renderUser() {
+    return (
+      <Column style={{ minWidth: '115px', maxWidth: '115px' }}>
+        <ItemLabel>
+          User
+        </ItemLabel>
+        <ItemValue
+          style={{
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {this.props.userNameLoading ? 'Loading...' : (this.props.getUserName(this.props.item.user_id) || this.props.item.user_id)}
+        </ItemValue>
+      </Column>
     )
   }
 
@@ -235,14 +211,9 @@ class MainListItem extends React.Component<Props> {
             </StatusWrapper>
           </Title>
           {endpointImages}
-          {this.renderLastExecution()}
-          <TasksRemaining>
-            <ItemLabel>{this.props.useTasksRemaining ? 'Tasks Remaining' : 'Total Executions'}</ItemLabel>
-            <ItemValue>{
-              this.props.useTasksRemaining ? this.getTasksRemaining() : this.getTotalExecutions()
-}
-            </ItemValue>
-          </TasksRemaining>
+          {this.renderCreationDate()}
+          {this.renderUpdateDate()}
+          {this.renderUser()}
         </Content>
       </Wrapper>
     )

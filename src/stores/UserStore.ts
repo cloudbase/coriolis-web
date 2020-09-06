@@ -152,12 +152,20 @@ class UserStore {
     }
   }
 
-  @action async getAllUsers(options?: { showLoading?: boolean, skipLog?: boolean }): Promise<void> {
-    if (options && options.showLoading) this.allUsersLoading = true
+  @action async getAllUsers(options?: {
+    showLoading?: boolean,
+    skipLog?: boolean,
+    quietError?: boolean,
+  }): Promise<void> {
+    if (options?.showLoading) this.allUsersLoading = true
 
     try {
-      const users = await UserSource.getAllUsers(options && options.skipLog)
+      const users = await UserSource.getAllUsers(options?.skipLog, options?.quietError)
       runInAction(() => { this.users = users })
+    } catch (err) {
+      if (err.data?.error?.code !== 403) {
+        throw err
+      }
     } finally {
       runInAction(() => { this.allUsersLoading = false })
     }

@@ -27,7 +27,6 @@ import EditReplica from '../../organisms/EditReplica'
 import ReplicaMigrationOptions from '../../organisms/ReplicaMigrationOptions'
 import DeleteReplicaModal from '../../molecules/DeleteReplicaModal'
 
-import type { MainItem } from '../../../@types/MainItem'
 import type { InstanceScript } from '../../../@types/Instance'
 import type { Execution } from '../../../@types/Execution'
 import type { Schedule } from '../../../@types/Schedule'
@@ -45,11 +44,12 @@ import notificationStore from '../../../stores/NotificationStore'
 import providerStore from '../../../stores/ProviderStore'
 
 import configLoader from '../../../utils/Config'
-import utils from '../../../utils/ObjectUtils'
 import { providerTypes } from '../../../constants'
 
 import replicaImage from './images/replica.svg'
 import Palette from '../../styleUtils/Palette'
+import { ReplicaItemDetails } from '../../../@types/MainItem'
+import ObjectUtils from '../../../utils/ObjectUtils'
 
 const Wrapper = styled.div<any>``
 
@@ -65,7 +65,7 @@ type State = {
   showForceCancelConfirmation: boolean,
   showDeleteReplicaConfirmation: boolean,
   showDeleteReplicaDisksConfirmation: boolean,
-  confirmationItem: MainItem | null | Execution | null,
+  confirmationItem?: ReplicaItemDetails | null | Execution | null,
   showCancelConfirmation: boolean,
   isEditable: boolean,
   pausePolling: boolean,
@@ -88,12 +88,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   stopPolling: boolean | null = null
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     document.title = 'Replica Details'
 
     const loadReplica = async () => {
       await endpointStore.getEndpoints({ showLoading: true })
-      const replica = await this.loadReplicaWithInstances(this.replicaId, true)
+      const replica = await this.loadReplicaWithInstances(true)
       if (!replica) {
         return
       }
@@ -141,7 +141,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadReplicaWithInstances(newProps.match.params.id, true)
+      this.loadReplicaWithInstances(true, newProps.match.params.id)
       scheduleStore.getSchedules(newProps.match.params.id)
     }
   }
@@ -159,8 +159,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   get replica() {
-    const replica = replicaStore.replicas.find(r => r.id === this.replicaId)
-    return replica
+    return replicaStore.replicaDetails
   }
 
   getLastExecution() {
@@ -176,11 +175,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     return lastExecution && lastExecution.status
   }
 
-  async loadIsEditable(replicaDetails: MainItem) {
+  async loadIsEditable(replicaDetails: ReplicaItemDetails) {
     const targetEndpointId = replicaDetails.destination_endpoint_id
     const sourceEndpointId = replicaDetails.origin_endpoint_id
     await providerStore.loadProviders()
-    await utils.waitFor(() => endpointStore.endpoints.length > 0)
+    await ObjectUtils.waitFor(() => endpointStore.endpoints.length > 0)
     const sourceEndpoint = endpointStore.endpoints.find(e => e.id === sourceEndpointId)
     const targetEndpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
     if (!sourceEndpoint || !targetEndpoint || !providerStore.providers) {
@@ -196,8 +195,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.setState({ isEditable })
   }
 
-  async loadReplicaWithInstances(_: string, cache: boolean) {
-    await replicaStore.getReplicas({ showLoading: true })
+  async loadReplicaWithInstances(cache: boolean, replicaId?: string) {
+    await replicaStore.getReplicaDetails({ replicaId: replicaId || this.replicaId })
     const replica = this.replica
     if (!replica) {
       return null
@@ -259,7 +258,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.handleCloseExecutionConfirmation()
   }
 
-  handleDeleteExecutionClick(execution: Execution | null) {
+  handleDeleteExecutionClick(execution?: Execution | null) {
     this.setState({
       showDeleteExecutionConfirmation: true,
       confirmationItem: execution,
@@ -304,7 +303,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       return
     }
     replicaStore.deleteDisks(replica.id)
-    this.props.history.push(`/replica/executions/${replica.id}`)
+    this.props.history.push(`/replicas/${replica.id}/executions`)
   }
 
   handleCloseDeleteReplicaDisksConfirmation() {
@@ -354,7 +353,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.handleCancelExecution(this.getLastExecution(), force)
   }
 
-  handleCancelExecution(confirmationItem: Execution | null, force?: boolean | null) {
+  handleCancelExecution(confirmationItem?: Execution | null, force?: boolean | null) {
     if (force) {
       this.setState({ confirmationItem, showForceCancelConfirmation: true })
     } else {
@@ -374,11 +373,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     if (!this.state.confirmationItem || !replica) {
       return
     }
-    replicaStore.cancelExecution(
-      replica.id,
-      this.state.confirmationItem.id,
+    replicaStore.cancelExecution({
+      replicaId: replica.id,
+      executionId: this.state.confirmationItem.id,
       force,
-    )
+    })
     this.setState({
       showForceCancelConfirmation: false,
       showCancelConfirmation: false,
@@ -404,7 +403,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       action: {
         label: 'View Migration Status',
         callback: () => {
-          this.props.history.push(`/migration/tasks/${migration.id}`)
+          this.props.history.push(`/migrations/${migration.id}/tasks/`)
         },
       },
     })
@@ -417,7 +416,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
     replicaStore.execute(replica.id, fields)
     this.handleCloseOptionsModal()
-    this.props.history.push(`/replica/executions/${replica.id}`)
+    this.props.history.push(`/replicas/${replica.id}/executions`)
   }
 
   async pollData(showLoading: boolean) {
@@ -425,7 +424,16 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       return
     }
 
-    await replicaStore.getReplicas({ showLoading, skipLog: true })
+    await Promise.all([
+      replicaStore.getReplicaDetails({
+        replicaId: this.replicaId, showLoading, polling: true,
+      }),
+      (async () => {
+        if (window.location.pathname.indexOf('executions') > -1) {
+          await replicaStore.getExecutionTasks({ replicaId: this.replicaId, polling: true })
+        }
+      })(),
+    ])
 
     setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
   }
@@ -437,12 +445,20 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   handleEditReplicaReload() {
-    this.loadReplicaWithInstances(this.replicaId, false)
+    this.loadReplicaWithInstances(false)
   }
 
   handleUpdateComplete(redirectTo: string) {
     this.props.history.push(redirectTo)
     this.closeEditModal()
+  }
+
+  async handleExecutionChange(executionId: string) {
+    await ObjectUtils.waitFor(() => Boolean(replicaStore.replicaDetails))
+    if (!replicaStore.replicaDetails?.id) {
+      return
+    }
+    replicaStore.getExecutionTasks({ replicaId: replicaStore.replicaDetails.id, executionId })
   }
 
   renderEditReplica() {
@@ -516,7 +532,18 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       },
     ]
     const replica = this.replica
-
+    let title = null
+    if (replica) {
+      const { instances } = replica
+      if (instances) {
+        title = instances[0]
+        if (instances.length > 1) {
+          title += ` (+${instances.length - 1} more)`
+        }
+      } else {
+        title = replica.name
+      }
+    }
     return (
       <Wrapper>
         <DetailsTemplate
@@ -528,7 +555,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 )}
           contentHeaderComponent={(
             <DetailsContentHeader
-              item={replica}
+              statusPill={replica?.last_execution_status}
+              itemTitle={title}
+              itemType="replica"
+              itemDescription={replica?.description}
               dropdownActions={dropdownActions}
               backLink="/replicas"
               typeImage={replicaImage}
@@ -543,7 +573,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               endpoints={endpointStore.endpoints}
               scheduleStore={scheduleStore}
               networks={networkStore.networks}
-              detailsLoading={replicaStore.loading || endpointStore.loading}
+              detailsLoading={replicaStore.replicaDetailsLoading || endpointStore.loading}
               sourceSchema={providerStore.sourceSchema}
               sourceSchemaLoading={providerStore.sourceSchemaLoading
               || providerStore.sourceOptionsPrimaryLoading
@@ -552,7 +582,13 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               destinationSchemaLoading={providerStore.destinationSchemaLoading
               || providerStore.destinationOptionsPrimaryLoading
               || providerStore.destinationOptionsSecondaryLoading}
-              executionsLoading={replicaStore.startingExecution}
+              executionsLoading={replicaStore.startingExecution
+                || replicaStore.replicaDetailsLoading}
+              onExecutionChange={id => { this.handleExecutionChange(id) }}
+              executions={replicaStore.replicaDetails?.executions || []}
+              executionsTasksLoading={replicaStore.executionsTasksLoading
+                || replicaStore.replicaDetailsLoading || replicaStore.startingExecution}
+              executionsTasks={replicaStore.executionsTasks}
               page={this.props.match.params.page || ''}
               onCancelExecutionClick={(e, f) => { this.handleCancelExecution(e, f) }}
               onDeleteExecutionClick={execution => { this.handleDeleteExecutionClick(execution) }}
@@ -602,7 +638,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         />
         {this.state.showDeleteReplicaConfirmation ? (
           <DeleteReplicaModal
-            hasDisks={replicaStore.hasReplicaDisks(this.replica)}
+            hasDisks={replicaStore.testReplicaHasDisks(this.replica)}
             onRequestClose={() => this.handleCloseDeleteReplicaConfirmation()}
             onDeleteReplica={() => { this.handleDeleteReplicaConfirmation() }}
             onDeleteDisks={() => { this.handleDeleteReplicaDisksConfirmation() }}

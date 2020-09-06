@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action, runInAction } from 'mobx'
 
 import type { WizardData, WizardPage } from '../@types/WizardData'
-import type { MainItem } from '../@types/MainItem'
 import type { Instance, InstanceScript } from '../@types/Instance'
 import type { Field } from '../@types/Field'
 import type { NetworkMap } from '../@types/Network'
@@ -24,6 +23,7 @@ import type { Schedule } from '../@types/Schedule'
 import { wizardPages } from '../constants'
 import source from '../sources/WizardSource'
 import notificationStore from './NotificationStore'
+import { TransferItem } from '../@types/MainItem'
 
 const updateOptions = (
   oldOptions: { [prop: string]: any } | null | undefined,
@@ -64,11 +64,11 @@ class WizardStore {
 
   @observable currentPage: WizardPage = wizardPages[0]
 
-  @observable createdItem: MainItem | null = null
+  @observable createdItem: TransferItem | null = null
 
   @observable creatingItem: boolean = false
 
-  @observable createdItems: Array<MainItem | null> | null = null
+  @observable createdItems: Array<TransferItem | null> | null = null
 
   @observable creatingItems: boolean = false
 
@@ -217,7 +217,7 @@ class WizardStore {
     this.creatingItem = true
 
     try {
-      const item: MainItem = await source.create(
+      const item: TransferItem = await source.create(
         type, data, defaultStorage, storageMap, uploadedUserScripts,
       )
       runInAction(() => { this.createdItem = item })

@@ -121,7 +121,7 @@ class UsersPage extends React.Component<{ history: any }, State> {
               selectionLabel="user"
               loading={userStore.allUsersLoading}
               items={userStore.users}
-              onItemClick={(user: User) => { this.props.history.push(`/user/${user.id}`) }}
+              onItemClick={(user: User) => { this.props.history.push(`/users/${user.id}`) }}
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={component => (

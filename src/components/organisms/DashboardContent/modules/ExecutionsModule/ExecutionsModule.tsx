@@ -24,10 +24,8 @@ import BarChart from '../../charts/BarChart'
 import Palette from '../../../../styleUtils/Palette'
 import StyleProps from '../../../../styleUtils/StyleProps'
 
-import type { MainItem } from '../../../../../@types/MainItem'
-import type { Execution } from '../../../../../@types/Execution'
-
 import emptyBackgroundImage from './images/empty-background.svg'
+import { ReplicaItem, MigrationItem, TransferItem } from '../../../../../@types/MainItem'
 
 const INTERVALS = [
   { label: 'Last {x} days', value: '30-days' },
@@ -132,7 +130,8 @@ const EmptyBackgroundImage = styled.div<any>`
 
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
-  replicas: MainItem[],
+  replicas: ReplicaItem[],
+  migrations: MigrationItem[],
   loading: boolean,
 }
 type GroupedData = {
@@ -142,8 +141,8 @@ type GroupedData = {
 }
 type TooltipData = {
   title: string,
-  success: number,
-  failed: number,
+  migrations: number,
+  replicas: number,
 }
 type State = {
   selectedPeriod: string,
@@ -151,7 +150,7 @@ type State = {
   tooltipPosition: { x: number, y: number },
   tooltipData: TooltipData | null,
 }
-const COLORS = ['#0044CA', '#2D74FF']
+const COLORS = ['#F91661', '#0044CB']
 
 @observer
 class ExecutionsModule extends React.Component<Props, State> {
@@ -162,54 +161,52 @@ class ExecutionsModule extends React.Component<Props, State> {
     tooltipPosition: { x: 0, y: 0 },
   }
 
-  UNSAFE_componentWillMount() {
-    this.groupExecutions(this.props)
+  componentDidMount() {
+    this.groupCreations(this.props)
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
-    this.groupExecutions(props)
+    this.groupCreations(props)
   }
 
-  groupExecutions(props: Props) {
-    let executions: Execution[] = []
-    const replicas = props.replicas
-    replicas.forEach(replica => {
-      executions = [...executions, ...replica.executions]
-    })
+  groupCreations(props: Props) {
+    let creations: TransferItem[] = [...props.replicas, ...props.migrations]
+
     const periodUnit: any = this.state.selectedPeriod.split('-')[1]
     const periodValue: any = Number(this.state.selectedPeriod.split('-')[0])
     const oldestDate: Date = moment().subtract(periodValue, periodUnit).toDate()
-    executions = executions
-      .filter(e => new Date(e.updated_at || e.created_at).getTime() >= oldestDate.getTime())
-    executions.sort((a, b) => new Date(a.updated_at || a.created_at).getTime()
-      - new Date(b.updated_at || b.created_at).getTime())
-    this.groupByPeriod(executions, periodUnit)
+    creations = creations
+      .filter(e => new Date(e.created_at).getTime() >= oldestDate.getTime())
+    creations.sort((a, b) => new Date(a.created_at).getTime()
+      - new Date(b.created_at).getTime())
+
+    this.groupByPeriod(creations, periodUnit)
   }
 
-  groupByPeriod(executions: Execution[], periodUnit: string) {
+  groupByPeriod(transferItems: TransferItem[], periodUnit: string) {
     const groupedData: GroupedData[] = []
-    const periods: { [period: string]: { success: number, failed: number } } = {}
-    executions.forEach(e => {
-      const date = moment(new Date(e.updated_at || e.created_at))
+    const periods: { [period: string]: { replicas: number, migrations: number } } = {}
+    transferItems.forEach(item => {
+      const date = moment(new Date(item.created_at))
       const period: string = periodUnit === 'days' ? date.format('DD-MMM-YYYY_DD MMMM') : date.format('MMM-YYYY_MMMM YYYY')
       if (!periods[period]) {
-        periods[period] = { success: 0, failed: 0 }
+        periods[period] = { replicas: 0, migrations: 0 }
       }
-      if (e.status === 'COMPLETED') {
-        periods[period].success += 1
-      } else if (e.status === 'ERROR') {
-        periods[period].failed += 1
+      if (item.type === 'replica') {
+        periods[period].replicas += 1
+      } else if (item.type === 'migration') {
+        periods[period].migrations += 1
       }
     })
     Object.keys(periods).forEach(period => {
-      if (!periods[period].success && !periods[period].failed) {
+      if (!periods[period].replicas && !periods[period].migrations) {
         return
       }
       const label = period.split('_')[0]
       const title = period.split('_')[1]
       groupedData.push({
         label: periodUnit === 'days' ? `${label.split('-')[0]} ${label.split('-')[1]}` : label.split('-')[0],
-        values: [periods[period].failed, periods[period].success],
+        values: [periods[period].migrations, periods[period].replicas],
         data: title,
       })
     })
@@ -218,7 +215,7 @@ class ExecutionsModule extends React.Component<Props, State> {
 
   handleDropdownChange(selectedPeriod: string) {
     this.setState({ selectedPeriod }, () => {
-      this.groupExecutions(this.props)
+      this.groupCreations(this.props)
     })
   }
 
@@ -226,8 +223,8 @@ class ExecutionsModule extends React.Component<Props, State> {
     this.setState({
       tooltipPosition: { x: position.x - 86, y: position.y },
       tooltipData: {
-        failed: item.values[0],
-        success: item.values[1],
+        replicas: item.values[1],
+        migrations: item.values[0],
         title: item.data || '-',
       },
     })
@@ -264,16 +261,16 @@ class ExecutionsModule extends React.Component<Props, State> {
         <TooltipHeader>{data.title}</TooltipHeader>
         <TooltipBody>
           <TooltipRow>
-            <TooltipRowLabel>Total Executions</TooltipRowLabel>
-            <TooltipRowLabel>{data.success + data.failed}</TooltipRowLabel>
+            <TooltipRowLabel>Created</TooltipRowLabel>
+            <TooltipRowLabel>{data.replicas + data.migrations}</TooltipRowLabel>
           </TooltipRow>
           <TooltipRow>
-            <TooltipRowLabel>Successful</TooltipRowLabel>
-            <TooltipRowLabel>{data.success}</TooltipRowLabel>
+            <TooltipRowLabel>Replicas</TooltipRowLabel>
+            <TooltipRowLabel>{data.replicas}</TooltipRowLabel>
           </TooltipRow>
           <TooltipRow>
-            <TooltipRowLabel>Failed</TooltipRowLabel>
-            <TooltipRowLabel>{data.failed}</TooltipRowLabel>
+            <TooltipRowLabel>Migrations</TooltipRowLabel>
+            <TooltipRowLabel>{data.migrations}</TooltipRowLabel>
           </TooltipRow>
         </TooltipBody>
         <TooltipTip />
@@ -326,7 +323,7 @@ class ExecutionsModule extends React.Component<Props, State> {
   render() {
     return (
       <Wrapper>
-        <Title>Replica Executions</Title>
+        <Title>Items Created</Title>
         <Module>
           {this.props.replicas.length === 0 && this.props.loading
             ? this.renderLoading() : this.renderChart()}

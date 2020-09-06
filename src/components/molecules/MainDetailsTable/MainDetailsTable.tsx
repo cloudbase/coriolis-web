@@ -22,7 +22,8 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import {
-  MainItem, TransferNetworkMap, isNetworkMapSecurityGroups, isNetworkMapSourceDest,
+  TransferNetworkMap, isNetworkMapSecurityGroups,
+  isNetworkMapSourceDest, TransferItem,
 } from '../../../@types/MainItem'
 import type { Instance, Nic, Disk } from '../../../@types/Instance'
 import type { Network } from '../../../@types/Network'
@@ -147,7 +148,7 @@ const ArrowIcon = styled.div<any>`
 export const TEST_ID = 'mainDetailsTable'
 
 export type Props = {
-  item?: MainItem | null,
+  item?: TransferItem | null,
   instancesDetails: Instance[],
   networks?: Network[],
 }
@@ -279,7 +280,7 @@ class MainDetailsTable extends React.Component<Props, State> {
           destinationKey = destinationName as string
           destinationBody = getBody(transferDisk)
         }
-      } else if (this.props.item && this.props.item.status === 'RUNNING' && this.props.item.type === 'migration') {
+      } else if (this.props.item?.type === 'migration' && this.props.item.last_execution_status === 'RUNNING') {
         destinationBody = ['Waiting for migration to finish']
       }
 
@@ -354,7 +355,7 @@ class MainDetailsTable extends React.Component<Props, State> {
             destinationNetworkName = destinationNic.network_name
             destinationBody = getBody(destinationNic)
           }
-        } else if (this.props.item && this.props.item.status === 'RUNNING' && this.props.item.type === 'migration') {
+        } else if (this.props.item?.type === 'migration' && this.props.item.last_execution_status === 'RUNNING') {
           destinationBody = ['Waiting for migration to finish']
         }
 
@@ -387,7 +388,7 @@ class MainDetailsTable extends React.Component<Props, State> {
     if (transferResult) {
       destinationName = transferResult.instance_name || transferResult.name
       destinationBody = getBody(transferResult)
-    } else if (this.props.item && this.props.item.status === 'RUNNING' && this.props.item.type === 'migration') {
+    } else if (this.props.item?.type === 'migration' && this.props.item.last_execution_status === 'RUNNING') {
       destinationName = 'Waiting for migration to finish'
     }
     const instanceName = instance.instance_name || instance.name

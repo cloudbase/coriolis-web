@@ -100,6 +100,7 @@ const statuses = (status: any) => {
       `
     case 'INFO':
     case 'SCHEDULED':
+    case 'UNEXECUTED':
       return null
     default:
       return null
@@ -143,6 +144,7 @@ const Wrapper = styled.div<any>`
   border-radius: 4px;
   ${(props: any) => statuses(props.status)}
   ${(props: any) => (props.status === 'INFO' ? getInfoStatusColor(props) : '')}
+  text-transform: uppercase;
 `
 
 type Props = {

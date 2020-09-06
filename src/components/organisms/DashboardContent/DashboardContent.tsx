@@ -25,12 +25,12 @@ import ExecutionsModule from './modules/ExecutionsModule'
 
 import Palette from '../../styleUtils/Palette'
 
-import type { MainItem } from '../../../@types/MainItem'
 import type { Endpoint } from '../../../@types/Endpoint'
 import type { Project } from '../../../@types/Project'
 import type { User } from '../../../@types/User'
 import type { Licence } from '../../../@types/Licence'
 import type { NotificationItemData } from '../../../@types/NotificationItem'
+import { ReplicaItem, MigrationItem } from '../../../@types/MainItem'
 
 const MIDDLE_WIDTHS = ['264px', '264px', '264px']
 
@@ -52,8 +52,8 @@ const MiddleMobileLayout = styled.div<any>`
 `
 
 type Props = {
-  replicas: MainItem[],
-  migrations: MainItem[],
+  replicas: ReplicaItem[],
+  migrations: MigrationItem[],
   endpoints: Endpoint[],
   projects: Project[],
   replicasLoading: boolean,
@@ -211,7 +211,8 @@ class DashboardContent extends React.Component<Props, State> {
         {this.renderMiddleModules()}
         <ExecutionsModule
           replicas={this.props.replicas}
-          loading={this.props.replicasLoading}
+          migrations={this.props.migrations}
+          loading={this.props.replicasLoading || this.props.migrationsLoading}
         />
       </Wrapper>
     )

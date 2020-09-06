@@ -23,6 +23,7 @@ const Wrapper = styled.div<any>`
 `
 
 const STATUSES = [
+  'UNEXECUTED',
   'SCHEDULED',
   'UNSCHEDULED',
   'COMPLETED',

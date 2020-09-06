@@ -33,12 +33,12 @@ import userStore from '../../../stores/UserStore'
 import projectStore from '../../../stores/ProjectStore'
 
 import type { Endpoint as EndpointType } from '../../../@types/Endpoint'
-import type { MainItem } from '../../../@types/MainItem'
 
 import Palette from '../../styleUtils/Palette'
 
 import endpointImage from './images/endpoint.svg'
 import regionStore from '../../../stores/RegionStore'
+import { MigrationItem, ReplicaItem } from '../../../@types/MainItem'
 
 const Wrapper = styled.div<any>``
 
@@ -52,7 +52,7 @@ type State = {
   showEndpointModal: boolean,
   showEndpointInUseModal: boolean,
   showEndpointInUseLoadingModal: boolean,
-  endpointUsage: { replicas: MainItem[], migrations: MainItem[] },
+  endpointUsage: { replicas: ReplicaItem[], migrations: MigrationItem[] },
   showDuplicateModal: boolean,
   duplicating: boolean,
 }
@@ -83,7 +83,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     return endpointStore.endpoints.find(e => e.id === this.props.match.params.id) || null
   }
 
-  getEndpointUsage(): { migrations: MainItem[], replicas: MainItem[] } {
+  getEndpointUsage(): { migrations: MigrationItem[], replicas: ReplicaItem[] } {
     const endpointId = this.props.match.params.id
     const replicas = replicaStore.replicas.filter(
       r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId,
@@ -246,7 +246,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 )}
           contentHeaderComponent={(
             <DetailsContentHeader
-              item={endpoint}
+              itemTitle={endpoint?.name}
+              itemType="endpoint"
+              itemDescription={endpoint?.description}
               backLink="/endpoints"
               dropdownActions={dropdownActions}
               typeImage={endpointImage}
