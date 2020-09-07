@@ -49,6 +49,7 @@ type Props = {
   emptyListButtonLabel?: string,
   onEmptyListButtonClick?: () => void,
   customFilterComponent?: React.ReactNode,
+  largeDropdownActionItems?: boolean
 }
 type State = {
   items: any[],
@@ -210,6 +211,7 @@ class FilterList extends React.Component<Props, State> {
           }}
           items={this.props.filterItems}
           dropdownActions={this.props.dropdownActions || []}
+          largeDropdownActionItems={this.props.largeDropdownActionItems}
           data-test-id="filterList-filter"
         />
         <MainList

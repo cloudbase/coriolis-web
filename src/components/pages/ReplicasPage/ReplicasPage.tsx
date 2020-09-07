@@ -161,6 +161,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         fields,
         uploadedScripts.filter(s => !s.instanceName
           || replica.instances.find(i => i === s.instanceName)),
+        replica.instance_osmorphing_minion_pool_mappings || {},
       )))
     notificationStore.alert('Migrations successfully created from replicas.', 'success')
     this.props.history.push('/migrations')
@@ -418,6 +419,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
             }}
           >
             <ReplicaMigrationOptions
+              transferItem={null}
+              minionPools={[]}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
               onCancelClick={() => {

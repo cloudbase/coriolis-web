@@ -39,6 +39,8 @@ import providerStore from '../../../stores/ProviderStore'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import { ProviderTypes } from '../../../@types/Providers'
+import MinionEndpointModal from '../MinionEndpointModal/MinionEndpointModal'
+import MinionPoolModal from '../MinionPoolModal'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -77,24 +79,32 @@ type Props = {
 type State = {
   showChooseProviderModal: boolean,
   showEndpointModal: boolean,
+  showChooseMinionEndpointModal: boolean,
+  showMinionPoolModal: boolean,
+  selectedMinionPoolEndpoint: EndpointType | null
   showUserModal: boolean,
   showProjectModal: boolean,
   showAbout: boolean,
   providerType: ProviderTypes | null,
   uploadedEndpoint: EndpointType | null,
   multiValidating: boolean,
+  selectedMinionPoolPlatform: 'source' | 'destination'
 }
 @observer
 class PageHeader extends React.Component<Props, State> {
   state: State = {
     showChooseProviderModal: false,
     showEndpointModal: false,
+    showChooseMinionEndpointModal: false,
+    selectedMinionPoolEndpoint: null,
+    showMinionPoolModal: false,
     showUserModal: false,
     showProjectModal: false,
     providerType: null,
     uploadedEndpoint: null,
     showAbout: false,
     multiValidating: false,
+    selectedMinionPoolPlatform: 'source',
   }
 
   pollTimeout!: number
@@ -148,6 +158,14 @@ class PageHeader extends React.Component<Props, State> {
         }
         this.setState({ showChooseProviderModal: true })
         break
+      case 'minionPool':
+        providerStore.loadProviders()
+        endpointStore.getEndpoints({ showLoading: true })
+        if (this.props.onModalOpen) {
+          this.props.onModalOpen()
+        }
+        this.setState({ showChooseMinionEndpointModal: true })
+        break
       case 'user':
         projectStore.getProjects()
         if (this.props.onModalOpen) {
@@ -174,6 +192,33 @@ class PageHeader extends React.Component<Props, State> {
       this.props.onModalClose()
     }
     this.setState({ showChooseProviderModal: false }, () => { this.pollData() })
+  }
+
+  handleCloseChooseMinionPoolEndpointModal() {
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
+    this.setState({ showChooseMinionEndpointModal: false }, () => { this.pollData() })
+  }
+
+  handleBackMinionPoolModal() {
+    this.setState({ showChooseMinionEndpointModal: true, showMinionPoolModal: false })
+  }
+
+  handleCloseMinionPoolModalRequest() {
+    if (this.props.onModalClose) {
+      this.props.onModalClose()
+    }
+    this.setState({ showMinionPoolModal: false }, () => { this.pollData() })
+  }
+
+  handleChooseMinionPoolSelectEndpoint(selectedMinionPoolEndpoint: EndpointType, platform: 'source' | 'destination') {
+    this.setState({
+      showChooseMinionEndpointModal: false,
+      showMinionPoolModal: true,
+      selectedMinionPoolEndpoint,
+      selectedMinionPoolPlatform: platform,
+    })
   }
 
   handleProviderClick(providerType: ProviderTypes) {
@@ -271,6 +316,8 @@ class PageHeader extends React.Component<Props, State> {
       this.stopPolling
       || this.state.showChooseProviderModal
       || this.state.showEndpointModal
+      || this.state.showChooseMinionEndpointModal
+      || this.state.showMinionPoolModal
       || this.state.showProjectModal
       || this.state.showUserModal
       || this.state.showAbout
@@ -324,6 +371,32 @@ class PageHeader extends React.Component<Props, State> {
             onResetValidation={() => { this.handleResetValidation() }}
           />
         </Modal>
+        {this.state.showChooseMinionEndpointModal ? (
+          <MinionEndpointModal
+            providers={providerStore.providers}
+            endpoints={endpointStore.endpoints}
+            loading={providerStore.providersLoading || endpointStore.loading}
+            onRequestClose={() => { this.handleCloseChooseMinionPoolEndpointModal() }}
+            onSelectEndpoint={(endpoint, platform) => {
+              this.handleChooseMinionPoolSelectEndpoint(endpoint, platform)
+            }}
+          />
+        ) : null}
+        {this.state.showMinionPoolModal ? (
+          <Modal
+            isOpen
+            title="New Minion Pool"
+            onRequestClose={() => { this.handleCloseMinionPoolModalRequest() }}
+          >
+            <MinionPoolModal
+              cancelButtonText="Back"
+              platform={this.state.selectedMinionPoolPlatform}
+              endpoint={this.state.selectedMinionPoolEndpoint!}
+              onCancelClick={() => { this.handleBackMinionPoolModal() }}
+              onRequestClose={() => { this.handleCloseMinionPoolModalRequest() }}
+            />
+          </Modal>
+        ) : null}
         {this.state.showEndpointModal && this.state.providerType ? (
           <Modal
             isOpen

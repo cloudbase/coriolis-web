@@ -65,6 +65,8 @@ type BaseItem = {
   updated_at: string,
   origin_endpoint_id: string,
   destination_endpoint_id: string,
+  origin_minion_pool_id: string | null,
+  destination_minion_pool_id: string | null,
   instances: string[],
   info: { [prop: string]: MainItemInfo },
   destination_environment: { [prop: string]: any },
@@ -75,6 +77,7 @@ type BaseItem = {
   network_map?: TransferNetworkMap,
   last_execution_status: string
   user_id: string
+  instance_osmorphing_minion_pool_mappings?: {[instanceName: string]: string}
 }
 
 export type ReplicaItem = BaseItem & {

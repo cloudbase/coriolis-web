@@ -141,7 +141,12 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
 
     await Promise.all(this.state.selectedMigrations.map(async migration => {
       if (migration.replica_id) {
-        await migrationStore.migrateReplica(migration.replica_id, replicaMigrationFields, [])
+        await migrationStore.migrateReplica(
+          migration.replica_id,
+          replicaMigrationFields,
+          [],
+          migration.instance_osmorphing_minion_pool_mappings || {},
+        )
       } else {
         await migrationStore.recreateFullCopy(migration as any)
       }

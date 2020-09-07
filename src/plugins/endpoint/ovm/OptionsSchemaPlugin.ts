@@ -28,6 +28,8 @@ import type { NetworkMap } from '../../../@types/Network'
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_template_map'
 
+  static imageSuffix = '_os_image'
+
   static parseSchemaToFields(
     schema: SchemaProperties,
     schemaDefinitions: SchemaDefinitions | null | undefined,
@@ -66,15 +68,25 @@ export default class OptionsSchemaParser {
     if (!option) {
       return
     }
-    if (!defaultFillMigrationImageMapValues(field, option, this.migrationImageMapFieldName)) {
+    if (!defaultFillMigrationImageMapValues(
+      field,
+      option,
+      this.migrationImageMapFieldName,
+      this.imageSuffix,
+    )) {
       defaultFillFieldValues(field, option)
     }
   }
 
   static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
-      ...defaultGetDestinationEnv(options, oldOptions),
-      ...defaultGetMigrationImageMap(options, oldOptions, this.migrationImageMapFieldName),
+      ...defaultGetDestinationEnv(options, oldOptions, this.imageSuffix),
+      ...defaultGetMigrationImageMap(
+        options,
+        oldOptions,
+        this.migrationImageMapFieldName,
+        this.imageSuffix,
+      ),
     }
     return env
   }

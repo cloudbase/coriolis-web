@@ -46,6 +46,8 @@ import { navigationMenu } from '../constants'
 import Palette from './styleUtils/Palette'
 import StyleProps from './styleUtils/StyleProps'
 import configLoader from '../utils/Config'
+import MinionPoolsPage from './pages/MinionPoolsPage/MinionPoolsPage'
+import MinionPoolDetailsPage from './pages/MinionPoolDetailsPage/MinionPoolDetailsPage'
 
 const GlobalStyle = createGlobalStyle`
  ${Fonts}
@@ -185,6 +187,9 @@ class App extends React.Component<{}, State> {
             {renderRoute('/migrations/:id/:page', MigrationDetailsPage)}
             {renderRoute('/endpoints', EndpointsPage, true)}
             {renderRoute('/endpoints/:id', EndpointDetailsPage)}
+            {renderRoute('/minion-pools', MinionPoolsPage, true)}
+            {renderRoute('/minion-pools/:id', MinionPoolDetailsPage, true)}
+            {renderRoute('/minion-pools/:id/:page', MinionPoolDetailsPage)}
             {renderRoute('/wizard/:type', WizardPage)}
             {renderOptionalRoute('planning', AssessmentsPage)}
             {renderOptionalRoute('planning', AssessmentDetailsPage, '/assessment/:info')}

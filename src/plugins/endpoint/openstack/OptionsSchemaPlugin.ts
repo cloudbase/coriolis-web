@@ -12,7 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import DefaultOptionsSchemaPlugin from '../default/OptionsSchemaPlugin'
+import DefaultOptionsSchemaPlugin, {
+  defaultGetDestinationEnv,
+  defaultGetMigrationImageMap,
+  defaultFillFieldValues,
+  defaultFillMigrationImageMapValues,
+} from '../default/OptionsSchemaPlugin'
+
 import LabelDictionary from '../../../utils/LabelDictionary'
 
 import type { InstanceScript } from '../../../@types/Instance'
@@ -23,6 +29,8 @@ import type { NetworkMap } from '../../../@types/Network'
 
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
+
+  static imageSuffix = ''
 
   static parseSchemaToFields(
     schema: SchemaProperties,
@@ -60,12 +68,31 @@ export default class OptionsSchemaParser {
         }
       })
     } else {
-      DefaultOptionsSchemaPlugin.fillFieldValues(field, options)
+      const option = options.find(f => f.name === field.name)
+      if (!option) {
+        return
+      }
+      if (!defaultFillMigrationImageMapValues(
+        field,
+        option,
+        this.migrationImageMapFieldName,
+        this.imageSuffix,
+      )) {
+        defaultFillFieldValues(field, option)
+      }
     }
   }
 
   static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
-    return DefaultOptionsSchemaPlugin.getDestinationEnv(options, oldOptions)
+    const env = {
+      ...defaultGetDestinationEnv(options, oldOptions, this.imageSuffix),
+      ...defaultGetMigrationImageMap(
+        options,
+        oldOptions,
+        this.migrationImageMapFieldName, this.imageSuffix,
+      ),
+    }
+    return env
   }
 
   static getNetworkMap(networkMappings: NetworkMap[] | null) {

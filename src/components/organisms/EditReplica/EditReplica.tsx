@@ -28,7 +28,7 @@ import Modal from '../../molecules/Modal'
 import Panel from '../../molecules/Panel'
 import { isOptionsPageValid } from '../WizardPageContent'
 import WizardNetworks from '../WizardNetworks'
-import WizardOptions from '../WizardOptions'
+import WizardOptions, { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../WizardOptions'
 import WizardStorage from '../WizardStorage/WizardStorage'
 
 import type {
@@ -44,6 +44,7 @@ import { providerTypes, migrationFields } from '../../../constants'
 import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
 import LoadingButton from '../../molecules/LoadingButton/LoadingButton'
+import minionPoolStore from '../../../stores/MinionPoolStore'
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -209,21 +210,49 @@ class EditReplica extends React.Component<Props, State> {
       ? this.state.defaultStorage : replicaDefaultStorage
   }
 
-  getFieldValue(type: 'source' | 'destination', fieldName: string, defaultValue: any) {
+  getFieldValue(type: 'source' | 'destination', fieldName: string, defaultValue: any, parentFieldName?: string) {
     const currentData = type === 'source' ? this.state.sourceData : this.state.destinationData
+
+    const replicaMinionMappings = this.props.replica[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+
+    if (parentFieldName) {
+      if (currentData[parentFieldName]
+        && currentData[parentFieldName][fieldName] !== undefined) {
+        return currentData[parentFieldName][fieldName]
+      }
+      if (parentFieldName === INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
+        && replicaMinionMappings
+        && replicaMinionMappings[fieldName] !== undefined
+      ) {
+        return replicaMinionMappings[fieldName]
+      }
+    }
+
     if (currentData[fieldName] !== undefined) {
       return currentData[fieldName]
     }
-    const replicaData: any = this.parseReplicaData(type === 'source' ? this.props.replica.source_environment
-      : this.props.replica.destination_environment)
+
+    if (fieldName === 'minion_pool_id') {
+      return type === 'source' ? this.props.replica.origin_minion_pool_id : this.props.replica.destination_minion_pool_id
+    }
+
+    const replicaData: any = type === 'source' ? this.props.replica.source_environment
+      : this.props.replica.destination_environment
+
+    if (parentFieldName) {
+      if (replicaData[parentFieldName]?.[fieldName] !== undefined) {
+        return replicaData[parentFieldName][fieldName]
+      }
+    }
     if (replicaData[fieldName] !== undefined) {
       return replicaData[fieldName]
     }
-    const osMapping = /^(windows|linux)_os_image$/.exec(fieldName)
+    const endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
+    const plugin = OptionsSchemaPlugin.for(endpoint.type)
+
+    const osMapping = new RegExp(`^(windows|linux)${plugin.imageSuffix}`).exec(fieldName)
     if (osMapping) {
-      const endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
-      const plugin = OptionsSchemaPlugin.for(endpoint.type)
-      const osData = replicaData[`${plugin.migrationImageMapFieldName}/${osMapping[1]}`]
+      const osData = replicaData[`${plugin.migrationImageMapFieldName}/${osMapping[0]}`]
       return osData
     }
     const anyData = this.props.replica as any
@@ -237,6 +266,7 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   async loadData(useCache: boolean) {
+    minionPoolStore.loadMinionPools()
     await providerStore.loadProviders()
 
     if (this.hasStorageMap()) {
@@ -298,7 +328,7 @@ class EditReplica extends React.Component<Props, State> {
       providerName: endpoint.type,
       schema: type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema,
       data: {
-        ...this.parseReplicaData(env),
+        ...env,
         ...stateEnv,
       },
       field,
@@ -353,33 +383,12 @@ class EditReplica extends React.Component<Props, State> {
       || this.isLoadingStorage()
   }
 
-  parseReplicaData(environment: { [prop: string]: any } | null) {
-    const data: any = {}
-    const env = environment
-    if (!env) {
-      return data
-    }
-    Object.keys(env).forEach(key => {
-      if (env[key] && typeof env[key] === 'object' && !Array.isArray(JSON.parse(JSON.stringify(env[key])))) {
-        Object.keys(env[key]).forEach(subkey => {
-          const destParent: any = env[key]
-          if (destParent[subkey]) {
-            data[`${key}/${subkey}`] = destParent[subkey]
-          }
-        })
-      } else {
-        data[key] = env[key]
-      }
-    })
-    return data
-  }
-
   validateOptions(type: 'source' | 'destination') {
     const env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
     const data = type === 'source' ? this.state.sourceData : this.state.destinationData
     const schema = type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
     const isValid = isOptionsPageValid({
-      ...this.parseReplicaData(env),
+      ...env,
       ...data,
     }, schema)
 
@@ -395,8 +404,9 @@ class EditReplica extends React.Component<Props, State> {
     this.loadData(false)
   }
 
-  handleFieldChange(type: 'source' | 'destination', field: Field, value: any) {
+  handleFieldChange(type: 'source' | 'destination', field: Field, value: any, parentFieldName?: string) {
     const data = type === 'source' ? { ...this.state.sourceData } : { ...this.state.destinationData }
+
     if (field.type === 'array') {
       const oldValues: string[] = data[field.name] || []
       if (oldValues.find(v => v === value)) {
@@ -404,6 +414,9 @@ class EditReplica extends React.Component<Props, State> {
       } else {
         data[field.name] = [...oldValues, value]
       }
+    } else if (parentFieldName) {
+      data[parentFieldName] = data[parentFieldName] || {}
+      data[parentFieldName][field.name] = value
     } else {
       data[field.name] = value
     }
@@ -441,11 +454,13 @@ class EditReplica extends React.Component<Props, State> {
     }
     if (this.props.type === 'replica') {
       try {
-        await replicaStore.update(
-          this.props.replica as any,
-          this.props.destinationEndpoint,
-          updateData, this.getDefaultStorage(), endpointStore.storageConfigDefault,
-        )
+        await replicaStore.update({
+          replica: this.props.replica as any,
+          destinationEndpoint: this.props.destinationEndpoint,
+          updateData,
+          defaultStorage: this.getDefaultStorage(),
+          storageConfigDefault: endpointStore.storageConfigDefault,
+        })
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/replicas/${this.props.replica.id}/executions`)
       } catch (err) {
@@ -531,15 +546,20 @@ class EditReplica extends React.Component<Props, State> {
     if (endpoint) {
       dictionaryKey = `${endpoint.type}-${type}`
     }
+    const minionPools = type === 'source'
+      ? minionPoolStore.minionPools.filter(m => m.endpoint_id === this.props.sourceEndpoint.id)
+      : minionPoolStore.minionPools.filter(m => m.endpoint_id === this.props.destinationEndpoint.id)
     return (
       <WizardOptions
+        minionPools={minionPools}
         wizardType={`${this.props.type || 'replica'}-${type}-options-edit`}
-        getFieldValue={(f, d) => this.getFieldValue(type, f, d)}
+        getFieldValue={(f, d, pf) => this.getFieldValue(type, f, d, pf)}
         fields={fields}
+        selectedInstances={type === 'destination' ? this.props.instancesDetails : null}
         hasStorageMap={type === 'source' ? false : this.hasStorageMap()}
         storageBackends={endpointStore.storageBackends}
         storageConfigDefault={endpointStore.storageConfigDefault}
-        onChange={(f, v) => { this.handleFieldChange(type, f, v) }}
+        onChange={(f, v, fp) => { this.handleFieldChange(type, f, v, fp) }}
         oneColumnStyle={{
           marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center',
         }}

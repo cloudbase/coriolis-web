@@ -90,8 +90,8 @@ type Props = {
   tasksLoading: boolean,
   onChange: (executionId: string) => void,
   onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
-  onDeleteExecutionClick: (execution: Execution | null) => void,
-  onExecuteClick: () => void,
+  onDeleteExecutionClick?: (execution: Execution | null) => void,
+  onExecuteClick?: () => void,
 }
 type State = {
   selectedExecution: Execution | null,
@@ -275,7 +275,6 @@ class Executions extends React.Component<Props, State> {
           secondary
           hollow
           onClick={() => { this.handleCancelExecutionClick() }}
-          data-test-id="executions-cancelButton"
         >Cancel Execution
         </Button>
       )
@@ -292,12 +291,15 @@ class Executions extends React.Component<Props, State> {
       )
     }
 
+    const onDeleteExecutionClick = this.props.onDeleteExecutionClick
+    if (!onDeleteExecutionClick) {
+      return null
+    }
     return (
       <Button
         alert
         hollow
-        onClick={() => { this.props.onDeleteExecutionClick(this.state.selectedExecution) }}
-        data-test-id="executions-deleteButton"
+        onClick={() => { onDeleteExecutionClick(this.state.selectedExecution) }}
       >Delete Execution
       </Button>
     )

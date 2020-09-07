@@ -75,6 +75,7 @@ class MigrationStore {
     const migrationResult = await MigrationSource.recreate({
       sourceEndpoint,
       destEndpoint,
+      migration,
       instanceNames: migration.instances,
       sourceEnv: migration.source_environment,
       updatedSourceEnv: updateData.source,
@@ -119,8 +120,18 @@ class MigrationStore {
     runInAction(() => { this.migrations = this.migrations.filter(r => r.id !== migrationId) })
   }
 
-  @action async migrateReplica(replicaId: string, options: Field[], userScripts: InstanceScript[]) {
-    const migration = await MigrationSource.migrateReplica(replicaId, options, userScripts)
+  @action async migrateReplica(
+    replicaId: string,
+    options: Field[],
+    userScripts: InstanceScript[],
+    minionPoolMappings: { [instance: string]: string },
+  ) {
+    const migration = await MigrationSource.migrateReplica(
+      replicaId,
+      options,
+      userScripts,
+      minionPoolMappings,
+    )
     runInAction(() => {
       this.migrations = [
         migration,

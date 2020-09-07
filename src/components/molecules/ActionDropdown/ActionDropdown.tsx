@@ -30,7 +30,7 @@ const Wrapper = styled.div<any>`
 
 const ListItem = styled.div<any>`
   color: ${(props: any) => (props.disabled ? Palette.grayscale[2] : props.color || Palette.black)};
-  height: 32px;
+  height: ${(props: any) => (props.large ? 42 : 32)}px;
   padding: 0 16px;
   cursor: ${(props: any) => (props.disabled ? 'default' : 'pointer')};
   display: flex;
@@ -66,6 +66,7 @@ export type Props = {
   actions: Action[],
   style?: any,
   'data-test-id'?: string,
+  largeItems?: boolean
 }
 
 type State = {
@@ -172,6 +173,7 @@ class ActionDropdown extends React.Component<Props, State> {
             disabled={action.disabled}
             data-test-id={`${TEST_ID}-listItem-${action.label}`}
             title={action.title}
+            large={this.props.largeItems}
           >
             {action.label}
           </ListItem>

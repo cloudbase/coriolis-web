@@ -45,6 +45,7 @@ const Wrapper = styled.div<any>`
 `
 
 const Label = styled.div<any>`
+  ${props => (props.width ? `width: ${props.width}px;` : '')}
   font-weight: ${StyleProps.fontWeights.medium};
   flex-grow: 1;
   ${props => (props.layout === 'page' ? css`
@@ -96,6 +97,7 @@ type Props = {
   description?: string,
   addNullValue?: boolean,
   nullableBoolean?: boolean,
+  labelRenderer?: ((prop: string) => string) | null,
   style?: React.CSSProperties,
 }
 @observer
@@ -113,6 +115,8 @@ class FieldInput extends React.Component<Props> {
         onChange={checked => { if (this.props.onChange) this.props.onChange(checked) }}
         leftLabel={this.props.layout === 'page'}
         style={this.props.layout === 'page' ? { marginTop: '-8px' } : {}}
+        required={this.props.required}
+        highlight={this.props.highlight}
       />
     )
   }
@@ -178,6 +182,7 @@ class FieldInput extends React.Component<Props> {
 
     return (
       <PropertiesTable
+        width={this.props.width}
         properties={this.props.properties}
         valueCallback={field => this.props.valueCallback && this.props.valueCallback(field)}
         onChange={(field, value) => {
@@ -185,6 +190,7 @@ class FieldInput extends React.Component<Props> {
             this.props.onChange(value, field)
           }
         }}
+        labelRenderer={this.props.labelRenderer}
         hideRequiredSymbol={this.props.layout === 'page'}
         disabledLoading={this.props.disabledLoading}
       />
@@ -235,6 +241,7 @@ class FieldInput extends React.Component<Props> {
       items,
       disabledLoading: this.props.disabledLoading,
       disabled: this.props.disabled,
+      highlight: this.props.highlight,
       onChange: (item: { value: any }) => this.props.onChange && this.props.onChange(item.value),
     }
 
@@ -363,7 +370,11 @@ class FieldInput extends React.Component<Props> {
     const marginRight = this.props.layout === 'modal' || description || this.props.required ? '24px' : 0
 
     return (
-      <Label layout={this.props.layout} disabledLoading={this.props.disabledLoading}>
+      <Label
+        layout={this.props.layout}
+        disabledLoading={this.props.disabledLoading}
+        width={this.props.width}
+      >
         <LabelText style={{ marginRight }}>
           {this.props.label}
         </LabelText>

@@ -144,7 +144,9 @@ class ReplicaStore {
 
     try {
       const executionTasks = await ReplicaSource.getExecutionTasks({
-        replicaId, executionId: this.currentlyLoadingExecution, polling,
+        replicaId,
+        executionId: this.currentlyLoadingExecution,
+        polling,
       })
       runInAction(() => {
         this.executionsTasks = [
@@ -225,20 +227,14 @@ class ReplicaStore {
     }
   }
 
-  async update(
+  async update(options: {
     replica: ReplicaItemDetails,
     destinationEndpoint: Endpoint,
     updateData: UpdateData,
     defaultStorage: string | null | undefined,
     storageConfigDefault: string,
-  ) {
-    await ReplicaSource.update(
-      replica,
-      destinationEndpoint,
-      updateData,
-      defaultStorage,
-      storageConfigDefault,
-    )
+  }) {
+    await ReplicaSource.update(options)
   }
 
   testReplicaHasDisks(replica: ReplicaItemDetails | null) {

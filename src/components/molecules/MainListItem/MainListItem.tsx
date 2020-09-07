@@ -172,9 +172,9 @@ class MainListItem extends React.Component<Props> {
     const destinationType = this.props.endpointType(this.props.item.destination_endpoint_id)
     const endpointImages = (
       <EndpointsImages>
-        <EndpointLogos data-test-id="mainListItem-sourceLogo" height={32} endpoint={sourceType} />
+        <EndpointLogos data-test-id="mainListItem-sourceLogo" height={32} endpoint={sourceType as any} />
         <EndpointImageArrow />
-        <EndpointLogos data-test-id="mainListItem-destLogo" height={32} endpoint={destinationType} />
+        <EndpointLogos data-test-id="mainListItem-destLogo" height={32} endpoint={destinationType as any} />
       </EndpointsImages>
     )
     const status = this.getStatus()

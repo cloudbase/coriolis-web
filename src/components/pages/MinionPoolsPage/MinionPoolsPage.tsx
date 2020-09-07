@@ -1,0 +1,411 @@
+/*
+Copyright (C) 2020  Cloudbase Solutions SRL
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+import React from 'react'
+import styled from 'styled-components'
+import { observer } from 'mobx-react'
+
+import { RouteComponentProps } from 'react-router-dom'
+
+import Modal from '../../molecules/Modal'
+import MainTemplate from '../../templates/MainTemplate/MainTemplate'
+import Navigation from '../../organisms/Navigation/Navigation'
+import FilterList from '../../organisms/FilterList/FilterList'
+import PageHeader from '../../organisms/PageHeader/PageHeader'
+
+import type { Action as DropdownAction } from '../../molecules/ActionDropdown/ActionDropdown'
+
+import projectStore from '../../../stores/ProjectStore'
+
+import configLoader from '../../../utils/Config'
+import { MinionPool } from '../../../@types/MinionPool'
+
+import emptyListImage from './images/minion-pool-empty-list.svg'
+import providerStore from '../../../stores/ProviderStore'
+import endpointStore from '../../../stores/EndpointStore'
+import minionPoolStore, { MinionPoolAction } from '../../../stores/MinionPoolStore'
+import { Endpoint } from '../../../@types/Endpoint'
+import MinionEndpointModal from '../../organisms/MinionEndpointModal/MinionEndpointModal'
+import MinionPoolModal from '../../organisms/MinionPoolModal/MinionPoolModal'
+import MinionPoolListItem from '../../molecules/MinionPoolListItem/MinionPoolListItem'
+import Palette from '../../styleUtils/Palette'
+import notificationStore from '../../../stores/NotificationStore'
+import AlertModal from '../../organisms/AlertModal/AlertModal'
+
+const Wrapper = styled.div<any>``
+
+type State = {
+  modalIsOpen: boolean,
+  selectedMinionPools: MinionPool[],
+  showChooseMinionEndpointModal: boolean,
+  showMinionPoolModal: boolean,
+  selectedMinionPoolEndpoint: Endpoint | null
+  showCancelExecutionModal: boolean,
+  showDeletePoolsModal: boolean,
+  selectedMinionPoolPlatform: 'source' | 'destination'
+}
+
+@observer
+class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
+  state: State = {
+    modalIsOpen: false,
+    selectedMinionPools: [],
+    showChooseMinionEndpointModal: false,
+    selectedMinionPoolEndpoint: null,
+    showMinionPoolModal: false,
+    showCancelExecutionModal: false,
+    showDeletePoolsModal: false,
+    selectedMinionPoolPlatform: 'source',
+  }
+
+  pollTimeout: number = 0
+
+  stopPolling: boolean = false
+
+  componentDidMount() {
+    document.title = 'Coriolis Minion Pools'
+
+    projectStore.getProjects()
+    endpointStore.getEndpoints()
+    this.stopPolling = false
+    this.pollData(minionPoolStore.minionPools.length === 0)
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.pollTimeout)
+    this.stopPolling = true
+  }
+
+  getFilterItems() {
+    return [
+      { label: 'All', value: 'all' },
+      { label: 'Allocating', value: 'ALLOCATING' },
+      { label: 'Allocated', value: 'ALLOCATED' },
+      { label: 'Initializing', value: 'INITIALIZING' },
+      { label: 'Initialized', value: 'INITIALIZED' },
+      { label: 'Error', value: 'ERROR' },
+    ]
+  }
+
+  getEndpoint(endpointId: string) {
+    return endpointStore.endpoints.find(endpoint => endpoint.id === endpointId)
+  }
+
+  async pollData(showLoading: boolean) {
+    if (this.state.modalIsOpen || this.stopPolling) {
+      return
+    }
+
+    await Promise.all([
+      minionPoolStore.loadMinionPools({ showLoading }),
+    ])
+
+    this.pollTimeout = setTimeout(() => {
+      this.pollData(false)
+    }, configLoader.config.requestPollTimeout)
+  }
+
+  searchText(item: MinionPool, text?: string | null) {
+    const result = false
+    if (item.pool_name.toLowerCase().indexOf(text || '') > -1) {
+      return true
+    }
+    return result
+  }
+
+  itemFilterFunction(item: MinionPool, filterStatus?: string | null, filterText?: string) {
+    if ((filterStatus !== 'all' && item.pool_status !== filterStatus)
+      || !this.searchText(item, filterText)
+    ) {
+      return false
+    }
+
+    return true
+  }
+
+  cancelExecutions() {
+    this.state.selectedMinionPools.forEach(pool => {
+      minionPoolStore.cancelExecution(pool.id)
+    })
+    this.setState({ showCancelExecutionModal: false })
+  }
+
+  deleteSelectedMinionPools() {
+    this.state.selectedMinionPools.forEach(pool => {
+      minionPoolStore.deleteMinionPool(pool.id)
+    })
+    this.setState({ showDeletePoolsModal: false })
+  }
+
+  handleProjectChange() {
+    projectStore.getProjects()
+    endpointStore.getEndpoints()
+    minionPoolStore.loadMinionPools({ showLoading: true })
+  }
+
+  handleItemClick(item: MinionPool) {
+    this.props.history.push(`/minion-pools/${item.id}`)
+  }
+
+  handleReloadButtonClick() {
+    projectStore.getProjects()
+    endpointStore.getEndpoints()
+    minionPoolStore.loadMinionPools({ showLoading: true })
+  }
+
+  handleEmptyListButtonClick() {
+    providerStore.loadProviders()
+    endpointStore.getEndpoints({ showLoading: true })
+    this.setState({ showChooseMinionEndpointModal: true, modalIsOpen: true })
+  }
+
+  handleCloseChooseMinionPoolEndpointModal() {
+    this.setState({
+      showChooseMinionEndpointModal: false,
+      modalIsOpen: false,
+    }, () => { this.pollData(false) })
+  }
+
+  handleBackMinionPoolModal() {
+    this.setState({
+      showChooseMinionEndpointModal: true,
+      showMinionPoolModal: false,
+    })
+  }
+
+  handleCloseMinionPoolModalRequest() {
+    this.setState({
+      showMinionPoolModal: false,
+      modalIsOpen: false,
+    }, () => { this.pollData(false) })
+  }
+
+  handleChooseMinionPoolSelectEndpoint(selectedMinionPoolEndpoint: Endpoint, platform: 'source' | 'destination') {
+    this.setState({
+      showChooseMinionEndpointModal: false,
+      showMinionPoolModal: true,
+      selectedMinionPoolEndpoint,
+      selectedMinionPoolPlatform: platform,
+    })
+  }
+
+  handleModalOpen() {
+    this.setState({ modalIsOpen: true })
+  }
+
+  handleModalClose() {
+    this.setState({ modalIsOpen: false }, () => {
+      this.pollData(false)
+    })
+  }
+
+  async handleAction(action: MinionPoolAction) {
+    const runAction = async (message: string) => {
+      notificationStore.alert(message)
+      await Promise.all(this.state.selectedMinionPools
+        .map(minionPool => minionPoolStore.runAction(minionPool.id, action)))
+      await minionPoolStore.loadMinionPools()
+    }
+
+    switch (action) {
+      case 'set-up-shared-resources':
+        runAction('Setting up shared resources...')
+        break
+      case 'tear-down-shared-resources':
+        runAction('Tearing up shared resources...')
+        break
+      case 'allocate-machines':
+        runAction('Allocating machines...')
+        break
+      case 'deallocate-machines':
+        runAction('Deallocating machines...')
+        break
+      default:
+    }
+  }
+
+  render() {
+    const allPoolsAreStatus = () => {
+      const statuses: any = {}
+      this.state.selectedMinionPools.forEach(pool => {
+        if (!statuses[pool.pool_status]) {
+          statuses[pool.pool_status] = 0
+        }
+        statuses[pool.pool_status] += 1
+      })
+      if (Object.keys(statuses).length === 1) {
+        return Object.keys(statuses)[0]
+      }
+      return null
+    }
+    const allPoolStatusResult = allPoolsAreStatus()
+    const uninitialized = allPoolStatusResult === 'UNINITIALIZED'
+    const deallocated = allPoolStatusResult === 'DEALLOCATED'
+    const allocated = allPoolStatusResult === 'ALLOCATED'
+    const isRunning = allPoolStatusResult?.indexOf('ING') === ((allPoolStatusResult?.length || -100) - 3)
+    const BulkActions: DropdownAction[] = [
+      {
+        label: 'Setup shared resources',
+        color: Palette.primary,
+        action: () => {
+          this.handleAction('set-up-shared-resources')
+        },
+        disabled: !uninitialized,
+        title: !uninitialized ? 'The minion pools should be uninitialized' : '',
+      },
+      {
+        label: 'Tear down shared resources',
+        action: () => {
+          this.handleAction('tear-down-shared-resources')
+        },
+        disabled: !deallocated,
+        title: !deallocated ? 'The minion pools should be deallocated' : '',
+      },
+      {
+        label: 'Allocate Machines',
+        color: Palette.primary,
+        action: () => {
+          this.handleAction('allocate-machines')
+        },
+        disabled: !deallocated,
+        title: !deallocated ? 'The minion pools should be deallocated' : '',
+      },
+      {
+        label: 'Deallocate Machines',
+        action: () => {
+          this.handleAction('deallocate-machines')
+        },
+        disabled: !allocated,
+        title: !allocated ? 'The minion pools should be allocated' : '',
+      },
+      {
+        label: 'Cancel Execution',
+        action: () => {
+          this.setState({ showCancelExecutionModal: true })
+        },
+        disabled: !isRunning,
+        title: !isRunning ? 'The minion pools do not have an active execution' : '',
+      },
+      {
+        label: 'Delete Minion Pools',
+        color: Palette.alert,
+        action: () => {
+          this.setState({ showDeletePoolsModal: true })
+        },
+        disabled: !uninitialized,
+        title: !uninitialized ? 'The minion pools should be uninitialized' : '',
+      },
+    ]
+
+    return (
+      <Wrapper>
+        <MainTemplate
+          navigationComponent={<Navigation currentPage="minion-pools" />}
+          listComponent={(
+            <FilterList
+              filterItems={this.getFilterItems()}
+              selectionLabel="minion pool"
+              loading={minionPoolStore.loadingMinionPools}
+              items={minionPoolStore.minionPools}
+              dropdownActions={BulkActions}
+              largeDropdownActionItems
+              onItemClick={item => { this.handleItemClick(item) }}
+              onReloadButtonClick={() => { this.handleReloadButtonClick() }}
+              itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
+              onSelectedItemsChange={selectedMinionPools => {
+                this.setState({ selectedMinionPools })
+              }}
+              renderItemComponent={options => (
+                <MinionPoolListItem
+                  {...options}
+                  endpointType={id => {
+                    const endpoint = this.getEndpoint(id)
+                    if (endpoint) {
+                      return endpoint.type
+                    }
+                    if (endpointStore.loading) {
+                      return 'Loading...'
+                    }
+                    return 'Not Found'
+                  }}
+                />
+              )}
+              emptyListImage={emptyListImage}
+              emptyListMessage="It seems like you don’t have any Minion Pools in this project."
+              emptyListExtraMessage="A minion pool defines a set of machines to be created on a certain endpoint with a certain set of options. These machines can then be used during Migrations/Replicas to avoid having to create/delete them during each transfer, thus reducing the time duration."
+              emptyListButtonLabel="Create a Minion Pool"
+              onEmptyListButtonClick={() => { this.handleEmptyListButtonClick() }}
+            />
+          )}
+          headerComponent={(
+            <PageHeader
+              title="Coriolis Minion Pools"
+              onProjectChange={() => { this.handleProjectChange() }}
+              onModalOpen={() => { this.handleModalOpen() }}
+              onModalClose={() => { this.handleModalClose() }}
+            />
+          )}
+        />
+        {this.state.showChooseMinionEndpointModal ? (
+          <MinionEndpointModal
+            providers={providerStore.providers}
+            endpoints={endpointStore.endpoints}
+            loading={providerStore.providersLoading || endpointStore.loading}
+            onRequestClose={() => { this.handleCloseChooseMinionPoolEndpointModal() }}
+            onSelectEndpoint={(endpoint, platform) => {
+              this.handleChooseMinionPoolSelectEndpoint(endpoint, platform)
+            }}
+          />
+        ) : null}
+        {this.state.showMinionPoolModal ? (
+          <Modal
+            isOpen
+            title="New Minion Pool"
+            onRequestClose={() => { this.handleCloseMinionPoolModalRequest() }}
+          >
+            <MinionPoolModal
+              platform={this.state.selectedMinionPoolPlatform}
+              cancelButtonText="Back"
+              endpoint={this.state.selectedMinionPoolEndpoint!}
+              onCancelClick={() => { this.handleBackMinionPoolModal() }}
+              onRequestClose={() => { this.handleCloseMinionPoolModalRequest() }}
+            />
+          </Modal>
+        ) : null}
+        {this.state.showCancelExecutionModal ? (
+          <AlertModal
+            isOpen
+            title="Cancel Executions?"
+            message="Are you sure you want to cancel the selected Minion Pools executions?"
+            extraMessage=" "
+            onConfirmation={() => { this.cancelExecutions() }}
+            onRequestClose={() => { this.setState({ showCancelExecutionModal: false }) }}
+          />
+        ) : null}
+        {this.state.showDeletePoolsModal ? (
+          <AlertModal
+            isOpen
+            title="Delete Minion Pools?"
+            message="Are you sure you want to delete the selected Minion Pools?"
+            extraMessage="Deleting a Coriolis Minion Pool is permanent!"
+            onConfirmation={() => { this.deleteSelectedMinionPools() }}
+            onRequestClose={() => { this.setState({ showDeletePoolsModal: false }) }}
+          />
+        ) : null}
+      </Wrapper>
+    )
+  }
+}
+
+export default MinionPoolsPage

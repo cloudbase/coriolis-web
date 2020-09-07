@@ -179,7 +179,7 @@ class EndpointDetailsContent extends React.Component<Props> {
       <span>
         <LinkStyled
           key={item.id}
-          to={`/${item.type}/${item.id}`}
+          to={`/${item.type}s/${item.id}`}
         >
           {item.instances[0]}
         </LinkStyled>

@@ -23,6 +23,7 @@ import type { StorageMap } from '../@types/Endpoint'
 import type { InstanceScript } from '../@types/Instance'
 import DefaultOptionsSchemaParser from '../plugins/endpoint/default/OptionsSchemaPlugin'
 import { TransferItem } from '../@types/MainItem'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
 
 class WizardSource {
   async create(
@@ -40,7 +41,6 @@ class WizardSource {
     payload[type] = {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target ? data.target.id : 'null',
-      destination_environment: destParser.getDestinationEnv(data.destOptions),
       network_map: destParser.getNetworkMap(data.networks),
       instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name || i.name) : 'null',
       storage_mappings: destParser.getStorageMap(defaultStorage, storageMap),
@@ -52,8 +52,42 @@ class WizardSource {
     }
 
     if (data.sourceOptions) {
-      payload[type].source_environment = sourceParser.getDestinationEnv(data.sourceOptions)
+      const sourceEnv = sourceParser.getDestinationEnv(data.sourceOptions)
+      if (sourceEnv.minion_pool_id) {
+        payload[type].origin_minion_pool_id = sourceEnv.minion_pool_id
+        delete sourceEnv.minion_pool_id
+      }
+      payload[type].source_environment = sourceEnv
     }
+
+    const destEnv = destParser.getDestinationEnv(data.destOptions)
+    if (destEnv.minion_pool_id) {
+      payload[type].destination_minion_pool_id = destEnv.minion_pool_id
+      delete destEnv.minion_pool_id
+    }
+
+    const poolMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+    if (poolMappings) {
+      Object.keys(poolMappings).forEach(instanceName => {
+        if (poolMappings[instanceName]
+          && payload[type].instances.find((i: string) => i === instanceName)) {
+          if (!payload[type][
+            INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
+          ]) {
+            payload[type][
+              INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
+            ] = {}
+          }
+          payload[type][
+            INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
+          ][instanceName] = poolMappings[instanceName]
+        }
+      })
+    }
+
+    delete destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+
+    payload[type].destination_environment = destEnv
 
     if (type === 'migration') {
       payload[type].shutdown_instances = Boolean(

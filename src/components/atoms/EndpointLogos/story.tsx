@@ -35,7 +35,7 @@ const wrap = (
   disabled = false, white = false,
 ) => (
   <EndpointLogos
-    endpoint={endpoint}
+    endpoint={endpoint as any}
     height={height}
     disabled={disabled}
     white={white}

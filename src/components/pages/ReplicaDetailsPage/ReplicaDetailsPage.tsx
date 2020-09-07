@@ -50,6 +50,7 @@ import replicaImage from './images/replica.svg'
 import Palette from '../../styleUtils/Palette'
 import { ReplicaItemDetails } from '../../../@types/MainItem'
 import ObjectUtils from '../../../utils/ObjectUtils'
+import minionPoolStore from '../../../stores/MinionPoolStore'
 
 const Wrapper = styled.div<any>``
 
@@ -201,6 +202,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     if (!replica) {
       return null
     }
+    minionPoolStore.loadMinionPools()
+
     this.loadIsEditable(replica)
     networkStore.loadNetworks(replica.destination_endpoint_id, replica.destination_environment, {
       quietError: true,
@@ -384,12 +387,20 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     })
   }
 
-  migrateReplica(options: Field[], uploadedScripts: InstanceScript[]) {
-    this.migrate(options, uploadedScripts)
+  migrateReplica(
+    options: Field[],
+    uploadedScripts: InstanceScript[],
+    minionPoolMappings: { [instance: string]: string },
+  ) {
+    this.migrate(options, uploadedScripts, minionPoolMappings)
     this.handleCloseMigrationModal()
   }
 
-  async migrate(options: Field[], uploadedScripts: InstanceScript[]) {
+  async migrate(
+    options: Field[],
+    uploadedScripts: InstanceScript[],
+    minionPoolMappings: { [instance: string]: string },
+  ) {
     const replica = this.replica
     if (!replica) {
       return
@@ -398,6 +409,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       replica.id,
       options,
       uploadedScripts,
+      minionPoolMappings,
     )
     notificationStore.alert('Migration successfully created from replica.', 'success', {
       action: {
@@ -573,7 +585,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               endpoints={endpointStore.endpoints}
               scheduleStore={scheduleStore}
               networks={networkStore.networks}
-              detailsLoading={replicaStore.replicaDetailsLoading || endpointStore.loading}
+              minionPools={minionPoolStore.minionPools}
+              detailsLoading={replicaStore.replicaDetailsLoading || endpointStore.loading
+                || minionPoolStore.loadingMinionPools}
               sourceSchema={providerStore.sourceSchema}
               sourceSchemaLoading={providerStore.sourceSchemaLoading
               || providerStore.sourceOptionsPrimaryLoading
@@ -621,10 +635,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             onRequestClose={() => { this.handleCloseMigrationModal() }}
           >
             <ReplicaMigrationOptions
+              transferItem={this.replica}
+              minionPools={minionPoolStore.minionPools}
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
               onCancelClick={() => { this.handleCloseMigrationModal() }}
-              onMigrateClick={(o, s) => { this.migrateReplica(o, s) }}
+              onMigrateClick={(o, s, m) => { this.migrateReplica(o, s, m) }}
             />
           </Modal>
         ) : null}

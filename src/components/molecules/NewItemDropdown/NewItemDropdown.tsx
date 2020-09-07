@@ -30,8 +30,18 @@ import replicaImage from './images/replica.svg'
 import endpointImage from './images/endpoint.svg'
 import userImage from './images/user.svg'
 import projectImage from './images/project.svg'
+import minionPoolImage from './images/minionPool.svg'
 
 import { navigationMenu } from '../../../constants'
+
+const ICON_MAP = {
+  migration: migrationImage,
+  replica: replicaImage,
+  endpoint: endpointImage,
+  minionPool: minionPoolImage,
+  user: userImage,
+  project: projectImage,
+}
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -86,26 +96,10 @@ const ListItem = styled(Link)`
   }
 `
 
-const getIcon = (props: any) => {
-  if (props.migration) {
-    return migrationImage
-  }
-  if (props.replica) {
-    return replicaImage
-  }
-  if (props.user) {
-    return userImage
-  }
-  if (props.project) {
-    return projectImage
-  }
-  return endpointImage
-}
-
-const Icon = styled.div<any>`
+const Icon = styled.div<{iconName: keyof typeof ICON_MAP}>`
   min-width: 48px;
   height: 48px;
-  background: url('${props => getIcon(props)}') no-repeat center;
+  background: url('${props => ICON_MAP[props.iconName]}') no-repeat center;
   margin: 16px;
 `
 const Content = styled.div<any>`
@@ -122,10 +116,7 @@ const Description = styled.div<any>`
 
 export type ItemType = {
   href?: string,
-  icon: {
-    migration?: boolean,
-    replica?: boolean, endpoint?: boolean, user?: boolean, project?: boolean
-  },
+  iconName: keyof typeof ICON_MAP,
   title: string,
   description: string,
   value?: string,
@@ -180,36 +171,48 @@ class NewItemDropdown extends React.Component<Props, State> {
 
     const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
     const disabledPages = configLoader.config ? configLoader.config.disabledPages : []
-    const items: ItemType[] = [{
-      title: 'Migration',
-      href: '/wizard/migration',
-      description: 'Migrate VMs between two clouds',
-      icon: { migration: true },
-    }, {
-      title: 'Replica',
-      href: '/wizard/replica',
-      description: 'Incrementally replicate VMs between two clouds',
-      icon: { replica: true },
-    }, {
-      title: 'Endpoint',
-      value: 'endpoint',
-      description: 'Add connection information for a cloud',
-      icon: { endpoint: true },
-    }, {
-      title: 'User',
-      value: 'user',
-      description: 'Create a new Coriolis user',
-      icon: { user: true },
-      disabled: Boolean(navigationMenu.find(i => i.value === 'users'
+    const items: ItemType[] = [
+      {
+        title: 'Migration',
+        href: '/wizard/migration',
+        description: 'Migrate VMs between two clouds',
+        iconName: 'migration',
+      },
+      {
+        title: 'Replica',
+        href: '/wizard/replica',
+        description: 'Incrementally replicate VMs between two clouds',
+        iconName: 'replica',
+      },
+      {
+        title: 'Endpoint',
+        value: 'endpoint',
+        description: 'Add connection information for a cloud',
+        iconName: 'endpoint',
+      },
+      {
+        title: 'Minion Pool',
+        value: 'minionPool',
+        description: 'Create a new Coriolis Minion Pool',
+        iconName: 'minionPool',
+      },
+      {
+        title: 'User',
+        value: 'user',
+        description: 'Create a new Coriolis user',
+        iconName: 'user',
+        disabled: Boolean(navigationMenu.find(i => i.value === 'users'
         && (disabledPages.find(p => p === 'users') || (i.requiresAdmin && !isAdmin)))),
-    }, {
-      title: 'Project',
-      value: 'project',
-      description: 'Create a new Coriolis project',
-      icon: { project: true },
-      disabled: Boolean(navigationMenu.find(i => i.value === 'projects'
+      },
+      {
+        title: 'Project',
+        value: 'project',
+        description: 'Create a new Coriolis project',
+        iconName: 'project',
+        disabled: Boolean(navigationMenu.find(i => i.value === 'projects'
         && (disabledPages.find(p => p === 'users') || (i.requiresAdmin && !isAdmin)))),
-    }]
+      },
+    ]
 
     const list = (
       <List>
@@ -217,7 +220,6 @@ class NewItemDropdown extends React.Component<Props, State> {
           items.filter(i => (i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true))
             .map(item => (
               <ListItem
-                data-test-id={`newItemDropdown-listItem-${item.title}`}
                 key={item.title}
                 onMouseDown={() => { this.itemMouseDown = true }}
                 onMouseUp={() => { this.itemMouseDown = false }}
@@ -225,8 +227,7 @@ class NewItemDropdown extends React.Component<Props, State> {
                 onClick={() => { this.handleItemClick(item) }}
               >
                 <Icon
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  {...item.icon}
+                  iconName={item.iconName}
                 />
                 <Content>
                   <Title>{item.title}</Title>

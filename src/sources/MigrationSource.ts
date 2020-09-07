@@ -27,6 +27,7 @@ import type { Endpoint, StorageMap } from '../@types/Endpoint'
 import configLoader from '../utils/Config'
 import { Task } from '../@types/Task'
 import { MigrationItem, MigrationItemOptions, MigrationItemDetails } from '../@types/MainItem'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates: any[]) {
@@ -75,7 +76,8 @@ class MigrationSource {
   async recreateFullCopy(migration: MigrationItemOptions): Promise<MigrationItem> {
     const {
       origin_endpoint_id, destination_endpoint_id, destination_environment,
-      network_map, instances, storage_mappings, notes,
+      network_map, instances, storage_mappings, notes, destination_minion_pool_id,
+      origin_minion_pool_id, instance_osmorphing_minion_pool_mappings,
     } = migration
 
     const payload: any = {
@@ -87,6 +89,9 @@ class MigrationSource {
         instances,
         storage_mappings,
         notes,
+        destination_minion_pool_id,
+        origin_minion_pool_id,
+        instance_osmorphing_minion_pool_mappings,
       },
     }
 
@@ -125,6 +130,7 @@ class MigrationSource {
     updatedNetworkMappings: NetworkMap[] | null,
     defaultSkipOsMorphing: boolean | null,
     replicationCount?: number | null,
+    migration: MigrationItemDetails
   }): Promise<MigrationItemDetails> {
     const getValue = (fieldName: string): string | null => {
       const updatedDestEnv = opts.updatedDestEnv && opts.updatedDestEnv[fieldName]
@@ -139,10 +145,6 @@ class MigrationSource {
     payload.migration = {
       origin_endpoint_id: opts.sourceEndpoint.id,
       destination_endpoint_id: opts.destEndpoint.id,
-      destination_environment: {
-        ...opts.destEnv,
-        ...destParser.getDestinationEnv(opts.updatedDestEnv),
-      },
       shutdown_instances: Boolean(opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances),
       replication_count: (opts.updatedDestEnv
         && opts.updatedDestEnv.replication_count) || opts.replicationCount || 2,
@@ -174,12 +176,45 @@ class MigrationSource {
             || opts.defaultStorage, opts.updatedStorageMappings),
       }
     }
+    const { migration } = opts
+    const sourceEnv: any = {
+      ...opts.sourceEnv,
+    }
+    const updatedSourceEnv = opts.updatedSourceEnv
+      ? sourceParser.getDestinationEnv(opts.updatedSourceEnv) : {}
+    const sourceMinionPoolId = updatedSourceEnv.minion_pool_id || migration.origin_minion_pool_id
+    if (sourceMinionPoolId) {
+      payload.migration.origin_minion_pool_id = sourceMinionPoolId
+    }
+    delete updatedSourceEnv.minion_pool_id
+    payload.migration.source_environment = {
+      ...sourceEnv,
+      ...updatedSourceEnv,
+    }
 
-    if (opts.sourceEnv || opts.updatedSourceEnv) {
-      payload.migration.source_environment = {
-        ...opts.sourceEnv,
-        ...sourceParser.getDestinationEnv(opts.updatedSourceEnv),
-      }
+    const destEnv: any = {
+      ...opts.destEnv,
+    }
+    const updatedDestEnv = opts.updatedDestEnv
+      ? sourceParser.getDestinationEnv(opts.updatedDestEnv) : {}
+    const destMinionPoolId = updatedDestEnv.minion_pool_id || migration.destination_minion_pool_id
+    if (destMinionPoolId) {
+      payload.migration.destination_minion_pool_id = destMinionPoolId
+    }
+    delete updatedDestEnv.minion_pool_id
+
+    const updatedDestEnvMappings = updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
+    const oldMappings = migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
+    const newMappings = { ...oldMappings, ...updatedDestEnvMappings }
+    if (Object.keys(newMappings).length) {
+      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings
+    }
+
+    delete updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+
+    payload.migration.destination_environment = {
+      ...destEnv,
+      ...updatedDestEnv,
     }
 
     const response = await Api.send({
@@ -212,7 +247,10 @@ class MigrationSource {
   }
 
   async migrateReplica(
-    replicaId: string, options: Field[], userScripts: InstanceScript[],
+    replicaId: string,
+    options: Field[],
+    userScripts: InstanceScript[],
+    minionPoolMappings: { [instance: string]: string },
   ): Promise<MigrationItem> {
     const payload: any = {
       migration: {
@@ -225,6 +263,12 @@ class MigrationSource {
 
     if (userScripts.length) {
       payload.migration.user_scripts = DefaultOptionsSchemaPlugin.getUserScripts(userScripts)
+    }
+
+    if (Object.keys(minionPoolMappings).length) {
+      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = minionPoolMappings
+    } else {
+      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = null
     }
 
     const response = await Api.send({

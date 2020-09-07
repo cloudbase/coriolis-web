@@ -30,6 +30,7 @@ import type { Field } from '../../../@types/Field'
 import type { Schedule as ScheduleType } from '../../../@types/Schedule'
 import StyleProps from '../../styleUtils/StyleProps'
 import { ReplicaItemDetails } from '../../../@types/MainItem'
+import { MinionPool } from '../../../@types/MinionPool'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -86,6 +87,7 @@ type Props = {
   executionsLoading: boolean,
   executionsTasksLoading: boolean,
   executionsTasks: ExecutionTasks[],
+  minionPools: MinionPool[]
   onExecutionChange: (executionId: string) => void,
   onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
   onDeleteExecutionClick: (execution: Execution | null) => void,
@@ -168,6 +170,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
     return (
       <MainDetails
         item={this.props.item}
+        minionPools={this.props.minionPools}
         sourceSchema={this.props.sourceSchema}
         sourceSchemaLoading={this.props.sourceSchemaLoading}
         destinationSchema={this.props.destinationSchema}

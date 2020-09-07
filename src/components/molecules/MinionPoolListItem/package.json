@@ -1,0 +1,6 @@
+{
+  "name": "MinionPoolListItem",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MinionPoolListItem.tsx"
+}

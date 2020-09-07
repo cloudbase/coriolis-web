@@ -50,6 +50,7 @@ import networkStore from '../../../stores/NetworkStore'
 
 import migrationArrowImage from './images/migration'
 import { ProviderTypes } from '../../../@types/Providers'
+import minionPoolStore from '../../../stores/MinionPoolStore'
 
 const Wrapper = styled.div<any>`
   ${StyleProps.exactWidth(`${parseInt(StyleProps.contentWidth, 10) + 64}px`)}
@@ -172,6 +173,7 @@ type Props = {
   instanceStore: typeof instanceStore,
   networkStore: typeof networkStore,
   endpointStore: typeof endpointStore,
+  minionPoolStore: typeof minionPoolStore,
   wizardData: WizardData,
   schedules: ScheduleType[],
   storageMap: StorageMap[],
@@ -190,8 +192,8 @@ type Props = {
   onInstancesReloadClick: () => void,
   onInstanceClick: (instance: Instance) => void,
   onInstancePageClick: (page: number) => void,
-  onDestOptionsChange: (field: Field, value: any) => void,
-  onSourceOptionsChange: (field: Field, value: any) => void,
+  onDestOptionsChange: (field: Field, value: any, parentFieldName?: string) => void,
+  onSourceOptionsChange: (field: Field, value: any, parentFieldName?: string) => void,
   onNetworkChange: (nic: Nic, network: Network, secGroups?: SecurityGroup[]) => void,
   onStorageChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
   onDefaultStorageChange: (value: string | null) => void,
@@ -411,7 +413,7 @@ class WizardPageContent extends React.Component<Props, State> {
             onReloadClick={this.props.onInstancesReloadClick}
             onInstanceClick={this.props.onInstanceClick}
             onPageClick={this.props.onInstancePageClick}
-            selectedInstances={this.props.wizardData.selectedInstances}
+            selectedInstances={this.props.wizardData.selectedInstances || []}
             hasSourceOptions={this.props.hasSourceOptions}
           />
         )
@@ -420,7 +422,10 @@ class WizardPageContent extends React.Component<Props, State> {
         body = (
           <WizardOptions
             loading={this.props.providerStore.sourceSchemaLoading
-              || this.props.providerStore.sourceOptionsPrimaryLoading}
+              || this.props.providerStore.sourceOptionsPrimaryLoading
+              || this.props.minionPoolStore.loadingMinionPools}
+            minionPools={this.props.minionPoolStore.minionPools
+              .filter(m => m.pool_platform === 'source' && m.endpoint_id === this.props.wizardData.source?.id)}
             optionsLoading={this.props.providerStore.sourceOptionsSecondaryLoading}
             optionsLoadingSkipFields={getOptionsLoadingSkipFields('source')}
             fields={this.props.providerStore.sourceSchema}
@@ -439,12 +444,19 @@ class WizardPageContent extends React.Component<Props, State> {
         body = (
           <WizardOptions
             loading={this.props.providerStore.destinationSchemaLoading
-              || this.props.providerStore.destinationOptionsPrimaryLoading}
+              || this.props.providerStore.destinationOptionsPrimaryLoading
+              || this.props.minionPoolStore.loadingMinionPools}
+            minionPools={this.props.minionPoolStore.minionPools
+              .filter(m => m.pool_platform === 'destination' && m.endpoint_id === this.props.wizardData.target?.id)}
             optionsLoading={this.props.providerStore.destinationOptionsSecondaryLoading}
             optionsLoadingSkipFields={[
               ...getOptionsLoadingSkipFields('destination'), 'description', 'execute_now',
               'execute_now_options', ...migrationFields.map(f => f.name)]}
             selectedInstances={this.props.wizardData.selectedInstances}
+            showSeparatePerVm={
+              Boolean(this.props.wizardData.selectedInstances
+                && this.props.wizardData.selectedInstances.length > 1)
+            }
             fields={this.props.providerStore.destinationSchema}
             onChange={this.props.onDestOptionsChange}
             data={this.props.wizardData.destOptions}
@@ -522,6 +534,7 @@ class WizardPageContent extends React.Component<Props, State> {
             sourceSchema={this.props.providerStore.sourceSchema}
             destinationSchema={this.props.providerStore.destinationSchema}
             uploadedUserScripts={this.props.uploadedUserScripts}
+            minionPools={this.props.minionPoolStore.minionPools}
           />
         )
         break
@@ -541,7 +554,7 @@ class WizardPageContent extends React.Component<Props, State> {
       <Navigation>
         <Button secondary onClick={this.props.onBackClick}>Back</Button>
         <IconRepresentation>
-          <EndpointLogos height={32} endpoint={sourceEndpoint || ''} />
+          <EndpointLogos height={32} endpoint={(sourceEndpoint || '') as any} />
           <WizardTypeIcon
             dangerouslySetInnerHTML={{
               __html: this.props.type === 'replica'

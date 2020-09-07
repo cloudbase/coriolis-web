@@ -27,7 +27,7 @@ import { TransferItem } from '../@types/MainItem'
 
 const updateOptions = (
   oldOptions: { [prop: string]: any } | null | undefined,
-  data: { field: Field, value: any },
+  data: { field: Field, value: any, parentFieldName: string | undefined },
 ) => {
   const options: any = oldOptions ? { ...oldOptions } : {}
   if (data.field.type === 'array') {
@@ -37,6 +37,11 @@ const updateOptions = (
     } else {
       options[data.field.name] = [...oldValues, data.value]
     }
+  } else if (data.parentFieldName) {
+    if (!options[data.parentFieldName]) {
+      options[data.parentFieldName] = {}
+    }
+    options[data.parentFieldName][data.field.name] = data.value
   } else {
     options[data.field.name] = data.value
   }
@@ -140,12 +145,20 @@ class WizardStore {
     this.currentPage = page
   }
 
-  @action updateSourceOptions(data: { field: Field, value: any }) {
+  @action updateSourceOptions(data: {
+    field: Field,
+    value: any
+    parentFieldName: string | undefined
+  }) {
     this.data = { ...this.data }
     this.data.sourceOptions = updateOptions(this.data.sourceOptions, data)
   }
 
-  @action updateDestOptions(data: { field: Field, value: any }) {
+  @action updateDestOptions(data: {
+    field: Field,
+    value: any,
+    parentFieldName: string | undefined
+  }) {
     this.data = { ...this.data }
     this.data.destOptions = updateOptions(this.data.destOptions, data)
   }
