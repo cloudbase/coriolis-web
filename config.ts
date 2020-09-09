@@ -26,7 +26,7 @@ const conf: Config = {
   showOpenstackCurrentUserSwitch: false,
 
   // Whether to use Barbican secrets when creating a new endpoint
-  useBarbicanSecrets: true,
+  useBarbicanSecrets: false,
 
   // The timeout between polling requests
   requestPollTimeout: 5000,
