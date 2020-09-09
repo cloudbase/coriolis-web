@@ -313,7 +313,7 @@ class WizardOptions extends React.Component<Props> {
       }
     } else {
       additionalProps = {
-        value: this.getFieldValue(field.name, field.default),
+        value: this.getFieldValue(field.name, field.default, field.groupName),
         onChange: (value: any) => { this.props.onChange(field, value) },
       }
     }
@@ -434,7 +434,7 @@ class WizardOptions extends React.Component<Props> {
             {g.name ? (
               <GroupName>
                 <GroupNameBar />
-                <GroupNameText>{g.name}</GroupNameText>
+                <GroupNameText>{LabelDictionary.get(g.name)}</GroupNameText>
                 <GroupNameBar />
               </GroupName>
             ) : null}

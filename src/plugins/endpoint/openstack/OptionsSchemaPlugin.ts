@@ -19,8 +19,6 @@ import DefaultOptionsSchemaPlugin, {
   defaultFillMigrationImageMapValues,
 } from '../default/OptionsSchemaPlugin'
 
-import LabelDictionary from '../../../utils/LabelDictionary'
-
 import type { InstanceScript } from '../../../@types/Instance'
 import type { Field } from '../../../@types/Field'
 import type { OptionValues, StorageMap } from '../../../@types/Endpoint'
@@ -46,9 +44,9 @@ export default class OptionsSchemaParser {
         const exportTypeFieldIdx = fields.findIndex(f => f.name === `${exportType}_options`)
         if (exportTypeFieldIdx > -1) {
           const subField = fields[exportTypeFieldIdx]
-          if (subField.properties && subField.properties.length > 2) {
+          if (subField.properties && subField.properties.length) {
             subField.properties = subField.properties
-              .map((p: any) => ({ ...p, groupName: LabelDictionary.get(subField.name) }))
+              .map((p: any) => ({ ...p, groupName: subField.name }))
           }
           exportMechField.subFields.push(subField)
           fields.splice(exportTypeFieldIdx, 1)

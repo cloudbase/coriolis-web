@@ -273,7 +273,12 @@ class WizardSummary extends React.Component<Props> {
         <SectionTitle>{type} Source Options</SectionTitle>
         <OptionsList>
           {data.sourceOptions ? Object.keys(data.sourceOptions).map(optionName => {
-            if (!data.sourceOptions || data.sourceOptions[optionName] == null || data.sourceOptions[optionName] === '') {
+            if (
+              !data.sourceOptions
+              || data.sourceOptions[optionName] == null
+              || data.sourceOptions[optionName] === ''
+              || typeof data.sourceOptions[optionName] === 'object'
+            ) {
               return null
             }
             const optionLabel = optionName.split('/')
