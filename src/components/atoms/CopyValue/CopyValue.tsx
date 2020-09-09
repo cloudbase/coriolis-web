@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import CopyButton from '../CopyButton'
 import DomUtils from '../../../utils/DomUtils'
@@ -26,6 +26,9 @@ const Wrapper = styled.div<any>`
   &:hover > span:last-child {
     opacity: 1;
   }
+  ${props => (props.capitalize ? css`
+    text-transform: capitalize;
+  ` : '')}
 `
 const Value = styled.span<any>`
   width: ${(props: any) => `${props.width || 'auto'}`};
@@ -41,6 +44,7 @@ type Props = {
   value: string,
   width?: string,
   maxWidth?: string,
+  capitalize?: boolean,
   'data-test-id'?: string,
   onCopy?: (value: string) => void,
 }
@@ -66,6 +70,7 @@ class CopyValue extends React.Component<Props> {
         onMouseDown={(e: { stopPropagation: () => void }) => { e.stopPropagation() }}
         onMouseUp={(e: { stopPropagation: () => void }) => { e.stopPropagation() }}
         data-test-id={this.props['data-test-id'] || 'copyValue'}
+        capitalize={this.props.capitalize}
       >
         <Value
           data-test-id="copyValue-value"

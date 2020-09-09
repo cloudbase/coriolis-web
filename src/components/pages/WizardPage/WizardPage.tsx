@@ -46,6 +46,7 @@ import type { WizardPage as WizardPageType } from '../../../@types/WizardData'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import { ProviderTypes } from '../../../@types/Providers'
 import { TransferItem, ReplicaItem } from '../../../@types/MainItem'
+import minionPoolStore from '../../../stores/MinionPoolStore'
 
 const Wrapper = styled.div<any>``
 
@@ -229,6 +230,7 @@ class WizardPage extends React.Component<Props, State> {
     if (!source) {
       return
     }
+
     await providerStore.loadOptionsSchema({
       providerName: source.type,
       optionsType: 'source',
@@ -315,10 +317,10 @@ class WizardPage extends React.Component<Props, State> {
     instanceStore.setPage(page)
   }
 
-  handleDestOptionsChange(field: Field, value: any) {
+  handleDestOptionsChange(field: Field, value: any, parentFieldName?: string) {
     wizardStore.updateData({ networks: null })
     wizardStore.clearStorageMap()
-    wizardStore.updateDestOptions({ field, value })
+    wizardStore.updateDestOptions({ field, value, parentFieldName })
     // If the field is a string and doesn't have an enum property,
     // we can't call destination options on "change" since too many calls will be made,
     // it also means a potential problem with the server not populating the "enum" prop.
@@ -331,9 +333,9 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.updateUrlState()
   }
 
-  handleSourceOptionsChange(field: Field, value: any) {
+  handleSourceOptionsChange(field: Field, value: any, parentFieldName?: string) {
     wizardStore.updateData({ selectedInstances: [] })
-    wizardStore.updateSourceOptions({ field, value })
+    wizardStore.updateSourceOptions({ field, value, parentFieldName })
     if (field.type !== 'string' || field.enum) {
       this.loadExtraOptions(field, 'source')
     }
@@ -378,6 +380,7 @@ class WizardPage extends React.Component<Props, State> {
     if (!endpoint) {
       return
     }
+    minionPoolStore.loadMinionPools()
     await providerStore.loadOptionsSchema({
       providerName: endpoint.type,
       optionsType,
@@ -452,6 +455,7 @@ class WizardPage extends React.Component<Props, State> {
 
     switch (page.id) {
       case 'source': {
+        minionPoolStore.loadMinionPools()
         providerStore.loadProviders()
         endpointStore.getEndpoints()
         // Preload instances if data is set from 'Permalink'
@@ -647,6 +651,7 @@ class WizardPage extends React.Component<Props, State> {
               instanceStore={instanceStore}
               networkStore={networkStore}
               endpointStore={endpointStore}
+              minionPoolStore={minionPoolStore}
               wizardData={wizardStore.data}
               hasStorageMap={Boolean(this.pages.find(p => p.id === 'storage'))}
               hasSourceOptions={Boolean(this.pages.find(p => p.id === 'source-options'))}
@@ -667,9 +672,11 @@ class WizardPage extends React.Component<Props, State> {
               onInstancesReloadClick={() => { this.handleInstancesReloadClick() }}
               onInstanceClick={instance => { this.handleInstanceClick(instance) }}
               onInstancePageClick={page => { this.handleInstancePageClick(page) }}
-              onDestOptionsChange={(field, value) => { this.handleDestOptionsChange(field, value) }}
-              onSourceOptionsChange={(field, value) => {
-                this.handleSourceOptionsChange(field, value)
+              onDestOptionsChange={(field, value, parent) => {
+                this.handleDestOptionsChange(field, value, parent)
+              }}
+              onSourceOptionsChange={(field, value, parent) => {
+                this.handleSourceOptionsChange(field, value, parent)
               }}
               onNetworkChange={(sourceNic, targetNetwork, secGroups) => {
                 this.handleNetworkChange(sourceNic, targetNetwork, secGroups)

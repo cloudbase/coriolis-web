@@ -74,6 +74,7 @@ const EmptyListMessage = styled.div<any>`
   font-size: 18px;
 `
 const EmptyListExtraMessage = styled.div<any>`
+  max-width: 700px;
   text-align: center;
   margin: 10px 0 25px 0;
 `

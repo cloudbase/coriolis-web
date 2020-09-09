@@ -39,6 +39,7 @@ import { OptionsSchemaPlugin } from '../../../plugins/endpoint'
 
 import arrowImage from './images/arrow.svg'
 import { TransferItem } from '../../../@types/MainItem'
+import { MinionPool } from '../../../@types/MinionPool'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -121,6 +122,7 @@ const PropertyValue = styled.div<any>`
 
 type Props = {
   item?: TransferItem | null,
+  minionPools: MinionPool[]
   destinationSchema: FieldType[],
   destinationSchemaLoading: boolean,
   sourceSchema: FieldType[],
@@ -235,7 +237,7 @@ class MainDetails extends React.Component<Props, State> {
           }
           let fieldName = pn
           if (migrationImageMapFieldName && fieldName === migrationImageMapFieldName) {
-            fieldName = `${p}_os_image`
+            fieldName = `${p}${plugin?.imageSuffix}`
           }
           return {
             label: `${label} - ${LabelDictionary.get(p)}`,
@@ -283,6 +285,11 @@ class MainDetails extends React.Component<Props, State> {
       )) : []
     }
 
+    const sourceMinionPool = this.props.minionPools
+      .find(m => m.id === this.props.item?.origin_minion_pool_id)
+    const destMinionPool = this.props.minionPools
+      .find(m => m.id === this.props.item?.destination_minion_pool_id)
+
     return (
       <ColumnsLayout>
         <Column width="42.5%">
@@ -294,7 +301,7 @@ class MainDetails extends React.Component<Props, State> {
           </Row>
           <Row>
             <EndpointLogos
-              endpoint={sourceEndpoint ? sourceEndpoint.type : ''}
+              endpoint={(sourceEndpoint ? sourceEndpoint.type : '') as any}
               data-test-id="mainDetails-sourceLogo"
             />
           </Row>
@@ -339,6 +346,18 @@ class MainDetails extends React.Component<Props, State> {
               </Field>
             </Row>
           ) : null}
+          {this.props.item?.origin_minion_pool_id ? (
+            <Row>
+              <Field>
+                <Label>Source Minion Pool</Label>
+                {sourceMinionPool ? (
+                  <ValueLink to={`/minion-pools/${sourceMinionPool.id}`}>{sourceMinionPool.pool_name}</ValueLink>
+                ) : (
+                  <Value>{this.props.item.origin_minion_pool_id}</Value>
+                )}
+              </Field>
+            </Row>
+          ) : null}
           {this.props.item?.type === 'migration' && this.props.item.replica_id ? (
             <Row>
               <Field>
@@ -360,7 +379,7 @@ class MainDetails extends React.Component<Props, State> {
           </Row>
           <Row>
             <EndpointLogos
-              endpoint={destinationEndpoint ? destinationEndpoint.type : ''}
+              endpoint={(destinationEndpoint ? destinationEndpoint.type : '') as any}
               data-test-id="mainDetails-targetLogo"
             />
           </Row>
@@ -372,6 +391,18 @@ class MainDetails extends React.Component<Props, State> {
                 ) : <StatusIconStub />}
                 </Label>
                 <Value block>{this.renderPropertiesTable(getPropertyNames('destination'), 'destination')}</Value>
+              </Field>
+            </Row>
+          ) : null}
+          {this.props.item?.destination_minion_pool_id ? (
+            <Row>
+              <Field>
+                <Label>Target Minion Pool</Label>
+                {destMinionPool ? (
+                  <ValueLink to={`/minion-pools/${destMinionPool.id}`}>{destMinionPool.pool_name}</ValueLink>
+                ) : (
+                  <Value>{this.props.item.destination_minion_pool_id}</Value>
+                )}
               </Field>
             </Row>
           ) : null}
@@ -407,6 +438,7 @@ class MainDetails extends React.Component<Props, State> {
         {this.props.instancesDetailsLoading || this.props.loading ? null : (
           <MainDetailsTable
             item={this.props.item}
+            minionPools={this.props.minionPools}
             instancesDetails={this.props.instancesDetails}
             networks={this.props.networks}
           />

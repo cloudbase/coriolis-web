@@ -33,6 +33,7 @@ const LABEL_MAP: { [status: string]: string } = {
 const statuses = (status: any) => {
   switch (status) {
     case 'COMPLETED':
+    case 'ALLOCATED':
       return css`
         background: ${Palette.success};
         color: white;
@@ -63,6 +64,9 @@ const statuses = (status: any) => {
     case 'STARTING':
     case 'RUNNING':
     case 'PENDING':
+    case 'INITIALIZING':
+    case 'ALLOCATING':
+    case 'RECONFIGURING':
       return css`
         background: url('${runningImage}');
         animation: bgMotion 1s infinite linear;
@@ -74,6 +78,8 @@ const statuses = (status: any) => {
         }
       `
     case 'CANCELLING':
+    case 'UNINITIALIZING':
+    case 'DEALLOCATING':
     case 'CANCELLING_AFTER_COMPLETION':
       return css`
         background: url('${cancellingImage}');
@@ -93,6 +99,9 @@ const statuses = (status: any) => {
         border-color: transparent;
       `
     case 'UNSCHEDULED':
+    case 'UNINITIALIZED':
+    case 'DEALLOCATED':
+    case 'INITIALIZED':
       return css`
         background: ${Palette.grayscale[2]};
         color: ${Palette.black};

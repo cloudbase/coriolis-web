@@ -32,6 +32,9 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import Palette from '../../styleUtils/Palette'
 
 import endpointImage from './images/endpoint.svg'
+import { MinionPool } from '../../../@types/MinionPool'
+
+export const INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS = 'instance_osmorphing_minion_pool_mappings'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -120,11 +123,17 @@ type FieldRender = {
 }
 type Props = {
   fields: Field[],
+  minionPools: MinionPool[]
   isSource?: boolean,
   selectedInstances?: Instance[] | null,
+  showSeparatePerVm?: boolean
   data?: { [prop: string]: any } | null,
-  getFieldValue?: (fieldName: string, defaultValue: any) => any,
-  onChange: (field: Field, value: any) => void,
+  getFieldValue?: (
+    fieldName: string,
+    defaultValue: any,
+    parentFieldName: string | undefined
+  ) => any,
+  onChange: (field: Field, value: any, parentFieldName?: string) => void,
   useAdvancedOptions?: boolean,
   hasStorageMap: boolean,
   storageBackends?: StorageBackend[],
@@ -151,9 +160,21 @@ class WizardOptions extends React.Component<Props> {
     window.removeEventListener('resize', this.handleResize, false)
   }
 
-  getFieldValue(fieldName: string, defaultValue: any) {
+  getFieldValue(fieldName: string, defaultValue: any, parentFieldName?: string) {
     if (this.props.getFieldValue) {
-      return this.props.getFieldValue(fieldName, defaultValue)
+      return this.props.getFieldValue(fieldName, defaultValue, parentFieldName)
+    }
+
+    if (!this.props.data) {
+      return defaultValue
+    }
+
+    if (parentFieldName) {
+      if (this.props.data[parentFieldName]
+        && this.props.data[parentFieldName][fieldName] !== undefined) {
+        return this.props.data[parentFieldName][fieldName]
+      }
+      return defaultValue
     }
 
     if (!this.props.data || this.props.data[fieldName] === undefined) {
@@ -163,8 +184,8 @@ class WizardOptions extends React.Component<Props> {
     return this.props.data[fieldName]
   }
 
-  getDefaultFieldsSchema() {
-    let fieldsSchema = []
+  getDefaultSimpleFieldsSchema() {
+    let fieldsSchema: Field[] = []
 
     if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica') {
       fieldsSchema.push({ name: 'description', type: 'string' })
@@ -174,11 +195,23 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'boolean', default: false })
     }
 
-    if (this.props.selectedInstances && this.props.selectedInstances.length > 1) {
+    if (this.props.showSeparatePerVm) {
       const dictionaryLabel = LabelDictionary.get('separate_vm')
       const label = this.props.wizardType === 'migration' ? dictionaryLabel : dictionaryLabel.replace('Migration', 'Replica')
       fieldsSchema.unshift({
         name: 'separate_vm', label, type: 'boolean', default: true,
+      })
+    }
+
+    if (this.props.minionPools.length) {
+      fieldsSchema.push({
+        name: 'minion_pool_id',
+        label: 'Minion Pool',
+        type: 'string',
+        enum: this.props.minionPools.map(minionPool => ({
+          label: minionPool.pool_name,
+          value: minionPool.id,
+        })),
       })
     }
 
@@ -196,6 +229,29 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema = [...fieldsSchema, ...migrationFields]
     }
 
+    return fieldsSchema
+  }
+
+  getDefaultAdvancedFieldsSchema() {
+    const fieldsSchema: Field[] = []
+
+    if (this.props.minionPools.length && this.props.selectedInstances) {
+      const properties: Field[] = this.props.selectedInstances.map(instance => ({
+        name: instance.instance_name || instance.name,
+        type: 'string',
+        enum: this.props.minionPools.map(minionPool => ({
+          name: minionPool.pool_name,
+          id: minionPool.id,
+        })),
+      }))
+
+      fieldsSchema.push({
+        name: INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS,
+        label: 'Instance OSMorphing Minion Pool Mappings',
+        type: 'object',
+        properties,
+      })
+    }
     return fieldsSchema
   }
 
@@ -242,9 +298,17 @@ class WizardOptions extends React.Component<Props> {
   renderOptionsField(field: Field) {
     let additionalProps
     if (field.type === 'object' && field.properties) {
+      const renderOsMorphingLabels = (propName: string) => (
+        propName.indexOf('/') > -1 ? propName.split('/')[propName.split('/').length - 1] : propName
+      )
+
       additionalProps = {
-        valueCallback: (f: any) => this.getFieldValue(f.name, f.default),
-        onChange: (value: any, f: any) => { this.props.onChange(f, value) },
+        valueCallback: (f: any) => this.getFieldValue(f.name, f.default, field.name),
+        onChange: (value: any, f: any) => {
+          this.props.onChange(f, value, field.name)
+        },
+        labelRenderer: field.name === INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
+          ? renderOsMorphingLabels : null,
         properties: field.properties,
       }
     } else {
@@ -297,12 +361,13 @@ class WizardOptions extends React.Component<Props> {
       return this.renderNoFieldsMessage()
     }
 
-    let fieldsSchema: Field[] = this.getDefaultFieldsSchema()
+    let fieldsSchema: Field[] = this.getDefaultSimpleFieldsSchema()
     const nonNullableBooleans: string[] = fieldsSchema.filter(f => f.type === 'boolean').map(f => f.name)
 
     fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => f.required))
 
     if (this.props.useAdvancedOptions) {
+      fieldsSchema = fieldsSchema.concat(this.getDefaultAdvancedFieldsSchema())
       fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => !f.required))
     }
 

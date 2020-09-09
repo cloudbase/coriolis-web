@@ -88,6 +88,7 @@ type Props = {
   customFilterComponent?: React.ReactNode,
   searchValue?: string,
   dropdownActions: DropdownAction[] | null,
+  largeDropdownActionItems?: boolean
 }
 @observer
 class MainListFilter extends React.Component<Props> {
@@ -131,6 +132,7 @@ class MainListFilter extends React.Component<Props> {
         {this.props.dropdownActions && this.props.dropdownActions.length ? (
           <ActionDropdown
             actions={this.props.dropdownActions}
+            largeItems={this.props.largeDropdownActionItems}
             style={{ marginLeft: '8px' }}
             data-test-id="mainListFilter-actionButton"
           />

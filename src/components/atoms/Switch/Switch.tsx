@@ -18,15 +18,30 @@ import styled, { css } from 'styled-components'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
+import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div<any>`
+  position: relative;
   display: flex;
   height: ${StyleProps.inputSizes.regular.height}px;
   align-items: center;
+  ${(props: any) => (props.highlight ? css`
+    border: 1px solid ${Palette.alert};
+    height: ${StyleProps.inputSizes.regular.height - 2}px;
+    border-radius: ${StyleProps.borderRadius};
+  ` : '')}
   ${(props: any) => (props.disabled ? 'opacity: 0.5;' : '')}
   ${(props: any) => (props.justifyContent ? `justify-content: ${props.justifyContent};` : '')}
   ${(props: any) => (props.width ? `width: ${props.width};` : '')}
   ${(props: any) => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+`
+const Required = styled.div<any>`
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  right: -16px;
+  top: 12px;
+  background: url('${requiredImage}') center no-repeat;
 `
 const InputWrapper = styled.div<any>`
   position: relative;
@@ -131,6 +146,8 @@ type Props = {
   uncheckedLabel?: string,
   'data-test-id'?: string,
   style?: React.CSSProperties,
+  required?: boolean,
+  highlight?: boolean,
 }
 type State = {
   lastChecked: boolean | null | undefined,
@@ -241,11 +258,14 @@ class Switch extends React.Component<Props, State> {
         disabledLoading={this.props.disabledLoading}
         style={this.props.style}
         width={this.props.width}
+        height={this.props.height}
         justifyContent={this.props.justifyContent}
+        highlight={this.props.highlight}
       >
         {this.renderLeftLabel()}
         {this.renderInput()}
         {this.renderRightLabel()}
+        {this.props.required ? <Required /> : null}
       </Wrapper>
     )
   }

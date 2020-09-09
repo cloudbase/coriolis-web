@@ -89,6 +89,7 @@ type Props = {
   itemTitle?: string | null
   itemType?: string
   itemDescription?: string
+  largeDropdownActionItems?: boolean
 }
 @observer
 class DetailsContentHeader extends React.Component<Props> {
@@ -124,6 +125,7 @@ class DetailsContentHeader extends React.Component<Props> {
     return (
       <ActionDropdown
         actions={this.props.dropdownActions}
+        largeItems={this.props.largeDropdownActionItems}
         style={{ marginLeft: '32px' }}
         data-test-id="dcHeader-actionButton"
       />

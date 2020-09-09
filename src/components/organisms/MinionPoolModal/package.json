@@ -1,0 +1,6 @@
+{
+  "name": "MinionPoolModal",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MinionPoolModal.tsx"
+}

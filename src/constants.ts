@@ -22,6 +22,7 @@ export const navigationMenu: NavigationMenuType[] = [
   { label: 'Replicas', value: 'replicas' },
   { label: 'Migrations', value: 'migrations' },
   { label: 'Cloud Endpoints', value: 'endpoints' },
+  { label: 'Minion Pools', value: 'minion-pools' },
 
   // Optional pages
   { label: 'Planning', value: 'planning' },
@@ -42,6 +43,8 @@ export const providerTypes = {
   STORAGE: 32768,
   SOURCE_UPDATE: 65536,
   TARGET_UPDATE: 262144,
+  SOURCE_MINION_POOL: 524288,
+  DESTINATION_MINION_POOL: 1048576,
 }
 
 export const loginButtons = [

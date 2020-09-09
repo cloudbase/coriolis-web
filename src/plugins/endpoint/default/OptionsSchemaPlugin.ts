@@ -43,7 +43,10 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
 }
 
 export const defaultFillMigrationImageMapValues = (
-  field: Field, option: OptionValues, migrationImageMapFieldName: string,
+  field: Field,
+  option: OptionValues,
+  migrationImageMapFieldName: string,
+  imageSuffix: string,
 ): boolean => {
   if (field.name !== migrationImageMapFieldName) {
     return false
@@ -65,7 +68,7 @@ export const defaultFillMigrationImageMapValues = (
     }
 
     return {
-      name: `${os}_os_image`,
+      name: `${os}${imageSuffix}`,
       type: 'string',
       enum: values,
     }
@@ -74,13 +77,15 @@ export const defaultFillMigrationImageMapValues = (
 }
 
 export const defaultGetDestinationEnv = (
-  options?: { [prop: string]: any } | null, oldOptions?: { [prop: string]: any } | null,
+  options?: { [prop: string]: any } | null,
+  oldOptions?: { [prop: string]: any } | null,
+  imageSuffix?: string,
 ): any => {
   const env: any = {}
   const specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'description']
     .concat(migrationFields.map(f => f.name))
     .concat(executionOptions.map(o => o.name))
-    .concat(migrationImageOsTypes.map(o => `${o}_os_image`))
+    .concat(migrationImageOsTypes.map(o => `${o}${imageSuffix}`))
 
   if (!options) {
     return env
@@ -90,13 +95,12 @@ export const defaultGetDestinationEnv = (
     if (specialOptions.find(o => o === optionName) || !options || options[optionName] == null || options[optionName] === '') {
       return
     }
-    if (optionName.indexOf('/') > 0) {
-      const parentName = optionName.substr(0, optionName.lastIndexOf('/'))
-      if (!env[parentName]) {
-        env[parentName] = oldOptions ? oldOptions[parentName] || {} : {}
+    if (typeof options[optionName] === 'object') {
+      const oldOption = oldOptions?.[optionName] || {}
+      env[optionName] = {
+        ...oldOption,
+        ...options[optionName],
       }
-      env[parentName][optionName.substr(optionName.lastIndexOf('/') + 1)] = options
-        ? Utils.trim(optionName, options[optionName]) : null
     } else {
       env[optionName] = options ? Utils.trim(optionName, options[optionName]) : null
     }
@@ -106,26 +110,28 @@ export const defaultGetDestinationEnv = (
 
 export const defaultGetMigrationImageMap = (
   options: { [prop: string]: any } | null | undefined,
-  oldOptions: any, migrationImageMapFieldName: string,
+  oldOptions: any,
+  migrationImageMapFieldName: string,
+  imageSuffix: string,
 ) => {
   const env: any = {}
   const usableOptions = options
   if (!usableOptions) {
     return env
   }
-  const hasMigrationMap = Object.keys(usableOptions).find(k => migrationImageOsTypes.find(os => `${os}_os_image` === k))
+
+  const hasMigrationMap = Object.keys(usableOptions).find(k => k === migrationImageMapFieldName)
   if (!hasMigrationMap) {
     return env
   }
   migrationImageOsTypes.forEach(os => {
-    let value = usableOptions[`${os}_os_image`]
+    let value = usableOptions[migrationImageMapFieldName][`${os}${imageSuffix}`]
 
     // Make sure the migr. image mapping has all the OSes filled,
     // even if only one OS mapping was updated,
     // ie. don't send just the updated OS map to the server, send them all if one was updated.
     if (!value) {
-      value = oldOptions && oldOptions[migrationImageMapFieldName]
-        && oldOptions[migrationImageMapFieldName][os]
+      value = oldOptions?.[migrationImageMapFieldName]?.[`${os}${imageSuffix}`]
       if (!value) {
         return
       }
@@ -135,7 +141,7 @@ export const defaultGetMigrationImageMap = (
       env[migrationImageMapFieldName] = {}
     }
 
-    env[migrationImageMapFieldName][os] = value
+    env[migrationImageMapFieldName][`${os}${imageSuffix}`] = value
   })
 
   return env
@@ -144,10 +150,12 @@ export const defaultGetMigrationImageMap = (
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_image_map'
 
+  static imageSuffix = '_os_image'
+
   static parseSchemaToFields(
     schema: SchemaProperties, schemaDefinitions?: SchemaDefinitions | null, dictionaryKey?: string,
   ) {
-    return defaultSchemaToFields(schema, schemaDefinitions, null, dictionaryKey)
+    return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey)
   }
 
   static fillFieldValues(field: Field, options: OptionValues[], customFieldName?: string) {
@@ -156,15 +164,29 @@ export default class OptionsSchemaParser {
     if (!option) {
       return
     }
-    if (!defaultFillMigrationImageMapValues(field, option, this.migrationImageMapFieldName)) {
+    if (!defaultFillMigrationImageMapValues(
+      field,
+      option,
+      this.migrationImageMapFieldName,
+      this.imageSuffix,
+    )) {
       defaultFillFieldValues(field, option)
     }
   }
 
   static getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
-      ...defaultGetDestinationEnv(options, oldOptions),
-      ...defaultGetMigrationImageMap(options, oldOptions, this.migrationImageMapFieldName),
+      ...defaultGetDestinationEnv(
+        options,
+        oldOptions,
+        this.imageSuffix,
+      ),
+      ...defaultGetMigrationImageMap(
+        options,
+        oldOptions,
+        this.migrationImageMapFieldName,
+        this.imageSuffix,
+      ),
     }
     return env
   }

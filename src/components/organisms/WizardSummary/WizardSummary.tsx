@@ -34,6 +34,9 @@ import fieldHelper from '../../../@types/Field'
 import { getDisks } from '../WizardStorage'
 
 import networkArrowImage from './images/network-arrow.svg'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../WizardOptions/WizardOptions'
+import { MinionPool } from '../../../@types/MinionPool'
+import { ProviderTypes } from '../../../@types/Providers'
 
 const Wrapper = styled.div<any>`
   width: 100%;
@@ -160,11 +163,18 @@ const OptionValue = styled.div<any>`
   text-overflow: ellipsis;
   overflow: hidden;
 `
+const ObjectTable = styled.div`
+  margin-top: 24px;
+`
+const ObjectTableTitle = styled.div`
+  margin-bottom: 8px;
+`
 
 type Props = {
   data: WizardData,
   wizardType: 'replica' | 'migration',
   schedules: Schedule[],
+  minionPools: MinionPool[]
   defaultStorage: string | null,
   storageMap: StorageMap[],
   instancesDetails: Instance[],
@@ -282,8 +292,86 @@ class WizardSummary extends React.Component<Props> {
               </Option>
             )
           }) : null}
+          {this.renderObjectTable(data.sourceOptions, this.props.sourceSchema, provider)}
         </OptionsList>
       </Section>
+    )
+  }
+
+  renderObjectTable(options: any, schema: Field[], provider?: ProviderTypes | null) {
+    if (!options) {
+      return null
+    }
+    const objectKeys: string[] = Object.keys(options).filter(key => typeof options[key] === 'object'
+      && key !== INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS)
+
+    return objectKeys.map(key => (
+      <ObjectTable key={key}>
+        <ObjectTableTitle>
+          {LabelDictionary.get(key)}
+        </ObjectTableTitle>
+        {Object.keys(options[key]).map(propertyName => {
+          const value = options[key][propertyName]
+          if (value == null || value === '') {
+            return null
+          }
+
+          const optionValue = fieldHelper.getValueAlias(propertyName,
+            value,
+            schema, provider)
+
+          return (
+            <Option key={propertyName}>
+              <OptionLabel title={propertyName}>
+                {LabelDictionary.get(propertyName)}
+              </OptionLabel>
+              <OptionValue title={options[key][propertyName]}>
+                {optionValue}
+              </OptionValue>
+            </Option>
+          )
+        })}
+      </ObjectTable>
+    ))
+  }
+
+  renderMinionPoolMapping() {
+    const allMappings = this.props.data.destOptions?.[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+    if (!allMappings) {
+      return null
+    }
+    const mappings: any = {}
+    Object.keys(allMappings).forEach(map => {
+      if (allMappings[map]) {
+        mappings[map] = allMappings[map]
+      }
+    })
+
+    if (!Object.keys(mappings).length) {
+      return null
+    }
+
+    const getMinionPoolName = (id: string) => {
+      const minionPool = this.props.minionPools.find(m => m.id === id)
+      return minionPool?.pool_name || id
+    }
+
+    return (
+      <ObjectTable>
+        <ObjectTableTitle>
+          Instance OSMorphing Minion Pool Mappings
+        </ObjectTableTitle>
+        {Object.keys(mappings).map(instanceName => (
+          <Option key={instanceName}>
+            <OptionLabel title={instanceName}>
+              {instanceName}
+            </OptionLabel>
+            <OptionValue title={mappings[instanceName]}>
+              {getMinionPoolName(mappings[instanceName])}
+            </OptionValue>
+          </Option>
+        ))}
+      </ObjectTable>
     )
   }
 
@@ -345,15 +433,18 @@ class WizardSummary extends React.Component<Props> {
               || optionName === 'separate_vm'
               || migrationFields.find(f => f.name === optionName)
               || !data.destOptions || data.destOptions[optionName] == null || data.destOptions[optionName] === ''
+              || typeof data.destOptions[optionName] === 'object'
             ) {
               return null
             }
 
             const optionLabel = optionName.split('/')
               .map(n => LabelDictionary.get(n, `${data.target ? data.target.type : ''}-destination`)).join(' - ')
+
             const optionValue = fieldHelper.getValueAlias(optionName,
               data.destOptions && data.destOptions[optionName],
               this.props.destinationSchema, provider)
+
             return (
               <Option key={optionName}>
                 <OptionLabel data-test-id={`wSummary-optionLabel-${optionName}`} title={optionLabel}>
@@ -365,6 +456,8 @@ class WizardSummary extends React.Component<Props> {
               </Option>
             )
           }) : null}
+          {this.renderMinionPoolMapping()}
+          {this.renderObjectTable(data.destOptions, this.props.destinationSchema, provider)}
         </OptionsList>
       </Section>
     )

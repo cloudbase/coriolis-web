@@ -39,6 +39,7 @@ import Palette from '../../styleUtils/Palette'
 
 import type { Field } from '../../../@types/Field'
 import type { InstanceScript } from '../../../@types/Instance'
+import minionPoolStore from '../../../stores/MinionPoolStore'
 
 const Wrapper = styled.div<any>``
 
@@ -145,6 +146,10 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       return
     }
 
+    if (details.origin_minion_pool_id || details.destination_minion_pool_id) {
+      minionPoolStore.loadMinionPools()
+    }
+
     networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
       quietError: true,
       cache,
@@ -225,18 +230,32 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  async recreateFromReplica(options: Field[], userScripts: InstanceScript[]) {
+  async recreateFromReplica(
+    options: Field[],
+    userScripts: InstanceScript[],
+    minionPoolMappings: { [instance: string]: string },
+  ) {
     const replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
     if (!replicaId) {
       return
     }
 
-    this.migrate(replicaId, options, userScripts)
+    this.migrate(replicaId, options, userScripts, minionPoolMappings)
     this.handleCloseFromReplicaModal()
   }
 
-  async migrate(replicaId: string, options: Field[], userScripts: InstanceScript[]) {
-    const migration = await migrationStore.migrateReplica(replicaId, options, userScripts)
+  async migrate(
+    replicaId: string,
+    options: Field[],
+    userScripts: InstanceScript[],
+    minionPoolMappings: { [instance: string]: string },
+  ) {
+    const migration = await migrationStore.migrateReplica(
+      replicaId,
+      options,
+      userScripts,
+      minionPoolMappings,
+    )
     this.props.history.push(`/migrations/${migration.id}/tasks`)
   }
 
@@ -368,7 +387,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
               || providerStore.destinationOptionsSecondaryLoading}
               endpoints={endpointStore.endpoints}
               page={this.props.match.params.page || ''}
-              detailsLoading={endpointStore.loading || migrationStore.detailsLoading}
+              minionPools={minionPoolStore.minionPools}
+              detailsLoading={migrationStore.detailsLoading || endpointStore.loading
+                || minionPoolStore.loadingMinionPools}
               onDeleteMigrationClick={() => { this.handleDeleteMigrationClick() }}
             />
 )}
@@ -407,8 +428,10 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
             onRequestClose={() => { this.handleCloseFromReplicaModal() }}
           >
             <ReplicaMigrationOptions
+              transferItem={migrationStore.migrationDetails}
+              minionPools={minionPoolStore.minionPools}
               onCancelClick={() => { this.handleCloseFromReplicaModal() }}
-              onMigrateClick={(o, s) => { this.recreateFromReplica(o, s) }}
+              onMigrateClick={(o, s, m) => { this.recreateFromReplica(o, s, m) }}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
               defaultSkipOsMorphing={migrationStore

@@ -28,6 +28,7 @@ import { Field, EnumItem, isEnumSeparator } from '../../../@types/Field'
 
 const Wrapper = styled.div<any>`
   display: flex;
+  ${props => (props.width ? `width: ${props.width}px;` : '')}
   flex-direction: column;
   border: 1px solid ${Palette.grayscale[2]};
   border-radius: ${StyleProps.borderRadius};
@@ -39,6 +40,13 @@ const Column = styled.div<any>`
   padding: 0 8px 0 16px;
   display: flex;
   align-items: center;
+  > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
   ${props => (props.header ? css`
     color: ${Palette.grayscale[4]};
     background: ${Palette.grayscale[7]};
@@ -65,10 +73,16 @@ type Props = {
   valueCallback: (property: Field) => any,
   hideRequiredSymbol?: boolean,
   disabledLoading?: boolean,
+  labelRenderer?: ((propName: string) => string) | null,
+  width?: number,
 }
 @observer
 class PropertiesTable extends React.Component<Props> {
   getName(propName: string): string {
+    if (this.props.labelRenderer) {
+      return this.props.labelRenderer(propName)
+    }
+
     if (propName.indexOf('/') > -1) {
       return LabelDictionary.get(propName.substr(propName.lastIndexOf('/') + 1))
     }
@@ -181,10 +195,10 @@ class PropertiesTable extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper disabledLoading={this.props.disabledLoading}>
+      <Wrapper disabledLoading={this.props.disabledLoading} width={this.props.width}>
         {this.props.properties.map(prop => (
           <Row key={prop.name} data-test-id={`${baseId}-row-${prop.name}`}>
-            <Column header data-test-id={`${baseId}-header`}>{this.getName(prop.name)}</Column>
+            <Column header data-test-id={`${baseId}-header`}><span title={this.getName(prop.name)}>{this.getName(prop.name)}</span></Column>
             <Column input>{this.renderInput(prop)}</Column>
           </Row>
         ))}

@@ -26,6 +26,7 @@ import type { Instance } from '../../../@types/Instance'
 import type { Endpoint } from '../../../@types/Endpoint'
 import type { Field } from '../../../@types/Field'
 import { MigrationItemDetails } from '../../../@types/MainItem'
+import { MinionPool } from '../../../@types/MinionPool'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -54,6 +55,7 @@ const NavigationItems = [
 
 type Props = {
   item: MigrationItemDetails | null,
+  minionPools: MinionPool[]
   detailsLoading: boolean,
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
@@ -88,6 +90,7 @@ class MigrationDetailsContent extends React.Component<Props> {
     return (
       <MainDetails
         item={this.props.item}
+        minionPools={this.props.minionPools}
         instancesDetails={this.props.instancesDetails}
         instancesDetailsLoading={this.props.instancesDetailsLoading}
         sourceSchema={this.props.sourceSchema}

@@ -23,6 +23,7 @@ import type { Execution, ExecutionTasks } from '../@types/Execution'
 import type { Endpoint } from '../@types/Endpoint'
 import type { Task, ProgressUpdate } from '../@types/Task'
 import type { Field } from '../@types/Field'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
 
 export const sortTasks = (
   tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void,
@@ -65,7 +66,7 @@ export const sortTasks = (
   tasks.splice(0, tasks.length, ...sortedTasks)
 }
 
-class ReplicaSourceUtils {
+export class ReplicaSourceUtils {
   static filterDeletedExecutions(executions?: Execution[]) {
     if (!executions || !executions.length) {
       return []
@@ -75,7 +76,12 @@ class ReplicaSourceUtils {
   }
 
   static sortReplicas(replicas: ReplicaItem[]) {
-    replicas.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+    replicas
+      .sort(
+        (a, b) => new Date(b.updated_at || b.created_at).getTime()
+          - new Date(a.updated_at || a.created_at)
+            .getTime(),
+      )
   }
 
   static sortExecutions(executions: Execution[]) {
@@ -131,6 +137,7 @@ class ReplicaSource {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/executions/${executionId}`,
       skipLog: polling,
+      quietError: true,
     })
     const execution: ExecutionTasks = response.data.execution
     sortTasks(execution.tasks, ReplicaSourceUtils.sortTaskUpdates)
@@ -206,28 +213,57 @@ class ReplicaSource {
     return response.data.execution
   }
 
-  async update(
-    replica: ReplicaItem,
+  async update(options: {
+    replica: ReplicaItemDetails,
     destinationEndpoint: Endpoint,
     updateData: UpdateData,
     defaultStorage: string | null | undefined,
     storageConfigDefault: string,
-  ): Promise<Execution> {
+  }): Promise<Execution> {
+    const {
+      replica, destinationEndpoint, updateData, defaultStorage, storageConfigDefault,
+    } = options
+
     const parser = OptionsSchemaPlugin.for(destinationEndpoint.type)
     const payload: any = { replica: {} }
 
     if (updateData.network.length > 0) {
       payload.replica.network_map = parser.getNetworkMap(updateData.network)
     }
-
-    if (Object.keys(updateData.destination).length > 0) {
-      payload.replica.destination_environment = parser
-        .getDestinationEnv(updateData.destination, replica.destination_environment)
+    if (Object.keys(updateData.source).length > 0) {
+      const sourceEnv = parser.getDestinationEnv(updateData.source, replica.source_environment)
+      if (sourceEnv.minion_pool_id) {
+        payload.replica.origin_minion_pool_id = sourceEnv.minion_pool_id
+        delete sourceEnv.minion_pool_id
+      }
+      if (Object.keys(sourceEnv).length) {
+        payload.replica.source_environment = sourceEnv
+      }
     }
 
-    if (Object.keys(updateData.source).length > 0) {
-      payload.replica.source_environment = parser
-        .getDestinationEnv(updateData.source, replica.source_environment)
+    if (Object.keys(updateData.destination).length > 0) {
+      const destEnv = parser.getDestinationEnv(updateData.destination,
+        replica.destination_environment)
+
+      const newMinionMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+      if (newMinionMappings) {
+        const oldMinionMappings = replica[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
+        payload.replica[
+          INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
+        ] = {
+          ...oldMinionMappings,
+          ...newMinionMappings,
+        }
+      }
+      delete destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+
+      if (destEnv.minion_pool_id) {
+        payload.replica.destination_minion_pool_id = destEnv.minion_pool_id
+        delete destEnv.minion_pool_id
+      }
+      if (Object.keys(destEnv).length) {
+        payload.replica.destination_environment = destEnv
+      }
     }
 
     if (defaultStorage || updateData.storage.length > 0) {

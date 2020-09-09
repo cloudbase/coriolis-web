@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
@@ -37,6 +37,7 @@ import projectImage from './images/project-menu.svg'
 import userImage from './images/user-menu.svg'
 import logsImage from './images/logs-menu.svg'
 import dashboardImage from './images/dashboard-menu.svg'
+import minionPoolsImage from './images/minion-pools-menu.svg'
 
 const isCollapsed = (props: any) => props.collapsed
   || (window.outerWidth <= StyleProps.mobileMaxWidth)
@@ -375,7 +376,7 @@ class Navigation extends React.Component<Props> {
           this.filteredMenu.map(item => {
             let menuImage
             let bullet
-            let style = null
+            let style: CSSProperties | null = null
             switch (item.value) {
               case 'dashboard':
                 menuImage = dashboardImage
@@ -391,6 +392,9 @@ class Navigation extends React.Component<Props> {
                 break
               case 'endpoints':
                 menuImage = endpointImage
+                break
+              case 'minion-pools':
+                menuImage = minionPoolsImage
                 break
               case 'planning':
                 menuImage = planningImage

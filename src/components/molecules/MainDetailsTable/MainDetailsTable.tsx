@@ -32,6 +32,7 @@ import instanceIcon from './images/instance.svg'
 import networkIcon from './images/network.svg'
 import storageIcon from './images/storage.svg'
 import arrowIcon from './images/arrow.svg'
+import { MinionPool } from '../../../@types/MinionPool'
 
 const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {
@@ -151,6 +152,7 @@ export type Props = {
   item?: TransferItem | null,
   instancesDetails: Instance[],
   networks?: Network[],
+  minionPools: MinionPool[]
 }
 type State = {
   openedRows: string[],
@@ -382,6 +384,14 @@ class MainDetailsTable extends React.Component<Props, State> {
     ]
 
     const sourceBody: string[] = getBody(instance)
+
+    const minionPoolMappings = this.props.item?.instance_osmorphing_minion_pool_mappings
+    const minionPoolId = minionPoolMappings
+      && minionPoolMappings[instance.instance_name || instance.name]
+    if (minionPoolId) {
+      const minionPool = this.props.minionPools.find(m => m.id === minionPoolId)
+      sourceBody.push(`Minion Pool: ${minionPool?.pool_name || minionPoolId}`)
+    }
     let destinationBody: string[] = []
     let destinationName: string = ''
     const transferResult = this.getTransferResult(instance)

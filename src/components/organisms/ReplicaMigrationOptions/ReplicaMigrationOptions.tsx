@@ -30,6 +30,9 @@ import replicaMigrationFields from './replicaMigrationFields'
 
 import type { Field } from '../../../@types/Field'
 import type { Instance, InstanceScript } from '../../../@types/Instance'
+import { TransferItemDetails } from '../../../@types/MainItem'
+import { MinionPool } from '../../../@types/MinionPool'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../WizardOptions/WizardOptions'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -61,7 +64,7 @@ const Form = styled.div<any>`
   flex-wrap: wrap;
   margin-left: -64px;
   justify-content: space-between;
-  margin: 0 auto 46px auto;
+  margin: 0 auto;
 `
 const Buttons = styled.div<any>`
   display: flex;
@@ -76,16 +79,23 @@ const FieldInputStyled = styled(FieldInput)`
 
 type Props = {
   instances: Instance[],
+  transferItem: TransferItemDetails | null,
+  minionPools: MinionPool[]
   loadingInstances: boolean,
   defaultSkipOsMorphing?: boolean | null,
   onCancelClick: () => void,
-  onMigrateClick: (fields: Field[], uploadedScripts: InstanceScript[]) => void,
+  onMigrateClick: (
+    fields: Field[],
+    uploadedScripts: InstanceScript[],
+    minionPoolMappings: { [instance: string]: string }
+  ) => void,
   onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
 }
 type State = {
   fields: Field[],
   selectedBarButton: string,
   uploadedScripts: InstanceScript[],
+  minionPoolMappings: {[instance: string]: string}
 }
 
 @observer
@@ -94,15 +104,19 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     fields: [],
     selectedBarButton: 'options',
     uploadedScripts: [],
+    minionPoolMappings: {},
   }
 
   scrollableRef!: HTMLElement
 
   UNSAFE_componentWillMount() {
+    const mappings = this.props.transferItem?.instance_osmorphing_minion_pool_mappings || {}
+
     this.setState({
       fields: replicaMigrationFields.map(f => (f.name === 'skip_os_morphing' ? (
         { ...f, value: this.props.defaultSkipOsMorphing || null }
       ) : f)),
+      minionPoolMappings: { ...mappings },
     })
   }
 
@@ -123,7 +137,11 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
   }
 
   migrate() {
-    this.props.onMigrateClick(this.state.fields, this.state.uploadedScripts)
+    this.props.onMigrateClick(
+      this.state.fields,
+      this.state.uploadedScripts,
+      this.state.minionPoolMappings,
+    )
   }
 
   handleValueChange(field: Field, value: boolean) {
@@ -156,25 +174,71 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     }))
   }
 
+  renderField(field: Field) {
+    return (
+      <FieldInputStyled
+        width={224}
+        key={field.name}
+        name={field.name}
+        type={field.type}
+        value={field.value || field.default}
+        minimum={field.minimum}
+        maximum={field.maximum}
+        layout="page"
+        label={field.label || LabelDictionary.get(field.name)}
+        onChange={value => this.handleValueChange(field, value)}
+        description={LabelDictionary.getDescription(field.name)}
+      />
+    )
+  }
+
+  renderMinionPoolMappings() {
+    const minionPools = this.props.minionPools
+      .filter(m => m.endpoint_id === this.props.transferItem?.destination_endpoint_id)
+    if (!minionPools.length) {
+      return null
+    }
+
+    const properties: Field[] = this.props.instances.map(instance => ({
+      name: instance.instance_name || instance.name,
+      type: 'string',
+      enum: minionPools.map(minionPool => ({
+        name: minionPool.pool_name,
+        id: minionPool.id,
+      })),
+    }))
+
+    return (
+      <FieldInputStyled
+        width={500}
+        style={{ marginBottom: '64px' }}
+        name={INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS}
+        type="object"
+        valueCallback={field => this.state.minionPoolMappings
+              && this.state.minionPoolMappings[field.name]}
+        layout="page"
+        label="Instance OSMorphing Minion Pool Mappings"
+        onChange={(value, field) => this.setState(prevState => {
+          const minionPoolMappings = { ...prevState.minionPoolMappings }
+          minionPoolMappings[field!.name] = value
+          return { minionPoolMappings }
+        })}
+        properties={properties}
+        labelRenderer={(propName: string) => (
+          propName.indexOf('/') > -1 ? propName.split('/')[propName.split('/').length - 1] : propName
+        )}
+      />
+    )
+  }
+
   renderOptions() {
     return (
-      <Form>
-        {this.state.fields.map(field => (
-          <FieldInputStyled
-            width={224}
-            key={field.name}
-            name={field.name}
-            type={field.type}
-            value={field.value || field.default}
-            minimum={field.minimum}
-            maximum={field.maximum}
-            layout="page"
-            label={LabelDictionary.get(field.name)}
-            onChange={value => this.handleValueChange(field, value)}
-            description={LabelDictionary.getDescription(field.name)}
-          />
-        ))}
-      </Form>
+      <>
+        <Form>
+          {this.state.fields.map(field => this.renderField(field))}
+        </Form>
+        {this.renderMinionPoolMappings()}
+      </>
     )
   }
 

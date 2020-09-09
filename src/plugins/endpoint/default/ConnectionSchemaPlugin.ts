@@ -21,7 +21,6 @@ import { Endpoint } from '../../../@types/Endpoint'
 export const defaultSchemaToFields = (
   schema: SchemaProperties,
   schemaDefinitions?: SchemaDefinitions | null,
-  parent?: string | null,
   dictionaryKey?: string,
 ): any[] => {
   if (!schema.properties) {
@@ -38,17 +37,17 @@ export const defaultSchemaToFields = (
         name: fieldName,
         type: properties.type ? properties.type : '',
         properties: properties.properties
-          ? defaultSchemaToFields(properties, null, fieldName, dictionaryKey) : [],
+          ? defaultSchemaToFields(properties, null, dictionaryKey) : [],
       }
     } if (properties.type === 'object' && properties.properties && Object.keys(properties.properties).length) {
       return {
         name: fieldName,
         type: 'object',
-        properties: defaultSchemaToFields(properties, null, fieldName, dictionaryKey),
+        properties: defaultSchemaToFields(properties, null, dictionaryKey),
       }
     }
 
-    const name = parent ? `${parent}/${fieldName}` : fieldName
+    const name = fieldName
     LabelDictionary.pushToCache({ name, title: properties.title, description: properties.description }, dictionaryKey || '')
 
     return {
