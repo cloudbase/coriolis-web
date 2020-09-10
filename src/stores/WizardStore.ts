@@ -37,6 +37,11 @@ const updateOptions = (
     } else {
       options[data.field.name] = [...oldValues, data.value]
     }
+  } else if (data.field.groupName) {
+    if (!options[data.field.groupName]) {
+      options[data.field.groupName] = {}
+    }
+    options[data.field.groupName][data.field.name] = data.value
   } else if (data.parentFieldName) {
     if (!options[data.parentFieldName]) {
       options[data.parentFieldName] = {}
@@ -48,7 +53,7 @@ const updateOptions = (
 
   if (data.field.enum && data.field.subFields) {
     data.field.subFields.forEach(subField => {
-      const subFieldKeys = Object.keys(options).filter(k => k.indexOf(`${subField.name}/`) > -1)
+      const subFieldKeys = Object.keys(options).filter(k => k.indexOf(subField.name) > -1)
       subFieldKeys.forEach(k => {
         delete options[k]
       })

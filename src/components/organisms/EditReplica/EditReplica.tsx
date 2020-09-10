@@ -408,12 +408,24 @@ class EditReplica extends React.Component<Props, State> {
     const data = type === 'source' ? { ...this.state.sourceData } : { ...this.state.destinationData }
 
     if (field.type === 'array') {
-      const oldValues: string[] = data[field.name] || []
-      if (oldValues.find(v => v === value)) {
-        data[field.name] = oldValues.filter(v => v !== value)
-      } else {
-        data[field.name] = [...oldValues, value]
+      const replicaData: any = type === 'source' ? this.props.replica.source_environment
+        : this.props.replica.destination_environment
+      const currentValues: string[] = data[field.name] || []
+      const oldValues: string[] = replicaData[field.name] || []
+      let values: string[] = currentValues
+      if (!currentValues.length) {
+        values = [...oldValues]
       }
+      if (values.find(v => v === value)) {
+        data[field.name] = values.filter(v => v !== value)
+      } else {
+        data[field.name] = [...values, value]
+      }
+    } else if (field.groupName) {
+      if (!data[field.groupName]) {
+        data[field.groupName] = {}
+      }
+      data[field.groupName][field.name] = value
     } else if (parentFieldName) {
       data[parentFieldName] = data[parentFieldName] || {}
       data[parentFieldName][field.name] = value
@@ -423,7 +435,7 @@ class EditReplica extends React.Component<Props, State> {
 
     if (field.enum && field.subFields) {
       field.subFields.forEach(subField => {
-        const subFieldKeys = Object.keys(data).filter(k => k.indexOf(`${subField.name}/`) > -1)
+        const subFieldKeys = Object.keys(data).filter(k => k.indexOf(subField.name) > -1)
         subFieldKeys.forEach(k => {
           delete data[k]
         })

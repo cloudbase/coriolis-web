@@ -95,7 +95,9 @@ export const defaultGetDestinationEnv = (
     if (specialOptions.find(o => o === optionName) || !options || options[optionName] == null || options[optionName] === '') {
       return
     }
-    if (typeof options[optionName] === 'object') {
+    if (Array.isArray(options[optionName])) {
+      env[optionName] = options[optionName]
+    } else if (typeof options[optionName] === 'object') {
       const oldOption = oldOptions?.[optionName] || {}
       env[optionName] = {
         ...oldOption,
