@@ -72,6 +72,7 @@ const statuses = (status: any, props: any) => {
         background-image: url('${pendingImage}');
       `
     case 'FAILED_TO_SCHEDULE':
+    case 'FAILED_TO_CANCEL':
     case 'ERROR':
       return css`
         background-image: url('${props.hollow ? errorHollowImage : errorImage}');

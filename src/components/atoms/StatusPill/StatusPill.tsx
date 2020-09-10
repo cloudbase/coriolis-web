@@ -28,6 +28,7 @@ const LABEL_MAP: { [status: string]: string } = {
   CANCELED_AFTER_COMPLETION: 'CANCELED',
   CANCELLING_AFTER_COMPLETION: 'CANCELLING',
   FAILED_TO_SCHEDULE: 'UNSCHEDULABLE',
+  FAILED_TO_CANCEL: 'FAILED TO CANCEL',
 }
 
 const statuses = (status: any) => {
@@ -40,6 +41,7 @@ const statuses = (status: any) => {
         border-color: transparent;
       `
     case 'FAILED_TO_SCHEDULE':
+    case 'FAILED_TO_CANCEL':
     case 'ERROR':
       return css`
         background: ${Palette.alert};
