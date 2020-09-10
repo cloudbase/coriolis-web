@@ -310,7 +310,7 @@ class WizardSummary extends React.Component<Props> {
     const objectKeys: string[] = Object.keys(options).filter(key => typeof options[key] === 'object'
       && key !== INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS)
 
-    return objectKeys.map(key => (
+    return objectKeys.map(key => (options[key] != null ? (
       <ObjectTable key={key}>
         <ObjectTableTitle>
           {LabelDictionary.get(key)}
@@ -337,7 +337,7 @@ class WizardSummary extends React.Component<Props> {
           )
         })}
       </ObjectTable>
-    ))
+    ) : null))
   }
 
   renderMinionPoolMapping() {
