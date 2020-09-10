@@ -91,6 +91,7 @@
     "webpack-merge": "^4.2.2"
   },
   "resolutions": {
-    "base64url": "^3.0.0"
+    "base64url": "^3.0.0",
+    "yargs-parser": "^13.1.2"
   }
 }
