@@ -400,7 +400,7 @@ class Dropdown extends React.Component<Props, State> {
 
     this.justFocused = true
     this.toggleDropdownList(true)
-    setTimeout(() => { this.justFocused = false }, 100)
+    setTimeout(() => { this.justFocused = false }, 1000)
   }
 
   handleBlur() {
