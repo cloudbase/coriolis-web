@@ -636,7 +636,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           >
             <ReplicaMigrationOptions
               transferItem={this.replica}
-              minionPools={minionPoolStore.minionPools}
+              minionPools={minionPoolStore.minionPools.filter(m => m.endpoint_id === this.replica?.destination_endpoint_id && m.pool_platform === 'destination')}
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
               onCancelClick={() => { this.handleCloseMigrationModal() }}
