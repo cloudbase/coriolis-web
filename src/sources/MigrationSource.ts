@@ -205,8 +205,14 @@ class MigrationSource {
 
     const updatedDestEnvMappings = updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
     const oldMappings = migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
-    const newMappings = { ...oldMappings, ...updatedDestEnvMappings }
-    if (Object.keys(newMappings).length) {
+    const mergedMappings = { ...oldMappings, ...updatedDestEnvMappings }
+    if (Object.keys(mergedMappings).length) {
+      const newMappings: any = {}
+      Object.keys(mergedMappings).forEach(k => {
+        if (mergedMappings[k] !== null) {
+          newMappings[k] = mergedMappings[k]
+        }
+      })
       payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings
     }
 
@@ -266,7 +272,13 @@ class MigrationSource {
     }
 
     if (Object.keys(minionPoolMappings).length) {
-      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = minionPoolMappings
+      const newMappings: any = {}
+      Object.keys(minionPoolMappings).forEach(k => {
+        if (minionPoolMappings[k] !== null) {
+          newMappings[k] = minionPoolMappings[k]
+        }
+      })
+      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings
     } else {
       payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = null
     }
