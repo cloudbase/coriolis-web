@@ -243,17 +243,13 @@ class ReplicaSource {
 
     if (Object.keys(updateData.destination).length > 0) {
       const destEnv = parser.getDestinationEnv(updateData.destination,
-        replica.destination_environment)
+        { ...replica, ...replica.destination_environment })
 
       const newMinionMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
       if (newMinionMappings) {
-        const oldMinionMappings = replica[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
         payload.replica[
           INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
-        ] = {
-          ...oldMinionMappings,
-          ...newMinionMappings,
-        }
+        ] = newMinionMappings
       }
       delete destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
 
