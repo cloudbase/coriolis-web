@@ -558,9 +558,8 @@ class EditReplica extends React.Component<Props, State> {
     if (endpoint) {
       dictionaryKey = `${endpoint.type}-${type}`
     }
-    const minionPools = type === 'source'
-      ? minionPoolStore.minionPools.filter(m => m.endpoint_id === this.props.sourceEndpoint.id)
-      : minionPoolStore.minionPools.filter(m => m.endpoint_id === this.props.destinationEndpoint.id)
+    const minionPools = minionPoolStore.minionPools
+      .filter(m => m.pool_platform === type && m.endpoint_id === endpoint.id)
     return (
       <WizardOptions
         minionPools={minionPools}
