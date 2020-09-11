@@ -80,6 +80,7 @@ export const defaultGetDestinationEnv = (
   options?: { [prop: string]: any } | null,
   oldOptions?: { [prop: string]: any } | null,
   imageSuffix?: string,
+  useNullValues?: boolean,
 ): any => {
   const env: any = {}
   const specialOptions = ['execute_now', 'separate_vm', 'skip_os_morphing', 'description']
@@ -92,19 +93,37 @@ export const defaultGetDestinationEnv = (
   }
 
   Object.keys(options).forEach(optionName => {
-    if (specialOptions.find(o => o === optionName) || !options || options[optionName] == null || options[optionName] === '') {
+    if (specialOptions.find(o => o === optionName)) {
       return
     }
-    if (Array.isArray(options[optionName])) {
-      env[optionName] = options[optionName]
-    } else if (typeof options[optionName] === 'object') {
+    let value = options[optionName]
+    if (value == null || value === '') {
+      if (useNullValues) {
+        value = null
+      } else {
+        return
+      }
+    }
+
+    if (value === null) {
+      env[optionName] = null
+    } else if (Array.isArray(value)) {
+      env[optionName] = value
+    } else if (typeof value === 'object') {
       const oldOption = oldOptions?.[optionName] || {}
-      env[optionName] = {
-        ...oldOption,
-        ...options[optionName],
+      const newOption: any = {}
+      Object.keys(value).filter(key => useNullValues || value[key] !== null)
+        .forEach(key => {
+          newOption[key] = value[key]
+        })
+      if (Object.keys(newOption).length) {
+        env[optionName] = {
+          ...oldOption,
+          ...value,
+        }
       }
     } else {
-      env[optionName] = options ? Utils.trim(optionName, options[optionName]) : null
+      env[optionName] = options ? Utils.trim(optionName, value) : null
     }
   })
   return env
@@ -176,12 +195,17 @@ export default class OptionsSchemaParser {
     }
   }
 
-  static getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
+  static getDestinationEnv(
+    options?: { [prop: string]: any } | null,
+    oldOptions?: any,
+    useNullValues?: boolean,
+  ) {
     const env = {
       ...defaultGetDestinationEnv(
         options,
         oldOptions,
         this.imageSuffix,
+        useNullValues,
       ),
       ...defaultGetMigrationImageMap(
         options,

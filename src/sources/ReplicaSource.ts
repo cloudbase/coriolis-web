@@ -231,8 +231,12 @@ class ReplicaSource {
       payload.replica.network_map = parser.getNetworkMap(updateData.network)
     }
     if (Object.keys(updateData.source).length > 0) {
-      const sourceEnv = parser.getDestinationEnv(updateData.source, replica.source_environment)
-      if (sourceEnv.minion_pool_id) {
+      const sourceEnv = parser.getDestinationEnv(
+        updateData.source,
+        replica.source_environment,
+        true,
+      )
+      if (sourceEnv.minion_pool_id !== undefined) {
         payload.replica.origin_minion_pool_id = sourceEnv.minion_pool_id
         delete sourceEnv.minion_pool_id
       }
@@ -242,8 +246,11 @@ class ReplicaSource {
     }
 
     if (Object.keys(updateData.destination).length > 0) {
-      const destEnv = parser.getDestinationEnv(updateData.destination,
-        replica.destination_environment)
+      const destEnv = parser.getDestinationEnv(
+        updateData.destination,
+        replica.destination_environment,
+        true,
+      )
 
       const newMinionMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
       if (newMinionMappings) {
@@ -257,7 +264,7 @@ class ReplicaSource {
       }
       delete destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
 
-      if (destEnv.minion_pool_id) {
+      if (destEnv.minion_pool_id !== undefined) {
         payload.replica.destination_minion_pool_id = destEnv.minion_pool_id
         delete destEnv.minion_pool_id
       }

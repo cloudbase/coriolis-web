@@ -81,13 +81,23 @@ export default class OptionsSchemaParser {
     }
   }
 
-  static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
+  static getDestinationEnv(
+    options: { [prop: string]: any } | null,
+    oldOptions?: any,
+    useNullValues?: boolean,
+  ) {
     const env = {
-      ...defaultGetDestinationEnv(options, oldOptions, this.imageSuffix),
+      ...defaultGetDestinationEnv(
+        options,
+        oldOptions,
+        this.imageSuffix,
+        useNullValues,
+      ),
       ...defaultGetMigrationImageMap(
         options,
         oldOptions,
-        this.migrationImageMapFieldName, this.imageSuffix,
+        this.migrationImageMapFieldName,
+        this.imageSuffix,
       ),
     }
     return env
