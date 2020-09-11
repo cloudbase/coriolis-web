@@ -29,6 +29,11 @@ Your server will be running at `http://localhost:3000/` (the port is configurabl
 - run `yarn ui-dev` to start local development server (starts on port 3001)
 - run `yarn server-dev` to start the express server in development mode
 
+To debug the client code using VS Code, simply run the project's launch configuration from the 'Run' menu (Ctrl+Shift+D).
+The last 2 `yarn ...` commands must be running in the background.
+
+To debug the Node server using VS Code, run `yarn server-debug` instead of `yarn server-dev`.
+
 You can view some of the UIs components in the [Storybook](https://github.com/storybooks/storybook) by running `yarn storybook`
 
 ## Modding
