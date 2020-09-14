@@ -8,6 +8,7 @@ declare module '*.woff'
 declare module 'ansi-to-html'
 
 declare module 'require-without-cache'
+declare module 'react-transition-group'
 
 interface Window {
   /**
