@@ -92,6 +92,7 @@
   },
   "resolutions": {
     "base64url": "^3.0.0",
+    "node-fetch": "^2.6.1",
     "yargs-parser": "^13.1.2"
   }
 }
