@@ -256,7 +256,7 @@ class NotificationDropdown extends React.Component<Props, State> {
     const list = (
       <List>
         {this.props.items.map(item => {
-          const executionsHref = item.status === 'RUNNING' ? item.type === 'replica' ? '/executions' : item.type === 'migration' ? '/tasks' : '' : ''
+          const executionsPath = item.status === 'RUNNING' ? item.type === 'replica' ? '/executions' : item.type === 'migration' ? '/tasks' : '' : ''
 
           return (
             <ListItem
@@ -264,7 +264,7 @@ class NotificationDropdown extends React.Component<Props, State> {
               onMouseDown={() => { this.itemMouseDown = true }}
               onMouseUp={() => { this.itemMouseDown = false }}
               onClick={() => { this.handleItemClick() }}
-              to={`/${item.type}s/${item.id}/${executionsHref}`}
+              to={`/${item.type}s/${item.id}${executionsPath}`}
             >
               <InfoColumn>
                 <MainItemInfo>
