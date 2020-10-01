@@ -28,8 +28,6 @@ import type { NetworkMap } from '../../../@types/Network'
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_template_map'
 
-  static imageSuffix = '_os_image'
-
   static parseSchemaToFields(
     schema: SchemaProperties,
     schemaDefinitions: SchemaDefinitions | null | undefined,
@@ -45,17 +43,18 @@ export default class OptionsSchemaParser {
       ) {
         return
       }
-      // eslint-disable-next-line no-param-reassign
+
+      const password = f.name === 'migr_template_password_map'
       f.properties = [
         {
           type: 'string',
-          name: `${f.name}/windows`,
-          password: f.name === 'migr_template_password_map',
+          name: 'windows',
+          password,
         },
         {
           type: 'string',
-          name: `${f.name}/linux`,
-          password: f.name === 'migr_template_password_map',
+          name: 'linux',
+          password,
         },
       ]
     })
@@ -72,7 +71,6 @@ export default class OptionsSchemaParser {
       field,
       option,
       this.migrationImageMapFieldName,
-      this.imageSuffix,
     )) {
       defaultFillFieldValues(field, option)
     }
@@ -80,12 +78,11 @@ export default class OptionsSchemaParser {
 
   static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
-      ...defaultGetDestinationEnv(options, oldOptions, this.imageSuffix),
+      ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
         options,
         oldOptions,
         this.migrationImageMapFieldName,
-        this.imageSuffix,
       ),
     }
     return env

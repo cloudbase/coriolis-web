@@ -100,7 +100,7 @@ class FieldHelper {
       return value.map((v: any) => findInEnum(v)).join(', ')
     }
 
-    const isImageMapField = migrationImageOsTypes.find(os => `${os}${plugin?.imageSuffix}` === name)
+    const isImageMapField = migrationImageOsTypes.find(os => os === name)
     if (isImageMapField) {
       const migrImageField = plugin && fields
         .find(f => f.name === plugin.migrationImageMapFieldName)

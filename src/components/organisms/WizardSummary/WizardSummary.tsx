@@ -321,9 +321,14 @@ class WizardSummary extends React.Component<Props> {
             return null
           }
 
-          const optionValue = fieldHelper.getValueAlias(propertyName,
-            value,
-            schema, provider)
+          let optionValue
+          if (key.indexOf('password') > -1 || propertyName.indexOf('password') > -1) {
+            optionValue = '•••••••••'
+          } else {
+            optionValue = fieldHelper.getValueAlias(propertyName,
+              value,
+              schema, provider)
+          }
 
           return (
             <Option key={propertyName}>
