@@ -28,7 +28,7 @@ import { Field, EnumItem, isEnumSeparator } from '../../../@types/Field'
 
 const Wrapper = styled.div<any>`
   display: flex;
-  ${props => (props.width ? `width: ${props.width}px;` : '')}
+  ${props => (props.width ? `width: ${props.width - 2}px;` : '')}
   flex-direction: column;
   border: 1px solid ${Palette.grayscale[2]};
   border-radius: ${StyleProps.borderRadius};

@@ -10,6 +10,15 @@
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:3001",
       "webRoot": "${workspaceFolder}"
+    },
+    // Launch Chrome like this: "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Chrome",
+      "port": 9222,
+      "urlFilter": "http://localhost:3001/*",
+      "webRoot": "${workspaceFolder}"
     }
   ]
 }
