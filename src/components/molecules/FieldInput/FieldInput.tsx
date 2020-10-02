@@ -59,6 +59,9 @@ const Label = styled.div<any>`
     align-items: center;
   `)}
   ${props => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${props => (props.disabled ? css`
+    opacity: 0.5;
+  ` : '')}
 `
 const LabelText = styled.span``
 const Asterisk = styled.div<any>`
@@ -186,13 +189,14 @@ class FieldInput extends React.Component<Props> {
         properties={this.props.properties}
         valueCallback={field => this.props.valueCallback && this.props.valueCallback(field)}
         onChange={(field, value) => {
-          if (this.props.onChange) {
+          if (!this.props.disabled && this.props.onChange) {
             this.props.onChange(value, field)
           }
         }}
         labelRenderer={this.props.labelRenderer}
         hideRequiredSymbol={this.props.layout === 'page'}
         disabledLoading={this.props.disabledLoading}
+        disabled={this.props.disabled}
       />
     )
   }
@@ -374,6 +378,7 @@ class FieldInput extends React.Component<Props> {
         layout={this.props.layout}
         disabledLoading={this.props.disabledLoading}
         width={this.props.width}
+        disabled={this.props.disabled}
       >
         <LabelText style={{ marginRight }}>
           {this.props.label}

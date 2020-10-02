@@ -17,6 +17,7 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 import { toJS } from 'mobx'
 import autobind from 'autobind-decorator'
+import { CSSTransitionGroup } from 'react-transition-group'
 
 import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
@@ -57,6 +58,14 @@ const Group = styled.div<any>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+
+  &.field-group-transition-appear {
+    opacity: 0.01;
+  }
+  &.field-group-transition-appear-active {
+    opacity: 1;
+    transition: opacity 250ms ease-out;
+  }
 `
 const GroupName = styled.div<any>`
   display: flex;
@@ -76,7 +85,6 @@ const GroupFields = styled.div<any>`
   display: flex;
   justify-content: space-between;
 `
-const OneColumn = styled.div<any>``
 const Column = styled.div<any>`
   margin-top: -16px;
 `
@@ -218,13 +226,13 @@ class WizardOptions extends React.Component<Props> {
     if (this.props.wizardType === 'replica') {
       fieldsSchema.push({ name: 'execute_now', type: 'boolean', default: true })
       const executeNowValue = this.getFieldValue('execute_now', true)
-      if (executeNowValue) {
-        fieldsSchema.push({
-          name: 'execute_now_options',
-          type: 'object',
-          properties: executionOptions,
-        })
-      }
+      fieldsSchema.push({
+        name: 'execute_now_options',
+        type: 'object',
+        properties: executionOptions,
+        disabled: !executeNowValue,
+        description: !executeNowValue ? 'Enable \'Execute Now\' to set \'Execute Now Options\'' : `Set the options for ${this.props.wizardType} execution`,
+      })
     } else if (this.props.wizardType === 'migration' || this.props.wizardType === 'migration-destination-options-edit') {
       fieldsSchema = [...fieldsSchema, ...migrationFields]
     }
@@ -336,6 +344,7 @@ class WizardOptions extends React.Component<Props> {
         data-test-id={`wOptions-field-${field.name}`}
         width={this.props.fieldWidth || StyleProps.inputSizes.wizard.width}
         nullableBoolean={field.nullableBoolean}
+        disabled={field.disabled}
         disabledLoading={this.props.optionsLoading
           && !optionsLoadingReqFields.find(fn => fn === field.name)}
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -409,44 +418,36 @@ class WizardOptions extends React.Component<Props> {
       }
     })
 
-    const availableHeight = this.props.availableHeight || (window.innerHeight - 450)
-
-    if (fields.length * 96 < availableHeight) {
-      return (
-        <Fields padding={this.props.layout === 'page' ? null : 32}>
-          <Group>
-            <GroupFields style={{ justifyContent: 'center' }}>
-              <OneColumn style={this.props.oneColumnStyle}>
-                {fields.map(f => f.component)}
-              </OneColumn>
-            </GroupFields>
-          </Group>
-        </Fields>
-      )
-    }
-
     const groups = this.generateGroups(fields)
 
     return (
       <Fields ref={this.props.onScrollableRef} padding={this.props.layout === 'page' ? null : 32}>
-        {groups.map(g => (
-          <Group key={g.name || 0}>
-            {g.name ? (
-              <GroupName>
-                <GroupNameBar />
-                <GroupNameText>{LabelDictionary.get(g.name)}</GroupNameText>
-                <GroupNameBar />
-              </GroupName>
-            ) : null}
-            <GroupFields>
-              <Column left>
-                {g.fields.map(f => f.column === 0 && f.component)}
-              </Column>
-              <Column right>
-                {g.fields.map(f => f.column === 1 && f.component)}
-              </Column>
-            </GroupFields>
-          </Group>
+        {groups.map((g, i) => (
+          <CSSTransitionGroup
+            key={g.name || 0}
+            transitionName={i > 0 ? 'field-group-transition' : ''}
+            transitionAppear
+            transitionAppearTimeout={250}
+            in={false}
+          >
+            <Group>
+              {g.name ? (
+                <GroupName>
+                  <GroupNameBar />
+                  <GroupNameText>{LabelDictionary.get(g.name)}</GroupNameText>
+                  <GroupNameBar />
+                </GroupName>
+              ) : null}
+              <GroupFields>
+                <Column left>
+                  {g.fields.map(f => f.column === 0 && f.component)}
+                </Column>
+                <Column right>
+                  {g.fields.map(f => f.column === 1 && f.component)}
+                </Column>
+              </GroupFields>
+            </Group>
+          </CSSTransitionGroup>
         ))}
       </Fields>
     )

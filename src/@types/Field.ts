@@ -31,6 +31,7 @@ export type Field = {
   enum?: EnumItem[],
   default?: any,
   password?: boolean,
+  disabled?: boolean,
   nullableBoolean?: boolean,
   items?: Field[],
   fields?: Field[],

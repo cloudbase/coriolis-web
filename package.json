@@ -79,6 +79,7 @@
     "react-notification-system": "^0.4.0",
     "react-router-dom": "^5.1.2",
     "react-tooltip": "^4.2.7",
+    "react-transition-group": "1.x",
     "request": "^2.88.0",
     "require-without-cache": "^0.0.6",
     "rimraf": "^2.6.2",

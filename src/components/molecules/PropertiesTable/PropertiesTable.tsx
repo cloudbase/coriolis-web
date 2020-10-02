@@ -32,6 +32,9 @@ const Wrapper = styled.div<any>`
   flex-direction: column;
   border: 1px solid ${Palette.grayscale[2]};
   border-radius: ${StyleProps.borderRadius};
+  ${props => (props.disabled ? css`
+    opacity: 0.5;
+  ` : '')}
   ${props => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
 `
 const Column = styled.div<any>`
@@ -72,6 +75,7 @@ type Props = {
   onChange: (property: Field, value: any) => void,
   valueCallback: (property: Field) => any,
   hideRequiredSymbol?: boolean,
+  disabled?: boolean,
   disabledLoading?: boolean,
   labelRenderer?: ((propName: string) => string) | null,
   width?: number,
@@ -195,7 +199,11 @@ class PropertiesTable extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper disabledLoading={this.props.disabledLoading} width={this.props.width}>
+      <Wrapper
+        disabled={this.props.disabled}
+        disabledLoading={this.props.disabledLoading}
+        width={this.props.width}
+      >
         {this.props.properties.map(prop => (
           <Row key={prop.name} data-test-id={`${baseId}-row-${prop.name}`}>
             <Column header data-test-id={`${baseId}-header`}><span title={this.getName(prop.name)}>{this.getName(prop.name)}</span></Column>
