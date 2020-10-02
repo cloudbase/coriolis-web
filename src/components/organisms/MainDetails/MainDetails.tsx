@@ -237,7 +237,7 @@ class MainDetails extends React.Component<Props, State> {
           }
           let fieldName = pn
           if (migrationImageMapFieldName && fieldName === migrationImageMapFieldName) {
-            fieldName = `${p}${plugin?.imageSuffix}`
+            fieldName = p
           }
           return {
             label: `${label} - ${LabelDictionary.get(p)}`,

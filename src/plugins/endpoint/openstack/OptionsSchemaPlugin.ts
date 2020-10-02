@@ -28,8 +28,6 @@ import type { NetworkMap } from '../../../@types/Network'
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
 
-  static imageSuffix = ''
-
   static parseSchemaToFields(
     schema: SchemaProperties,
     schemaDefinitions: SchemaDefinitions | null | undefined,
@@ -74,7 +72,6 @@ export default class OptionsSchemaParser {
         field,
         option,
         this.migrationImageMapFieldName,
-        this.imageSuffix,
       )) {
         defaultFillFieldValues(field, option)
       }
@@ -83,11 +80,11 @@ export default class OptionsSchemaParser {
 
   static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
-      ...defaultGetDestinationEnv(options, oldOptions, this.imageSuffix),
+      ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
         options,
         oldOptions,
-        this.migrationImageMapFieldName, this.imageSuffix,
+        this.migrationImageMapFieldName,
       ),
     }
     return env
