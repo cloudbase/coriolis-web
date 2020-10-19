@@ -100,10 +100,13 @@ export const generateBaseFields = () => [
   generateField({
     name: 'mapped_regions',
     title: 'Coriolis Regions',
-    required: true,
     type: 'array',
     noItemsMessage: 'No regions available',
     noSelectionMessage: 'Choose regions',
+    description: `Optional list of one or more Coriolis Regions the Endpoint should be mapped to.
+    Mapping this Endpoint to a set of Regions will mean that any operations related to the Endpoint will be executed on Coriolis services which are marked as being in the same Region.
+    (e.g. running DRaaS operations with some Coriolis services running on a private source platform and some on a public target).
+    Can be left unselected for all-in-one Coriolis installations or when the source/target platform is accessible by the whole Coriolis deployment.`,
   }),
   generateField({ name: 'description', title: 'Description' }),
 ]
