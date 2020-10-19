@@ -210,7 +210,7 @@ class EndpointSource {
 
   async add(endpoint: Endpoint, skipSchemaParser: boolean = false): Promise<Endpoint> {
     const parsedConnectionInfo: any = skipSchemaParser
-      ? { ...endpoint } : SchemaParser.connectionInfoToPayload(endpoint)
+      ? { ...endpoint.connection_info } : SchemaParser.connectionInfoToPayload(endpoint)
     let newEndpoint: any = {}
     let connectionInfo: any = {}
     if (configLoader.config.useBarbicanSecrets
