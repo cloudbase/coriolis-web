@@ -56,6 +56,8 @@ export default class ConnectionSchemaParser {
       identityField.default = identityField.minimum
     }
 
+    fields.find(f => f.name === 'ceph_options')?.properties?.forEach(f => { f.name = `ceph_options/${f.name}` })
+
     const createInputChoice = (name: string, field1Name: string, field2Name: string) => {
       const field1 = fields.find(f => f.name === field1Name)
       const field2 = fields.find(f => f.name === field2Name)
