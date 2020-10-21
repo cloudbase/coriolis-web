@@ -161,7 +161,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
   handleCanceScript(global: string | null, instanceName: string | null) {
     this.setState(prevState => ({
       uploadedScripts: prevState.uploadedScripts
-        .filter(s => (global ? s.global !== global : s.instanceName !== instanceName)),
+        .filter(s => (global ? s.global !== global : s.instanceId !== instanceName)),
     }))
   }
 
@@ -200,7 +200,8 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     }
 
     const properties: Field[] = this.props.instances.map(instance => ({
-      name: instance.instance_name || instance.name,
+      name: instance.instance_name || instance.id,
+      label: instance.name,
       type: 'string',
       enum: minionPools.map(minionPool => ({
         name: minionPool.pool_name,

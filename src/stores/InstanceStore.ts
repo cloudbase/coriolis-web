@@ -16,7 +16,7 @@ import {
   observable, runInAction, computed, action,
 } from 'mobx'
 
-import type { Instance } from '../@types/Instance'
+import type { Instance, InstanceBase } from '../@types/Instance'
 import type { Endpoint } from '../@types/Endpoint'
 import InstanceSource from '../sources/InstanceSource'
 import ApiCaller from '../utils/ApiCaller'
@@ -241,7 +241,7 @@ class InstanceStore {
   @action async loadInstancesDetailsBulk(
     instanceInfos: {
       endpointId: string,
-      instanceNames: string[],
+      instanceIds: string[],
       env?: any,
     }[],
   ) {
@@ -251,10 +251,10 @@ class InstanceStore {
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
     try {
       await Promise.all(instanceInfos.map(async i => {
-        await Promise.all(i.instanceNames.map(async name => {
+        await Promise.all(i.instanceIds.map(async instanceId => {
           const instanceDetails = await InstanceSource.loadInstanceDetails({
             endpointId: i.endpointId,
-            instanceName: name,
+            instanceId,
             reqId: this.reqId,
             quietError: false,
             env: i.env,
@@ -265,10 +265,11 @@ class InstanceStore {
             return
           }
           runInAction(() => {
-            this.instancesDetails = this.instancesDetails.filter(id => (id.name || id.instance_name || '') !== name)
+            this.instancesDetails = this.instancesDetails
+              .filter(id => (id.instance_name || id.id) !== instanceId)
             this.instancesDetails.push(instance)
-            this.instancesDetails = this.instancesDetails.slice().sort(n => (n.name || n.instance_name || '')
-              .localeCompare(n.name || n.instance_name || ''))
+            this.instancesDetails = this.instancesDetails.slice()
+              .sort(n => n.name.localeCompare(n.name))
           })
         }))
       }))
@@ -279,7 +280,7 @@ class InstanceStore {
 
   @action async addInstanceDetails(opts: {
     endpointId: string,
-    instanceInfo: {name: string, instance_name?: string | null},
+    instanceInfo: InstanceBase,
     cache?: boolean,
     quietError?: boolean,
     env?: any,
@@ -291,7 +292,7 @@ class InstanceStore {
     this.loadingInstancesDetails = true
     const resp = await InstanceSource.loadInstanceDetails({
       endpointId,
-      instanceName: instanceInfo.instance_name || instanceInfo.name,
+      instanceId: instanceInfo.instance_name || instanceInfo.id,
       targetProvider,
       reqId: this.reqId,
       quietError,
@@ -323,7 +324,7 @@ class InstanceStore {
 
   @action async loadInstancesDetails(opts: {
     endpointId: string,
-    instancesInfo: {name: string, instance_name?: string | null}[],
+    instances: InstanceBase[],
     cache?: boolean,
     quietError?: boolean,
     skipLog?: boolean,
@@ -331,17 +332,18 @@ class InstanceStore {
     targetProvider?: ProviderTypes | null,
   }): Promise<void> {
     const {
-      endpointId, instancesInfo, cache, quietError, env, targetProvider, skipLog,
+      endpointId, instances, cache, quietError, env, targetProvider, skipLog,
     } = opts
     // Use reqId to be able to uniquely identify the request
     // so all but the latest request can be igonred and canceled
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
 
-    instancesInfo
-      .sort((a, b) => (a.instance_name || a.name).localeCompare(b.instance_name || b.name))
+    instances
+      .sort((a, b) => (a.instance_name || a.name || a.id)
+        .localeCompare(b.instance_name || b.name || b.id))
 
-    const count = instancesInfo.length
+    const count = instances.length
     if (count === 0) {
       return
     }
@@ -351,11 +353,11 @@ class InstanceStore {
     this.instancesDetailsRemaining = count
 
     await new Promise(resolve => {
-      Promise.all(instancesInfo.map(async instanceInfo => {
+      Promise.all(instances.map(async instanceInfo => {
         try {
           const resp = await InstanceSource.loadInstanceDetails({
             endpointId,
-            instanceName: instanceInfo.instance_name || instanceInfo.name,
+            instanceId: instanceInfo.instance_name || instanceInfo.id,
             targetProvider,
             reqId: this.reqId,
             quietError,

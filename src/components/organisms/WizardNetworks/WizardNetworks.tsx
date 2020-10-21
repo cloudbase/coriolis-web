@@ -22,7 +22,7 @@ import Dropdown from '../../molecules/Dropdown'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-import type { Instance, Nic as NicType } from '../../../@types/Instance'
+import { Instance, Nic as NicType, shortenId } from '../../../@types/Instance'
 import type { Network, NetworkMap, SecurityGroup } from '../../../@types/Network'
 
 import networkImage from './images/network.svg'
@@ -249,7 +249,7 @@ class WizardNetworks extends React.Component<Props> {
     return (
       <NicsWrapper>
         {nics.map(nic => {
-          const connectedTo = this.props.instancesDetails.filter(i => {
+          const connectedToInstances = this.props.instancesDetails.filter(i => {
             if (!i.devices || !i.devices.nics) {
               return false
             }
@@ -257,17 +257,18 @@ class WizardNetworks extends React.Component<Props> {
               return true
             }
             return false
-          }).map(i => i.instance_name || i.name)
+          }).map(instance => `${instance.name} (${shortenId(instance.instance_name || instance.id)})`)
+
           const selectedNetwork = this.props.selectedNetworks
             && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
           return (
             <Nic key={nic.id} data-test-id="networkItem">
               <NetworkImage />
               <NetworkTitle width={this.props.titleWidth || 320}>
-                <NetworkName data-test-id={`wNetworks-networkName-${nic.id}`}>{nic.network_name}</NetworkName>
-                {connectedTo.length ? (
-                  <NetworkSubtitle data-test-id={`wNetworks-connectedTo-${nic.id}`}>
-                    {`Connected to ${connectedTo.join(', ')}`}
+                <NetworkName>{nic.network_name}</NetworkName>
+                {connectedToInstances.length ? (
+                  <NetworkSubtitle>
+                    {`Connected to ${connectedToInstances.join(', ')}`}
                   </NetworkSubtitle>
                 ) : null}
               </NetworkTitle>

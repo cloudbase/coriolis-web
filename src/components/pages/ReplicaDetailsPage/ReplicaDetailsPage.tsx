@@ -214,7 +214,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       .find(e => e.id === replica.destination_endpoint_id)
     instanceStore.loadInstancesDetails({
       endpointId: replica.origin_endpoint_id,
-      instancesInfo: replica.instances.map(n => ({ name: n })),
+      instances: replica.instances.map(n => ({ id: n })),
       cache,
       quietError: false,
       env: replica.source_environment,

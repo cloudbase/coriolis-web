@@ -114,6 +114,10 @@ const InstanceRowTitle = styled.div<any>`
 const InstanceRowSubtitle = styled.div<any>`
   font-size: 10px;
   color: ${Palette.grayscale[5]};
+  margin-bottom: 4px;
+  &:last-child {
+    margin-bottom: 0;
+  }
 `
 const SourceNetwork = styled.div<any>`
   width: 50%;
@@ -371,16 +375,20 @@ class WizardSummary extends React.Component<Props> {
         <ObjectTableTitle>
           Instance OSMorphing Minion Pool Mappings
         </ObjectTableTitle>
-        {Object.keys(mappings).map(instanceName => (
-          <Option key={instanceName}>
-            <OptionLabel title={instanceName}>
-              {instanceName}
-            </OptionLabel>
-            <OptionValue title={mappings[instanceName]}>
-              {getMinionPoolName(mappings[instanceName])}
-            </OptionValue>
-          </Option>
-        ))}
+        {Object.keys(mappings).map(instanceId => {
+          const instanceName = this.props.instancesDetails
+            .find(i => i.instance_name === instanceId || i.id === instanceId)?.name || instanceId
+          return (
+            <Option key={instanceId}>
+              <OptionLabel title={instanceName}>
+                {instanceName}
+              </OptionLabel>
+              <OptionValue title={mappings[instanceId]}>
+                {getMinionPoolName(mappings[instanceId])}
+              </OptionValue>
+            </Option>
+          )
+        })}
       </ObjectTable>
     )
   }
@@ -558,7 +566,8 @@ class WizardSummary extends React.Component<Props> {
             const flavorName = instance.flavor_name ? `/${instance.flavor_name}` : ''
             return (
               <Row key={instance.id}>
-                <InstanceRowTitle data-test-id={`wSummary-instance-${instance.id}`}>{instance.name}</InstanceRowTitle>
+                <InstanceRowTitle>{instance.name}</InstanceRowTitle>
+                <InstanceRowSubtitle>{instance.instance_name || instance.id}</InstanceRowSubtitle>
                 <InstanceRowSubtitle>{`${instance.num_cpu}vCPU/${instance.memory_mb}MB${flavorName}`}</InstanceRowSubtitle>
               </Row>
             )
@@ -579,7 +588,7 @@ class WizardSummary extends React.Component<Props> {
         <Table>
           {this.props.uploadedUserScripts.map(s => (
             <Row
-              key={s.instanceName || s.global || undefined}
+              key={s.instanceId || s.global || undefined}
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -588,7 +597,7 @@ class WizardSummary extends React.Component<Props> {
               }}
             >
               <InstanceRowTitle>{
-                s.global ? s.global === 'windows' ? 'Global Windows Script' : 'Global Linux Script' : s.instanceName
+                s.global ? s.global === 'windows' ? 'Global Windows Script' : 'Global Linux Script' : s.instanceId
               }
               </InstanceRowTitle>
               <ScriptFileName title={s.fileName}>{s.fileName}</ScriptFileName>

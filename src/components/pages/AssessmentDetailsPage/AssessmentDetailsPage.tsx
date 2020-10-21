@@ -150,7 +150,8 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     }
     return azureStore.assessedVms.filter(vm => {
       if (vm.properties.datacenterManagementServerName.toLowerCase() === sourceHost.toLowerCase()
-        && instanceStore.instances.find(i => i.name === `${vm.properties.displayName}`)) {
+        && instanceStore.instances.find(i => i.name === vm.properties.displayName
+          || i.instance_name === vm.properties.displayName)) {
         return true
       }
       return false
@@ -167,7 +168,8 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   handleVmSelectedChange(vm: VmItem, selected: boolean) {
     let selectedVms = this.getLocalData().selectedVms
-    const instanceInfo = instanceStore.instances.find(i => i.name === vm.properties.displayName)
+    const instanceInfo = instanceStore.instances.find(i => i.name === vm.properties.displayName
+      || i.instance_name === vm.properties.displayName)
     if (selected) {
       selectedVms = [
         ...selectedVms,
@@ -435,7 +437,8 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   loadInstancesDetails() {
     const localData = this.getLocalData()
     const selectedVms = localData.selectedVms
-    const instancesInfo = instanceStore.instances.filter(i => selectedVms.find(m => i.name === m))
+    const instancesInfo = instanceStore.instances.filter(i => selectedVms
+      .find(m => i.instance_name === m || i.name === m))
     instanceStore.clearInstancesDetails()
     const sourceEndpointId = this.getSourceEndpointId()
     if (!sourceEndpointId) {
@@ -443,7 +446,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     }
     instanceStore.loadInstancesDetails({
       endpointId: sourceEndpointId,
-      instancesInfo,
+      instances: instancesInfo,
       // cache: true,
       skipLog: true,
       env: {
@@ -457,12 +460,12 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   handleMigrationExecute(fieldValues: { [prop: string]: any }) {
     const selectedVms = this.getLocalData().selectedVms
     const selectedInstances = instanceStore.instancesDetails
-      .filter(i => selectedVms.find(m => i.name === m))
+      .filter(i => selectedVms.find(m => i.name === m || i.instance_name === m))
     const vmSizes: any = {}
     const localData = this.getLocalData()
     selectedInstances.forEach(i => {
-      const vm = selectedVms.find(m => i.name === m)
-      const selectedVmSize = localData.selectedVmSizes[i.name]
+      const vm = selectedVms.find(m => i.name === m || i.instance_name === m)
+      const selectedVmSize = localData.selectedVmSizes[i.instance_name || i.name]
       if (vm && azureStore.vmSizes.find(s => s === selectedVmSize)) {
         vmSizes[i.instance_name || i.name] = selectedVmSize
       }

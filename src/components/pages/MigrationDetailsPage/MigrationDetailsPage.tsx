@@ -159,7 +159,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       .find(e => e.id === details.destination_endpoint_id)
     instanceStore.loadInstancesDetails({
       endpointId: details.origin_endpoint_id,
-      instancesInfo: details.instances.map(n => ({ name: n })),
+      instances: details.instances.map(n => ({ id: n })),
       cache,
       quietError: false,
       env: details.source_environment,
