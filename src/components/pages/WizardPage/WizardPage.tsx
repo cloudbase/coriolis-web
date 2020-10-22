@@ -598,8 +598,8 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   shouldShowLoadingButton() {
-    return providerStore.destinationOptionsSecondaryLoading
-      || providerStore.sourceOptionsSecondaryLoading
+    return (wizardStore.currentPage.id === 'dest-options' && providerStore.destinationOptionsSecondaryLoading)
+      || (wizardStore.currentPage.id === 'source-options' && providerStore.sourceOptionsSecondaryLoading)
   }
 
   scheduleReplica(replica: ReplicaItem): Promise<void> {
