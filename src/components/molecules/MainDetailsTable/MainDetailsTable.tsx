@@ -164,13 +164,11 @@ class MainDetailsTable extends React.Component<Props, State> {
   }
 
   getTransferResult(instance: Instance): Instance | null {
-    if (this.props.item && this.props.item.transfer_result) {
+    if (this.props.item?.transfer_result) {
       const transferInstanceKey = Object.keys(this.props.item.transfer_result)
-        .find(i => i.indexOf(instance.name))
-      if (transferInstanceKey && this.props.item && this.props.item.transfer_result) {
-        const result = this.props.item.transfer_result[transferInstanceKey]
-        result.instance_name = transferInstanceKey
-        return result
+        .find(k => k === instance.name || k === instance.instance_name || k === instance.id)
+      if (transferInstanceKey) {
+        return this.props.item.transfer_result[transferInstanceKey]
       }
     }
     return null
@@ -377,6 +375,7 @@ class MainDetailsTable extends React.Component<Props, State> {
 
   renderInstanceDetails(instance: Instance) {
     const getBody = (i: Instance): string[] => [
+      `ID: ${i.id}`,
       `Cores: ${i.num_cpu}`,
       `Memory: ${i.memory_mb} MB`,
       `Flavor Name: ${i.flavor_name || 'N/A'}`,
@@ -387,7 +386,7 @@ class MainDetailsTable extends React.Component<Props, State> {
 
     const minionPoolMappings = this.props.item?.instance_osmorphing_minion_pool_mappings
     const minionPoolId = minionPoolMappings
-      && minionPoolMappings[instance.instance_name || instance.name]
+      && minionPoolMappings[instance.instance_name || instance.id || instance.name]
     if (minionPoolId) {
       const minionPool = this.props.minionPools.find(m => m.id === minionPoolId)
       sourceBody.push(`Minion Pool: ${minionPool?.pool_name || minionPoolId}`)
