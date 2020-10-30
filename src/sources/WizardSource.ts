@@ -139,14 +139,14 @@ class WizardSource {
       return
     }
     const location = locationExp[0].replace('?', '')
-    window.history.replaceState({}, '', `${location}?d=${btoa(JSON.stringify(data))}`)
+    window.history.replaceState({}, '', `${location}?d=${DomUtils.encodeToBase64Url(data)}`)
   }
 
   getUrlState() {
     const dataExpExec = /\?d=(.*)/.exec(window.location.href)
     let result = null
     try {
-      result = dataExpExec && JSON.parse(atob(dataExpExec[1]))
+      result = dataExpExec && DomUtils.decodeFromBase64Url(dataExpExec[1])
     } catch (err) {
       console.error(err)
     }

@@ -16,6 +16,7 @@ import Api from '../utils/ApiCaller'
 import type { Network } from '../@types/Network'
 
 import configLoader from '../utils/Config'
+import DomUtils from '../utils/DomUtils'
 
 class NetworkSource {
   async loadNetworks(enpointId: string, environment: { [prop: string]: any } | null, options?: {
@@ -24,7 +25,7 @@ class NetworkSource {
   }): Promise<Network[]> {
     let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`
     if (environment) {
-      url = `${url}?env=${btoa(JSON.stringify(environment))}`
+      url = `${url}?env=${DomUtils.encodeToBase64Url(environment)}`
     }
     const response = await Api.send({
       url,

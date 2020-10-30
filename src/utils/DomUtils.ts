@@ -12,6 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { Base64 } from 'js-base64'
+
 class DomUtils {
   static getScrollableParent(
     element: HTMLElement, includeHidden?: boolean,
@@ -150,6 +152,21 @@ class DomUtils {
 
   static isSafari() {
     return navigator.userAgent.indexOf('Chrome') === -1 && navigator.userAgent.indexOf('Safari') > -1
+  }
+
+  static encodeToBase64Url(data: any) {
+    let dataStr: string
+    if (typeof data === 'string') {
+      dataStr = data
+    } else {
+      dataStr = JSON.stringify(data)
+    }
+
+    return Base64.encode(dataStr).replace(/\+/g, '-').replace(/\//g, '_')
+  }
+
+  static decodeFromBase64Url(data: string) {
+    return JSON.parse(Base64.decode(data.replace(/-/g, '+').replace(/_/g, '/')))
   }
 }
 

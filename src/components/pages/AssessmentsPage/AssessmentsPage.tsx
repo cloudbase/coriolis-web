@@ -32,6 +32,7 @@ import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
 import configLoader from '../../../utils/Config'
 import DropdownLink from '../../molecules/DropdownLink/DropdownLink'
+import DomUtils from '../../../utils/DomUtils'
 
 const Wrapper = styled.div<any>``
 
@@ -142,7 +143,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       endpoint, connectionInfo, resourceGroupName, projectName, groupName, assessmentName,
     }
 
-    this.props.history.push(`/assessment/${encodeURIComponent(btoa(JSON.stringify({ ...info })))}`)
+    this.props.history.push(`/assessment/${DomUtils.encodeToBase64Url({ ...info })}`)
   }
 
   handleProjectChange() {
