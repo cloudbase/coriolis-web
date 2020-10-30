@@ -419,36 +419,40 @@ class WizardOptions extends React.Component<Props> {
     })
 
     const groups = this.generateGroups(fields)
-
     return (
       <Fields ref={this.props.onScrollableRef} padding={this.props.layout === 'page' ? null : 32}>
-        {groups.map((g, i) => (
-          <CSSTransitionGroup
-            key={g.name || 0}
-            transitionName={i > 0 ? 'field-group-transition' : ''}
-            transitionAppear
-            transitionAppearTimeout={250}
-            in={false}
-          >
-            <Group>
-              {g.name ? (
-                <GroupName>
-                  <GroupNameBar />
-                  <GroupNameText>{LabelDictionary.get(g.name)}</GroupNameText>
-                  <GroupNameBar />
-                </GroupName>
-              ) : null}
-              <GroupFields>
-                <Column left>
-                  {g.fields.map(f => f.column === 0 && f.component)}
-                </Column>
-                <Column right>
-                  {g.fields.map(f => f.column === 1 && f.component)}
-                </Column>
-              </GroupFields>
-            </Group>
-          </CSSTransitionGroup>
-        ))}
+        {groups.map((g, i) => {
+          const getColumnInGroup = (field: any, fieldIndex: number) => (
+            g.name ? fieldIndex % 2 : field.column
+          )
+          return (
+            <CSSTransitionGroup
+              key={g.name || 0}
+              transitionName={i > 0 ? 'field-group-transition' : ''}
+              transitionAppear
+              transitionAppearTimeout={250}
+              in={false}
+            >
+              <Group>
+                {g.name ? (
+                  <GroupName>
+                    <GroupNameBar />
+                    <GroupNameText>{LabelDictionary.get(g.name)}</GroupNameText>
+                    <GroupNameBar />
+                  </GroupName>
+                ) : null}
+                <GroupFields>
+                  <Column left>
+                    {g.fields.map((f, j) => (getColumnInGroup(f, j) === 0 && f.component))}
+                  </Column>
+                  <Column right>
+                    {g.fields.map((f, j) => getColumnInGroup(f, j) === 1 && f.component)}
+                  </Column>
+                </GroupFields>
+              </Group>
+            </CSSTransitionGroup>
+          )
+        })}
       </Fields>
     )
   }
