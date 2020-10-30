@@ -159,8 +159,9 @@ export default class ConnectionSchemaParser {
     const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
     const connection_info = fieldsToPayload(data, schemaRoot)
 
-    if (data.secret_ref) {
-      connection_info.secret_ref = data.secret_ref
+    const dataSecretRef = data.secret_ref || data['connection_info/secret_ref']
+    if (dataSecretRef) {
+      connection_info.secret_ref = dataSecretRef
     }
 
     return connection_info
