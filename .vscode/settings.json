@@ -12,10 +12,9 @@
   "[typescriptreact]": {
     "editor.formatOnSave": false,
   },
-  "debug.node.autoAttach": "on",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "eslint.enable": true,
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "debug.javascript.autoAttachFilter": "always"
 }
