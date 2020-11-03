@@ -41,6 +41,7 @@ import assessmentStore from '../../../stores/AssessmentStore'
 import providerStore from '../../../stores/ProviderStore'
 
 import assessmentImage from './images/assessment.svg'
+import DomUtils from '../../../utils/DomUtils'
 
 const Wrapper = styled.div<any>``
 
@@ -71,7 +72,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
 
   UNSAFE_componentWillMount() {
     document.title = 'Assessment Details'
-    const urlData: LocalData = JSON.parse(atob(decodeURIComponent(this.props.match.params.info)))
+    const urlData: LocalData = DomUtils.decodeFromBase64Url(this.props.match.params.info)
     if (!azureStore.loadLocalData(urlData.assessmentName)) {
       azureStore.setLocalData(urlData)
     }
@@ -91,7 +92,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
   }
 
   getUrlInfo() {
-    return JSON.parse(atob(decodeURIComponent(this.props.match.params.info)))
+    return DomUtils.decodeFromBase64Url(this.props.match.params.info)
   }
 
   getSourceEndpoints() {

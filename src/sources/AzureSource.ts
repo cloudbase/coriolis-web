@@ -16,6 +16,7 @@ import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
 import type { Assessment, VmItem, VmSize } from '../@types/Assessment'
+import DomUtils from '../utils/DomUtils'
 
 const azureUrl = 'https://management.azure.com/'
 const defaultApiVersion = '2019-10-01'
@@ -29,7 +30,7 @@ const assessedVmsUrl = ({ ...other }) => `${assessmentDetailsUrl({ ...other })}/
 
 class Util {
   static buildUrl(baseUrl: string, apiVersion?: string): string {
-    const url = `/proxy/${btoa(`${azureUrl + baseUrl}?api-version=${apiVersion || defaultApiVersion}`)}`
+    const url = `/proxy/${DomUtils.encodeToBase64Url(`${azureUrl + baseUrl}?api-version=${apiVersion || defaultApiVersion}`)}`
     return url
   }
 

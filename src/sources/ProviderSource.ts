@@ -19,6 +19,7 @@ import { SchemaParser } from './Schemas'
 import type { Field } from '../@types/Field'
 import type { Providers, ProviderTypes } from '../@types/Providers'
 import type { OptionValues } from '../@types/Endpoint'
+import DomUtils from '../utils/DomUtils'
 
 class ProviderSource {
   async getConnectionInfoSchema(providerName: ProviderTypes): Promise<Field[]> {
@@ -63,7 +64,7 @@ class ProviderSource {
   ): Promise<OptionValues[]> {
     let envString = ''
     if (envData) {
-      envString = `?env=${btoa(JSON.stringify(envData))}`
+      envString = `?env=${DomUtils.encodeToBase64Url(envData)}`
     }
     const callName = optionsType === 'source' ? 'source-options' : 'destination-options'
     const fieldName = optionsType === 'source' ? 'source_options' : 'destination_options'

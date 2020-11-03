@@ -19,6 +19,7 @@ import configLoader from '../utils/Config'
 
 import { InstanceInfoPlugin } from '../plugins/endpoint'
 import { ProviderTypes } from '../@types/Providers'
+import DomUtils from '../utils/DomUtils'
 
 class InstanceSource {
   async loadInstancesChunk(
@@ -56,7 +57,7 @@ class InstanceSource {
     if (env) {
       queryParams = {
         ...queryParams,
-        env: btoa(JSON.stringify(env)),
+        env: DomUtils.encodeToBase64Url(env),
       }
     }
 
@@ -87,9 +88,9 @@ class InstanceSource {
     const {
       endpointId, instanceName, targetProvider, reqId, quietError, env, cache, skipLog,
     } = opts
-    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${btoa(instanceName)}`
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${DomUtils.encodeToBase64Url(instanceName)}`
     if (env) {
-      url += `?env=${btoa(JSON.stringify(env))}`
+      url += `?env=${DomUtils.encodeToBase64Url(env)}`
     }
     const response = await Api.send({
       url,

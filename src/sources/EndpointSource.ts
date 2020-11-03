@@ -21,6 +21,7 @@ import ObjectUtils from '../utils/ObjectUtils'
 import type { Endpoint, Validation, Storage } from '../@types/Endpoint'
 
 import configLoader from '../utils/Config'
+import DomUtils from '../utils/DomUtils'
 
 const getBarbicanPayload = (data: any) => ({
   payload: JSON.stringify(data),
@@ -273,7 +274,7 @@ class EndpointSource {
   }
 
   async loadStorage(endpointId: string, data: any): Promise<Storage> {
-    const env = btoa(JSON.stringify(data))
+    const env = DomUtils.encodeToBase64Url(data)
     const response = await Api.get(`${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`)
     return response.data.storage
   }
