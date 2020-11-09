@@ -266,11 +266,11 @@ export default class OptionsSchemaParser {
         payload.global[script.global || ''] = script.scriptContent
       })
     }
-    const instanceScripts = uploadedUserScripts.filter(s => s.instanceName)
+    const instanceScripts = uploadedUserScripts.filter(s => s.instanceId)
     if (instanceScripts.length) {
       payload.instances = {}
       instanceScripts.forEach(script => {
-        payload.instances[script.instanceName || ''] = script.scriptContent
+        payload.instances[script.instanceId || ''] = script.scriptContent
       })
     }
     return payload

@@ -42,7 +42,7 @@ class WizardSource {
       origin_endpoint_id: data.source ? data.source.id : 'null',
       destination_endpoint_id: data.target ? data.target.id : 'null',
       network_map: destParser.getNetworkMap(data.networks),
-      instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name || i.name) : 'null',
+      instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name || i.id) : 'null',
       storage_mappings: destParser.getStorageMap(defaultStorage, storageMap),
       notes: data.destOptions ? data.destOptions.description || '' : '',
     }
@@ -68,9 +68,9 @@ class WizardSource {
 
     const poolMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
     if (poolMappings) {
-      Object.keys(poolMappings).forEach(instanceName => {
-        if (poolMappings[instanceName]
-          && payload[type].instances.find((i: string) => i === instanceName)) {
+      Object.keys(poolMappings).forEach(instanceId => {
+        if (poolMappings[instanceId]
+          && payload[type].instances.find((i: string) => i === instanceId)) {
           if (!payload[type][
             INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
           ]) {
@@ -80,7 +80,7 @@ class WizardSource {
           }
           payload[type][
             INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
-          ][instanceName] = poolMappings[instanceName]
+          ][instanceId] = poolMappings[instanceId]
         }
       })
     }

@@ -77,7 +77,7 @@ class InstanceSource {
 
   async loadInstanceDetails(opts: {
     endpointId: string,
-    instanceName: string,
+    instanceId: string,
     targetProvider?: ProviderTypes | null,
     reqId: number,
     quietError?: boolean,
@@ -86,9 +86,9 @@ class InstanceSource {
     skipLog?: boolean | null,
   }): Promise<{ instance?: Instance, reqId: number }> {
     const {
-      endpointId, instanceName, targetProvider, reqId, quietError, env, cache, skipLog,
+      endpointId, instanceId, targetProvider, reqId, quietError, env, cache, skipLog,
     } = opts
-    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${DomUtils.encodeToBase64Url(instanceName)}`
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${DomUtils.encodeToBase64Url(instanceId)}`
     if (env) {
       url += `?env=${DomUtils.encodeToBase64Url(env)}`
     }

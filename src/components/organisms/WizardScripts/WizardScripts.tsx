@@ -148,7 +148,7 @@ class WizardScripts extends React.Component<Props> {
   async handleFileUpload(
     files: FileList | null,
     global: string | null,
-    instanceName: string | null,
+    instanceId: string | null,
   ) {
     if (!files || !files.length) {
       return
@@ -156,7 +156,7 @@ class WizardScripts extends React.Component<Props> {
     const fileName = files[0].name
     const scriptContent = await FileUtils.readTextFromFirstFile(files)
     this.props.onScriptUpload({
-      instanceName,
+      instanceId,
       global,
       fileName,
       scriptContent: scriptContent || '',
@@ -165,13 +165,13 @@ class WizardScripts extends React.Component<Props> {
 
   renderScriptItem(
     global: string | null,
-    instanceName: string | null,
+    instanceId: string | null,
     title: string,
     subtitle?: string,
   ) {
     const uploadedScript = this.props.uploadedScripts.find(
-      s => (s.instanceName
-        ? s.instanceName === instanceName : s.global ? s.global === global : false),
+      s => (s.instanceId
+        ? s.instanceId === instanceId : s.global ? s.global === global : false),
     )
 
     return (
@@ -192,7 +192,7 @@ class WizardScripts extends React.Component<Props> {
             <InputCloseStyled
               show
               onClick={() => {
-                this.props.onCancelScript(global, instanceName)
+                this.props.onCancelScript(global, instanceId)
                 const ref = this.fileInputRefs[title]
                 if (ref) {
                   ref.inputRef.value = ''
@@ -215,7 +215,7 @@ class WizardScripts extends React.Component<Props> {
         <FakeFileInput
           type="file"
           ref={(r: HTMLInputElement) => { this.fileInputRefs[title] = { inputRef: r } }}
-          onChange={e => { this.handleFileUpload(e.target.files, global, instanceName) }}
+          onChange={e => { this.handleFileUpload(e.target.files, global, instanceId) }}
         />
       </Script>
     )
@@ -264,12 +264,13 @@ class WizardScripts extends React.Component<Props> {
         </Heading>
         <Scripts>
           {this.props.instances.map(instance => {
-            const title = instance.instance_name || instance.name
+            const id = instance.instance_name || instance.id
+            const title = instance.name
             const osLabel = instance.os_type ? instance.os_type === 'windows' ? 'Windows' : instance.os_type === 'linux' ? 'Linux' : instance.os_type : ''
             const osType = osLabel ? `${osLabel} OS | ` : ''
             const subtitle = `${osType}${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM`
 
-            return this.renderScriptItem(null, title, title, subtitle)
+            return this.renderScriptItem(null, id, title, subtitle)
           })}
         </Scripts>
       </Group>

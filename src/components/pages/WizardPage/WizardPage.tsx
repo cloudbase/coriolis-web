@@ -503,8 +503,7 @@ class WizardPage extends React.Component<Props, State> {
     if (wizardStore.data.source && wizardStore.data.selectedInstances && wizardStore.data.target) {
       instanceStore.loadInstancesDetails({
         endpointId: wizardStore.data.source.id,
-        instancesInfo:
-          wizardStore.data.selectedInstances as { name: string, instance_name?: string }[],
+        instances: wizardStore.data.selectedInstances,
         env: wizardStore.data.sourceOptions,
         cache,
         targetProvider: wizardStore.data.target.type,

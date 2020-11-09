@@ -217,7 +217,8 @@ class AssessmentDetailsContent extends React.Component<Props> {
     }
 
     if (this.props.instances.length > 0
-      && !this.props.instances.find(i => i.name === `${vm.properties.displayName}`)) {
+      && !this.props.instances.find(i => i.name === vm.properties.displayName
+        || i.instance_name === vm.properties.displayName)) {
       return false
     }
 

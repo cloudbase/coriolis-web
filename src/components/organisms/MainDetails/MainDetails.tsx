@@ -155,29 +155,6 @@ class MainDetails extends React.Component<Props, State> {
     return endpoint
   }
 
-  getConnectedVms(networkId: string) {
-    if (this.props.instancesDetailsLoading) {
-      return 'Loading...'
-    }
-
-    if (!this.props.item) {
-      return '-'
-    }
-
-    const vms: string[] = []
-
-    this.props.instancesDetails.forEach(instanceDet => {
-      if (
-        instanceDet.devices && instanceDet.devices.nics && instanceDet.devices.nics.find
-        && instanceDet.devices.nics.find(n => n.network_name === networkId)
-      ) {
-        vms.push(instanceDet.instance_name || instanceDet.name)
-      }
-    })
-
-    return vms.length === 0 ? 'Failed to read network configuration for the original instance' : vms.map(vm => <div data-test-id={`vm-${vm}`} style={{ marginBottom: '8px' }}>{vm}<br /></div>)
-  }
-
   renderLastExecutionTime() {
     return this.props.item ? this.renderValue(DateUtils.getLocalTime(this.props.item.updated_at).format('YYYY-MM-DD HH:mm:ss')) : '-'
   }

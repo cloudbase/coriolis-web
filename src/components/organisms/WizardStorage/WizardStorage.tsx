@@ -22,7 +22,7 @@ import InfoIcon from '../../atoms/InfoIcon'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-import type { Instance, Disk } from '../../../@types/Instance'
+import { Instance, Disk, shortenId } from '../../../@types/Instance'
 import type { StorageBackend, StorageMap } from '../../../@types/Endpoint'
 
 import backendImage from './images/backend.svg'
@@ -245,7 +245,7 @@ class WizardStorage extends React.Component<Props> {
         <StorageSection>{title}</StorageSection>
         <StorageItems>
           {usableDisks.map(disk => {
-            const connectedTo = this.props.instancesDetails.filter(i => {
+            const connectedToInstances = this.props.instancesDetails.filter(i => {
               if (!i.devices || !i.devices.disks) {
                 return false
               }
@@ -253,7 +253,8 @@ class WizardStorage extends React.Component<Props> {
                 return true
               }
               return false
-            }).map(i => i.instance_name || i.name)
+            }).map(instance => `${instance.name} (${shortenId(instance.instance_name || instance.id)})`)
+
             const selectedStorage = storageMap && storageMap.find(s => s.type === type
                 && String(s.source[diskFieldName]) === String(disk[diskFieldName]))
             const selectedItem = selectedStorage ? selectedStorage.target : null
@@ -262,17 +263,12 @@ class WizardStorage extends React.Component<Props> {
               <StorageItem key={disk[diskFieldName]}>
                 <StorageImage backend={type === 'backend'} />
                 <StorageTitle width={this.props.titleWidth || 320}>
-                  <StorageName
-                    data-test-id={`${TEST_ID}-${type}-source`}
-                    title={diskNameParsed[1] ? disk[diskFieldName] : null}
-                  >
+                  <StorageName title={diskNameParsed[1] ? disk[diskFieldName] : null}>
                     {diskNameParsed[0]}
                   </StorageName>
-                  {connectedTo.length ? (
-                    <StorageSubtitle
-                      data-test-id={`${TEST_ID}-${type}-connectedTo`}
-                    >
-                      {`Connected to ${connectedTo.join(', ')}`}
+                  {connectedToInstances.length ? (
+                    <StorageSubtitle>
+                      {`Connected to ${connectedToInstances.join(', ')}`}
                     </StorageSubtitle>
                   ) : null}
                 </StorageTitle>

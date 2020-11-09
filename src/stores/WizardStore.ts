@@ -315,7 +315,7 @@ class WizardStore {
 
   @action cancelUploadedScript(global: string | null, instanceName: string | null) {
     this.uploadedUserScripts = this.uploadedUserScripts
-      .filter(s => (global ? s.global !== global : s.instanceName !== instanceName))
+      .filter(s => (global ? s.global !== global : s.instanceId !== instanceName))
   }
 
   @action uploadUserScript(instanceScript: InstanceScript) {

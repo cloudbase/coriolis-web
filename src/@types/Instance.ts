@@ -47,9 +47,15 @@ export type Instance = {
   },
 }
 
+export type InstanceBase = {
+  id: string
+} & Partial<Instance>
+
 export type InstanceScript = {
   global?: string | null,
-  instanceName?: string | null,
+  instanceId?: string | null,
   scriptContent: string,
   fileName: string,
 }
+
+export const shortenId = (id: string) => id.replace(/(^.*?)-.*-(.*$)/, '$1-...-$2')

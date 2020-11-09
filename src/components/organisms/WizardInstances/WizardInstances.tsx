@@ -96,14 +96,19 @@ export const Image = styled.div<any>`
 `
 const Label = styled.div<any>`
   flex-grow: 1;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
   margin: 0 16px;
+  display: flex;
+  flex-direction: column;
+`
+const LabelTitle = styled.div``
+const LabelSubtitle = styled.div`
+  color: ${Palette.grayscale[4]};
+  overflow-wrap: anywhere;
 `
 const Details = styled.div<any>`
-  font-size: 14px;
   color: ${Palette.grayscale[4]};
+  min-width: 160px;
+  text-align: right;
 `
 const FiltersWrapper = styled.div<any>`
   padding: 8px 0 0 8px;
@@ -308,6 +313,7 @@ class WizardInstances extends React.Component<Props, State> {
           const selected = Boolean(this.props.selectedInstances
             && this.props.selectedInstances.find(i => i.id === instance.id))
           const flavorName = instance.flavor_name ? ` | ${instance.flavor_name}` : ''
+          const instanceId = instance.instance_name || instance.id
           return (
             <Instance
               key={instance.id}
@@ -325,8 +331,13 @@ class WizardInstances extends React.Component<Props, State> {
               />
               <InstanceContent data-test-id="wInstances-instanceItem">
                 <Image />
-                <Label data-test-id="wInstances-itemName">{instance.instance_name || instance.name}</Label>
-                <Details data-test-id="wInstances-itemDetails">{`${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM${flavorName}`}</Details>
+                <Label>
+                  <LabelTitle>{instance.name}</LabelTitle>
+                  {instanceId !== instance.name ? (
+                    <LabelSubtitle>{instanceId}</LabelSubtitle>
+                  ) : null}
+                </Label>
+                <Details>{`${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM${flavorName}`}</Details>
               </InstanceContent>
             </Instance>
           )

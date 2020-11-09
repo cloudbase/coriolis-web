@@ -159,8 +159,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       .map(replica => migrationStore.migrateReplica(
         replica.id,
         fields,
-        uploadedScripts.filter(s => !s.instanceName
-          || replica.instances.find(i => i === s.instanceName)),
+        uploadedScripts.filter(s => !s.instanceId
+          || replica.instances.find(i => i === s.instanceId)),
         replica.instance_osmorphing_minion_pool_mappings || {},
       )))
     notificationStore.alert('Migrations successfully created from replicas.', 'success')
@@ -226,7 +226,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
   handleShowCreateMigrationsModal() {
     instanceStore.loadInstancesDetailsBulk(replicaStore.replicas.map(r => ({
       endpointId: r.origin_endpoint_id,
-      instanceNames: r.instances,
+      instanceIds: r.instances,
       env: r.source_environment,
     })))
 

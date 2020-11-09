@@ -285,7 +285,7 @@ class MainDetailsTable extends React.Component<Props, State> {
       }
 
       rows.push(this.renderRow(
-        `${instance.instance_name || instance.name}-${sourceName}-${destinationKey}`,
+        `${instance.instance_name || instance.id}-${sourceName}-${destinationKey}`,
         'storage',
         sourceName,
         destinationName,
@@ -360,7 +360,7 @@ class MainDetailsTable extends React.Component<Props, State> {
         }
 
         rows.push(this.renderRow(
-          `${instance.instance_name || instance.name}-${nic.network_name}`,
+          `${instance.instance_name || instance.id}-${nic.network_name}`,
           'network',
           nic.mac_address,
           destinationNetworkName,
@@ -400,7 +400,7 @@ class MainDetailsTable extends React.Component<Props, State> {
     } else if (this.props.item?.type === 'migration' && this.props.item.last_execution_status === 'RUNNING') {
       destinationName = 'Waiting for migration to finish'
     }
-    const instanceName = instance.instance_name || instance.name
+    const instanceName = instance.instance_name || instance.id
     return this.renderRow(
       instanceName,
       'instance',
@@ -425,7 +425,7 @@ class MainDetailsTable extends React.Component<Props, State> {
         </Header>
         {this.props.instancesDetails.map(instance => (
           <InstanceInfo key={instance.name}>
-            <InstanceName data-test-id={`${TEST_ID}-instanceName-${instance.name}`}>{instance.name}</InstanceName>
+            <InstanceName>{instance.name}</InstanceName>
             <InstanceBody>
               {this.renderInstanceDetails(instance)}
               {this.renderNetworks(instance)}

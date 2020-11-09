@@ -243,9 +243,11 @@ class WizardOptions extends React.Component<Props> {
   getDefaultAdvancedFieldsSchema() {
     const fieldsSchema: Field[] = []
 
-    if (this.props.minionPools.length && this.props.selectedInstances) {
+    if (this.props.minionPools.length && this.props.selectedInstances
+      && this.props.selectedInstances.length) {
       const properties: Field[] = this.props.selectedInstances.map(instance => ({
-        name: instance.instance_name || instance.name,
+        name: instance.instance_name || instance.id,
+        label: instance.name,
         type: 'string',
         enum: this.props.minionPools.map(minionPool => ({
           name: minionPool.pool_name,

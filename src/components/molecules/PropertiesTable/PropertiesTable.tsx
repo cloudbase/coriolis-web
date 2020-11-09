@@ -205,8 +205,12 @@ class PropertiesTable extends React.Component<Props> {
         width={this.props.width}
       >
         {this.props.properties.map(prop => (
-          <Row key={prop.name} data-test-id={`${baseId}-row-${prop.name}`}>
-            <Column header data-test-id={`${baseId}-header`}><span title={this.getName(prop.name)}>{this.getName(prop.name)}</span></Column>
+          <Row key={prop.name}>
+            <Column header>
+              <span title={this.getName(prop.label || prop.name)}>
+                {this.getName(prop.label || prop.name)}
+              </span>
+            </Column>
             <Column input>{this.renderInput(prop)}</Column>
           </Row>
         ))}
