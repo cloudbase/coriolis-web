@@ -53,6 +53,13 @@ const InputWrapper = styled.div<any>`
   }
 `
 const inputBackground = (props: any) => {
+  if (props.checkedColor && props.checked) {
+    return props.checkedColor
+  }
+  if (props.uncheckedColor && !props.checked) {
+    return props.uncheckedColor
+  }
+
   if (props.big) {
     if (props.checked) {
       return Palette.alert
@@ -71,6 +78,13 @@ const inputBackground = (props: any) => {
   return 'white'
 }
 const getInputBorderColor = (props: any) => {
+  if (props.checkedColor && props.checked) {
+    return props.checkedColor
+  }
+  if (props.uncheckedColor && !props.checked) {
+    return props.uncheckedColor
+  }
+
   if (props.big && props.checked) {
     return Palette.alert
   }
@@ -148,6 +162,8 @@ type Props = {
   style?: React.CSSProperties,
   required?: boolean,
   highlight?: boolean,
+  checkedColor?: string,
+  uncheckedColor?: string,
 }
 type State = {
   lastChecked: boolean | null | undefined,
@@ -218,6 +234,8 @@ class Switch extends React.Component<Props, State> {
           checked={this.props.checked}
           height={this.props.height}
           secondary={this.props.secondary}
+          checkedColor={this.props.checkedColor}
+          uncheckedColor={this.props.uncheckedColor}
         >
           <InputThumb
             triState={this.props.triState}
@@ -225,6 +243,8 @@ class Switch extends React.Component<Props, State> {
             checked={this.props.checked}
             height={this.props.height}
             secondary={this.props.secondary}
+            checkedColor={this.props.checkedColor}
+            uncheckedColor={this.props.uncheckedColor}
           />
         </InputBackground>
       </InputWrapper>

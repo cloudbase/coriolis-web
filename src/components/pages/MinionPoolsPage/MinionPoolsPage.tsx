@@ -34,14 +34,16 @@ import { MinionPool } from '../../../@types/MinionPool'
 import emptyListImage from './images/minion-pool-empty-list.svg'
 import providerStore from '../../../stores/ProviderStore'
 import endpointStore from '../../../stores/EndpointStore'
-import minionPoolStore, { MinionPoolAction } from '../../../stores/MinionPoolStore'
+import minionPoolStore from '../../../stores/MinionPoolStore'
 import { Endpoint } from '../../../@types/Endpoint'
 import MinionEndpointModal from '../../organisms/MinionEndpointModal/MinionEndpointModal'
 import MinionPoolModal from '../../organisms/MinionPoolModal/MinionPoolModal'
 import MinionPoolListItem from '../../molecules/MinionPoolListItem/MinionPoolListItem'
 import Palette from '../../styleUtils/Palette'
-import notificationStore from '../../../stores/NotificationStore'
 import AlertModal from '../../organisms/AlertModal/AlertModal'
+import MinionPoolConfirmationModal from '../../molecules/MinionPoolConfirmationModal/MinionPoolConfirmationModal'
+import notificationStore from '../../../stores/NotificationStore'
+import ObjectUtils from '../../../utils/ObjectUtils'
 
 const Wrapper = styled.div<any>``
 
@@ -51,8 +53,8 @@ type State = {
   showChooseMinionEndpointModal: boolean,
   showMinionPoolModal: boolean,
   selectedMinionPoolEndpoint: Endpoint | null
-  showCancelExecutionModal: boolean,
   showDeletePoolsModal: boolean,
+  showDeallocateConfirmation: boolean,
   selectedMinionPoolPlatform: 'source' | 'destination'
 }
 
@@ -64,8 +66,8 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
     showChooseMinionEndpointModal: false,
     selectedMinionPoolEndpoint: null,
     showMinionPoolModal: false,
-    showCancelExecutionModal: false,
     showDeletePoolsModal: false,
+    showDeallocateConfirmation: false,
     selectedMinionPoolPlatform: 'source',
   }
 
@@ -90,12 +92,26 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
   getFilterItems() {
     return [
       { label: 'All', value: 'all' },
-      { label: 'Allocating', value: 'ALLOCATING' },
       { label: 'Allocated', value: 'ALLOCATED' },
-      { label: 'Initializing', value: 'INITIALIZING' },
-      { label: 'Initialized', value: 'INITIALIZED' },
+      { label: 'Allocating', value: 'ALLOCATING_MACHINES' },
+      { label: 'Deallocated', value: 'DEALLOCATED' },
+      { label: 'Deallocating', value: 'DEALLOCATING_MACHINES' },
       { label: 'Error', value: 'ERROR' },
     ]
+  }
+
+  getMinionsThatCanBe(action: 'allocated' | 'deallocated' | 'refreshed' | 'deleted'): MinionPool[] {
+    const minions = this.state.selectedMinionPools
+    switch (action) {
+      case 'allocated':
+        return minions.filter(minion => minion.status === 'DEALLOCATED')
+      case 'deallocated':
+        return minions.filter(minion => minion.status === 'ALLOCATED' || minion.status === 'ERROR')
+      case 'refreshed':
+        return minions.filter(minion => minion.status === 'ALLOCATED')
+      default:
+        return minions.filter(minion => minion.status === 'DEALLOCATED' || minion.status === 'ERROR')
+    }
   }
 
   getEndpoint(endpointId: string) {
@@ -118,14 +134,14 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
 
   searchText(item: MinionPool, text?: string | null) {
     const result = false
-    if (item.pool_name.toLowerCase().indexOf(text || '') > -1) {
+    if (item.name.toLowerCase().indexOf(text || '') > -1) {
       return true
     }
     return result
   }
 
   itemFilterFunction(item: MinionPool, filterStatus?: string | null, filterText?: string) {
-    if ((filterStatus !== 'all' && item.pool_status !== filterStatus)
+    if ((filterStatus !== 'all' && item.status !== filterStatus)
       || !this.searchText(item, filterText)
     ) {
       return false
@@ -134,15 +150,9 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
     return true
   }
 
-  cancelExecutions() {
-    this.state.selectedMinionPools.forEach(pool => {
-      minionPoolStore.cancelExecution(pool.id)
-    })
-    this.setState({ showCancelExecutionModal: false })
-  }
-
   deleteSelectedMinionPools() {
-    this.state.selectedMinionPools.forEach(pool => {
+    const pools = this.getMinionsThatCanBe('deleted')
+    pools.forEach(pool => {
       minionPoolStore.deleteMinionPool(pool.id)
     })
     this.setState({ showDeletePoolsModal: false })
@@ -210,92 +220,69 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
     })
   }
 
-  async handleAction(action: MinionPoolAction) {
-    const runAction = async (message: string) => {
-      notificationStore.alert(message)
-      await Promise.all(this.state.selectedMinionPools
-        .map(minionPool => minionPoolStore.runAction(minionPool.id, action)))
-      await minionPoolStore.loadMinionPools()
-    }
+  async handleAllocate() {
+    const pools = this.getMinionsThatCanBe('allocated')
 
-    switch (action) {
-      case 'set-up-shared-resources':
-        runAction('Setting up shared resources...')
-        break
-      case 'tear-down-shared-resources':
-        runAction('Tearing up shared resources...')
-        break
-      case 'allocate-machines':
-        runAction('Allocating machines...')
-        break
-      case 'deallocate-machines':
-        runAction('Deallocating machines...')
-        break
-      default:
-    }
+    const plural = pools.length === 1 ? '' : 's'
+    notificationStore.alert(`Allocating minion pool${plural}...`)
+    await Promise.all(pools.map(minionPool => minionPoolStore.runAction(minionPool.id, 'allocate')))
+    await minionPoolStore.loadMinionPools()
+  }
+
+  handleDeallocate() {
+    this.setState({
+      showDeallocateConfirmation: true,
+    })
+  }
+
+  async handleDeallocateConfirmation(force: boolean) {
+    this.setState({
+      showDeallocateConfirmation: false,
+    })
+    const pools = this.getMinionsThatCanBe('deallocated')
+    const plural = pools.length === 1 ? '' : 's'
+    notificationStore.alert(`Deallocating minion pool${plural}...`)
+    await Promise.all(pools.map(minionPool => minionPoolStore.runAction(minionPool.id, 'deallocate', { force })))
+    await minionPoolStore.loadMinionPools()
+  }
+
+  async handleRefreshAction() {
+    const pools = this.getMinionsThatCanBe('refreshed')
+    const plural = pools.length === 1 ? '' : 's'
+    notificationStore.alert(`Refreshing minion pool${plural}...`)
+    await Promise.all(pools.map(minionPool => minionPoolStore.runAction(minionPool.id, 'refresh')))
+    await minionPoolStore.loadMinionPools()
   }
 
   render() {
-    const allPoolsAreStatus = () => {
-      const statuses: any = {}
-      this.state.selectedMinionPools.forEach(pool => {
-        if (!statuses[pool.pool_status]) {
-          statuses[pool.pool_status] = 0
-        }
-        statuses[pool.pool_status] += 1
-      })
-      if (Object.keys(statuses).length === 1) {
-        return Object.keys(statuses)[0]
-      }
-      return null
-    }
-    const allPoolStatusResult = allPoolsAreStatus()
-    const uninitialized = allPoolStatusResult === 'UNINITIALIZED'
-    const deallocated = allPoolStatusResult === 'DEALLOCATED'
-    const allocated = allPoolStatusResult === 'ALLOCATED'
-    const isRunning = allPoolStatusResult?.indexOf('ING') === ((allPoolStatusResult?.length || -100) - 3)
+    const canBeAllocated = this.getMinionsThatCanBe('allocated').length > 0
+    const canBeDeallocated = this.getMinionsThatCanBe('deallocated').length > 0
+    const canBeRefreshed = this.getMinionsThatCanBe('refreshed').length > 0
+    const canBeDeleted = this.getMinionsThatCanBe('deleted').length > 0
+
     const BulkActions: DropdownAction[] = [
       {
-        label: 'Setup shared resources',
+        label: 'Allocate',
         color: Palette.primary,
-        action: () => {
-          this.handleAction('set-up-shared-resources')
-        },
-        disabled: !uninitialized,
-        title: !uninitialized ? 'The minion pools should be uninitialized' : '',
+        action: () => { this.handleAllocate() },
+        disabled: !canBeAllocated,
+        title: !canBeAllocated ? 'The minion pool should be deallocated' : '',
       },
       {
-        label: 'Tear down shared resources',
+        label: 'Deallocate',
         action: () => {
-          this.handleAction('tear-down-shared-resources')
+          this.handleDeallocate()
         },
-        disabled: !deallocated,
-        title: !deallocated ? 'The minion pools should be deallocated' : '',
+        disabled: !canBeDeallocated,
+        title: !canBeDeallocated ? 'The minion pool should be allocated' : '',
       },
       {
-        label: 'Allocate Machines',
-        color: Palette.primary,
+        label: 'Refresh',
         action: () => {
-          this.handleAction('allocate-machines')
+          this.handleRefreshAction()
         },
-        disabled: !deallocated,
-        title: !deallocated ? 'The minion pools should be deallocated' : '',
-      },
-      {
-        label: 'Deallocate Machines',
-        action: () => {
-          this.handleAction('deallocate-machines')
-        },
-        disabled: !allocated,
-        title: !allocated ? 'The minion pools should be allocated' : '',
-      },
-      {
-        label: 'Cancel Execution',
-        action: () => {
-          this.setState({ showCancelExecutionModal: true })
-        },
-        disabled: !isRunning,
-        title: !isRunning ? 'The minion pools do not have an active execution' : '',
+        disabled: !canBeRefreshed,
+        title: !canBeRefreshed ? 'The minion pool should be allocated' : '',
       },
       {
         label: 'Delete Minion Pools',
@@ -303,8 +290,8 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
         action: () => {
           this.setState({ showDeletePoolsModal: true })
         },
-        disabled: !uninitialized,
-        title: !uninitialized ? 'The minion pools should be uninitialized' : '',
+        disabled: !canBeDeleted,
+        title: !canBeDeleted ? 'The minion pool should be deallocated' : '',
       },
     ]
 
@@ -371,7 +358,7 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
         {this.state.showMinionPoolModal ? (
           <Modal
             isOpen
-            title="New Minion Pool"
+            title={`New ${ObjectUtils.capitalizeFirstLetter(this.state.selectedMinionPoolPlatform)} Minion Pool`}
             onRequestClose={() => { this.handleCloseMinionPoolModalRequest() }}
           >
             <MinionPoolModal
@@ -383,16 +370,6 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
             />
           </Modal>
         ) : null}
-        {this.state.showCancelExecutionModal ? (
-          <AlertModal
-            isOpen
-            title="Cancel Executions?"
-            message="Are you sure you want to cancel the selected Minion Pools executions?"
-            extraMessage=" "
-            onConfirmation={() => { this.cancelExecutions() }}
-            onRequestClose={() => { this.setState({ showCancelExecutionModal: false }) }}
-          />
-        ) : null}
         {this.state.showDeletePoolsModal ? (
           <AlertModal
             isOpen
@@ -401,6 +378,12 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
             extraMessage="Deleting a Coriolis Minion Pool is permanent!"
             onConfirmation={() => { this.deleteSelectedMinionPools() }}
             onRequestClose={() => { this.setState({ showDeletePoolsModal: false }) }}
+          />
+        ) : null}
+        {this.state.showDeallocateConfirmation ? (
+          <MinionPoolConfirmationModal
+            onCancelClick={() => { this.setState({ showDeallocateConfirmation: false }) }}
+            onExecuteClick={force => { this.handleDeallocateConfirmation(force) }}
           />
         ) : null}
       </Wrapper>

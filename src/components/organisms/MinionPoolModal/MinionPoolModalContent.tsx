@@ -24,6 +24,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import EndpointLogos from '../../atoms/EndpointLogos/EndpointLogos'
 import { Endpoint } from '../../../@types/Endpoint'
+import ToggleButtonBar from '../../atoms/ToggleButtonBar/ToggleButtonBar'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -36,6 +37,9 @@ const Fields = styled.div<any>`
   padding: 0 32px;
   flex-direction: column;
   overflow: auto;
+`
+const ToggleButtonBarStyled = styled(ToggleButtonBar)`
+  margin-top: 16px;
 `
 const FieldStyled = styled(FieldInput)`
   min-width: ${props => (props.useTextArea ? '100%' : '224px')};
@@ -68,6 +72,7 @@ const EndpointFieldLabelText = styled.span`
 const EndpointFieldValue = styled.div`
   display: flex;
   align-items: center;
+  height: 29px;
 `
 const EndpointFieldValueText = styled.div`
   overflow: hidden;
@@ -76,11 +81,11 @@ const EndpointFieldValueText = styled.div`
   font-size: 12px;
   color: ${Palette.grayscale[4]};
 `
-const PoolPlatformFieldText = styled.div`
+const EndpointFieldValueLabel = styled.div`
   text-transform: capitalize;
 `
 const EndpointFieldValueLogo = styled.div``
-const Group = styled.div<any>`
+const Group = styled.div`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -89,6 +94,14 @@ const GroupName = styled.div<any>`
   display: flex;
   align-items: center;
   margin: 32px 0 24px 0;
+`
+const DisabledMessage = styled.div`
+  display: flex;
+  align-items: center;
+  width: 340px;
+  margin: 0 auto 32px auto;
+  text-align: center;
+  font-size: 13px;
 `
 const GroupNameText = styled.div<any>`
   margin: 0 32px;
@@ -105,6 +118,7 @@ const GroupFields = styled.div<any>`
   flex-direction: column;
 `
 type Props = {
+  envOptionsDisabled: boolean
   defaultSchema: Field[],
   envSchema: Field[],
   invalidFields: string[],
@@ -118,7 +132,28 @@ type Props = {
   onCreateClick: () => void
   onCancelClick: () => void
 }
-class MinionPoolModalContent extends React.Component<Props> {
+type State = {
+  useAdvancedOptions: boolean
+}
+class MinionPoolModalContent extends React.Component<Props, State> {
+  state = {
+    useAdvancedOptions: false,
+  }
+
+  componentDidUpdate(_: Props, prevState: State) {
+    if (prevState.useAdvancedOptions !== this.state.useAdvancedOptions) {
+      this.props.onResizeUpdate(0)
+    }
+  }
+
+  filterBySimpleAdvanced(fields: Field[]): Field[] {
+    if (this.state.useAdvancedOptions) {
+      return fields
+    }
+    const exceptions = ['endpoint_id', 'platform', 'os_type']
+    return fields.filter(f => (f.required && f.default == null) || exceptions.indexOf(f.name) > -1)
+  }
+
   renderEndpoint() {
     return (
       <EndpointField>
@@ -142,24 +177,24 @@ class MinionPoolModalContent extends React.Component<Props> {
     )
   }
 
-  renderPoolPlatform() {
+  renderReadOnlyField(field: Field) {
     return (
       <EndpointField>
         <EndpointFieldLabel>
           <EndpointFieldLabelText>
-            Pool Platform
+            {field.title}
           </EndpointFieldLabelText>
         </EndpointFieldLabel>
         <EndpointFieldValue>
-          <PoolPlatformFieldText>
-            {this.props.getFieldValue(this.props.defaultSchema.find(f => f.name === 'pool_platform'))}
-          </PoolPlatformFieldText>
+          <EndpointFieldValueLabel>
+            {this.props.getFieldValue(field)}
+          </EndpointFieldValueLabel>
         </EndpointFieldValue>
       </EndpointField>
     )
   }
 
-  renderFieldSet(customFields: Field[]) {
+  renderFieldSet(customFields: Field[], options?: {disabled?: boolean}) {
     const rows: JSX.Element[] = []
     let lastField: JSX.Element
     let i = 0
@@ -167,19 +202,19 @@ class MinionPoolModalContent extends React.Component<Props> {
       let currentField
       if (field.name === 'endpoint_id') {
         currentField = this.renderEndpoint()
-      } else if (field.name === 'pool_platform') {
-        currentField = this.renderPoolPlatform()
+      } else if (field.name === 'platform' || field.name === 'os_type') {
+        currentField = this.renderReadOnlyField(field)
       } else {
         currentField = (
           <FieldStyled
             {...field}
             label={field.title || LabelDictionary.get(field.name)}
             width={StyleProps.inputSizes.large.width}
-            disabled={this.props.disabled}
+            disabled={this.props.disabled || options?.disabled}
             highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
             value={this.props.getFieldValue(field)}
             onChange={value => { this.props.onFieldChange(field, value) }}
-            nullableBoolean
+            nullableBoolean={field.nullableBoolean != null ? field.nullableBoolean : true}
           />
         )
       }
@@ -216,7 +251,7 @@ class MinionPoolModalContent extends React.Component<Props> {
       <Fields ref={(ref: HTMLElement) => { this.props.scrollableRef(ref) }}>
         <Group>
           <GroupFields>
-            {this.renderFieldSet(this.props.defaultSchema)}
+            {this.renderFieldSet(this.filterBySimpleAdvanced(this.props.defaultSchema))}
           </GroupFields>
         </Group>
         <Group>
@@ -225,17 +260,36 @@ class MinionPoolModalContent extends React.Component<Props> {
             <GroupNameText>Environment Options</GroupNameText>
             <GroupNameBar />
           </GroupName>
+          {this.props.envOptionsDisabled ? (
+            <DisabledMessage>
+              The environment options are disabled while the minion pool is not deallocated.
+            </DisabledMessage>
+          ) : null}
           <GroupFields>
-            {this.renderFieldSet(this.props.envSchema)}
+            {this.renderFieldSet(
+              this.filterBySimpleAdvanced(this.props.envSchema),
+              { disabled: this.props.envOptionsDisabled },
+            )}
           </GroupFields>
         </Group>
       </Fields>
     )
   }
 
+  renderSimpleAdvancedToggle() {
+    return (
+      <ToggleButtonBarStyled
+        items={[{ label: 'Simple', value: 'simple' }, { label: 'Advanced', value: 'advanced' }]}
+        selectedValue={this.state.useAdvancedOptions ? 'advanced' : 'simple'}
+        onChange={item => { this.setState({ useAdvancedOptions: item.value === 'advanced' }) }}
+      />
+    )
+  }
+
   render() {
     return (
       <Wrapper>
+        {this.renderSimpleAdvancedToggle()}
         {this.renderFields()}
       </Wrapper>
     )

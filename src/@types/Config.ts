@@ -34,4 +34,5 @@ export type Config = {
   passwordFields: string[],
   mainListItemsPerPage: number,
   servicesUrls: Services,
+  maxMinionPoolEventsPerPage: number,
 }

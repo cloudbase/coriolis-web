@@ -17,7 +17,14 @@ import LabelDictionary from '../utils/LabelDictionary'
 import { ProviderTypes } from './Providers'
 
 type Separator = { separator: boolean }
-type EnumItemObject = { label?: string, value?: any, name?: string, id?: string | null }
+type EnumItemObject = {
+  label?: string,
+  value?: any,
+  name?: string,
+  id?: string | null,
+  disabled?: boolean,
+  subtitleLabel?: string,
+}
 export const isEnumSeparator = (e: any): e is Separator => (typeof e !== 'string' && e.separator === true)
 
 export type EnumItem = (

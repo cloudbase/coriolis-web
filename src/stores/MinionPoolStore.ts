@@ -20,9 +20,12 @@ import MinionPoolSource from '../sources/MinionPoolSource'
 import { Field } from '../@types/Field'
 import { ProviderTypes } from '../@types/Providers'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
-import { ExecutionTasks } from '../@types/Execution'
 
-export type MinionPoolAction = 'set-up-shared-resources' | 'allocate-machines' | 'deallocate-machines' | 'tear-down-shared-resources'
+export type MinionPoolAction = 'allocate' | 'deallocate' | 'refresh'
+
+export const MinionPoolStoreUtils = {
+  isActive: (minionPool: MinionPool) => minionPool.status === 'ALLOCATED' || minionPool.status === 'SCALING' || minionPool.status === 'RESCALING',
+}
 
 class MinionPoolStore {
   @observable
@@ -30,6 +33,12 @@ class MinionPoolStore {
 
   @observable
   minionPools: MinionPool[] = []
+
+  @observable
+  loadingMinionPoolDetails: boolean = false
+
+  @observable
+  minionPoolDetails: MinionPoolDetails | null = null
 
   @observable
   loadingMinionPoolSchema: boolean = false
@@ -41,19 +50,7 @@ class MinionPoolStore {
   minionPoolEnvSchema: Field[] = []
 
   @observable
-  loadingMinionPoolDetails: boolean = false
-
-  @observable
-  minionPoolDetails: MinionPoolDetails | null = null
-
-  @observable
   loadingEnvOptions: boolean = false
-
-  @observable
-  executionsTasks: ExecutionTasks[] = []
-
-  @observable
-  loadingExecutionsTasks: boolean = false
 
   @computed
   get minionPoolCombinedSchema() {
@@ -84,25 +81,21 @@ class MinionPoolStore {
     if (options?.showLoading) {
       this.loadingMinionPoolDetails = true
     }
+
     try {
-      const minionPoolDetails = await MinionPoolSource.getMinionPoolDetails(
+      const minionPool = await MinionPoolSource.loadMinionPoolDetails(
         id,
         { skipLog: options?.skipLog },
       )
 
       runInAction(() => {
-        this.minionPoolDetails = minionPoolDetails
+        this.minionPoolDetails = minionPool
       })
     } finally {
       runInAction(() => {
         this.loadingMinionPoolDetails = false
       })
     }
-  }
-
-  @action
-  clearMinionPoolDetails() {
-    this.minionPoolDetails = null
   }
 
   @action
@@ -169,62 +162,12 @@ class MinionPoolStore {
   }
 
   @action
-  async runAction(minionPoolId: string, minionPoolAction: MinionPoolAction) {
-    return MinionPoolSource.runAction(minionPoolId, minionPoolAction)
-  }
-
-  @action
-  async cancelExecution(minionPoolId: string, force?: boolean, executionId?: string) {
-    return MinionPoolSource.cancelExecution(minionPoolId, force, executionId)
+  async runAction(minionPoolId: string, minionPoolAction: MinionPoolAction, actionOptions?: any) {
+    return MinionPoolSource.runAction(minionPoolId, minionPoolAction, actionOptions)
   }
 
   async deleteMinionPool(minionPoolId: string) {
     return MinionPoolSource.deleteMinionPool(minionPoolId)
-  }
-
-  private currentlyLoadingExecution: string = ''
-
-  @action
-  async loadExecutionTasks(
-    options: {
-      minionPoolId: string,
-      executionId?: string,
-      skipLog?: boolean,
-    },
-  ) {
-    const {
-      minionPoolId, executionId, skipLog,
-    } = options
-
-    if (!skipLog && this.currentlyLoadingExecution === executionId) {
-      return
-    }
-    this.currentlyLoadingExecution = skipLog ? this.currentlyLoadingExecution : executionId || ''
-    if (!this.currentlyLoadingExecution) {
-      return
-    }
-
-    if (!this.executionsTasks.find(e => e.id === this.currentlyLoadingExecution)) {
-      this.loadingExecutionsTasks = true
-    }
-
-    try {
-      const executionTasks = await MinionPoolSource.getExecutionTasks({
-        minionPoolId, executionId: this.currentlyLoadingExecution, skipLog,
-      })
-      runInAction(() => {
-        this.executionsTasks = [
-          ...this.executionsTasks.filter(e => e.id !== this.currentlyLoadingExecution),
-          executionTasks,
-        ]
-      })
-    } catch (err) {
-      console.error(err)
-    } finally {
-      runInAction(() => {
-        this.loadingExecutionsTasks = false
-      })
-    }
   }
 }
 

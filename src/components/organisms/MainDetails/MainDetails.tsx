@@ -46,6 +46,17 @@ const Wrapper = styled.div<any>`
   flex-direction: column;
   padding-bottom: 48px;
 `
+const WarningWrapper = styled.div`
+  display: flex;
+  background: ${Palette.warning}66;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  align-items: center;
+`
+const WarningText = styled.div`
+  margin-left: 8px;
+`
 const ColumnsLayout = styled.div<any>`
   display: flex;
 `
@@ -328,7 +339,7 @@ class MainDetails extends React.Component<Props, State> {
               <Field>
                 <Label>Source Minion Pool</Label>
                 {sourceMinionPool ? (
-                  <ValueLink to={`/minion-pools/${sourceMinionPool.id}`}>{sourceMinionPool.pool_name}</ValueLink>
+                  <ValueLink to={`/minion-pools/${sourceMinionPool.id}`}>{sourceMinionPool.name}</ValueLink>
                 ) : (
                   <Value>{this.props.item.origin_minion_pool_id}</Value>
                 )}
@@ -376,7 +387,7 @@ class MainDetails extends React.Component<Props, State> {
               <Field>
                 <Label>Target Minion Pool</Label>
                 {destMinionPool ? (
-                  <ValueLink to={`/minion-pools/${destMinionPool.id}`}>{destMinionPool.pool_name}</ValueLink>
+                  <ValueLink to={`/minion-pools/${destMinionPool.id}`}>{destMinionPool.name}</ValueLink>
                 ) : (
                   <Value>{this.props.item.destination_minion_pool_id}</Value>
                 )}
@@ -408,9 +419,27 @@ class MainDetails extends React.Component<Props, State> {
     )
   }
 
+  renderSpecialError() {
+    if (this.props.item?.last_execution_status !== 'ERROR_ALLOCATING_MINIONS') {
+      return null
+    }
+
+    return (
+      <WarningWrapper>
+        <StatusIcon status="ERROR" />
+        <WarningText>
+          There was an error allocating minion machines for this {this.props.item.type}.
+          Please review the log events for the selected minion pool(s)
+          and the logs of the Coriolis Minion Manager component for full details.
+        </WarningText>
+      </WarningWrapper>
+    )
+  }
+
   render() {
     return (
       <Wrapper>
+        {this.renderSpecialError()}
         {this.renderTable()}
         {this.props.instancesDetailsLoading || this.props.loading ? null : (
           <MainDetailsTable

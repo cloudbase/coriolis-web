@@ -127,7 +127,8 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
 
   cancelSelectedMigrations() {
     this.state.selectedMigrations.forEach(migration => {
-      if (this.getStatus(migration.id) === 'RUNNING') {
+      const status = this.getStatus(migration.id)
+      if (status === 'RUNNING' || status === 'AWAITING_MINION_ALLOCATIONS') {
         migrationStore.cancel(migration.id)
       }
     })
@@ -213,7 +214,8 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
   render() {
     let atLeaseOneIsRunning = false
     this.state.selectedMigrations.forEach(migration => {
-      atLeaseOneIsRunning = atLeaseOneIsRunning || this.getStatus(migration.id) === 'RUNNING'
+      const status = this.getStatus(migration.id)
+      atLeaseOneIsRunning = atLeaseOneIsRunning || status === 'RUNNING' || status === 'AWAITING_MINION_ALLOCATIONS'
     })
     const BulkActions = [
       {

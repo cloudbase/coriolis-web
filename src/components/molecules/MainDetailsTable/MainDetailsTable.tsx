@@ -280,7 +280,10 @@ class MainDetailsTable extends React.Component<Props, State> {
           destinationKey = destinationName as string
           destinationBody = getBody(transferDisk)
         }
-      } else if (this.props.item?.type === 'migration' && this.props.item.last_execution_status === 'RUNNING') {
+      } else if (this.props.item?.type === 'migration' && (
+        this.props.item.last_execution_status === 'RUNNING'
+        || this.props.item.last_execution_status === 'AWAITING_MINION_ALLOCATIONS'
+      )) {
         destinationBody = ['Waiting for migration to finish']
       }
 
@@ -355,7 +358,10 @@ class MainDetailsTable extends React.Component<Props, State> {
             destinationNetworkName = destinationNic.network_name
             destinationBody = getBody(destinationNic)
           }
-        } else if (this.props.item?.type === 'migration' && this.props.item.last_execution_status === 'RUNNING') {
+        } else if (this.props.item?.type === 'migration' && (
+          this.props.item.last_execution_status === 'RUNNING'
+          || this.props.item.last_execution_status === 'AWAITING_MINION_ALLOCATIONS'
+        )) {
           destinationBody = ['Waiting for migration to finish']
         }
 
@@ -389,7 +395,7 @@ class MainDetailsTable extends React.Component<Props, State> {
       && minionPoolMappings[instance.instance_name || instance.id || instance.name]
     if (minionPoolId) {
       const minionPool = this.props.minionPools.find(m => m.id === minionPoolId)
-      sourceBody.push(`Minion Pool: ${minionPool?.pool_name || minionPoolId}`)
+      sourceBody.push(`Minion Pool: ${minionPool?.name || minionPoolId}`)
     }
     let destinationBody: string[] = []
     let destinationName: string = ''
@@ -397,7 +403,10 @@ class MainDetailsTable extends React.Component<Props, State> {
     if (transferResult) {
       destinationName = transferResult.instance_name || transferResult.name
       destinationBody = getBody(transferResult)
-    } else if (this.props.item?.type === 'migration' && this.props.item.last_execution_status === 'RUNNING') {
+    } else if (this.props.item?.type === 'migration' && (
+      this.props.item.last_execution_status === 'RUNNING'
+      || this.props.item.last_execution_status === 'AWAITING_MINION_ALLOCATIONS'
+    )) {
       destinationName = 'Waiting for migration to finish'
     }
     const instanceName = instance.instance_name || instance.id

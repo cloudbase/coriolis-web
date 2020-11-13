@@ -26,6 +26,7 @@ import warningImage from './images/warning'
 import pendingImage from './images/pending.svg'
 import successHollowImage from './images/success-hollow.svg'
 import errorHollowImage from './images/error-hollow.svg'
+import triangleImage from './images/triangle.svg'
 
 type Props = {
   status: string,
@@ -33,7 +34,9 @@ type Props = {
   hollow?: boolean,
   secondary?: boolean,
   style?: React.CSSProperties
+  triangle?: boolean
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
+  title?: string
 }
 
 const getSpinnerUrl = (
@@ -49,6 +52,10 @@ const getRunningImageUrl = (props: Props) => {
 const getWarningUrl = (background: string) => `url('data:image/svg+xml;utf8,${encodeURIComponent(warningImage(background))}')`
 
 const statuses = (status: any, props: any) => {
+  if (props.triangle) {
+    return css`background-image: url('${triangleImage}');`
+  }
+
   switch (status) {
     case 'COMPLETED':
       return css`
@@ -57,6 +64,7 @@ const statuses = (status: any, props: any) => {
     case 'STARTING':
     case 'RUNNING':
     case 'PENDING':
+    case 'AWAITING_MINION_ALLOCATIONS':
       return css`
         background-image: ${getRunningImageUrl(props)};
         ${StyleProps.animations.rotation}
@@ -74,6 +82,7 @@ const statuses = (status: any, props: any) => {
     case 'FAILED_TO_SCHEDULE':
     case 'FAILED_TO_CANCEL':
     case 'ERROR':
+    case 'ERROR_ALLOCATING_MINIONS':
       return css`
         background-image: url('${props.hollow ? errorHollowImage : errorImage}');
       `

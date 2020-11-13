@@ -107,17 +107,41 @@ const Checkmark = styled.div<any>`
     }
   }
 `
+const getListItemColor = (props: any) => {
+  if (props.disabled) {
+    return Palette.grayscale[3]
+  }
+  if (props.multipleSelected) {
+    return Palette.primary
+  }
+  if (props.selected) {
+    return 'white'
+  }
+  if (props.dim) {
+    return Palette.grayscale[3]
+  }
+  return Palette.grayscale[4]
+}
+const getListBackgroundColor = (props: any) => {
+  if (props.arrowSelected) {
+    return css`background: ${Palette.primary}44;`
+  }
+  if (props.selected) {
+    return css`background: ${Palette.primary};`
+  }
+  return ''
+}
 const ListItem = styled.div<any>`
   position: relative;
   display: flex;
-  color: ${(props: any) => (props.multipleSelected ? Palette.primary : props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4])};
-  ${(props: any) => (props.arrowSelected ? css`background: ${Palette.primary}44;` : '')}
-  ${(props: any) => (props.selected ? css`background: ${Palette.primary};` : '')}
+  color: ${(props: any) => getListItemColor(props)};
+  ${(props: any) => getListBackgroundColor(props)}
   ${(props: any) => (props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : '')}
   padding: 8px 16px;
   transition: all ${StyleProps.animations.swift};
   padding-left: ${(props: any) => props.paddingLeft}px;
   word-break: break-word;
+  ${props => (props.disabled ? css`cursor: default;` : '')}
 
   &:first-child {
     border-top-left-radius: ${StyleProps.borderRadius};
@@ -137,7 +161,11 @@ const ListItem = styled.div<any>`
     }
   }
 `
-const DuplicatedLabel = styled.div<any>`
+const SubtitleLabel = styled.div`
+  display: flex;
+  font-size: 11px;
+`
+const DuplicatedLabel = styled.div`
   display: flex;
   font-size: 11px;
   span {
@@ -445,6 +473,12 @@ class Dropdown extends React.Component<Props, State> {
       this.wrapperRef.focus()
       setTimeout(() => { this.ignoreFocusHandler = false }, 100)
     }
+
+    if (item.disabled) {
+      resetFocus()
+      return
+    }
+
     if (!this.props.multipleSelection) {
       this.setState({ showDropdownList: false, firstItemHover: false }, () => {
         resetFocus()
@@ -588,6 +622,7 @@ class Dropdown extends React.Component<Props, State> {
                 dim={this.props.dimFirstItem && i === 0}
                 paddingLeft={this.props.multipleSelection ? 8 : 16}
                 arrowSelected={i === this.state.arrowSelection}
+                disabled={item.disabled}
               >
                 {this.props.multipleSelection ? (
                   <Checkmark
@@ -598,7 +633,11 @@ class Dropdown extends React.Component<Props, State> {
                 ) : null}
                 <Labels>
                   {label === '' ? '\u00A0' : label}
-                  {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
+                  {item.subtitleLabel ? (
+                    <SubtitleLabel>{item.subtitleLabel}</SubtitleLabel>
+                  ) : null}
+
+                  {duplicatedLabel ? <DuplicatedLabel>(<span>{value || ''}</span>)</DuplicatedLabel> : ''}
                 </Labels>
               </ListItem>
             )

@@ -106,7 +106,7 @@ type Props = {
 @observer
 class MinionPoolListItem extends React.Component<Props> {
   getStatus() {
-    return this.props.item.pool_status
+    return this.props.item.status
   }
 
   renderCreationDate() {
@@ -135,11 +135,14 @@ class MinionPoolListItem extends React.Component<Props> {
     )
   }
 
-  renderUser() {
+  renderCreatedCount() {
+    const createdCount = this.props.item.minion_machines.filter(m => m.status === 'ALLOCATED' || m.status === 'AVAILABLE').length
+    const totalCount = this.props.item.minion_machines.length
+
     return (
-      <Column style={{ minWidth: '115px', maxWidth: '115px' }}>
+      <Column style={{ minWidth: '150px', maxWidth: '150px' }}>
         <ItemLabel>
-          OS Type
+          Allocated
         </ItemLabel>
         <ItemValue
           style={{
@@ -147,7 +150,7 @@ class MinionPoolListItem extends React.Component<Props> {
             overflow: 'hidden',
           }}
         >
-          {this.props.item.pool_os_type}
+          {createdCount} of {totalCount} machines<br />({this.props.item.maximum_minions} maximum)
         </ItemValue>
       </Column>
     )
@@ -171,7 +174,7 @@ class MinionPoolListItem extends React.Component<Props> {
         <Content onClick={this.props.onClick}>
           <Image />
           <Title>
-            <TitleLabel>{this.props.item.pool_name}</TitleLabel>
+            <TitleLabel>{this.props.item.name}</TitleLabel>
             <StatusWrapper>
               {status ? (
                 <StatusPill
@@ -184,7 +187,7 @@ class MinionPoolListItem extends React.Component<Props> {
           {endpointImage}
           {this.renderCreationDate()}
           {this.renderUpdateDate()}
-          {this.renderUser()}
+          {this.renderCreatedCount()}
         </Content>
       </Wrapper>
     )

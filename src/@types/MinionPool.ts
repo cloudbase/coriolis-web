@@ -12,23 +12,47 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Execution } from './Execution'
-
+export type MinionMachine = {
+  id: string
+  created_at: string
+  updated_at: string
+  status: string
+  connection_info?: any
+  provider_properties: any
+}
+export type MinionPoolEvent = {
+  id: string
+  index: number
+  level: 'INFO' | 'DEBUG' | 'ERROR'
+  message: string
+  created_at: string
+}
+export type MinionPoolProgressUpdate = {
+  id: string
+  current_step: number
+  message: string
+  created_at: string
+}
+export type MinionPoolEventProgressUpdate = MinionPoolEvent | MinionPoolProgressUpdate
 export type MinionPool = {
   id: string
   created_at: string
   updated_at: string | null
-  pool_name: string
-  pool_os_type: string
-  pool_status: string
+  name: string
+  os_type: string
+  status: string
   minimum_minions: number
+  maximum_minions: number
   environment_options: { [prop: string]: any }
   endpoint_id: string
-  last_execution_status: string
   notes?: string
-  pool_platform: 'source' | 'destination'
+  platform: 'source' | 'destination',
+  minion_machines: MinionMachine[],
+  minion_retention_strategy: 'poweroff' | 'delete'
+  minion_max_idle_time: number,
 }
 
 export type MinionPoolDetails = MinionPool & {
-  executions: Execution[]
+  events: MinionPoolEvent[],
+  progress_updates: MinionPoolProgressUpdate[]
 }

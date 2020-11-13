@@ -135,3 +135,19 @@ storiesOf('Dropdown', module)
       ]}
     />
   ))
+  .add('subtitle label', () => (
+    <Wrapper items={[
+      {
+        label: 'Item 1',
+        value: 'item-1',
+        subtitleLabel: 'Pool is in UNALLOCATED status instead of being ALLOCATED.',
+        disabled: true,
+      },
+      { label: 'Item 2', value: 'item-2' },
+      { label: 'Item 3', value: 'item-3' },
+      { label: 'Item 4', value: 'item-4' },
+      { separator: true },
+      { label: 'Item 1', value: 'item-1' },
+    ]}
+    />
+  ))

@@ -184,7 +184,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
   cancelExecutions() {
     this.state.selectedReplicas.forEach(replica => {
       const actualReplica = replicaStore.replicas.find(r => r.id === replica.id)
-      if (actualReplica?.last_execution_status === 'RUNNING') {
+      if (actualReplica?.last_execution_status === 'RUNNING' || actualReplica?.last_execution_status === 'AWAITING_MINION_ALLOCATIONS') {
         replicaStore.cancelExecution({ replicaId: replica.id })
       }
     })
@@ -200,7 +200,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       .find(e => e.id === usableReplica.origin_endpoint_id)
     const targetEndpoint = endpointStore.endpoints
       .find(e => e.id === usableReplica.destination_endpoint_id)
-    return Boolean(originEndpoint && targetEndpoint && this.getStatus(usableReplica) !== 'RUNNING')
+    const status = this.getStatus(usableReplica)
+    return Boolean(originEndpoint && targetEndpoint && status !== 'RUNNING' && status !== 'AWAITING_MINION_ALLOCATIONS')
   }
 
   deleteSelectedReplicas() {
@@ -303,7 +304,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       const storeReplica = replicaStore.replicas.find(r => r.id === replica.id)
       atLeastOneHasExecuteEnabled = atLeastOneHasExecuteEnabled
         || this.isExecuteEnabled(storeReplica)
-      atLeaseOneIsRunning = atLeaseOneIsRunning || this.getStatus(storeReplica) === 'RUNNING'
+      const status = this.getStatus(storeReplica)
+      atLeaseOneIsRunning = atLeaseOneIsRunning || status === 'RUNNING' || status === 'AWAITING_MINION_ALLOCATIONS'
     })
 
     const BulkActions: DropdownAction[] = [{

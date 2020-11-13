@@ -581,7 +581,7 @@ class EditReplica extends React.Component<Props, State> {
       dictionaryKey = `${endpoint.type}-${type}`
     }
     const minionPools = minionPoolStore.minionPools
-      .filter(m => m.pool_platform === type && m.endpoint_id === endpoint.id)
+      .filter(m => m.platform === type && m.endpoint_id === endpoint.id)
     return (
       <WizardOptions
         minionPools={minionPools}

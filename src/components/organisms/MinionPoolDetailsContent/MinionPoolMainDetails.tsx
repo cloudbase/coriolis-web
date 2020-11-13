@@ -20,7 +20,6 @@ import styled, { css } from 'styled-components'
 import EndpointLogos from '../../atoms/EndpointLogos'
 import CopyValue from '../../atoms/CopyValue'
 import StatusIcon from '../../atoms/StatusIcon'
-import StatusImage from '../../atoms/StatusImage'
 import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 
 import type { Endpoint } from '../../../@types/Endpoint'
@@ -33,9 +32,8 @@ import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import { OptionsSchemaPlugin } from '../../../plugins/endpoint'
 
-import { MinionPoolDetails } from '../../../@types/MinionPool'
-import StatusPill from '../../atoms/StatusPill/StatusPill'
 import { TransferItem, ReplicaItem, MigrationItem } from '../../../@types/MainItem'
+import { MinionPool } from '../../../@types/MinionPool'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -81,12 +79,6 @@ const ValueLink = styled(Link)`
   text-decoration: none;
   cursor: pointer;
 `
-const Loading = styled.div<any>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-`
 const PropertiesTable = styled.div<any>``
 const PropertyRow = styled.div<any>`
   display: flex;
@@ -111,14 +103,13 @@ const PropertyValue = styled.div<any>`
 `
 
 type Props = {
-  item?: MinionPoolDetails | null,
+  item?: MinionPool | null,
   replicas: ReplicaItem[]
   migrations: MigrationItem[]
   schema: FieldType[],
   schemaLoading: boolean,
   endpoints: Endpoint[],
   bottomControls: React.ReactNode,
-  loading: boolean,
 }
 @observer
 class MinionPoolMainDetails extends React.Component<Props> {
@@ -215,22 +206,18 @@ class MinionPoolMainDetails extends React.Component<Props> {
 
   renderUsage(items: TransferItem[]) {
     return items.map(item => (
-      <span>
+      <div>
         <ValueLink
           key={item.id}
           to={`/${item.type}s/${item.id}`}
         >
           {item.instances[0]}
         </ValueLink>
-        <br />
-      </span>
+      </div>
     ))
   }
 
   renderTable() {
-    if (this.props.loading) {
-      return null
-    }
     const endpoint = this.getEndpoint()
     const lastUpdated = this.renderLastExecutionTime()
 
@@ -268,7 +255,7 @@ class MinionPoolMainDetails extends React.Component<Props> {
           <Row>
             <Field>
               <Label>Pool Platform</Label>
-              {this.renderValue(this.props.item?.pool_platform || '-', true)}
+              {this.renderValue(this.props.item?.platform || '-', true)}
             </Field>
           </Row>
           <Row>
@@ -304,12 +291,6 @@ class MinionPoolMainDetails extends React.Component<Props> {
         </Column>
         <Column width="9.5%" />
         <Column width="48%" style={{ flexGrow: 1 }}>
-          <Row>
-            <Field>
-              <Label>Last Execution Status</Label>
-              <Value>{this.props.item?.last_execution_status ? <StatusPill status={this.props.item.last_execution_status} /> : '-'}</Value>
-            </Field>
-          </Row>
           {getPropertyNames().length > 0 ? (
             <Row>
               <Field>
@@ -321,36 +302,43 @@ class MinionPoolMainDetails extends React.Component<Props> {
               </Field>
             </Row>
           ) : null}
+          <Row>
+            <Field>
+              <Label>Minimum Minions</Label>
+              <Value>{this.props.item?.minimum_minions || '1'}</Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
+              <Label>Maximum Minions</Label>
+              <Value>{this.props.item?.maximum_minions || '1'}</Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
+              <Label>Minion Max Idle Time (s)</Label>
+              <Value>{this.props.item?.minion_max_idle_time || '-'}</Value>
+            </Field>
+          </Row>
+          <Row>
+            <Field>
+              <Label>Minion Retention Strategy</Label>
+              <Value>{this.props.item?.minion_retention_strategy || 'delete'}</Value>
+            </Field>
+          </Row>
         </Column>
       </ColumnsLayout>
     )
   }
 
   renderBottomControls() {
-    if (this.props.loading) {
-      return null
-    }
-
     return this.props.bottomControls
-  }
-
-  renderLoading() {
-    if (!this.props.loading) {
-      return null
-    }
-
-    return (
-      <Loading>
-        <StatusImage loading />
-      </Loading>
-    )
   }
 
   render() {
     return (
       <Wrapper>
         {this.renderTable()}
-        {this.renderLoading()}
         {this.renderBottomControls()}
       </Wrapper>
     )
