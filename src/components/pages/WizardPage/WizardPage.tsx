@@ -620,8 +620,9 @@ class WizardPage extends React.Component<Props, State> {
     }
 
     const executeNowOptions = executionOptions.map(field => {
-      if (options && options[field.name] != null) {
-        return { name: field.name, value: options[field.name] }
+      const value = options?.execute_now_options?.[field.name]
+      if (value != null) {
+        return { name: field.name, value }
       }
       return field
     })
