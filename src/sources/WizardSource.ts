@@ -89,10 +89,11 @@ class WizardSource {
 
     payload[type].destination_environment = destEnv
 
+    payload[type].shutdown_instances = Boolean(
+      data.destOptions && data.destOptions.shutdown_instances,
+    )
+
     if (type === 'migration') {
-      payload[type].shutdown_instances = Boolean(
-        data.destOptions && data.destOptions.shutdown_instances,
-      )
       payload[type].replication_count = (
         data.destOptions && data.destOptions.replication_count) || 2
       if (uploadedUserScripts.length) {
