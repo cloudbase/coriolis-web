@@ -223,6 +223,10 @@ class MigrationSource {
       ...updatedDestEnv,
     }
 
+    if (migration.user_scripts) {
+      payload.migration.user_scripts = migration.user_scripts
+    }
+
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
       method: 'POST',

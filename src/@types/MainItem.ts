@@ -87,6 +87,7 @@ export type ReplicaItem = BaseItem & {
 export type MigrationItem = BaseItem & {
   type: 'migration',
   replica_id?: string,
+  user_scripts?: any
 }
 
 export type MigrationItemOptions = MigrationItem & {
