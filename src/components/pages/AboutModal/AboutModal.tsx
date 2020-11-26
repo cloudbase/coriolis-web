@@ -23,6 +23,7 @@ import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import licenceStore from '../../../stores/LicenceStore'
+import userStore from '../../../stores/UserStore'
 
 import logoImage from './images/coriolis-logo.svg'
 
@@ -59,8 +60,8 @@ const Logo = styled.div<any>`
   ${StyleProps.exactHeight('71px')}
   background: url('${logoImage}') center no-repeat;
 `
-const Text = styled.div<any>`
-  margin: 48px 0;
+const Text = styled.div`
+  margin: 48px 0 32px 0;
   color: ${Palette.grayscale[5]};
   font-size: 12px;
 `
@@ -93,11 +94,16 @@ class AboutModal extends React.Component<Props, State> {
 
   UNSAFE_componentWillMount() {
     licenceStore.loadVersion()
-    licenceStore.loadLicenceInfo()
+    if (userStore.loggedUser && userStore.loggedUser.isAdmin) {
+      licenceStore.loadLicenceInfo({ showLoading: true })
+    }
   }
 
   async handleAddLicence(licence: string) {
-    await licenceStore.addLicence(licence)
+    if (!licenceStore.licenceInfo) {
+      throw new Error('Licence info not loaded')
+    }
+    await licenceStore.addLicence(licence, licenceStore.licenceInfo.applianceId)
     licenceStore.loadLicenceInfo()
     this.setState({ licenceAddMode: false })
   }
@@ -124,6 +130,7 @@ class AboutModal extends React.Component<Props, State> {
             ) : null}
             <LicenceComponent
               licenceInfo={licenceStore.licenceInfo}
+              licenceError={licenceStore.licenceInfoError}
               loadingLicenceInfo={licenceStore.loadingLicenceInfo}
               onRequestClose={this.props.onRequestClose}
               addMode={this.state.licenceAddMode}

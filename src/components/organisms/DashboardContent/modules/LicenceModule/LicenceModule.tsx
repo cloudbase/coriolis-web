@@ -18,6 +18,7 @@ import styled from 'styled-components'
 import moment from 'moment'
 
 import StatusImage from '../../../../atoms/StatusImage'
+import InfoIcon from '../../../../atoms/InfoIcon'
 
 import Palette from '../../../../styleUtils/Palette'
 import StyleProps from '../../../../styleUtils/StyleProps'
@@ -40,14 +41,15 @@ const Module = styled.div<any>`
   padding: 24px 16px 16px 16px;
   height: 232px;
 `
-const LicenceInfo = styled.div<any>``
+const LicenceInfo = styled.div<any>`
+  width: 100%;
+`
 const NoLicence = styled.div<any>``
 const TopInfo = styled.div<any>`
   display: flex;
 `
 const TopInfoText = styled.div<any>`
   flex-grow: 1;
-  margin-top: 8px;
 `
 const TopInfoDate = styled.div<any>`
   ${StyleProps.exactWidth('76px')}
@@ -78,13 +80,16 @@ const TopInfoDateBottom = styled.div<any>`
   font-weight: ${StyleProps.fontWeights.extraLight};
 `
 const Charts = styled.div<any>`
+  margin-top: -8px;
+`
+const ChartRow = styled.div`
+  display: flex;
+  margin-left: -32px;
   margin-top: 32px;
 `
 const Chart = styled.div<any>`
-  margin-top: 32px;
-  &:first-child {
-    margin-top: 0;
-  }
+  width: 100%;
+  margin-left: 32px;
 `
 const ChartHeader = styled.div<any>`
   display: flex;
@@ -119,47 +124,89 @@ type Props = {
   licence: Licence | null,
   loading: boolean,
   style: any,
+  licenceError: string | null,
 }
 @observer
 class LicenceModule extends React.Component<Props> {
+  renderExpiration(date: Date) {
+    const dateMoment = moment(date)
+    const days = dateMoment.diff(new Date(), 'days')
+    if (days === 0) {
+      return (
+        <span>today at <b>{dateMoment.utc().format('HH:mm')} UTC</b></span>
+      )
+    }
+    return (
+      <span>on <b>{dateMoment.format('DD MMM YYYY')}</b></span>
+    )
+  }
+
   renderLicenceStatusText(info: Licence): React.ReactNode {
-    const currentPeriod = moment(info.currentPeriodEnd)
-    const days = currentPeriod.diff(new Date(), 'days')
-    const graphData = [{
-      color: Palette.alert,
-      current: info.performedReplicas,
-      total: info.totalReplicas,
-      label: 'Replicas',
-    }, {
-      color: Palette.primary,
-      current: info.performedMigrations,
-      total: info.totalMigations,
-      label: 'Migrations',
-    }]
+    const graphDataRows = [
+      [
+        {
+          color: Palette.alert,
+          current: info.currentPerformedReplicas,
+          total: info.currentAvailableReplicas,
+          label: 'Current Replicas',
+          info: 'The number of replicas performed with current licence over the number of replicas available in current licence',
+        },
+        {
+          color: Palette.alert,
+          current: info.lifetimePerformedReplicas,
+          total: info.lifetimeAvailableReplicas,
+          label: 'Lifetime Replicas',
+          info: 'The number of lifetime performed replicas over the number of lifetime available replicas',
+        },
+      ],
+      [
+        {
+          color: Palette.primary,
+          current: info.currentPerformedMigrations,
+          total: info.currentAvailableMigrations,
+          label: 'Current Migrations',
+          info: 'The number of migrations performed with current licence over the number of migrations available in current licence',
+        },
+        {
+          color: Palette.primary,
+          current: info.lifetimePerformedMigrations,
+          total: info.lifetimeAvailableMigrations,
+          label: 'Lifetime Migrations',
+          info: 'The number of lifetime performed migrations over the number of lifetime available migrations',
+        },
+      ],
+    ]
+    const latestLicenceExpiryDate = moment(info.latestLicenceExpiryDate)
     return (
       <LicenceInfo>
         <TopInfo>
           <TopInfoText>
-            Coriolis® Licence is active until&nbsp;
-            {currentPeriod.format('DD MMM YYYY')}
-            &nbsp;({days} days from now).
+            Earliest Coriolis® Licence expires&nbsp;
+            {this.renderExpiration(info.earliestLicenceExpiryDate)}.<br /><br />
+            Latest Coriolis® Licence expires {this.renderExpiration(info.latestLicenceExpiryDate)}.
           </TopInfoText>
           <TopInfoDate>
-            <TopInfoDateTop>{currentPeriod.format('MMM')} &#39;{currentPeriod.format('YY')}</TopInfoDateTop>
-            <TopInfoDateBottom>{currentPeriod.format('DD')}</TopInfoDateBottom>
+            <TopInfoDateTop>{latestLicenceExpiryDate.format('MMM')} &#39;{latestLicenceExpiryDate.format('YY')}</TopInfoDateTop>
+            <TopInfoDateBottom>{latestLicenceExpiryDate.format('DD')}</TopInfoDateBottom>
           </TopInfoDate>
         </TopInfo>
         <Charts>
-          {graphData.map(data => (
-            <Chart key={data.label}>
-              <ChartHeader>
-                <ChartHeaderCurrent>{data.current} {data.label}</ChartHeaderCurrent>
-                <ChartHeaderTotal>{data.total}</ChartHeaderTotal>
-              </ChartHeader>
-              <ChartBodyWrapper>
-                <ChartBody color={data.color} width={(data.current / data.total) * 100} />
-              </ChartBodyWrapper>
-            </Chart>
+          {graphDataRows.map(row => (
+            <ChartRow>
+              {row.map(data => (
+                <Chart key={data.label}>
+                  <ChartHeader>
+                    <ChartHeaderCurrent>
+                      {data.current} {data.label} <InfoIcon marginBottom={-3} text={data.info} />
+                    </ChartHeaderCurrent>
+                    <ChartHeaderTotal>{data.total}</ChartHeaderTotal>
+                  </ChartHeader>
+                  <ChartBodyWrapper>
+                    <ChartBody color={data.color} width={(data.current / data.total) * 100} />
+                  </ChartBodyWrapper>
+                </Chart>
+              ))}
+            </ChartRow>
           ))}
         </Charts>
       </LicenceInfo>
@@ -167,11 +214,9 @@ class LicenceModule extends React.Component<Props> {
   }
 
   renderNoLicence() {
+    const message = this.props.licenceError || 'Please contact Cloudbase Solutions with your Appliance ID in order to obtain a Coriolis® licence.'
     return (
-      <NoLicence>
-        Please contact Cloudbase Solutions with your
-        Appliance ID in order to obtain a Coriolis® licence.
-      </NoLicence>
+      <NoLicence>{message}</NoLicence>
     )
   }
 
@@ -185,17 +230,24 @@ class LicenceModule extends React.Component<Props> {
 
   render() {
     const licence = this.props.licence
-    let days: number | null = null
+    let moduleContent = null
     if (licence) {
-      const currentPeriod = moment(licence.currentPeriodEnd)
-      days = currentPeriod.diff(new Date(), 'days')
+      if (new Date(licence.earliestLicenceExpiryDate).getTime() > new Date().getTime()) {
+        moduleContent = this.renderLicenceStatusText(licence)
+      } else {
+        moduleContent = this.renderNoLicence()
+      }
+    } else if (this.props.loading) {
+      moduleContent = this.renderLoading()
+    } else if (this.props.licenceError) {
+      moduleContent = this.renderNoLicence()
     }
-    return licence || this.props.loading ? (
+
+    return licence || this.props.loading || this.props.licenceError ? (
       <Wrapper style={this.props.style}>
-        <Title>Licence</Title>
+        <Title>Current Licence</Title>
         <Module>
-          {licence ? days && days > 0 ? this.renderLicenceStatusText(licence)
-            : this.renderNoLicence() : this.props.loading ? this.renderLoading() : null}
+          {moduleContent}
         </Module>
       </Wrapper>
     ) : null

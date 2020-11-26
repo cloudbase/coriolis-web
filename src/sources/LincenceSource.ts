@@ -18,23 +18,35 @@ import configLoader from '../utils/Config'
 import type { Licence } from '../@types/Licence'
 
 class LicenceSource {
-  async loadLicenceInfo(skipLog?: boolean | null): Promise<Licence> {
-    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/licence-status`
+  async loadAppliancesIds(skipLog?: boolean | null): Promise<string[]> {
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances`
     const response = await Api.send({ url, quietError: true, skipLog })
-    const root = response.data.licence_status
-    return ({
-      currentPeriodStart: new Date(root.current_period_start),
-      currentPeriodEnd: new Date(root.current_period_end),
-      performedMigrations: root.performed_migrations,
-      performedReplicas: root.performed_replicas,
-      totalMigations: root.total_migrations,
-      totalReplicas: root.total_replicas,
-      applianceId: root.appliance_id,
-    })
+    return response.data.appliances.map((a: any) => a.id)
   }
 
-  async addLicence(licence: string) {
-    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/licences`
+  async loadLicenceInfo(applianceId: string, skipLog?: boolean | null): Promise<Licence> {
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/status`
+    const response = await Api.send({ url, quietError: true, skipLog })
+    const root = response.data.appliance_licence_status
+    const licence: Licence = {
+      applianceId: root.appliance_id,
+      earliestLicenceExpiryDate: new Date(root.earliest_licence_expiry_time),
+      latestLicenceExpiryDate: new Date(root.latest_licence_expiry_time),
+      currentPerformedMigrations: root.current_performed_migrations,
+      currentPerformedReplicas: root.current_performed_replicas,
+      lifetimePerformedMigrations: root.lifetime_perfomed_migrations,
+      lifetimePerformedReplicas: root.lifetime_perfomed_replicas,
+      currentAvailableMigrations: root.current_available_migrations,
+      currentAvailableReplicas: root.current_available_replicas,
+      lifetimeAvailableMigrations: root.lifetime_available_migrations,
+      lifetimeAvailableReplicas: root.lifetime_available_replicas,
+    }
+
+    return licence
+  }
+
+  async addLicence(licence: string, applianceId: string) {
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/licences`
     await Api.send({
       url,
       method: 'POST',

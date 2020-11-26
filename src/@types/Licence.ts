@@ -13,11 +13,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 export type Licence = {
-  currentPeriodStart: Date,
-  currentPeriodEnd: Date,
-  performedMigrations: number,
-  performedReplicas: number,
-  totalMigations: number,
-  totalReplicas: number,
   applianceId: string,
+  earliestLicenceExpiryDate: Date,
+  latestLicenceExpiryDate: Date,
+  currentPerformedMigrations: number,
+  currentPerformedReplicas: number,
+  lifetimePerformedMigrations: number,
+  lifetimePerformedReplicas: number,
+  currentAvailableMigrations: number,
+  currentAvailableReplicas: number,
+  lifetimeAvailableMigrations: number,
+  lifetimeAvailableReplicas: number,
 }
