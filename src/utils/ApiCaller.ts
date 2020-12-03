@@ -200,7 +200,7 @@ class ApiCaller {
           })
           reject({})
         } else {
-          const canceled = error.constructor.name === 'Cancel'
+          const canceled = error.__CANCEL__
           reject({ canceled })
           if (canceled) {
             logger.log({
