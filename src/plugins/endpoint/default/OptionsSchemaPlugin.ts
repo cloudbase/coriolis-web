@@ -91,14 +91,16 @@ export const defaultGetDestinationEnv = (
 
   Object.keys(options).forEach(optionName => {
     const value = options[optionName]
-    if (specialOptions.find(o => o === optionName) || value == null || value === '') {
+    const oldValue = oldOptions?.[optionName]
+    const skipNull = (oldValue == null || oldValue === '') && (value == null || value === '')
+    if (specialOptions.find(o => o === optionName) || skipNull) {
       return
     }
     if (Array.isArray(value)) {
       env[optionName] = value
-    } else if (typeof value === 'object') {
-      const oldValue = oldOptions?.[optionName] || {}
-      const mergedValue: any = { ...oldValue, ...value }
+    } else if (value != null && typeof value === 'object') {
+      const oldValueNonNull = oldValue || {}
+      const mergedValue: any = { ...oldValueNonNull, ...value }
       const newValue: any = {}
       Object.keys(mergedValue).forEach(k => {
         if (mergedValue[k] !== null) {
