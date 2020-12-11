@@ -40,6 +40,10 @@ const LABEL_MAP: { [status: string]: string } = {
   IN_MAINTENANCE: 'MAINTENANCE',
   RESCALING: 'SCALING',
   IN_USE: 'IN USE',
+  // Minion Machine power statuses
+  POWERED_ON: 'POWERED ON',
+  POWERED_OFF: 'POWERED OFF',
+  POWER_ERROR: 'ERROR'
 }
 
 const statuses = (status: any) => {
@@ -56,6 +60,7 @@ const statuses = (status: any) => {
     case 'FAILED_TO_CANCEL':
     case 'ERROR':
     case 'ERROR_ALLOCATING_MINIONS':
+    case 'POWER_ERROR': // Minion Machine power status
       return css`
         background: ${Palette.alert};
         color: white;
@@ -91,6 +96,7 @@ const statuses = (status: any) => {
     case 'RESCALING': // Minion Pool status
     case 'DEPLOYING': // Minion Pool status
     case 'IN_USE': // Minion Pool status
+    case 'POWERED_ON': // Minion Machine status
     case 'HEALTHCHECKING': // Minion Pool status
       return css`
         background: url('${runningImage}');
@@ -102,6 +108,7 @@ const statuses = (status: any) => {
           100% { background-position: 0 -1px; }
         }
       `
+
     case 'CANCELLING':
     case 'UNINITIALIZING':
     case 'DEALLOCATING':
@@ -126,9 +133,11 @@ const statuses = (status: any) => {
         border-color: transparent;
       `
     case 'UNSCHEDULED':
-    case 'UNINITIALIZED': // Minion Pool status
+    case 'UNKNOWN': // Minion Pool/Machine status
+    case 'UNINITIALIZED': // Minion Pool/Machine status
     case 'DEALLOCATED': // Minion Pool status
     case 'INITIALIZED': // Minion Pool status
+    case 'POWERED_OFF': // Minion Machine status
       return css`
         background: ${Palette.grayscale[2]};
         color: ${Palette.black};

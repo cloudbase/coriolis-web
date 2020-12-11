@@ -136,7 +136,7 @@ class MinionPoolListItem extends React.Component<Props> {
   }
 
   renderCreatedCount() {
-    const createdCount = this.props.item.minion_machines.filter(m => m.status === 'ALLOCATED' || m.status === 'AVAILABLE').length
+    const createdCount = this.props.item.minion_machines.filter(m => m.allocation_status === 'IN_USE' || m.allocation_status === 'AVAILABLE').length
     const totalCount = this.props.item.minion_machines.length
 
     return (

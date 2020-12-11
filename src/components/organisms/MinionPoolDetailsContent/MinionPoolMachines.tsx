@@ -149,9 +149,9 @@ class MinionPoolMachines extends React.Component<Props, State> {
       case 'all':
         return this.machines
       case 'allocated':
-        return this.machines.filter(m => m.status === 'ALLOCATED' || m.status === 'AVAILABLE')
+        return this.machines.filter(m => m.allocation_status === 'ALLOCATED' || m.allocation_status === 'AVAILABLE')
       default:
-        return this.machines.filter(m => m.status !== 'ALLOCATED' && m.status !== 'AVAILABLE')
+        return this.machines.filter(m => m.allocation_status !== 'ALLOCATED' && m.allocation_status !== 'AVAILABLE')
     }
   }
 
@@ -193,7 +193,7 @@ class MinionPoolMachines extends React.Component<Props, State> {
           />
         </HeaderFilter>
         <HeaderText>
-          {this.machines.length} minion machine{plural}, {this.machines.filter(m => m.status === 'ALLOCATED' || m.status === 'AVAILABLE').length} allocated
+          {this.machines.length} minion machine{plural}, {this.machines.filter(m => m.allocation_status === 'ALLOCATED' || m.allocation_status === 'AVAILABLE').length} allocated
         </HeaderText>
       </Header>
     )
@@ -245,7 +245,10 @@ class MinionPoolMachines extends React.Component<Props, State> {
             <MachineTitle>ID: {machine.id}</MachineTitle>
             <MachineBody>
               <MachineRow style={{ marginBottom: '8px', display: 'flex' }}>
-                Status: <StatusPill style={{ marginLeft: '8px' }} status={machine.status} />
+                Power Status: <StatusPill style={{ marginLeft: '8px' }} status={machine.power_status} />
+              </MachineRow>
+              <MachineRow style={{ marginBottom: '8px', display: 'flex' }}>
+                Allocation Status: <StatusPill style={{ marginLeft: '8px' }} status={machine.allocation_status} />
               </MachineRow>
               <MachineRow secondary>Created At: {moment(machine.created_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow>
               {machine.updated_at ? <MachineRow secondary>Updated At: {moment(machine.updated_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow> : null}
