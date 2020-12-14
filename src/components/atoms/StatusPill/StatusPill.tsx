@@ -70,7 +70,6 @@ const statuses = (status: any) => {
     case 'CANCELED_FOR_DEBUGGING':
     case 'CANCELED_AFTER_COMPLETION':
     case 'FORCE_CANCELED':
-    case 'IN_MAINTENANCE': // Minion Pool status
       return css`
         background: ${Palette.warning};
         color: ${Palette.black};
@@ -113,6 +112,7 @@ const statuses = (status: any) => {
     case 'UNINITIALIZING':
     case 'DEALLOCATING':
     case 'CANCELLING_AFTER_COMPLETION':
+    case 'IN_MAINTENANCE': // Minion Pool status
     case 'DEALLOCATING_MACHINES': // Minion Pool status
     case 'DEALLOCATING_SHARED_RESOURCES': // Minion Pool status
       return css`
