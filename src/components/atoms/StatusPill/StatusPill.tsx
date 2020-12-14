@@ -41,6 +41,7 @@ const LABEL_MAP: { [status: string]: string } = {
   RESCALING: 'SCALING',
   IN_USE: 'IN USE',
   // Minion Machine power statuses
+  POWERING_OFF: 'POWERING OFF',
   POWERED_ON: 'POWERED ON',
   POWERED_OFF: 'POWERED OFF',
   POWER_ERROR: 'ERROR'
@@ -110,7 +111,8 @@ const statuses = (status: any) => {
 
     case 'CANCELLING':
     case 'UNINITIALIZING':
-    case 'DEALLOCATING':
+    case 'DEALLOCATING': // Minion Machine status
+    case 'POWERING_OFF': // Minion Machine status
     case 'CANCELLING_AFTER_COMPLETION':
     case 'IN_MAINTENANCE': // Minion Pool status
     case 'DEALLOCATING_MACHINES': // Minion Pool status
