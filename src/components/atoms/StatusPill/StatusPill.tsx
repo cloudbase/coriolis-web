@@ -42,6 +42,7 @@ const LABEL_MAP: { [status: string]: string } = {
   IN_USE: 'IN USE',
   // Minion Machine power statuses
   POWERING_OFF: 'POWERING OFF',
+  POWERING_ON: 'POWERING ON',
   POWERED_ON: 'POWERED ON',
   POWERED_OFF: 'POWERED OFF',
   POWER_ERROR: 'ERROR'
@@ -51,6 +52,7 @@ const statuses = (status: any) => {
   switch (status) {
     case 'COMPLETED':
     case 'ALLOCATED': // Minion Pool status
+    case 'POWERED_ON': // Minion Machine status
     case 'AVAILABLE': // Minion Pool status
       return css`
         background: ${Palette.success};
@@ -96,8 +98,8 @@ const statuses = (status: any) => {
     case 'RESCALING': // Minion Pool status
     case 'DEPLOYING': // Minion Pool status
     case 'IN_USE': // Minion Pool status
-    case 'POWERED_ON': // Minion Machine status
-    case 'HEALTHCHECKING': // Minion Pool status
+    case 'HEALTHCHECKING': // Minion Machine status
+    case 'POWERING_ON': // Minion Machine power status
       return css`
         background: url('${runningImage}');
         animation: bgMotion 1s infinite linear;
@@ -112,7 +114,7 @@ const statuses = (status: any) => {
     case 'CANCELLING':
     case 'UNINITIALIZING':
     case 'DEALLOCATING': // Minion Machine status
-    case 'POWERING_OFF': // Minion Machine status
+    case 'POWERING_OFF': // Minion Machine power status
     case 'CANCELLING_AFTER_COMPLETION':
     case 'IN_MAINTENANCE': // Minion Pool status
     case 'DEALLOCATING_MACHINES': // Minion Pool status
