@@ -252,6 +252,8 @@ class MinionPoolMachines extends React.Component<Props, State> {
               </MachineRow>
               <MachineRow secondary>Created At: {moment(machine.created_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow>
               {machine.updated_at ? <MachineRow secondary>Updated At: {moment(machine.updated_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow> : null}
+              {machine.last_used_at ? <MachineRow secondary>Last Used At: {moment(machine.last_used_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow> : null}
+              <MachineRow secondary>Allocated Action: {machine.allocated_action}</MachineRow>
             </MachineBody>
             {machine.connection_info ? this.renderConnectionInfo(machine) : null}
           </MachineWrapper>
