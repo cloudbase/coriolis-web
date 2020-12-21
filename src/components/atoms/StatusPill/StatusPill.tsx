@@ -45,7 +45,7 @@ const LABEL_MAP: { [status: string]: string } = {
   POWERING_ON: 'POWERING ON',
   POWERED_ON: 'POWERED ON',
   POWERED_OFF: 'POWERED OFF',
-  POWER_ERROR: 'ERROR'
+  POWER_ERROR: 'ERROR',
 }
 
 const statuses = (status: any) => {

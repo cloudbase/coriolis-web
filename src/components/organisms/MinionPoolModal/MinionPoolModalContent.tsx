@@ -123,6 +123,7 @@ type Props = {
   envSchema: Field[],
   invalidFields: string[],
   endpoint: Endpoint
+  platform: 'source' | 'destination'
   getFieldValue: (field: Field | null | undefined) => any,
   onFieldChange: (field: Field | null, value: any) => void,
   disabled: boolean,
@@ -202,7 +203,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
       let currentField
       if (field.name === 'endpoint_id') {
         currentField = this.renderEndpoint()
-      } else if (field.name === 'platform' || field.name === 'os_type') {
+      } else if (field.name === 'platform' || (field.name === 'os_type' && this.props.platform === 'source')) {
         currentField = this.renderReadOnlyField(field)
       } else {
         currentField = (

@@ -59,7 +59,7 @@ const Wrapper = styled.div<any>`
   }
 `
 
-const Image = styled.div<any>`
+const Image = styled.div`
   min-width: 48px;
   height: 48px;
   background: url('${itemImage}') no-repeat center;

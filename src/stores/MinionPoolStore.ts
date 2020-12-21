@@ -98,6 +98,10 @@ class MinionPoolStore {
     }
   }
 
+  @action clearMinionPoolDetails() {
+    this.minionPoolDetails = null
+  }
+
   @action
   async loadMinionPoolSchema(provider: ProviderTypes, platform: 'source' | 'destination') {
     this.loadingMinionPoolSchema = true

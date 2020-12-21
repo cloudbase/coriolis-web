@@ -17,14 +17,17 @@ import styled, { createGlobalStyle, css } from 'styled-components'
 import moment from 'moment'
 import { Collapse } from 'react-collapse'
 
+import { Link } from 'react-router-dom'
 import { MinionMachine, MinionPool } from '../../../@types/MinionPool'
 import DropdownLink from '../../molecules/DropdownLink/DropdownLink'
+import { ItemReplicaBadge } from '../../molecules/NotificationDropdown'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 import Arrow from '../../atoms/Arrow/Arrow'
 
 import networkImage from './images/network.svg'
 import StatusPill from '../../atoms/StatusPill/StatusPill'
+import { MigrationItem, ReplicaItem, TransferItem } from '../../../@types/MainItem'
 
 const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {
@@ -120,15 +123,27 @@ const MachineTitle = styled.div`
 const MachineBody = styled.div`
   padding: 16px;
 `
-const MachineRow = styled.div<{secondary?: boolean}>`
+const MachineRow = styled.div<{ secondary?: boolean }>`
+  display: flex;
+  margin-bottom: 8px;
+  align-items: center;
   ${props => (props.secondary ? css`
     color: ${Palette.grayscale[5]};
+    margin-bottom: 4px;
   ` : '')}
+`
+const ValueLink = styled(Link)`
+  display: flex;
+  color: ${Palette.primary};
+  text-decoration: none;
+  cursor: pointer;
 `
 
 type FilterType = 'all' | 'allocated' | 'not-allocated'
 type Props = {
   item?: MinionPool | null,
+  replicas: ReplicaItem[]
+  migrations: MigrationItem[]
 }
 type State = {
   filterStatus: FilterType
@@ -240,24 +255,45 @@ class MinionPoolMachines extends React.Component<Props, State> {
 
     return (
       <MachinesWrapper>
-        {this.filteredMachines.map(machine => (
-          <MachineWrapper key={machine.id}>
-            <MachineTitle>ID: {machine.id}</MachineTitle>
-            <MachineBody>
-              <MachineRow style={{ marginBottom: '8px', display: 'flex' }}>
-                Power Status: <StatusPill style={{ marginLeft: '8px' }} status={machine.power_status} />
-              </MachineRow>
-              <MachineRow style={{ marginBottom: '8px', display: 'flex' }}>
-                Allocation Status: <StatusPill style={{ marginLeft: '8px' }} status={machine.allocation_status} />
-              </MachineRow>
-              <MachineRow secondary>Created At: {moment(machine.created_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow>
-              {machine.updated_at ? <MachineRow secondary>Updated At: {moment(machine.updated_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow> : null}
-              {machine.last_used_at ? <MachineRow secondary>Last Used At: {moment(machine.last_used_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow> : null}
-              <MachineRow secondary>Allocated Action: {machine.allocated_action}</MachineRow>
-            </MachineBody>
-            {machine.connection_info ? this.renderConnectionInfo(machine) : null}
-          </MachineWrapper>
-        ))}
+        {this.filteredMachines.map(machine => {
+          const findTransferItem = (transferItems: TransferItem[]) => transferItems
+            .find(i => i.id === machine.allocated_action)
+          const allocatedAction = machine.allocated_action ? (
+            findTransferItem(this.props.replicas) || findTransferItem(this.props.migrations)
+          ) : null
+          return (
+            <MachineWrapper key={machine.id}>
+              <MachineTitle>ID: {machine.id}</MachineTitle>
+              <MachineBody>
+                <MachineRow>
+                  Allocation Status: <StatusPill style={{ marginLeft: '8px' }} status={machine.allocation_status} />
+                </MachineRow>
+                <MachineRow style={{ marginBottom: '16px' }}>
+                  <span style={{ width: '114px' }}>Power Status:</span> <StatusPill style={{ marginLeft: '8px' }} status={machine.power_status} />
+                </MachineRow>
+                <MachineRow secondary>Created At: {moment(machine.created_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow>
+                {machine.updated_at ? <MachineRow secondary>Updated At: {moment(machine.updated_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow> : null}
+                {machine.last_used_at ? <MachineRow secondary>Last Used At: {moment(machine.last_used_at).format('YYYY-MM-DD HH:mm:ss')}</MachineRow> : null}
+                {machine.allocated_action ? (
+                  <MachineRow secondary>
+                    Allocated Action:
+                    {allocatedAction ? (
+                      <>
+                        <ItemReplicaBadge style={{ margin: '0px 4px 0 5px' }}>{allocatedAction.type === 'replica' ? 'RE' : 'MI'}</ItemReplicaBadge>
+                        <ValueLink
+                          to={`/${allocatedAction.type}s/${allocatedAction.id}`}
+                        >
+                          {allocatedAction.instances[0]}
+                        </ValueLink>
+                      </>
+                    ) : <span>&nbsp;{machine.allocated_action}</span>}
+                  </MachineRow>
+                ) : null}
+              </MachineBody>
+              {machine.connection_info ? this.renderConnectionInfo(machine) : null}
+            </MachineWrapper>
+          )
+        })}
         <GlobalStyle />
       </MachinesWrapper>
     )

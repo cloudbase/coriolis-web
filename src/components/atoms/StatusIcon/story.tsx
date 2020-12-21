@@ -70,8 +70,8 @@ storiesOf('StatusIcon', module)
       <StatusIcon status="CANCELLING" useBackground />
     </Wrapper>
   ))
-  .add('triangle', () => (
+  .add('info hollow', () => (
     <Wrapper>
-      <StatusIcon status="INFO" triangle />
+      <StatusIcon status="INFO" hollow />
     </Wrapper>
   ))

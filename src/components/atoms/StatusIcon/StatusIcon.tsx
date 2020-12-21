@@ -26,7 +26,7 @@ import warningImage from './images/warning'
 import pendingImage from './images/pending.svg'
 import successHollowImage from './images/success-hollow.svg'
 import errorHollowImage from './images/error-hollow.svg'
-import triangleImage from './images/triangle.svg'
+import warningHollowImage from './images/warning-hollow.svg'
 
 type Props = {
   status: string,
@@ -34,7 +34,7 @@ type Props = {
   hollow?: boolean,
   secondary?: boolean,
   style?: React.CSSProperties
-  triangle?: boolean
+  outlined?: boolean
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
   title?: string
 }
@@ -51,11 +51,7 @@ const getRunningImageUrl = (props: Props) => {
 
 const getWarningUrl = (background: string) => `url('data:image/svg+xml;utf8,${encodeURIComponent(warningImage(background))}')`
 
-const statuses = (status: any, props: any) => {
-  if (props.triangle) {
-    return css`background-image: url('${triangleImage}');`
-  }
-
+const statuses = (status: any, props: Props) => {
   switch (status) {
     case 'COMPLETED':
       return css`
@@ -99,10 +95,11 @@ const statuses = (status: any, props: any) => {
       return css`
         background-image: ${getWarningUrl('#424242')};
       `
+    case 'INFO':
     case 'UNSCHEDULED':
     case 'UNEXECUTED':
       return css`
-        background-image: ${getWarningUrl(Palette.grayscale[2])};
+        background-image: ${props.hollow ? `url('${warningHollowImage}')` : getWarningUrl(Palette.grayscale[2])};
       `
     default:
       return null

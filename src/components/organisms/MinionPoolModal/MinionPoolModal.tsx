@@ -304,6 +304,7 @@ class MinionPoolModal extends React.Component<Props, State> {
       <Content>
         <MinionPoolModalContent
           endpoint={this.props.endpoint}
+          platform={this.props.platform}
           envOptionsDisabled={this.props.minionPool != null && this.props.minionPool.status !== 'DEALLOCATED'}
           defaultSchema={minionPoolStore.minionPoolDefaultSchema}
           envSchema={minionPoolStore.minionPoolEnvSchema}

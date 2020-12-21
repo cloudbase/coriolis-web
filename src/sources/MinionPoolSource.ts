@@ -64,6 +64,15 @@ class MinionPoolSource {
         required: true,
         title: 'Pool OS Type',
         default: 'linux',
+        enum: [
+          {
+            label: 'Linux',
+            value: 'linux',
+          }, {
+            label: 'Windows',
+            value: 'windows',
+          },
+        ],
       },
       {
         name: 'minimum_minions',

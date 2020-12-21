@@ -39,7 +39,7 @@ const EventsTable = styled.div`
   border-radius: ${StyleProps.borderRadius};
   margin-bottom: 16px;
 `
-const Header = styled.div<any>`
+const Header = styled.div`
   display: flex;
   border-bottom: 1px solid ${Palette.grayscale[5]};
   padding: 4px 8px;
@@ -132,7 +132,7 @@ class MinionPoolEvents extends React.Component<Props, State> {
     return this.state.allEvents
       .filter((event: any) => shouldFilterByEventType(event) && shouldFilterByLevel(event))
       .sort((a: any, b: any) => {
-        if (a.index && b.index) {
+        if (a.index && b.index && this.state.filterBy !== 'all') {
           return this.state.orderDir === 'asc' ? a.index - b.index : b.index - a.index
         }
         const aTime = new Date(a.created_at).getTime()
@@ -203,18 +203,12 @@ class MinionPoolEvents extends React.Component<Props, State> {
     return (
       <Body>
         {this.filteredEvents.map((event: any) => {
-          let status: string | null = null
-          if (event.level) {
-            if (event.level === 'DEBUG') {
-              status = 'WARNING'
-            }
-            if (event.level === 'INFO') {
-              status = 'UNEXECUTED'
-            }
-            if (event.level === 'ERROR') {
-              status = 'ERROR'
-            }
+          let status = 'INFO'
+          status = event.level || status
+          if (event.level === 'DEBUG') {
+            status = 'WARNING'
           }
+          const title = event.current_step ? 'Progress Update' : 'Event'
           return (
             <Row key={event.id}>
               <RowData
@@ -225,21 +219,12 @@ class MinionPoolEvents extends React.Component<Props, State> {
                   paddingRight: '8px',
                 }}
               >
-                {status ? (
-                  <StatusIcon
-                    style={{ marginRight: '8px' }}
-                    status={status}
-                    title="Event"
-                  />
-                ) : null}
-                {event.current_step ? (
-                  <StatusIcon
-                    style={{ marginRight: '8px' }}
-                    status="INFO"
-                    title="Progress Update"
-                    triangle
-                  />
-                ) : null}
+                <StatusIcon
+                  style={{ marginRight: '8px' }}
+                  status={status}
+                  title={title}
+                  hollow={event.current_step != null}
+                />
                 <Message>{event.message}</Message>
               </RowData>
               <RowData width="192px" secondary>{moment(event.created_at).format('YYYY-MM-DD HH:mm:ss')}</RowData>

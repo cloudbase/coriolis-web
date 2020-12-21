@@ -260,6 +260,12 @@ class MinionPoolMainDetails extends React.Component<Props> {
           </Row>
           <Row>
             <Field>
+              <Label>Pool OS Type</Label>
+              {this.renderValue(this.props.item?.os_type || '-', true)}
+            </Field>
+          </Row>
+          <Row>
+            <Field>
               <Label>Created</Label>
               {this.props.item?.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')) : <Value>-</Value>}
             </Field>

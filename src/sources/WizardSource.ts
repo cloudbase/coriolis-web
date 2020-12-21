@@ -53,17 +53,15 @@ class WizardSource {
 
     if (data.sourceOptions) {
       const sourceEnv = sourceParser.getDestinationEnv(data.sourceOptions)
-      if (sourceEnv.minion_pool_id) {
-        payload[type].origin_minion_pool_id = sourceEnv.minion_pool_id
-        delete sourceEnv.minion_pool_id
+      if (data.sourceOptions.minion_pool_id) {
+        payload[type].origin_minion_pool_id = data.sourceOptions.minion_pool_id
       }
       payload[type].source_environment = sourceEnv
     }
 
     const destEnv = destParser.getDestinationEnv(data.destOptions)
-    if (destEnv.minion_pool_id) {
-      payload[type].destination_minion_pool_id = destEnv.minion_pool_id
-      delete destEnv.minion_pool_id
+    if (data.destOptions?.minion_pool_id) {
+      payload[type].destination_minion_pool_id = data.destOptions.minion_pool_id
     }
 
     const poolMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]

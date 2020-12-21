@@ -74,6 +74,7 @@ const NavigationItems = [
 
 type Props = {
   item?: MinionPoolDetails | null,
+  itemId: string
   replicas: ReplicaItem[],
   migrations: MigrationItem[]
   endpoints: Endpoint[],
@@ -139,7 +140,13 @@ class MinionPoolDetailsContent extends React.Component<Props> {
       return null
     }
 
-    return <MinionPoolMachines item={this.props.item} />
+    return (
+      <MinionPoolMachines
+        item={this.props.item}
+        replicas={this.props.replicas}
+        migrations={this.props.migrations}
+      />
+    )
   }
 
   renderEvents() {
@@ -174,7 +181,7 @@ class MinionPoolDetailsContent extends React.Component<Props> {
         <DetailsNavigation
           items={NavigationItems}
           selectedValue={this.props.page}
-          itemId={this.props.item ? this.props.item.id : ''}
+          itemId={this.props.itemId}
           itemType="minion-pool"
         />
         <DetailsBody>

@@ -37,7 +37,7 @@ import projectImage from './images/project-menu.svg'
 import userImage from './images/user-menu.svg'
 import logsImage from './images/logs-menu.svg'
 import dashboardImage from './images/dashboard-menu.svg'
-import minionPoolsImage from './images/minion-pools-menu.svg'
+import minionPoolsImage from './images/minion-pool-menu.svg'
 
 const isCollapsed = (props: any) => props.collapsed
   || (window.outerWidth <= StyleProps.mobileMaxWidth)

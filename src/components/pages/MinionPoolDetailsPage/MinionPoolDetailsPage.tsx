@@ -78,6 +78,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    minionPoolStore.clearMinionPoolDetails()
     this.stopPolling = true
   }
 
@@ -101,6 +102,8 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     await Promise.all([
       endpointStore.getEndpoints({ showLoading: true }),
       minionPoolStore.loadMinionPoolDetails(this.minionPoolId, { showLoading: true }),
+      replicaStore.getReplicas(),
+      migrationStore.getMigrations(),
     ])
     const minionPool = this.minionPool
     if (!minionPool) {
@@ -158,10 +161,14 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       return
     }
 
-    await minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
-      showLoading,
-      skipLog: true,
-    })
+    await Promise.all([
+      minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
+        showLoading,
+        skipLog: true,
+      }),
+      replicaStore.getReplicas(),
+      migrationStore.getMigrations(),
+    ])
 
     setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
   }
@@ -312,6 +319,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
           contentComponent={(
             <MinionPoolDetailsContent
               item={this.minionPool}
+              itemId={this.minionPoolId}
               replicas={replicaStore.replicas
                 .filter(r => r.origin_minion_pool_id === this.minionPool?.id
                   || r.destination_minion_pool_id === this.minionPool?.id)}

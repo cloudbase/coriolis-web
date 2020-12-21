@@ -16,9 +16,12 @@ export type MinionMachine = {
   id: string
   created_at: string
   updated_at: string
-  status: string
+  allocation_status: string
   connection_info?: any
+  power_status: string
   provider_properties: any
+  last_used_at?: string
+  allocated_action: string | null
 }
 export type MinionPoolEvent = {
   id: string
@@ -39,7 +42,7 @@ export type MinionPool = {
   created_at: string
   updated_at: string | null
   name: string
-  os_type: string
+  os_type: 'linux' | 'windows'
   status: string
   minimum_minions: number
   maximum_minions: number
