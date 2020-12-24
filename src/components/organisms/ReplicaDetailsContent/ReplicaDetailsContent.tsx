@@ -72,6 +72,7 @@ const NavigationItems = [
 type TimezoneValue = 'utc' | 'local'
 type Props = {
   item?: ReplicaItemDetails | null,
+  itemId: string
   endpoints: Endpoint[],
   sourceSchema: Field[],
   sourceSchemaLoading: boolean,
