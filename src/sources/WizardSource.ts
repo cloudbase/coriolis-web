@@ -93,12 +93,12 @@ class WizardSource {
       data.destOptions && data.destOptions.shutdown_instances,
     )
 
+    if (uploadedUserScripts.length) {
+      payload[type].user_scripts = destParser.getUserScripts(uploadedUserScripts, {})
+    }
+
     if (type === 'migration') {
-      payload[type].replication_count = (
-        data.destOptions && data.destOptions.replication_count) || 2
-      if (uploadedUserScripts.length) {
-        payload[type].user_scripts = destParser.getUserScripts(uploadedUserScripts)
-      }
+      payload[type].replication_count = data.destOptions?.replication_count || 2
     }
 
     const response = await Api.send({

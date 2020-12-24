@@ -409,6 +409,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       replica.id,
       options,
       uploadedScripts,
+      replica.user_scripts,
       minionPoolMappings,
     )
     notificationStore.alert('Migration successfully created from replica.', 'success', {

@@ -251,6 +251,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
         onScriptUpload={s => { this.handleScriptUpload(s) }}
         onCancelScript={(g, i) => { this.handleCanceScript(g, i) }}
         uploadedScripts={this.state.uploadedScripts}
+        userScriptData={this.props.transferItem?.user_scripts}
         scrollableRef={(r: HTMLElement) => { this.scrollableRef = r }}
         layout="modal"
       />

@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { Execution } from './Execution'
-import type { Instance } from './Instance'
+import type { Instance, InstanceScript } from './Instance'
 import type { NetworkMap } from './Network'
 import type { StorageMap } from './Endpoint'
 import { Task } from './Task'
@@ -33,6 +33,7 @@ export type UpdateData = {
   source: any,
   network: NetworkMap[],
   storage: StorageMap[],
+  uploadedScripts: InstanceScript[],
 }
 type NetworkMapSecurityGroups = { id: string, security_groups?: string[] }
 type NetworkMapSourceDest = {
@@ -77,17 +78,27 @@ type BaseItem = {
   network_map?: TransferNetworkMap,
   last_execution_status: string
   user_id: string
-  instance_osmorphing_minion_pool_mappings?: {[instanceName: string]: string}
+  instance_osmorphing_minion_pool_mappings?: { [instanceName: string]: string }
+  user_scripts?: UserScriptData
 }
 
 export type ReplicaItem = BaseItem & {
   type: 'replica',
 }
 
+export type UserScriptData = {
+  global?: {
+    linux?: string | null
+    windows?: string | null
+  }
+  instances?: {
+    [instanceName: string]: string | null
+  }
+}
+
 export type MigrationItem = BaseItem & {
   type: 'migration',
   replica_id?: string,
-  user_scripts?: any
 }
 
 export type MigrationItemOptions = MigrationItem & {

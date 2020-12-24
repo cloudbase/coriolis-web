@@ -28,6 +28,8 @@ import FileUtils from '../../../utils/FileUtils'
 import scriptItemImage from './images/script-item.svg'
 
 import type { Instance, InstanceScript } from '../../../@types/Instance'
+import { UserScriptData } from '../../../@types/MainItem'
+import DomUtils from '../../../utils/DomUtils'
 
 const Wrapper = styled.div<any>`
   width: 100%;
@@ -125,14 +127,22 @@ const FakeFileInput = styled.input`
   opacity: 0;
   top: -99999px;
 `
+const DownloadScriptData = styled.div`
+  color: ${Palette.primary};
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 8px;
+`
 
 type Props = {
   instances: Instance[],
   uploadedScripts: InstanceScript[],
   layout?: 'modal' | 'page',
   loadingInstances?: boolean,
+  userScriptData: UserScriptData | null | undefined
+  style?: React.CSSProperties
   onScriptUpload: (instanceScript: InstanceScript) => void,
-  onCancelScript: (global: string | null, instanceName: string | null) => void,
+  onCancelScript: (global: 'windows' | 'linux' | null, instanceName: string | null) => void,
   onScrollableRef?: (ref: HTMLElement) => void,
   scrollableRef?: (r: HTMLElement) => void
 }
@@ -147,7 +157,7 @@ class WizardScripts extends React.Component<Props> {
 
   async handleFileUpload(
     files: FileList | null,
-    global: string | null,
+    global: 'windows' | 'linux' | null,
     instanceId: string | null,
   ) {
     if (!files || !files.length) {
@@ -163,8 +173,12 @@ class WizardScripts extends React.Component<Props> {
     })
   }
 
+  handleScriptDataDownload(scriptData: string, fileName: string) {
+    DomUtils.download(scriptData, fileName)
+  }
+
   renderScriptItem(
-    global: string | null,
+    global: 'windows' | 'linux' | null,
     instanceId: string | null,
     title: string,
     subtitle?: string,
@@ -173,6 +187,12 @@ class WizardScripts extends React.Component<Props> {
       s => (s.instanceId
         ? s.instanceId === instanceId : s.global ? s.global === global : false),
     )
+    let scriptData: string | null | undefined = null
+    if (global) {
+      scriptData = this.props.userScriptData?.global?.[global]
+    } else if (instanceId) {
+      scriptData = this.props.userScriptData?.instances?.[instanceId]
+    }
 
     return (
       <Script key={title}>
@@ -181,6 +201,13 @@ class WizardScripts extends React.Component<Props> {
           <NameLabel>
             <NameLabelTitle>{title}</NameLabelTitle>
             {subtitle ? <NameLabelSubtitle>{subtitle}</NameLabelSubtitle> : null}
+            {scriptData ? (
+              <DownloadScriptData onClick={() => {
+                this.handleScriptDataDownload(scriptData as string, title.toLowerCase().replaceAll(' ', '_'))
+              }}
+              >Download the current script
+              </DownloadScriptData>
+            ) : null}
           </NameLabel>
         </Name>
         {uploadedScript ? (
@@ -279,11 +306,13 @@ class WizardScripts extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper ref={(r: HTMLElement) => {
-        if (this.props.onScrollableRef) {
-          this.props.onScrollableRef(r)
-        }
-      }}
+      <Wrapper
+        style={this.props.style}
+        ref={(r: HTMLElement) => {
+          if (this.props.onScrollableRef) {
+            this.props.onScrollableRef(r)
+          }
+        }}
       >
         {this.renderScriptGroup('global')}
         {this.renderScriptGroup('instance')}

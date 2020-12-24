@@ -16,6 +16,7 @@ import moment from 'moment'
 
 import Api from '../utils/ApiCaller'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
+import DefaultOptionsSchemaPlugin from '../plugins/endpoint/default/OptionsSchemaPlugin'
 
 import configLoader from '../utils/Config'
 import type { UpdateData, ReplicaItem, ReplicaItemDetails } from '../@types/MainItem'
@@ -265,6 +266,11 @@ class ReplicaSource {
     if (defaultStorage || updateData.storage.length > 0) {
       payload.replica.storage_mappings = parser
         .getStorageMap(defaultStorage, updateData.storage, storageConfigDefault)
+    }
+
+    if (updateData.uploadedScripts?.length) {
+      payload.replica.user_scripts = DefaultOptionsSchemaPlugin
+        .getUserScripts(updateData.uploadedScripts, replica.user_scripts)
     }
 
     const response = await Api.send({

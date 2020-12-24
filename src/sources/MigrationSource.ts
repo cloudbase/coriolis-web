@@ -26,7 +26,9 @@ import type { Endpoint, StorageMap } from '../@types/Endpoint'
 
 import configLoader from '../utils/Config'
 import { Task } from '../@types/Task'
-import { MigrationItem, MigrationItemOptions, MigrationItemDetails } from '../@types/MainItem'
+import {
+  MigrationItem, MigrationItemOptions, MigrationItemDetails, UserScriptData,
+} from '../@types/MainItem'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
 
 class MigrationSourceUtils {
@@ -130,7 +132,8 @@ class MigrationSource {
     updatedNetworkMappings: NetworkMap[] | null,
     defaultSkipOsMorphing: boolean | null,
     replicationCount?: number | null,
-    migration: MigrationItemDetails
+    migration: MigrationItemDetails,
+    uploadedScripts: InstanceScript[]
   }): Promise<MigrationItemDetails> {
     const getValue = (fieldName: string): string | null => {
       const updatedDestEnv = opts.updatedDestEnv && opts.updatedDestEnv[fieldName]
@@ -223,8 +226,9 @@ class MigrationSource {
       ...updatedDestEnv,
     }
 
-    if (migration.user_scripts) {
-      payload.migration.user_scripts = migration.user_scripts
+    if (opts.uploadedScripts?.length || migration.user_scripts) {
+      payload.migration.user_scripts = DefaultOptionsSchemaPlugin
+        .getUserScripts(opts.uploadedScripts, migration.user_scripts)
     }
 
     const response = await Api.send({
@@ -260,6 +264,7 @@ class MigrationSource {
     replicaId: string,
     options: Field[],
     userScripts: InstanceScript[],
+    userScriptData: UserScriptData | null | undefined,
     minionPoolMappings: { [instance: string]: string },
   ): Promise<MigrationItem> {
     const payload: any = {
@@ -271,8 +276,9 @@ class MigrationSource {
       payload.migration[o.name] = o.value || o.default || false
     })
 
-    if (userScripts.length) {
-      payload.migration.user_scripts = DefaultOptionsSchemaPlugin.getUserScripts(userScripts)
+    if (userScripts.length || userScriptData) {
+      payload.migration.user_scripts = DefaultOptionsSchemaPlugin
+        .getUserScripts(userScripts, userScriptData)
     }
 
     if (Object.keys(minionPoolMappings).length) {

@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action, runInAction } from 'mobx'
 
 import type {
-  UpdateData, MigrationItem, MigrationItemDetails, MigrationItemOptions,
+  UpdateData, MigrationItem, MigrationItemDetails, MigrationItemOptions, UserScriptData,
 } from '../@types/MainItem'
 import type { Field } from '../@types/Field'
 import type { Endpoint } from '../@types/Endpoint'
@@ -89,6 +89,7 @@ class MigrationStore {
       updatedNetworkMappings: updateData.network,
       defaultSkipOsMorphing: this.getDefaultSkipOsMorphing(migration),
       replicationCount,
+      uploadedScripts: updateData.uploadedScripts,
     })
     return migrationResult
   }
@@ -124,12 +125,14 @@ class MigrationStore {
     replicaId: string,
     options: Field[],
     userScripts: InstanceScript[],
+    userScriptData: UserScriptData | null | undefined,
     minionPoolMappings: { [instance: string]: string },
   ) {
     const migration = await MigrationSource.migrateReplica(
       replicaId,
       options,
       userScripts,
+      userScriptData,
       minionPoolMappings,
     )
     runInAction(() => {
