@@ -41,6 +41,7 @@ export type Field = {
   properties?: Field[],
   required?: boolean,
   useTextArea?: boolean,
+  useFile?: boolean,
   readOnly?: boolean,
   title?: string,
   description?: string,

@@ -39,6 +39,7 @@ import Palette from '../../styleUtils/Palette'
 import endpointImage from './images/endpoint.svg'
 import regionStore from '../../../stores/RegionStore'
 import { MigrationItem, ReplicaItem } from '../../../@types/MainItem'
+import providerStore from '../../../stores/ProviderStore'
 
 const Wrapper = styled.div<any>``
 
@@ -153,6 +154,9 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   handleCloseEndpointModal() {
     this.setState({ showEndpointModal: false })
+    if (this.endpoint) {
+      providerStore.getConnectionInfoSchema(this.endpoint.type)
+    }
   }
 
   handleCloseEndpointInUseModal() {
@@ -205,9 +209,13 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     await endpointStore.getEndpoints()
     const endpoint = this.endpoint
 
-    if (endpoint && endpoint.connection_info && endpoint.connection_info.secret_ref) {
+    if (endpoint?.type) {
+      providerStore.getConnectionInfoSchema(endpoint.type)
+    }
+
+    if (endpoint?.connection_info?.secret_ref) {
       endpointStore.getConnectionInfo(endpoint)
-    } else if (endpoint && endpoint.connection_info) {
+    } else if (endpoint?.connection_info) {
       endpointStore.setConnectionInfo(endpoint.connection_info)
     }
   }
@@ -259,8 +267,10 @@ class EndpointDetailsPage extends React.Component<Props, State> {
               item={endpoint}
               regions={regionStore.regions}
               usage={this.state.endpointUsage}
-              loading={endpointStore.connectionInfoLoading || endpointStore.loading}
+              loading={endpointStore.connectionInfoLoading || endpointStore.loading
+                || providerStore.connectionSchemaLoading}
               connectionInfo={endpointStore.connectionInfo}
+              connectionInfoSchema={providerStore.connectionInfoSchema}
               onDeleteClick={() => { this.handleDeleteEndpointClick() }}
               onValidateClick={() => { this.handleValidateClick() }}
             />
