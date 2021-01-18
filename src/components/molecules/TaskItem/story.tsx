@@ -20,6 +20,18 @@ const item: any = {
   progress_updates: [
     { message: 'the task has a progress of 50%', created_at: new Date() },
     { message: 'the task is almost done', created_at: new Date() },
+    {
+      message: 'Transferring changed areas of Cinder volume \'ca816553-a616-413e-a078-9a19e1da5326\'',
+      created_at: new Date(),
+      total_steps: 5,
+      current_step: 2,
+    },
+    {
+      message: 'Transferring changed areas of Cinder volume \'ca816553-a616-413e-a078-9a19e1da5326\'',
+      created_at: new Date(),
+      total_steps: 5,
+      current_step: 7,
+    },
   ],
   exception_details: 'Exception details',
   status: 'RUNNING',

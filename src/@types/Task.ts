@@ -13,8 +13,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 export type ProgressUpdate = {
+  index: number,
   message: string,
   created_at: Date,
+  total_steps: number | null
+  current_step: number | null
 }
 
 export type Task = {

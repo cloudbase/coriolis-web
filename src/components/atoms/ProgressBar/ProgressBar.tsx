@@ -19,29 +19,41 @@ import styled from 'styled-components'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
 
-type Props = {
-  progress: number,
-  width?: number,
-  style?: React.CSSProperties
-}
-
-const Wrapper = styled.div<any>`
-  background: white;
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
 `
-const Progress = styled.div<any>`
+const ProgressLabel = styled.div`
+  text-align: right;
+  min-width: 36px;
+  font-size: 12px;
+`
+const ProgressBarWrapper = styled.div`
+  background: white;
+  flex-grow: 1;
+`
+const Progress = styled.div<{width: number}>`
   height: 2px;
   background: ${Palette.primary};
   transition: all ${StyleProps.animations.swift};
-  width: ${(props: Props) => props.width}%;
+  width: ${props => props.width}%;
 `
-
+type Props = {
+  progress: number,
+  style?: React.CSSProperties
+  useLabel?: boolean
+}
 @observer
 class ProgressBar extends React.Component<Props> {
   render() {
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      <Wrapper {...this.props}>
-        <Progress data-test-id="progressBar-progress" width={this.props.progress} />
+      <Wrapper>
+        <ProgressBarWrapper style={this.props.style}>
+          <Progress width={this.props.progress} />
+        </ProgressBarWrapper>
+        {this.props.useLabel ? (
+          <ProgressLabel>{this.props.progress} %</ProgressLabel>
+        ) : null}
       </Wrapper>
     )
   }
