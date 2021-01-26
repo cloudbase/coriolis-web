@@ -17,7 +17,7 @@ import { observer } from 'mobx-react'
 import styled, { css, createGlobalStyle } from 'styled-components'
 import { Collapse } from 'react-collapse'
 
-import type { Task } from '../../../@types/Task'
+import type { ProgressUpdate, Task } from '../../../@types/Task'
 import StatusIcon from '../../atoms/StatusIcon'
 import Arrow from '../../atoms/Arrow'
 import StatusPill from '../../atoms/StatusPill'
@@ -136,7 +136,7 @@ const ExceptionText = styled.div<any>`
 const ProgressUpdates = styled.div<any>`
   color: ${Palette.black};
 `
-const ProgressUpdate = styled.div<any>`
+const ProgressUpdateDiv = styled.div<any>`
   display: flex;
   color: ${props => (props.secondary ? Palette.grayscale[5] : 'inherit')};
 `
@@ -172,9 +172,23 @@ class TaskItem extends React.Component<Props> {
     return message
   }
 
-  getMessageProgress(message: string) {
-    const match = message.match(/.*progress.*?(100|\d{1,2})%/)
-    return match && match[1]
+  getProgressPercentage(progressUpdate: ProgressUpdate): {useLabel: boolean, value: number} | null {
+    if (progressUpdate.total_steps && progressUpdate.current_step) {
+      const currentStep = Math.min(progressUpdate.total_steps, progressUpdate.current_step)
+      return {
+        value: (currentStep * 100) / progressUpdate.total_steps,
+        useLabel: true,
+      }
+    }
+
+    const stringPercentage = progressUpdate.message.match(/.*progress.*?(100|\d{1,2})%/)?.[1]
+    if (!stringPercentage) {
+      return null
+    }
+    return {
+      value: Number(stringPercentage),
+      useLabel: false,
+    }
   }
 
   handleExceptionTextClick(exceptionText: string) {
@@ -250,19 +264,25 @@ class TaskItem extends React.Component<Props> {
           if (!update) {
             return <Value>N/A</Value>
           }
-          const messageProgress = this.getMessageProgress(update.message)
+          const progressPercentage = this.getProgressPercentage(update)
 
           return (
             // eslint-disable-next-line react/no-array-index-key
-            <ProgressUpdate key={i} secondary={i < this.props.item.progress_updates.length - 1 || this.props.item.status !== 'RUNNING'}>
+            <ProgressUpdateDiv key={i} secondary={i < this.props.item.progress_updates.length - 1 || this.props.item.status !== 'RUNNING'}>
               <ProgressUpdateDate width={this.props.columnWidths[0]}>
                 <span>{DateUtils.getLocalTime(update.created_at).format('YYYY-MM-DD HH:mm:ss')}</span>
               </ProgressUpdateDate>
               <ProgressUpdateValue data-test-id={`taskItem-progressUpdateMessage-${i}`}>
                 {update.message}
-                {messageProgress && <ProgressBar style={{ margin: '8px 0' }} progress={Number(messageProgress)} data-test-id={`taskItem-progressBar-${i}`} />}
+                {progressPercentage && (
+                  <ProgressBar
+                    style={{ margin: '8px 0' }}
+                    progress={progressPercentage.value}
+                    useLabel={progressPercentage.useLabel}
+                  />
+                )}
               </ProgressUpdateValue>
-            </ProgressUpdate>
+            </ProgressUpdateDiv>
           )
         })}
       </ProgressUpdates>

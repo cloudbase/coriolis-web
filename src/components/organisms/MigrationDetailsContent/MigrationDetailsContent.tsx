@@ -55,6 +55,7 @@ const NavigationItems = [
 
 type Props = {
   item: MigrationItemDetails | null,
+  itemId: string
   minionPools: MinionPool[]
   detailsLoading: boolean,
   instancesDetails: Instance[],
@@ -124,7 +125,7 @@ class MigrationDetailsContent extends React.Component<Props> {
         <DetailsNavigation
           items={NavigationItems}
           selectedValue={this.props.page}
-          itemId={this.props.item ? this.props.item.id : ''}
+          itemId={this.props.itemId}
           itemType="migration"
         />
         <DetailsBody>

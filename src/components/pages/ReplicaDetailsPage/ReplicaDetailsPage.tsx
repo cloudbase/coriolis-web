@@ -148,6 +148,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    replicaStore.clearDetails()
     scheduleStore.clearUnsavedSchedules()
     this.stopPolling = true
   }
@@ -581,6 +582,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           contentComponent={(
             <ReplicaDetailsContent
               item={replica}
+              itemId={this.replicaId}
               instancesDetails={instanceStore.instancesDetails}
               instancesDetailsLoading={instanceStore.loadingInstancesDetails}
               endpoints={endpointStore.endpoints}

@@ -12,8 +12,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from 'moment'
-
 import Api from '../utils/ApiCaller'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
 import DefaultOptionsSchemaPlugin from '../plugins/endpoint/default/OptionsSchemaPlugin'
@@ -93,9 +91,7 @@ export class ReplicaSourceUtils {
     if (!updates) {
       return
     }
-    updates
-      .sort((a, b) => moment(a.created_at)
-        .toDate().getTime() - moment(b.created_at).toDate().getTime())
+    updates.sort((a, b) => a.index - b.index)
   }
 }
 
