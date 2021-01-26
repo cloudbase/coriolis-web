@@ -107,6 +107,10 @@ class ReplicaStore {
     }
   }
 
+  @action clearDetails() {
+    this.replicaDetails = null
+  }
+
   @action getReplicasSuccess(replicas: ReplicaItem[]) {
     this.replicasLoaded = true
     this.replicas = replicas

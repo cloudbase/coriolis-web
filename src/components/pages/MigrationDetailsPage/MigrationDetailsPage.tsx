@@ -375,6 +375,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           contentComponent={(
             <MigrationDetailsContent
               item={migrationStore.migrationDetails}
+              itemId={this.props.match.params.id}
               instancesDetails={instanceStore.instancesDetails}
               instancesDetailsLoading={instanceStore.loadingInstancesDetails}
               sourceSchema={providerStore.sourceSchema}
