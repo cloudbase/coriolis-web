@@ -37,7 +37,9 @@ import type {
 import type { NavigationItem } from '../../molecules/Panel'
 import type { Endpoint, StorageBackend, StorageMap } from '../../../@types/Endpoint'
 import type { Field } from '../../../@types/Field'
-import type { Instance, Nic, Disk } from '../../../@types/Instance'
+import type {
+  Instance, Nic, Disk, InstanceScript,
+} from '../../../@types/Instance'
 import type { Network, NetworkMap, SecurityGroup } from '../../../@types/Network'
 
 import { providerTypes, migrationFields } from '../../../constants'
@@ -45,6 +47,7 @@ import configLoader from '../../../utils/Config'
 import StyleProps from '../../styleUtils/StyleProps'
 import LoadingButton from '../../molecules/LoadingButton/LoadingButton'
 import minionPoolStore from '../../../stores/MinionPoolStore'
+import WizardScripts from '../WizardScripts/WizardScripts'
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -106,6 +109,7 @@ type State = {
   storageMap: StorageMap[],
   sourceFailed: boolean,
   destinationFailedMessage: string | null,
+  uploadedScripts: InstanceScript[],
 }
 
 @observer
@@ -118,6 +122,7 @@ class EditReplica extends React.Component<Props, State> {
     selectedNetworks: [],
     defaultStorage: undefined,
     storageMap: [],
+    uploadedScripts: [],
     sourceFailed: false,
     destinationFailedMessage: null,
   }
@@ -463,6 +468,7 @@ class EditReplica extends React.Component<Props, State> {
       destination: this.state.destinationData,
       network: this.state.selectedNetworks.length > 0 ? this.getSelectedNetworks() : [],
       storage: this.state.storageMap,
+      uploadedScripts: this.state.uploadedScripts,
     }
     if (this.props.type === 'replica') {
       try {
@@ -510,6 +516,22 @@ class EditReplica extends React.Component<Props, State> {
     this.setState({
       selectedNetworks: [...networkMap, { sourceNic, targetNetwork, targetSecurityGroups }],
     })
+  }
+
+  handleCancelScript(global: 'windows' | 'linux' | null, instanceName: string | null) {
+    this.setState(prevState => ({
+      uploadedScripts: prevState.uploadedScripts
+        .filter(s => (global ? s.global !== global : s.instanceId !== instanceName)),
+    }))
+  }
+
+  handleScriptUpload(script: InstanceScript) {
+    this.setState(prevState => ({
+      uploadedScripts: [
+        ...prevState.uploadedScripts,
+        script,
+      ],
+    }))
   }
 
   handleStorageChange(source: Disk, target: StorageBackend, type: 'backend' | 'disk') {
@@ -630,6 +652,21 @@ class EditReplica extends React.Component<Props, State> {
     )
   }
 
+  renderUserScripts() {
+    return (
+      <WizardScripts
+        instances={this.props.instancesDetails}
+        loadingInstances={this.props.instancesDetailsLoading}
+        onScriptUpload={s => { this.handleScriptUpload(s) }}
+        onCancelScript={(g, i) => { this.handleCancelScript(g, i) }}
+        uploadedScripts={this.state.uploadedScripts}
+        userScriptData={this.props.replica?.user_scripts}
+        scrollableRef={(r: HTMLElement) => { this.scrollableRef = r }}
+        style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}
+      />
+    )
+  }
+
   renderContent() {
     let content = null
     switch (this.state.selectedPanel) {
@@ -641,6 +678,9 @@ class EditReplica extends React.Component<Props, State> {
         break
       case 'network_mapping':
         content = this.renderNetworkMapping()
+        break
+      case 'user_scripts':
+        content = this.renderUserScripts()
         break
       case 'storage_mapping':
         content = this.renderStorageMapping()
@@ -703,6 +743,11 @@ class EditReplica extends React.Component<Props, State> {
         value: 'network_mapping',
         label: 'Network Mapping',
         loading: this.isLoadingNetwork(),
+      },
+      {
+        value: 'user_scripts',
+        label: 'User Scripts',
+        loading: this.props.instancesDetailsLoading,
       },
     ]
 

@@ -24,6 +24,7 @@ import type { Field } from '../../../@types/Field'
 import type { OptionValues, StorageMap } from '../../../@types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '../../../@types/Schema'
 import type { NetworkMap } from '../../../@types/Network'
+import { UserScriptData } from '../../../@types/MainItem'
 
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_template_map'
@@ -100,7 +101,10 @@ export default class OptionsSchemaParser {
     return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)
   }
 
-  static getUserScripts(uploadedUserScripts: InstanceScript[]) {
-    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts)
+  static getUserScripts(
+    uploadedUserScripts: InstanceScript[],
+    userScriptData: UserScriptData | null | undefined,
+  ) {
+    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts, userScriptData)
   }
 }

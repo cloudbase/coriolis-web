@@ -254,6 +254,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       replicaId,
       options,
       userScripts,
+      migrationStore.migrationDetails?.user_scripts,
       minionPoolMappings,
     )
     this.props.history.push(`/migrations/${migration.id}/tasks`)

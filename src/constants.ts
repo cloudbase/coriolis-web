@@ -96,7 +96,7 @@ export const wizardPages: WizardPage[] = [
   { id: 'networks', title: 'Networks', breadcrumb: 'Networks' },
   { id: 'storage', title: 'Storage Mapping', breadcrumb: 'Storage' },
   {
-    id: 'scripts', title: 'User Scripts', breadcrumb: 'Scripts', excludeFrom: 'replica',
+    id: 'scripts', title: 'User Scripts', breadcrumb: 'Scripts',
   },
   {
     id: 'schedule', title: 'Schedule', breadcrumb: 'Schedule', excludeFrom: 'migration',

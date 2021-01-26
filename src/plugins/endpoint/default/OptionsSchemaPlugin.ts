@@ -24,6 +24,7 @@ import type { SchemaProperties, SchemaDefinitions } from '../../../@types/Schema
 import type { NetworkMap } from '../../../@types/Network'
 import type { InstanceScript } from '../../../@types/Instance'
 import { executionOptions, migrationFields } from '../../../constants'
+import { UserScriptData } from '../../../@types/MainItem'
 
 const migrationImageOsTypes = ['windows', 'linux']
 
@@ -257,18 +258,21 @@ export default class OptionsSchemaParser {
     return payload
   }
 
-  static getUserScripts(uploadedUserScripts: InstanceScript[]) {
-    const payload: any = {}
+  static getUserScripts(
+    uploadedUserScripts: InstanceScript[],
+    userScriptData: UserScriptData | null | undefined,
+  ) {
+    const payload: any = userScriptData || {}
     const globalScripts = uploadedUserScripts.filter(s => s.global)
     if (globalScripts.length) {
-      payload.global = {}
+      payload.global = payload.global || {}
       globalScripts.forEach(script => {
         payload.global[script.global || ''] = script.scriptContent
       })
     }
     const instanceScripts = uploadedUserScripts.filter(s => s.instanceId)
     if (instanceScripts.length) {
-      payload.instances = {}
+      payload.instances = payload.instances || {}
       instanceScripts.forEach(script => {
         payload.instances[script.instanceId || ''] = script.scriptContent
       })

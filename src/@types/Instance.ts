@@ -52,7 +52,7 @@ export type InstanceBase = {
 } & Partial<Instance>
 
 export type InstanceScript = {
-  global?: string | null,
+  global?: 'windows' | 'linux' | null,
   instanceId?: string | null,
   scriptContent: string,
   fileName: string,
