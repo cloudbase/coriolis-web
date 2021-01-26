@@ -25,21 +25,21 @@ import type { NetworkMap } from '../@types/Network'
 import type { Endpoint, StorageMap } from '../@types/Endpoint'
 
 import configLoader from '../utils/Config'
-import { Task } from '../@types/Task'
+import { ProgressUpdate, Task } from '../@types/Task'
 import { MigrationItem, MigrationItemOptions, MigrationItemDetails } from '../@types/MainItem'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
 
 class MigrationSourceUtils {
-  static sortTaskUpdates(updates: any[]) {
+  static sortTaskUpdates(updates: ProgressUpdate[]) {
     if (!updates) {
       return
     }
-    updates.sort((a: any, b: any) => {
+    updates.sort((a, b) => {
       const sortNull = !a && b ? 1 : a && !b ? -1 : !a && !b ? 0 : false
       if (sortNull !== false) {
         return sortNull
       }
-      return moment(a.created_at).toDate().getTime() - moment(b.created_at).toDate().getTime()
+      return a.index - b.index
     })
   }
 
