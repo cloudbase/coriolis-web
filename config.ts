@@ -109,6 +109,8 @@ const conf: Config = {
   // replicas, migrations, endpoints, users etc.
   mainListItemsPerPage: 20,
 
+  maxMinionPoolEventsPerPage: 50,
+
   servicesUrls: {
     keystone: '{BASE_URL}/identity',
     barbican: '{BASE_URL}/barbican',

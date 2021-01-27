@@ -12,8 +12,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from 'moment'
-
 import Api from '../utils/ApiCaller'
 
 import configLoader from '../utils/Config'
@@ -24,9 +22,8 @@ import { providerTypes } from '../constants'
 import { SchemaParser } from './Schemas'
 import { OptionValues } from '../@types/Endpoint'
 import { MinionPoolAction } from '../stores/MinionPoolStore'
-import { Execution, ExecutionTasks } from '../@types/Execution'
-import { sortTasks } from './ReplicaSource'
-import { ProgressUpdate } from '../@types/Task'
+import { Execution } from '../@types/Execution'
+import DomUtils from '../utils/DomUtils'
 
 const transformFieldsToPayload = (schema: Field[], data: any) => {
   const payload: any = {}
@@ -51,26 +48,29 @@ class MinionPoolSource {
         type: 'string',
       },
       {
-        name: 'pool_platform',
+        name: 'platform',
         type: 'string',
+        title: 'Pool Platform',
       },
       {
-        name: 'pool_name',
+        name: 'name',
         type: 'string',
         required: true,
+        title: 'Pool Name',
       },
       {
-        name: 'pool_os_type',
+        name: 'os_type',
         type: 'string',
         required: true,
+        title: 'Pool OS Type',
+        default: 'linux',
         enum: [
           {
-            value: 'linux',
             label: 'Linux',
-          },
-          {
-            value: 'windows',
+            value: 'linux',
+          }, {
             label: 'Windows',
+            value: 'windows',
           },
         ],
       },
@@ -79,6 +79,38 @@ class MinionPoolSource {
         type: 'integer',
         minimum: 1,
         default: 1,
+      },
+      {
+        name: 'maximum_minions',
+        type: 'integer',
+        minimum: 1,
+        default: 1,
+      },
+      {
+        name: 'minion_max_idle_time',
+        type: 'integer',
+        minimum: 0,
+        default: 3600,
+      },
+      {
+        name: 'minion_retention_strategy',
+        type: 'string',
+        default: 'delete',
+        enum: [
+          {
+            value: 'delete',
+            label: 'Delete',
+          },
+          {
+            value: 'poweroff',
+            label: 'Power Off',
+          },
+        ],
+      },
+      {
+        name: 'skip_allocation',
+        type: 'boolean',
+        nullableBoolean: false,
       },
       {
         name: 'notes',
@@ -92,12 +124,27 @@ class MinionPoolSource {
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools`,
       skipLog: options?.skipLog,
     })
-    return response.data.minion_pools
+    const minionPools: MinionPool[] = response.data.minion_pools
+    minionPools.sort((a, b) => new Date(b.updated_at || b.created_at || '').getTime()
+      - new Date(a.updated_at || a.created_at || '').getTime())
+    return minionPools
+  }
+
+  async loadMinionPoolDetails(
+    id: string,
+    options?: { skipLog?: boolean },
+  ): Promise<MinionPoolDetails> {
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools/${id}`,
+      skipLog: options?.skipLog,
+    })
+    return response.data.minion_pool
   }
 
   async loadEnvOptions(endpointId: string, platform: 'source' | 'destination', useCache?: boolean): Promise<OptionValues[]> {
+    const env = DomUtils.encodeToBase64Url({ list_all_destination_networks: true })
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/${platform}-minion-pool-options`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/${platform}-minion-pool-options?env=${env}`,
       cache: useCache,
     })
     return response.data[`${platform}_minion_pool_options`]
@@ -115,6 +162,8 @@ class MinionPoolSource {
       if (schema) {
         fields = SchemaParser.optionsSchemaToFields(providerName, schema, `${providerName}-minion-pool`)
       }
+      // Remove this field, as all networks are always listed
+      fields = fields.filter(f => f.name !== 'list_all_destination_networks')
       return fields
     } catch (err) {
       console.error(err)
@@ -129,6 +178,7 @@ class MinionPoolSource {
         endpoint_id: endpointId,
         environment_options: {
           ...transformFieldsToPayload(envSchema, data),
+          list_all_destination_networks: true,
         },
       },
     }
@@ -146,6 +196,7 @@ class MinionPoolSource {
         ...transformFieldsToPayload(defaultSchema, data),
         environment_options: {
           ...transformFieldsToPayload(envSchema, data),
+          list_all_destination_networks: true,
         },
       },
     }
@@ -157,9 +208,18 @@ class MinionPoolSource {
     return response.data.minion_pool
   }
 
-  async runAction(minionPoolId: string, minionPoolAction: MinionPoolAction): Promise<Execution> {
+  async runAction(
+    minionPoolId: string,
+    minionPoolAction: MinionPoolAction,
+    actionOptions?: any,
+  ): Promise<Execution> {
     const payload: any = {}
-    payload[minionPoolAction] = null
+
+    if (actionOptions) {
+      payload[minionPoolAction] = { ...actionOptions }
+    } else {
+      payload[minionPoolAction] = null
+    }
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools/${minionPoolId}/actions`,
@@ -169,73 +229,12 @@ class MinionPoolSource {
     return response.data.execution
   }
 
-  async getMinionPoolDetails(
-    minionPoolId: string,
-    options?: { skipLog?: boolean },
-  ): Promise<MinionPoolDetails> {
-    const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools/${minionPoolId}`,
-      skipLog: options?.skipLog,
-    })
-    const minionPool: MinionPoolDetails = response.data.minion_pool
-    minionPool.executions.sort((a, b) => a.number - b.number)
-    return minionPool
-  }
-
-  async cancelExecution(minionPoolId: string, force?: boolean, executionId?: string) {
-    let usableExecutionId = executionId
-    if (!usableExecutionId) {
-      const details = await this.getMinionPoolDetails(minionPoolId)
-      const lastExecution = details.executions[details.executions.length - 1]
-
-      if (!lastExecution) {
-        return null
-      }
-      usableExecutionId = lastExecution.id
-    }
-
-    const payload: any = { cancel: { force: force || false } }
-
-    await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools/${minionPoolId}/executions/${usableExecutionId}/actions`,
-      method: 'POST',
-      data: payload,
-    })
-    return null
-  }
-
   async deleteMinionPool(minionPoolId: string) {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools/${minionPoolId}`,
       method: 'DELETE',
     })
     return response.data.execution
-  }
-
-  async getExecutionTasks(options: {
-    minionPoolId: string,
-    executionId?: string,
-    skipLog?: boolean,
-  }): Promise<ExecutionTasks> {
-    const {
-      minionPoolId, executionId, skipLog,
-    } = options
-
-    const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools/${minionPoolId}/executions/${executionId}`,
-      skipLog,
-      quietError: true,
-    })
-    const execution: ExecutionTasks = response.data.execution
-    const sortTaskUpdates = (updates: ProgressUpdate[]) => {
-      if (!updates) {
-        return
-      }
-      updates.sort((a, b) => moment(a.created_at)
-        .toDate().getTime() - moment(b.created_at).toDate().getTime())
-    }
-    sortTasks(execution.tasks, sortTaskUpdates)
-    return execution
   }
 }
 

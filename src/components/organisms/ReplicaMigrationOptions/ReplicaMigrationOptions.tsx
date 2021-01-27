@@ -204,7 +204,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
       label: instance.name,
       type: 'string',
       enum: minionPools.map(minionPool => ({
-        name: minionPool.pool_name,
+        name: minionPool.name,
         id: minionPool.id,
       })),
     }))

@@ -41,6 +41,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import { ProviderTypes } from '../../../@types/Providers'
 import MinionEndpointModal from '../MinionEndpointModal/MinionEndpointModal'
 import MinionPoolModal from '../MinionPoolModal'
+import ObjectUtils from '../../../utils/ObjectUtils'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -385,7 +386,7 @@ class PageHeader extends React.Component<Props, State> {
         {this.state.showMinionPoolModal ? (
           <Modal
             isOpen
-            title="New Minion Pool"
+            title={`New ${ObjectUtils.capitalizeFirstLetter(this.state.selectedMinionPoolPlatform)} Minion Pool`}
             onRequestClose={() => { this.handleCloseMinionPoolModalRequest() }}
           >
             <MinionPoolModal

@@ -269,7 +269,7 @@ class Executions extends React.Component<Props, State> {
       return null
     }
 
-    if (this.state.selectedExecution.status === 'RUNNING') {
+    if (this.state.selectedExecution.status === 'RUNNING' || this.state.selectedExecution.status === 'AWAITING_MINION_ALLOCATIONS') {
       return (
         <Button
           secondary

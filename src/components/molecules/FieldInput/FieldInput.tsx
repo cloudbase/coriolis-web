@@ -228,11 +228,15 @@ class FieldInput extends React.Component<Props> {
       return {
         label: typeof e === 'string' ? (useDictionary ? LabelDictionary.get(e) : e) : e.name || e.label,
         value: typeof e === 'string' ? e : e.id || e.value,
+        disabled: typeof e !== 'string' ? Boolean(e.disabled) : false,
+        subtitleLabel: typeof e !== 'string' ? e.subtitleLabel || '' : false,
       }
     })
     if (this.props.addNullValue) {
       items = [
-        { label: 'Choose a value', value: null },
+        {
+          label: 'Choose a value', value: null, disabled: false, subtitleLabel: '',
+        },
         ...items,
       ]
     }

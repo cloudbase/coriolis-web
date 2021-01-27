@@ -232,8 +232,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     const originEndpoint = endpointStore.endpoints.find(e => e.id === replica.origin_endpoint_id)
     const targetEndpoint = endpointStore.endpoints
       .find(e => e.id === replica.destination_endpoint_id)
+    const status = this.getStatus()
 
-    return Boolean(!originEndpoint || !targetEndpoint || this.getStatus() === 'RUNNING' || this.getStatus() === 'CANCELLING')
+    return Boolean(!originEndpoint || !targetEndpoint || status === 'RUNNING' || status === 'CANCELLING' || status === 'AWAITING_MINION_ALLOCATIONS')
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -516,7 +517,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Cancel',
-        hidden: this.getStatus() !== 'RUNNING',
+        hidden: this.getStatus() !== 'RUNNING' && this.getStatus() !== 'AWAITING_MINION_ALLOCATIONS',
         action: () => { this.handleCancelLastExecutionClick() },
       },
       {
@@ -639,7 +640,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           >
             <ReplicaMigrationOptions
               transferItem={this.replica}
-              minionPools={minionPoolStore.minionPools.filter(m => m.endpoint_id === this.replica?.destination_endpoint_id && m.pool_platform === 'destination')}
+              minionPools={minionPoolStore.minionPools.filter(m => m.endpoint_id === this.replica?.destination_endpoint_id && m.platform === 'destination')}
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
               onCancelClick={() => { this.handleCloseMigrationModal() }}

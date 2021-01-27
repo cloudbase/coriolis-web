@@ -22,7 +22,6 @@ import DetailsContentHeader from '../../organisms/DetailsContentHeader/DetailsCo
 import Modal from '../../molecules/Modal/Modal'
 import AlertModal from '../../organisms/AlertModal/AlertModal'
 
-import type { Execution } from '../../../@types/Execution'
 import type { Action as DropdownAction } from '../../molecules/ActionDropdown/ActionDropdown'
 
 import userStore from '../../../stores/UserStore'
@@ -33,12 +32,12 @@ import configLoader from '../../../utils/Config'
 
 import minionPoolImage from './images/minion-pool.svg'
 import Palette from '../../styleUtils/Palette'
-import ObjectUtils from '../../../utils/ObjectUtils'
-import minionPoolStore, { MinionPoolAction } from '../../../stores/MinionPoolStore'
+import minionPoolStore from '../../../stores/MinionPoolStore'
 import MinionPoolModal from '../../organisms/MinionPoolModal/MinionPoolModal'
 import MinionPoolDetailsContent from '../../organisms/MinionPoolDetailsContent/MinionPoolDetailsContent'
 import replicaStore from '../../../stores/ReplicaStore'
 import migrationStore from '../../../stores/MigrationStore'
+import MinionPoolConfirmationModal from '../../molecules/MinionPoolConfirmationModal/MinionPoolConfirmationModal'
 
 const Wrapper = styled.div<any>``
 
@@ -49,10 +48,8 @@ type Props = {
 type State = {
   showEditModal: boolean,
   showDeleteMinionPoolConfirmation: boolean,
-  showCancelConfirmation: boolean
-  forceCancel: boolean,
-  confirmationExecution: Execution | null,
   pausePolling: boolean,
+  showDeallocateConfirmation: boolean
 }
 
 @observer
@@ -60,10 +57,8 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
   state: State = {
     showEditModal: false,
     showDeleteMinionPoolConfirmation: false,
-    confirmationExecution: null,
-    showCancelConfirmation: false,
     pausePolling: false,
-    forceCancel: false,
+    showDeallocateConfirmation: false,
   }
 
   stopPolling: boolean | null = null
@@ -83,8 +78,8 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this.stopPolling = true
     minionPoolStore.clearMinionPoolDetails()
+    this.stopPolling = true
   }
 
   get minionPoolId() {
@@ -94,29 +89,42 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     return this.props.match.params.id
   }
 
+  get minionPool() {
+    return minionPoolStore.minionPoolDetails
+  }
+
   getStatus() {
-    return minionPoolStore.minionPoolDetails?.pool_status
+    return this.minionPool?.status
   }
 
   async loadMinionPool(minionPoolId?: string) {
+    const usableId = minionPoolId || this.minionPoolId
     await Promise.all([
       endpointStore.getEndpoints({ showLoading: true }),
-      minionPoolStore
-        .loadMinionPoolDetails(minionPoolId || this.minionPoolId, { showLoading: true }),
+      minionPoolStore.loadMinionPoolDetails(this.minionPoolId, { showLoading: true }),
+      replicaStore.getReplicas(),
+      migrationStore.getMigrations(),
     ])
+    const minionPool = this.minionPool
+    if (!minionPool) {
+      notificationStore.alert(`Minion pool with ID '${usableId}' was not found`, 'error')
+      return
+    }
+
     const endpoint = endpointStore.endpoints
-      .find(e => e.id === minionPoolStore.minionPoolDetails?.endpoint_id)
+      .find(e => e.id === minionPool.endpoint_id)
     if (!endpoint) {
+      notificationStore.alert('The endpoint associated to this minion pool was not found', 'error')
       return
     }
     await minionPoolStore.loadMinionPoolSchema(
       endpoint.type,
-      minionPoolStore.minionPoolDetails!.pool_platform,
+      minionPool.platform,
     )
     await minionPoolStore.loadEnvOptions(
       endpoint.id,
       endpoint.type,
-      minionPoolStore.minionPoolDetails!.pool_platform,
+      minionPool.platform,
       { useCache: true },
     )
   }
@@ -130,27 +138,14 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  handleCancelExecutionConfirmation() {
-    if (!minionPoolStore.minionPoolDetails) {
-      return
-    }
-    minionPoolStore.cancelExecution(
-      minionPoolStore.minionPoolDetails.id,
-      this.state.forceCancel,
-      this.state.confirmationExecution?.id,
-    )
-
-    this.handleCloseCancelConfirmation()
-  }
-
   handleDeleteMinionPoolClick() {
     this.setState({ showDeleteMinionPoolConfirmation: true })
   }
 
   handleDeleteMinionPool() {
     this.setState({ showDeleteMinionPoolConfirmation: false })
-    this.props.history.push('/replicas')
-    minionPoolStore.deleteMinionPool(minionPoolStore.minionPoolDetails!.id)
+    this.props.history.push('/minion-pools')
+    minionPoolStore.deleteMinionPool(this.minionPool!.id)
   }
 
   handleCloseDeleteMinionPoolConfirmation() {
@@ -161,20 +156,6 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     this.setState({ showEditModal: true, pausePolling: true })
   }
 
-  handleCancelExecution(confirmationExecution: Execution | null, force?: boolean) {
-    this.setState({
-      showCancelConfirmation: true,
-      confirmationExecution,
-      forceCancel: force || false,
-    })
-  }
-
-  handleCloseCancelConfirmation() {
-    this.setState({
-      showCancelConfirmation: false,
-    })
-  }
-
   async pollData(showLoading: boolean) {
     if (this.state.pausePolling || this.stopPolling) {
       return
@@ -182,16 +163,11 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
 
     await Promise.all([
       minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
-        showLoading, skipLog: true,
+        showLoading,
+        skipLog: true,
       }),
-      (async () => {
-        if (window.location.pathname.indexOf('executions') > -1) {
-          await minionPoolStore.loadExecutionTasks({
-            minionPoolId: this.minionPoolId,
-            skipLog: true,
-          })
-        }
-      })(),
+      replicaStore.getReplicas(),
+      migrationStore.getMigrations(),
     ])
 
     setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
@@ -208,44 +184,41 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     this.closeEditModal()
   }
 
-  async handleExecutionChange(executionId: string) {
-    await ObjectUtils.waitFor(() => Boolean(minionPoolStore.minionPoolDetails))
-    if (!minionPoolStore.minionPoolDetails?.id) {
+  async handleAllocate() {
+    if (!this.minionPool) {
       return
     }
-    minionPoolStore.loadExecutionTasks(
-      {
-        minionPoolId: minionPoolStore.minionPoolDetails.id,
-        executionId,
-      },
-    )
+    notificationStore.alert('Allocating minion pool...')
+    await minionPoolStore.runAction(this.minionPool.id, 'allocate')
+    await minionPoolStore.loadMinionPoolDetails(this.minionPool.id)
   }
 
-  async handleAction(action: MinionPoolAction) {
-    const runAction = async (message: string) => {
-      if (!minionPoolStore.minionPoolDetails) {
-        return
-      }
-      notificationStore.alert(message)
-      await minionPoolStore.runAction(minionPoolStore.minionPoolDetails.id, action)
-      await minionPoolStore.loadMinionPoolDetails(minionPoolStore.minionPoolDetails.id)
-    }
+  handleDeallocate() {
+    this.setState({
+      showDeallocateConfirmation: true,
+    })
+  }
 
-    switch (action) {
-      case 'set-up-shared-resources':
-        runAction('Setting up shared resources...')
-        break
-      case 'tear-down-shared-resources':
-        runAction('Tearing up shared resources...')
-        break
-      case 'allocate-machines':
-        runAction('Allocating machines...')
-        break
-      case 'deallocate-machines':
-        runAction('Deallocating machines...')
-        break
-      default:
+  async handleRefresh() {
+    if (!this.minionPool) {
+      return
     }
+    notificationStore.alert('Refreshing minion pool...')
+    await minionPoolStore.runAction(this.minionPool.id, 'refresh')
+    await minionPoolStore.loadMinionPoolDetails(this.minionPool.id)
+    this.props.history.push(`/minion-pools/${this.minionPool.id}/machines`)
+  }
+
+  async handleDeallocateConfirmation(force: boolean) {
+    this.setState({
+      showDeallocateConfirmation: false,
+    })
+    if (!this.minionPool) {
+      return
+    }
+    notificationStore.alert('Deallocating minion pool...')
+    await minionPoolStore.runAction(this.minionPool.id, 'deallocate', { force })
+    await minionPoolStore.loadMinionPoolDetails(this.minionPool.id)
   }
 
   renderEditMinionPool() {
@@ -253,7 +226,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       return null
     }
     const endpoint = endpointStore.endpoints
-      .find(e => e.id === minionPoolStore.minionPoolDetails?.endpoint_id)
+      .find(e => e.id === this.minionPool?.endpoint_id)
     if (!endpoint) {
       return null
     }
@@ -268,8 +241,8 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
           endpoint={endpoint}
           onCancelClick={() => { this.closeEditModal() }}
           onRequestClose={() => { this.closeEditModal() }}
-          minionPool={minionPoolStore.minionPoolDetails}
-          platform={minionPoolStore.minionPoolDetails?.pool_platform || 'source'}
+          minionPool={this.minionPool}
+          platform={this.minionPool?.platform || 'source'}
           onUpdateComplete={r => { this.handleUpdateComplete(r) }}
         />
       </Modal>
@@ -277,63 +250,40 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
-    const uninitialized = minionPoolStore.minionPoolDetails?.pool_status === 'UNINITIALIZED'
-    const deallocated = minionPoolStore.minionPoolDetails?.pool_status === 'DEALLOCATED'
-    const allocated = minionPoolStore.minionPoolDetails?.pool_status === 'ALLOCATED'
-    const isRunning = minionPoolStore.minionPoolDetails?.pool_status?.indexOf('ING') === ((minionPoolStore.minionPoolDetails?.pool_status?.length || -100) - 3)
+    const status = this.minionPool?.status
+    const deallocated = status === 'DEALLOCATED'
+    const allocated = status === 'ALLOCATED'
+    const error = status === 'ERROR'
 
     const dropdownActions: DropdownAction[] = [
       {
         label: 'Edit',
         action: () => { this.handleMinionPoolEditClick() },
-        disabled: !uninitialized,
-        title: !uninitialized ? 'The minion pool should be uninitialized' : '',
-      },
-      {
-        label: 'Setup shared resources',
-        color: Palette.primary,
-        action: () => {
-          this.handleAction('set-up-shared-resources')
-        },
-        disabled: !uninitialized,
-        title: !uninitialized ? 'The minion pool should be uninitialized' : '',
-      },
-      {
-        label: 'Tear down shared resources',
-        action: () => {
-          this.handleAction('tear-down-shared-resources')
-        },
         disabled: !deallocated,
         title: !deallocated ? 'The minion pool should be deallocated' : '',
       },
       {
-        label: 'Allocate Machines',
+        label: 'Allocate',
         color: Palette.primary,
-        action: () => {
-          this.handleAction('allocate-machines')
-        },
+        action: () => { this.handleAllocate() },
         disabled: !deallocated,
         title: !deallocated ? 'The minion pool should be deallocated' : '',
       },
       {
-        label: 'Deallocate Machines',
+        label: 'Deallocate',
         action: () => {
-          this.handleAction('deallocate-machines')
+          this.handleDeallocate()
+        },
+        disabled: !allocated && !error,
+        title: !allocated && !error ? 'The minion pool should be allocated' : '',
+      },
+      {
+        label: 'Refresh',
+        action: () => {
+          this.handleRefresh()
         },
         disabled: !allocated,
         title: !allocated ? 'The minion pool should be allocated' : '',
-      },
-      {
-        label: 'Cancel Execution',
-        action: () => {
-          this.setState({
-            showCancelConfirmation: true,
-            confirmationExecution: null,
-            forceCancel: false,
-          })
-        },
-        disabled: !isRunning,
-        title: !isRunning ? 'The minion pool do not have an active execution' : '',
       },
       {
         label: 'Delete Minion Pool',
@@ -341,8 +291,8 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
         action: () => {
           this.setState({ showDeleteMinionPoolConfirmation: true })
         },
-        disabled: !uninitialized,
-        title: !uninitialized ? 'The minion pool should be uninitialized' : '',
+        disabled: !deallocated && !error,
+        title: (!deallocated && !error) ? 'The minion pool should be deallocated' : '',
       },
     ]
 
@@ -357,8 +307,8 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
 )}
           contentHeaderComponent={(
             <DetailsContentHeader
-              statusPill={minionPoolStore.minionPoolDetails?.pool_status}
-              itemTitle={minionPoolStore.minionPoolDetails?.pool_name}
+              statusPill={this.minionPool?.status}
+              itemTitle={this.minionPool?.name}
               itemType="minion pool"
               dropdownActions={dropdownActions}
               largeDropdownActionItems
@@ -368,28 +318,22 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
 )}
           contentComponent={(
             <MinionPoolDetailsContent
-              item={minionPoolStore.minionPoolDetails}
+              item={this.minionPool}
+              itemId={this.minionPoolId}
               replicas={replicaStore.replicas
-                .filter(r => r.origin_minion_pool_id === minionPoolStore.minionPoolDetails?.id
-                  || r.destination_minion_pool_id === minionPoolStore.minionPoolDetails?.id)}
+                .filter(r => r.origin_minion_pool_id === this.minionPool?.id
+                  || r.destination_minion_pool_id === this.minionPool?.id)}
               migrations={migrationStore.migrations
-                .filter(r => r.origin_minion_pool_id === minionPoolStore.minionPoolDetails?.id
-                  || r.destination_minion_pool_id === minionPoolStore.minionPoolDetails?.id)}
+                .filter(r => r.origin_minion_pool_id === this.minionPool?.id
+                  || r.destination_minion_pool_id === this.minionPool?.id)}
               endpoints={endpointStore.endpoints}
-              detailsLoading={minionPoolStore.loadingMinionPoolDetails || endpointStore.loading}
               schema={minionPoolStore.minionPoolCombinedSchema}
               schemaLoading={minionPoolStore.loadingMinionPoolSchema
                 || minionPoolStore.loadingEnvOptions}
-              executionsLoading={minionPoolStore.loadingMinionPoolDetails}
-              onExecutionChange={id => { this.handleExecutionChange(id) }}
-              executions={minionPoolStore.minionPoolDetails?.executions || []}
-              executionsTasksLoading={minionPoolStore.loadingMinionPoolDetails
-                || minionPoolStore.loadingExecutionsTasks}
-              executionsTasks={minionPoolStore.executionsTasks}
               page={this.props.match.params.page || ''}
-              onCancelExecutionClick={(e, f) => { this.handleCancelExecution(e, f) }}
+              loading={minionPoolStore.loadingMinionPoolDetails}
               onDeleteMinionPoolClick={() => { this.handleDeleteMinionPoolClick() }}
-              onRunAction={a => { this.handleAction(a) }}
+              onAllocate={() => { this.handleAllocate() }}
             />
           )}
         />
@@ -403,14 +347,12 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
             onRequestClose={() => { this.setState({ showDeleteMinionPoolConfirmation: false }) }}
           />
         ) : null}
-        <AlertModal
-          isOpen={this.state.showCancelConfirmation}
-          title="Cancel Execution?"
-          message="Are you sure you want to cancel the current execution?"
-          extraMessage=" "
-          onConfirmation={() => { this.handleCancelExecutionConfirmation() }}
-          onRequestClose={() => { this.handleCloseCancelConfirmation() }}
-        />
+        {this.state.showDeallocateConfirmation ? (
+          <MinionPoolConfirmationModal
+            onCancelClick={() => { this.setState({ showDeallocateConfirmation: false }) }}
+            onExecuteClick={force => { this.handleDeallocateConfirmation(force) }}
+          />
+        ) : null}
         {this.renderEditMinionPool()}
       </Wrapper>
     )

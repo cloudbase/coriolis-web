@@ -25,6 +25,7 @@ import { providerTypes } from '../../../constants'
 import EndpointLogos from '../../atoms/EndpointLogos/EndpointLogos'
 import Dropdown from '../../molecules/Dropdown/Dropdown'
 import Button from '../../atoms/Button/Button'
+import Palette from '../../styleUtils/Palette'
 
 const Wrapper = styled.div``
 const LoadingWrapper = styled.div`
@@ -136,11 +137,13 @@ class MinionEndpointModal extends React.Component<Props, State> {
     return (
       <PoolPlatformWrapper>
         <PoolPlatformOptions>
-          <PoolPlatformOption>Source Platform</PoolPlatformOption>
+          <PoolPlatformOption>Source Minion Pool</PoolPlatformOption>
           <SwitchWrapper>
             <Switch
               big
               checked={this.state.platform === 'destination'}
+              checkedColor={Palette.primary}
+              uncheckedColor={Palette.primary}
               onChange={value => {
                 this.setState({
                   platform: value ? 'destination' : 'source',
@@ -148,7 +151,7 @@ class MinionEndpointModal extends React.Component<Props, State> {
               }}
             />
           </SwitchWrapper>
-          <PoolPlatformOption>Destination Platform</PoolPlatformOption>
+          <PoolPlatformOption>Destination Minion Pool</PoolPlatformOption>
         </PoolPlatformOptions>
       </PoolPlatformWrapper>
     )

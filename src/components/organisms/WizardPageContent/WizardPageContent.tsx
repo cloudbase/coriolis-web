@@ -427,7 +427,7 @@ class WizardPageContent extends React.Component<Props, State> {
               || this.props.providerStore.sourceOptionsPrimaryLoading
               || this.props.minionPoolStore.loadingMinionPools}
             minionPools={this.props.minionPoolStore.minionPools
-              .filter(m => m.pool_platform === 'source' && m.endpoint_id === this.props.wizardData.source?.id)}
+              .filter(m => m.platform === 'source' && m.endpoint_id === this.props.wizardData.source?.id)}
             optionsLoading={this.props.providerStore.sourceOptionsSecondaryLoading}
             optionsLoadingSkipFields={getOptionsLoadingSkipFields('source')}
             fields={this.props.providerStore.sourceSchema}
@@ -449,7 +449,7 @@ class WizardPageContent extends React.Component<Props, State> {
               || this.props.providerStore.destinationOptionsPrimaryLoading
               || this.props.minionPoolStore.loadingMinionPools}
             minionPools={this.props.minionPoolStore.minionPools
-              .filter(m => m.pool_platform === 'destination' && m.endpoint_id === this.props.wizardData.target?.id)}
+              .filter(m => m.platform === 'destination' && m.endpoint_id === this.props.wizardData.target?.id)}
             optionsLoading={this.props.providerStore.destinationOptionsSecondaryLoading}
             optionsLoadingSkipFields={[
               ...getOptionsLoadingSkipFields('destination'), 'description', 'execute_now',

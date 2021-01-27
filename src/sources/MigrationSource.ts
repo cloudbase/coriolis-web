@@ -186,11 +186,11 @@ class MigrationSource {
     }
     const updatedSourceEnv = opts.updatedSourceEnv
       ? sourceParser.getDestinationEnv(opts.updatedSourceEnv) : {}
-    const sourceMinionPoolId = updatedSourceEnv.minion_pool_id || migration.origin_minion_pool_id
+    const sourceMinionPoolId = opts?.updatedSourceEnv?.minion_pool_id
+      || migration.origin_minion_pool_id
     if (sourceMinionPoolId) {
       payload.migration.origin_minion_pool_id = sourceMinionPoolId
     }
-    delete updatedSourceEnv.minion_pool_id
     payload.migration.source_environment = {
       ...sourceEnv,
       ...updatedSourceEnv,
@@ -201,11 +201,11 @@ class MigrationSource {
     }
     const updatedDestEnv = opts.updatedDestEnv
       ? sourceParser.getDestinationEnv(opts.updatedDestEnv) : {}
-    const destMinionPoolId = updatedDestEnv.minion_pool_id || migration.destination_minion_pool_id
+    const destMinionPoolId = opts?.updatedDestEnv?.minion_pool_id
+      || migration.destination_minion_pool_id
     if (destMinionPoolId) {
       payload.migration.destination_minion_pool_id = destMinionPoolId
     }
-    delete updatedDestEnv.minion_pool_id
 
     const updatedDestEnvMappings = updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
     const oldMappings = migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}

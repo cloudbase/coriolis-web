@@ -29,12 +29,31 @@ const LABEL_MAP: { [status: string]: string } = {
   CANCELLING_AFTER_COMPLETION: 'CANCELLING',
   FAILED_TO_SCHEDULE: 'UNSCHEDULABLE',
   FAILED_TO_CANCEL: 'CANCELED',
+  AWAITING_MINION_ALLOCATIONS: 'AWAITING MINIONS',
+  ERROR_ALLOCATING_MINIONS: 'MINIONS ERROR',
+  // Minion Pool statuses
+  VALIDATING_INPUTS: 'VALIDATING',
+  ALLOCATING_SHARED_RESOURCES: 'ALLOCATING',
+  ALLOCATING_MACHINES: 'ALLOCATING',
+  DEALLOCATING_MACHINES: 'DEALLOCATING',
+  DEALLOCATING_SHARED_RESOURCES: 'DEALLOCATING',
+  IN_MAINTENANCE: 'MAINTENANCE',
+  RESCALING: 'SCALING',
+  IN_USE: 'IN USE',
+  // Minion Machine power statuses
+  POWERING_OFF: 'POWERING OFF',
+  POWERING_ON: 'POWERING ON',
+  POWERED_ON: 'POWERED ON',
+  POWERED_OFF: 'POWERED OFF',
+  POWER_ERROR: 'ERROR',
 }
 
 const statuses = (status: any) => {
   switch (status) {
     case 'COMPLETED':
-    case 'ALLOCATED':
+    case 'ALLOCATED': // Minion Pool status
+    case 'POWERED_ON': // Minion Machine status
+    case 'AVAILABLE': // Minion Pool status
       return css`
         background: ${Palette.success};
         color: white;
@@ -43,6 +62,8 @@ const statuses = (status: any) => {
     case 'FAILED_TO_SCHEDULE':
     case 'FAILED_TO_CANCEL':
     case 'ERROR':
+    case 'ERROR_ALLOCATING_MINIONS':
+    case 'POWER_ERROR': // Minion Machine power status
       return css`
         background: ${Palette.alert};
         color: white;
@@ -66,9 +87,19 @@ const statuses = (status: any) => {
     case 'STARTING':
     case 'RUNNING':
     case 'PENDING':
-    case 'INITIALIZING':
-    case 'ALLOCATING':
-    case 'RECONFIGURING':
+    case 'AWAITING_MINION_ALLOCATIONS':
+    case 'INITIALIZING': // Minion Pool status
+    case 'ALLOCATING': // Minion Pool status
+    case 'RECONFIGURING': // Minion Pool status
+    case 'VALIDATING_INPUTS': // Minion Pool status
+    case 'ALLOCATING_SHARED_RESOURCES': // Minion Pool status
+    case 'ALLOCATING_MACHINES': // Minion Pool status
+    case 'SCALING': // Minion Pool status
+    case 'RESCALING': // Minion Pool status
+    case 'DEPLOYING': // Minion Pool status
+    case 'IN_USE': // Minion Pool status
+    case 'HEALTHCHECKING': // Minion Machine status
+    case 'POWERING_ON': // Minion Machine power status
       return css`
         background: url('${runningImage}');
         animation: bgMotion 1s infinite linear;
@@ -79,10 +110,15 @@ const statuses = (status: any) => {
           100% { background-position: 0 -1px; }
         }
       `
+
     case 'CANCELLING':
     case 'UNINITIALIZING':
-    case 'DEALLOCATING':
+    case 'DEALLOCATING': // Minion Machine status
+    case 'POWERING_OFF': // Minion Machine power status
     case 'CANCELLING_AFTER_COMPLETION':
+    case 'IN_MAINTENANCE': // Minion Pool status
+    case 'DEALLOCATING_MACHINES': // Minion Pool status
+    case 'DEALLOCATING_SHARED_RESOURCES': // Minion Pool status
       return css`
         background: url('${cancellingImage}');
         animation: bgMotion 1s infinite linear;
@@ -101,9 +137,11 @@ const statuses = (status: any) => {
         border-color: transparent;
       `
     case 'UNSCHEDULED':
-    case 'UNINITIALIZED':
-    case 'DEALLOCATED':
-    case 'INITIALIZED':
+    case 'UNKNOWN': // Minion Pool/Machine status
+    case 'UNINITIALIZED': // Minion Pool/Machine status
+    case 'DEALLOCATED': // Minion Pool status
+    case 'INITIALIZED': // Minion Pool status
+    case 'POWERED_OFF': // Minion Machine status
       return css`
         background: ${Palette.grayscale[2]};
         color: ${Palette.black};
@@ -156,6 +194,7 @@ const Wrapper = styled.div<any>`
   ${(props: any) => statuses(props.status)}
   ${(props: any) => (props.status === 'INFO' ? getInfoStatusColor(props) : '')}
   text-transform: uppercase;
+  overflow: hidden;
 `
 
 type Props = {

@@ -18,21 +18,26 @@ import { observer } from 'mobx-react'
 
 import Button from '../../atoms/Button/Button'
 import DetailsNavigation from '../../molecules/DetailsNavigation/DetailsNavigation'
-import Executions from '../Executions/Executions'
 import type { Endpoint } from '../../../@types/Endpoint'
-import type { Execution, ExecutionTasks } from '../../../@types/Execution'
 import type { Field } from '../../../@types/Field'
 import StyleProps from '../../styleUtils/StyleProps'
-import { MinionPoolDetails } from '../../../@types/MinionPool'
-import { MinionPoolAction } from '../../../stores/MinionPoolStore'
 import MinionPoolMainDetails from './MinionPoolMainDetails'
 import { ReplicaItem, MigrationItem } from '../../../@types/MainItem'
+import { MinionPoolDetails } from '../../../@types/MinionPool'
+import MinionPoolMachines from './MinionPoolMachines'
+import StatusImage from '../../atoms/StatusImage/StatusImage'
+import MinionPoolEvents from './MinionPoolEvents'
 
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
 `
-
+const Loading = styled.div<any>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+`
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
@@ -58,33 +63,32 @@ const NavigationItems = [
     value: '',
   },
   {
-    label: 'Executions',
-    value: 'executions',
+    label: 'Machines',
+    value: 'machines',
+  },
+  {
+    label: 'Events',
+    value: 'events',
   },
 ]
 
 type Props = {
   item?: MinionPoolDetails | null,
+  itemId: string
   replicas: ReplicaItem[],
   migrations: MigrationItem[]
   endpoints: Endpoint[],
   schema: Field[],
   schemaLoading: boolean,
+  loading: boolean,
   page: string,
-  detailsLoading: boolean,
-  executions: Execution[],
-  executionsLoading: boolean,
-  executionsTasksLoading: boolean,
-  executionsTasks: ExecutionTasks[],
-  onRunAction: (action: MinionPoolAction) => void,
-  onExecutionChange: (executionId: string) => void,
-  onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
+  onAllocate: () => void,
   onDeleteMinionPoolClick: () => void,
 }
 @observer
 class MinionPoolDetailsContent extends React.Component<Props> {
   getStatus() {
-    return this.props.item?.pool_status
+    return this.props.item?.status
   }
 
   isEndpointMissing() {
@@ -95,8 +99,9 @@ class MinionPoolDetailsContent extends React.Component<Props> {
   }
 
   renderBottomControls() {
-    const uninitialized = this.props.item?.pool_status === 'UNINITIALIZED'
-    const deallocated = this.props.item?.pool_status === 'DEALLOCATED'
+    const status = this.props.item?.status
+    const deleteEnabled = status === 'DEALLOCATED' || status === 'ERROR'
+    const deallocated = this.props.item?.status === 'DEALLOCATED'
 
     return (
       <Buttons>
@@ -104,30 +109,52 @@ class MinionPoolDetailsContent extends React.Component<Props> {
           <Button
             primary
             hollow
-            disabled={this.isEndpointMissing() || !uninitialized}
-            onClick={() => { this.props.onRunAction('set-up-shared-resources') }}
-          >Setup Shared Resources
-          </Button>
-          <Button
-            primary
-            hollow
             disabled={this.isEndpointMissing() || !deallocated}
-            onClick={() => { this.props.onRunAction('allocate-machines') }}
-          >Allocate Machines
+            onClick={() => { this.props.onAllocate() }}
+          >Allocate
           </Button>
         </ButtonColumn>
         <ButtonColumn>
           <Button
             alert
             hollow
-            disabled={!uninitialized}
+            disabled={!deleteEnabled}
             onClick={this.props.onDeleteMinionPoolClick}
-            data-test-id="rdContent-deleteButton"
           >Delete Minion Pool
           </Button>
         </ButtonColumn>
       </Buttons>
     )
+  }
+
+  renderLoading() {
+    return (
+      <Loading>
+        <StatusImage loading />
+      </Loading>
+    )
+  }
+
+  renderMachines() {
+    if (this.props.page !== 'machines') {
+      return null
+    }
+
+    return (
+      <MinionPoolMachines
+        item={this.props.item}
+        replicas={this.props.replicas}
+        migrations={this.props.migrations}
+      />
+    )
+  }
+
+  renderEvents() {
+    if (this.props.page !== 'events') {
+      return null
+    }
+
+    return <MinionPoolEvents item={this.props.item} />
   }
 
   renderMainDetails() {
@@ -142,26 +169,8 @@ class MinionPoolDetailsContent extends React.Component<Props> {
         migrations={this.props.migrations}
         schema={this.props.schema}
         schemaLoading={this.props.schemaLoading}
-        loading={this.props.detailsLoading}
         endpoints={this.props.endpoints}
         bottomControls={this.renderBottomControls()}
-      />
-    )
-  }
-
-  renderExecutions() {
-    if (this.props.page !== 'executions') {
-      return null
-    }
-
-    return (
-      <Executions
-        executions={this.props.executions}
-        executionsTasks={this.props.executionsTasks}
-        onCancelExecutionClick={this.props.onCancelExecutionClick}
-        loading={this.props.executionsLoading}
-        onChange={this.props.onExecutionChange}
-        tasksLoading={this.props.executionsTasksLoading}
       />
     )
   }
@@ -172,12 +181,14 @@ class MinionPoolDetailsContent extends React.Component<Props> {
         <DetailsNavigation
           items={NavigationItems}
           selectedValue={this.props.page}
-          itemId={this.props.item ? this.props.item.id : ''}
+          itemId={this.props.itemId}
           itemType="minion-pool"
         />
         <DetailsBody>
-          {this.renderMainDetails()}
-          {this.renderExecutions()}
+          {!this.props.loading ? this.renderMainDetails() : null}
+          {!this.props.loading ? this.renderMachines() : null}
+          {!this.props.loading ? this.renderEvents() : null}
+          {this.props.loading ? this.renderLoading() : null}
         </DetailsBody>
       </Wrapper>
     )

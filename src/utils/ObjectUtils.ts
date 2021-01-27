@@ -97,6 +97,10 @@ class ObjectUtils {
       || fieldName.toLowerCase().indexOf('password') > -1
     return typeof value === 'string' && !isPassword ? value.trim() : value
   }
+
+  static capitalizeFirstLetter(value: string): string {
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  }
 }
 
 export default ObjectUtils

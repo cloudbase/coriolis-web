@@ -30,7 +30,7 @@ import replicaImage from './images/replica.svg'
 import endpointImage from './images/endpoint.svg'
 import userImage from './images/user.svg'
 import projectImage from './images/project.svg'
-import minionPoolImage from './images/minionPool.svg'
+import minionPoolImage from './images/minion-pool.svg'
 
 import { navigationMenu } from '../../../constants'
 

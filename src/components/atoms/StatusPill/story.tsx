@@ -40,6 +40,8 @@ const STATUSES = [
   'FAILED_TO_SCHEDULE',
   'DEADLOCKED',
   'STRANDED_AFTER_DEADLOCK',
+  'AWAITING_MINION_ALLOCATIONS',
+  'ERROR_ALLOCATING_MINIONS',
   // Minion Pool statuses
   'INITIALIZED',
   'UNINITIALIZED',
@@ -50,6 +52,8 @@ const STATUSES = [
   'ALLOCATING',
   'ALLOCATED',
   'RECONFIGURING',
+  'IN_USE',
+  'HEALTHCHECKING',
 ]
 
 const renderAllStatuses = (small?: boolean) => (

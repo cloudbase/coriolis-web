@@ -367,7 +367,7 @@ class WizardSummary extends React.Component<Props> {
 
     const getMinionPoolName = (id: string) => {
       const minionPool = this.props.minionPools.find(m => m.id === id)
-      return minionPool?.pool_name || id
+      return minionPool?.name || id
     }
 
     return (

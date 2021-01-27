@@ -140,7 +140,7 @@ class MinionPoolModal extends React.Component<Props, State> {
       this.setState(prevState => ({
         minionPool: {
           ...prevState.minionPool,
-          pool_platform: props.platform,
+          platform: props.platform,
         },
       }))
     }
@@ -203,40 +203,35 @@ class MinionPoolModal extends React.Component<Props, State> {
       return
     }
     this.setState({ saving: true })
-    if (this.state.minionPool?.id) {
-      await this.update()
-    } else {
-      await this.add()
+    try {
+      if (this.state.minionPool?.id) {
+        await this.update()
+      } else {
+        await this.add()
+      }
+    } catch (err) {
+      this.setState({ saving: false })
     }
   }
 
   async update() {
     const stateMinionPool = { ...this.state.minionPool }
-    await minionPoolStore.loadMinionPools()
     const minionPool = minionPoolStore.minionPools.find(e => e.id === stateMinionPool.id)
     if (!minionPool) {
       throw new Error('Minion pool not found!')
     }
-    try {
-      delete stateMinionPool.pool_platform
-      delete stateMinionPool.endpoint_id
-      await minionPoolStore.update(stateMinionPool)
-      if (this.props.onUpdateComplete) {
-        this.props.onUpdateComplete(`/minion-pools/${stateMinionPool.id}`)
-      }
-    } catch (err) {
-      this.props.onRequestClose()
+    delete stateMinionPool.platform
+    delete stateMinionPool.endpoint_id
+    await minionPoolStore.update(stateMinionPool)
+    if (this.props.onUpdateComplete) {
+      this.props.onUpdateComplete(`/minion-pools/${stateMinionPool.id}`)
     }
   }
 
   async add() {
-    try {
-      await minionPoolStore.add(this.props.endpoint.id, this.state.minionPool)
-      notificationStore.alert('Minion Pool created', 'success')
-      this.props.onRequestClose()
-    } catch (err) {
-      this.props.onRequestClose()
-    }
+    await minionPoolStore.add(this.props.endpoint.id, this.state.minionPool)
+    notificationStore.alert('Minion Pool created', 'success')
+    this.props.onRequestClose()
   }
 
   fillRequiredDefaults() {
@@ -309,6 +304,8 @@ class MinionPoolModal extends React.Component<Props, State> {
       <Content>
         <MinionPoolModalContent
           endpoint={this.props.endpoint}
+          platform={this.props.platform}
+          envOptionsDisabled={this.props.minionPool != null && this.props.minionPool.status !== 'DEALLOCATED'}
           defaultSchema={minionPoolStore.minionPoolDefaultSchema}
           envSchema={minionPoolStore.minionPoolEnvSchema}
           invalidFields={this.state.invalidFields}
@@ -338,7 +335,7 @@ class MinionPoolModal extends React.Component<Props, State> {
     return (
       <LoadingWrapper>
         <StatusImage loading />
-        <LoadingText>Loading schema ...</LoadingText>
+        <LoadingText>Loading Pool Options ...</LoadingText>
       </LoadingWrapper>
     )
   }

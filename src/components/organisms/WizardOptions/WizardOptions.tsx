@@ -34,6 +34,7 @@ import Palette from '../../styleUtils/Palette'
 
 import endpointImage from './images/endpoint.svg'
 import { MinionPool } from '../../../@types/MinionPool'
+import { MinionPoolStoreUtils } from '../../../stores/MinionPoolStore'
 
 export const INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS = 'instance_osmorphing_minion_pool_mappings'
 
@@ -195,32 +196,34 @@ class WizardOptions extends React.Component<Props> {
   getDefaultSimpleFieldsSchema() {
     let fieldsSchema: Field[] = []
 
-    if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica') {
-      fieldsSchema.push({ name: 'description', type: 'string' })
-    }
-
-    if (this.props.wizardType === 'migration' || this.props.wizardType === 'migration-destination-options-edit') {
-      fieldsSchema.unshift({ name: 'skip_os_morphing', type: 'boolean', default: false })
+    if (this.props.minionPools.length) {
+      fieldsSchema.push({
+        name: 'minion_pool_id',
+        label: `${this.props.isSource ? 'Source' : 'Target'} Minion Pool`,
+        type: 'string',
+        enum: this.props.minionPools.map(minionPool => ({
+          label: minionPool.name,
+          value: minionPool.id,
+          disabled: !MinionPoolStoreUtils.isActive(minionPool),
+          subtitleLabel: !MinionPoolStoreUtils.isActive(minionPool) ? `Pool is in ${minionPool.status} status instead of being ALLOCATED.` : '',
+        })),
+      })
     }
 
     if (this.props.showSeparatePerVm) {
       const dictionaryLabel = LabelDictionary.get('separate_vm')
       const label = this.props.wizardType === 'migration' ? dictionaryLabel : dictionaryLabel.replace('Migration', 'Replica')
-      fieldsSchema.unshift({
+      fieldsSchema.push({
         name: 'separate_vm', label, type: 'boolean', default: true,
       })
     }
 
-    if (this.props.minionPools.length) {
-      fieldsSchema.push({
-        name: 'minion_pool_id',
-        label: 'Minion Pool',
-        type: 'string',
-        enum: this.props.minionPools.map(minionPool => ({
-          label: minionPool.pool_name,
-          value: minionPool.id,
-        })),
-      })
+    if (this.props.wizardType === 'migration' || this.props.wizardType === 'migration-destination-options-edit') {
+      fieldsSchema.push({ name: 'skip_os_morphing', type: 'boolean', default: false })
+    }
+
+    if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica') {
+      fieldsSchema.push({ name: 'description', type: 'string' })
     }
 
     if (this.props.wizardType === 'replica') {
@@ -250,7 +253,7 @@ class WizardOptions extends React.Component<Props> {
         label: instance.name,
         type: 'string',
         enum: this.props.minionPools.map(minionPool => ({
-          name: minionPool.pool_name,
+          name: minionPool.name,
           id: minionPool.id,
         })),
       }))
