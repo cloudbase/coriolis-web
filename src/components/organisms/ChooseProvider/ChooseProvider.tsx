@@ -34,14 +34,23 @@ import MultipleUploadedEndpoints from './MultipleUploadedEndpoints'
 import { ProviderTypes } from '../../../@types/Providers'
 
 const Wrapper = styled.div<any>`
+  display: flex;
   min-height: 0;
   padding: 22px 0 32px 0;
   text-align: center;
 `
-const Providers = styled.div<any>``
+const Providers = styled.div`
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 const Logos = styled.div<any>`
   display: flex;
   flex-wrap: wrap;
+  overflow: auto;
+  min-height: 0;
+  flex-grow: 1;
 `
 const Upload = styled.div<any>`
   border: 1px dashed ${props => (props.highlight ? Palette.primary : 'white')};
@@ -73,6 +82,7 @@ const LoadingWrapper = styled.div<any>`
   flex-direction: column;
   align-items: center;
   margin: 32px 0;
+  flex-grow: 1;
 `
 const LoadingText = styled.div<any>`
   font-size: 18px;
@@ -173,7 +183,7 @@ class ChooseProvider extends React.Component<Props, State> {
     if (!endpoint.name || !endpoint.type || !this.props.providers.find(p => p === endpoint.type)) {
       throw new Error()
     }
-    delete endpoint.id
+    delete (endpoint as any).id
     return endpoint
   }
 

@@ -32,6 +32,8 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
 import { Region } from '../../../@types/Region'
 import { MigrationItem, ReplicaItem, TransferItem } from '../../../@types/MainItem'
+import { Field as FieldType } from '../../../@types/Field'
+import DomUtils from '../../../utils/DomUtils'
 
 const Wrapper = styled.div<any>`
   ${StyleProps.exactWidth(StyleProps.contentWidth)}
@@ -76,18 +78,42 @@ const LinkStyled = styled(Link)`
   cursor: pointer;
 `
 
+const DownloadLink = styled.div`
+  display: inline-block;
+  color: ${Palette.primary};
+  cursor: pointer;
+  :hover {
+    text-decoration: underline;
+  }
+`
+
 type Props = {
   item: Endpoint | null,
   regions: Region[],
   connectionInfo: Endpoint['connection_info'] | null,
   loading: boolean,
   usage: { migrations: MigrationItem[], replicas: ReplicaItem[] },
+  connectionInfoSchema: FieldType[],
   onDeleteClick: () => void,
   onValidateClick: () => void,
 }
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
   renderedKeys!: { [prop: string]: boolean }
+
+  renderDownloadValue(value: string, fieldName: string) {
+    const endpoint = this.props.item
+    if (!endpoint) {
+      return null
+    }
+    return (
+      <DownloadLink onClick={() => {
+        DomUtils.download(value, fieldName)
+      }}
+      >Download
+      </DownloadLink>
+    )
+  }
 
   renderConnectionInfoLoading() {
     if (!this.props.loading) {
@@ -131,18 +157,21 @@ class EndpointDetailsContent extends React.Component<Props> {
         value = '-'
       }
 
-      let valueClass = null
+      let valueElement = null
+      const schemaField = this.props.connectionInfoSchema.find(f => f.name === key)
 
       if (configLoader.config.passwordFields.find(fn => fn === key) || key.indexOf('password') > -1) {
-        valueClass = <PasswordValue value={value} data-test-id="edContent-connPassword" />
+        valueElement = <PasswordValue value={value} data-test-id="edContent-connPassword" />
+      } else if (schemaField?.useFile) {
+        valueElement = this.renderDownloadValue(value, key)
       } else {
-        valueClass = this.renderValue(value, `connValue-${key}`)
+        valueElement = this.renderValue(value, `connValue-${key}`)
       }
 
       return (
         <Field key={key}>
           <Label>{LabelDictionary.get(key)}</Label>
-          {valueClass}
+          {valueElement}
         </Field>
       )
     })

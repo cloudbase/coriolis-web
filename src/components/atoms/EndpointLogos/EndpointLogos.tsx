@@ -31,11 +31,11 @@ const Logo = styled.div<any>`
 const widthHeights = [
   { w: 80, h: 32 },
   { w: 105, h: 42 },
-  { w: 192, h: 128 },
-  { w: 192, h: 64 },
+  { w: 185, h: 128 },
+  { w: 185, h: 64 },
 ]
 const PROVIDER_LOGOS = [
-  'azure', 'openstack', 'opc', 'oracle_vm', 'vmware_vsphere', 'aws', 'oci', 'hyper-v', 'scvmm',
+  'azure', 'openstack', 'opc', 'oracle_vm', 'vmware_vsphere', 'aws', 'oci', 'hyper-v', 'scvmm', 'kubevirt',
 ]
 type Props = {
   endpoint?: string | null,
