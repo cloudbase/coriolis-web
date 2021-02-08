@@ -176,7 +176,7 @@ class TaskItem extends React.Component<Props> {
     if (progressUpdate.total_steps && progressUpdate.current_step) {
       const currentStep = Math.min(progressUpdate.total_steps, progressUpdate.current_step)
       return {
-        value: (currentStep * 100) / progressUpdate.total_steps,
+        value: Math.round((currentStep * 100) / progressUpdate.total_steps),
         useLabel: true,
       }
     }
