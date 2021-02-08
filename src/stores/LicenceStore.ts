@@ -14,38 +14,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from 'mobx'
 
-import apiCaller from '../utils/ApiCaller'
 import licenceSource from '../sources/LincenceSource'
 
-import type { Licence } from '../@types/Licence'
+import type { Licence, LicenceServerStatus } from '../@types/Licence'
 
 class LicenceStore {
   @observable loadingLicenceInfo: boolean = false
 
   @observable licenceInfo: Licence | null = null
 
+  @observable licenceServerStatus: LicenceServerStatus | null = null
+
   @observable addingLicence: boolean = false
 
-  @observable version: string | null = null
-
   @observable licenceInfoError: string | null = null
-
-  async loadVersion(): Promise<string> {
-    if (this.version) {
-      return this.version
-    }
-
-    const response = await apiCaller.get('/api/version')
-    runInAction(() => {
-      this.version = response.data.version
-    })
-    return this.version || ''
-  }
 
   @action async loadLicenceInfo(opts?: { skipLog?: boolean, showLoading?: boolean }) {
     if (opts && opts.showLoading) this.loadingLicenceInfo = true
     try {
-      const ids = await licenceSource.loadAppliancesIds(opts && opts.skipLog)
+      const ids = await licenceSource.loadAppliancesIds(opts?.skipLog)
       if (!ids.length || ids.length > 1) {
         runInAction(() => {
           if (ids.length > 1) {
@@ -56,9 +43,13 @@ class LicenceStore {
       }
       this.licenceInfoError = null
       const applianceId = ids[0]
-      const licenceInfo = await licenceSource.loadLicenceInfo(applianceId, opts && opts.skipLog)
+      const [licenceServerStatus, licenceInfo] = await Promise.all([
+        licenceSource.loadLicenceServerStatus(opts?.skipLog),
+        licenceSource.loadLicenceInfo(applianceId, opts?.skipLog),
+      ])
       runInAction(() => {
         this.licenceInfo = licenceInfo
+        this.licenceServerStatus = licenceServerStatus
         this.loadingLicenceInfo = false
       })
     } finally {

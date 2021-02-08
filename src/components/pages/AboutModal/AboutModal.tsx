@@ -93,8 +93,7 @@ class AboutModal extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillMount() {
-    licenceStore.loadVersion()
-    if (userStore.loggedUser && userStore.loggedUser.isAdmin) {
+    if (userStore.loggedUser?.isAdmin) {
       licenceStore.loadLicenceInfo({ showLoading: true })
     }
   }
@@ -130,6 +129,7 @@ class AboutModal extends React.Component<Props, State> {
             ) : null}
             <LicenceComponent
               licenceInfo={licenceStore.licenceInfo}
+              licenceServerStatus={licenceStore.licenceServerStatus}
               licenceError={licenceStore.licenceInfoError}
               loadingLicenceInfo={licenceStore.loadingLicenceInfo}
               onRequestClose={this.props.onRequestClose}

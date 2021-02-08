@@ -12,8 +12,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import licenceStore from '../stores/LicenceStore'
-
 import DomUtils from './DomUtils'
 
 type LogType = 'REQUEST' | 'RESPONSE'
@@ -37,7 +35,6 @@ type Log = {
   requests: RequestLog[],
   userAgent: string,
   platform: string,
-  version: string,
 }
 
 const MAX_LOGS = 1000
@@ -112,7 +109,6 @@ class ApiLogger {
       requests,
       userAgent: window.navigator.userAgent,
       platform: window.navigator.platform,
-      version: licenceStore.version || '-',
     }
 
     DomUtils.download(JSON.stringify(log), 'coriolis-log.json')
