@@ -25,3 +25,10 @@ export type Licence = {
   lifetimeAvailableMigrations: number,
   lifetimeAvailableReplicas: number,
 }
+
+export type LicenceServerStatus = {
+  hostname: string,
+  multi_appliance: boolean,
+  supported_licence_versions: string[],
+  server_local_time: string
+}

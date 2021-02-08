@@ -15,13 +15,21 @@ import Api from '../utils/ApiCaller'
 
 import configLoader from '../utils/Config'
 
-import type { Licence } from '../@types/Licence'
+import type { Licence, LicenceServerStatus } from '../@types/Licence'
 
 class LicenceSource {
   async loadAppliancesIds(skipLog?: boolean | null): Promise<string[]> {
     const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances`
     const response = await Api.send({ url, quietError: true, skipLog })
     return response.data.appliances.map((a: any) => a.id)
+  }
+
+  async loadLicenceServerStatus(skipLog?: boolean | null): Promise<LicenceServerStatus> {
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/status`
+    const response = await Api.send({ url, quietError: true, skipLog })
+    const status: LicenceServerStatus = response.data.status
+    status.supported_licence_versions.sort((a, b) => b.localeCompare(a))
+    return response.data.status
   }
 
   async loadLicenceInfo(applianceId: string, skipLog?: boolean | null): Promise<Licence> {

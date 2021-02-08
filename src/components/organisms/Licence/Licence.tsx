@@ -27,7 +27,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
 import FileUtils from '../../../utils/FileUtils'
 
-import type { Licence } from '../../../@types/Licence'
+import type { Licence, LicenceServerStatus } from '../../../@types/Licence'
 
 import licenceImage from './images/licence'
 
@@ -103,6 +103,7 @@ const FakeFileInput = styled.input`
 
 type Props = {
   licenceInfo: Licence | null,
+  licenceServerStatus: LicenceServerStatus | null,
   licenceError: string | null,
   loadingLicenceInfo: boolean,
   onRequestClose: () => void,
@@ -259,7 +260,7 @@ class LicenceC extends React.Component<Props, State> {
     return <LicenceInfoWrapper>{error}</LicenceInfoWrapper>
   }
 
-  renderLicenceInfo(info: Licence) {
+  renderLicenceInfo(info: Licence, status: LicenceServerStatus) {
     return (
       <LicenceInfoWrapper>
         <LicenceRow>
@@ -279,7 +280,7 @@ class LicenceC extends React.Component<Props, State> {
           <LicenceRowContent>
             <LicenceRowLabel>Appliance ID</LicenceRowLabel>
             <LicenceRowDescription>
-              <CopyValue value={info.applianceId} />
+              <CopyValue value={`${info.applianceId}-licence${status.supported_licence_versions[0]}`} />
             </LicenceRowDescription>
           </LicenceRowContent>
         </LicenceRow>
@@ -374,7 +375,9 @@ class LicenceC extends React.Component<Props, State> {
 
     return (
       <Wrapper>
-        {showInfo && this.props.licenceInfo ? this.renderLicenceInfo(this.props.licenceInfo) : null}
+        {showInfo && this.props.licenceInfo
+          && this.props.licenceServerStatus
+          ? this.renderLicenceInfo(this.props.licenceInfo, this.props.licenceServerStatus) : null}
         {showError && this.props.licenceError
           ? this.renderLicenceError(this.props.licenceError) : null}
         {this.props.addMode ? this.renderLicenceAdd() : null}
