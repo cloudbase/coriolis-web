@@ -149,14 +149,14 @@ class LicenceModule extends React.Component<Props> {
           current: info.currentPerformedReplicas,
           total: info.currentAvailableReplicas,
           label: 'Current Replicas',
-          info: 'The number of replicas performed with current licence over the number of replicas available in current licence',
+          info: 'The number of replicas consumed over the number of replicas available in all currently active licences (including non-activated floating licences)',
         },
         {
           color: Palette.alert,
           current: info.lifetimePerformedReplicas,
           total: info.lifetimeAvailableReplicas,
           label: 'Lifetime Replicas',
-          info: 'The number of lifetime performed replicas over the number of lifetime available replicas',
+          info: 'The number of replicas perfomred over the number of replicas licenced from all licences (including expired licences)',
         },
       ],
       [
@@ -165,14 +165,14 @@ class LicenceModule extends React.Component<Props> {
           current: info.currentPerformedMigrations,
           total: info.currentAvailableMigrations,
           label: 'Current Migrations',
-          info: 'The number of migrations performed with current licence over the number of migrations available in current licence',
+          info: 'The number of migrations consumed over the number of migrations available in all currently active licences (including non-activated floating licences)',
         },
         {
           color: Palette.primary,
           current: info.lifetimePerformedMigrations,
           total: info.lifetimeAvailableMigrations,
           label: 'Lifetime Migrations',
-          info: 'The number of lifetime performed migrations over the number of lifetime available migrations',
+          info: 'The number of migrations performed over the number of migrations licenced from all licences (including expired licences)',
         },
       ],
     ]
