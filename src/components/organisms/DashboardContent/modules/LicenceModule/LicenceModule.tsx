@@ -156,7 +156,7 @@ class LicenceModule extends React.Component<Props> {
           current: info.lifetimePerformedReplicas,
           total: info.lifetimeAvailableReplicas,
           label: 'Lifetime Replicas',
-          info: 'The number of replicas perfomed over the number of replicas licenced from all licences (including expired licences)',
+          info: 'The number of replicas perfomred over the number of replicas licenced from all licences (including expired licences)',
         },
       ],
       [
@@ -172,7 +172,7 @@ class LicenceModule extends React.Component<Props> {
           current: info.lifetimePerformedMigrations,
           total: info.lifetimeAvailableMigrations,
           label: 'Lifetime Migrations',
-          info: 'The number of migrations perfomed over the number of migrations licenced from all licences (including expired licences)',
+          info: 'The number of migrations performed over the number of migrations licenced from all licences (including expired licences)',
         },
       ],
     ]
