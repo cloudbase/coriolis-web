@@ -30,7 +30,9 @@ class LicenceStore {
   @observable licenceInfoError: string | null = null
 
   @action async loadLicenceInfo(opts?: { skipLog?: boolean, showLoading?: boolean }) {
-    if (opts && opts.showLoading) this.loadingLicenceInfo = true
+    if (opts?.showLoading && !this.licenceInfo && !this.licenceInfoError) {
+      this.loadingLicenceInfo = true
+    }
     try {
       const ids = await licenceSource.loadAppliancesIds(opts?.skipLog)
       if (!ids.length || ids.length > 1) {
@@ -40,17 +42,22 @@ class LicenceStore {
           }
           this.loadingLicenceInfo = false
         })
+        return
       }
-      this.licenceInfoError = null
       const applianceId = ids[0]
       const [licenceServerStatus, licenceInfo] = await Promise.all([
         licenceSource.loadLicenceServerStatus(opts?.skipLog),
         licenceSource.loadLicenceInfo(applianceId, opts?.skipLog),
       ])
       runInAction(() => {
+        this.licenceInfoError = null
         this.licenceInfo = licenceInfo
         this.licenceServerStatus = licenceServerStatus
         this.loadingLicenceInfo = false
+      })
+    } catch (err) {
+      runInAction(() => {
+        this.licenceInfoError = `There was an error contacting Coriolis® Licensing Server. Request status: ${err.status}\nPlease contact Coriolis® Support.`
       })
     } finally {
       runInAction(() => {

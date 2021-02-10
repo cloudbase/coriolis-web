@@ -85,7 +85,8 @@ type State = {
   selectedMinionPoolEndpoint: EndpointType | null
   showUserModal: boolean,
   showProjectModal: boolean,
-  showAbout: boolean,
+  showAddLicenceModal: boolean,
+  showAboutModal: boolean,
   providerType: ProviderTypes | null,
   uploadedEndpoint: EndpointType | null,
   multiValidating: boolean,
@@ -103,7 +104,8 @@ class PageHeader extends React.Component<Props, State> {
     showProjectModal: false,
     providerType: null,
     uploadedEndpoint: null,
-    showAbout: false,
+    showAboutModal: false,
+    showAddLicenceModal: false,
     multiValidating: false,
     selectedMinionPoolPlatform: 'source',
   }
@@ -138,7 +140,7 @@ class PageHeader extends React.Component<Props, State> {
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
       case 'about':
-        this.setState({ showAbout: true })
+        this.setState({ showAboutModal: true })
         if (this.props.onModalOpen) {
           this.props.onModalOpen()
         }
@@ -179,6 +181,12 @@ class PageHeader extends React.Component<Props, State> {
           this.props.onModalOpen()
         }
         this.setState({ showProjectModal: true })
+        break
+      case 'licence':
+        if (this.props.onModalOpen) {
+          this.props.onModalOpen()
+        }
+        this.setState({ showAddLicenceModal: true })
         break
       default:
     }
@@ -321,7 +329,8 @@ class PageHeader extends React.Component<Props, State> {
       || this.state.showMinionPoolModal
       || this.state.showProjectModal
       || this.state.showUserModal
-      || this.state.showAbout
+      || this.state.showAboutModal
+      || this.state.showAddLicenceModal
     ) {
       return
     }
@@ -430,13 +439,15 @@ class PageHeader extends React.Component<Props, State> {
             onUpdateClick={project => { this.handleProjectModalUpdateClick(project) }}
           />
         ) : null}
-        {this.state.showAbout ? (
-          <AboutModal onRequestClose={() => {
-            this.setState({ showAbout: false })
-            if (this.props.onModalClose) {
-              this.props.onModalClose()
-            }
-          }}
+        {this.state.showAboutModal || this.state.showAddLicenceModal ? (
+          <AboutModal
+            licenceAddMode={this.state.showAddLicenceModal}
+            onRequestClose={() => {
+              this.setState({ showAboutModal: false, showAddLicenceModal: false })
+              if (this.props.onModalClose) {
+                this.props.onModalClose()
+              }
+            }}
           />
         ) : null}
       </Wrapper>

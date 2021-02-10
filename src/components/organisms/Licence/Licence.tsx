@@ -111,6 +111,7 @@ type Props = {
   addMode: boolean,
   onAddLicence: (licence: string) => void,
   addingLicence: boolean,
+  backButtonText: string
 }
 type State = {
   licence: string,
@@ -296,7 +297,7 @@ class LicenceC extends React.Component<Props, State> {
             secondary
             large
             onClick={() => { this.props.onAddModeChange(false) }}
-          >Back
+          >{this.props.backButtonText}
           </Button>
         )
           : (
