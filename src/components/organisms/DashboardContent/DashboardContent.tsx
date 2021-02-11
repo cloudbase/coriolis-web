@@ -28,7 +28,7 @@ import Palette from '../../styleUtils/Palette'
 import type { Endpoint } from '../../../@types/Endpoint'
 import type { Project } from '../../../@types/Project'
 import type { User } from '../../../@types/User'
-import type { Licence } from '../../../@types/Licence'
+import type { Licence, LicenceServerStatus } from '../../../@types/Licence'
 import type { NotificationItemData } from '../../../@types/NotificationItem'
 import { ReplicaItem, MigrationItem } from '../../../@types/MainItem'
 
@@ -65,11 +65,13 @@ type Props = {
   notificationItemsLoading: boolean,
   users: User[],
   licence: Licence | null,
+  licenceServerStatus: LicenceServerStatus | null
   licenceError: string | null,
   notificationItems: NotificationItemData[],
   isAdmin: boolean,
   onNewReplicaClick: () => void,
   onNewEndpointClick: () => void,
+  onAddLicenceClick: () => void,
 }
 type State = {
   useMobileLayout: boolean,
@@ -132,7 +134,9 @@ class DashboardContent extends React.Component<Props, State> {
       <LicenceModule
         licence={this.props.licence}
         loading={this.props.licenceLoading}
+        licenceServerStatus={this.props.licenceServerStatus}
         licenceError={this.props.licenceError}
+        onAddClick={this.props.onAddLicenceClick}
         style={{
           minWidth: MIDDLE_WIDTHS[2],
           width: MIDDLE_WIDTHS[2],

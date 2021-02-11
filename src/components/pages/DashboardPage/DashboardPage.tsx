@@ -82,6 +82,10 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
     this.pageHeaderRef.handleNewItem('endpoint')
   }
 
+  handleAddLicenceClick() {
+    this.pageHeaderRef.handleNewItem('licence')
+  }
+
   async pollData(showLoading: boolean) {
     if (this.state.modalIsOpen || this.stopPolling) {
       return
@@ -107,7 +111,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
   async loadAdminData(showLoading: boolean) {
     await Utils.waitFor(() => Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin),
       30000, 100)
-    if (userStore.loggedUser && userStore.loggedUser.isAdmin) {
+    if (userStore.loggedUser?.isAdmin) {
       userStore.getAllUsers({ skipLog: true, showLoading })
       licenceStore.loadLicenceInfo({ skipLog: true, showLoading })
     }
@@ -127,6 +131,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               users={userStore.users}
               projects={projectStore.projects}
               licence={licenceStore.licenceInfo}
+              licenceServerStatus={licenceStore.licenceServerStatus}
               isAdmin={Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin)}
               notificationItems={notificationStore.notificationItems}
               notificationItemsLoading={notificationStore.loading}
@@ -139,6 +144,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               replicasLoading={replicaStore.loading}
               onNewReplicaClick={() => { this.props.history.push('/wizard/replica') }}
               onNewEndpointClick={() => { this.handleNewEndpointClick() }}
+              onAddLicenceClick={() => { this.handleAddLicenceClick() }}
             />
           )}
           headerComponent={(

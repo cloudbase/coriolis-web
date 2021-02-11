@@ -80,19 +80,21 @@ const TextLine = styled.div<any>`
 
 type Props = {
   onRequestClose: () => void,
+  licenceAddMode?: boolean
 }
 
 type State = {
   licenceAddMode: boolean,
 }
-
 @observer
 class AboutModal extends React.Component<Props, State> {
   state = {
     licenceAddMode: false,
   }
 
-  UNSAFE_componentWillMount() {
+  constructor(props: Props) {
+    super(props)
+
     if (userStore.loggedUser?.isAdmin) {
       licenceStore.loadLicenceInfo({ showLoading: true })
     }
@@ -104,20 +106,24 @@ class AboutModal extends React.Component<Props, State> {
     }
     await licenceStore.addLicence(licence, licenceStore.licenceInfo.applianceId)
     licenceStore.loadLicenceInfo()
-    this.setState({ licenceAddMode: false })
+    if (this.props.licenceAddMode) {
+      this.props.onRequestClose()
+    } else {
+      this.setState({ licenceAddMode: false })
+    }
   }
 
   render() {
     return (
       <Modal
-        title="About"
+        title={this.state.licenceAddMode || this.props.licenceAddMode ? 'Add Licence' : 'About'}
         isOpen
         onRequestClose={() => { this.props.onRequestClose() }}
       >
         <Wrapper>
-          {!this.state.licenceAddMode ? <Gradient /> : null}
+          {!this.state.licenceAddMode && !this.props.licenceAddMode ? <Gradient /> : null}
           <Content>
-            {!this.state.licenceAddMode ? (
+            {!this.state.licenceAddMode && !this.props.licenceAddMode ? (
               <AboutContentWrapper>
                 <Logo />
                 <Text>
@@ -133,8 +139,15 @@ class AboutModal extends React.Component<Props, State> {
               licenceError={licenceStore.licenceInfoError}
               loadingLicenceInfo={licenceStore.loadingLicenceInfo}
               onRequestClose={this.props.onRequestClose}
-              addMode={this.state.licenceAddMode}
-              onAddModeChange={licenceAddMode => { this.setState({ licenceAddMode }) }}
+              addMode={this.state.licenceAddMode || this.props.licenceAddMode || false}
+              backButtonText={this.props.licenceAddMode ? 'Cancel' : 'Back'}
+              onAddModeChange={licenceAddMode => {
+                if (this.props.licenceAddMode) {
+                  this.props.onRequestClose()
+                } else {
+                  this.setState({ licenceAddMode })
+                }
+              }}
               onAddLicence={licence => { this.handleAddLicence(licence) }}
               addingLicence={licenceStore.addingLicence}
             />

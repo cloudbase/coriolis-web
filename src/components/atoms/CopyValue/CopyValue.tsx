@@ -47,6 +47,7 @@ type Props = {
   capitalize?: boolean,
   'data-test-id'?: string,
   onCopy?: (value: string) => void,
+  style?: React.CSSProperties
 }
 @observer
 class CopyValue extends React.Component<Props> {
@@ -71,6 +72,7 @@ class CopyValue extends React.Component<Props> {
         onMouseUp={(e: { stopPropagation: () => void }) => { e.stopPropagation() }}
         data-test-id={this.props['data-test-id'] || 'copyValue'}
         capitalize={this.props.capitalize}
+        style={this.props.style}
       >
         <Value
           data-test-id="copyValue-value"

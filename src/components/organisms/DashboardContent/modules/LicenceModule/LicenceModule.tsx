@@ -23,7 +23,11 @@ import InfoIcon from '../../../../atoms/InfoIcon'
 import Palette from '../../../../styleUtils/Palette'
 import StyleProps from '../../../../styleUtils/StyleProps'
 
-import type { Licence } from '../../../../../@types/Licence'
+import type { Licence, LicenceServerStatus } from '../../../../../@types/Licence'
+import CopyValue from '../../../../atoms/CopyValue/CopyValue'
+import Button from '../../../../atoms/Button/Button'
+
+import licenceImage from '../../../Licence/images/licence'
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;
@@ -44,7 +48,22 @@ const Module = styled.div<any>`
 const LicenceInfo = styled.div<any>`
   width: 100%;
 `
-const NoLicence = styled.div<any>``
+const LicenceError = styled.span`
+  p {
+    margin: 16px 0 0 0;
+    &:first-child {
+      margin: 0;
+    }
+  }
+`
+const ApplianceId = styled.div`
+  display: flex;
+  margin-top: 16px;
+`
+const AddLicenceButtonWrapper = styled.div`
+  margin-top: 32px;
+  text-align: center;
+`
 const TopInfo = styled.div<any>`
   display: flex;
 `
@@ -111,6 +130,13 @@ const ChartBody = styled.div<any>`
   background: ${props => props.color};
   height: 100%;
 `
+const Logo = styled.div`
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+  transform: scale(0.7);
+  text-align: center;
+`
 const LoadingWrapper = styled.div<any>`
   overflow: hidden;
   display: flex;
@@ -122,9 +148,11 @@ const LoadingWrapper = styled.div<any>`
 
 type Props = {
   licence: Licence | null,
+  licenceServerStatus: LicenceServerStatus | null
   loading: boolean,
   style: any,
   licenceError: string | null,
+  onAddClick: () => void,
 }
 @observer
 class LicenceModule extends React.Component<Props> {
@@ -149,7 +177,8 @@ class LicenceModule extends React.Component<Props> {
           current: info.currentPerformedReplicas,
           total: info.currentAvailableReplicas,
           label: 'Current Replicas',
-          info: 'The number of replicas consumed over the number of replicas available in all currently active licences (including non-activated floating licences)',
+          info: `The number of replicas consumed over the number of replicas available in
+          all currently active licences (including non-activated floating licences)`,
         },
         {
           color: Palette.alert,
@@ -165,7 +194,8 @@ class LicenceModule extends React.Component<Props> {
           current: info.currentPerformedMigrations,
           total: info.currentAvailableMigrations,
           label: 'Current Migrations',
-          info: 'The number of migrations consumed over the number of migrations available in all currently active licences (including non-activated floating licences)',
+          info: `The number of migrations consumed over the number of migrations available in
+          all currently active licences (including non-activated floating licences)`,
         },
         {
           color: Palette.primary,
@@ -213,10 +243,34 @@ class LicenceModule extends React.Component<Props> {
     )
   }
 
-  renderNoLicence() {
-    const message = this.props.licenceError || 'Please contact Cloudbase Solutions with your Appliance ID in order to obtain a Coriolis® licence.'
+  renderLicenceError() {
     return (
-      <NoLicence>{message}</NoLicence>
+      <LicenceError>{this.props.licenceError?.split('\n').map(str => <p>{str}</p>)}</LicenceError>
+    )
+  }
+
+  renderLicenceExpired(licence: Licence, serverStatus: LicenceServerStatus) {
+    return (
+      <LicenceError>
+        <p>
+          Please contact Cloudbase Solutions with your Appliance ID
+          in order to obtain a Coriolis® licence.
+        </p>
+        <ApplianceId>
+          Appliance ID: <CopyValue
+            style={{ marginLeft: '8px' }}
+            value={`${licence.applianceId}-licence${serverStatus.supported_licence_versions[0]}`}
+          />
+        </ApplianceId>
+        <AddLicenceButtonWrapper>
+          <Logo
+            dangerouslySetInnerHTML={
+              { __html: licenceImage(Palette.grayscale[5]) }
+            }
+          />
+          <Button primary onClick={this.props.onAddClick}>Add Licence</Button>
+        </AddLicenceButtonWrapper>
+      </LicenceError>
     )
   }
 
@@ -231,16 +285,16 @@ class LicenceModule extends React.Component<Props> {
   render() {
     const licence = this.props.licence
     let moduleContent = null
-    if (licence) {
+    if (licence && this.props.licenceServerStatus) {
       if (new Date(licence.earliestLicenceExpiryDate).getTime() > new Date().getTime()) {
         moduleContent = this.renderLicenceStatusText(licence)
       } else {
-        moduleContent = this.renderNoLicence()
+        moduleContent = this.renderLicenceExpired(licence, this.props.licenceServerStatus)
       }
     } else if (this.props.loading) {
       moduleContent = this.renderLoading()
     } else if (this.props.licenceError) {
-      moduleContent = this.renderNoLicence()
+      moduleContent = this.renderLicenceError()
     }
 
     return licence || this.props.loading || this.props.licenceError ? (
