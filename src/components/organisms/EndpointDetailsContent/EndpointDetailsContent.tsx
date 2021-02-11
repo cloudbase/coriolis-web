@@ -257,7 +257,7 @@ class EndpointDetailsContent extends React.Component<Props> {
             <Label>Used in replicas/migrations ({usage.length})</Label>
             {usage.length > 0 ? this.renderUsage(usage) : <Value>-</Value>}
           </Field>
-          {this.renderConnectionInfoLoading()}
+          {!this.props.connectionInfo ? this.renderConnectionInfoLoading() : null}
           {this.renderConnectionInfo(this.props.connectionInfo)}
         </Info>
         {this.renderButtons()}

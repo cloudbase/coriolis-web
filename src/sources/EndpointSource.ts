@@ -87,7 +87,7 @@ class EndpointSource {
   }
 
   async getSecretPayload(uuid: string, count: number = 0) {
-    const delay = () => new Promise(r => { setTimeout(() => { r() }, 2000) })
+    const delay = () => new Promise<void>(r => { setTimeout(() => { r() }, 2000) })
 
     if (count >= 10) {
       return Promise.reject({ secretCustomError: `The secret '${uuid}' is not active after ${count} retries.` })
