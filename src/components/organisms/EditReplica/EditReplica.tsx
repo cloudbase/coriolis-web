@@ -110,6 +110,7 @@ type State = {
   sourceFailed: boolean,
   destinationFailedMessage: string | null,
   uploadedScripts: InstanceScript[],
+  removedScripts: InstanceScript[],
 }
 
 @observer
@@ -125,6 +126,7 @@ class EditReplica extends React.Component<Props, State> {
     uploadedScripts: [],
     sourceFailed: false,
     destinationFailedMessage: null,
+    removedScripts: [],
   }
 
   scrollableRef: HTMLElement | null | undefined
@@ -469,6 +471,7 @@ class EditReplica extends React.Component<Props, State> {
       network: this.state.selectedNetworks.length > 0 ? this.getSelectedNetworks() : [],
       storage: this.state.storageMap,
       uploadedScripts: this.state.uploadedScripts,
+      removedScripts: this.state.removedScripts,
     }
     if (this.props.type === 'replica') {
       try {
@@ -529,6 +532,15 @@ class EditReplica extends React.Component<Props, State> {
     this.setState(prevState => ({
       uploadedScripts: [
         ...prevState.uploadedScripts,
+        script,
+      ],
+    }))
+  }
+
+  handleScriptDataRemove(script: InstanceScript) {
+    this.setState(prevState => ({
+      removedScripts: [
+        ...prevState.removedScripts,
         script,
       ],
     }))
@@ -658,8 +670,10 @@ class EditReplica extends React.Component<Props, State> {
         instances={this.props.instancesDetails}
         loadingInstances={this.props.instancesDetailsLoading}
         onScriptUpload={s => { this.handleScriptUpload(s) }}
+        onScriptDataRemove={s => { this.handleScriptDataRemove(s) }}
         onCancelScript={(g, i) => { this.handleCancelScript(g, i) }}
         uploadedScripts={this.state.uploadedScripts}
+        removedScripts={this.state.removedScripts}
         userScriptData={this.props.replica?.user_scripts}
         scrollableRef={(r: HTMLElement) => { this.scrollableRef = r }}
         style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}

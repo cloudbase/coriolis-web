@@ -90,6 +90,7 @@ class MigrationStore {
       defaultSkipOsMorphing: this.getDefaultSkipOsMorphing(migration),
       replicationCount,
       uploadedScripts: updateData.uploadedScripts,
+      removedScripts: updateData.removedScripts,
     })
     return migrationResult
   }
@@ -124,14 +125,16 @@ class MigrationStore {
   @action async migrateReplica(
     replicaId: string,
     options: Field[],
-    userScripts: InstanceScript[],
+    uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,
     minionPoolMappings: { [instance: string]: string },
   ) {
     const migration = await MigrationSource.migrateReplica(
       replicaId,
       options,
-      userScripts,
+      uploadedUserScripts,
+      removedUserScripts,
       userScriptData,
       minionPoolMappings,
     )

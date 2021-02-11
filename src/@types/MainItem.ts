@@ -34,6 +34,7 @@ export type UpdateData = {
   network: NetworkMap[],
   storage: StorageMap[],
   uploadedScripts: InstanceScript[],
+  removedScripts: InstanceScript[],
 }
 type NetworkMapSecurityGroups = { id: string, security_groups?: string[] }
 type NetworkMapSourceDest = {

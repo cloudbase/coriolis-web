@@ -87,6 +87,7 @@ type Props = {
   onMigrateClick: (
     fields: Field[],
     uploadedScripts: InstanceScript[],
+    removedScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string }
   ) => void,
   onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
@@ -95,6 +96,7 @@ type State = {
   fields: Field[],
   selectedBarButton: string,
   uploadedScripts: InstanceScript[],
+  removedScripts: InstanceScript[],
   minionPoolMappings: {[instance: string]: string}
 }
 
@@ -104,6 +106,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     fields: [],
     selectedBarButton: 'options',
     uploadedScripts: [],
+    removedScripts: [],
     minionPoolMappings: {},
   }
 
@@ -140,6 +143,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     this.props.onMigrateClick(
       this.state.fields,
       this.state.uploadedScripts,
+      this.state.removedScripts,
       this.state.minionPoolMappings,
     )
   }
@@ -169,6 +173,15 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     this.setState(prevState => ({
       uploadedScripts: [
         ...prevState.uploadedScripts,
+        script,
+      ],
+    }))
+  }
+
+  handleScriptRemove(script: InstanceScript) {
+    this.setState(prevState => ({
+      removedScripts: [
+        ...prevState.removedScripts,
         script,
       ],
     }))
@@ -249,8 +262,10 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
         instances={this.props.instances}
         loadingInstances={this.props.loadingInstances}
         onScriptUpload={s => { this.handleScriptUpload(s) }}
+        onScriptDataRemove={s => { this.handleScriptRemove(s) }}
         onCancelScript={(g, i) => { this.handleCanceScript(g, i) }}
         uploadedScripts={this.state.uploadedScripts}
+        removedScripts={this.state.removedScripts}
         userScriptData={this.props.transferItem?.user_scripts}
         scrollableRef={(r: HTMLElement) => { this.scrollableRef = r }}
         layout="modal"

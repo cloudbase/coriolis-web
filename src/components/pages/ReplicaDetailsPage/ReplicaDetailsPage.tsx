@@ -392,15 +392,17 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   migrateReplica(
     options: Field[],
     uploadedScripts: InstanceScript[],
+    removedScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
   ) {
-    this.migrate(options, uploadedScripts, minionPoolMappings)
+    this.migrate(options, uploadedScripts, removedScripts, minionPoolMappings)
     this.handleCloseMigrationModal()
   }
 
   async migrate(
     options: Field[],
     uploadedScripts: InstanceScript[],
+    removedScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
   ) {
     const replica = this.replica
@@ -411,6 +413,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       replica.id,
       options,
       uploadedScripts,
+      removedScripts,
       replica.user_scripts,
       minionPoolMappings,
     )
@@ -509,6 +512,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
+    const editTitle = providerStore.providersLoading ? 'Loading providers data' : !this.state.isEditable ? 'At least one of the providers doesn\'t support editing' : null
     const dropdownActions: DropdownAction[] = [
       {
         label: 'Execute',
@@ -532,7 +536,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Edit',
-        title: !this.state.isEditable ? 'At least one of the providers doesn\'t support editing' : null,
+        title: editTitle,
         action: () => { this.handleReplicaEditClick() },
         disabled: !this.state.isEditable,
       },
@@ -644,7 +648,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
               onCancelClick={() => { this.handleCloseMigrationModal() }}
-              onMigrateClick={(o, s, m) => { this.migrateReplica(o, s, m) }}
+              onMigrateClick={(o, s, r, m) => { this.migrateReplica(o, s, r, m) }}
             />
           </Modal>
         ) : null}

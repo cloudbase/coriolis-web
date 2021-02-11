@@ -54,8 +54,8 @@ export type InstanceBase = {
 export type InstanceScript = {
   global?: 'windows' | 'linux' | null,
   instanceId?: string | null,
-  scriptContent: string,
-  fileName: string,
+  scriptContent: string | null,
+  fileName: string | null,
 }
 
 export const shortenId = (id: string) => id.replace(/(^.*?)-.*-(.*$)/, '$1-...-$2')

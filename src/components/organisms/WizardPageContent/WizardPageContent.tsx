@@ -509,6 +509,8 @@ class WizardPageContent extends React.Component<Props, State> {
             onCancelScript={this.props.onCancelUploadedScript}
             uploadedScripts={this.props.uploadedUserScripts}
             userScriptData={null}
+            removedScripts={[]}
+            onScriptDataRemove={() => {}}
           />
         )
         break

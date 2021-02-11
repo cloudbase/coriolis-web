@@ -135,6 +135,7 @@ class MigrationSource {
     replicationCount?: number | null,
     migration: MigrationItemDetails,
     uploadedScripts: InstanceScript[]
+    removedScripts: InstanceScript[]
   }): Promise<MigrationItemDetails> {
     const getValue = (fieldName: string): string | null => {
       const updatedDestEnv = opts.updatedDestEnv && opts.updatedDestEnv[fieldName]
@@ -227,9 +228,13 @@ class MigrationSource {
       ...updatedDestEnv,
     }
 
-    if (opts.uploadedScripts?.length || migration.user_scripts) {
+    if (opts.uploadedScripts?.length || opts.removedScripts?.length || migration.user_scripts) {
       payload.migration.user_scripts = DefaultOptionsSchemaPlugin
-        .getUserScripts(opts.uploadedScripts, migration.user_scripts)
+        .getUserScripts(
+          opts.uploadedScripts || [],
+          opts.removedScripts || [],
+          migration.user_scripts,
+        )
     }
 
     const response = await Api.send({
@@ -264,7 +269,8 @@ class MigrationSource {
   async migrateReplica(
     replicaId: string,
     options: Field[],
-    userScripts: InstanceScript[],
+    uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,
     minionPoolMappings: { [instance: string]: string },
   ): Promise<MigrationItem> {
@@ -277,9 +283,9 @@ class MigrationSource {
       payload.migration[o.name] = o.value || o.default || false
     })
 
-    if (userScripts.length || userScriptData) {
+    if (uploadedUserScripts.length || removedUserScripts.length || userScriptData) {
       payload.migration.user_scripts = DefaultOptionsSchemaPlugin
-        .getUserScripts(userScripts, userScriptData)
+        .getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
     }
 
     if (Object.keys(minionPoolMappings).length) {

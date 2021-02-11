@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import InfoIcon from '../../atoms/InfoIcon'
 import { Close as InputClose } from '../../atoms/TextInput'
@@ -127,16 +127,28 @@ const FakeFileInput = styled.input`
   opacity: 0;
   top: -99999px;
 `
-const DownloadScriptData = styled.div`
-  color: ${Palette.primary};
-  cursor: pointer;
-  font-size: 12px;
+const ScriptDataActions = styled.div`
+  display: flex;
+  margin-left: -8px;
   margin-top: 8px;
+  > div {
+    margin-left: 8px;
+  }
+`
+const ScriptDataAction = styled.div<{ red?: boolean, disabled?: boolean}>`
+  color: ${props => (props.red ? Palette.alert : Palette.primary)};
+  cursor: pointer;
+  ${props => (props.disabled ? css`
+    opacity: 0.6;
+    cursor: default;
+  ` : '')}
+  font-size: 12px;
 `
 
 type Props = {
   instances: Instance[],
   uploadedScripts: InstanceScript[],
+  removedScripts: InstanceScript[],
   layout?: 'modal' | 'page',
   loadingInstances?: boolean,
   userScriptData: UserScriptData | null | undefined
@@ -145,6 +157,7 @@ type Props = {
   onCancelScript: (global: 'windows' | 'linux' | null, instanceName: string | null) => void,
   onScrollableRef?: (ref: HTMLElement) => void,
   scrollableRef?: (r: HTMLElement) => void
+  onScriptDataRemove: (script: InstanceScript) => void
 }
 type FileInputRefs = {
   [prop: string]: {
@@ -193,6 +206,8 @@ class WizardScripts extends React.Component<Props> {
     } else if (instanceId) {
       scriptData = this.props.userScriptData?.instances?.[instanceId]
     }
+    const isRemoved: boolean = Boolean(this.props.removedScripts
+      .find(s => (global ? s.global === global : s.instanceId === instanceId)))
 
     return (
       <Script key={title}>
@@ -202,11 +217,29 @@ class WizardScripts extends React.Component<Props> {
             <NameLabelTitle>{title}</NameLabelTitle>
             {subtitle ? <NameLabelSubtitle>{subtitle}</NameLabelSubtitle> : null}
             {scriptData ? (
-              <DownloadScriptData onClick={() => {
-                this.handleScriptDataDownload(scriptData as string, title.toLowerCase().replaceAll(' ', '_'))
-              }}
-              >Download the current script
-              </DownloadScriptData>
+              <ScriptDataActions>
+                <ScriptDataAction
+                  title="Downloads the currently uploaded script"
+                  onClick={() => {
+                    this.handleScriptDataDownload(scriptData as string, title.toLowerCase().replaceAll(' ', '_'))
+                  }}
+                >Download
+                </ScriptDataAction>
+                <ScriptDataAction
+                  title={isRemoved ? 'The currently uploaded script will be removed' : 'Removes the currently uploaded script'}
+                  red
+                  disabled={isRemoved}
+                  onClick={() => {
+                    if (isRemoved) {
+                      return
+                    }
+                    this.props.onScriptDataRemove({
+                      global, instanceId, scriptContent: null, fileName: null,
+                    })
+                  }}
+                >{isRemoved ? 'To be removed' : 'Remove'}
+                </ScriptDataAction>
+              </ScriptDataActions>
             ) : null}
           </NameLabel>
         </Name>
