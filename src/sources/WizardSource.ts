@@ -92,7 +92,7 @@ class WizardSource {
     )
 
     if (uploadedUserScripts.length) {
-      payload[type].user_scripts = destParser.getUserScripts(uploadedUserScripts, {})
+      payload[type].user_scripts = destParser.getUserScripts(uploadedUserScripts, [], {})
     }
 
     if (type === 'migration') {

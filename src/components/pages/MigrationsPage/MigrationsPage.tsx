@@ -146,6 +146,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
           migration.replica_id,
           replicaMigrationFields,
           [],
+          [],
           migration.user_scripts,
           migration.instance_osmorphing_minion_pool_mappings || {},
         )

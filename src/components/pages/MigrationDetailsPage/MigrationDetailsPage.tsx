@@ -232,7 +232,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
   async recreateFromReplica(
     options: Field[],
-    userScripts: InstanceScript[],
+    uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
   ) {
     const replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
@@ -240,20 +241,22 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       return
     }
 
-    this.migrate(replicaId, options, userScripts, minionPoolMappings)
+    this.migrate(replicaId, options, uploadedUserScripts, removedUserScripts, minionPoolMappings)
     this.handleCloseFromReplicaModal()
   }
 
   async migrate(
     replicaId: string,
     options: Field[],
-    userScripts: InstanceScript[],
+    uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
   ) {
     const migration = await migrationStore.migrateReplica(
       replicaId,
       options,
-      userScripts,
+      uploadedUserScripts,
+      removedUserScripts,
       migrationStore.migrationDetails?.user_scripts,
       minionPoolMappings,
     )
@@ -433,7 +436,7 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
               transferItem={migrationStore.migrationDetails}
               minionPools={minionPoolStore.minionPools}
               onCancelClick={() => { this.handleCloseFromReplicaModal() }}
-              onMigrateClick={(o, s, m) => { this.recreateFromReplica(o, s, m) }}
+              onMigrateClick={(o, s, r, m) => { this.recreateFromReplica(o, s, r, m) }}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
               defaultSkipOsMorphing={migrationStore

@@ -260,23 +260,30 @@ export default class OptionsSchemaParser {
 
   static getUserScripts(
     uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,
   ) {
     const payload: any = userScriptData || {}
-    const globalScripts = uploadedUserScripts.filter(s => s.global)
-    if (globalScripts.length) {
-      payload.global = payload.global || {}
-      globalScripts.forEach(script => {
-        payload.global[script.global || ''] = script.scriptContent
+
+    const setPayload = (scripts: InstanceScript[], scriptProp: 'global' | 'instanceId', payloadProp: 'global' | 'instances') => {
+      if (!scripts.length) {
+        return
+      }
+      payload[payloadProp] = payload[payloadProp] || {}
+      scripts.forEach(script => {
+        const scriptValue = script[scriptProp]
+        if (!scriptValue) {
+          throw new Error(`The uploaded script structure is missing the '${scriptProp}' property`)
+        }
+        payload[payloadProp][scriptValue] = script.scriptContent
       })
     }
-    const instanceScripts = uploadedUserScripts.filter(s => s.instanceId)
-    if (instanceScripts.length) {
-      payload.instances = payload.instances || {}
-      instanceScripts.forEach(script => {
-        payload.instances[script.instanceId || ''] = script.scriptContent
-      })
-    }
+
+    setPayload(removedUserScripts.filter(s => s.global), 'global', 'global')
+    setPayload(removedUserScripts.filter(s => s.instanceId), 'instanceId', 'instances')
+    setPayload(uploadedUserScripts.filter(s => s.global), 'global', 'global')
+    setPayload(uploadedUserScripts.filter(s => s.instanceId), 'instanceId', 'instances')
+
     return payload
   }
 }

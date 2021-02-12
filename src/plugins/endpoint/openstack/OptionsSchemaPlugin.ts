@@ -105,8 +105,10 @@ export default class OptionsSchemaParser {
 
   static getUserScripts(
     uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,
   ) {
-    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts, userScriptData)
+    return DefaultOptionsSchemaPlugin
+      .getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
   }
 }

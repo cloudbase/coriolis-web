@@ -218,7 +218,11 @@ class ReplicaSource {
     storageConfigDefault: string,
   }): Promise<Execution> {
     const {
-      replica, destinationEndpoint, updateData, defaultStorage, storageConfigDefault,
+      replica,
+      destinationEndpoint,
+      updateData,
+      defaultStorage,
+      storageConfigDefault,
     } = options
 
     const parser = OptionsSchemaPlugin.for(destinationEndpoint.type)
@@ -262,9 +266,13 @@ class ReplicaSource {
         .getStorageMap(defaultStorage, updateData.storage, storageConfigDefault)
     }
 
-    if (updateData.uploadedScripts?.length) {
+    if (updateData.uploadedScripts?.length || updateData.removedScripts?.length) {
       payload.replica.user_scripts = DefaultOptionsSchemaPlugin
-        .getUserScripts(updateData.uploadedScripts, replica.user_scripts)
+        .getUserScripts(
+          updateData.uploadedScripts || [],
+          updateData.removedScripts || [],
+          replica.user_scripts,
+        )
     }
 
     const response = await Api.send({
