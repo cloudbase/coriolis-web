@@ -512,7 +512,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   render() {
-    const editTitle = providerStore.providersLoading ? 'Loading providers data' : !this.state.isEditable ? 'At least one of the providers doesn\'t support editing' : null
+    const editTitle = providerStore.providersLoading ? 'Loading providers data' : !this.state.isEditable ? 'One of the platform plugins doesn\'t support editing replica option.' : null
     const dropdownActions: DropdownAction[] = [
       {
         label: 'Execute',
