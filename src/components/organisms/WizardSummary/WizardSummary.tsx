@@ -543,7 +543,7 @@ class WizardSummary extends React.Component<Props> {
               <SourceNetwork data-test-id="wSummary-networkSource">{mapping.sourceNic.network_name}</SourceNetwork>
               <NetworkArrow />
               <TargetNetwork>
-                <TargetNetworkName data-test-id="wSummary-networkTarget">{mapping.targetNetwork.name}</TargetNetworkName>
+                <TargetNetworkName data-test-id="wSummary-networkTarget">{mapping.targetNetwork!.name}</TargetNetworkName>
                 {mapping.targetSecurityGroups && mapping.targetSecurityGroups.length ? (
                   <TargetNetworkName>Security Groups: {mapping.targetSecurityGroups.map(s => (typeof s === 'string' ? s : s.name)).join(', ')}</TargetNetworkName>
                 ) : null}

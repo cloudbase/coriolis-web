@@ -437,7 +437,7 @@ class AssessmentDetailsContent extends React.Component<Props> {
       const selectedNetwork = this.props.selectedNetworks
         && this.props.selectedNetworks.find(n => n.sourceNic.network_name === nic.network_name)
       if (selectedNetwork) {
-        selectedNetworkName = selectedNetwork.targetNetwork.name
+        selectedNetworkName = selectedNetwork.targetNetwork?.name
       }
 
       return (

@@ -180,10 +180,7 @@ class EditReplica extends React.Component<Props, State> {
         const destNetId = String(typeof destNetObj === 'string' || !destNetObj
           || !destNetObj.id ? destNetObj : destNetObj.id)
 
-        const network = this.props.networks.find(n => n.name === destNetId || n.id === destNetId)
-        if (!network) {
-          return
-        }
+        const network = this.props.networks.find(n => n.name === destNetId || n.id === destNetId) || null
         const mapping: NetworkMap = {
           sourceNic: {
             id: '', network_name: sourceNetworkName, mac_address: '', network_id: '',

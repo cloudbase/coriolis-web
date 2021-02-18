@@ -175,7 +175,9 @@ class WizardNetworks extends React.Component<Props> {
           items={this.props.networks}
           labelField="name"
           valueField="id"
-          onChange={(item: Network) => { this.props.onChange(nic, item) }}
+          onChange={(item: Network) => {
+            this.props.onChange(nic, item)
+          }}
           data-test-id={`wNetworks-dropdown-${nic.id}`}
         />
       )
@@ -215,7 +217,7 @@ class WizardNetworks extends React.Component<Props> {
           if (selectedSecGroups.length > MAX_SELECTED_GROUPS) {
             selectedSecGroups.splice(MAX_SELECTED_GROUPS - 1, 1)
           }
-          this.props.onChange(nic, selectedNetwork.targetNetwork, selectedSecGroups)
+          this.props.onChange(nic, selectedNetwork.targetNetwork!, selectedSecGroups)
         }}
       />
     ) : null

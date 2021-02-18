@@ -27,6 +27,6 @@ export type Network = {
 
 export type NetworkMap = {
   sourceNic: Nic,
-  targetNetwork: Network,
+  targetNetwork: Network | null,
   targetSecurityGroups?: SecurityGroup[] | null,
 }
