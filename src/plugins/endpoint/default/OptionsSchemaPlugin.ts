@@ -81,7 +81,7 @@ export const defaultGetDestinationEnv = (
   oldOptions?: { [prop: string]: any } | null,
 ): any => {
   const env: any = {}
-  const specialOptions = ['execute_now', 'execute_now_options', 'separate_vm', 'skip_os_morphing', 'description', 'minion_pool_id']
+  const specialOptions = ['execute_now', 'execute_now_options', 'separate_vm', 'skip_os_morphing', 'title', 'minion_pool_id']
     .concat(migrationFields.map(f => f.name))
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes)

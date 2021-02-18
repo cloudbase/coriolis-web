@@ -551,18 +551,18 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       },
     ]
     const replica = this.replica
-    let title = null
-    if (replica) {
-      const { instances } = replica
-      if (instances) {
-        title = instances[0]
-        if (instances.length > 1) {
-          title += ` (+${instances.length - 1} more)`
+    let title = replica?.notes
+    if (!title) {
+      if (replica?.instances) {
+        title = replica.instances[0]
+        if (replica.instances.length > 1) {
+          title += ` (+${replica.instances.length - 1} more)`
         }
       } else {
-        title = replica.name
+        title = replica?.name
       }
     }
+
     return (
       <Wrapper>
         <DetailsTemplate

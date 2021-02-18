@@ -239,6 +239,14 @@ class EditReplica extends React.Component<Props, State> {
       return currentData[fieldName]
     }
 
+    if (fieldName === 'title') {
+      let title = this.props.instancesDetails?.[0]?.name
+      if (this.props.instancesDetails && this.props.instancesDetails.length > 1) {
+        title += ` (+${this.props.instancesDetails.length - 1} more)`
+      }
+      return title
+    }
+
     if (fieldName === 'minion_pool_id') {
       return type === 'source' ? this.props.replica.origin_minion_pool_id : this.props.replica.destination_minion_pool_id
     }
