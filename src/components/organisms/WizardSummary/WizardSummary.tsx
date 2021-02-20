@@ -122,18 +122,12 @@ const InstanceRowSubtitle = styled.div<any>`
 const SourceNetwork = styled.div<any>`
   width: 50%;
   margin-right: 16px;
+  overflow-wrap: break-word;
 `
 const NetworkArrow = styled.div<any>`
   width: 32px;
   height: 16px;
   background: url('${networkArrowImage}') center no-repeat;
-`
-const StorageTarget = styled.div<any>`
-  width: 50%;
-  text-align: right;
-  margin-left: 20px;
-  text-overflow: ellipsis;
-  overflow: hidden;
 `
 const TargetNetwork = styled.div<any>`
   width: 50%;
@@ -147,7 +141,10 @@ const TargetNetworkName = styled.div<any>`
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
-  margin-top: 16px;
+  margin-top: 8px;
+  &:first-child {
+    margin-top: 16px;
+  }
 `
 const OptionsList = styled.div<any>``
 const Option = styled.div<any>`
@@ -179,7 +176,7 @@ type Props = {
   wizardType: 'replica' | 'migration',
   schedules: Schedule[],
   minionPools: MinionPool[]
-  defaultStorage: string | null,
+  defaultStorage: { value: string | null, busType?: string | null } | undefined,
   storageMap: StorageMap[],
   instancesDetails: Instance[],
   sourceSchema: Field[],
@@ -429,10 +426,16 @@ class WizardSummary extends React.Component<Props> {
       ),
     ]
 
-    const defaultStorageOption = (
+    const renderDefaultStorageOption = () => (
       <Option>
         <OptionLabel>Default Storage</OptionLabel>
-        <OptionValue>{this.props.defaultStorage}</OptionValue>
+        <OptionValue>{this.props.defaultStorage!.value}{this.props.defaultStorage!.busType ? (
+          <>
+            <br />
+            Bus Type: {this.props.defaultStorage!.busType}
+          </>
+        ) : null}
+        </OptionValue>
       </Option>
     )
 
@@ -444,7 +447,7 @@ class WizardSummary extends React.Component<Props> {
           {this.props.wizardType === 'migration' ? migrationOptions : null}
           {this.props.data.selectedInstances
             && this.props.data.selectedInstances.length > 1 ? separateVmOption : null}
-          {this.props.defaultStorage ? defaultStorageOption : null}
+          {this.props.defaultStorage ? renderDefaultStorageOption() : null}
           {data.destOptions ? Object.keys(data.destOptions).map(optionName => {
             if (
               optionName === 'execute_now'
@@ -490,11 +493,11 @@ class WizardSummary extends React.Component<Props> {
     }
     const fieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
 
-    let fullStorageMap: { source: Disk, target: StorageBackend | null }[] = disks
+    let fullStorageMap: { source: Disk, target: StorageBackend | null, busType?: string | null }[] = disks
       .filter(d => d[fieldName]).map(disk => {
         const diskMapped = storageMap.find(s => s.source[fieldName] === disk[fieldName])
         if (diskMapped) {
-          return { source: diskMapped.source, target: diskMapped.target }
+          return { source: diskMapped.source, target: diskMapped.target, busType: diskMapped.targetBusType }
         }
         return { source: disk, target: null }
       })
@@ -519,7 +522,12 @@ class WizardSummary extends React.Component<Props> {
             >
               <SourceNetwork>{mapping.source[fieldName]}</SourceNetwork>
               <NetworkArrow />
-              <StorageTarget>{mapping.target ? mapping.target.name : 'Default'}</StorageTarget>
+              <TargetNetwork>
+                <TargetNetworkName>{mapping.target ? mapping.target.name : 'Default'}</TargetNetworkName>
+                {mapping.busType ? (
+                  <TargetNetworkName>Bus Type: {mapping.busType}</TargetNetworkName>
+                ) : null}
+              </TargetNetwork>
             </Row>
           ))}
         </Table>
@@ -544,8 +552,11 @@ class WizardSummary extends React.Component<Props> {
               <NetworkArrow />
               <TargetNetwork>
                 <TargetNetworkName data-test-id="wSummary-networkTarget">{mapping.targetNetwork!.name}</TargetNetworkName>
-                {mapping.targetSecurityGroups && mapping.targetSecurityGroups.length ? (
+                {mapping.targetSecurityGroups?.length ? (
                   <TargetNetworkName>Security Groups: {mapping.targetSecurityGroups.map(s => (typeof s === 'string' ? s : s.name)).join(', ')}</TargetNetworkName>
+                ) : null}
+                {mapping.targetPortKey ? (
+                  <TargetNetworkName>Port Key: {mapping.targetPortKey}</TargetNetworkName>
                 ) : null}
               </TargetNetwork>
             </Row>

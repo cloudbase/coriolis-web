@@ -235,7 +235,7 @@ class ReplicaStore {
     replica: ReplicaItemDetails,
     destinationEndpoint: Endpoint,
     updateData: UpdateData,
-    defaultStorage: string | null | undefined,
+    defaultStorage: { value: string | null, busType?: string | null },
     storageConfigDefault: string,
   }) {
     await ReplicaSource.update(options)

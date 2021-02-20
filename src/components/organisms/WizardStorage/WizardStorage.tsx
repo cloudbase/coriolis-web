@@ -22,7 +22,7 @@ import InfoIcon from '../../atoms/InfoIcon'
 
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-import { Instance, Disk, shortenId } from '../../../@types/Instance'
+import { Instance, Disk, InstanceUtils } from '../../../@types/Instance'
 import type { StorageBackend, StorageMap } from '../../../@types/Endpoint'
 
 import backendImage from './images/backend.svg'
@@ -97,6 +97,22 @@ const ArrowImage = styled.div<any>`
   flex-grow: 1;
   margin-right: 16px;
 `
+const Dropdowns = styled.div<any>`
+  > div {
+    margin-bottom: 16px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+`
+const DefaultDropdowns = styled.div<any>`
+  display: flex;
+  margin-bottom: 0;
+  margin-left: -16px;
+  > div {
+    margin-left: 16px;
+  }
+`
 const NoStorageMessage = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -151,10 +167,9 @@ export type Props = {
   instancesDetails: Instance[],
   storageMap: StorageMap[] | null | undefined,
   defaultStorageLayout: 'modal' | 'page',
-  defaultStorage: string | null | undefined,
-  storageConfigDefault: string | null | undefined,
-  onDefaultStorageChange: (value: string | null) => void,
-  onChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
+  defaultStorage: { value: string | null, busType?: string | null },
+  onDefaultStorageChange: (value: string | null, busType?: string | null) => void,
+  onChange: (newMapping: StorageMap) => void,
   onScrollableRef?: (ref: HTMLElement) => void,
   style?: any,
   titleWidth?: number,
@@ -173,27 +188,60 @@ class WizardStorage extends React.Component<Props> {
     )
   }
 
+  renderDisabledDisk(disk: Disk) {
+    return (
+      <DiskDisabledMessage>
+        {disk.disabled!.message}{disk.disabled!.info
+          ? <InfoIcon text={disk.disabled!.info} /> : null}
+      </DiskDisabledMessage>
+    )
+  }
+
+  renderBusTypeDropdown(selectedStorageMap: StorageMap | null | undefined) {
+    if (!selectedStorageMap) {
+      return null
+    }
+    type DropdownItem = {label: string, value: string | null}
+    const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
+      .find(s => s.id === selectedStorageMap.target.id)?.additional_provider_properties?.supported_bus_types?.map(value => ({
+        label: value,
+        value,
+      }))
+    if (!storageBusTypes || !storageBusTypes.length) {
+      return null
+    }
+    storageBusTypes.unshift({
+      label: 'Choose a Bus Type',
+      value: null,
+    })
+    const selectedBusType = selectedStorageMap?.targetBusType
+
+    return (
+      <Dropdown
+        width={StyleProps.inputSizes.large.width}
+        noSelectionMessage="Choose a Bus Type"
+        centered
+        items={storageBusTypes}
+        selectedItem={selectedBusType}
+        onChange={(item: DropdownItem) => {
+          this.props.onChange({ ...selectedStorageMap, targetBusType: item.value })
+        }}
+      />
+    )
+  }
+
   renderStorageDropdown(
-    storageItems: Array<StorageBackend | { id: string | null, name: string }>,
-    selectedItem: StorageBackend | null,
+    storageItems: Array<StorageBackend>,
+    selectedItem: StorageBackend | null | undefined,
     disk: Disk,
     type: 'backend' | 'disk',
   ) {
-    if (disk.disabled && type === 'disk') {
-      return (
-        <DiskDisabledMessage>
-          {disk.disabled.message}{disk.disabled.info
-            ? <InfoIcon text={disk.disabled.info} /> : null}
-        </DiskDisabledMessage>
-      )
-    }
-
     return storageItems.length > 10 ? (
       <AutocompleteDropdown
         width={StyleProps.inputSizes.large.width}
         selectedItem={selectedItem}
         items={storageItems}
-        onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
+        onChange={(item: StorageBackend) => { this.props.onChange({ source: disk, target: item, type }) }}
         labelField="name"
         valueField="id"
       />
@@ -208,7 +256,7 @@ class WizardStorage extends React.Component<Props> {
           items={storageItems}
           labelField="name"
           valueField="id"
-          onChange={(item: StorageBackend) => { this.props.onChange(disk, item, type) }}
+          onChange={(item: StorageBackend) => { this.props.onChange({ source: disk, target: item, type }) }}
           data-test-id={`${TEST_ID}-${type}-destination`}
         />
       )
@@ -253,11 +301,10 @@ class WizardStorage extends React.Component<Props> {
                 return true
               }
               return false
-            }).map(instance => `${instance.name} (${shortenId(instance.instance_name || instance.id)})`)
+            }).map(instance => `${instance.name} (${InstanceUtils.shortenId(instance.instance_name || instance.id)})`)
 
-            const selectedStorage = storageMap && storageMap.find(s => s.type === type
+            const selectedStorageMapping = storageMap?.find(s => s.type === type
                 && String(s.source[diskFieldName]) === String(disk[diskFieldName]))
-            const selectedItem = selectedStorage ? selectedStorage.target : null
             const diskNameParsed = parseDiskName(disk[diskFieldName])
             return (
               <StorageItem key={disk[diskFieldName]}>
@@ -273,7 +320,14 @@ class WizardStorage extends React.Component<Props> {
                   ) : null}
                 </StorageTitle>
                 <ArrowImage />
-                {this.renderStorageDropdown(storageItems, selectedItem, disk, type)}
+                <Dropdowns>
+                  {disk.disabled && type === 'disk' ? this.renderDisabledDisk(disk) : (
+                    <>
+                      {this.renderStorageDropdown(storageItems, selectedStorageMapping?.target, disk, type)}
+                      {this.renderBusTypeDropdown(selectedStorageMapping)}
+                    </>
+                  )}
+                </Dropdowns>
               </StorageItem>
             )
           })}
@@ -318,10 +372,7 @@ class WizardStorage extends React.Component<Props> {
         { label: 'Choose a value', value: null },
         ...items,
       ]
-      const selectedItem = items.find(i => i.value === (
-        this.props.defaultStorage !== undefined
-          ? this.props.defaultStorage : this.props.storageConfigDefault
-      ))
+      const selectedItem = items.find(i => i.value === this.props.defaultStorage.value)
       const commonProps = {
         width: StyleProps.inputSizes.regular.width,
         selectedItem,
@@ -345,6 +396,40 @@ class WizardStorage extends React.Component<Props> {
         )
     }
 
+    const renderDefaultBusTypeDropdown = () => {
+      if (!this.props.defaultStorage || !this.props.defaultStorage.value) {
+        return null
+      }
+
+      type DropdownItem = { label: string, value: string | null }
+      const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
+        .find(s => s.id === this.props.defaultStorage?.value)?.additional_provider_properties?.supported_bus_types?.map(value => ({
+          label: value,
+          value,
+        }))
+      if (!storageBusTypes || !storageBusTypes.length) {
+        return null
+      }
+      storageBusTypes.unshift({
+        label: 'Choose a Bus Type',
+        value: null,
+      })
+      const selectedBusType = this.props.defaultStorage.busType
+
+      return (
+        <Dropdown
+          width={StyleProps.inputSizes.regular.width}
+          noSelectionMessage="Choose a Bus Type"
+          centered
+          items={storageBusTypes}
+          selectedItem={selectedBusType}
+          onChange={(item: DropdownItem) => {
+            this.props.onDefaultStorageChange(this.props.defaultStorage?.value || null, item.value)
+          }}
+        />
+      )
+    }
+
     return (
       <StorageWrapper>
         <StorageSection>
@@ -360,7 +445,10 @@ class WizardStorage extends React.Component<Props> {
             <StorageImage backend="backend" />
             <StorageTitle width={this.props.titleWidth || 320}>
               <StorageName>
-                {renderDropdown()}
+                <DefaultDropdowns>
+                  {renderDropdown()}
+                  {renderDefaultBusTypeDropdown()}
+                </DefaultDropdowns>
               </StorageName>
             </StorageTitle>
           </StorageItem>

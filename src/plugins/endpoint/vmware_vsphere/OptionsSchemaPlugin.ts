@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2017  Cloudbase Solutions SRL
+Copyright (C) 2021  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -27,7 +27,7 @@ import type { NetworkMap } from '../../../@types/Network'
 import { UserScriptData } from '../../../@types/MainItem'
 
 export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = 'migr_template_map'
+  static migrationImageMapFieldName = 'migr_template_name_map'
 
   static parseSchemaToFields(
     schema: SchemaProperties,

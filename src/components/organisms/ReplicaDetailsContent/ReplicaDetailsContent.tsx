@@ -23,7 +23,7 @@ import MainDetails from '../MainDetails'
 import Executions from '../Executions'
 import Schedule from '../Schedule'
 import type { Instance } from '../../../@types/Instance'
-import type { Endpoint } from '../../../@types/Endpoint'
+import type { Endpoint, StorageBackend } from '../../../@types/Endpoint'
 import type { Execution, ExecutionTasks } from '../../../@types/Execution'
 import type { Network } from '../../../@types/Network'
 import type { Field } from '../../../@types/Field'
@@ -89,6 +89,7 @@ type Props = {
   executionsTasksLoading: boolean,
   executionsTasks: ExecutionTasks[],
   minionPools: MinionPool[]
+  storageBackends: StorageBackend[]
   onExecutionChange: (executionId: string) => void,
   onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
   onDeleteExecutionClick: (execution: Execution | null) => void,
@@ -171,6 +172,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
     return (
       <MainDetails
         item={this.props.item}
+        storageBackends={this.props.storageBackends}
         minionPools={this.props.minionPools}
         sourceSchema={this.props.sourceSchema}
         sourceSchemaLoading={this.props.sourceSchemaLoading}

@@ -23,10 +23,11 @@ import Tasks from '../Tasks'
 import StyleProps from '../../styleUtils/StyleProps'
 
 import type { Instance } from '../../../@types/Instance'
-import type { Endpoint } from '../../../@types/Endpoint'
+import type { Endpoint, StorageBackend } from '../../../@types/Endpoint'
 import type { Field } from '../../../@types/Field'
 import { MigrationItemDetails } from '../../../@types/MainItem'
 import { MinionPool } from '../../../@types/MinionPool'
+import { Network } from '../../../@types/Network'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -58,8 +59,10 @@ type Props = {
   itemId: string
   minionPools: MinionPool[]
   detailsLoading: boolean,
+  storageBackends: StorageBackend[]
   instancesDetails: Instance[],
   instancesDetailsLoading: boolean,
+  networks: Network[],
   sourceSchema: Field[],
   sourceSchemaLoading: boolean,
   destinationSchema: Field[],
@@ -91,9 +94,11 @@ class MigrationDetailsContent extends React.Component<Props> {
     return (
       <MainDetails
         item={this.props.item}
+        storageBackends={this.props.storageBackends}
         minionPools={this.props.minionPools}
         instancesDetails={this.props.instancesDetails}
         instancesDetailsLoading={this.props.instancesDetailsLoading}
+        networks={this.props.networks}
         sourceSchema={this.props.sourceSchema}
         sourceSchemaLoading={this.props.sourceSchemaLoading}
         destinationSchema={this.props.destinationSchema}

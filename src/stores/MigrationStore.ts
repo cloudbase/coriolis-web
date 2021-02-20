@@ -68,8 +68,8 @@ class MigrationStore {
     sourceEndpoint: Endpoint,
     destEndpoint: Endpoint,
     updateData: UpdateData,
-    defaultStorage: string | null | undefined,
-    updatedDefaultStorage: string | null | undefined,
+    defaultStorage: { value: string | null, busType?: string | null },
+    updatedDefaultStorage: { value: string | null, busType?: string | null } | undefined,
     replicationCount: number | null | undefined,
   ): Promise<MigrationItemDetails> {
     const migrationResult = await MigrationSource.recreate({

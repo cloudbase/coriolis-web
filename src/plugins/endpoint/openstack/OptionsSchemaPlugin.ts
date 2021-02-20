@@ -96,7 +96,7 @@ export default class OptionsSchemaParser {
   }
 
   static getStorageMap(
-    defaultStorage: string | null,
+    defaultStorage: { value: string | null, busType?: string | null },
     storageMap: StorageMap[] | null,
     configDefault?: string | null,
   ) {

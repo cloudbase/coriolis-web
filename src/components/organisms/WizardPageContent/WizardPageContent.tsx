@@ -23,7 +23,7 @@ import InfoIcon from '../../atoms/InfoIcon'
 import WizardBreadcrumbs from '../../molecules/WizardBreadcrumbs'
 import WizardEndpointList from '../WizardEndpointList'
 import WizardInstances from '../WizardInstances'
-import WizardNetworks from '../WizardNetworks'
+import WizardNetworks, { WizardNetworksChangeObject } from '../WizardNetworks'
 import WizardStorage from '../WizardStorage'
 import WizardOptions from '../WizardOptions'
 import WizardScripts from '../WizardScripts'
@@ -36,12 +36,11 @@ import { providerTypes, wizardPages, migrationFields } from '../../../constants'
 import configLoader from '../../../utils/Config'
 
 import type { WizardData, WizardPage } from '../../../@types/WizardData'
-import type { Endpoint, StorageBackend, StorageMap } from '../../../@types/Endpoint'
+import { Endpoint, EndpointUtils, StorageMap } from '../../../@types/Endpoint'
 import type {
-  Instance, Nic, Disk, InstanceScript,
+  Instance, InstanceScript,
 } from '../../../@types/Instance'
 import type { Field } from '../../../@types/Field'
-import type { Network, SecurityGroup } from '../../../@types/Network'
 import type { Schedule as ScheduleType } from '../../../@types/Schedule'
 import instanceStore from '../../../stores/InstanceStore'
 import providerStore from '../../../stores/ProviderStore'
@@ -178,7 +177,7 @@ type Props = {
   wizardData: WizardData,
   schedules: ScheduleType[],
   storageMap: StorageMap[],
-  defaultStorage: string | null,
+  defaultStorage: { value: string | null, busType?: string | null } | undefined,
   hasStorageMap: boolean,
   hasSourceOptions: boolean,
   pages: WizardPage[],
@@ -196,9 +195,9 @@ type Props = {
   onInstancePageClick: (page: number) => void,
   onDestOptionsChange: (field: Field, value: any, parentFieldName?: string) => void,
   onSourceOptionsChange: (field: Field, value: any, parentFieldName?: string) => void,
-  onNetworkChange: (nic: Nic, network: Network, secGroups?: SecurityGroup[]) => void,
-  onStorageChange: (sourceStorage: Disk, targetStorage: StorageBackend, type: 'backend' | 'disk') => void,
-  onDefaultStorageChange: (value: string | null) => void,
+  onNetworkChange: (changeObject: WizardNetworksChangeObject) => void,
+  onStorageChange: (mapping: StorageMap) => void,
+  onDefaultStorageChange: (value: string | null, busType?: string | null) => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void,
   onScheduleRemove: (scheudleId: string) => void,
@@ -376,6 +375,24 @@ class WizardPageContent extends React.Component<Props, State> {
       return optionsLoadingRequiredFields
     }
 
+    const getDefaultStorage = (): { value: string | null, busType?: string | null } => {
+      if (this.props.defaultStorage) {
+        return this.props.defaultStorage
+      }
+
+      if (endpointStore.storageConfigDefault) {
+        const busTypeInfo = EndpointUtils.getBusTypeStorageId(endpointStore.storageBackends, endpointStore.storageConfigDefault || null)
+        const defaultStorage: { value: string | null, busType?: string | null } = {
+          value: busTypeInfo.id,
+        }
+        if (busTypeInfo.busType) {
+          defaultStorage.busType = busTypeInfo.busType
+        }
+        return defaultStorage
+      }
+      return { value: null }
+    }
+
     switch (this.props.page.id) {
       case 'type':
         body = (
@@ -473,7 +490,6 @@ class WizardPageContent extends React.Component<Props, State> {
             useAdvancedOptions={this.state.useAdvancedOptions}
             hasStorageMap={this.props.hasStorageMap}
             storageBackends={this.props.endpointStore.storageBackends}
-            storageConfigDefault={this.props.endpointStore.storageConfigDefault}
             wizardType={this.props.type}
             onAdvancedOptionsToggle={useAdvancedOptions => {
               this.handleAdvancedOptionsToggle(useAdvancedOptions)
@@ -502,8 +518,7 @@ class WizardPageContent extends React.Component<Props, State> {
             instancesDetails={this.props.instanceStore.instancesDetails}
             storageMap={this.props.storageMap}
             onChange={this.props.onStorageChange}
-            storageConfigDefault={this.props.endpointStore.storageConfigDefault}
-            defaultStorage={this.props.defaultStorage}
+            defaultStorage={getDefaultStorage()}
             onDefaultStorageChange={this.props.onDefaultStorageChange}
             defaultStorageLayout="page"
           />

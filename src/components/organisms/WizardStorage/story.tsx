@@ -68,8 +68,7 @@ storiesOf('WizardStorage', module)
       instancesDetails={instancesDetails}
       storageMap={null}
       defaultStorageLayout="page"
-      defaultStorage="backend-1"
-      storageConfigDefault={null}
+      defaultStorage={{ value: 'backend-1' }}
       onDefaultStorageChange={() => { }}
       onChange={() => { }}
     />
@@ -80,8 +79,7 @@ storiesOf('WizardStorage', module)
       instancesDetails={instancesDetails}
       storageMap={null}
       defaultStorageLayout="modal"
-      defaultStorage="backend-1"
-      storageConfigDefault={null}
+      defaultStorage={{ value: 'backend-1' }}
       onDefaultStorageChange={() => { }}
       onChange={() => { }}
     />

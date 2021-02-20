@@ -4,6 +4,7 @@ type ExtraOption = {
   name: string,
   types: Type[],
   requiredFields: string[],
+  relistFields?: string[],
   requiredValues?: {
     field: string,
     values: string[],
