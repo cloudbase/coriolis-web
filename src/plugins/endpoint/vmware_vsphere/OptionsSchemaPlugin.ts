@@ -27,7 +27,7 @@ import type { NetworkMap } from '../../../@types/Network'
 import { UserScriptData } from '../../../@types/MainItem'
 
 export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = 'migr_template_name_map'
+  static migrationImageMapFieldName = 'migr_template_map'
 
   static parseSchemaToFields(
     schema: SchemaProperties,
@@ -40,7 +40,7 @@ export default class OptionsSchemaParser {
       if (
         f.name !== 'migr_template_username_map'
         && f.name !== 'migr_template_password_map'
-        && f.name !== 'migr_template_name_map'
+        && f.name !== 'migr_template_map'
       ) {
         return
       }

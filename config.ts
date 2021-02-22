@@ -82,7 +82,7 @@ const conf: Config = {
       name: 'vmware_vsphere',
       types: ['destination'],
       requiredFields: ['import_datacenter'],
-      relistFields: ['import_cluster'],
+      relistFields: ['import_cluster', 'migr_minion_cluster'],
     },
   ],
 
