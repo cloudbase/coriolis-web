@@ -24,7 +24,7 @@ class AssessmentSourceUtils {
     const networkMap: any = {}
     if (data.networks && data.networks.length) {
       data.networks.forEach(mapping => {
-        networkMap[mapping.sourceNic.network_name] = mapping.targetNetwork.name
+        networkMap[mapping.sourceNic.network_name] = mapping.targetNetwork!.name
       })
     }
     return networkMap
