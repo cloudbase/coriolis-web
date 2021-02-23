@@ -222,8 +222,9 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema.push({ name: 'skip_os_morphing', type: 'boolean', default: false })
     }
 
-    if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica') {
-      fieldsSchema.push({ name: 'description', type: 'string' })
+    if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica'
+      || this.props.wizardType === 'migration-destination-options-edit' || this.props.wizardType === 'replica-destination-options-edit') {
+      fieldsSchema.push({ name: 'title', type: 'string' })
     }
 
     if (this.props.wizardType === 'replica') {

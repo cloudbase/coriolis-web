@@ -228,6 +228,10 @@ class ReplicaSource {
     const parser = OptionsSchemaPlugin.for(destinationEndpoint.type)
     const payload: any = { replica: {} }
 
+    if (updateData.destination.title) {
+      payload.replica.notes = updateData.destination.title
+    }
+
     if (updateData.network.length > 0) {
       payload.replica.network_map = parser.getNetworkMap(updateData.network)
     }

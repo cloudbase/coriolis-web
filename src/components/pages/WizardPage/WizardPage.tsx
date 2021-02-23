@@ -74,6 +74,8 @@ class WizardPage extends React.Component<Props, State> {
 
   contentRef!: WizardPageContent
 
+  title: string | undefined
+
   UNSAFE_componentWillMount() {
     this.initializeState(this.props.match)
     this.handleResize()
@@ -125,6 +127,16 @@ class WizardPage extends React.Component<Props, State> {
     return pages
       .filter(p => !p.excludeFrom || p.excludeFrom !== this.state.type)
       .filter(p => p.id !== 'storage' || hasStorageMapping())
+  }
+
+  setTransferItemTitle() {
+    const selectedInstance = wizardStore.data?.selectedInstances?.[0]
+    let title = selectedInstance?.name || selectedInstance?.instance_name || selectedInstance?.id
+    if (wizardStore.data?.selectedInstances && wizardStore.data.selectedInstances.length > 1) {
+      title += ` (+${wizardStore.data.selectedInstances.length - 1} more)`
+    }
+    this.title = title
+    wizardStore.updateData({ destOptions: { title } })
   }
 
   @autobind
@@ -311,6 +323,7 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.clearStorageMap()
     wizardStore.toggleInstanceSelection(instance)
     wizardStore.updateUrlState()
+    this.setTransferItemTitle()
   }
 
   handleInstancePageClick(page: number) {
@@ -400,6 +413,7 @@ class WizardPage extends React.Component<Props, State> {
 
   initializeState(match: any) {
     wizardStore.getUrlState()
+    this.setTransferItemTitle()
     const type = match && match.params && match.params.type
     if (type === 'migration' || type === 'replica') {
       this.setState({ type })
@@ -490,6 +504,12 @@ class WizardPage extends React.Component<Props, State> {
         }
         // Preload destination options schema
         loadOptions(target, 'destination')
+        break
+      }
+      case 'dest-options': {
+        if (!wizardStore.data?.destOptions?.title) {
+          wizardStore.updateData({ destOptions: { title: this.title } })
+        }
         break
       }
       case 'networks':

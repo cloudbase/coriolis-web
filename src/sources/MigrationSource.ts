@@ -154,7 +154,7 @@ class MigrationSource {
       replication_count: (opts.updatedDestEnv
         && opts.updatedDestEnv.replication_count) || opts.replicationCount || 2,
       instances: opts.instanceNames,
-      notes: getValue('description') || '',
+      notes: getValue('title') || getValue('notes') || '',
     }
 
     const skipOsMorphingValue = getValue('skip_os_morphing')

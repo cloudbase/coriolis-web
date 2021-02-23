@@ -22,7 +22,6 @@ import CopyValue from '../../atoms/CopyValue'
 import StatusIcon from '../../atoms/StatusIcon'
 import StatusImage from '../../atoms/StatusImage'
 import MainDetailsTable from '../../molecules/MainDetailsTable'
-import CopyMultilineValue from '../../atoms/CopyMultilineValue'
 import PasswordValue from '../../atoms/PasswordValue'
 
 import type { Instance } from '../../../@types/Instance'
@@ -316,16 +315,6 @@ class MainDetails extends React.Component<Props, State> {
               {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss'), 'created') : <Value>-</Value>}
             </Field>
           </Row>
-          {this.props.item && this.props.item.notes
-            ? (
-              <Row>
-                <Field>
-                  <Label>Description</Label>
-                  <CopyMultilineValue value={this.props.item.notes} data-test-id="mainDetails-description" />
-                </Field>
-              </Row>
-            )
-            : null}
           {lastUpdated ? (
             <Row>
               <Field>

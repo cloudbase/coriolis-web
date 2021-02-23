@@ -44,7 +44,7 @@ class WizardSource {
       network_map: destParser.getNetworkMap(data.networks),
       instances: data.selectedInstances ? data.selectedInstances.map(i => i.instance_name || i.id) : 'null',
       storage_mappings: destParser.getStorageMap(defaultStorage, storageMap),
-      notes: data.destOptions ? data.destOptions.description || '' : '',
+      notes: data.destOptions?.title || '',
     }
 
     if (data.destOptions && data.destOptions.skip_os_morphing != null) {

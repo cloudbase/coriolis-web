@@ -342,19 +342,20 @@ class MigrationDetailsPage extends React.Component<Props, State> {
         action: () => { this.handleDeleteMigrationClick() },
       },
     ]
-    let title = null
+
     const migration = migrationStore.migrationDetails
-    if (migration) {
-      const { instances } = migration
-      if (instances) {
-        title = instances[0]
-        if (instances.length > 1) {
-          title += ` (+${instances.length - 1} more)`
+    let title = migration?.notes
+    if (!title) {
+      if (migration?.instances) {
+        title = migration.instances[0]
+        if (migration.instances.length > 1) {
+          title += ` (+${migration.instances.length - 1} more)`
         }
       } else {
-        title = migration.name
+        title = migration?.name
       }
     }
+
     return (
       <Wrapper>
         <DetailsTemplate

@@ -452,7 +452,7 @@ class WizardPageContent extends React.Component<Props, State> {
               .filter(m => m.platform === 'destination' && m.endpoint_id === this.props.wizardData.target?.id)}
             optionsLoading={this.props.providerStore.destinationOptionsSecondaryLoading}
             optionsLoadingSkipFields={[
-              ...getOptionsLoadingSkipFields('destination'), 'description', 'execute_now',
+              ...getOptionsLoadingSkipFields('destination'), 'title', 'execute_now',
               'execute_now_options', ...migrationFields.map(f => f.name)]}
             selectedInstances={this.props.wizardData.selectedInstances}
             showSeparatePerVm={

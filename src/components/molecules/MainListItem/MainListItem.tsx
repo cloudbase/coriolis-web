@@ -178,20 +178,22 @@ class MainListItem extends React.Component<Props> {
       </EndpointsImages>
     )
     const status = this.getStatus()
-    const { instances } = this.props.item
-    let title = instances[0]
-    if (instances.length > 1) {
-      title += ` (+${instances.length - 1} more)`
+    const { instances, notes } = this.props.item
+    let title = notes
+    if (!notes) {
+      title = instances[0]
+      if (instances.length > 1) {
+        title += ` (+${instances.length - 1} more)`
+      }
     }
 
     return (
       <Wrapper>
         <CheckboxStyled
-          data-test-id="mainListItem-checkbox"
           checked={this.props.selected}
           onChange={this.props.onSelectedChange}
         />
-        <Content onClick={this.props.onClick} data-test-id="mainListItem-content">
+        <Content onClick={this.props.onClick}>
           <Image image={this.props.image} />
           <Title>
             <TitleLabel>{title}</TitleLabel>
@@ -200,7 +202,6 @@ class MainListItem extends React.Component<Props> {
                 <StatusPill
                   status={status}
                   style={{ marginRight: '8px' }}
-                  data-test-id={`mainListItem-statusPill-${status}`}
                 />
               ) : null}
               {this.props.showScheduleIcon ? (
