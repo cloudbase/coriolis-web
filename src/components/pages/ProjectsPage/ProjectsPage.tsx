@@ -22,7 +22,7 @@ import FilterList from '../../organisms/FilterList'
 import PageHeader from '../../organisms/PageHeader'
 import ProjectListItem from '../../molecules/ProjectListItem'
 
-import type { Project } from '../../../@types/Project'
+import type { Project, RoleAssignment } from '../../../@types/Project'
 
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
@@ -57,7 +57,14 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
 
   getMembers(projectId: string): number {
     return projectStore.roleAssignments
-      .filter(a => a.scope.project && a.scope.project.id === projectId).length
+      .filter(a => a.scope.project?.id === projectId)
+      .reduce((uniqueRoles, role) => {
+        if (!uniqueRoles.find(p => p.user.id === role.user.id)) {
+          uniqueRoles.push(role)
+        }
+        return uniqueRoles
+      }, [] as RoleAssignment[])
+      .length
   }
 
   isCurrentProject(projectId: string): boolean {
