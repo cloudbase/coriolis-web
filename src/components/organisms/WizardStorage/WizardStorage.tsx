@@ -197,38 +197,38 @@ class WizardStorage extends React.Component<Props> {
     )
   }
 
-  renderBusTypeDropdown(selectedStorageMap: StorageMap | null | undefined) {
-    if (!selectedStorageMap) {
-      return null
-    }
-    type DropdownItem = {label: string, value: string | null}
-    const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
-      .find(s => s.id === selectedStorageMap.target.id)?.additional_provider_properties?.supported_bus_types?.map(value => ({
-        label: value,
-        value,
-      }))
-    if (!storageBusTypes || !storageBusTypes.length) {
-      return null
-    }
-    storageBusTypes.unshift({
-      label: 'Choose a Bus Type',
-      value: null,
-    })
-    const selectedBusType = selectedStorageMap?.targetBusType
+  // renderBusTypeDropdown(selectedStorageMap: StorageMap | null | undefined) {
+  //   if (!selectedStorageMap) {
+  //     return null
+  //   }
+  //   type DropdownItem = {label: string, value: string | null}
+  //   const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
+  //     .find(s => s.id === selectedStorageMap.target.id)?.additional_provider_properties?.supported_bus_types?.map(value => ({
+  //       label: value,
+  //       value,
+  //     }))
+  //   if (!storageBusTypes || !storageBusTypes.length) {
+  //     return null
+  //   }
+  //   storageBusTypes.unshift({
+  //     label: 'Choose a Bus Type',
+  //     value: null,
+  //   })
+  //   const selectedBusType = selectedStorageMap?.targetBusType
 
-    return (
-      <Dropdown
-        width={StyleProps.inputSizes.large.width}
-        noSelectionMessage="Choose a Bus Type"
-        centered
-        items={storageBusTypes}
-        selectedItem={selectedBusType}
-        onChange={(item: DropdownItem) => {
-          this.props.onChange({ ...selectedStorageMap, targetBusType: item.value })
-        }}
-      />
-    )
-  }
+  //   return (
+  //     <Dropdown
+  //       width={StyleProps.inputSizes.large.width}
+  //       noSelectionMessage="Choose a Bus Type"
+  //       centered
+  //       items={storageBusTypes}
+  //       selectedItem={selectedBusType}
+  //       onChange={(item: DropdownItem) => {
+  //         this.props.onChange({ ...selectedStorageMap, targetBusType: item.value })
+  //       }}
+  //     />
+  //   )
+  // }
 
   renderStorageDropdown(
     storageItems: Array<StorageBackend>,
@@ -324,7 +324,7 @@ class WizardStorage extends React.Component<Props> {
                   {disk.disabled && type === 'disk' ? this.renderDisabledDisk(disk) : (
                     <>
                       {this.renderStorageDropdown(storageItems, selectedStorageMapping?.target, disk, type)}
-                      {this.renderBusTypeDropdown(selectedStorageMapping)}
+                      {/* {this.renderBusTypeDropdown(selectedStorageMapping)} */}
                     </>
                   )}
                 </Dropdowns>
@@ -396,39 +396,39 @@ class WizardStorage extends React.Component<Props> {
         )
     }
 
-    const renderDefaultBusTypeDropdown = () => {
-      if (!this.props.defaultStorage || !this.props.defaultStorage.value) {
-        return null
-      }
+    // const renderDefaultBusTypeDropdown = () => {
+    //   if (!this.props.defaultStorage || !this.props.defaultStorage.value) {
+    //     return null
+    //   }
 
-      type DropdownItem = { label: string, value: string | null }
-      const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
-        .find(s => s.id === this.props.defaultStorage?.value)?.additional_provider_properties?.supported_bus_types?.map(value => ({
-          label: value,
-          value,
-        }))
-      if (!storageBusTypes || !storageBusTypes.length) {
-        return null
-      }
-      storageBusTypes.unshift({
-        label: 'Choose a Bus Type',
-        value: null,
-      })
-      const selectedBusType = this.props.defaultStorage.busType
+    //   type DropdownItem = { label: string, value: string | null }
+    //   const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
+    //     .find(s => s.id === this.props.defaultStorage?.value)?.additional_provider_properties?.supported_bus_types?.map(value => ({
+    //       label: value,
+    //       value,
+    //     }))
+    //   if (!storageBusTypes || !storageBusTypes.length) {
+    //     return null
+    //   }
+    //   storageBusTypes.unshift({
+    //     label: 'Choose a Bus Type',
+    //     value: null,
+    //   })
+    //   const selectedBusType = this.props.defaultStorage.busType
 
-      return (
-        <Dropdown
-          width={StyleProps.inputSizes.regular.width}
-          noSelectionMessage="Choose a Bus Type"
-          centered
-          items={storageBusTypes}
-          selectedItem={selectedBusType}
-          onChange={(item: DropdownItem) => {
-            this.props.onDefaultStorageChange(this.props.defaultStorage?.value || null, item.value)
-          }}
-        />
-      )
-    }
+    //   return (
+    //     <Dropdown
+    //       width={StyleProps.inputSizes.regular.width}
+    //       noSelectionMessage="Choose a Bus Type"
+    //       centered
+    //       items={storageBusTypes}
+    //       selectedItem={selectedBusType}
+    //       onChange={(item: DropdownItem) => {
+    //         this.props.onDefaultStorageChange(this.props.defaultStorage?.value || null, item.value)
+    //       }}
+    //     />
+    //   )
+    // }
 
     return (
       <StorageWrapper>
@@ -447,7 +447,7 @@ class WizardStorage extends React.Component<Props> {
               <StorageName>
                 <DefaultDropdowns>
                   {renderDropdown()}
-                  {renderDefaultBusTypeDropdown()}
+                  {/* {renderDefaultBusTypeDropdown()} */}
                 </DefaultDropdowns>
               </StorageName>
             </StorageTitle>

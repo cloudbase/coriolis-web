@@ -220,32 +220,32 @@ class WizardNetworks extends React.Component<Props> {
     ) : null
   }
 
-  renderPortKeysDropdown(selectedNetwork: NetworkMap | null | undefined, nic: NicType) {
-    const portKeys = selectedNetwork?.targetNetwork?.port_keys
-    if (!portKeys || !portKeys.length || !this.props.networks.length) {
-      return null
-    }
-    type DropdownItem = { label: string, value: string | null }
-    const portKeysDict: DropdownItem[] = portKeys.map(p => ({
-      label: p,
-      value: p,
-    }))
-    portKeysDict.unshift({ label: 'Choose Port Key', value: null })
+  // renderPortKeysDropdown(selectedNetwork: NetworkMap | null | undefined, nic: NicType) {
+  //   const portKeys = selectedNetwork?.targetNetwork?.port_keys
+  //   if (!portKeys || !portKeys.length || !this.props.networks.length) {
+  //     return null
+  //   }
+  //   type DropdownItem = { label: string, value: string | null }
+  //   const portKeysDict: DropdownItem[] = portKeys.map(p => ({
+  //     label: p,
+  //     value: p,
+  //   }))
+  //   portKeysDict.unshift({ label: 'Choose Port Key', value: null })
 
-    const selectedPortKey: string | null = selectedNetwork?.targetPortKey || null
-    return (
-      <Dropdown
-        width={StyleProps.inputSizes.large.width}
-        noSelectionMessage="Choose Port Key"
-        centered
-        items={portKeysDict}
-        selectedItem={selectedPortKey}
-        onChange={(item: DropdownItem) => {
-          this.props.onChange({ nic, network: selectedNetwork!.targetNetwork!, portKey: item.value })
-        }}
-      />
-    )
-  }
+  //   const selectedPortKey: string | null = selectedNetwork?.targetPortKey || null
+  //   return (
+  //     <Dropdown
+  //       width={StyleProps.inputSizes.large.width}
+  //       noSelectionMessage="Choose Port Key"
+  //       centered
+  //       items={portKeysDict}
+  //       selectedItem={selectedPortKey}
+  //       onChange={(item: DropdownItem) => {
+  //         this.props.onChange({ nic, network: selectedNetwork!.targetNetwork!, portKey: item.value })
+  //       }}
+  //     />
+  //   )
+  // }
 
   renderNics() {
     if (this.isLoading()) {
@@ -301,7 +301,7 @@ class WizardNetworks extends React.Component<Props> {
               <Dropdowns>
                 {this.renderNetworksDropdown(selectedNetwork, nic)}
                 {this.renderSecGroupsDropdown(selectedNetwork, nic)}
-                {this.renderPortKeysDropdown(selectedNetwork, nic)}
+                {/* {this.renderPortKeysDropdown(selectedNetwork, nic)} */}
               </Dropdowns>
             </Nic>
           )
