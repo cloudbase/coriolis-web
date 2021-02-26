@@ -48,6 +48,7 @@ import StyleProps from '../../styleUtils/StyleProps'
 import LoadingButton from '../../molecules/LoadingButton/LoadingButton'
 import minionPoolStore from '../../../stores/MinionPoolStore'
 import WizardScripts from '../WizardScripts/WizardScripts'
+import networkStore from '../../../stores/NetworkStore'
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -357,12 +358,17 @@ class EditReplica extends React.Component<Props, State> {
       useCache,
       envData,
     })
+    if (type === 'destination') {
+      networkStore.loadNetworks(endpoint.id, envData, { cache: true })
+      if (this.hasStorageMap()) {
+        endpointStore.loadStorage(this.props.destinationEndpoint.id, envData, { cache: true })
+      }
+    }
   }
 
   hasStorageMap(): boolean {
-    return providerStore.providers && providerStore.providers[this.props.destinationEndpoint.type]
-      ? !!providerStore.providers[this.props.destinationEndpoint.type]
-        .types.find(t => t === providerTypes.STORAGE)
+    return providerStore.providers?.[this.props.destinationEndpoint.type]
+      ? !!providerStore.providers[this.props.destinationEndpoint.type].types.find(t => t === providerTypes.STORAGE)
       : false
   }
 
