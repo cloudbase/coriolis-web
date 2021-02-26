@@ -213,7 +213,6 @@ type State = {
   useAdvancedOptions: boolean,
   timezone: TimezoneValue,
 }
-const testName = 'wpContent'
 @observer
 class WizardPageContent extends React.Component<Props, State> {
   state: State = {
@@ -252,6 +251,17 @@ class WizardPageContent extends React.Component<Props, State> {
     })
 
     return this.props.providerStore.providerNames.filter(p => validProviders[p])
+  }
+
+  areOptionsLoading(type: 'source' | 'destination'): boolean {
+    if (type === 'source') {
+      return this.props.providerStore.sourceSchemaLoading
+        || this.props.providerStore.sourceOptionsPrimaryLoading
+        || this.props.minionPoolStore.loadingMinionPools
+    }
+    return this.props.providerStore.destinationSchemaLoading
+      || this.props.providerStore.destinationOptionsPrimaryLoading
+      || this.props.minionPoolStore.loadingMinionPools
   }
 
   isNetworksPageValid() {
@@ -314,24 +324,26 @@ class WizardPageContent extends React.Component<Props, State> {
     if (pageId === 'type') {
       title += ` ${this.props.type.charAt(0).toUpperCase() + this.props.type.substr(1)}`
     }
-    const optionsReload = {
+    const optionsReload = (type: 'source' | 'destination') => ({
       label: 'Reload Options',
       action: () => { this.props.onReloadOptionsClick() },
       tip: 'Options may be cached by the UI. Here you can reload them from the API.',
-    }
+      visible: !this.areOptionsLoading(type),
+    })
     const reloadPages: any = {
-      'source-options': optionsReload,
-      'dest-options': optionsReload,
+      'source-options': optionsReload('source'),
+      'dest-options': optionsReload('destination'),
       networks: {
         label: 'Reload Networks',
         action: () => { this.props.onReloadNetworksClick() },
         tip: 'Networks and instances info may be cached by the UI. Here you can reload them from the API.',
+        visible: !this.props.instanceStore.loadingInstancesDetails,
       },
     }
     return (
       <Header>
-        <HeaderLabel data-test-id={`${testName}-header`}>{title}</HeaderLabel>
-        {reloadPages[pageId] ? (
+        <HeaderLabel>{title}</HeaderLabel>
+        {reloadPages[pageId]?.visible ? (
           <HeaderReload>
             <HeaderReloadLabel onClick={() => { reloadPages[pageId].action() }}>
               {reloadPages[pageId].label}
@@ -423,9 +435,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'source-options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.sourceSchemaLoading
-              || this.props.providerStore.sourceOptionsPrimaryLoading
-              || this.props.minionPoolStore.loadingMinionPools}
+            loading={this.areOptionsLoading('source')}
             minionPools={this.props.minionPoolStore.minionPools
               .filter(m => m.platform === 'source' && m.endpoint_id === this.props.wizardData.source?.id)}
             optionsLoading={this.props.providerStore.sourceOptionsSecondaryLoading}
@@ -445,9 +455,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'dest-options':
         body = (
           <WizardOptions
-            loading={this.props.providerStore.destinationSchemaLoading
-              || this.props.providerStore.destinationOptionsPrimaryLoading
-              || this.props.minionPoolStore.loadingMinionPools}
+            loading={this.areOptionsLoading('destination')}
             minionPools={this.props.minionPoolStore.minionPools
               .filter(m => m.platform === 'destination' && m.endpoint_id === this.props.wizardData.target?.id)}
             optionsLoading={this.props.providerStore.destinationOptionsSecondaryLoading}
