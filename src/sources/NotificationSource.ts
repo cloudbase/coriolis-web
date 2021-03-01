@@ -12,12 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from 'moment'
-
 import configLoader from '../utils/Config'
 import Api from '../utils/ApiCaller'
 import type { NotificationItemData, NotificationItem } from '../@types/NotificationItem'
-import { TransferItem, MigrationItem, ReplicaItem } from '../@types/MainItem'
+import {
+  TransferItem, MigrationItem, ReplicaItem, getTransferItemTitle,
+} from '../@types/MainItem'
 
 class NotificationStorage {
   static storeName: string = 'seenNotifications'
@@ -85,14 +85,15 @@ class NotificationSource {
     const migrations: MigrationItem[] = migrationsResponse.data.migrations
     const replicas: ReplicaItem[] = replicasResponse.data.replicas
     const apiData = [...migrations, ...replicas]
-    apiData.sort((a, b) => moment(b.updated_at).diff(a.updated_at))
+    apiData.sort((a, b) => new Date(b.updated_at || b.created_at).getTime()
+        - new Date(a.updated_at || a.created_at).getTime())
 
     const notificationItems: NotificationItemData[] = apiData.map(item => {
       const newItem: NotificationItemData = {
         id: item.id,
         status: item.last_execution_status,
         type: item.type,
-        name: item.instances[0],
+        name: getTransferItemTitle(item) || '',
         updatedAt: item.updated_at,
         description: DataUtils.getItemDescription(item),
       }
