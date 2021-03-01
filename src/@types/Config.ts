@@ -1,3 +1,5 @@
+import { ProviderTypes } from './Providers'
+
 type Type = 'source' | 'destination'
 
 type ExtraOption = {
@@ -20,6 +22,17 @@ export type Services = {
   coriolisLicensing: string,
 }
 
+export type ProviderMigrationCloneDiskDisabledOption = {
+  defaultValue: boolean
+  description: string
+}
+
+export type ProviderMigrationOptions = {
+  [provider in ProviderTypes]?: {
+    cloneDiskDisabledOptions: ProviderMigrationCloneDiskDisabledOption
+  }
+}
+
 export type Config = {
   disabledPages: string[],
   showUserDomainInput: boolean,
@@ -36,4 +49,5 @@ export type Config = {
   mainListItemsPerPage: number,
   servicesUrls: Services,
   maxMinionPoolEventsPerPage: number,
+  providerMigrationOptions: ProviderMigrationOptions
 }

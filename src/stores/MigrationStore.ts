@@ -21,6 +21,8 @@ import type { Field } from '../@types/Field'
 import type { Endpoint } from '../@types/Endpoint'
 import type { InstanceScript } from '../@types/Instance'
 import MigrationSource from '../sources/MigrationSource'
+import configLoader from '../utils/Config'
+import { ProviderTypes } from '../@types/Providers'
 
 class MigrationStore {
   @observable migrations: MigrationItem[] = []
@@ -57,6 +59,13 @@ class MigrationStore {
       return true
     }
     return null
+  }
+
+  getDisabledCloneDiskOptions(provider: ProviderTypes | undefined) {
+    if (!provider) {
+      return null
+    }
+    return configLoader.config.providerMigrationOptions[provider]?.cloneDiskDisabledOptions || null
   }
 
   @action async recreateFullCopy(migration: MigrationItemOptions) {

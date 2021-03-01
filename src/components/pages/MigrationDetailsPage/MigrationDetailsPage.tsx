@@ -443,6 +443,8 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
               loadingInstances={instanceStore.loadingInstancesDetails}
               defaultSkipOsMorphing={migrationStore
                 .getDefaultSkipOsMorphing(migrationStore.migrationDetails)}
+              disabledCloneDisk={migrationStore.getDisabledCloneDiskOptions(endpointStore.endpoints
+                .find(e => e.id === migrationStore.migrationDetails?.destination_endpoint_id)?.type)}
             />
           </Modal>
         ) : null}
