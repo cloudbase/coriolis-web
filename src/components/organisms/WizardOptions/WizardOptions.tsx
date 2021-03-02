@@ -224,7 +224,16 @@ class WizardOptions extends React.Component<Props> {
 
     if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica'
       || this.props.wizardType === 'migration-destination-options-edit' || this.props.wizardType === 'replica-destination-options-edit') {
-      fieldsSchema.push({ name: 'title', type: 'string' })
+      let titleFieldSchema: Field = { name: 'title', type: 'string' }
+      if (this.props.showSeparatePerVm && this.getFieldValue('separate_vm', true)) {
+        titleFieldSchema = {
+          ...titleFieldSchema,
+          disabled: true,
+          description: 'When using \'Separate Migration/VM\', the title is automatically set based on the names of the selected instances',
+        }
+      }
+
+      fieldsSchema.push(titleFieldSchema)
     }
 
     if (this.props.wizardType === 'replica') {
