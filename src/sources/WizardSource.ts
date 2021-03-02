@@ -120,6 +120,10 @@ class WizardSource {
     const mainItems = await Promise.all(data.selectedInstances.map(async instance => {
       const newData = { ...data }
       newData.selectedInstances = [instance]
+      const newDestOptions: any = { ...newData.destOptions }
+      newDestOptions.title = instance.name || instance.instance_name || instance.id
+      newData.destOptions = newDestOptions
+
       let mainItem: TransferItem | null = null
       try {
         mainItem = await this.create(type, newData, defaultStorage, storageMap, uploadedUserScripts)

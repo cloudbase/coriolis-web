@@ -133,10 +133,15 @@ class WizardPage extends React.Component<Props, State> {
     const selectedInstance = wizardStore.data?.selectedInstances?.[0]
     let title = selectedInstance?.name || selectedInstance?.instance_name || selectedInstance?.id
     if (wizardStore.data?.selectedInstances && wizardStore.data.selectedInstances.length > 1) {
-      title += ` (+${wizardStore.data.selectedInstances.length - 1} more)`
+      const shouldSeparateVm = wizardStore.data.destOptions?.separate_vm || wizardStore.data.destOptions?.separate_vm === undefined
+      if (shouldSeparateVm) {
+        title = 'Automatically Set'
+      } else {
+        title += ` (+${wizardStore.data.selectedInstances.length - 1} more)`
+      }
     }
     this.title = title
-    wizardStore.updateData({ destOptions: { title } })
+    wizardStore.updateDestOptionsRaw('title', title)
   }
 
   @autobind
@@ -334,6 +339,9 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.updateData({ networks: null })
     wizardStore.clearStorageMap()
     wizardStore.updateDestOptions({ field, value, parentFieldName })
+    if (field.name === 'separate_vm') {
+      this.setTransferItemTitle()
+    }
     // If the field is a string and doesn't have an enum property,
     // we can't call destination options on "change" since too many calls will be made,
     // it also means a potential problem with the server not populating the "enum" prop.
@@ -414,7 +422,7 @@ class WizardPage extends React.Component<Props, State> {
   initializeState(match: any) {
     wizardStore.getUrlState()
     this.setTransferItemTitle()
-    const type = match && match.params && match.params.type
+    const type = match?.params?.type
     if (type === 'migration' || type === 'replica') {
       this.setState({ type })
     }
@@ -508,7 +516,7 @@ class WizardPage extends React.Component<Props, State> {
       }
       case 'dest-options': {
         if (!wizardStore.data?.destOptions?.title) {
-          wizardStore.updateData({ destOptions: { title: this.title } })
+          wizardStore.updateDestOptionsRaw('title', this.title)
         }
         break
       }

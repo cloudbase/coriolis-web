@@ -159,6 +159,14 @@ class WizardStore {
     this.data.sourceOptions = updateOptions(this.data.sourceOptions, data)
   }
 
+  @action updateDestOptionsRaw(fieldName: string, fieldValue: any) {
+    const currentData = { ...this.data }
+    const currentDestOptions: any = { ...currentData.destOptions }
+    currentDestOptions[fieldName] = fieldValue
+    currentData.destOptions = currentDestOptions
+    this.data = currentData
+  }
+
   @action updateDestOptions(data: {
     field: Field,
     value: any,
