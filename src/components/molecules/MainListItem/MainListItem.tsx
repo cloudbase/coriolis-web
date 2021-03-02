@@ -21,7 +21,7 @@ import StatusPill from '../../atoms/StatusPill'
 import EndpointLogos from '../../atoms/EndpointLogos'
 import Palette from '../../styleUtils/Palette'
 import StyleProps from '../../styleUtils/StyleProps'
-import type { TransferItem } from '../../../@types/MainItem'
+import { getTransferItemTitle, TransferItem } from '../../../@types/MainItem'
 
 import arrowImage from './images/arrow.svg'
 import scheduleImage from './images/schedule.svg'
@@ -178,14 +178,6 @@ class MainListItem extends React.Component<Props> {
       </EndpointsImages>
     )
     const status = this.getStatus()
-    const { instances, notes } = this.props.item
-    let title = notes
-    if (!notes) {
-      title = instances[0]
-      if (instances.length > 1) {
-        title += ` (+${instances.length - 1} more)`
-      }
-    }
 
     return (
       <Wrapper>
@@ -196,7 +188,7 @@ class MainListItem extends React.Component<Props> {
         <Content onClick={this.props.onClick}>
           <Image image={this.props.image} />
           <Title>
-            <TitleLabel>{title}</TitleLabel>
+            <TitleLabel>{getTransferItemTitle(this.props.item)}</TitleLabel>
             <StatusWrapper>
               {status ? (
                 <StatusPill

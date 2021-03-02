@@ -40,6 +40,7 @@ import Palette from '../../styleUtils/Palette'
 import type { Field } from '../../../@types/Field'
 import type { InstanceScript } from '../../../@types/Instance'
 import minionPoolStore from '../../../stores/MinionPoolStore'
+import { getTransferItemTitle } from '../../../@types/MainItem'
 
 const Wrapper = styled.div<any>``
 
@@ -343,19 +344,6 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       },
     ]
 
-    const migration = migrationStore.migrationDetails
-    let title = migration?.notes
-    if (!title) {
-      if (migration?.instances) {
-        title = migration.instances[0]
-        if (migration.instances.length > 1) {
-          title += ` (+${migration.instances.length - 1} more)`
-        }
-      } else {
-        title = migration?.name
-      }
-    }
-
     return (
       <Wrapper>
         <DetailsTemplate
@@ -368,7 +356,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
           contentHeaderComponent={(
             <DetailsContentHeader
               statusPill={migrationStore.migrationDetails?.last_execution_status}
-              itemTitle={title}
+              itemTitle={getTransferItemTitle(migrationStore.migrationDetails)}
               itemType="migration"
               itemDescription={migrationStore.migrationDetails?.description}
               backLink="/migrations"

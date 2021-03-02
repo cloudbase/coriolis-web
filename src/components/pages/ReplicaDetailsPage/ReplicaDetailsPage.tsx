@@ -48,7 +48,7 @@ import { providerTypes } from '../../../constants'
 
 import replicaImage from './images/replica.svg'
 import Palette from '../../styleUtils/Palette'
-import { ReplicaItemDetails } from '../../../@types/MainItem'
+import { getTransferItemTitle, ReplicaItemDetails } from '../../../@types/MainItem'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import minionPoolStore from '../../../stores/MinionPoolStore'
 
@@ -551,17 +551,6 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       },
     ]
     const replica = this.replica
-    let title = replica?.notes
-    if (!title) {
-      if (replica?.instances) {
-        title = replica.instances[0]
-        if (replica.instances.length > 1) {
-          title += ` (+${replica.instances.length - 1} more)`
-        }
-      } else {
-        title = replica?.name
-      }
-    }
 
     return (
       <Wrapper>
@@ -575,7 +564,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           contentHeaderComponent={(
             <DetailsContentHeader
               statusPill={replica?.last_execution_status}
-              itemTitle={title}
+              itemTitle={getTransferItemTitle(this.replica)}
               itemType="replica"
               itemDescription={replica?.description}
               dropdownActions={dropdownActions}

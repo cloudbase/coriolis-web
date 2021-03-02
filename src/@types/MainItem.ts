@@ -118,3 +118,18 @@ export type MigrationItemDetails = MigrationItem & {
 }
 
 export type TransferItemDetails = ReplicaItemDetails | MigrationItemDetails
+
+export const getTransferItemTitle = (item: TransferItem | null) => {
+  if (!item) {
+    return null
+  }
+  const { instances, notes } = item
+  let title = notes
+  if (!notes) {
+    title = instances[0]
+    if (instances.length > 1) {
+      title += ` (+${instances.length - 1} more)`
+    }
+  }
+  return title
+}
