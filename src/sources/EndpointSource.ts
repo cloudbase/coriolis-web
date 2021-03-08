@@ -273,9 +273,12 @@ class EndpointSource {
     return SchemaParser.parseConnectionResponse(response.data.endpoint)
   }
 
-  async loadStorage(endpointId: string, data: any): Promise<Storage> {
+  async loadStorage(endpointId: string, data: any, options?: { cache?: boolean }): Promise<Storage> {
     const env = DomUtils.encodeToBase64Url(data)
-    const response = await Api.get(`${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`)
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/storage?env=${env}`,
+      cache: options?.cache,
+    })
     return response.data.storage
   }
 }
