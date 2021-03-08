@@ -66,6 +66,7 @@ export const executionOptions = [
     name: 'shutdown_instances',
     type: 'boolean',
     defaultValue: false,
+    nullableBoolean: false,
   },
 ]
 
@@ -74,6 +75,7 @@ export const migrationFields = [
     name: 'shutdown_instances',
     type: 'boolean',
     default: false,
+    nullableBoolean: false,
     description: 'Whether or not Coriolis should power off the source VM before performing the final incremental sync. This guarantees consistency of the exported VM\'s filesystems, but implies downtime for the source VM during the final sync.',
   },
   {

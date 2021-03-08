@@ -35,17 +35,7 @@ class SchemaParser {
     const parser = OptionsSchemaPlugin.for(provider)
     const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
     const fields = parser.parseSchemaToFields(schemaRoot, schema.definitions, dictionaryKey)
-    fields.sort((a, b) => {
-      if (a.required && !b.required) {
-        return -1
-      }
-
-      if (!a.required && b.required) {
-        return 1
-      }
-
-      return a.name.localeCompare(b.name)
-    })
+    parser.sortFields(fields)
     return fields
   }
 

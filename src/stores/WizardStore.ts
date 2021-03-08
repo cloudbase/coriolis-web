@@ -51,7 +51,7 @@ const updateOptions = (
     options[data.field.name] = data.value
   }
 
-  if (data.field.enum && data.field.subFields) {
+  if (data.field.subFields) {
     data.field.subFields.forEach(subField => {
       const subFieldKeys = Object.keys(options).filter(k => k.indexOf(subField.name) > -1)
       subFieldKeys.forEach(k => {

@@ -212,6 +212,7 @@ class ReplicaSource {
 
   async update(options: {
     replica: ReplicaItemDetails,
+    sourceEndpoint: Endpoint,
     destinationEndpoint: Endpoint,
     updateData: UpdateData,
     defaultStorage: string | null | undefined,
@@ -223,9 +224,11 @@ class ReplicaSource {
       updateData,
       defaultStorage,
       storageConfigDefault,
+      sourceEndpoint,
     } = options
 
-    const parser = OptionsSchemaPlugin.for(destinationEndpoint.type)
+    const sourceParser = OptionsSchemaPlugin.for(sourceEndpoint.type)
+    const destinationParser = OptionsSchemaPlugin.for(destinationEndpoint.type)
     const payload: any = { replica: {} }
 
     if (updateData.destination.title) {
@@ -233,10 +236,10 @@ class ReplicaSource {
     }
 
     if (updateData.network.length > 0) {
-      payload.replica.network_map = parser.getNetworkMap(updateData.network)
+      payload.replica.network_map = destinationParser.getNetworkMap(updateData.network)
     }
     if (Object.keys(updateData.source).length > 0) {
-      const sourceEnv = parser.getDestinationEnv(updateData.source, replica.source_environment)
+      const sourceEnv = sourceParser.getDestinationEnv(updateData.source, replica.source_environment)
       if (updateData.source.minion_pool_id !== undefined) {
         payload.replica.origin_minion_pool_id = updateData.source.minion_pool_id
       }
@@ -246,7 +249,7 @@ class ReplicaSource {
     }
 
     if (Object.keys(updateData.destination).length > 0) {
-      const destEnv = parser.getDestinationEnv(updateData.destination,
+      const destEnv = destinationParser.getDestinationEnv(updateData.destination,
         { ...replica, ...replica.destination_environment })
 
       const newMinionMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
@@ -266,7 +269,7 @@ class ReplicaSource {
     }
 
     if (defaultStorage || updateData.storage.length > 0) {
-      payload.replica.storage_mappings = parser
+      payload.replica.storage_mappings = destinationParser
         .getStorageMap(defaultStorage, updateData.storage, storageConfigDefault)
     }
 

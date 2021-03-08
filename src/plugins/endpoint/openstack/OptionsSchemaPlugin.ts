@@ -34,25 +34,29 @@ export default class OptionsSchemaParser {
     schemaDefinitions: SchemaDefinitions | null | undefined,
     dictionaryKey: string,
   ) {
-    const fields = DefaultOptionsSchemaPlugin
-      .parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    const fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
     const exportMechField = fields.find(f => f.name === 'replica_export_mechanism')
-    if (exportMechField) {
-      exportMechField.subFields = []
-      exportMechField.enum.forEach((exportType: any) => {
-        const exportTypeFieldIdx = fields.findIndex(f => f.name === `${exportType}_options`)
-        if (exportTypeFieldIdx > -1) {
-          const subField = fields[exportTypeFieldIdx]
-          if (subField.properties && subField.properties.length) {
-            subField.properties = subField.properties
-              .map((p: any) => ({ ...p, groupName: subField.name }))
-          }
-          exportMechField.subFields.push(subField)
-          fields.splice(exportTypeFieldIdx, 1)
-        }
-      })
+    if (!exportMechField) {
+      return fields
     }
+    exportMechField.subFields = []
+    exportMechField.enum.forEach((exportType: any) => {
+      const exportTypeFieldIdx = fields.findIndex(f => f.name === `${exportType}_options`)
+      if (exportTypeFieldIdx === -1) {
+        return
+      }
+      const subField = fields[exportTypeFieldIdx]
+      if (subField.properties?.length) {
+        subField.properties = subField.properties.map((p: Field) => ({ ...p, groupName: subField.name }))
+      }
+      exportMechField.subFields.push(subField)
+      fields.splice(exportTypeFieldIdx, 1)
+    })
     return fields
+  }
+
+  static sortFields(fields: Field[]) {
+    DefaultOptionsSchemaPlugin.sortFields(fields)
   }
 
   static fillFieldValues(field: Field, options: OptionValues[]) {

@@ -233,6 +233,7 @@ class ReplicaStore {
 
   async update(options: {
     replica: ReplicaItemDetails,
+    sourceEndpoint: Endpoint,
     destinationEndpoint: Endpoint,
     updateData: UpdateData,
     defaultStorage: string | null | undefined,

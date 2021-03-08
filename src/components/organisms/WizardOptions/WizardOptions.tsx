@@ -214,12 +214,14 @@ class WizardOptions extends React.Component<Props> {
       const dictionaryLabel = LabelDictionary.get('separate_vm')
       const label = this.props.wizardType === 'migration' ? dictionaryLabel : dictionaryLabel.replace('Migration', 'Replica')
       fieldsSchema.push({
-        name: 'separate_vm', label, type: 'boolean', default: true,
+        name: 'separate_vm', label, type: 'boolean', default: true, nullableBoolean: false,
       })
     }
 
     if (this.props.wizardType === 'migration' || this.props.wizardType === 'migration-destination-options-edit') {
-      fieldsSchema.push({ name: 'skip_os_morphing', type: 'boolean', default: false })
+      fieldsSchema.push({
+        name: 'skip_os_morphing', type: 'boolean', default: false, nullableBoolean: false,
+      })
     }
 
     if (this.props.wizardType === 'migration' || this.props.wizardType === 'replica'
@@ -237,7 +239,9 @@ class WizardOptions extends React.Component<Props> {
     }
 
     if (this.props.wizardType === 'replica') {
-      fieldsSchema.push({ name: 'execute_now', type: 'boolean', default: true })
+      fieldsSchema.push({
+        name: 'execute_now', type: 'boolean', default: true, nullableBoolean: false,
+      })
       const executeNowValue = this.getFieldValue('execute_now', true)
       fieldsSchema.push({
         name: 'execute_now_options',
@@ -386,7 +390,6 @@ class WizardOptions extends React.Component<Props> {
     }
 
     let fieldsSchema: Field[] = this.getDefaultSimpleFieldsSchema()
-    const nonNullableBooleans: string[] = fieldsSchema.filter(f => f.type === 'boolean').map(f => f.name)
 
     fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => f.required))
 
@@ -395,18 +398,25 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => !f.required))
     }
 
+    const nonNullableBooleans: string[] = fieldsSchema.filter(f => f.type === 'boolean' && f.nullableBoolean === false).map(f => f.name)
+
     // Add subfields for enums which have them
     let subFields: any[] = []
     fieldsSchema.forEach(f => {
-      if (!f.enum || !f.subFields) {
+      if (!f.subFields) {
         return
       }
       const value = this.getFieldValue(f.name, f.default)
       if (!f.subFields) {
         return
       }
-      const subField = f.subFields.find(sf => sf.name === `${String(value)}_options`)
-      if (subField && subField.properties) {
+      let subField: Field | undefined
+      if (f.type === 'boolean') {
+        subField = value ? f.subFields[1] : f.subFields[0]
+      } else {
+        subField = f.subFields.find(sf => sf.name === `${String(value)}_options`)
+      }
+      if (subField?.properties) {
         subFields = [...subFields, ...subField.properties]
       }
     })

@@ -161,6 +161,20 @@ export default class OptionsSchemaParser {
     return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey)
   }
 
+  static sortFields(fields: Field[]) {
+    fields.sort((a, b) => {
+      if (a.required && !b.required) {
+        return -1
+      }
+
+      if (!a.required && b.required) {
+        return 1
+      }
+
+      return a.name.localeCompare(b.name)
+    })
+  }
+
   static fillFieldValues(field: Field, options: OptionValues[], customFieldName?: string) {
     const option = options
       .find(f => (customFieldName ? f.name === customFieldName : f.name === field.name))
