@@ -146,7 +146,6 @@ type Props = {
   useAdvancedOptions?: boolean,
   hasStorageMap: boolean,
   storageBackends?: StorageBackend[],
-  storageConfigDefault?: string,
   onAdvancedOptionsToggle?: (showAdvanced: boolean) => void,
   wizardType: string,
   oneColumnStyle?: { [prop: string]: any },

@@ -58,4 +58,6 @@ export type InstanceScript = {
   fileName: string | null,
 }
 
-export const shortenId = (id: string) => id.replace(/(^.*?)-.*-(.*$)/, '$1-...-$2')
+export const InstanceUtils = {
+  shortenId: (id: string) => id.replace(/(^.*?)-.*-(.*$)/, '$1-...-$2'),
+}

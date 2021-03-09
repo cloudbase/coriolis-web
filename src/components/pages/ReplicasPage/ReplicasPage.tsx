@@ -46,6 +46,7 @@ import Palette from '../../styleUtils/Palette'
 import configLoader from '../../../utils/Config'
 import { ReplicaItem } from '../../../@types/MainItem'
 import userStore from '../../../stores/UserStore'
+import { ProviderMigrationCloneDiskDisabledOption } from '../../../@types/Config'
 
 const Wrapper = styled.div<any>``
 
@@ -330,6 +331,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       action: () => { this.handleShowDeleteReplicas() },
     }]
 
+    let disabledDiskOptions: ProviderMigrationCloneDiskDisabledOption | null = null
+    this.state.selectedReplicas.forEach(r => {
+      const options = migrationStore.getDisabledCloneDiskOptions(this.getEndpoint(r.destination_endpoint_id)?.type)
+      if (options) {
+        disabledDiskOptions = options
+      }
+    })
+
     return (
       <Wrapper>
         <MainTemplate
@@ -431,6 +440,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
                 this.setState({ showCreateMigrationsModal: false, modalIsOpen: false })
               }}
               onMigrateClick={(options, s) => { this.migrateSelectedReplicas(options, s) }}
+              disabledCloneDisk={disabledDiskOptions}
             />
           </Modal>
         ) : null}

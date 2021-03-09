@@ -26,13 +26,14 @@ import {
   isNetworkMapSourceDest, TransferItem,
 } from '../../../@types/MainItem'
 import type { Instance, Nic, Disk } from '../../../@types/Instance'
-import type { Network } from '../../../@types/Network'
+import { Network, NetworkUtils } from '../../../@types/Network'
 
 import instanceIcon from './images/instance.svg'
 import networkIcon from './images/network.svg'
 import storageIcon from './images/storage.svg'
 import arrowIcon from './images/arrow.svg'
 import { MinionPool } from '../../../@types/MinionPool'
+import { EndpointUtils, StorageBackend } from '../../../@types/Endpoint'
 
 const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {
@@ -153,6 +154,7 @@ export type Props = {
   instancesDetails: Instance[],
   networks?: Network[],
   minionPools: MinionPool[]
+  storageBackends: StorageBackend[]
 }
 type State = {
   openedRows: string[],
@@ -228,31 +230,41 @@ class MainDetailsTable extends React.Component<Props, State> {
     )
   }
 
-  renderStorage(instance: Instance) {
-    const storageMapping = this.props.item && this.props.item.storage_mappings
+  renderStorage(instance: Instance, type: 'backend' | 'disk') {
+    const storageMapping = this.props.item?.storage_mappings
     const transferResult = this.getTransferResult(instance)
     const rows: React.ReactNode[] = []
+    const diskFieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
+    const mappingFieldName = type === 'backend' ? 'source' : 'disk_id'
+    const storageMappingFieldName = type === 'backend' ? 'backend_mappings' : 'disk_mappings'
+
     instance.devices.disks.forEach(disk => {
-      const sourceName = disk.id
-      const mappedDisk = storageMapping && storageMapping.disk_mappings
-        && storageMapping.disk_mappings.find(m => String(m.disk_id) === String(disk.id))
+      const sourceName = disk[diskFieldName] || ''
+      const mappedDisk = (storageMapping?.[storageMappingFieldName] as any)
+        ?.find((m: any) => String(m[mappingFieldName]) === String(disk[diskFieldName]))
       let destinationName: React.ReactNode
       let destinationKey: string
+      const defaultBusTypeInfo = EndpointUtils.getBusTypeStorageId(this.props.storageBackends, this.props.item?.storage_mappings?.default || null)
 
       if (disk.disabled) {
         destinationKey = disk.disabled.info || disk.disabled.message
         destinationName = <span style={{ color: Palette.grayscale[5] }}>{destinationKey}</span>
       } else {
-        destinationName = (
-          this.props.item && this.props.item.storage_mappings
-          && this.props.item.storage_mappings.default
-        ) || 'Default'
+        destinationName = defaultBusTypeInfo.id || 'Default'
         destinationKey = destinationName as string
       }
+      let destinationBody: string[] = []
 
       if (mappedDisk) {
-        destinationName = mappedDisk.destination
+        const busTypeInfo = EndpointUtils.getBusTypeStorageId(this.props.storageBackends, mappedDisk?.destination)
+
+        destinationName = busTypeInfo.id
         destinationKey = destinationName as string
+        if (busTypeInfo.busType) {
+          destinationBody.push(`Bus Type: ${busTypeInfo.busType}`)
+        }
+      } else if (defaultBusTypeInfo.busType) {
+        destinationBody.push(`Bus Type: ${defaultBusTypeInfo.busType}`)
       }
       const getBody = (d: Disk): string[] => {
         const body: string[] = []
@@ -271,14 +283,14 @@ class MainDetailsTable extends React.Component<Props, State> {
         return body
       }
       const sourceBody = getBody(disk)
-      let destinationBody: string[] = []
+
       if (transferResult) {
         const transferDisk = transferResult.devices.disks
           .find(d => d.storage_backend_identifier === destinationName)
         if (transferDisk) {
           destinationName = transferDisk.name || transferDisk.id
           destinationKey = destinationName as string
-          destinationBody = getBody(transferDisk)
+          destinationBody = destinationBody.concat(getBody(transferDisk))
         }
       } else if (this.props.item?.type === 'migration' && (
         this.props.item.last_execution_status === 'RUNNING'
@@ -327,23 +339,23 @@ class MainDetailsTable extends React.Component<Props, State> {
           return body
         }
         const destNetMapObj = destinationNetworkMap[nic.network_name]
-        const destinationNetworkId = isNetworkMapSecurityGroups(destNetMapObj)
-          ? destNetMapObj.id : destNetMapObj
-        const destinationNetwork = this.props.networks
-          && this.props.networks.find(n => n.id === destinationNetworkId)
-
+        const portKeyInfo = NetworkUtils.getPortKeyNetworkId(this.props.networks || [], destNetMapObj as any)
+        const destinationNetworkId = isNetworkMapSecurityGroups(destNetMapObj) ? destNetMapObj.id : portKeyInfo.id
+        const destinationNetwork = this.props.networks?.find(n => n.id === destinationNetworkId)
         const sourceBody = getBody(nic)
 
         let destinationBody: string[] = []
-        if (isNetworkMapSecurityGroups(destNetMapObj)
-          && destNetMapObj.security_groups && destNetMapObj.security_groups.length) {
-          const destSecGroupsInfo = (destinationNetwork && destinationNetwork.security_groups) || []
-
+        if (isNetworkMapSecurityGroups(destNetMapObj) && destNetMapObj.security_groups?.length) {
+          const destSecGroupsInfo = (destinationNetwork?.security_groups) || []
           const secNames = destNetMapObj.security_groups.map(s => {
             const foundSecGroupInfo = destSecGroupsInfo.find(si => (typeof si === 'string' ? si === s : si.id === s))
             return foundSecGroupInfo && typeof foundSecGroupInfo !== 'string' && foundSecGroupInfo.name ? foundSecGroupInfo.name : s
           })
           destinationBody = [`Security Groups: ${secNames.join(', ')}`]
+        }
+
+        if (portKeyInfo.portKey != null) {
+          destinationBody = [`Port Key: ${portKeyInfo.portKey}`]
         }
 
         let destinationNetworkName = destinationNetworkId
@@ -438,7 +450,8 @@ class MainDetailsTable extends React.Component<Props, State> {
             <InstanceBody>
               {this.renderInstanceDetails(instance)}
               {this.renderNetworks(instance)}
-              {this.renderStorage(instance)}
+              {this.renderStorage(instance, 'disk')}
+              {this.renderStorage(instance, 'backend')}
             </InstanceBody>
           </InstanceInfo>
         ))}

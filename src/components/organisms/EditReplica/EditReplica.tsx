@@ -27,7 +27,7 @@ import StatusImage from '../../atoms/StatusImage'
 import Modal from '../../molecules/Modal'
 import Panel from '../../molecules/Panel'
 import { isOptionsPageValid } from '../WizardPageContent'
-import WizardNetworks from '../WizardNetworks'
+import WizardNetworks, { WizardNetworksChangeObject } from '../WizardNetworks'
 import WizardOptions, { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../WizardOptions'
 import WizardStorage from '../WizardStorage/WizardStorage'
 
@@ -35,12 +35,16 @@ import type {
   UpdateData, TransferItemDetails, MigrationItemDetails,
 } from '../../../@types/MainItem'
 import type { NavigationItem } from '../../molecules/Panel'
-import type { Endpoint, StorageBackend, StorageMap } from '../../../@types/Endpoint'
+import {
+  Endpoint, EndpointUtils, StorageBackend, StorageMap,
+} from '../../../@types/Endpoint'
 import type { Field } from '../../../@types/Field'
 import type {
-  Instance, Nic, Disk, InstanceScript,
+  Instance, InstanceScript,
 } from '../../../@types/Instance'
-import type { Network, NetworkMap, SecurityGroup } from '../../../@types/Network'
+import {
+  Network, NetworkMap, NetworkUtils, SecurityGroup,
+} from '../../../@types/Network'
 
 import { providerTypes, migrationFields } from '../../../constants'
 import configLoader from '../../../utils/Config'
@@ -106,7 +110,7 @@ type State = {
   sourceData: any,
   updateDisabled: boolean,
   selectedNetworks: NetworkMap[],
-  defaultStorage: string | null | undefined,
+  defaultStorage: { value: string | null, busType?: string | null } | undefined,
   storageMap: StorageMap[],
   sourceFailed: boolean,
   destinationFailedMessage: string | null,
@@ -139,20 +143,25 @@ class EditReplica extends React.Component<Props, State> {
   getStorageMap(storageBackends: StorageBackend[]): StorageMap[] {
     const storageMap: StorageMap[] = []
     const currentStorage = this.props.replica.storage_mappings
-    const buildStorageMap = (type: 'backend' | 'disk', mapping: any) => {
-      const backend = storageBackends.find(b => b.name === mapping.destination)
-      return {
+    const buildStorageMap = (type: 'backend' | 'disk', mapping: any): StorageMap => {
+      const busTypeInfo = EndpointUtils.getBusTypeStorageId(storageBackends, mapping.destination)
+      const backend = storageBackends.find(b => b.name === busTypeInfo.id)
+      const newStorageMap: StorageMap = {
         type,
         source: { storage_backend_identifier: mapping.source, id: mapping.disk_id },
-        target: { name: mapping.destination, id: backend ? backend.id : mapping.destination },
+        target: { name: busTypeInfo.id!, id: backend ? backend.id : busTypeInfo.id },
       }
+      if (busTypeInfo.busType) {
+        newStorageMap.targetBusType = busTypeInfo.busType
+      }
+      return newStorageMap
     }
-    const backendMappings = (currentStorage && currentStorage.backend_mappings) || []
+    const backendMappings = currentStorage?.backend_mappings || []
     backendMappings.forEach(mapping => {
       storageMap.push(buildStorageMap('backend', mapping))
     })
 
-    const diskMappings = (currentStorage && currentStorage.disk_mappings) || []
+    const diskMappings = currentStorage?.disk_mappings || []
     diskMappings.forEach(mapping => {
       storageMap.push(buildStorageMap('disk', mapping))
     })
@@ -163,6 +172,9 @@ class EditReplica extends React.Component<Props, State> {
         && m.source[fieldName] === String(mapping.source[fieldName]))
       if (existingMapping) {
         existingMapping.target = mapping.target
+        if (mapping.targetBusType !== undefined) {
+          existingMapping.targetBusType = mapping.targetBusType
+        }
       } else {
         storageMap.push(mapping)
       }
@@ -178,8 +190,9 @@ class EditReplica extends React.Component<Props, State> {
     if (networkMap) {
       Object.keys(networkMap).forEach(sourceNetworkName => {
         const destNetObj: any = networkMap[sourceNetworkName]
+        const portKeyInfo = NetworkUtils.getPortKeyNetworkId(this.props.networks, destNetObj)
         const destNetId = String(typeof destNetObj === 'string' || !destNetObj
-          || !destNetObj.id ? destNetObj : destNetObj.id)
+          || !destNetObj.id ? portKeyInfo.id : destNetObj.id)
 
         const network = this.props.networks.find(n => n.name === destNetId || n.id === destNetId) || null
         const mapping: NetworkMap = {
@@ -189,13 +202,16 @@ class EditReplica extends React.Component<Props, State> {
           targetNetwork: network,
         }
         if (destNetObj.security_groups) {
-          const destSecGroupsInfo = (network && network.security_groups) || []
+          const destSecGroupsInfo = network?.security_groups || []
           const secInfo = destNetObj.security_groups.map((s: SecurityGroup) => {
             const foundSecGroupInfo = destSecGroupsInfo
               .find((si: any) => (si.id ? si.id === s : si === s))
             return foundSecGroupInfo || { id: s, name: s }
           })
           mapping.targetSecurityGroups = secInfo
+        }
+        if (portKeyInfo.portKey) {
+          mapping.targetPortKey = portKeyInfo.portKey
         }
         selectedNetworks.push(mapping)
       })
@@ -208,11 +224,30 @@ class EditReplica extends React.Component<Props, State> {
     return selectedNetworks
   }
 
-  getDefaultStorage() {
-    const storageMappings = this.props.replica.storage_mappings
-    const replicaDefaultStorage = storageMappings && storageMappings.default
-    return this.state.defaultStorage !== undefined
-      ? this.state.defaultStorage : replicaDefaultStorage
+  getDefaultStorage(): { value: string | null, busType?: string | null } {
+    if (this.state.defaultStorage) {
+      return this.state.defaultStorage
+    }
+
+    const buildDefaultStorage = (defaultValue: string | null | undefined) => {
+      const busTypeInfo = EndpointUtils.getBusTypeStorageId(endpointStore.storageBackends, defaultValue || null)
+      const defaultStorage: { value: string | null, busType?: string | null } = {
+        value: busTypeInfo.id,
+      }
+      if (busTypeInfo.busType) {
+        defaultStorage.busType = busTypeInfo.busType
+      }
+      return defaultStorage
+    }
+
+    if (this.props.replica.storage_mappings?.default) {
+      return buildDefaultStorage(this.props.replica.storage_mappings.default)
+    }
+
+    if (endpointStore.storageConfigDefault) {
+      return buildDefaultStorage(endpointStore.storageConfigDefault)
+    }
+    return { value: null }
   }
 
   getFieldValue(type: 'source' | 'destination', fieldName: string, defaultValue: any, parentFieldName?: string) {
@@ -281,10 +316,6 @@ class EditReplica extends React.Component<Props, State> {
   async loadData(useCache: boolean) {
     minionPoolStore.loadMinionPools()
     await providerStore.loadProviders()
-
-    if (this.hasStorageMap()) {
-      endpointStore.loadStorage(this.props.destinationEndpoint.id, {})
-    }
 
     const loadAllOptions = async (type: 'source' | 'destination') => {
       const endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
@@ -500,8 +531,11 @@ class EditReplica extends React.Component<Props, State> {
       }
     } else {
       try {
-        const replicaDefaultStorage = this.props.replica.storage_mappings
-          && this.props.replica.storage_mappings.default
+        const defaultStorage = EndpointUtils.getBusTypeStorageId(endpointStore.storageBackends, this.props.replica.storage_mappings?.default || null)
+        const replicaDefaultStorage: { value: string | null, busType?: string | null } = {
+          value: defaultStorage.id,
+          busType: defaultStorage.busType,
+        }
         const migration: MigrationItemDetails = await migrationStore.recreate(
           this.props.replica as any,
           this.props.sourceEndpoint,
@@ -520,15 +554,16 @@ class EditReplica extends React.Component<Props, State> {
     }
   }
 
-  handleNetworkChange(
-    sourceNic: Nic,
-    targetNetwork: Network,
-    targetSecurityGroups: SecurityGroup[] | null | undefined,
-  ) {
+  handleNetworkChange(changeObject: WizardNetworksChangeObject) {
     const networkMap = this.state.selectedNetworks
-      .filter(n => n.sourceNic.network_name !== sourceNic.network_name)
+      .filter(n => n.sourceNic.network_name !== changeObject.nic.network_name)
     this.setState({
-      selectedNetworks: [...networkMap, { sourceNic, targetNetwork, targetSecurityGroups }],
+      selectedNetworks: [...networkMap, {
+        sourceNic: changeObject.nic,
+        targetNetwork: changeObject.network,
+        targetSecurityGroups: changeObject.securityGroups,
+        targetPortKey: changeObject.portKey,
+      }],
     })
   }
 
@@ -557,12 +592,12 @@ class EditReplica extends React.Component<Props, State> {
     }))
   }
 
-  handleStorageChange(source: Disk, target: StorageBackend, type: 'backend' | 'disk') {
+  handleStorageChange(mapping: StorageMap) {
     this.setState(prevState => {
-      const diskFieldName = type === 'backend' ? 'storage_backend_identifier' : 'id'
+      const diskFieldName = mapping.type === 'backend' ? 'storage_backend_identifier' : 'id'
       const storageMap = prevState.storageMap
-        .filter(n => n.type !== type || n.source[diskFieldName] !== source[diskFieldName])
-      storageMap.push({ source, target, type })
+        .filter(n => n.type !== mapping.type || n.source[diskFieldName] !== mapping.source[diskFieldName])
+      storageMap.push(mapping)
 
       return { storageMap }
     })
@@ -614,7 +649,6 @@ class EditReplica extends React.Component<Props, State> {
         selectedInstances={type === 'destination' ? this.props.instancesDetails : null}
         hasStorageMap={type === 'source' ? false : this.hasStorageMap()}
         storageBackends={endpointStore.storageBackends}
-        storageConfigDefault={endpointStore.storageConfigDefault}
         onChange={(f, v, fp) => { this.handleFieldChange(type, f, v, fp) }}
         oneColumnStyle={{
           marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center',
@@ -644,13 +678,12 @@ class EditReplica extends React.Component<Props, State> {
     return (
       <WizardStorage
         defaultStorage={this.getDefaultStorage()}
-        onDefaultStorageChange={defaultStorage => { this.setState({ defaultStorage }) }}
-        storageConfigDefault={endpointStore.storageConfigDefault}
+        onDefaultStorageChange={(value, busType) => { this.setState({ defaultStorage: { value, busType } }) }}
         defaultStorageLayout="modal"
         storageBackends={endpointStore.storageBackends}
         instancesDetails={this.props.instancesDetails}
         storageMap={this.getStorageMap(endpointStore.storageBackends)}
-        onChange={(s, t, type) => { this.handleStorageChange(s, t, type) }}
+        onChange={mapping => { this.handleStorageChange(mapping) }}
         style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}
         titleWidth={160}
         onScrollableRef={ref => { this.scrollableRef = ref }}
@@ -665,8 +698,8 @@ class EditReplica extends React.Component<Props, State> {
         loadingInstancesDetails={this.props.instancesDetailsLoading}
         networks={this.props.networks}
         loading={this.props.networksLoading}
-        onChange={(nic, network, secGroups) => {
-          this.handleNetworkChange(nic, network, secGroups)
+        onChange={change => {
+          this.handleNetworkChange(change)
         }}
         selectedNetworks={this.getSelectedNetworks()}
         style={{ padding: '32px 32px 0 32px', width: 'calc(100% - 64px)' }}

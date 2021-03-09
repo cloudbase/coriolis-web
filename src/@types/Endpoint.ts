@@ -48,8 +48,11 @@ export type OptionValues = {
 }
 
 export type StorageBackend = {
-  id: string,
+  id: string | null,
   name: string,
+  additional_provider_properties?: {
+    supported_bus_types?: string[]
+  }
 }
 
 export type Storage = {
@@ -61,4 +64,27 @@ export type StorageMap = {
   type: 'backend' | 'disk',
   source: Disk,
   target: StorageBackend,
+  targetBusType?: string | null
+}
+
+export const EndpointUtils = {
+  getBusTypeStorageId: (storageBackends: StorageBackend[], id: string | null): { busType: string | null, id: string | null } => {
+    const idMatches = /(.*):(.*)/.exec(String(id))
+    if (!idMatches) {
+      return { busType: null, id }
+    }
+    const actualId = idMatches[1]
+    const busType = idMatches[2]
+
+    for (let i = 0; i < storageBackends.length; i += 1) {
+      if (storageBackends[i].id === actualId) {
+        if (storageBackends[i].additional_provider_properties?.supported_bus_types?.find(p => p === busType)) {
+          return { id: actualId, busType }
+        }
+        return { id: actualId, busType: null }
+      }
+    }
+
+    return { id, busType: null }
+  },
 }

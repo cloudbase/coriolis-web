@@ -24,6 +24,7 @@ import OpenstackContentPlugin from './openstack/ContentPlugin'
 
 import DefaultOptionsSchemaPlugin from './default/OptionsSchemaPlugin'
 import OvmOptionsSchemaPlugin from './ovm/OptionsSchemaPlugin'
+import VmwareOptionsSchemaPlugin from './vmware_vsphere/OptionsSchemaPlugin'
 import OpenstackOptionsSchemaPlugin from './openstack/OptionsSchemaPlugin'
 
 import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
@@ -54,6 +55,7 @@ export const OptionsSchemaPlugin = {
       default: DefaultOptionsSchemaPlugin,
       oracle_vm: OvmOptionsSchemaPlugin,
       openstack: OpenstackOptionsSchemaPlugin,
+      vmware_vsphere: VmwareOptionsSchemaPlugin,
     }
     if (hasKey(map, provider)) {
       return map[provider]

@@ -1,9 +1,12 @@
+import { ProviderTypes } from './Providers'
+
 type Type = 'source' | 'destination'
 
 type ExtraOption = {
   name: string,
   types: Type[],
   requiredFields: string[],
+  relistFields?: string[],
   requiredValues?: {
     field: string,
     values: string[],
@@ -17,6 +20,17 @@ export type Services = {
   coriolisLogs: string,
   coriolisLogStreamBaseUrl: string,
   coriolisLicensing: string,
+}
+
+export type ProviderMigrationCloneDiskDisabledOption = {
+  defaultValue: boolean
+  description: string
+}
+
+export type ProviderMigrationOptions = {
+  [provider in ProviderTypes]?: {
+    cloneDiskDisabledOptions: ProviderMigrationCloneDiskDisabledOption
+  }
 }
 
 export type Config = {
@@ -35,4 +49,5 @@ export type Config = {
   mainListItemsPerPage: number,
   servicesUrls: Services,
   maxMinionPoolEventsPerPage: number,
+  providerMigrationOptions: ProviderMigrationOptions
 }

@@ -44,6 +44,7 @@ const conf: Config = {
    * If `requiredValues` is provided, the field specified there needs to have a
    * certain value (specified in values)
    * in order to make the options API call.
+   * If `relistFields` is provided, the options call will be made if any of the relist fields are changed.
    */
   extraOptionsApiCalls: [
     {
@@ -77,7 +78,22 @@ const conf: Config = {
       types: ['destination'],
       requiredFields: ['compartment', 'availability_domain', 'vcn_compartment'],
     },
+    {
+      name: 'vmware_vsphere',
+      types: ['destination'],
+      requiredFields: ['import_datacenter'],
+      relistFields: ['import_cluster', 'migr_minion_cluster'],
+    },
   ],
+
+  providerMigrationOptions: {
+    vmware_vsphere: {
+      cloneDiskDisabledOptions: {
+        defaultValue: false,
+        description: 'Replica Deployments on VMware do not currently support Replica disk cloning',
+      },
+    },
+  },
 
   /*
   Lower number means that the provider will appear sooner in the list.

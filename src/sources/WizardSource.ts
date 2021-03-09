@@ -29,7 +29,7 @@ class WizardSource {
   async create(
     type: string,
     data: WizardData,
-    defaultStorage: string | null,
+    defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[],
   ): Promise<TransferItem> {
@@ -110,7 +110,7 @@ class WizardSource {
   async createMultiple(
     type: string,
     data: WizardData,
-    defaultStorage: string | null,
+    defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[],
   ) {

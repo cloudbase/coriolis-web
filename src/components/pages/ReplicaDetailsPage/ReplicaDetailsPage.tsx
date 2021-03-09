@@ -180,7 +180,6 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   async loadIsEditable(replicaDetails: ReplicaItemDetails) {
     const targetEndpointId = replicaDetails.destination_endpoint_id
     const sourceEndpointId = replicaDetails.origin_endpoint_id
-    await providerStore.loadProviders()
     await ObjectUtils.waitFor(() => endpointStore.endpoints.length > 0)
     const sourceEndpoint = endpointStore.endpoints.find(e => e.id === sourceEndpointId)
     const targetEndpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
@@ -205,7 +204,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
     minionPoolStore.loadMinionPools()
 
+    await providerStore.loadProviders()
+
     this.loadIsEditable(replica)
+
     networkStore.loadNetworks(replica.destination_endpoint_id, replica.destination_environment, {
       quietError: true,
       cache,
@@ -213,6 +215,15 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
     const targetEndpoint = endpointStore.endpoints
       .find(e => e.id === replica.destination_endpoint_id)
+
+    const hasStorageMap = targetEndpoint ? (providerStore.providers && providerStore.providers[targetEndpoint.type]
+      ? !!providerStore.providers[targetEndpoint.type]
+        .types.find(t => t === providerTypes.STORAGE)
+      : false) : false
+    if (hasStorageMap) {
+      endpointStore.loadStorage(replica.destination_endpoint_id, replica.destination_environment)
+    }
+
     instanceStore.loadInstancesDetails({
       endpointId: replica.origin_endpoint_id,
       instances: replica.instances.map(n => ({ id: n })),
@@ -578,8 +589,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               item={replica}
               itemId={this.replicaId}
               instancesDetails={instanceStore.instancesDetails}
-              instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+              instancesDetailsLoading={instanceStore.loadingInstancesDetails || endpointStore.storageLoading || providerStore.providersLoading}
               endpoints={endpointStore.endpoints}
+              storageBackends={endpointStore.storageBackends}
               scheduleStore={scheduleStore}
               networks={networkStore.networks}
               minionPools={minionPoolStore.minionPools}
@@ -638,6 +650,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               instances={instanceStore.instancesDetails}
               onCancelClick={() => { this.handleCloseMigrationModal() }}
               onMigrateClick={(o, s, r, m) => { this.migrateReplica(o, s, r, m) }}
+              disabledCloneDisk={migrationStore.getDisabledCloneDiskOptions(endpointStore.endpoints
+                .find(e => e.id === replicaStore.replicaDetails?.destination_endpoint_id)?.type)}
             />
           </Modal>
         ) : null}

@@ -193,39 +193,42 @@ export default class OptionsSchemaParser {
 
   static getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
     const payload: any = {}
-    if (networkMappings && networkMappings.length) {
-      const hasSecurityGroups = Boolean(networkMappings
-        .find(nm => nm.targetNetwork!.security_groups))
-      networkMappings.forEach(mapping => {
-        let target
-        if (hasSecurityGroups) {
-          target = {
-            id: mapping.targetNetwork!.id,
-            security_groups: mapping.targetSecurityGroups
-              ? mapping.targetSecurityGroups.map(s => (typeof s === 'string' ? s : s.id))
-              : [],
-          }
-        } else {
-          target = mapping.targetNetwork!.id
-        }
-        payload[mapping.sourceNic.network_name] = target
-      })
+    if (!networkMappings?.length) {
+      return payload
     }
+    const hasSecurityGroups = Boolean(networkMappings.find(nm => nm.targetNetwork!.security_groups))
+    networkMappings.forEach(mapping => {
+      let target
+      if (hasSecurityGroups) {
+        target = {
+          id: mapping.targetNetwork!.id,
+          security_groups: mapping.targetSecurityGroups ? mapping.targetSecurityGroups.map(s => (typeof s === 'string' ? s : s.id)) : [],
+        }
+      } else if (mapping.targetPortKey != null) {
+        target = `${mapping.targetNetwork!.id}:${mapping.targetPortKey}`
+      } else {
+        target = mapping.targetNetwork!.id
+      }
+      payload[mapping.sourceNic.network_name] = target
+    })
     return payload
   }
 
   static getStorageMap(
-    defaultStorage: string | null | undefined,
+    defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap: StorageMap[] | null,
     configDefault?: string | null,
   ) {
-    if (!defaultStorage && !storageMap) {
+    if (!defaultStorage?.value && !storageMap) {
       return null
     }
 
     const payload: any = {}
-    if (defaultStorage) {
-      payload.default = defaultStorage
+    if (defaultStorage?.value) {
+      payload.default = defaultStorage.value
+      if (defaultStorage.busType) {
+        payload.default += `:${defaultStorage.busType}`
+      }
     }
 
     if (!storageMap) {
@@ -237,13 +240,21 @@ export default class OptionsSchemaParser {
         return
       }
 
+      const getDestination = () => {
+        let destination = mapping.target.id === null ? configDefault : mapping.target.name
+        if (mapping.targetBusType) {
+          destination += `:${mapping.targetBusType}`
+        }
+        return destination
+      }
+
       if (mapping.type === 'backend') {
         if (!payload.backend_mappings) {
           payload.backend_mappings = []
         }
         payload.backend_mappings.push({
           source: mapping.source.storage_backend_identifier,
-          destination: mapping.target.id === null ? configDefault : mapping.target.name,
+          destination: getDestination(),
         })
       } else {
         if (!payload.disk_mappings) {
@@ -251,7 +262,7 @@ export default class OptionsSchemaParser {
         }
         payload.disk_mappings.push({
           disk_id: mapping.source.id.toString(),
-          destination: mapping.target.id === null ? configDefault : mapping.target.name,
+          destination: getDestination(),
         })
       }
     })

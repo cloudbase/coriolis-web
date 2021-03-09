@@ -41,6 +41,7 @@ import type { Field } from '../../../@types/Field'
 import type { InstanceScript } from '../../../@types/Instance'
 import minionPoolStore from '../../../stores/MinionPoolStore'
 import { getTransferItemTitle } from '../../../@types/MainItem'
+import { providerTypes } from '../../../constants'
 
 const Wrapper = styled.div<any>``
 
@@ -151,13 +152,23 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       minionPoolStore.loadMinionPools()
     }
 
+    await providerStore.loadProviders()
+
+    const targetEndpoint = endpointStore.endpoints
+      .find(e => e.id === details.destination_endpoint_id)
+    const hasStorageMap = targetEndpoint ? (providerStore.providers && providerStore.providers[targetEndpoint.type]
+      ? !!providerStore.providers[targetEndpoint.type]
+        .types.find(t => t === providerTypes.STORAGE)
+      : false) : false
+    if (hasStorageMap) {
+      endpointStore.loadStorage(details.destination_endpoint_id, details.destination_environment)
+    }
+
     networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
       quietError: true,
       cache,
     })
 
-    const targetEndpoint = endpointStore.endpoints
-      .find(e => e.id === details.destination_endpoint_id)
     instanceStore.loadInstancesDetails({
       endpointId: details.origin_endpoint_id,
       instances: details.instances.map(n => ({ id: n })),
@@ -370,7 +381,9 @@ class MigrationDetailsPage extends React.Component<Props, State> {
               item={migrationStore.migrationDetails}
               itemId={this.props.match.params.id}
               instancesDetails={instanceStore.instancesDetails}
-              instancesDetailsLoading={instanceStore.loadingInstancesDetails}
+              instancesDetailsLoading={instanceStore.loadingInstancesDetails || endpointStore.storageLoading || providerStore.providersLoading}
+              storageBackends={endpointStore.storageBackends}
+              networks={networkStore.networks}
               sourceSchema={providerStore.sourceSchema}
               sourceSchemaLoading={providerStore.sourceSchemaLoading
               || providerStore.sourceOptionsPrimaryLoading
@@ -430,6 +443,8 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
               loadingInstances={instanceStore.loadingInstancesDetails}
               defaultSkipOsMorphing={migrationStore
                 .getDefaultSkipOsMorphing(migrationStore.migrationDetails)}
+              disabledCloneDisk={migrationStore.getDisabledCloneDiskOptions(endpointStore.endpoints
+                .find(e => e.id === migrationStore.migrationDetails?.destination_endpoint_id)?.type)}
             />
           </Modal>
         ) : null}

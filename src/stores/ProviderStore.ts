@@ -45,13 +45,15 @@ export const getFieldChangeOptions = (config: {
   }
   const requiredFields = providerWithEnvOptions.requiredFields
   const requiredValues = providerWithEnvOptions.requiredValues
+  const relistFields = providerWithEnvOptions.relistFields
 
   const findFieldInSchema = (name: string) => schema.find(f => f.name === name)
 
-  const validFields = requiredFields.filter(fn => {
+  const filterValidField = (fn: string) => {
     const schemaField = findFieldInSchema(fn)
     if (data) {
       // This is for 'list_all_networks' field, which requires options calls after each value change
+      // @TODO: refactor to use `relistFields` option
       if (schemaField && schemaField.type === 'boolean') {
         return true
       }
@@ -59,7 +61,7 @@ export const getFieldChangeOptions = (config: {
         return false
       }
       const defaultValue = data[fn] === undefined && schemaField && schemaField.default
-      const requiredValue = requiredValues && requiredValues.find(f => f.field === fn)
+      const requiredValue = requiredValues?.find(f => f.field === fn)
       if (defaultValue != null) {
         if (requiredValue) {
           return Boolean(requiredValue.values.find(v => v === defaultValue))
@@ -72,16 +74,23 @@ export const getFieldChangeOptions = (config: {
       return data[fn]
     }
     return false
-  })
+  }
 
-  const isCurrentFieldValid = field
-    ? validFields.find(fn => (field ? fn === field.name : false)) : true
-  if (validFields.length !== requiredFields.length || !isCurrentFieldValid) {
+  const requiredValidFields = requiredFields.filter(filterValidField)
+  const relistValidFields = relistFields?.filter(filterValidField)
+
+  const relistField = relistFields?.find(fn => fn === field?.name)
+
+  const isCurrentFieldValid = field ? (
+    requiredValidFields.find(fn => fn === field.name)
+    || relistField
+  ) : true
+  if (requiredValidFields.length !== requiredFields.length || !isCurrentFieldValid) {
     return null
   }
 
   const envData: any = {}
-  validFields.forEach(fn => {
+  const setEnvDataValue = (fn: string) => {
     envData[fn] = data ? data[fn] : null
     if (envData[fn] == null) {
       const schemaField = findFieldInSchema(fn)
@@ -89,8 +98,13 @@ export const getFieldChangeOptions = (config: {
         envData[fn] = schemaField.default
       }
     }
+  }
+  requiredValidFields.forEach(fn => {
+    setEnvDataValue(fn)
   })
-
+  relistValidFields?.forEach(fn => {
+    setEnvDataValue(fn)
+  })
   return envData
 }
 

@@ -35,18 +35,18 @@ import replicaStore from '../../../stores/ReplicaStore'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import { wizardPages, executionOptions, providerTypes } from '../../../constants'
 
-import type { Endpoint as EndpointType, StorageBackend } from '../../../@types/Endpoint'
+import type { Endpoint as EndpointType, StorageMap } from '../../../@types/Endpoint'
 import type {
-  Instance, Nic, Disk, InstanceScript,
+  Instance, InstanceScript,
 } from '../../../@types/Instance'
 import type { Field } from '../../../@types/Field'
-import type { Network, SecurityGroup } from '../../../@types/Network'
 import type { Schedule } from '../../../@types/Schedule'
 import type { WizardPage as WizardPageType } from '../../../@types/WizardData'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import { ProviderTypes } from '../../../@types/Providers'
 import { TransferItem, ReplicaItem } from '../../../@types/MainItem'
 import minionPoolStore from '../../../stores/MinionPoolStore'
+import { WizardNetworksChangeObject } from '../../organisms/WizardNetworks/WizardNetworks'
 
 const Wrapper = styled.div<any>``
 
@@ -262,15 +262,13 @@ class WizardPage extends React.Component<Props, State> {
       useCache: true,
     })
     wizardStore.fillWithDefaultValues('source', providerStore.sourceSchema)
+    await this.loadExtraOptions(null, 'source')
   }
 
   async handleTargetEndpointChange(target: EndpointType) {
     wizardStore.updateData({ target, networks: null, destOptions: null })
     wizardStore.clearStorageMap()
     wizardStore.updateUrlState()
-    if (this.pages.find(p => p.id === 'storage')) {
-      endpointStore.loadStorage(target.id, {})
-    }
     // Preload destination options schema
     await providerStore.loadOptionsSchema({
       providerName: target.type,
@@ -286,6 +284,7 @@ class WizardPage extends React.Component<Props, State> {
       useCache: true,
     })
     wizardStore.fillWithDefaultValues('destination', providerStore.destinationSchema)
+    await this.loadExtraOptions(null, 'destination')
   }
 
   handleAddEndpoint(newEndpointType: ProviderTypes, newEndpointFromSource: boolean) {
@@ -363,20 +362,23 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.updateUrlState()
   }
 
-  handleNetworkChange(
-    sourceNic: Nic, targetNetwork: Network, targetSecurityGroups?: SecurityGroup[] | null,
-  ) {
-    wizardStore.updateNetworks({ sourceNic, targetNetwork, targetSecurityGroups })
+  handleNetworkChange(changeObject: WizardNetworksChangeObject) {
+    wizardStore.updateNetworks({
+      sourceNic: changeObject.nic,
+      targetNetwork: changeObject.network,
+      targetSecurityGroups: changeObject.securityGroups,
+      targetPortKey: changeObject.portKey,
+    })
     wizardStore.updateUrlState()
   }
 
-  handleDefaultStorageChange(value: string | null) {
-    wizardStore.updateDefaultStorage(value)
+  handleDefaultStorageChange(value: string | null, busType?: string | null) {
+    wizardStore.updateDefaultStorage({ value, busType })
     wizardStore.updateUrlState()
   }
 
-  handleStorageChange(source: Disk, target: StorageBackend, type: 'backend' | 'disk') {
-    wizardStore.updateStorage({ source, target, type })
+  handleStorageChange(mapping: StorageMap) {
+    wizardStore.updateStorage(mapping)
     wizardStore.updateUrlState()
   }
 
@@ -506,10 +508,6 @@ class WizardPage extends React.Component<Props, State> {
         if (!target) {
           return
         }
-        // Preload Storage Mapping
-        if (this.pages.find(p => p.id === 'storage')) {
-          endpointStore.loadStorage(target.id, {})
-        }
         // Preload destination options schema
         loadOptions(target, 'destination')
         break
@@ -521,6 +519,8 @@ class WizardPage extends React.Component<Props, State> {
         break
       }
       case 'networks':
+        // Preload storage API calls
+        endpointStore.loadStorage(wizardStore.data.target!.id, wizardStore.data.destOptions)
         this.loadNetworks(true)
         break
       default:
@@ -712,12 +712,12 @@ class WizardPage extends React.Component<Props, State> {
               onSourceOptionsChange={(field, value, parent) => {
                 this.handleSourceOptionsChange(field, value, parent)
               }}
-              onNetworkChange={(sourceNic, targetNetwork, secGroups) => {
-                this.handleNetworkChange(sourceNic, targetNetwork, secGroups)
+              onNetworkChange={(changeObject: WizardNetworksChangeObject) => {
+                this.handleNetworkChange(changeObject)
               }}
-              onDefaultStorageChange={value => { this.handleDefaultStorageChange(value) }}
-              onStorageChange={(source, target, type) => {
-                this.handleStorageChange(source, target, type)
+              onDefaultStorageChange={(d, b) => { this.handleDefaultStorageChange(d, b) }}
+              onStorageChange={mapping => {
+                this.handleStorageChange(mapping)
               }}
               onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
               onScheduleChange={(scheduleId, data) => {
