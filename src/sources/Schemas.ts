@@ -12,10 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ConnectionSchemaPlugin, OptionsSchemaPlugin } from '../plugins/endpoint'
+import { ConnectionSchemaPlugin, MinionPoolSchemaPlugin, OptionsSchemaPlugin } from '../plugins/endpoint'
 import type { Schema } from '../@types/Schema'
 import type { Endpoint } from '../@types/Endpoint'
 import { ProviderTypes } from '../@types/Providers'
+import { Field } from '../@types/Field'
 
 class SchemaParser {
   static storedConnectionsSchemas: any = {}
@@ -60,6 +61,23 @@ class SchemaParser {
 
   static parseConnectionResponse(endpoint: Endpoint) {
     return ConnectionSchemaPlugin.for(endpoint.type).parseConnectionResponse(endpoint)
+  }
+
+  static getMinionPoolToOptionsQuery(env: any, provider: ProviderTypes) {
+    const parsers = MinionPoolSchemaPlugin.for(provider)
+    return parsers.getMinionPoolToOptionsQuery(env)
+  }
+
+  static minionPoolOptionsSchemaToFields(provider: ProviderTypes, schema: any, dictionaryKey: string) {
+    let fields = this.optionsSchemaToFields(provider, schema, dictionaryKey)
+    const parsers = MinionPoolSchemaPlugin.for(provider)
+    fields = parsers.minionPoolTransformOptionsFields(fields)
+    return fields
+  }
+
+  static getMinionPoolEnv(provider: ProviderTypes, schema: Field[], data: any) {
+    const parsers = MinionPoolSchemaPlugin.for(provider)
+    return parsers.getMinionPoolEnv(schema, data)
   }
 }
 

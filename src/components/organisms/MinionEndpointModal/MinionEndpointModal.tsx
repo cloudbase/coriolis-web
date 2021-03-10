@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
+import { CSSTransitionGroup } from 'react-transition-group'
 
 import Modal from '../../molecules/Modal'
 import { Providers, ProviderTypes } from '../../../@types/Providers'
@@ -37,6 +38,15 @@ const LoadingWrapper = styled.div`
 `
 const ContentWrapper = styled.div`
   padding: 48px;
+  > span {
+    display: flex;
+    justify-content: center;
+    margin-left: -24px;
+    transition: all 250ms ease-out;
+    > div {
+      margin-left: 24px;
+    }
+  }
 `
 const NoEndpoints = styled.div`
   padding: 64px;
@@ -54,6 +64,20 @@ const ProviderWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  &.providers-group-transition-leave {
+    opacity: 1;
+  }
+  &.providers-group-transition-leave-active {
+    opacity: 0.01;
+    transition: opacity 250ms ease-out;
+  }
+  &.providers-group-transition-enter {
+    opacity: 0.01;
+  }
+  &.providers-group-transition-enter-active {
+    opacity: 1;
+    transition: opacity 250ms ease-out;
+  }
 `
 const ButtonWrapper = styled.div`
   display: flex;
@@ -112,27 +136,6 @@ class MinionEndpointModal extends React.Component<Props, State> {
     )
   }
 
-  renderProvider(providerName: ProviderTypes, providerEndpoints: Endpoint[]) {
-    return (
-      <ProviderWrapper key={providerName}>
-        <EndpointLogos
-          height={128}
-          endpoint={providerName}
-          style={{ marginBottom: '16px' }}
-        />
-        <Dropdown
-          items={providerEndpoints}
-          valueField="id"
-          labelField="name"
-          noSelectionMessage="Choose an endpoint"
-          centered
-          selectedItem={this.state.selectedEndpoint}
-          onChange={endpoint => { this.setState({ selectedEndpoint: endpoint }) }}
-        />
-      </ProviderWrapper>
-    )
-  }
-
   renderPoolPlatform() {
     return (
       <PoolPlatformWrapper>
@@ -178,10 +181,32 @@ class MinionEndpointModal extends React.Component<Props, State> {
 
     return (
       <ContentWrapper>
-        {availableProviders.map(providerName => this.renderProvider(
-          providerName as any,
-          this.props.endpoints.filter(e => e.type === providerName),
-        ))}
+        <CSSTransitionGroup
+          transitionName="providers-group-transition"
+          transitionLeave
+          transitionEnter
+          transitionLeaveTimeout={250}
+          transitionEnterTimeout={250}
+        >
+          {availableProviders.map(providerName => (
+            <ProviderWrapper key={providerName}>
+              <EndpointLogos
+                height={128}
+                endpoint={providerName}
+                style={{ marginBottom: '16px' }}
+              />
+              <Dropdown
+                items={this.props.endpoints.filter(e => e.type === providerName)}
+                valueField="id"
+                labelField="name"
+                noSelectionMessage="Choose an endpoint"
+                centered
+                selectedItem={this.state.selectedEndpoint?.type === providerName ? this.state.selectedEndpoint : null}
+                onChange={endpoint => { this.setState({ selectedEndpoint: endpoint }) }}
+              />
+            </ProviderWrapper>
+          ))}
+        </CSSTransitionGroup>
       </ContentWrapper>
     )
   }

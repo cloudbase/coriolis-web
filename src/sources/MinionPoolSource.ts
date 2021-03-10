@@ -13,6 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import Api from '../utils/ApiCaller'
+import DefaultMinionPoolSchemaPlugin from '../plugins/endpoint/default/MinionPoolSchemaPlugin'
 
 import configLoader from '../utils/Config'
 import { MinionPool, MinionPoolDetails } from '../@types/MinionPool'
@@ -20,24 +21,9 @@ import { ProviderTypes } from '../@types/Providers'
 import { Field } from '../@types/Field'
 import { providerTypes } from '../constants'
 import { SchemaParser } from './Schemas'
-import { OptionValues } from '../@types/Endpoint'
+import { Endpoint, OptionValues } from '../@types/Endpoint'
 import { MinionPoolAction } from '../stores/MinionPoolStore'
 import { Execution } from '../@types/Execution'
-import DomUtils from '../utils/DomUtils'
-
-const transformFieldsToPayload = (schema: Field[], data: any) => {
-  const payload: any = {}
-  schema.forEach(field => {
-    if (data[field.name] === null || data[field.name] === undefined || data[field.name] === '') {
-      if (field.default !== null) {
-        payload[field.name] = field.default
-      }
-    } else {
-      payload[field.name] = data[field.name]
-    }
-  })
-  return payload
-}
 
 class MinionPoolSource {
   getMinionPoolDefaultSchema(): Field[] {
@@ -141,13 +127,25 @@ class MinionPoolSource {
     return response.data.minion_pool
   }
 
-  async loadEnvOptions(endpointId: string, platform: 'source' | 'destination', useCache?: boolean): Promise<OptionValues[]> {
-    const env = DomUtils.encodeToBase64Url({ list_all_destination_networks: true })
+  async loadOptions(config: {
+    optionsType: 'source' | 'destination',
+    endpoint: Endpoint,
+    envData: { [prop: string]: any } | null | undefined,
+    useCache?: boolean | null,
+  }): Promise<OptionValues[]> {
+    const {
+      optionsType, endpoint, envData, useCache,
+    } = config
+    const envString = SchemaParser.getMinionPoolToOptionsQuery(envData, endpoint.type)
+    const callName = optionsType === 'source' ? 'source-minion-pool-options' : 'destination-minion-pool-options'
+    const fieldName = optionsType === 'source' ? 'source_minion_pool_options' : 'destination_minion_pool_options'
+
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/${platform}-minion-pool-options?env=${env}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}/${callName}${envString}`,
       cache: useCache,
+      cancelId: endpoint.id,
     })
-    return response.data[`${platform}_minion_pool_options`]
+    return response.data[fieldName]
   }
 
   async loadMinionPoolSchema(providerName: ProviderTypes, platform: 'source' | 'destination'): Promise<Field[]> {
@@ -160,10 +158,8 @@ class MinionPoolSource {
       const schema = response.data?.schemas?.[`${platform}_minion_pool_environment_schema`]
       let fields = []
       if (schema) {
-        fields = SchemaParser.optionsSchemaToFields(providerName, schema, `${providerName}-minion-pool`)
+        fields = SchemaParser.minionPoolOptionsSchemaToFields(providerName, schema, `${providerName}-minion-pool`)
       }
-      // Remove this field, as all networks are always listed
-      fields = fields.filter(f => f.name !== 'list_all_destination_networks')
       return fields
     } catch (err) {
       console.error(err)
@@ -171,15 +167,21 @@ class MinionPoolSource {
     }
   }
 
-  async add(endpointId: string, data: any, defaultSchema: Field[], envSchema: Field[]) {
+  async add(config: {
+    endpointId: string,
+    data: any,
+    defaultSchema: Field[],
+    envSchema: Field[],
+    provider: ProviderTypes
+  }) {
+    const {
+      endpointId, data, defaultSchema, envSchema, provider,
+    } = config
     const payload = {
       minion_pool: {
-        ...transformFieldsToPayload(defaultSchema, data),
+        ...DefaultMinionPoolSchemaPlugin.getMinionPoolEnv(defaultSchema, data),
         endpoint_id: endpointId,
-        environment_options: {
-          ...transformFieldsToPayload(envSchema, data),
-          list_all_destination_networks: true,
-        },
+        environment_options: SchemaParser.getMinionPoolEnv(provider, envSchema, data),
       },
     }
     const response = await Api.send({
@@ -190,14 +192,19 @@ class MinionPoolSource {
     return response.data.minion_pool
   }
 
-  async update(data: any, defaultSchema: Field[], envSchema: Field[]) {
+  async update(config: {
+    data: any,
+    defaultSchema: Field[],
+    envSchema: Field[],
+    provider: ProviderTypes
+  }) {
+    const {
+      data, defaultSchema, envSchema, provider,
+    } = config
     const payload = {
       minion_pool: {
-        ...transformFieldsToPayload(defaultSchema, data),
-        environment_options: {
-          ...transformFieldsToPayload(envSchema, data),
-          list_all_destination_networks: true,
-        },
+        ...DefaultMinionPoolSchemaPlugin.getMinionPoolEnv(defaultSchema, data),
+        environment_options: SchemaParser.getMinionPoolEnv(provider, envSchema, data),
       },
     }
     const response = await Api.send({

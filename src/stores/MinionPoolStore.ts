@@ -18,8 +18,11 @@ import {
 import { MinionPool, MinionPoolDetails } from '../@types/MinionPool'
 import MinionPoolSource from '../sources/MinionPoolSource'
 import { Field } from '../@types/Field'
-import { ProviderTypes } from '../@types/Providers'
+import { Providers, ProviderTypes } from '../@types/Providers'
 import { OptionsSchemaPlugin } from '../plugins/endpoint'
+import { providerTypes } from '../constants'
+import apiCaller from '../utils/ApiCaller'
+import { Endpoint, OptionValues } from '../@types/Endpoint'
 
 export type MinionPoolAction = 'allocate' | 'deallocate' | 'refresh'
 
@@ -50,7 +53,10 @@ class MinionPoolStore {
   minionPoolEnvSchema: Field[] = []
 
   @observable
-  loadingEnvOptions: boolean = false
+  optionsPrimaryLoading: boolean = false
+
+  @observable
+  optionsSecondaryLoading: boolean = false
 
   @computed
   get minionPoolCombinedSchema() {
@@ -121,48 +127,88 @@ class MinionPoolStore {
     }
   }
 
-  @action
-  async loadEnvOptions(
-    endpointId: string,
-    providerName: ProviderTypes,
-    platform: 'source' | 'destination',
-    opts?: { useCache?: boolean },
-  ) {
-    this.loadingEnvOptions = true
+  private getOptionsValuesLastReqId: string = ''
+
+  async loadOptions(config: {
+    endpoint: Endpoint,
+    providers: Providers,
+    optionsType: 'source' | 'destination',
+    envData?: { [prop: string]: any } | null,
+    useCache?: boolean,
+  }) {
+    const {
+      optionsType, endpoint, envData, useCache, providers,
+    } = config
+    const providerType = optionsType === 'source' ? providerTypes.SOURCE_OPTIONS : providerTypes.DESTINATION_OPTIONS
+
+    const providerWithExtraOptions = providers[endpoint.type].types.find(t => t === providerType)
+    if (!providerWithExtraOptions) {
+      return
+    }
+
+    let canceled = false
+    apiCaller.cancelRequests(endpoint.id)
+
+    this.optionsPrimaryLoading = !envData
+    this.optionsSecondaryLoading = !!envData
+
+    const reqId = `${(endpoint.id)}-${providerType}`
+    this.getOptionsValuesLastReqId = reqId
 
     try {
-      const options = await MinionPoolSource.loadEnvOptions(endpointId, platform, opts?.useCache)
-
-      runInAction(() => {
-        this.minionPoolEnvSchema.forEach(field => {
-          const parser = OptionsSchemaPlugin.for(providerName)
-          parser.fillFieldValues(field, options)
-        })
+      const options = await MinionPoolSource.loadOptions({
+        optionsType, endpoint, envData, useCache,
       })
+      this.getOptionsValuesSuccess(
+        endpoint.type,
+        options,
+        this.getOptionsValuesLastReqId === reqId,
+      )
+    } catch (err) {
+      canceled = err ? err.canceled : false
+      throw err
     } finally {
-      runInAction(() => {
-        this.loadingEnvOptions = false
-      })
+      if (!canceled && this.getOptionsValuesLastReqId === reqId) {
+        this.optionsPrimaryLoading = false
+        this.optionsSecondaryLoading = false
+      }
     }
   }
 
-  @action
-  async update(minionPoolData: any) {
-    return MinionPoolSource.update(
-      minionPoolData,
-      this.minionPoolDefaultSchema,
-      this.minionPoolEnvSchema,
-    )
+  @action getOptionsValuesSuccess(
+    provider: ProviderTypes,
+    options: OptionValues[],
+    isValid: boolean,
+  ) {
+    if (!isValid) {
+      return
+    }
+    this.minionPoolEnvSchema.forEach(field => {
+      const parser = OptionsSchemaPlugin.for(provider)
+      parser.fillFieldValues(field, options)
+    })
+    this.minionPoolEnvSchema = [...this.minionPoolEnvSchema]
   }
 
   @action
-  async add(endpointId: string, minionPoolData: any) {
-    return MinionPoolSource.add(
+  async update(provider: ProviderTypes, minionPoolData: any) {
+    return MinionPoolSource.update({
+      data: minionPoolData,
+      defaultSchema: this.minionPoolDefaultSchema,
+      envSchema: this.minionPoolEnvSchema,
+      provider,
+    })
+  }
+
+  @action
+  async add(provider: ProviderTypes, endpointId: string, minionPoolData: any) {
+    return MinionPoolSource.add({
       endpointId,
-      minionPoolData,
-      this.minionPoolDefaultSchema,
-      this.minionPoolEnvSchema,
-    )
+      data: minionPoolData,
+      defaultSchema: this.minionPoolDefaultSchema,
+      envSchema: this.minionPoolEnvSchema,
+      provider,
+    })
   }
 
   @action
