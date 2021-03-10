@@ -315,7 +315,7 @@ class WizardScripts extends React.Component<Props> {
           {!this.props.loadingInstances ? (
             <InfoIconStyled
               layout={this.props.layout}
-              text="Specify user scripts that will run during OS morphing for a particular instance"
+              text="Specify user scripts that will run during OS morphing for a particular instance. These override the uploaded global scripts."
             />
           ) : null}
           {this.props.loadingInstances ? (
