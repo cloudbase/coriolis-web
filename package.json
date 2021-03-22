@@ -94,9 +94,10 @@
   },
   "resolutions": {
     "base64url": "^3.0.0",
+    "is-svg": "^4.2.2",
     "node-fetch": "^2.6.1",
-    "yargs-parser": "^13.1.2",
     "node-notifier": "^8.0.1",
-    "xmldom": "^0.5.0"
+    "xmldom": "^0.5.0",
+    "yargs-parser": "^13.1.2"
   }
 }
