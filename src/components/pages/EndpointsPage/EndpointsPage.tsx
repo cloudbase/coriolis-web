@@ -41,6 +41,7 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
 import Palette from '../../styleUtils/Palette'
 import { ProviderTypes } from '../../../@types/Providers'
+import regionStore from '../../../stores/RegionStore'
 
 const Wrapper = styled.div<any>``
 
@@ -158,6 +159,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
 
   handleEmptyListButtonClick() {
     providerStore.loadProviders()
+    regionStore.getRegions()
     this.setState({ showChooseProviderModal: true })
   }
 
@@ -336,8 +338,9 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
         >
           <ChooseProvider
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
+            regions={regionStore.regions}
             providers={providerStore.providerNames}
-            loading={providerStore.providersLoading}
+            loading={providerStore.providersLoading || regionStore.loading}
             onUploadEndpoint={endpoint => { this.handleUploadEndpoint(endpoint) }}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
             multiValidating={this.state.multiValidating}

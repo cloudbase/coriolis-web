@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action } from 'mobx'
 
-import type { AlertInfo, NotificationItemData } from '../@types/NotificationItem'
+import type { AlertInfo, AlertInfoLevel, NotificationItemData } from '../@types/NotificationItem'
 import NotificationSource from '../sources/NotificationSource'
 
 class NotificationStore {
@@ -26,7 +26,7 @@ class NotificationStore {
 
   visibleErrors: string[] = []
 
-  @action alert(message: string, level?: AlertInfo['level'], options?: AlertInfo['options']) {
+  @action alert(message: string, level?: AlertInfoLevel, options?: AlertInfo['options']) {
     if (this.visibleErrors.find(e => e === message)) {
       return
     }

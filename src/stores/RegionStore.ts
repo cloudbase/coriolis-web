@@ -13,6 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { observable, action, runInAction } from 'mobx'
+import { Endpoint } from '../@types/Endpoint'
 import { Region } from '../@types/Region'
 import regionSource from '../sources/RegionSource'
 
@@ -28,11 +29,20 @@ class RegionStore {
       runInAction(() => {
         this.regions = regions
       })
+      return regions
     } finally {
       runInAction(() => {
         this.loading = false
       })
     }
+  }
+
+  async setEndpointRegionExport(endpoint: Endpoint) {
+    if (!endpoint.mapped_regions?.length) {
+      return
+    }
+    const regions = this.regions.length ? this.regions : await this.getRegions()
+    endpoint.mapped_regions = endpoint.mapped_regions.map(id => regions.find(r => r.id === id)?.name || id)
   }
 }
 
