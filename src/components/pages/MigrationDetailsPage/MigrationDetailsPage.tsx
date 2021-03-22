@@ -56,6 +56,7 @@ type State = {
   showEditModal: boolean,
   showFromReplicaModal: boolean,
   pausePolling: boolean,
+  initialLoading: boolean
 }
 @observer
 class MigrationDetailsPage extends React.Component<Props, State> {
@@ -66,6 +67,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     showEditModal: false,
     showFromReplicaModal: false,
     pausePolling: false,
+    initialLoading: true,
   }
 
   stopPolling: boolean | null = null
@@ -74,53 +76,60 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     document.title = 'Migration Details'
 
     const loadMigration = async () => {
-      await Promise.all([
-        endpointStore.getEndpoints({ showLoading: true }),
-        this.loadMigrationWithInstances(this.props.match.params.id, true),
-      ])
-      const details = migrationStore.migrationDetails
-      if (!details) {
-        return
-      }
-      const sourceEndpoint = endpointStore.endpoints.find(e => e.id === details.origin_endpoint_id)
-      const destinationEndpoint = endpointStore.endpoints
-        .find(e => e.id === details.destination_endpoint_id)
-      if (!sourceEndpoint || !destinationEndpoint) {
-        return
-      }
-      const loadOptions = async (optionsType: 'source' | 'destination') => {
-        const providerName = optionsType === 'source' ? sourceEndpoint.type : destinationEndpoint.type
-        // This allows the values to be displayed with their allocated names instead of their IDs
-        await providerStore.loadOptionsSchema({
-          providerName,
-          optionsType,
-          useCache: true,
-          quietError: true,
-        })
-        const getOptionsValuesConfig = {
-          optionsType,
-          endpointId: optionsType === 'source' ? details.origin_endpoint_id : details.destination_endpoint_id,
-          providerName,
-          useCache: true,
-          quietError: true,
-          allowMultiple: true,
-        }
-        // For some providers, the API doesn't return the required fields values
-        // if those required fields are sent in env data,
-        // so to retrieve those values a request without env data must be made
-        await providerStore.getOptionsValues(getOptionsValuesConfig)
-        await providerStore.getOptionsValues({
-          ...getOptionsValuesConfig,
-          envData: optionsType === 'source' ? details.source_environment : details.destination_environment,
-        })
-      }
+      await endpointStore.getEndpoints({ showLoading: true })
+      this.setState({ initialLoading: false })
+      await this.loadMigrationWithInstances({
+        migrationId: this.props.match.params.id,
+        cache: true,
+        onDetailsLoaded: async () => {
+          const details = migrationStore.migrationDetails
+          if (!details) {
+            return
+          }
+          const sourceEndpoint = endpointStore.endpoints.find(e => e.id === details.origin_endpoint_id)
+          const destinationEndpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
+          if (!sourceEndpoint || !destinationEndpoint) {
+            return
+          }
+          const loadOptions = async (optionsType: 'source' | 'destination') => {
+            const providerName = optionsType === 'source' ? sourceEndpoint.type : destinationEndpoint.type
+            // This allows the values to be displayed with their allocated names instead of their IDs
+            await providerStore.loadOptionsSchema({
+              providerName,
+              optionsType,
+              useCache: true,
+              quietError: true,
+            })
+            const getOptionsValuesConfig = {
+              optionsType,
+              endpointId: optionsType === 'source' ? details.origin_endpoint_id : details.destination_endpoint_id,
+              providerName,
+              useCache: true,
+              quietError: true,
+              allowMultiple: true,
+            }
+            // For some providers, the API doesn't return the required fields values
+            // if those required fields are sent in env data,
+            // so to retrieve those values a request without env data must be made
+            await providerStore.getOptionsValues(getOptionsValuesConfig)
+            await providerStore.getOptionsValues({
+              ...getOptionsValuesConfig,
+              envData: optionsType === 'source' ? details.source_environment : details.destination_environment,
+            })
+          }
 
-      loadOptions('source')
-      loadOptions('destination')
+          await Promise.all([
+            loadOptions('source'),
+            loadOptions('destination'),
+          ])
+        },
+      })
     }
-    loadMigration()
-
-    this.pollData()
+    const loadMigrationAndPollData = async () => {
+      await loadMigration()
+      this.pollData()
+    }
+    loadMigrationAndPollData()
   }
 
   UNSAFE_componentWillReceiveProps(newProps: any) {
@@ -129,10 +138,11 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     }
 
     endpointStore.getEndpoints()
-    this.loadMigrationWithInstances(newProps.match.params.id, true)
+    this.loadMigrationWithInstances({ migrationId: newProps.match.params.id, cache: true })
   }
 
   componentWillUnmount() {
+    migrationStore.cancelMigrationDetails()
     migrationStore.clearDetails()
     this.stopPolling = true
   }
@@ -141,21 +151,22 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     return migrationStore.migrationDetails?.last_execution_status
   }
 
-  async loadMigrationWithInstances(migrationId: string, cache: boolean) {
-    await migrationStore.getMigration(migrationId, { showLoading: true })
+  async loadMigrationWithInstances(options: { migrationId: string, cache: boolean, onDetailsLoaded?: () => void }) {
+    await migrationStore.getMigration(options.migrationId, { showLoading: true })
     const details = migrationStore.migrationDetails
     if (!details) {
       return
     }
-
+    if (options.onDetailsLoaded) {
+      options.onDetailsLoaded()
+    }
     if (details.origin_minion_pool_id || details.destination_minion_pool_id) {
       minionPoolStore.loadMinionPools()
     }
 
     await providerStore.loadProviders()
 
-    const targetEndpoint = endpointStore.endpoints
-      .find(e => e.id === details.destination_endpoint_id)
+    const targetEndpoint = endpointStore.endpoints.find(e => e.id === details.destination_endpoint_id)
     const hasStorageMap = targetEndpoint ? (providerStore.providers && providerStore.providers[targetEndpoint.type]
       ? !!providerStore.providers[targetEndpoint.type]
         .types.find(t => t === providerTypes.STORAGE)
@@ -166,13 +177,13 @@ class MigrationDetailsPage extends React.Component<Props, State> {
 
     networkStore.loadNetworks(details.destination_endpoint_id, details.destination_environment, {
       quietError: true,
-      cache,
+      cache: options.cache,
     })
 
     instanceStore.loadInstancesDetails({
       endpointId: details.origin_endpoint_id,
       instances: details.instances.map(n => ({ id: n })),
-      cache,
+      cache: options.cache,
       quietError: false,
       env: details.source_environment,
       targetProvider: targetEndpoint?.type,
@@ -292,7 +303,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   handleEditReplicaReload() {
-    this.loadMigrationWithInstances(this.props.match.params.id, false)
+    this.loadMigrationWithInstances({ migrationId: this.props.match.params.id, cache: false })
   }
 
   handleUpdateComplete(redirectTo: string) {
@@ -396,7 +407,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
               page={this.props.match.params.page || ''}
               minionPools={minionPoolStore.minionPools}
               detailsLoading={migrationStore.detailsLoading || endpointStore.loading
-                || minionPoolStore.loadingMinionPools}
+                || minionPoolStore.loadingMinionPools || this.state.initialLoading}
               onDeleteMigrationClick={() => { this.handleDeleteMigrationClick() }}
             />
 )}

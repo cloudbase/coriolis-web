@@ -70,6 +70,7 @@ class MigrationSource {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       skipLog,
+      cancelId: migrationId,
     })
     const migration = response.data.migration
     sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)

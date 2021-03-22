@@ -187,7 +187,7 @@ class ProviderStore {
   }
 
   @action async loadProviders(): Promise<void> {
-    if (this.providers) {
+    if (this.providers || this.providersLoading) {
       return
     }
     this.providersLoading = true
@@ -233,8 +233,7 @@ class ProviderStore {
     }
 
     try {
-      const fields: Field[] = await ProviderSource
-        .loadOptionsSchema(providerName, optionsType, useCache, quietError)
+      const fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, optionsType, useCache, quietError)
       this.loadOptionsSchemaSuccess(fields, optionsType, isValid())
       return fields
     } finally {

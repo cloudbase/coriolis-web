@@ -21,6 +21,7 @@ import type { Field } from '../@types/Field'
 import type { Endpoint } from '../@types/Endpoint'
 import type { InstanceScript } from '../@types/Instance'
 import MigrationSource from '../sources/MigrationSource'
+import apiCaller from '../utils/ApiCaller'
 
 class MigrationStore {
   @observable migrations: MigrationItem[] = []
@@ -145,6 +146,13 @@ class MigrationStore {
       ]
     })
     return migration
+  }
+
+  @action cancelMigrationDetails() {
+    if (this.migrationDetails) {
+      apiCaller.cancelRequests(this.migrationDetails.id)
+    }
+    this.detailsLoading = false
   }
 
   @action clearDetails() {
