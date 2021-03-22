@@ -32,6 +32,7 @@ import type { Endpoint, MultiValidationItem } from '../../../@types/Endpoint'
 
 import MultipleUploadedEndpoints from './MultipleUploadedEndpoints'
 import { ProviderTypes } from '../../../@types/Providers'
+import { Region } from '../../../@types/Region'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -90,6 +91,7 @@ const LoadingText = styled.div<any>`
 `
 type Props = {
   providers: ProviderTypes[],
+  regions: Region[]
   onCancelClick: () => void,
   onProviderClick: (provider: ProviderTypes) => void,
   onUploadEndpoint: (endpoint: Endpoint) => void,
@@ -104,12 +106,14 @@ type Props = {
 type State = {
   highlightDropzone: boolean,
   multipleUploadedEndpoints: (Endpoint | string)[],
+  invalidRegionsEndpointIds: { id: string, regions: string[] }[],
 }
 @observer
 class ChooseProvider extends React.Component<Props, State> {
-  state = {
+  state: State = {
     highlightDropzone: false,
     multipleUploadedEndpoints: [],
+    invalidRegionsEndpointIds: [],
   }
 
   fileInput: HTMLElement | null | undefined
@@ -178,19 +182,34 @@ class ChooseProvider extends React.Component<Props, State> {
     this.dragDropListeners = []
   }
 
-  parseEndpoint(content: string): Endpoint {
+  parseEndpoint(content: string, skipAlert?: boolean): { endpoint: Endpoint, unidentRegions: string[] } {
     const endpoint: Endpoint = JSON.parse(content)
     if (!endpoint.name || !endpoint.type || !this.props.providers.find(p => p === endpoint.type)) {
       throw new Error()
     }
     delete (endpoint as any).id
-    return endpoint
+    const unidentRegions: string[] = []
+
+    if (endpoint.mapped_regions?.length) {
+      endpoint.mapped_regions = endpoint.mapped_regions.map(nameId => {
+        const region = this.props.regions.find(r => r.id === nameId || r.name === nameId)
+        if (region) {
+          return region.id
+        }
+        unidentRegions.push(nameId)
+        return null
+      }).filter((item: string | null): item is string => Boolean(item))
+      if (unidentRegions.length && !skipAlert) {
+        notificationStore.alert(`${unidentRegions.length} Coriolis Region${unidentRegions.length > 1 ? 's' : ''} couldn't be mapped`, 'warning')
+      }
+    }
+    return { endpoint, unidentRegions }
   }
 
   processOneFileContent(content: string) {
     this.props.onResetValidation()
     try {
-      const endpoint = this.parseEndpoint(content)
+      const { endpoint } = this.parseEndpoint(content)
       this.chooseEndpoint(endpoint)
     } catch (err) {
       notificationStore.alert('Invalid .endpoint file', 'error')
@@ -200,15 +219,20 @@ class ChooseProvider extends React.Component<Props, State> {
   processMultipleFilesContents(filesContents: FileContent[]) {
     this.props.onResetValidation()
     const uniqueNames: { [prop: string]: number } = {}
+    const invalidRegionsEndpointIds: {id: string, regions: string[]}[] = []
+
     const endpoints = filesContents.map(fileContent => {
       try {
-        const endpoint = this.parseEndpoint(fileContent.content)
+        const { endpoint, unidentRegions } = this.parseEndpoint(fileContent.content, true)
         const key = `${endpoint.type}${endpoint.name}`
         if (uniqueNames[key] === undefined) {
           uniqueNames[key] = 0
         } else {
           uniqueNames[key] += 1
           endpoint.name = `${endpoint.name} (${uniqueNames[key]})`
+        }
+        if (unidentRegions.length) {
+          invalidRegionsEndpointIds.push({ id: `${endpoint.type}${endpoint.name}`, regions: unidentRegions })
         }
         return endpoint
       } catch (err) {
@@ -239,7 +263,10 @@ class ChooseProvider extends React.Component<Props, State> {
       return a.type.localeCompare(b.type)
     })
 
-    this.setState({ multipleUploadedEndpoints: endpoints })
+    this.setState({
+      multipleUploadedEndpoints: endpoints,
+      invalidRegionsEndpointIds,
+    })
   }
 
   chooseEndpoint(endpoint: Endpoint) {
@@ -273,6 +300,20 @@ class ChooseProvider extends React.Component<Props, State> {
     })
   }
 
+  handleRegionsChange(endpoint: Endpoint, newRegions: string[]) {
+    this.setState(prevState => ({
+      multipleUploadedEndpoints: prevState.multipleUploadedEndpoints.map(stateEndpoint => {
+        if (typeof stateEndpoint !== 'string' && `${stateEndpoint.type}${stateEndpoint.name}` === `${endpoint.type}${endpoint.name}`) {
+          return {
+            ...stateEndpoint,
+            mapped_regions: newRegions,
+          }
+        }
+        return stateEndpoint
+      }),
+    }))
+  }
+
   renderMultipleUploadedEndpoints() {
     return (
       <MultipleUploadedEndpoints
@@ -281,8 +322,11 @@ class ChooseProvider extends React.Component<Props, State> {
         onRemove={(e, isAdded) => { this.handleRemoveUploadedEndpoint(e, isAdded) }}
         validating={this.props.multiValidating}
         multiValidation={this.props.multiValidation}
+        invalidRegionsEndpointIds={this.state.invalidRegionsEndpointIds}
+        regions={this.props.regions}
+        onRegionsChange={(endpoint, newRegions) => { this.handleRegionsChange(endpoint, newRegions) }}
         onValidateClick={() => {
-          this.props.onValidateMultipleEndpoints(this.state.multipleUploadedEndpoints.filter(e => typeof e !== 'string'))
+          this.props.onValidateMultipleEndpoints(this.state.multipleUploadedEndpoints.filter(e => typeof e !== 'string') as Endpoint[])
         }}
         onDone={this.props.onCancelClick}
       />

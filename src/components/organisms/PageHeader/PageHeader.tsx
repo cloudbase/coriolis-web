@@ -42,6 +42,7 @@ import { ProviderTypes } from '../../../@types/Providers'
 import MinionEndpointModal from '../MinionEndpointModal/MinionEndpointModal'
 import MinionPoolModal from '../MinionPoolModal'
 import ObjectUtils from '../../../utils/ObjectUtils'
+import regionStore from '../../../stores/RegionStore'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -156,6 +157,7 @@ class PageHeader extends React.Component<Props, State> {
     switch (item) {
       case 'endpoint':
         providerStore.loadProviders()
+        regionStore.getRegions()
         if (this.props.onModalOpen) {
           this.props.onModalOpen()
         }
@@ -369,7 +371,8 @@ class PageHeader extends React.Component<Props, State> {
           <ChooseProvider
             onCancelClick={() => { this.handleCloseChooseProviderModal() }}
             providers={providerStore.providerNames}
-            loading={providerStore.providersLoading}
+            loading={providerStore.providersLoading || regionStore.loading}
+            regions={regionStore.regions}
             onProviderClick={providerName => { this.handleProviderClick(providerName) }}
             onUploadEndpoint={endpoint => { this.handleUploadEndpoint(endpoint) }}
             multiValidating={this.state.multiValidating}

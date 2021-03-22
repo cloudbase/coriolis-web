@@ -24,6 +24,7 @@ import notificationStore from './NotificationStore'
 import EndpointSource from '../sources/EndpointSource'
 
 import DomUtils from '../utils/DomUtils'
+import regionStore from './RegionStore'
 
 const updateEndpoint = (endpoint: Endpoint, endpoints: Endpoint[]) => endpoints.map(e => {
   if (e.id === endpoint.id) {
@@ -163,8 +164,9 @@ class EndpointStore {
 
   @action async exportToJson(endpoint: Endpoint): Promise<void> {
     const connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
-    const newEndpoint = endpoint
+    const newEndpoint = JSON.parse(JSON.stringify(endpoint))
     newEndpoint.connection_info = connectionInfo
+    await regionStore.setEndpointRegionExport(newEndpoint)
     DomUtils.download(JSON.stringify(newEndpoint), `${newEndpoint.name}.endpoint`)
   }
 
@@ -173,8 +175,9 @@ class EndpointStore {
 
     await Promise.all(endpoints.map(async endpoint => {
       const connectionInfo = await EndpointSource.getConnectionInfo(endpoint)
-      const newEndpoint = endpoint
+      const newEndpoint = JSON.parse(JSON.stringify(endpoint))
       newEndpoint.connection_info = connectionInfo
+      await regionStore.setEndpointRegionExport(newEndpoint)
       zip.file(`${newEndpoint.name}.endpoint`, JSON.stringify(newEndpoint))
     }))
 

@@ -27,18 +27,21 @@ import deleteImage from './images/delete.svg'
 import deleteHoverImage from './images/delete-hover.svg'
 import DomUtils from '../../../utils/DomUtils'
 import notificationStore from '../../../stores/NotificationStore'
+import DropdownLink from '../../molecules/DropdownLink/DropdownLink'
+import { Region } from '../../../@types/Region'
 
-const Wrapper = styled.div<any>`
+const Wrapper = styled.div`
+  width: 100%;
   min-height: 0;
 `
-const Buttons = styled.div<any>`
+const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 32px;
   flex-shrink: 0;
   padding: 0 32px;
 `
-const DeleteButton = styled.div<any>`
+const DeleteButton = styled.div`
   width: 16px;
   height: 16px;
   background: url('${deleteImage}') center no-repeat;
@@ -48,7 +51,7 @@ const DeleteButton = styled.div<any>`
     background: url('${deleteHoverImage}') center no-repeat;
   }
 `
-const Content = styled.div<any>`
+const Content = styled.div`
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -57,39 +60,46 @@ const Content = styled.div<any>`
   max-height: 384px;
   text-align: left;
 `
-const InvalidEndpoint = styled.div<any>`
+const InvalidEndpoint = styled.div`
   margin-bottom: 8px;
 `
-const EndpointItem = styled.div<any>`
+const EndpointItem = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 8px;
 `
-const EndpointLogoWrapper = styled.div<any>`
+const EndpointLogoWrapper = styled.div`
   min-width: 110px;
 `
-const EndpointData = styled.div<any>`
+const EndpointData = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-grow: 1;
   overflow: hidden;
 `
-const EndpointName = styled.div<any>`
+const EndpointName = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 `
-const EndpointOptions = styled.div<any>`
+const EndpointOptions = styled.div`
   display: flex;
   align-items: center;
 `
-const EndpointStatus = styled.div<any>`
-  margin: 0 8px;
+const EndpointStatus = styled.div`
+  display: flex;
+  margin-right: 8px;
+  > div {
+    margin-left:  8px;
+  }
 `
 type Props = {
   endpoints: (Endpoint | string)[],
+  regions: Region[],
+  invalidRegionsEndpointIds: { id: string, regions: string[] }[]
   multiValidation: MultiValidationItem[],
   validating: boolean,
+  onRegionsChange: (endpoint: Endpoint, newRegions: string[]) => void
   onBackClick: () => void,
   onRemove: (endpoint: Endpoint, isAdded: boolean) => void,
   onValidateClick: () => void,
@@ -172,11 +182,38 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
   }
 
   renderStatus(endpoint: Endpoint) {
-    const validationItem = this.props.multiValidation.find(v => v.endpoint.name === endpoint.name
-      && v.endpoint.type === endpoint.type)
-
+    const validationItem = this.props.multiValidation.find(v => v.endpoint.name === endpoint.name && v.endpoint.type === endpoint.type)
     if (!validationItem) {
-      return null
+      const invalidRegions = this.props.invalidRegionsEndpointIds.find(e => e.id === `${endpoint.type}${endpoint.name}`)?.regions
+      if (!invalidRegions?.length) {
+        return null
+      }
+      return (
+        <>
+          <DropdownLink
+            width="200px"
+            listWidth="120px"
+            getLabel={() => 'Coriolis Regions'}
+            multipleSelection
+            selectedItems={endpoint.mapped_regions}
+            items={this.props.regions.map(r => ({
+              label: r.name,
+              value: r.id,
+            }))}
+            onChange={item => {
+              if (endpoint.mapped_regions.find(r => r === item.value)) {
+                this.props.onRegionsChange(endpoint, endpoint.mapped_regions.filter(r => r !== item.value))
+              } else {
+                this.props.onRegionsChange(endpoint, [...endpoint.mapped_regions, item.value])
+              }
+            }}
+          />
+          <StatusIcon
+            status="INFO"
+            data-tip={`${invalidRegions.length} Coriolis Region${invalidRegions.length > 1 ? 's' : ''} couldn't be mapped for this endpoint. Use the Coriolis Regions dropdown to view and update the current mapping.`}
+          />
+        </>
+      )
     }
 
     if (validationItem.validating) {

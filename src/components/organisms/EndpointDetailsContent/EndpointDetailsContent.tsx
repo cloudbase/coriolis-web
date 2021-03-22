@@ -197,8 +197,7 @@ class EndpointDetailsContent extends React.Component<Props> {
   renderRegions() {
     return (
       <span>
-        {this.props.item?.mapped_regions
-          .map(regionId => this.props.regions.find(r => r.id === regionId)?.name).join(', ') || '-'}
+        {this.props.item?.mapped_regions.map(regionId => this.props.regions.find(r => r.id === regionId)?.name).join(', ') || '-'}
       </span>
     )
   }
