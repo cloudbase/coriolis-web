@@ -31,7 +31,9 @@ import DateUtils from '../../../utils/DateUtils'
 import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
 import { Region } from '../../../@types/Region'
-import { MigrationItem, ReplicaItem, TransferItem } from '../../../@types/MainItem'
+import {
+  getTransferItemTitle, MigrationItem, ReplicaItem, TransferItem,
+} from '../../../@types/MainItem'
 import { Field as FieldType } from '../../../@types/Field'
 import DomUtils from '../../../utils/DomUtils'
 
@@ -76,6 +78,13 @@ const LinkStyled = styled(Link)`
   color: ${Palette.primary};
   text-decoration: none;
   cursor: pointer;
+`
+const TransferItems = styled.div`
+  max-height: 200px;
+  overflow: auto;
+`
+const TransferItemWrapper = styled.div`
+  margin-bottom: 4px;
 `
 
 const DownloadLink = styled.div`
@@ -197,24 +206,26 @@ class EndpointDetailsContent extends React.Component<Props> {
   renderRegions() {
     return (
       <span>
-        {this.props.item?.mapped_regions
-          .map(regionId => this.props.regions.find(r => r.id === regionId)?.name).join(', ') || '-'}
+        {this.props.item?.mapped_regions.map(regionId => this.props.regions.find(r => r.id === regionId)?.name).join(', ') || '-'}
       </span>
     )
   }
 
   renderUsage(items: TransferItem[]) {
-    return items.map(item => (
-      <span>
-        <LinkStyled
-          key={item.id}
-          to={`/${item.type}s/${item.id}`}
-        >
-          {item.instances[0]}
-        </LinkStyled>
-        <br />
-      </span>
-    ))
+    return (
+      <TransferItems>
+        {items.map(item => (
+          <TransferItemWrapper>
+            <LinkStyled
+              key={item.id}
+              to={`/${item.type}s/${item.id}`}
+            >
+              {getTransferItemTitle(item)}
+            </LinkStyled>
+          </TransferItemWrapper>
+        ))}
+      </TransferItems>
+    )
   }
 
   render() {
