@@ -86,15 +86,6 @@ const conf: Config = {
     },
   ],
 
-  providerMigrationOptions: {
-    vmware_vsphere: {
-      cloneDiskDisabledOptions: {
-        defaultValue: false,
-        description: 'Replica Deployments on VMware do not currently support Replica disk cloning',
-      },
-    },
-  },
-
   /*
   Lower number means that the provider will appear sooner in the list.
   Equal number means alphabetical order within the same group number.

@@ -650,8 +650,6 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               instances={instanceStore.instancesDetails}
               onCancelClick={() => { this.handleCloseMigrationModal() }}
               onMigrateClick={(o, s, r, m) => { this.migrateReplica(o, s, r, m) }}
-              disabledCloneDisk={migrationStore.getDisabledCloneDiskOptions(endpointStore.endpoints
-                .find(e => e.id === replicaStore.replicaDetails?.destination_endpoint_id)?.type)}
             />
           </Modal>
         ) : null}
