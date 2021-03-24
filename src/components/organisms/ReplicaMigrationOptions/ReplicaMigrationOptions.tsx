@@ -33,7 +33,6 @@ import type { Instance, InstanceScript } from '../../../@types/Instance'
 import { TransferItemDetails } from '../../../@types/MainItem'
 import { MinionPool } from '../../../@types/MinionPool'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../WizardOptions/WizardOptions'
-import { ProviderMigrationCloneDiskDisabledOption } from '../../../@types/Config'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -84,7 +83,6 @@ type Props = {
   minionPools: MinionPool[]
   loadingInstances: boolean,
   defaultSkipOsMorphing?: boolean | null,
-  disabledCloneDisk?: ProviderMigrationCloneDiskDisabledOption | null,
   onCancelClick: () => void,
   onMigrateClick: (
     fields: Field[],
@@ -118,20 +116,9 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     const mappings = this.props.transferItem?.instance_osmorphing_minion_pool_mappings || {}
 
     this.setState({
-      fields: replicaMigrationFields.map(f => {
-        if (f.name === 'skip_os_morphing') {
-          return { ...f, value: this.props.defaultSkipOsMorphing || null }
-        }
-        if (f.name === 'clone_disks' && this.props.disabledCloneDisk) {
-          return {
-            ...f,
-            disabled: true,
-            value: this.props.disabledCloneDisk.defaultValue,
-            description: this.props.disabledCloneDisk.description,
-          }
-        }
-        return f
-      }),
+      fields: replicaMigrationFields.map(f => (f.name === 'skip_os_morphing' ? (
+        { ...f, value: this.props.defaultSkipOsMorphing || null }
+      ) : f)),
       minionPoolMappings: { ...mappings },
     })
   }
@@ -213,8 +200,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
         layout="page"
         label={field.label || LabelDictionary.get(field.name)}
         onChange={value => this.handleValueChange(field, value)}
-        description={field.description || LabelDictionary.getDescription(field.name)}
-        disabled={field.disabled}
+        description={LabelDictionary.getDescription(field.name)}
       />
     )
   }
