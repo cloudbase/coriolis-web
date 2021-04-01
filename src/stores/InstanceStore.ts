@@ -339,9 +339,7 @@ class InstanceStore {
     this.reqId = !this.reqId ? 1 : this.reqId + 1
     InstanceSource.cancelInstancesDetailsRequests(this.reqId - 1)
 
-    instances
-      .sort((a, b) => (a.instance_name || a.name || a.id)
-        .localeCompare(b.instance_name || b.name || b.id))
+    instances.sort((a, b) => (a.instance_name || a.name || a.id).localeCompare(b.instance_name || b.name || b.id))
 
     const count = instances.length
     if (count === 0) {
@@ -352,7 +350,7 @@ class InstanceStore {
     this.instancesDetailsCount = count
     this.instancesDetailsRemaining = count
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       Promise.all(instances.map(async instanceInfo => {
         try {
           const resp = await InstanceSource.loadInstanceDetails({

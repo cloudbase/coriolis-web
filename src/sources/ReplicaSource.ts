@@ -115,6 +115,7 @@ class ReplicaSource {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}`,
       skipLog: polling,
+      cancelId: replicaId,
     })
     const replica: ReplicaItemDetails = response.data.replica
     replica.executions = ReplicaSourceUtils.filterDeletedExecutions(replica.executions)

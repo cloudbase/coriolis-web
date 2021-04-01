@@ -63,7 +63,10 @@ class EndpointStore {
   @observable multiValidation: MultiValidationItem[] = []
 
   @action async getEndpoints(options?: { showLoading?: boolean, skipLog?: boolean }) {
-    if (options && options.showLoading) {
+    if (this.loading) {
+      return
+    }
+    if (options?.showLoading) {
       this.loading = true
     }
     try {

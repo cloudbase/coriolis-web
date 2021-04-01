@@ -22,6 +22,7 @@ import type {
 import type { Execution, ExecutionTasks } from '../@types/Execution'
 import type { Endpoint } from '../@types/Endpoint'
 import type { Field } from '../@types/Field'
+import apiCaller from '../utils/ApiCaller'
 
 class ReplicaStoreUtils {
   static getNewReplica(
@@ -83,6 +84,13 @@ class ReplicaStore {
     } finally {
       this.getReplicasDone()
     }
+  }
+
+  @action cancelReplicaDetails() {
+    if (this.replicaDetails?.id) {
+      apiCaller.cancelRequests(this.replicaDetails?.id)
+    }
+    this.replicaDetailsLoading = false
   }
 
   @action async getReplicaDetails(options: {

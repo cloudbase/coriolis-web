@@ -70,6 +70,7 @@ type State = {
   showCancelConfirmation: boolean,
   isEditable: boolean,
   pausePolling: boolean,
+  initialLoading: boolean,
 }
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
@@ -85,6 +86,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     showForceCancelConfirmation: false,
     isEditable: false,
     pausePolling: false,
+    initialLoading: true,
   }
 
   stopPolling: boolean | null = null
@@ -94,60 +96,71 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
     const loadReplica = async () => {
       await endpointStore.getEndpoints({ showLoading: true })
-      const replica = await this.loadReplicaWithInstances(true)
-      if (!replica) {
-        return
-      }
-      const sourceEndpoint = endpointStore.endpoints.find(e => e.id === replica.origin_endpoint_id)
-      const destinationEndpoint = endpointStore.endpoints
-        .find(e => e.id === replica.destination_endpoint_id)
-      if (!sourceEndpoint || !destinationEndpoint) {
-        return
-      }
-      const loadOptions = async (optionsType: 'source' | 'destination') => {
-        const providerName = optionsType === 'source' ? sourceEndpoint.type : destinationEndpoint.type
-        // This allows the values to be displayed with their allocated names instead of their IDs
-        await providerStore.loadOptionsSchema({
-          providerName,
-          optionsType,
-          useCache: true,
-          quietError: true,
-        })
-        const getOptionsValuesConfig = {
-          optionsType,
-          endpointId: optionsType === 'source' ? replica.origin_endpoint_id : replica.destination_endpoint_id,
-          providerName,
-          useCache: true,
-          quietError: true,
-          allowMultiple: true,
-        }
-        // For some providers, the API doesn't return the required fields values
-        // if those required fields are sent in env data,
-        // so to retrieve those values a request without env data must be made
-        await providerStore.getOptionsValues(getOptionsValuesConfig)
-        await providerStore.getOptionsValues({
-          ...getOptionsValuesConfig,
-          envData: optionsType === 'source' ? replica.source_environment : replica.destination_environment,
-        })
-      }
+      this.setState({ initialLoading: false })
+      this.loadReplicaWithInstances({
+        cache: true,
+        showLoading: true,
+        onDetailsLoaded: async () => {
+          if (!this.replica) {
+            return
+          }
+          const sourceEndpoint = endpointStore.endpoints.find(e => e.id === this.replica!.origin_endpoint_id)
+          const destinationEndpoint = endpointStore.endpoints.find(e => e.id === this.replica!.destination_endpoint_id)
+          if (!sourceEndpoint || !destinationEndpoint) {
+            return
+          }
+          const loadOptions = async (optionsType: 'source' | 'destination') => {
+            const providerName = optionsType === 'source' ? sourceEndpoint.type : destinationEndpoint.type
+            // This allows the values to be displayed with their allocated names instead of their IDs
+            await providerStore.loadOptionsSchema({
+              providerName,
+              optionsType,
+              useCache: true,
+              quietError: true,
+            })
+            const getOptionsValuesConfig = {
+              optionsType,
+              endpointId: optionsType === 'source' ? this.replica!.origin_endpoint_id : this.replica!.destination_endpoint_id,
+              providerName,
+              useCache: true,
+              quietError: true,
+              allowMultiple: true,
+            }
+            // For some providers, the API doesn't return the required fields values
+            // if those required fields are sent in env data,
+            // so to retrieve those values a request without env data must be made
+            await providerStore.getOptionsValues(getOptionsValuesConfig)
+            await providerStore.getOptionsValues({
+              ...getOptionsValuesConfig,
+              envData: optionsType === 'source' ? this.replica!.source_environment : this.replica!.destination_environment,
+            })
+          }
 
-      loadOptions('source')
-      loadOptions('destination')
+          await Promise.all([
+            loadOptions('source'),
+            loadOptions('destination'),
+          ])
+        },
+      })
     }
-    loadReplica()
 
+    const loadReplicaAndPollData = async () => {
+      await loadReplica()
+      this.pollData()
+    }
+    loadReplicaAndPollData()
     scheduleStore.getSchedules(this.replicaId)
-    this.pollData(true)
   }
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadReplicaWithInstances(true, newProps.match.params.id)
+      this.loadReplicaWithInstances({ cache: true, replicaId: newProps.match.params.id })
       scheduleStore.getSchedules(newProps.match.params.id)
     }
   }
 
   componentWillUnmount() {
+    replicaStore.cancelReplicaDetails()
     replicaStore.clearDetails()
     scheduleStore.clearUnsavedSchedules()
     this.stopPolling = true
@@ -196,11 +209,19 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.setState({ isEditable })
   }
 
-  async loadReplicaWithInstances(cache: boolean, replicaId?: string) {
-    await replicaStore.getReplicaDetails({ replicaId: replicaId || this.replicaId })
+  async loadReplicaWithInstances(options: {
+    cache: boolean,
+    replicaId?: string,
+    showLoading?: boolean,
+    onDetailsLoaded?: () => void,
+  }) {
+    await replicaStore.getReplicaDetails({ replicaId: options.replicaId || this.replicaId, showLoading: options.showLoading })
     const replica = this.replica
     if (!replica) {
       return null
+    }
+    if (options.onDetailsLoaded) {
+      options.onDetailsLoaded()
     }
     minionPoolStore.loadMinionPools()
 
@@ -210,11 +231,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
     networkStore.loadNetworks(replica.destination_endpoint_id, replica.destination_environment, {
       quietError: true,
-      cache,
+      cache: options.cache,
     })
 
-    const targetEndpoint = endpointStore.endpoints
-      .find(e => e.id === replica.destination_endpoint_id)
+    const targetEndpoint = endpointStore.endpoints.find(e => e.id === replica.destination_endpoint_id)
 
     const hasStorageMap = targetEndpoint ? (providerStore.providers && providerStore.providers[targetEndpoint.type]
       ? !!providerStore.providers[targetEndpoint.type]
@@ -227,7 +247,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     instanceStore.loadInstancesDetails({
       endpointId: replica.origin_endpoint_id,
       instances: replica.instances.map(n => ({ id: n })),
-      cache,
+      cache: options.cache,
       quietError: false,
       env: replica.source_environment,
       targetProvider: targetEndpoint?.type,
@@ -448,14 +468,14 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.props.history.push(`/replicas/${replica.id}/executions`)
   }
 
-  async pollData(showLoading: boolean) {
+  async pollData() {
     if (this.state.pausePolling || this.stopPolling) {
       return
     }
 
     await Promise.all([
       replicaStore.getReplicaDetails({
-        replicaId: this.replicaId, showLoading, polling: true,
+        replicaId: this.replicaId, polling: true,
       }),
       (async () => {
         if (window.location.pathname.indexOf('executions') > -1) {
@@ -464,17 +484,17 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       })(),
     ])
 
-    setTimeout(() => { this.pollData(false) }, configLoader.config.requestPollTimeout)
+    setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   closeEditModal() {
     this.setState({ showEditModal: false, pausePolling: false }, () => {
-      this.pollData(false)
+      this.pollData()
     })
   }
 
   handleEditReplicaReload() {
-    this.loadReplicaWithInstances(false)
+    this.loadReplicaWithInstances({ cache: false })
   }
 
   handleUpdateComplete(redirectTo: string) {
@@ -596,7 +616,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               networks={networkStore.networks}
               minionPools={minionPoolStore.minionPools}
               detailsLoading={replicaStore.replicaDetailsLoading || endpointStore.loading
-                || minionPoolStore.loadingMinionPools}
+                || minionPoolStore.loadingMinionPools || this.state.initialLoading}
               sourceSchema={providerStore.sourceSchema}
               sourceSchemaLoading={providerStore.sourceSchemaLoading
               || providerStore.sourceOptionsPrimaryLoading
