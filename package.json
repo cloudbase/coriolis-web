@@ -94,9 +94,13 @@
   },
   "resolutions": {
     "base64url": "^3.0.0",
+    "hosted-git-info": "^2.8.9",
     "is-svg": "^4.2.2",
     "node-fetch": "^2.6.1",
     "node-notifier": "^8.0.1",
+    "lodash": "^4.17.21",
+    "ua-parser-js": "^0.7.24",
+    "underscore": "^1.12.1",
     "xmldom": "^0.5.0",
     "y18n": "^3.2.2",
     "yargs-parser": "^13.1.2"
