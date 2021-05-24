@@ -201,7 +201,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         onCancelExecutionClick={this.props.onCancelExecutionClick}
         onDeleteExecutionClick={this.props.onDeleteExecutionClick}
         onExecuteClick={this.props.onExecuteClick}
-        loading={this.props.executionsLoading}
+        loading={this.props.executionsLoading || this.props.detailsLoading}
         onChange={this.props.onExecutionChange}
         tasksLoading={this.props.executionsTasksLoading}
       />
@@ -236,7 +236,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         <DetailsNavigation
           items={NavigationItems}
           selectedValue={this.props.page}
-          itemId={this.props.item ? this.props.item.id : ''}
+          itemId={this.props.itemId}
           itemType="replica"
         />
         <DetailsBody>
