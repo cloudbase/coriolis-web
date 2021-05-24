@@ -25,6 +25,7 @@ import type { User } from '../../../@types/User'
 
 import userImage from './images/user.svg'
 import userWhiteImage from './images/user-white.svg'
+import openInNewImage from './images/openInNewImage'
 import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div<any>`
@@ -42,6 +43,16 @@ const Icon = styled.div<any>`
     opacity: 0.8;
   }
 `
+const Help = styled.div`
+  display: flex;
+  align-items: center;
+`
+const OpenInNewIcon = styled.div`
+  ${StyleProps.exactSize('16px')}
+  position: relative;
+  top: -2px;
+  transform: scale(0.6);
+`
 const List = styled.div<any>`
   background: ${Palette.grayscale[1]};
   border-radius: ${StyleProps.borderRadius};
@@ -58,13 +69,16 @@ const ListItem = styled.div<any>`
   padding-top: 8px;
 `
 
-const Label = styled.div<any>`
+const Label = styled.div<{selectable?: boolean, hoverColor?: string}>`
   display: inline-block;
   white-space: nowrap;
   ${props => (props.selectable ? css`
     cursor: pointer;
     &:hover {
-      color: ${Palette.primary};
+      color: ${props.hoverColor};
+      svg {
+        fill: ${props.hoverColor};
+      }
     }
   ` : '')}
 `
@@ -101,7 +115,7 @@ const Email = styled.div<any>`
   border-bottom: 1px solid ${Palette.grayscale[3]};
 `
 
-type DictItem = { label: string, value: string }
+type DictItem = { label: React.ReactNode, value: string }
 type Props = {
   onItemClick: (item: DictItem) => void,
   user: User | null | undefined,
@@ -133,6 +147,10 @@ class UserDropdown extends React.Component<Props, State> {
     }
 
     this.setState({ showDropdownList: false })
+
+    if (item.value === 'help') {
+      window.open('https://cloudbase.it/coriolis-overview/', '_blank')
+    }
   }
 
   @autobind
@@ -186,13 +204,25 @@ class UserDropdown extends React.Component<Props, State> {
       return null
     }
 
-    const items = [{
-      label: 'About Coriolis',
-      value: 'about',
-    }, {
-      label: 'Sign Out',
-      value: 'signout',
-    }]
+    const items: DictItem[] = [
+      {
+        label: 'About Coriolis',
+        value: 'about',
+      },
+      {
+        label: (
+          <Help>
+            Help
+            <OpenInNewIcon dangerouslySetInnerHTML={{ __html: openInNewImage() }} />
+          </Help>
+        ),
+        value: 'help',
+      },
+      {
+        label: 'Sign Out',
+        value: 'signout',
+      },
+    ]
     const list = (
       <List>
         <ListHeader>
@@ -205,7 +235,12 @@ class UserDropdown extends React.Component<Props, State> {
             onMouseDown={() => { this.itemMouseDown = true }}
             onMouseUp={() => { this.itemMouseDown = false }}
           >
-            <Label selectable onClick={() => { this.handleItemClick(item) }} data-test-id={`userDropdown-label-${item.value}`}>{item.label}</Label>
+            <Label
+              selectable
+              onClick={() => { this.handleItemClick(item) }}
+              hoverColor={item.value !== 'signout' ? Palette.primary : Palette.alert}
+            >{item.label}
+            </Label>
           </ListItem>
         )) : null}
       </List>
