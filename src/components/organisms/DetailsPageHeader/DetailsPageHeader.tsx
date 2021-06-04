@@ -59,7 +59,7 @@ type State = {
 }
 type Props = {
   user?: UserType | null,
-  onUserItemClick: (userItem: { label: string, value: string }) => void,
+  onUserItemClick: (userItem: { label: React.ReactNode, value: string }) => void,
   testMode?: boolean,
 }
 
@@ -90,7 +90,7 @@ class DetailsPageHeader extends React.Component<Props, State> {
     notificationStore.saveSeen()
   }
 
-  handleUserItemClick(item: { label: string, value: string }) {
+  handleUserItemClick(item: { label: React.ReactNode, value: string }) {
     switch (item.value) {
       case 'about':
         this.setState({ showAbout: true })
