@@ -482,7 +482,7 @@ class EditReplica extends React.Component<Props, State> {
       data[field.name] = value
     }
 
-    if (field.enum && field.subFields) {
+    if (field.subFields) {
       field.subFields.forEach(subField => {
         const subFieldKeys = Object.keys(data).filter(k => k.indexOf(subField.name) > -1)
         subFieldKeys.forEach(k => {
@@ -519,6 +519,7 @@ class EditReplica extends React.Component<Props, State> {
       try {
         await replicaStore.update({
           replica: this.props.replica as any,
+          sourceEndpoint: this.props.sourceEndpoint,
           destinationEndpoint: this.props.destinationEndpoint,
           updateData,
           defaultStorage: this.getDefaultStorage(),

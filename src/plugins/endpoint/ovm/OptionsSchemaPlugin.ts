@@ -34,8 +34,31 @@ export default class OptionsSchemaParser {
     schemaDefinitions: SchemaDefinitions | null | undefined,
     dictionaryKey: string,
   ) {
-    const fields = DefaultOptionsSchemaPlugin
-      .parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    const useCoriolisExporterField = fields.find(f => f.name === 'use_coriolis_exporter')
+    if (useCoriolisExporterField) {
+      const usableFields: Field[] = [
+        {
+          ...useCoriolisExporterField,
+          nullableBoolean: false,
+          default: false,
+          subFields: [
+            {
+              name: 'generic_exporter_options',
+              type: 'object',
+              properties: fields.filter(f => f.name !== 'use_coriolis_exporter')
+                .map(f => ({ ...f, groupName: 'generic_exporter_options' })),
+            },
+            {
+              name: 'ovm_exporter_options',
+              type: 'object',
+              properties: [],
+            },
+          ],
+        },
+      ]
+      return usableFields
+    }
     fields.forEach(f => {
       if (
         f.name !== 'migr_template_username_map'
@@ -63,25 +86,46 @@ export default class OptionsSchemaParser {
     return fields
   }
 
+  static sortFields(fields: Field[]) {
+    DefaultOptionsSchemaPlugin.sortFields(fields)
+  }
+
   static fillFieldValues(field: Field, options: OptionValues[]) {
-    const option = options.find(f => f.name === field.name)
-    if (!option) {
-      return
-    }
-    if (!defaultFillMigrationImageMapValues(
-      field,
-      option,
-      this.migrationImageMapFieldName,
-    )) {
-      defaultFillFieldValues(field, option)
+    if (field.name === 'use_coriolis_exporter') {
+      field.subFields?.forEach(sf => {
+        if (sf.properties) {
+          sf.properties.forEach(f => {
+            DefaultOptionsSchemaPlugin.fillFieldValues(f, options, f.name.split('/')[1])
+          })
+        }
+      })
+    } else {
+      const option = options.find(f => f.name === field.name)
+      if (!option) {
+        return
+      }
+      if (!defaultFillMigrationImageMapValues(
+        field,
+        option,
+        this.migrationImageMapFieldName,
+      )) {
+        defaultFillFieldValues(field, option)
+      }
     }
   }
 
   static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
+    let newOptions: any = { ...options }
+    if (newOptions.use_coriolis_exporter != null) {
+      newOptions = { use_coriolis_exporter: newOptions.use_coriolis_exporter }
+    }
+    if (options?.generic_exporter_options) {
+      newOptions = { ...options.generic_exporter_options, use_coriolis_exporter: false }
+    }
     const env = {
-      ...defaultGetDestinationEnv(options, oldOptions),
+      ...defaultGetDestinationEnv(newOptions, oldOptions),
       ...defaultGetMigrationImageMap(
-        options,
+        newOptions,
         oldOptions,
         this.migrationImageMapFieldName,
       ),

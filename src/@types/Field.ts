@@ -53,7 +53,7 @@ export type Field = {
   title?: string,
   description?: string,
   subFields?: Field[],
-  groupName?: string,
+  groupName?: string
 }
 
 const migrationImageOsTypes = ['windows', 'linux']
