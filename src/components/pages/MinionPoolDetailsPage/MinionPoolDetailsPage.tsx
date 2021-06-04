@@ -38,6 +38,8 @@ import MinionPoolDetailsContent from '../../organisms/MinionPoolDetailsContent/M
 import replicaStore from '../../../stores/ReplicaStore'
 import migrationStore from '../../../stores/MigrationStore'
 import MinionPoolConfirmationModal from '../../molecules/MinionPoolConfirmationModal/MinionPoolConfirmationModal'
+import providerStore from '../../../stores/ProviderStore'
+import { Field } from '../../../@types/Field'
 
 const Wrapper = styled.div<any>``
 
@@ -93,6 +95,28 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     return minionPoolStore.minionPoolDetails
   }
 
+  get envData() {
+    return this.getSchemaData(minionPoolStore.minionPoolEnvSchema, minionPoolStore.minionPoolDetails?.environment_options)
+  }
+
+  get editableData() {
+    const envData = this.envData
+    const defaultData = this.getSchemaData(minionPoolStore.minionPoolDefaultSchema, minionPoolStore.minionPoolDetails)
+    return defaultData || envData ? { ...defaultData, ...envData } : null
+  }
+
+  getSchemaData(schema: Field[], data: any | null) {
+    let schemaData: any = null
+    const details: any = data || {}
+    Object.keys(details).forEach(prop => {
+      if (schema.find(f => f.name === prop)) {
+        schemaData = schemaData || {}
+        schemaData[prop] = details[prop]
+      }
+    })
+    return schemaData
+  }
+
   getStatus() {
     return this.minionPool?.status
   }
@@ -121,12 +145,14 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       endpoint.type,
       minionPool.platform,
     )
-    await minionPoolStore.loadEnvOptions(
-      endpoint.id,
-      endpoint.type,
-      minionPool.platform,
-      { useCache: true },
-    )
+    await providerStore.loadProviders()
+    await minionPoolStore.loadOptions({
+      providers: providerStore.providers!,
+      endpoint,
+      optionsType: minionPool.platform,
+      useCache: true,
+      envData: this.envData,
+    })
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -241,6 +267,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
           endpoint={endpoint}
           onCancelClick={() => { this.closeEditModal() }}
           onRequestClose={() => { this.closeEditModal() }}
+          editableData={this.editableData}
           minionPool={this.minionPool}
           platform={this.minionPool?.platform || 'source'}
           onUpdateComplete={r => { this.handleUpdateComplete(r) }}
@@ -329,7 +356,9 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
               endpoints={endpointStore.endpoints}
               schema={minionPoolStore.minionPoolCombinedSchema}
               schemaLoading={minionPoolStore.loadingMinionPoolSchema
-                || minionPoolStore.loadingEnvOptions}
+                || minionPoolStore.optionsPrimaryLoading
+                || providerStore.providersLoading
+                || minionPoolStore.optionsSecondaryLoading}
               page={this.props.match.params.page || ''}
               loading={minionPoolStore.loadingMinionPoolDetails}
               onDeleteMinionPoolClick={() => { this.handleDeleteMinionPoolClick() }}

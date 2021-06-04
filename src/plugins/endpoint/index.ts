@@ -31,6 +31,9 @@ import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
 import OciInstanceInfoPlugin from './oci/InstanceInfoPlugin'
 import { ProviderTypes } from '../../@types/Providers'
 
+import DefaultMinionPoolSchemaPlugin from './default/MinionPoolSchemaPlugin'
+import OpenstackMinionPoolSchemaPlugin from './openstack/MinionPoolSchemaPlugin'
+
 const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj
 
 export const ConnectionSchemaPlugin = {
@@ -83,6 +86,19 @@ export const InstanceInfoPlugin = {
     const map = {
       default: DefaultInstanceInfoPlugin,
       oci: OciInstanceInfoPlugin,
+    }
+    if (hasKey(map, provider)) {
+      return map[provider]
+    }
+    return map.default
+  },
+}
+
+export const MinionPoolSchemaPlugin = {
+  for: (provider: ProviderTypes) => {
+    const map = {
+      default: DefaultMinionPoolSchemaPlugin,
+      openstack: OpenstackMinionPoolSchemaPlugin,
     }
     if (hasKey(map, provider)) {
       return map[provider]

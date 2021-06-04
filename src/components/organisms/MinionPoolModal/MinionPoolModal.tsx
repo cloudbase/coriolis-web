@@ -25,13 +25,14 @@ import type { Endpoint as EndpointType } from '../../../@types/Endpoint'
 import type { Field } from '../../../@types/Field'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import KeyboardManager from '../../../utils/KeyboardManager'
-import { MinionPool } from '../../../@types/MinionPool'
 import MinionPoolModalContent from './MinionPoolModalContent'
 import minionPoolStore from '../../../stores/MinionPoolStore'
 
 import minionPoolImage from './images/minion-pool.svg'
 import StyleProps from '../../styleUtils/StyleProps'
 import notificationStore from '../../../stores/NotificationStore'
+import providerStore, { getFieldChangeOptions } from '../../../stores/ProviderStore'
+import { MinionPool } from '../../../@types/MinionPool'
 
 const Wrapper = styled.div<any>`
   padding: 24px 0 32px 0;
@@ -71,7 +72,8 @@ const Buttons = styled.div<any>`
 type Props = {
   cancelButtonText: string,
   endpoint: EndpointType,
-  minionPool?: MinionPool | null
+  minionPool?: MinionPool | null,
+  editableData?: any | null
   platform: 'source' | 'destination',
   onCancelClick: () => void,
   onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
@@ -80,7 +82,7 @@ type Props = {
 }
 type State = {
   invalidFields: any[],
-  minionPool: any | null
+  editableData: any | null
   saving: boolean
 }
 @observer
@@ -91,7 +93,7 @@ class MinionPoolModal extends React.Component<Props, State> {
 
   state: State = {
     invalidFields: [],
-    minionPool: null,
+    editableData: null,
     saving: false,
   }
 
@@ -112,11 +114,19 @@ class MinionPoolModal extends React.Component<Props, State> {
         return
       }
       await minionPoolStore.loadMinionPoolSchema(this.props.endpoint.type, this.props.platform)
-      await minionPoolStore.loadEnvOptions(
-        this.props.endpoint.id,
-        this.props.endpoint.type,
-        this.props.platform,
-      )
+
+      await providerStore.loadProviders()
+      const providers = providerStore.providers
+      if (!providers) {
+        return
+      }
+      await minionPoolStore.loadOptions({
+        providers,
+        optionsType: this.props.platform,
+        endpoint: this.props.endpoint,
+        envData: this.envData,
+        useCache: true,
+      })
 
       this.fillRequiredDefaults()
     }
@@ -127,19 +137,19 @@ class MinionPoolModal extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
-    if (props.minionPool) {
+    if (props.editableData) {
       this.setState(prevState => ({
-        minionPool: {
-          ...prevState.minionPool,
-          ...ObjectUtils.flatten(props.minionPool || {}),
+        editableData: {
+          ...prevState.editableData,
+          ...ObjectUtils.flatten(props.editableData || {}),
         },
       }))
     }
 
     if (props.platform) {
       this.setState(prevState => ({
-        minionPool: {
-          ...prevState.minionPool,
+        editableData: {
+          ...prevState.editableData,
           platform: props.platform,
         },
       }))
@@ -154,16 +164,29 @@ class MinionPoolModal extends React.Component<Props, State> {
   }
 
   get isLoading() {
-    return minionPoolStore.loadingMinionPoolSchema || minionPoolStore.loadingMinionPools
-      || minionPoolStore.loadingEnvOptions
+    return minionPoolStore.loadingMinionPoolSchema
+      || minionPoolStore.loadingMinionPools
+      || minionPoolStore.optionsPrimaryLoading
+      || providerStore.providersLoading
+  }
+
+  get envData() {
+    let envData: any = null
+    Object.keys(this.state.editableData).forEach(prop => {
+      if (!minionPoolStore.minionPoolDefaultSchema.find(f => f.name === prop)) {
+        envData = envData || {}
+        envData[prop] = this.state.editableData[prop]
+      }
+    })
+    return envData
   }
 
   getFieldValue(field?: Field | null) {
-    if (!field || !this.state.minionPool) {
+    if (!field || !this.state.editableData) {
       return ''
     }
-    if (this.state.minionPool[field.name] != null) {
-      return this.state.minionPool[field.name]
+    if (this.state.editableData[field.name] != null) {
+      return this.state.editableData[field.name]
     }
 
     if (Object.keys(field).find(k => k === 'default')) {
@@ -204,39 +227,39 @@ class MinionPoolModal extends React.Component<Props, State> {
     }
     this.setState({ saving: true })
     try {
-      if (this.state.minionPool?.id) {
+      if (this.props.minionPool?.id) {
         await this.update()
       } else {
         await this.add()
       }
     } catch (err) {
+      console.error(err)
       this.setState({ saving: false })
     }
   }
 
   async update() {
-    const stateMinionPool = { ...this.state.minionPool }
-    const minionPool = minionPoolStore.minionPools.find(e => e.id === stateMinionPool.id)
-    if (!minionPool) {
-      throw new Error('Minion pool not found!')
+    const stateMinionPool = {
+      ...this.state.editableData,
+      id: this.props.minionPool?.id,
     }
     delete stateMinionPool.platform
     delete stateMinionPool.endpoint_id
-    await minionPoolStore.update(stateMinionPool)
+    await minionPoolStore.update(this.props.endpoint.type, stateMinionPool)
     if (this.props.onUpdateComplete) {
-      this.props.onUpdateComplete(`/minion-pools/${stateMinionPool.id}`)
+      this.props.onUpdateComplete(`/minion-pools/${this.props.minionPool?.id}`)
     }
   }
 
   async add() {
-    await minionPoolStore.add(this.props.endpoint.id, this.state.minionPool)
+    await minionPoolStore.add(this.props.endpoint.type, this.props.endpoint.id, this.state.editableData)
     notificationStore.alert('Minion Pool created', 'success')
     this.props.onRequestClose()
   }
 
   fillRequiredDefaults() {
     this.setState(prevState => {
-      const minionPool: any = { ...prevState.minionPool }
+      const minionPool: any = { ...prevState.editableData }
       const requiredFieldsDefaults = minionPoolStore.minionPoolCombinedSchema
         .filter(f => f.required && f.default != null)
       requiredFieldsDefaults.forEach(f => {
@@ -244,26 +267,48 @@ class MinionPoolModal extends React.Component<Props, State> {
           minionPool[f.name] = f.default
         }
       })
-      return { minionPool }
+      return { editableData: minionPool }
     })
   }
 
-  handleFieldsChange(items: { field: Field, value: any }[]) {
+  async loadExtraOptions(field: Field | null, type: 'source' | 'destination', useCache: boolean = true) {
+    const envData = getFieldChangeOptions({
+      providerName: this.props.endpoint.type,
+      schema: minionPoolStore.minionPoolEnvSchema,
+      data: this.envData,
+      field,
+      type,
+    })
+    if (!envData) {
+      return
+    }
+    await minionPoolStore.loadOptions({
+      providers: providerStore.providers!,
+      optionsType: type,
+      endpoint: this.props.endpoint,
+      envData,
+      useCache,
+    })
+    this.fillRequiredDefaults()
+  }
+
+  handleFieldChange(field: Field, value: any) {
     this.setState(prevState => {
-      const minionPool: any = { ...prevState.minionPool }
+      const minionPool: any = { ...prevState.editableData }
 
-      items.forEach(item => {
-        let value = item.value
-        if (item.field.type === 'array') {
-          const arrayItems = minionPool[item.field.name] || []
-          value = arrayItems.find((v: any) => v === item.value)
-            ? arrayItems.filter((v: any) => v !== item.value) : [...arrayItems, item.value]
-        }
+      if (field.type === 'array') {
+        const arrayItems = minionPool[field.name] || []
+        value = arrayItems.find((v: any) => v === value)
+          ? arrayItems.filter((v: any) => v !== value) : [...arrayItems, value]
+      }
 
-        minionPool[item.field.name] = value
-      })
+      minionPool[field.name] = value
 
-      return { minionPool }
+      return { editableData: minionPool }
+    }, () => {
+      if (field.type !== 'string' || field.enum) {
+        this.loadExtraOptions(field, this.props.platform, true)
+      }
     })
   }
 
@@ -305,6 +350,8 @@ class MinionPoolModal extends React.Component<Props, State> {
         <MinionPoolModalContent
           endpoint={this.props.endpoint}
           platform={this.props.platform}
+          optionsLoading={minionPoolStore.optionsSecondaryLoading}
+          optionsLoadingSkipFields={minionPoolStore.minionPoolDefaultSchema.map(f => f.name)}
           envOptionsDisabled={this.props.minionPool != null && this.props.minionPool.status !== 'DEALLOCATED'}
           defaultSchema={minionPoolStore.minionPoolDefaultSchema}
           envSchema={minionPoolStore.minionPoolEnvSchema}
@@ -314,7 +361,7 @@ class MinionPoolModal extends React.Component<Props, State> {
           getFieldValue={field => this.getFieldValue(field)}
           onFieldChange={(field, value) => {
             if (field) {
-              this.handleFieldsChange([{ field, value }])
+              this.handleFieldChange(field, value)
             }
           }}
           onCreateClick={() => { this.create() }}

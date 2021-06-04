@@ -124,6 +124,8 @@ type Props = {
   invalidFields: string[],
   endpoint: Endpoint
   platform: 'source' | 'destination'
+  optionsLoading: boolean
+  optionsLoadingSkipFields: string[],
   getFieldValue: (field: Field | null | undefined) => any,
   onFieldChange: (field: Field | null, value: any) => void,
   disabled: boolean,
@@ -216,6 +218,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
             value={this.props.getFieldValue(field)}
             onChange={value => { this.props.onFieldChange(field, value) }}
             nullableBoolean={field.nullableBoolean != null ? field.nullableBoolean : true}
+            disabledLoading={this.props.optionsLoading && !this.props.optionsLoadingSkipFields.find(fn => fn === field.name)}
           />
         )
       }
