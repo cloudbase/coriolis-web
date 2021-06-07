@@ -34,8 +34,7 @@ export default class OptionsSchemaParser {
     schemaDefinitions: SchemaDefinitions | null | undefined,
     dictionaryKey: string,
   ) {
-    const fields = DefaultOptionsSchemaPlugin
-      .parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    const fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
     fields.forEach(f => {
       if (
         f.name !== 'migr_template_username_map'
@@ -63,6 +62,10 @@ export default class OptionsSchemaParser {
     return fields
   }
 
+  static sortFields(fields: Field[]) {
+    DefaultOptionsSchemaPlugin.sortFields(fields)
+  }
+
   static fillFieldValues(field: Field, options: OptionValues[]) {
     const option = options.find(f => f.name === field.name)
     if (!option) {
@@ -77,7 +80,7 @@ export default class OptionsSchemaParser {
     }
   }
 
-  static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
+  static getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
       ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
@@ -94,8 +97,8 @@ export default class OptionsSchemaParser {
   }
 
   static getStorageMap(
-    defaultStorage: { value: string | null, busType?: string | null },
-    storageMap: StorageMap[] | null,
+    defaultStorage?: { value: string | null, busType?: string | null },
+    storageMap?: StorageMap[] | null,
     configDefault?: string | null,
   ) {
     return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)
@@ -106,7 +109,6 @@ export default class OptionsSchemaParser {
     removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,
   ) {
-    return DefaultOptionsSchemaPlugin
-      .getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
+    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
   }
 }
