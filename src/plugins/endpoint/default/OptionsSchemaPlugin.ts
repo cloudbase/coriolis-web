@@ -230,7 +230,7 @@ export default class OptionsSchemaParser {
 
   static getStorageMap(
     defaultStorage: { value: string | null, busType?: string | null } | undefined,
-    storageMap: StorageMap[] | null,
+    storageMap?: StorageMap[] | null,
     configDefault?: string | null,
   ) {
     if (!defaultStorage?.value && !storageMap) {
