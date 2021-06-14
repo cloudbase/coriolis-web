@@ -94,10 +94,12 @@
   },
   "resolutions": {
     "base64url": "^3.0.0",
+    "glob-parent": "^^5.1.2",
     "hosted-git-info": "^2.8.9",
     "is-svg": "^4.2.2",
     "node-fetch": "^2.6.1",
     "node-notifier": "^8.0.1",
+    "normalize-url": "^4.5.1",
     "lodash": "^4.17.21",
     "ua-parser-js": "^0.7.24",
     "underscore": "^1.12.1",
