@@ -22,7 +22,7 @@ import Button from '../../atoms/Button'
 import LoadingButton from '../../molecules/LoadingButton'
 
 import type { Endpoint as EndpointType } from '../../../@types/Endpoint'
-import type { Field } from '../../../@types/Field'
+import { Field, isEnumSeparator } from '../../../@types/Field'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import MinionPoolModalContent from './MinionPoolModalContent'
@@ -140,8 +140,8 @@ class MinionPoolModal extends React.Component<Props, State> {
     if (props.editableData) {
       this.setState(prevState => ({
         editableData: {
-          ...prevState.editableData,
           ...ObjectUtils.flatten(props.editableData || {}),
+          ...prevState.editableData,
         },
       }))
     }
@@ -203,7 +203,19 @@ class MinionPoolModal extends React.Component<Props, State> {
     const invalidFields = minionPoolStore.minionPoolCombinedSchema.filter(field => {
       if (field.required) {
         const value = this.getFieldValue(field)
-        return value === null || value === '' || value.length === 0
+        if (value === null || value === '' || value.length === 0) {
+          return true
+        }
+        if (!field.enum) {
+          return false
+        }
+        // When loading new options as a result of destination options calls,
+        // the value stored in the state may no longer be found in the field's enum.
+        // Example: When changing the AD of an OCI minion pool,
+        // although the Subnet ID may show 'Choose Value', the modal would still let you hit 'Update'.
+        if (!field.enum.find(f => (!isEnumSeparator(f) ? (typeof f === 'string' ? f === value : (f.value === value || f.id === value)) : false))) {
+          return true
+        }
       }
       return false
     }).map(f => f.name)
