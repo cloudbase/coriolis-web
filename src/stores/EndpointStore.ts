@@ -17,7 +17,7 @@ import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 
 import type {
-  Endpoint, Validation, StorageBackend, Storage, MultiValidationItem,
+  Endpoint, Validation, StorageBackend, MultiValidationItem,
 } from '../@types/Endpoint'
 
 import notificationStore from './NotificationStore'
@@ -324,17 +324,15 @@ class EndpointStore {
 
     try {
       const storage = await EndpointSource.loadStorage(endpointId, data, options)
-      this.loadStorageSuccess(storage)
-    } catch (ex) {
-      runInAction(() => { this.storageLoading = false })
-      throw ex
+      runInAction(() => {
+        this.storageBackends = storage.storage_backends
+        this.storageConfigDefault = storage.config_default || ''
+      })
+    } finally {
+      runInAction(() => {
+        this.storageLoading = false
+      })
     }
-  }
-
-  @action loadStorageSuccess(storage: Storage) {
-    this.storageBackends = storage.storage_backends
-    this.storageConfigDefault = storage.config_default || ''
-    this.storageLoading = false
   }
 }
 

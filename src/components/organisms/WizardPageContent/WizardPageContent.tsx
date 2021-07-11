@@ -177,6 +177,7 @@ type Props = {
   wizardData: WizardData,
   schedules: ScheduleType[],
   storageMap: StorageMap[],
+  onStorageReloadClick: () => void,
   defaultStorage: { value: string | null, busType?: string | null } | undefined,
   hasStorageMap: boolean,
   hasSourceOptions: boolean,
@@ -514,6 +515,8 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'storage':
         body = (
           <WizardStorage
+            loading={endpointStore.storageLoading}
+            onReloadClick={this.props.onStorageReloadClick}
             storageBackends={this.props.endpointStore.storageBackends}
             instancesDetails={this.props.instanceStore.instancesDetails}
             storageMap={this.props.storageMap}

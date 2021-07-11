@@ -29,6 +29,8 @@ import backendImage from './images/backend.svg'
 import diskImage from './images/disk.svg'
 import bigStorageImage from './images/storage-big.svg'
 import arrowImage from './images/arrow.svg'
+import StatusImage from '../../atoms/StatusImage/StatusImage'
+import Button from '../../atoms/Button/Button'
 
 const Wrapper = styled.div<any>`
   width: 100%;
@@ -129,14 +131,25 @@ const NoStorageTitle = styled.div<any>`
   margin-bottom: 10px;
   font-size: 18px;
 `
-const NoStorageSubtitle = styled.div<any>`
+const NoStorageSubtitle = styled.div`
   color: ${Palette.grayscale[4]};
   text-align: center;
+  margin-bottom: 42px;
 `
 const DiskDisabledMessage = styled.div<any>`
   width: 224px;
   text-align: center;
   color: gray;
+`
+const LoadingWrapper = styled.div`
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+const LoadingText = styled.div`
+  margin-top: 38px;
+  font-size: 18px;
 `
 
 export const getDisks = (instancesDetails: Instance[], type: 'backend' | 'disk', storageMap?: StorageMap[] | null): Disk[] => {
@@ -164,6 +177,8 @@ export const TEST_ID = 'wizardStorage'
 
 export type Props = {
   storageBackends: StorageBackend[],
+  loading: boolean,
+  onReloadClick?: () => void
   instancesDetails: Instance[],
   storageMap: StorageMap[] | null | undefined,
   defaultStorageLayout: 'modal' | 'page',
@@ -178,12 +193,15 @@ export type Props = {
 class WizardStorage extends React.Component<Props> {
   renderNoStorage() {
     return (
-      <NoStorageMessage data-test-id={`${TEST_ID}-noStorage`}>
+      <NoStorageMessage>
         <BigStorageImage />
         <NoStorageTitle>No storage backends were found</NoStorageTitle>
         <NoStorageSubtitle>
           We could not find any storage backends. Coriolis will skip this step.
         </NoStorageSubtitle>
+        {this.props.onReloadClick ? (
+          <Button hollow onClick={this.props.onReloadClick}>Try again</Button>
+        ) : null}
       </NoStorageMessage>
     )
   }
@@ -196,39 +214,6 @@ class WizardStorage extends React.Component<Props> {
       </DiskDisabledMessage>
     )
   }
-
-  // renderBusTypeDropdown(selectedStorageMap: StorageMap | null | undefined) {
-  //   if (!selectedStorageMap) {
-  //     return null
-  //   }
-  //   type DropdownItem = {label: string, value: string | null}
-  //   const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
-  //     .find(s => s.id === selectedStorageMap.target.id)?.additional_provider_properties?.supported_bus_types?.map(value => ({
-  //       label: value,
-  //       value,
-  //     }))
-  //   if (!storageBusTypes || !storageBusTypes.length) {
-  //     return null
-  //   }
-  //   storageBusTypes.unshift({
-  //     label: 'Choose a Bus Type',
-  //     value: null,
-  //   })
-  //   const selectedBusType = selectedStorageMap?.targetBusType
-
-  //   return (
-  //     <Dropdown
-  //       width={StyleProps.inputSizes.large.width}
-  //       noSelectionMessage="Choose a Bus Type"
-  //       centered
-  //       items={storageBusTypes}
-  //       selectedItem={selectedBusType}
-  //       onChange={(item: DropdownItem) => {
-  //         this.props.onChange({ ...selectedStorageMap, targetBusType: item.value })
-  //       }}
-  //     />
-  //   )
-  // }
 
   renderStorageDropdown(
     storageItems: Array<StorageBackend>,
@@ -396,40 +381,6 @@ class WizardStorage extends React.Component<Props> {
         )
     }
 
-    // const renderDefaultBusTypeDropdown = () => {
-    //   if (!this.props.defaultStorage || !this.props.defaultStorage.value) {
-    //     return null
-    //   }
-
-    //   type DropdownItem = { label: string, value: string | null }
-    //   const storageBusTypes: DropdownItem[] | undefined = this.props.storageBackends
-    //     .find(s => s.id === this.props.defaultStorage?.value)?.additional_provider_properties?.supported_bus_types?.map(value => ({
-    //       label: value,
-    //       value,
-    //     }))
-    //   if (!storageBusTypes || !storageBusTypes.length) {
-    //     return null
-    //   }
-    //   storageBusTypes.unshift({
-    //     label: 'Choose a Bus Type',
-    //     value: null,
-    //   })
-    //   const selectedBusType = this.props.defaultStorage.busType
-
-    //   return (
-    //     <Dropdown
-    //       width={StyleProps.inputSizes.regular.width}
-    //       noSelectionMessage="Choose a Bus Type"
-    //       centered
-    //       items={storageBusTypes}
-    //       selectedItem={selectedBusType}
-    //       onChange={(item: DropdownItem) => {
-    //         this.props.onDefaultStorageChange(this.props.defaultStorage?.value || null, item.value)
-    //       }}
-    //     />
-    //   )
-    // }
-
     return (
       <StorageWrapper>
         <StorageSection>
@@ -457,14 +408,25 @@ class WizardStorage extends React.Component<Props> {
     )
   }
 
+  renderLoading() {
+    return (
+      <LoadingWrapper>
+        <StatusImage loading />
+        <LoadingText>Loading storage...</LoadingText>
+      </LoadingWrapper>
+    )
+  }
+
   render() {
     return (
       <Wrapper style={this.props.style} ref={this.props.onScrollableRef}>
-        <Mapping>
-          {this.renderDefaultStorage()}
-          {this.renderBackendMapping()}
-          {this.renderDiskMapping()}
-        </Mapping>
+        {this.props.loading ? this.renderLoading() : (
+          <Mapping>
+            {this.renderDefaultStorage()}
+            {this.renderBackendMapping()}
+            {this.renderDiskMapping()}
+          </Mapping>
+        )}
       </Wrapper>
     )
   }

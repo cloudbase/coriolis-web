@@ -211,6 +211,10 @@ class WizardPage extends React.Component<Props, State> {
     this.props.history.replace(`/wizard/${type}`)
   }
 
+  handleStorageReloadClick() {
+    endpointStore.loadStorage(wizardStore.data.target!.id, wizardStore.data.destOptions)
+  }
+
   handleBackClick() {
     const currentPageIndex = this.pages.findIndex(p => p.id === wizardStore.currentPage.id)
 
@@ -690,6 +694,7 @@ class WizardPage extends React.Component<Props, State> {
               hasSourceOptions={Boolean(this.pages.find(p => p.id === 'source-options'))}
               defaultStorage={wizardStore.defaultStorage}
               storageMap={wizardStore.storageMap}
+              onStorageReloadClick={() => { this.handleStorageReloadClick() }}
               schedules={wizardStore.schedules}
               nextButtonDisabled={this.isNextButtonDisabled()}
               showLoadingButton={this.shouldShowLoadingButton()}
