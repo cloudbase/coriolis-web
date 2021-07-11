@@ -18,6 +18,7 @@
     "src/**/package.json"
   ],
   "rules": {
+    "react/sort-comp": "off",
     "react/jsx-one-expression-per-line": "off",
     "@typescript-eslint/semi": [
       2,
