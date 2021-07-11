@@ -16,5 +16,6 @@
     "source.fixAll.eslint": true
   },
   "files.eol": "\n",
-  "debug.javascript.autoAttachFilter": "always"
+  "debug.javascript.autoAttachFilter": "always",
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
