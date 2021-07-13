@@ -109,6 +109,7 @@ type State = {
   destinationData: any,
   sourceData: any,
   updateDisabled: boolean,
+  updating: boolean,
   selectedNetworks: NetworkMap[],
   defaultStorage: { value: string | null, busType?: string | null } | undefined,
   storageMap: StorageMap[],
@@ -125,6 +126,7 @@ class EditReplica extends React.Component<Props, State> {
     destinationData: {},
     sourceData: {},
     updateDisabled: false,
+    updating: false,
     selectedNetworks: [],
     defaultStorage: undefined,
     storageMap: [],
@@ -505,7 +507,7 @@ class EditReplica extends React.Component<Props, State> {
   }
 
   async handleUpdateClick() {
-    this.setState({ updateDisabled: true })
+    this.setState({ updating: true })
 
     const updateData: UpdateData = {
       source: this.state.sourceData,
@@ -528,7 +530,7 @@ class EditReplica extends React.Component<Props, State> {
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/replicas/${this.props.replica.id}/executions`)
       } catch (err) {
-        this.setState({ updateDisabled: false })
+        this.setState({ updating: false })
       }
     } else {
       try {
@@ -550,7 +552,7 @@ class EditReplica extends React.Component<Props, State> {
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/migrations/${migration.id}/tasks`)
       } catch (err) {
-        this.setState({ updateDisabled: false })
+        this.setState({ updating: false })
       }
     }
   }
@@ -755,10 +757,12 @@ class EditReplica extends React.Component<Props, State> {
             large
             onClick={this.props.onRequestClose}
             secondary
-          >Cancel
+          >Close
           </Button>
           {this.isLoading() ? (
-            <LoadingButton>Loading ...</LoadingButton>
+            <LoadingButton large>Loading ...</LoadingButton>
+          ) : this.state.updating ? (
+            <LoadingButton large>Updating ...</LoadingButton>
           ) : (
             <Button
               large
