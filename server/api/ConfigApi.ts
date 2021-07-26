@@ -34,14 +34,17 @@ const modServicesUrls = (configServices: Services, servicesMod?: Services): Serv
   return services
 }
 
+const NOT_FIRST_LAUNCH_PATH = path.join(__dirname, '../../.not-first-launch')
+
 export default (router: express.Router) => {
   router.get('/config', (_, res) => {
     const configPath = path.join(__dirname, '../../config.ts')
+    const isFirstLaunch = !fs.existsSync(NOT_FIRST_LAUNCH_PATH)
     const config: any = requireWithoutCache(configPath, require).config
     const modJsonPath: string | null | undefined = process.env.MOD_JSON
     if (!modJsonPath) {
       config.servicesUrls = modServicesUrls(config.servicesUrls)
-      res.send(config)
+      res.send({ config, isFirstLaunch })
       return
     }
     try {
@@ -53,10 +56,18 @@ export default (router: express.Router) => {
         }
       })
       config.servicesUrls = modServicesUrls(config.servicesUrls, configMod.servicesUrls)
-      res.send(config)
+      res.send({ config, isFirstLaunch })
     } catch (err) {
       console.error(err)
       res.status(400).json({ error: { message: 'Invalid MOD_JSON file' } })
     }
+  }).post('/config/first-launch', (req, res) => {
+    const { isFirstLaunch } = req.body
+    if (isFirstLaunch !== false) {
+      res.status(422).json({ error: { message: '\'isFirstLaunch\' property not set to \'false\'' } })
+      return
+    }
+    fs.writeFileSync(NOT_FIRST_LAUNCH_PATH, '')
+    res.json({ isFirstLaunch })
   })
 }

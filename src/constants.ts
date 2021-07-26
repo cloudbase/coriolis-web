@@ -107,3 +107,8 @@ export const wizardPages: WizardPage[] = [
 ]
 
 export const basename = process.env.PUBLIC_PATH
+
+export const LEGAL_URLS = {
+  eula: 'https://cloudbase.it/coriolis-eula/',
+  privacy: ' https://cloudbase.it/privacy/',
+}

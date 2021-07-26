@@ -47,6 +47,7 @@ type Props = {
   disabled?: boolean,
   color?: string,
   thick?: boolean,
+  style?: React.CSSProperties
 }
 
 @observer

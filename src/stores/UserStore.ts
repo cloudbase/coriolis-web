@@ -18,6 +18,7 @@ import type { Project } from '@src/@types/Project'
 import UserSource from '@src/sources/UserSource'
 import projectStore from './ProjectStore'
 import notificationStore from './NotificationStore'
+import configLoader from '../utils/Config'
 
 /**
  * This is the authentication / authorization flow:
@@ -72,6 +73,9 @@ class UserStore {
       await this.getLoggedUserInfo()
       await this.loginScoped(this.loggedUser ? this.loggedUser.project_id : '', true)
       await this.isAdmin()
+      // If the user skipped the setup process and has successfully logged in,
+      // make sure the setup page doesn't get displayed again
+      configLoader.setNotFirstLaunch()
       runInAction(() => { this.loggedIn = true })
       notificationStore.alert('Signed in', 'success')
     } catch (err) {
@@ -163,7 +167,7 @@ class UserStore {
       const users = await UserSource.getAllUsers(options?.skipLog, options?.quietError)
       runInAction(() => { this.users = users })
     } catch (err) {
-      if (err.data?.error?.code !== 403) {
+      if ((err as any).data?.error?.code !== 403) {
         throw err
       }
     } finally {

@@ -111,6 +111,7 @@ type Props = {
   onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
   onFocus?: () => void,
   onBlur?: () => void,
+  autoComplete?: string
 }
 const TextInput = (props: Props) => {
   const {

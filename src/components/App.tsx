@@ -14,7 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { hot } from 'react-hot-loader/root'
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import {
+  BrowserRouter as Router, Switch, Route,
+} from 'react-router-dom'
 import styled, { createGlobalStyle } from 'styled-components'
 import { observe } from 'mobx'
 
@@ -47,6 +49,7 @@ import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import configLoader from '@src/utils/Config'
 import { navigationMenu } from '@src/constants'
 import userStore from '@src/stores/UserStore'
+import SetupPage from '@src/components/smart/SetupPage'
 
 const GlobalStyle = createGlobalStyle`
  ${Fonts}
@@ -91,7 +94,14 @@ class App extends React.Component<{}, State> {
       this.setState({})
     })
     await configLoader.load()
-    userStore.tokenLogin()
+    if (configLoader.isFirstLaunch && window.location.pathname !== '/login') {
+      if (window.location.pathname !== '/') {
+        window.location.href = '/'
+        return
+      }
+    } else {
+      userStore.tokenLogin()
+    }
     this.setState({ isConfigReady: true })
   }
 
@@ -153,7 +163,7 @@ class App extends React.Component<{}, State> {
           showAuthAnimation: true,
         })
       }
-      if (userStore.loggedUser && userStore.loggedUser.isAdmin === false) {
+      if (userStore.loggedUser?.isAdmin === false) {
         return renderMessagePage({
           path: actualPath,
           exact,
@@ -162,7 +172,7 @@ class App extends React.Component<{}, State> {
           showDenied: true,
         })
       }
-      if (userStore.loggedUser && userStore.loggedUser.isAdmin) {
+      if (userStore.loggedUser?.isAdmin) {
         return <Route path={actualPath} exact={exact} component={component} />
       }
       return null
@@ -173,7 +183,9 @@ class App extends React.Component<{}, State> {
         <GlobalStyle />
         <Router>
           <Switch>
-            {renderRoute('/', DashboardPage, true)}
+            {configLoader.isFirstLaunch ? (
+              <Route path="/" component={SetupPage} exact />
+            ) : renderRoute('/', DashboardPage, true)}
             <Route path="/login" component={LoginPage} />
             {renderRoute('/dashboard', DashboardPage)}
             {renderRoute('/replicas', ReplicasPage, true)}

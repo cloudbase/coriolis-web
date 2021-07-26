@@ -20,6 +20,7 @@ export type Services = {
   coriolisLogs: string,
   coriolisLogStreamBaseUrl: string,
   coriolisLicensing: string,
+  cloudbaseEmailEndpoint: string
 }
 
 export type Config = {

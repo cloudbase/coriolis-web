@@ -9,6 +9,7 @@ declare module 'ansi-to-html'
 
 declare module 'require-without-cache'
 declare module 'react-transition-group'
+declare module 'tai-password-strength'
 
 interface Window {
   /**

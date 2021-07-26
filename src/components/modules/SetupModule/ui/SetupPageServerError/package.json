@@ -1,0 +1,6 @@
+{
+  "name": "SetupPageServerError",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./SetupPageServerError.tsx"
+}

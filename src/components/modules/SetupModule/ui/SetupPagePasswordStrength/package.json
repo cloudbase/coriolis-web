@@ -1,0 +1,6 @@
+{
+  "name": "SetupPagePasswordStrength",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./SetupPagePasswordStrength.tsx"
+}

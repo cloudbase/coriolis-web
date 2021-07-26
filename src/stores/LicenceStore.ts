@@ -34,7 +34,7 @@ class LicenceStore {
       this.loadingLicenceInfo = true
     }
     try {
-      const ids = await licenceSource.loadAppliancesIds(opts?.skipLog)
+      const ids = await licenceSource.loadAppliancesIds({ skipLog: opts?.skipLog, quietError: true })
       if (!ids.length || ids.length > 1) {
         runInAction(() => {
           if (ids.length > 1) {
@@ -46,7 +46,7 @@ class LicenceStore {
       }
       const applianceId = ids[0]
       const [licenceServerStatus, licenceInfo] = await Promise.all([
-        licenceSource.loadLicenceServerStatus(opts?.skipLog),
+        licenceSource.loadLicenceServerStatus({ skipLog: opts?.skipLog, quietError: true }),
         licenceSource.loadLicenceInfo(applianceId, opts?.skipLog),
       ])
       runInAction(() => {

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const image = (color: string) => `
+export default (color: string) => `
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="59px" height="22px" viewBox="0 0 59 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
@@ -33,5 +33,3 @@ const image = (color: string) => `
     </g>
 </svg>
 `
-
-export default image

@@ -18,15 +18,25 @@ import configLoader from '@src/utils/Config'
 import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
 
 class LicenceSource {
-  async loadAppliancesIds(skipLog?: boolean | null): Promise<string[]> {
+  async loadAppliancesIds(config?: {
+    skipLog?: boolean,
+    quietError?: boolean
+  }): Promise<string[]> {
     const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances`
-    const response = await Api.send({ url, quietError: true, skipLog })
+    const response = await Api.send({
+      url,
+      quietError: config?.quietError,
+      skipLog: config?.skipLog,
+    })
     return response.data.appliances.map((a: any) => a.id)
   }
 
-  async loadLicenceServerStatus(skipLog?: boolean | null): Promise<LicenceServerStatus> {
+  async loadLicenceServerStatus(config?: {
+    skipLog?: boolean,
+    quietError?: boolean
+  }): Promise<LicenceServerStatus> {
     const url = `${configLoader.config.servicesUrls.coriolisLicensing}/status`
-    const response = await Api.send({ url, quietError: true, skipLog })
+    const response = await Api.send({ url, quietError: config?.quietError, skipLog: config?.skipLog })
     const status: LicenceServerStatus = response.data.status
     status.supported_licence_versions.sort((a, b) => b.localeCompare(a))
     return response.data.status

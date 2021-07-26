@@ -28,6 +28,9 @@ import FileUtils from '@src/utils/FileUtils'
 
 import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
 
+// import OpenInNewIcon from '@src/components/ui/OpenInNewIcon'
+import OpenInNewIcon from '@src/components/ui/OpenInNewIcon'
+import { LEGAL_URLS } from '@src/constants'
 import licenceImage from './images/licence'
 
 const Wrapper = styled.div<any>`
@@ -98,6 +101,29 @@ const FakeFileInput = styled.input`
   position: absolute;
   opacity: 0;
   top: -99999px;
+`
+// const OutsideLinkLarge = styled.a`
+//   display: inline-block;
+//   color: ${ThemePalette.primary};
+//   cursor: pointer;
+//   text-decoration: none;
+//   margin-top: 16px;
+// `
+const OutsideLink = styled.a`
+  display: inline-block;
+  color: ${ThemePalette.primary};
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: 8px;
+  font-size: 12px;
+`
+const OpenInNewIconWrapper = styled.div`
+  ${ThemeProps.exactSize('16px')}
+  display: inline-block;
+  position: relative;
+  top: 9px;
+  margin-top: -12px;
+  transform: scale(0.6);
 `
 
 type Props = {
@@ -283,6 +309,12 @@ class LicenceModule extends React.Component<Props, State> {
               <CopyValue value={`${info.applianceId}-licence${status.supported_licence_versions[0]}`} />
             </LicenceRowDescription>
           </LicenceRowContent>
+        </LicenceRow>
+        <LicenceRow>
+          <OutsideLink href={LEGAL_URLS.eula} target="_blank">
+            Read Coriolis© EULA
+            <OpenInNewIconWrapper dangerouslySetInnerHTML={{ __html: OpenInNewIcon(ThemePalette.primary) }} />
+          </OutsideLink>
         </LicenceRow>
       </LicenceInfoWrapper>
     )

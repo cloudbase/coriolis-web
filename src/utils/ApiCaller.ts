@@ -35,6 +35,7 @@ export type RequestOptions = {
   skipLog?: boolean | null,
   cache?: boolean | null,
   cacheFor?: number | null,
+  timeout?: number
 }
 
 let cancelables: Cancelable[] = []
@@ -81,6 +82,7 @@ class ApiCaller {
       headers: options.headers || {},
       data: options.data || null,
       responseType: options.responseType || 'json',
+      timeout: options.timeout,
     }
 
     if (options.cancelId) {
