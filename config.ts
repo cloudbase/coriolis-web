@@ -105,6 +105,19 @@ const conf: Config = {
     oracle_vm: 3,
   },
 
+  providerNames: {
+    aws: 'AWS',
+    openstack: 'OpenStack',
+    vmware_vsphere: 'VMware',
+    azure: 'Azure',
+    'hyper-v': 'Hyper-V',
+    kubevirt: 'KubeVirt',
+    scvmm: 'SCVMM',
+    oci: 'OCI',
+    opc: 'Oracle Cloud',
+    oracle_vm: 'Oracle VM',
+  },
+
   // The list of the users to hide in the UI
   hiddenUsers: ['barbican', 'coriolis'],
 

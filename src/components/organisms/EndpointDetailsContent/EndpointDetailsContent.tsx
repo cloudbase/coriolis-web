@@ -250,7 +250,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Type</Label>
-            {this.renderValue(type || '', 'type')}
+            {this.renderValue(this.props.item ? configLoader.config.providerNames[this.props.item.type] : '', 'type')}
           </Field>
           <Field>
             <Label>Coriolis Regions</Label>

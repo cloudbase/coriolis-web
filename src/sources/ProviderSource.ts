@@ -43,8 +43,7 @@ class ProviderSource {
         cache: useCache,
         quietError,
       })
-      const schemas = (response && response.data && response.data.schemas) || {}
-      const schema = optionsType === 'source' ? schemas.source_environment_schema : schemas.destination_environment_schema
+      const schema = optionsType === 'source' ? response?.data?.schemas?.source_environment_schema : response?.data?.schemas?.destination_environment_schema
       let fields = []
       if (schema) {
         fields = SchemaParser.optionsSchemaToFields(providerName, schema, `${providerName}-${optionsType}`)

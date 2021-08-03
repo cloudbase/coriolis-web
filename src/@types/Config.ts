@@ -1,3 +1,5 @@
+import { ProviderTypes } from './Providers'
+
 type Type = 'source' | 'destination'
 
 type ExtraOption = {
@@ -30,7 +32,8 @@ export type Config = {
   requestPollTimeout: number,
   instancesListBackgroundLoading: { default: number, [prop: string]: number },
   extraOptionsApiCalls: ExtraOption[],
-  providerSortPriority: { [providerName: string]: number },
+  providerSortPriority: { [providerName in ProviderTypes]: number },
+  providerNames: {[providerName in ProviderTypes]: string}
   hiddenUsers: string[],
   passwordFields: string[],
   mainListItemsPerPage: number,

@@ -37,7 +37,6 @@ import replicaStore from '../../../stores/ReplicaStore'
 import providerStore from '../../../stores/ProviderStore'
 import EndpointDuplicateOptions from '../../organisms/EndpointDuplicateOptions'
 
-import LabelDictionary from '../../../utils/LabelDictionary'
 import configLoader from '../../../utils/Config'
 import Palette from '../../styleUtils/Palette'
 import { ProviderTypes } from '../../../@types/Providers'
@@ -96,7 +95,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     const types = [{ label: 'All', value: 'all' }]
     endpointStore.endpoints.forEach(endpoint => {
       if (!types.find(t => t.value === endpoint.type)) {
-        types.push({ label: LabelDictionary.get(endpoint.type), value: endpoint.type })
+        types.push({ label: configLoader.config.providerNames[endpoint.type], value: endpoint.type })
       }
     })
 
