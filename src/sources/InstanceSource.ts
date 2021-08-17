@@ -30,7 +30,7 @@ class InstanceSource {
     searchText?: string,
     env?: any,
     cache?: boolean,
-  ): Promise<Instance[]> {
+  ): Promise<[Instance[], Instance[]]> {
     let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let queryParams: { [prop: string]: string | number } = {}
 
@@ -65,7 +65,16 @@ class InstanceSource {
     url = `${url}${keys.length > 0 ? '?' : ''}${keys.map(p => `${p}=${queryParams[p]}`).join('&')}`
 
     const response = await Api.send({ url, cancelId, cache })
-    return response.data.instances
+    const rawinstances: Instance[] = response.data.instances
+    const invalidInstances: Instance[] = []
+    const instances = rawinstances.filter(instance => {
+      if (!instance.id) {
+        invalidInstances.push(instance)
+        return false
+      }
+      return true
+    })
+    return [instances, invalidInstances]
   }
 
   async loadInstances(endpointId: string, cache?: boolean | null): Promise<Instance[]> {

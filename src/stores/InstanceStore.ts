@@ -22,6 +22,7 @@ import InstanceSource from '../sources/InstanceSource'
 import ApiCaller from '../utils/ApiCaller'
 import configLoader from '../utils/Config'
 import { ProviderTypes } from '../@types/Providers'
+import notificationStore from './NotificationStore'
 
 class InstanceStore {
   @observable instancesLoading = false
@@ -99,11 +100,15 @@ class InstanceStore {
 
     const loadNextChunk = async (lastEndpointId?: string) => {
       const currentEndpointId = endpoint.id
-      const instances = await InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`, undefined, env, useCache)
+      const [instances, invalidInstances] = await InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`, undefined, env, useCache)
       if (currentEndpointId !== this.lastEndpointId) {
         return
       }
-      const shouldContinue = this.loadInstancesInChunksSuccess(instances, chunkCount, reload)
+      if (invalidInstances.length) {
+        notificationStore.alert(`There are one or more instances with invalid data (i.e. missing ID): ${invalidInstances.map(i => i.name || i.instance_name).join(', ')}`, 'error')
+      }
+
+      const shouldContinue = this.loadInstancesInChunksSuccess(instances, instances.length + invalidInstances.length, chunkCount, reload)
       if (shouldContinue) {
         loadNextChunk(instances[instances.length - 1].id)
       }
@@ -112,7 +117,10 @@ class InstanceStore {
   }
 
   @action loadInstancesInChunksSuccess(
-    instances: Instance[], chunkCount: number, reload?: boolean,
+    instances: Instance[],
+    instancesCount: number,
+    chunkCount: number,
+    reload?: boolean,
   ): boolean {
     this.backgroundInstances = [...this.backgroundInstances, ...instances]
     if (reload) {
@@ -120,7 +128,7 @@ class InstanceStore {
     }
     this.instancesLoading = false
 
-    if (instances.length < chunkCount) {
+    if (instancesCount < chunkCount) {
       this.backgroundChunksLoading = false
       return false
     }
@@ -180,7 +188,7 @@ class InstanceStore {
       .max(chunkSize[endpoint.type] || chunkSize.default, this.instancesPerPage)
 
     const loadNextChunk = async (lastEndpointId?: string) => {
-      const instances = await InstanceSource.loadInstancesChunk(
+      const [instances, invalidInstances] = await InstanceSource.loadInstancesChunk(
         endpoint.id,
         chunkCount,
         lastEndpointId,
@@ -193,7 +201,10 @@ class InstanceStore {
           this.searchedInstances = []
         })
       }
-      const shouldContinue = this.searchInstancesSuccess(instances, chunkCount)
+      if (invalidInstances.length) {
+        notificationStore.alert(`There are one or more instances with invalid data (i.e. missing ID): ${invalidInstances.map(i => i.name || i.instance_name).join(', ')}`, 'error')
+      }
+      const shouldContinue = this.searchInstancesSuccess(instances, instances.length + invalidInstances.length, chunkCount)
       if (shouldContinue) {
         loadNextChunk(instances[instances.length - 1].id)
       }
@@ -201,11 +212,11 @@ class InstanceStore {
     loadNextChunk()
   }
 
-  @action searchInstancesSuccess(instances: Instance[], chunkCount: number): boolean {
+  @action searchInstancesSuccess(instances: Instance[], instancesCount: number, chunkCount: number): boolean {
     this.searchedInstances = [...this.searchedInstances, ...instances]
     this.searching = false
     this.searchNotFound = Boolean(this.searchedInstances.length === 0)
-    if (instances.length < chunkCount) {
+    if (instancesCount < chunkCount) {
       this.searchChunksLoading = false
       return false
     }
