@@ -69,6 +69,7 @@ type State = {
   confirmationItem?: ReplicaItemDetails | null | Execution | null,
   showCancelConfirmation: boolean,
   isEditable: boolean,
+  isEditableLoading: boolean,
   pausePolling: boolean,
   initialLoading: boolean,
 }
@@ -85,6 +86,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     showCancelConfirmation: false,
     showForceCancelConfirmation: false,
     isEditable: false,
+    isEditableLoading: true,
     pausePolling: false,
     initialLoading: true,
   }
@@ -206,7 +208,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       && !!targetProviderTypes.types.find(t => t === providerTypes.TARGET_UPDATE)
       : false
 
-    this.setState({ isEditable })
+    this.setState({ isEditable, isEditableLoading: false })
   }
 
   async loadReplicaWithInstances(options: {
@@ -570,6 +572,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         title: editTitle,
         action: () => { this.handleReplicaEditClick() },
         disabled: !this.state.isEditable,
+        loading: this.state.isEditableLoading,
       },
       {
         label: 'Delete Disks',
