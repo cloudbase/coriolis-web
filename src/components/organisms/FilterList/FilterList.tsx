@@ -42,6 +42,7 @@ type Props = {
   renderItemComponent: (componentProps: ItemComponentProps) => React.ReactNode,
   itemFilterFunction: (item: any, filterStatus?: string | null, filterState?: string) => boolean,
   onSelectedItemsChange?: (items: any[]) => void,
+  onPaginatedItemsChange?: (items: any[]) => void
   filterItems: DictItem[],
   emptyListImage?: string | null,
   emptyListMessage?: string,
@@ -71,7 +72,11 @@ class FilterList extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillMount() {
-    this.setState({ items: this.props.items })
+    this.setState({ items: this.props.items }, () => {
+      if (this.props.onPaginatedItemsChange) {
+        this.props.onPaginatedItemsChange(this.paginatedItems)
+      }
+    })
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
@@ -82,6 +87,10 @@ class FilterList extends React.Component<Props, State> {
         filterText: '',
         selectedItems: [],
         currentPage: 1,
+      }, () => {
+        if (this.props.onPaginatedItemsChange) {
+          this.props.onPaginatedItemsChange(this.paginatedItems)
+        }
       })
       if (this.props.onSelectedItemsChange) this.props.onSelectedItemsChange([])
       return
@@ -89,6 +98,10 @@ class FilterList extends React.Component<Props, State> {
 
     this.setState({
       items: this.filterItems(props.items),
+    }, () => {
+      if (this.props.onPaginatedItemsChange) {
+        this.props.onPaginatedItemsChange(this.paginatedItems)
+      }
     })
   }
 
@@ -121,7 +134,12 @@ class FilterList extends React.Component<Props, State> {
         items,
         currentPage: 1,
       }, () => {
-        if (this.props.onSelectedItemsChange) this.props.onSelectedItemsChange(selectedItems)
+        if (this.props.onSelectedItemsChange) {
+          this.props.onSelectedItemsChange(selectedItems)
+        }
+        if (this.props.onPaginatedItemsChange) {
+          this.props.onPaginatedItemsChange(this.paginatedItems)
+        }
       })
     })
   }
@@ -131,6 +149,10 @@ class FilterList extends React.Component<Props, State> {
       filterText: text,
       items: this.filterItems(this.props.items, null, text),
       currentPage: 1,
+    }, () => {
+      if (this.props.onPaginatedItemsChange) {
+        this.props.onPaginatedItemsChange(this.paginatedItems)
+      }
     })
   }
 
@@ -168,7 +190,11 @@ class FilterList extends React.Component<Props, State> {
   }
 
   handlePageClick(page: number) {
-    this.setState({ currentPage: page })
+    this.setState({ currentPage: page }, () => {
+      if (this.props.onPaginatedItemsChange) {
+        this.props.onPaginatedItemsChange(this.paginatedItems)
+      }
+    })
   }
 
   renderPagination() {

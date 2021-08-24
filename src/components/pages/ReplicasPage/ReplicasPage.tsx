@@ -80,6 +80,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
 
   schedulePollTimeout: number = 0
 
+  paginatedReplicaIds: string[] = []
+
   componentDidMount() {
     document.title = 'Coriolis Replicas'
 
@@ -135,6 +137,10 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     } else {
       this.props.history.push(`/replicas/${item.id}`)
     }
+  }
+
+  handlePaginatedItemsChange(paginatedReplicas: ReplicaItem[]) {
+    this.paginatedReplicaIds = paginatedReplicas.map(r => r.id)
   }
 
   executeSelectedReplicas(fields: Field[]) {
@@ -257,7 +263,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       return
     }
     this.schedulePolling = true
-    await scheduleStore.getSchedulesBulk(replicaStore.replicas.map(r => r.id))
+    await scheduleStore.getSchedulesBulk(this.paginatedReplicaIds)
     this.schedulePollTimeout = setTimeout(() => {
       this.pollSchedule()
     }, SCHEDULE_POLL_TIMEOUT)
@@ -345,6 +351,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               onReloadButtonClick={() => { this.handleReloadButtonClick() }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               onSelectedItemsChange={selectedReplicas => { this.setState({ selectedReplicas }) }}
+              onPaginatedItemsChange={paginatedReplicas => { this.handlePaginatedItemsChange(paginatedReplicas) }}
               renderItemComponent={options => (
                 <MainListItem
                   {...options}
