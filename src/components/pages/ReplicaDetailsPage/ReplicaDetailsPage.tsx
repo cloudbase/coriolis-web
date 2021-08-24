@@ -178,16 +178,14 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   getLastExecution() {
-    const replica = this.replica
-    if (replica && replica.executions && replica.executions.length) {
-      return replica.executions[replica.executions.length - 1]
+    if (this.replica?.executions?.length) {
+      return this.replica.executions[this.replica.executions.length - 1]
     }
     return null
   }
 
   getStatus() {
-    const lastExecution = this.getLastExecution()
-    return lastExecution && lastExecution.status
+    return this.getLastExecution()?.status
   }
 
   async loadIsEditable(replicaDetails: ReplicaItemDetails) {

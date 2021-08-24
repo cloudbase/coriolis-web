@@ -17,14 +17,14 @@ import cookie from 'js-cookie'
 
 import cacher from './Cacher'
 import logger from './ApiLogger'
-import notificationStore from '../stores/NotificationStore'
+import ApiCallerHandlers from './ApiCallerHandlers'
 
 type Cancelable = {
   requestId: string,
   cancel: () => void,
 }
 
-type RequestOptions = {
+export type RequestOptions = {
   url: string,
   method?: AxiosRequestConfig['method'],
   cancelId?: string,
@@ -45,29 +45,6 @@ const addCancelable = (cancelable: Cancelable) => {
   if (cancelables.length > 100) {
     cancelables.pop()
   }
-}
-
-const isOnLoginPage = (): boolean => window.location.pathname.indexOf('login') > -1
-
-const redirect = (statusCode: number) => {
-  if (statusCode !== 401 || isOnLoginPage()) {
-    return
-  }
-  let currentPath = '?prev=/'
-  if (window.location.pathname !== '/') {
-    currentPath = `?prev=${window.location.pathname}${window.location.search}`
-  }
-  window.location.href = `/login${currentPath}`
-}
-
-const truncateUrl = (url: string): string => {
-  const MAX_LENGTH = 100
-  let relativePath = url.replace(/http(s)?:\/\/.*?\//, '/')
-  relativePath += relativePath
-  if (relativePath.length > MAX_LENGTH) {
-    relativePath = `${relativePath.substr(0, MAX_LENGTH)}...`
-  }
-  return relativePath
 }
 
 class ApiCaller {
@@ -91,151 +68,63 @@ class ApiCaller {
     return this.send({ url })
   }
 
-  send(options: RequestOptions): Promise<AxiosResponse<any>> {
-    const cachedData = options.cache ? cacher
-      .load({ key: options.url, maxAge: options.cacheFor }) : null
+  async send(options: RequestOptions): Promise<AxiosResponse<any>> {
+    const cachedData = options.cache ? cacher.load({ key: options.url, maxAge: options.cacheFor }) : null
     if (cachedData) {
       const response: any = { data: cachedData }
-      return Promise.resolve(response)
+      return response
     }
 
-    return new Promise((resolve, reject) => {
-      const axiosOptions: AxiosRequestConfig = {
-        url: options.url,
-        method: options.method || 'GET',
-        headers: options.headers || {},
-        data: options.data || null,
-        responseType: options.responseType || 'json',
-      }
+    const axiosOptions: AxiosRequestConfig = {
+      url: options.url,
+      method: options.method || 'GET',
+      headers: options.headers || {},
+      data: options.data || null,
+      responseType: options.responseType || 'json',
+    }
 
-      if (options.cancelId) {
-        let cancel = () => { }
-        axiosOptions.cancelToken = new CancelToken(c => {
-          cancel = c
-        })
-        addCancelable({ requestId: options.cancelId, cancel })
-      }
+    if (options.cancelId) {
+      let cancel = () => { }
+      axiosOptions.cancelToken = new CancelToken(c => {
+        cancel = c
+      })
+      addCancelable({ requestId: options.cancelId, cancel })
+    }
 
+    if (!options.skipLog) {
+      logger.log({
+        url: axiosOptions.url,
+        method: axiosOptions.method || 'GET',
+        type: 'REQUEST',
+      })
+    }
+
+    const apiCallerHandlers = new ApiCallerHandlers(options, axiosOptions)
+
+    try {
+      const response = await axios(axiosOptions)
       if (!options.skipLog) {
+        console.log(`%cResponse ${axiosOptions.url}`, 'color: #0044CA', response.data)
         logger.log({
           url: axiosOptions.url,
           method: axiosOptions.method || 'GET',
-          type: 'REQUEST',
+          type: 'RESPONSE',
+          requestStatus: 200,
         })
       }
-
-      axios(axiosOptions).then(response => {
-        if (!options.skipLog) {
-          console.log(`%cResponse ${axiosOptions.url}`, 'color: #0044CA', response.data)
-          logger.log({
-            url: axiosOptions.url,
-            method: axiosOptions.method || 'GET',
-            type: 'RESPONSE',
-            requestStatus: 200,
-          })
-        }
-        if (options.cache) {
-          cacher.save({ key: options.url, data: response.data })
-        }
-        resolve(response)
-      }).catch(error => {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          if (
-            (error.response.status !== 401 || !isOnLoginPage())
-            && !options.quietError) {
-            const data = error.response.data
-            const message = (data && data.error && data.error.message) || (data && data.description)
-            const alertMessage = message || `${error.response.statusText || error.response.status} ${truncateUrl(options.url)}`
-            const status = error.response.status && error.response.statusText
-              ? `${error.response.status} - ${error.response.statusText}`
-              : error.response.statusText || error.response.status
-            notificationStore.alert(alertMessage, 'error', {
-              action: {
-                label: 'View details',
-                callback: () => ({ request: axiosOptions, error: { status, message } }),
-              },
-            })
-          }
-
-          if (error.request.responseURL.indexOf('/proxy/') === -1
-            && error.request.responseURL.indexOf('/azure-login') === -1) {
-            redirect(error.response.status)
-          }
-
-          logger.log({
-            url: axiosOptions.url,
-            method: axiosOptions.method || 'GET',
-            type: 'RESPONSE',
-            requestStatus: error.response.status,
-            requestError: error,
-          })
-          reject(error.response)
-        } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest
-          if (!isOnLoginPage() && !options.quietError) {
-            notificationStore.alert(
-              `Request failed, there might be a problem with the connection to the server. ${truncateUrl(options.url)}`,
-              'error',
-              {
-                action: {
-                  label: 'View details',
-                  callback: () => ({
-                    request: axiosOptions,
-                    error: { message: 'Request was made but no response was received' },
-                  }),
-                },
-              },
-            )
-          }
-          logger.log({
-            url: axiosOptions.url,
-            method: axiosOptions.method || 'GET',
-            type: 'RESPONSE',
-            description: 'No response',
-            requestStatus: 500,
-            requestError: error,
-          })
-          reject({})
-        } else {
-          const canceled = error.__CANCEL__
-          reject({ canceled })
-          if (canceled) {
-            logger.log({
-              url: axiosOptions.url,
-              method: axiosOptions.method || 'GET',
-              type: 'RESPONSE',
-              requestStatus: 'canceled',
-            })
-            return
-          }
-
-          // Something happened in setting up the request that triggered an Error
-          logger.log({
-            url: axiosOptions.url,
-            method: axiosOptions.method || 'GET',
-            type: 'RESPONSE',
-            description: 'Something happened in setting up the request',
-            requestStatus: 500,
-          })
-          notificationStore.alert(
-            `Request failed, there might be a problem with the connection to the server. ${truncateUrl(options.url)}`,
-            'error',
-            {
-              action: {
-                label: 'View details',
-                callback: () => ({
-                  request: axiosOptions,
-                  error: { message: 'Something happened in setting up the request' },
-                }),
-              },
-            },
-          )
-        }
-      })
-    })
+      if (options.cache) {
+        cacher.save({ key: options.url, data: response.data })
+      }
+      return response
+    } catch (error) {
+      if (error.response) {
+        throw apiCallerHandlers.handleErrorResponse(error)
+      } else if (error.request) {
+        throw apiCallerHandlers.handleErrorRequest(error)
+      } else {
+        throw apiCallerHandlers.handleRequestCancel(error)
+      }
+    }
   }
 
   setDefaultHeader(name: string, value: string | null) {
