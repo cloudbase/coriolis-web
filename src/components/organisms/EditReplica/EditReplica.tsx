@@ -674,12 +674,10 @@ class EditReplica extends React.Component<Props, State> {
     if (this.props.instancesDetailsLoading) {
       return this.renderLoading('Loading instances details ...')
     }
-    if (endpointStore.storageLoading) {
-      return this.renderLoading('Loading storage ...')
-    }
 
     return (
       <WizardStorage
+        loading={endpointStore.storageLoading}
         defaultStorage={this.getDefaultStorage()}
         onDefaultStorageChange={(value, busType) => { this.setState({ defaultStorage: { value, busType } }) }}
         defaultStorageLayout="modal"

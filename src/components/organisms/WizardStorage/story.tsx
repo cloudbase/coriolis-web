@@ -64,6 +64,7 @@ const storageBackends: any = [
 storiesOf('WizardStorage', module)
   .add('page', () => (
     <WizardStorage
+      loading={false}
       storageBackends={storageBackends}
       instancesDetails={instancesDetails}
       storageMap={null}
@@ -75,6 +76,7 @@ storiesOf('WizardStorage', module)
   ))
   .add('modal', () => (
     <WizardStorage
+      loading={false}
       storageBackends={storageBackends}
       instancesDetails={instancesDetails}
       storageMap={null}
