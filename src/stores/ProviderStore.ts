@@ -145,20 +145,26 @@ class ProviderStore {
 
   @computed
   get providerNames(): ProviderTypes[] {
+    if (!this.providers) {
+      return []
+    }
+
     const sortPriority = configLoader.config.providerSortPriority
 
-    const array: any[] = Object.keys(this.providers || {}).sort((a, b) => {
-      if (sortPriority[a] && sortPriority[b]) {
-        return (sortPriority[a] - sortPriority[b]) || a.localeCompare(b)
+    const array = Object.keys(this.providers).sort((a, b) => {
+      const aTyped = a as ProviderTypes
+      const bTyped = b as ProviderTypes
+      if (sortPriority[aTyped] && sortPriority[bTyped]) {
+        return (sortPriority[aTyped] - sortPriority[bTyped]) || a.localeCompare(b)
       }
-      if (sortPriority[a]) {
+      if (sortPriority[aTyped]) {
         return -1
       }
-      if (sortPriority[b]) {
+      if (sortPriority[bTyped]) {
         return 1
       }
       return a.localeCompare(b)
-    })
+    }) as ProviderTypes[]
     return array
   }
 

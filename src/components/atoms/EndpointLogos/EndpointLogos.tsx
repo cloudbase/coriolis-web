@@ -17,6 +17,7 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
 import Generic from './resources/Generic'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div<any>``
 const Logo = styled.div<any>`
@@ -33,9 +34,6 @@ const widthHeights = [
   { w: 105, h: 42 },
   { w: 185, h: 128 },
   { w: 185, h: 64 },
-]
-const PROVIDER_LOGOS = [
-  'azure', 'openstack', 'opc', 'oracle_vm', 'vmware_vsphere', 'aws', 'oci', 'hyper-v', 'scvmm', 'kubevirt',
 ]
 type Props = {
   endpoint?: string | null,
@@ -74,7 +72,7 @@ class EndpointLogos extends React.Component<Props> {
 
     let imageUrl: string | null = null
     const provider = this.props.endpoint
-    if (provider && PROVIDER_LOGOS.indexOf(provider) > -1) {
+    if (provider && Object.keys(configLoader.config.providerNames).indexOf(provider) > -1) {
       imageUrl = `${this.props.baseUrl || ''}/api/logos/${provider}/${size.h}`
       const style = this.props.white ? 'white' : this.props.disabled ? 'disabled' : null
       imageUrl = style ? `${imageUrl}/${style}` : imageUrl

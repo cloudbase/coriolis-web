@@ -37,6 +37,7 @@ import networkArrowImage from './images/network-arrow.svg'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../WizardOptions/WizardOptions'
 import { MinionPool } from '../../../@types/MinionPool'
 import { ProviderTypes } from '../../../@types/Providers'
+import configLoader from '../../../utils/Config'
 
 const Wrapper = styled.div<any>`
   width: 100%;
@@ -392,7 +393,7 @@ class WizardSummary extends React.Component<Props> {
 
   renderTargetOptionsSection() {
     const data = this.props.data
-    const provider = this.props.data && this.props.data.target && this.props.data.target.type
+    const provider = data?.target?.type
     const type = this.props.wizardType.charAt(0).toUpperCase() + this.props.wizardType.substr(1)
 
     const executeNowOption = (
@@ -632,7 +633,7 @@ class WizardSummary extends React.Component<Props> {
               <StatusPill
                 secondary
                 small
-                label={LabelDictionary.get(data.source && data.source.type).toUpperCase()}
+                label={configLoader.config.providerNames[data.source!.type]}
                 data-test-id="wSummary-sourcePill"
               />
               <OverviewRowLabel data-test-id="wSummary-source">{data.source ? data.source.name : ''}</OverviewRowLabel>
@@ -644,7 +645,7 @@ class WizardSummary extends React.Component<Props> {
               <StatusPill
                 secondary
                 small
-                label={LabelDictionary.get(data.target && data.target.type).toUpperCase()}
+                label={configLoader.config.providerNames[data.target!.type]}
                 data-test-id="wSummary-targetPill"
               />
               <OverviewRowLabel data-test-id="wSummary-target">{data.target && data.target.name}</OverviewRowLabel>
