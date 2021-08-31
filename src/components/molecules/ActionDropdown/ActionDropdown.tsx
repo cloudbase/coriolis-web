@@ -23,6 +23,7 @@ import { List, ListItems, Tip } from '../DropdownLink/DropdownLink'
 
 import StyleProps from '../../styleUtils/StyleProps'
 import Palette from '../../styleUtils/Palette'
+import StatusIcon from '../../atoms/StatusIcon/StatusIcon'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -60,6 +61,7 @@ export type Action = {
   disabled?: boolean,
   hidden?: boolean,
   title?: string | null,
+  loading?: boolean
 }
 export type Props = {
   label: string,
@@ -175,7 +177,7 @@ class ActionDropdown extends React.Component<Props, State> {
             title={action.title}
             large={this.props.largeItems}
           >
-            {action.label}
+            {action.label}{action.loading ? <StatusIcon style={{ marginLeft: '4px', opacity: 0.3 }} status="RUNNING" /> : ''}
           </ListItem>
         ))}
       </ListItems>
