@@ -78,8 +78,7 @@ class ReplicaStore {
     }
 
     try {
-      const replicas = await ReplicaSource
-        .getReplicas(options && options.skipLog, options && options.quietError)
+      const replicas = await ReplicaSource.getReplicas(options && options.skipLog, options && options.quietError)
       this.getReplicasSuccess(replicas)
     } finally {
       this.getReplicasDone()
@@ -184,8 +183,7 @@ class ReplicaStore {
 
   @action executeSuccess(replicaId: string, execution: Execution) {
     if (this.replicaDetails?.id === replicaId) {
-      const updatedReplica = ReplicaStoreUtils
-        .getNewReplica(this.replicaDetails, execution)
+      const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
       this.replicaDetails = updatedReplica
     }
     this.getExecutionTasks({ replicaId, executionId: execution.id })
