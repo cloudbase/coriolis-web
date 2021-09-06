@@ -250,6 +250,8 @@ class LicenceModule extends React.Component<Props> {
   }
 
   renderLicenceExpired(licence: Licence, serverStatus: LicenceServerStatus) {
+    const applianceId = `${licence.applianceId}-licence${serverStatus.supported_licence_versions[0]}`
+    const applianceLabel = applianceId.replace(/(.*-.*-)(.*-.*)(-.*-.*)/, '$1...$3')
     return (
       <LicenceError>
         <p>
@@ -259,7 +261,8 @@ class LicenceModule extends React.Component<Props> {
         <ApplianceId>
           Appliance ID: <CopyValue
             style={{ marginLeft: '8px' }}
-            value={`${licence.applianceId}-licence${serverStatus.supported_licence_versions[0]}`}
+            value={applianceId}
+            label={applianceLabel}
           />
         </ApplianceId>
         <AddLicenceButtonWrapper>
