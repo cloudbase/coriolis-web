@@ -42,6 +42,7 @@ const Value = styled.span<any>`
 
 type Props = {
   value: string,
+  label?: string
   width?: string,
   maxWidth?: string,
   capitalize?: boolean,
@@ -78,7 +79,7 @@ class CopyValue extends React.Component<Props> {
           data-test-id="copyValue-value"
           width={this.props.width}
           maxWidth={this.props.maxWidth}
-        >{this.props.value}
+        >{this.props.label || this.props.value}
         </Value>
         <CopyButton />
       </Wrapper>
