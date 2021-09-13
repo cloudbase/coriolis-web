@@ -38,7 +38,7 @@ const smallblackProps = css`
   height: 48px;
   background: url('${coriolisSmallBlackImage}') center no-repeat;
 `
-const Wrapper = styled(Link)`
+const LinkStyled = styled(Link)`
   transition: all ${StyleProps.animations.swift};
 `
 const Coriolis = styled.div<any>`
@@ -63,20 +63,29 @@ type Props = {
 
 class Logo extends React.Component<Props> {
   render() {
-    const to = this.props.to || ''
+    const coriolisLogo = (
+      <Coriolis
+        large={this.props.large}
+        small={this.props.small}
+        smallblack={this.props.smallblack}
+      />
+    )
+    const logoWrapper = this.props.to ? (
+      <LinkStyled to={this.props.to}>
+        {coriolisLogo}
+      </LinkStyled>
+    ) : (
+      <div>
+        {coriolisLogo}
+      </div>
+    )
     return (
       <div
         style={{ transition: `all ${StyleProps.animations.swift}` }}
         className={this.props.className}
         ref={ref => { if (this.props.customRef && ref) this.props.customRef(ref) }}
       >
-        <Wrapper to={to}>
-          <Coriolis
-            large={this.props.large}
-            small={this.props.small}
-            smallblack={this.props.smallblack}
-          />
-        </Wrapper>
+        {logoWrapper}
       </div>
     )
   }
