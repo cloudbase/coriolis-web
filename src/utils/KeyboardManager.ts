@@ -41,7 +41,7 @@ export default class KeyboardManager {
 
   static onEnter(id: string, callback: (evt: KeyboardEvent) => void, priority?: number) {
     this.onKeyDown(`${id}-enter`, evt => {
-      if (evt.keyCode === 13) {
+      if (evt.key === 'Enter') {
         callback(evt)
       }
     }, priority)
@@ -49,7 +49,7 @@ export default class KeyboardManager {
 
   static onEsc(id: string, callback: (evt: KeyboardEvent) => void, priority?: number) {
     this.onKeyDown(`${id}-esc`, evt => {
-      if (evt.keyCode === 27) {
+      if (evt.key === 'Escape') {
         callback(evt)
       }
     }, priority)
