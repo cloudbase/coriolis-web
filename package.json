@@ -100,6 +100,7 @@
     "node-fetch": "^2.6.1",
     "node-notifier": "^8.0.1",
     "normalize-url": "^4.5.1",
+    "nth-check": "^2.0.1",
     "lodash": "^4.17.21",
     "tar": "^4.4.18",
     "ua-parser-js": "^0.7.24",
