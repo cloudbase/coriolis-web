@@ -116,7 +116,8 @@ class ApiCaller {
         cacher.save({ key: options.url, data: response.data })
       }
       return response
-    } catch (error) {
+    } catch (err) {
+      const error: any = err
       if (error.response) {
         throw apiCallerHandlers.handleErrorResponse(error)
       } else if (error.request) {

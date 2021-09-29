@@ -330,7 +330,8 @@ class ProviderStore {
         isValid(),
       )
       return options
-    } catch (err) {
+    } catch (e) {
+      const err: any = e
       console.error(err)
       canceled = err ? err.canceled : false
       if (canceled) {
