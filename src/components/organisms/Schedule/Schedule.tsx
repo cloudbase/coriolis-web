@@ -33,6 +33,7 @@ import type { Field } from '../../../@types/Field'
 import { executionOptions } from '../../../constants'
 
 import scheduleImage from './images/schedule.svg'
+import LoadingButton from '../../molecules/LoadingButton/LoadingButton'
 
 const Wrapper = styled.div<any>`
   ${StyleProps.exactWidth(StyleProps.contentWidth)}
@@ -116,6 +117,9 @@ type Props = {
   onSaveSchedule?: (schedule: ScheduleType) => void,
   adding?: boolean,
   loading?: boolean,
+  savingIds?: string[],
+  enablingIds?: string[],
+  deletingIds?: string[],
   secondaryEmpty?: boolean,
 }
 type State = {
@@ -149,7 +153,7 @@ class Schedule extends React.Component<Props, State> {
 
   handleDeleteConfirmation() {
     this.setState({ showDeleteConfirmation: false })
-    if (this.state.selectedSchedule && this.state.selectedSchedule.id) {
+    if (this.state.selectedSchedule?.id) {
       this.props.onRemove(this.state.selectedSchedule.id)
     }
   }
@@ -275,7 +279,9 @@ class Schedule extends React.Component<Props, State> {
             }}
             onShowOptionsClick={() => { this.handleShowOptions(schedule) }}
             onDeleteClick={() => { this.handleDeleteClick(schedule) }}
-            data-test-id={`schedule-item-${schedule.id || ''}`}
+            saving={Boolean(this.props.savingIds?.find(id => id === schedule.id))}
+            enabling={Boolean(this.props.enablingIds?.find(id => id === schedule.id))}
+            deleting={Boolean(this.props.deletingIds?.find(id => id === schedule.id))}
           />
         ))}
       </Body>
@@ -303,14 +309,17 @@ class Schedule extends React.Component<Props, State> {
     return (
       <NoSchedules secondary={this.props.secondaryEmpty}>
         <ScheduleImage />
-        <NoSchedulesTitle data-test-id="schedule-noScheduleTitle">{this.props.secondaryEmpty ? 'Schedule this Replica' : 'This Replica has no Schedules.'}</NoSchedulesTitle>
+        <NoSchedulesTitle>{this.props.secondaryEmpty ? 'Schedule this Replica' : 'This Replica has no Schedules.'}</NoSchedulesTitle>
         <NoSchedulesSubtitle>{this.props.secondaryEmpty ? 'You can schedule this replica so that it executes automatically.' : 'Add a new schedule so that the Replica executes automatically.'}</NoSchedulesSubtitle>
-        <Button
-          hollow={this.props.secondaryEmpty}
-          onClick={() => { this.handleAddScheduleClick() }}
-          data-test-id="schedule-noScheduleAddButton"
-        >Add Schedule
-        </Button>
+        {this.props.adding ? (
+          <LoadingButton>Adding ...</LoadingButton>
+        ) : (
+          <Button
+            hollow={this.props.secondaryEmpty}
+            onClick={() => { this.handleAddScheduleClick() }}
+          >Add Schedule
+          </Button>
+        )}
       </NoSchedules>
     )
   }
@@ -329,13 +338,15 @@ class Schedule extends React.Component<Props, State> {
     return (
       <Footer>
         <Buttons>
-          <Button
-            data-test-id="schedule-addScheduleButton"
-            disabled={this.props.adding}
-            secondary
-            onClick={() => { this.handleAddScheduleClick() }}
-          >Add Schedule
-          </Button>
+          {this.props.adding ? (
+            <LoadingButton>Adding ...</LoadingButton>
+          ) : (
+            <Button
+              disabled={this.props.adding}
+              onClick={() => { this.handleAddScheduleClick() }}
+            >Add Schedule
+            </Button>
+          )}
         </Buttons>
         <Timezone>
           <TimezoneLabel>Show all times in</TimezoneLabel>
