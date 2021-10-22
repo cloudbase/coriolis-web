@@ -41,7 +41,7 @@ type Props = {
 
 const getSpinnerUrl = (
   smallCircleColor: string,
-  useWhiteBackground: boolean | null | undefined,
+  useWhiteBackground?: boolean | null,
 ) => `url('data:image/svg+xml;utf8,${encodeURIComponent(progressImage(Palette.grayscale[3], smallCircleColor, useWhiteBackground))}');`
 
 const getRunningImageUrl = (props: Props) => {
@@ -63,6 +63,11 @@ const statuses = (status: any, props: Props) => {
     case 'AWAITING_MINION_ALLOCATIONS':
       return css`
         background-image: ${getRunningImageUrl(props)};
+        ${StyleProps.animations.rotation}
+      `
+    case 'DELETING':
+      return css`
+        background-image: ${getSpinnerUrl(Palette.alert)};
         ${StyleProps.animations.rotation}
       `
     case 'CANCELLING':
