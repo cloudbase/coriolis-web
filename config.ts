@@ -103,6 +103,7 @@ const conf: Config = {
     oci: 3,
     opc: 3,
     oracle_vm: 3,
+    ovirt: 3,
   },
 
   providerNames: {
@@ -116,6 +117,7 @@ const conf: Config = {
     oci: 'OCI',
     opc: 'Oracle Cloud',
     oracle_vm: 'Oracle VM',
+    ovirt: 'OLVM',
   },
 
   // The list of the users to hide in the UI
