@@ -176,8 +176,15 @@ class ProviderStore {
     regionsField.enum = [...regionStore.regions]
   }
 
+  loadingForProvider: ProviderTypes | null = null
+
   @action async getConnectionInfoSchema(providerName: ProviderTypes): Promise<void> {
+    if (this.connectionSchemaLoading && this.loadingForProvider === providerName) {
+      return
+    }
+
     this.connectionSchemaLoading = true
+    this.loadingForProvider = providerName
 
     try {
       const fields: Field[] = await ProviderSource.getConnectionInfoSchema(providerName)
@@ -330,7 +337,8 @@ class ProviderStore {
         isValid(),
       )
       return options
-    } catch (err) {
+    } catch (e) {
+      const err: any = e
       console.error(err)
       canceled = err ? err.canceled : false
       if (canceled) {

@@ -72,7 +72,7 @@ class ObjectUtils {
   }
 
   static async wait(ms: number) {
-    return new Promise(r => setTimeout(() => r(), ms))
+    return new Promise<void>(r => setTimeout(() => r(), ms))
   }
 
   static async waitFor(
