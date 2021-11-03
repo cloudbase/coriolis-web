@@ -32,6 +32,7 @@ import deleteImage from './images/delete.svg'
 import deleteHoverImage from './images/delete-hover.svg'
 import saveImage from './images/save.svg'
 import saveHoverImage from './images/save-hover.svg'
+import StatusIcon from '../../atoms/StatusIcon/StatusIcon'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -41,6 +42,11 @@ const Wrapper = styled.div<any>`
   &:last-child {
     border-bottom: 1px solid ${Palette.grayscale[1]};
   }
+`
+const EnablingIcon = styled.div`
+  position: absolute;
+  top: 24px;
+  left: 8px;
 `
 const Data = styled.div<any>`
   width: ${props => props.width};
@@ -87,6 +93,16 @@ const SaveButton = styled.div<any>`
     background: url('${saveHoverImage}') center no-repeat;
   }
 `
+const SavingIcon = styled.div`
+  position: absolute;
+  right: -64px;
+  top: 24px;
+`
+const DeletingIcon = styled.div`
+  position: absolute;
+  right: -32px;
+  top: 24px;
+`
 const padNumber = (number: number) => {
   if (number < 10) return `0${number}`
   return number.toString()
@@ -103,6 +119,9 @@ type Props = {
   onDeleteClick: () => void,
   unsavedSchedules: Schedule[],
   timezone: TimezoneValue,
+  saving: boolean
+  enabling: boolean
+  deleting: boolean
 }
 @observer
 class ScheduleItem extends React.Component<Props> {
@@ -200,7 +219,7 @@ class ScheduleItem extends React.Component<Props> {
       items.push({ label, value: value + 1 })
     })
 
-    if (this.props.item.enabled) {
+    if (this.props.item.enabled || this.props.deleting) {
       return this.renderLabel(this.getFieldValue(items, 'month'))
     }
 
@@ -225,7 +244,7 @@ class ScheduleItem extends React.Component<Props> {
       items.push({ label: i.toString(), value: i })
     }
 
-    if (this.props.item.enabled) {
+    if (this.props.item.enabled || this.props.deleting) {
       return this.renderLabel(this.getFieldValue(items, 'dom'))
     }
 
@@ -250,7 +269,7 @@ class ScheduleItem extends React.Component<Props> {
       items.push({ label, value })
     })
 
-    if (this.props.item.enabled) {
+    if (this.props.item.enabled || this.props.deleting) {
       return this.renderLabel(this.getFieldValue(items, 'dow', true))
     }
 
@@ -273,7 +292,7 @@ class ScheduleItem extends React.Component<Props> {
       items.push({ label: padNumber(i), value: i })
     }
 
-    if (this.props.item.enabled) {
+    if (this.props.item.enabled || this.props.deleting) {
       return this.renderLabel(this.getFieldValue(items, 'hour', true, 1))
     }
 
@@ -296,7 +315,7 @@ class ScheduleItem extends React.Component<Props> {
       items.push({ label: padNumber(i), value: i })
     }
 
-    if (this.props.item.enabled) {
+    if (this.props.item.enabled || this.props.deleting) {
       return this.renderLabel(this.getFieldValue(items, 'minute', true, 1))
     }
 
@@ -316,7 +335,7 @@ class ScheduleItem extends React.Component<Props> {
   renderExpirationValue() {
     const date = this.props.item.expiration_date && moment(this.props.item.expiration_date)
 
-    if (this.props.item.enabled) {
+    if (this.props.item.enabled || this.props.deleting) {
       let labelDate = date
       if (this.props.timezone === 'utc' && date) {
         labelDate = DateUtils.getUtcTime(date)
@@ -340,13 +359,20 @@ class ScheduleItem extends React.Component<Props> {
     return (
       <Wrapper data-test-id="scheduleItem">
         <Data width={this.props.colWidths[0]}>
-          <Switch
-            noLabel
-            height={16}
-            checked={enabled}
-            onChange={itemEnabled => { this.props.onChange({ enabled: itemEnabled }, true) }}
-            data-test-id="scheduleItem-enabled"
-          />
+          {this.props.enabling ? (
+            <EnablingIcon>
+              <StatusIcon status="RUNNING" />
+            </EnablingIcon>
+          ) : (
+            <Switch
+              noLabel
+              height={16}
+              disabled={this.props.deleting}
+              checked={enabled}
+              onChange={itemEnabled => { this.props.onChange({ enabled: itemEnabled }, true) }}
+              data-test-id="scheduleItem-enabled"
+            />
+          )}
         </Data>
         <Data width={this.props.colWidths[1]}>
           {this.renderMonthValue()}
@@ -381,17 +407,29 @@ class ScheduleItem extends React.Component<Props> {
           >•••
           </Button>
         </Data>
-        <DeleteButton
-          data-test-id="scheduleItem-deleteButton"
-          onClick={this.props.onDeleteClick}
-          hidden={this.props.item.enabled}
-        />
-        <SaveButton
-          data-test-id="scheduleItem-saveButton"
-          onClick={this.props.onSaveSchedule}
-          hidden={this.props.item.enabled
-            || !this.props.unsavedSchedules.find(us => us.id === this.props.item.id)}
-        />
+        {this.props.deleting ? (
+          <DeletingIcon>
+            <StatusIcon status="DELETING" />
+          </DeletingIcon>
+        ) : (
+          <DeleteButton
+            data-test-id="scheduleItem-deleteButton"
+            onClick={this.props.onDeleteClick}
+            hidden={this.props.item.enabled}
+          />
+        )}
+        {this.props.saving && !this.props.enabling ? (
+          <SavingIcon>
+            <StatusIcon status="RUNNING" />
+          </SavingIcon>
+        ) : (
+          <SaveButton
+            data-test-id="scheduleItem-saveButton"
+            onClick={this.props.onSaveSchedule}
+            hidden={this.props.item.enabled
+          || !this.props.unsavedSchedules.find(us => us.id === this.props.item.id)}
+          />
+        )}
       </Wrapper>
     )
   }

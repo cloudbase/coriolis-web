@@ -225,7 +225,9 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         onSaveSchedule={this.props.onScheduleSave}
         timezone={this.state.timezone}
         onTimezoneChange={timezone => { this.handleTimezoneChange(timezone) }}
-        data-test-id="rdContent-schedule"
+        savingIds={this.props.scheduleStore.savingIds}
+        enablingIds={this.props.scheduleStore.enablingIds}
+        deletingIds={this.props.scheduleStore.deletingIds}
       />
     )
   }

@@ -42,6 +42,12 @@ class ScheduleStore {
 
   @observable adding: boolean = false
 
+  @observable savingIds: string[] = []
+
+  @observable enablingIds: string[] = []
+
+  @observable deletingIds: string[] = []
+
   @action async scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<void> {
     this.scheduling = true
 
@@ -84,10 +90,18 @@ class ScheduleStore {
   }
 
   @action async removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
-    this.schedules = this.schedules.filter(s => s.id !== scheduleId)
-    this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== scheduleId)
-
-    await Source.removeSchedule(replicaId, scheduleId)
+    this.deletingIds.push(scheduleId)
+    try {
+      await Source.removeSchedule(replicaId, scheduleId)
+      runInAction(() => {
+        this.schedules = this.schedules.filter(s => s.id !== scheduleId)
+        this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== scheduleId)
+      })
+    } finally {
+      runInAction(() => {
+        this.deletingIds = this.deletingIds.filter(id => id !== scheduleId)
+      })
+    }
   }
 
   @action async updateSchedule(
@@ -98,9 +112,8 @@ class ScheduleStore {
     unsavedData?: Schedule | null,
     forceSave?: boolean,
   ): Promise<void> {
-    this.schedules = updateSchedule(this.schedules, scheduleId, data)
-
     if (!forceSave) {
+      this.schedules = updateSchedule(this.schedules, scheduleId, data)
       const unsavedSchedule = this.unsavedSchedules.find(s => s.id === scheduleId)
       if (unsavedSchedule) {
         this.unsavedSchedules = updateSchedule(this.unsavedSchedules, scheduleId, data)
@@ -109,22 +122,33 @@ class ScheduleStore {
       }
       return
     }
-    const schedule: Schedule = await Source.updateSchedule(
-      replicaId,
-      scheduleId,
-      data,
-      oldData,
-      unsavedData,
-    )
-    runInAction(() => {
-      this.schedules = this.schedules.map(s => {
-        if (s.id === schedule.id) {
-          return { ...schedule }
-        }
-        return { ...s }
+    this.savingIds.push(scheduleId)
+    if (data.enabled !== oldData?.enabled) {
+      this.enablingIds.push(scheduleId)
+    }
+    try {
+      const schedule: Schedule = await Source.updateSchedule(
+        replicaId,
+        scheduleId,
+        data,
+        oldData,
+        unsavedData,
+      )
+      runInAction(() => {
+        this.schedules = this.schedules.map(s => {
+          if (s.id === schedule.id) {
+            return { ...schedule }
+          }
+          return { ...s }
+        })
+        this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== schedule.id)
       })
-      this.unsavedSchedules = this.unsavedSchedules.filter(s => s.id !== schedule.id)
-    })
+    } finally {
+      runInAction(() => {
+        this.savingIds = this.savingIds.filter(id => id !== scheduleId)
+        this.enablingIds = this.enablingIds.filter(id => id !== scheduleId)
+      })
+    }
   }
 
   @action clearUnsavedSchedules() {
