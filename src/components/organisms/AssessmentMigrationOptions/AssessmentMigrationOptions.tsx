@@ -162,7 +162,7 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     const useReplica = this.getFieldValue('use_replica')
     const skipFields = ['location', 'resource_group', 'network_map', 'storage_map', 'vm_size', 'worker_size']
     // eslint-disable-next-line no-shadow
-    const cleanup = (fields: any[]) => fields.filter((f: {
+    const cleanup = (cleanupFields: any[]) => cleanupFields.filter((f: {
       name: string
     }) => !skipFields
       .find(n => n === f.name)).map((f: { type: string; nullableBoolean: boolean }) => {
@@ -229,7 +229,7 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
         additionalProps = {
           value,
           // eslint-disable-next-line no-shadow
-          onChange: (value: any) => { this.handleValueChange(field.name, value) },
+          onChange: (changeValue: any) => { this.handleValueChange(field.name, changeValue) },
           type: field.type,
         }
       }

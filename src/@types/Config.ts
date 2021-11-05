@@ -33,7 +33,7 @@ export type Config = {
   instancesListBackgroundLoading: { default: number, [prop: string]: number },
   extraOptionsApiCalls: ExtraOption[],
   providerSortPriority: { [providerName in ProviderTypes]: number },
-  providerNames: {[providerName in ProviderTypes]: string}
+  providerNames: { [providerName in ProviderTypes]: string }
   hiddenUsers: string[],
   passwordFields: string[],
   mainListItemsPerPage: number,

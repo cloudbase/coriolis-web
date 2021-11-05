@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import * as React from 'react'
 import styled, { css } from 'styled-components'
 
@@ -175,6 +174,7 @@ class Stepper extends React.Component<Props, State> {
   }
 
   render() {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { _ref, value, type } = this.props
     let downImageRef: HTMLElement | null | undefined
     let upImageRef: HTMLElement | null | undefined

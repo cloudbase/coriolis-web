@@ -192,7 +192,7 @@ class ReplicaStore {
   }
 
   async cancelExecution(
-    options: {replicaId: string, executionId?: string, force?: boolean},
+    options: { replicaId: string, executionId?: string, force?: boolean },
   ): Promise<void> {
     await ReplicaSource.cancelExecution(options)
     if (options.force) {

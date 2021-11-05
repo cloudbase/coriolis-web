@@ -197,7 +197,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
     )
   }
 
-  renderFieldSet(customFields: Field[], options?: {disabled?: boolean}) {
+  renderFieldSet(customFields: Field[], options?: { disabled?: boolean }) {
     const rows: JSX.Element[] = []
     let lastField: JSX.Element
     let i = 0

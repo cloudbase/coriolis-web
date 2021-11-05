@@ -170,7 +170,7 @@ class AzureStore {
     try {
       await AzureSource.authenticate(connectionInfo)
       this.authenticating = false
-      return Promise.resolve()
+      return await Promise.resolve()
     } catch (e) {
       this.authenticating = false
       return Promise.reject()

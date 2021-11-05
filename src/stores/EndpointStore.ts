@@ -318,7 +318,7 @@ class EndpointStore {
     this.adding = false
   }
 
-  @action async loadStorage(endpointId: string, data: any, options?: {cache?: boolean}): Promise<void> {
+  @action async loadStorage(endpointId: string, data: any, options?: { cache?: boolean }): Promise<void> {
     this.storageBackends = []
     this.storageLoading = true
 

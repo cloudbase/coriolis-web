@@ -32,7 +32,7 @@ const ProgressBarWrapper = styled.div`
   background: white;
   flex-grow: 1;
 `
-const Progress = styled.div<{width: number}>`
+const Progress = styled.div<{ width: number }>`
   height: 2px;
   background: ${Palette.primary};
   transition: all ${StyleProps.animations.swift};

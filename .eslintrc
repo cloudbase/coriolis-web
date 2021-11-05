@@ -2,6 +2,22 @@
   "extends": [
     "airbnb-typescript"
   ],
+  "parser": "@typescript-eslint/parser",
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      }
+    }
+  ],
+  "plugins": [
+    "import",
+    "react"
+  ],
   "env": {
     "browser": true,
     "node": true

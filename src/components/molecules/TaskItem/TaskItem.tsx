@@ -172,7 +172,7 @@ class TaskItem extends React.Component<Props> {
     return message
   }
 
-  getProgressPercentage(progressUpdate: ProgressUpdate): {useLabel: boolean, value: number} | null {
+  getProgressPercentage(progressUpdate: ProgressUpdate): { useLabel: boolean, value: number } | null {
     if (progressUpdate.total_steps && progressUpdate.current_step) {
       const currentStep = Math.min(progressUpdate.total_steps, progressUpdate.current_step)
       return {

@@ -231,6 +231,7 @@ class EndpointDetailsContent extends React.Component<Props> {
   render() {
     this.renderedKeys = {}
     const {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       type, name, description, created_at, id,
     } = this.props.item || {}
     const usage: TransferItem[] = this.props.usage.replicas

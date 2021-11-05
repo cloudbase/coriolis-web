@@ -349,7 +349,7 @@ class WizardStorage extends React.Component<Props> {
     }
 
     const renderDropdown = () => {
-      let items: {label: string, value: string | null}[] = this.props.storageBackends.map(s => ({
+      let items: { label: string, value: string | null }[] = this.props.storageBackends.map(s => ({
         label: s.name,
         value: s.name,
       }))
