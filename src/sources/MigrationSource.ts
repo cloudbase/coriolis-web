@@ -79,8 +79,11 @@ class MigrationSource {
 
   async recreateFullCopy(migration: MigrationItemOptions): Promise<MigrationItem> {
     const {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       origin_endpoint_id, destination_endpoint_id, destination_environment,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       network_map, instances, storage_mappings, notes, destination_minion_pool_id,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       origin_minion_pool_id, instance_osmorphing_minion_pool_mappings,
     } = migration
 

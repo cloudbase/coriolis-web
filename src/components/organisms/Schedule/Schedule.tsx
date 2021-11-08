@@ -132,7 +132,7 @@ type State = {
 const colWidths = ['6%', '18%', '10%', '18%', '10%', '10%', '23%', '5%']
 @observer
 class Schedule extends React.Component<Props, State> {
-  static defaultProps={
+  static defaultProps = {
     unsavedSchedules: [],
   }
 

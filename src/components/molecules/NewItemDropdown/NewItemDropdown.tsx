@@ -96,7 +96,7 @@ const ListItem = styled(Link)`
   }
 `
 
-const Icon = styled.div<{iconName: keyof typeof ICON_MAP}>`
+const Icon = styled.div<{ iconName: keyof typeof ICON_MAP }>`
   min-width: 48px;
   height: 48px;
   background: url('${props => ICON_MAP[props.iconName]}') no-repeat center;

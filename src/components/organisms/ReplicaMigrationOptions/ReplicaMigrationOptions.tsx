@@ -97,7 +97,7 @@ type State = {
   selectedBarButton: string,
   uploadedScripts: InstanceScript[],
   removedScripts: InstanceScript[],
-  minionPoolMappings: {[instance: string]: string}
+  minionPoolMappings: { [instance: string]: string }
 }
 
 @observer

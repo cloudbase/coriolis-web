@@ -69,7 +69,7 @@ const ListItem = styled.div<any>`
   padding-top: 8px;
 `
 
-const Label = styled.div<{selectable?: boolean, hoverColor?: string}>`
+const Label = styled.div<{ selectable?: boolean, hoverColor?: string }>`
   display: inline-block;
   white-space: nowrap;
   ${props => (props.selectable ? css`

@@ -32,31 +32,31 @@ export const MinionPoolStoreUtils = {
 
 class MinionPoolStore {
   @observable
-  loadingMinionPools: boolean = false
+    loadingMinionPools: boolean = false
 
   @observable
-  minionPools: MinionPool[] = []
+    minionPools: MinionPool[] = []
 
   @observable
-  loadingMinionPoolDetails: boolean = false
+    loadingMinionPoolDetails: boolean = false
 
   @observable
-  minionPoolDetails: MinionPoolDetails | null = null
+    minionPoolDetails: MinionPoolDetails | null = null
 
   @observable
-  loadingMinionPoolSchema: boolean = false
+    loadingMinionPoolSchema: boolean = false
 
   @observable
-  minionPoolDefaultSchema: Field[] = []
+    minionPoolDefaultSchema: Field[] = []
 
   @observable
-  minionPoolEnvSchema: Field[] = []
+    minionPoolEnvSchema: Field[] = []
 
   @observable
-  optionsPrimaryLoading: boolean = false
+    optionsPrimaryLoading: boolean = false
 
   @observable
-  optionsSecondaryLoading: boolean = false
+    optionsSecondaryLoading: boolean = false
 
   @computed
   get minionPoolCombinedSchema() {

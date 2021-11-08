@@ -75,7 +75,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
 
   pollTimeout: number = 0
 
-  stopPolling: boolean =false
+  stopPolling: boolean = false
 
   componentDidMount() {
     document.title = 'Coriolis Endpoints'

@@ -157,14 +157,14 @@ export default class ConnectionSchemaParser {
 
   static parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: any) {
     const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
-    const connection_info = fieldsToPayload(data, schemaRoot)
+    const connectionInfo = fieldsToPayload(data, schemaRoot)
 
     const dataSecretRef = data.secret_ref || data['connection_info/secret_ref']
     if (dataSecretRef) {
-      connection_info.secret_ref = dataSecretRef
+      connectionInfo.secret_ref = dataSecretRef
     }
 
-    return connection_info
+    return connectionInfo
   }
 
   static parseConnectionResponse(endpoint: Endpoint) {

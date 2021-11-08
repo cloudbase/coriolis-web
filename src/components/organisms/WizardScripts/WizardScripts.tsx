@@ -135,7 +135,7 @@ const ScriptDataActions = styled.div`
     margin-left: 8px;
   }
 `
-const ScriptDataAction = styled.div<{ red?: boolean, disabled?: boolean}>`
+const ScriptDataAction = styled.div<{ red?: boolean, disabled?: boolean }>`
   color: ${props => (props.red ? Palette.alert : Palette.primary)};
   cursor: pointer;
   ${props => (props.disabled ? css`

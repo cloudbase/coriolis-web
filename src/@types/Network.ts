@@ -36,7 +36,7 @@ export type NetworkMap = {
 }
 
 export const NetworkUtils = {
-  getPortKeyNetworkId: (networks: Network[], id: string): {portKey: string | null, id: string} => {
+  getPortKeyNetworkId: (networks: Network[], id: string): { portKey: string | null, id: string } => {
     const idMatches = /(.*):(.*)/.exec(String(id))
     if (!idMatches) {
       return { portKey: null, id }

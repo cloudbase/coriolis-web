@@ -372,9 +372,9 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
     }
     const resourceGroups = options.find(o_1 => o_1.name === 'resource_group') as any
     if (resourceGroups && resourceGroups.values) {
-      const localDataFind_1 = resourceGroups.values
+      const localDataFind = resourceGroups.values
         .find((g: string) => g === localData.resourceGroupName)
-      if (!localDataFind_1) {
+      if (!localDataFind) {
         azureStore.updateResourceGroup(resourceGroups.values[0] as string)
       }
       azureStore.saveResourceGroups(resourceGroups.values)

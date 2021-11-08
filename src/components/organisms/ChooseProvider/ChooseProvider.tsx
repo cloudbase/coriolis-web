@@ -219,7 +219,7 @@ class ChooseProvider extends React.Component<Props, State> {
   processMultipleFilesContents(filesContents: FileContent[]) {
     this.props.onResetValidation()
     const uniqueNames: { [prop: string]: number } = {}
-    const invalidRegionsEndpointIds: {id: string, regions: string[]}[] = []
+    const invalidRegionsEndpointIds: { id: string, regions: string[] }[] = []
 
     const endpoints = filesContents.map(fileContent => {
       try {

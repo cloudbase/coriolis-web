@@ -78,7 +78,7 @@ class AssessmentSource {
       const newData = { ...data }
       newData.selectedInstances = [instance]
       try {
-        return this.migrate(newData)
+        return await this.migrate(newData)
       } catch (e) {
         notificationStore.alert(`Error while migrating instance ${instance.name}`, 'error')
         return null
