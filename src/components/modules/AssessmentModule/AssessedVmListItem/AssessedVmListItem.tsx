@@ -20,8 +20,7 @@ import Checkbox from '../../../ui/Checkbox/Checkbox'
 import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
 import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
 import type { VmItem } from '../../../../@types/Assessment'
-
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -46,7 +45,7 @@ const DisplayName = styled.div<any>`
   ${(props: any) => columnWidth(props.width)}
 `
 const Value = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   ${(props: any) => columnWidth(props.width)}
 `
 const DisplayNameLabel = styled.div<any>`

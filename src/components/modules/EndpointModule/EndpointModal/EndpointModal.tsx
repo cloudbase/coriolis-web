@@ -30,7 +30,7 @@ import notificationStore from '../../../../stores/NotificationStore'
 import endpointStore from '../../../../stores/EndpointStore'
 import providerStore from '../../../../stores/ProviderStore'
 import ObjectUtils from '../../../../utils/ObjectUtils'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 import DomUtils from '../../../../utils/DomUtils'
 import { ContentPlugin } from '../../../../plugins/endpoint'
 import DefaultContentPlugin from '../../../../plugins/endpoint/default/ContentPlugin'
@@ -62,7 +62,7 @@ const StatusMessage = styled.div<any>`
 `
 const ShowErrorButton = styled.span`
   font-size: 10px;
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   margin-left: 8px;
   cursor: pointer;
 `

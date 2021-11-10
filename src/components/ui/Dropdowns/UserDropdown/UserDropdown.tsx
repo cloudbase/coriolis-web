@@ -18,8 +18,7 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import { navigationMenu } from '../../../../constants'
 import type { User } from '../../../../@types/User'
 
@@ -36,7 +35,7 @@ const Icon = styled.div<any>`
   cursor: pointer;
   width: 32px;
   height: 32px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   background: url('${props => (props.white ? userWhiteImage : userImage)}') no-repeat center;
 
   &:hover {
@@ -48,14 +47,14 @@ const Help = styled.div`
   align-items: center;
 `
 const OpenInNewIcon = styled.div`
-  ${StyleProps.exactSize('16px')}
+  ${ThemeProps.exactSize('16px')}
   position: relative;
   top: -2px;
   transform: scale(0.6);
 `
 const List = styled.div<any>`
-  background: ${Palette.grayscale[1]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[1]};
+  border-radius: ${ThemeProps.borderRadius};
   position: absolute;
   right: 0;
   top: 45px;
@@ -63,7 +62,7 @@ const List = styled.div<any>`
   display: flex;
   flex-direction: column;
   z-index: 10;
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
 `
 const ListItem = styled.div<any>`
   padding-top: 8px;
@@ -91,28 +90,28 @@ const ListHeader = styled.div<any>`
     position: absolute;
     width: 10px;
     height: 10px;
-    background: ${Palette.grayscale[1]};
-    border: 1px solid ${Palette.grayscale[1]};
-    border-color: transparent transparent ${Palette.grayscale[1]} ${Palette.grayscale[1]};
+    background: ${ThemePalette.grayscale[1]};
+    border: 1px solid ${ThemePalette.grayscale[1]};
+    border-color: transparent transparent ${ThemePalette.grayscale[1]} ${ThemePalette.grayscale[1]};
     transform: rotate(135deg);
     right: -6px;
     top: -22px;
-    transition: all ${StyleProps.animations.swift};
+    transition: all ${ThemeProps.animations.swift};
   }
 `
 const Username = styled(Link)`
   font-size: 16px;
-  color: ${Palette.black};
+  color: ${ThemePalette.black};
   text-decoration: none;
   ${props => (props.to === '' ? 'pointer-events: none;' : '')}
-  &:hover {color: ${Palette.primary};}
+  &:hover {color: ${ThemePalette.primary};}
 `
 const Email = styled.div<any>`
   font-size: 10px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin-top: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid ${Palette.grayscale[3]};
+  border-bottom: 1px solid ${ThemePalette.grayscale[3]};
 `
 
 type DictItem = { label: React.ReactNode, value: string }
@@ -238,7 +237,7 @@ class UserDropdown extends React.Component<Props, State> {
             <Label
               selectable
               onClick={() => { this.handleItemClick(item) }}
-              hoverColor={item.value !== 'signout' ? Palette.primary : Palette.alert}
+              hoverColor={item.value !== 'signout' ? ThemePalette.primary : ThemePalette.alert}
             >{item.label}
             </Label>
           </ListItem>

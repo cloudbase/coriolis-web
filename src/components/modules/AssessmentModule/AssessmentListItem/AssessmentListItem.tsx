@@ -18,25 +18,24 @@ import styled from 'styled-components'
 
 import StatusPill from '../../../ui/StatusComponents/StatusPill/StatusPill'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
 import type { Assessment } from '../../../../@types/Assessment'
 
 import assessmentImage from './images/assessment.svg'
 import azureMigrateImage from './images/azure-migrate.svg'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Content = styled.div<any>`
   display: flex;
   align-items: center;
-  border-top: 1px solid ${Palette.grayscale[1]};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
   padding: 8px 16px;
   cursor: pointer;
   flex-grow: 1;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   min-width: 785px;
 
   &:hover {
-    background: ${Palette.grayscale[1]};
+    background: ${ThemePalette.grayscale[1]};
   }
 `
 const Wrapper = styled.div<any>`
@@ -44,7 +43,7 @@ const Wrapper = styled.div<any>`
   align-items: center;
 
   &:last-child ${Content} {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 const Image = styled.div<any>`
@@ -70,7 +69,7 @@ const AssessmentType = styled.div<any>`
   justify-content: center;
   align-items: center;
   margin-right: 46px;
-  ${StyleProps.exactWidth('180px')}
+  ${ThemeProps.exactWidth('180px')}
 `
 const AssessmentImage = styled.div<any>`
   width: 48px;
@@ -80,22 +79,22 @@ const AssessmentImage = styled.div<any>`
 `
 const AssessmentLabel = styled.div<any>`
   font-size: 15px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   width: 64px;
 `
 const TotalVms = styled.div<any>`
-  ${StyleProps.exactWidth('96px')}
+  ${ThemeProps.exactWidth('96px')}
   margin-right: 48px;
 `
 const Project = styled.div<any>`
-  ${StyleProps.exactWidth('175px')}
+  ${ThemeProps.exactWidth('175px')}
   margin-right: 48px;
 `
 const ItemLabel = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const ItemValue = styled.div<any>`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
 `
 
 type Props = {

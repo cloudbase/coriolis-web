@@ -29,10 +29,10 @@ import MinionPoolModalContent from './MinionPoolModalContent'
 import minionPoolStore from '../../../../stores/MinionPoolStore'
 
 import minionPoolImage from './images/minion-pool.svg'
-import StyleProps from '../../../styleUtils/StyleProps'
 import notificationStore from '../../../../stores/NotificationStore'
 import providerStore, { getFieldChangeOptions } from '../../../../stores/ProviderStore'
 import { MinionPool } from '../../../../@types/MinionPool'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   padding: 24px 0 32px 0;
@@ -42,7 +42,7 @@ const Wrapper = styled.div<any>`
   min-height: 0;
 `
 const MinionPoolImageWrapper = styled.div`
-  ${StyleProps.exactSize('128px')}
+  ${ThemeProps.exactSize('128px')}
   background: url('${minionPoolImage}') center no-repeat;
 `
 const Content = styled.div<any>`

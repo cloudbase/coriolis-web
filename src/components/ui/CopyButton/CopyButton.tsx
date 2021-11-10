@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StyleProps from '../../styleUtils/StyleProps'
 
 import copyImage from './images/copy.svg'
+import { ThemeProps } from '../../Theme'
 
 const Wrapper = styled.span`
   opacity: 0;
@@ -27,7 +27,7 @@ const Wrapper = styled.span`
   display: inline-block;
   background: url('${copyImage}') no-repeat;
   background-position-y: 2px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 `
 
 @observer

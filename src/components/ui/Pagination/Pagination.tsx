@@ -19,8 +19,7 @@ import styled, { css } from 'styled-components'
 import Arrow from '../Arrow/Arrow'
 import HorizontalLoading from '../HorizontalLoading/HorizontalLoading'
 
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -31,7 +30,7 @@ const pageStyle = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${Palette.grayscale[1]};
+  background: ${ThemePalette.grayscale[1]};
   :focus {
     ${(props: any) => (props.disabled ? css`outline: none;` : '')}
   }
@@ -43,14 +42,14 @@ const pageButtonStyle = css`
   padding-top: 2px;
 `
 const PagePrevious = styled.div<any>`
-  border-top-left-radius: ${StyleProps.borderRadius};
-  border-bottom-left-radius: ${StyleProps.borderRadius};
+  border-top-left-radius: ${ThemeProps.borderRadius};
+  border-bottom-left-radius: ${ThemeProps.borderRadius};
   ${pageStyle}
   ${pageButtonStyle}
 `
 const PageNext = styled.div<any>`
-  border-top-right-radius: ${StyleProps.borderRadius};
-  border-bottom-right-radius: ${StyleProps.borderRadius};
+  border-top-right-radius: ${ThemeProps.borderRadius};
+  border-bottom-right-radius: ${ThemeProps.borderRadius};
   ${pageStyle}
   ${pageButtonStyle}
 `
@@ -107,7 +106,7 @@ class Pagination extends React.Component<Props> {
           onClick={() => { this.goTo('previous') }}
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => { this.handleKeyDown(e, 'previous') }}
         >
-          <Arrow orientation="left" disabled={this.props.previousDisabled} color={Palette.black} thick />
+          <Arrow orientation="left" disabled={this.props.previousDisabled} color={ThemePalette.black} thick />
         </PagePrevious>
         <PageNumber>
           {this.props.currentPage} of {this.props.totalPages}
@@ -121,7 +120,7 @@ class Pagination extends React.Component<Props> {
           onClick={() => { this.goTo('next') }}
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => { this.handleKeyDown(e, 'next') }}
         >
-          <Arrow disabled={this.props.nextDisabled} color={Palette.black} thick />
+          <Arrow disabled={this.props.nextDisabled} color={ThemePalette.black} thick />
         </PageNext>
       </Wrapper>
     )

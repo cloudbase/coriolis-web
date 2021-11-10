@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import DropdownLink from '../DropdownLink'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 type State = {
   items: { label: string, value: string }[],
@@ -77,13 +77,13 @@ storiesOf('DropdownLink', module)
       width="200px"
       getLLabel={(items: any[]) => (items.length > 0 ? items.join(', ') : 'Choose something')}
       listWidth="120px"
-      itemStyle={(item: { value: string }) => `color: ${item.value === 'remove' ? Palette.alert : Palette.black};`}
+      itemStyle={(item: { value: string }) => `color: ${item.value === 'remove' ? ThemePalette.alert : ThemePalette.black};`}
       multipleSelection
       items={[
         { value: 'owner' },
         { value: 'admin' },
         { value: 'member', label: 'member' },
       ]}
-      labelStyle={{ color: Palette.black }}
+      labelStyle={{ color: ThemePalette.black }}
     />
   ))

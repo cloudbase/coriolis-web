@@ -22,8 +22,7 @@ import EndpointLogos from '../EndpointLogos/EndpointLogos'
 import Button from '../../../ui/Button/Button'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import FileUtils from '../../../../utils/FileUtils'
 import configLoader from '../../../../utils/Config'
 
@@ -54,15 +53,15 @@ const Logos = styled.div<any>`
   flex-grow: 1;
 `
 const Upload = styled.div<any>`
-  border: 1px dashed ${props => (props.highlight ? Palette.primary : 'white')};
+  border: 1px dashed ${props => (props.highlight ? ThemePalette.primary : 'white')};
   margin: 0 32px 16px 32px;
   padding: 16px;
 `
 const UploadMessage = styled.div<any>`
-  color: ${Palette.grayscale[3]};
+  color: ${ThemePalette.grayscale[3]};
 `
 const UploadMessageButton = styled.span`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   cursor: pointer;
 `
 const FakeFileInput = styled.input`
@@ -72,7 +71,7 @@ const FakeFileInput = styled.input`
 `
 const EndpointLogosStyled = styled(EndpointLogos)`
   transform: scale(0.67);
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   cursor: pointer;
   &:hover {
     transform: scale(0.7);

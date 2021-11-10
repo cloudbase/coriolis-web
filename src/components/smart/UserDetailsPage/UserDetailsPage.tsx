@@ -27,7 +27,7 @@ import AlertModal from '../../ui/AlertModal/AlertModal'
 import userStore from '../../../stores/UserStore'
 import projectStore from '../../../stores/ProjectStore'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 
 import userImage from './images/user.svg'
 
@@ -112,14 +112,14 @@ class UserDetailsPage extends React.Component<Props, State> {
   render() {
     const dropdownActions = [{
       label: 'Change password',
-      color: Palette.primary,
+      color: ThemePalette.primary,
       action: () => { this.handleUpdatePasswordClick() },
     }, {
       label: 'Edit user',
       action: () => { this.handleEditClick() },
     }, {
       label: 'Delete user',
-      color: Palette.alert,
+      color: ThemePalette.alert,
       action: () => { this.handleDeleteClick() },
     }]
 

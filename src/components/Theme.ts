@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2017  Cloudbase Solutions SRL
+Copyright (C) 2021  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -14,7 +14,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { css } from 'styled-components'
 
-const StyleProps = {
+const exactWidth = (width: string) => css`
+  min-width: ${width};
+  max-width: ${width};
+`
+
+const exactHeight = (height: string) => css`
+  min-height: ${height};
+  max-height: ${height};
+`
+
+export const ThemePalette = {
+  primary: '#0044CB',
+  primaryLight: '#000EA9',
+  secondary: '#D9DCE3',
+  secondaryLight: '#777A8B',
+  black: '#202134',
+  alert: '#F91661',
+  success: '#4CD964',
+  warning: '#FDC02F',
+  grayscale: [
+    '#D8DBE2', // 0
+    '#ECEDF1', // 1
+    '#C8CCD7', // 2
+    '#A4AAB5', // 3
+    '#616770', // 4
+    '#7F8795', // 5
+    '#1B2733', // 6
+    '#F2F3F4', // 7
+    '#858B93', // 8
+  ],
+}
+
+export const ThemeProps = {
   fontWeights: {
     extraLight: 200,
     light: 300,
@@ -36,37 +68,27 @@ const StyleProps = {
   animations: {
     swift: '.45s cubic-bezier(0.3, 1, 0.4, 1) 0s',
     rotation: css`
-      animation: rotate 2s infinite linear;
-      @keyframes rotate {
-        from {transform: rotate(0deg);}
-        to {transform: rotate(360deg);}
-      }
-    `,
+        animation: rotate 2s infinite linear;
+        @keyframes rotate {
+          from {transform: rotate(0deg);}
+          to {transform: rotate(360deg);}
+        }
+      `,
     disabledLoading: css`
-      animation: opacityToggle 750ms linear infinite alternate-reverse;
-      @keyframes opacityToggle {
-        0% {opacity: 1;}
-        100% {opacity: 0.3;}
-      }
-    `,
+        animation: opacityToggle 750ms linear infinite alternate-reverse;
+        @keyframes opacityToggle {
+          0% {opacity: 1;}
+          100% {opacity: 0.3;}
+        }
+      `,
   },
 
   mobileMaxWidth: 1350,
 
-  exactWidth: (width: string) => css`
-    min-width: ${width};
-    max-width: ${width};
-  `,
-
-  exactHeight: (height: string) => css`
-    min-height: ${height};
-    max-height: ${height};
-  `,
-
+  exactWidth,
+  exactHeight,
   exactSize: (size: string) => css`
-    ${StyleProps.exactWidth(size)}
-    ${StyleProps.exactHeight(size)}
-  `,
+      ${exactWidth(size)}
+      ${exactHeight(size)}
+    `,
 }
-
-export default StyleProps

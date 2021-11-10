@@ -48,11 +48,11 @@ import {
 
 import { providerTypes, migrationFields } from '../../../../constants'
 import configLoader from '../../../../utils/Config'
-import StyleProps from '../../../styleUtils/StyleProps'
 import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 import minionPoolStore from '../../../../stores/MinionPoolStore'
 import WizardScripts from '../../WizardModule/WizardScripts/WizardScripts'
 import networkStore from '../../../../stores/NetworkStore'
+import { ThemeProps } from '../../../Theme'
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -656,7 +656,7 @@ class TransferItemModal extends React.Component<Props, State> {
         oneColumnStyle={{
           marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center',
         }}
-        fieldWidth={StyleProps.inputSizes.large.width}
+        fieldWidth={ThemeProps.inputSizes.large.width}
         onScrollableRef={ref => { this.scrollableRef = ref }}
         availableHeight={384}
         useAdvancedOptions

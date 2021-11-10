@@ -18,18 +18,18 @@ import styled from 'styled-components'
 import Modal from 'react-modal'
 import autobind from 'autobind-decorator'
 
-import StyleProps from '../../styleUtils/StyleProps'
 import KeyboardManager from '../../../utils/KeyboardManager'
 
 import headerBackground from './images/header-background.png'
 import headerBackgroundWide from './images/header-background-wide.png'
+import { ThemeProps } from '../../Theme'
 
 const headerHeight = 48
 
 const Title = styled.div<any>`
   height: ${headerHeight}px;
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   text-align: center;
   line-height: 48px;
   color: white;

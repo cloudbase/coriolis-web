@@ -31,7 +31,7 @@ import notificationStore from '../../../stores/NotificationStore'
 import configLoader from '../../../utils/Config'
 
 import minionPoolImage from './images/minion-pool.svg'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 import minionPoolStore from '../../../stores/MinionPoolStore'
 import MinionPoolModal from '../../modules/MinionModule/MinionPoolModal/MinionPoolModal'
 import MinionPoolDetailsContent from '../../modules/MinionModule/MinionPoolDetailsContent/MinionPoolDetailsContent'
@@ -291,7 +291,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Allocate',
-        color: Palette.primary,
+        color: ThemePalette.primary,
         action: () => { this.handleAllocate() },
         disabled: !deallocated,
         title: !deallocated ? 'The minion pool should be deallocated' : '',
@@ -314,7 +314,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Delete Minion Pool',
-        color: Palette.alert,
+        color: ThemePalette.alert,
         action: () => {
           this.setState({ showDeleteMinionPoolConfirmation: true })
         },

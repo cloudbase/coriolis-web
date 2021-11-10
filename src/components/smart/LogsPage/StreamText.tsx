@@ -20,8 +20,7 @@ import AnsiToHtml from 'ansi-to-html'
 import DropdownLink from '../../ui/Dropdowns/DropdownLink/DropdownLink'
 import Checkbox from '../../ui/Checkbox/Checkbox'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import type { Log } from '../../../@types/Log'
 
@@ -44,7 +43,7 @@ const DropdownLinkStyled = styled(DropdownLink)`
   margin-left: 16px;
 `
 const OpenInNewWindow = styled.a`
-  ${StyleProps.exactSize('14px')}
+  ${ThemeProps.exactSize('14px')}
   background: url('${expandImage}') center no-repeat;
   background-size: contain;
   cursor: pointer;
@@ -52,8 +51,8 @@ const OpenInNewWindow = styled.a`
 `
 const Content = styled.div<any>`
   padding: 8px;
-  border-top-left-radius: ${StyleProps.borderRadius};
-  border-top-right-radius: ${StyleProps.borderRadius};
+  border-top-left-radius: ${ThemeProps.borderRadius};
+  border-top-right-radius: ${ThemeProps.borderRadius};
   border: 1px solid #DCE1EB;
   background: #F5F6FA;
   font-family: 'Courier New', Courier, monospace;
@@ -62,8 +61,8 @@ const Content = styled.div<any>`
 `
 const Footer = styled.div<any>`
   padding: 8px;
-  border-bottom-left-radius: ${StyleProps.borderRadius};
-  border-bottom-right-radius: ${StyleProps.borderRadius};
+  border-bottom-left-radius: ${ThemeProps.borderRadius};
+  border-bottom-right-radius: ${ThemeProps.borderRadius};
   border: 1px solid #DCE1EB;
   border-top: none;
   display: flex;
@@ -77,12 +76,12 @@ const FeedLine = styled.div<any>`
   word-break: break-word;
 `
 const TextButton = styled.div<any>`
-  color: ${Palette.grayscale[3]};
+  color: ${ThemePalette.grayscale[3]};
   cursor: pointer;
   margin-right: 16px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   &:hover {
-    color: ${Palette.primary};
+    color: ${ThemePalette.primary};
   }
 `
 const ERROR_COLOR = '#c80546'

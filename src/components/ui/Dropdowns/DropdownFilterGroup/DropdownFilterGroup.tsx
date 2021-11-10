@@ -18,7 +18,7 @@ import styled from 'styled-components'
 
 import DropdownLink from '../DropdownLink/DropdownLink'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 const Wrapper = styled.div<any>``
 const Dropdowns = styled.div<any>``
@@ -31,7 +31,7 @@ const DropdownLinkStyled = styled(DropdownLink)`
     content: '';
     width: 1px;
     height: 18px;
-    background: ${Palette.grayscale[4]};
+    background: ${ThemePalette.grayscale[4]};
     right: -16px;
     top: -1px;
   }

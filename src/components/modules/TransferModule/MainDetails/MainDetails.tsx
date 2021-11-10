@@ -30,8 +30,7 @@ import type { Network } from '../../../../@types/Network'
 import type { Field as FieldType } from '../../../../@types/Field'
 import fieldHelper from '../../../../@types/Field'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 import LabelDictionary from '../../../../utils/LabelDictionary'
 import { OptionsSchemaPlugin } from '../../../../plugins/endpoint'
@@ -47,7 +46,7 @@ const Wrapper = styled.div<any>`
 `
 const WarningWrapper = styled.div`
   display: flex;
-  background: ${Palette.warning}66;
+  background: ${ThemePalette.warning}66;
   padding: 8px;
   border-radius: 4px;
   margin-bottom: 24px;
@@ -60,7 +59,7 @@ const ColumnsLayout = styled.div<any>`
   display: flex;
 `
 const Column = styled.div<any>`
-  ${props => StyleProps.exactWidth(props.width)}
+  ${props => ThemeProps.exactWidth(props.width)}
 `
 const Arrow = styled.div<any>`
   width: 34px;
@@ -80,14 +79,14 @@ const Field = styled.div<any>`
 `
 const Label = styled.div<any>`
   font-size: 10px;
-  color: ${Palette.grayscale[3]};
-  font-weight: ${StyleProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
   display: flex;
   align-items: center;
 `
 const StatusIconStub = styled.div<any>`
-  ${StyleProps.exactSize('16px')}
+  ${ThemeProps.exactSize('16px')}
 `
 const Value = styled.div<any>`
   display: ${props => (props.flex ? 'flex' : props.block ? 'block' : 'inline-table')};
@@ -97,7 +96,7 @@ const Value = styled.div<any>`
 const ValueLink = styled(Link)`
   display: flex;
   margin-top: 3px;
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   text-decoration: none;
   cursor: pointer;
 `
@@ -122,7 +121,7 @@ const PropertyName = styled.div<any>`
 `
 const PropertyValue = styled.div<any>`
   ${PropertyText}
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;

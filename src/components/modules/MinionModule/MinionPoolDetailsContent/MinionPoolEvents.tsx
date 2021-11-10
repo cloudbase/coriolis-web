@@ -18,8 +18,7 @@ import styled from 'styled-components'
 import {
   MinionPoolDetails, MinionPoolEventProgressUpdate,
 } from '../../../../@types/MinionPool'
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
 import Pagination from '../../../ui/Pagination/Pagination'
 import configLoader from '../../../../utils/Config'
@@ -35,13 +34,13 @@ const FilterDropdownWrapper = styled.div`
   margin-left: 24px;
 `
 const EventsTable = styled.div`
-  background: ${Palette.grayscale[1]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[1]};
+  border-radius: ${ThemeProps.borderRadius};
   margin-bottom: 16px;
 `
 const Header = styled.div`
   display: flex;
-  border-bottom: 1px solid ${Palette.grayscale[5]};
+  border-bottom: 1px solid ${ThemePalette.grayscale[5]};
   padding: 4px 8px;
 `
 type DataDivProps = {
@@ -50,11 +49,11 @@ type DataDivProps = {
   secondary?: boolean
 }
 const HeaderData = styled.div<DataDivProps>`
-  ${props => (props.width ? StyleProps.exactWidth(props.width) : '')}
+  ${props => (props.width ? ThemeProps.exactWidth(props.width) : '')}
   ${props => (props.grow ? 'flex-grow: 1;' : '')}
   font-size: 10px;
-  color: ${Palette.grayscale[5]};
-  font-weight: ${StyleProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[5]};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
 `
 const Body = styled.div``
@@ -64,9 +63,9 @@ const Row = styled.div`
   border-bottom: 1px solid white;
 `
 const RowData = styled.div<DataDivProps>`
-  ${props => (props.width ? StyleProps.exactWidth(props.width) : '')}
+  ${props => (props.width ? ThemeProps.exactWidth(props.width) : '')}
   ${props => (props.grow ? 'flex-grow: 1;' : '')}
-  ${props => (props.secondary ? `color: ${Palette.grayscale[4]};` : '')}
+  ${props => (props.secondary ? `color: ${ThemePalette.grayscale[4]};` : '')}
 `
 const Message = styled.pre`
   font-family: inherit;

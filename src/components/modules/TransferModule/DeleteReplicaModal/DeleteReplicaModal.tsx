@@ -20,7 +20,7 @@ import Modal from '../../../ui/Modal/Modal'
 import Button from '../../../ui/Button/Button'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -35,7 +35,7 @@ const Message = styled.div<any>`
   margin-top: 48px;
 `
 const ExtraMessage = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin: 11px 0 48px 0;
   text-align: center;
   font-size: 12px;
@@ -67,7 +67,7 @@ const LoadingTitle = styled.div`
   margin-bottom: 8px;
 `
 const LoadingSubtitle = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 
 type Props = {

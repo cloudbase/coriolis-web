@@ -27,8 +27,6 @@ import DropdownFilter from '../../../ui/Dropdowns/DropdownFilter/DropdownFilter'
 import Checkbox from '../../../ui/Checkbox/Checkbox'
 import SmallLoading from '../../../ui/SmallLoading/SmallLoading'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
 import type { Assessment, VmItem, AzureLocation } from '../../../../@types/Assessment'
 import type { Endpoint } from '../../../../@types/Endpoint'
 import type { Instance, Nic } from '../../../../@types/Instance'
@@ -36,6 +34,7 @@ import type { Network, NetworkMap } from '../../../../@types/Network'
 
 import azureMigrateImage from './images/logo.svg'
 import arrowImage from './images/arrow.svg'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -51,7 +50,7 @@ const Buttons = styled.div<any>`
   }
 `
 const DetailsBody = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin-bottom: 32px;
 `
 const Columns = styled.div<any>`
@@ -71,8 +70,8 @@ const Field = styled.div<any>`
 `
 const Label = styled.div<any>`
   font-size: 10px;
-  color: ${Palette.grayscale[3]};
-  font-weight: ${StyleProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
 `
 const Value = styled.div<any>`

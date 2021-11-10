@@ -21,8 +21,7 @@ import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
 import DashboardBarChart from '../DashboardBarChart/DashboardBarChart'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import emptyBackgroundImage from './images/empty-background.svg'
 import { ReplicaItem, MigrationItem, TransferItem } from '../../../../@types/MainItem'
@@ -35,14 +34,14 @@ const INTERVALS = [
 const Wrapper = styled.div<any>``
 const Title = styled.div<any>`
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   margin-bottom: 12px;
 `
 const Module = styled.div<any>`
   position: relative;
   display: flex;
-  background: ${Palette.grayscale[0]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[0]};
+  border-radius: ${ThemeProps.borderRadius};
   height: 240px;
 `
 const ChartWrapper = styled.div<any>`
@@ -73,16 +72,16 @@ const Tooltip = styled.div<any>`
   position: absolute;
   bottom: ${props => props.position.y}px;
   left: ${props => props.position.x}px;
-  background: ${Palette.black};
+  background: ${ThemePalette.black};
   padding: 8px 16px 16px 16px;
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   color: white;
-  ${StyleProps.exactWidth('174px')}
+  ${ThemeProps.exactWidth('174px')}
   box-shadow: rgba(0,0,0,0.1) 0 0 6px 1px;
 `
 const TooltipHeader = styled.div<any>`
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   text-align: center;
   border-bottom: 1px solid;
   padding-bottom: 4px;
@@ -101,7 +100,7 @@ const TooltipTip = styled.div<any>`
   width: 16px;
   height: 16px;
   bottom: -8px;
-  background: ${Palette.black};
+  background: ${ThemePalette.black};
   left: calc(50% - 16px);
   transform: rotate(45deg);
 `
@@ -112,7 +111,7 @@ const NoData = styled.div<any>`
 const NoDataMessage = styled.div<any>`
   position: absolute;
   font-size: 17px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   display: flex;
   top: 0;
   bottom: 0;

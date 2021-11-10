@@ -23,7 +23,7 @@ import DashboardActivity from '../DashboardActivity/DashboardActivity'
 import DashboardTopEndpoints from '../DashboardTopEndpoints/DashboardTopEndpoints'
 import DashboardExecutions from '../DashboardExecutions/DashboardExecutions'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 import type { Endpoint } from '../../../../@types/Endpoint'
 import type { Project } from '../../../../@types/Project'
@@ -170,21 +170,21 @@ class DashboardContent extends React.Component<Props, State> {
       {
         label: 'Replicas',
         value: this.props.replicas.length,
-        color: Palette.alert,
+        color: ThemePalette.alert,
         link: '/replicas',
         loading: this.props.replicasLoading,
       },
       {
         label: 'Migrations',
         value: this.props.migrations.length,
-        color: Palette.primary,
+        color: ThemePalette.primary,
         link: '/migrations',
         loading: this.props.migrationsLoading,
       },
       {
         label: 'Endpoints',
         value: this.props.endpoints.length,
-        color: Palette.black,
+        color: ThemePalette.black,
         link: '/endpoints',
         loading: this.props.endpointsLoading,
       },
@@ -195,14 +195,14 @@ class DashboardContent extends React.Component<Props, State> {
         {
           label: 'Users',
           value: this.props.users.length,
-          color: Palette.grayscale[3],
+          color: ThemePalette.grayscale[3],
           link: '/users',
           loading: this.props.usersLoading,
         },
         {
           label: 'Projects',
           value: this.props.projects.length,
-          color: Palette.grayscale[3],
+          color: ThemePalette.grayscale[3],
           link: '/projects',
           loading: this.props.projectsLoading,
         },

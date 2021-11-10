@@ -30,8 +30,7 @@ import WizardScripts from '../WizardScripts/WizardScripts'
 import Schedule from '../../TransferModule/Schedule/Schedule'
 import WizardSummary from '../WizardSummary/WizardSummary'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import { providerTypes, wizardPages, migrationFields } from '../../../../constants'
 import configLoader from '../../../../utils/Config'
 
@@ -53,7 +52,7 @@ import minionPoolStore from '../../../../stores/MinionPoolStore'
 import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 
 const Wrapper = styled.div<any>`
-  ${StyleProps.exactWidth(`${parseInt(StyleProps.contentWidth, 10) + 64}px`)}
+  ${ThemeProps.exactWidth(`${parseInt(ThemeProps.contentWidth, 10) + 64}px`)}
   margin: 64px auto 32px auto;
   position: absolute;
   top: 0;
@@ -72,8 +71,8 @@ const Header = styled.div<any>`
 const HeaderLabel = styled.div<any>`
   text-align: center;
   font-size: 32px;
-  font-weight: ${StyleProps.fontWeights.light};
-  color: ${Palette.primary};
+  font-weight: ${ThemeProps.fontWeights.light};
+  color: ${ThemePalette.primary};
   width: 100%;
 `
 const HeaderReload = styled.div<any>`
@@ -84,9 +83,9 @@ const HeaderReload = styled.div<any>`
 `
 const HeaderReloadLabel = styled.div<any>`
   font-size: 10px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   &:hover {
-    color: ${Palette.primary};
+    color: ${ThemePalette.primary};
   }
   cursor: pointer;
 `
@@ -589,7 +588,7 @@ class WizardPageContent extends React.Component<Props, State> {
           <WizardTypeIcon
             dangerouslySetInnerHTML={{
               __html: this.props.type === 'replica'
-                ? migrationArrowImage(Palette.alert) : migrationArrowImage(Palette.primary),
+                ? migrationArrowImage(ThemePalette.alert) : migrationArrowImage(ThemePalette.primary),
             }}
           />
           <EndpointLogos height={32} endpoint={targetEndpoint} />

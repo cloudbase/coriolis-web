@@ -29,7 +29,7 @@ import AlertModal from '../../ui/AlertModal/AlertModal'
 import projectStore from '../../../stores/ProjectStore'
 import userStore from '../../../stores/UserStore'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 
 import projectImage from './images/project.svg'
 
@@ -171,14 +171,14 @@ class ProjectDetailsPage extends React.Component<Props, State> {
   render() {
     const dropdownActions = [{
       label: 'Add Member',
-      color: Palette.primary,
+      color: ThemePalette.primary,
       action: () => { this.handleAddMemberClick() },
     }, {
       label: 'Edit Project',
       action: () => { this.handleEditProjectClick() },
     }, {
       label: 'Delete Project',
-      color: Palette.alert,
+      color: ThemePalette.alert,
       action: () => { this.handleDeleteProjectClick() },
     }]
 

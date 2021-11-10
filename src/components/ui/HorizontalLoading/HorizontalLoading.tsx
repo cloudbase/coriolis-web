@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -25,7 +25,7 @@ const Wrapper = styled.div<any>`
 const Loader = styled.div<any>`
   width: 8px;
   height: 2px;
-  background: ${Palette.primary};
+  background: ${ThemePalette.primary};
   position: absolute;
   animation: move 1s linear infinite;
   @keyframes move {

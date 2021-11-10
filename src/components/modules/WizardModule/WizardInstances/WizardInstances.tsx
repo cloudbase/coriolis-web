@@ -24,8 +24,7 @@ import SearchInput from '../../../ui/SearchInput/SearchInput'
 import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
 import Pagination from '../../../ui/Pagination/Pagination'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import type { Instance as InstanceType } from '../../../../@types/Instance'
 
 import instanceImage from './images/instance.svg'
@@ -53,16 +52,16 @@ const InstanceContent = styled.div<any>`
   width: 100%;
   padding: 8px 16px;
   margin-left: 16px;
-  border-top: 1px solid ${Palette.grayscale[1]};
-  transition: background ${StyleProps.animations.swift};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
+  transition: background ${ThemeProps.animations.swift};
 
   &:hover {
-    background: ${Palette.grayscale[1]};
+    background: ${ThemePalette.grayscale[1]};
   }
 `
 const CheckboxStyled = styled(Checkbox)`
   opacity: 0;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 
   :focus {
     opacity: 1;
@@ -83,7 +82,7 @@ const Instance = styled.div<any>`
   }
 
   &:last-child ${InstanceContent} {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 const LoadingText = styled.div<any>`
@@ -91,7 +90,7 @@ const LoadingText = styled.div<any>`
   font-size: 18px;
 `
 export const Image = styled.div<any>`
-  ${StyleProps.exactSize('48px')}
+  ${ThemeProps.exactSize('48px')}
   background: url('${instanceImage}') center no-repeat;
 `
 const Label = styled.div<any>`
@@ -102,11 +101,11 @@ const Label = styled.div<any>`
 `
 const LabelTitle = styled.div``
 const LabelSubtitle = styled.div`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   overflow-wrap: anywhere;
 `
 const Details = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   min-width: 160px;
   text-align: right;
 `
@@ -123,7 +122,7 @@ const SearchInputInfo = styled.div<any>`
 `
 const FilterInfo = styled.div<any>`
   display: flex;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const SelectionInfo = styled.div<any>``
 const FilterSeparator = styled.div<any>`
@@ -146,12 +145,12 @@ const SearchNotFoundText = styled.div<any>`
   font-size: 18px;
 `
 const SearchNotFoundSubtitle = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin-top: -32px;
   text-align: center;
 `
 const BigInstanceImage = styled.div<any>`
-  ${StyleProps.exactSize('96px')}
+  ${ThemeProps.exactSize('96px')}
   background: url('${bigInstanceImage}') center no-repeat;
 `
 

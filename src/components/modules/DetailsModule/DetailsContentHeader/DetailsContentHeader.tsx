@@ -21,13 +21,12 @@ import StatusPill from '../../../ui/StatusComponents/StatusPill/StatusPill'
 import ActionDropdown from '../../../ui/Dropdowns/ActionDropdown/ActionDropdown'
 import type { Action as DropdownAction } from '../../../ui/Dropdowns/ActionDropdown/ActionDropdown'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import backArrowImage from './images/back-arrow.svg'
 
 const Wrapper = styled.div<any>`
-  background: ${Palette.grayscale[0]};
+  background: ${ThemePalette.grayscale[0]};
   height: 96px;
   display: flex;
   align-items: center;
@@ -35,7 +34,7 @@ const Wrapper = styled.div<any>`
   margin-left: -72px;
 `
 const BackButton = styled(Link)`
-  ${StyleProps.exactSize('33px')}
+  ${ThemeProps.exactSize('33px')}
   background: url('${backArrowImage}') no-repeat center;
   cursor: pointer;
   margin-right: 32px;
@@ -49,11 +48,11 @@ const TypeImage = styled.div<any>`
 const Title = styled.div<any>`
   display: flex;
   align-items: center;
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
 `
 const Text = styled.div<any>`
   font-size: 30px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -71,11 +70,11 @@ const StatusPills = styled.div<any>`
   }
 `
 const Description = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin-top: 3px;
 `
 const MockButton = styled.div<any>`
-  ${StyleProps.exactWidth(`${StyleProps.inputSizes.regular.width}px`)}
+  ${ThemeProps.exactWidth(`${ThemeProps.inputSizes.regular.width}px`)}
 `
 
 type Props = {

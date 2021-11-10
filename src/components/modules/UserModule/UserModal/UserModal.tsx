@@ -25,9 +25,9 @@ import FieldInput from '../../../ui/FieldInput/FieldInput'
 
 import LabelDictionary from '../../../../utils/LabelDictionary'
 import KeyboardManager from '../../../../utils/KeyboardManager'
-import StyleProps from '../../../styleUtils/StyleProps'
 
 import userImage from './images/user.svg'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   padding: 48px 0 32px 0;
@@ -183,7 +183,7 @@ class UserModal extends React.Component<Props, State> {
         type={field.type || 'string'}
         value={value}
         onChange={onChange}
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         disabled={disabled}
         enum={field.enum}
         password={field.name === 'new_password' || field.name === 'confirm_password'}

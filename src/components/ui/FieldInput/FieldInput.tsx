@@ -31,8 +31,7 @@ import type { Field, EnumItem } from '../../../@types/Field'
 import { isEnumSeparator } from '../../../@types/Field'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import asteriskImage from './images/asterisk.svg'
 import FileInput from '../FileInput/FileInput'
@@ -49,24 +48,24 @@ const labelLayout = (props: any) => (props.layout === 'page' ? css`
   ` : css`
     margin-bottom: 2px;
     font-size: 10px;
-    color: ${Palette.grayscale[3]};
+    color: ${ThemePalette.grayscale[3]};
     text-transform: uppercase;
     display: flex;
     align-items: center;
   `)
 const Label = styled.div<any>`
   ${props => (props.width ? `width: ${props.width}px;` : '')}
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   flex-grow: 1;
   ${labelLayout}
-  ${props => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${props => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
   ${props => (props.disabled ? css`
     opacity: 0.5;
   ` : '')}
 `
 const LabelText = styled.span``
 const Asterisk = styled.div<any>`
-  ${StyleProps.exactSize('16px')}
+  ${ThemeProps.exactSize('16px')}
   display: inline-block;
   background: url('${asteriskImage}') center no-repeat;
   margin-bottom: -3px;

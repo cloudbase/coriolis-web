@@ -14,9 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import { ThemeProps } from '../../../Theme'
 
 import TextInput from '../../../ui/TextInput/TextInput'
-import StyleProps from '../../../styleUtils/StyleProps'
 
 const Wrapper = styled.div<any>`
   margin-bottom: 16px;
@@ -26,11 +26,11 @@ const FormFieldLabel = styled.div<any>`
   color: white;
   text-transform: uppercase;
   margin-bottom: 6px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   font-size: 9px;
 `
 const StyledTextInput = styled(TextInput)<any>`
-  width: ${StyleProps.inputSizes.regular.width}px;
+  width: ${ThemeProps.inputSizes.regular.width}px;
 `
 
 type Props = {

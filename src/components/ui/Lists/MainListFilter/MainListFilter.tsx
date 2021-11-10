@@ -21,8 +21,7 @@ import SearchInput from '../../SearchInput/SearchInput'
 import ActionDropdown from '../../Dropdowns/ActionDropdown/ActionDropdown'
 import ReloadButton from '../../ReloadButton/ReloadButton'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import type { Action as DropdownAction } from '../../Dropdowns/ActionDropdown/ActionDropdown'
 
@@ -44,11 +43,11 @@ const Main = styled.div<any>`
 const FilterGroup = styled.div<any>`
   display: flex;
   margin: 0 16px 0 ${props => (props.noMargin ? '0' : '32px')};
-  border-right: 1px solid ${Palette.grayscale[4]};
+  border-right: 1px solid ${ThemePalette.grayscale[4]};
 `
 const FilterItem = styled.div<any>`
   margin-right: 32px;
-  color: ${props => (props.selected ? Palette.primary : Palette.grayscale[4])};
+  color: ${props => (props.selected ? ThemePalette.primary : ThemePalette.grayscale[4])};
   ${props => (props.selected ? 'text-decoration: underline;' : '')}
   cursor: pointer;
   white-space: nowrap;
@@ -60,7 +59,7 @@ const FilterItem = styled.div<any>`
 const Selection = styled.div<any>`
   display: flex;
   align-items: center;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   margin-bottom: 32px;
   animation: show-animation .4s;
 
@@ -71,7 +70,7 @@ const Selection = styled.div<any>`
 `
 const SelectionText = styled.div<any>`
   margin-right: 16px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   white-space: nowrap;
 `
 

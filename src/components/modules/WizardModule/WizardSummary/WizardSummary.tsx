@@ -19,8 +19,7 @@ import moment from 'moment'
 
 import StatusPill from '../../../ui/StatusComponents/StatusPill/StatusPill'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import LabelDictionary from '../../../../utils/LabelDictionary'
 import DateUtils from '../../../../utils/DateUtils'
 import { migrationFields } from '../../../../constants'
@@ -62,15 +61,15 @@ const Section = styled.div<any>`
 `
 const SectionTitle = styled.div<any>`
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   margin-bottom: 16px;
 `
 const Overview = styled.div<any>``
 const OverviewLabel = styled.div<any>`
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   margin-bottom: 4px;
 `
 const OverviewRow = styled.div<any>`
@@ -94,11 +93,11 @@ const Row = styled.div<any>`
   display: flex;
   flex-direction: ${props => props.direction || 'column'};
   padding: 8px 0;
-  border-top: 1px solid ${Palette.grayscale[1]};
-  color: ${Palette.grayscale[4]};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
+  color: ${ThemePalette.grayscale[4]};
 
   &:last-child {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 const ScriptFileName = styled.div<any>`
@@ -114,7 +113,7 @@ const InstanceRowTitle = styled.div<any>`
 `
 const InstanceRowSubtitle = styled.div<any>`
   font-size: 10px;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   margin-bottom: 4px;
   &:last-child {
     margin-bottom: 0;
@@ -153,15 +152,15 @@ const Option = styled.div<any>`
   margin-bottom: 8px;
 `
 const OptionLabel = styled.div<any>`
-  color: ${Palette.grayscale[4]};
-  ${StyleProps.exactWidth('50%')}
+  color: ${ThemePalette.grayscale[4]};
+  ${ThemeProps.exactWidth('50%')}
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `
 const OptionValue = styled.div<any>`
   text-align: right;
-  ${StyleProps.exactWidth('50%')}
+  ${ThemeProps.exactWidth('50%')}
   text-overflow: ellipsis;
   overflow: hidden;
 `

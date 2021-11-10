@@ -24,8 +24,7 @@ import Button from '../../../ui/Button/Button'
 import type { Schedule, ScheduleFieldName } from '../../../../@types/Schedule'
 
 import { executionOptions } from '../../../../constants'
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 import notificationStore from '../../../../stores/NotificationStore'
 import deleteImage from './images/delete.svg'
@@ -36,11 +35,11 @@ import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
 
 const Wrapper = styled.div<any>`
   display: flex;
-  border-top: 1px solid ${Palette.grayscale[1]};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
   padding: 16px 0;
   position: relative;
   &:last-child {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 const EnablingIcon = styled.div`
@@ -52,11 +51,11 @@ const Data = styled.div<any>`
   width: ${props => props.width};
 `
 const Label = styled.div<any>`
-  background: ${Palette.grayscale[7]};
+  background: ${ThemePalette.grayscale[7]};
   height: 100%;
   font-size: 12px;
   margin-right: 8px;
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   padding: 0 8px;
   white-space: nowrap;
   overflow: hidden;

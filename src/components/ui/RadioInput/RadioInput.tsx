@@ -18,14 +18,13 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import checkedImage from './images/checked.svg'
 
 const Wrapper = styled.div<any>`
   ${(props: any) => (props.disabled ? 'opacity: 0.5;' : '')}
-  ${(props: any) => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const LabelStyled = styled.label`
   display: flex;
@@ -36,12 +35,12 @@ const Text = styled.div<any>`
 const InputStyled = styled.input`
   width: 16px;
   height: 16px;
-  border: 1px solid ${Palette.grayscale[3]};
+  border: 1px solid ${ThemePalette.grayscale[3]};
   border-radius: 50%;
   background: white;
   appearance: none;
   outline: 0;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   position: relative;
   margin: 0;
   cursor: pointer;

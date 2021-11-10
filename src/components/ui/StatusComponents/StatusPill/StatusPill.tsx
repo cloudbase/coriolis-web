@@ -16,8 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import runningImage from './images/running.svg'
 import cancellingImage from './images/cancelling.svg'
 
@@ -55,7 +54,7 @@ const statuses = (status: any) => {
     case 'POWERED_ON': // Minion Machine status
     case 'AVAILABLE': // Minion Pool status
       return css`
-        background: ${Palette.success};
+        background: ${ThemePalette.success};
         color: white;
         border-color: transparent;
       `
@@ -65,7 +64,7 @@ const statuses = (status: any) => {
     case 'ERROR_ALLOCATING_MINIONS':
     case 'POWER_ERROR': // Minion Machine power status
       return css`
-        background: ${Palette.alert};
+        background: ${ThemePalette.alert};
         color: white;
         border-color: transparent;
       `
@@ -74,15 +73,15 @@ const statuses = (status: any) => {
     case 'CANCELED_AFTER_COMPLETION':
     case 'FORCE_CANCELED':
       return css`
-        background: ${Palette.warning};
-        color: ${Palette.black};
+        background: ${ThemePalette.warning};
+        color: ${ThemePalette.black};
         border-color: transparent;
       `
     case 'PAUSED':
       return css`
         background: white;
-        color: ${Palette.primary};
-        border-color: ${Palette.primary};
+        color: ${ThemePalette.primary};
+        border-color: ${ThemePalette.primary};
       `
     case 'STARTING':
     case 'RUNNING':
@@ -122,7 +121,7 @@ const statuses = (status: any) => {
       return css`
         background: url('${cancellingImage}');
         animation: bgMotion 1s infinite linear;
-        color: ${Palette.black};
+        color: ${ThemePalette.black};
         border-color: transparent;
         @keyframes bgMotion {
           0% { background-position: -12px -1px; }
@@ -143,8 +142,8 @@ const statuses = (status: any) => {
     case 'INITIALIZED': // Minion Pool status
     case 'POWERED_OFF': // Minion Machine status
       return css`
-        background: ${Palette.grayscale[2]};
-        color: ${Palette.black};
+        background: ${ThemePalette.grayscale[2]};
+        color: ${ThemePalette.black};
         border-color: transparent;
       `
     case 'INFO':
@@ -157,19 +156,19 @@ const statuses = (status: any) => {
 }
 
 const primaryColors = css`
-  color: ${Palette.primary};
-  border-color: ${Palette.primary};
+  color: ${ThemePalette.primary};
+  border-color: ${ThemePalette.primary};
   background: white;
 `
 const alertColors = css`
-  color: ${Palette.alert};
-  border-color: ${Palette.alert};
+  color: ${ThemePalette.alert};
+  border-color: ${ThemePalette.alert};
   background: white;
 `
 const secondaryColors = css`
   color: white;
-  border-color: ${Palette.grayscale[8]};
-  background: ${Palette.grayscale[8]};
+  border-color: ${ThemePalette.grayscale[8]};
+  background: ${ThemePalette.grayscale[8]};
 `
 const getInfoStatusColor = (props: any) => {
   if (props.alert) {
@@ -183,12 +182,12 @@ const getInfoStatusColor = (props: any) => {
   return primaryColors
 }
 const Wrapper = styled.div<any>`
-  ${(props: any) => StyleProps.exactWidth(`${props.small ? 78 : 94}px`)}
+  ${(props: any) => ThemeProps.exactWidth(`${props.small ? 78 : 94}px`)}
   height: 14px;
   line-height: 14px;
   border: 1px solid;
   font-size: 9px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-align: center;
   border-radius: 4px;
   ${(props: any) => statuses(props.status)}

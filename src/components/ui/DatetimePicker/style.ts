@@ -14,16 +14,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { css } from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import arrowImage from './images/arrow.svg'
 
 const style = css`
   .rdtPicker {
     width: 240px;
-    border: 1px solid ${Palette.grayscale[2]};
-    border-radius: ${StyleProps.borderRadius};
+    border: 1px solid ${ThemePalette.grayscale[2]};
+    border-radius: ${ThemeProps.borderRadius};
     background: white;
     position: relative;
 
@@ -34,8 +33,8 @@ const style = css`
       right: 16px;
       width: 16px;
       height: 16px;
-      border-top: 1px solid ${Palette.grayscale[2]};
-      border-left: 1px solid ${Palette.grayscale[2]};
+      border-top: 1px solid ${ThemePalette.grayscale[2]};
+      border-left: 1px solid ${ThemePalette.grayscale[2]};
       transform: rotate(45deg);
       background: white;
     }
@@ -53,7 +52,7 @@ const style = css`
           align-items: center;
 
           &:first-child {
-            border-bottom: 1px solid ${Palette.grayscale[2]};
+            border-bottom: 1px solid ${ThemePalette.grayscale[2]};
           }
 
           &:nth-child(2) {
@@ -81,7 +80,7 @@ const style = css`
             padding: 0;
             justify-content: center;
             align-items: center;
-            ${StyleProps.exactWidth('24px')}
+            ${ThemeProps.exactWidth('24px')}
             height: 24px;
             border: 1px solid transparent;
             border-radius: 50%;
@@ -91,7 +90,7 @@ const style = css`
       }
 
       tfoot {
-        border-top: 1px solid ${Palette.grayscale[2]};
+        border-top: 1px solid ${ThemePalette.grayscale[2]};
         display: flex;
 
         tr {
@@ -110,10 +109,10 @@ const style = css`
 
     .rdtSwitch {
       flex-grow: 1;
-      font-weight: ${StyleProps.fontWeights.regular};
+      font-weight: ${ThemeProps.fontWeights.regular};
       justify-content: center;
       cursor: pointer;
-      color: ${Palette.grayscale[4]};
+      color: ${ThemePalette.grayscale[4]};
     }
 
     .rdtPrev, .rdtNext {
@@ -134,9 +133,9 @@ const style = css`
 
     .dow {
       font-size: 10px;
-      font-weight: ${StyleProps.fontWeights.medium};
-      color: ${Palette.grayscale[3]};
-      ${StyleProps.exactWidth('25px')};
+      font-weight: ${ThemeProps.fontWeights.medium};
+      color: ${ThemePalette.grayscale[3]};
+      ${ThemeProps.exactWidth('25px')};
       margin-right: 7px;
       display: flex;
       justify-content: center;
@@ -148,11 +147,11 @@ const style = css`
     }
 
     .rdtDay.rdtOld, .rdtDay.rdtDisabled, .rdtDay.rdtNew {
-      color: ${Palette.grayscale[3]};
+      color: ${ThemePalette.grayscale[3]};
     }
 
     .rdtDay.rdtActive {
-      background: ${Palette.primary};
+      background: ${ThemePalette.primary};
       color: white;
     }
 

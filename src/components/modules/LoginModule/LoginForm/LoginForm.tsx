@@ -21,12 +21,12 @@ import LoginOptions from '../LoginOptions/LoginOptions'
 import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 import LoginFormField from '../LoginFormField/LoginFormField'
 
-import StyleProps from '../../../styleUtils/StyleProps'
 
 import errorIcon from './images/error.svg'
 
 import { loginButtons } from '../../../../constants'
 import notificationStore from '../../../../stores/NotificationStore'
+import { ThemeProps } from '../../../Theme'
 
 const Form = styled.form`
   background: rgba(221, 224, 229, 0.5);
@@ -77,7 +77,7 @@ const LoginErrorText = styled.div<any>`
   color: white;
   font-size: 12px;
   margin-top: 4px;
-  width: ${StyleProps.inputSizes.regular.width}px;
+  width: ${ThemeProps.inputSizes.regular.width}px;
   text-align: center;
 `
 

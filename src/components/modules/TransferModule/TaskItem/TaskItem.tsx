@@ -26,8 +26,7 @@ import ProgressBar from '../../../ui/ProgressBar/ProgressBar'
 import CopyButton from '../../../ui/CopyButton/CopyButton'
 import notificationStore from '../../../../stores/NotificationStore'
 import DomUtils from '../../../../utils/DomUtils'
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 
 const GlobalStyle = createGlobalStyle`
@@ -38,10 +37,10 @@ const GlobalStyle = createGlobalStyle`
 const Wrapper = styled.div<any>`
   cursor: pointer;
   border-bottom: 1px solid white;
-  transition: all ${StyleProps.animations.swift};
-  ${props => (props.open ? `background: ${Palette.grayscale[0]};` : '')}
+  transition: all ${ThemeProps.animations.swift};
+  ${props => (props.open ? `background: ${ThemePalette.grayscale[0]};` : '')}
   &:hover {
-    background: ${Palette.grayscale[0]};
+    background: ${ThemePalette.grayscale[0]};
   }
 `
 const ArrowStyled = styled(Arrow)`
@@ -60,7 +59,7 @@ const HeaderData = styled.div<any>`
   display: block;
   ${props => (props.capitalize ? 'text-transform: capitalize;' : '')}
   width: ${props => props.width};
-  color: ${props => (props.black ? Palette.black : Palette.grayscale[4])};
+  color: ${props => (props.black ? ThemePalette.black : ThemePalette.grayscale[4])};
   padding-right: 8px;
   overflow: hidden;
   white-space: nowrap;
@@ -103,8 +102,8 @@ const RowData = styled.div<any>`
 const Label = styled.div<any>`
   text-transform: uppercase;
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[5]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[5]};
   margin-bottom: 4px;
 `
 const Value = styled.div<any>`
@@ -112,9 +111,9 @@ const Value = styled.div<any>`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  ${props => (props.primary ? css`color: ${Palette.primary};` : '')}
+  ${props => (props.primary ? css`color: ${ThemePalette.primary};` : '')}
   &:hover {
-    ${props => (props.primaryOnHover ? css`color: ${Palette.primary};` : '')}
+    ${props => (props.primaryOnHover ? css`color: ${ThemePalette.primary};` : '')}
   }
 `
 const DependsOnIds = styled.div<any>`
@@ -134,11 +133,11 @@ const ExceptionText = styled.div<any>`
   }
 `
 const ProgressUpdates = styled.div<any>`
-  color: ${Palette.black};
+  color: ${ThemePalette.black};
 `
 const ProgressUpdateDiv = styled.div<any>`
   display: flex;
-  color: ${props => (props.secondary ? Palette.grayscale[5] : 'inherit')};
+  color: ${props => (props.secondary ? ThemePalette.grayscale[5] : 'inherit')};
 `
 const ProgressUpdateDate = styled.div<any>`
   min-width: ${props => props.width || 'auto'};

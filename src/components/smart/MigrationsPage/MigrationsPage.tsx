@@ -32,7 +32,7 @@ import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import configLoader from '../../../utils/Config'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 import replicaMigrationFields from '../../modules/TransferModule/ReplicaMigrationOptions/replicaMigrationFields'
 import { MigrationItem } from '../../../@types/MainItem'
 import userStore from '../../../stores/UserStore'
@@ -227,12 +227,12 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
       {
         label: 'Recreate Migrations',
         disabled: atLeaseOneIsRunning,
-        color: Palette.primary,
+        color: ThemePalette.primary,
         action: () => { this.setState({ showRecreateMigrationsModal: true }) },
       },
       {
         label: 'Delete Migrations',
-        color: Palette.alert,
+        color: ThemePalette.alert,
         action: () => { this.setState({ showDeleteMigrationModal: true }) },
       },
     ]

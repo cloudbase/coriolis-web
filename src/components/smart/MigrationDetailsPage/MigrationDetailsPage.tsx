@@ -35,7 +35,7 @@ import providerStore from '../../../stores/ProviderStore'
 import configLoader from '../../../utils/Config'
 
 import migrationImage from './images/migration.svg'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 
 import type { Field } from '../../../@types/Field'
 import type { InstanceScript } from '../../../@types/Instance'
@@ -356,12 +356,12 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Recreate Migration',
-        color: Palette.primary,
+        color: ThemePalette.primary,
         action: () => { this.handleRecreateClick() },
       },
       {
         label: 'Delete Migration',
-        color: Palette.alert,
+        color: ThemePalette.alert,
         action: () => { this.handleDeleteMigrationClick() },
       },
     ]

@@ -25,8 +25,7 @@ import CopyMultilineValue from '../../ui/CopyMultilineValue/CopyMultilineValue'
 import Button from '../../ui/Button/Button'
 import Modal from '../../ui/Modal/Modal'
 
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 import NotificationsStyle from './style'
 import DomUtils from '../../../utils/DomUtils'
 
@@ -47,8 +46,8 @@ const ErrorInfoRequestItem = styled.div<any>`
 `
 const ErrorInfoRequestLabel = styled.div<any>`
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 4px;
 `

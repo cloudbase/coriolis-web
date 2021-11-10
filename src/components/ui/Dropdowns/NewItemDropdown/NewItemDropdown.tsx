@@ -20,8 +20,7 @@ import autobind from 'autobind-decorator'
 
 import DropdownButton from '../DropdownButton/DropdownButton'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import userStore from '../../../../stores/UserStore'
 import configLoader from '../../../../utils/Config'
 
@@ -48,50 +47,50 @@ const Wrapper = styled.div<any>`
 `
 const List = styled.div<any>`
   cursor: pointer;
-  background: ${Palette.grayscale[1]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[1]};
+  border-radius: ${ThemeProps.borderRadius};
   width: 240px;
   position: absolute;
   right: 0;
   top: 45px;
   z-index: 10;
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
 `
 const ListItem = styled(Link)`
   display: flex;
   align-items: center;
   border-bottom: 1px solid white;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   text-decoration: none;
-  color: ${Palette.black};
+  color: ${ThemePalette.black};
   &:hover {
-    background: ${Palette.grayscale[0]};
+    background: ${ThemePalette.grayscale[0]};
   }
   &:last-child {
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
   }
   &:first-child {
     position: relative;
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-top-right-radius: ${StyleProps.borderRadius};
+    border-top-left-radius: ${ThemeProps.borderRadius};
+    border-top-right-radius: ${ThemeProps.borderRadius};
     &:after {
       content: ' ';
       position: absolute;
       width: 10px;
       height: 10px;
-      background: ${Palette.grayscale[1]};
-      border: 1px solid ${Palette.grayscale[1]};
-      border-color: transparent transparent ${Palette.grayscale[1]} ${Palette.grayscale[1]};
+      background: ${ThemePalette.grayscale[1]};
+      border: 1px solid ${ThemePalette.grayscale[1]};
+      border-color: transparent transparent ${ThemePalette.grayscale[1]} ${ThemePalette.grayscale[1]};
       transform: rotate(135deg);
       right: 10px;
       top: -6px;
-      transition: all ${StyleProps.animations.swift};
+      transition: all ${ThemeProps.animations.swift};
     }
     &:hover:after {
-      background: ${Palette.grayscale[0]};
-      border: 1px solid ${Palette.grayscale[0]};
-      border-color: transparent transparent ${Palette.grayscale[0]} ${Palette.grayscale[0]};
+      background: ${ThemePalette.grayscale[0]};
+      border: 1px solid ${ThemePalette.grayscale[0]};
+      border-color: transparent transparent ${ThemePalette.grayscale[0]} ${ThemePalette.grayscale[0]};
     }
   }
 `
@@ -111,7 +110,7 @@ const Title = styled.div<any>`
 `
 const Description = styled.div<any>`
   font-size: 12px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 
 export type ItemType = {

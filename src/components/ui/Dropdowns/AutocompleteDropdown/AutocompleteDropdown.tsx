@@ -24,9 +24,8 @@ import {
 } from '../Dropdown/Dropdown'
 import tipImage from '../Dropdown/images/tip'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DomUtils from '../../../../utils/DomUtils'
-import StyleProps from '../../../styleUtils/StyleProps'
 
 import requiredImage from './images/required.svg'
 
@@ -36,10 +35,10 @@ const getWidth = (props: any) => {
   }
 
   if (props.large) {
-    return StyleProps.inputSizes.large.width - 2
+    return ThemeProps.inputSizes.large.width - 2
   }
 
-  return StyleProps.inputSizes.regular.width - 2
+  return ThemeProps.inputSizes.regular.width - 2
 }
 const Wrapper = styled.div<any>`
   position: relative;
@@ -58,16 +57,16 @@ const List = styled.div<any>`
   background: white;
   cursor: pointer;
   width: ${(props: any) => getWidth(props)}px;
-  border: 1px solid ${Palette.grayscale[3]};
-  border-radius: ${StyleProps.borderRadius};
+  border: 1px solid ${ThemePalette.grayscale[3]};
+  border-radius: ${ThemeProps.borderRadius};
   z-index: 1000;
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
 `
 const Separator = styled.div<any>`
   width: calc(100% - 32px);
   height: 1px;
   margin: 8px 16px;
-  background: ${Palette.grayscale[3]};
+  background: ${ThemePalette.grayscale[3]};
 `
 const ListItems = styled.div<any>`
   max-height: 400px;
@@ -79,26 +78,26 @@ const SearchNotFound = styled.div<any>`
 `
 const ListItem = styled.div<any>`
   position: relative;
-  color: ${(props: any) => (props.selected ? 'white' : props.dim ? Palette.grayscale[3] : Palette.grayscale[4])};
-  ${(props: any) => (props.arrowSelected ? css`background: ${Palette.primary}44;` : '')}
-  ${(props: any) => (props.selected ? css`background: ${Palette.primary};` : '')}
-  ${(props: any) => (props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : '')}
+  color: ${(props: any) => (props.selected ? 'white' : props.dim ? ThemePalette.grayscale[3] : ThemePalette.grayscale[4])};
+  ${(props: any) => (props.arrowSelected ? css`background: ${ThemePalette.primary}44;` : '')}
+  ${(props: any) => (props.selected ? css`background: ${ThemePalette.primary};` : '')}
+  ${(props: any) => (props.selected ? css`font-weight: ${ThemeProps.fontWeights.medium};` : '')}
   padding: 8px 16px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   word-break: break-word;
 
   &:first-child {
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-top-right-radius: ${StyleProps.borderRadius};
+    border-top-left-radius: ${ThemeProps.borderRadius};
+    border-top-right-radius: ${ThemeProps.borderRadius};
   }
 
   &:last-child {
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
   }
 
   &:hover {
-    background: ${Palette.primary};
+    background: ${ThemePalette.primary};
     color: white;
   }
 `

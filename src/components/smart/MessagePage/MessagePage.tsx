@@ -14,12 +14,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
+import EmptyTemplate from '../../modules/TemplateModule/EmptyTemplate/EmptyTemplate'
+import { ThemePalette } from '../../Theme'
 
 import StatusImage from '../../ui/StatusComponents/StatusImage/StatusImage'
 
-import Palette from '../../styleUtils/Palette'
 import fingerprintImage from './images/fingerprint'
-import EmptyTemplate from '../../modules/TemplateModule/EmptyTemplate/EmptyTemplate'
 
 const Wrapper = styled.div<any>`
   position: absolute;
@@ -56,11 +56,11 @@ const FingerPrintAnimation = styled.div<any>`
 `
 const Title = styled.div<any>`
   font-size: 21px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const Message = styled.div<any>`
   margin-top: 16px;
-  color: ${Palette.grayscale[8]};
+  color: ${ThemePalette.grayscale[8]};
 `
 type Props = {
   title?: string,

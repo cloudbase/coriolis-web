@@ -21,8 +21,8 @@ import LabelDictionary from '../../../utils/LabelDictionary'
 import FieldInput from '../../../components/ui/FieldInput'
 import type { Field } from '../../../@types/Field'
 
-import StyleProps from '../../../components/styleUtils/StyleProps'
 import { Endpoint, Validation } from '../../../@types/Endpoint'
+import { ThemeProps } from '../../../components/Theme'
 
 export const Wrapper = styled.div<any>`
   display: flex;
@@ -38,7 +38,7 @@ export const Fields = styled.div<any>`
 `
 export const FieldStyled = styled(FieldInput)`
   min-width: ${props => (props.useTextArea ? '100%' : '224px')};
-  max-width: ${StyleProps.inputSizes.large.width}px;
+  max-width: ${ThemeProps.inputSizes.large.width}px;
   margin-bottom: 16px;
 `
 export const Row = styled.div<any>`
@@ -97,7 +97,7 @@ class ContentPlugin extends React.Component<Props> {
         <FieldStyled
           {...field}
           label={field.title || LabelDictionary.get(field.name)}
-          width={StyleProps.inputSizes.large.width}
+          width={ThemeProps.inputSizes.large.width}
           disabled={this.props.disabled}
           password={isPassword}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}

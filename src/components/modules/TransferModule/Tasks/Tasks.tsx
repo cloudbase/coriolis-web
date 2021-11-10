@@ -19,15 +19,14 @@ import styled from 'styled-components'
 import TaskItem from '../TaskItem/TaskItem'
 
 import type { Task } from '../../../../@types/Task'
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 
 const ColumnWidths = ['26%', '18%', '36%', '20%']
 
 const Wrapper = styled.div<any>``
 const ContentWrapper = styled.div`
-  background: ${Palette.grayscale[1]};
+  background: ${ThemePalette.grayscale[1]};
 `
 const LoadingWrapper = styled.div`
   display: flex;
@@ -37,14 +36,14 @@ const LoadingWrapper = styled.div`
 `
 const Header = styled.div<any>`
   display: flex;
-  border-bottom: 1px solid ${Palette.grayscale[5]};
+  border-bottom: 1px solid ${ThemePalette.grayscale[5]};
   padding: 4px 8px;
 `
 const HeaderData = styled.div<any>`
   width: ${props => props.width};
   font-size: 10px;
-  color: ${Palette.grayscale[5]};
-  font-weight: ${StyleProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[5]};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
 `
 const Body = styled.div<any>``

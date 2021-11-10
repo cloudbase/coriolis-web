@@ -23,8 +23,7 @@ import StatusImage from '../../ui/StatusComponents/StatusImage/StatusImage'
 import TextArea from '../../ui/TextArea/TextArea'
 import CopyValue from '../../ui/CopyValue/CopyValue'
 
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 import FileUtils from '../../../utils/FileUtils'
 
 import type { Licence, LicenceServerStatus } from '../../../@types/Licence'
@@ -38,7 +37,7 @@ const Wrapper = styled.div<any>`
 `
 const TextAreaStyled = styled(TextArea)`
   ${props => (props.dropzone ? css`
-    border: 1px dashed ${Palette.primary};
+    border: 1px dashed ${ThemePalette.primary};
   ` : '')}
 `
 const LicenceInfoWrapper = styled.div<any>`
@@ -55,15 +54,15 @@ const LicenceRow = styled.div<any>`
 const LicenceRowLabel = styled.div<any>`
   display: flex;
   align-items: center;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   font-size: 10px;
   text-transform: uppercase;
-  color: ${Palette.grayscale[3]};
+  color: ${ThemePalette.grayscale[3]};
 `
 const LicenceLink = styled.span`
   text-transform: initial;
-  color: ${Palette.primary};
-  font-weight: ${StyleProps.fontWeights.regular};
+  color: ${ThemePalette.primary};
+  font-weight: ${ThemeProps.fontWeights.regular};
   cursor: pointer;
 `
 const LicenceRowContent = styled.div<any>`
@@ -93,7 +92,7 @@ const LicenceAddWrapper = styled.div<any>`
   padding: 0 32px;
 `
 const Description = styled.div<any>`
-  color: ${Palette.grayscale[3]};
+  color: ${ThemePalette.grayscale[3]};
 `
 const FakeFileInput = styled.input`
   position: absolute;
@@ -341,7 +340,7 @@ class LicenceModule extends React.Component<Props, State> {
       <LicenceAddWrapper>
         <Logo
           dangerouslySetInnerHTML={
-            { __html: licenceImage(this.state.isValid ? Palette.primary : Palette.grayscale[5]) }
+            { __html: licenceImage(this.state.isValid ? ThemePalette.primary : ThemePalette.grayscale[5]) }
           }
         />
         <LicenceRowLabel style={{ marginTop: '32px' }}>Licence</LicenceRowLabel>

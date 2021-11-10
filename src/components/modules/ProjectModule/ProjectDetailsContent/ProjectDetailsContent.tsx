@@ -27,11 +27,10 @@ import Button from '../../../ui/Button/Button'
 
 import type { Project, RoleAssignment, Role } from '../../../../@types/Project'
 import type { User } from '../../../../@types/User'
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
   padding-left: 126px;
 `
@@ -42,15 +41,15 @@ const Info = styled.div<any>`
   margin-left: -32px;
 `
 const Field = styled.div<any>`
-  ${StyleProps.exactWidth('calc(50% - 32px)')}
+  ${ThemeProps.exactWidth('calc(50% - 32px)')}
   margin-bottom: 32px;
   margin-left: 32px;
 `
 const Value = styled.div<any>``
 const Label = styled.div<any>`
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 3px;
 `
@@ -70,11 +69,11 @@ const Buttons = styled.div<any>`
   justify-content: space-between;
 `
 const UserColumn = styled.div<any>`
-  ${props => (props.disabled ? css`color: ${Palette.grayscale[3]};` : '')}
+  ${props => (props.disabled ? css`color: ${ThemePalette.grayscale[3]};` : '')}
 `
 const UserName = styled(Link)<any>`
   ${props => (props.disabled ? css`opacity: 0.7;` : '')}
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   text-decoration: none;
 `
 const ButtonsColumn = styled.div<any>`
@@ -252,7 +251,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
           listWidth="120px"
           multipleSelection
           items={allRoles}
-          labelStyle={{ color: Palette.grayscale[4] }}
+          labelStyle={{ color: ThemePalette.grayscale[4] }}
           disabled={!user.enabled}
           style={{ opacity: user.enabled ? 1 : 0.7 }}
           onChange={item => {
@@ -272,7 +271,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
           onChange={item => { this.handleUserAction(user, item) }}
           disabled={user.id === this.props.loggedUserId}
           style={{ opacity: user.id === this.props.loggedUserId ? 0.7 : 1 }}
-          itemStyle={item => `color: ${item.value === 'remove' ? Palette.alert : Palette.black};`}
+          itemStyle={item => `color: ${item.value === 'remove' ? ThemePalette.alert : ThemePalette.black};`}
         />,
       ]
       rows.push(columns)
@@ -284,7 +283,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         header={['Member', 'Roles', 'Status', '']}
         items={rows}
         noItemsLabel="No members available!"
-        columnsStyle={[css`color: ${Palette.black};`]}
+        columnsStyle={[css`color: ${ThemePalette.black};`]}
       />
     )
   }

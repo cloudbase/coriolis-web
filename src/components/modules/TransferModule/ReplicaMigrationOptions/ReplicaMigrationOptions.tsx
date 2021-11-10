@@ -23,7 +23,6 @@ import WizardScripts from '../../WizardModule/WizardScripts/WizardScripts'
 
 import LabelDictionary from '../../../../utils/LabelDictionary'
 import KeyboardManager from '../../../../utils/KeyboardManager'
-import StyleProps from '../../../styleUtils/StyleProps'
 
 import replicaMigrationImage from './images/replica-migration.svg'
 import replicaMigrationFields from './replicaMigrationFields'
@@ -33,6 +32,7 @@ import type { Instance, InstanceScript } from '../../../../@types/Instance'
 import { TransferItemDetails } from '../../../../@types/MainItem'
 import { MinionPool } from '../../../../@types/MinionPool'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../../WizardModule/WizardOptions/WizardOptions'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -42,8 +42,8 @@ const Wrapper = styled.div<any>`
   min-height: 0;
 `
 const Image = styled.div<any>`
-  ${StyleProps.exactWidth('288px')}
-  ${StyleProps.exactHeight('96px')}
+  ${ThemeProps.exactWidth('288px')}
+  ${ThemeProps.exactHeight('96px')}
   background: url('${replicaMigrationImage}') center no-repeat;
   margin: 80px 0;
 `

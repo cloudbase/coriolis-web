@@ -16,11 +16,11 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import ActionDropdown from '../ActionDropdown'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 const actions = [{
   label: 'Execute',
-  color: Palette.primary,
+  color: ThemePalette.primary,
   action: () => { console.log('execute clicked') },
   disabled: true,
 }, {
@@ -28,7 +28,7 @@ const actions = [{
   action: () => { console.log('Edit clicked') },
 }, {
   label: 'Delete',
-  color: Palette.alert,
+  color: ThemePalette.alert,
   action: () => { console.log('Delete clicked') },
 }]
 

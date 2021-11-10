@@ -26,7 +26,7 @@ import { providerTypes } from '../../../../constants'
 import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
 import Dropdown from '../../../ui/Dropdowns/Dropdown/Dropdown'
 import Button from '../../../ui/Button/Button'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 const Wrapper = styled.div``
 const LoadingWrapper = styled.div`
@@ -145,8 +145,8 @@ class MinionEndpointModal extends React.Component<Props, State> {
             <Switch
               big
               checked={this.state.platform === 'destination'}
-              checkedColor={Palette.primary}
-              uncheckedColor={Palette.primary}
+              checkedColor={ThemePalette.primary}
+              uncheckedColor={ThemePalette.primary}
               onChange={value => {
                 this.setState({
                   platform: value ? 'destination' : 'source',

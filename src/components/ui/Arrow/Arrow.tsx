@@ -16,8 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import arrowImage from './images/arrow'
 import arrowThickImage from './images/arrow-thick'
@@ -36,7 +35,7 @@ const Wrapper = styled.div<any>`
   align-items: center;
   cursor: ${props => (props.useDefaultCursor || props.disabled ? 'default' : 'pointer')};
   opacity: ${props => props.opacity};
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   ${props => getOrientation(props)}
 `
 
@@ -58,9 +57,9 @@ class Arrow extends React.Component<Props> {
   }
 
   render() {
-    let color = this.props.primary ? Palette.primary : Palette.grayscale[4]
+    let color = this.props.primary ? ThemePalette.primary : ThemePalette.grayscale[4]
     color = this.props.color || color
-    color = this.props.disabled ? Palette.grayscale[0] : color
+    color = this.props.disabled ? ThemePalette.grayscale[0] : color
     return (
       <Wrapper
         // eslint-disable-next-line react/jsx-props-no-spreading

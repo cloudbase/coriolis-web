@@ -20,8 +20,7 @@ import moment from 'moment'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import type { Licence, LicenceServerStatus } from '../../../../@types/Licence'
 import CopyValue from '../../../ui/CopyValue/CopyValue'
@@ -34,14 +33,14 @@ const Wrapper = styled.div<any>`
 `
 const Title = styled.div<any>`
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   margin-bottom: 12px;
 `
 const Module = styled.div<any>`
-  background: ${Palette.grayscale[0]};
+  background: ${ThemePalette.grayscale[0]};
   display: flex;
   overflow: auto;
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   padding: 24px 16px 16px 16px;
   height: 232px;
 `
@@ -71,13 +70,13 @@ const TopInfoText = styled.div<any>`
   flex-grow: 1;
 `
 const TopInfoDate = styled.div<any>`
-  ${StyleProps.exactWidth('76px')}
-  ${StyleProps.exactHeight('80px')}
+  ${ThemeProps.exactWidth('76px')}
+  ${ThemeProps.exactHeight('80px')}
   display: flex;
   flex-direction: column;
   margin-left: 24px;
-  ${StyleProps.boxShadow}
-  border-radius: ${StyleProps.borderRadius};
+  ${ThemeProps.boxShadow}
+  border-radius: ${ThemeProps.borderRadius};
   overflow: hidden;
 `
 const TopInfoDateTop = styled.div<any>`
@@ -94,9 +93,9 @@ const TopInfoDateBottom = styled.div<any>`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   font-size: 37px;
-  font-weight: ${StyleProps.fontWeights.extraLight};
+  font-weight: ${ThemeProps.fontWeights.extraLight};
 `
 const Charts = styled.div<any>`
   margin-top: -8px;
@@ -116,12 +115,12 @@ const ChartHeader = styled.div<any>`
 `
 const ChartHeaderCurrent = styled.div<any>``
 const ChartHeaderTotal = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const ChartBodyWrapper = styled.div<any>`
   height: 8px;
-  background: ${Palette.grayscale[2]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[2]};
+  border-radius: ${ThemeProps.borderRadius};
   margin-top: 4px;
   overflow: hidden;
 `
@@ -173,7 +172,7 @@ class DashboardLicence extends React.Component<Props> {
     const graphDataRows = [
       [
         {
-          color: Palette.alert,
+          color: ThemePalette.alert,
           current: info.currentPerformedReplicas,
           total: info.currentAvailableReplicas,
           label: 'Current Replicas',
@@ -181,7 +180,7 @@ class DashboardLicence extends React.Component<Props> {
           all currently active licences (including non-activated floating licences)`,
         },
         {
-          color: Palette.alert,
+          color: ThemePalette.alert,
           current: info.lifetimePerformedReplicas,
           total: info.lifetimeAvailableReplicas,
           label: 'Lifetime Replicas',
@@ -190,7 +189,7 @@ class DashboardLicence extends React.Component<Props> {
       ],
       [
         {
-          color: Palette.primary,
+          color: ThemePalette.primary,
           current: info.currentPerformedMigrations,
           total: info.currentAvailableMigrations,
           label: 'Current Migrations',
@@ -198,7 +197,7 @@ class DashboardLicence extends React.Component<Props> {
           all currently active licences (including non-activated floating licences)`,
         },
         {
-          color: Palette.primary,
+          color: ThemePalette.primary,
           current: info.lifetimePerformedMigrations,
           total: info.lifetimeAvailableMigrations,
           label: 'Lifetime Migrations',
@@ -268,7 +267,7 @@ class DashboardLicence extends React.Component<Props> {
         <AddLicenceButtonWrapper>
           <Logo
             dangerouslySetInnerHTML={
-              { __html: licenceImage(Palette.grayscale[5]) }
+              { __html: licenceImage(ThemePalette.grayscale[5]) }
             }
           />
           <Button primary onClick={this.props.onAddClick}>Add Licence</Button>

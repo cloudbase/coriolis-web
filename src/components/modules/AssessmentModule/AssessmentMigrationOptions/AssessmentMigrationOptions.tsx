@@ -22,7 +22,8 @@ import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
 
 import type { Field } from '../../../../@types/Field'
 
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemeProps } from '../../../Theme'
+
 import LabelDictionary from '../../../../utils/LabelDictionary'
 
 import assessmentImage from './images/assessment.svg'
@@ -51,7 +52,7 @@ const Fields = styled.div<any>`
   min-height: 0;
 `
 const FieldStyled = styled(FieldInput)`
-  ${StyleProps.exactWidth(`${StyleProps.inputSizes.large.width}px`)}
+  ${ThemeProps.exactWidth(`${ThemeProps.inputSizes.large.width}px`)}
   margin-bottom: 16px;
 `
 const Row = styled.div<any>`
@@ -236,7 +237,7 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
 
       const currentField = (
         <FieldStyled
-          width={StyleProps.inputSizes.large.width}
+          width={ThemeProps.inputSizes.large.width}
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...field}
           // eslint-disable-next-line react/jsx-props-no-spreading

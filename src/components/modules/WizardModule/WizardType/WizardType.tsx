@@ -18,8 +18,7 @@ import styled from 'styled-components'
 
 import Switch from '../../../ui/Switch/Switch'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import migrationImage from './images/migration'
 
@@ -33,8 +32,8 @@ const Image = styled.div<any>`
   width: 96px;
   height: 96px;
   #stroke {
-    transition: all ${StyleProps.animations.swift};
-    stroke: ${props => (props.type === 'replica' ? Palette.alert : Palette.primary)};
+    transition: all ${ThemeProps.animations.swift};
+    stroke: ${props => (props.type === 'replica' ? ThemePalette.alert : ThemePalette.primary)};
   }
 `
 const Row = styled.div<any>`
@@ -51,12 +50,12 @@ const Column = styled.div<any>`
 `
 const Title = styled.div<any>`
   font-size: 23px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   margin-bottom: 17px;
 `
 const Message = styled.div<any>`
-  color: ${Palette.grayscale[4]};
-  transition: all ${StyleProps.animations.swift};
+  color: ${ThemePalette.grayscale[4]};
+  transition: all ${ThemeProps.animations.swift};
   opacity: ${props => (props.selected ? 1 : 0.6)};
 `
 

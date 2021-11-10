@@ -17,17 +17,16 @@ import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
-  ${StyleProps.exactWidth('128px')}
+  ${ThemeProps.exactWidth('128px')}
   display: flex;
   flex-direction: column;
 `
 const Item = styled(Link)<any>`
   font-size: 16px;
-  color: ${props => (props.selected ? Palette.primary : Palette.grayscale[4])};
+  color: ${props => (props.selected ? ThemePalette.primary : ThemePalette.grayscale[4])};
   cursor: pointer;
   margin-bottom: 13px;
   text-decoration: none;

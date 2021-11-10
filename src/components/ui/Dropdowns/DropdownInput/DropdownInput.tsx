@@ -19,8 +19,7 @@ import styled from 'styled-components'
 import DropdownLink from '../DropdownLink/DropdownLink'
 import TextInput from '../../TextInput/TextInput'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import arrowImage from './images/arrow'
 import requiredImage from './images/required.svg'
@@ -28,9 +27,9 @@ import requiredImage from './images/required.svg'
 const Wrapper = styled.div<any>`
   display: flex;
   align-items: center;
-  border: 1px solid ${(props: any) => (props.disabled ? Palette.grayscale[0] : props.highlight ? Palette.alert : Palette.grayscale[3])};
-  border-radius: ${StyleProps.borderRadius};
-  height: ${StyleProps.inputSizes.regular.height - 2}px;
+  border: 1px solid ${(props: any) => (props.disabled ? ThemePalette.grayscale[0] : props.highlight ? ThemePalette.alert : ThemePalette.grayscale[3])};
+  border-radius: ${ThemeProps.borderRadius};
+  height: ${ThemeProps.inputSizes.regular.height - 2}px;
   position: relative;
 `
 const Required = styled.div<any>`
@@ -45,9 +44,9 @@ const linkButtonStyle = (props: any) => ({
   width: '60px',
   height: '14px',
   padding: '8px',
-  background: props.disabled ? Palette.grayscale[0] : Palette.grayscale[1],
-  borderTopLeftRadius: StyleProps.borderRadius,
-  borderBottomLeftRadius: StyleProps.borderRadius,
+  background: props.disabled ? ThemePalette.grayscale[0] : ThemePalette.grayscale[1],
+  borderTopLeftRadius: ThemeProps.borderRadius,
+  borderBottomLeftRadius: ThemeProps.borderRadius,
   justifyContent: 'center',
 })
 type ItemType = {

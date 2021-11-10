@@ -21,8 +21,7 @@ import { Close as InputClose } from '../../../ui/TextInput/TextInput'
 import { Image as InstanceImage } from '../WizardInstances/WizardInstances'
 import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import FileUtils from '../../../../utils/FileUtils'
 
 import scriptItemImage from './images/script-item.svg'
@@ -51,7 +50,7 @@ const Group = styled.div<any>`
 const Heading = styled.div<any>`
   margin-bottom: 16px;
   font-size: ${props => (props.layout === 'modal' ? '16px' : '24px')};
-  font-weight: ${props => (props.layout === 'modal' ? StyleProps.fontWeights.medium : StyleProps.fontWeights.light)};
+  font-weight: ${props => (props.layout === 'modal' ? ThemeProps.fontWeights.medium : ThemeProps.fontWeights.light)};
   display: flex;
 `
 const InfoIconStyled = styled(InfoIcon)<any>`
@@ -69,11 +68,11 @@ const Script = styled.div<any>`
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  border-top: 1px solid ${Palette.grayscale[1]};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
   padding: 8px 0;
 
   &:last-child {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 const Name = styled.div<any>`
@@ -81,7 +80,7 @@ const Name = styled.div<any>`
   align-items: center;
 `
 const OsImage = styled.div<any>`
-  ${StyleProps.exactSize('48px')}
+  ${ThemeProps.exactSize('48px')}
   background: url('${scriptItemImage}') center no-repeat;
 `
 const NameLabel = styled.div<any>`
@@ -95,12 +94,12 @@ const NameLabelTitle = styled.div<any>`
 `
 const NameLabelSubtitle = styled.div<any>`
   font-size: 12px;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   margin-top: 1px;
   word-break: break-word;
 `
 const LinkButton = styled.div<any>`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   flex-shrink: 0;
   margin: 0 8px 0 16px;
   cursor: pointer;
@@ -136,7 +135,7 @@ const ScriptDataActions = styled.div`
   }
 `
 const ScriptDataAction = styled.div<{ red?: boolean, disabled?: boolean }>`
-  color: ${props => (props.red ? Palette.alert : Palette.primary)};
+  color: ${props => (props.red ? ThemePalette.alert : ThemePalette.primary)};
   cursor: pointer;
   ${props => (props.disabled ? css`
     opacity: 0.6;

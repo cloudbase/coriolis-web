@@ -28,9 +28,9 @@ import type { Execution, ExecutionTasks } from '../../../../@types/Execution'
 import type { Network } from '../../../../@types/Network'
 import type { Field } from '../../../../@types/Field'
 import type { Schedule as ScheduleType } from '../../../../@types/Schedule'
-import StyleProps from '../../../styleUtils/StyleProps'
 import { ReplicaItemDetails } from '../../../../@types/MainItem'
 import { MinionPool } from '../../../../@types/MinionPool'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -53,7 +53,7 @@ const ButtonColumn = styled.div<any>`
   }
 `
 const DetailsBody = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
 `
 
 const NavigationItems = [

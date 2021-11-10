@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
-import Palette from '../../../../styleUtils/Palette'
-import StyleProps from '../../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../../Theme'
 import generic64Image from './generic-64.svg'
 import generic128Image from './generic-128.svg'
 import generic128DisabledImage from './generic-128-disabled.svg'
@@ -31,8 +30,8 @@ const Wrapper = styled.div<any>`
   letter-spacing: -1px;
 `
 const Logo = styled.div<any>`
-  ${(props: any) => StyleProps.exactWidth(`${props.width}px`)}
-  ${(props: any) => StyleProps.exactHeight(`${props.height}px`)}
+  ${(props: any) => ThemeProps.exactWidth(`${props.width}px`)}
+  ${(props: any) => ThemeProps.exactHeight(`${props.height}px`)}
   background: url(${(props: any) => props.image}) center no-repeat;
 `
 
@@ -47,7 +46,7 @@ class Generic extends React.Component<Props> {
     return (
       <Wrapper style={{
         fontSize: '14px',
-        color: white ? 'white' : Palette.grayscale[4],
+        color: white ? 'white' : ThemePalette.grayscale[4],
       }}
       >
         {this.props.name}
@@ -59,7 +58,7 @@ class Generic extends React.Component<Props> {
     return (
       <Wrapper style={{
         fontSize: '18px',
-        color: Palette.grayscale[4],
+        color: ThemePalette.grayscale[4],
       }}
       >
         {this.props.name}
@@ -71,7 +70,7 @@ class Generic extends React.Component<Props> {
     return (
       <Wrapper style={{
         fontSize: '22px',
-        color: Palette.black,
+        color: ThemePalette.black,
         textAlign: 'left',
       }}
       >
@@ -85,7 +84,7 @@ class Generic extends React.Component<Props> {
     return (
       <Wrapper style={{
         fontSize: '22px',
-        color: disabled ? Palette.grayscale[3] : Palette.black,
+        color: disabled ? ThemePalette.grayscale[3] : ThemePalette.black,
         textAlign: 'left',
         flexDirection: 'column',
       }}

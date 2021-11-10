@@ -24,16 +24,16 @@ import DropdownButton from '../Dropdowns/DropdownButton/DropdownButton'
 
 import DomUtils from '../../../utils/DomUtils'
 import DateUtils from '../../../utils/DateUtils'
-import StyleProps from '../../styleUtils/StyleProps'
 
 import style from './style'
+import { ThemeProps } from '../../Theme'
 
 require('moment/locale/en-gb')
 
 const GlobalStyle = createGlobalStyle`${style}`
 
 const Wrapper = styled.div<any>`
-  width: ${StyleProps.inputSizes.regular.width}px;
+  width: ${ThemeProps.inputSizes.regular.width}px;
 `
 const DropdownButtonStyled = styled(DropdownButton)`
   font-size: 12px;
@@ -48,7 +48,7 @@ const Portal = styled.div<any>`
   }
 `
 const DatetimeStyled = styled(Datetime)<any>`
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
 `
 
 type Props = {

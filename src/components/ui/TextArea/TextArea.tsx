@@ -15,14 +15,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${(props: any) => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const Required = styled.div<any>`
   position: absolute;
@@ -39,38 +38,38 @@ const getInputWidth = (props: any) => {
   }
 
   if (props.large) {
-    return `${StyleProps.inputSizes.large.width}px`
+    return `${ThemeProps.inputSizes.large.width}px`
   }
 
-  return `${StyleProps.inputSizes.regular.width}px`
+  return `${ThemeProps.inputSizes.regular.width}px`
 }
 
 const Input = styled.textarea<any>`
   width: ${(props: any) => getInputWidth(props)};
-  height: ${(props: any) => props.height || `${StyleProps.inputSizes.regular.height * 2}px`};
-  border-radius: ${StyleProps.borderRadius};
+  height: ${(props: any) => props.height || `${ThemeProps.inputSizes.regular.height * 2}px`};
+  border-radius: ${ThemeProps.borderRadius};
   background-color: #FFF;
-  border: 1px solid ${props => (props.highlight ? Palette.alert : Palette.grayscale[3])};
-  color: ${Palette.black};
+  border: 1px solid ${props => (props.highlight ? ThemePalette.alert : ThemePalette.grayscale[3])};
+  color: ${ThemePalette.black};
   padding: 8px;
   font-size: inherit;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   box-sizing: border-box;
   font-family: monospace;
   &:hover {
-    border-color: ${props => (props.highlight ? Palette.alert : Palette.primary)};
+    border-color: ${props => (props.highlight ? ThemePalette.alert : ThemePalette.primary)};
   }
   &:focus {
-    border-color: ${props => (props.highlight ? Palette.alert : Palette.primary)};
+    border-color: ${props => (props.highlight ? ThemePalette.alert : ThemePalette.primary)};
     outline: none;
   }
   &:disabled {
-    color: ${Palette.grayscale[3]};
-    border-color: ${Palette.grayscale[0]};
-    background-color: ${Palette.grayscale[0]};
+    color: ${ThemePalette.grayscale[3]};
+    border-color: ${ThemePalette.grayscale[0]};
+    background-color: ${ThemePalette.grayscale[0]};
   }
   &::placeholder {
-    color: ${Palette.grayscale[3]};
+    color: ${ThemePalette.grayscale[3]};
   }
 `
 @observer

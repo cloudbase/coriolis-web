@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { css } from 'styled-components'
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 import Table from '../Table'
 
 const items = [
@@ -51,8 +50,8 @@ storiesOf('Table', module)
         header={header}
         items={items}
         columnsStyle={[
-          css`font-weight: ${StyleProps.fontWeights.medium};`,
-          css`color: ${Palette.alert};`,
+          css`font-weight: ${ThemeProps.fontWeights.medium};`,
+          css`color: ${ThemePalette.alert};`,
         ]}
       />
     </div>

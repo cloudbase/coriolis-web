@@ -20,15 +20,15 @@ import autobind from 'autobind-decorator'
 import SearchButton from '../SearchButton/SearchButton'
 import TextInput from '../TextInput/TextInput'
 import StatusIcon from '../StatusComponents/StatusIcon/StatusIcon'
+import { ThemeProps } from '../../Theme'
 
-import StyleProps from '../../styleUtils/StyleProps'
 
 const Input = styled(TextInput)<any>`
   padding-left: 32px;
   ${props => (props.loading || (props.showClose && props.value) ? 'padding-right: 32px;' : '')}
   width: 50px;
   opacity: 0;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 `
 const InputAnimation = (props: any) => css`
   ${Input} {
@@ -74,7 +74,7 @@ type State = {
 class SearchInput extends React.Component<Props, State> {
   static defaultProps = {
     placeholder: 'Search',
-    width: `${StyleProps.inputSizes.regular.width}px`,
+    width: `${ThemeProps.inputSizes.regular.width}px`,
     value: '',
   }
 

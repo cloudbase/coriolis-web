@@ -13,8 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { css } from 'styled-components'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import closeImage from './images/close.svg'
 
@@ -23,7 +22,7 @@ const NotificationsStyle = css`
     width: 244px !important;
   }
   .notification-action-button {
-    background: ${Palette.primary} !important;
+    background: ${ThemePalette.primary} !important;
     font-weight: 400 !important;
     border-radius: 4px !important;
     margin-top: 8px !important;
@@ -35,11 +34,11 @@ const NotificationsStyle = css`
     margin-left: 25px !important;
   }
   .notification-error .notification-action-button {
-    background: ${Palette.secondaryLight} !important;
+    background: ${ThemePalette.secondaryLight} !important;
   }
   .notification {
-    border-radius: ${StyleProps.borderRadius} !important;
-    background-color: ${Palette.grayscale[1]} !important;
+    border-radius: ${ThemeProps.borderRadius} !important;
+    background-color: ${ThemePalette.grayscale[1]} !important;
     box-shadow: none !important;
     border-top: none !important;
     height: auto !important;
@@ -59,7 +58,7 @@ const NotificationsStyle = css`
     background-repeat: no-repeat;
     background-position: 0 0;
     font-size: 14px !important;
-    color: ${Palette.black} !important;
+    color: ${ThemePalette.black} !important;
     letter-spacing: 0 !important;
     line-height: 18px !important;
     margin-bottom: 1px !important;
@@ -70,7 +69,7 @@ const NotificationsStyle = css`
   }
   .notification-message {
     font-size: 14px !important;
-    color: ${Palette.black} !important;
+    color: ${ThemePalette.black} !important;
     letter-spacing: 0 !important;
     line-height: 18px !important;
     font-weight: 400 !important;

@@ -16,8 +16,8 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
+import { ThemeProps } from '../../../Theme'
 
-import StyleProps from '../../../styleUtils/StyleProps'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -27,16 +27,16 @@ const OuterShadow = styled.div<any>`
   position: absolute;
   top: 0;
   left: 0;
-  ${props => StyleProps.exactSize(`${props.size}px`)}
+  ${props => ThemeProps.exactSize(`${props.size}px`)}
   border-radius: 50%;
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
   pointer-events: none;
 `
 const InnerShadow = styled.div<any>`
   position: absolute;
   top: calc(50% - ${props => props.size}px);
   left: calc(50% - ${props => props.size}px);
-  ${props => StyleProps.exactSize(`${props.size * 2}px`)}
+  ${props => ThemeProps.exactSize(`${props.size * 2}px`)}
   border-radius: 50%;
   box-shadow: inset rgba(0, 0, 0, 0.1) 0 0 6px 2px;
   pointer-events: none;

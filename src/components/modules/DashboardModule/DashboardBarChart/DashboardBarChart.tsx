@@ -16,9 +16,8 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-
 import BarChartNiceScale from './BarChartNiceScale'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -34,7 +33,7 @@ const YTick = styled.div<any>`
   position: absolute;
   top: ${props => 100 - props.bottom}%;
   font-size: 9px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   width: 24px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -85,7 +84,7 @@ const StackedBar = styled.div<any>`
 `
 const BarLabel = styled.div<any>`
   font-size: 9px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   margin-top: 8px;
 `
 type DataItem = {

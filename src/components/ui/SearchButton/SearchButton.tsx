@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 
 import searchImage from './images/search'
 import filterImage from './images/filter'
@@ -48,8 +48,8 @@ class SearchButton extends React.Component<Props> {
           data-test-id="searchButton-icon"
           dangerouslySetInnerHTML={{
             __html: this.props.useFilterIcon
-              ? filterImage(Palette.grayscale[3])
-              : searchImage(this.props.primary ? Palette.primary : Palette.grayscale[4]),
+              ? filterImage(ThemePalette.grayscale[3])
+              : searchImage(this.props.primary ? ThemePalette.primary : ThemePalette.grayscale[4]),
           }}
         />
       </Wrapper>

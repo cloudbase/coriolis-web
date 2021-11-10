@@ -20,7 +20,7 @@ import Modal from '../Modal/Modal'
 import Button from '../Button/Button'
 import StatusImage from '../StatusComponents/StatusImage/StatusImage'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 import KeyboardManager from '../../../utils/KeyboardManager'
 
 const Wrapper = styled.div<any>`
@@ -36,7 +36,7 @@ const Message = styled.div<any>`
   margin-top: 48px;
 `
 const ExtraMessage = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin: 11px 0 48px 0;
   text-align: center;
 `

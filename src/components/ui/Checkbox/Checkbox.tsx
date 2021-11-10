@@ -16,8 +16,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import checkmarkImage from './images/checkmark.svg'
 
@@ -34,20 +33,20 @@ const Wrapper = styled.div<any>`
   ${(props: any) => (props.disabled ? 'opacity: 0.9;' : '')}
   justify-content: center;
   align-items: center;
-  ${StyleProps.exactSize('16px')}
-  border: 1px solid ${Palette.grayscale[3]};
+  ${ThemeProps.exactSize('16px')}
+  border: 1px solid ${ThemePalette.grayscale[3]};
   border-radius: 3px;
   background: white;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   ${(props: any) => (props.checked ? css`
-    border-color: ${Palette.primary};
-    background: ${Palette.primary};
+    border-color: ${ThemePalette.primary};
+    background: ${ThemePalette.primary};
     ${CheckmarkImage} {
       transform: scale(1);
     }
   ` : '')}
   :focus {
-    border: 1px solid ${Palette.primary};
+    border: 1px solid ${ThemePalette.primary};
     outline: none;
   }
 `

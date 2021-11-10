@@ -20,7 +20,6 @@ import autobind from 'autobind-decorator'
 import { CSSTransitionGroup } from 'react-transition-group'
 
 import configLoader from '../../../../utils/Config'
-import StyleProps from '../../../styleUtils/StyleProps'
 import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
 import FieldInput from '../../../ui/FieldInput/FieldInput'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
@@ -30,7 +29,7 @@ import type { StorageBackend } from '../../../../@types/Endpoint'
 
 import { executionOptions, migrationFields } from '../../../../constants'
 import LabelDictionary from '../../../../utils/LabelDictionary'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import endpointImage from './images/endpoint.svg'
 import { MinionPool } from '../../../../@types/MinionPool'
@@ -79,7 +78,7 @@ const GroupNameText = styled.div<any>`
 `
 const GroupNameBar = styled.div<any>`
   flex-grow: 1;
-  background: ${Palette.grayscale[3]};
+  background: ${ThemePalette.grayscale[3]};
   height: 1px;
 `
 const GroupFields = styled.div<any>`
@@ -90,7 +89,7 @@ const Column = styled.div<any>`
   margin-top: -16px;
 `
 const FieldInputStyled = styled(FieldInput)`
-  width: ${props => props.width || StyleProps.inputSizes.wizard.width}px;
+  width: ${props => props.width || ThemeProps.inputSizes.wizard.width}px;
   justify-content: space-between;
   margin-top: 16px;
 `
@@ -105,7 +104,7 @@ const LoadingText = styled.div<any>`
   font-size: 18px;
 `
 const EndpointImage = styled.div<any>`
-  ${StyleProps.exactSize('96px')};
+  ${ThemeProps.exactSize('96px')};
   background: url('${endpointImage}') center no-repeat;
 `
 const NoSourceFieldsWrapper = styled.div<any>`
@@ -120,7 +119,7 @@ const NoSourceFieldsMessage = styled.div<any>`
 `
 const NoSourceFieldsSubMessage = styled.div<any>`
   margin-top: 16px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 
 export const shouldRenderField = (field: Field) => (field.type !== 'array' || (field.enum && field.enum.length && field.enum.length > 0))
@@ -360,7 +359,7 @@ class WizardOptions extends React.Component<Props> {
         addNullValue
         required={field.required}
         data-test-id={`wOptions-field-${field.name}`}
-        width={this.props.fieldWidth || StyleProps.inputSizes.wizard.width}
+        width={this.props.fieldWidth || ThemeProps.inputSizes.wizard.width}
         nullableBoolean={field.nullableBoolean}
         disabled={field.disabled}
         disabledLoading={this.props.optionsLoading

@@ -19,7 +19,7 @@ import autobind from 'autobind-decorator'
 
 import SearchInput from '../../SearchInput/SearchInput'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 import filterImage from './images/filter'
 
@@ -43,7 +43,7 @@ const List = styled.div<any>`
   right: -7px;
   z-index: 9999;
   padding: 8px;
-  background: ${Palette.grayscale[1]};
+  background: ${ThemePalette.grayscale[1]};
   border-radius: 4px;
   border: ${border};
   box-shadow: 0 0 4px 0 rgba(32, 34, 52, 0.13);
@@ -54,7 +54,7 @@ const Tip = styled.div<any>`
   right: 8px;
   width: 10px;
   height: 10px;
-  background: ${Palette.grayscale[1]};
+  background: ${ThemePalette.grayscale[1]};
   border-top: ${border};
   border-left: ${border};
   border-bottom: 1px solid transparent;
@@ -147,7 +147,7 @@ class DropdownFilter extends React.Component<Props, State> {
         onClick={() => { this.handleButtonClick() }}
         dangerouslySetInnerHTML={{
           __html:
-            filterImage(this.props.searchValue ? Palette.primary : Palette.grayscale[5]),
+            filterImage(this.props.searchValue ? ThemePalette.primary : ThemePalette.grayscale[5]),
         }}
       />
     )

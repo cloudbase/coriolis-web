@@ -22,7 +22,7 @@ import FieldInput from '../../../ui/FieldInput/FieldInput'
 
 import KeyboardManager from '../../../../utils/KeyboardManager'
 import type { Project } from '../../../../@types/Project'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 import duplicateImage from './images/duplicate.svg'
 
@@ -54,7 +54,7 @@ const Title = styled.div<any>`
   margin-bottom: 8px;
 `
 const Subtitle = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const Form = styled.div<any>`
   margin-bottom: 128px;

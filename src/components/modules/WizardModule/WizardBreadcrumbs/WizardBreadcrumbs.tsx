@@ -18,7 +18,7 @@ import styled from 'styled-components'
 
 import Arrow from '../../../ui/Arrow/Arrow'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 import type { WizardPage } from '../../../../@types/WizardData'
 
 const Wrapper = styled.div<any>`
@@ -36,7 +36,7 @@ const Breadcrumb = styled.div<any>`
   }
 `
 const Name = styled.div<any>`
-  color: ${props => (props.selected ? Palette.primary : Palette.black)};
+  color: ${props => (props.selected ? ThemePalette.primary : ThemePalette.black)};
 `
 
 type Props = {

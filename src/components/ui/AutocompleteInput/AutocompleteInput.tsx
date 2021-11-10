@@ -18,8 +18,7 @@ import styled, { css } from 'styled-components'
 import arrowImage from './images/arrow'
 
 import TextInput from '../TextInput/TextInput'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const getWidth = (props: any) => {
   if (props.width) {
@@ -27,17 +26,17 @@ const getWidth = (props: any) => {
   }
 
   if (props.large) {
-    return StyleProps.inputSizes.large.width - 2
+    return ThemeProps.inputSizes.large.width - 2
   }
 
-  return StyleProps.inputSizes.regular.width - 2
+  return ThemeProps.inputSizes.regular.width - 2
 }
 
 const getBorder = (props: any) => {
   if (props.embedded) {
     return css`border: none;`
   }
-  return css`border: 1px solid ${props.highlight ? Palette.alert : props.disabled ? Palette.grayscale[0] : Palette.grayscale[3]};`
+  return css`border: 1px solid ${props.highlight ? ThemePalette.alert : props.disabled ? ThemePalette.grayscale[0] : ThemePalette.grayscale[3]};`
 }
 
 const Wrapper = styled.div<any>`
@@ -45,17 +44,17 @@ const Wrapper = styled.div<any>`
   align-items: center;
   position: relative;
   width: ${props => (props.embedded ? 'calc(100% + 8px)' : `${getWidth(props)}px`)};
-  height: ${props => (props.large ? StyleProps.inputSizes.large.height - 2
-    : StyleProps.inputSizes.regular.height - 2)}px;
+  height: ${props => (props.large ? ThemeProps.inputSizes.large.height - 2
+    : ThemeProps.inputSizes.regular.height - 2)}px;
   ${props => getBorder(props)}
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   cursor: ${props => (props.disabled ? 'default' : 'pointer')};
-  transition: all ${StyleProps.animations.swift};
-  background: ${props => (props.disabled && !props.embedded ? Palette.grayscale[0] : 'white')};
+  transition: all ${ThemeProps.animations.swift};
+  background: ${props => (props.disabled && !props.embedded ? ThemePalette.grayscale[0] : 'white')};
 
-  #dropdown-arrow-image {stroke: ${props => (props.disabled ? Palette.grayscale[3] : Palette.black)};}
-  ${props => (props.focus ? css`border-color: ${Palette.primary};` : '')}
-  ${props => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  #dropdown-arrow-image {stroke: ${props => (props.disabled ? ThemePalette.grayscale[3] : ThemePalette.black)};}
+  ${props => (props.focus ? css`border-color: ${ThemePalette.primary};` : '')}
+  ${props => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 
 `
 const Arrow = styled.div<any>`

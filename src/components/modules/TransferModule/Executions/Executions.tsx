@@ -24,7 +24,7 @@ import Timeline from '../Timeline/Timeline'
 import Tasks from '../Tasks/Tasks'
 
 import type { Execution, ExecutionTasks } from '../../../../@types/Execution'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 
 import executionImage from './images/execution.svg'
@@ -41,7 +41,7 @@ const LoadingText = styled.div<any>`
   font-size: 18px;
 `
 const ExecutionInfo = styled.div<any>`
-  background: ${Palette.grayscale[1]};
+  background: ${ThemePalette.grayscale[1]};
   padding: 24px 16px;
   display: flex;
   align-items: center;
@@ -52,17 +52,17 @@ const ExecutionInfoNumber = styled.div<any>`
   padding-right: 24px;
 `
 const ExecutionInfoDate = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin-right: 16px;
 `
 const ExecutionInfoId = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   display: flex;
   margin-right: 16px;
   flex-grow: 1;
 `
 const NoExecutions = styled.div<any>`
-  background: ${Palette.grayscale[7]};
+  background: ${ThemePalette.grayscale[7]};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,7 +79,7 @@ const NoExecutionTitle = styled.div<any>`
   margin-bottom: 10px;
 `
 const NoExecutionText = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin-bottom: 48px;
 `
 

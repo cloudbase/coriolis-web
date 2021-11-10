@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StyleProps from '../../styleUtils/StyleProps'
 
 import eyeImage from './images/eye.svg'
+import { ThemeProps } from '../../Theme'
 
 const EyeIcon = styled.span`
   opacity: 0;
@@ -27,7 +27,7 @@ const EyeIcon = styled.span`
   display: inline-block;
   background: url('${eyeImage}') no-repeat;
   background-position-y: 2px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 `
 const Wrapper = styled.div<any>`
   cursor: ${(props: any) => (props.show ? '' : 'pointer')};

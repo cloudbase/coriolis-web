@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import errorImage from './images/error'
 import successImage from './images/success'
@@ -32,16 +31,16 @@ type Props = {
 }
 const Wrapper = styled.div<any>`
   position: relative;
-  ${(props: any) => StyleProps.exactSize(`${props.size}px`)}
+  ${(props: any) => ThemeProps.exactSize(`${props.size}px`)}
   background-repeat: no-repeat;
   background-position: center;
 `
 const ProgressSvgWrapper = styled.svg<any>`
-  ${StyleProps.exactSize('100%')}
+  ${ThemeProps.exactSize('100%')}
   transform: rotate(-90deg);
 `
 const ProgressText = styled.div<any>`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   font-size: 18px;
   top: 36px;
   position: absolute;
@@ -49,7 +48,7 @@ const ProgressText = styled.div<any>`
   text-align: center;
 `
 const CircleProgressBar = styled.circle`
-  transition: stroke-dashoffset ${StyleProps.animations.swift};
+  transition: stroke-dashoffset ${ThemeProps.animations.swift};
 `
 const dashAnimationStyle = css`
   .circle {
@@ -84,7 +83,7 @@ const loadingAnimationStyle = css`
   }
 `
 const Image = styled.div<any>`
-  ${(props: any) => StyleProps.exactSize(`${props.size}px`)}
+  ${(props: any) => ThemeProps.exactSize(`${props.size}px`)}
   ${(props: any) => props.cssStyle}
 `
 const Images: any = {
@@ -120,7 +119,7 @@ class StatusImage extends React.Component<Props> {
             cx="48"
             cy="48"
             fill="transparent"
-            stroke={Palette.grayscale[2]}
+            stroke={ThemePalette.grayscale[2]}
           />
           <CircleProgressBar
             data-test-id="statusImage-progressBar"
@@ -128,7 +127,7 @@ class StatusImage extends React.Component<Props> {
             cx="48"
             cy="48"
             fill="transparent"
-            stroke={Palette.primary}
+            stroke={ThemePalette.primary}
             strokeDasharray="300 1000"
             strokeDashoffset={300 - ((this.props.loadingProgress || 0) * 3)}
           />

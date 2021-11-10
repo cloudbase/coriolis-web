@@ -20,13 +20,13 @@ import Button from '../../../ui/Button/Button'
 import DetailsNavigation from '../../NavigationModule/DetailsNavigation/DetailsNavigation'
 import type { Endpoint } from '../../../../@types/Endpoint'
 import type { Field } from '../../../../@types/Field'
-import StyleProps from '../../../styleUtils/StyleProps'
 import MinionPoolMainDetails from './MinionPoolMainDetails'
 import { ReplicaItem, MigrationItem } from '../../../../@types/MainItem'
 import { MinionPoolDetails } from '../../../../@types/MinionPool'
 import MinionPoolMachines from './MinionPoolMachines'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 import MinionPoolEvents from './MinionPoolEvents'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -54,7 +54,7 @@ const ButtonColumn = styled.div<any>`
   }
 `
 const DetailsBody = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
 `
 
 const NavigationItems = [

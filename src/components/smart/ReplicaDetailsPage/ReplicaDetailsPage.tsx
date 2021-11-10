@@ -47,7 +47,7 @@ import configLoader from '../../../utils/Config'
 import { providerTypes } from '../../../constants'
 
 import replicaImage from './images/replica.svg'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 import { getTransferItemTitle, ReplicaItemDetails } from '../../../@types/MainItem'
 import ObjectUtils from '../../../utils/ObjectUtils'
 import minionPoolStore from '../../../stores/MinionPoolStore'
@@ -562,7 +562,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Create Migration',
-        color: Palette.primary,
+        color: ThemePalette.primary,
         action: () => { this.handleCreateMigrationClick() },
       },
       {
@@ -578,7 +578,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       },
       {
         label: 'Delete Replica',
-        color: Palette.alert,
+        color: ThemePalette.alert,
         action: () => { this.handleDeleteReplicaClick() },
       },
     ]

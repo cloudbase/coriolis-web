@@ -20,7 +20,7 @@ import Button from '../../../ui/Button/Button'
 import CopyButton from '../../../ui/CopyButton/CopyButton'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 import type { Validation as ValidationType } from '../../../../@types/Endpoint'
 
 import notificationStore from '../../../../stores/NotificationStore'
@@ -51,7 +51,7 @@ const Title = styled.div<any>`
   margin-bottom: 8px;
 `
 const Subtitle = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const Buttons = styled.div<any>`
   margin-top: 48px;

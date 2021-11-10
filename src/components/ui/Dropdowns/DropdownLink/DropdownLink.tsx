@@ -21,8 +21,7 @@ import DomUtils from '../../../../utils/DomUtils'
 
 import SearchInput from '../../SearchInput/SearchInput'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import arrowImage from './images/arrow'
 import checkmarkImage from './images/checkmark.svg'
@@ -41,15 +40,15 @@ export const List = styled.div<any>`
   position: absolute;
   z-index: 1001;
   padding: ${props => (props.padding != null ? props.padding : 8)}px;
-  background: ${Palette.grayscale[1]};
+  background: ${ThemePalette.grayscale[1]};
   border-radius: 4px;
-  border: 1px solid ${Palette.grayscale[0]};
-  ${props => (props.width ? StyleProps.exactWidth(props.width) : css`
+  border: 1px solid ${ThemePalette.grayscale[0]};
+  ${props => (props.width ? ThemeProps.exactWidth(props.width) : css`
     min-width: 132px;
     max-width: 160px;
   `)}
   ${props => props.customStyle || ''}
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
 `
 export const Tip = styled.div<any>`
   position: absolute;
@@ -57,13 +56,13 @@ export const Tip = styled.div<any>`
   right: 11px;
   width: 10px;
   height: 10px;
-  background: ${Palette.grayscale[1]};
-  border-top: 1px solid ${props => props.borderColor || Palette.grayscale[0]};
-  border-left: 1px solid ${props => props.borderColor || Palette.grayscale[0]};
+  background: ${ThemePalette.grayscale[1]};
+  border-top: 1px solid ${props => props.borderColor || ThemePalette.grayscale[0]};
+  border-left: 1px solid ${props => props.borderColor || ThemePalette.grayscale[0]};
   border-bottom: 1px solid transparent;
   border-right: 1px solid transparent;
   transform: rotate(45deg);
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 `
 export const ListItems = styled.div<any>`
   max-height: 400px;
@@ -72,7 +71,7 @@ export const ListItems = styled.div<any>`
 `
 export const ListItem = styled.div<any>`
   padding-top: 13px;
-  color: ${props => (props.selected ? Palette.primary : Palette.grayscale[4])};
+  color: ${props => (props.selected ? ThemePalette.primary : ThemePalette.grayscale[4])};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -84,18 +83,18 @@ export const ListItem = styled.div<any>`
 export const ListItemLabel = styled.div<any>`
   word-break: break-all;
   word-break: break-word;
-  ${props => (props.highlighted ? `font-weight: ${StyleProps.fontWeights.medium};` : '')}
+  ${props => (props.highlighted ? `font-weight: ${ThemeProps.fontWeights.medium};` : '')}
   ${props => (props.addMargin ? css`margin-left: ${props.addMargin}px;` : '')}
   ${props => props.customStyle}
 `
 const Checkmark = styled.div<any>`
-  ${StyleProps.exactWidth('16px')}
+  ${ThemeProps.exactWidth('16px')}
   height: 16px;
   background: ${props => (props.show ? `url('${checkmarkImage}') center no-repeat` : 'transparent')};
   margin-right: 8px;
 `
 const Label = styled.div<any>`
-  color: ${props => (props.secondary ? Palette.grayscale[4] : Palette.primary)};
+  color: ${props => (props.secondary ? ThemePalette.grayscale[4] : ThemePalette.primary)};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -443,7 +442,7 @@ class DropdownLink extends React.Component<Props, State> {
           <Arrow
             ref={(arrow: HTMLElement | null | undefined) => { this.arrowRef = arrow }}
             dangerouslySetInnerHTML={{
-              __html: arrowImageFunc(this.props.secondary ? Palette.grayscale[3] : Palette.primary),
+              __html: arrowImageFunc(this.props.secondary ? ThemePalette.grayscale[3] : ThemePalette.primary),
             }}
           />
         </LinkButton>

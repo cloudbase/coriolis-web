@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import { loginButtons } from '../../../../constants'
 import googleLogo from './images/google-logo.svg'
 import microsoftLogo from './images/microsoft-logo.svg'
@@ -37,8 +36,8 @@ const buttonStyle = (id: any, isLogo?: boolean) => {
       return isLogo
         ? css`background-image: url('${googleLogo}');`
         : css`
-          color: ${Palette.grayscale[4]};
-          border-color: ${Palette.grayscale[2]};
+          color: ${ThemePalette.grayscale[4]};
+          border-color: ${ThemePalette.grayscale[2]};
           background-color: white;
         `
     case 'microsoft':
@@ -63,8 +62,8 @@ const buttonStyle = (id: any, isLogo?: boolean) => {
       return isLogo
         ? css`background-image: url('${githubLogo}');`
         : css`
-          border-color: ${Palette.grayscale[4]};
-          background-color: ${Palette.grayscale[4]};
+          border-color: ${ThemePalette.grayscale[4]};
+          background-color: ${ThemePalette.grayscale[4]};
         `
     default:
       return ''
@@ -72,12 +71,12 @@ const buttonStyle = (id: any, isLogo?: boolean) => {
 }
 
 const Button = styled.div<any>`
-  width: ${StyleProps.inputSizes.large.width - 2}px;
-  height: ${StyleProps.inputSizes.large.height - 2}px;
+  width: ${ThemeProps.inputSizes.large.width - 2}px;
+  height: ${ThemeProps.inputSizes.large.height - 2}px;
   display: flex;
   align-items: center;
   border: 1px solid;
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   color: white;
   cursor: pointer;
   margin-left: 16px;

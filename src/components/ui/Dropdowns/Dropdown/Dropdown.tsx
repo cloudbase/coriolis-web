@@ -20,9 +20,8 @@ import autobind from 'autobind-decorator'
 
 import DropdownButton from '../DropdownButton/DropdownButton'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DomUtils from '../../../../utils/DomUtils'
-import StyleProps from '../../../styleUtils/StyleProps'
 
 import checkmarkImage from './images/checkmark'
 import tipImage from './images/tip'
@@ -33,7 +32,7 @@ const getWidth = (props: any) => {
     return props.width - 2
   }
 
-  return StyleProps.inputSizes.regular.width - 2
+  return ThemeProps.inputSizes.regular.width - 2
 }
 const Wrapper = styled.div<any>`
   position: relative;
@@ -49,17 +48,17 @@ const Required = styled.div<any>`
   right: ${(props: any) => props.right}px;
   top: 12px;
   background: url('${requiredImage}') center no-repeat;
-  ${(props: any) => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const List = styled.div<any>`
   position: absolute;
   background: white;
   cursor: pointer;
   width: ${(props: any) => getWidth(props)}px;
-  border: 1px solid ${Palette.grayscale[3]};
-  border-radius: ${StyleProps.borderRadius};
+  border: 1px solid ${ThemePalette.grayscale[3]};
+  border-radius: ${ThemeProps.borderRadius};
   z-index: 1000;
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
 `
 const ListItems = styled.div<any>`
   max-height: 400px;
@@ -72,17 +71,17 @@ export const Tip = styled.div<any>`
   right: 8px;
   top: -8px;
   z-index: 11;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   overflow: hidden;
   svg {
     #path {
-      transition: all ${StyleProps.animations.swift};
-      fill: ${props => (props.primary ? Palette.primary : 'white')};
+      transition: all ${ThemeProps.animations.swift};
+      fill: ${props => (props.primary ? ThemePalette.primary : 'white')};
     }
   }
 `
 const Checkmark = styled.div<any>`
-  ${StyleProps.exactWidth('16px')}
+  ${ThemeProps.exactWidth('16px')}
   height: 16px;
   margin-right: 8px;
   margin-top: 1px;
@@ -90,7 +89,7 @@ const Checkmark = styled.div<any>`
   justify-content: center;
   align-items: center;
   #symbol {
-    transition: stroke ${StyleProps.animations.swift};
+    transition: stroke ${ThemeProps.animations.swift};
     stroke-dasharray: 12;
     stroke-dashoffset: ${(props: any) => (props.show ? 24 : 12)};
     animation-duration: 100ms;
@@ -109,25 +108,25 @@ const Checkmark = styled.div<any>`
 `
 const getListItemColor = (props: any) => {
   if (props.disabled) {
-    return Palette.grayscale[3]
+    return ThemePalette.grayscale[3]
   }
   if (props.multipleSelected) {
-    return Palette.primary
+    return ThemePalette.primary
   }
   if (props.selected) {
     return 'white'
   }
   if (props.dim) {
-    return Palette.grayscale[3]
+    return ThemePalette.grayscale[3]
   }
-  return Palette.grayscale[4]
+  return ThemePalette.grayscale[4]
 }
 const getListBackgroundColor = (props: any) => {
   if (props.arrowSelected) {
-    return css`background: ${Palette.primary}44;`
+    return css`background: ${ThemePalette.primary}44;`
   }
   if (props.selected) {
-    return css`background: ${Palette.primary};`
+    return css`background: ${ThemePalette.primary};`
   }
   return ''
 }
@@ -136,25 +135,25 @@ const ListItem = styled.div<any>`
   display: flex;
   color: ${(props: any) => getListItemColor(props)};
   ${(props: any) => getListBackgroundColor(props)}
-  ${(props: any) => (props.selected ? css`font-weight: ${StyleProps.fontWeights.medium};` : '')}
+  ${(props: any) => (props.selected ? css`font-weight: ${ThemeProps.fontWeights.medium};` : '')}
   padding: 8px 16px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   padding-left: ${(props: any) => props.paddingLeft}px;
   word-break: break-word;
   ${props => (props.disabled ? css`cursor: default;` : '')}
 
   &:first-child {
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-top-right-radius: ${StyleProps.borderRadius};
+    border-top-left-radius: ${ThemeProps.borderRadius};
+    border-top-right-radius: ${ThemeProps.borderRadius};
   }
 
   &:last-child {
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
   }
 
   &:hover {
-    background: ${Palette.primary};
+    background: ${ThemePalette.primary};
     color: white;
     ${Checkmark} #symbol {
       stroke: white;
@@ -178,7 +177,7 @@ const Separator = styled.div<any>`
   width: calc(100% - 32px);
   height: 1px;
   margin: 8px 16px;
-  background: ${Palette.grayscale[3]};
+  background: ${ThemePalette.grayscale[3]};
 `
 const Labels = styled.div<any>`
   word-break: break-word;

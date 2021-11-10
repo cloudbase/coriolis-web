@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const backgroundColor = (props: any) => {
   if (props.hollow) {
@@ -26,48 +25,48 @@ const backgroundColor = (props: any) => {
     return 'white'
   }
   if (props.secondary) {
-    return Palette.secondaryLight
+    return ThemePalette.secondaryLight
   }
   if (props.alert) {
-    return Palette.alert
+    return ThemePalette.alert
   }
-  return Palette.primary
+  return ThemePalette.primary
 }
 const disabledBackgroundColor = (props: any) => {
   if (props.secondary && props.hollow) {
-    return Palette.grayscale[7]
+    return ThemePalette.grayscale[7]
   }
   return backgroundColor(props)
 }
 
 const hoverBackgroundColor = (props: any) => {
   if (props.disabled && props.secondary && props.hollow) {
-    return Palette.grayscale[7]
+    return ThemePalette.grayscale[7]
   }
 
   if (props.secondary) {
-    return Palette.grayscale[8]
+    return ThemePalette.grayscale[8]
   }
 
   if (props.hoverPrimary) {
-    return Palette.primary
+    return ThemePalette.primary
   }
 
   if (props.alert) {
-    return Palette.alert
+    return ThemePalette.alert
   }
-  return Palette.primary
+  return ThemePalette.primary
 }
 
 const border = (props: any) => {
   if (props.hollow) {
     if (props.secondary) {
-      return `border: 1px solid ${Palette.grayscale[3]};`
+      return `border: 1px solid ${ThemePalette.grayscale[3]};`
     }
     if (props.alert) {
-      return `border: 1px solid ${Palette.alert};`
+      return `border: 1px solid ${ThemePalette.alert};`
     }
-    return `border: 1px solid ${Palette.primary};`
+    return `border: 1px solid ${ThemePalette.primary};`
   }
   return ''
 }
@@ -81,12 +80,12 @@ const disabledBorder = (props: any) => {
 const color = (props: any) => {
   if (props.hollow) {
     if (props.secondary) {
-      return props.disabled ? Palette.grayscale[3] : Palette.black
+      return props.disabled ? ThemePalette.grayscale[3] : ThemePalette.black
     }
     if (props.alert) {
-      return Palette.alert
+      return ThemePalette.alert
     }
-    return Palette.primary
+    return ThemePalette.primary
   }
   return 'white'
 }
@@ -96,12 +95,12 @@ const getWidth = (props: any) => {
   }
 
   if (props.large) {
-    return `${StyleProps.inputSizes.large.width}px`
+    return `${ThemeProps.inputSizes.large.width}px`
   }
-  return `${StyleProps.inputSizes.regular.width}px`
+  return `${ThemeProps.inputSizes.regular.width}px`
 }
 const StyledButton = styled.button`
-  ${StyleProps.exactHeight('32px')}
+  ${ThemeProps.exactHeight('32px')}
   border-radius: 4px;
   margin: 0;
   background-color: ${props => backgroundColor(props)};
@@ -109,10 +108,10 @@ const StyledButton = styled.button`
   ${props => border(props)}
   color: ${props => color(props)};
   padding: 0;
-  ${props => StyleProps.exactWidth(getWidth(props))}
+  ${props => ThemeProps.exactWidth(getWidth(props))}
   cursor: pointer;
   font-size: inherit;
-  transition: background-color ${StyleProps.animations.swift}, opacity ${StyleProps.animations.swift};
+  transition: background-color ${ThemeProps.animations.swift}, opacity ${ThemeProps.animations.swift};
   &:disabled {
     opacity: ${(props: any) => (props.secondary ? 1 : 0.7)};
     cursor: not-allowed;
@@ -120,7 +119,7 @@ const StyledButton = styled.button`
     ${props => disabledBorder(props)}
   }
   &:hover {
-    ${(props: any) => (props.hollow ? `color: ${props.disabled ? Palette.grayscale[3] : 'white'};` : '')}
+    ${(props: any) => (props.hollow ? `color: ${props.disabled ? ThemePalette.grayscale[3] : 'white'};` : '')}
     background-color: ${props => hoverBackgroundColor(props)};
   }
   &:focus {

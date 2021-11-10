@@ -17,19 +17,18 @@ import styled, { css } from 'styled-components'
 
 import arrowImage from './images/arrow'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const getLabelColor = (props: any) => {
   if (props.disabled) {
-    return Palette.grayscale[3]
+    return ThemePalette.grayscale[3]
   }
 
   if (props.primary || props.secondary) {
     return 'white'
   }
 
-  return Palette.black
+  return ThemePalette.black
 }
 const Label = styled.div<any>`
   color: ${(props: any) => getLabelColor(props)};
@@ -38,7 +37,7 @@ const Label = styled.div<any>`
   text-overflow: ellipsis;
   white-space: nowrap;
   flex-grow: 1;
-  ${(props: any) => (props.useBold ? `font-weight: ${StyleProps.fontWeights.medium};` : '')}
+  ${(props: any) => (props.useBold ? `font-weight: ${ThemeProps.fontWeights.medium};` : '')}
   ${(props: any) => (props.centered ? 'text-align: center;' : '')}
 `
 
@@ -48,22 +47,22 @@ const getBackgroundColor = (props: any) => {
   }
 
   if (props.disabled) {
-    return Palette.grayscale[0]
+    return ThemePalette.grayscale[0]
   }
 
   if (props.secondary) {
-    return Palette.secondaryLight
+    return ThemePalette.secondaryLight
   }
 
   if (props.primary) {
-    return Palette.primary
+    return ThemePalette.primary
   }
 
   return 'white'
 }
 const getArrowColor = (props: any) => {
   if (props.disabled) {
-    return Palette.grayscale[3]
+    return ThemePalette.grayscale[3]
   }
 
   if (props.primary || props.secondary) {
@@ -71,46 +70,46 @@ const getArrowColor = (props: any) => {
   }
 
   if (props.outline) {
-    return Palette.primary
+    return ThemePalette.primary
   }
 
-  return Palette.black
+  return ThemePalette.black
 }
 const getWidth = (props: any) => {
   if (props.large) {
-    return StyleProps.inputSizes.large.width - 2
+    return ThemeProps.inputSizes.large.width - 2
   }
   if (props.width) {
     return props.width - 2
   }
-  return StyleProps.inputSizes.regular.width - 2
+  return ThemeProps.inputSizes.regular.width - 2
 }
 const borderColor = (props: any) => {
   if (props.highlight) {
-    return Palette.alert
+    return ThemePalette.alert
   }
   if (props.disabled) {
-    return Palette.grayscale[0]
+    return ThemePalette.grayscale[0]
   }
   if (props.primary) {
-    return Palette.primary
+    return ThemePalette.primary
   }
   if (props.secondary) {
-    return Palette.secondaryLight
+    return ThemePalette.secondaryLight
   }
   if (props.outline) {
-    return Palette.primary
+    return ThemePalette.primary
   }
-  return Palette.grayscale[3]
+  return ThemePalette.grayscale[3]
 }
 const backgroundHover = (props: any) => {
   if (props.disabled || props.embedded) {
     return ''
   }
   if (props.secondary) {
-    return Palette.secondaryLight
+    return ThemePalette.secondaryLight
   }
-  return Palette.primary
+  return ThemePalette.primary
 }
 
 const Wrapper = styled.div<any>`
@@ -118,12 +117,12 @@ const Wrapper = styled.div<any>`
   align-items: center;
   position: relative;
   width: ${(props: any) => getWidth(props)}px;
-  height: ${(props: any) => (props.large ? StyleProps.inputSizes.large.height - 2
-    : StyleProps.inputSizes.regular.height - 2)}px;
+  height: ${(props: any) => (props.large ? ThemeProps.inputSizes.large.height - 2
+    : ThemeProps.inputSizes.regular.height - 2)}px;
   border: 1px solid ${props => borderColor(props)};
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   cursor: ${(props: any) => (props.disabled ? 'default' : 'pointer')};
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   background: ${props => getBackgroundColor(props)};
   ${(props: any) => (props.embedded ? css`
     border: 0;
@@ -139,7 +138,7 @@ const Wrapper = styled.div<any>`
   &:hover ${Label} {
     color: ${(props: any) => (props.disabled ? '' : props.embedded ? '' : 'white')};
   }
-  ${(props: any) => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const Arrow = styled.div<any>`
   position: absolute;

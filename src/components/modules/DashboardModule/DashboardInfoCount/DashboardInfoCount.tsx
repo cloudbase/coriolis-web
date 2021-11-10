@@ -19,14 +19,13 @@ import { Link } from 'react-router-dom'
 
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
-  background: ${Palette.grayscale[0]};
+  background: ${ThemePalette.grayscale[0]};
   display: flex;
   overflow: auto;
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
 `
 const CountBlock = styled.div<any>`
   flex-grow: 1;
@@ -39,7 +38,7 @@ const CountBlock = styled.div<any>`
   height: 96px;
   justify-content: center;
   &:first-child {
-    border-left: 1px solid ${Palette.grayscale[0]};
+    border-left: 1px solid ${ThemePalette.grayscale[0]};
   }
 
   @media (max-width: 832px) {
@@ -52,13 +51,13 @@ const LoadingWrapper = styled.div<any>`
 `
 const CountBlockValue = styled(Link)`
   font-size: 53px;
-  font-weight: ${StyleProps.fontWeights.extraLight};
+  font-weight: ${ThemeProps.fontWeights.extraLight};
   text-decoration: none;
   color: inherit;
 `
 const CountBlockLabel = styled(Link)`
   font-size: 12px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
   color: ${props => props.color};
   text-decoration: none;

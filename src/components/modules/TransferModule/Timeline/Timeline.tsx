@@ -20,8 +20,7 @@ import type { Execution } from '../../../../@types/Execution'
 import Arrow from '../../../ui/Arrow/Arrow'
 import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 
 const ITEM_GAP = 96
@@ -30,7 +29,7 @@ const ArrowStyled = styled(Arrow)<any>`
   opacity: ${props => (props.forceShow ? 1 : 0)};
   position: absolute;
   top: 0;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   ${props => (props.orientation === 'left' ? 'left: -19px;' : '')}
   ${props => (props.orientation === 'right' ? 'right: -19px;' : '')}
 `
@@ -48,12 +47,12 @@ const MainLine = styled.div<any>`
   display: flex;
 `
 const ProgressLine = styled.div<any>`
-  border-bottom: 2px solid ${Palette.primary};
-  transition: all ${StyleProps.animations.swift};
+  border-bottom: 2px solid ${ThemePalette.primary};
+  transition: all ${ThemeProps.animations.swift};
 `
 const EndLine = styled.div<any>`
-  border-bottom: 2px solid ${Palette.grayscale[2]};
-  transition: all ${StyleProps.animations.swift};
+  border-bottom: 2px solid ${ThemePalette.grayscale[2]};
+  transition: all ${ThemeProps.animations.swift};
 `
 const ItemsWrapper = styled.div<any>`
   overflow: hidden;
@@ -76,10 +75,10 @@ const Item = styled.div<any>`
 `
 const ItemLabel = styled.div<any>`
   font-size: 12px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   margin-top: 2px;
-  ${props => (props.selected ? `color: ${Palette.black};` : '')}
-  ${props => (props.selected ? `font-weight: ${StyleProps.fontWeights.medium};` : '')}
+  ${props => (props.selected ? `color: ${ThemePalette.black};` : '')}
+  ${props => (props.selected ? `font-weight: ${ThemeProps.fontWeights.medium};` : '')}
 `
 
 type Props = {
@@ -107,12 +106,12 @@ class Timeline extends React.Component<Props> {
     if (!this.itemsRef) {
       return
     }
-    this.itemsRef.style.transition = `all ${StyleProps.animations.swift}`
+    this.itemsRef.style.transition = `all ${ThemeProps.animations.swift}`
   }
 
   componentDidUpdate() {
     if (this.itemsRef && !this.itemsRef.style.transition) {
-      this.itemsRef.style.transition = `all ${StyleProps.animations.swift}`
+      this.itemsRef.style.transition = `all ${ThemeProps.animations.swift}`
     }
 
     this.moveToSelectedItem()

@@ -25,7 +25,7 @@ import FieldInput from '../../../ui/FieldInput/FieldInput'
 import projectImage from './images/project.svg'
 import LabelDictionary from '../../../../utils/LabelDictionary'
 import KeyboardManager from '../../../../utils/KeyboardManager'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   padding: 48px 32px 32px 32px;
@@ -125,7 +125,7 @@ class ProjectModal extends React.Component<Props, State> {
         value={value}
         label={LabelDictionary.get(field.name)}
         onChange={onChange}
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         disabled={this.props.loading}
         required={field.required}
         highlight={Boolean(this.state.highlightFieldNames.find(n => n === field.name))}

@@ -22,9 +22,8 @@ import ToggleButtonBar from '../../../components/ui/ToggleButtonBar'
 import type { Field } from '../../../@types/Field'
 import { Wrapper, FieldStyled, Row } from '../default/ContentPlugin'
 
-import StyleProps from '../../../components/styleUtils/StyleProps'
-import Palette from '../../../components/styleUtils/Palette'
 import { Validation, Endpoint } from '../../../@types/Endpoint'
+import { ThemePalette, ThemeProps } from '../../../components/Theme'
 
 const ToggleButtonBarStyled = styled(ToggleButtonBar)`
   margin-top: 16px;
@@ -52,7 +51,7 @@ const GroupNameText = styled.div<any>`
 `
 const GroupNameBar = styled.div<any>`
   flex-grow: 1;
-  background: ${Palette.grayscale[3]};
+  background: ${ThemePalette.grayscale[3]};
   height: 1px;
 `
 const GroupFields = styled.div<any>`
@@ -276,7 +275,7 @@ class ContentPlugin extends React.Component<Props, State> {
           label={field.title || LabelDictionary.get(field.name)}
           required={required}
           password={isPassword}
-          width={StyleProps.inputSizes.large.width}
+          width={ThemeProps.inputSizes.large.width}
           disabled={disabled}
           highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
           value={value}

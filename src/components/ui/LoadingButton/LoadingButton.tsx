@@ -18,9 +18,9 @@ import styled from 'styled-components'
 
 import Button from '../Button/Button'
 
-import StyleProps from '../../styleUtils/StyleProps'
 
 import loadingImage from './images/loading.svg'
+import { ThemeProps } from '../../Theme'
 
 const ButtonStyled = styled(Button)`
   position: relative;
@@ -32,7 +32,7 @@ const Loading = styled.span`
   width: 16px;
   height: 16px;
   background: url('${loadingImage}') center no-repeat;
-  ${StyleProps.animations.rotation}
+  ${ThemeProps.animations.rotation}
 `
 
 type Props = {

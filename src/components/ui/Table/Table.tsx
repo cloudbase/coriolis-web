@@ -16,8 +16,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -26,20 +25,20 @@ const Wrapper = styled.div<any>`
     &:after {
       content: ' ';
       height: 4px;
-      background: ${Palette.grayscale[1]};
-      border-bottom-left-radius: ${StyleProps.borderRadius};
-      border-bottom-right-radius: ${StyleProps.borderRadius};
+      background: ${ThemePalette.grayscale[1]};
+      border-bottom-left-radius: ${ThemeProps.borderRadius};
+      border-bottom-right-radius: ${ThemeProps.borderRadius};
     }
   ` : '')}
 `
 const Header = styled.div<any>`
   display: flex;
-  border-bottom: 1px solid ${props => (props.secondary ? Palette.grayscale[5] : Palette.grayscale[2])};
+  border-bottom: 1px solid ${props => (props.secondary ? ThemePalette.grayscale[5] : ThemePalette.grayscale[2])};
   ${props => (props.secondary ? css`
     padding: 8px;
-    background: ${Palette.grayscale[1]};
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-top-right-radius: ${StyleProps.borderRadius};
+    background: ${ThemePalette.grayscale[1]};
+    border-top-left-radius: ${ThemeProps.borderRadius};
+    border-top-right-radius: ${ThemeProps.borderRadius};
   ` : css`
     padding-bottom: 8px;
   `)}
@@ -55,9 +54,9 @@ const TableData = (props: any) => css`
 `
 const HeaderData = styled.div<any>`
   ${props => TableData(props)}
-  color: ${props => (props.secondary ? Palette.grayscale[5] : Palette.grayscale[3])};
+  color: ${props => (props.secondary ? ThemePalette.grayscale[5] : ThemePalette.grayscale[3])};
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
   line-height: 16px;
 `
@@ -71,8 +70,8 @@ const Body = styled.div<any>`
 const Row = styled.div<any>`
   display: flex;
   padding: ${props => (props.secondary ? '8px' : '8px 0')};
-  ${props => (props.secondary ? `background: ${Palette.grayscale[1]};` : '')}
-  border-bottom: 1px solid ${props => (props.secondary ? 'white' : Palette.grayscale[2])};
+  ${props => (props.secondary ? `background: ${ThemePalette.grayscale[1]};` : '')}
+  border-bottom: 1px solid ${props => (props.secondary ? 'white' : ThemePalette.grayscale[2])};
   flex-shrink: 0;
   ${props => (props.secondary ? css`
     &:last-child {
@@ -83,7 +82,7 @@ const Row = styled.div<any>`
 `
 const RowData = styled.div<any>`
   ${props => TableData(props)}
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   ${props => props.customStyle};
   overflow: hidden;
   text-overflow: ellipsis;
@@ -92,7 +91,7 @@ const NoItems = styled.div<any>`
   text-align: center;
   padding: 16px;
   margin-left: 24px;
-  ${props => (props.secondary ? `background: ${Palette.grayscale[1]};` : '')}
+  ${props => (props.secondary ? `background: ${ThemePalette.grayscale[1]};` : '')}
 `
 
 type Props = {

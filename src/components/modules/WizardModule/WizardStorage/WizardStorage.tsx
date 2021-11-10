@@ -20,8 +20,7 @@ import AutocompleteDropdown from '../../../ui/Dropdowns/AutocompleteDropdown/Aut
 import Dropdown from '../../../ui/Dropdowns/Dropdown/Dropdown'
 import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import { Instance, Disk, InstanceUtils } from '../../../../@types/Instance'
 import type { StorageBackend, StorageMap } from '../../../../@types/Endpoint'
 
@@ -57,7 +56,7 @@ const StorageWrapper = styled.div<any>`
 const StorageSection = styled.div<any>`
   margin-bottom: 16px;
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
 `
 const StorageItems = styled.div<any>`
   display: flex;
@@ -67,15 +66,15 @@ const StorageItem = styled.div<any>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  border-top: 1px solid ${Palette.grayscale[1]};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
   padding: 8px 0;
 
   &:last-child {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 const StorageImage = styled.div<any>`
-  ${StyleProps.exactSize('48px')}
+  ${ThemeProps.exactSize('48px')}
   background: url('${props => (props.backend ? backendImage : diskImage)}') center no-repeat;
   margin-right: 16px;
 `
@@ -88,13 +87,13 @@ const StorageName = styled.div<any>`
 `
 const StorageSubtitle = styled.div<any>`
   font-size: 12px;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   margin-top: 1px;
   word-break: break-word;
 `
 const ArrowImage = styled.div<any>`
   min-width: 32px;
-  ${StyleProps.exactHeight('16px')}
+  ${ThemeProps.exactHeight('16px')}
   background: url('${arrowImage}') center no-repeat;
   flex-grow: 1;
   margin-right: 16px;
@@ -124,7 +123,7 @@ const NoStorageMessage = styled.div<any>`
 `
 const BigStorageImage = styled.div<any>`
   margin-bottom: 46px;
-  ${StyleProps.exactSize('96px')}
+  ${ThemeProps.exactSize('96px')}
   background: url('${bigStorageImage}') center no-repeat;
 `
 const NoStorageTitle = styled.div<any>`
@@ -132,7 +131,7 @@ const NoStorageTitle = styled.div<any>`
   font-size: 18px;
 `
 const NoStorageSubtitle = styled.div`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   text-align: center;
   margin-bottom: 42px;
 `
@@ -223,7 +222,7 @@ class WizardStorage extends React.Component<Props> {
   ) {
     return storageItems.length > 10 ? (
       <AutocompleteDropdown
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         selectedItem={selectedItem}
         items={storageItems}
         onChange={(item: StorageBackend) => { this.props.onChange({ source: disk, target: item, type }) }}
@@ -233,7 +232,7 @@ class WizardStorage extends React.Component<Props> {
     )
       : (
         <Dropdown
-          width={StyleProps.inputSizes.large.width}
+          width={ThemeProps.inputSizes.large.width}
           centered
           noSelectionMessage="Default"
           noItemsMessage="No storage found"
@@ -359,7 +358,7 @@ class WizardStorage extends React.Component<Props> {
       ]
       const selectedItem = items.find(i => i.value === this.props.defaultStorage.value)
       const commonProps = {
-        width: StyleProps.inputSizes.regular.width,
+        width: ThemeProps.inputSizes.regular.width,
         selectedItem,
         items,
         onChange: (item: { value: string | null }) => this.props.onDefaultStorageChange(item.value),

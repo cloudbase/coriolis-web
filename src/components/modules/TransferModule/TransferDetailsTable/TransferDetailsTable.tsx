@@ -18,8 +18,7 @@ import { Collapse } from 'react-collapse'
 
 import Arrow from '../../../ui/Arrow/Arrow'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import {
   TransferNetworkMap, isNetworkMapSecurityGroups,
@@ -52,22 +51,22 @@ const Header = styled.div<any>`
 `
 const HeaderLabel = styled.div<any>`
   font-size: 10px;
-  color: ${Palette.grayscale[3]};
-  font-weight: ${StyleProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
   width: 50%;
   margin-bottom: 8px;
   &:last-child { margin-left: 36px; }
 `
 const InstanceInfo = styled.div<any>`
-  background: ${Palette.grayscale[1]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[1]};
+  border-radius: ${ThemeProps.borderRadius};
   margin-bottom: 32px;
   &:last-child { margin-bottom: 0; }
 `
 const InstanceName = styled.div<any>`
   padding: 16px;
-  border-bottom: 1px solid ${Palette.grayscale[5]};
+  border-bottom: 1px solid ${ThemePalette.grayscale[5]};
   font-size: 16px;
 `
 const InstanceBody = styled.div<any>`
@@ -77,14 +76,14 @@ const Row = styled.div<any>`
   position: relative;
   padding: 8px 0;
   border-bottom: 1px solid white;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   &:last-child {
     border-bottom: 0;
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
   }
   &:hover {
-    background: ${Palette.grayscale[0]};
+    background: ${ThemePalette.grayscale[0]};
     ${ArrowStyled} {
       opacity: 1;
     }
@@ -99,27 +98,27 @@ const RowHeader = styled.div<any>`
 const RowHeaderColumn = styled.div<any>`
   display: flex;
   align-items: center;
-  ${StyleProps.exactWidth('50%')}
+  ${ThemeProps.exactWidth('50%')}
   &:last-child { margin-left: 19px; }
 `
 const HeaderName = styled.div<any>`
   overflow: hidden;
   text-overflow: ellipsis;
-  ${props => StyleProps.exactWidth(`calc(100% - ${props.source ? 120 : 8}px)`)}
+  ${props => ThemeProps.exactWidth(`calc(100% - ${props.source ? 120 : 8}px)`)}
 `
 const RowBody = styled.div<any>`
   display: flex;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   padding: 0 16px;
   margin-top: 4px;
 `
 const RowBodyColumn = styled.div<any>`
   &:first-child {
-    ${StyleProps.exactWidth('calc(50% - 70px)')}
+    ${ThemeProps.exactWidth('calc(50% - 70px)')}
     margin-right: 88px;
   }
   &:last-child {
-    ${StyleProps.exactWidth('calc(50% - 16px)')}
+    ${ThemeProps.exactWidth('calc(50% - 16px)')}
   }
 `
 const RowBodyColumnValue = styled.div<any>`
@@ -248,7 +247,7 @@ class TransferDetailsTable extends React.Component<Props, State> {
 
       if (disk.disabled) {
         destinationKey = disk.disabled.info || disk.disabled.message
-        destinationName = <span style={{ color: Palette.grayscale[5] }}>{destinationKey}</span>
+        destinationName = <span style={{ color: ThemePalette.grayscale[5] }}>{destinationKey}</span>
       } else {
         destinationName = defaultBusTypeInfo.id || 'Default'
         destinationKey = destinationName as string

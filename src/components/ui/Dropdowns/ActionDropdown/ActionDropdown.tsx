@@ -21,8 +21,7 @@ import autobind from 'autobind-decorator'
 import DropdownButton from '../DropdownButton/DropdownButton'
 import { List, ListItems, Tip } from '../DropdownLink/DropdownLink'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import StatusIcon from '../../StatusComponents/StatusIcon/StatusIcon'
 
 const Wrapper = styled.div<any>`
@@ -30,27 +29,27 @@ const Wrapper = styled.div<any>`
 `
 
 const ListItem = styled.div<any>`
-  color: ${(props: any) => (props.disabled ? Palette.grayscale[2] : props.color || Palette.black)};
+  color: ${(props: any) => (props.disabled ? ThemePalette.grayscale[2] : props.color || ThemePalette.black)};
   height: ${(props: any) => (props.large ? 42 : 32)}px;
   padding: 0 16px;
   cursor: ${(props: any) => (props.disabled ? 'default' : 'pointer')};
   display: flex;
   align-items: center;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   &:hover {
-    ${(props: any) => (props.disabled ? '' : css`background: ${Palette.grayscale[0]};`)}
+    ${(props: any) => (props.disabled ? '' : css`background: ${ThemePalette.grayscale[0]};`)}
   }
   &:first-child {
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-top-right-radius: ${StyleProps.borderRadius};
+    border-top-left-radius: ${ThemeProps.borderRadius};
+    border-top-right-radius: ${ThemeProps.borderRadius};
   }
   &:last-child {
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
   }
 `
 const ListStyle = css`
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
   border: none;
 `
 export const TEST_ID = 'actionDropdown'
@@ -149,7 +148,7 @@ class ActionDropdown extends React.Component<Props, State> {
     if (!this.tipRef || index !== 0 || action.disabled) {
       return
     }
-    this.tipRef.style.background = isEnter ? Palette.grayscale[0] : Palette.grayscale[1]
+    this.tipRef.style.background = isEnter ? ThemePalette.grayscale[0] : ThemePalette.grayscale[1]
   }
 
   handleItemClick(action: Action) {
@@ -193,7 +192,7 @@ class ActionDropdown extends React.Component<Props, State> {
     return ReactDOM.createPortal((
       <List
         ref={(list: HTMLElement | null | undefined) => { this.listRef = list }}
-        width={`${StyleProps.inputSizes.regular.width}px`}
+        width={`${ThemeProps.inputSizes.regular.width}px`}
         padding={0}
         customStyle={ListStyle}
         data-test-id={`${TEST_ID}-list`}

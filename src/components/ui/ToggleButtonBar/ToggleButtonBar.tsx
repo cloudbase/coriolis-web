@@ -16,8 +16,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -26,30 +25,30 @@ const Wrapper = styled.div<any>`
 const Item = styled.div<any>`
   width: 112px;
   height: 14px;
-  background: ${(props: any) => (props.selected ? Palette.primary : 'white')};
-  color: ${(props: any) => (props.selected ? 'white' : Palette.primary)};
-  border: 1px solid ${Palette.primary};
+  background: ${(props: any) => (props.selected ? ThemePalette.primary : 'white')};
+  color: ${(props: any) => (props.selected ? 'white' : ThemePalette.primary)};
+  border: 1px solid ${ThemePalette.primary};
   border-right: 1px solid white;
   text-align: center;
   line-height: 15px;
   text-transform: uppercase;
   font-size: 9px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  transition: all ${StyleProps.animations.swift};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  transition: all ${ThemeProps.animations.swift};
   cursor: pointer;
   &:first-child {
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-right: 1px solid ${Palette.primary};
+    border-top-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-right: 1px solid ${ThemePalette.primary};
   }
   &:last-child {
-    border-top-right-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
-    border-right: 1px solid ${Palette.primary};
+    border-top-right-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
+    border-right: 1px solid ${ThemePalette.primary};
   }
   outline: none;
   :focus {
-    ${(props: any) => (!props.selected ? css`background: ${Palette.primary}44;` : '')}
+    ${(props: any) => (!props.selected ? css`background: ${ThemePalette.primary}44;` : '')}
   }
 `
 

@@ -16,8 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import errorImage from './images/error.svg'
 import progressImage from './images/progress'
@@ -42,10 +41,10 @@ type Props = {
 const getSpinnerUrl = (
   smallCircleColor: string,
   useWhiteBackground?: boolean | null,
-) => `url('data:image/svg+xml;utf8,${encodeURIComponent(progressImage(Palette.grayscale[3], smallCircleColor, useWhiteBackground))}');`
+) => `url('data:image/svg+xml;utf8,${encodeURIComponent(progressImage(ThemePalette.grayscale[3], smallCircleColor, useWhiteBackground))}');`
 
 const getRunningImageUrl = (props: Props) => {
-  const smallCircleColor = props.secondary ? Palette.grayscale[0] : Palette.primary
+  const smallCircleColor = props.secondary ? ThemePalette.grayscale[0] : ThemePalette.primary
   return getSpinnerUrl(smallCircleColor, props.useBackground)
 }
 
@@ -63,18 +62,18 @@ const statuses = (status: any, props: Props) => {
     case 'AWAITING_MINION_ALLOCATIONS':
       return css`
         background-image: ${getRunningImageUrl(props)};
-        ${StyleProps.animations.rotation}
+        ${ThemeProps.animations.rotation}
       `
     case 'DELETING':
       return css`
-        background-image: ${getSpinnerUrl(Palette.alert)};
-        ${StyleProps.animations.rotation}
+        background-image: ${getSpinnerUrl(ThemePalette.alert)};
+        ${ThemeProps.animations.rotation}
       `
     case 'CANCELLING':
     case 'CANCELLING_AFTER_COMPLETION':
       return css`
-        background-image: ${getSpinnerUrl(Palette.warning, props.useBackground)};
-        ${StyleProps.animations.rotation}
+        background-image: ${getSpinnerUrl(ThemePalette.warning, props.useBackground)};
+        ${ThemeProps.animations.rotation}
       `
     case 'SCHEDULED':
       return css`
@@ -93,7 +92,7 @@ const statuses = (status: any, props: Props) => {
     case 'CANCELED_FOR_DEBUGGING':
     case 'FORCE_CANCELED':
       return css`
-        background-image: ${getWarningUrl(Palette.warning)};
+        background-image: ${getWarningUrl(ThemePalette.warning)};
       `
     case 'DEADLOCKED':
     case 'STRANDED_AFTER_DEADLOCK':
@@ -104,7 +103,7 @@ const statuses = (status: any, props: Props) => {
     case 'UNSCHEDULED':
     case 'UNEXECUTED':
       return css`
-        background-image: ${props.hollow ? `url('${warningHollowImage}')` : getWarningUrl(Palette.grayscale[2])};
+        background-image: ${props.hollow ? `url('${warningHollowImage}')` : getWarningUrl(ThemePalette.grayscale[2])};
       `
     default:
       return null

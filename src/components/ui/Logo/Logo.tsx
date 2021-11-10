@@ -16,10 +16,10 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import StyleProps from '../../styleUtils/StyleProps'
 import coriolisLargeImage from './images/coriolis-large.svg'
 import coriolisSmallImage from './images/coriolis-small.svg'
 import coriolisSmallBlackImage from './images/coriolis-small-black.svg'
+import { ThemeProps } from '../../Theme'
 
 const largeProps = css`
   width: 256px;
@@ -39,7 +39,7 @@ const smallblackProps = css`
   background: url('${coriolisSmallBlackImage}') center no-repeat;
 `
 const LinkStyled = styled(Link)`
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 `
 const Coriolis = styled.div<any>`
   ${props => (props.small ? smallProps : props.smallblack ? smallblackProps : largeProps)}
@@ -81,7 +81,7 @@ class Logo extends React.Component<Props> {
     )
     return (
       <div
-        style={{ transition: `all ${StyleProps.animations.swift}` }}
+        style={{ transition: `all ${ThemeProps.animations.swift}` }}
         className={this.props.className}
         ref={ref => { if (this.props.customRef && ref) this.props.customRef(ref) }}
       >

@@ -12,18 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
 import { observer } from 'mobx-react'
+import React from 'react'
 import styled from 'styled-components'
-
-import StyleProps from '../../styleUtils/StyleProps'
-
+import { ThemeProps } from '../../Theme'
+import questionFilledImage from './images/question-filled.svg'
 import questionImage from './images/question.svg'
 import warningImage from './images/warning.svg'
-import questionFilledImage from './images/question-filled.svg'
 
 const Wrapper = styled.div<any>`
-  ${StyleProps.exactSize('16px')}
+  ${ThemeProps.exactSize('16px')}
   background: url('${(props: any) => (props.warning ? warningImage : props.filled ? questionFilledImage : questionImage)}') center no-repeat;
   display: inline-block;
   margin-left: ${(props: any) => (props.marginLeft != null ? `${props.marginLeft}px` : '4px')};

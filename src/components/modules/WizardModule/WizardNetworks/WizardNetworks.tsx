@@ -20,8 +20,7 @@ import AutocompleteDropdown from '../../../ui/Dropdowns/AutocompleteDropdown/Aut
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 import Dropdown from '../../../ui/Dropdowns/Dropdown/Dropdown'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import { Instance, InstanceUtils, Nic as NicType } from '../../../../@types/Instance'
 import type { Network, NetworkMap, SecurityGroup } from '../../../../@types/Network'
 
@@ -52,15 +51,15 @@ const NicsWrapper = styled.div<any>`
 const Nic = styled.div<any>`
   display: flex;
   align-items: center;
-  border-top: 1px solid ${Palette.grayscale[1]};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
   padding: 16px 0;
 
   &:last-child {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 const NetworkImage = styled.div<any>`
-  ${StyleProps.exactSize('48px')}
+  ${ThemeProps.exactSize('48px')}
   background: url('${networkImage}') center no-repeat;
   margin-right: 16px;
 `
@@ -72,13 +71,13 @@ const NetworkName = styled.div<any>`
 `
 const NetworkSubtitle = styled.div<any>`
   font-size: 12px;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   margin-top: 1px;
   word-break: break-word;
 `
 const ArrowImage = styled.div<any>`
   min-width: 32px;
-  ${StyleProps.exactHeight('16px')}
+  ${ThemeProps.exactHeight('16px')}
   background: url('${arrowImage}') center no-repeat;
   flex-grow: 1;
   margin-right: 16px;
@@ -92,7 +91,7 @@ const NoNicsMessage = styled.div<any>`
 `
 const BigNetworkImage = styled.div<any>`
   margin-bottom: 46px;
-  ${StyleProps.exactSize('96px')}
+  ${ThemeProps.exactSize('96px')}
   background: url('${bigNetworkImage}') center no-repeat;
 `
 const NoNicsTitle = styled.div<any>`
@@ -100,7 +99,7 @@ const NoNicsTitle = styled.div<any>`
   font-size: 18px;
 `
 const NoNicsSubtitle = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   text-align: center;
 `
 const Dropdowns = styled.div<any>`
@@ -162,7 +161,7 @@ class WizardNetworks extends React.Component<Props> {
   renderNetworksDropdown(selectedNetwork: NetworkMap | null | undefined, nic: NicType) {
     return this.props.networks.length > 10 ? (
       <AutocompleteDropdown
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         selectedItem={selectedNetwork?.targetNetwork || null}
         items={this.props.networks}
         onChange={(network: Network) => { this.props.onChange({ nic, network }) }}
@@ -172,7 +171,7 @@ class WizardNetworks extends React.Component<Props> {
     )
       : (
         <Dropdown
-          width={StyleProps.inputSizes.large.width}
+          width={ThemeProps.inputSizes.large.width}
           centered
           noSelectionMessage="Select Network"
           noItemsMessage={this.props.loading ? 'Loading ...' : 'No networks found'}
@@ -192,7 +191,7 @@ class WizardNetworks extends React.Component<Props> {
     let selectedSecGroups: SecurityGroup[] = selectedNetwork?.targetSecurityGroups || []
     return hasSecurityGroups && this.props.networks.length ? (
       <Dropdown
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         noSelectionMessage="Select Security Groups"
         noItemsMessage="Select Security Groups"
         multipleSelection
@@ -235,7 +234,7 @@ class WizardNetworks extends React.Component<Props> {
   //   const selectedPortKey: string | null = selectedNetwork?.targetPortKey || null
   //   return (
   //     <Dropdown
-  //       width={StyleProps.inputSizes.large.width}
+  //       width={ThemeProps.inputSizes.large.width}
   //       noSelectionMessage="Choose Port Key"
   //       centered
   //       items={portKeysDict}

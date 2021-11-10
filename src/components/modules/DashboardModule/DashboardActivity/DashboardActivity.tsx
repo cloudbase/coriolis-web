@@ -24,26 +24,24 @@ import {
   InfoColumn, MainItemInfo, ItemReplicaBadge, ItemTitle, ItemDescription,
 } from '../../../ui/Dropdowns/NotificationDropdown/NotificationDropdown'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
-
 import type { NotificationItemData } from '../../../../@types/NotificationItem'
 
 import replicaImage from './images/replica.svg'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;
 `
 const Title = styled.div<any>`
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   margin-bottom: 12px;
 `
 const Module = styled.div<any>`
-  background: ${Palette.grayscale[0]};
+  background: ${ThemePalette.grayscale[0]};
   display: flex;
   overflow: hidden;
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   height: 273px;
 `
 const LoadingWrapper = styled.div<any>`
@@ -66,10 +64,10 @@ const ListItem = styled(Link)`
   text-decoration: none;
   color: inherit;
   display: block;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 
   &:hover {
-    background: ${Palette.grayscale[1]};
+    background: ${ThemePalette.grayscale[1]};
   }
 `
 const NoItems = styled.div<any>`
@@ -79,7 +77,7 @@ const NoItems = styled.div<any>`
   width: 100%;
 `
 const ReplicaImage = styled.div<any>`
-  ${StyleProps.exactSize('148px')}
+  ${ThemeProps.exactSize('148px')}
   background: url('${replicaImage}') center no-repeat;
 `
 const Message = styled.div<any>`

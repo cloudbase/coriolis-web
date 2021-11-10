@@ -38,7 +38,7 @@ import providerStore from '../../../stores/ProviderStore'
 import EndpointDuplicateOptions from '../../modules/EndpointModule/EndpointDuplicateOptions/EndpointDuplicateOptions'
 
 import configLoader from '../../../utils/Config'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 import { ProviderTypes } from '../../../@types/Providers'
 import regionStore from '../../../stores/RegionStore'
 
@@ -274,7 +274,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       action: () => { this.handleExportToJson() },
     }, {
       label: 'Delete Endpoint',
-      color: Palette.alert,
+      color: ThemePalette.alert,
       action: () => { this.handleDeleteAction() },
     }]
 

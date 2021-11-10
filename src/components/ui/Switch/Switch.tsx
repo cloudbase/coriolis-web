@@ -16,24 +16,23 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div<any>`
   position: relative;
   display: flex;
-  height: ${StyleProps.inputSizes.regular.height}px;
+  height: ${ThemeProps.inputSizes.regular.height}px;
   align-items: center;
   ${(props: any) => (props.highlight ? css`
-    border: 1px solid ${Palette.alert};
-    height: ${StyleProps.inputSizes.regular.height - 2}px;
-    border-radius: ${StyleProps.borderRadius};
+    border: 1px solid ${ThemePalette.alert};
+    height: ${ThemeProps.inputSizes.regular.height - 2}px;
+    border-radius: ${ThemeProps.borderRadius};
   ` : '')}
   ${(props: any) => (props.disabled ? 'opacity: 0.5;' : '')}
   ${(props: any) => (props.justifyContent ? `justify-content: ${props.justifyContent};` : '')}
   ${(props: any) => (props.width ? `width: ${props.width};` : '')}
-  ${(props: any) => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const Required = styled.div<any>`
   position: absolute;
@@ -62,17 +61,17 @@ const inputBackground = (props: any) => {
 
   if (props.big) {
     if (props.checked) {
-      return Palette.alert
+      return ThemePalette.alert
     }
-    return Palette.primary
+    return ThemePalette.primary
   }
 
   if (props.secondary && props.checked) {
-    return Palette.grayscale[5]
+    return ThemePalette.grayscale[5]
   }
 
   if (props.checked) {
-    return Palette.primary
+    return ThemePalette.primary
   }
 
   return 'white'
@@ -86,18 +85,18 @@ const getInputBorderColor = (props: any) => {
   }
 
   if (props.big && props.checked) {
-    return Palette.alert
+    return ThemePalette.alert
   }
 
   if (props.secondary) {
-    return Palette.grayscale[5]
+    return ThemePalette.grayscale[5]
   }
 
   if (props.triState && props.checked == null) {
-    return Palette.grayscale[2]
+    return ThemePalette.grayscale[2]
   }
 
-  return Palette.primary
+  return ThemePalette.primary
 }
 const InputBackground = styled.div<any>`
   position: absolute;
@@ -105,7 +104,7 @@ const InputBackground = styled.div<any>`
   left: 0;
   right: 0;
   bottom: 0;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   background: ${props => inputBackground(props)};
   border-radius: 50px;
   border: 1px solid ${props => getInputBorderColor(props)};
@@ -125,7 +124,7 @@ const InputThumb = styled.div<any>`
   position: absolute;
   width: ${(props: any) => props.height - 2}px;
   height: ${(props: any) => props.height - 2}px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   top: -1px;
   left: ${(props: any) => getThumbLeft(props)}px;
   background: white;
@@ -134,12 +133,12 @@ const InputThumb = styled.div<any>`
 `
 const Label = styled.div<any>`
   margin-left: 16px;
-  ${(props: any) => (props.secondary ? `color: ${Palette.grayscale[4]};` : '')}
+  ${(props: any) => (props.secondary ? `color: ${ThemePalette.grayscale[4]};` : '')}
   white-space: nowrap;
 `
 const LeftLabel = styled.div<any>`
   margin-right: 16px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   white-space: nowrap;
 `
 

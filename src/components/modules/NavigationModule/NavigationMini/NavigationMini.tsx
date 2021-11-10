@@ -18,8 +18,8 @@ import styled, { css } from 'styled-components'
 
 import Navigation from '../Navigation/Navigation'
 
-import StyleProps from '../../../styleUtils/StyleProps'
 import menuImage from './images/menu'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   margin-right: 38px;
@@ -40,11 +40,11 @@ const MenuImage = styled.div<any>`
   z-index: 99;
   #top {
     ${props => (props.open ? css`transform: rotate(45deg) translateX(0.5px) translateY(-4.5px);` : Close)}
-    transition: all ${StyleProps.animations.swift};
+    transition: all ${ThemeProps.animations.swift};
   }
   #bottom {
     ${props => (props.open ? css`transform: rotate(-45deg) translateX(-6.5px) translateY(1.5px);` : Close)}
-    transition: all ${StyleProps.animations.swift};
+    transition: all ${ThemeProps.animations.swift};
   }
 `
 const NavigationStyled = styled(Navigation)<any>`
@@ -52,7 +52,7 @@ const NavigationStyled = styled(Navigation)<any>`
   left: ${props => (props.open ? 0 : -80)}px;
   top: 0;
   padding-top: 24px;
-  transition: left ${StyleProps.animations.swift};
+  transition: left ${ThemeProps.animations.swift};
   z-index: 9;
 `
 

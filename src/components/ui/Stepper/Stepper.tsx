@@ -1,15 +1,14 @@
 import * as React from 'react'
 import styled, { css } from 'styled-components'
 
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import upSvg from './images/up.svg'
 import downSvg from './images/down.svg'
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${(props: any) => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const getInputWidth = (props: any) => {
   if (props.width) {
@@ -17,46 +16,46 @@ const getInputWidth = (props: any) => {
   }
 
   if (props.large) {
-    return `${StyleProps.inputSizes.large.width}px`
+    return `${ThemeProps.inputSizes.large.width}px`
   }
 
-  return `${StyleProps.inputSizes.regular.width}px`
+  return `${ThemeProps.inputSizes.regular.width}px`
 }
 const borderColor = (
   props: any,
-  defaultColor = Palette.grayscale[3],
-) => (props.highlight ? Palette.alert : defaultColor)
+  defaultColor = ThemePalette.grayscale[3],
+) => (props.highlight ? ThemePalette.alert : defaultColor)
 
 const Input = styled.input<any>`
   width: ${(props: any) => getInputWidth(props)};
-  height: ${(props: any) => props.height || `${StyleProps.inputSizes.regular.height}px`};
+  height: ${(props: any) => props.height || `${ThemeProps.inputSizes.regular.height}px`};
   line-height: ${(props: any) => props.lineHeight || 'normal'};
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   background-color: #FFF;
   border: ${(props: any) => (props.embedded ? '0' : `1px solid ${borderColor(props)}`)};
-  border-top-left-radius: ${(props: any) => (props.embedded ? '0' : StyleProps.borderRadius)};
-  border-top-right-radius: ${StyleProps.borderRadius};
-  border-bottom-left-radius: ${(props: any) => (props.embedded ? '0' : StyleProps.borderRadius)};
-  border-bottom-right-radius: ${StyleProps.borderRadius};
-  color: ${Palette.black};
+  border-top-left-radius: ${(props: any) => (props.embedded ? '0' : ThemeProps.borderRadius)};
+  border-top-right-radius: ${ThemeProps.borderRadius};
+  border-bottom-left-radius: ${(props: any) => (props.embedded ? '0' : ThemeProps.borderRadius)};
+  border-bottom-right-radius: ${ThemeProps.borderRadius};
+  color: ${ThemePalette.black};
   padding: 0 8px 0 ${(props: any) => (props.embedded ? '0' : '16px')};
   font-size: inherit;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   box-sizing: border-box;
   &:hover {
-    border-color: ${(props: any) => borderColor(props, props.disablePrimary ? undefined : Palette.primaryLight)};
+    border-color: ${(props: any) => borderColor(props, props.disablePrimary ? undefined : ThemePalette.primaryLight)};
   }
   &:focus {
-    border-color: ${(props: any) => borderColor(props, props.disablePrimary ? undefined : Palette.primaryLight)};
+    border-color: ${(props: any) => borderColor(props, props.disablePrimary ? undefined : ThemePalette.primaryLight)};
     outline: none;
   }
   &:disabled {
-    color: ${Palette.grayscale[3]};
-    border-color: ${Palette.grayscale[0]};
-    background-color: ${Palette.grayscale[0]};
+    color: ${ThemePalette.grayscale[3]};
+    border-color: ${ThemePalette.grayscale[0]};
+    background-color: ${ThemePalette.grayscale[0]};
   }
   &::placeholder {
-    color: ${Palette.grayscale[3]};
+    color: ${ThemePalette.grayscale[3]};
   }
 `
 const StepsButtons = styled.div<any>`
@@ -75,7 +74,7 @@ const StepButton = css`
 const StepButtonUp = styled.div<any>`
   width: 17px;
   height: 15px;
-  border-bottom: 1px solid ${Palette.secondaryLight};
+  border-bottom: 1px solid ${ThemePalette.secondaryLight};
   border-top-right-radius: 4px;
   ${StepButton}
 `
@@ -90,7 +89,7 @@ const StepImage = styled.div<any>`
   height: 4px;
   background: url('${(props: any) => (props.up ? upSvg : downSvg)}') center no-repeat;
   transform: scale(1);
-  animation: ${StyleProps.animations.swift};
+  animation: ${ThemeProps.animations.swift};
 `
 
 type State = {

@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled, { css } from 'styled-components'
 import { observer } from 'mobx-react'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import loadingImage from './images/loading.svg'
 
@@ -33,16 +32,16 @@ const Navigation = styled.div<any>`
 const NavigationItemDiv = styled.div<any>`
   position: relative;
   height: 47px;
-  border-bottom: 1px solid ${Palette.grayscale[2]};
-  color: ${props => (props.disabled ? Palette.grayscale[3] : 'black')};
+  border-bottom: 1px solid ${ThemePalette.grayscale[2]};
+  color: ${props => (props.disabled ? ThemePalette.grayscale[3] : 'black')};
   display: flex;
   align-items: center;
   padding: 0 24px;
   font-size: 18px;
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
   ${props => (props.selected ? css`
-    color: ${Palette.primary};
-    background: ${Palette.grayscale[2]};
+    color: ${ThemePalette.primary};
+    background: ${ThemePalette.grayscale[2]};
     cursor: default;
   ` : '')}
 `
@@ -54,9 +53,9 @@ const Content = styled.div<any>`
 `
 const ReloadButton = styled.div<any>`
   font-size: 10px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
   &:hover {
-    color: ${Palette.primary};
+    color: ${ThemePalette.primary};
   }
   cursor: pointer;
   position: absolute;
@@ -70,7 +69,7 @@ const Loading = styled.span`
   width: 16px;
   height: 16px;
   background: url('${loadingImage}') center no-repeat;
-  ${StyleProps.animations.rotation}
+  ${ThemeProps.animations.rotation}
 `
 
 export type NavigationItem = {

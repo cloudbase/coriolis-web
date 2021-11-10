@@ -34,7 +34,7 @@ import projectStore from '../../../stores/ProjectStore'
 
 import type { Endpoint as EndpointType } from '../../../@types/Endpoint'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 
 import endpointImage from './images/endpoint.svg'
 import regionStore from '../../../stores/RegionStore'
@@ -226,7 +226,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     const endpoint = this.endpoint
     const dropdownActions = [{
       label: 'Validate',
-      color: Palette.primary,
+      color: ThemePalette.primary,
       action: () => { this.handleValidateClick() },
     }, {
       label: 'Edit',
@@ -240,7 +240,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
       action: () => { this.handleExportToJsonClick() },
     }, {
       label: 'Delete Endpoint',
-      color: Palette.alert,
+      color: ThemePalette.alert,
       action: () => { this.handleDeleteEndpointClick() },
     }]
     return (

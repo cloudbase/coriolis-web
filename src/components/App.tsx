@@ -43,11 +43,10 @@ import LogStreamPage from './smart/LogStreamPage'
 import Tooltip from './ui/Tooltip/Tooltip'
 
 import { navigationMenu } from '../constants'
-import Palette from './styleUtils/Palette'
-import StyleProps from './styleUtils/StyleProps'
 import configLoader from '../utils/Config'
 import MinionPoolsPage from './smart/MinionPoolsPage/MinionPoolsPage'
 import MinionPoolDetailsPage from './smart/MinionPoolDetailsPage/MinionPoolDetailsPage'
+import { ThemePalette, ThemeProps } from './Theme'
 
 const GlobalStyle = createGlobalStyle`
  ${Fonts}
@@ -59,10 +58,10 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     margin: 0;
-    color: ${Palette.black};
+    color: ${ThemePalette.black};
     font-family: Rubik;
     font-size: 14px;
-    font-weight: ${StyleProps.fontWeights.regular};
+    font-weight: ${ThemeProps.fontWeights.regular};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

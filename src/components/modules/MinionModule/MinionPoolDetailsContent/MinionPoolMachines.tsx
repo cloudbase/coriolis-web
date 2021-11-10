@@ -21,8 +21,7 @@ import { Link } from 'react-router-dom'
 import { MinionMachine, MinionPool } from '../../../../@types/MinionPool'
 import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
 import { ItemReplicaBadge } from '../../../ui/Dropdowns/NotificationDropdown/NotificationDropdown'
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import Arrow from '../../../ui/Arrow/Arrow'
 
 import networkImage from './images/network.svg'
@@ -52,14 +51,14 @@ const Row = styled.div<any>`
   position: relative;
   padding: 8px 0;
   border-top: 1px solid white;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   &:last-child {
     border-bottom: 0;
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
   }
   &:hover {
-    background: ${Palette.grayscale[0]};
+    background: ${ThemePalette.grayscale[0]};
     ${ArrowStyled} {
       opacity: 1;
     }
@@ -74,12 +73,12 @@ const RowHeader = styled.div<any>`
 const RowHeaderColumn = styled.div<any>`
   display: flex;
   align-items: center;
-  ${StyleProps.exactWidth('50%')}
+  ${ThemeProps.exactWidth('50%')}
 `
 const HeaderName = styled.div<any>`
   overflow: hidden;
   text-overflow: ellipsis;
-  ${props => StyleProps.exactWidth(`calc(100% - ${props.source ? 120 : 8}px)`)}
+  ${props => ThemeProps.exactWidth(`calc(100% - ${props.source ? 120 : 8}px)`)}
 `
 const HeaderIcon = styled.div<any>`
   min-width: 16px;
@@ -93,18 +92,18 @@ const HeaderText = styled.div`
 `
 const RowBody = styled.div<any>`
   display: flex;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   padding: 0 16px;
   margin-top: 4px;
 `
 const RowBodyColumn = styled.div<any>`
   margin-top: 8px;
   &:first-child {
-    ${StyleProps.exactWidth('calc(50% - 70px)')}
+    ${ThemeProps.exactWidth('calc(50% - 70px)')}
     margin-right: 88px;
   }
   &:last-child {
-    ${StyleProps.exactWidth('calc(50% - 16px)')}
+    ${ThemeProps.exactWidth('calc(50% - 16px)')}
   }
 `
 const RowBodyColumnValue = styled.div<any>`
@@ -112,8 +111,8 @@ const RowBodyColumnValue = styled.div<any>`
 `
 const MachinesWrapper = styled.div``
 const MachineWrapper = styled.div`
-  background: ${Palette.grayscale[1]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[1]};
+  border-radius: ${ThemeProps.borderRadius};
 `
 const MachineTitle = styled.div`
   padding: 16px;
@@ -128,13 +127,13 @@ const MachineRow = styled.div<{ secondary?: boolean }>`
   margin-bottom: 8px;
   align-items: center;
   ${props => (props.secondary ? css`
-    color: ${Palette.grayscale[5]};
+    color: ${ThemePalette.grayscale[5]};
     margin-bottom: 4px;
   ` : '')}
 `
 const ValueLink = styled(Link)`
   display: flex;
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   text-decoration: none;
   cursor: pointer;
 `

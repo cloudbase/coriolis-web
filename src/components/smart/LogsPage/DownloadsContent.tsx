@@ -23,9 +23,9 @@ import { Close } from '../../ui/TextInput/TextInput'
 import DatetimePicker from '../../ui/DatetimePicker/DatetimePicker'
 import StatusIcon from '../../ui/StatusComponents/StatusIcon/StatusIcon'
 
-import StyleProps from '../../styleUtils/StyleProps'
 
 import downloadImage from './images/download.svg'
+import { ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -54,7 +54,7 @@ const DateWrapper = styled.div<any>`
   margin-left: 48px;
 `
 const DateLabel = styled.div<any>`
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
 `
 const DateInput = styled.div<any>`
   margin-top: 4px;
@@ -85,7 +85,7 @@ const LogName = styled.div<any>`
   margin-left: 16px;
 `
 const LogDownload = styled.div<any>`
-  ${StyleProps.exactSize('16px')}
+  ${ThemeProps.exactSize('16px')}
   background: url('${downloadImage}') center no-repeat;
   background-size: contain;
   cursor: pointer;

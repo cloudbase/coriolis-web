@@ -24,11 +24,10 @@ import Button from '../../../ui/Button/Button'
 
 import type { User } from '../../../../@types/User'
 import type { Project } from '../../../../@types/Project'
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
   padding-left: 126px;
 `
@@ -39,19 +38,19 @@ const Info = styled.div<any>`
   margin-left: -32px;
 `
 const LinkStyled = styled(Link)`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   text-decoration: none;
 `
 const Field = styled.div<any>`
-  ${StyleProps.exactWidth('calc(50% - 32px)')}
+  ${ThemeProps.exactWidth('calc(50% - 32px)')}
   margin-bottom: 32px;
   margin-left: 32px;
 `
 const Value = styled.div<any>``
 const Label = styled.div<any>`
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 3px;
 `

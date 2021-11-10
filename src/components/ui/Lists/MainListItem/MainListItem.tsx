@@ -19,8 +19,7 @@ import { observer } from 'mobx-react'
 import Checkbox from '../../Checkbox/Checkbox'
 import StatusPill from '../../StatusComponents/StatusPill/StatusPill'
 import EndpointLogos from '../../../modules/EndpointModule/EndpointLogos/EndpointLogos'
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import { getTransferItemTitle, TransferItem } from '../../../../@types/MainItem'
 
 import arrowImage from './images/arrow.svg'
@@ -29,21 +28,21 @@ import DateUtils from '../../../../utils/DateUtils'
 
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => (props.checked ? 1 : 0)};
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 `
 const Content = styled.div<any>`
   display: flex;
   align-items: center;
   margin-left: 16px;
-  border-top: 1px solid ${Palette.grayscale[1]};
+  border-top: 1px solid ${ThemePalette.grayscale[1]};
   padding: 8px 16px;
   cursor: pointer;
   flex-grow: 1;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   min-width: 785px;
 
   &:hover {
-    background: ${Palette.grayscale[1]};
+    background: ${ThemePalette.grayscale[1]};
   }
 `
 const Wrapper = styled.div<any>`
@@ -55,7 +54,7 @@ const Wrapper = styled.div<any>`
   }
 
   &:last-child ${Content} {
-    border-bottom: 1px solid ${Palette.grayscale[1]};
+    border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
 `
 
@@ -82,7 +81,7 @@ const StatusWrapper = styled.div<any>`
   margin-top: 8px;
 `
 const ScheduleImage = styled.div<any>`
-  ${StyleProps.exactSize('16px')}
+  ${ThemeProps.exactSize('16px')}
   background: url('${scheduleImage}') center no-repeat;
 `
 const EndpointsImages = styled.div<any>`
@@ -97,10 +96,10 @@ const EndpointImageArrow = styled.div<any>`
   background: url('${arrowImage}') center no-repeat;
 `
 const ItemLabel = styled.div<any>`
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const ItemValue = styled.div<any>`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
 `
 const Column = styled.div`
   align-self: start;

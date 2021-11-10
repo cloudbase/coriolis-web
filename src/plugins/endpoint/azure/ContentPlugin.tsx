@@ -21,8 +21,7 @@ import type { Field } from '../../../@types/Field'
 
 import configLoader from '../../../utils/Config'
 import LabelDictionary from '../../../utils/LabelDictionary'
-import Palette from '../../../components/styleUtils/Palette'
-import StyleProps from '../../../components/styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../components/Theme'
 import KeyboardManager from '../../../utils/KeyboardManager'
 import {
   Wrapper, Fields, FieldStyled, Row,
@@ -41,13 +40,13 @@ const PasteLabel = styled.div<any>`
   font-size: 10px;
 `
 const PasteLabelText = styled.div<any>`
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 4px;
 `
 const PasteLabelShowMore = styled.div<any>`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   margin-left: 5px;
   cursor: pointer;
 `
@@ -238,7 +237,7 @@ class ContentPlugin extends React.Component<Props, State> {
       <FieldStyled
         {...field}
         label={field.title || LabelDictionary.get(field.name)}
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         disabled={this.props.disabled}
         key={field.name}
         password={isPassword}

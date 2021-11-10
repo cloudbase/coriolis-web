@@ -19,8 +19,7 @@ import styled from 'styled-components'
 import Modal from '../../ui/Modal/Modal'
 import LicenceComponent from '../../modules/LicenceModule/LicenceModule'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import licenceStore from '../../../stores/LicenceStore'
 import userStore from '../../../stores/UserStore'
@@ -57,12 +56,12 @@ const Content = styled.div<any>`
 const AboutContentWrapper = styled.div<any>``
 const Logo = styled.div<any>`
   width: 362px;
-  ${StyleProps.exactHeight('71px')}
+  ${ThemeProps.exactHeight('71px')}
   background: url('${logoImage}') center no-repeat;
 `
 const Text = styled.div`
   margin: 48px 0 32px 0;
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   font-size: 12px;
 `
 const TextLine = styled.div<any>`

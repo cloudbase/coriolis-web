@@ -20,8 +20,7 @@ import LabelDictionary from '../../../../utils/LabelDictionary'
 import FieldInput from '../../../ui/FieldInput/FieldInput'
 import type { Field } from '../../../../@types/Field'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
 import { Endpoint } from '../../../../@types/Endpoint'
 import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
@@ -43,7 +42,7 @@ const ToggleButtonBarStyled = styled(ToggleButtonBar)`
 `
 const FieldStyled = styled(FieldInput)`
   min-width: ${props => (props.useTextArea ? '100%' : '224px')};
-  max-width: ${StyleProps.inputSizes.large.width}px;
+  max-width: ${ThemeProps.inputSizes.large.width}px;
   margin-bottom: 16px;
 `
 const Row = styled.div<any>`
@@ -52,16 +51,16 @@ const Row = styled.div<any>`
   justify-content: space-between;
 `
 const EndpointField = styled.div`
-  min-width: ${StyleProps.inputSizes.large.width}px;
-  max-width: ${StyleProps.inputSizes.large.width}px;
+  min-width: ${ThemeProps.inputSizes.large.width}px;
+  max-width: ${ThemeProps.inputSizes.large.width}px;
   margin-bottom: 16px;
 `
 const EndpointFieldLabel = styled.div<any>`
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   flex-grow: 1;
   margin-bottom: 2px;
   font-size: 10px;
-  color: ${Palette.grayscale[3]};
+  color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -79,7 +78,7 @@ const EndpointFieldValueText = styled.div`
   text-overflow: ellipsis;
   margin-left: 8px;
   font-size: 12px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const EndpointFieldValueLabel = styled.div`
   text-transform: capitalize;
@@ -109,7 +108,7 @@ const GroupNameText = styled.div<any>`
 `
 const GroupNameBar = styled.div<any>`
   flex-grow: 1;
-  background: ${Palette.grayscale[3]};
+  background: ${ThemePalette.grayscale[3]};
   height: 1px;
 `
 const GroupFields = styled.div<any>`
@@ -212,7 +211,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
           <FieldStyled
             {...field}
             label={field.title || LabelDictionary.get(field.name)}
-            width={StyleProps.inputSizes.large.width}
+            width={ThemeProps.inputSizes.large.width}
             disabled={this.props.disabled || options?.disabled}
             highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
             value={this.props.getFieldValue(field)}

@@ -22,7 +22,6 @@ import Logo from '../../../ui/Logo/Logo'
 import userStore from '../../../../stores/UserStore'
 import configLoader from '../../../../utils/Config'
 
-import StyleProps from '../../../styleUtils/StyleProps'
 
 import { navigationMenu } from '../../../../constants'
 import backgroundImage from './images/star-bg.jpg'
@@ -38,9 +37,10 @@ import userImage from './images/user-menu.svg'
 import logsImage from './images/logs-menu.svg'
 import dashboardImage from './images/dashboard-menu.svg'
 import minionPoolsImage from './images/minion-pool-menu.svg'
+import { ThemeProps } from '../../../Theme'
 
 const isCollapsed = (props: any) => props.collapsed
-  || (window.outerWidth <= StyleProps.mobileMaxWidth)
+  || (window.outerWidth <= ThemeProps.mobileMaxWidth)
 
 const ANIMATION = '200ms'
 
@@ -73,7 +73,7 @@ const LogoStyled = styled(Logo)<any>`
 
 const WrappedLink = (props: any) => (
   <div
-    style={{ transition: `all ${StyleProps.animations.swift}` }}
+    style={{ transition: `all ${ThemeProps.animations.swift}` }}
     className={props.className}
     ref={r => { if (props.customRef) props.customRef(r) }}
   >
@@ -307,7 +307,7 @@ class Navigation extends React.Component<Props> {
 
     this.resizeTimeout = setTimeout(() => {
       this.resizeTimeout = null
-      this.toggleMenu(window.outerWidth <= StyleProps.mobileMaxWidth)
+      this.toggleMenu(window.outerWidth <= ThemeProps.mobileMaxWidth)
     }, 100)
   }
 

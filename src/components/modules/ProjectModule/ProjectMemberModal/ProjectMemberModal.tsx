@@ -25,8 +25,7 @@ import FieldInput from '../../../ui/FieldInput/FieldInput'
 import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
 import AutocompleteDropdown from '../../../ui/Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import KeyboardManager from '../../../../utils/KeyboardManager'
 
 import userImage from './images/user.svg'
@@ -38,7 +37,7 @@ const Wrapper = styled.div<any>`
   min-height: 0;
 `
 const Image = styled.div<any>`
-  ${StyleProps.exactSize('96px')}
+  ${ThemeProps.exactSize('96px')}
   background: url('${userImage}') center no-repeat;
   margin: 0 auto;
 `
@@ -58,13 +57,13 @@ const Form = styled.div<any>`
   }
 `
 const FieldStyled = styled(FieldInput)`
-  ${StyleProps.exactWidth(`${StyleProps.inputSizes.large.width}px`)}
+  ${ThemeProps.exactWidth(`${ThemeProps.inputSizes.large.width}px`)}
 `
 const FormField = styled.div<any>``
 const FormLabel = styled.div<any>`
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 2px;
   display: flex;
@@ -240,7 +239,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
           }
         }}
         value={selectedRoles}
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         layout="modal"
         disabled={this.props.loading}
         enum={this.props.roles.filter(r => r.name !== 'key-manager:service-admin').map(r => ({ name: r.name, id: r.id }))}
@@ -262,7 +261,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         value={value}
         label={field.label}
         onChange={onChange}
-        width={StyleProps.inputSizes.large.width}
+        width={ThemeProps.inputSizes.large.width}
         disabled={this.props.loading}
         enum={field.enum}
         password={field.name === 'password' || field.name === 'confirm_password'}

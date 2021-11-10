@@ -25,8 +25,7 @@ import CopyMultilineValue from '../../../ui/CopyMultilineValue/CopyMultilineValu
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 
 import type { Endpoint } from '../../../../@types/Endpoint'
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 import LabelDictionary from '../../../../utils/LabelDictionary'
 import configLoader from '../../../../utils/Config'
@@ -38,7 +37,7 @@ import { Field as FieldType } from '../../../../@types/Field'
 import DomUtils from '../../../../utils/DomUtils'
 
 const Wrapper = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
   padding-left: 126px;
 `
@@ -49,14 +48,14 @@ const Info = styled.div<any>`
   margin-left: -32px;
 `
 const Field = styled.div<any>`
-  ${StyleProps.exactWidth('calc(50% - 32px)')}
+  ${ThemeProps.exactWidth('calc(50% - 32px)')}
   margin-bottom: 32px;
   margin-left: 32px;
 `
 const Label = styled.div<any>`
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[3]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 3px;
 `
@@ -75,7 +74,7 @@ const LoadingWrapper = styled.div<any>`
   margin: 32px 0 64px 0;
 `
 const LinkStyled = styled(Link)`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   text-decoration: none;
   cursor: pointer;
 `
@@ -89,7 +88,7 @@ const TransferItemWrapper = styled.div`
 
 const DownloadLink = styled.div`
   display: inline-block;
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   cursor: pointer;
   :hover {
     text-decoration: underline;

@@ -25,8 +25,7 @@ import AlertModal from '../../../ui/AlertModal/AlertModal'
 import ReplicaExecutionOptions from '../ReplicaExecutionOptions/ReplicaExecutionOptions'
 import ScheduleItem from '../ScheduleItem/ScheduleItem'
 
-import StyleProps from '../../../styleUtils/StyleProps'
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 import type { Schedule as ScheduleType } from '../../../../@types/Schedule'
 import type { Field } from '../../../../@types/Field'
@@ -36,7 +35,7 @@ import scheduleImage from './images/schedule.svg'
 import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 
 const Wrapper = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
 `
 const LoadingWrapper = styled.div<any>`
   margin-top: 32px;
@@ -56,8 +55,8 @@ const Header = styled.div<any>`
 const HeaderData = styled.div<any>`
   width: ${props => props.width};
   font-size: 10px;
-  font-weight: ${StyleProps.fontWeights.medium};
-  color: ${Palette.grayscale[5]};
+  font-weight: ${ThemeProps.fontWeights.medium};
+  color: ${ThemePalette.grayscale[5]};
   text-transform: uppercase;
 `
 const Body = styled.div<any>``
@@ -66,7 +65,7 @@ const NoSchedules = styled.div<any>`
   flex-direction: column;
   align-items: center;
   padding: ${props => (props.secondary ? 56 : 80)}px 80px 80px 80px;
-  background: ${props => (props.secondary ? 'white' : Palette.grayscale[7])};
+  background: ${props => (props.secondary ? 'white' : ThemePalette.grayscale[7])};
 `
 const NoSchedulesTitle = styled.div<any>`
   margin-bottom: 10px;
@@ -74,10 +73,10 @@ const NoSchedulesTitle = styled.div<any>`
 `
 const NoSchedulesSubtitle = styled.div<any>`
   margin-bottom: 45px;
-  color: ${Palette.grayscale[4]};
+  color: ${ThemePalette.grayscale[4]};
 `
 const ScheduleImage = styled.div<any>`
-  ${StyleProps.exactSize('96px')}
+  ${ThemeProps.exactSize('96px')}
   background: url('${scheduleImage}') no-repeat center;
   margin-bottom: 46px;
 `

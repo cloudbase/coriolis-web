@@ -14,15 +14,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from 'react'
 import styled, { css } from 'styled-components'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import closeImage from './images/close.svg'
 import requiredImage from './images/required.svg'
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${props => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${props => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const Required = styled.div<any>`
   position: absolute;
@@ -38,45 +37,45 @@ const getInputWidth = (props: any) => {
   }
 
   if (props.large) {
-    return `${StyleProps.inputSizes.large.width}px`
+    return `${ThemeProps.inputSizes.large.width}px`
   }
 
-  return `${StyleProps.inputSizes.regular.width}px`
+  return `${ThemeProps.inputSizes.regular.width}px`
 }
 const borderColor = (
   props: any,
-  defaultColor: string | undefined | null = Palette.grayscale[3],
-) => (props.highlight ? Palette.alert : defaultColor)
+  defaultColor: string | undefined | null = ThemePalette.grayscale[3],
+) => (props.highlight ? ThemePalette.alert : defaultColor)
 const Input = styled.input<any>`
   width: ${props => getInputWidth(props)};
-  height: ${props => props.height || `${StyleProps.inputSizes.regular.height}px`};
+  height: ${props => props.height || `${ThemeProps.inputSizes.regular.height}px`};
   line-height: ${props => props.lineHeight || 'normal'};
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   background-color: #FFF;
   border: ${props => (props.embedded ? 0 : css`1px solid ${borderColor(props)}`)};
-  border-top-left-radius: ${props => (props.embedded ? 0 : StyleProps.borderRadius)};
-  border-top-right-radius: ${StyleProps.borderRadius};
-  border-bottom-left-radius: ${props => (props.embedded ? 0 : StyleProps.borderRadius)};
-  border-bottom-right-radius: ${StyleProps.borderRadius};
-  color: ${Palette.black};
+  border-top-left-radius: ${props => (props.embedded ? 0 : ThemeProps.borderRadius)};
+  border-top-right-radius: ${ThemeProps.borderRadius};
+  border-bottom-left-radius: ${props => (props.embedded ? 0 : ThemeProps.borderRadius)};
+  border-bottom-right-radius: ${ThemeProps.borderRadius};
+  color: ${ThemePalette.black};
   padding: 0 8px 0 ${props => (props.embedded ? 0 : '16px')};
   font-size: inherit;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   box-sizing: border-box;
   &:hover {
-    border-color: ${props => borderColor(props, props.disablePrimary ? null : Palette.primary)};
+    border-color: ${props => borderColor(props, props.disablePrimary ? null : ThemePalette.primary)};
   }
   &:focus {
-    border-color: ${props => borderColor(props, props.disablePrimary ? null : Palette.primary)};
+    border-color: ${props => borderColor(props, props.disablePrimary ? null : ThemePalette.primary)};
     outline: none;
   }
   &:disabled {
-    color: ${props => (!props.embedded ? Palette.grayscale[3] : 'inherit')};
-    border-color: ${props => (!props.embedded ? Palette.grayscale[0] : 'inherit')};
-    background-color: ${props => (!props.embedded ? Palette.grayscale[0] : 'inherit')};
+    color: ${props => (!props.embedded ? ThemePalette.grayscale[3] : 'inherit')};
+    border-color: ${props => (!props.embedded ? ThemePalette.grayscale[0] : 'inherit')};
+    background-color: ${props => (!props.embedded ? ThemePalette.grayscale[0] : 'inherit')};
   }
   &::placeholder {
-    color: ${Palette.grayscale[3]};
+    color: ${ThemePalette.grayscale[3]};
   }
 `
 export const Close = styled.div<any>`

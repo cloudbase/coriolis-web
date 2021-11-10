@@ -42,7 +42,7 @@ import instanceStore from '../../../stores/InstanceStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 import configLoader from '../../../utils/Config'
 import { ReplicaItem } from '../../../@types/MainItem'
 import userStore from '../../../stores/UserStore'
@@ -325,14 +325,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       action: () => { this.setState({ showCancelExecutionModal: true }) },
     }, {
       label: 'Create Migrations',
-      color: Palette.primary,
+      color: ThemePalette.primary,
       action: () => { this.handleShowCreateMigrationsModal() },
     }, {
       label: 'Delete Disks',
       action: () => { this.setState({ showDeleteDisksModal: true }) },
     }, {
       label: 'Delete Replicas',
-      color: Palette.alert,
+      color: ThemePalette.alert,
       action: () => { this.handleShowDeleteReplicas() },
     }]
 

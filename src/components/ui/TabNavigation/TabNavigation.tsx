@@ -16,8 +16,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -31,17 +30,17 @@ const Header = styled.div<any>`
 `
 const HeaderItem = styled.div<any>`
   display: flex;
-  color: ${props => (props.selected ? Palette.primary : 'inherit')};
+  color: ${props => (props.selected ? ThemePalette.primary : 'inherit')};
   min-width: 96px;
   justify-content: center;
-  border-bottom: 1px solid ${props => (props.selected ? Palette.primary : 'transparent')};
+  border-bottom: 1px solid ${props => (props.selected ? ThemePalette.primary : 'transparent')};
   padding: 4px 4px 8px 4px;
   cursor: pointer;
   margin-right: 16px;
   &:hover {
-    border-bottom: 1px solid ${props => (props.selected ? Palette.primary : '#e6e7ea')};
+    border-bottom: 1px solid ${props => (props.selected ? ThemePalette.primary : '#e6e7ea')};
   }
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
 `
 const Body = styled.div<any>`
   display: flex;

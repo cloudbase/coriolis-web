@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 import requiredImage from './images/required.svg'
 import FileUtils from '../../../utils/FileUtils'
@@ -27,18 +26,18 @@ const getInputWidth = (props: any) => {
   }
 
   if (props.large) {
-    return `${StyleProps.inputSizes.large.width - 8}px`
+    return `${ThemeProps.inputSizes.large.width - 8}px`
   }
 
-  return `${StyleProps.inputSizes.regular.width - 8}px`
+  return `${ThemeProps.inputSizes.regular.width - 8}px`
 }
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${props => StyleProps.exactWidth(getInputWidth(props))}
-  height: ${props => props.height || `${StyleProps.inputSizes.regular.height}px`};
-  border-radius: ${StyleProps.borderRadius};
-  border: 1px solid ${props => (props.highlight ? Palette.alert : 'transparent')};
+  ${props => ThemeProps.exactWidth(getInputWidth(props))}
+  height: ${props => props.height || `${ThemeProps.inputSizes.regular.height}px`};
+  border-radius: ${ThemeProps.borderRadius};
+  border: 1px solid ${props => (props.highlight ? ThemePalette.alert : 'transparent')};
   ${props => (props.highlight ? css`padding-left: 8px;` : '')}
 `
 const Required = styled.div<any>`
@@ -50,7 +49,7 @@ const Required = styled.div<any>`
   background: url('${requiredImage}') center no-repeat;
 `
 const Prompt = styled.div<any>`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   flex-shrink: 0;
   margin-right: 4px;
   ${props => (!props.disabled ? css`
@@ -72,7 +71,7 @@ const Content = styled.div<any>`
   height: 100%;
   align-items: center;
   ${props => (props.disabledLoading
-    ? StyleProps.animations.disabledLoading
+    ? ThemeProps.animations.disabledLoading
     : props.disabled ? css`opacity: 0.6;` : '')}
 `
 const FakeFileInput = styled.input`

@@ -16,8 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,8 +33,8 @@ const ProgressBarWrapper = styled.div`
 `
 const Progress = styled.div<{ width: number }>`
   height: 2px;
-  background: ${Palette.primary};
-  transition: all ${StyleProps.animations.swift};
+  background: ${ThemePalette.primary};
+  transition: all ${ThemeProps.animations.swift};
   width: ${props => props.width}%;
 `
 type Props = {

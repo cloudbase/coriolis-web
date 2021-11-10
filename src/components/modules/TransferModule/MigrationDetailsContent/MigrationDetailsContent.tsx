@@ -20,7 +20,6 @@ import Button from '../../../ui/Button/Button'
 import DetailsNavigation from '../../NavigationModule/DetailsNavigation/DetailsNavigation'
 import MainDetails from '../MainDetails/MainDetails'
 import Tasks from '../Tasks/Tasks'
-import StyleProps from '../../../styleUtils/StyleProps'
 
 import type { Instance } from '../../../../@types/Instance'
 import type { Endpoint, StorageBackend } from '../../../../@types/Endpoint'
@@ -28,6 +27,7 @@ import type { Field } from '../../../../@types/Field'
 import { MigrationItemDetails } from '../../../../@types/MainItem'
 import { MinionPool } from '../../../../@types/MinionPool'
 import { Network } from '../../../../@types/Network'
+import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -41,7 +41,7 @@ const Buttons = styled.div<any>`
   }
 `
 const DetailsBody = styled.div<any>`
-  ${StyleProps.exactWidth(StyleProps.contentWidth)}
+  ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
 `
 
 const NavigationItems = [

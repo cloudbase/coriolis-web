@@ -22,8 +22,7 @@ import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
 import DashboardPieChart from '../DashboardPieChart/DashboardPieChart'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 
 import type { Endpoint } from '../../../../@types/Endpoint'
 
@@ -35,12 +34,12 @@ const Wrapper = styled.div<any>`
 `
 const Title = styled.div<any>`
   font-size: 24px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   margin-bottom: 12px;
 `
 const Module = styled.div<any>`
-  background: ${Palette.grayscale[0]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[0]};
+  border-radius: ${ThemeProps.borderRadius};
   height: 224px;
   padding: 32px 16px 16px 16px;
 `
@@ -62,11 +61,11 @@ const Tooltip = styled.div<any>`
   position: absolute;
   width: 208px;
   overflow: hidden;
-  border-radius: ${StyleProps.borderRadius};
+  border-radius: ${ThemeProps.borderRadius};
   box-shadow: rgba(0,0,0,0.1) 0 0 6px 1px;
 `
 const TooltipHeader = styled.div<any>`
-  background: ${Palette.grayscale[3]};
+  background: ${ThemePalette.grayscale[3]};
   height: 24px;
   display: flex;
   align-items: center;
@@ -74,7 +73,7 @@ const TooltipHeader = styled.div<any>`
   padding: 0 14px;
 `
 const TooltipBody = styled.div<any>`
-  background: ${Palette.black};
+  background: ${ThemePalette.black};
   height: 54px;
   display: flex;
   align-items: center;
@@ -99,7 +98,7 @@ const LegendItem = styled.div<any>`
   width: calc(33% - 8px);
 `
 const LegendBullet = styled.div<any>`
-  ${StyleProps.exactSize('8px')}
+  ${ThemeProps.exactSize('8px')}
   border: 2px solid ${props => props.color};
   border-radius: 50%;
 `
@@ -121,7 +120,7 @@ const NoItems = styled.div<any>`
   width: 100%;
 `
 const EndpointImage = styled.div<any>`
-  ${StyleProps.exactSize('148px')}
+  ${ThemeProps.exactSize('148px')}
   background: url('${endpointImage}') center no-repeat;
 `
 const Message = styled.div<any>`
@@ -252,7 +251,7 @@ class DashboardTopEndpoints extends React.Component<Props, State> {
           size={144}
           data={this.state.groupedEndpoints}
           colors={COLORS}
-          holeStyle={{ radius: 57, color: Palette.grayscale[0] }}
+          holeStyle={{ radius: 57, color: ThemePalette.grayscale[0] }}
           onMouseOver={(item, x, y) => { this.handleMouseOver(item, x, y) }}
           onMouseLeave={() => { this.handleMouseLeave() }}
         />

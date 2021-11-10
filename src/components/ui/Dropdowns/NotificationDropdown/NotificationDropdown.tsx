@@ -18,8 +18,7 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import Palette from '../../../styleUtils/Palette'
-import StyleProps from '../../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../../Theme'
 import type { NotificationItemData } from '../../../../@types/NotificationItem'
 import StatusIcon from '../../StatusComponents/StatusIcon/StatusIcon'
 
@@ -32,7 +31,7 @@ const Wrapper = styled.div<any>`
 `
 const Icon = styled.div<any>`
   position: relative;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   width: 32px;
   height: 32px;
   display: flex;
@@ -54,7 +53,7 @@ const bellBadgePostion = css`
 `
 const Badge = styled.div<any>`
   ${props => (props.isBellBadge ? bellBadgePostion : '')}
-  background: ${Palette.primary};
+  background: ${ThemePalette.primary};
   border-radius: 50%;
   width: 6px;
   height: 6px;
@@ -62,48 +61,48 @@ const Badge = styled.div<any>`
 `
 const List = styled.div<any>`
   cursor: pointer;
-  background: ${Palette.grayscale[1]};
-  border-radius: ${StyleProps.borderRadius};
+  background: ${ThemePalette.grayscale[1]};
+  border-radius: ${ThemeProps.borderRadius};
   width: 272px;
   position: absolute;
   right: 0;
   top: 45px;
   z-index: 10;
-  ${StyleProps.boxShadow}
+  ${ThemeProps.boxShadow}
 `
 const ListItemCss = css`
   display: flex;
-  border-bottom: 1px solid ${Palette.grayscale[0]};
+  border-bottom: 1px solid ${ThemePalette.grayscale[0]};
   padding: 8px;
-  transition: all ${StyleProps.animations.swift};
+  transition: all ${ThemeProps.animations.swift};
   justify-content: space-between;
   text-decoration: none;
   color: inherit;
 
   &:first-child {
     position: relative;
-    border-top-left-radius: ${StyleProps.borderRadius};
-    border-top-right-radius: ${StyleProps.borderRadius};
+    border-top-left-radius: ${ThemeProps.borderRadius};
+    border-top-right-radius: ${ThemeProps.borderRadius};
 
     &:after {
       content: ' ';
       position: absolute;
       width: 10px;
       height: 10px;
-      background: ${Palette.grayscale[1]};
-      border: 1px solid ${Palette.grayscale[1]};
-      border-color: transparent transparent ${Palette.grayscale[1]} ${Palette.grayscale[1]};
+      background: ${ThemePalette.grayscale[1]};
+      border: 1px solid ${ThemePalette.grayscale[1]};
+      border-color: transparent transparent ${ThemePalette.grayscale[1]} ${ThemePalette.grayscale[1]};
       transform: rotate(135deg);
       right: 10px;
       top: -6px;
-      transition: all ${StyleProps.animations.swift};
+      transition: all ${ThemeProps.animations.swift};
     }
   }
 
   &:last-child {
     border-color: transparent;
-    border-bottom-left-radius: ${StyleProps.borderRadius};
-    border-bottom-right-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
+    border-bottom-right-radius: ${ThemeProps.borderRadius};
   }
 `
 const ListItemNoLink = styled.div<any>`
@@ -115,13 +114,13 @@ const ListItem = styled(Link)`
   ${ListItemCss}
 
   &:hover {
-    background: ${Palette.grayscale[0]};
+    background: ${ThemePalette.grayscale[0]};
   }
 
   &:first-child {
      &:hover:after {
-      background: ${Palette.grayscale[0]};
-      border-color: transparent transparent ${Palette.grayscale[0]} ${Palette.grayscale[0]};
+      background: ${ThemePalette.grayscale[0]};
+      border-color: transparent transparent ${ThemePalette.grayscale[0]} ${ThemePalette.grayscale[0]};
     }
   }
 `
@@ -147,8 +146,8 @@ export const ItemReplicaBadge = styled.div<any>`
   background: 'white';
   color: #7F8795;
   font-size: 9px;
-  ${StyleProps.exactWidth('13px')}
-  ${StyleProps.exactHeight('10px')}
+  ${ThemeProps.exactWidth('13px')}
+  ${ThemeProps.exactHeight('10px')}
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,7 +161,7 @@ export const ItemTitle = styled.div<any>`
   text-overflow: ellipsis;
 `
 export const ItemDescription = styled.div<any>`
-  color: ${Palette.grayscale[5]};
+  color: ${ThemePalette.grayscale[5]};
   font-size: 10px;
   margin-top: 8px;
 `
@@ -299,7 +298,7 @@ class NotificationDropdown extends React.Component<Props, State> {
         onClick={() => this.handleButtonClick()}
       >
         <BellIcon
-          dangerouslySetInnerHTML={{ __html: bellImage(this.props.white ? 'white' : Palette.grayscale[2]) }}
+          dangerouslySetInnerHTML={{ __html: bellImage(this.props.white ? 'white' : ThemePalette.grayscale[2]) }}
         />
         {this.props.items.find(i => i.unseen) ? <Badge data-test-id={`${testId}-bell-badge`} isBellBadge /> : null}
         {isLoading ? (

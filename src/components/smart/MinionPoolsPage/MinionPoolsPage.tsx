@@ -39,7 +39,7 @@ import { Endpoint } from '../../../@types/Endpoint'
 import MinionEndpointModal from '../../modules/MinionModule/MinionEndpointModal/MinionEndpointModal'
 import MinionPoolModal from '../../modules/MinionModule/MinionPoolModal/MinionPoolModal'
 import MinionPoolListItem from '../../modules/MinionModule/MinionPoolListItem/MinionPoolListItem'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette } from '../../Theme'
 import AlertModal from '../../ui/AlertModal/AlertModal'
 import MinionPoolConfirmationModal from '../../modules/MinionModule/MinionPoolConfirmationModal/MinionPoolConfirmationModal'
 import notificationStore from '../../../stores/NotificationStore'
@@ -263,7 +263,7 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
     const BulkActions: DropdownAction[] = [
       {
         label: 'Allocate',
-        color: Palette.primary,
+        color: ThemePalette.primary,
         action: () => { this.handleAllocate() },
         disabled: !canBeAllocated,
         title: !canBeAllocated ? 'The minion pool should be deallocated' : '',
@@ -286,7 +286,7 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
       },
       {
         label: 'Delete Minion Pools',
-        color: Palette.alert,
+        color: ThemePalette.alert,
         action: () => {
           this.setState({ showDeletePoolsModal: true })
         },

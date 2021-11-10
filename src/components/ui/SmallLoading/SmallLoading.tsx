@@ -16,17 +16,16 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import StyleProps from '../../styleUtils/StyleProps'
-import Palette from '../../styleUtils/Palette'
+import { ThemePalette, ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${StyleProps.exactSize('28px')}
+  ${ThemeProps.exactSize('28px')}
   background-repeat: no-repeat;
   background-position: center;
 `
 const ProgressSvgWrapper = styled.svg<any>`
-  ${StyleProps.exactSize('100%')}
+  ${ThemeProps.exactSize('100%')}
   transform: rotate(-90deg);
   ${(props: any) => (props.spinning ? css`animation: rotate 1s linear infinite;` : '')}
   @keyframes rotate {
@@ -35,9 +34,9 @@ const ProgressSvgWrapper = styled.svg<any>`
   }
 `
 const ProgressText = styled.div<any>`
-  color: ${Palette.primary};
+  color: ${ThemePalette.primary};
   font-size: 9px;
-  font-weight: ${StyleProps.fontWeights.medium};
+  font-weight: ${ThemeProps.fontWeights.medium};
   top: 9px;
   position: absolute;
   width: 100%;
@@ -72,7 +71,7 @@ class SmallLoading extends React.Component<Props> {
             cx="14"
             cy="14"
             fill="transparent"
-            stroke={Palette.grayscale[2]}
+            stroke={ThemePalette.grayscale[2]}
           />
           <CircleProgressBar
             data-test-id="statusImage-progressBar"
@@ -80,7 +79,7 @@ class SmallLoading extends React.Component<Props> {
             cx="14"
             cy="14"
             fill="transparent"
-            stroke={Palette.primary}
+            stroke={ThemePalette.primary}
             strokeDasharray="100 100"
             strokeDashoffset={300 - ((progress / 100) * 82)}
           />

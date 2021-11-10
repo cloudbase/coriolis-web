@@ -20,8 +20,7 @@ import Switch from '../Switch/Switch'
 import TextInput from '../TextInput/TextInput'
 
 import LabelDictionary from '../../../utils/LabelDictionary'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 import Dropdown from '../Dropdowns/Dropdown/Dropdown'
 import AutocompleteDropdown from '../Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
 import { Field, EnumItem, isEnumSeparator } from '../../../@types/Field'
@@ -30,15 +29,15 @@ const Wrapper = styled.div<any>`
   display: flex;
   ${props => (props.width ? `width: ${props.width - 2}px;` : '')}
   flex-direction: column;
-  border: 1px solid ${Palette.grayscale[2]};
-  border-radius: ${StyleProps.borderRadius};
+  border: 1px solid ${ThemePalette.grayscale[2]};
+  border-radius: ${ThemeProps.borderRadius};
   ${props => (props.disabled ? css`
     opacity: 0.5;
   ` : '')}
-  ${props => (props.disabledLoading ? StyleProps.animations.disabledLoading : '')}
+  ${props => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
 `
 const Column = styled.div<any>`
-  ${StyleProps.exactWidth('calc(50% - 24px)')}
+  ${ThemeProps.exactWidth('calc(50% - 24px)')}
   height: 32px;
   padding: 0 8px 0 16px;
   display: flex;
@@ -51,22 +50,22 @@ const Column = styled.div<any>`
   }
 
   ${props => (props.header ? css`
-    color: ${Palette.grayscale[4]};
-    background: ${Palette.grayscale[7]};
+    color: ${ThemePalette.grayscale[4]};
+    background: ${ThemePalette.grayscale[7]};
   ` : '')}
 `
 const Row = styled.div<any>`
   display: flex;
   align-items: center;
-  border-bottom: 1px solid ${Palette.grayscale[2]};
+  border-bottom: 1px solid ${ThemePalette.grayscale[2]};
   &:last-child {
     border-bottom: 0;
   }
   &:first-child ${Column} {
-    border-top-left-radius: ${StyleProps.borderRadius};
+    border-top-left-radius: ${ThemeProps.borderRadius};
   }
   &:last-child ${Column} {
-    border-bottom-left-radius: ${StyleProps.borderRadius};
+    border-bottom-left-radius: ${ThemeProps.borderRadius};
   }
 `
 const baseId = 'propertiesTable'

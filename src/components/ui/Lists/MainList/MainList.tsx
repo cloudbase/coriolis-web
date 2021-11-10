@@ -19,7 +19,7 @@ import styled from 'styled-components'
 import StatusImage from '../../StatusComponents/StatusImage/StatusImage'
 import Button from '../../Button/Button'
 
-import Palette from '../../../styleUtils/Palette'
+import { ThemePalette } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   margin-top: 8px;
@@ -31,7 +31,7 @@ const Wrapper = styled.div<any>`
 `
 const Separator = styled.div<any>`
   height: 1px;
-  background: ${Palette.grayscale[1]};;
+  background: ${ThemePalette.grayscale[1]};;
 `
 const Loading = styled.div<any>`
   display: flex;

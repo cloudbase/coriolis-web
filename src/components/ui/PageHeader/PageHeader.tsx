@@ -36,8 +36,7 @@ import userStore from '../../../stores/UserStore'
 import endpointStore from '../../../stores/EndpointStore'
 import notificationStore from '../../../stores/NotificationStore'
 import providerStore from '../../../stores/ProviderStore'
-import Palette from '../../styleUtils/Palette'
-import StyleProps from '../../styleUtils/StyleProps'
+import { ThemePalette, ThemeProps } from '../../Theme'
 import { ProviderTypes } from '../../../@types/Providers'
 import MinionEndpointModal from '../../modules/MinionModule/MinionEndpointModal/MinionEndpointModal'
 import MinionPoolModal from '../../modules/MinionModule/MinionPoolModal/MinionPoolModal'
@@ -51,9 +50,9 @@ const Wrapper = styled.div<any>`
   flex-wrap: wrap;
 `
 const Title = styled.div<any>`
-  color: ${Palette.black};
+  color: ${ThemePalette.black};
   font-size: 32px;
-  font-weight: ${StyleProps.fontWeights.light};
+  font-weight: ${ThemeProps.fontWeights.light};
   flex-grow: 1;
   overflow: hidden;
   white-space: nowrap;
