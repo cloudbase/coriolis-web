@@ -22,7 +22,7 @@ import type { Execution, ExecutionTasks } from '../@types/Execution'
 import type { Endpoint } from '../@types/Endpoint'
 import type { Task, ProgressUpdate } from '../@types/Task'
 import type { Field } from '../@types/Field'
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
 
 export const sortTasks = (
   tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void,

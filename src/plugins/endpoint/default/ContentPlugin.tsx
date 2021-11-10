@@ -18,7 +18,7 @@ import styled from 'styled-components'
 import configLoader from '../../../utils/Config'
 import LabelDictionary from '../../../utils/LabelDictionary'
 
-import FieldInput from '../../../components/molecules/FieldInput'
+import FieldInput from '../../../components/ui/FieldInput'
 import type { Field } from '../../../@types/Field'
 
 import StyleProps from '../../../components/styleUtils/StyleProps'

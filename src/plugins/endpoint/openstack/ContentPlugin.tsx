@@ -18,7 +18,7 @@ import styled from 'styled-components'
 import configLoader from '../../../utils/Config'
 import LabelDictionary from '../../../utils/LabelDictionary'
 
-import ToggleButtonBar from '../../../components/atoms/ToggleButtonBar'
+import ToggleButtonBar from '../../../components/ui/ToggleButtonBar'
 import type { Field } from '../../../@types/Field'
 import { Wrapper, FieldStyled, Row } from '../default/ContentPlugin'
 

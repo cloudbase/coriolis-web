@@ -30,7 +30,7 @@ import {
   MigrationItem, MigrationItemOptions, MigrationItemDetails, UserScriptData,
 } from '../@types/MainItem'
 
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates: ProgressUpdate[]) {

@@ -1,0 +1,6 @@
+{
+  "name": "DashboardInfoCount",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./DashboardInfoCount.tsx"
+}
