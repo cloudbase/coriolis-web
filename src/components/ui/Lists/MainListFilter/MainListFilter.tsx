@@ -106,7 +106,6 @@ class MainListFilter extends React.Component<Props> {
         {renderCustomComponent()}
         {this.props.items.map(item => (
           <FilterItem
-            data-test-id={`mainListFilter-filterItem-${item.value}`}
             onClick={() => this.props.onFilterItemClick(item)}
             key={item.value}
             selected={this.props.selectedValue === item.value}
@@ -124,7 +123,7 @@ class MainListFilter extends React.Component<Props> {
 
     return (
       <Selection>
-        <SelectionText data-test-id="mainListFilter-selectionText">
+        <SelectionText>
           {this.props.selectionInfo.selected} of {this.props.selectionInfo.total}&nbsp;
           {this.props.selectionInfo.label}(s) selected
         </SelectionText>
@@ -133,7 +132,6 @@ class MainListFilter extends React.Component<Props> {
             actions={this.props.dropdownActions}
             largeItems={this.props.largeDropdownActionItems}
             style={{ marginLeft: '8px' }}
-            data-test-id="mainListFilter-actionButton"
           />
         ) : null}
       </Selection>
@@ -159,7 +157,6 @@ class MainListFilter extends React.Component<Props> {
           {renderCheckbox()}
           {this.renderFilterGroup()}
           <ReloadButton
-            data-test-id="mainListFilter-reloadButton"
             style={{ marginRight: '16px' }}
             onClick={this.props.onReloadButtonClick}
           />

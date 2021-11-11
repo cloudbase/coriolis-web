@@ -93,34 +93,33 @@ type Props = {
   onClick: () => void,
   getProjectName: (projectId: string | null | undefined) => string,
 }
-const testName = 'ulItem'
 @observer
 class UserListItem extends React.Component<Props> {
   render() {
     return (
       <Wrapper>
-        <Content data-test-id={`${testName}-content`} onClick={this.props.onClick}>
+        <Content onClick={this.props.onClick}>
           <Image />
           <Title>
-            <TitleLabel data-test-id={`${testName}-name`}>{this.props.item.name}</TitleLabel>
-            <Subtitle data-test-id={`${testName}-description`}>{this.props.item.description}</Subtitle>
+            <TitleLabel>{this.props.item.name}</TitleLabel>
+            <Subtitle>{this.props.item.description}</Subtitle>
           </Title>
           <Body>
             <Data percentage={45}>
               <ItemLabel>Email</ItemLabel>
-              <ItemValue data-test-id={`${testName}-email`}>
+              <ItemValue>
                 {this.props.item.email || '-'}
               </ItemValue>
             </Data>
             <Data percentage={35}>
               <ItemLabel>Primary Project</ItemLabel>
-              <ItemValue data-test-id={`${testName}-project`}>
+              <ItemValue>
                 {this.props.getProjectName(this.props.item.project_id)}
               </ItemValue>
             </Data>
             <Data percentage={20}>
               <ItemLabel>Enabled</ItemLabel>
-              <ItemValue data-test-id={`${testName}-enabled`}>
+              <ItemValue>
                 {this.props.item.enabled ? 'Yes' : 'No'}
               </ItemValue>
             </Data>

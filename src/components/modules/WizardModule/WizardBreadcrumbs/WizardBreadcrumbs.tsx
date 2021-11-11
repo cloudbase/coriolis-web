@@ -50,7 +50,7 @@ class WizardBreadcrumbs extends React.Component<Props> {
       <Wrapper>
         {this.props.pages.map(page => (
           <Breadcrumb key={page.id}>
-            <Name selected={this.props.selected.id === page.id} data-test-id={`wBreadCrumbs-name-${page.id}`}>{page.breadcrumb}</Name>
+            <Name selected={this.props.selected.id === page.id}>{page.breadcrumb}</Name>
             <ArrowStyled primary={this.props.selected.id === page.id} useDefaultCursor />
           </Breadcrumb>
         ))}

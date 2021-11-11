@@ -112,7 +112,6 @@ class UserDetailsContent extends React.Component<Props> {
           <Button
             hollow
             onClick={this.props.onUpdatePasswordClick}
-            data-test-id={`${TEST_ID}-updateButton`}
           >Change password
           </Button>
         </ButtonsColumn>
@@ -122,7 +121,6 @@ class UserDetailsContent extends React.Component<Props> {
             hollow
             onClick={() => { this.props.onDeleteClick() }}
             disabled={this.props.isLoggedUser}
-            data-test-id={`${TEST_ID}-deleteUserButton`}
           >Delete user
           </Button>
         </ButtonsColumn>
@@ -163,7 +161,7 @@ class UserDetailsContent extends React.Component<Props> {
       <Info>
         <Field>
           <Label>Name</Label>
-          {this.renderValue(user.name, 'name')}
+          {this.renderValue(user.name)}
         </Field>
         <Field>
           <Label>Description</Label>
@@ -171,15 +169,15 @@ class UserDetailsContent extends React.Component<Props> {
         </Field>
         <Field>
           <Label>ID</Label>
-          {this.renderValue(user.id, 'id')}
+          {this.renderValue(user.id)}
         </Field>
         <Field>
           <Label>Email</Label>
-          {this.renderValue(user.email || '-', 'email')}
+          {this.renderValue(user.email || '-')}
         </Field>
         <Field>
           <Label>Primary Project</Label>
-          {this.renderValue(primaryProjectName || '-', 'primaryProject')}
+          {this.renderValue(primaryProjectName || '-')}
         </Field>
         <Field>
           <Label>Project Membership</Label>
@@ -187,16 +185,15 @@ class UserDetailsContent extends React.Component<Props> {
         </Field>
         <Field>
           <Label>Enabled</Label>
-          <Value data-test-id={`${TEST_ID}-enabled`}>{user.enabled ? 'Yes' : 'No'}</Value>
+          <Value>{user.enabled ? 'Yes' : 'No'}</Value>
         </Field>
       </Info>
     )
   }
 
-  renderValue(value: string, dataTestId?: string) {
+  renderValue(value: string) {
     return value !== '-' ? (
       <CopyValue
-        data-test-id={`${TEST_ID}-${dataTestId || ''}`}
         value={value}
         maxWidth="90%"
       />

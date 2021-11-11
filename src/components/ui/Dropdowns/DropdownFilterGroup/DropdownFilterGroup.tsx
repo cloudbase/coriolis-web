@@ -47,7 +47,7 @@ class DropdownFilterGroup extends React.Component<Props> {
       <Dropdowns>
         {
           // eslint-disable-next-line react/jsx-props-no-spreading
-          this.props.items.map(config => <DropdownLinkStyled data-test-id={`dfGroup-dropdown-${config.key}`} {...config} />)
+          this.props.items.map(config => <DropdownLinkStyled {...config} />)
 }
       </Dropdowns>
     )

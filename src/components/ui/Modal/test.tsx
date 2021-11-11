@@ -28,7 +28,7 @@ describe('Modal Component', () => {
   })
 
   it('renders children and add resize handler', () => {
-    let wrapper = wrap({ isOpen: true, children: <div data-test-id="modal-child">Modal</div>, title: 'the_title' })
+    let wrapper = wrap({ isOpen: true, children: <div>Modal</div>, title: 'the_title' })
     expect(wrapper.findText('child', true)).toBe('Modal')
     expect(wrapper.find('child').prop('onResizeUpdate')).toBeTruthy()
   })

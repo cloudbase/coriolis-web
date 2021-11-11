@@ -105,7 +105,6 @@ type Props = {
   height?: string,
   style?: React.CSSProperties,
   lineHeight?: string,
-  'data-test-id'?: string,
   required?: boolean,
   disabledLoading?: boolean,
   onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
@@ -122,13 +121,12 @@ const TextInput = (props: Props) => {
   const actualDisabled = disabled || disabledLoading
   let input: { focus: () => void }
   return (
-    <Wrapper data-test-id={props['data-test-id'] || 'textInput'} disabledLoading={disabledLoading}>
+    <Wrapper disabledLoading={disabledLoading}>
       <Input
         ref={(ref: HTMLElement) => { input = ref; if (_ref) _ref(ref) }}
         type="text"
         value={value}
         onChange={onChange}
-        data-test-id="textInput-input"
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...props}
         onKeyDown={onInputKeyDown}
@@ -136,7 +134,6 @@ const TextInput = (props: Props) => {
       />
       {props.required ? <Required right={embedded ? -24 : -16} /> : null}
       <Close
-        data-test-id="textInput-close"
         show={showClose && value !== '' && value !== undefined}
         onClick={() => {
           input.focus()

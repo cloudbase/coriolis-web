@@ -125,7 +125,6 @@ type Props = {
   width?: number,
   dimNullValue?: boolean,
   highlight?: boolean,
-  'data-test-id'?: string,
   required?: boolean,
   embedded?: boolean,
 }
@@ -394,7 +393,6 @@ class AutocompleteDropdown extends React.Component<Props, State> {
           const duplicatedLabel = duplicatedLabels.find(l => l === label)
           const listItem = (
             <ListItem
-              data-test-id="ad-listItem"
               key={value}
               ref={(ref: HTMLElement | null | undefined) => {
                 if (i === 0) { this.firstItemRef = ref }
@@ -468,7 +466,6 @@ class AutocompleteDropdown extends React.Component<Props, State> {
 
     return (
       <Wrapper
-        data-test-id={this.props['data-test-id'] || 'acDropdown-wrapper'}
         className={this.props.className}
         width={this.props.width}
         embedded={this.props.embedded}

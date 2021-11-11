@@ -356,7 +356,6 @@ class Navigation extends React.Component<Props> {
               key={item.value}
               selected={this.props.currentPage === item.value}
               to={`/${item.value}`}
-              data-test-id={`navigation-item-${item.value}`}
             >{item.label}
             </MenuItem>
           ))
@@ -416,7 +415,6 @@ class Navigation extends React.Component<Props> {
                 key={item.value}
                 selected={this.props.currentPage === item.value}
                 to={`/${item.value}`}
-                data-test-id={`${TEST_ID}-smallMenuItem-${item.value}`}
               >
                 <SmallMenuBackground />
                 {bullet ? <SmallMenuItemBullet bullet={bullet} /> : null}

@@ -89,7 +89,6 @@ class TextArea extends React.Component<any> {
               this.props.customRef(r)
             }
           }}
-          data-test-id="textArea-input"
         />
         {this.props.required ? <Required /> : null}
       </Wrapper>

@@ -56,7 +56,6 @@ type Props = {
   checked?: boolean,
   disabled?: boolean,
   onChange?: (checked: boolean) => void,
-  'data-test-id'?: string,
   onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void,
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void,
 }
@@ -81,7 +80,6 @@ class Checkbox extends React.Component<Props> {
   render() {
     return (
       <Wrapper
-        data-test-id={this.props['data-test-id'] || 'checkbox'}
         className={this.props.className}
         onClick={() => { this.handleClick() }}
         checked={this.props.checked}

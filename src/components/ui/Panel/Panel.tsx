@@ -113,14 +113,13 @@ class Panel extends React.Component<Props> {
               selected={this.props.selectedValue
                 ? this.props.selectedValue === item.value : i === 0}
               onClick={() => { this.handleItemClick(item) }}
-              data-test-id={`${TEST_ID}-navItem-${item.value}`}
               disabled={item.disabled}
               title={item.title}
             >{item.label}{item.loading ? <Loading /> : null}
             </NavigationItemDiv>
           ))}
         </Navigation>
-        <Content data-test-id={`${TEST_ID}-content`}>{this.props.content}</Content>
+        <Content>{this.props.content}</Content>
         <ReloadButton onClick={() => { this.props.onReloadClick() }}>
           {this.props.reloadLabel}
         </ReloadButton>

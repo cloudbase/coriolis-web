@@ -105,11 +105,10 @@ const LoginOptions = (props: Props) => {
     <Wrapper>
       {buttons.map(button => (
         <Button
-          data-test-id={`loginOptions-button-${button.id}`}
           key={button.id}
           id={button.id}
         >
-          <Logo data-test-id={`loginOptions-logo-${button.id}`} id={button.id} />Sign in with {button.name}
+          <Logo id={button.id} />Sign in with {button.name}
         </Button>
       ))}
     </Wrapper>

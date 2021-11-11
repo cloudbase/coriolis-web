@@ -103,15 +103,14 @@ class EndpointListItem extends React.Component<Props> {
     return (
       <Wrapper>
         <CheckboxStyled
-          data-test-id={`endpointListItem-checkbox-${this.props.item.name}`}
           checked={this.props.selected}
           onChange={this.props.onSelectedChange}
         />
-        <Content onClick={this.props.onClick} data-test-id={`endpointListItem-content-${this.props.item.name}`}>
+        <Content onClick={this.props.onClick}>
           <Image image={endpointImage} />
           <Title>
-            <TitleLabel data-test-id="endpointListItem-name">{this.props.item.name}</TitleLabel>
-            <Subtitle data-test-id="endpointListItem-description">{this.props.item.description || 'N/A'}</Subtitle>
+            <TitleLabel>{this.props.item.name}</TitleLabel>
+            <Subtitle>{this.props.item.description || 'N/A'}</Subtitle>
           </Title>
           <EndpointLogos height={42} endpoint={this.props.item.type} />
           <Created>
@@ -122,7 +121,7 @@ class EndpointListItem extends React.Component<Props> {
           </Created>
           <Usage>
             <ItemLabel>Usage</ItemLabel>
-            <ItemValue data-test-id="endpointListItem-usageCount">
+            <ItemValue>
               {this.props.getUsage(this.props.item).migrationsCount} migrations,&nbsp;
               {this.props.getUsage(this.props.item).replicasCount} replicas
             </ItemValue>

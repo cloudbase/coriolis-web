@@ -294,8 +294,8 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
         <Image />
         {this.renderBody()}
         <Buttons>
-          <Button secondary onClick={this.props.onCancelClick} data-test-id="rmOptions-cancelButton">Cancel</Button>
-          <Button onClick={() => { this.migrate() }} data-test-id="rmOptions-execButton">Migrate</Button>
+          <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
+          <Button onClick={() => { this.migrate() }}>Migrate</Button>
         </Buttons>
       </Wrapper>
     )

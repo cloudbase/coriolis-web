@@ -19,7 +19,7 @@ import TW from '@src/utils/TestWrapper'
 import MainList from '.'
 
 const wrap = props => new TW(shallow(
-  
+
   <MainList {...props} />
 ), 'mainList')
 
@@ -32,7 +32,7 @@ let items = [
 
 let selectedItems = [{ ...items[1] }, { ...items[2] }]
 
-let renderItemComponent = options => <div data-test-id={`mainList-item-${options.key}`} {...options}>{options.item.label}</div>
+let renderItemComponent = options => <div {...options}>{options.item.label}</div>
 
 describe('MainList Component', () => {
   it('renders all items', () => {

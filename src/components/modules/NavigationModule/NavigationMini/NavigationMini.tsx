@@ -78,7 +78,6 @@ class NavigationMini extends React.Component<{}, State> {
           open={this.state.open}
           onClick={() => { this.handleMenuToggleClick() }}
           dangerouslySetInnerHTML={{ __html: menuImage() }}
-          data-test-id={`${TEST_ID}-toggleButton`}
         />
         {this.state.open ? <Stub /> : null}
         <NavigationStyled

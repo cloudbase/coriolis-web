@@ -241,7 +241,6 @@ class WizardStorage extends React.Component<Props> {
           labelField="name"
           valueField="id"
           onChange={(item: StorageBackend) => { this.props.onChange({ source: disk, target: item, type }) }}
-          data-test-id={`${TEST_ID}-${type}-destination`}
         />
       )
   }

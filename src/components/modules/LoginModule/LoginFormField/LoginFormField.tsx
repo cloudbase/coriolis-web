@@ -42,9 +42,8 @@ type Props = {
 }
 const LoginFormField = (props: Props) => (
   <Wrapper>
-    <FormFieldLabel data-test-id="loginFormField-label">{props.label}</FormFieldLabel>
+    <FormFieldLabel>{props.label}</FormFieldLabel>
     <StyledTextInput
-      data-test-id="loginFormField-input"
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
       onChange={props.onChange}

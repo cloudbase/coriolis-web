@@ -130,7 +130,7 @@ class EndpointDetailsContent extends React.Component<Props> {
 
     return (
       <LoadingWrapper>
-        <StatusImage loading data-test-id="edContent-connLoading" />
+        <StatusImage loading />
       </LoadingWrapper>
     )
   }
@@ -169,11 +169,11 @@ class EndpointDetailsContent extends React.Component<Props> {
       const schemaField = this.props.connectionInfoSchema.find(f => f.name === key)
 
       if (configLoader.config.passwordFields.find(fn => fn === key) || key.indexOf('password') > -1) {
-        valueElement = <PasswordValue value={value} data-test-id="edContent-connPassword" />
+        valueElement = <PasswordValue value={value} />
       } else if (schemaField?.useFile) {
         valueElement = this.renderDownloadValue(value, key)
       } else {
-        valueElement = this.renderValue(value, `connValue-${key}`)
+        valueElement = this.renderValue(value)
       }
 
       return (
@@ -189,17 +189,17 @@ class EndpointDetailsContent extends React.Component<Props> {
     return (
       <Buttons>
         <MainButtons>
-          <Button onClick={this.props.onValidateClick} data-test-id="edContent-validateButton">Validate Endpoint</Button>
+          <Button onClick={this.props.onValidateClick}>Validate Endpoint</Button>
         </MainButtons>
         <DeleteButton>
-          <Button hollow alert onClick={this.props.onDeleteClick} data-test-id="edContent-deleteButton">Delete Endpoint</Button>
+          <Button hollow alert onClick={this.props.onDeleteClick}>Delete Endpoint</Button>
         </DeleteButton>
       </Buttons>
     )
   }
 
-  renderValue(value: string, dataTestId?: string) {
-    return <CopyValue data-test-id={dataTestId ? `edContent-${dataTestId}` : undefined} value={value} maxWidth="90%" />
+  renderValue(value: string) {
+    return <CopyValue value={value} maxWidth="90%" />
   }
 
   renderRegions() {
@@ -246,11 +246,11 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Name</Label>
-            {this.renderValue(name || '', 'name')}
+            {this.renderValue(name || '')}
           </Field>
           <Field>
             <Label>Type</Label>
-            {this.renderValue(this.props.item ? configLoader.config.providerNames[this.props.item.type] : '', 'type')}
+            {this.renderValue(this.props.item ? configLoader.config.providerNames[this.props.item.type] : '')}
           </Field>
           <Field>
             <Label>Coriolis Regions</Label>
@@ -258,11 +258,11 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Description</Label>
-            {description ? <CopyMultilineValue data-test-id="edContent-description" value={description} /> : <Value>-</Value>}
+            {description ? <CopyMultilineValue value={description} /> : <Value>-</Value>}
           </Field>
           <Field>
             <Label>Created</Label>
-            {this.renderValue(DateUtils.getLocalTime(created_at).format('DD/MM/YYYY HH:mm'), 'created')}
+            {this.renderValue(DateUtils.getLocalTime(created_at).format('DD/MM/YYYY HH:mm'))}
           </Field>
           <Field>
             <Label>Used in replicas/migrations ({usage.length})</Label>

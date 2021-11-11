@@ -99,7 +99,6 @@ type State = {
   selectedRolesExisting: string[],
   selectedRolesNew: string[],
 }
-const testName = 'pmModal'
 @observer
 class ProjectMemberModal extends React.Component<Props, State> {
   state: State = {
@@ -204,7 +203,6 @@ class ProjectMemberModal extends React.Component<Props, State> {
     }]
     return (
       <ToggleButtonBarStyled
-        data-test-id={`${testName}-formToggle`}
         items={items}
         selectedValue={this.state.isNew ? 'new' : 'existing'}
         onChange={item => { this.setState({ isNew: item.value === 'new' }) }}
@@ -226,7 +224,6 @@ class ProjectMemberModal extends React.Component<Props, State> {
 
     return (
       <FieldInput
-        data-test-id={`${testName}-roles`}
         key="roles"
         name="role(s)"
         label="Role(s)"
@@ -254,7 +251,6 @@ class ProjectMemberModal extends React.Component<Props, State> {
   renderField(field: FieldType, value: any, onChange: (value: any) => void) {
     return (
       <FieldStyled
-        data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
         type={field.type || 'string'}
@@ -336,7 +332,6 @@ class ProjectMemberModal extends React.Component<Props, State> {
             Username
           </FormLabel>
           <AutocompleteDropdown
-            data-test-id={`${testName}-users`}
             items={users}
             disabled={this.props.loading}
             selectedItem={this.state.selectedUser ? this.state.selectedUser.id : ''}
@@ -381,7 +376,6 @@ class ProjectMemberModal extends React.Component<Props, State> {
               large
               disabled={this.props.loading}
               onClick={() => { this.handleAddClick() }}
-              data-test-id={`${testName}-addButton`}
             >Add Member
             </Button>
           </Buttons>

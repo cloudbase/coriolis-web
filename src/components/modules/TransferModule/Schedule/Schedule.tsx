@@ -206,7 +206,7 @@ class Schedule extends React.Component<Props, State> {
 
     return (
       <LoadingWrapper>
-        <StatusImage loading data-test-id="schedule-loadingStatus" />
+        <StatusImage loading />
         <LoadingText>Loading schedules...</LoadingText>
       </LoadingWrapper>
     )
@@ -316,7 +316,6 @@ class Schedule extends React.Component<Props, State> {
         <Timezone>
           <TimezoneLabel>Show all times in</TimezoneLabel>
           <DropdownLink
-            data-test-id="schedule-timezoneDropdown"
             items={timezoneItems}
             selectedItem={selectedItem}
             onChange={item => { this.props.onTimezoneChange(item.value === 'utc' ? 'utc' : 'local') }}

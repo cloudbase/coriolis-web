@@ -35,11 +35,10 @@ const Loader = styled.div<any>`
 `
 type Props = {
   style?: any,
-  'data-test-id'?: string,
 }
 
 const HorizontalLoading = (props: Props) => (
-  <Wrapper style={props.style} data-test-id={props['data-test-id'] || 'horizontalLoading'}>
+  <Wrapper style={props.style}>
     <Loader />
   </Wrapper>
 )

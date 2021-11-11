@@ -157,7 +157,6 @@ type Props = {
   big?: boolean,
   checkedLabel?: string,
   uncheckedLabel?: string,
-  'data-test-id'?: string,
   style?: React.CSSProperties,
   required?: boolean,
   highlight?: boolean,
@@ -225,7 +224,6 @@ class Switch extends React.Component<Props, State> {
         onClick={() => { this.handleInputChange() }}
         tabIndex={0}
         onKeyDown={(evt: KeyboardEvent) => { this.handleKeyDown(evt) }}
-        data-test-id={this.props['data-test-id'] || 'switch-input'}
       >
         <InputBackground
           triState={this.props.triState}

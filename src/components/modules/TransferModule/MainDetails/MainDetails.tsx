@@ -169,13 +169,13 @@ class MainDetails extends React.Component<Props, State> {
     return this.props.item ? this.renderValue(DateUtils.getLocalTime(this.props.item.updated_at).format('YYYY-MM-DD HH:mm:ss')) : '-'
   }
 
-  renderValue(value: string, dateTestId?: string) {
-    return <CopyValue value={value} maxWidth="90%" data-test-id={dateTestId ? `mainDetails-${dateTestId}` : undefined} />
+  renderValue(value: string) {
+    return <CopyValue value={value} maxWidth="90%" />
   }
 
   renderEndpointLink(type: string): React.ReactNode {
     const endpointIsMissing = (
-      <Value flex data-test-id={`mainDetails-missing-${type}`}>
+      <Value flex>
         <StatusIcon style={{ marginRight: '8px' }} status="ERROR" />Endpoint is missing
       </Value>
     )
@@ -289,7 +289,6 @@ class MainDetails extends React.Component<Props, State> {
           <Row>
             <EndpointLogos
               endpoint={(sourceEndpoint ? sourceEndpoint.type : '') as any}
-              data-test-id="mainDetails-sourceLogo"
             />
           </Row>
           {getPropertyNames('source').length > 0 ? (
@@ -306,20 +305,20 @@ class MainDetails extends React.Component<Props, State> {
           <Row>
             <Field>
               <Label>Id</Label>
-              {this.renderValue(this.props.item ? this.props.item.id || '-' : '-', 'id')}
+              {this.renderValue(this.props.item ? this.props.item.id || '-' : '-')}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Created</Label>
-              {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss'), 'created') : <Value>-</Value>}
+              {this.props.item && this.props.item.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')) : <Value>-</Value>}
             </Field>
           </Row>
           {lastUpdated ? (
             <Row>
               <Field>
                 <Label>Last Updated</Label>
-                <Value data-test-id="mainDetails-updated">{lastUpdated}</Value>
+                <Value>{lastUpdated}</Value>
               </Field>
             </Row>
           ) : null}
@@ -357,7 +356,6 @@ class MainDetails extends React.Component<Props, State> {
           <Row>
             <EndpointLogos
               endpoint={(destinationEndpoint ? destinationEndpoint.type : '') as any}
-              data-test-id="mainDetails-targetLogo"
             />
           </Row>
           {getPropertyNames('destination').length > 0 ? (
@@ -403,7 +401,7 @@ class MainDetails extends React.Component<Props, State> {
 
     return (
       <Loading>
-        <StatusImage loading data-test-id="mainDetails-loading" />
+        <StatusImage loading />
       </Loading>
     )
   }

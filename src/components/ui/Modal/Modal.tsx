@@ -162,7 +162,7 @@ class NewModal extends React.Component<Props> {
       return null
     }
 
-    return <Title data-test-id="modal-title" wide={contentWidth === '800px'}>{this.props.title}</Title>
+    return <Title wide={contentWidth === '800px'}>{this.props.title}</Title>
   }
 
   render() {

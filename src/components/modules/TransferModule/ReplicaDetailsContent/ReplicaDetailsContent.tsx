@@ -147,7 +147,6 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
             primary
             disabled={this.isEndpointMissing()}
             onClick={this.props.onCreateMigrationClick}
-            data-test-id="rdContent-createButton"
           >Create Migration
           </Button>
         </ButtonColumn>
@@ -156,7 +155,6 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
             alert
             hollow
             onClick={this.props.onDeleteReplicaClick}
-            data-test-id="rdContent-deleteButton"
           >Delete Replica
           </Button>
         </ButtonColumn>
@@ -184,7 +182,6 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         endpoints={this.props.endpoints}
         networks={this.props.networks}
         bottomControls={this.renderBottomControls()}
-        data-test-id="rdContent-mainDetails"
       />
     )
   }

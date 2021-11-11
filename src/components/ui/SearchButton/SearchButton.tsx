@@ -45,7 +45,6 @@ class SearchButton extends React.Component<Props> {
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Wrapper className={this.props.className} {...this.props}>
         <Icon
-          data-test-id="searchButton-icon"
           dangerouslySetInnerHTML={{
             __html: this.props.useFilterIcon
               ? filterImage(ThemePalette.grayscale[3])

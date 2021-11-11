@@ -190,7 +190,6 @@ export type Props = {
 type State = {
   showDropdownList: boolean,
 }
-const testId = 'notificationDropdown'
 @observer
 class NotificationDropdown extends React.Component<Props, State> {
   state = {
@@ -241,7 +240,7 @@ class NotificationDropdown extends React.Component<Props, State> {
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
         >
-          <NoItems data-test-id={`${testId}-noItems`}>There are no notifications</NoItems>
+          <NoItems>There are no notifications</NoItems>
         </ListItemNoLink>
       </List>
     )
@@ -267,17 +266,16 @@ class NotificationDropdown extends React.Component<Props, State> {
             >
               <InfoColumn>
                 <MainItemInfo>
-                  <StatusIcon data-test-id={`${testId}-${item.id}-status`} status={item.status} hollow />
+                  <StatusIcon status={item.status} hollow />
                   <ItemReplicaBadge
                     type={item.type}
-                    data-test-id={`${testId}-${item.id}-type`}
                   >{item.type === 'replica' ? 'RE' : 'MI'}
                   </ItemReplicaBadge>
-                  <ItemTitle data-test-id={`${testId}-${item.id}-name`}>{item.name}</ItemTitle>
+                  <ItemTitle>{item.name}</ItemTitle>
                 </MainItemInfo>
-                <ItemDescription data-test-id={`${testId}-${item.id}-description`}>{item.description}</ItemDescription>
+                <ItemDescription>{item.description}</ItemDescription>
               </InfoColumn>
-              {item.unseen ? <BadgeColumn data-test-id={`${testId}-${item.id}-badge`}><Badge /></BadgeColumn> : null}
+              {item.unseen ? <BadgeColumn><Badge /></BadgeColumn> : null}
             </ListItem>
           )
         })}
@@ -292,7 +290,6 @@ class NotificationDropdown extends React.Component<Props, State> {
 
     return (
       <Icon
-        data-test-id={`${testId}-button`}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
         onClick={() => this.handleButtonClick()}
@@ -300,10 +297,9 @@ class NotificationDropdown extends React.Component<Props, State> {
         <BellIcon
           dangerouslySetInnerHTML={{ __html: bellImage(this.props.white ? 'white' : ThemePalette.grayscale[2]) }}
         />
-        {this.props.items.find(i => i.unseen) ? <Badge data-test-id={`${testId}-bell-badge`} isBellBadge /> : null}
+        {this.props.items.find(i => i.unseen) ? <Badge isBellBadge /> : null}
         {isLoading ? (
           <Loading
-            data-test-id={`${testId}-bell-loading`}
             dangerouslySetInnerHTML={{ __html: loadingImage(this.props.white) }}
           />
         ) : null}

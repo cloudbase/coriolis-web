@@ -74,7 +74,6 @@ class SmallLoading extends React.Component<Props> {
             stroke={ThemePalette.grayscale[2]}
           />
           <CircleProgressBar
-            data-test-id="statusImage-progressBar"
             r="13"
             cx="14"
             cy="14"
@@ -94,7 +93,8 @@ class SmallLoading extends React.Component<Props> {
     }
 
     return (
-      <ProgressText>{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
+      <ProgressText>
+        {this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
       </ProgressText>
     )
   }

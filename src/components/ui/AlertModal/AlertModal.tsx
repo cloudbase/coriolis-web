@@ -84,7 +84,7 @@ class AlertModal extends React.Component<Props> {
 
     return (
       <Buttons centered>
-        <Button secondary onClick={this.props.onRequestClose} data-test-id="aModal-dismissButton">Dismiss</Button>
+        <Button secondary onClick={this.props.onRequestClose}>Dismiss</Button>
       </Buttons>
     )
   }
@@ -96,8 +96,8 @@ class AlertModal extends React.Component<Props> {
 
     return (
       <Buttons>
-        <Button secondary onClick={this.props.onRequestClose} data-test-id="aModal-noButton">No</Button>
-        <Button onClick={this.props.onConfirmation} data-test-id="aModal-yesButton">Yes</Button>
+        <Button secondary onClick={this.props.onRequestClose}>No</Button>
+        <Button onClick={this.props.onConfirmation}>Yes</Button>
       </Buttons>
     )
   }
@@ -108,10 +108,10 @@ class AlertModal extends React.Component<Props> {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Modal {...this.props} isOpen={this.props.isOpen || false}>
-        <Wrapper data-test-id="alertModal">
-          <StatusImage status={status} data-test-id="aModal-status" />
-          {this.props.message ? <Message data-test-id="aModal-message">{this.props.message}</Message> : null}
-          {this.props.extraMessage ? <ExtraMessage data-test-id="aModal-extraMessage">{this.props.extraMessage}</ExtraMessage> : null}
+        <Wrapper>
+          <StatusImage status={status} />
+          {this.props.message ? <Message>{this.props.message}</Message> : null}
+          {this.props.extraMessage ? <ExtraMessage>{this.props.extraMessage}</ExtraMessage> : null}
           {this.renderConfirmationButtons()}
           {this.renderDismissButton()}
         </Wrapper>

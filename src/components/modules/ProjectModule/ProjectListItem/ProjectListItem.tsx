@@ -96,7 +96,6 @@ type Props = {
   isCurrentProject: (projectId: string) => boolean,
   onSwitchProjectClick: (projectId: string) => void | Promise<void>,
 }
-const testName = 'plItem'
 @observer
 class ProjectListItem extends React.Component<Props> {
   render() {
@@ -104,22 +103,22 @@ class ProjectListItem extends React.Component<Props> {
 
     return (
       <Wrapper>
-        <Content onClick={this.props.onClick} data-test-id={`${testName}-content`}>
+        <Content onClick={this.props.onClick}>
           <Image />
           <Title>
-            <TitleLabel data-test-id={`${testName}-name`}>{this.props.item.name}</TitleLabel>
-            <Subtitle data-test-id={`${testName}-description`}>{this.props.item.description}</Subtitle>
+            <TitleLabel>{this.props.item.name}</TitleLabel>
+            <Subtitle>{this.props.item.description}</Subtitle>
           </Title>
           <Body>
             <Data percentage={33}>
               <ItemLabel>Members</ItemLabel>
-              <ItemValue data-test-id={`${testName}-members`}>
+              <ItemValue>
                 {this.props.getMembers(this.props.item.id)}
               </ItemValue>
             </Data>
             <Data percentage={33}>
               <ItemLabel>Enabled</ItemLabel>
-              <ItemValue data-test-id={`${testName}-enabled`}>
+              <ItemValue>
                 {this.props.item.enabled ? 'Yes' : 'No'}
               </ItemValue>
             </Data>
@@ -134,7 +133,6 @@ class ProjectListItem extends React.Component<Props> {
                   if (e) e.stopPropagation(); this.props.onSwitchProjectClick(this.props.item.id)
                 }}
                 disabled={isCurrentProject}
-                data-test-id={`${testName}-currentButton`}
               >{isCurrentProject ? 'Current' : 'Switch'}
               </Button>
             </Data>
