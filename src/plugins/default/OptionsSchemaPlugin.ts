@@ -16,15 +16,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { defaultSchemaToFields } from './ConnectionSchemaPlugin'
 
-import Utils from '../../../utils/ObjectUtils'
+import Utils from '../../utils/ObjectUtils'
 
-import type { Field } from '../../../@types/Field'
-import type { OptionValues, StorageMap } from '../../../@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '../../../@types/Schema'
-import type { NetworkMap } from '../../../@types/Network'
-import type { InstanceScript } from '../../../@types/Instance'
-import { executionOptions, migrationFields } from '../../../constants'
-import { UserScriptData } from '../../../@types/MainItem'
+import type { Field } from '../../@types/Field'
+import type { OptionValues, StorageMap } from '../../@types/Endpoint'
+import type { SchemaProperties, SchemaDefinitions } from '../../@types/Schema'
+import type { NetworkMap } from '../../@types/Network'
+import type { InstanceScript } from '../../@types/Instance'
+import { executionOptions, migrationFields } from '../../constants'
+import { UserScriptData } from '../../@types/MainItem'
 
 const migrationImageOsTypes = ['windows', 'linux']
 

@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Schema } from '../../../@types/Schema'
-import type { Field } from '../../../@types/Field'
+import type { Schema } from '../../@types/Schema'
+import type { Field } from '../../@types/Field'
 
 import DefaultConnectionSchemaParser from '../default/ConnectionSchemaPlugin'
-import { Endpoint } from '../../../@types/Endpoint'
+import { Endpoint } from '../../@types/Endpoint'
 
 export default class ConnectionSchemaParser {
   static parseSchemaToFields(schema: Schema): Field[] {

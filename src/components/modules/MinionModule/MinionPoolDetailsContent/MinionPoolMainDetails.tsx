@@ -29,7 +29,7 @@ import fieldHelper from '../../../../@types/Field'
 import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 import LabelDictionary from '../../../../utils/LabelDictionary'
-import { OptionsSchemaPlugin } from '../../../../plugins/endpoint'
+import { OptionsSchemaPlugin } from '../../../../plugins'
 
 import { TransferItem, ReplicaItem, MigrationItem } from '../../../../@types/MainItem'
 import { MinionPool } from '../../../../@types/MinionPool'

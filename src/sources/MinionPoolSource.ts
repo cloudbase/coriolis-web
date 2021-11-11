@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import Api from '../utils/ApiCaller'
-import DefaultMinionPoolSchemaPlugin from '../plugins/endpoint/default/MinionPoolSchemaPlugin'
+import DefaultMinionPoolSchemaPlugin from '../plugins/default/MinionPoolSchemaPlugin'
 
 import configLoader from '../utils/Config'
 import { MinionPool, MinionPoolDetails } from '../@types/MinionPool'

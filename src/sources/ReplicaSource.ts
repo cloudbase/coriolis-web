@@ -13,8 +13,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import Api from '../utils/ApiCaller'
-import { OptionsSchemaPlugin } from '../plugins/endpoint'
-import DefaultOptionsSchemaPlugin from '../plugins/endpoint/default/OptionsSchemaPlugin'
+import { OptionsSchemaPlugin } from '../plugins'
+import DefaultOptionsSchemaPlugin from '../plugins/default/OptionsSchemaPlugin'
 
 import configLoader from '../utils/Config'
 import type { UpdateData, ReplicaItem, ReplicaItemDetails } from '../@types/MainItem'

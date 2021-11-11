@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import Api from '../utils/ApiCaller'
-import { OptionsSchemaPlugin } from '../plugins/endpoint'
+import { OptionsSchemaPlugin } from '../plugins'
 
 import DomUtils from '../utils/DomUtils'
 import configLoader from '../utils/Config'
@@ -21,7 +21,7 @@ import configLoader from '../utils/Config'
 import type { WizardData } from '../@types/WizardData'
 import type { StorageMap } from '../@types/Endpoint'
 import type { InstanceScript } from '../@types/Instance'
-import DefaultOptionsSchemaParser from '../plugins/endpoint/default/OptionsSchemaPlugin'
+import DefaultOptionsSchemaParser from '../plugins/default/OptionsSchemaPlugin'
 import { TransferItem } from '../@types/MainItem'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
 

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ConnectionSchemaPlugin, MinionPoolSchemaPlugin, OptionsSchemaPlugin } from '../plugins/endpoint'
+import { ConnectionSchemaPlugin, MinionPoolSchemaPlugin, OptionsSchemaPlugin } from '../plugins'
 import type { Schema } from '../@types/Schema'
 import type { Endpoint } from '../@types/Endpoint'
 import { ProviderTypes } from '../@types/Providers'

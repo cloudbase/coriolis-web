@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019  Cloudbase Solutions SRL
+Copyright (C) 2017  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -13,45 +13,76 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import DefaultOptionsSchemaPlugin, {
+  defaultFillMigrationImageMapValues,
+  defaultFillFieldValues,
   defaultGetDestinationEnv,
   defaultGetMigrationImageMap,
-  defaultFillFieldValues,
-  defaultFillMigrationImageMapValues,
 } from '../default/OptionsSchemaPlugin'
 
-import type { InstanceScript } from '../../../@types/Instance'
-import type { Field } from '../../../@types/Field'
-import type { OptionValues, StorageMap } from '../../../@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '../../../@types/Schema'
-import type { NetworkMap } from '../../../@types/Network'
-import { UserScriptData } from '../../../@types/MainItem'
+import type { InstanceScript } from '../../@types/Instance'
+import type { Field } from '../../@types/Field'
+import type { OptionValues, StorageMap } from '../../@types/Endpoint'
+import type { SchemaProperties, SchemaDefinitions } from '../../@types/Schema'
+import type { NetworkMap } from '../../@types/Network'
+import { UserScriptData } from '../../@types/MainItem'
 
 export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
+  static migrationImageMapFieldName = 'migr_template_map'
 
   static parseSchemaToFields(
     schema: SchemaProperties,
     schemaDefinitions: SchemaDefinitions | null | undefined,
     dictionaryKey: string,
   ) {
-    const fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
-    const exportMechField = fields.find(f => f.name === 'replica_export_mechanism')
-    if (!exportMechField) {
-      return fields
+    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    const useCoriolisExporterField = fields.find(f => f.name === 'use_coriolis_exporter')
+    if (useCoriolisExporterField) {
+      const usableFields: Field[] = [
+        {
+          ...useCoriolisExporterField,
+          nullableBoolean: false,
+          default: false,
+          subFields: [
+            {
+              name: 'generic_exporter_options',
+              type: 'object',
+              properties: fields.filter(f => f.name !== 'use_coriolis_exporter')
+                .map(f => ({ ...f, groupName: 'generic_exporter_options' })),
+            },
+            {
+              name: 'ovm_exporter_options',
+              type: 'object',
+              properties: [],
+            },
+          ],
+        },
+      ]
+      return usableFields
     }
-    exportMechField.subFields = []
-    exportMechField.enum.forEach((exportType: any) => {
-      const exportTypeFieldIdx = fields.findIndex(f => f.name === `${exportType}_options`)
-      if (exportTypeFieldIdx === -1) {
+    fields.forEach(f => {
+      if (
+        f.name !== 'migr_template_username_map'
+        && f.name !== 'migr_template_password_map'
+        && f.name !== 'migr_template_name_map'
+      ) {
         return
       }
-      const subField = fields[exportTypeFieldIdx]
-      if (subField.properties?.length) {
-        subField.properties = subField.properties.map((p: Field) => ({ ...p, groupName: subField.name }))
-      }
-      exportMechField.subFields.push(subField)
-      fields.splice(exportTypeFieldIdx, 1)
+
+      const password = f.name === 'migr_template_password_map'
+      f.properties = [
+        {
+          type: 'string',
+          name: 'windows',
+          password,
+        },
+        {
+          type: 'string',
+          name: 'linux',
+          password,
+        },
+      ]
     })
+
     return fields
   }
 
@@ -60,8 +91,8 @@ export default class OptionsSchemaParser {
   }
 
   static fillFieldValues(field: Field, options: OptionValues[]) {
-    if (field.name === 'replica_export_mechanism' && field.subFields) {
-      field.subFields.forEach(sf => {
+    if (field.name === 'use_coriolis_exporter') {
+      field.subFields?.forEach(sf => {
         if (sf.properties) {
           sf.properties.forEach(f => {
             DefaultOptionsSchemaPlugin.fillFieldValues(f, options, f.name.split('/')[1])
@@ -84,10 +115,17 @@ export default class OptionsSchemaParser {
   }
 
   static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
+    let newOptions: any = { ...options }
+    if (newOptions.use_coriolis_exporter != null) {
+      newOptions = { use_coriolis_exporter: newOptions.use_coriolis_exporter }
+    }
+    if (options?.generic_exporter_options) {
+      newOptions = { ...options.generic_exporter_options, use_coriolis_exporter: false }
+    }
     const env = {
-      ...defaultGetDestinationEnv(options, oldOptions),
+      ...defaultGetDestinationEnv(newOptions, oldOptions),
       ...defaultGetMigrationImageMap(
-        options,
+        newOptions,
         oldOptions,
         this.migrationImageMapFieldName,
       ),
@@ -95,7 +133,7 @@ export default class OptionsSchemaParser {
     return env
   }
 
-  static getNetworkMap(networkMappings: NetworkMap[] | null) {
+  static getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
     return DefaultOptionsSchemaPlugin.getNetworkMap(networkMappings)
   }
 

@@ -30,7 +30,7 @@ import OvirtOptionsSchemaPlugin from './ovirt/OptionsSchemaPlugin'
 
 import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
 import OciInstanceInfoPlugin from './oci/InstanceInfoPlugin'
-import { ProviderTypes } from '../../@types/Providers'
+import { ProviderTypes } from '../@types/Providers'
 
 import DefaultMinionPoolSchemaPlugin from './default/MinionPoolSchemaPlugin'
 import OpenstackMinionPoolSchemaPlugin from './openstack/MinionPoolSchemaPlugin'

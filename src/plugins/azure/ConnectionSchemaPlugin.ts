@@ -18,7 +18,7 @@ import {
   fieldsToPayload,
   generateBaseFields,
 } from '../default/ConnectionSchemaPlugin'
-import { Endpoint } from '../../../@types/Endpoint'
+import { Endpoint } from '../../@types/Endpoint'
 
 const fieldsToPayloadUseDefaults = (
   data: any, schema: { properties: any },

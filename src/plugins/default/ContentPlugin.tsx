@@ -15,14 +15,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 
-import configLoader from '../../../utils/Config'
-import LabelDictionary from '../../../utils/LabelDictionary'
+import configLoader from '../../utils/Config'
+import LabelDictionary from '../../utils/LabelDictionary'
 
-import FieldInput from '../../../components/ui/FieldInput'
-import type { Field } from '../../../@types/Field'
+import FieldInput from '../../components/ui/FieldInput/FieldInput'
+import type { Field } from '../../@types/Field'
 
-import { Endpoint, Validation } from '../../../@types/Endpoint'
-import { ThemeProps } from '../../../components/Theme'
+import { Endpoint, Validation } from '../../@types/Endpoint'
+import { ThemeProps } from '../../components/Theme'
 
 export const Wrapper = styled.div<any>`
   display: flex;

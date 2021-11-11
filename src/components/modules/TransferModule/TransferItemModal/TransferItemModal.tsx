@@ -20,7 +20,7 @@ import providerStore, { getFieldChangeOptions } from '../../../../stores/Provide
 import replicaStore from '../../../../stores/ReplicaStore'
 import migrationStore from '../../../../stores/MigrationStore'
 import endpointStore from '../../../../stores/EndpointStore'
-import { OptionsSchemaPlugin } from '../../../../plugins/endpoint'
+import { OptionsSchemaPlugin } from '../../../../plugins'
 
 import Button from '../../../ui/Button/Button'
 import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'

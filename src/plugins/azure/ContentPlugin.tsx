@@ -15,18 +15,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
-import TextArea from '../../../components/ui/TextArea'
-import ToggleButtonBar from '../../../components/ui/ToggleButtonBar'
-import type { Field } from '../../../@types/Field'
+import TextArea from '../../components/ui/TextArea/TextArea'
+import ToggleButtonBar from '../../components/ui/ToggleButtonBar/ToggleButtonBar'
+import type { Field } from '../../@types/Field'
 
-import configLoader from '../../../utils/Config'
-import LabelDictionary from '../../../utils/LabelDictionary'
-import { ThemePalette, ThemeProps } from '../../../components/Theme'
-import KeyboardManager from '../../../utils/KeyboardManager'
+import configLoader from '../../utils/Config'
+import LabelDictionary from '../../utils/LabelDictionary'
+import { ThemePalette, ThemeProps } from '../../components/Theme'
+import KeyboardManager from '../../utils/KeyboardManager'
 import {
   Wrapper, Fields, FieldStyled, Row,
 } from '../default/ContentPlugin'
-import { Validation, Endpoint } from '../../../@types/Endpoint'
+import { Validation, Endpoint } from '../../@types/Endpoint'
 
 const ToggleButtonBarStyled = styled(ToggleButtonBar)`
   margin-top: 16px;

@@ -19,12 +19,12 @@ import DefaultOptionsSchemaPlugin, {
   defaultGetMigrationImageMap,
 } from '../default/OptionsSchemaPlugin'
 
-import type { InstanceScript } from '../../../@types/Instance'
-import type { Field } from '../../../@types/Field'
-import type { OptionValues, StorageMap } from '../../../@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '../../../@types/Schema'
-import type { NetworkMap } from '../../../@types/Network'
-import { UserScriptData } from '../../../@types/MainItem'
+import type { InstanceScript } from '../../@types/Instance'
+import type { Field } from '../../@types/Field'
+import type { OptionValues, StorageMap } from '../../@types/Endpoint'
+import type { SchemaProperties, SchemaDefinitions } from '../../@types/Schema'
+import type { NetworkMap } from '../../@types/Network'
+import { UserScriptData } from '../../@types/MainItem'
 
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_template_map'
