@@ -102,7 +102,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
       projectStore.getProjects({ showLoading, skipLog: true }),
       projectStore.getRoleAssignments({ skipLog: true }),
     ])
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: Project, _?: string | null, filterText?: string): boolean {

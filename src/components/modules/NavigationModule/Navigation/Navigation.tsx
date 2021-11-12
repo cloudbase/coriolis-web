@@ -305,7 +305,7 @@ class Navigation extends React.Component<Props> {
       return
     }
 
-    this.resizeTimeout = setTimeout(() => {
+    this.resizeTimeout = window.setTimeout(() => {
       this.resizeTimeout = null
       this.toggleMenu(window.outerWidth <= ThemeProps.mobileMaxWidth)
     }, 100)

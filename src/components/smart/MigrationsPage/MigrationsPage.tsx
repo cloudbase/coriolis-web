@@ -209,7 +209,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
       endpointStore.getEndpoints({ skipLog: true }),
       userStore.getAllUsers({ skipLog: true, quietError: true }),
     ])
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   render() {

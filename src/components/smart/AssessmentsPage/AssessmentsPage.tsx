@@ -182,7 +182,7 @@ class AssessmentsPage extends React.Component<Props, State> {
 
     if (!connectionInfo || !connectionInfo.subscription_id
       || !selectedResourceGroup || !selectedResourceGroup.name) {
-      this.pollTimeout = setTimeout(() => {
+      this.pollTimeout = window.setTimeout(() => {
         this.pollData()
       }, configLoader.config.requestPollTimeout)
       return
@@ -195,7 +195,7 @@ class AssessmentsPage extends React.Component<Props, State> {
       userStore.loggedUser ? userStore.loggedUser.project.id : '',
       { backgroundLoading: true, skipLog: true },
     ).then(() => {
-      this.pollTimeout = setTimeout(() => {
+      this.pollTimeout = window.setTimeout(() => {
         this.pollData()
       }, configLoader.config.requestPollTimeout)
     })
