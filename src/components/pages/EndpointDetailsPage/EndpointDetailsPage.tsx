@@ -251,7 +251,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           contentHeaderComponent={(
             <DetailsContentHeader
               itemTitle={endpoint?.name}
@@ -261,7 +261,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
               dropdownActions={dropdownActions}
               typeImage={endpointImage}
             />
-)}
+          )}
           contentComponent={(
             <EndpointDetailsContent
               item={endpoint}
@@ -274,7 +274,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
               onDeleteClick={() => { this.handleDeleteEndpointClick() }}
               onValidateClick={() => { this.handleValidateClick() }}
             />
-)}
+          )}
         />
         <AlertModal
           isOpen={this.state.showDeleteEndpointConfirmation}

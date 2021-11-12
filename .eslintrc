@@ -35,6 +35,21 @@
   ],
   "rules": {
     "react/sort-comp": "off",
+    "react/jsx-indent": [
+      2,
+      2,
+      {
+        "checkAttributes": true,
+        "indentLogicalExpressions": true
+      }
+    ],
+    "react/jsx-indent-props": [
+      2,
+      2
+    ],
+    "react/self-closing-comp": [
+      2
+    ],
     "react/jsx-one-expression-per-line": "off",
     "@typescript-eslint/semi": [
       2,

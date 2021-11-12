@@ -592,7 +592,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           contentHeaderComponent={(
             <DetailsContentHeader
               statusPill={replica?.last_execution_status}
@@ -604,7 +604,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               typeImage={replicaImage}
               alertInfoPill
             />
-)}
+          )}
           contentComponent={(
             <ReplicaDetailsContent
               item={replica}
@@ -646,7 +646,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
               onScheduleSave={s => { this.handleScheduleSave(s) }}
             />
-)}
+          )}
         />
         <Modal
           isOpen={this.state.showOptionsModal}

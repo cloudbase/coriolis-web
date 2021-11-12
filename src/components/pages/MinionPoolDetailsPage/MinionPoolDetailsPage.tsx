@@ -331,7 +331,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           contentHeaderComponent={(
             <DetailsContentHeader
               statusPill={this.minionPool?.status}
@@ -342,7 +342,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
               backLink="/minion-pools"
               typeImage={minionPoolImage}
             />
-)}
+          )}
           contentComponent={(
             <MinionPoolDetailsContent
               item={this.minionPool}

@@ -374,7 +374,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           contentHeaderComponent={(
             <DetailsContentHeader
               statusPill={migrationStore.migrationDetails?.last_execution_status}
@@ -386,7 +386,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
               dropdownActions={dropdownActions}
               primaryInfoPill
             />
-)}
+          )}
           contentComponent={(
             <MigrationDetailsContent
               item={migrationStore.migrationDetails}
@@ -410,7 +410,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
                 || minionPoolStore.loadingMinionPools || this.state.initialLoading}
               onDeleteMigrationClick={() => { this.handleDeleteMigrationClick() }}
             />
-)}
+          )}
         />
         <AlertModal
           isOpen={this.state.showDeleteMigrationConfirmation}
