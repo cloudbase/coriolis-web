@@ -72,12 +72,10 @@ class ObjectUtils {
   }
 
   static async wait(ms: number) {
-    return new Promise<void>(r => setTimeout(() => r(), ms))
+    return new Promise<void>(r => { setTimeout(() => r(), ms) })
   }
 
-  static async waitFor(
-    predicate: () => boolean, timeoutMs: number = 15000, tryEvery: number = 1000,
-  ) {
+  static async waitFor(predicate: () => boolean, timeoutMs: number = 15000, tryEvery: number = 1000) {
     const startTime = new Date().getTime()
     const testLoop = async () => {
       if (predicate()) {

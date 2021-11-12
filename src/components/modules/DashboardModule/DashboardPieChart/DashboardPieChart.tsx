@@ -18,7 +18,6 @@ import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 import { ThemeProps } from '../../../Theme'
 
-
 const Wrapper = styled.div<any>`
   position: relative;
   display: flex;

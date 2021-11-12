@@ -94,9 +94,7 @@ class SmallLoading extends React.Component<Props> {
     }
 
     return (
-      <ProgressText
-        data-test-id={`${TEST_ID}-progressText`}
-      >{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
+      <ProgressText>{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
       </ProgressText>
     )
   }

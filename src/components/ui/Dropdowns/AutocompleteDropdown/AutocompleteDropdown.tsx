@@ -444,18 +444,20 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       ? this.getValue(this.state.filteredItems[0]) : null
     const isFirstItemSelected = selectedItemValue !== null && selectedItemValue === firstItemValue
 
-    const list = ReactDOM.createPortal((
+    const list = ReactDOM.createPortal(
+      (
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <List {...this.props} ref={(ref: HTMLElement | null | undefined) => { this.listRef = ref }}>
-        <Tip
-          ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }}
-          primary={this.state.firstItemHover || isFirstItemSelected}
-          dangerouslySetInnerHTML={{ __html: tipImage }}
-        />
-        {this.renderItems()}
-        {this.renderSearchNotFound()}
-      </List>
-    ), body)
+        <List {...this.props} ref={(ref: HTMLElement | null | undefined) => { this.listRef = ref }}>
+          <Tip
+            ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }}
+            primary={this.state.firstItemHover || isFirstItemSelected}
+            dangerouslySetInnerHTML={{ __html: tipImage }}
+          />
+          {this.renderItems()}
+          {this.renderSearchNotFound()}
+        </List>
+      ), body,
+    )
 
     return list
   }

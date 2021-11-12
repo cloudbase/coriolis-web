@@ -32,7 +32,8 @@ const Wrapper = styled.div<any>`
 const wrap = (
   endpoint: string | null | undefined,
   height: number | undefined,
-  disabled = false, white = false,
+  disabled = false,
+  white = false,
 ) => (
   <EndpointLogos
     endpoint={endpoint as any}

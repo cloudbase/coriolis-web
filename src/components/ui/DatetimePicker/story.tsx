@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import moment from 'moment'
-import DatetimePicker from '../DatetimePicker'
+import DatetimePicker from '.'
 
 const Wrapper = (props: any) => (
   <div

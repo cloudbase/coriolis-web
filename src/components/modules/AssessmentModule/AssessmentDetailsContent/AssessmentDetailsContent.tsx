@@ -225,19 +225,6 @@ class AssessmentDetailsContent extends React.Component<Props> {
       === vm.properties.datacenterManagementServerName
   }
 
-  renderBottomControls() {
-    return (
-      <Buttons>
-        <Button
-          alert
-          hollow
-          onClick={() => { }}
-        >Migrate
-        </Button>
-      </Buttons>
-    )
-  }
-
   renderMainDetails() {
     if (this.props.page !== '' || !this.props.item || !this.props.item.id) {
       return null

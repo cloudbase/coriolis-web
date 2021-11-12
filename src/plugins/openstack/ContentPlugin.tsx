@@ -151,6 +151,7 @@ class ContentPlugin extends React.Component<Props, State> {
     return fieldValue
   }
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
   findInvalidFields = () => {
     const inputChoices = ['user_domain', 'project_domain']
 
@@ -284,9 +285,7 @@ class ContentPlugin extends React.Component<Props, State> {
             this.props.connectionInfoSchema.find(n => n.name === fieldName),
           )}
           onFieldChange={(fieldName, fieldValue) => {
-            this.props.handleFieldChange(
-              this.props.connectionInfoSchema.find(n => n.name === fieldName), fieldValue,
-            )
+            this.props.handleFieldChange(this.props.connectionInfoSchema.find(n => n.name === fieldName), fieldValue)
           }}
         />
       )

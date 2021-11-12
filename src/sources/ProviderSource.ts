@@ -57,7 +57,8 @@ class ProviderSource {
 
   async getOptionsValues(
     optionsType: 'source' | 'destination',
-    endpointId: string, envData: { [prop: string]: any } | null | undefined,
+    endpointId: string,
+    envData: { [prop: string]: any } | null | undefined,
     cache?: boolean | null,
     quietError?: boolean,
   ): Promise<OptionValues[]> {

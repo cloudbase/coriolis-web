@@ -115,7 +115,7 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     showAdvancedOptions: false,
   }
 
-  scrollableRef: HTMLElement | undefined | null
+  // scrollableRef: HTMLElement | undefined | null
 
   getFieldValue(fieldName: string) {
     if (this.state.fieldValues[fieldName] != null) {
@@ -140,12 +140,12 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     })
   }
 
-  UNSAFE_componentDidUpdate(_: Props, prevState: State) {
-    if (prevState.showAdvancedOptions !== this.state.showAdvancedOptions
-      && this.props.onResizeUpdate && this.scrollableRef) {
-      this.props.onResizeUpdate(this.scrollableRef)
-    }
-  }
+  // UNSAFE_componentDidUpdate(_: Props, prevState: State) {
+  //   if (prevState.showAdvancedOptions !== this.state.showAdvancedOptions
+  //     && this.props.onResizeUpdate && this.scrollableRef) {
+  //     this.props.onResizeUpdate(this.scrollableRef)
+  //   }
+  // }
 
   handleObjectValueChange(fieldName: string, propName: string, value: any) {
     this.setState(prevState => {
@@ -263,7 +263,8 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     })
 
     return (
-      <Fields ref={(ref: HTMLElement | null | undefined) => { this.scrollableRef = ref }}>
+      // <Fields ref={(ref: HTMLElement | null | undefined) => { this.scrollableRef = ref }}>
+      <Fields>
         {rows}
       </Fields>
     )

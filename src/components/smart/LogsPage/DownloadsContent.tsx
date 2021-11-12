@@ -23,7 +23,6 @@ import { Close } from '../../ui/TextInput/TextInput'
 import DatetimePicker from '../../ui/DatetimePicker/DatetimePicker'
 import StatusIcon from '../../ui/StatusComponents/StatusIcon/StatusIcon'
 
-
 import downloadImage from './images/download.svg'
 import { ThemeProps } from '../../Theme'
 

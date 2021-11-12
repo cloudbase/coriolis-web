@@ -290,9 +290,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     if (this.state.pausePolling || this.stopPolling) {
       return
     }
-    await migrationStore.getMigration(
-      this.props.match.params.id, { showLoading: false, skipLog: true },
-    )
+    await migrationStore.getMigration(this.props.match.params.id, { showLoading: false, skipLog: true })
     setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 

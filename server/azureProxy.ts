@@ -42,9 +42,7 @@ export default (app: express.Application) => {
     if (userCred && userCred.username && userCred.password) {
       MsRest.loginWithUsernamePassword(userCred.username, userCred.password, handleResponse)
     } else if (servicePrin && servicePrin.client_id && servicePrin.client_secret) {
-      MsRest.loginWithServicePrincipalSecret(
-        servicePrin.client_id, servicePrin.client_secret, connInfo.tenant, handleResponse,
-      )
+      MsRest.loginWithServicePrincipalSecret(servicePrin.client_id, servicePrin.client_secret, connInfo.tenant, handleResponse)
     } else {
       res.status(401).send(buildError('Azure API authentication error'))
     }

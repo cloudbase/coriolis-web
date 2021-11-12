@@ -138,9 +138,7 @@ class StatusImage extends React.Component<Props> {
 
   renderProgressText() {
     return (
-      <ProgressText
-        data-test-id="statusImage-progressText"
-      >{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
+      <ProgressText>{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
       </ProgressText>
     )
   }

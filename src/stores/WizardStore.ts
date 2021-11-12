@@ -243,9 +243,7 @@ class WizardStore {
     this.creatingItem = true
 
     try {
-      const item: TransferItem = await source.create(
-        type, data, defaultStorage, storageMap, uploadedUserScripts,
-      )
+      const item: TransferItem = await source.create(type, data, defaultStorage, storageMap, uploadedUserScripts)
       runInAction(() => { this.createdItem = item })
     } finally {
       runInAction(() => { this.creatingItem = false })
@@ -262,9 +260,7 @@ class WizardStore {
     this.creatingItems = true
 
     try {
-      const items = await source.createMultiple(
-        type, data, defaultStorage, storageMap, uploadedUserScripts,
-      )
+      const items = await source.createMultiple(type, data, defaultStorage, storageMap, uploadedUserScripts)
       const nullItemsCount = items.filter(i => i === null).length
       if (items && nullItemsCount === 0) {
         runInAction(() => { this.createdItems = items })

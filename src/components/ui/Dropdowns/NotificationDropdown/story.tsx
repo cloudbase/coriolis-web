@@ -16,7 +16,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 
 import type { NotificationItemData } from '../../../../@types/NotificationItem'
-import NotificationDropdown from '../NotificationDropdown'
+import NotificationDropdown from '.'
 
 const items: NotificationItemData[] = [
   {

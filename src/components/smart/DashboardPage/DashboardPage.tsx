@@ -109,8 +109,11 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
   }
 
   async loadAdminData(showLoading: boolean) {
-    await Utils.waitFor(() => Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin),
-      30000, 100)
+    await Utils.waitFor(
+      () => Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin),
+      30000,
+      100,
+    )
     if (userStore.loggedUser?.isAdmin) {
       userStore.getAllUsers({ skipLog: true, showLoading })
       licenceStore.loadLicenceInfo({ skipLog: true, showLoading })

@@ -281,9 +281,7 @@ class UserSource {
     await this.assignUserToProjectWithRole(userId, projectId, roleId)
   }
 
-  async assignUserToProjectWithRole(
-    userId: string, projectId: string, roleId: string,
-  ): Promise<void> {
+  async assignUserToProjectWithRole(userId: string, projectId: string, roleId: string): Promise<void> {
     await Api.send({
       url: `${configLoader.config.servicesUrls.keystone}/projects/${projectId}/users/${userId}/roles/${roleId}`,
       method: 'PUT',

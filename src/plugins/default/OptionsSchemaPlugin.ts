@@ -155,9 +155,7 @@ export const defaultGetMigrationImageMap = (
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_image_map'
 
-  static parseSchemaToFields(
-    schema: SchemaProperties, schemaDefinitions?: SchemaDefinitions | null, dictionaryKey?: string,
-  ) {
+  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: SchemaDefinitions | null, dictionaryKey?: string) {
     return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey)
   }
 

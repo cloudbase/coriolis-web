@@ -18,7 +18,6 @@ import styled from 'styled-components'
 
 import Button from '../Button/Button'
 
-
 import loadingImage from './images/loading.svg'
 import { ThemeProps } from '../../Theme'
 

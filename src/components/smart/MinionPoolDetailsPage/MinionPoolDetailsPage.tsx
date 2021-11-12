@@ -117,10 +117,6 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     return schemaData
   }
 
-  getStatus() {
-    return this.minionPool?.status
-  }
-
   async loadMinionPool(minionPoolId?: string) {
     const usableId = minionPoolId || this.minionPoolId
     await Promise.all([
@@ -172,10 +168,6 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     this.setState({ showDeleteMinionPoolConfirmation: false })
     this.props.history.push('/minion-pools')
     minionPoolStore.deleteMinionPool(this.minionPool!.id)
-  }
-
-  handleCloseDeleteMinionPoolConfirmation() {
-    this.setState({ showDeleteMinionPoolConfirmation: false })
   }
 
   handleMinionPoolEditClick() {

@@ -326,9 +326,12 @@ class WizardSummary extends React.Component<Props> {
           if (key.indexOf('password') > -1 || propertyName.indexOf('password') > -1) {
             optionValue = '•••••••••'
           } else {
-            optionValue = fieldHelper.getValueAlias(propertyName,
+            optionValue = fieldHelper.getValueAlias(
+              propertyName,
               value,
-              schema, provider)
+              schema,
+              provider,
+            )
           }
 
           return (
@@ -462,9 +465,12 @@ class WizardSummary extends React.Component<Props> {
             const optionLabel = optionName.split('/')
               .map(n => LabelDictionary.get(n, `${data.target ? data.target.type : ''}-destination`)).join(' - ')
 
-            const optionValue = fieldHelper.getValueAlias(optionName,
+            const optionValue = fieldHelper.getValueAlias(
+              optionName,
               data.destOptions && data.destOptions[optionName],
-              this.props.destinationSchema, provider)
+              this.props.destinationSchema,
+              provider,
+            )
 
             return (
               <Option key={optionName}>

@@ -185,10 +185,14 @@ class EndpointModal extends React.Component<Props, State> {
           ? (prevState.isNew === null || prevState.isNew) : prevState.isNew,
         endpoint: {
           ...prevState.endpoint,
-          ...ObjectUtils.flatten(props.endpoint || {},
-            plugin.REQUIRES_PARENT_OBJECT_PATH),
-          ...ObjectUtils.flatten(endpointStore.connectionInfo || {},
-            plugin.REQUIRES_PARENT_OBJECT_PATH),
+          ...ObjectUtils.flatten(
+            props.endpoint || {},
+            plugin.REQUIRES_PARENT_OBJECT_PATH,
+          ),
+          ...ObjectUtils.flatten(
+            endpointStore.connectionInfo || {},
+            plugin.REQUIRES_PARENT_OBJECT_PATH,
+          ),
         },
       }))
     } else {
