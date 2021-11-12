@@ -87,10 +87,6 @@ type Props = {
 }
 @observer
 class MinionPoolDetailsContent extends React.Component<Props> {
-  getStatus() {
-    return this.props.item?.status
-  }
-
   isEndpointMissing() {
     const endpoint = this.props.endpoints
       .find(e => e.id === this.props.item?.endpoint_id)

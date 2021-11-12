@@ -24,9 +24,7 @@ import type { Task, ProgressUpdate } from '../@types/Task'
 import type { Field } from '../@types/Field'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
 
-export const sortTasks = (
-  tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void,
-) => {
+export const sortTasks = (tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void) => {
   if (!tasks) {
     return
   }
@@ -250,8 +248,10 @@ class ReplicaSource {
     }
 
     if (Object.keys(updateData.destination).length > 0) {
-      const destEnv = destinationParser.getDestinationEnv(updateData.destination,
-        { ...replica, ...replica.destination_environment })
+      const destEnv = destinationParser.getDestinationEnv(
+        updateData.destination,
+        { ...replica, ...replica.destination_environment },
+      )
 
       const newMinionMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
       if (newMinionMappings) {

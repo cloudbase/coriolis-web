@@ -16,7 +16,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { css } from 'styled-components'
 import { ThemePalette, ThemeProps } from '../../Theme'
-import Table from '../Table'
+import Table from '.'
 
 const items = [
   ['item-1', 'item-2', 'item-3', 'item-4', 'item-5'],

@@ -146,6 +146,7 @@ class ContentPlugin extends React.Component<Props, State> {
       ? loginTypeField.items.find(f => f.name === this.getLoginTypeValue()) : null
   }
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
   findInvalidFields = () => {
     const invalidFields: any[] = []
     const selectedLoginTypeField = this.getSelectedLoginTypeField()

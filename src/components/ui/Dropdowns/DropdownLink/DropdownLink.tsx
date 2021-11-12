@@ -172,8 +172,6 @@ class DropdownLink extends React.Component<Props, State> {
 
   tipRef: HTMLElement | null | undefined
 
-  searchInputWrapperRef: HTMLElement | null | undefined
-
   componentDidMount() {
     window.addEventListener('mousedown', this.handlePageClick, false)
     if (this.arrowRef) {
@@ -309,7 +307,6 @@ class DropdownLink extends React.Component<Props, State> {
 
     return (
       <SearchInputWrapper
-        ref={(ref: HTMLElement | null | undefined) => { this.searchInputWrapperRef = ref }}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
       >
@@ -385,19 +382,21 @@ class DropdownLink extends React.Component<Props, State> {
     }
 
     const { body } = document
-    return ReactDOM.createPortal((
-      <List
-        ref={(list: HTMLElement | null | undefined) => {
-          this.listRef = list
-        }}
-        width={this.props.listWidth}
-      >
-        <Tip ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }} />
-        {this.renderSearch()}
-        {this.renderEmptySearch()}
-        {this.renderListItems()}
-      </List>
-    ), body)
+    return ReactDOM.createPortal(
+      (
+        <List
+          ref={(list: HTMLElement | null | undefined) => {
+            this.listRef = list
+          }}
+          width={this.props.listWidth}
+        >
+          <Tip ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }} />
+          {this.renderSearch()}
+          {this.renderEmptySearch()}
+          {this.renderListItems()}
+        </List>
+      ), body,
+    )
   }
 
   render() {

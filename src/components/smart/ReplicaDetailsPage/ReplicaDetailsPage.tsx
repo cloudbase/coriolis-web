@@ -367,9 +367,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     const unsavedData = scheduleStore.unsavedSchedules.find(s => s.id === scheduleId)
 
     if (scheduleId) {
-      scheduleStore.updateSchedule(
-        this.replicaId, scheduleId, data, oldData, unsavedData, forceSave,
-      )
+      scheduleStore.updateSchedule(this.replicaId, scheduleId, data, oldData, unsavedData, forceSave)
     }
   }
 

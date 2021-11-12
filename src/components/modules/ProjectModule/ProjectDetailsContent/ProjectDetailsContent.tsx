@@ -255,8 +255,11 @@ class ProjectDetailsContent extends React.Component<Props, State> {
           disabled={!user.enabled}
           style={{ opacity: user.enabled ? 1 : 0.7 }}
           onChange={item => {
-            this.props.onUserRoleChange(user,
-              item.value, !userRoles.find(i => i.value === item.value))
+            this.props.onUserRoleChange(
+              user,
+              item.value,
+              !userRoles.find(i => i.value === item.value),
+            )
           }}
         />,
         <UserColumn disabled={!user.enabled}>{user.enabled ? 'Enabled' : 'Disabled'}</UserColumn>,

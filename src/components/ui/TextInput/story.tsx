@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styled from 'styled-components'
-import TextInput from '../TextInput'
+import TextInput from '.'
 
 const Wrapper = styled.div<any>`
   display: inline-block;

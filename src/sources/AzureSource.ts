@@ -93,9 +93,7 @@ class AzureSource {
 
   static previousReqId: string
 
-  static async getAssessments(
-    subscriptionId: string, resourceGroupName: string, skipLog?: boolean | null,
-  ): Promise<Assessment[]> {
+  static async getAssessments(subscriptionId: string, resourceGroupName: string, skipLog?: boolean | null): Promise<Assessment[]> {
     const cancelId = subscriptionId + resourceGroupName
     if (this.previousReqId) {
       Api.cancelRequests(this.previousReqId)

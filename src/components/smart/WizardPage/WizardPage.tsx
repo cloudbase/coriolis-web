@@ -319,9 +319,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleInstancesReloadClick() {
     if (wizardStore.data.source) {
-      instanceStore.reloadInstances(
-        wizardStore.data.source, this.instancesPerPage, wizardStore.data.sourceOptions,
-      )
+      instanceStore.reloadInstances(wizardStore.data.source, this.instancesPerPage, wizardStore.data.sourceOptions)
     }
   }
 

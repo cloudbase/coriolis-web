@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 
-import ProgressBar from '../ProgressBar'
+import ProgressBar from '.'
 
 // eslint-disable-next-line react/jsx-props-no-spreading
 const Wrapper = (props: any) => <div style={{ width: '800px' }}><ProgressBar {...props} /></div>

@@ -22,7 +22,6 @@ import TextInput from '../TextInput/TextInput'
 import StatusIcon from '../StatusComponents/StatusIcon/StatusIcon'
 import { ThemeProps } from '../../Theme'
 
-
 const Input = styled(TextInput)<any>`
   padding-left: 32px;
   ${props => (props.loading || (props.showClose && props.value) ? 'padding-right: 32px;' : '')}

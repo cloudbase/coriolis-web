@@ -16,7 +16,6 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-
 import copyImage from './images/copy.svg'
 import { ThemeProps } from '../../Theme'
 

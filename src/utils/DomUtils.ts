@@ -15,9 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Base64 } from 'js-base64'
 
 class DomUtils {
-  static getScrollableParent(
-    element: HTMLElement, includeHidden?: boolean,
-  ): HTMLElement {
+  static getScrollableParent(element: HTMLElement, includeHidden?: boolean): HTMLElement {
     let style = getComputedStyle(element)
     const excludeStaticParent = style.position === 'absolute'
     const overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/

@@ -189,18 +189,19 @@ class ActionDropdown extends React.Component<Props, State> {
     }
 
     const { body } = document
-    return ReactDOM.createPortal((
-      <List
-        ref={(list: HTMLElement | null | undefined) => { this.listRef = list }}
-        width={`${ThemeProps.inputSizes.regular.width}px`}
-        padding={0}
-        customStyle={ListStyle}
-        data-test-id={`${TEST_ID}-list`}
-      >
-        <Tip ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }} borderColor="rgba(111, 114, 118, 0.2)" />
-        {this.renderListItems()}
-      </List>
-    ), body)
+    return ReactDOM.createPortal(
+      (
+        <List
+          ref={(list: HTMLElement | null | undefined) => { this.listRef = list }}
+          width={`${ThemeProps.inputSizes.regular.width}px`}
+          padding={0}
+          customStyle={ListStyle}
+        >
+          <Tip ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }} borderColor="rgba(111, 114, 118, 0.2)" />
+          {this.renderListItems()}
+        </List>
+      ), body,
+    )
   }
 
   render() {

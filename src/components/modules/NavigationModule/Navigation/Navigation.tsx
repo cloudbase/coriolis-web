@@ -22,7 +22,6 @@ import Logo from '../../../ui/Logo/Logo'
 import userStore from '../../../../stores/UserStore'
 import configLoader from '../../../../utils/Config'
 
-
 import { navigationMenu } from '../../../../constants'
 import backgroundImage from './images/star-bg.jpg'
 import cbsImage from './images/cbsl-logo.svg'

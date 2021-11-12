@@ -29,7 +29,6 @@ import { ThemePalette, ThemeProps } from '../../../Theme'
 import DateUtils from '../../../../utils/DateUtils'
 import type { Schedule as ScheduleType } from '../../../../@types/Schedule'
 import type { Field } from '../../../../@types/Field'
-import { executionOptions } from '../../../../constants'
 
 import scheduleImage from './images/schedule.svg'
 import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
@@ -198,39 +197,6 @@ class Schedule extends React.Component<Props, State> {
       hour = DateUtils.getUtcHour(0)
     }
     this.props.onAddScheduleClick({ schedule: { hour, minute: 0 } })
-  }
-
-  areExecutionOptionsChanged(schedule: ScheduleType) {
-    let isChanged = false
-    executionOptions.forEach(o => {
-      const usableSchedule: any = schedule
-      const scheduleValue = usableSchedule[o.name]
-      const optionValue = o.defaultValue !== undefined ? o.defaultValue : false
-      if (scheduleValue != null && scheduleValue !== optionValue) {
-        isChanged = true
-      }
-    })
-    return isChanged
-  }
-
-  padNumber(number: number) {
-    if (number < 10) {
-      return `0${number}`
-    }
-
-    return number.toString()
-  }
-
-  shouldUseBold(scheduleId: string | null, fieldName: string, isRootField?: boolean) {
-    const unsavedSchedule = this.props.unsavedSchedules.find(s => s.id === scheduleId)
-    if (!unsavedSchedule) {
-      return false
-    }
-    const data: any = isRootField ? unsavedSchedule : unsavedSchedule.schedule
-    if (data && data[fieldName] != null) {
-      return true
-    }
-    return false
   }
 
   renderLoading() {

@@ -20,9 +20,7 @@ import {
 } from '../default/ConnectionSchemaPlugin'
 import { Endpoint } from '../../@types/Endpoint'
 
-const fieldsToPayloadUseDefaults = (
-  data: any, schema: { properties: any },
-) => {
+const fieldsToPayloadUseDefaults = (data: any, schema: { properties: any }) => {
   const info: any = {}
 
   Object.keys(schema.properties).forEach(fieldName => {
@@ -114,12 +112,16 @@ export default class ConnectionSchemaParser {
     if (data.cloud_profile === 'CustomCloud') {
       connectionInfo.custom_cloud_properties = {
         endpoints: {
-          ...fieldsToPayloadUseDefaults(data,
-            schema.properties.custom_cloud_properties.properties.endpoints),
+          ...fieldsToPayloadUseDefaults(
+            data,
+            schema.properties.custom_cloud_properties.properties.endpoints,
+          ),
         },
         suffixes: {
-          ...fieldsToPayloadUseDefaults(data,
-            schema.properties.custom_cloud_properties.properties.suffixes),
+          ...fieldsToPayloadUseDefaults(
+            data,
+            schema.properties.custom_cloud_properties.properties.suffixes,
+          ),
         },
       }
     }

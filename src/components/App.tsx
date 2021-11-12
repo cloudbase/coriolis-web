@@ -86,8 +86,6 @@ class App extends React.Component<{}, State> {
     isConfigReady: false,
   }
 
-  awaitingRefresh: boolean = false
-
   async componentDidMount() {
     observe(userStore, 'loggedUser', () => {
       this.setState({})

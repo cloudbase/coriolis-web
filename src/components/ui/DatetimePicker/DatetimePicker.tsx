@@ -192,22 +192,24 @@ class DatetimePicker extends React.Component<Props, State> {
     }
 
     const { body } = document
-    return ReactDOM.createPortal((
-      <Portal ref={(e: HTMLElement | null | undefined) => { this.portalRef = e }}>
-        <DatetimeStyled
-          input={false}
-          value={timezoneDate}
-          style={{ top: 0, right: 0 }}
-          onChange={(date: Date) => { this.handleChange(date) }}
-          dateFormat="DD/MM/YYYY"
-          timeFormat="hh:mm A"
-          locale="en-gb"
-          isValidDate={
+    return ReactDOM.createPortal(
+      (
+        <Portal ref={(e: HTMLElement | null | undefined) => { this.portalRef = e }}>
+          <DatetimeStyled
+            input={false}
+            value={timezoneDate}
+            style={{ top: 0, right: 0 }}
+            onChange={(date: Date) => { this.handleChange(date) }}
+            dateFormat="DD/MM/YYYY"
+            timeFormat="hh:mm A"
+            locale="en-gb"
+            isValidDate={
             (currentDate: Date, selectedDate: Date) => this.isValidDate(currentDate, selectedDate)
           }
-        />
-      </Portal>
-    ), body)
+          />
+        </Portal>
+      ), body,
+    )
   }
 
   render() {

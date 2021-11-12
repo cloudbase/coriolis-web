@@ -96,9 +96,7 @@ class MigrationStore {
     return migrationResult
   }
 
-  @action async getMigration(
-    migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean },
-  ) {
+  @action async getMigration(migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean }) {
     if (options && options.showLoading) {
       this.detailsLoading = true
     }

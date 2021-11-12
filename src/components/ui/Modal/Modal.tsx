@@ -198,13 +198,17 @@ class NewModal extends React.Component<Props> {
       ...this.props.contentStyle,
     }
 
-    const children = React.Children.map(this.props.children,
-      child => React.cloneElement(child as React.ReactElement<any>,
+    const children = React.Children.map(
+      this.props.children,
+      child => React.cloneElement(
+        child as React.ReactElement<any>,
         {
           onResizeUpdate: (scrollableRef: HTMLDivElement, scrollOffset: number) => {
             this.handleChildUpdate(scrollableRef, scrollOffset)
           },
-        }))
+        },
+      ),
+    )
 
     return (
       <Modal

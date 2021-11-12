@@ -120,9 +120,7 @@ class DashboardBarChart extends React.Component<Props> {
   }
 
   calculateYTicks(props: Props) {
-    this.range = props.data.reduce((max, item) => Math.max(
-      max, item.values.reduce((sum, value) => sum + value, 0),
-    ), 1)
+    this.range = props.data.reduce((max, item) => Math.max(max, item.values.reduce((sum, value) => sum + value, 0)), 1)
     const niceScale = new BarChartNiceScale(0, this.range, props.yNumTicks)
     this.ticks = []
     const numTicks = Math.floor(this.range / niceScale.tickSpacing) + 1

@@ -234,9 +234,7 @@ class UserStore {
     }
   }
 
-  async assignUserToProjectWithRole(
-    userId: string, projectId: string, roleId: string,
-  ): Promise<void> {
+  async assignUserToProjectWithRole(userId: string, projectId: string, roleId: string): Promise<void> {
     await UserSource.assignUserToProjectWithRole(userId, projectId, roleId)
   }
 

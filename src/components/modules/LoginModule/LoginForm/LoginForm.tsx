@@ -21,7 +21,6 @@ import LoginOptions from '../LoginOptions/LoginOptions'
 import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 import LoginFormField from '../LoginFormField/LoginFormField'
 
-
 import errorIcon from './images/error.svg'
 
 import { loginButtons } from '../../../../constants'

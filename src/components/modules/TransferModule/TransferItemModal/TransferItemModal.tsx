@@ -300,7 +300,7 @@ class TransferItemModal extends React.Component<Props, State> {
     const endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
     const plugin = OptionsSchemaPlugin.for(endpoint.type)
 
-    const osMapping = new RegExp('^(windows|linux)').exec(fieldName)
+    const osMapping = /^(windows|linux)/.exec(fieldName)
     if (osMapping) {
       const osData = replicaData[`${plugin.migrationImageMapFieldName}/${osMapping[0]}`]
       return osData
