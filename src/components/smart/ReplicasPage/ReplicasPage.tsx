@@ -19,9 +19,8 @@ import { observer } from 'mobx-react'
 import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
 import Navigation from '@src/components/modules/NavigationModule/Navigation'
 import FilterList from '@src/components/ui/Lists/FilterList'
-import PageHeader from '@src/components/ui/PageHeader'
+import PageHeader from '@src/components/smart/PageHeader'
 import AlertModal from '@src/components/ui/AlertModal'
-import MainListItem from '@src/components/ui/Lists/MainListItem'
 import Modal from '@src/components/ui/Modal'
 import ReplicaExecutionOptions from '@src/components/modules/TransferModule/ReplicaExecutionOptions'
 import ReplicaMigrationOptions from '@src/components/modules/TransferModule/ReplicaMigrationOptions'
@@ -43,6 +42,7 @@ import { ThemePalette } from '@src/components/Theme'
 import configLoader from '@src/utils/Config'
 import { ReplicaItem } from '@src/@types/MainItem'
 import userStore from '@src/stores/UserStore'
+import TransferListItem from '@src/components/modules/TransferModule/TransferListItem'
 import replicaLargeImage from './images/replica-large.svg'
 import replicaItemImage from './images/replica.svg'
 
@@ -352,7 +352,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               onSelectedItemsChange={selectedReplicas => { this.setState({ selectedReplicas }) }}
               onPaginatedItemsChange={paginatedReplicas => { this.handlePaginatedItemsChange(paginatedReplicas) }}
               renderItemComponent={options => (
-                <MainListItem
+                <TransferListItem
                   {...options}
                   image={replicaItemImage}
                   showScheduleIcon={this.isReplicaScheduled(options.item.id)}

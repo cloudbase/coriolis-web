@@ -144,7 +144,7 @@ const LeftLabel = styled.div<any>`
 
 type Props = {
   onChange: (checked: boolean | null) => void,
-  checked: boolean,
+  checked: boolean | null,
   disabled?: boolean,
   disabledLoading?: boolean,
   triState?: boolean,
@@ -205,7 +205,7 @@ class Switch extends React.Component<Props, State> {
   }
 
   handleKeyDown(evt: KeyboardEvent) {
-    if (evt.which !== 32) {
+    if (evt.key !== ' ') {
       return
     }
     evt.preventDefault()

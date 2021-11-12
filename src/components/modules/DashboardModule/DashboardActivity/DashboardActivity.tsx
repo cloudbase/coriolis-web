@@ -87,10 +87,10 @@ const Message = styled.div<any>`
 
 type Props = {
   notificationItems: NotificationItemData[],
-  style: any,
-  loading: boolean,
-  large: boolean,
-  onNewClick: () => void,
+  style?: React.CSSProperties | null,
+  loading?: boolean,
+  large?: boolean,
+  onNewClick?: () => void,
 }
 @observer
 class DashboardActivity extends React.Component<Props> {

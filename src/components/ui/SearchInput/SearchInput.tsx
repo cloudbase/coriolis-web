@@ -143,7 +143,6 @@ class SearchInput extends React.Component<Props, State> {
           }}
           onFocus={() => { this.handleFocus() }}
           onBlur={() => { this.handleBlur() }}
-          loading={this.props.loading}
           value={this.props.value}
           disablePrimary={this.props.disablePrimary}
           showClose={

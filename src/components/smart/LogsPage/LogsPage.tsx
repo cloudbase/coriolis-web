@@ -18,7 +18,7 @@ import { observer } from 'mobx-react'
 
 import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
 import Navigation from '@src/components/modules/NavigationModule/Navigation'
-import PageHeader from '@src/components/ui/PageHeader'
+import PageHeader from '@src/components/smart/PageHeader'
 import TabNavigation from '@src/components/ui/TabNavigation'
 
 import logStore from '@src/stores/LogStore'

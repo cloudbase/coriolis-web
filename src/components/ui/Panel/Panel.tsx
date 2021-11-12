@@ -72,7 +72,7 @@ const Loading = styled.span`
   ${ThemeProps.animations.rotation}
 `
 
-export type NavigationItem = {
+type NavigationItem = {
   label: string,
   value: string,
   disabled?: boolean,
@@ -80,7 +80,7 @@ export type NavigationItem = {
   loading?: boolean,
 }
 
-export type Props = {
+type Props = {
   navigationItems: NavigationItem[],
   content: React.ReactNode,
   selectedValue: string | null,
@@ -89,8 +89,6 @@ export type Props = {
   reloadLabel: string,
   onReloadClick: () => void,
 }
-
-export const TEST_ID = 'panel'
 
 @observer
 class Panel extends React.Component<Props> {

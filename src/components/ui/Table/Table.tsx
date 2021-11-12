@@ -158,21 +158,21 @@ class Table extends React.Component<Props> {
           // eslint-disable-next-line react/no-array-index-key
           <Row key={i} secondary={this.props.useSecondaryStyle}>
             {
-                row.constructor === Array ? row.map((data, j) => {
-                  let columnStyle = ''
+              row.constructor === Array ? row.map((data, j) => {
+                let columnStyle = ''
 
-                  if (this.props.columnsStyle) {
-                    columnStyle = this.props.columnsStyle[j] || ''
-                  }
+                if (this.props.columnsStyle) {
+                  columnStyle = this.props.columnsStyle[j] || ''
+                }
 
-                  return (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <RowData customStyle={columnStyle} width={dataWidth} key={`${i}-${j}`}>
-                      {data}
-                    </RowData>
-                  )
-                }) : row
-}
+                return (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <RowData customStyle={columnStyle} width={dataWidth} key={`${i}-${j}`}>
+                    {data}
+                  </RowData>
+                )
+              }) : row
+            }
           </Row>
         ))}
       </Body>

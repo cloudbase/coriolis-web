@@ -19,7 +19,6 @@ import { observer } from 'mobx-react'
 import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
 import Navigation from '@src/components/modules/NavigationModule/Navigation'
 import FilterList from '@src/components/ui/Lists/FilterList'
-import PageHeader from '@src/components/ui/PageHeader'
 import UserListItem from '@src/components/modules/UserModule/UserListItem'
 
 import type { User } from '@src/@types/User'
@@ -27,6 +26,7 @@ import type { User } from '@src/@types/User'
 import projectStore from '@src/stores/ProjectStore'
 import userStore from '@src/stores/UserStore'
 import configLoader from '@src/utils/Config'
+import PageHeader from '@src/components/smart/PageHeader'
 
 const Wrapper = styled.div<any>``
 

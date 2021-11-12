@@ -127,20 +127,20 @@ class FilterList extends React.Component<Props, State> {
       })
 
       const selectAllSelected = selectedItems.length > 0 && selectedItems.length === items.length
-      this.setState({
+      return {
         selectedItems,
         selectAllSelected,
         filterStatus: item.value,
         items,
         currentPage: 1,
-      }, () => {
-        if (this.props.onSelectedItemsChange) {
-          this.props.onSelectedItemsChange(selectedItems)
-        }
-        if (this.props.onPaginatedItemsChange) {
-          this.props.onPaginatedItemsChange(this.paginatedItems)
-        }
-      })
+      }
+    }, () => {
+      if (this.props.onSelectedItemsChange) {
+        this.props.onSelectedItemsChange(this.state.selectedItems)
+      }
+      if (this.props.onPaginatedItemsChange) {
+        this.props.onPaginatedItemsChange(this.paginatedItems)
+      }
     })
   }
 

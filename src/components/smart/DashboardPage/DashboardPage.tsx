@@ -26,7 +26,7 @@ import notificationStore from '@src/stores/NotificationStore'
 
 import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
 import Navigation from '@src/components/modules/NavigationModule/Navigation'
-import PageHeader from '@src/components/ui/PageHeader'
+import PageHeader from '@src/components/smart/PageHeader'
 import DashboardContent from '@src/components/modules/DashboardModule/DashboardContent'
 
 import Utils from '@src/utils/ObjectUtils'

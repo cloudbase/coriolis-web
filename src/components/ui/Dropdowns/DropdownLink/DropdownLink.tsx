@@ -213,9 +213,9 @@ class DropdownLink extends React.Component<Props, State> {
   getFilteredItems() {
     const { items } = this.props
 
-    return items.filter(item => (typeof item.value === 'string'
+    return items.filter(item => ((typeof item.value === 'string'
       ? item.value.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1
-      : item.value === Number(this.state.searchText)
+      : item.value === Number(this.state.searchText))
         || item.label.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1))
   }
 
