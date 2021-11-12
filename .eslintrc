@@ -1,5 +1,6 @@
 {
   "extends": [
+    "airbnb",
     "airbnb-typescript"
   ],
   "parser": "@typescript-eslint/parser",
@@ -34,6 +35,8 @@
     "src/**/package.json"
   ],
   "rules": {
+    "react/function-component-definition": "off",
+    "import/no-relative-packages": "off",
     "react/sort-comp": "off",
     "react/jsx-indent": [
       2,
