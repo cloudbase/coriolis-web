@@ -190,7 +190,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           contentHeaderComponent={(
             <DetailsContentHeader
               itemTitle={projectStore.projectDetails?.name}
@@ -199,7 +199,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
               dropdownActions={dropdownActions}
               typeImage={projectImage}
             />
-)}
+          )}
           contentComponent={(
             <ProjectDetailsContent
               project={projectStore.projectDetails}
@@ -217,7 +217,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
               }}
               onDeleteClick={() => this.handleDeleteProjectClick()}
             />
-)}
+          )}
         />
         {this.state.showProjectModal ? (
           <ProjectModal

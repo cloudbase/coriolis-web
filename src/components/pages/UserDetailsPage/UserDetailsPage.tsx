@@ -131,7 +131,7 @@ class UserDetailsPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           contentHeaderComponent={(
             <DetailsContentHeader
               itemTitle={userStore.userDetails?.name}
@@ -140,7 +140,7 @@ class UserDetailsPage extends React.Component<Props, State> {
               typeImage={userImage}
               dropdownActions={dropdownActions}
             />
-)}
+          )}
           contentComponent={(
             <UserDetailsContent
               onDeleteClick={() => { this.handleDeleteClick() }}
@@ -152,7 +152,7 @@ class UserDetailsPage extends React.Component<Props, State> {
               projects={projectStore.projects}
               onUpdatePasswordClick={() => { this.handleUpdatePasswordClick() }}
             />
-)}
+          )}
         />
         {this.state.showUserModal && userStore.userDetails ? (
           <UserModal

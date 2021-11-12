@@ -515,7 +515,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           contentHeaderComponent={(
             <DetailsContentHeader
               statusPill={status}
@@ -525,7 +525,7 @@ class AssessmentDetailsPage extends React.Component<Props, State> {
               backLink="/planning"
               typeImage={assessmentImage}
             />
-)}
+          )}
           contentComponent={(
             <AssessmentDetailsContent
               item={details}

@@ -679,7 +679,7 @@ class WizardPage extends React.Component<Props, State> {
               user={userStore.loggedUser}
               onUserItemClick={item => { this.handleUserItemClick(item) }}
             />
-)}
+          )}
           pageContentComponent={(
             <WizardPageContent
               pages={this.pages}
@@ -736,7 +736,7 @@ class WizardPage extends React.Component<Props, State> {
               onCancelUploadedScript={(g, i) => { this.handleCancelUploadedScript(g, i) }}
               onUserScriptUpload={s => { this.handleUserScriptUpload(s) }}
             />
-)}
+          )}
         />
         <Modal
           isOpen={this.state.showNewEndpointModal}
