@@ -127,7 +127,7 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
       minionPoolStore.loadMinionPools({ showLoading }),
     ])
 
-    this.pollTimeout = setTimeout(() => {
+    this.pollTimeout = window.setTimeout(() => {
       this.pollData(false)
     }, configLoader.config.requestPollTimeout)
   }

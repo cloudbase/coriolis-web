@@ -92,7 +92,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
     }
 
     await this.loadData(showLoading)
-    this.pollTimeout = setTimeout(() => {
+    this.pollTimeout = window.setTimeout(() => {
       this.pollData(false)
     }, configLoader.config.requestPollTimeout)
   }

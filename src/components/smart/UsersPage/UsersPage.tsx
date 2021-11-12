@@ -87,7 +87,7 @@ class UsersPage extends React.Component<{ history: any }, State> {
     }
 
     await userStore.getAllUsers({ showLoading, skipLog: true })
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: User, filterItem?: string | null, filterText?: string): boolean {

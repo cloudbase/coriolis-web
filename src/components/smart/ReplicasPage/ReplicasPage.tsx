@@ -255,7 +255,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     if (!this.schedulePolling) {
       this.pollSchedule()
     }
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   async pollSchedule() {
@@ -264,7 +264,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     }
     this.schedulePolling = true
     await scheduleStore.getSchedulesBulk(this.paginatedReplicaIds)
-    this.schedulePollTimeout = setTimeout(() => {
+    this.schedulePollTimeout = window.setTimeout(() => {
       this.pollSchedule()
     }, SCHEDULE_POLL_TIMEOUT)
   }

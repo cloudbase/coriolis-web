@@ -28,7 +28,7 @@ const getModJsonProviders = (jsonPath: string) => {
 const getOptimalLogoHeightKey = (
   availableHeightKeys: string[],
   requestedHeight: number,
-  style: string | null,
+  style?: string | null,
 ): string => {
   let heightKeys = availableHeightKeys
   if (style) {

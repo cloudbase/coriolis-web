@@ -245,7 +245,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       migrationStore.getMigrations({ skipLog: true }),
       replicaStore.getReplicas({ skipLog: true }),
     ])
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: any, filterItem?: string | null, filterText?: string) {

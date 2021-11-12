@@ -489,7 +489,7 @@ class EndpointModal extends React.Component<Props, State> {
   render() {
     if (endpointStore.validation && endpointStore.validation.valid
       && !this.closeTimeout) {
-      this.closeTimeout = setTimeout(() => {
+      this.closeTimeout = window.setTimeout(() => {
         this.props.onCancelClick({ autoClose: true })
       }, 2000)
     }

@@ -192,7 +192,7 @@ class WizardInstances extends React.Component<Props, State> {
   handleSeachInputChange(searchText: string) {
     clearTimeout(this.timeout)
     this.setState({ searchText })
-    this.timeout = setTimeout(() => {
+    this.timeout = window.setTimeout(() => {
       this.props.onSearchInputChange(searchText)
     }, 500)
   }

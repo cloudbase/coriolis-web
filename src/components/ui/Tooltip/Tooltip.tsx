@@ -73,7 +73,7 @@ class Tooltip extends React.Component<{}> {
     if (this.intervalId) {
       return
     }
-    this.intervalId = setInterval(() => {
+    this.intervalId = window.setInterval(() => {
       ReactTooltip.rebuild()
     }, 1000)
   }
