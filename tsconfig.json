@@ -75,6 +75,7 @@
     "src",
     "server",
     "./config.ts"
+    "jest.config.ts"
   ],
   "exclude": [
     "src/**/test.tsx"
