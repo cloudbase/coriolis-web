@@ -17,11 +17,11 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
-import DomUtils from '../../../../utils/DomUtils'
+import DomUtils from '@src/utils/DomUtils'
 
-import SearchInput from '../../SearchInput/SearchInput'
+import SearchInput from '@src/components/ui/SearchInput/SearchInput'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import arrowImage from './images/arrow'
 import checkmarkImage from './images/checkmark.svg'

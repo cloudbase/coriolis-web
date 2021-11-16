@@ -17,17 +17,17 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Button from '../../../ui/Button/Button'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import Button from '@src/components/ui/Button/Button'
 import {
   InfoColumn, MainItemInfo, ItemReplicaBadge, ItemTitle, ItemDescription,
-} from '../../../ui/Dropdowns/NotificationDropdown/NotificationDropdown'
+} from '@src/components/ui/Dropdowns/NotificationDropdown/NotificationDropdown'
 
-import type { NotificationItemData } from '../../../../@types/NotificationItem'
+import type { NotificationItemData } from '@src/@types/NotificationItem'
 
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import replicaImage from './images/replica.svg'
-import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;

@@ -20,13 +20,13 @@ import Datetime from 'react-datetime'
 import moment from 'moment'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '../Dropdowns/DropdownButton/DropdownButton'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton/DropdownButton'
 
-import DomUtils from '../../../utils/DomUtils'
-import DateUtils from '../../../utils/DateUtils'
+import DomUtils from '@src/utils/DomUtils'
+import DateUtils from '@src/utils/DateUtils'
 
+import { ThemeProps } from '@src/components/Theme'
 import style from './style'
-import { ThemeProps } from '../../Theme'
 
 require('moment/locale/en-gb')
 

@@ -19,17 +19,17 @@ import NotificationSystem from 'react-notification-system'
 import { observe } from 'mobx'
 
 import { AxiosRequestConfig } from 'axios'
-import notificationStore from '../../../stores/NotificationStore'
+import notificationStore from '@src/stores/NotificationStore'
 
-import CopyMultilineValue from '../../ui/CopyMultilineValue/CopyMultilineValue'
-import Button from '../../ui/Button/Button'
-import Modal from '../../ui/Modal/Modal'
+import CopyMultilineValue from '@src/components/ui/CopyMultilineValue/CopyMultilineValue'
+import Button from '@src/components/ui/Button/Button'
+import Modal from '@src/components/ui/Modal/Modal'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DomUtils from '@src/utils/DomUtils'
+
+import type { AlertInfo } from '@src/@types/NotificationItem'
 import NotificationsStyle from './style'
-import DomUtils from '../../../utils/DomUtils'
-
-import type { AlertInfo } from '../../../@types/NotificationItem'
 
 const GlobalStyle = createGlobalStyle`
   ${NotificationsStyle}

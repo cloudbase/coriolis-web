@@ -16,15 +16,15 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import Checkbox from '../../../ui/Checkbox/Checkbox'
-import StatusPill from '../../../ui/StatusComponents/StatusPill/StatusPill'
-import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import itemImage from './images/minion-pool-list-item.svg'
+import Checkbox from '@src/components/ui/Checkbox/Checkbox'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos/EndpointLogos'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
-import DateUtils from '../../../../utils/DateUtils'
-import { MinionPool } from '../../../../@types/MinionPool'
-import { ProviderTypes } from '../../../../@types/Providers'
+import DateUtils from '@src/utils/DateUtils'
+import { MinionPool } from '@src/@types/MinionPool'
+import { ProviderTypes } from '@src/@types/Providers'
+import itemImage from './images/minion-pool-list-item.svg'
 
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => (props.checked ? 1 : 0)};

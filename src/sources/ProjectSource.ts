@@ -12,12 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '../utils/ApiCaller'
+import Api from '@src/utils/ApiCaller'
 
+import configLoader from '@src/utils/Config'
+import type { Project, Role, RoleAssignment } from '@src/@types/Project'
+import type { User } from '@src/@types/User'
 import UserSource from './UserSource'
-import configLoader from '../utils/Config'
-import type { Project, Role, RoleAssignment } from '../@types/Project'
-import type { User } from '../@types/User'
 
 class ProjectsSource {
   async getProjects(skipLog?: boolean): Promise<Project[]> {

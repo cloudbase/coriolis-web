@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '../utils/ApiCaller'
-import { providerTypes } from '../constants'
-import configLoader from '../utils/Config'
+import Api from '@src/utils/ApiCaller'
+import { providerTypes } from '@src/constants'
+import configLoader from '@src/utils/Config'
+import type { Field } from '@src/@types/Field'
+import type { Providers, ProviderTypes } from '@src/@types/Providers'
+import type { OptionValues } from '@src/@types/Endpoint'
+import DomUtils from '@src/utils/DomUtils'
 import { SchemaParser } from './Schemas'
-import type { Field } from '../@types/Field'
-import type { Providers, ProviderTypes } from '../@types/Providers'
-import type { OptionValues } from '../@types/Endpoint'
-import DomUtils from '../utils/DomUtils'
 
 class ProviderSource {
   async getConnectionInfoSchema(providerName: ProviderTypes): Promise<Field[]> {

@@ -16,11 +16,11 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Modal from '../../../ui/Modal/Modal'
-import Button from '../../../ui/Button/Button'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
+import Modal from '@src/components/ui/Modal/Modal'
+import Button from '@src/components/ui/Button/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
 
-import { ThemePalette } from '../../../Theme'
+import { ThemePalette } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;

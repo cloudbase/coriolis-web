@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '../utils/ApiCaller'
-import DefaultMinionPoolSchemaPlugin from '../plugins/default/MinionPoolSchemaPlugin'
+import Api from '@src/utils/ApiCaller'
+import DefaultMinionPoolSchemaPlugin from '@src/plugins/default/MinionPoolSchemaPlugin'
 
-import configLoader from '../utils/Config'
-import { MinionPool, MinionPoolDetails } from '../@types/MinionPool'
-import { ProviderTypes } from '../@types/Providers'
-import { Field } from '../@types/Field'
-import { providerTypes } from '../constants'
+import configLoader from '@src/utils/Config'
+import { MinionPool, MinionPoolDetails } from '@src/@types/MinionPool'
+import { ProviderTypes } from '@src/@types/Providers'
+import { Field } from '@src/@types/Field'
+import { providerTypes } from '@src/constants'
+import { Endpoint, OptionValues } from '@src/@types/Endpoint'
+import { MinionPoolAction } from '@src/stores/MinionPoolStore'
+import { Execution } from '@src/@types/Execution'
 import { SchemaParser } from './Schemas'
-import { Endpoint, OptionValues } from '../@types/Endpoint'
-import { MinionPoolAction } from '../stores/MinionPoolStore'
-import { Execution } from '../@types/Execution'
 
 class MinionPoolSource {
   getMinionPoolDefaultSchema(): Field[] {

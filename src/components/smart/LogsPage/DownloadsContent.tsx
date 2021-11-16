@@ -17,14 +17,14 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 import moment from 'moment'
 
-import type { Log as LogType } from '../../../@types/Log'
+import type { Log as LogType } from '@src/@types/Log'
 
-import { Close } from '../../ui/TextInput/TextInput'
-import DatetimePicker from '../../ui/DatetimePicker/DatetimePicker'
-import StatusIcon from '../../ui/StatusComponents/StatusIcon/StatusIcon'
+import { Close } from '@src/components/ui/TextInput/TextInput'
+import DatetimePicker from '@src/components/ui/DatetimePicker/DatetimePicker'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
 
+import { ThemeProps } from '@src/components/Theme'
 import downloadImage from './images/download.svg'
-import { ThemeProps } from '../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;

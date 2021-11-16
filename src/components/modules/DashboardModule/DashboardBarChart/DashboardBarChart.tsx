@@ -16,8 +16,8 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
+import { ThemeProps } from '@src/components/Theme'
 import BarChartNiceScale from './BarChartNiceScale'
-import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   position: relative;

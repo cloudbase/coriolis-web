@@ -15,10 +15,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action } from 'mobx'
 import cookie from 'js-cookie'
 
-import AzureSource from '../sources/AzureSource'
-import type { Assessment, VmItem, AzureLocation } from '../@types/Assessment'
-import type { NetworkMap } from '../@types/Network'
-import type { Endpoint } from '../@types/Endpoint'
+import AzureSource from '@src/sources/AzureSource'
+import type { Assessment, VmItem, AzureLocation } from '@src/@types/Assessment'
+import type { NetworkMap } from '@src/@types/Network'
+import type { Endpoint } from '@src/@types/Endpoint'
 
 export type LocalData = {
   endpoint: Endpoint,

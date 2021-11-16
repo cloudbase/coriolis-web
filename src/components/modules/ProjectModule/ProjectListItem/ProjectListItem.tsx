@@ -16,9 +16,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import Button from '../../../ui/Button/Button'
-import type { Project } from '../../../../@types/Project'
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import Button from '@src/components/ui/Button/Button'
+import type { Project } from '@src/@types/Project'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import projectImage from './images/project.svg'
 

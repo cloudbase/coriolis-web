@@ -15,11 +15,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import TestWrapper from '../../../utils/TestWrapper'
+import TestWrapper from '@src/utils/TestWrapper'
 import MainListItem from '.'
 
 const wrap = props => new TestWrapper(shallow(
-  
+
   <MainListItem {...props} />
 ), 'mainListItem')
 

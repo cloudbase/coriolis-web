@@ -14,15 +14,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from 'mobx'
 
-import notificationStore from './NotificationStore'
-import ReplicaSource from '../sources/ReplicaSource'
+import ReplicaSource from '@src/sources/ReplicaSource'
 import type {
   UpdateData, ReplicaItem, ReplicaItemDetails,
-} from '../@types/MainItem'
-import type { Execution, ExecutionTasks } from '../@types/Execution'
-import type { Endpoint } from '../@types/Endpoint'
-import type { Field } from '../@types/Field'
-import apiCaller from '../utils/ApiCaller'
+} from '@src/@types/MainItem'
+import type { Execution, ExecutionTasks } from '@src/@types/Execution'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { Field } from '@src/@types/Field'
+import apiCaller from '@src/utils/ApiCaller'
+import notificationStore from './NotificationStore'
 
 class ReplicaStoreUtils {
   static getNewReplica(

@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import CopyButton from '../CopyButton/CopyButton'
-import DomUtils from '../../../utils/DomUtils'
-import notificationStore from '../../../stores/NotificationStore'
+import CopyButton from '@src/components/ui/CopyButton/CopyButton'
+import DomUtils from '@src/utils/DomUtils'
+import notificationStore from '@src/stores/NotificationStore'
 
 const CopyButtonStyled = styled(CopyButton)`
   background-position-y: 4px;

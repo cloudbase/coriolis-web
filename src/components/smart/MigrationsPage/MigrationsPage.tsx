@@ -16,26 +16,25 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import MainTemplate from '../../modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '../../modules/NavigationModule/Navigation/Navigation'
-import FilterList from '../../ui/Lists/FilterList/FilterList'
-import PageHeader from '../../ui/PageHeader/PageHeader'
-import AlertModal from '../../ui/AlertModal/AlertModal'
-import MainListItem from '../../ui/Lists/MainListItem/MainListItem'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation/Navigation'
+import FilterList from '@src/components/ui/Lists/FilterList/FilterList'
+import PageHeader from '@src/components/ui/PageHeader/PageHeader'
+import AlertModal from '@src/components/ui/AlertModal/AlertModal'
+import MainListItem from '@src/components/ui/Lists/MainListItem/MainListItem'
 
-import migrationItemImage from './images/migration.svg'
+import projectStore from '@src/stores/ProjectStore'
+import migrationStore from '@src/stores/MigrationStore'
+import endpointStore from '@src/stores/EndpointStore'
+import notificationStore from '@src/stores/NotificationStore'
+import configLoader from '@src/utils/Config'
+
+import { ThemePalette } from '@src/components/Theme'
+import replicaMigrationFields from '@src/components/modules/TransferModule/ReplicaMigrationOptions/replicaMigrationFields'
+import { MigrationItem } from '@src/@types/MainItem'
+import userStore from '@src/stores/UserStore'
 import migrationLargeImage from './images/migration-large.svg'
-
-import projectStore from '../../../stores/ProjectStore'
-import migrationStore from '../../../stores/MigrationStore'
-import endpointStore from '../../../stores/EndpointStore'
-import notificationStore from '../../../stores/NotificationStore'
-import configLoader from '../../../utils/Config'
-
-import { ThemePalette } from '../../Theme'
-import replicaMigrationFields from '../../modules/TransferModule/ReplicaMigrationOptions/replicaMigrationFields'
-import { MigrationItem } from '../../../@types/MainItem'
-import userStore from '../../../stores/UserStore'
+import migrationItemImage from './images/migration.svg'
 
 const Wrapper = styled.div<any>``
 

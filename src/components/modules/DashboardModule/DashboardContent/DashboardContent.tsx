@@ -17,20 +17,20 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import DashboardInfoCount from '../DashboardInfoCount/DashboardInfoCount'
-import DashboardLicence from '../DashboardLicence/DashboardLicence'
-import DashboardActivity from '../DashboardActivity/DashboardActivity'
-import DashboardTopEndpoints from '../DashboardTopEndpoints/DashboardTopEndpoints'
-import DashboardExecutions from '../DashboardExecutions/DashboardExecutions'
+import DashboardInfoCount from '@src/components/modules/DashboardModule/DashboardInfoCount/DashboardInfoCount'
+import DashboardLicence from '@src/components/modules/DashboardModule/DashboardLicence/DashboardLicence'
+import DashboardActivity from '@src/components/modules/DashboardModule/DashboardActivity/DashboardActivity'
+import DashboardTopEndpoints from '@src/components/modules/DashboardModule/DashboardTopEndpoints/DashboardTopEndpoints'
+import DashboardExecutions from '@src/components/modules/DashboardModule/DashboardExecutions/DashboardExecutions'
 
-import { ThemePalette } from '../../../Theme'
+import { ThemePalette } from '@src/components/Theme'
 
-import type { Endpoint } from '../../../../@types/Endpoint'
-import type { Project } from '../../../../@types/Project'
-import type { User } from '../../../../@types/User'
-import type { Licence, LicenceServerStatus } from '../../../../@types/Licence'
-import type { NotificationItemData } from '../../../../@types/NotificationItem'
-import { ReplicaItem, MigrationItem } from '../../../../@types/MainItem'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { Project } from '@src/@types/Project'
+import type { User } from '@src/@types/User'
+import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
+import type { NotificationItemData } from '@src/@types/NotificationItem'
+import { ReplicaItem, MigrationItem } from '@src/@types/MainItem'
 
 const MIDDLE_WIDTHS = ['264px', '264px', '450px']
 

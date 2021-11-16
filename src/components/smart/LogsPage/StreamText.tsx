@@ -17,12 +17,12 @@ import styled, { createGlobalStyle } from 'styled-components'
 import { observer } from 'mobx-react'
 import AnsiToHtml from 'ansi-to-html'
 
-import DropdownLink from '../../ui/Dropdowns/DropdownLink/DropdownLink'
-import Checkbox from '../../ui/Checkbox/Checkbox'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
+import Checkbox from '@src/components/ui/Checkbox/Checkbox'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
-import type { Log } from '../../../@types/Log'
+import type { Log } from '@src/@types/Log'
 
 import expandImage from './images/expand.svg'
 

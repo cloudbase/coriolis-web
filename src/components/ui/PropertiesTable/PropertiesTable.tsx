@@ -16,14 +16,14 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Switch from '../Switch/Switch'
-import TextInput from '../TextInput/TextInput'
+import Switch from '@src/components/ui/Switch/Switch'
+import TextInput from '@src/components/ui/TextInput/TextInput'
 
-import LabelDictionary from '../../../utils/LabelDictionary'
-import { ThemePalette, ThemeProps } from '../../Theme'
-import Dropdown from '../Dropdowns/Dropdown/Dropdown'
-import AutocompleteDropdown from '../Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
-import { Field, EnumItem, isEnumSeparator } from '../../../@types/Field'
+import LabelDictionary from '@src/utils/LabelDictionary'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import Dropdown from '@src/components/ui/Dropdowns/Dropdown/Dropdown'
+import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
+import { Field, EnumItem, isEnumSeparator } from '@src/@types/Field'
 
 const Wrapper = styled.div<any>`
   display: flex;

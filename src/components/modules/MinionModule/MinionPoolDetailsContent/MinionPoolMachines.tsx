@@ -18,15 +18,15 @@ import moment from 'moment'
 import { Collapse } from 'react-collapse'
 
 import { Link } from 'react-router-dom'
-import { MinionMachine, MinionPool } from '../../../../@types/MinionPool'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import { ItemReplicaBadge } from '../../../ui/Dropdowns/NotificationDropdown/NotificationDropdown'
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import Arrow from '../../../ui/Arrow/Arrow'
+import { MinionMachine, MinionPool } from '@src/@types/MinionPool'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
+import { ItemReplicaBadge } from '@src/components/ui/Dropdowns/NotificationDropdown/NotificationDropdown'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import Arrow from '@src/components/ui/Arrow/Arrow'
 
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
+import { MigrationItem, ReplicaItem, TransferItem } from '@src/@types/MainItem'
 import networkImage from './images/network.svg'
-import StatusPill from '../../../ui/StatusComponents/StatusPill/StatusPill'
-import { MigrationItem, ReplicaItem, TransferItem } from '../../../../@types/MainItem'
 
 const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {

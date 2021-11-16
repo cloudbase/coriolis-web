@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '../utils/ApiCaller'
-import type { Network } from '../@types/Network'
+import Api from '@src/utils/ApiCaller'
+import type { Network } from '@src/@types/Network'
 
-import configLoader from '../utils/Config'
-import DomUtils from '../utils/DomUtils'
+import configLoader from '@src/utils/Config'
+import DomUtils from '@src/utils/DomUtils'
 
 class NetworkSource {
   async loadNetworks(enpointId: string, environment: { [prop: string]: any } | null, options?: {

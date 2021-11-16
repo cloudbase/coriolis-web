@@ -17,21 +17,21 @@ import styled from 'styled-components'
 import moment from 'moment-timezone'
 import { observer } from 'mobx-react'
 
-import Button from '../../../ui/Button/Button'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Modal from '../../../ui/Modal/Modal'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import AlertModal from '../../../ui/AlertModal/AlertModal'
-import ReplicaExecutionOptions from '../ReplicaExecutionOptions/ReplicaExecutionOptions'
-import ScheduleItem from '../ScheduleItem/ScheduleItem'
+import Button from '@src/components/ui/Button/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import Modal from '@src/components/ui/Modal/Modal'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
+import AlertModal from '@src/components/ui/AlertModal/AlertModal'
+import ReplicaExecutionOptions from '@src/components/modules/TransferModule/ReplicaExecutionOptions/ReplicaExecutionOptions'
+import ScheduleItem from '@src/components/modules/TransferModule/ScheduleItem/ScheduleItem'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DateUtils from '../../../../utils/DateUtils'
-import type { Schedule as ScheduleType } from '../../../../@types/Schedule'
-import type { Field } from '../../../../@types/Field'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DateUtils from '@src/utils/DateUtils'
+import type { Schedule as ScheduleType } from '@src/@types/Schedule'
+import type { Field } from '@src/@types/Field'
 
+import LoadingButton from '@src/components/ui/LoadingButton/LoadingButton'
 import scheduleImage from './images/schedule.svg'
-import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}

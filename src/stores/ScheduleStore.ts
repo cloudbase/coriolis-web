@@ -14,8 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from 'mobx'
 
-import type { Schedule, ScheduleBulkItem } from '../@types/Schedule'
-import Source from '../sources/ScheduleSource'
+import type { Schedule, ScheduleBulkItem } from '@src/@types/Schedule'
+import Source from '@src/sources/ScheduleSource'
 
 const updateSchedule = (schedules: any[], id: any, data: any) => schedules.map(schedule => {
   if (schedule.id === id) {

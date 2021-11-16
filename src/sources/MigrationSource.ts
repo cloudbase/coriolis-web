@@ -14,23 +14,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import { OptionsSchemaPlugin } from '../plugins'
-import DefaultOptionsSchemaPlugin from '../plugins/default/OptionsSchemaPlugin'
-import { sortTasks } from './ReplicaSource'
+import { OptionsSchemaPlugin } from '@src/plugins'
+import DefaultOptionsSchemaPlugin from '@src/plugins/default/OptionsSchemaPlugin'
 
-import Api from '../utils/ApiCaller'
-import type { InstanceScript } from '../@types/Instance'
-import type { Field } from '../@types/Field'
-import type { NetworkMap } from '../@types/Network'
-import type { Endpoint, StorageMap } from '../@types/Endpoint'
+import Api from '@src/utils/ApiCaller'
+import type { InstanceScript } from '@src/@types/Instance'
+import type { Field } from '@src/@types/Field'
+import type { NetworkMap } from '@src/@types/Network'
+import type { Endpoint, StorageMap } from '@src/@types/Endpoint'
 
-import configLoader from '../utils/Config'
-import { ProgressUpdate, Task } from '../@types/Task'
+import configLoader from '@src/utils/Config'
+import { ProgressUpdate, Task } from '@src/@types/Task'
 import {
   MigrationItem, MigrationItemOptions, MigrationItemDetails, UserScriptData,
-} from '../@types/MainItem'
+} from '@src/@types/MainItem'
 
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions/WizardOptions'
+import { sortTasks } from './ReplicaSource'
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates: ProgressUpdate[]) {

@@ -1,6 +1,5 @@
+import type { Config } from '@src/@types/Config'
 import apiCaller from './ApiCaller'
-
-import type { Config } from '../@types/Config'
 
 class ConfigLoader {
   config!: Config

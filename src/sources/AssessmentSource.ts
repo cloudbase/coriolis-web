@@ -12,12 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { MigrationInfo } from '../@types/Assessment'
-import Api from '../utils/ApiCaller'
-import configLoader from '../utils/Config'
-import notificationStore from '../stores/NotificationStore'
-import ObjectUtils from '../utils/ObjectUtils'
-import { MigrationItem } from '../@types/MainItem'
+import type { MigrationInfo } from '@src/@types/Assessment'
+import Api from '@src/utils/ApiCaller'
+import configLoader from '@src/utils/Config'
+import notificationStore from '@src/stores/NotificationStore'
+import ObjectUtils from '@src/utils/ObjectUtils'
+import { MigrationItem } from '@src/@types/MainItem'
 
 class AssessmentSourceUtils {
   static getNetworkMap(data: MigrationInfo) {

@@ -16,23 +16,23 @@ import * as React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Collapse } from 'react-collapse'
 
-import Arrow from '../../../ui/Arrow/Arrow'
+import Arrow from '@src/components/ui/Arrow/Arrow'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import {
   TransferNetworkMap, isNetworkMapSecurityGroups,
   isNetworkMapSourceDest, TransferItem,
-} from '../../../../@types/MainItem'
-import type { Instance, Nic, Disk } from '../../../../@types/Instance'
-import { Network, NetworkUtils } from '../../../../@types/Network'
+} from '@src/@types/MainItem'
+import type { Instance, Nic, Disk } from '@src/@types/Instance'
+import { Network, NetworkUtils } from '@src/@types/Network'
 
+import { MinionPool } from '@src/@types/MinionPool'
+import { EndpointUtils, StorageBackend } from '@src/@types/Endpoint'
 import instanceIcon from './images/instance.svg'
 import networkIcon from './images/network.svg'
 import storageIcon from './images/storage.svg'
 import arrowIcon from './images/arrow.svg'
-import { MinionPool } from '../../../../@types/MinionPool'
-import { EndpointUtils, StorageBackend } from '../../../../@types/Endpoint'
 
 const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {

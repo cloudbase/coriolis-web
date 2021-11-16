@@ -16,9 +16,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import StreamText from '../LogsPage/StreamText'
+import StreamText from '@src/components/smart/LogsPage/StreamText'
 
-import logStore from '../../../stores/LogStore'
+import logStore from '@src/stores/LogStore'
 
 const Wrapper = styled.div<any>`
   display: flex;

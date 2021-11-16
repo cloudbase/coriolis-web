@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import LabelDictionary from '../../utils/LabelDictionary'
-import Utils from '../../utils/ObjectUtils'
-import type { Schema, SchemaProperties, SchemaDefinitions } from '../../@types/Schema'
-import type { Field } from '../../@types/Field'
-import { Endpoint } from '../../@types/Endpoint'
+import LabelDictionary from '@src/utils/LabelDictionary'
+import Utils from '@src/utils/ObjectUtils'
+import type { Schema, SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
+import type { Field } from '@src/@types/Field'
+import { Endpoint } from '@src/@types/Endpoint'
 
 export const defaultSchemaToFields = (
   schema: SchemaProperties,

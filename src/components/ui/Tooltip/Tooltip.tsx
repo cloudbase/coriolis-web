@@ -17,7 +17,7 @@ import { observer } from 'mobx-react'
 import { createGlobalStyle } from 'styled-components'
 import ReactTooltip from 'react-tooltip'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 const GlobalStyle = createGlobalStyle`
   .reactTooltip {

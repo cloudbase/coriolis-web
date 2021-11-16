@@ -1,4 +1,4 @@
-import type { Cache } from '../@types/Cache'
+import type { Cache } from '@src/@types/Cache'
 
 const MAX_ITEMS = 100
 const DEFAULT_MAX_AGE = 30 * 60 * 1000 // 30 minutes

@@ -14,8 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { ThemePalette } from '@src/components/Theme'
 import DropdownLink from '.'
-import { ThemePalette } from '../../../Theme'
 
 type State = {
   items: { label: string, value: string }[],

@@ -14,14 +14,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import Api from '../utils/ApiCaller'
-import notificationStore from '../stores/NotificationStore'
-import { SchemaParser } from './Schemas'
-import ObjectUtils from '../utils/ObjectUtils'
-import type { Endpoint, Validation, Storage } from '../@types/Endpoint'
+import Api from '@src/utils/ApiCaller'
+import notificationStore from '@src/stores/NotificationStore'
+import ObjectUtils from '@src/utils/ObjectUtils'
+import type { Endpoint, Validation, Storage } from '@src/@types/Endpoint'
 
-import configLoader from '../utils/Config'
-import DomUtils from '../utils/DomUtils'
+import configLoader from '@src/utils/Config'
+import DomUtils from '@src/utils/DomUtils'
+import { SchemaParser } from './Schemas'
 
 const getBarbicanPayload = (data: any) => ({
   payload: JSON.stringify(data),

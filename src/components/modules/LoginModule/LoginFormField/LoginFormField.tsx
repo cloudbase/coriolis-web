@@ -14,9 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import { ThemeProps } from '../../../Theme'
+import { ThemeProps } from '@src/components/Theme'
 
-import TextInput from '../../../ui/TextInput/TextInput'
+import TextInput from '@src/components/ui/TextInput/TextInput'
 
 const Wrapper = styled.div<any>`
   margin-bottom: 16px;

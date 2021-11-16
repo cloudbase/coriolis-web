@@ -17,15 +17,14 @@ import cookie from 'js-cookie'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 
-import type { Log } from '../@types/Log'
+import type { Log } from '@src/@types/Log'
 
-import configLoader from '../utils/Config'
+import configLoader from '@src/utils/Config'
 
+import apiCaller from '@src/utils/ApiCaller'
+import DateUtils from '@src/utils/DateUtils'
+import DomUtils from '@src/utils/DomUtils'
 import notificationStore from './NotificationStore'
-
-import apiCaller from '../utils/ApiCaller'
-import DateUtils from '../utils/DateUtils'
-import DomUtils from '../utils/DomUtils'
 
 const MAX_STREAM_LINES = 200
 class LogStore {

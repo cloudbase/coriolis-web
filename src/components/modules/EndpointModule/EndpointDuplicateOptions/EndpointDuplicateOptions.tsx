@@ -16,13 +16,13 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Button from '../../../ui/Button/Button'
-import FieldInput from '../../../ui/FieldInput/FieldInput'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import Button from '@src/components/ui/Button/Button'
+import FieldInput from '@src/components/ui/FieldInput/FieldInput'
 
-import KeyboardManager from '../../../../utils/KeyboardManager'
-import type { Project } from '../../../../@types/Project'
-import { ThemePalette } from '../../../Theme'
+import KeyboardManager from '@src/utils/KeyboardManager'
+import type { Project } from '@src/@types/Project'
+import { ThemePalette } from '@src/components/Theme'
 
 import duplicateImage from './images/duplicate.svg'
 

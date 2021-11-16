@@ -16,13 +16,13 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StatusPill from '../../../ui/StatusComponents/StatusPill/StatusPill'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
 
-import type { Assessment } from '../../../../@types/Assessment'
+import type { Assessment } from '@src/@types/Assessment'
 
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import assessmentImage from './images/assessment.svg'
 import azureMigrateImage from './images/azure-migrate.svg'
-import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Content = styled.div<any>`
   display: flex;

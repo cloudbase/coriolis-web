@@ -17,7 +17,7 @@ import path from 'path'
 import fs from 'fs'
 import requireWithoutCache from 'require-without-cache'
 
-import type { Services } from '../../src/@types/Config'
+import type { Services } from '@src/@types/Config'
 
 const getBaseUrl = () => {
   const BASE_URL = process.env.CORIOLIS_URL || ''

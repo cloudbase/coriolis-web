@@ -16,18 +16,18 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import type { User } from '../../../@types/User'
-import DetailsTemplate from '../../modules/TemplateModule/DetailsTemplate/DetailsTemplate'
-import DetailsPageHeader from '../../modules/DetailsModule/DetailsPageHeader/DetailsPageHeader'
-import DetailsContentHeader from '../../modules/DetailsModule/DetailsContentHeader/DetailsContentHeader'
-import UserDetailsContent from '../../modules/UserModule/UserDetailsContent/UserDetailsContent'
-import UserModal from '../../modules/UserModule/UserModal/UserModal'
-import AlertModal from '../../ui/AlertModal/AlertModal'
+import type { User } from '@src/@types/User'
+import DetailsTemplate from '@src/components/modules/TemplateModule/DetailsTemplate/DetailsTemplate'
+import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader/DetailsPageHeader'
+import DetailsContentHeader from '@src/components/modules/DetailsModule/DetailsContentHeader/DetailsContentHeader'
+import UserDetailsContent from '@src/components/modules/UserModule/UserDetailsContent/UserDetailsContent'
+import UserModal from '@src/components/modules/UserModule/UserModal/UserModal'
+import AlertModal from '@src/components/ui/AlertModal/AlertModal'
 
-import userStore from '../../../stores/UserStore'
-import projectStore from '../../../stores/ProjectStore'
+import userStore from '@src/stores/UserStore'
+import projectStore from '@src/stores/ProjectStore'
 
-import { ThemePalette } from '../../Theme'
+import { ThemePalette } from '@src/components/Theme'
 
 import userImage from './images/user.svg'
 

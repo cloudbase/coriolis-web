@@ -14,8 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { Execution } from '@src/@types/Execution'
 import Timeline from '.'
-import { Execution } from '../../../../@types/Execution'
 
 const items: any = [
   { id: 'item-1', status: 'ERROR', created_at: new Date() },

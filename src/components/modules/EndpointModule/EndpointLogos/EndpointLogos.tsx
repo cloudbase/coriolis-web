@@ -16,8 +16,8 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
+import configLoader from '@src/utils/Config'
 import Generic from './resources/Generic'
-import configLoader from '../../../../utils/Config'
 
 const Wrapper = styled.div<any>``
 const Logo = styled.div<any>`

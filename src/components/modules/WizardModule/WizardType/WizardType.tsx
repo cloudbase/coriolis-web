@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Switch from '../../../ui/Switch/Switch'
+import Switch from '@src/components/ui/Switch/Switch'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import migrationImage from './images/migration'
 

@@ -12,13 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { Endpoint } from '@src/@types/Endpoint'
 import {
   connectionSchemaToFields,
   defaultSchemaToFields,
   fieldsToPayload,
   generateBaseFields,
 } from '../default/ConnectionSchemaPlugin'
-import { Endpoint } from '../../@types/Endpoint'
 
 const fieldsToPayloadUseDefaults = (data: any, schema: { properties: any }) => {
   const info: any = {}

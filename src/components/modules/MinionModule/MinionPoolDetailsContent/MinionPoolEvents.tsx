@@ -17,13 +17,13 @@ import moment from 'moment'
 import styled from 'styled-components'
 import {
   MinionPoolDetails, MinionPoolEventProgressUpdate,
-} from '../../../../@types/MinionPool'
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
-import Pagination from '../../../ui/Pagination/Pagination'
-import configLoader from '../../../../utils/Config'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
+} from '@src/@types/MinionPool'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
+import Pagination from '@src/components/ui/Pagination/Pagination'
+import configLoader from '@src/utils/Config'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
+import InfoIcon from '@src/components/ui/InfoIcon/InfoIcon'
 
 const Wrapper = styled.div``
 const Filters = styled.div`

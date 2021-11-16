@@ -36,7 +36,6 @@
   ],
   "rules": {
     "react/function-component-definition": "off",
-    "import/no-relative-packages": "off",
     "react/sort-comp": "off",
     "react/jsx-one-expression-per-line": "off",
     "@typescript-eslint/semi": [

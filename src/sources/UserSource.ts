@@ -14,11 +14,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cookie from 'js-cookie'
 
-import Api from '../utils/ApiCaller'
-import configLoader from '../utils/Config'
-import type { Credentials, User } from '../@types/User'
-import type { Role, Project, RoleAssignment } from '../@types/Project'
-import utils from '../utils/ObjectUtils'
+import Api from '@src/utils/ApiCaller'
+import configLoader from '@src/utils/Config'
+import type { Credentials, User } from '@src/@types/User'
+import type { Role, Project, RoleAssignment } from '@src/@types/Project'
+import utils from '@src/utils/ObjectUtils'
 
 class UserModel {
   static parseUserData(data: any) {

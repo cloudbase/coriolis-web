@@ -13,9 +13,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { observable, action, runInAction } from 'mobx'
-import { Endpoint } from '../@types/Endpoint'
-import { Region } from '../@types/Region'
-import regionSource from '../sources/RegionSource'
+import { Endpoint } from '@src/@types/Endpoint'
+import { Region } from '@src/@types/Region'
+import regionSource from '@src/sources/RegionSource'
 
 class RegionStore {
   @observable regions: Region[] = []

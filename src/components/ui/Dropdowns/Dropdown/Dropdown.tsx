@@ -18,10 +18,10 @@ import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '../DropdownButton/DropdownButton'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton/DropdownButton'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DomUtils from '../../../../utils/DomUtils'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DomUtils from '@src/utils/DomUtils'
 
 import checkmarkImage from './images/checkmark'
 import tipImage from './images/tip'

@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Schema } from '../../@types/Schema'
-import type { Field } from '../../@types/Field'
-import type { Endpoint } from '../../@types/Endpoint'
+import type { Schema } from '@src/@types/Schema'
+import type { Field } from '@src/@types/Field'
+import type { Endpoint } from '@src/@types/Endpoint'
 
-import DefaultConnectionSchemaParser from '../default/ConnectionSchemaPlugin'
+import DefaultConnectionSchemaParser from '@src/plugins/default/ConnectionSchemaPlugin'
 
 const customSort = (fields: Field[]) => {
   const sortPriority: any = {

@@ -16,13 +16,13 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Modal from '../../ui/Modal/Modal'
-import LicenceComponent from '../../modules/LicenceModule/LicenceModule'
+import Modal from '@src/components/ui/Modal/Modal'
+import LicenceComponent from '@src/components/modules/LicenceModule/LicenceModule'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
-import licenceStore from '../../../stores/LicenceStore'
-import userStore from '../../../stores/UserStore'
+import licenceStore from '@src/stores/LicenceStore'
+import userStore from '@src/stores/UserStore'
 
 import logoImage from './images/coriolis-logo.svg'
 

@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
-import { ThemePalette, ThemeProps } from '../../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import generic64Image from './generic-64.svg'
 import generic128Image from './generic-128.svg'
 import generic128DisabledImage from './generic-128-disabled.svg'

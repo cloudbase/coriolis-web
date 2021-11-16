@@ -12,12 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import configLoader from '../utils/Config'
-import Api from '../utils/ApiCaller'
-import type { NotificationItemData, NotificationItem } from '../@types/NotificationItem'
+import configLoader from '@src/utils/Config'
+import Api from '@src/utils/ApiCaller'
+import type { NotificationItemData, NotificationItem } from '@src/@types/NotificationItem'
 import {
   TransferItem, MigrationItem, ReplicaItem, getTransferItemTitle,
-} from '../@types/MainItem'
+} from '@src/@types/MainItem'
 
 class NotificationStorage {
   static storeName: string = 'seenNotifications'

@@ -16,15 +16,15 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '../../../ui/Button/Button'
-import FieldInput from '../../../ui/FieldInput/FieldInput'
-import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
+import Button from '@src/components/ui/Button/Button'
+import FieldInput from '@src/components/ui/FieldInput/FieldInput'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar/ToggleButtonBar'
 
-import type { Field } from '../../../../@types/Field'
+import type { Field } from '@src/@types/Field'
 
-import { ThemeProps } from '../../../Theme'
+import { ThemeProps } from '@src/components/Theme'
 
-import LabelDictionary from '../../../../utils/LabelDictionary'
+import LabelDictionary from '@src/utils/LabelDictionary'
 
 import assessmentImage from './images/assessment.svg'
 

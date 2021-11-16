@@ -16,8 +16,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import type { User } from '../../../../@types/User'
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import type { User } from '@src/@types/User'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import userImage from './images/user.svg'
 

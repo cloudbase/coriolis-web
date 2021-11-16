@@ -17,17 +17,17 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import Button from '../../../ui/Button/Button'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
-import DashboardPieChart from '../DashboardPieChart/DashboardPieChart'
+import Button from '@src/components/ui/Button/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos/EndpointLogos'
+import DashboardPieChart from '@src/components/modules/DashboardModule/DashboardPieChart/DashboardPieChart'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
-import type { Endpoint } from '../../../../@types/Endpoint'
+import type { Endpoint } from '@src/@types/Endpoint'
 
+import { ReplicaItem, MigrationItem, TransferItem } from '@src/@types/MainItem'
 import endpointImage from './images/endpoint.svg'
-import { ReplicaItem, MigrationItem, TransferItem } from '../../../../@types/MainItem'
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;

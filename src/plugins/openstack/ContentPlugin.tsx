@@ -15,15 +15,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 
-import configLoader from '../../utils/Config'
-import LabelDictionary from '../../utils/LabelDictionary'
+import configLoader from '@src/utils/Config'
+import LabelDictionary from '@src/utils/LabelDictionary'
 
-import ToggleButtonBar from '../../components/ui/ToggleButtonBar/ToggleButtonBar'
-import type { Field } from '../../@types/Field'
-import { Wrapper, FieldStyled, Row } from '../default/ContentPlugin'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar/ToggleButtonBar'
+import type { Field } from '@src/@types/Field'
+import { Wrapper, FieldStyled, Row } from '@src/plugins/default/ContentPlugin'
 
-import { Validation, Endpoint } from '../../@types/Endpoint'
-import { ThemePalette, ThemeProps } from '../../components/Theme'
+import { Validation, Endpoint } from '@src/@types/Endpoint'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 const ToggleButtonBarStyled = styled(ToggleButtonBar)`
   margin-top: 16px;

@@ -16,10 +16,10 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import DropdownLink from '../DropdownLink/DropdownLink'
-import TextInput from '../../TextInput/TextInput'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
+import TextInput from '@src/components/ui/TextInput/TextInput'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import arrowImage from './images/arrow'
 import requiredImage from './images/required.svg'

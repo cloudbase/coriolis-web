@@ -18,11 +18,11 @@ import styled from 'styled-components'
 import Modal from 'react-modal'
 import autobind from 'autobind-decorator'
 
-import KeyboardManager from '../../../utils/KeyboardManager'
+import KeyboardManager from '@src/utils/KeyboardManager'
 
+import { ThemeProps } from '@src/components/Theme'
 import headerBackground from './images/header-background.png'
 import headerBackgroundWide from './images/header-background-wide.png'
-import { ThemeProps } from '../../Theme'
 
 const headerHeight = 48
 

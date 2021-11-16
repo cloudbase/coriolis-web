@@ -16,7 +16,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import moment from 'moment'
-import TW from '../../../utils/TestWrapper'
+import TW from '@src/utils/TestWrapper'
 import Timeline from '.'
 
 const wrap = props => new TW(shallow(

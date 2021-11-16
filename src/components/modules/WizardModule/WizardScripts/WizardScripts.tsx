@@ -16,19 +16,18 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
-import { Close as InputClose } from '../../../ui/TextInput/TextInput'
-import { Image as InstanceImage } from '../WizardInstances/WizardInstances'
-import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
+import InfoIcon from '@src/components/ui/InfoIcon/InfoIcon'
+import { Close as InputClose } from '@src/components/ui/TextInput/TextInput'
+import { Image as InstanceImage } from '@src/components/modules/WizardModule/WizardInstances/WizardInstances'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import FileUtils from '../../../../utils/FileUtils'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import FileUtils from '@src/utils/FileUtils'
 
+import type { Instance, InstanceScript } from '@src/@types/Instance'
+import { UserScriptData } from '@src/@types/MainItem'
+import DomUtils from '@src/utils/DomUtils'
 import scriptItemImage from './images/script-item.svg'
-
-import type { Instance, InstanceScript } from '../../../../@types/Instance'
-import { UserScriptData } from '../../../../@types/MainItem'
-import DomUtils from '../../../../utils/DomUtils'
 
 const Wrapper = styled.div<any>`
   width: 100%;

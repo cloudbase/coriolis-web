@@ -18,11 +18,11 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '../DropdownButton/DropdownButton'
-import { List, ListItems, Tip } from '../DropdownLink/DropdownLink'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton/DropdownButton'
+import { List, ListItems, Tip } from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import StatusIcon from '../../StatusComponents/StatusIcon/StatusIcon'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
 
 const Wrapper = styled.div<any>`
   position: relative;

@@ -16,20 +16,20 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import AutocompleteDropdown from '../../../ui/Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
-import Dropdown from '../../../ui/Dropdowns/Dropdown/Dropdown'
-import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
+import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
+import Dropdown from '@src/components/ui/Dropdowns/Dropdown/Dropdown'
+import InfoIcon from '@src/components/ui/InfoIcon/InfoIcon'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import { Instance, Disk, InstanceUtils } from '../../../../@types/Instance'
-import type { StorageBackend, StorageMap } from '../../../../@types/Endpoint'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { Instance, Disk, InstanceUtils } from '@src/@types/Instance'
+import type { StorageBackend, StorageMap } from '@src/@types/Endpoint'
 
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import Button from '@src/components/ui/Button/Button'
 import backendImage from './images/backend.svg'
 import diskImage from './images/disk.svg'
 import bigStorageImage from './images/storage-big.svg'
 import arrowImage from './images/arrow.svg'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Button from '../../../ui/Button/Button'
 
 const Wrapper = styled.div<any>`
   width: 100%;

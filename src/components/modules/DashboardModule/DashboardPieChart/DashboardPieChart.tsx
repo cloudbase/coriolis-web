@@ -16,7 +16,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
-import { ThemeProps } from '../../../Theme'
+import { ThemeProps } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   position: relative;

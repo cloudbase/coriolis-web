@@ -12,19 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import type { InstanceScript } from '@src/@types/Instance'
+import type { Field } from '@src/@types/Field'
+import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
+import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
+import type { NetworkMap } from '@src/@types/Network'
+import { UserScriptData } from '@src/@types/MainItem'
 import DefaultOptionsSchemaPlugin, {
   defaultGetDestinationEnv,
   defaultGetMigrationImageMap,
   defaultFillFieldValues,
   defaultFillMigrationImageMapValues,
 } from '../default/OptionsSchemaPlugin'
-
-import type { InstanceScript } from '../../@types/Instance'
-import type { Field } from '../../@types/Field'
-import type { OptionValues, StorageMap } from '../../@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '../../@types/Schema'
-import type { NetworkMap } from '../../@types/Network'
-import { UserScriptData } from '../../@types/MainItem'
 
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName

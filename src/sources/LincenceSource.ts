@@ -11,11 +11,11 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-import Api from '../utils/ApiCaller'
+import Api from '@src/utils/ApiCaller'
 
-import configLoader from '../utils/Config'
+import configLoader from '@src/utils/Config'
 
-import type { Licence, LicenceServerStatus } from '../@types/Licence'
+import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
 
 class LicenceSource {
   async loadAppliancesIds(skipLog?: boolean | null): Promise<string[]> {

@@ -16,11 +16,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import type { Endpoint } from '../../../../@types/Endpoint'
-import Checkbox from '../../../ui/Checkbox/Checkbox'
-import EndpointLogos from '../EndpointLogos/EndpointLogos'
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DateUtils from '../../../../utils/DateUtils'
+import type { Endpoint } from '@src/@types/Endpoint'
+import Checkbox from '@src/components/ui/Checkbox/Checkbox'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos/EndpointLogos'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DateUtils from '@src/utils/DateUtils'
 
 import endpointImage from './images/endpoint.svg'
 

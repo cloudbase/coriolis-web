@@ -13,8 +13,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { observable, action, runInAction } from 'mobx'
-import type { Network } from '../@types/Network'
-import NetworkSource from '../sources/NetworkSource'
+import type { Network } from '@src/@types/Network'
+import NetworkSource from '@src/sources/NetworkSource'
 
 class NetworkStore {
   @observable networks: Network[] = []
