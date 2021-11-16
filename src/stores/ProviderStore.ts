@@ -21,7 +21,7 @@ import apiCaller from '../utils/ApiCaller'
 
 import configLoader from '../utils/Config'
 import { providerTypes } from '../constants'
-import { OptionsSchemaPlugin } from '../plugins/endpoint'
+import { OptionsSchemaPlugin } from '../plugins'
 import type { OptionValues } from '../@types/Endpoint'
 import type { Field } from '../@types/Field'
 import type { Providers, ProviderTypes } from '../@types/Providers'

@@ -18,36 +18,35 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import styled, { createGlobalStyle } from 'styled-components'
 import { observe } from 'mobx'
 
-import Fonts from './atoms/Fonts'
-import Notifications from './organisms/Notifications'
-import LoginPage from './pages/LoginPage'
-import ReplicasPage from './pages/ReplicasPage'
-import MessagePage from './pages/MessagePage'
-import ReplicaDetailsPage from './pages/ReplicaDetailsPage'
-import MigrationsPage from './pages/MigrationsPage'
-import MigrationDetailsPage from './pages/MigrationDetailsPage'
-import EndpointsPage from './pages/EndpointsPage'
-import EndpointDetailsPage from './pages/EndpointDetailsPage'
-import WizardPage from './pages/WizardPage'
+import Fonts from './ui/Fonts'
+import NotificationsModule from './modules/NotificationsModule'
+import LoginPage from './smart/LoginPage'
+import ReplicasPage from './smart/ReplicasPage'
+import MessagePage from './smart/MessagePage'
+import ReplicaDetailsPage from './smart/ReplicaDetailsPage'
+import MigrationsPage from './smart/MigrationsPage'
+import MigrationDetailsPage from './smart/MigrationDetailsPage'
+import EndpointsPage from './smart/EndpointsPage'
+import EndpointDetailsPage from './smart/EndpointDetailsPage'
+import WizardPage from './smart/WizardPage'
 import userStore from '../stores/UserStore'
-import AssessmentsPage from './pages/AssessmentsPage'
-import AssessmentDetailsPage from './pages/AssessmentDetailsPage'
-import UsersPage from './pages/UsersPage'
-import UserDetailsPage from './pages/UserDetailsPage'
-import ProjectsPage from './pages/ProjectsPage'
-import ProjectDetailsPage from './pages/ProjectDetailsPage'
-import DashboardPage from './pages/DashboardPage'
-import LogsPage from './pages/LogsPage'
-import LogStreamPage from './pages/LogStreamPage'
+import AssessmentsPage from './smart/AssessmentsPage'
+import AssessmentDetailsPage from './smart/AssessmentDetailsPage'
+import UsersPage from './smart/UsersPage'
+import UserDetailsPage from './smart/UserDetailsPage'
+import ProjectsPage from './smart/ProjectsPage'
+import ProjectDetailsPage from './smart/ProjectDetailsPage'
+import DashboardPage from './smart/DashboardPage'
+import LogsPage from './smart/LogsPage'
+import LogStreamPage from './smart/LogStreamPage'
 
-import Tooltip from './atoms/Tooltip/Tooltip'
+import Tooltip from './ui/Tooltip/Tooltip'
 
 import { navigationMenu } from '../constants'
-import Palette from './styleUtils/Palette'
-import StyleProps from './styleUtils/StyleProps'
 import configLoader from '../utils/Config'
-import MinionPoolsPage from './pages/MinionPoolsPage/MinionPoolsPage'
-import MinionPoolDetailsPage from './pages/MinionPoolDetailsPage/MinionPoolDetailsPage'
+import MinionPoolsPage from './smart/MinionPoolsPage/MinionPoolsPage'
+import MinionPoolDetailsPage from './smart/MinionPoolDetailsPage/MinionPoolDetailsPage'
+import { ThemePalette, ThemeProps } from './Theme'
 
 const GlobalStyle = createGlobalStyle`
  ${Fonts}
@@ -59,10 +58,10 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     margin: 0;
-    color: ${Palette.black};
+    color: ${ThemePalette.black};
     font-family: Rubik;
     font-size: 14px;
-    font-weight: ${StyleProps.fontWeights.regular};
+    font-weight: ${ThemeProps.fontWeights.regular};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -202,7 +201,7 @@ class App extends React.Component<{}, State> {
             <Route component={MessagePage} />
           </Switch>
         </Router>
-        <Notifications />
+        <NotificationsModule />
         <Tooltip />
       </Wrapper>
     )

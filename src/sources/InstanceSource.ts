@@ -17,7 +17,7 @@ import type { Instance } from '../@types/Instance'
 
 import configLoader from '../utils/Config'
 
-import { InstanceInfoPlugin } from '../plugins/endpoint'
+import { InstanceInfoPlugin } from '../plugins'
 import { ProviderTypes } from '../@types/Providers'
 import DomUtils from '../utils/DomUtils'
 

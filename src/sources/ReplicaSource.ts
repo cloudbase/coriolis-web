@@ -13,8 +13,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import Api from '../utils/ApiCaller'
-import { OptionsSchemaPlugin } from '../plugins/endpoint'
-import DefaultOptionsSchemaPlugin from '../plugins/endpoint/default/OptionsSchemaPlugin'
+import { OptionsSchemaPlugin } from '../plugins'
+import DefaultOptionsSchemaPlugin from '../plugins/default/OptionsSchemaPlugin'
 
 import configLoader from '../utils/Config'
 import type { UpdateData, ReplicaItem, ReplicaItemDetails } from '../@types/MainItem'
@@ -22,7 +22,7 @@ import type { Execution, ExecutionTasks } from '../@types/Execution'
 import type { Endpoint } from '../@types/Endpoint'
 import type { Task, ProgressUpdate } from '../@types/Task'
 import type { Field } from '../@types/Field'
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
 
 export const sortTasks = (
   tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void,

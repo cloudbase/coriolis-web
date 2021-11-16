@@ -14,8 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import { OptionsSchemaPlugin } from '../plugins/endpoint'
-import DefaultOptionsSchemaPlugin from '../plugins/endpoint/default/OptionsSchemaPlugin'
+import { OptionsSchemaPlugin } from '../plugins'
+import DefaultOptionsSchemaPlugin from '../plugins/default/OptionsSchemaPlugin'
 import { sortTasks } from './ReplicaSource'
 
 import Api from '../utils/ApiCaller'
@@ -30,7 +30,7 @@ import {
   MigrationItem, MigrationItemOptions, MigrationItemDetails, UserScriptData,
 } from '../@types/MainItem'
 
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/organisms/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates: ProgressUpdate[]) {
