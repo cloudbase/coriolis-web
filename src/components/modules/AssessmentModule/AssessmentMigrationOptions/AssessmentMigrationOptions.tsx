@@ -16,9 +16,9 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '@src/components/ui/Button/Button'
-import FieldInput from '@src/components/ui/FieldInput/FieldInput'
-import ToggleButtonBar from '@src/components/ui/ToggleButtonBar/ToggleButtonBar'
+import Button from '@src/components/ui/Button'
+import FieldInput from '@src/components/ui/FieldInput'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
 
 import type { Field } from '@src/@types/Field'
 

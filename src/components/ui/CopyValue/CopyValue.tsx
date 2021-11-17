@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import CopyButton from '@src/components/ui/CopyButton/CopyButton'
+import CopyButton from '@src/components/ui/CopyButton'
 import DomUtils from '@src/utils/DomUtils'
 import notificationStore from '@src/stores/NotificationStore'
 

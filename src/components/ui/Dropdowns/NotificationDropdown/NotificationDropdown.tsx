@@ -20,7 +20,7 @@ import autobind from 'autobind-decorator'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import type { NotificationItemData } from '@src/@types/NotificationItem'
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
 
 import bellImage from './images/bell'
 import loadingImage from './images/loading'

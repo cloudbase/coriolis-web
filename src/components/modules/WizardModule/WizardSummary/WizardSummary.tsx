@@ -17,7 +17,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import moment from 'moment'
 
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import LabelDictionary from '@src/utils/LabelDictionary'
@@ -30,9 +30,9 @@ import type { Instance, Disk, InstanceScript } from '@src/@types/Instance'
 import type { Field } from '@src/@types/Field'
 
 import fieldHelper from '@src/@types/Field'
-import { getDisks } from '@src/components/modules/WizardModule/WizardStorage/WizardStorage'
+import { getDisks } from '@src/components/modules/WizardModule/WizardStorage'
 
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
 import { MinionPool } from '@src/@types/MinionPool'
 import { ProviderTypes } from '@src/@types/Providers'
 import configLoader from '@src/utils/Config'

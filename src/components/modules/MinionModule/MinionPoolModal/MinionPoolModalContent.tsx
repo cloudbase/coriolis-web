@@ -17,13 +17,13 @@ import styled from 'styled-components'
 
 import LabelDictionary from '@src/utils/LabelDictionary'
 
-import FieldInput from '@src/components/ui/FieldInput/FieldInput'
+import FieldInput from '@src/components/ui/FieldInput'
 import type { Field } from '@src/@types/Field'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos/EndpointLogos'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
 import { Endpoint } from '@src/@types/Endpoint'
-import ToggleButtonBar from '@src/components/ui/ToggleButtonBar/ToggleButtonBar'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
 
 const Wrapper = styled.div<any>`
   display: flex;

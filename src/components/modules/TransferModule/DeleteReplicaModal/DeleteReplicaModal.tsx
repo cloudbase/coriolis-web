@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Modal from '@src/components/ui/Modal/Modal'
-import Button from '@src/components/ui/Button/Button'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import Modal from '@src/components/ui/Modal'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
 import { ThemePalette } from '@src/components/Theme'
 

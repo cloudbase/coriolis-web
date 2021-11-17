@@ -17,9 +17,9 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import moment from 'moment'
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
-import DashboardBarChart from '@src/components/modules/DashboardModule/DashboardBarChart/DashboardBarChart'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import DashboardBarChart from '@src/components/modules/DashboardModule/DashboardBarChart'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

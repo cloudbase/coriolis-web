@@ -1,7 +1,6 @@
 {
-  "name": "PieChart",
+  "name": "DashboardPieChart",
   "version": "0.0.0",
   "private": true,
-  "main": "./PieChart.tsx"
+  "main": "./DashboardPieChart.tsx"
 }
-

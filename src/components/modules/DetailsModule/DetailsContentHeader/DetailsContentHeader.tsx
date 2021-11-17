@@ -17,9 +17,9 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
-import ActionDropdown from '@src/components/ui/Dropdowns/ActionDropdown/ActionDropdown'
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown/ActionDropdown'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
+import ActionDropdown from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

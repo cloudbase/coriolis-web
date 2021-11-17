@@ -18,9 +18,9 @@ import styled from 'styled-components'
 
 import type { Project } from '@src/@types/Project'
 import type { Field as FieldType } from '@src/@types/Field'
-import Button from '@src/components/ui/Button/Button'
-import Modal from '@src/components/ui/Modal/Modal'
-import FieldInput from '@src/components/ui/FieldInput/FieldInput'
+import Button from '@src/components/ui/Button'
+import Modal from '@src/components/ui/Modal'
+import FieldInput from '@src/components/ui/FieldInput'
 
 import LabelDictionary from '@src/utils/LabelDictionary'
 import KeyboardManager from '@src/utils/KeyboardManager'

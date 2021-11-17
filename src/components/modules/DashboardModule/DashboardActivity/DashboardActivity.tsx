@@ -17,12 +17,12 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import Button from '@src/components/ui/Button/Button'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from '@src/components/ui/Button'
 import {
   InfoColumn, MainItemInfo, ItemReplicaBadge, ItemTitle, ItemDescription,
-} from '@src/components/ui/Dropdowns/NotificationDropdown/NotificationDropdown'
+} from '@src/components/ui/Dropdowns/NotificationDropdown'
 
 import type { NotificationItemData } from '@src/@types/NotificationItem'
 

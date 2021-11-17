@@ -18,7 +18,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import Logo from '@src/components/ui/Logo/Logo'
+import Logo from '@src/components/ui/Logo'
 import userStore from '@src/stores/UserStore'
 import configLoader from '@src/utils/Config'
 

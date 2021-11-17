@@ -19,11 +19,11 @@ import {
   MinionPoolDetails, MinionPoolEventProgressUpdate,
 } from '@src/@types/MinionPool'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
-import Pagination from '@src/components/ui/Pagination/Pagination'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
+import Pagination from '@src/components/ui/Pagination'
 import configLoader from '@src/utils/Config'
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
-import InfoIcon from '@src/components/ui/InfoIcon/InfoIcon'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import InfoIcon from '@src/components/ui/InfoIcon'
 
 const Wrapper = styled.div``
 const Filters = styled.div`

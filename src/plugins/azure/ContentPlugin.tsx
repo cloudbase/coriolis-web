@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled from 'styled-components'
 
-import TextArea from '@src/components/ui/TextArea/TextArea'
-import ToggleButtonBar from '@src/components/ui/ToggleButtonBar/ToggleButtonBar'
+import TextArea from '@src/components/ui/TextArea'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
 import type { Field } from '@src/@types/Field'
 
 import configLoader from '@src/utils/Config'

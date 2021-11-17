@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Navigation from '@src/components/modules/NavigationModule/Navigation/Navigation'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
 
 import { ThemeProps } from '@src/components/Theme'
 import menuImage from './images/menu'

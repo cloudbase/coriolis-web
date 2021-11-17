@@ -29,7 +29,7 @@ import {
   MigrationItem, MigrationItemOptions, MigrationItemDetails, UserScriptData,
 } from '@src/@types/MainItem'
 
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
 import { sortTasks } from './ReplicaSource'
 
 class MigrationSourceUtils {

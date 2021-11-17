@@ -17,11 +17,11 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import DashboardInfoCount from '@src/components/modules/DashboardModule/DashboardInfoCount/DashboardInfoCount'
-import DashboardLicence from '@src/components/modules/DashboardModule/DashboardLicence/DashboardLicence'
-import DashboardActivity from '@src/components/modules/DashboardModule/DashboardActivity/DashboardActivity'
-import DashboardTopEndpoints from '@src/components/modules/DashboardModule/DashboardTopEndpoints/DashboardTopEndpoints'
-import DashboardExecutions from '@src/components/modules/DashboardModule/DashboardExecutions/DashboardExecutions'
+import DashboardInfoCount from '@src/components/modules/DashboardModule/DashboardInfoCount'
+import DashboardLicence from '@src/components/modules/DashboardModule/DashboardLicence'
+import DashboardActivity from '@src/components/modules/DashboardModule/DashboardActivity'
+import DashboardTopEndpoints from '@src/components/modules/DashboardModule/DashboardTopEndpoints'
+import DashboardExecutions from '@src/components/modules/DashboardModule/DashboardExecutions'
 
 import { ThemePalette } from '@src/components/Theme'
 

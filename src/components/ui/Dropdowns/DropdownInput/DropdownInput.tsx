@@ -16,8 +16,8 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
-import TextInput from '@src/components/ui/TextInput/TextInput'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import TextInput from '@src/components/ui/TextInput'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

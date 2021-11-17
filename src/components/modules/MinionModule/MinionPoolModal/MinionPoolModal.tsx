@@ -17,9 +17,9 @@ import styled from 'styled-components'
 import { observer } from 'mobx-react'
 import { observe } from 'mobx'
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import Button from '@src/components/ui/Button/Button'
-import LoadingButton from '@src/components/ui/LoadingButton/LoadingButton'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from '@src/components/ui/Button'
+import LoadingButton from '@src/components/ui/LoadingButton'
 
 import type { Endpoint as EndpointType } from '@src/@types/Endpoint'
 import { Field, isEnumSeparator } from '@src/@types/Field'

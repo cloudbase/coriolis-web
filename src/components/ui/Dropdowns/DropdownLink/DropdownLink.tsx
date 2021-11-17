@@ -19,7 +19,7 @@ import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
 import DomUtils from '@src/utils/DomUtils'
 
-import SearchInput from '@src/components/ui/SearchInput/SearchInput'
+import SearchInput from '@src/components/ui/SearchInput'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

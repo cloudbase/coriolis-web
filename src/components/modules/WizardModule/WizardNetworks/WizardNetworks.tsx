@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import Dropdown from '@src/components/ui/Dropdowns/Dropdown/Dropdown'
+import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import { Instance, InstanceUtils, Nic as NicType } from '@src/@types/Instance'

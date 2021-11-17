@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Button from '@src/components/ui/Button/Button'
-import CopyButton from '@src/components/ui/CopyButton/CopyButton'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import Button from '@src/components/ui/Button'
+import CopyButton from '@src/components/ui/CopyButton'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
 import { ThemePalette } from '@src/components/Theme'
 import type { Validation as ValidationType } from '@src/@types/Endpoint'

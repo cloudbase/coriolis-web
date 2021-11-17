@@ -16,8 +16,8 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import Button from '@src/components/ui/Button/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from '@src/components/ui/Button'
 
 import { ThemePalette } from '@src/components/Theme'
 

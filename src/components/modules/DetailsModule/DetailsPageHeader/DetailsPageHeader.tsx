@@ -17,10 +17,10 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import NavigationMini from '@src/components/modules/NavigationModule/NavigationMini/NavigationMini'
-import NotificationDropdown from '@src/components/ui/Dropdowns/NotificationDropdown/NotificationDropdown'
-import UserDropdown from '@src/components/ui/Dropdowns/UserDropdown/UserDropdown'
-import AboutModal from '@src/components/smart/AboutModal/AboutModal'
+import NavigationMini from '@src/components/modules/NavigationModule/NavigationMini'
+import NotificationDropdown from '@src/components/ui/Dropdowns/NotificationDropdown'
+import UserDropdown from '@src/components/ui/Dropdowns/UserDropdown'
+import AboutModal from '@src/components/smart/AboutModal'
 
 import type { User as UserType } from '@src/@types/User'
 

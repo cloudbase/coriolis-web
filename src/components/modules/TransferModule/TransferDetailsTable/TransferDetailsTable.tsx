@@ -16,7 +16,7 @@ import * as React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Collapse } from 'react-collapse'
 
-import Arrow from '@src/components/ui/Arrow/Arrow'
+import Arrow from '@src/components/ui/Arrow'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

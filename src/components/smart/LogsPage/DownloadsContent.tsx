@@ -19,9 +19,9 @@ import moment from 'moment'
 
 import type { Log as LogType } from '@src/@types/Log'
 
-import { Close } from '@src/components/ui/TextInput/TextInput'
-import DatetimePicker from '@src/components/ui/DatetimePicker/DatetimePicker'
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
+import { Close } from '@src/components/ui/TextInput'
+import DatetimePicker from '@src/components/ui/DatetimePicker'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
 
 import { ThemeProps } from '@src/components/Theme'
 import downloadImage from './images/download.svg'

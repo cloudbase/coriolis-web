@@ -17,8 +17,8 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
 import type { Execution } from '@src/@types/Execution'
-import Arrow from '@src/components/ui/Arrow/Arrow'
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon/StatusIcon'
+import Arrow from '@src/components/ui/Arrow'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import DateUtils from '@src/utils/DateUtils'

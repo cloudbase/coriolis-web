@@ -16,13 +16,13 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Switch from '@src/components/ui/Switch/Switch'
-import TextInput from '@src/components/ui/TextInput/TextInput'
+import Switch from '@src/components/ui/Switch'
+import TextInput from '@src/components/ui/TextInput'
 
 import LabelDictionary from '@src/utils/LabelDictionary'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import Dropdown from '@src/components/ui/Dropdowns/Dropdown/Dropdown'
-import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown/AutocompleteDropdown'
+import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
+import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown'
 import { Field, EnumItem, isEnumSeparator } from '@src/@types/Field'
 
 const Wrapper = styled.div<any>`

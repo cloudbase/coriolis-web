@@ -19,12 +19,12 @@ import { Collapse } from 'react-collapse'
 
 import { Link } from 'react-router-dom'
 import { MinionMachine, MinionPool } from '@src/@types/MinionPool'
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
-import { ItemReplicaBadge } from '@src/components/ui/Dropdowns/NotificationDropdown/NotificationDropdown'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import { ItemReplicaBadge } from '@src/components/ui/Dropdowns/NotificationDropdown'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import Arrow from '@src/components/ui/Arrow/Arrow'
+import Arrow from '@src/components/ui/Arrow'
 
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
 import { MigrationItem, ReplicaItem, TransferItem } from '@src/@types/MainItem'
 import networkImage from './images/network.svg'
 

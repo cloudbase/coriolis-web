@@ -17,11 +17,11 @@ import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 import { observer } from 'mobx-react'
 
-import WizardTemplate from '@src/components/modules/TemplateModule/WizardTemplate/WizardTemplate'
-import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader/DetailsPageHeader'
-import WizardPageContent from '@src/components/modules/WizardModule/WizardPageContent/WizardPageContent'
-import Modal from '@src/components/ui/Modal/Modal'
-import EndpointModal from '@src/components/modules/EndpointModule/EndpointModal/EndpointModal'
+import WizardTemplate from '@src/components/modules/TemplateModule/WizardTemplate'
+import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader'
+import WizardPageContent from '@src/components/modules/WizardModule/WizardPageContent'
+import Modal from '@src/components/ui/Modal'
+import EndpointModal from '@src/components/modules/EndpointModule/EndpointModal'
 
 import userStore from '@src/stores/UserStore'
 import providerStore, { getFieldChangeOptions } from '@src/stores/ProviderStore'
@@ -46,7 +46,7 @@ import ObjectUtils from '@src/utils/ObjectUtils'
 import { ProviderTypes } from '@src/@types/Providers'
 import { TransferItem, ReplicaItem } from '@src/@types/MainItem'
 import minionPoolStore from '@src/stores/MinionPoolStore'
-import { WizardNetworksChangeObject } from '@src/components/modules/WizardModule/WizardNetworks/WizardNetworks'
+import { WizardNetworksChangeObject } from '@src/components/modules/WizardModule/WizardNetworks'
 
 const Wrapper = styled.div<any>``
 

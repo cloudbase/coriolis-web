@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
 
 import type { Assessment } from '@src/@types/Assessment'
 

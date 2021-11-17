@@ -17,7 +17,8 @@
   ],
   "plugins": [
     "import",
-    "react"
+    "react",
+    "coriolis-web"
   ],
   "env": {
     "browser": true,
@@ -35,6 +36,7 @@
     "src/**/package.json"
   ],
   "rules": {
+    "coriolis-web/import-no-duplicate-name": "error",
     "react/function-component-definition": "off",
     "react/sort-comp": "off",
     "react/jsx-one-expression-per-line": "off",

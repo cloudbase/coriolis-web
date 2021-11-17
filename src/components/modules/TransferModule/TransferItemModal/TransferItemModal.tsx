@@ -22,19 +22,19 @@ import migrationStore from '@src/stores/MigrationStore'
 import endpointStore from '@src/stores/EndpointStore'
 import { OptionsSchemaPlugin } from '@src/plugins'
 
-import Button from '@src/components/ui/Button/Button'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import Modal from '@src/components/ui/Modal/Modal'
-import Panel from '@src/components/ui/Panel/Panel'
-import { isOptionsPageValid } from '@src/components/modules/WizardModule/WizardPageContent/WizardPageContent'
-import WizardNetworks, { WizardNetworksChangeObject } from '@src/components/modules/WizardModule/WizardNetworks/WizardNetworks'
-import WizardOptions, { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions/WizardOptions'
-import WizardStorage from '@src/components/modules/WizardModule/WizardStorage/WizardStorage'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Modal from '@src/components/ui/Modal'
+import Panel from '@src/components/ui/Panel'
+import { isOptionsPageValid } from '@src/components/modules/WizardModule/WizardPageContent'
+import WizardNetworks, { WizardNetworksChangeObject } from '@src/components/modules/WizardModule/WizardNetworks'
+import WizardOptions, { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
+import WizardStorage from '@src/components/modules/WizardModule/WizardStorage'
 
 import type {
   UpdateData, TransferItemDetails, MigrationItemDetails,
 } from '@src/@types/MainItem'
-import type { NavigationItem } from '@src/components/ui/Panel/Panel'
+import type { NavigationItem } from '@src/components/ui/Panel'
 import {
   Endpoint, EndpointUtils, StorageBackend, StorageMap,
 } from '@src/@types/Endpoint'
@@ -48,9 +48,9 @@ import {
 
 import { providerTypes, migrationFields } from '@src/constants'
 import configLoader from '@src/utils/Config'
-import LoadingButton from '@src/components/ui/LoadingButton/LoadingButton'
+import LoadingButton from '@src/components/ui/LoadingButton'
 import minionPoolStore from '@src/stores/MinionPoolStore'
-import WizardScripts from '@src/components/modules/WizardModule/WizardScripts/WizardScripts'
+import WizardScripts from '@src/components/modules/WizardModule/WizardScripts'
 import networkStore from '@src/stores/NetworkStore'
 import { ThemeProps } from '@src/components/Theme'
 

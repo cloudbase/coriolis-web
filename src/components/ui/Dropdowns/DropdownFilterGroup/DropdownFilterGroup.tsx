@@ -16,7 +16,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
 
 import { ThemePalette } from '@src/components/Theme'
 

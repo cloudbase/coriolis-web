@@ -18,7 +18,7 @@ import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton/DropdownButton'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import DomUtils from '@src/utils/DomUtils'

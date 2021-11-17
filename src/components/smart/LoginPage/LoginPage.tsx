@@ -16,9 +16,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import EmptyTemplate from '@src/components/modules/TemplateModule/EmptyTemplate/EmptyTemplate'
-import Logo from '@src/components/ui/Logo/Logo'
-import LoginForm from '@src/components/modules/LoginModule/LoginForm/LoginForm'
+import EmptyTemplate from '@src/components/modules/TemplateModule/EmptyTemplate'
+import Logo from '@src/components/ui/Logo'
+import LoginForm from '@src/components/modules/LoginModule/LoginForm'
 
 import userStore from '@src/stores/UserStore'
 import configStore from '@src/utils/Config'

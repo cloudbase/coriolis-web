@@ -16,8 +16,8 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Arrow from '@src/components/ui/Arrow/Arrow'
-import HorizontalLoading from '@src/components/ui/HorizontalLoading/HorizontalLoading'
+import Arrow from '@src/components/ui/Arrow'
+import HorizontalLoading from '@src/components/ui/HorizontalLoading'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

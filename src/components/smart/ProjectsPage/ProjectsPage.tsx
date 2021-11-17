@@ -16,11 +16,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '@src/components/modules/NavigationModule/Navigation/Navigation'
-import FilterList from '@src/components/ui/Lists/FilterList/FilterList'
-import PageHeader from '@src/components/ui/PageHeader/PageHeader'
-import ProjectListItem from '@src/components/modules/ProjectModule/ProjectListItem/ProjectListItem'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
+import FilterList from '@src/components/ui/Lists/FilterList'
+import PageHeader from '@src/components/ui/PageHeader'
+import ProjectListItem from '@src/components/modules/ProjectModule/ProjectListItem'
 
 import type { Project, RoleAssignment } from '@src/@types/Project'
 

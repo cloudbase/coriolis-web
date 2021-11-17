@@ -18,7 +18,7 @@ import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
 
-import AutocompleteInput from '@src/components/ui/AutocompleteInput/AutocompleteInput'
+import AutocompleteInput from '@src/components/ui/AutocompleteInput'
 import tipImage from '@src/components/ui/Dropdowns/Dropdown/images/tip'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'

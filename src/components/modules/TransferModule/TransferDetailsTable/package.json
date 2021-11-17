@@ -1,7 +1,6 @@
 {
-  "name": "MainDetailsTable",
+  "name": "TransferDetailsTable",
   "version": "0.0.0",
   "private": true,
-  "main": "./MainDetailsTable.tsx"
+  "main": "./TransferDetailsTable.tsx"
 }
-

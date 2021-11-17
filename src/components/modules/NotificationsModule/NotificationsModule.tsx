@@ -21,9 +21,9 @@ import { observe } from 'mobx'
 import { AxiosRequestConfig } from 'axios'
 import notificationStore from '@src/stores/NotificationStore'
 
-import CopyMultilineValue from '@src/components/ui/CopyMultilineValue/CopyMultilineValue'
-import Button from '@src/components/ui/Button/Button'
-import Modal from '@src/components/ui/Modal/Modal'
+import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
+import Button from '@src/components/ui/Button'
+import Modal from '@src/components/ui/Modal'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import DomUtils from '@src/utils/DomUtils'

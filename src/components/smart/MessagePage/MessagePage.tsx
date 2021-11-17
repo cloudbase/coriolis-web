@@ -14,10 +14,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import styled from 'styled-components'
-import EmptyTemplate from '@src/components/modules/TemplateModule/EmptyTemplate/EmptyTemplate'
+import EmptyTemplate from '@src/components/modules/TemplateModule/EmptyTemplate'
 import { ThemePalette } from '@src/components/Theme'
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
 import fingerprintImage from './images/fingerprint'
 

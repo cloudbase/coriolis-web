@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Arrow from '@src/components/ui/Arrow/Arrow'
+import Arrow from '@src/components/ui/Arrow'
 
 import { ThemePalette } from '@src/components/Theme'
 import type { WizardPage } from '@src/@types/WizardData'

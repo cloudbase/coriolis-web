@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Checkbox from '@src/components/ui/Checkbox/Checkbox'
-import InfoIcon from '@src/components/ui/InfoIcon/InfoIcon'
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink/DropdownLink'
+import Checkbox from '@src/components/ui/Checkbox'
+import InfoIcon from '@src/components/ui/InfoIcon'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
 import type { VmItem } from '@src/@types/Assessment'
 import { ThemePalette } from '@src/components/Theme'
 

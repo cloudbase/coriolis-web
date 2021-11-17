@@ -20,7 +20,7 @@ import Datetime from 'react-datetime'
 import moment from 'moment'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton/DropdownButton'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
 
 import DomUtils from '@src/utils/DomUtils'
 import DateUtils from '@src/utils/DateUtils'

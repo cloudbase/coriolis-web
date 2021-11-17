@@ -17,7 +17,7 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import SearchInput from '@src/components/ui/SearchInput/SearchInput'
+import SearchInput from '@src/components/ui/SearchInput'
 
 import { ThemePalette } from '@src/components/Theme'
 

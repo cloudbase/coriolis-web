@@ -18,9 +18,9 @@ import styled from 'styled-components'
 
 import notificationStore from '@src/stores/NotificationStore'
 
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos/EndpointLogos'
-import Button from '@src/components/ui/Button/Button'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import FileUtils from '@src/utils/FileUtils'

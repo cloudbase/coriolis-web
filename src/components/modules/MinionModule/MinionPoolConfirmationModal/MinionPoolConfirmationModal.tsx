@@ -16,12 +16,12 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '@src/components/ui/Button/Button'
+import Button from '@src/components/ui/Button'
 
 import KeyboardManager from '@src/utils/KeyboardManager'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import FieldInput from '@src/components/ui/FieldInput/FieldInput'
-import Modal from '@src/components/ui/Modal/Modal'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import FieldInput from '@src/components/ui/FieldInput'
+import Modal from '@src/components/ui/Modal'
 
 const Wrapper = styled.div<any>`
   display: flex;

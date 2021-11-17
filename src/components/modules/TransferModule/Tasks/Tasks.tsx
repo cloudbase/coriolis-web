@@ -16,11 +16,11 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import TaskItem from '@src/components/modules/TransferModule/TaskItem/TaskItem'
+import TaskItem from '@src/components/modules/TransferModule/TaskItem'
 
 import type { Task } from '@src/@types/Task'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
 const ColumnWidths = ['26%', '18%', '36%', '20%']
 

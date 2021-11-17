@@ -18,7 +18,7 @@ import styled from 'styled-components'
 import configLoader from '@src/utils/Config'
 import LabelDictionary from '@src/utils/LabelDictionary'
 
-import ToggleButtonBar from '@src/components/ui/ToggleButtonBar/ToggleButtonBar'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
 import type { Field } from '@src/@types/Field'
 import { Wrapper, FieldStyled, Row } from '@src/plugins/default/ContentPlugin'
 

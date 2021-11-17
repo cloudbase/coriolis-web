@@ -23,7 +23,7 @@ import type { StorageMap } from '@src/@types/Endpoint'
 import type { InstanceScript } from '@src/@types/Instance'
 import DefaultOptionsSchemaParser from '@src/plugins/default/OptionsSchemaPlugin'
 import { TransferItem } from '@src/@types/MainItem'
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions/WizardOptions'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
 
 class WizardSource {
   async create(

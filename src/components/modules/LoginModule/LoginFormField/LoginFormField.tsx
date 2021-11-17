@@ -16,7 +16,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { ThemeProps } from '@src/components/Theme'
 
-import TextInput from '@src/components/ui/TextInput/TextInput'
+import TextInput from '@src/components/ui/TextInput'
 
 const Wrapper = styled.div<any>`
   margin-bottom: 16px;

@@ -17,10 +17,10 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import Button from '@src/components/ui/Button/Button'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos/EndpointLogos'
-import DashboardPieChart from '@src/components/modules/DashboardModule/DashboardPieChart/DashboardPieChart'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import DashboardPieChart from '@src/components/modules/DashboardModule/DashboardPieChart'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

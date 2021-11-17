@@ -16,8 +16,8 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Modal from '@src/components/ui/Modal/Modal'
-import LicenceComponent from '@src/components/modules/LicenceModule/LicenceModule'
+import Modal from '@src/components/ui/Modal'
+import LicenceComponent from '@src/components/modules/LicenceModule'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

@@ -16,9 +16,9 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage/StatusImage'
-import Button from '@src/components/ui/Button/Button'
-import FieldInput from '@src/components/ui/FieldInput/FieldInput'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from '@src/components/ui/Button'
+import FieldInput from '@src/components/ui/FieldInput'
 
 import KeyboardManager from '@src/utils/KeyboardManager'
 import type { Project } from '@src/@types/Project'

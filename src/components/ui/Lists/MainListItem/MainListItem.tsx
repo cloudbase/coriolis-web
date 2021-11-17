@@ -16,9 +16,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import Checkbox from '@src/components/ui/Checkbox/Checkbox'
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill/StatusPill'
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos/EndpointLogos'
+import Checkbox from '@src/components/ui/Checkbox'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import { getTransferItemTitle, TransferItem } from '@src/@types/MainItem'
 

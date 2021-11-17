@@ -16,14 +16,14 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Checkbox from '@src/components/ui/Checkbox/Checkbox'
-import SearchInput from '@src/components/ui/SearchInput/SearchInput'
-import ActionDropdown from '@src/components/ui/Dropdowns/ActionDropdown/ActionDropdown'
-import ReloadButton from '@src/components/ui/ReloadButton/ReloadButton'
+import Checkbox from '@src/components/ui/Checkbox'
+import SearchInput from '@src/components/ui/SearchInput'
+import ActionDropdown from '@src/components/ui/Dropdowns/ActionDropdown'
+import ReloadButton from '@src/components/ui/ReloadButton'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown/ActionDropdown'
+import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
 const Wrapper = styled.div<any>`
   display: flex;

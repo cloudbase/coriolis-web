@@ -16,8 +16,8 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '@src/components/ui/Button/Button'
-import FieldInput from '@src/components/ui/FieldInput/FieldInput'
+import Button from '@src/components/ui/Button'
+import FieldInput from '@src/components/ui/FieldInput'
 
 import LabelDictionary from '@src/utils/LabelDictionary'
 import KeyboardManager from '@src/utils/KeyboardManager'

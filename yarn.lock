@@ -5045,6 +5045,11 @@ eslint-module-utils@^2.7.1:
     find-up "^2.1.0"
     pkg-dir "^2.0.0"
 
+eslint-plugin-coriolis-web@./src/utils/eslint-plugin-coriolis-web:
+  version "0.0.1"
+  dependencies:
+    requireindex "^1.2.0"
+
 eslint-plugin-import@^2.25.3:
   version "2.25.3"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.25.3.tgz#a554b5f66e08fb4f6dc99221866e57cfff824766"
@@ -10027,6 +10032,11 @@ require-without-cache@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/require-without-cache/-/require-without-cache-0.0.6.tgz#b76566d78f8c5efa58b978266b9cfbeb96e037e2"
   integrity sha1-t2Vm14+MXvpYuXgma5z765bgN+I=
+
+requireindex@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
+  integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
 
 requires-port@^1.0.0:
   version "1.0.0"

@@ -18,7 +18,7 @@ import styled from 'styled-components'
 import configLoader from '@src/utils/Config'
 import LabelDictionary from '@src/utils/LabelDictionary'
 
-import FieldInput from '@src/components/ui/FieldInput/FieldInput'
+import FieldInput from '@src/components/ui/FieldInput'
 import type { Field } from '@src/@types/Field'
 
 import { Endpoint, Validation } from '@src/@types/Endpoint'
