@@ -13,6 +13,7 @@
     "server-debug": "node --inspect server",
     "tsc": "npx tsc --skipLibCheck",
     "eslint": "npx eslint \"src/**\" \"server/**\"",
+    "test-release": "node ./server/testRelease",
     "storybook": "start-storybook"
   },
   "devDependencies": {
