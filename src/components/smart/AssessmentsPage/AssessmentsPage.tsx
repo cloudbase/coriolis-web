@@ -119,12 +119,11 @@ class AssessmentsPage extends React.Component<Props, State> {
       return
     }
 
-    azureStore.getAssessments(
-
-      endpointStore.connectionInfo.subscription_id,
-      assessmentStore.selectedResourceGroup ? assessmentStore.selectedResourceGroup.name : '',
-      userStore.loggedUser ? userStore.loggedUser.project.id : '',
-    )
+    azureStore.getAssessments({
+      subscriptionId: endpointStore.connectionInfo.subscription_id,
+      resourceGroupName: assessmentStore.selectedResourceGroup?.name || '',
+      projectId: userStore.loggedUser?.project.id || '',
+    })
   }
 
   handleItemClick(assessment: Assessment) {
@@ -188,13 +187,13 @@ class AssessmentsPage extends React.Component<Props, State> {
       return
     }
 
-    azureStore.getAssessments(
-
-      connectionInfo.subscription_id,
-      selectedResourceGroup.name,
-      userStore.loggedUser ? userStore.loggedUser.project.id : '',
-      { backgroundLoading: true, skipLog: true },
-    ).then(() => {
+    azureStore.getAssessments({
+      subscriptionId: connectionInfo.subscription_id,
+      resourceGroupName: selectedResourceGroup.name,
+      projectId: userStore.loggedUser?.project.id || '',
+      backgroundLoading: true,
+      skipLog: true,
+    }).then(() => {
       this.pollTimeout = window.setTimeout(() => {
         this.pollData()
       }, configLoader.config.requestPollTimeout)
@@ -207,12 +206,11 @@ class AssessmentsPage extends React.Component<Props, State> {
     }
 
     assessmentStore.updateSelectedResourceGroup(selectedResourceGroup)
-    azureStore.getAssessments(
-
-      endpointStore.connectionInfo.subscription_id,
-      selectedResourceGroup.name,
-      userStore.loggedUser ? userStore.loggedUser.project.id : '',
-    )
+    azureStore.getAssessments({
+      subscriptionId: endpointStore.connectionInfo.subscription_id,
+      resourceGroupName: selectedResourceGroup.name,
+      projectId: userStore.loggedUser?.project.id || '',
+    })
   }
 
   chooseEndpoint(selectedEndpoint: Endpoint, clearResourceGroup?: boolean) {

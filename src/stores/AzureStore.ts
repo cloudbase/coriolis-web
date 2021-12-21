@@ -193,22 +193,26 @@ class AzureStore {
     return this.assessmentsProjectId === (cookie.get('projectId') || 'null')
   }
 
-  @action async getAssessments(
+  @action async getAssessments(opts: {
     subscriptionId: string,
     resourceGroupName: string,
     projectId: string,
-    options?: { backgroundLoading: boolean, skipLog?: boolean },
-  ): Promise<void> {
+    backgroundLoading?: boolean,
+    skipLog?: boolean
+  }): Promise<void> {
+    const {
+      subscriptionId, resourceGroupName, projectId, backgroundLoading, skipLog,
+    } = opts
     let cookieProjectId = cookie.get('projectId') || 'null'
     if (projectId !== cookieProjectId) {
       return Promise.resolve()
     }
 
-    if (!options || !options.backgroundLoading) {
+    if (!backgroundLoading) {
       this.loadingAssessments = true
     }
     const assessments = await AzureSource
-      .getAssessments(subscriptionId, resourceGroupName, options && options.skipLog)
+      .getAssessments(subscriptionId, resourceGroupName, skipLog)
     this.loadingAssessments = false
     cookieProjectId = cookie.get('projectId') || 'null'
     if (projectId !== cookieProjectId) {

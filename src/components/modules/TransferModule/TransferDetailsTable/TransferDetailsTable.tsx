@@ -187,14 +187,17 @@ class TransferDetailsTable extends React.Component<Props, State> {
     }
   }
 
-  renderRow(
+  renderRow(opts: {
     id: string,
     icon: 'instance' | 'network' | 'storage',
     sourceName: string,
     destinationName: React.ReactNode,
     sourceBody: string[],
     destinationBody: string[],
-  ) {
+  }) {
+    const {
+      id, icon, sourceName, destinationName, sourceBody, destinationBody,
+    } = opts
     const isOpened: boolean = Boolean(this.state.openedRows.find(i => i === id))
 
     return (
@@ -298,14 +301,14 @@ class TransferDetailsTable extends React.Component<Props, State> {
         destinationBody = ['Waiting for migration to finish']
       }
 
-      rows.push(this.renderRow(
-        `${instance.instance_name || instance.id}-${sourceName}-${destinationKey}`,
-        'storage',
+      rows.push(this.renderRow({
+        id: `${instance.instance_name || instance.id}-${sourceName}-${destinationKey}`,
+        icon: 'storage',
         sourceName,
         destinationName,
         sourceBody,
         destinationBody,
-      ))
+      }))
     })
 
     return rows
@@ -376,14 +379,14 @@ class TransferDetailsTable extends React.Component<Props, State> {
           destinationBody = ['Waiting for migration to finish']
         }
 
-        rows.push(this.renderRow(
-          `${instance.instance_name || instance.id}-${nic.network_name}`,
-          'network',
-          nic.mac_address,
-          destinationNetworkName,
+        rows.push(this.renderRow({
+          id: `${instance.instance_name || instance.id}-${nic.network_name}`,
+          icon: 'network',
+          sourceName: nic.mac_address,
+          destinationName: destinationNetworkName,
           sourceBody,
           destinationBody,
-        ))
+        }))
       }
     })
 
@@ -421,14 +424,14 @@ class TransferDetailsTable extends React.Component<Props, State> {
       destinationName = 'Waiting for migration to finish'
     }
     const instanceName = instance.instance_name || instance.id
-    return this.renderRow(
-      instanceName,
-      'instance',
-      instanceName,
+    return this.renderRow({
+      id: instanceName,
+      icon: 'instance',
+      sourceName: instanceName,
       destinationName,
       sourceBody,
       destinationBody,
-    )
+    })
   }
 
   render() {

@@ -100,7 +100,14 @@ class InstanceStore {
 
     const loadNextChunk = async (lastEndpointId?: string) => {
       const currentEndpointId = endpoint.id
-      const [instances, invalidInstances] = await InstanceSource.loadInstancesChunk(currentEndpointId, chunkCount, lastEndpointId, `${endpoint.id}-chunk`, undefined, env, useCache)
+      const [instances, invalidInstances] = await InstanceSource.loadInstancesChunk({
+        endpointId: currentEndpointId,
+        chunkSize: chunkCount,
+        lastInstanceId: lastEndpointId,
+        cancelId: `${endpoint.id}-chunk`,
+        env,
+        cache: useCache,
+      })
       if (currentEndpointId !== this.lastEndpointId) {
         return
       }
@@ -108,7 +115,9 @@ class InstanceStore {
         notificationStore.alert(`There are one or more instances with invalid data (i.e. missing ID): ${invalidInstances.map(i => i.name || i.instance_name).join(', ')}`, 'error')
       }
 
-      const shouldContinue = this.loadInstancesInChunksSuccess(instances, instances.length + invalidInstances.length, chunkCount, reload)
+      const shouldContinue = this.loadInstancesInChunksSuccess({
+        instances, instancesCount: instances.length + invalidInstances.length, chunkCount, reload,
+      })
       if (shouldContinue) {
         loadNextChunk(instances[instances.length - 1].id)
       }
@@ -116,12 +125,16 @@ class InstanceStore {
     loadNextChunk()
   }
 
-  @action loadInstancesInChunksSuccess(
+  @action loadInstancesInChunksSuccess(opts: {
     instances: Instance[],
     instancesCount: number,
     chunkCount: number,
     reload?: boolean,
-  ): boolean {
+  }): boolean {
+    const {
+      instances, instancesCount, chunkCount, reload,
+    } = opts
+
     this.backgroundInstances = [...this.backgroundInstances, ...instances]
     if (reload) {
       this.reloading = false
@@ -188,13 +201,13 @@ class InstanceStore {
       .max(chunkSize[endpoint.type] || chunkSize.default, this.instancesPerPage)
 
     const loadNextChunk = async (lastEndpointId?: string) => {
-      const [instances, invalidInstances] = await InstanceSource.loadInstancesChunk(
-        endpoint.id,
-        chunkCount,
-        lastEndpointId,
-        `${endpoint.id}-chunk-search`,
+      const [instances, invalidInstances] = await InstanceSource.loadInstancesChunk({
+        endpointId: endpoint.id,
+        chunkSize: chunkCount,
+        lastInstanceId: lastEndpointId,
+        cancelId: `${endpoint.id}-chunk-search`,
         searchText,
-      )
+      })
       if (this.searching) {
         runInAction(() => {
           this.currentPage = 1

@@ -214,12 +214,15 @@ class WizardStorage extends React.Component<Props> {
     )
   }
 
-  renderStorageDropdown(
+  renderStorageDropdown(opts: {
     storageItems: Array<StorageBackend>,
     selectedItem: StorageBackend | null | undefined,
     disk: Disk,
     type: 'backend' | 'disk',
-  ) {
+  }) {
+    const {
+      storageItems, selectedItem, disk, type,
+    } = opts
     return storageItems.length > 10 ? (
       <AutocompleteDropdown
         width={ThemeProps.inputSizes.large.width}
@@ -307,7 +310,9 @@ class WizardStorage extends React.Component<Props> {
                 <Dropdowns>
                   {disk.disabled && type === 'disk' ? this.renderDisabledDisk(disk) : (
                     <>
-                      {this.renderStorageDropdown(storageItems, selectedStorageMapping?.target, disk, type)}
+                      {this.renderStorageDropdown({
+                        storageItems, selectedItem: selectedStorageMapping?.target, disk, type,
+                      })}
                       {/* {this.renderBusTypeDropdown(selectedStorageMapping)} */}
                     </>
                   )}

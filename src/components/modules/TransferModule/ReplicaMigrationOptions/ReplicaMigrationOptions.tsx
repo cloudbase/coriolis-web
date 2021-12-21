@@ -83,12 +83,12 @@ type Props = {
   loadingInstances: boolean,
   defaultSkipOsMorphing?: boolean | null,
   onCancelClick: () => void,
-  onMigrateClick: (
+  onMigrateClick: (opts: {
     fields: Field[],
-    uploadedScripts: InstanceScript[],
-    removedScripts: InstanceScript[],
+    uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string }
-  ) => void,
+  }) => void,
   onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
 }
 type State = {
@@ -139,12 +139,12 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
   }
 
   migrate() {
-    this.props.onMigrateClick(
-      this.state.fields,
-      this.state.uploadedScripts,
-      this.state.removedScripts,
-      this.state.minionPoolMappings,
-    )
+    this.props.onMigrateClick({
+      fields: this.state.fields,
+      uploadedUserScripts: this.state.uploadedScripts,
+      removedUserScripts: this.state.removedScripts,
+      minionPoolMappings: this.state.minionPoolMappings,
+    })
   }
 
   handleValueChange(field: Field, value: boolean) {

@@ -161,15 +161,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
 
   async migrate(fields: Field[], uploadedScripts: InstanceScript[]) {
     await Promise.all(this.state.selectedReplicas
-      .map(replica => migrationStore.migrateReplica(
-        replica.id,
+      .map(replica => migrationStore.migrateReplica({
+        replicaId: replica.id,
         fields,
-        uploadedScripts.filter(s => !s.instanceId
-          || replica.instances.find(i => i === s.instanceId)),
-        [],
-        replica.user_scripts,
-        replica.instance_osmorphing_minion_pool_mappings || {},
-      )))
+        uploadedUserScripts: uploadedScripts.filter(s => !s.instanceId || replica.instances.find(i => i === s.instanceId)),
+        removedUserScripts: [],
+        userScriptData: replica.user_scripts,
+        minionPoolMappings: replica.instance_osmorphing_minion_pool_mappings || {},
+      })))
     notificationStore.alert('Migrations successfully created from replicas.', 'success')
     this.props.history.push('/migrations')
   }
@@ -436,7 +435,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               onCancelClick={() => {
                 this.setState({ showCreateMigrationsModal: false, modalIsOpen: false })
               }}
-              onMigrateClick={(options, s) => { this.migrateSelectedReplicas(options, s) }}
+              onMigrateClick={options => { this.migrateSelectedReplicas(options.fields, options.uploadedUserScripts) }}
             />
           </Modal>
         ) : null}

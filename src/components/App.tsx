@@ -145,7 +145,10 @@ class App extends React.Component<{}, State> {
       return <Route path={path} component={component} exact={exact} />
     }
 
-    const renderOptionalRoute = (name: string, component: any, path?: string, exact?: boolean) => {
+    const renderOptionalRoute = (opts: { name: string, component: any, path?: string, exact?: boolean }) => {
+      const {
+        name, component, path, exact,
+      } = opts
       if (configLoader.config.disabledPages.find(p => p === name)) {
         return null
       }
@@ -200,13 +203,13 @@ class App extends React.Component<{}, State> {
             {renderRoute('/minion-pools/:id', MinionPoolDetailsPage, true)}
             {renderRoute('/minion-pools/:id/:page', MinionPoolDetailsPage)}
             {renderRoute('/wizard/:type', WizardPage)}
-            {renderOptionalRoute('planning', AssessmentsPage)}
-            {renderOptionalRoute('planning', AssessmentDetailsPage, '/assessment/:info')}
-            {renderOptionalRoute('users', UsersPage, undefined, true)}
-            {renderOptionalRoute('users', UserDetailsPage, '/users/:id')}
-            {renderOptionalRoute('projects', ProjectsPage, undefined, true)}
-            {renderOptionalRoute('projects', ProjectDetailsPage, '/projects/:id')}
-            {renderOptionalRoute('logging', LogsPage)}
+            {renderOptionalRoute({ name: 'planning', component: AssessmentsPage })}
+            {renderOptionalRoute({ name: 'planning', component: AssessmentDetailsPage, path: '/assessment/:info' })}
+            {renderOptionalRoute({ name: 'users', component: UsersPage, exact: true })}
+            {renderOptionalRoute({ name: 'users', component: UserDetailsPage, path: '/users/:id' })}
+            {renderOptionalRoute({ name: 'users', component: ProjectsPage, exact: true })}
+            {renderOptionalRoute({ name: 'projects', component: ProjectDetailsPage, path: '/projects/:id' })}
+            {renderOptionalRoute({ name: 'logging', component: LogsPage })}
             {renderRoute('/streamlog', LogStreamPage)}
             <Route component={MessagePage} />
           </Switch>

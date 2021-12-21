@@ -29,17 +29,17 @@ const Wrapper = styled.div<any>`
     margin-top: 32px;
   }
 `
-const wrap = (
+const wrap = (opts: {
   endpoint: string | null | undefined,
   height: number | undefined,
-  disabled = false,
-  white = false,
-) => (
+  disabled?: boolean,
+  white?: boolean,
+}) => (
   <EndpointLogos
-    endpoint={endpoint as any}
-    height={height}
-    disabled={disabled}
-    white={white}
+    endpoint={opts.endpoint as any}
+    height={opts.height}
+    disabled={opts.disabled}
+    white={opts.white}
     baseUrl="http://localhost:3000"
   />
 )
@@ -61,7 +61,7 @@ storiesOf('EndpointLogos', module)
     const height = 32
     return (
       <Wrapper>
-        {providers.map(p => wrap(p, height))}
+        {providers.map(p => wrap({ endpoint: p, height }))}
       </Wrapper>
     )
   })
@@ -69,7 +69,7 @@ storiesOf('EndpointLogos', module)
     const height = 32
     return (
       <Wrapper background="#202134">
-        {providers.map(p => wrap(p, height, false, true))}
+        {providers.map(p => wrap({ endpoint: p, height, white: true }))}
       </Wrapper>
     )
   })
@@ -77,7 +77,7 @@ storiesOf('EndpointLogos', module)
     const height = 42
     return (
       <Wrapper>
-        {providers.map(p => wrap(p, height))}
+        {providers.map(p => wrap({ endpoint: p, height }))}
       </Wrapper>
     )
   })
@@ -85,7 +85,7 @@ storiesOf('EndpointLogos', module)
     const height = 64
     return (
       <Wrapper>
-        {providers.map(p => wrap(p, height))}
+        {providers.map(p => wrap({ endpoint: p, height }))}
       </Wrapper>
     )
   })
@@ -93,7 +93,7 @@ storiesOf('EndpointLogos', module)
     const height = 128
     return (
       <Wrapper>
-        {providers.map(p => wrap(p, height))}
+        {providers.map(p => wrap({ endpoint: p, height }))}
       </Wrapper>
     )
   })
@@ -101,7 +101,7 @@ storiesOf('EndpointLogos', module)
     const height = 128
     return (
       <Wrapper>
-        {providers.map(p => wrap(p, height, true))}
+        {providers.map(p => wrap({ endpoint: p, height, disabled: true }))}
       </Wrapper>
     )
   })

@@ -367,13 +367,27 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     const unsavedData = scheduleStore.unsavedSchedules.find(s => s.id === scheduleId)
 
     if (scheduleId) {
-      scheduleStore.updateSchedule(this.replicaId, scheduleId, data, oldData, unsavedData, forceSave)
+      scheduleStore.updateSchedule({
+        replicaId: this.replicaId,
+        scheduleId,
+        data,
+        oldData,
+        unsavedData,
+        forceSave,
+      })
     }
   }
 
   handleScheduleSave(schedule: Schedule) {
     if (schedule.id) {
-      scheduleStore.updateSchedule(this.replicaId, schedule.id, schedule, schedule, schedule, true)
+      scheduleStore.updateSchedule({
+        replicaId: this.replicaId,
+        scheduleId: schedule.id,
+        data: schedule,
+        oldData: schedule,
+        unsavedData: schedule,
+        forceSave: true,
+      })
     }
   }
 
@@ -418,34 +432,37 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     })
   }
 
-  migrateReplica(
-    options: Field[],
-    uploadedScripts: InstanceScript[],
-    removedScripts: InstanceScript[],
+  migrateReplica(opts: {
+    fields: Field[],
+    uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
-  ) {
-    this.migrate(options, uploadedScripts, removedScripts, minionPoolMappings)
+  }) {
+    this.migrate(opts)
     this.handleCloseMigrationModal()
   }
 
-  async migrate(
-    options: Field[],
-    uploadedScripts: InstanceScript[],
-    removedScripts: InstanceScript[],
+  async migrate(opts: {
+    fields: Field[],
+    uploadedUserScripts: InstanceScript[],
+    removedUserScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
-  ) {
+  }) {
     const replica = this.replica
     if (!replica) {
       return
     }
-    const migration = await migrationStore.migrateReplica(
-      replica.id,
-      options,
-      uploadedScripts,
-      removedScripts,
-      replica.user_scripts,
+    const {
+      fields, uploadedUserScripts, removedUserScripts, minionPoolMappings,
+    } = opts
+    const migration = await migrationStore.migrateReplica({
+      replicaId: replica.id,
+      fields,
+      uploadedUserScripts,
+      removedUserScripts,
+      userScriptData: replica.user_scripts,
       minionPoolMappings,
-    )
+    })
     notificationStore.alert('Migration successfully created from replica.', 'success', {
       action: {
         label: 'View Migration Status',
@@ -668,7 +685,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
               onCancelClick={() => { this.handleCloseMigrationModal() }}
-              onMigrateClick={(o, s, r, m) => { this.migrateReplica(o, s, r, m) }}
+              onMigrateClick={opts => { this.migrateReplica(opts) }}
             />
           </Modal>
         ) : null}

@@ -233,34 +233,44 @@ class WizardStore {
     this.schedules = this.schedules.filter(s => s.id !== scheduleId)
   }
 
-  @action async create(
+  @action async create(opts: {
     type: string,
     data: WizardData,
     defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[],
-  ): Promise<void> {
+  }): Promise<void> {
+    const {
+      type, data, defaultStorage, storageMap, uploadedUserScripts,
+    } = opts
     this.creatingItem = true
 
     try {
-      const item: TransferItem = await source.create(type, data, defaultStorage, storageMap, uploadedUserScripts)
+      const item: TransferItem = await source.create({
+        type, data, defaultStorage, storageMap, uploadedUserScripts,
+      })
       runInAction(() => { this.createdItem = item })
     } finally {
       runInAction(() => { this.creatingItem = false })
     }
   }
 
-  @action async createMultiple(
+  @action async createMultiple(opts: {
     type: string,
     data: WizardData,
     defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[],
-  ): Promise<boolean> {
+  }): Promise<boolean> {
+    const {
+      type, data, defaultStorage, storageMap, uploadedUserScripts,
+    } = opts
     this.creatingItems = true
 
     try {
-      const items = await source.createMultiple(type, data, defaultStorage, storageMap, uploadedUserScripts)
+      const items = await source.createMultiple({
+        type, data, defaultStorage, storageMap, uploadedUserScripts,
+      })
       const nullItemsCount = items.filter(i => i === null).length
       if (items && nullItemsCount === 0) {
         runInAction(() => { this.createdItems = items })

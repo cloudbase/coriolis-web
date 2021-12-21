@@ -22,7 +22,7 @@ import { ProviderTypes } from '@src/@types/Providers'
 import DomUtils from '@src/utils/DomUtils'
 
 class InstanceSource {
-  async loadInstancesChunk(
+  async loadInstancesChunk(opts: {
     endpointId: string,
     chunkSize: number,
     lastInstanceId?: string,
@@ -30,7 +30,10 @@ class InstanceSource {
     searchText?: string,
     env?: any,
     cache?: boolean,
-  ): Promise<[Instance[], Instance[]]> {
+  }): Promise<[Instance[], Instance[]]> {
+    const {
+      endpointId, chunkSize, lastInstanceId, cache, cancelId, env, searchText,
+    } = opts
     let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
     let queryParams: { [prop: string]: string | number } = {}
 

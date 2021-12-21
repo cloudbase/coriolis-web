@@ -284,9 +284,9 @@ class WizardSummary extends React.Component<Props> {
             }
             const optionLabel = optionName.split('/')
               .map(n => LabelDictionary.get(n, `${data.source ? data.source.type : ''}-source`)).join(' - ')
-            const optionValue = fieldHelper
-              .getValueAlias(optionName, data.sourceOptions
-                && data.sourceOptions[optionName], this.props.sourceSchema, provider)
+            const optionValue = fieldHelper.getValueAlias({
+              name: optionName, value: data.sourceOptions?.[optionName], fields: this.props.sourceSchema, targetProvider: provider,
+            })
             return (
               <Option key={optionName}>
                 <OptionLabel title={optionLabel}>
@@ -326,12 +326,12 @@ class WizardSummary extends React.Component<Props> {
           if (key.indexOf('password') > -1 || propertyName.indexOf('password') > -1) {
             optionValue = '•••••••••'
           } else {
-            optionValue = fieldHelper.getValueAlias(
-              propertyName,
+            optionValue = fieldHelper.getValueAlias({
+              name: propertyName,
               value,
-              schema,
-              provider,
-            )
+              fields: schema,
+              targetProvider: provider,
+            })
           }
 
           return (
@@ -465,12 +465,12 @@ class WizardSummary extends React.Component<Props> {
             const optionLabel = optionName.split('/')
               .map(n => LabelDictionary.get(n, `${data.target ? data.target.type : ''}-destination`)).join(' - ')
 
-            const optionValue = fieldHelper.getValueAlias(
-              optionName,
-              data.destOptions && data.destOptions[optionName],
-              this.props.destinationSchema,
-              provider,
-            )
+            const optionValue = fieldHelper.getValueAlias({
+              name: optionName,
+              value: data.destOptions?.[optionName],
+              fields: this.props.destinationSchema,
+              targetProvider: provider,
+            })
 
             return (
               <Option key={optionName}>

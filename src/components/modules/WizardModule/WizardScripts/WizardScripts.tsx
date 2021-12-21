@@ -188,12 +188,15 @@ class WizardScripts extends React.Component<Props> {
     DomUtils.download(scriptData, fileName)
   }
 
-  renderScriptItem(
-    global: 'windows' | 'linux' | null,
-    instanceId: string | null,
+  renderScriptItem(opts: {
+    global?: 'windows' | 'linux',
+    instanceId?: string,
     title: string,
     subtitle?: string,
-  ) {
+  }) {
+    const {
+      global, instanceId, title, subtitle,
+    } = opts
     const uploadedScript = this.props.uploadedScripts.find(
       s => (s.instanceId
         ? s.instanceId === instanceId : s.global ? s.global === global : false),
@@ -250,7 +253,7 @@ class WizardScripts extends React.Component<Props> {
             <InputCloseStyled
               show
               onClick={() => {
-                this.props.onCancelScript(global, instanceId)
+                this.props.onCancelScript(global || null, instanceId || null)
                 const ref = this.fileInputRefs[title]
                 if (ref) {
                   ref.inputRef.value = ''
@@ -273,7 +276,7 @@ class WizardScripts extends React.Component<Props> {
         <FakeFileInput
           type="file"
           ref={(r: HTMLInputElement) => { this.fileInputRefs[title] = { inputRef: r } }}
-          onChange={e => { this.handleFileUpload(e.target.files, global, instanceId) }}
+          onChange={e => { this.handleFileUpload(e.target.files, global || null, instanceId || null) }}
         />
       </Script>
     )
@@ -293,8 +296,8 @@ class WizardScripts extends React.Component<Props> {
             />
           </Heading>
           <Scripts>
-            {this.renderScriptItem('windows', null, 'Windows Script File')}
-            {this.renderScriptItem('linux', null, 'Linux Script File')}
+            {this.renderScriptItem({ global: 'windows', title: 'Windows Script File' })}
+            {this.renderScriptItem({ global: 'linux', title: 'Linux Script File' })}
           </Scripts>
         </Group>
       )
@@ -328,7 +331,7 @@ class WizardScripts extends React.Component<Props> {
             const osType = osLabel ? `${osLabel} OS | ` : ''
             const subtitle = `${osType}${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM`
 
-            return this.renderScriptItem(null, id, title, subtitle)
+            return this.renderScriptItem({ instanceId: id, title, subtitle })
           })}
         </Scripts>
       </Group>

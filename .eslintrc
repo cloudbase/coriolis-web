@@ -36,6 +36,10 @@
     "src/**/package.json"
   ],
   "rules": {
+    "max-params": [
+      "error",
+      3
+    ],
     "coriolis-web/import-no-duplicate-name": "error",
     "react/function-component-definition": "off",
     "react/sort-comp": "off",

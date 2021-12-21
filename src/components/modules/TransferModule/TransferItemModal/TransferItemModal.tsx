@@ -252,7 +252,10 @@ class TransferItemModal extends React.Component<Props, State> {
     return { value: null }
   }
 
-  getFieldValue(type: 'source' | 'destination', fieldName: string, defaultValue: any, parentFieldName?: string) {
+  getFieldValue(opts: { type: 'source' | 'destination', fieldName: string, defaultValue: any, parentFieldName?: string }) {
+    const {
+      type, fieldName, defaultValue, parentFieldName,
+    } = opts
     const currentData = type === 'source' ? this.state.sourceData : this.state.destinationData
 
     const replicaMinionMappings = this.props.replica[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
@@ -455,7 +458,10 @@ class TransferItemModal extends React.Component<Props, State> {
     this.loadData(false)
   }
 
-  handleFieldChange(type: 'source' | 'destination', field: Field, value: any, parentFieldName?: string) {
+  handleFieldChange(opts: { type: 'source' | 'destination', field: Field, value: any, parentFieldName?: string }) {
+    const {
+      type, field, value, parentFieldName,
+    } = opts
     const data = type === 'source' ? { ...this.state.sourceData } : { ...this.state.destinationData }
 
     if (field.type === 'array') {
@@ -539,15 +545,15 @@ class TransferItemModal extends React.Component<Props, State> {
           value: defaultStorage.id,
           busType: defaultStorage.busType,
         }
-        const migration: MigrationItemDetails = await migrationStore.recreate(
-          this.props.replica as any,
-          this.props.sourceEndpoint,
-          this.props.destinationEndpoint,
+        const migration: MigrationItemDetails = await migrationStore.recreate({
+          migration: this.props.replica as any,
+          sourceEndpoint: this.props.sourceEndpoint,
+          destEndpoint: this.props.destinationEndpoint,
           updateData,
-          replicaDefaultStorage,
-          this.state.defaultStorage,
-          this.props.replica.replication_count,
-        )
+          defaultStorage: replicaDefaultStorage,
+          updatedDefaultStorage: this.state.defaultStorage,
+          replicationCount: this.props.replica.replication_count,
+        })
         migrationStore.clearDetails()
         this.props.onRequestClose()
         this.props.onUpdateComplete(`/migrations/${migration.id}/tasks`)
@@ -647,12 +653,18 @@ class TransferItemModal extends React.Component<Props, State> {
       <WizardOptions
         minionPools={minionPools}
         wizardType={`${this.props.type || 'replica'}-${type}-options-edit`}
-        getFieldValue={(f, d, pf) => this.getFieldValue(type, f, d, pf)}
+        getFieldValue={(f, d, pf) => this.getFieldValue({
+          type, fieldName: f, defaultValue: d, parentFieldName: pf,
+        })}
         fields={fields}
         selectedInstances={type === 'destination' ? this.props.instancesDetails : null}
         hasStorageMap={type === 'source' ? false : this.hasStorageMap()}
         storageBackends={endpointStore.storageBackends}
-        onChange={(f, v, fp) => { this.handleFieldChange(type, f, v, fp) }}
+        onChange={(f, v, fp) => {
+          this.handleFieldChange({
+            type, field: f, value: v, parentFieldName: fp,
+          })
+        }}
         oneColumnStyle={{
           marginTop: '-16px', display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center',
         }}

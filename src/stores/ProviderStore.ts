@@ -246,7 +246,9 @@ class ProviderStore {
     }
 
     try {
-      const fields: Field[] = await ProviderSource.loadOptionsSchema(providerName, optionsType, useCache, quietError)
+      const fields: Field[] = await ProviderSource.loadOptionsSchema({
+        providerName, optionsType, useCache, quietError,
+      })
       this.loadOptionsSchemaSuccess(fields, optionsType, isValid())
       return fields
     } finally {
@@ -328,14 +330,15 @@ class ProviderStore {
     }
 
     try {
-      const options = await ProviderSource
-        .getOptionsValues(optionsType, endpointId, envData, useCache, quietError)
-      this.getOptionsValuesSuccess(
+      const options = await ProviderSource.getOptionsValues({
+        optionsType, endpointId, envData, cache: useCache, quietError,
+      })
+      this.getOptionsValuesSuccess({
         optionsType,
-        providerName,
+        provider: providerName,
         options,
-        isValid(),
-      )
+        isValid: isValid(),
+      })
       return options
     } catch (e) {
       const err: any = e
@@ -398,12 +401,15 @@ class ProviderStore {
     }
   }
 
-  @action getOptionsValuesSuccess(
+  @action getOptionsValuesSuccess(opts: {
     optionsType: 'source' | 'destination',
     provider: ProviderTypes,
     options: OptionValues[],
     isValid: boolean,
-  ) {
+  }) {
+    const {
+      optionsType, provider, options, isValid,
+    } = opts
     if (!isValid) {
       return
     }

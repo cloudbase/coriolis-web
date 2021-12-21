@@ -104,14 +104,18 @@ class ScheduleStore {
     }
   }
 
-  @action async updateSchedule(
+  @action async updateSchedule(opts: {
     replicaId: string,
     scheduleId: string,
     data: Schedule,
     oldData?: Schedule | null,
     unsavedData?: Schedule | null,
     forceSave?: boolean,
-  ): Promise<void> {
+  }): Promise<void> {
+    const {
+      replicaId, scheduleId, data, oldData, unsavedData, forceSave,
+    } = opts
+
     if (!forceSave) {
       this.schedules = updateSchedule(this.schedules, scheduleId, data)
       const unsavedSchedule = this.unsavedSchedules.find(s => s.id === scheduleId)
@@ -127,13 +131,13 @@ class ScheduleStore {
       this.enablingIds.push(scheduleId)
     }
     try {
-      const schedule: Schedule = await Source.updateSchedule(
+      const schedule: Schedule = await Source.updateSchedule({
         replicaId,
         scheduleId,
-        data,
-        oldData,
+        scheduleData: data,
+        scheduleOldData: oldData,
         unsavedData,
-      )
+      })
       runInAction(() => {
         this.schedules = this.schedules.map(s => {
           if (s.id === schedule.id) {

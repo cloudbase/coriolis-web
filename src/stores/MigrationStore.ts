@@ -64,7 +64,7 @@ class MigrationStore {
     return MigrationSource.recreateFullCopy(migration)
   }
 
-  @action async recreate(
+  @action async recreate(opts: {
     migration: MigrationItemDetails,
     sourceEndpoint: Endpoint,
     destEndpoint: Endpoint,
@@ -72,7 +72,10 @@ class MigrationStore {
     defaultStorage: { value: string | null, busType?: string | null },
     updatedDefaultStorage: { value: string | null, busType?: string | null } | undefined,
     replicationCount: number | null | undefined,
-  ): Promise<MigrationItemDetails> {
+  }): Promise<MigrationItemDetails> {
+    const {
+      migration, sourceEndpoint, destEndpoint, updateData, defaultStorage, updatedDefaultStorage, replicationCount,
+    } = opts
     const migrationResult = await MigrationSource.recreate({
       sourceEndpoint,
       destEndpoint,
@@ -121,22 +124,25 @@ class MigrationStore {
     runInAction(() => { this.migrations = this.migrations.filter(r => r.id !== migrationId) })
   }
 
-  @action async migrateReplica(
+  @action async migrateReplica(opts: {
     replicaId: string,
-    options: Field[],
+    fields: Field[],
     uploadedUserScripts: InstanceScript[],
     removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,
     minionPoolMappings: { [instance: string]: string },
-  ) {
-    const migration = await MigrationSource.migrateReplica(
+  }) {
+    const {
+      replicaId, fields: options, uploadedUserScripts, removedUserScripts, userScriptData, minionPoolMappings,
+    } = opts
+    const migration = await MigrationSource.migrateReplica({
       replicaId,
       options,
       uploadedUserScripts,
       removedUserScripts,
       userScriptData,
       minionPoolMappings,
-    )
+    })
     runInAction(() => {
       this.migrations = [
         migration,
