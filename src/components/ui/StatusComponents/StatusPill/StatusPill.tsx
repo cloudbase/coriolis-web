@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import runningImage from './images/running.svg'
 import cancellingImage from './images/cancelling.svg'
 

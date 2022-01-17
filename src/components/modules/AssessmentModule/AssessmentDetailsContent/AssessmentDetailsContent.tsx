@@ -17,24 +17,24 @@ import styled, { css } from 'styled-components'
 import moment from 'moment'
 import { observer } from 'mobx-react'
 
-import DetailsNavigation from '../../NavigationModule/DetailsNavigation/DetailsNavigation'
-import Button from '../../../ui/Button/Button'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import Table from '../../../ui/Table/Table'
-import AssessedVmListItem from '../AssessedVmListItem/AssessedVmListItem'
-import DropdownFilter from '../../../ui/Dropdowns/DropdownFilter/DropdownFilter'
-import Checkbox from '../../../ui/Checkbox/Checkbox'
-import SmallLoading from '../../../ui/SmallLoading/SmallLoading'
+import DetailsNavigation from '@src/components/modules/NavigationModule/DetailsNavigation'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import Table from '@src/components/ui/Table'
+import AssessedVmListItem from '@src/components/modules/AssessmentModule/AssessedVmListItem'
+import DropdownFilter from '@src/components/ui/Dropdowns/DropdownFilter'
+import Checkbox from '@src/components/ui/Checkbox'
+import SmallLoading from '@src/components/ui/SmallLoading'
 
-import type { Assessment, VmItem, AzureLocation } from '../../../../@types/Assessment'
-import type { Endpoint } from '../../../../@types/Endpoint'
-import type { Instance, Nic } from '../../../../@types/Instance'
-import type { Network, NetworkMap } from '../../../../@types/Network'
+import type { Assessment, VmItem, AzureLocation } from '@src/@types/Assessment'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { Instance, Nic } from '@src/@types/Instance'
+import type { Network, NetworkMap } from '@src/@types/Network'
 
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import azureMigrateImage from './images/logo.svg'
 import arrowImage from './images/arrow.svg'
-import { ThemePalette, ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -223,19 +223,6 @@ class AssessmentDetailsContent extends React.Component<Props> {
 
     return this.props.sourceEndpoint.connection_info.host
       === vm.properties.datacenterManagementServerName
-  }
-
-  renderBottomControls() {
-    return (
-      <Buttons>
-        <Button
-          alert
-          hollow
-          onClick={() => { }}
-        >Migrate
-        </Button>
-      </Buttons>
-    )
   }
 
   renderMainDetails() {

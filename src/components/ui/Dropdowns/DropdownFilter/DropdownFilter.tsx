@@ -17,9 +17,9 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import SearchInput from '../../SearchInput/SearchInput'
+import SearchInput from '@src/components/ui/SearchInput'
 
-import { ThemePalette } from '../../../Theme'
+import { ThemePalette } from '@src/components/Theme'
 
 import filterImage from './images/filter'
 

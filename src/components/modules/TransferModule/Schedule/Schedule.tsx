@@ -17,22 +17,21 @@ import styled from 'styled-components'
 import moment from 'moment-timezone'
 import { observer } from 'mobx-react'
 
-import Button from '../../../ui/Button/Button'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Modal from '../../../ui/Modal/Modal'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import AlertModal from '../../../ui/AlertModal/AlertModal'
-import ReplicaExecutionOptions from '../ReplicaExecutionOptions/ReplicaExecutionOptions'
-import ScheduleItem from '../ScheduleItem/ScheduleItem'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Modal from '@src/components/ui/Modal'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import AlertModal from '@src/components/ui/AlertModal'
+import ReplicaExecutionOptions from '@src/components/modules/TransferModule/ReplicaExecutionOptions'
+import ScheduleItem from '@src/components/modules/TransferModule/ScheduleItem'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DateUtils from '../../../../utils/DateUtils'
-import type { Schedule as ScheduleType } from '../../../../@types/Schedule'
-import type { Field } from '../../../../@types/Field'
-import { executionOptions } from '../../../../constants'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DateUtils from '@src/utils/DateUtils'
+import type { Schedule as ScheduleType } from '@src/@types/Schedule'
+import type { Field } from '@src/@types/Field'
 
+import LoadingButton from '@src/components/ui/LoadingButton'
 import scheduleImage from './images/schedule.svg'
-import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
@@ -198,39 +197,6 @@ class Schedule extends React.Component<Props, State> {
       hour = DateUtils.getUtcHour(0)
     }
     this.props.onAddScheduleClick({ schedule: { hour, minute: 0 } })
-  }
-
-  areExecutionOptionsChanged(schedule: ScheduleType) {
-    let isChanged = false
-    executionOptions.forEach(o => {
-      const usableSchedule: any = schedule
-      const scheduleValue = usableSchedule[o.name]
-      const optionValue = o.defaultValue !== undefined ? o.defaultValue : false
-      if (scheduleValue != null && scheduleValue !== optionValue) {
-        isChanged = true
-      }
-    })
-    return isChanged
-  }
-
-  padNumber(number: number) {
-    if (number < 10) {
-      return `0${number}`
-    }
-
-    return number.toString()
-  }
-
-  shouldUseBold(scheduleId: string | null, fieldName: string, isRootField?: boolean) {
-    const unsavedSchedule = this.props.unsavedSchedules.find(s => s.id === scheduleId)
-    if (!unsavedSchedule) {
-      return false
-    }
-    const data: any = isRootField ? unsavedSchedule : unsavedSchedule.schedule
-    if (data && data[fieldName] != null) {
-      return true
-    }
-    return false
   }
 
   renderLoading() {

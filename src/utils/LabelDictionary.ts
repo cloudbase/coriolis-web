@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Field } from '../@types/Field'
+import type { Field } from '@src/@types/Field'
 
 // The word will be uppercased
 const acronyms = ['id', 'api', 'url', 'vm', 'os', 'dhcp', 'sql', 'oci', 'aws', 'vcn']

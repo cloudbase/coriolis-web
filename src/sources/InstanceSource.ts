@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '../utils/ApiCaller'
-import type { Instance } from '../@types/Instance'
+import Api from '@src/utils/ApiCaller'
+import type { Instance } from '@src/@types/Instance'
 
-import configLoader from '../utils/Config'
+import configLoader from '@src/utils/Config'
 
-import { InstanceInfoPlugin } from '../plugins'
-import { ProviderTypes } from '../@types/Providers'
-import DomUtils from '../utils/DomUtils'
+import { InstanceInfoPlugin } from '@src/plugins'
+import { ProviderTypes } from '@src/@types/Providers'
+import DomUtils from '@src/utils/DomUtils'
 
 class InstanceSource {
   async loadInstancesChunk(

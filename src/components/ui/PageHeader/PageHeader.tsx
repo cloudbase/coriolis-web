@@ -16,32 +16,32 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import type { User } from '../../../@types/User'
-import type { Project } from '../../../@types/Project'
-import type { Endpoint as EndpointType } from '../../../@types/Endpoint'
+import type { User } from '@src/@types/User'
+import type { Project } from '@src/@types/Project'
+import type { Endpoint as EndpointType } from '@src/@types/Endpoint'
 
-import Dropdown from '../Dropdowns/Dropdown/Dropdown'
-import NewItemDropdown from '../Dropdowns/NewItemDropdown/NewItemDropdown'
-import NotificationDropdown from '../Dropdowns/NotificationDropdown/NotificationDropdown'
-import UserDropdown from '../Dropdowns/UserDropdown/UserDropdown'
-import Modal from '../Modal/Modal'
-import ChooseProvider from '../../modules/EndpointModule/ChooseProvider/ChooseProvider'
-import EndpointModal from '../../modules/EndpointModule/EndpointModal/EndpointModal'
-import UserModal from '../../modules/UserModule/UserModal/UserModal'
-import ProjectModal from '../../modules/ProjectModule/ProjectModal/ProjectModal'
-import AboutModal from '../../smart/AboutModal/AboutModal'
+import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
+import NewItemDropdown from '@src/components/ui/Dropdowns/NewItemDropdown'
+import NotificationDropdown from '@src/components/ui/Dropdowns/NotificationDropdown'
+import UserDropdown from '@src/components/ui/Dropdowns/UserDropdown'
+import Modal from '@src/components/ui/Modal'
+import ChooseProvider from '@src/components/modules/EndpointModule/ChooseProvider'
+import EndpointModal from '@src/components/modules/EndpointModule/EndpointModal'
+import UserModal from '@src/components/modules/UserModule/UserModal'
+import ProjectModal from '@src/components/modules/ProjectModule/ProjectModal'
 
-import projectStore from '../../../stores/ProjectStore'
-import userStore from '../../../stores/UserStore'
-import endpointStore from '../../../stores/EndpointStore'
-import notificationStore from '../../../stores/NotificationStore'
-import providerStore from '../../../stores/ProviderStore'
-import { ThemePalette, ThemeProps } from '../../Theme'
-import { ProviderTypes } from '../../../@types/Providers'
-import MinionEndpointModal from '../../modules/MinionModule/MinionEndpointModal/MinionEndpointModal'
-import MinionPoolModal from '../../modules/MinionModule/MinionPoolModal/MinionPoolModal'
-import ObjectUtils from '../../../utils/ObjectUtils'
-import regionStore from '../../../stores/RegionStore'
+import projectStore from '@src/stores/ProjectStore'
+import userStore from '@src/stores/UserStore'
+import endpointStore from '@src/stores/EndpointStore'
+import notificationStore from '@src/stores/NotificationStore'
+import providerStore from '@src/stores/ProviderStore'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ProviderTypes } from '@src/@types/Providers'
+import MinionEndpointModal from '@src/components/modules/MinionModule/MinionEndpointModal'
+import MinionPoolModal from '@src/components/modules/MinionModule/MinionPoolModal'
+import ObjectUtils from '@src/utils/ObjectUtils'
+import regionStore from '@src/stores/RegionStore'
+import AboutModal from '@src/components/smart/AboutModal'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -337,7 +337,7 @@ class PageHeader extends React.Component<Props, State> {
     }
 
     await notificationStore.loadData(showLoading)
-    this.pollTimeout = setTimeout(() => { this.pollData() }, 15000)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, 15000)
   }
 
   render() {

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import Arrow from '../Arrow'
+import Arrow from '.'
 
 storiesOf('Arrow', module)
   .add('default', () => (

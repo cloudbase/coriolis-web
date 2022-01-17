@@ -18,11 +18,11 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '../DropdownButton/DropdownButton'
-import { List, ListItems, Tip } from '../DropdownLink/DropdownLink'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
+import { List, ListItems, Tip } from '@src/components/ui/Dropdowns/DropdownLink'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import StatusIcon from '../../StatusComponents/StatusIcon/StatusIcon'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -189,18 +189,19 @@ class ActionDropdown extends React.Component<Props, State> {
     }
 
     const { body } = document
-    return ReactDOM.createPortal((
-      <List
-        ref={(list: HTMLElement | null | undefined) => { this.listRef = list }}
-        width={`${ThemeProps.inputSizes.regular.width}px`}
-        padding={0}
-        customStyle={ListStyle}
-        data-test-id={`${TEST_ID}-list`}
-      >
-        <Tip ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }} borderColor="rgba(111, 114, 118, 0.2)" />
-        {this.renderListItems()}
-      </List>
-    ), body)
+    return ReactDOM.createPortal(
+      (
+        <List
+          ref={(list: HTMLElement | null | undefined) => { this.listRef = list }}
+          width={`${ThemeProps.inputSizes.regular.width}px`}
+          padding={0}
+          customStyle={ListStyle}
+        >
+          <Tip ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }} borderColor="rgba(111, 114, 118, 0.2)" />
+          {this.renderListItems()}
+        </List>
+      ), body,
+    )
   }
 
   render() {

@@ -16,21 +16,21 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import replicaStore from '../../../stores/ReplicaStore'
-import migrationStore from '../../../stores/MigrationStore'
-import endpointStore from '../../../stores/EndpointStore'
-import userStore from '../../../stores/UserStore'
-import projectStore from '../../../stores/ProjectStore'
-import licenceStore from '../../../stores/LicenceStore'
-import notificationStore from '../../../stores/NotificationStore'
+import replicaStore from '@src/stores/ReplicaStore'
+import migrationStore from '@src/stores/MigrationStore'
+import endpointStore from '@src/stores/EndpointStore'
+import userStore from '@src/stores/UserStore'
+import projectStore from '@src/stores/ProjectStore'
+import licenceStore from '@src/stores/LicenceStore'
+import notificationStore from '@src/stores/NotificationStore'
 
-import MainTemplate from '../../modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '../../modules/NavigationModule/Navigation/Navigation'
-import PageHeader from '../../ui/PageHeader/PageHeader'
-import DashboardContent from '../../modules/DashboardModule/DashboardContent/DashboardContent'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
+import PageHeader from '@src/components/ui/PageHeader'
+import DashboardContent from '@src/components/modules/DashboardModule/DashboardContent'
 
-import Utils from '../../../utils/ObjectUtils'
-import configLoader from '../../../utils/Config'
+import Utils from '@src/utils/ObjectUtils'
+import configLoader from '@src/utils/Config'
 
 const Wrapper = styled.div<any>``
 
@@ -92,7 +92,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
     }
 
     await this.loadData(showLoading)
-    this.pollTimeout = setTimeout(() => {
+    this.pollTimeout = window.setTimeout(() => {
       this.pollData(false)
     }, configLoader.config.requestPollTimeout)
   }
@@ -109,8 +109,11 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
   }
 
   async loadAdminData(showLoading: boolean) {
-    await Utils.waitFor(() => Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin),
-      30000, 100)
+    await Utils.waitFor(
+      () => Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin),
+      30000,
+      100,
+    )
     if (userStore.loggedUser?.isAdmin) {
       userStore.getAllUsers({ skipLog: true, showLoading })
       licenceStore.loadLicenceInfo({ skipLog: true, showLoading })

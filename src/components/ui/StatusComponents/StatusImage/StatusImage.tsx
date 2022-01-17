@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import errorImage from './images/error'
 import successImage from './images/success'
@@ -138,9 +138,7 @@ class StatusImage extends React.Component<Props> {
 
   renderProgressText() {
     return (
-      <ProgressText
-        data-test-id="statusImage-progressText"
-      >{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
+      <ProgressText>{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
       </ProgressText>
     )
   }

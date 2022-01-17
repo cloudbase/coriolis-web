@@ -17,17 +17,17 @@ import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import AlertModal from '../../../ui/AlertModal/AlertModal'
-import Table from '../../../ui/Table/Table'
-import CopyValue from '../../../ui/CopyValue/CopyValue'
-import CopyMultilineValue from '../../../ui/CopyMultilineValue/CopyMultilineValue'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import Button from '../../../ui/Button/Button'
+import AlertModal from '@src/components/ui/AlertModal'
+import Table from '@src/components/ui/Table'
+import CopyValue from '@src/components/ui/CopyValue'
+import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import Button from '@src/components/ui/Button'
 
-import type { Project, RoleAssignment, Role } from '../../../../@types/Project'
-import type { User } from '../../../../@types/User'
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import type { Project, RoleAssignment, Role } from '@src/@types/Project'
+import type { User } from '@src/@types/User'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
@@ -255,8 +255,11 @@ class ProjectDetailsContent extends React.Component<Props, State> {
           disabled={!user.enabled}
           style={{ opacity: user.enabled ? 1 : 0.7 }}
           onChange={item => {
-            this.props.onUserRoleChange(user,
-              item.value, !userRoles.find(i => i.value === item.value))
+            this.props.onUserRoleChange(
+              user,
+              item.value,
+              !userRoles.find(i => i.value === item.value),
+            )
           }}
         />,
         <UserColumn disabled={!user.enabled}>{user.enabled ? 'Enabled' : 'Disabled'}</UserColumn>,

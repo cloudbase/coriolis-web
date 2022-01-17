@@ -12,21 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '../utils/ApiCaller'
-import { OptionsSchemaPlugin } from '../plugins'
-import DefaultOptionsSchemaPlugin from '../plugins/default/OptionsSchemaPlugin'
+import Api from '@src/utils/ApiCaller'
+import { OptionsSchemaPlugin } from '@src/plugins'
+import DefaultOptionsSchemaPlugin from '@src/plugins/default/OptionsSchemaPlugin'
 
-import configLoader from '../utils/Config'
-import type { UpdateData, ReplicaItem, ReplicaItemDetails } from '../@types/MainItem'
-import type { Execution, ExecutionTasks } from '../@types/Execution'
-import type { Endpoint } from '../@types/Endpoint'
-import type { Task, ProgressUpdate } from '../@types/Task'
-import type { Field } from '../@types/Field'
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
+import configLoader from '@src/utils/Config'
+import type { UpdateData, ReplicaItem, ReplicaItemDetails } from '@src/@types/MainItem'
+import type { Execution, ExecutionTasks } from '@src/@types/Execution'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { Task, ProgressUpdate } from '@src/@types/Task'
+import type { Field } from '@src/@types/Field'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
 
-export const sortTasks = (
-  tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void,
-) => {
+export const sortTasks = (tasks?: Task[], taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void) => {
   if (!tasks) {
     return
   }
@@ -250,8 +248,10 @@ class ReplicaSource {
     }
 
     if (Object.keys(updateData.destination).length > 0) {
-      const destEnv = destinationParser.getDestinationEnv(updateData.destination,
-        { ...replica, ...replica.destination_environment })
+      const destEnv = destinationParser.getDestinationEnv(
+        updateData.destination,
+        { ...replica, ...replica.destination_environment },
+      )
 
       const newMinionMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
       if (newMinionMappings) {

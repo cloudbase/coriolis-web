@@ -16,31 +16,30 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import MainTemplate from '../../modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '../../modules/NavigationModule/Navigation/Navigation'
-import FilterList from '../../ui/Lists/FilterList/FilterList'
-import PageHeader from '../../ui/PageHeader/PageHeader'
-import EndpointListItem from '../../modules/EndpointModule/EndpointListItem/EndpointListItem'
-import AlertModal from '../../ui/AlertModal/AlertModal'
-import Modal from '../../ui/Modal/Modal'
-import ChooseProvider from '../../modules/EndpointModule/ChooseProvider/ChooseProvider'
-import EndpointModal from '../../modules/EndpointModule/EndpointModal/EndpointModal'
-import type { Endpoint as EndpointType } from '../../../@types/Endpoint'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
+import FilterList from '@src/components/ui/Lists/FilterList'
+import PageHeader from '@src/components/ui/PageHeader'
+import EndpointListItem from '@src/components/modules/EndpointModule/EndpointListItem'
+import AlertModal from '@src/components/ui/AlertModal'
+import Modal from '@src/components/ui/Modal'
+import ChooseProvider from '@src/components/modules/EndpointModule/ChooseProvider'
+import EndpointModal from '@src/components/modules/EndpointModule/EndpointModal'
+import type { Endpoint as EndpointType } from '@src/@types/Endpoint'
 
+import projectStore from '@src/stores/ProjectStore'
+import userStore from '@src/stores/UserStore'
+import endpointStore from '@src/stores/EndpointStore'
+import migrationStore from '@src/stores/MigrationStore'
+import replicaStore from '@src/stores/ReplicaStore'
+import providerStore from '@src/stores/ProviderStore'
+import EndpointDuplicateOptions from '@src/components/modules/EndpointModule/EndpointDuplicateOptions'
+
+import configLoader from '@src/utils/Config'
+import { ThemePalette } from '@src/components/Theme'
+import { ProviderTypes } from '@src/@types/Providers'
+import regionStore from '@src/stores/RegionStore'
 import endpointImage from './images/endpoint-large.svg'
-
-import projectStore from '../../../stores/ProjectStore'
-import userStore from '../../../stores/UserStore'
-import endpointStore from '../../../stores/EndpointStore'
-import migrationStore from '../../../stores/MigrationStore'
-import replicaStore from '../../../stores/ReplicaStore'
-import providerStore from '../../../stores/ProviderStore'
-import EndpointDuplicateOptions from '../../modules/EndpointModule/EndpointDuplicateOptions/EndpointDuplicateOptions'
-
-import configLoader from '../../../utils/Config'
-import { ThemePalette } from '../../Theme'
-import { ProviderTypes } from '../../../@types/Providers'
-import regionStore from '../../../stores/RegionStore'
 
 const Wrapper = styled.div<any>``
 
@@ -245,7 +244,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       migrationStore.getMigrations({ skipLog: true }),
       replicaStore.getReplicas({ skipLog: true }),
     ])
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: any, filterItem?: string | null, filterText?: string) {

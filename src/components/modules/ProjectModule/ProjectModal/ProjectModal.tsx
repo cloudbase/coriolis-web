@@ -16,16 +16,16 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import type { Project } from '../../../../@types/Project'
-import type { Field as FieldType } from '../../../../@types/Field'
-import Button from '../../../ui/Button/Button'
-import Modal from '../../../ui/Modal/Modal'
-import FieldInput from '../../../ui/FieldInput/FieldInput'
+import type { Project } from '@src/@types/Project'
+import type { Field as FieldType } from '@src/@types/Field'
+import Button from '@src/components/ui/Button'
+import Modal from '@src/components/ui/Modal'
+import FieldInput from '@src/components/ui/FieldInput'
 
+import LabelDictionary from '@src/utils/LabelDictionary'
+import KeyboardManager from '@src/utils/KeyboardManager'
+import { ThemeProps } from '@src/components/Theme'
 import projectImage from './images/project.svg'
-import LabelDictionary from '../../../../utils/LabelDictionary'
-import KeyboardManager from '../../../../utils/KeyboardManager'
-import { ThemeProps } from '../../../Theme'
 
 const Wrapper = styled.div<any>`
   padding: 48px 32px 32px 32px;

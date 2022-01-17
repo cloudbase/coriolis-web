@@ -18,10 +18,10 @@ import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '../DropdownButton/DropdownButton'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DomUtils from '../../../../utils/DomUtils'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DomUtils from '@src/utils/DomUtils'
 
 import checkmarkImage from './images/checkmark'
 import tipImage from './images/tip'
@@ -581,71 +581,72 @@ class Dropdown extends React.Component<Props, State> {
     const firstItemValue = this.props.items.length > 0 ? this.getValue(this.props.items[0]) : null
     const isFirstItemSelected = selectedValue === firstItemValue
 
-    const list = ReactDOM.createPortal((
-      <List
+    const list = ReactDOM.createPortal(
+      (
+        <List
         // eslint-disable-next-line react/jsx-props-no-spreading
-        {...this.props}
-        ref={(ref: HTMLElement | null | undefined) => { this.listRef = ref }}
-      >
-        <Tip
-          ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }}
-          primary={this.state.firstItemHover || isFirstItemSelected}
-          dangerouslySetInnerHTML={{ __html: tipImage }}
-        />
-        <ListItems ref={(ref: HTMLElement | null | undefined) => { this.listItemsRef = ref }}>
-          {this.props.items.map((item, i) => {
-            if (item.separator === true) {
-              // eslint-disable-next-line react/no-array-index-key
-              return <Separator key={`sep-${i}`} />
-            }
+          {...this.props}
+          ref={(ref: HTMLElement | null | undefined) => { this.listRef = ref }}
+        >
+          <Tip
+            ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }}
+            primary={this.state.firstItemHover || isFirstItemSelected}
+            dangerouslySetInnerHTML={{ __html: tipImage }}
+          />
+          <ListItems ref={(ref: HTMLElement | null | undefined) => { this.listItemsRef = ref }}>
+            {this.props.items.map((item, i) => {
+              if (item.separator === true) {
+                // eslint-disable-next-line react/no-array-index-key
+                return <Separator key={`sep-${i}`} />
+              }
 
-            const label = this.getLabel(item)
-            const value = this.getValue(item)
-            const duplicatedLabel = duplicatedLabels.find(l => l === label)
-            const multipleSelected = this.props.selectedItems && this.props.selectedItems
-              .find(j => this.getValue(j) === value)
-            const listItem = (
-              <ListItem
-                data-test-id="dropdownListItem"
-                ref={(ref: HTMLElement | null | undefined) => {
-                  if (i === 0) { this.firstItemRef = ref }
-                }}
-                key={value}
-                onMouseDown={() => { this.itemMouseDown = true }}
-                onMouseUp={() => { this.itemMouseDown = false }}
-                onMouseEnter={() => { this.handleItemMouseEnter(i) }}
-                onMouseLeave={() => { this.handleItemMouseLeave(i) }}
-                onClick={() => { this.handleItemClick(item) }}
-                selected={!this.props.multipleSelection && value === selectedValue}
-                multipleSelected={this.props.multipleSelection && multipleSelected}
-                dim={this.props.dimFirstItem && i === 0}
-                paddingLeft={this.props.multipleSelection ? 8 : 16}
-                arrowSelected={i === this.state.arrowSelection}
-                disabled={item.disabled}
-              >
-                {this.props.multipleSelection ? (
-                  <Checkmark
-                    ref={(ref: HTMLElement) => { this.checkmarkRefs[`${label}-${value || ''}`] = ref }}
-                    dangerouslySetInnerHTML={{ __html: checkmarkImage }}
-                    show={multipleSelected}
-                  />
-                ) : null}
-                <Labels>
-                  {label === '' ? '\u00A0' : label}
-                  {item.subtitleLabel ? (
-                    <SubtitleLabel>{item.subtitleLabel}</SubtitleLabel>
+              const label = this.getLabel(item)
+              const value = this.getValue(item)
+              const duplicatedLabel = duplicatedLabels.find(l => l === label)
+              const multipleSelected = this.props.selectedItems && this.props.selectedItems
+                .find(j => this.getValue(j) === value)
+              const listItem = (
+                <ListItem
+                  ref={(ref: HTMLElement | null | undefined) => {
+                    if (i === 0) { this.firstItemRef = ref }
+                  }}
+                  key={value}
+                  onMouseDown={() => { this.itemMouseDown = true }}
+                  onMouseUp={() => { this.itemMouseDown = false }}
+                  onMouseEnter={() => { this.handleItemMouseEnter(i) }}
+                  onMouseLeave={() => { this.handleItemMouseLeave(i) }}
+                  onClick={() => { this.handleItemClick(item) }}
+                  selected={!this.props.multipleSelection && value === selectedValue}
+                  multipleSelected={this.props.multipleSelection && multipleSelected}
+                  dim={this.props.dimFirstItem && i === 0}
+                  paddingLeft={this.props.multipleSelection ? 8 : 16}
+                  arrowSelected={i === this.state.arrowSelection}
+                  disabled={item.disabled}
+                >
+                  {this.props.multipleSelection ? (
+                    <Checkmark
+                      ref={(ref: HTMLElement) => { this.checkmarkRefs[`${label}-${value || ''}`] = ref }}
+                      dangerouslySetInnerHTML={{ __html: checkmarkImage }}
+                      show={multipleSelected}
+                    />
                   ) : null}
+                  <Labels>
+                    {label === '' ? '\u00A0' : label}
+                    {item.subtitleLabel ? (
+                      <SubtitleLabel>{item.subtitleLabel}</SubtitleLabel>
+                    ) : null}
 
-                  {duplicatedLabel ? <DuplicatedLabel>(<span>{value || ''}</span>)</DuplicatedLabel> : ''}
-                </Labels>
-              </ListItem>
-            )
+                    {duplicatedLabel ? <DuplicatedLabel>(<span>{value || ''}</span>)</DuplicatedLabel> : ''}
+                  </Labels>
+                </ListItem>
+              )
 
-            return listItem
-          })}
-        </ListItems>
-      </List>
-    ), body)
+              return listItem
+            })}
+          </ListItems>
+        </List>
+      ), body,
+    )
 
     return list
   }

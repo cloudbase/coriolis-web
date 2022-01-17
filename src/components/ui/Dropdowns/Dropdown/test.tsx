@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import TestWrapper from '../../../utils/TestWrapper'
+import TestWrapper from '@src/utils/TestWrapper'
 import Dropdown from '.'
 
 const wrap = props => new TestWrapper(shallow(<Dropdown {...props} />), 'dropdown')

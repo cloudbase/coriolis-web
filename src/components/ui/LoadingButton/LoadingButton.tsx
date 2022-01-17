@@ -16,11 +16,10 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '../Button/Button'
+import Button from '@src/components/ui/Button'
 
-
+import { ThemeProps } from '@src/components/Theme'
 import loadingImage from './images/loading.svg'
-import { ThemeProps } from '../../Theme'
 
 const ButtonStyled = styled(Button)`
   position: relative;

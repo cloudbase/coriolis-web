@@ -16,12 +16,12 @@ import { observable, action, runInAction } from 'mobx'
 
 import type {
   UpdateData, MigrationItem, MigrationItemDetails, MigrationItemOptions, UserScriptData,
-} from '../@types/MainItem'
-import type { Field } from '../@types/Field'
-import type { Endpoint } from '../@types/Endpoint'
-import type { InstanceScript } from '../@types/Instance'
-import MigrationSource from '../sources/MigrationSource'
-import apiCaller from '../utils/ApiCaller'
+} from '@src/@types/MainItem'
+import type { Field } from '@src/@types/Field'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { InstanceScript } from '@src/@types/Instance'
+import MigrationSource from '@src/sources/MigrationSource'
+import apiCaller from '@src/utils/ApiCaller'
 
 class MigrationStore {
   @observable migrations: MigrationItem[] = []
@@ -96,9 +96,7 @@ class MigrationStore {
     return migrationResult
   }
 
-  @action async getMigration(
-    migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean },
-  ) {
+  @action async getMigration(migrationId: string, options?: { showLoading?: boolean, skipLog?: boolean }) {
     if (options && options.showLoading) {
       this.detailsLoading = true
     }

@@ -16,10 +16,10 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
 
+import { ThemeProps } from '@src/components/Theme'
 import coriolisLargeImage from './images/coriolis-large.svg'
 import coriolisSmallImage from './images/coriolis-small.svg'
 import coriolisSmallBlackImage from './images/coriolis-small-black.svg'
-import { ThemeProps } from '../../Theme'
 
 const largeProps = css`
   width: 256px;

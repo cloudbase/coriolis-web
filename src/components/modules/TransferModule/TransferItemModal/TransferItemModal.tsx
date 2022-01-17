@@ -16,43 +16,43 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import providerStore, { getFieldChangeOptions } from '../../../../stores/ProviderStore'
-import replicaStore from '../../../../stores/ReplicaStore'
-import migrationStore from '../../../../stores/MigrationStore'
-import endpointStore from '../../../../stores/EndpointStore'
-import { OptionsSchemaPlugin } from '../../../../plugins'
+import providerStore, { getFieldChangeOptions } from '@src/stores/ProviderStore'
+import replicaStore from '@src/stores/ReplicaStore'
+import migrationStore from '@src/stores/MigrationStore'
+import endpointStore from '@src/stores/EndpointStore'
+import { OptionsSchemaPlugin } from '@src/plugins'
 
-import Button from '../../../ui/Button/Button'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Modal from '../../../ui/Modal/Modal'
-import Panel from '../../../ui/Panel/Panel'
-import { isOptionsPageValid } from '../../WizardModule/WizardPageContent/WizardPageContent'
-import WizardNetworks, { WizardNetworksChangeObject } from '../../WizardModule/WizardNetworks/WizardNetworks'
-import WizardOptions, { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../../WizardModule/WizardOptions/WizardOptions'
-import WizardStorage from '../../WizardModule/WizardStorage/WizardStorage'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Modal from '@src/components/ui/Modal'
+import Panel from '@src/components/ui/Panel'
+import { isOptionsPageValid } from '@src/components/modules/WizardModule/WizardPageContent'
+import WizardNetworks, { WizardNetworksChangeObject } from '@src/components/modules/WizardModule/WizardNetworks'
+import WizardOptions, { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
+import WizardStorage from '@src/components/modules/WizardModule/WizardStorage'
 
 import type {
   UpdateData, TransferItemDetails, MigrationItemDetails,
-} from '../../../../@types/MainItem'
-import type { NavigationItem } from '../../../ui/Panel/Panel'
+} from '@src/@types/MainItem'
+import type { NavigationItem } from '@src/components/ui/Panel'
 import {
   Endpoint, EndpointUtils, StorageBackend, StorageMap,
-} from '../../../../@types/Endpoint'
-import type { Field } from '../../../../@types/Field'
+} from '@src/@types/Endpoint'
+import type { Field } from '@src/@types/Field'
 import type {
   Instance, InstanceScript,
-} from '../../../../@types/Instance'
+} from '@src/@types/Instance'
 import {
   Network, NetworkMap, NetworkUtils, SecurityGroup,
-} from '../../../../@types/Network'
+} from '@src/@types/Network'
 
-import { providerTypes, migrationFields } from '../../../../constants'
-import configLoader from '../../../../utils/Config'
-import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
-import minionPoolStore from '../../../../stores/MinionPoolStore'
-import WizardScripts from '../../WizardModule/WizardScripts/WizardScripts'
-import networkStore from '../../../../stores/NetworkStore'
-import { ThemeProps } from '../../../Theme'
+import { providerTypes, migrationFields } from '@src/constants'
+import configLoader from '@src/utils/Config'
+import LoadingButton from '@src/components/ui/LoadingButton'
+import minionPoolStore from '@src/stores/MinionPoolStore'
+import WizardScripts from '@src/components/modules/WizardModule/WizardScripts'
+import networkStore from '@src/stores/NetworkStore'
+import { ThemeProps } from '@src/components/Theme'
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -300,7 +300,7 @@ class TransferItemModal extends React.Component<Props, State> {
     const endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
     const plugin = OptionsSchemaPlugin.for(endpoint.type)
 
-    const osMapping = new RegExp('^(windows|linux)').exec(fieldName)
+    const osMapping = /^(windows|linux)/.exec(fieldName)
     if (osMapping) {
       const osData = replicaData[`${plugin.migrationImageMapFieldName}/${osMapping[0]}`]
       return osData

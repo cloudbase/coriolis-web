@@ -72,7 +72,6 @@ storiesOf('TaskItem', module)
           item={newItem}
           columnWidths={columnWidths}
           onDependsOnClick={() => { }}
-
           open
         />
       </div>
@@ -87,7 +86,6 @@ storiesOf('TaskItem', module)
           item={newItem}
           columnWidths={columnWidths}
           onDependsOnClick={() => { }}
-
           open
         />
       </div>
@@ -102,7 +100,6 @@ storiesOf('TaskItem', module)
           item={newItem}
           columnWidths={columnWidths}
           onDependsOnClick={() => { }}
-
           open
         />
       </div>

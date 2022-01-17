@@ -14,10 +14,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action } from 'mobx'
 
-import AssessmentSource from '../sources/AssessmentSource'
-import type { Endpoint } from '../@types/Endpoint'
-import type { Assessment, MigrationInfo } from '../@types/Assessment'
-import { MigrationItem } from '../@types/MainItem'
+import AssessmentSource from '@src/sources/AssessmentSource'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { Assessment, MigrationInfo } from '@src/@types/Assessment'
+import { MigrationItem } from '@src/@types/MainItem'
 
 class AssessmentStore {
   @observable selectedEndpoint: Endpoint | null = null

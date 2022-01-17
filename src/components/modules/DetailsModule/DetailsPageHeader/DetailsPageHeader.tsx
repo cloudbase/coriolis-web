@@ -17,14 +17,14 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import NavigationMini from '../../NavigationModule/NavigationMini/NavigationMini'
-import NotificationDropdown from '../../../ui/Dropdowns/NotificationDropdown/NotificationDropdown'
-import UserDropdown from '../../../ui/Dropdowns/UserDropdown/UserDropdown'
-import AboutModal from '../../../smart/AboutModal/AboutModal'
+import NavigationMini from '@src/components/modules/NavigationModule/NavigationMini'
+import NotificationDropdown from '@src/components/ui/Dropdowns/NotificationDropdown'
+import UserDropdown from '@src/components/ui/Dropdowns/UserDropdown'
+import AboutModal from '@src/components/smart/AboutModal'
 
-import type { User as UserType } from '../../../../@types/User'
+import type { User as UserType } from '@src/@types/User'
 
-import notificationStore from '../../../../stores/NotificationStore'
+import notificationStore from '@src/stores/NotificationStore'
 
 import backgroundImage from './images/star-bg.jpg'
 import logoImage from './images/logo.svg'
@@ -106,7 +106,7 @@ class DetailsPageHeader extends React.Component<Props, State> {
     }
 
     await notificationStore.loadData(showLoading)
-    this.pollTimeout = setTimeout(() => { this.pollData() }, 15000)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, 15000)
   }
 
   render() {

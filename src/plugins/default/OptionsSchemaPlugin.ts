@@ -14,17 +14,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable no-param-reassign */
 
+import Utils from '@src/utils/ObjectUtils'
+
+import type { Field } from '@src/@types/Field'
+import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
+import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
+import type { NetworkMap } from '@src/@types/Network'
+import type { InstanceScript } from '@src/@types/Instance'
+import { executionOptions, migrationFields } from '@src/constants'
+import { UserScriptData } from '@src/@types/MainItem'
 import { defaultSchemaToFields } from './ConnectionSchemaPlugin'
-
-import Utils from '../../utils/ObjectUtils'
-
-import type { Field } from '../../@types/Field'
-import type { OptionValues, StorageMap } from '../../@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '../../@types/Schema'
-import type { NetworkMap } from '../../@types/Network'
-import type { InstanceScript } from '../../@types/Instance'
-import { executionOptions, migrationFields } from '../../constants'
-import { UserScriptData } from '../../@types/MainItem'
 
 const migrationImageOsTypes = ['windows', 'linux']
 
@@ -155,9 +154,7 @@ export const defaultGetMigrationImageMap = (
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_image_map'
 
-  static parseSchemaToFields(
-    schema: SchemaProperties, schemaDefinitions?: SchemaDefinitions | null, dictionaryKey?: string,
-  ) {
+  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: SchemaDefinitions | null, dictionaryKey?: string) {
     return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey)
   }
 

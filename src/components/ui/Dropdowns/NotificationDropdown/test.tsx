@@ -16,8 +16,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import type { NotificationItemData } from '../../../../@types/NotificationItem'
-import TW from '../../../utils/TestWrapper'
+import type { NotificationItemData } from '@src/@types/NotificationItem'
+import TW from '@src/utils/TestWrapper'
 import NotificationDropdown from '.'
 import type { Props } from '.'
 

@@ -17,22 +17,22 @@ import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
-import CopyValue from '../../../ui/CopyValue/CopyValue'
-import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
-import CopyMultilineValue from '../../../ui/CopyMultilineValue/CopyMultilineValue'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import CopyValue from '@src/components/ui/CopyValue'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
+import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
 
-import type { Endpoint } from '../../../../@types/Endpoint'
-import type { Field as FieldType } from '../../../../@types/Field'
-import fieldHelper from '../../../../@types/Field'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { Field as FieldType } from '@src/@types/Field'
+import fieldHelper from '@src/@types/Field'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DateUtils from '../../../../utils/DateUtils'
-import LabelDictionary from '../../../../utils/LabelDictionary'
-import { OptionsSchemaPlugin } from '../../../../plugins'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DateUtils from '@src/utils/DateUtils'
+import LabelDictionary from '@src/utils/LabelDictionary'
+import { OptionsSchemaPlugin } from '@src/plugins'
 
-import { TransferItem, ReplicaItem, MigrationItem } from '../../../../@types/MainItem'
-import { MinionPool } from '../../../../@types/MinionPool'
+import { TransferItem, ReplicaItem, MigrationItem } from '@src/@types/MainItem'
+import { MinionPool } from '@src/@types/MinionPool'
 
 const Wrapper = styled.div<any>`
   display: flex;

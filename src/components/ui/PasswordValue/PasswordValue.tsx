@@ -16,9 +16,8 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-
+import { ThemeProps } from '@src/components/Theme'
 import eyeImage from './images/eye.svg'
-import { ThemeProps } from '../../Theme'
 
 const EyeIcon = styled.span`
   opacity: 0;

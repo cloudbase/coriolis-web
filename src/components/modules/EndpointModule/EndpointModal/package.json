@@ -1,7 +1,6 @@
 {
-  "name": "Endpoint",
+  "name": "EndpointModal",
   "version": "0.0.0",
   "private": true,
-  "main":"./Endpoint.tsx"
+  "main": "./EndpointModal.tsx"
 }
-

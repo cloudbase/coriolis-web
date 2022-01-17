@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -94,9 +94,7 @@ class SmallLoading extends React.Component<Props> {
     }
 
     return (
-      <ProgressText
-        data-test-id={`${TEST_ID}-progressText`}
-      >{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
+      <ProgressText>{this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
       </ProgressText>
     )
   }

@@ -15,10 +15,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
+import FileUtils from '@src/utils/FileUtils'
 import requiredImage from './images/required.svg'
-import FileUtils from '../../../utils/FileUtils'
 
 const getInputWidth = (props: any) => {
   if (props.width) {

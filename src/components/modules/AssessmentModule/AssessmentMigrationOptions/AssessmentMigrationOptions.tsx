@@ -16,15 +16,15 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '../../../ui/Button/Button'
-import FieldInput from '../../../ui/FieldInput/FieldInput'
-import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
+import Button from '@src/components/ui/Button'
+import FieldInput from '@src/components/ui/FieldInput'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
 
-import type { Field } from '../../../../@types/Field'
+import type { Field } from '@src/@types/Field'
 
-import { ThemeProps } from '../../../Theme'
+import { ThemeProps } from '@src/components/Theme'
 
-import LabelDictionary from '../../../../utils/LabelDictionary'
+import LabelDictionary from '@src/utils/LabelDictionary'
 
 import assessmentImage from './images/assessment.svg'
 
@@ -115,7 +115,7 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     showAdvancedOptions: false,
   }
 
-  scrollableRef: HTMLElement | undefined | null
+  // scrollableRef: HTMLElement | undefined | null
 
   getFieldValue(fieldName: string) {
     if (this.state.fieldValues[fieldName] != null) {
@@ -140,12 +140,12 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     })
   }
 
-  UNSAFE_componentDidUpdate(_: Props, prevState: State) {
-    if (prevState.showAdvancedOptions !== this.state.showAdvancedOptions
-      && this.props.onResizeUpdate && this.scrollableRef) {
-      this.props.onResizeUpdate(this.scrollableRef)
-    }
-  }
+  // UNSAFE_componentDidUpdate(_: Props, prevState: State) {
+  //   if (prevState.showAdvancedOptions !== this.state.showAdvancedOptions
+  //     && this.props.onResizeUpdate && this.scrollableRef) {
+  //     this.props.onResizeUpdate(this.scrollableRef)
+  //   }
+  // }
 
   handleObjectValueChange(fieldName: string, propName: string, value: any) {
     this.setState(prevState => {
@@ -263,7 +263,8 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
     })
 
     return (
-      <Fields ref={(ref: HTMLElement | null | undefined) => { this.scrollableRef = ref }}>
+      // <Fields ref={(ref: HTMLElement | null | undefined) => { this.scrollableRef = ref }}>
+      <Fields>
         {rows}
       </Fields>
     )

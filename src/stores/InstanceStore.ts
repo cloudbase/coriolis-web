@@ -16,12 +16,12 @@ import {
   observable, runInAction, computed, action,
 } from 'mobx'
 
-import type { Instance, InstanceBase } from '../@types/Instance'
-import type { Endpoint } from '../@types/Endpoint'
-import InstanceSource from '../sources/InstanceSource'
-import ApiCaller from '../utils/ApiCaller'
-import configLoader from '../utils/Config'
-import { ProviderTypes } from '../@types/Providers'
+import type { Instance, InstanceBase } from '@src/@types/Instance'
+import type { Endpoint } from '@src/@types/Endpoint'
+import InstanceSource from '@src/sources/InstanceSource'
+import ApiCaller from '@src/utils/ApiCaller'
+import configLoader from '@src/utils/Config'
+import { ProviderTypes } from '@src/@types/Providers'
 import notificationStore from './NotificationStore'
 
 class InstanceStore {

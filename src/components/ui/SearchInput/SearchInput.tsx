@@ -17,11 +17,10 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import SearchButton from '../SearchButton/SearchButton'
-import TextInput from '../TextInput/TextInput'
-import StatusIcon from '../StatusComponents/StatusIcon/StatusIcon'
-import { ThemeProps } from '../../Theme'
-
+import SearchButton from '@src/components/ui/SearchButton'
+import TextInput from '@src/components/ui/TextInput'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
+import { ThemeProps } from '@src/components/Theme'
 
 const Input = styled(TextInput)<any>`
   padding-left: 32px;

@@ -16,22 +16,22 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import notificationStore from '../../../../stores/NotificationStore'
+import notificationStore from '@src/stores/NotificationStore'
 
-import EndpointLogos from '../EndpointLogos/EndpointLogos'
-import Button from '../../../ui/Button/Button'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import Button from '@src/components/ui/Button'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import FileUtils from '../../../../utils/FileUtils'
-import configLoader from '../../../../utils/Config'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import FileUtils from '@src/utils/FileUtils'
+import configLoader from '@src/utils/Config'
 
-import type { FileContent } from '../../../../utils/FileUtils'
-import type { Endpoint, MultiValidationItem } from '../../../../@types/Endpoint'
+import type { FileContent } from '@src/utils/FileUtils'
+import type { Endpoint, MultiValidationItem } from '@src/@types/Endpoint'
 
+import { ProviderTypes } from '@src/@types/Providers'
+import { Region } from '@src/@types/Region'
 import MultipleUploadedEndpoints from './MultipleUploadedEndpoints'
-import { ProviderTypes } from '../../../../@types/Providers'
-import { Region } from '../../../../@types/Region'
 
 const Wrapper = styled.div<any>`
   display: flex;

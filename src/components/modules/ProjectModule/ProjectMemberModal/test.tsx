@@ -15,9 +15,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import TW from '../../../utils/TestWrapper'
-import type { User } from '../../../../@types/User'
-import type { Project, Role } from '../../../../@types/Project'
+import TW from '@src/utils/TestWrapper'
+import type { User } from '@src/@types/User'
+import type { Project, Role } from '@src/@types/Project'
 import ProjectMemberModal from '.'
 
 type Props = {

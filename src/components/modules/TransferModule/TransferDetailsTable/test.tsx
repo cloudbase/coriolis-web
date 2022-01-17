@@ -15,9 +15,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import type { MainItem } from '../../../../@types/MainItem'
-import type { Instance } from '../../../../@types/Instance'
-import TW from '../../../utils/TestWrapper'
+import type { MainItem } from '@src/@types/MainItem'
+import type { Instance } from '@src/@types/Instance'
+import TW from '@src/utils/TestWrapper'
 import Component, { TEST_ID } from './TransferDetailsTable'
 import type { Props } from './TransferDetailsTable'
 

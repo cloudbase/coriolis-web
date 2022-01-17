@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import AutocompleteDropdown from '../AutocompleteDropdown'
+import AutocompleteDropdown from '.'
 
 const generateItem = (item: string, value?: string) => ({
   value: value || item.replace(/ /g, '_').toLowerCase(),

@@ -16,16 +16,16 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Checkbox from '../../../ui/Checkbox/Checkbox'
-import ReloadButton from '../../../ui/ReloadButton/ReloadButton'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Button from '../../../ui/Button/Button'
-import SearchInput from '../../../ui/SearchInput/SearchInput'
-import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
-import Pagination from '../../../ui/Pagination/Pagination'
+import Checkbox from '@src/components/ui/Checkbox'
+import ReloadButton from '@src/components/ui/ReloadButton'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from '@src/components/ui/Button'
+import SearchInput from '@src/components/ui/SearchInput'
+import InfoIcon from '@src/components/ui/InfoIcon'
+import Pagination from '@src/components/ui/Pagination'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import type { Instance as InstanceType } from '../../../../@types/Instance'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import type { Instance as InstanceType } from '@src/@types/Instance'
 
 import instanceImage from './images/instance.svg'
 import bigInstanceImage from './images/instance-big.svg'
@@ -192,7 +192,7 @@ class WizardInstances extends React.Component<Props, State> {
   handleSeachInputChange(searchText: string) {
     clearTimeout(this.timeout)
     this.setState({ searchText })
-    this.timeout = setTimeout(() => {
+    this.timeout = window.setTimeout(() => {
       this.props.onSearchInputChange(searchText)
     }, 500)
   }

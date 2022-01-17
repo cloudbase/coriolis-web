@@ -18,11 +18,11 @@ import styled from 'styled-components'
 import Modal from 'react-modal'
 import autobind from 'autobind-decorator'
 
-import KeyboardManager from '../../../utils/KeyboardManager'
+import KeyboardManager from '@src/utils/KeyboardManager'
 
+import { ThemeProps } from '@src/components/Theme'
 import headerBackground from './images/header-background.png'
 import headerBackgroundWide from './images/header-background-wide.png'
-import { ThemeProps } from '../../Theme'
 
 const headerHeight = 48
 
@@ -198,13 +198,17 @@ class NewModal extends React.Component<Props> {
       ...this.props.contentStyle,
     }
 
-    const children = React.Children.map(this.props.children,
-      child => React.cloneElement(child as React.ReactElement<any>,
+    const children = React.Children.map(
+      this.props.children,
+      child => React.cloneElement(
+        child as React.ReactElement<any>,
         {
           onResizeUpdate: (scrollableRef: HTMLDivElement, scrollOffset: number) => {
             this.handleChildUpdate(scrollableRef, scrollOffset)
           },
-        }))
+        },
+      ),
+    )
 
     return (
       <Modal

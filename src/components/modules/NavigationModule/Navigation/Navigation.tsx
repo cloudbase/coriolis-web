@@ -18,12 +18,12 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import Logo from '../../../ui/Logo/Logo'
-import userStore from '../../../../stores/UserStore'
-import configLoader from '../../../../utils/Config'
+import Logo from '@src/components/ui/Logo'
+import userStore from '@src/stores/UserStore'
+import configLoader from '@src/utils/Config'
 
-
-import { navigationMenu } from '../../../../constants'
+import { navigationMenu } from '@src/constants'
+import { ThemeProps } from '@src/components/Theme'
 import backgroundImage from './images/star-bg.jpg'
 import cbsImage from './images/cbsl-logo.svg'
 import cbsImageSmall from './images/cbsl-logo-small.svg'
@@ -37,7 +37,6 @@ import userImage from './images/user-menu.svg'
 import logsImage from './images/logs-menu.svg'
 import dashboardImage from './images/dashboard-menu.svg'
 import minionPoolsImage from './images/minion-pool-menu.svg'
-import { ThemeProps } from '../../../Theme'
 
 const isCollapsed = (props: any) => props.collapsed
   || (window.outerWidth <= ThemeProps.mobileMaxWidth)
@@ -305,7 +304,7 @@ class Navigation extends React.Component<Props> {
       return
     }
 
-    this.resizeTimeout = setTimeout(() => {
+    this.resizeTimeout = window.setTimeout(() => {
       this.resizeTimeout = null
       this.toggleMenu(window.outerWidth <= ThemeProps.mobileMaxWidth)
     }, 100)

@@ -16,32 +16,32 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import DetailsTemplate from '../../modules/TemplateModule/DetailsTemplate/DetailsTemplate'
-import DetailsPageHeader from '../../modules/DetailsModule/DetailsPageHeader/DetailsPageHeader'
-import DetailsContentHeader from '../../modules/DetailsModule/DetailsContentHeader/DetailsContentHeader'
-import MigrationDetailsContent from '../../modules/TransferModule/MigrationDetailsContent/MigrationDetailsContent'
-import AlertModal from '../../ui/AlertModal/AlertModal'
-import TransferItemModal from '../../modules/TransferModule/TransferItemModal/TransferItemModal'
-import Modal from '../../ui/Modal/Modal'
-import ReplicaMigrationOptions from '../../modules/TransferModule/ReplicaMigrationOptions/ReplicaMigrationOptions'
+import DetailsTemplate from '@src/components/modules/TemplateModule/DetailsTemplate'
+import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader'
+import DetailsContentHeader from '@src/components/modules/DetailsModule/DetailsContentHeader'
+import MigrationDetailsContent from '@src/components/modules/TransferModule/MigrationDetailsContent'
+import AlertModal from '@src/components/ui/AlertModal'
+import TransferItemModal from '@src/components/modules/TransferModule/TransferItemModal'
+import Modal from '@src/components/ui/Modal'
+import ReplicaMigrationOptions from '@src/components/modules/TransferModule/ReplicaMigrationOptions'
 
-import migrationStore from '../../../stores/MigrationStore'
-import userStore from '../../../stores/UserStore'
-import endpointStore from '../../../stores/EndpointStore'
-import notificationStore from '../../../stores/NotificationStore'
-import networkStore from '../../../stores/NetworkStore'
-import instanceStore from '../../../stores/InstanceStore'
-import providerStore from '../../../stores/ProviderStore'
-import configLoader from '../../../utils/Config'
+import migrationStore from '@src/stores/MigrationStore'
+import userStore from '@src/stores/UserStore'
+import endpointStore from '@src/stores/EndpointStore'
+import notificationStore from '@src/stores/NotificationStore'
+import networkStore from '@src/stores/NetworkStore'
+import instanceStore from '@src/stores/InstanceStore'
+import providerStore from '@src/stores/ProviderStore'
+import configLoader from '@src/utils/Config'
 
+import { ThemePalette } from '@src/components/Theme'
+
+import type { Field } from '@src/@types/Field'
+import type { InstanceScript } from '@src/@types/Instance'
+import minionPoolStore from '@src/stores/MinionPoolStore'
+import { getTransferItemTitle } from '@src/@types/MainItem'
+import { providerTypes } from '@src/constants'
 import migrationImage from './images/migration.svg'
-import { ThemePalette } from '../../Theme'
-
-import type { Field } from '../../../@types/Field'
-import type { InstanceScript } from '../../../@types/Instance'
-import minionPoolStore from '../../../stores/MinionPoolStore'
-import { getTransferItemTitle } from '../../../@types/MainItem'
-import { providerTypes } from '../../../constants'
 
 const Wrapper = styled.div<any>``
 
@@ -290,9 +290,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     if (this.state.pausePolling || this.stopPolling) {
       return
     }
-    await migrationStore.getMigration(
-      this.props.match.params.id, { showLoading: false, skipLog: true },
-    )
+    await migrationStore.getMigration(this.props.match.params.id, { showLoading: false, skipLog: true })
     setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 

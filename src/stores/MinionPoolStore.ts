@@ -15,14 +15,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import {
   action, observable, runInAction, computed,
 } from 'mobx'
-import { MinionPool, MinionPoolDetails } from '../@types/MinionPool'
-import MinionPoolSource from '../sources/MinionPoolSource'
-import { Field } from '../@types/Field'
-import { Providers, ProviderTypes } from '../@types/Providers'
-import { OptionsSchemaPlugin } from '../plugins'
-import { providerTypes } from '../constants'
-import apiCaller from '../utils/ApiCaller'
-import { Endpoint, OptionValues } from '../@types/Endpoint'
+import { MinionPool, MinionPoolDetails } from '@src/@types/MinionPool'
+import MinionPoolSource from '@src/sources/MinionPoolSource'
+import { Field } from '@src/@types/Field'
+import { Providers, ProviderTypes } from '@src/@types/Providers'
+import { OptionsSchemaPlugin } from '@src/plugins'
+import { providerTypes } from '@src/constants'
+import apiCaller from '@src/utils/ApiCaller'
+import { Endpoint, OptionValues } from '@src/@types/Endpoint'
 
 export type MinionPoolAction = 'allocate' | 'deallocate' | 'refresh'
 

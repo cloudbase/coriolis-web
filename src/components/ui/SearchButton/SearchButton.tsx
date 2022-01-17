@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import { ThemePalette } from '../../Theme'
+import { ThemePalette } from '@src/components/Theme'
 
 import searchImage from './images/search'
 import filterImage from './images/filter'

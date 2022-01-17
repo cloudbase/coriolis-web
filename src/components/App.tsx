@@ -18,35 +18,35 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import styled, { createGlobalStyle } from 'styled-components'
 import { observe } from 'mobx'
 
-import Fonts from './ui/Fonts'
-import NotificationsModule from './modules/NotificationsModule'
-import LoginPage from './smart/LoginPage'
-import ReplicasPage from './smart/ReplicasPage'
-import MessagePage from './smart/MessagePage'
-import ReplicaDetailsPage from './smart/ReplicaDetailsPage'
-import MigrationsPage from './smart/MigrationsPage'
-import MigrationDetailsPage from './smart/MigrationDetailsPage'
-import EndpointsPage from './smart/EndpointsPage'
-import EndpointDetailsPage from './smart/EndpointDetailsPage'
-import WizardPage from './smart/WizardPage'
-import userStore from '../stores/UserStore'
-import AssessmentsPage from './smart/AssessmentsPage'
-import AssessmentDetailsPage from './smart/AssessmentDetailsPage'
-import UsersPage from './smart/UsersPage'
-import UserDetailsPage from './smart/UserDetailsPage'
-import ProjectsPage from './smart/ProjectsPage'
-import ProjectDetailsPage from './smart/ProjectDetailsPage'
-import DashboardPage from './smart/DashboardPage'
-import LogsPage from './smart/LogsPage'
-import LogStreamPage from './smart/LogStreamPage'
+import Fonts from '@src/components/ui/Fonts'
+import NotificationsModule from '@src/components/modules/NotificationsModule'
+import LoginPage from '@src/components/smart/LoginPage'
+import ReplicasPage from '@src/components/smart/ReplicasPage'
+import MessagePage from '@src/components/smart/MessagePage'
+import ReplicaDetailsPage from '@src/components/smart/ReplicaDetailsPage'
+import MigrationsPage from '@src/components/smart/MigrationsPage'
+import MigrationDetailsPage from '@src/components/smart/MigrationDetailsPage'
+import EndpointsPage from '@src/components/smart/EndpointsPage'
+import EndpointDetailsPage from '@src/components/smart/EndpointDetailsPage'
+import AssessmentsPage from '@src/components/smart/AssessmentsPage'
+import AssessmentDetailsPage from '@src/components/smart/AssessmentDetailsPage'
+import UsersPage from '@src/components/smart/UsersPage'
+import UserDetailsPage from '@src/components/smart/UserDetailsPage'
+import ProjectsPage from '@src/components/smart/ProjectsPage'
+import ProjectDetailsPage from '@src/components/smart/ProjectDetailsPage'
+import DashboardPage from '@src/components/smart/DashboardPage'
+import LogsPage from '@src/components/smart/LogsPage'
+import LogStreamPage from '@src/components/smart/LogStreamPage'
+import WizardPage from '@src/components/smart/WizardPage'
 
-import Tooltip from './ui/Tooltip/Tooltip'
+import Tooltip from '@src/components/ui/Tooltip'
 
-import { navigationMenu } from '../constants'
-import configLoader from '../utils/Config'
-import MinionPoolsPage from './smart/MinionPoolsPage/MinionPoolsPage'
-import MinionPoolDetailsPage from './smart/MinionPoolDetailsPage/MinionPoolDetailsPage'
-import { ThemePalette, ThemeProps } from './Theme'
+import MinionPoolsPage from '@src/components/smart/MinionPoolsPage'
+import MinionPoolDetailsPage from '@src/components/smart/MinionPoolDetailsPage'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import configLoader from '@src/utils/Config'
+import { navigationMenu } from '@src/constants'
+import userStore from '@src/stores/UserStore'
 
 const GlobalStyle = createGlobalStyle`
  ${Fonts}
@@ -85,8 +85,6 @@ class App extends React.Component<{}, State> {
   state = {
     isConfigReady: false,
   }
-
-  awaitingRefresh: boolean = false
 
   async componentDidMount() {
     observe(userStore, 'loggedUser', () => {

@@ -17,16 +17,16 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import moment from 'moment'
 
-import Button from '../../ui/Button/Button'
-import LoadingButton from '../../ui/LoadingButton/LoadingButton'
-import StatusImage from '../../ui/StatusComponents/StatusImage/StatusImage'
-import TextArea from '../../ui/TextArea/TextArea'
-import CopyValue from '../../ui/CopyValue/CopyValue'
+import Button from '@src/components/ui/Button'
+import LoadingButton from '@src/components/ui/LoadingButton'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import TextArea from '@src/components/ui/TextArea'
+import CopyValue from '@src/components/ui/CopyValue'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
-import FileUtils from '../../../utils/FileUtils'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import FileUtils from '@src/utils/FileUtils'
 
-import type { Licence, LicenceServerStatus } from '../../../@types/Licence'
+import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
 
 import licenceImage from './images/licence'
 

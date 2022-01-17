@@ -15,15 +15,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled from 'styled-components'
 
-import LabelDictionary from '../../../../utils/LabelDictionary'
+import LabelDictionary from '@src/utils/LabelDictionary'
 
-import FieldInput from '../../../ui/FieldInput/FieldInput'
-import type { Field } from '../../../../@types/Field'
+import FieldInput from '@src/components/ui/FieldInput'
+import type { Field } from '@src/@types/Field'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
-import { Endpoint } from '../../../../@types/Endpoint'
-import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import { Endpoint } from '@src/@types/Endpoint'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
 
 const Wrapper = styled.div<any>`
   display: flex;

@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '../utils/ApiCaller'
-import { OptionsSchemaPlugin } from '../plugins'
+import Api from '@src/utils/ApiCaller'
+import { OptionsSchemaPlugin } from '@src/plugins'
 
-import DomUtils from '../utils/DomUtils'
-import configLoader from '../utils/Config'
+import DomUtils from '@src/utils/DomUtils'
+import configLoader from '@src/utils/Config'
 
-import type { WizardData } from '../@types/WizardData'
-import type { StorageMap } from '../@types/Endpoint'
-import type { InstanceScript } from '../@types/Instance'
-import DefaultOptionsSchemaParser from '../plugins/default/OptionsSchemaPlugin'
-import { TransferItem } from '../@types/MainItem'
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../components/modules/WizardModule/WizardOptions/WizardOptions'
+import type { WizardData } from '@src/@types/WizardData'
+import type { StorageMap } from '@src/@types/Endpoint'
+import type { InstanceScript } from '@src/@types/Instance'
+import DefaultOptionsSchemaParser from '@src/plugins/default/OptionsSchemaPlugin'
+import { TransferItem } from '@src/@types/MainItem'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
 
 class WizardSource {
   async create(

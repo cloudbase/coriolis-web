@@ -1,6 +1,6 @@
-import DefaultMinionPoolSchemaPlugin from '../default/MinionPoolSchemaPlugin'
-import { Field } from '../../@types/Field'
-import DomUtils from '../../utils/DomUtils'
+import DefaultMinionPoolSchemaPlugin from '@src/plugins/default/MinionPoolSchemaPlugin'
+import { Field } from '@src/@types/Field'
+import DomUtils from '@src/utils/DomUtils'
 
 export default class MinionPoolSchemaPlugin {
   static getMinionPoolToOptionsQuery(envData: any) {

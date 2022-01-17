@@ -16,13 +16,13 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '../../../ui/Button/Button'
-import FieldInput from '../../../ui/FieldInput/FieldInput'
+import Button from '@src/components/ui/Button'
+import FieldInput from '@src/components/ui/FieldInput'
 
-import LabelDictionary from '../../../../utils/LabelDictionary'
-import KeyboardManager from '../../../../utils/KeyboardManager'
-import { executionOptions } from '../../../../constants'
-import type { Field } from '../../../../@types/Field'
+import LabelDictionary from '@src/utils/LabelDictionary'
+import KeyboardManager from '@src/utils/KeyboardManager'
+import { executionOptions } from '@src/constants'
+import type { Field } from '@src/@types/Field'
 
 import executionImage from './images/execution.svg'
 

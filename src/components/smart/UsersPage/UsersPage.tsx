@@ -16,17 +16,17 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import MainTemplate from '../../modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '../../modules/NavigationModule/Navigation/Navigation'
-import FilterList from '../../ui/Lists/FilterList/FilterList'
-import PageHeader from '../../ui/PageHeader/PageHeader'
-import UserListItem from '../../modules/UserModule/UserListItem/UserListItem'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
+import FilterList from '@src/components/ui/Lists/FilterList'
+import PageHeader from '@src/components/ui/PageHeader'
+import UserListItem from '@src/components/modules/UserModule/UserListItem'
 
-import type { User } from '../../../@types/User'
+import type { User } from '@src/@types/User'
 
-import projectStore from '../../../stores/ProjectStore'
-import userStore from '../../../stores/UserStore'
-import configLoader from '../../../utils/Config'
+import projectStore from '@src/stores/ProjectStore'
+import userStore from '@src/stores/UserStore'
+import configLoader from '@src/utils/Config'
 
 const Wrapper = styled.div<any>``
 
@@ -87,7 +87,7 @@ class UsersPage extends React.Component<{ history: any }, State> {
     }
 
     await userStore.getAllUsers({ showLoading, skipLog: true })
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: User, filterItem?: string | null, filterText?: string): boolean {

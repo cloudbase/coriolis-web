@@ -16,7 +16,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import TW from '../../../utils/TestWrapper'
+import TW from '@src/utils/TestWrapper'
 import Panel, { TEST_ID } from '.'
 import type { Props, NavigationItem } from '.'
 

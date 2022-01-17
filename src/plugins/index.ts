@@ -12,6 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { ProviderTypes } from '@src/@types/Providers'
 import DefaultConnectionSchemaPlugin from './default/ConnectionSchemaPlugin'
 import AzureConnectionSchemaPlugin from './azure/ConnectionSchemaPlugin'
 import OpenstackConnectionSchemaPlugin from './openstack/ConnectionSchemaPlugin'
@@ -30,7 +31,6 @@ import OvirtOptionsSchemaPlugin from './ovirt/OptionsSchemaPlugin'
 
 import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
 import OciInstanceInfoPlugin from './oci/InstanceInfoPlugin'
-import { ProviderTypes } from '../@types/Providers'
 
 import DefaultMinionPoolSchemaPlugin from './default/MinionPoolSchemaPlugin'
 import OpenstackMinionPoolSchemaPlugin from './openstack/MinionPoolSchemaPlugin'

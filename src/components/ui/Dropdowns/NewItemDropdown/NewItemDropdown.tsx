@@ -18,20 +18,19 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '../DropdownButton/DropdownButton'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import userStore from '../../../../stores/UserStore'
-import configLoader from '../../../../utils/Config'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import userStore from '@src/stores/UserStore'
+import configLoader from '@src/utils/Config'
 
+import { navigationMenu } from '@src/constants'
 import migrationImage from './images/migration.svg'
 import replicaImage from './images/replica.svg'
 import endpointImage from './images/endpoint.svg'
 import userImage from './images/user.svg'
 import projectImage from './images/project.svg'
 import minionPoolImage from './images/minion-pool.svg'
-
-import { navigationMenu } from '../../../../constants'
 
 const ICON_MAP = {
   migration: migrationImage,

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from 'react'
 import { storiesOf } from '@storybook/react'
-import Switch from '../Switch'
+import Switch from '.'
 
 type Props = {
   disabled?: boolean,

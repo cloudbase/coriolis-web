@@ -18,12 +18,12 @@ import { saveAs } from 'file-saver'
 
 import type {
   Endpoint, Validation, StorageBackend, MultiValidationItem,
-} from '../@types/Endpoint'
+} from '@src/@types/Endpoint'
 
+import EndpointSource from '@src/sources/EndpointSource'
+
+import DomUtils from '@src/utils/DomUtils'
 import notificationStore from './NotificationStore'
-import EndpointSource from '../sources/EndpointSource'
-
-import DomUtils from '../utils/DomUtils'
 import regionStore from './RegionStore'
 
 const updateEndpoint = (endpoint: Endpoint, endpoints: Endpoint[]) => endpoints.map(e => {

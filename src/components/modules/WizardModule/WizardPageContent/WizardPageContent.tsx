@@ -16,40 +16,40 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
-import WizardType from '../WizardType/WizardType'
-import Button from '../../../ui/Button/Button'
-import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
-import WizardBreadcrumbs from '../WizardBreadcrumbs/WizardBreadcrumbs'
-import WizardEndpointList from '../WizardEndpointList/WizardEndpointList'
-import WizardInstances from '../WizardInstances/WizardInstances'
-import WizardNetworks, { WizardNetworksChangeObject } from '../WizardNetworks/WizardNetworks'
-import WizardStorage from '../WizardStorage/WizardStorage'
-import WizardOptions from '../WizardOptions/WizardOptions'
-import WizardScripts from '../WizardScripts/WizardScripts'
-import Schedule from '../../TransferModule/Schedule/Schedule'
-import WizardSummary from '../WizardSummary/WizardSummary'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import WizardType from '@src/components/modules/WizardModule/WizardType'
+import Button from '@src/components/ui/Button'
+import InfoIcon from '@src/components/ui/InfoIcon'
+import WizardBreadcrumbs from '@src/components/modules/WizardModule/WizardBreadcrumbs'
+import WizardEndpointList from '@src/components/modules/WizardModule/WizardEndpointList'
+import WizardInstances from '@src/components/modules/WizardModule/WizardInstances'
+import WizardNetworks, { WizardNetworksChangeObject } from '@src/components/modules/WizardModule/WizardNetworks'
+import WizardStorage from '@src/components/modules/WizardModule/WizardStorage'
+import WizardOptions from '@src/components/modules/WizardModule/WizardOptions'
+import WizardScripts from '@src/components/modules/WizardModule/WizardScripts'
+import Schedule from '@src/components/modules/TransferModule/Schedule'
+import WizardSummary from '@src/components/modules/WizardModule/WizardSummary'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import { providerTypes, wizardPages, migrationFields } from '../../../../constants'
-import configLoader from '../../../../utils/Config'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { providerTypes, wizardPages, migrationFields } from '@src/constants'
+import configLoader from '@src/utils/Config'
 
-import type { WizardData, WizardPage } from '../../../../@types/WizardData'
-import { Endpoint, EndpointUtils, StorageMap } from '../../../../@types/Endpoint'
+import type { WizardData, WizardPage } from '@src/@types/WizardData'
+import { Endpoint, EndpointUtils, StorageMap } from '@src/@types/Endpoint'
 import type {
   Instance, InstanceScript,
-} from '../../../../@types/Instance'
-import type { Field } from '../../../../@types/Field'
-import type { Schedule as ScheduleType } from '../../../../@types/Schedule'
-import instanceStore from '../../../../stores/InstanceStore'
-import providerStore from '../../../../stores/ProviderStore'
-import endpointStore from '../../../../stores/EndpointStore'
-import networkStore from '../../../../stores/NetworkStore'
+} from '@src/@types/Instance'
+import type { Field } from '@src/@types/Field'
+import type { Schedule as ScheduleType } from '@src/@types/Schedule'
+import instanceStore from '@src/stores/InstanceStore'
+import providerStore from '@src/stores/ProviderStore'
+import endpointStore from '@src/stores/EndpointStore'
+import networkStore from '@src/stores/NetworkStore'
 
+import { ProviderTypes } from '@src/@types/Providers'
+import minionPoolStore from '@src/stores/MinionPoolStore'
+import LoadingButton from '@src/components/ui/LoadingButton'
 import migrationArrowImage from './images/migration'
-import { ProviderTypes } from '../../../../@types/Providers'
-import minionPoolStore from '../../../../stores/MinionPoolStore'
-import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(`${parseInt(ThemeProps.contentWidth, 10) + 64}px`)}
@@ -297,11 +297,15 @@ class WizardPageContent extends React.Component<Props, State> {
         return !this.props.wizardData.selectedInstances
           || !this.props.wizardData.selectedInstances.length
       case 'source-options':
-        return !isOptionsPageValid(this.props.wizardData.sourceOptions,
-          this.props.providerStore.sourceSchema)
+        return !isOptionsPageValid(
+          this.props.wizardData.sourceOptions,
+          this.props.providerStore.sourceSchema,
+        )
       case 'dest-options':
-        return !isOptionsPageValid(this.props.wizardData.destOptions,
-          this.props.providerStore.destinationSchema)
+        return !isOptionsPageValid(
+          this.props.wizardData.destOptions,
+          this.props.providerStore.destinationSchema,
+        )
       case 'networks':
         return !this.isNetworksPageValid()
       default:

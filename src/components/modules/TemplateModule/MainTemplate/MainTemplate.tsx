@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from 'react'
 import styled from 'styled-components'
-import { ThemeProps } from '../../../Theme'
+import { ThemeProps } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;

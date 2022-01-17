@@ -15,10 +15,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import TW from '../../../utils/TestWrapper'
+import TW from '@src/utils/TestWrapper'
 import ReplicaExecutionOptions from '.'
 
-import { executionOptions } from '../../../../constants'
+import { executionOptions } from '@src/constants'
 
 const wrap = props => new TW(shallow(<ReplicaExecutionOptions {...props} />), 'reOptions')
 

@@ -16,23 +16,22 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Button from '../../../ui/Button/Button'
-import FieldInput from '../../../ui/FieldInput/FieldInput'
-import ToggleButtonBar from '../../../ui/ToggleButtonBar/ToggleButtonBar'
-import WizardScripts from '../../WizardModule/WizardScripts/WizardScripts'
+import Button from '@src/components/ui/Button'
+import FieldInput from '@src/components/ui/FieldInput'
+import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
+import WizardScripts from '@src/components/modules/WizardModule/WizardScripts'
 
-import LabelDictionary from '../../../../utils/LabelDictionary'
-import KeyboardManager from '../../../../utils/KeyboardManager'
+import LabelDictionary from '@src/utils/LabelDictionary'
+import KeyboardManager from '@src/utils/KeyboardManager'
 
-import replicaMigrationImage from './images/replica-migration.svg'
+import type { Field } from '@src/@types/Field'
+import type { Instance, InstanceScript } from '@src/@types/Instance'
+import { TransferItemDetails } from '@src/@types/MainItem'
+import { MinionPool } from '@src/@types/MinionPool'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
+import { ThemeProps } from '@src/components/Theme'
 import replicaMigrationFields from './replicaMigrationFields'
-
-import type { Field } from '../../../../@types/Field'
-import type { Instance, InstanceScript } from '../../../../@types/Instance'
-import { TransferItemDetails } from '../../../../@types/MainItem'
-import { MinionPool } from '../../../../@types/MinionPool'
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../../WizardModule/WizardOptions/WizardOptions'
-import { ThemeProps } from '../../../Theme'
+import replicaMigrationImage from './images/replica-migration.svg'
 
 const Wrapper = styled.div<any>`
   display: flex;

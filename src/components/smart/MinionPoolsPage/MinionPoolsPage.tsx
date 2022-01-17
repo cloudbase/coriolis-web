@@ -18,32 +18,32 @@ import { observer } from 'mobx-react'
 
 import { RouteComponentProps } from 'react-router-dom'
 
-import Modal from '../../ui/Modal/Modal'
-import MainTemplate from '../../modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '../../modules/NavigationModule/Navigation/Navigation'
-import FilterList from '../../ui/Lists/FilterList/FilterList'
-import PageHeader from '../../ui/PageHeader/PageHeader'
+import Modal from '@src/components/ui/Modal'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
+import FilterList from '@src/components/ui/Lists/FilterList'
+import PageHeader from '@src/components/ui/PageHeader'
 
-import type { Action as DropdownAction } from '../../ui/Dropdowns/ActionDropdown/ActionDropdown'
+import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
-import projectStore from '../../../stores/ProjectStore'
+import projectStore from '@src/stores/ProjectStore'
 
-import configLoader from '../../../utils/Config'
-import { MinionPool } from '../../../@types/MinionPool'
+import configLoader from '@src/utils/Config'
+import { MinionPool } from '@src/@types/MinionPool'
 
+import providerStore from '@src/stores/ProviderStore'
+import endpointStore from '@src/stores/EndpointStore'
+import minionPoolStore from '@src/stores/MinionPoolStore'
+import { Endpoint } from '@src/@types/Endpoint'
+import MinionEndpointModal from '@src/components/modules/MinionModule/MinionEndpointModal'
+import MinionPoolModal from '@src/components/modules/MinionModule/MinionPoolModal'
+import MinionPoolListItem from '@src/components/modules/MinionModule/MinionPoolListItem'
+import { ThemePalette } from '@src/components/Theme'
+import AlertModal from '@src/components/ui/AlertModal'
+import MinionPoolConfirmationModal from '@src/components/modules/MinionModule/MinionPoolConfirmationModal'
+import notificationStore from '@src/stores/NotificationStore'
+import ObjectUtils from '@src/utils/ObjectUtils'
 import emptyListImage from './images/minion-pool-empty-list.svg'
-import providerStore from '../../../stores/ProviderStore'
-import endpointStore from '../../../stores/EndpointStore'
-import minionPoolStore from '../../../stores/MinionPoolStore'
-import { Endpoint } from '../../../@types/Endpoint'
-import MinionEndpointModal from '../../modules/MinionModule/MinionEndpointModal/MinionEndpointModal'
-import MinionPoolModal from '../../modules/MinionModule/MinionPoolModal/MinionPoolModal'
-import MinionPoolListItem from '../../modules/MinionModule/MinionPoolListItem/MinionPoolListItem'
-import { ThemePalette } from '../../Theme'
-import AlertModal from '../../ui/AlertModal/AlertModal'
-import MinionPoolConfirmationModal from '../../modules/MinionModule/MinionPoolConfirmationModal/MinionPoolConfirmationModal'
-import notificationStore from '../../../stores/NotificationStore'
-import ObjectUtils from '../../../utils/ObjectUtils'
 
 const Wrapper = styled.div<any>``
 
@@ -127,7 +127,7 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
       minionPoolStore.loadMinionPools({ showLoading }),
     ])
 
-    this.pollTimeout = setTimeout(() => {
+    this.pollTimeout = window.setTimeout(() => {
       this.pollData(false)
     }, configLoader.config.requestPollTimeout)
   }

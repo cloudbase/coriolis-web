@@ -18,9 +18,9 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import type { NotificationItemData } from '../../../../@types/NotificationItem'
-import StatusIcon from '../../StatusComponents/StatusIcon/StatusIcon'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import type { NotificationItemData } from '@src/@types/NotificationItem'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
 
 import bellImage from './images/bell'
 import loadingImage from './images/loading'

@@ -14,16 +14,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from 'mobx'
 
-import type { WizardData, WizardPage } from '../@types/WizardData'
-import type { Instance, InstanceScript } from '../@types/Instance'
-import type { Field } from '../@types/Field'
-import type { NetworkMap } from '../@types/Network'
-import type { StorageMap } from '../@types/Endpoint'
-import type { Schedule } from '../@types/Schedule'
-import { wizardPages } from '../constants'
-import source from '../sources/WizardSource'
+import type { WizardData, WizardPage } from '@src/@types/WizardData'
+import type { Instance, InstanceScript } from '@src/@types/Instance'
+import type { Field } from '@src/@types/Field'
+import type { NetworkMap } from '@src/@types/Network'
+import type { StorageMap } from '@src/@types/Endpoint'
+import type { Schedule } from '@src/@types/Schedule'
+import { wizardPages } from '@src/constants'
+import source from '@src/sources/WizardSource'
+import { TransferItem } from '@src/@types/MainItem'
 import notificationStore from './NotificationStore'
-import { TransferItem } from '../@types/MainItem'
 
 const updateOptions = (
   oldOptions: { [prop: string]: any } | null | undefined,
@@ -243,9 +243,7 @@ class WizardStore {
     this.creatingItem = true
 
     try {
-      const item: TransferItem = await source.create(
-        type, data, defaultStorage, storageMap, uploadedUserScripts,
-      )
+      const item: TransferItem = await source.create(type, data, defaultStorage, storageMap, uploadedUserScripts)
       runInAction(() => { this.createdItem = item })
     } finally {
       runInAction(() => { this.creatingItem = false })
@@ -262,9 +260,7 @@ class WizardStore {
     this.creatingItems = true
 
     try {
-      const items = await source.createMultiple(
-        type, data, defaultStorage, storageMap, uploadedUserScripts,
-      )
+      const items = await source.createMultiple(type, data, defaultStorage, storageMap, uploadedUserScripts)
       const nullItemsCount = items.filter(i => i === null).length
       if (items && nullItemsCount === 0) {
         runInAction(() => { this.createdItems = items })

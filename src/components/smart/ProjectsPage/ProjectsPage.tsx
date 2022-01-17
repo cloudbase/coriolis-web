@@ -16,17 +16,17 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import MainTemplate from '../../modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '../../modules/NavigationModule/Navigation/Navigation'
-import FilterList from '../../ui/Lists/FilterList/FilterList'
-import PageHeader from '../../ui/PageHeader/PageHeader'
-import ProjectListItem from '../../modules/ProjectModule/ProjectListItem/ProjectListItem'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
+import FilterList from '@src/components/ui/Lists/FilterList'
+import PageHeader from '@src/components/ui/PageHeader'
+import ProjectListItem from '@src/components/modules/ProjectModule/ProjectListItem'
 
-import type { Project, RoleAssignment } from '../../../@types/Project'
+import type { Project, RoleAssignment } from '@src/@types/Project'
 
-import projectStore from '../../../stores/ProjectStore'
-import userStore from '../../../stores/UserStore'
-import configLoader from '../../../utils/Config'
+import projectStore from '@src/stores/ProjectStore'
+import userStore from '@src/stores/UserStore'
+import configLoader from '@src/utils/Config'
 
 const Wrapper = styled.div<any>``
 
@@ -102,7 +102,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
       projectStore.getProjects({ showLoading, skipLog: true }),
       projectStore.getRoleAssignments({ skipLog: true }),
     ])
-    this.pollTimeout = setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
   }
 
   itemFilterFunction(item: Project, _?: string | null, filterText?: string): boolean {

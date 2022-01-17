@@ -16,9 +16,9 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import type { User } from '../../../@types/User'
-import type { Project } from '../../../@types/Project'
-import TW from '../../../utils/TestWrapper'
+import type { User } from '@src/@types/User'
+import type { Project } from '@src/@types/Project'
+import TW from '@src/utils/TestWrapper'
 import Component, { TEST_ID } from '.'
 import type { Props } from '.'
 

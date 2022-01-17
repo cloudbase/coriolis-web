@@ -16,30 +16,30 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import DetailsTemplate from '../../modules/TemplateModule/DetailsTemplate/DetailsTemplate'
-import DetailsPageHeader from '../../modules/DetailsModule/DetailsPageHeader/DetailsPageHeader'
-import DetailsContentHeader from '../../modules/DetailsModule/DetailsContentHeader/DetailsContentHeader'
-import Modal from '../../ui/Modal/Modal'
-import AlertModal from '../../ui/AlertModal/AlertModal'
+import DetailsTemplate from '@src/components/modules/TemplateModule/DetailsTemplate'
+import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader'
+import DetailsContentHeader from '@src/components/modules/DetailsModule/DetailsContentHeader'
+import Modal from '@src/components/ui/Modal'
+import AlertModal from '@src/components/ui/AlertModal'
 
-import type { Action as DropdownAction } from '../../ui/Dropdowns/ActionDropdown/ActionDropdown'
+import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
-import userStore from '../../../stores/UserStore'
-import endpointStore from '../../../stores/EndpointStore'
-import notificationStore from '../../../stores/NotificationStore'
+import userStore from '@src/stores/UserStore'
+import endpointStore from '@src/stores/EndpointStore'
+import notificationStore from '@src/stores/NotificationStore'
 
-import configLoader from '../../../utils/Config'
+import configLoader from '@src/utils/Config'
 
+import { ThemePalette } from '@src/components/Theme'
+import minionPoolStore from '@src/stores/MinionPoolStore'
+import MinionPoolModal from '@src/components/modules/MinionModule/MinionPoolModal'
+import MinionPoolDetailsContent from '@src/components/modules/MinionModule/MinionPoolDetailsContent'
+import replicaStore from '@src/stores/ReplicaStore'
+import migrationStore from '@src/stores/MigrationStore'
+import MinionPoolConfirmationModal from '@src/components/modules/MinionModule/MinionPoolConfirmationModal'
+import providerStore from '@src/stores/ProviderStore'
+import { Field } from '@src/@types/Field'
 import minionPoolImage from './images/minion-pool.svg'
-import { ThemePalette } from '../../Theme'
-import minionPoolStore from '../../../stores/MinionPoolStore'
-import MinionPoolModal from '../../modules/MinionModule/MinionPoolModal/MinionPoolModal'
-import MinionPoolDetailsContent from '../../modules/MinionModule/MinionPoolDetailsContent/MinionPoolDetailsContent'
-import replicaStore from '../../../stores/ReplicaStore'
-import migrationStore from '../../../stores/MigrationStore'
-import MinionPoolConfirmationModal from '../../modules/MinionModule/MinionPoolConfirmationModal/MinionPoolConfirmationModal'
-import providerStore from '../../../stores/ProviderStore'
-import { Field } from '../../../@types/Field'
 
 const Wrapper = styled.div<any>``
 
@@ -117,10 +117,6 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     return schemaData
   }
 
-  getStatus() {
-    return this.minionPool?.status
-  }
-
   async loadMinionPool(minionPoolId?: string) {
     const usableId = minionPoolId || this.minionPoolId
     await Promise.all([
@@ -172,10 +168,6 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     this.setState({ showDeleteMinionPoolConfirmation: false })
     this.props.history.push('/minion-pools')
     minionPoolStore.deleteMinionPool(this.minionPool!.id)
-  }
-
-  handleCloseDeleteMinionPoolConfirmation() {
-    this.setState({ showDeleteMinionPoolConfirmation: false })
   }
 
   handleMinionPoolEditClick() {

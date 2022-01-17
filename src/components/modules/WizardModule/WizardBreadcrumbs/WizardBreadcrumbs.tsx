@@ -16,10 +16,10 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import Arrow from '../../../ui/Arrow/Arrow'
+import Arrow from '@src/components/ui/Arrow'
 
-import { ThemePalette } from '../../../Theme'
-import type { WizardPage } from '../../../../@types/WizardData'
+import { ThemePalette } from '@src/components/Theme'
+import type { WizardPage } from '@src/@types/WizardData'
 
 const Wrapper = styled.div<any>`
   display: flex;

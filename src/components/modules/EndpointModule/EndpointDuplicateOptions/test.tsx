@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import TW from '../../../utils/TestWrapper'
-import type { Project } from '../../../../@types/Project'
+import TW from '@src/utils/TestWrapper'
+import type { Project } from '@src/@types/Project'
 import EndpointDuplicateOptions from '.'
 
 type Props = {

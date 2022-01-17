@@ -17,16 +17,16 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import moment from 'moment'
 
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import InfoIcon from '../../../ui/InfoIcon/InfoIcon'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import InfoIcon from '@src/components/ui/InfoIcon'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
-import type { Licence, LicenceServerStatus } from '../../../../@types/Licence'
-import CopyValue from '../../../ui/CopyValue/CopyValue'
-import Button from '../../../ui/Button/Button'
+import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
+import CopyValue from '@src/components/ui/CopyValue'
+import Button from '@src/components/ui/Button'
 
-import licenceImage from '../../LicenceModule/images/licence'
+import licenceImage from '@src/components/modules/LicenceModule/images/licence'
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;

@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import { loginButtons } from '../../../../constants'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { loginButtons } from '@src/constants'
 import googleLogo from './images/google-logo.svg'
 import microsoftLogo from './images/microsoft-logo.svg'
 import facebookLogo from './images/facebook-logo.svg'

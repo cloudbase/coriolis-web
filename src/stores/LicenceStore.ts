@@ -14,9 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from 'mobx'
 
-import licenceSource from '../sources/LincenceSource'
+import licenceSource from '@src/sources/LincenceSource'
 
-import type { Licence, LicenceServerStatus } from '../@types/Licence'
+import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
 
 class LicenceStore {
   @observable loadingLicenceInfo: boolean = false

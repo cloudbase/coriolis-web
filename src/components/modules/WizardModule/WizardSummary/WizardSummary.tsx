@@ -17,26 +17,26 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import moment from 'moment'
 
-import StatusPill from '../../../ui/StatusComponents/StatusPill/StatusPill'
+import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import LabelDictionary from '../../../../utils/LabelDictionary'
-import DateUtils from '../../../../utils/DateUtils'
-import { migrationFields } from '../../../../constants'
-import type { Schedule } from '../../../../@types/Schedule'
-import type { WizardData } from '../../../../@types/WizardData'
-import type { StorageMap, StorageBackend } from '../../../../@types/Endpoint'
-import type { Instance, Disk, InstanceScript } from '../../../../@types/Instance'
-import type { Field } from '../../../../@types/Field'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import LabelDictionary from '@src/utils/LabelDictionary'
+import DateUtils from '@src/utils/DateUtils'
+import { migrationFields } from '@src/constants'
+import type { Schedule } from '@src/@types/Schedule'
+import type { WizardData } from '@src/@types/WizardData'
+import type { StorageMap, StorageBackend } from '@src/@types/Endpoint'
+import type { Instance, Disk, InstanceScript } from '@src/@types/Instance'
+import type { Field } from '@src/@types/Field'
 
-import fieldHelper from '../../../../@types/Field'
-import { getDisks } from '../WizardStorage/WizardStorage'
+import fieldHelper from '@src/@types/Field'
+import { getDisks } from '@src/components/modules/WizardModule/WizardStorage'
 
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
+import { MinionPool } from '@src/@types/MinionPool'
+import { ProviderTypes } from '@src/@types/Providers'
+import configLoader from '@src/utils/Config'
 import networkArrowImage from './images/network-arrow.svg'
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '../WizardOptions/WizardOptions'
-import { MinionPool } from '../../../../@types/MinionPool'
-import { ProviderTypes } from '../../../../@types/Providers'
-import configLoader from '../../../../utils/Config'
 
 const Wrapper = styled.div<any>`
   width: 100%;
@@ -326,9 +326,12 @@ class WizardSummary extends React.Component<Props> {
           if (key.indexOf('password') > -1 || propertyName.indexOf('password') > -1) {
             optionValue = '•••••••••'
           } else {
-            optionValue = fieldHelper.getValueAlias(propertyName,
+            optionValue = fieldHelper.getValueAlias(
+              propertyName,
               value,
-              schema, provider)
+              schema,
+              provider,
+            )
           }
 
           return (
@@ -462,9 +465,12 @@ class WizardSummary extends React.Component<Props> {
             const optionLabel = optionName.split('/')
               .map(n => LabelDictionary.get(n, `${data.target ? data.target.type : ''}-destination`)).join(' - ')
 
-            const optionValue = fieldHelper.getValueAlias(optionName,
+            const optionValue = fieldHelper.getValueAlias(
+              optionName,
               data.destOptions && data.destOptions[optionName],
-              this.props.destinationSchema, provider)
+              this.props.destinationSchema,
+              provider,
+            )
 
             return (
               <Option key={optionName}>

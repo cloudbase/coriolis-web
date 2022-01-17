@@ -16,7 +16,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import arrowImage from './images/arrow'
 import arrowThickImage from './images/arrow-thick'

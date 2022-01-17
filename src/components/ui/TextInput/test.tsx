@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import TestWrapper from '../../../utils/TestWrapper'
+import TestWrapper from '@src/utils/TestWrapper'
 import TextInput from '.'
 
 const wrap = props => new TestWrapper(shallow(<TextInput {...props} />), 'textInput')

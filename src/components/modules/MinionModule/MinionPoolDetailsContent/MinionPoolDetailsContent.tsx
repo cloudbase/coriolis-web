@@ -16,17 +16,17 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import Button from '../../../ui/Button/Button'
-import DetailsNavigation from '../../NavigationModule/DetailsNavigation/DetailsNavigation'
-import type { Endpoint } from '../../../../@types/Endpoint'
-import type { Field } from '../../../../@types/Field'
-import MinionPoolMainDetails from './MinionPoolMainDetails'
-import { ReplicaItem, MigrationItem } from '../../../../@types/MainItem'
-import { MinionPoolDetails } from '../../../../@types/MinionPool'
+import Button from '@src/components/ui/Button'
+import DetailsNavigation from '@src/components/modules/NavigationModule/DetailsNavigation'
+import type { Endpoint } from '@src/@types/Endpoint'
+import type { Field } from '@src/@types/Field'
+import { ReplicaItem, MigrationItem } from '@src/@types/MainItem'
+import { MinionPoolDetails } from '@src/@types/MinionPool'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import { ThemeProps } from '@src/components/Theme'
 import MinionPoolMachines from './MinionPoolMachines'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
 import MinionPoolEvents from './MinionPoolEvents'
-import { ThemeProps } from '../../../Theme'
+import MinionPoolMainDetails from './MinionPoolMainDetails'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -87,10 +87,6 @@ type Props = {
 }
 @observer
 class MinionPoolDetailsContent extends React.Component<Props> {
-  getStatus() {
-    return this.props.item?.status
-  }
-
   isEndpointMissing() {
     const endpoint = this.props.endpoints
       .find(e => e.id === this.props.item?.endpoint_id)

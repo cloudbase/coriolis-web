@@ -12,8 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { OptionsSchemaPlugin } from '../plugins'
-import LabelDictionary from '../utils/LabelDictionary'
+import { OptionsSchemaPlugin } from '@src/plugins'
+import LabelDictionary from '@src/utils/LabelDictionary'
 import { ProviderTypes } from './Providers'
 
 type Separator = { separator: boolean }

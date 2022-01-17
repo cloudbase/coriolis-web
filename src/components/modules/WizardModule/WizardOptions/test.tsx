@@ -14,13 +14,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import TW from '../../../utils/TestWrapper'
+import TW from '@src/utils/TestWrapper'
 import WizardOptions from '.'
 
-import configLoader from '../../../utils/Config'
+import configLoader from '@src/utils/Config'
 
 const wrap = props => new TW(shallow(
-  
+
   <WizardOptions {...props} />
 ), 'wOptions')
 
@@ -42,7 +42,7 @@ let fields = [
   {
     name: 'enum_field',
     type: 'string',
-    
+
     enum: ['enum 1', 'enum 2', 'enum 3'],
   },
   {
@@ -57,7 +57,7 @@ let fields = [
 
 describe('WizardOptions Component', () => {
   beforeAll(() => {
-    
+
     configLoader.config = { passwordFields: [] }
   })
 

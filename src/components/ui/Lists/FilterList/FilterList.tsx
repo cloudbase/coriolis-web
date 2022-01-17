@@ -16,13 +16,13 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import MainListFilter from '../MainListFilter/MainListFilter'
-import Pagination from '../../Pagination/Pagination'
-import type { Action as DropdownAction } from '../../Dropdowns/ActionDropdown/ActionDropdown'
-import type { ItemComponentProps } from '../MainList/MainList'
-import MainList from '../MainList/MainList'
+import MainListFilter from '@src/components/ui/Lists/MainListFilter'
+import Pagination from '@src/components/ui/Pagination'
+import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { ItemComponentProps } from '@src/components/ui/Lists/MainList'
+import MainList from '@src/components/ui/Lists/MainList'
 
-import configLoader from '../../../../utils/Config'
+import configLoader from '@src/utils/Config'
 
 const Wrapper = styled.div<any>`
   display: flex;

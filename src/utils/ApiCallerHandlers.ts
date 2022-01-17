@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios'
-import notificationStore from '../stores/NotificationStore'
+import notificationStore from '@src/stores/NotificationStore'
 import { RequestOptions } from './ApiCaller'
 import logger from './ApiLogger'
 

@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { shallow } from 'enzyme'
-import TW from '../../../utils/TestWrapper'
+import TW from '@src/utils/TestWrapper'
 import PropertiesTable from '.'
 
 const wrap = props => new TW(shallow(<PropertiesTable onChange={() => { }} {...props} />), 'propertiesTable')
@@ -24,7 +24,7 @@ let properties = [
   { type: 'boolean', name: 'prop_2', label: 'Boolean', value: false },
   { type: 'string', name: 'prop_3', label: 'String', value: 'value-3' },
   { type: 'string', name: 'prop_3a', label: 'String', required: true, value: 'value-4' },
-  
+
   { type: 'string', enum: ['a', 'b', 'c'], name: 'prop_4', label: 'String enum', value: 'value-5' },
 ]
 const valueCallback = prop => {

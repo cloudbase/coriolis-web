@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observer } from 'mobx-react'
 import React from 'react'
 import styled from 'styled-components'
-import { ThemeProps } from '../../Theme'
+import { ThemeProps } from '@src/components/Theme'
 import questionFilledImage from './images/question-filled.svg'
 import questionImage from './images/question.svg'
 import warningImage from './images/warning.svg'

@@ -16,15 +16,15 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Button from '../../../ui/Button/Button'
-import CopyButton from '../../../ui/CopyButton/CopyButton'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
+import Button from '@src/components/ui/Button'
+import CopyButton from '@src/components/ui/CopyButton'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
-import { ThemePalette } from '../../../Theme'
-import type { Validation as ValidationType } from '../../../../@types/Endpoint'
+import { ThemePalette } from '@src/components/Theme'
+import type { Validation as ValidationType } from '@src/@types/Endpoint'
 
-import notificationStore from '../../../../stores/NotificationStore'
-import DomUtils from '../../../../utils/DomUtils'
+import notificationStore from '@src/stores/NotificationStore'
+import DomUtils from '@src/utils/DomUtils'
 
 const Wrapper = styled.div<any>`
   padding: 48px 32px 32px 32px;

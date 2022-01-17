@@ -16,7 +16,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import moment from 'moment'
 import sinon from 'sinon'
-import TW from '../../../utils/TestWrapper'
+import TW from '@src/utils/TestWrapper'
 import Schedule from '.'
 
 const wrap = props => new TW(shallow(<Schedule {...props} />), 'schedule')

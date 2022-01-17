@@ -16,10 +16,10 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import moment from 'moment'
-import TW from '../../../utils/TestWrapper'
+import TW from '@src/utils/TestWrapper'
 import EndpointDetailsContent from '.'
 
-import configLoader from '../../../../utils/Config'
+import configLoader from '@src/utils/Config'
 
 const wrap = props => new TW(shallow(
 

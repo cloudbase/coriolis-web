@@ -14,8 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action } from 'mobx'
 
-import type { AlertInfo, AlertInfoLevel, NotificationItemData } from '../@types/NotificationItem'
-import NotificationSource from '../sources/NotificationSource'
+import type { AlertInfo, AlertInfoLevel, NotificationItemData } from '@src/@types/NotificationItem'
+import NotificationSource from '@src/sources/NotificationSource'
 
 class NotificationStore {
   @observable alerts: AlertInfo[] = []

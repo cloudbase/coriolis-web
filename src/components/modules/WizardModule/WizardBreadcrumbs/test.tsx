@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { shallow } from 'enzyme'
 import WizardBreadcrumbs from '.'
-import TW from '../../../utils/TestWrapper'
-import { wizardPages } from '../../../../constants'
+import TW from '@src/utils/TestWrapper'
+import { wizardPages } from '@src/constants'
 
 const wrap = props => new TW(
   shallow(<WizardBreadcrumbs pages={wizardPages} destinationProvider="oci" sourceProvider="vmware_vsphere" {...props} />),

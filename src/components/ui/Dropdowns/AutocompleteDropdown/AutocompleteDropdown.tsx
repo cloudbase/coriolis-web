@@ -18,14 +18,14 @@ import styled, { css } from 'styled-components'
 import ReactDOM from 'react-dom'
 import autobind from 'autobind-decorator'
 
-import AutocompleteInput from '../../AutocompleteInput/AutocompleteInput'
+import AutocompleteInput from '@src/components/ui/AutocompleteInput'
+import tipImage from '@src/components/ui/Dropdowns/Dropdown/images/tip'
+
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DomUtils from '@src/utils/DomUtils'
 import {
   Tip, updateTipStyle, scrollItemIntoView, handleKeyNavigation,
-} from '../Dropdown/Dropdown'
-import tipImage from '../Dropdown/images/tip'
-
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DomUtils from '../../../../utils/DomUtils'
+} from '@src/components/ui/Dropdowns/Dropdown'
 
 import requiredImage from './images/required.svg'
 
@@ -444,18 +444,20 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       ? this.getValue(this.state.filteredItems[0]) : null
     const isFirstItemSelected = selectedItemValue !== null && selectedItemValue === firstItemValue
 
-    const list = ReactDOM.createPortal((
+    const list = ReactDOM.createPortal(
+      (
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <List {...this.props} ref={(ref: HTMLElement | null | undefined) => { this.listRef = ref }}>
-        <Tip
-          ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }}
-          primary={this.state.firstItemHover || isFirstItemSelected}
-          dangerouslySetInnerHTML={{ __html: tipImage }}
-        />
-        {this.renderItems()}
-        {this.renderSearchNotFound()}
-      </List>
-    ), body)
+        <List {...this.props} ref={(ref: HTMLElement | null | undefined) => { this.listRef = ref }}>
+          <Tip
+            ref={(ref: HTMLElement | null | undefined) => { this.tipRef = ref }}
+            primary={this.state.firstItemHover || isFirstItemSelected}
+            dangerouslySetInnerHTML={{ __html: tipImage }}
+          />
+          {this.renderItems()}
+          {this.renderSearchNotFound()}
+        </List>
+      ), body,
+    )
 
     return list
   }

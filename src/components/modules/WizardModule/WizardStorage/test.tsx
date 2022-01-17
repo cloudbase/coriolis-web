@@ -16,8 +16,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import type { Instance } from '../../../@types/Instance'
-import TW from '../../../utils/TestWrapper'
+import type { Instance } from '@src/@types/Instance'
+import TW from '@src/utils/TestWrapper'
 import Component, { TEST_ID } from '.'
 import type { Props } from '.'
 

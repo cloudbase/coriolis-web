@@ -13,9 +13,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { observable, action, runInAction } from 'mobx'
-import type { User, Credentials } from '../@types/User'
-import type { Project } from '../@types/Project'
-import UserSource from '../sources/UserSource'
+import type { User, Credentials } from '@src/@types/User'
+import type { Project } from '@src/@types/Project'
+import UserSource from '@src/sources/UserSource'
 import projectStore from './ProjectStore'
 import notificationStore from './NotificationStore'
 
@@ -234,9 +234,7 @@ class UserStore {
     }
   }
 
-  async assignUserToProjectWithRole(
-    userId: string, projectId: string, roleId: string,
-  ): Promise<void> {
+  async assignUserToProjectWithRole(userId: string, projectId: string, roleId: string): Promise<void> {
     await UserSource.assignUserToProjectWithRole(userId, projectId, roleId)
   }
 

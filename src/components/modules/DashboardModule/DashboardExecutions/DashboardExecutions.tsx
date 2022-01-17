@@ -17,14 +17,14 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import moment from 'moment'
 
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import DashboardBarChart from '../DashboardBarChart/DashboardBarChart'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import DashboardBarChart from '@src/components/modules/DashboardModule/DashboardBarChart'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
+import { ReplicaItem, MigrationItem, TransferItem } from '@src/@types/MainItem'
 import emptyBackgroundImage from './images/empty-background.svg'
-import { ReplicaItem, MigrationItem, TransferItem } from '../../../../@types/MainItem'
 
 const INTERVALS = [
   { label: 'Last {x} days', value: '30-days' },

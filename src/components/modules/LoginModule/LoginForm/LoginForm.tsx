@@ -16,17 +16,15 @@ import React, { FormEvent } from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import Button from '../../../ui/Button/Button'
-import LoginOptions from '../LoginOptions/LoginOptions'
-import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
-import LoginFormField from '../LoginFormField/LoginFormField'
+import Button from '@src/components/ui/Button'
+import LoginOptions from '@src/components/modules/LoginModule/LoginOptions'
+import LoadingButton from '@src/components/ui/LoadingButton'
+import LoginFormField from '@src/components/modules/LoginModule/LoginFormField'
 
-
+import { loginButtons } from '@src/constants'
+import notificationStore from '@src/stores/NotificationStore'
+import { ThemeProps } from '@src/components/Theme'
 import errorIcon from './images/error.svg'
-
-import { loginButtons } from '../../../../constants'
-import notificationStore from '../../../../stores/NotificationStore'
-import { ThemeProps } from '../../../Theme'
 
 const Form = styled.form`
   background: rgba(221, 224, 229, 0.5);

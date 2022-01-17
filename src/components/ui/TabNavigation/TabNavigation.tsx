@@ -16,7 +16,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   display: flex;

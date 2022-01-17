@@ -2,7 +2,7 @@ import React from 'react'
 import { addDecorator } from '@storybook/react'
 import styled, { createGlobalStyle } from 'styled-components'
 
-import { ThemePalette, ThemeProps } from '../src/components/Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import Fonts from '../src/components/atoms/Fonts'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 

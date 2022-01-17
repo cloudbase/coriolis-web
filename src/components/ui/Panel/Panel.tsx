@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled, { css } from 'styled-components'
 import { observer } from 'mobx-react'
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import loadingImage from './images/loading.svg'
 

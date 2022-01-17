@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { css } from 'styled-components'
-import { ThemePalette, ThemeProps } from '../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 import closeImage from './images/close.svg'
 

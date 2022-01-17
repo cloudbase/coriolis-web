@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 
-import type { NotificationItemData } from '../../../../@types/NotificationItem'
-import NotificationDropdown from '../NotificationDropdown'
+import type { NotificationItemData } from '@src/@types/NotificationItem'
+import NotificationDropdown from '.'
 
 const items: NotificationItemData[] = [
   {

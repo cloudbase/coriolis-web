@@ -17,7 +17,8 @@
   ],
   "plugins": [
     "import",
-    "react"
+    "react",
+    "coriolis-web"
   ],
   "env": {
     "browser": true,
@@ -35,24 +36,9 @@
     "src/**/package.json"
   ],
   "rules": {
+    "coriolis-web/import-no-duplicate-name": "error",
     "react/function-component-definition": "off",
-    "import/no-relative-packages": "off",
     "react/sort-comp": "off",
-    "react/jsx-indent": [
-      2,
-      2,
-      {
-        "checkAttributes": true,
-        "indentLogicalExpressions": true
-      }
-    ],
-    "react/jsx-indent-props": [
-      2,
-      2
-    ],
-    "react/self-closing-comp": [
-      2
-    ],
     "react/jsx-one-expression-per-line": "off",
     "@typescript-eslint/semi": [
       2,
@@ -63,6 +49,7 @@
       "as-needed"
     ],
     "no-console": "off",
+    "react/require-default-props": "off",
     "class-methods-use-this": "off",
     "no-underscore-dangle": "off",
     "jsx-a11y/mouse-events-have-key-events": "off",

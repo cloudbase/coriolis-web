@@ -16,18 +16,17 @@ import React from 'react'
 import styled from 'styled-components'
 import { observer } from 'mobx-react'
 
-import MainTemplate from '../../modules/TemplateModule/MainTemplate/MainTemplate'
-import Navigation from '../../modules/NavigationModule/Navigation/Navigation'
-import PageHeader from '../../ui/PageHeader/PageHeader'
-import TabNavigation from '../../ui/TabNavigation/TabNavigation'
+import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
+import Navigation from '@src/components/modules/NavigationModule/Navigation'
+import PageHeader from '@src/components/ui/PageHeader'
+import TabNavigation from '@src/components/ui/TabNavigation'
 
-import DownloadContent from './DownloadsContent'
+import logStore from '@src/stores/LogStore'
+import notificationStore from '@src/stores/NotificationStore'
+import projectStore from '@src/stores/ProjectStore'
+import apiLogger from '@src/utils/ApiLogger'
 import StreamText from './StreamText'
-
-import logStore from '../../../stores/LogStore'
-import notificationStore from '../../../stores/NotificationStore'
-import projectStore from '../../../stores/ProjectStore'
-import apiLogger from '../../../utils/ApiLogger'
+import DownloadContent from './DownloadsContent'
 
 const TAB_ITEMS = [
   { label: 'Download', value: 'downloads' },

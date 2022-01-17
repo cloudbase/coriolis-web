@@ -16,19 +16,19 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import type { Endpoint, MultiValidationItem } from '../../../../@types/Endpoint'
+import type { Endpoint, MultiValidationItem } from '@src/@types/Endpoint'
 
-import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
-import Button from '../../../ui/Button/Button'
-import EndpointLogos from '../EndpointLogos/EndpointLogos'
-import LoadingButton from '../../../ui/LoadingButton/LoadingButton'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
+import Button from '@src/components/ui/Button'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import LoadingButton from '@src/components/ui/LoadingButton'
 
-import deleteImage from './images/delete.svg'
+import DomUtils from '@src/utils/DomUtils'
+import notificationStore from '@src/stores/NotificationStore'
+import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import { Region } from '@src/@types/Region'
 import deleteHoverImage from './images/delete-hover.svg'
-import DomUtils from '../../../../utils/DomUtils'
-import notificationStore from '../../../../stores/NotificationStore'
-import DropdownLink from '../../../ui/Dropdowns/DropdownLink/DropdownLink'
-import { Region } from '../../../../@types/Region'
+import deleteImage from './images/delete.svg'
 
 const Wrapper = styled.div`
   width: 100%;

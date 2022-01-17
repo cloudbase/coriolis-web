@@ -14,10 +14,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import Api from '../utils/ApiCaller'
-import configLoader from '../utils/Config'
-import DateUtils from '../utils/DateUtils'
-import type { Schedule } from '../@types/Schedule'
+import Api from '@src/utils/ApiCaller'
+import configLoader from '@src/utils/Config'
+import DateUtils from '@src/utils/DateUtils'
+import type { Schedule } from '@src/@types/Schedule'
 
 class ScheduleSource {
   async scheduleSinge(replicaId: string, scheduleData: Schedule): Promise<Schedule> {

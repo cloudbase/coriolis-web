@@ -13,10 +13,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { observable, action, runInAction } from 'mobx'
-import type { Project, RoleAssignment, Role } from '../@types/Project'
-import type { User } from '../@types/User'
+import type { Project, RoleAssignment, Role } from '@src/@types/Project'
+import type { User } from '@src/@types/User'
 
-import ProjectSource from '../sources/ProjectSource'
+import ProjectSource from '@src/sources/ProjectSource'
 import userStore from './UserStore'
 
 class ProjectStore {

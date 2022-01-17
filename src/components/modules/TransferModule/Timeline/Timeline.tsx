@@ -16,12 +16,12 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import type { Execution } from '../../../../@types/Execution'
-import Arrow from '../../../ui/Arrow/Arrow'
-import StatusIcon from '../../../ui/StatusComponents/StatusIcon/StatusIcon'
+import type { Execution } from '@src/@types/Execution'
+import Arrow from '@src/components/ui/Arrow'
+import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import DateUtils from '../../../../utils/DateUtils'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import DateUtils from '@src/utils/DateUtils'
 
 const ITEM_GAP = 96
 

@@ -16,13 +16,13 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 
-import EndpointLogos from '../../EndpointModule/EndpointLogos/EndpointLogos'
-import Dropdown from '../../../ui/Dropdowns/Dropdown/Dropdown'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Button from '../../../ui/Button/Button'
+import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
+import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from '@src/components/ui/Button'
 
-import type { Endpoint } from '../../../../@types/Endpoint'
-import { ProviderTypes } from '../../../../@types/Providers'
+import type { Endpoint } from '@src/@types/Endpoint'
+import { ProviderTypes } from '@src/@types/Providers'
 
 const Wrapper = styled.div<any>`
   display: flex;

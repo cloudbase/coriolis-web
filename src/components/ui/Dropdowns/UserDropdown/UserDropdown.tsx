@@ -18,14 +18,14 @@ import { observer } from 'mobx-react'
 import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
-import { navigationMenu } from '../../../../constants'
-import type { User } from '../../../../@types/User'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { navigationMenu } from '@src/constants'
+import type { User } from '@src/@types/User'
 
+import configLoader from '@src/utils/Config'
 import userImage from './images/user.svg'
 import userWhiteImage from './images/user-white.svg'
 import openInNewImage from './images/openInNewImage'
-import configLoader from '../../../../utils/Config'
 
 const Wrapper = styled.div<any>`
   position: relative;

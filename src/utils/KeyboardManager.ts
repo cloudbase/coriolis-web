@@ -25,8 +25,11 @@ const keyDownHandler = (evt: KeyboardEvent) => {
 export default class KeyboardManager {
   static eventAdded = false
 
-  static onKeyDown(id: string,
-    callback: ((event: KeyboardEvent) => void) | null, priority?: number) {
+  static onKeyDown(
+    id: string,
+    callback: ((event: KeyboardEvent) => void) | null,
+    priority?: number,
+  ) {
     if (!eventAdded) {
       eventAdded = true
       document.addEventListener('keydown', (evt: KeyboardEvent) => { keyDownHandler(evt) })

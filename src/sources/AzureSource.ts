@@ -14,9 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import moment from 'moment'
 
-import Api from '../utils/ApiCaller'
-import type { Assessment, VmItem, VmSize } from '../@types/Assessment'
-import DomUtils from '../utils/DomUtils'
+import Api from '@src/utils/ApiCaller'
+import type { Assessment, VmItem, VmSize } from '@src/@types/Assessment'
+import DomUtils from '@src/utils/DomUtils'
 
 const azureUrl = 'https://management.azure.com/'
 const defaultApiVersion = '2019-10-01'
@@ -93,9 +93,7 @@ class AzureSource {
 
   static previousReqId: string
 
-  static async getAssessments(
-    subscriptionId: string, resourceGroupName: string, skipLog?: boolean | null,
-  ): Promise<Assessment[]> {
+  static async getAssessments(subscriptionId: string, resourceGroupName: string, skipLog?: boolean | null): Promise<Assessment[]> {
     const cancelId = subscriptionId + resourceGroupName
     if (this.previousReqId) {
       Api.cancelRequests(this.previousReqId)

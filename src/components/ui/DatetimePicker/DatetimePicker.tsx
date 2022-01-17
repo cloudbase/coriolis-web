@@ -20,13 +20,13 @@ import Datetime from 'react-datetime'
 import moment from 'moment'
 import autobind from 'autobind-decorator'
 
-import DropdownButton from '../Dropdowns/DropdownButton/DropdownButton'
+import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
 
-import DomUtils from '../../../utils/DomUtils'
-import DateUtils from '../../../utils/DateUtils'
+import DomUtils from '@src/utils/DomUtils'
+import DateUtils from '@src/utils/DateUtils'
 
+import { ThemeProps } from '@src/components/Theme'
 import style from './style'
-import { ThemeProps } from '../../Theme'
 
 require('moment/locale/en-gb')
 
@@ -192,22 +192,24 @@ class DatetimePicker extends React.Component<Props, State> {
     }
 
     const { body } = document
-    return ReactDOM.createPortal((
-      <Portal ref={(e: HTMLElement | null | undefined) => { this.portalRef = e }}>
-        <DatetimeStyled
-          input={false}
-          value={timezoneDate}
-          style={{ top: 0, right: 0 }}
-          onChange={(date: Date) => { this.handleChange(date) }}
-          dateFormat="DD/MM/YYYY"
-          timeFormat="hh:mm A"
-          locale="en-gb"
-          isValidDate={
+    return ReactDOM.createPortal(
+      (
+        <Portal ref={(e: HTMLElement | null | undefined) => { this.portalRef = e }}>
+          <DatetimeStyled
+            input={false}
+            value={timezoneDate}
+            style={{ top: 0, right: 0 }}
+            onChange={(date: Date) => { this.handleChange(date) }}
+            dateFormat="DD/MM/YYYY"
+            timeFormat="hh:mm A"
+            locale="en-gb"
+            isValidDate={
             (currentDate: Date, selectedDate: Date) => this.isValidDate(currentDate, selectedDate)
           }
-        />
-      </Portal>
-    ), body)
+          />
+        </Portal>
+      ), body,
+    )
   }
 
   render() {

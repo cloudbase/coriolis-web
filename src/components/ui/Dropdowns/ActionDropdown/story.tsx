@@ -14,9 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import ActionDropdown from '../ActionDropdown'
-
-import { ThemePalette } from '../../../Theme'
+import { ThemePalette } from '@src/components/Theme'
+import ActionDropdown from '.'
 
 const actions = [{
   label: 'Execute',

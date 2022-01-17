@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Instance } from '../../@types/Instance'
+import type { Instance } from '@src/@types/Instance'
 
 export default class InstanceInfoPlugin {
   static parseInstance(instance: Instance): Instance {

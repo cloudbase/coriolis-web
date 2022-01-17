@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import Button from '../Button'
+import Button from '.'
 
 storiesOf('Button', module)
   .add('primary', () => (

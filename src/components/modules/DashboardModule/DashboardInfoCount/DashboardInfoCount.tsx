@@ -17,9 +17,9 @@ import { observer } from 'mobx-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   background: ${ThemePalette.grayscale[0]};

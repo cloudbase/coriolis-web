@@ -17,14 +17,14 @@ import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import CopyValue from '../../../ui/CopyValue/CopyValue'
-import CopyMultilineValue from '../../../ui/CopyMultilineValue/CopyMultilineValue'
-import StatusImage from '../../../ui/StatusComponents/StatusImage/StatusImage'
-import Button from '../../../ui/Button/Button'
+import CopyValue from '@src/components/ui/CopyValue'
+import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
+import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from '@src/components/ui/Button'
 
-import type { User } from '../../../../@types/User'
-import type { Project } from '../../../../@types/Project'
-import { ThemePalette, ThemeProps } from '../../../Theme'
+import type { User } from '@src/@types/User'
+import type { Project } from '@src/@types/Project'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}

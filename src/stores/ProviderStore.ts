@@ -16,15 +16,15 @@ import {
   observable, action, computed, runInAction,
 } from 'mobx'
 
-import ProviderSource from '../sources/ProviderSource'
-import apiCaller from '../utils/ApiCaller'
+import ProviderSource from '@src/sources/ProviderSource'
+import apiCaller from '@src/utils/ApiCaller'
 
-import configLoader from '../utils/Config'
-import { providerTypes } from '../constants'
-import { OptionsSchemaPlugin } from '../plugins'
-import type { OptionValues } from '../@types/Endpoint'
-import type { Field } from '../@types/Field'
-import type { Providers, ProviderTypes } from '../@types/Providers'
+import configLoader from '@src/utils/Config'
+import { providerTypes } from '@src/constants'
+import { OptionsSchemaPlugin } from '@src/plugins'
+import type { OptionValues } from '@src/@types/Endpoint'
+import type { Field } from '@src/@types/Field'
+import type { Providers, ProviderTypes } from '@src/@types/Providers'
 import regionStore from './RegionStore'
 
 export const getFieldChangeOptions = (config: {

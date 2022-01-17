@@ -15,10 +15,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from 'react'
 import styled, { css } from 'styled-components'
 
+import TextInput from '@src/components/ui/TextInput'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import arrowImage from './images/arrow'
-
-import TextInput from '../TextInput/TextInput'
-import { ThemePalette, ThemeProps } from '../../Theme'
 
 const getWidth = (props: any) => {
   if (props.width) {
