@@ -290,6 +290,7 @@ type Props = {
   centered?: boolean,
   useBold?: boolean,
   primary?: boolean
+  labelRenderer?: (item: any, index: number) => React.ReactNode
 }
 type State = {
   showDropdownList: boolean,
@@ -605,6 +606,8 @@ class Dropdown extends React.Component<Props, State> {
               const duplicatedLabel = duplicatedLabels.find(l => l === label)
               const multipleSelected = this.props.selectedItems && this.props.selectedItems
                 .find(j => this.getValue(j) === value)
+              const labelRenderer = this.props.labelRenderer ? this.props.labelRenderer(item, i) : label
+
               const listItem = (
                 <ListItem
                   ref={(ref: HTMLElement | null | undefined) => {
@@ -631,7 +634,7 @@ class Dropdown extends React.Component<Props, State> {
                     />
                   ) : null}
                   <Labels>
-                    {label === '' ? '\u00A0' : label}
+                    {label === '' ? '\u00A0' : labelRenderer}
                     {item.subtitleLabel ? (
                       <SubtitleLabel>{item.subtitleLabel}</SubtitleLabel>
                     ) : null}

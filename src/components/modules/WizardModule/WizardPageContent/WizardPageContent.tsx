@@ -49,7 +49,7 @@ import networkStore from '@src/stores/NetworkStore'
 import { ProviderTypes } from '@src/@types/Providers'
 import minionPoolStore from '@src/stores/MinionPoolStore'
 import LoadingButton from '@src/components/ui/LoadingButton'
-import migrationArrowImage from './images/migration'
+import transferItemIcon from './images/transferItemIcon'
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(`${parseInt(ThemeProps.contentWidth, 10) + 64}px`)}
@@ -592,7 +592,7 @@ class WizardPageContent extends React.Component<Props, State> {
           <WizardTypeIcon
             dangerouslySetInnerHTML={{
               __html: this.props.type === 'replica'
-                ? migrationArrowImage(ThemePalette.alert) : migrationArrowImage(ThemePalette.primary),
+                ? transferItemIcon(ThemePalette.alert) : transferItemIcon(ThemePalette.primary),
             }}
           />
           <EndpointLogos height={32} endpoint={targetEndpoint} />

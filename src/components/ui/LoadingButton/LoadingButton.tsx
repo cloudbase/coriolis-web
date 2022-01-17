@@ -39,6 +39,7 @@ type Props = {
   large?: boolean
   onClick?: () => void
   style?: React.CSSProperties
+  width?: string
 }
 @observer
 class LoadingButton extends React.Component<Props> {

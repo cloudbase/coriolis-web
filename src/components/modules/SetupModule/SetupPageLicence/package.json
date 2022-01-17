@@ -1,0 +1,6 @@
+{
+  "name": "SetupPageLicence",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./SetupPageLicence.tsx"
+}

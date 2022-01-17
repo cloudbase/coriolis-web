@@ -92,6 +92,7 @@
     "require-without-cache": "^0.0.6",
     "rimraf": "^2.6.2",
     "styled-components": "^4.4.1",
+    "tai-password-strength": "^1.1.2",
     "typescript": "^4.4.4",
     "url-loader": "^4.1.0",
     "webpack": "^4.41.2",

@@ -30,7 +30,7 @@ const Wrapper = styled.span`
 `
 
 @observer
-class CopyButton extends React.Component<{}> {
+class CopyButton extends React.Component<any> {
   render() {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading

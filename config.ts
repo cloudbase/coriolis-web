@@ -1,4 +1,4 @@
-import type { Config } from './src/@types/Config'
+import type { Config } from '@src/@types/Config'
 
 const conf: Config = {
 
@@ -141,6 +141,7 @@ const conf: Config = {
     coriolisLogs: '{BASE_URL}/logs',
     coriolisLogStreamBaseUrl: '{BASE_URL}',
     coriolisLicensing: '{BASE_URL}/licensing',
+    cloudbaseEmailEndpoint: 'http://localhost:3334',
   },
 }
 

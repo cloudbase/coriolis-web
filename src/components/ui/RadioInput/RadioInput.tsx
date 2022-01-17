@@ -52,11 +52,11 @@ const InputStyled = styled.input`
 `
 
 type Props = {
-  label: string,
+  label: React.ReactNode,
   disabledLoading?: boolean,
   disabled?: boolean,
-  checked: boolean,
-  onChange: (checked: boolean) => void,
+  checked?: boolean,
+  onChange?: (checked: boolean) => void,
 }
 @observer
 class RadioInput extends React.Component<Props> {
@@ -65,8 +65,9 @@ class RadioInput extends React.Component<Props> {
       return
     }
     evt.preventDefault()
-
-    this.props.onChange(true)
+    if (this.props.onChange) {
+      this.props.onChange(true)
+    }
   }
 
   render() {
@@ -86,7 +87,7 @@ class RadioInput extends React.Component<Props> {
             {...props}
             disabled={disabled}
             data-test-id="radioInput-input"
-            onChange={e => { this.props.onChange(e.target.checked) }}
+            onChange={e => { if (this.props.onChange) this.props.onChange(e.target.checked) }}
           />
           <Text data-test-id="radioInput-label">{this.props.label}</Text>
         </LabelStyled>

@@ -74,6 +74,7 @@
   "include": [
     "src",
     "server",
+    "./config.ts"
   ],
   "exclude": [
     "src/**/test.tsx"

@@ -99,6 +99,29 @@ class ObjectUtils {
   static capitalizeFirstLetter(value: string): string {
     return value.charAt(0).toUpperCase() + value.slice(1)
   }
+
+  static async retry(retryFunction: () => Promise<any>, retryEvery: number = 1000, retryCount: number = 3): Promise<any> {
+    let currentTry = 0
+    const retryLoop = async (): Promise<any> => {
+      try {
+        currentTry += 1
+        if (currentTry > 1) {
+          console.log('Retrying... ', currentTry)
+        }
+        const result = await retryFunction()
+        return result
+      } catch (err) {
+        if (currentTry >= retryCount) {
+          console.error(`Retry failed after ${retryCount} attempts.`)
+          throw err
+        }
+        await this.wait(retryEvery)
+        return retryLoop()
+      }
+    }
+
+    return retryLoop()
+  }
 }
 
 export default ObjectUtils

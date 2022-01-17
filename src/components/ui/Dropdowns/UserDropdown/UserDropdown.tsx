@@ -19,13 +19,13 @@ import styled, { css } from 'styled-components'
 import autobind from 'autobind-decorator'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import { navigationMenu } from '@src/constants'
+import { LEGAL_URLS, navigationMenu } from '@src/constants'
 import type { User } from '@src/@types/User'
 
 import configLoader from '@src/utils/Config'
+import OpenInNewIcon from '@src/components/ui/OpenInNewIcon'
 import userImage from './images/user.svg'
 import userWhiteImage from './images/user-white.svg'
-import openInNewImage from './images/openInNewImage'
 
 const Wrapper = styled.div<any>`
   position: relative;
@@ -42,15 +42,9 @@ const Icon = styled.div<any>`
     opacity: 0.8;
   }
 `
-const Help = styled.div`
+const FlexAlign = styled.div`
   display: flex;
   align-items: center;
-`
-const OpenInNewIcon = styled.div`
-  ${ThemeProps.exactSize('16px')}
-  position: relative;
-  top: -2px;
-  transform: scale(0.6);
 `
 const List = styled.div<any>`
   background: ${ThemePalette.grayscale[1]};
@@ -67,7 +61,12 @@ const List = styled.div<any>`
 const ListItem = styled.div<any>`
   padding-top: 8px;
 `
-
+const OpenInNewIconWrapper = styled.div`
+  ${ThemeProps.exactSize('16px')}
+  position: relative;
+  top: -2px;
+  transform: scale(0.6);
+`
 const Label = styled.div<{ selectable?: boolean, hoverColor?: string }>`
   display: inline-block;
   white-space: nowrap;
@@ -84,6 +83,7 @@ const Label = styled.div<{ selectable?: boolean, hoverColor?: string }>`
 
 const ListHeader = styled.div<any>`
   position: relative;
+  margin-bottom: 4px;
 
   &:after {
     content: ' ';
@@ -150,6 +150,10 @@ class UserDropdown extends React.Component<Props, State> {
     if (item.value === 'help') {
       window.open('https://cloudbase.it/coriolis-overview/', '_blank')
     }
+
+    if (item.value === 'eula') {
+      window.open(LEGAL_URLS.eula, '_blank')
+    }
   }
 
   @autobind
@@ -210,10 +214,10 @@ class UserDropdown extends React.Component<Props, State> {
       },
       {
         label: (
-          <Help>
+          <FlexAlign>
             Help
-            <OpenInNewIcon dangerouslySetInnerHTML={{ __html: openInNewImage() }} />
-          </Help>
+            <OpenInNewIconWrapper dangerouslySetInnerHTML={{ __html: OpenInNewIcon() }} />
+          </FlexAlign>
         ),
         value: 'help',
       },
