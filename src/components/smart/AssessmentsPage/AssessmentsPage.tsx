@@ -18,7 +18,7 @@ import { observer } from 'mobx-react'
 
 import FilterList from '@src/components/ui/Lists/FilterList'
 import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
-import PageHeader from '@src/components/ui/PageHeader'
+import PageHeader from '@src/components/smart/PageHeader'
 import Navigation from '@src/components/modules/NavigationModule/Navigation'
 import DropdownFilterGroup from '@src/components/ui/Dropdowns/DropdownFilterGroup'
 import AssessmentListItem from '@src/components/modules/AssessmentModule/AssessmentListItem'

@@ -126,7 +126,6 @@ class DetailsContentHeader extends React.Component<Props> {
         actions={this.props.dropdownActions}
         largeItems={this.props.largeDropdownActionItems}
         style={{ marginLeft: '32px' }}
-        data-test-id="dcHeader-actionButton"
       />
     )
   }
@@ -144,7 +143,7 @@ class DetailsContentHeader extends React.Component<Props> {
   render() {
     return (
       <Wrapper>
-        <BackButton to={this.props.backLink} data-test-id="dcHeader-backButton" />
+        <BackButton to={this.props.backLink} />
         <TypeImage image={this.props.typeImage} />
         <Title>
           <Status>

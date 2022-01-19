@@ -65,12 +65,12 @@ const PageNumber = styled.div<any>`
 type Props = {
   className?: string,
   style?: any,
-  previousDisabled: boolean,
+  previousDisabled?: boolean,
   onPreviousClick: () => void,
   currentPage: number,
   totalPages: number,
   loading?: boolean,
-  nextDisabled: boolean,
+  nextDisabled?: boolean,
   onNextClick: () => void,
 }
 

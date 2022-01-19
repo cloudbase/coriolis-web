@@ -3,7 +3,7 @@ import { addDecorator } from '@storybook/react'
 import styled, { createGlobalStyle } from 'styled-components'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import Fonts from '../src/components/atoms/Fonts'
+import Fonts from '@src/components/ui/Fonts'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 const Wrapper = styled.div`

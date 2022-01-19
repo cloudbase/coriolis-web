@@ -34,7 +34,6 @@ import WizardStorage from '@src/components/modules/WizardModule/WizardStorage'
 import type {
   UpdateData, TransferItemDetails, MigrationItemDetails,
 } from '@src/@types/MainItem'
-import type { NavigationItem } from '@src/components/ui/Panel'
 import {
   Endpoint, EndpointUtils, StorageBackend, StorageMap,
 } from '@src/@types/Endpoint'
@@ -787,7 +786,7 @@ class TransferItemModal extends React.Component<Props, State> {
   }
 
   render() {
-    const navigationItems: NavigationItem[] = [
+    const navigationItems: Panel['props']['navigationItems'] = [
       {
         value: 'source_options',
         label: 'Source Options',

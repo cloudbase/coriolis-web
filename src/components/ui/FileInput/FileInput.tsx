@@ -113,8 +113,8 @@ class FileInput extends React.Component<Props, State> {
       return
     }
     const fileName = files[0].name
-    const content = await FileUtils.readTextFromFirstFile(files)
     this.setState({ fileName })
+    const content = await FileUtils.readTextFromFirstFile(files)
     if (this.props.onUpload) {
       this.props.onUpload(content)
     }

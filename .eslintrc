@@ -32,6 +32,8 @@
     "*.log",
     "*.jpg",
     "*.woff",
+    "*.js",
+    "*.snap",
     "src/**/test.tsx",
     "src/**/package.json"
   ],

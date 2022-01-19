@@ -22,7 +22,7 @@ import Modal from '@src/components/ui/Modal'
 import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
 import Navigation from '@src/components/modules/NavigationModule/Navigation'
 import FilterList from '@src/components/ui/Lists/FilterList'
-import PageHeader from '@src/components/ui/PageHeader'
+import PageHeader from '@src/components/smart/PageHeader'
 
 import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 

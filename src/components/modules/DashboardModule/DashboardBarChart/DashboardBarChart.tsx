@@ -16,7 +16,7 @@ import * as React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
-import { ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import BarChartNiceScale from './BarChartNiceScale'
 
 const Wrapper = styled.div<any>`
@@ -94,9 +94,7 @@ type DataItem = {
 }
 type Props = {
   style?: any,
-  // eslint-disable-next-line react/no-unused-prop-types
   data: DataItem[],
-  // eslint-disable-next-line react/no-unused-prop-types
   yNumTicks: number,
   colors?: string[],
   onBarMouseEnter?: (position: { x: number, y: number }, item: DataItem) => void,
@@ -192,7 +190,7 @@ class DashboardBarChart extends React.Component<Props> {
                   <StackedBar
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${item.label}-${i}`}
-                    background={this.props.colors ? this.props.colors[i % this.props.colors.length] : '#0044CA'}
+                    background={this.props.colors ? this.props.colors[i % this.props.colors.length] : ThemePalette.primary}
                     height={height}
                     onMouseEnter={(evt: MouseEvent) => {
                       const onMouseEnter = this.props.onBarMouseEnter

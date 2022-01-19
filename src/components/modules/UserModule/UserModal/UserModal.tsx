@@ -81,7 +81,6 @@ type State = {
   confirmPassword: string,
   description?: string,
 }
-const testName = 'userModal'
 @observer
 class UserModal extends React.Component<Props, State> {
   UNSAFE_componentWillMount() {
@@ -176,7 +175,6 @@ class UserModal extends React.Component<Props, State> {
     return (
       <FieldInput
         layout="modal"
-        data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
         label={LabelDictionary.get(field.name)}
@@ -275,7 +273,6 @@ class UserModal extends React.Component<Props, State> {
             >Cancel
             </Button>
             <Button
-              data-test-id={`${testName}-updateButton`}
               large
               disabled={this.props.loading}
               onClick={() => { this.handleUpdateClick() }}

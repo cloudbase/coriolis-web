@@ -79,7 +79,6 @@ class WizardType extends React.Component<Props> {
               big
               onChange={this.props.onChange}
               checked={this.props.selected === 'replica'}
-              data-test-id="wType-switch"
             />
           </Column>
           <Column width="50%">

@@ -127,20 +127,20 @@ class FilterList extends React.Component<Props, State> {
       })
 
       const selectAllSelected = selectedItems.length > 0 && selectedItems.length === items.length
-      this.setState({
+      return {
         selectedItems,
         selectAllSelected,
         filterStatus: item.value,
         items,
         currentPage: 1,
-      }, () => {
-        if (this.props.onSelectedItemsChange) {
-          this.props.onSelectedItemsChange(selectedItems)
-        }
-        if (this.props.onPaginatedItemsChange) {
-          this.props.onPaginatedItemsChange(this.paginatedItems)
-        }
-      })
+      }
+    }, () => {
+      if (this.props.onSelectedItemsChange) {
+        this.props.onSelectedItemsChange(this.state.selectedItems)
+      }
+      if (this.props.onPaginatedItemsChange) {
+        this.props.onPaginatedItemsChange(this.paginatedItems)
+      }
     })
   }
 
@@ -238,7 +238,6 @@ class FilterList extends React.Component<Props, State> {
           items={this.props.filterItems}
           dropdownActions={this.props.dropdownActions || []}
           largeDropdownActionItems={this.props.largeDropdownActionItems}
-          data-test-id="filterList-filter"
         />
         <MainList
           loading={this.props.loading}
@@ -253,7 +252,6 @@ class FilterList extends React.Component<Props, State> {
           emptyListExtraMessage={this.props.emptyListExtraMessage}
           emptyListButtonLabel={this.props.emptyListButtonLabel}
           onEmptyListButtonClick={this.props.onEmptyListButtonClick}
-          data-test-id="filterList-mainList"
         />
         {this.renderPagination()}
       </Wrapper>

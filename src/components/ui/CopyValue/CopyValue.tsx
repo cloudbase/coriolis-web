@@ -46,7 +46,6 @@ type Props = {
   width?: string,
   maxWidth?: string,
   capitalize?: boolean,
-  'data-test-id'?: string,
   onCopy?: (value: string) => void,
   style?: React.CSSProperties
 }
@@ -71,12 +70,10 @@ class CopyValue extends React.Component<Props> {
         onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => { this.handleCopyIdClick(e) }}
         onMouseDown={(e: { stopPropagation: () => void }) => { e.stopPropagation() }}
         onMouseUp={(e: { stopPropagation: () => void }) => { e.stopPropagation() }}
-        data-test-id={this.props['data-test-id'] || 'copyValue'}
         capitalize={this.props.capitalize}
         style={this.props.style}
       >
         <Value
-          data-test-id="copyValue-value"
           width={this.props.width}
           maxWidth={this.props.maxWidth}
         >{this.props.label || this.props.value}

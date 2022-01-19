@@ -264,7 +264,7 @@ class WizardInstances extends React.Component<Props, State> {
     return (
       <SearchNotFound>
         <StatusImage status="ERROR" />
-        <SearchNotFoundText data-test-id="wInstances-notFoundText">Your search returned no results</SearchNotFoundText>
+        <SearchNotFoundText>Your search returned no results</SearchNotFoundText>
         {subtitle}
         <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry</Button>
       </SearchNotFound>
@@ -290,7 +290,7 @@ class WizardInstances extends React.Component<Props, State> {
 
     return (
       <LoadingWrapper>
-        <StatusImage loading data-test-id="wInstances-loadingStatus" />
+        <StatusImage loading />
         <LoadingText>Loading instances...</LoadingText>
       </LoadingWrapper>
     )
@@ -320,7 +320,6 @@ class WizardInstances extends React.Component<Props, State> {
                 if (!this.isCheckboxMouseDown) this.props.onInstanceClick(instance)
               }}
               selected={selected}
-              data-test-id={`wInstances-item-${instance.id}`}
             >
               <CheckboxStyled
                 checked={selected}
@@ -328,7 +327,7 @@ class WizardInstances extends React.Component<Props, State> {
                 onMouseDown={() => { this.isCheckboxMouseDown = true }}
                 onMouseUp={() => { this.isCheckboxMouseDown = false }}
               />
-              <InstanceContent data-test-id="wInstances-instanceItem">
+              <InstanceContent>
                 <Image />
                 <Label>
                   <LabelTitle>{instance.name}</LabelTitle>
@@ -362,7 +361,6 @@ class WizardInstances extends React.Component<Props, State> {
             value={this.state.searchText}
             loading={this.props.searching}
             placeholder="Search VMs"
-            data-test-id="wInstances-searchInput"
           />
           {this.props.hasSourceOptions ? (
             <InfoIcon
@@ -374,11 +372,10 @@ class WizardInstances extends React.Component<Props, State> {
           ) : null}
         </SearchInputInfo>
         <FilterInfo>
-          <SelectionInfo data-test-id="wInstances-selInfo">{count} instance{plural} selected</SelectionInfo>
+          <SelectionInfo>{count} instance{plural} selected</SelectionInfo>
           <FilterSeparator>|</FilterSeparator>
           <ReloadButton
             onClick={() => { this.props.onReloadClick() }}
-            data-test-id="wInstances-reloadButton"
           />
         </FilterInfo>
       </FiltersWrapper>

@@ -149,7 +149,7 @@ type State = {
   tooltipPosition: { x: number, y: number },
   tooltipData: TooltipData | null,
 }
-const COLORS = ['#F91661', '#0044CB']
+const COLORS = [ThemePalette.alert, ThemePalette.primary]
 
 @observer
 class DashboardExecutions extends React.Component<Props, State> {

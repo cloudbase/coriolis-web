@@ -143,7 +143,6 @@ class SearchInput extends React.Component<Props, State> {
           }}
           onFocus={() => { this.handleFocus() }}
           onBlur={() => { this.handleBlur() }}
-          loading={this.props.loading}
           value={this.props.value}
           disablePrimary={this.props.disablePrimary}
           showClose={
@@ -160,9 +159,8 @@ class SearchInput extends React.Component<Props, State> {
           }
           onClick={() => { this.handleSearchButtonClick() }}
           useFilterIcon={this.props.useFilterIcon}
-          data-test-id="searchInput-button"
         />
-        {this.props.loading ? <StatusIconStyled status="RUNNING" data-test-id="searchInput-loading" /> : null}
+        {this.props.loading ? <StatusIconStyled status="RUNNING" /> : null}
       </Wrapper>
     )
   }

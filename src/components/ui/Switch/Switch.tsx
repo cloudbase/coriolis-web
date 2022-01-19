@@ -144,7 +144,7 @@ const LeftLabel = styled.div<any>`
 
 type Props = {
   onChange: (checked: boolean | null) => void,
-  checked: boolean,
+  checked: boolean | null,
   disabled?: boolean,
   disabledLoading?: boolean,
   triState?: boolean,
@@ -157,7 +157,6 @@ type Props = {
   big?: boolean,
   checkedLabel?: string,
   uncheckedLabel?: string,
-  'data-test-id'?: string,
   style?: React.CSSProperties,
   required?: boolean,
   highlight?: boolean,
@@ -206,7 +205,7 @@ class Switch extends React.Component<Props, State> {
   }
 
   handleKeyDown(evt: KeyboardEvent) {
-    if (evt.which !== 32) {
+    if (evt.key !== ' ') {
       return
     }
     evt.preventDefault()
@@ -225,7 +224,6 @@ class Switch extends React.Component<Props, State> {
         onClick={() => { this.handleInputChange() }}
         tabIndex={0}
         onKeyDown={(evt: KeyboardEvent) => { this.handleKeyDown(evt) }}
-        data-test-id={this.props['data-test-id'] || 'switch-input'}
       >
         <InputBackground
           triState={this.props.triState}

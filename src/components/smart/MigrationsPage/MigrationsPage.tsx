@@ -19,9 +19,8 @@ import { observer } from 'mobx-react'
 import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
 import Navigation from '@src/components/modules/NavigationModule/Navigation'
 import FilterList from '@src/components/ui/Lists/FilterList'
-import PageHeader from '@src/components/ui/PageHeader'
+import PageHeader from '@src/components/smart/PageHeader'
 import AlertModal from '@src/components/ui/AlertModal'
-import MainListItem from '@src/components/ui/Lists/MainListItem'
 
 import projectStore from '@src/stores/ProjectStore'
 import migrationStore from '@src/stores/MigrationStore'
@@ -33,6 +32,7 @@ import { ThemePalette } from '@src/components/Theme'
 import replicaMigrationFields from '@src/components/modules/TransferModule/ReplicaMigrationOptions/replicaMigrationFields'
 import { MigrationItem } from '@src/@types/MainItem'
 import userStore from '@src/stores/UserStore'
+import TransferListItem from '@src/components/modules/TransferModule/TransferListItem'
 import migrationLargeImage from './images/migration-large.svg'
 import migrationItemImage from './images/migration.svg'
 
@@ -254,7 +254,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
               }}
               dropdownActions={BulkActions}
               renderItemComponent={options => (
-                <MainListItem
+                <TransferListItem
                   {...options}
                   image={migrationItemImage}
                   endpointType={id => {

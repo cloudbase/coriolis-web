@@ -152,7 +152,6 @@ class LoginForm extends React.Component<Props, State> {
       <LoginError>
         <LoginErrorIcon />
         <LoginErrorText
-          data-test-id="loginForm-errorText"
           dangerouslySetInnerHTML={{ __html: errorMessage }}
         />
       </LoginError>
@@ -191,7 +190,6 @@ class LoginForm extends React.Component<Props, State> {
             value={this.state.username}
             name="username"
             onChange={e => { this.handleUsernameChange(e.target.value) }}
-            data-test-id="loginForm-usernameField"
           />
           <LoginFormField
             label="Password"
@@ -199,7 +197,6 @@ class LoginForm extends React.Component<Props, State> {
             onChange={e => { this.handlePasswordChange(e.target.value) }}
             name="password"
             type="password"
-            data-test-id="loginForm-passwordField"
           />
         </FormFields>
         {button}

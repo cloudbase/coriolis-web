@@ -26,7 +26,7 @@ const items = [
 
 describe('DetailsNavigation Component', () => {
   // it('renders 3 items', () => {
-  //   let wrapper = wrap({ items, 'data-test-id': 'dn-wrapper' })
+  //   let wrapper = wrap({ items})
   //   console.log(wrapper.find('dn-wrapper').debug())
   //   // items.forEach(item => {
   //   //   expect(wrapper.find(item.value).shallow.dive().dive()).toBe(item.label)

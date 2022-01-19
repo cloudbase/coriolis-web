@@ -66,7 +66,6 @@ type State = {
   highlightFieldNames: string[],
   description?: string,
 }
-const testName = 'projectModal'
 @observer
 class ProjectModal extends React.Component<Props, State> {
   UNSAFE_componentWillMount() {
@@ -118,7 +117,6 @@ class ProjectModal extends React.Component<Props, State> {
     return (
       <FieldInput
         layout="modal"
-        data-test-id={`${testName}-field-${field.name}`}
         key={field.name}
         name={field.name}
         type={field.type || 'string'}
@@ -179,7 +177,6 @@ class ProjectModal extends React.Component<Props, State> {
             >Cancel
             </Button>
             <Button
-              data-test-id={`${testName}-updateButton`}
               large
               disabled={this.props.loading}
               onClick={() => { this.handleUpdateClick() }}

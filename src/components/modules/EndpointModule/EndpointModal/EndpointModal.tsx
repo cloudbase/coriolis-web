@@ -388,7 +388,7 @@ class EndpointModal extends React.Component<Props, State> {
     }
 
     return (
-      <Status data-test-id="endpointStatus">
+      <Status>
         <StatusHeader>
           <StatusIcon status={status} />
           <StatusMessage>{message}{showErrorButton}</StatusMessage>

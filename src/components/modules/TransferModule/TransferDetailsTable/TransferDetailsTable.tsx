@@ -208,11 +208,11 @@ class TransferDetailsTable extends React.Component<Props, State> {
         <RowHeader>
           <RowHeaderColumn>
             <HeaderIcon icon={icon} />
-            <HeaderName source data-test-id={`${TEST_ID}-source-${icon}`}>{sourceName}</HeaderName>
+            <HeaderName source>{sourceName}</HeaderName>
             {destinationName ? <ArrowIcon /> : null}
           </RowHeaderColumn>
           <RowHeaderColumn>
-            <HeaderName data-test-id={`${TEST_ID}-destination-${icon}`}>{destinationName}</HeaderName>
+            <HeaderName>{destinationName}</HeaderName>
           </RowHeaderColumn>
         </RowHeader>
         <Collapse isOpened={isOpened}>

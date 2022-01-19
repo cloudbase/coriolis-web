@@ -125,7 +125,7 @@ class MainList extends React.Component<Props> {
   renderLoading() {
     return (
       <Loading>
-        <StatusImage loading data-test-id="mainList-loadingStatus" />
+        <StatusImage loading />
         <LoadingText>Loading ...</LoadingText>
       </Loading>
     )
@@ -147,7 +147,7 @@ class MainList extends React.Component<Props> {
 
     const renderButton = () => {
       if (this.props.emptyListButtonLabel) {
-        return <Button onClick={this.props.onEmptyListButtonClick} data-test-id="mainList-emptyListButton">{this.props.emptyListButtonLabel}</Button>
+        return <Button onClick={this.props.onEmptyListButtonClick}>{this.props.emptyListButtonLabel}</Button>
       }
       return null
     }
@@ -155,7 +155,7 @@ class MainList extends React.Component<Props> {
     return (
       <EmptyList>
         {renderImage()}
-        <EmptyListMessage data-test-id="mainList-emptyMessage">{this.props.emptyListMessage}</EmptyListMessage>
+        <EmptyListMessage>{this.props.emptyListMessage}</EmptyListMessage>
         <EmptyListExtraMessage>{this.props.emptyListExtraMessage}</EmptyListExtraMessage>
         {renderButton()}
       </EmptyList>

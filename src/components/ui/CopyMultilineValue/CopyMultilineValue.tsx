@@ -34,7 +34,6 @@ const Wrapper = styled.div<any>`
 `
 
 type Props = {
-  'data-test-id'?: string,
   value: string | null | undefined,
   onCopy?: (value: string) => void,
   useDangerousHtml?: boolean,
@@ -67,7 +66,6 @@ class CopyMultineValue extends React.Component<Props> {
     return (
       <Wrapper
         onClick={() => { this.handleCopy() }}
-        data-test-id={(this.props && this.props['data-test-id']) || 'copyMultilineValue'}
       >
         {text}
         <CopyButtonStyled />

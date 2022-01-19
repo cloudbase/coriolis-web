@@ -120,6 +120,7 @@ class App extends React.Component<{}, State> {
     }) => (
       <Route
         path={options.path}
+        // @ts-ignore
         exact={options.exact}
         render={() => (
           <MessagePage
@@ -142,6 +143,7 @@ class App extends React.Component<{}, State> {
           showAuthAnimation: true,
         })
       }
+      // @ts-ignore
       return <Route path={path} component={component} exact={exact} />
     }
 
@@ -173,6 +175,7 @@ class App extends React.Component<{}, State> {
         })
       }
       if (userStore.loggedUser?.isAdmin) {
+        // @ts-ignore
         return <Route path={actualPath} exact={exact} component={component} />
       }
       return null
@@ -184,9 +187,14 @@ class App extends React.Component<{}, State> {
         <Router>
           <Switch>
             {configLoader.isFirstLaunch ? (
+            // @ts-ignore
               <Route path="/" component={SetupPage} exact />
+            // @ts-ignore
             ) : renderRoute('/', DashboardPage, true)}
-            <Route path="/login" component={LoginPage} />
+            {
+              // @ts-ignore
+              <Route path="/login" component={LoginPage} />
+            }
             {renderRoute('/dashboard', DashboardPage)}
             {renderRoute('/replicas', ReplicasPage, true)}
             {renderRoute('/replicas/:id', ReplicaDetailsPage, true)}
@@ -208,7 +216,10 @@ class App extends React.Component<{}, State> {
             {renderOptionalRoute('projects', ProjectDetailsPage, '/projects/:id')}
             {renderOptionalRoute('logging', LogsPage)}
             {renderRoute('/streamlog', LogStreamPage)}
-            <Route component={MessagePage} />
+            {
+              // @ts-ignore
+              <Route component={MessagePage} />
+            }
           </Switch>
         </Router>
         <NotificationsModule />

@@ -68,7 +68,6 @@ const Row = styled.div<any>`
     border-bottom-left-radius: ${ThemeProps.borderRadius};
   }
 `
-const baseId = 'propertiesTable'
 type Props = {
   properties: Field[],
   onChange: (property: Field, value: any) => void,
@@ -95,7 +94,6 @@ class PropertiesTable extends React.Component<Props> {
   renderSwitch(prop: Field, opts: { triState: boolean }) {
     return (
       <Switch
-        data-test-id={`${baseId}-switch-${prop.name}`}
         secondary
         disabled={this.props.disabledLoading}
         triState={opts.triState}
@@ -109,7 +107,6 @@ class PropertiesTable extends React.Component<Props> {
   renderTextInput(prop: Field) {
     return (
       <TextInput
-        data-test-id={`${baseId}-textInput-${prop.name}`}
         width="100%"
         embedded
         type={prop.password ? 'password' : 'text'}
@@ -160,7 +157,6 @@ class PropertiesTable extends React.Component<Props> {
     if (items.length < 10) {
       return (
         <Dropdown
-          data-test-id={`${baseId}-dropdown-${prop.name}`}
           noSelectionMessage="Choose a value"
           dimFirstItem
           // eslint-disable-next-line react/jsx-props-no-spreading

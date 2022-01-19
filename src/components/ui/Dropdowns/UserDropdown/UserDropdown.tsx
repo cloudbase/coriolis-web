@@ -193,7 +193,6 @@ class UserDropdown extends React.Component<Props, State> {
         onMouseUp={() => { this.itemMouseDown = false }}
       >
         <Username
-          data-test-id="userDropdown-username"
           to={href || ''}
         >{this.props.user.name}
         </Username>
@@ -260,7 +259,6 @@ class UserDropdown extends React.Component<Props, State> {
           onMouseUp={() => { this.itemMouseDown = false }}
           onClick={() => this.handleButtonClick()}
           white={this.props.white}
-          data-test-id="userDropdown-button"
         />
         {this.renderList()}
       </Wrapper>

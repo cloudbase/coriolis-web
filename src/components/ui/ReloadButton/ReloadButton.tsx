@@ -34,7 +34,6 @@ const GlobalStyle = createGlobalStyle`
 
 type Props = {
   onClick: () => void,
-  'data-test-id'?: string,
   style?: React.CSSProperties
 }
 @observer
@@ -69,7 +68,6 @@ class ReloadButton extends React.Component<Props> {
       <>
         <GlobalStyle />
         <Wrapper
-          data-test-id={this.props['data-test-id'] || 'reloadButton'}
           ref={(div: HTMLElement | null | undefined) => { this.wrapper = div }}
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}

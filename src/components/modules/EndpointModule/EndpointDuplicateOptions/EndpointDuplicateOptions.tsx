@@ -84,7 +84,6 @@ type Props = {
 type State = {
   selectedProjectId: string,
 }
-const testName = 'edOptions'
 @observer
 class EndpointDuplicateOptions extends React.Component<Props, State> {
   UNSAFE_componentWillMount() {
@@ -103,7 +102,7 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
 
   renderDuplicating() {
     return (
-      <Loading data-test-id={`${testName}-loading`}>
+      <Loading>
         <StatusImage loading />
         <Message>
           <Title>Duplicating Endpoint</Title>
@@ -119,7 +118,6 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
         <Image />
         <Form>
           <FieldInputStyled
-            data-test-id={`${testName}-field-project`}
             name="duplicate_to_project"
             label="Duplicate To Project"
             type="string"
@@ -133,7 +131,6 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
         <Buttons>
           <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
           <Button
-            data-test-id={`${testName}-duplicateButton`}
             onClick={() => { this.props.onDuplicateClick(this.state.selectedProjectId) }}
           >Duplicate
           </Button>

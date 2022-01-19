@@ -72,7 +72,7 @@ const Loading = styled.span`
   ${ThemeProps.animations.rotation}
 `
 
-export type NavigationItem = {
+type NavigationItem = {
   label: string,
   value: string,
   disabled?: boolean,
@@ -80,7 +80,7 @@ export type NavigationItem = {
   loading?: boolean,
 }
 
-export type Props = {
+type Props = {
   navigationItems: NavigationItem[],
   content: React.ReactNode,
   selectedValue: string | null,
@@ -89,8 +89,6 @@ export type Props = {
   reloadLabel: string,
   onReloadClick: () => void,
 }
-
-export const TEST_ID = 'panel'
 
 @observer
 class Panel extends React.Component<Props> {
@@ -113,14 +111,13 @@ class Panel extends React.Component<Props> {
               selected={this.props.selectedValue
                 ? this.props.selectedValue === item.value : i === 0}
               onClick={() => { this.handleItemClick(item) }}
-              data-test-id={`${TEST_ID}-navItem-${item.value}`}
               disabled={item.disabled}
               title={item.title}
             >{item.label}{item.loading ? <Loading /> : null}
             </NavigationItemDiv>
           ))}
         </Navigation>
-        <Content data-test-id={`${TEST_ID}-content`}>{this.props.content}</Content>
+        <Content>{this.props.content}</Content>
         <ReloadButton onClick={() => { this.props.onReloadClick() }}>
           {this.props.reloadLabel}
         </ReloadButton>

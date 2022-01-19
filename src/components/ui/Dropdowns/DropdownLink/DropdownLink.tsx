@@ -133,7 +133,6 @@ type Props = {
   secondary?: boolean,
   multipleSelection?: boolean,
   selectedItems?: string[],
-  'data-test-id'?: string,
   linkButtonStyle?: any,
   arrowImage?: (color: string) => string,
   noCheckmark?: boolean,
@@ -214,9 +213,9 @@ class DropdownLink extends React.Component<Props, State> {
   getFilteredItems() {
     const { items } = this.props
 
-    return items.filter(item => (typeof item.value === 'string'
+    return items.filter(item => ((typeof item.value === 'string'
       ? item.value.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1
-      : item.value === Number(this.state.searchText)
+      : item.value === Number(this.state.searchText))
         || item.label.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1))
   }
 
@@ -367,7 +366,6 @@ class DropdownLink extends React.Component<Props, State> {
 
     return (
       <ListItems
-        data-test-id="dropdownLink-listItem"
         ref={(ref: HTMLElement | null | undefined) => { this.listItemsRef = ref }}
         searchable={this.props.searchable}
       >
@@ -423,7 +421,6 @@ class DropdownLink extends React.Component<Props, State> {
         className={this.props.className}
         onMouseDown={() => { this.itemMouseDown = true }}
         onMouseUp={() => { this.itemMouseDown = false }}
-        data-test-id={this.props['data-test-id'] || 'dropdownLink'}
         style={this.props.style}
       >
         <LinkButton
@@ -434,7 +431,6 @@ class DropdownLink extends React.Component<Props, State> {
           <Label
             secondary={this.props.secondary}
             ref={(label: HTMLElement | null | undefined) => { this.labelRef = label }}
-            data-test-id="dropdownLink-label"
             style={this.props.labelStyle}
           >{renderLabel()}
           </Label>

@@ -47,7 +47,7 @@ class LoadingButton extends React.Component<Props> {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <ButtonStyled {...this.props} disabled>
-        <span data-test-id="loadingButton-label">{this.props.children}<Loading /></span>
+        <span>{this.props.children}<Loading /></span>
       </ButtonStyled>
     )
   }

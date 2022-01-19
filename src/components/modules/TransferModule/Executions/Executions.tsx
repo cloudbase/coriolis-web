@@ -259,7 +259,6 @@ class Executions extends React.Component<Props, State> {
         onPreviousClick={() => { this.handlePreviousExecutionClick() }}
         onNextClick={() => { this.handleNextExecutionClick() }}
         onItemClick={item => { this.handleTimelineItemClick(item) }}
-        data-test-id="executions-timeline"
       />
     )
   }
@@ -312,7 +311,7 @@ class Executions extends React.Component<Props, State> {
 
     return (
       <ExecutionInfo>
-        <ExecutionInfoNumber data-test-id="executions-number">Execution #{this.state.selectedExecution.number}</ExecutionInfoNumber>
+        <ExecutionInfoNumber>Execution #{this.state.selectedExecution.number}</ExecutionInfoNumber>
         <StatusPill style={{ marginRight: '16px' }} small status={this.state.selectedExecution.status} />
         <ExecutionInfoDate>
           {DateUtils.getLocalTime(this.state.selectedExecution.created_at).format('DD MMMM YYYY HH:mm')}
@@ -350,9 +349,9 @@ class Executions extends React.Component<Props, State> {
     return (
       <NoExecutions>
         <ExecutionImage />
-        <NoExecutionTitle data-test-id="executions-noExTitle">It looks like there are no executions in this replica.</NoExecutionTitle>
+        <NoExecutionTitle>It looks like there are no executions in this replica.</NoExecutionTitle>
         <NoExecutionText>This replica has not been executed yet.</NoExecutionText>
-        <Button onClick={this.props.onExecuteClick} data-test-id="executions-executeButton">Execute Now</Button>
+        <Button onClick={this.props.onExecuteClick}>Execute Now</Button>
       </NoExecutions>
     )
   }

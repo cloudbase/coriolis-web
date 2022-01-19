@@ -244,7 +244,6 @@ class NewItemDropdown extends React.Component<Props, State> {
     return (
       <Wrapper>
         <DropdownButton
-          data-test-id="newItemDropdown-button"
           onMouseDown={() => { this.itemMouseDown = true }}
           onMouseUp={() => { this.itemMouseDown = false }}
           onClick={() => this.handleButtonClick()}
