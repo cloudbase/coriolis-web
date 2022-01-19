@@ -548,13 +548,13 @@ class WizardPage extends React.Component<Props, State> {
   async createMultiple() {
     const typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel}s ...`)
-    const success = await wizardStore.createMultiple(
-      this.state.type,
-      wizardStore.data,
-      wizardStore.defaultStorage,
-      wizardStore.storageMap,
-      wizardStore.uploadedUserScripts,
-    )
+    const success = await wizardStore.createMultiple({
+      type: this.state.type,
+      data: wizardStore.data,
+      defaultStorage: wizardStore.defaultStorage,
+      storageMap: wizardStore.storageMap,
+      uploadedUserScripts: wizardStore.uploadedUserScripts,
+    })
     if (success && wizardStore.createdItems) {
       this.handleCreationSuccess(wizardStore.createdItems.filter(ObjectUtils.notEmpty))
     } else {
@@ -566,13 +566,13 @@ class WizardPage extends React.Component<Props, State> {
     const typeLabel = this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1)
     notificationStore.alert(`Creating ${typeLabel} ...`)
     try {
-      await wizardStore.create(
-        this.state.type,
-        wizardStore.data,
-        wizardStore.defaultStorage,
-        wizardStore.storageMap,
-        wizardStore.uploadedUserScripts,
-      )
+      await wizardStore.create({
+        type: this.state.type,
+        data: wizardStore.data,
+        defaultStorage: wizardStore.defaultStorage,
+        storageMap: wizardStore.storageMap,
+        uploadedUserScripts: wizardStore.uploadedUserScripts,
+      })
       const item = wizardStore.createdItem
       if (!item) {
         notificationStore.alert(`${typeLabel} couldn't be created`, 'error')

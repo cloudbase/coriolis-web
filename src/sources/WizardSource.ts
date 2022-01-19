@@ -26,13 +26,16 @@ import { TransferItem } from '@src/@types/MainItem'
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
 
 class WizardSource {
-  async create(
+  async create(opts: {
     type: string,
     data: WizardData,
     defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[],
-  ): Promise<TransferItem> {
+  }): Promise<TransferItem> {
+    const {
+      type, data, defaultStorage, storageMap, uploadedUserScripts,
+    } = opts
     const sourceParser = data.source
       ? OptionsSchemaPlugin.for(data.source.type) : DefaultOptionsSchemaParser
     const destParser = data.target
@@ -107,13 +110,16 @@ class WizardSource {
     return response.data[type]
   }
 
-  async createMultiple(
+  async createMultiple(opts: {
     type: string,
     data: WizardData,
     defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap: StorageMap[],
     uploadedUserScripts: InstanceScript[],
-  ) {
+  }) {
+    const {
+      type, data, defaultStorage, storageMap, uploadedUserScripts,
+    } = opts
     if (!data.selectedInstances) {
       throw new Error('No selected instances')
     }
@@ -126,7 +132,9 @@ class WizardSource {
 
       let mainItem: TransferItem | null = null
       try {
-        mainItem = await this.create(type, newData, defaultStorage, storageMap, uploadedUserScripts)
+        mainItem = await this.create({
+          type, data: newData, defaultStorage, storageMap, uploadedUserScripts,
+        })
       } finally {
         // If an there's an error with the request, return null, don't break the loop.
         // eslint-disable-next-line no-unsafe-finally

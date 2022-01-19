@@ -253,36 +253,44 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  async recreateFromReplica(
-    options: Field[],
+  async recreateFromReplica(opts: {
+    fields: Field[],
     uploadedUserScripts: InstanceScript[],
     removedUserScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
-  ) {
+  }) {
+    const {
+      fields, uploadedUserScripts, removedUserScripts, minionPoolMappings,
+    } = opts
     const replicaId = migrationStore.migrationDetails && migrationStore.migrationDetails.replica_id
     if (!replicaId) {
       return
     }
 
-    this.migrate(replicaId, options, uploadedUserScripts, removedUserScripts, minionPoolMappings)
+    this.migrate({
+      replicaId, fields, uploadedUserScripts, removedUserScripts, minionPoolMappings,
+    })
     this.handleCloseFromReplicaModal()
   }
 
-  async migrate(
+  async migrate(opts: {
     replicaId: string,
-    options: Field[],
+    fields: Field[],
     uploadedUserScripts: InstanceScript[],
     removedUserScripts: InstanceScript[],
     minionPoolMappings: { [instance: string]: string },
-  ) {
-    const migration = await migrationStore.migrateReplica(
+  }) {
+    const {
+      replicaId, fields, uploadedUserScripts, removedUserScripts, minionPoolMappings,
+    } = opts
+    const migration = await migrationStore.migrateReplica({
       replicaId,
-      options,
+      fields,
       uploadedUserScripts,
       removedUserScripts,
-      migrationStore.migrationDetails?.user_scripts,
+      userScriptData: migrationStore.migrationDetails?.user_scripts,
       minionPoolMappings,
-    )
+    })
     this.props.history.push(`/migrations/${migration.id}/tasks`)
   }
 
@@ -447,7 +455,9 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
               transferItem={migrationStore.migrationDetails}
               minionPools={minionPoolStore.minionPools}
               onCancelClick={() => { this.handleCloseFromReplicaModal() }}
-              onMigrateClick={(o, s, r, m) => { this.recreateFromReplica(o, s, r, m) }}
+              onMigrateClick={opts => {
+                this.recreateFromReplica(opts)
+              }}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
               defaultSkipOsMorphing={migrationStore

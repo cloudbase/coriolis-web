@@ -270,14 +270,17 @@ class MigrationSource {
     return migrationId
   }
 
-  async migrateReplica(
+  async migrateReplica(opts: {
     replicaId: string,
     options: Field[],
     uploadedUserScripts: InstanceScript[],
     removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,
     minionPoolMappings: { [instance: string]: string },
-  ): Promise<MigrationItem> {
+  }): Promise<MigrationItem> {
+    const {
+      replicaId, options, uploadedUserScripts, removedUserScripts, userScriptData, minionPoolMappings,
+    } = opts
     const payload: any = {
       migration: {
         replica_id: replicaId,

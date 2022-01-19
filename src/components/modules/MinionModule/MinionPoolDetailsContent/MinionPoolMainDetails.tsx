@@ -150,7 +150,9 @@ class MinionPoolMainDetails extends React.Component<Props> {
         return value.map((v: { source: any; destination: any }) => `${v.source}=${v.destination}`).join(', ')
       }
       const schema = this.props.schema
-      return fieldHelper.getValueAlias(name, value, schema, endpoint && endpoint.type)
+      return fieldHelper.getValueAlias({
+        name, value, fields: schema, targetProvider: endpoint && endpoint.type,
+      })
     }
 
     let properties: any[] = []

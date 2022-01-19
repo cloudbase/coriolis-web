@@ -102,13 +102,16 @@ class ScheduleSource {
     })
   }
 
-  async updateSchedule(
+  async updateSchedule(opts: {
     replicaId: string,
     scheduleId: string,
     scheduleData: Schedule,
     scheduleOldData: Schedule | null | undefined,
     unsavedData: Schedule | null | undefined,
-  ): Promise<Schedule> {
+  }): Promise<Schedule> {
+    const {
+      replicaId, scheduleId, scheduleData, scheduleOldData, unsavedData,
+    } = opts
     const payload: any = {}
     if (scheduleData.enabled != null) {
       payload.enabled = scheduleData.enabled

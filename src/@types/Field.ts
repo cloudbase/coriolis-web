@@ -59,12 +59,15 @@ export type Field = {
 const migrationImageOsTypes = ['windows', 'linux']
 
 class FieldHelper {
-  getValueAlias(
+  getValueAlias(opts: {
     name: string,
     value: any,
     fields: Field[],
     targetProvider: ProviderTypes | null | undefined,
-  ): string {
+  }): string {
+    const {
+      name, value, fields, targetProvider,
+    } = opts
     const plugin = targetProvider && OptionsSchemaPlugin.for(targetProvider)
 
     if (value === true) {

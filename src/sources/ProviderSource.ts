@@ -34,7 +34,10 @@ class ProviderSource {
     return response.data.providers
   }
 
-  async loadOptionsSchema(providerName: ProviderTypes, optionsType: 'source' | 'destination', useCache?: boolean | null, quietError?: boolean | null): Promise<Field[]> {
+  async loadOptionsSchema(opts: { providerName: ProviderTypes, optionsType: 'source' | 'destination', useCache?: boolean | null, quietError?: boolean | null }): Promise<Field[]> {
+    const {
+      providerName, optionsType, useCache, quietError,
+    } = opts
     const schemaTypeInt = optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
 
     try {
@@ -55,13 +58,16 @@ class ProviderSource {
     }
   }
 
-  async getOptionsValues(
+  async getOptionsValues(opts: {
     optionsType: 'source' | 'destination',
     endpointId: string,
     envData: { [prop: string]: any } | null | undefined,
     cache?: boolean | null,
     quietError?: boolean,
-  ): Promise<OptionValues[]> {
+  }): Promise<OptionValues[]> {
+    const {
+      optionsType, endpointId, envData, cache, quietError,
+    } = opts
     let envString = ''
     if (envData) {
       envString = `?env=${DomUtils.encodeToBase64Url(envData)}`

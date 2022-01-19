@@ -124,12 +124,15 @@ type Props = {
 }
 @observer
 class ScheduleItem extends React.Component<Props> {
-  getFieldValue(
+  getFieldValue(opts: {
     items: Field[],
     fieldName: ScheduleFieldName,
     zeroBasedIndex?: boolean,
     defaultSelectedIndex?: number,
-  ) {
+  }) {
+    const {
+      items, fieldName, zeroBasedIndex, defaultSelectedIndex,
+    } = opts
     if (this.props.item.schedule == null) {
       return defaultSelectedIndex !== undefined ? items[defaultSelectedIndex] : items[0]
     }
@@ -219,7 +222,7 @@ class ScheduleItem extends React.Component<Props> {
     })
 
     if (this.props.item.enabled || this.props.deleting) {
-      return this.renderLabel(this.getFieldValue(items, 'month'))
+      return this.renderLabel(this.getFieldValue({ items, fieldName: 'month' }))
     }
 
     return (
@@ -228,7 +231,7 @@ class ScheduleItem extends React.Component<Props> {
         width={160}
         items={items}
         useBold={this.shouldUseBold('month')}
-        selectedItem={this.getFieldValue(items, 'month')}
+        selectedItem={this.getFieldValue({ items, fieldName: 'month' })}
         onChange={item => { this.handleMonthChange(item) }}
       />
     )
@@ -243,7 +246,7 @@ class ScheduleItem extends React.Component<Props> {
     }
 
     if (this.props.item.enabled || this.props.deleting) {
-      return this.renderLabel(this.getFieldValue(items, 'dom'))
+      return this.renderLabel(this.getFieldValue({ items, fieldName: 'dom' }))
     }
 
     return (
@@ -252,7 +255,7 @@ class ScheduleItem extends React.Component<Props> {
         width={86}
         items={items}
         useBold={this.shouldUseBold('dom')}
-        selectedItem={this.getFieldValue(items, 'dom')}
+        selectedItem={this.getFieldValue({ items, fieldName: 'dom' })}
         onChange={item => { this.props.onChange({ schedule: { dom: item.value } }) }}
       />
     )
@@ -267,7 +270,7 @@ class ScheduleItem extends React.Component<Props> {
     })
 
     if (this.props.item.enabled || this.props.deleting) {
-      return this.renderLabel(this.getFieldValue(items, 'dow', true))
+      return this.renderLabel(this.getFieldValue({ items, fieldName: 'dow', zeroBasedIndex: true }))
     }
 
     return (
@@ -276,7 +279,7 @@ class ScheduleItem extends React.Component<Props> {
         width={160}
         items={items}
         useBold={this.shouldUseBold('dow')}
-        selectedItem={this.getFieldValue(items, 'dow', true)}
+        selectedItem={this.getFieldValue({ items, fieldName: 'dow', zeroBasedIndex: true })}
         onChange={item => { this.props.onChange({ schedule: { dow: item.value } }) }}
       />
     )
@@ -289,7 +292,9 @@ class ScheduleItem extends React.Component<Props> {
     }
 
     if (this.props.item.enabled || this.props.deleting) {
-      return this.renderLabel(this.getFieldValue(items, 'hour', true, 1))
+      return this.renderLabel(this.getFieldValue({
+        items, fieldName: 'hour', zeroBasedIndex: true, defaultSelectedIndex: 1,
+      }))
     }
 
     return (
@@ -298,7 +303,9 @@ class ScheduleItem extends React.Component<Props> {
         width={86}
         items={items}
         useBold={this.shouldUseBold('hour')}
-        selectedItem={this.getFieldValue(items, 'hour', true, 1)}
+        selectedItem={this.getFieldValue({
+          items, fieldName: 'hour', zeroBasedIndex: true, defaultSelectedIndex: 1,
+        })}
         onChange={item => { this.handleHourChange(item.value) }}
       />
     )
@@ -311,7 +318,9 @@ class ScheduleItem extends React.Component<Props> {
     }
 
     if (this.props.item.enabled || this.props.deleting) {
-      return this.renderLabel(this.getFieldValue(items, 'minute', true, 1))
+      return this.renderLabel(this.getFieldValue({
+        items, fieldName: 'minute', zeroBasedIndex: true, defaultSelectedIndex: 1,
+      }))
     }
 
     return (
@@ -320,7 +329,9 @@ class ScheduleItem extends React.Component<Props> {
         width={86}
         items={items}
         useBold={this.shouldUseBold('minute')}
-        selectedItem={this.getFieldValue(items, 'minute', true, 1)}
+        selectedItem={this.getFieldValue({
+          items, fieldName: 'minute', zeroBasedIndex: true, defaultSelectedIndex: 1,
+        })}
         onChange={item => { this.props.onChange({ schedule: { minute: item.value } }) }}
       />
     )
