@@ -32,7 +32,7 @@ import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
 import type { NotificationItemData } from '@src/@types/NotificationItem'
 import { ReplicaItem, MigrationItem } from '@src/@types/MainItem'
 
-const MIDDLE_WIDTHS = ['264px', '264px', '450px']
+const MIDDLE_WIDTHS = ['264px', '264px', '264px']
 
 const Wrapper = styled.div<any>`
   margin-bottom: 64px;

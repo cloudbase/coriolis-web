@@ -65,16 +65,18 @@ const AddLicenceButtonWrapper = styled.div`
 `
 const TopInfo = styled.div<any>`
   display: flex;
+  flex-direction: column;
+  align-items: center;
 `
-const TopInfoText = styled.div<any>`
-  flex-grow: 1;
+const TopInfoText = styled.div`
+  margin-bottom: 8px;
+  color: ${ThemePalette.grayscale[4]};
 `
 const TopInfoDate = styled.div<any>`
   ${ThemeProps.exactWidth('76px')}
   ${ThemeProps.exactHeight('80px')}
   display: flex;
   flex-direction: column;
-  margin-left: 24px;
   ${ThemeProps.boxShadow}
   border-radius: ${ThemeProps.borderRadius};
   overflow: hidden;
@@ -155,19 +157,6 @@ type Props = {
 }
 @observer
 class DashboardLicence extends React.Component<Props> {
-  renderExpiration(date: Date) {
-    const dateMoment = moment(date)
-    const days = dateMoment.diff(new Date(), 'days')
-    if (days === 0) {
-      return (
-        <span>today at <b>{dateMoment.utc().format('HH:mm')} UTC</b></span>
-      )
-    }
-    return (
-      <span>on <b>{dateMoment.format('DD MMM YYYY')}</b></span>
-    )
-  }
-
   renderLicenceStatusText(info: Licence): React.ReactNode {
     const graphDataRows = [
       [
@@ -175,16 +164,9 @@ class DashboardLicence extends React.Component<Props> {
           color: ThemePalette.alert,
           current: info.currentPerformedReplicas,
           total: info.currentAvailableReplicas,
-          label: 'Current Replicas',
+          label: 'Used Replica',
           info: `The number of replicas consumed over the number of replicas available in
           all currently active licences (including non-activated floating licences)`,
-        },
-        {
-          color: ThemePalette.alert,
-          current: info.lifetimePerformedReplicas,
-          total: info.lifetimeAvailableReplicas,
-          label: 'Lifetime Replicas',
-          info: 'The number of replicas performed over the number of replicas licenced from all licences (including expired licences)',
         },
       ],
       [
@@ -192,31 +174,20 @@ class DashboardLicence extends React.Component<Props> {
           color: ThemePalette.primary,
           current: info.currentPerformedMigrations,
           total: info.currentAvailableMigrations,
-          label: 'Current Migrations',
+          label: 'Used Migration',
           info: `The number of migrations consumed over the number of migrations available in
           all currently active licences (including non-activated floating licences)`,
         },
-        {
-          color: ThemePalette.primary,
-          current: info.lifetimePerformedMigrations,
-          total: info.lifetimeAvailableMigrations,
-          label: 'Lifetime Migrations',
-          info: 'The number of migrations performed over the number of migrations licenced from all licences (including expired licences)',
-        },
       ],
     ]
-    const latestLicenceExpiryDate = moment(info.latestLicenceExpiryDate)
+    const expirationData = moment(info.earliestLicenceExpiryDate)
     return (
       <LicenceInfo>
         <TopInfo>
-          <TopInfoText>
-            Earliest Coriolis® Licence expires&nbsp;
-            {this.renderExpiration(info.earliestLicenceExpiryDate)}.<br /><br />
-            Latest Coriolis® Licence expires {this.renderExpiration(info.latestLicenceExpiryDate)}.
-          </TopInfoText>
+          <TopInfoText>Expires on</TopInfoText>
           <TopInfoDate>
-            <TopInfoDateTop>{latestLicenceExpiryDate.format('MMM')} &#39;{latestLicenceExpiryDate.format('YY')}</TopInfoDateTop>
-            <TopInfoDateBottom>{latestLicenceExpiryDate.format('DD')}</TopInfoDateBottom>
+            <TopInfoDateTop>{expirationData.format('MMM')} &#39;{expirationData.format('YY')}</TopInfoDateTop>
+            <TopInfoDateBottom>{expirationData.format('DD')}</TopInfoDateBottom>
           </TopInfoDate>
         </TopInfo>
         <Charts>
@@ -226,9 +197,9 @@ class DashboardLicence extends React.Component<Props> {
                 <Chart key={data.label}>
                   <ChartHeader>
                     <ChartHeaderCurrent>
-                      {data.current} {data.label} <InfoIcon marginBottom={-3} text={data.info} />
+                      {data.current} {data.current === 1 ? data.label : `${data.label}s`} <InfoIcon marginBottom={-3} text={data.info} />
                     </ChartHeaderCurrent>
-                    <ChartHeaderTotal>{data.total}</ChartHeaderTotal>
+                    <ChartHeaderTotal>Total {data.total}</ChartHeaderTotal>
                   </ChartHeader>
                   <ChartBodyWrapper>
                     <ChartBody color={data.color} width={(data.current / data.total) * 100} />
