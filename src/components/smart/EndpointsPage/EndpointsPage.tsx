@@ -91,14 +91,14 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 
   getFilterItems() {
-    const types = [{ label: 'All', value: 'all' }]
-    endpointStore.endpoints.forEach(endpoint => {
-      if (!types.find(t => t.value === endpoint.type)) {
-        types.push({ label: configLoader.config.providerNames[endpoint.type], value: endpoint.type })
+    const providers = endpointStore.endpoints.reduce((p, endpoint) => {
+      if (!p.find(p2 => p2.value === endpoint.type)) {
+        p.push({ label: configLoader.config.providerNames[endpoint.type], value: endpoint.type })
       }
-    })
-
-    return types
+      return p
+    }, [] as { label: string, value: ProviderTypes }[])
+    providers.sort((a, b) => a.label.localeCompare(b.label))
+    return [{ label: 'All', value: 'all' }, ...providers]
   }
 
   getEndpointUsage(endpointId: string) {
