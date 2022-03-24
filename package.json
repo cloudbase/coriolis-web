@@ -116,7 +116,7 @@
     "hosted-git-info": "^2.8.9",
     "is-svg": "^4.2.2",
     "json-schema": "^0.4.0",
-    "minimist": "^1.2.3",
+    "minimist": "^1.2.6",
     "node-fetch": "^2.6.1",
     "node-forge": "^1.0.0",
     "node-notifier": "^8.0.1",
