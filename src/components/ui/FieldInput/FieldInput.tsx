@@ -195,7 +195,7 @@ class FieldInput extends React.Component<Props> {
           }
         }}
         labelRenderer={this.props.labelRenderer}
-        hideRequiredSymbol={this.props.layout === 'page'}
+        // hideRequiredSymbol={this.props.layout === 'page'}
         disabledLoading={this.props.disabledLoading}
         disabled={this.props.disabled}
       />

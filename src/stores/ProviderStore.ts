@@ -221,9 +221,10 @@ class ProviderStore {
     optionsType: 'source' | 'destination',
     useCache?: boolean,
     quietError?: boolean,
+    requiresWindowsImage?: boolean
   }): Promise<Field[]> {
     const {
-      providerName, optionsType, useCache, quietError,
+      providerName, optionsType, useCache, quietError, requiresWindowsImage,
     } = options
 
     if (optionsType === 'source') {
@@ -247,7 +248,7 @@ class ProviderStore {
 
     try {
       const fields: Field[] = await ProviderSource.loadOptionsSchema({
-        providerName, optionsType, useCache, quietError,
+        providerName, optionsType, useCache, quietError, requiresWindowsImage,
       })
       this.loadOptionsSchemaSuccess(fields, optionsType, isValid())
       return fields
@@ -290,13 +291,15 @@ class ProviderStore {
     optionsType: 'source' | 'destination',
     endpointId: string,
     providerName: ProviderTypes,
+    // when setting the image map, mark the windows image as required (usually done when the source is a windows image)
+    requiresWindowsImage?: boolean,
     envData?: { [prop: string]: any } | null,
     useCache?: boolean,
     quietError?: boolean,
     allowMultiple?: boolean,
   }): Promise<OptionValues[]> {
     const {
-      providerName, optionsType, endpointId, envData, useCache, quietError, allowMultiple,
+      providerName, optionsType, endpointId, envData, useCache, quietError, allowMultiple, requiresWindowsImage,
     } = config
     const providerType = optionsType === 'source' ? providerTypes.SOURCE_OPTIONS : providerTypes.DESTINATION_OPTIONS
 
@@ -338,6 +341,7 @@ class ProviderStore {
         provider: providerName,
         options,
         isValid: isValid(),
+        requiresWindowsImage: requiresWindowsImage || false,
       })
       return options
     } catch (e) {
@@ -406,9 +410,10 @@ class ProviderStore {
     provider: ProviderTypes,
     options: OptionValues[],
     isValid: boolean,
+    requiresWindowsImage: boolean,
   }) {
     const {
-      optionsType, provider, options, isValid,
+      optionsType, provider, options, isValid, requiresWindowsImage,
     } = opts
     if (!isValid) {
       return
@@ -416,7 +421,7 @@ class ProviderStore {
     const schema = optionsType === 'source' ? this.sourceSchema : this.destinationSchema
     schema.forEach(field => {
       const parser = OptionsSchemaPlugin.for(provider)
-      parser.fillFieldValues(field, options)
+      parser.fillFieldValues({ field, options, requiresWindowsImage })
     })
     if (optionsType === 'source') {
       this.sourceSchema = [...schema]

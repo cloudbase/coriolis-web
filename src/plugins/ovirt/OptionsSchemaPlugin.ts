@@ -28,12 +28,13 @@ import DefaultOptionsSchemaPlugin, {
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_template_map'
 
-  static parseSchemaToFields(
+  static parseSchemaToFields(opts: {
     schema: SchemaProperties,
-    schemaDefinitions: SchemaDefinitions | null | undefined,
-    dictionaryKey: string,
-  ) {
-    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    schemaDefinitions?: SchemaDefinitions | null | undefined,
+    dictionaryKey?: string,
+    requiresWindowsImage?: boolean,
+  }) {
+    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
     fields.forEach(f => {
       if (
         f.name !== 'migr_template_username_map'
@@ -64,16 +65,19 @@ export default class OptionsSchemaParser {
     DefaultOptionsSchemaPlugin.sortFields(fields)
   }
 
-  static fillFieldValues(field: Field, options: OptionValues[]) {
+  static fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
+    const { field, options, requiresWindowsImage } = opts
+
     const option = options.find(f => f.name === field.name)
     if (!option) {
       return
     }
-    if (!defaultFillMigrationImageMapValues(
+    if (!defaultFillMigrationImageMapValues({
       field,
       option,
-      this.migrationImageMapFieldName,
-    )) {
+      migrationImageMapFieldName: this.migrationImageMapFieldName,
+      requiresWindowsImage,
+    })) {
       defaultFillFieldValues(field, option)
     }
   }

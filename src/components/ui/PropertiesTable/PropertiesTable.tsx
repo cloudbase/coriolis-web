@@ -193,11 +193,13 @@ class PropertiesTable extends React.Component<Props> {
   }
 
   render() {
+    const hasRequiredInputs = this.props.properties.some(prop => prop.required && prop.type === 'string')
+    const width = this.props.width && hasRequiredInputs ? this.props.width - 20 : this.props.width
     return (
       <Wrapper
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
-        width={this.props.width}
+        width={width}
       >
         {this.props.properties.map(prop => (
           <Row key={prop.name}>

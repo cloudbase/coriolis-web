@@ -17,5 +17,6 @@
   },
   "files.eol": "\n",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.importModuleSpecifier": "non-relative"
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "debug.javascript.autoAttachFilter": "always"
 }

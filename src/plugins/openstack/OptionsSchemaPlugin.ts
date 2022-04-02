@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { InstanceScript } from '@src/@types/Instance'
-import type { Field } from '@src/@types/Field'
+import { Field, isEnumSeparator } from '@src/@types/Field'
 import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
 import type { NetworkMap } from '@src/@types/Network'
@@ -28,18 +28,24 @@ import DefaultOptionsSchemaPlugin, {
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
 
-  static parseSchemaToFields(
+  static parseSchemaToFields(opts: {
     schema: SchemaProperties,
-    schemaDefinitions: SchemaDefinitions | null | undefined,
-    dictionaryKey: string,
-  ) {
-    const fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    schemaDefinitions?: SchemaDefinitions | null | undefined,
+    dictionaryKey?: string,
+    requiresWindowsImage?: boolean,
+  }) {
+    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
+    const exportImage = fields.find(f => f.name === 'coriolis_backups_options')?.properties?.find(p => p.name === 'export_image')
+    if (exportImage) {
+      exportImage.required = true
+    }
+
     const exportMechField = fields.find(f => f.name === 'replica_export_mechanism')
     if (!exportMechField) {
       return fields
     }
     exportMechField.subFields = []
-    exportMechField.enum.forEach((exportType: any) => {
+    exportMechField.enum!.forEach((exportType: any) => {
       const exportTypeFieldIdx = fields.findIndex(f => f.name === `${exportType}_options`)
       if (exportTypeFieldIdx === -1) {
         return
@@ -48,7 +54,7 @@ export default class OptionsSchemaParser {
       if (subField.properties?.length) {
         subField.properties = subField.properties.map((p: Field) => ({ ...p, groupName: subField.name }))
       }
-      exportMechField.subFields.push(subField)
+      exportMechField.subFields!.push(subField)
       fields.splice(exportTypeFieldIdx, 1)
     })
     return fields
@@ -58,12 +64,28 @@ export default class OptionsSchemaParser {
     DefaultOptionsSchemaPlugin.sortFields(fields)
   }
 
-  static fillFieldValues(field: Field, options: OptionValues[]) {
+  static fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
+    const { field, options, requiresWindowsImage } = opts
     if (field.name === 'replica_export_mechanism' && field.subFields) {
       field.subFields.forEach(sf => {
         if (sf.properties) {
           sf.properties.forEach(f => {
-            DefaultOptionsSchemaPlugin.fillFieldValues(f, options, f.name.split('/')[1])
+            DefaultOptionsSchemaPlugin.fillFieldValues({
+              field: f, options, customFieldName: f.name.split('/')[1], requiresWindowsImage,
+            })
+            if (f.name === 'export_image') {
+              f.enum?.forEach(exportImageValue => {
+                if (typeof exportImageValue === 'string' || isEnumSeparator(exportImageValue)) {
+                  return
+                }
+                // @ts-ignore
+                const osType = exportImageValue.os_type
+                if (osType !== 'unknown' && osType !== 'linux') {
+                  exportImageValue.disabled = true
+                  exportImageValue.subtitleLabel = `Source plugins rely on a Linux-based temporary virtual machine to perform data exports, but the platform reports this image to be of OS type '${osType}'.`
+                }
+              })
+            }
           })
         }
       })
@@ -72,11 +94,12 @@ export default class OptionsSchemaParser {
       if (!option) {
         return
       }
-      if (!defaultFillMigrationImageMapValues(
+      if (!defaultFillMigrationImageMapValues({
         field,
         option,
-        this.migrationImageMapFieldName,
-      )) {
+        migrationImageMapFieldName: this.migrationImageMapFieldName,
+        requiresWindowsImage,
+      })) {
         defaultFillFieldValues(field, option)
       }
     }

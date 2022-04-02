@@ -42,11 +42,15 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
   }
 }
 
-export const defaultFillMigrationImageMapValues = (
+export const defaultFillMigrationImageMapValues = (opts: {
   field: Field,
   option: OptionValues,
   migrationImageMapFieldName: string,
-): boolean => {
+  requiresWindowsImage: boolean,
+}): boolean => {
+  const {
+    field, option, migrationImageMapFieldName, requiresWindowsImage,
+  } = opts
   if (field.name !== migrationImageMapFieldName) {
     return false
   }
@@ -66,10 +70,18 @@ export const defaultFillMigrationImageMapValues = (
       values.splice(unknownIndex, 0, { separator: true })
     }
 
+    let defaultValue = null
+    if (option?.config_default && Object.prototype.hasOwnProperty.call(option.config_default, os)) {
+      // @ts-ignore
+      defaultValue = option.config_default[os]
+    }
+
     return {
       name: os,
       type: 'string',
       enum: values,
+      default: defaultValue,
+      required: os === 'linux' || (requiresWindowsImage && os === 'windows'),
     }
   })
   return true
@@ -154,7 +166,15 @@ export const defaultGetMigrationImageMap = (
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_image_map'
 
-  static parseSchemaToFields(schema: SchemaProperties, schemaDefinitions?: SchemaDefinitions | null, dictionaryKey?: string) {
+  static parseSchemaToFields(opts: {
+    schema: SchemaProperties,
+    schemaDefinitions?: SchemaDefinitions | null,
+    dictionaryKey?: string,
+    requiresWindowsImage?: boolean,
+  }) {
+    const {
+      schema, schemaDefinitions, dictionaryKey,
+    } = opts
     return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey)
   }
 
@@ -172,17 +192,26 @@ export default class OptionsSchemaParser {
     })
   }
 
-  static fillFieldValues(field: Field, options: OptionValues[], customFieldName?: string) {
-    const option = options
-      .find(f => (customFieldName ? f.name === customFieldName : f.name === field.name))
+  static fillFieldValues(opts: {
+    field: Field,
+    options: OptionValues[],
+    requiresWindowsImage: boolean,
+    customFieldName?: string,
+  }) {
+    const {
+      field, options, requiresWindowsImage, customFieldName,
+    } = opts
+
+    const option = options.find(f => (customFieldName ? f.name === customFieldName : f.name === field.name))
     if (!option) {
       return
     }
-    if (!defaultFillMigrationImageMapValues(
+    if (!defaultFillMigrationImageMapValues({
       field,
       option,
-      this.migrationImageMapFieldName,
-    )) {
+      migrationImageMapFieldName: this.migrationImageMapFieldName,
+      requiresWindowsImage,
+    })) {
       defaultFillFieldValues(field, option)
     }
   }

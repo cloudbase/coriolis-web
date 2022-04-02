@@ -34,9 +34,15 @@ class ProviderSource {
     return response.data.providers
   }
 
-  async loadOptionsSchema(opts: { providerName: ProviderTypes, optionsType: 'source' | 'destination', useCache?: boolean | null, quietError?: boolean | null }): Promise<Field[]> {
+  async loadOptionsSchema(opts: {
+    providerName: ProviderTypes,
+    optionsType: 'source' | 'destination',
+    useCache?: boolean | null,
+    quietError?: boolean | null,
+    requiresWindowsImage?: boolean,
+  }): Promise<Field[]> {
     const {
-      providerName, optionsType, useCache, quietError,
+      providerName, optionsType, useCache, quietError, requiresWindowsImage,
     } = opts
     const schemaTypeInt = optionsType === 'source' ? providerTypes.SOURCE_REPLICA : providerTypes.TARGET_REPLICA
 
@@ -49,7 +55,9 @@ class ProviderSource {
       const schema = optionsType === 'source' ? response?.data?.schemas?.source_environment_schema : response?.data?.schemas?.destination_environment_schema
       let fields = []
       if (schema) {
-        fields = SchemaParser.optionsSchemaToFields(providerName, schema, `${providerName}-${optionsType}`)
+        fields = SchemaParser.optionsSchemaToFields({
+          provider: providerName, schema, dictionaryKey: `${providerName}-${optionsType}`, requiresWindowsImage,
+        })
       }
       return fields
     } catch (err) {

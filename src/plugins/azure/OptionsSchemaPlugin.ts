@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2021  Cloudbase Solutions SRL
+Copyright (C) 2022 Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -26,7 +26,7 @@ import DefaultOptionsSchemaPlugin, {
 } from '../default/OptionsSchemaPlugin'
 
 export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = 'migr_template_map'
+  static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
 
   static parseSchemaToFields(opts: {
     schema: SchemaProperties,
@@ -34,34 +34,11 @@ export default class OptionsSchemaParser {
     dictionaryKey?: string,
     requiresWindowsImage?: boolean,
   }) {
-    const fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
-    fields.forEach(f => {
-      if (
-        f.name !== 'migr_template_username_map'
-        && f.name !== 'migr_template_password_map'
-        && f.name !== 'migr_template_map'
-      ) {
-        return
-      }
-
-      const password = f.name === 'migr_template_password_map'
-      f.properties = [
-        {
-          type: 'string',
-          name: 'windows',
-          required: opts.requiresWindowsImage,
-          password,
-        },
-        {
-          type: 'string',
-          name: 'linux',
-          required: true,
-          password,
-        },
-      ]
-    })
-
-    return fields
+    const { schemaDefinitions } = opts
+    if (schemaDefinitions?.azure_image?.required) {
+      schemaDefinitions.azure_image.required = []
+    }
+    return DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
   }
 
   static sortFields(fields: Field[]) {
@@ -70,7 +47,6 @@ export default class OptionsSchemaParser {
 
   static fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
     const { field, options, requiresWindowsImage } = opts
-
     const option = options.find(f => f.name === field.name)
     if (!option) {
       return
@@ -78,20 +54,20 @@ export default class OptionsSchemaParser {
     if (!defaultFillMigrationImageMapValues({
       field,
       option,
-      migrationImageMapFieldName: this.migrationImageMapFieldName,
+      migrationImageMapFieldName: DefaultOptionsSchemaPlugin.migrationImageMapFieldName,
       requiresWindowsImage,
     })) {
       defaultFillFieldValues(field, option)
     }
   }
 
-  static getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
+  static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
       ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
         options,
         oldOptions,
-        this.migrationImageMapFieldName,
+        DefaultOptionsSchemaPlugin.migrationImageMapFieldName,
       ),
     }
     return env
@@ -102,8 +78,8 @@ export default class OptionsSchemaParser {
   }
 
   static getStorageMap(
-    defaultStorage?: { value: string | null, busType?: string | null },
-    storageMap?: StorageMap[] | null,
+    defaultStorage: { value: string | null, busType?: string | null },
+    storageMap: StorageMap[] | null,
     configDefault?: string | null,
   ) {
     return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)

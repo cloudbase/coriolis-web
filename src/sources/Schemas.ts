@@ -32,10 +32,15 @@ class SchemaParser {
     return fields
   }
 
-  static optionsSchemaToFields(provider: ProviderTypes, schema: any, dictionaryKey: string) {
+  static optionsSchemaToFields(opts: { provider: ProviderTypes, schema: any, dictionaryKey: string, requiresWindowsImage?: boolean }) {
+    const {
+      provider, schema, dictionaryKey, requiresWindowsImage,
+    } = opts
     const parser = OptionsSchemaPlugin.for(provider)
     const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
-    const fields = parser.parseSchemaToFields(schemaRoot, schema.definitions, dictionaryKey)
+    const fields = parser.parseSchemaToFields({
+      schema: schemaRoot, schemaDefinitions: schema.definitions, dictionaryKey, requiresWindowsImage,
+    })
     parser.sortFields(fields)
     return fields
   }
@@ -59,7 +64,7 @@ class SchemaParser {
   }
 
   static minionPoolOptionsSchemaToFields(provider: ProviderTypes, schema: any, dictionaryKey: string) {
-    let fields = this.optionsSchemaToFields(provider, schema, dictionaryKey)
+    let fields = this.optionsSchemaToFields({ provider, schema, dictionaryKey })
     const parsers = MinionPoolSchemaPlugin.for(provider)
     fields = parsers.minionPoolTransformOptionsFields(fields)
     return fields

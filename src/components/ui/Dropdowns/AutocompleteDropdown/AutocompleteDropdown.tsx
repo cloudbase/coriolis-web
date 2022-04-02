@@ -100,6 +100,20 @@ const ListItem = styled.div<any>`
     background: ${ThemePalette.primary};
     color: white;
   }
+
+  ${props => (props.disabled ? css`
+    cursor: default;
+    color: ${ThemePalette.grayscale[3]};
+    &:hover {
+      background: white;
+      color: ${ThemePalette.grayscale[3]};
+    }
+  ` : '')}
+
+`
+const SubtitleLabel = styled.div`
+  display: flex;
+  font-size: 11px;
 `
 const DuplicatedLabel = styled.div<any>`
   display: flex;
@@ -257,6 +271,10 @@ class AutocompleteDropdown extends React.Component<Props, State> {
   }
 
   handleItemClick(item: any) {
+    if (item.disabled) {
+      return
+    }
+
     this.setState({
       showDropdownList: false,
       firstItemHover: false,
@@ -405,8 +423,12 @@ class AutocompleteDropdown extends React.Component<Props, State> {
               selected={value !== null && value === selectedValue}
               dim={this.props.dimNullValue && value == null}
               arrowSelected={i === this.state.arrowSelection}
+              disabled={item.disabled}
             >
               {label}
+              {item.subtitleLabel ? (
+                <SubtitleLabel>{item.subtitleLabel}</SubtitleLabel>
+              ) : null}
               {duplicatedLabel ? <DuplicatedLabel> (<span>{value || ''}</span>)</DuplicatedLabel> : ''}
             </ListItem>
           )
