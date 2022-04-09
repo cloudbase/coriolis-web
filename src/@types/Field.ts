@@ -52,6 +52,7 @@ export type Field = {
   readOnly?: boolean,
   title?: string,
   description?: string,
+  warning?: string,
   subFields?: Field[],
   groupName?: string
 }

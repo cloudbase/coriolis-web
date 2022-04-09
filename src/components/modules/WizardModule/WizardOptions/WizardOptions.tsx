@@ -352,6 +352,7 @@ class WizardOptions extends React.Component<Props> {
         minimum={field.minimum}
         maximum={field.maximum}
         label={field.label || LabelDictionary.get(field.name, this.props.dictionaryKey)}
+        warning={field.warning}
         description={field.description
           || LabelDictionary.getDescription(field.name, this.props.dictionaryKey)}
         password={this.isPassword(field.name)}

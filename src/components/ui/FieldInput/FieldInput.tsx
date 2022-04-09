@@ -63,6 +63,13 @@ const Label = styled.div<any>`
     opacity: 0.5;
   ` : '')}
 `
+const WarningLabel = styled.div<{ fontSize: number }>`
+  font-weight: 300;
+  font-size: ${props => props.fontSize}px;
+  color: ${ThemePalette.grayscale[3]};
+  display: inline-block;
+  margin-left: 4px;
+`
 const LabelText = styled.span``
 const Asterisk = styled.div<any>`
   ${ThemeProps.exactSize('16px')}
@@ -99,6 +106,7 @@ type Props = {
   width?: number,
   label?: string,
   description?: string,
+  warning?: string,
   addNullValue?: boolean,
   nullableBoolean?: boolean,
   labelRenderer?: ((prop: string) => string) | null,
@@ -392,6 +400,7 @@ class FieldInput extends React.Component<Props> {
     }
 
     const description = this.props.description
+    const warning = this.props.warning
     const marginRight = this.props.layout === 'modal' || description || this.props.required ? '24px' : 0
 
     return (
@@ -405,7 +414,12 @@ class FieldInput extends React.Component<Props> {
           {this.props.label}
         </LabelText>
         {description ? <InfoIcon text={description} marginLeft={-20} marginBottom={this.props.layout === 'page' ? null : 0} /> : null}
+        {/*
+        {warning ? <InfoIcon warning filled text={warning}
+         marginLeft={3} marginBottom={this.props.layout === 'page' ? null : 0} style={{ transform: 'scale(0.8)' }} /> : null}
+        */}
         {this.props.layout === 'page' && Boolean(this.props.required) ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}
+        {warning ? <WarningLabel fontSize={this.props.layout === 'page' ? 10 : 6}>{warning}</WarningLabel> : null}
       </Label>
     )
   }

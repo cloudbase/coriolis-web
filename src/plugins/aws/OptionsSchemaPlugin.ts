@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { InstanceScript } from '@src/@types/Instance'
-import { Field, isEnumSeparator } from '@src/@types/Field'
+import { Field } from '@src/@types/Field'
 import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
 import type { NetworkMap } from '@src/@types/Network'
@@ -23,6 +23,7 @@ import DefaultOptionsSchemaPlugin, {
   defaultGetMigrationImageMap,
   defaultFillFieldValues,
   defaultFillMigrationImageMapValues,
+  removeExportImageFieldValues,
 } from '../default/OptionsSchemaPlugin'
 
 export default class OptionsSchemaParser {
@@ -69,20 +70,7 @@ export default class OptionsSchemaParser {
       requiresWindowsImage,
     })) {
       defaultFillFieldValues(field, option)
-
-      if (field.name === 'export_image') {
-        field.enum?.forEach(exportImageValue => {
-          if (typeof exportImageValue === 'string' || isEnumSeparator(exportImageValue)) {
-            return
-          }
-          // @ts-ignore
-          const osType = exportImageValue.os_type
-          if (osType !== 'unknown' && osType !== 'linux') {
-            exportImageValue.disabled = true
-            exportImageValue.subtitleLabel = `Source plugins rely on a Linux-based temporary virtual machine to perform data exports, but the platform reports this image to be of OS type '${osType}'.`
-          }
-        })
-      }
+      removeExportImageFieldValues(field)
     }
   }
 

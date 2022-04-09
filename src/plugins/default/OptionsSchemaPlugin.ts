@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Utils from '@src/utils/ObjectUtils'
 
-import type { Field } from '@src/@types/Field'
+import { Field, isEnumSeparator } from '@src/@types/Field'
 import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
 import type { NetworkMap } from '@src/@types/Network'
@@ -39,6 +39,22 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
   }
   if (field.type === 'boolean' && option.config_default != null) {
     field.default = typeof option.config_default === 'boolean' ? option.config_default : option.config_default === 'true'
+  }
+}
+
+export const removeExportImageFieldValues = (field: Field) => {
+  if (field.name === 'export_image') {
+    field.enum = field.enum?.filter(exportImageValue => {
+      if (typeof exportImageValue === 'string' || isEnumSeparator(exportImageValue)) {
+        return true
+      }
+      // @ts-ignore
+      const isLinux = exportImageValue.os_type === 'linux' || exportImageValue.os_type === 'unknown'
+      if (!isLinux) {
+        field.warning = 'Only Linux images are listed.'
+      }
+      return isLinux
+    })
   }
 }
 

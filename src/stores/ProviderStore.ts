@@ -25,6 +25,7 @@ import { OptionsSchemaPlugin } from '@src/plugins'
 import type { OptionValues } from '@src/@types/Endpoint'
 import type { Field } from '@src/@types/Field'
 import type { Providers, ProviderTypes } from '@src/@types/Providers'
+import ObjectUtils from '@src/utils/ObjectUtils'
 import regionStore from './RegionStore'
 
 export const getFieldChangeOptions = (config: {
@@ -304,6 +305,7 @@ class ProviderStore {
     const providerType = optionsType === 'source' ? providerTypes.SOURCE_OPTIONS : providerTypes.DESTINATION_OPTIONS
 
     await this.loadProviders()
+    await ObjectUtils.waitFor(() => !this.providersLoading)
     if (!this.providers) {
       return []
     }
