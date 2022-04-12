@@ -25,7 +25,7 @@ Your server will be running at `http://localhost:3000/` (the port is configurabl
 
 ## Development mode
 
-- set env. variable `NODE_MODE='development'`
+- set env. variable `NODE_ENV='development'`
 - run `yarn client-dev` to start local development server (starts on port 3001)
 - run `yarn server-dev` to start the express server in development mode
 
@@ -55,7 +55,7 @@ All environment variables can be set in a `.env` file created in the root direct
 The following is the list of environment variables and their default values:
 
 ```(bash)
-NODE_MODE='production'
+NODE_ENV='production'
 CORIOLIS_URL='<your-coriolis-url>'
 MOD_JSON='<path-to-json>'
 ```

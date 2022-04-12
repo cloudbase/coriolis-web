@@ -1,5 +1,5 @@
 module.exports = api => {
-  api.cache.using(() => process.env.NODE_MODE)
+  api.cache.using(() => process.env.NODE_ENV)
 
   const common = {
     presets: [
@@ -20,7 +20,7 @@ module.exports = api => {
       '@babel/plugin-proposal-optional-chaining',
     ],
   }
-  if (process.env.NODE_MODE === 'development' || process.env.NODE_ENV === 'test') {
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     common.plugins.push(['babel-plugin-styled-components', { displayName: true, minify: false }])
   } else {
     common.plugins.push(['babel-plugin-styled-components', { displayName: false, minify: true }])
