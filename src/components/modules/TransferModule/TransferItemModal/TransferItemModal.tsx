@@ -26,9 +26,8 @@ import Button from '@src/components/ui/Button'
 import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
 import Modal from '@src/components/ui/Modal'
 import Panel from '@src/components/ui/Panel'
-import { isOptionsPageValid } from '@src/components/modules/WizardModule/WizardPageContent'
 import WizardNetworks, { WizardNetworksChangeObject } from '@src/components/modules/WizardModule/WizardNetworks'
-import WizardOptions, { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
+import WizardOptions, { findInvalidFields, INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
 import WizardStorage from '@src/components/modules/WizardModule/WizardStorage'
 
 import type {
@@ -440,12 +439,12 @@ class TransferItemModal extends React.Component<Props, State> {
     const env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
     const data = type === 'source' ? this.state.sourceData : this.state.destinationData
     const schema = type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
-    const isValid = isOptionsPageValid({
+    const invalidFields = findInvalidFields({
       ...env,
       ...data,
     }, schema)
 
-    this.setState({ updateDisabled: !isValid })
+    this.setState({ updateDisabled: invalidFields.length > 0 })
   }
 
   handlePanelChange(panel: string) {

@@ -37,6 +37,7 @@ import FileInput from '@src/components/ui/FileInput'
 import asteriskImage from './images/asterisk.svg'
 
 const Wrapper = styled.div<any>`
+  position: relative;
   ${props => (props.layout === 'page' ? css`
     display: flex;
     flex-direction: ${props.inline ? 'row' : 'column'};
@@ -77,6 +78,13 @@ const Asterisk = styled.div<any>`
   background: url('${asteriskImage}') center no-repeat;
   margin-bottom: -3px;
   margin-left: ${props => props.marginLeft || '0px'};
+`
+const HighlightLabel = styled.div<{ rightMargin: number }>`
+  position: absolute;
+  bottom: -13px;
+  font-size: 10px;
+  right: ${props => `${props.rightMargin}px`};
+  color: ${ThemePalette.alert};
 `
 
 type Props = {
@@ -194,6 +202,7 @@ class FieldInput extends React.Component<Props> {
 
     return (
       <PropertiesTable
+        highlight={this.props.highlight}
         width={this.props.width}
         properties={this.props.properties}
         valueCallback={field => this.props.valueCallback && this.props.valueCallback(field)}
@@ -414,10 +423,6 @@ class FieldInput extends React.Component<Props> {
           {this.props.label}
         </LabelText>
         {description ? <InfoIcon text={description} marginLeft={-20} marginBottom={this.props.layout === 'page' ? null : 0} /> : null}
-        {/*
-        {warning ? <InfoIcon warning filled text={warning}
-         marginLeft={3} marginBottom={this.props.layout === 'page' ? null : 0} style={{ transform: 'scale(0.8)' }} /> : null}
-        */}
         {this.props.layout === 'page' && Boolean(this.props.required) ? <Asterisk marginLeft={description ? '4px' : '-16px'} /> : null}
         {warning ? <WarningLabel fontSize={this.props.layout === 'page' ? 10 : 6}>{warning}</WarningLabel> : null}
       </Label>
@@ -434,6 +439,7 @@ class FieldInput extends React.Component<Props> {
       >
         {this.renderLabel()}
         {this.renderInput()}
+        {this.props.highlight ? <HighlightLabel rightMargin={this.props.type === 'object' ? 21 : 0}>Required field</HighlightLabel> : null}
       </Wrapper>
     )
   }

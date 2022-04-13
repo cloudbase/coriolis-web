@@ -154,8 +154,8 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   handleEnterKey() {
-    if (this.contentRef && !this.contentRef.isNextButtonDisabled()) {
-      this.handleNextClick()
+    if (this.contentRef && !this.contentRef.nextButtonDisabled) {
+      this.contentRef.handleNextClick()
     }
   }
 
