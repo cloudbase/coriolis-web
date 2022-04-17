@@ -143,8 +143,8 @@ export const fieldsToPayload = (data: { [prop: string]: any }, schema: SchemaPro
   return info
 }
 
-export default class ConnectionSchemaParser {
-  static parseSchemaToFields(schema: Schema): Field[] {
+class ConnectionSchemaParserBase {
+  parseSchemaToFields(schema: Schema): Field[] {
     let fields = connectionSchemaToFields(schema.oneOf[0])
 
     fields = [
@@ -155,7 +155,7 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: any) {
+  parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: any) {
     const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
     const connectionInfo = fieldsToPayload(data, schemaRoot)
 
@@ -167,7 +167,9 @@ export default class ConnectionSchemaParser {
     return connectionInfo
   }
 
-  static parseConnectionResponse(endpoint: Endpoint) {
+  parseConnectionResponse(endpoint: Endpoint) {
     return endpoint
   }
 }
+
+export default ConnectionSchemaParserBase

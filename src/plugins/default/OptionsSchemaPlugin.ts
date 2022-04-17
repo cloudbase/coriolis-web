@@ -179,10 +179,10 @@ export const defaultGetMigrationImageMap = (
   return env
 }
 
-export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = 'migr_image_map'
+export default class OptionsSchemaParserBase {
+  migrationImageMapFieldName = 'migr_image_map'
 
-  static parseSchemaToFields(opts: {
+  parseSchemaToFields(opts: {
     schema: SchemaProperties,
     schemaDefinitions?: SchemaDefinitions | null,
     dictionaryKey?: string,
@@ -194,7 +194,7 @@ export default class OptionsSchemaParser {
     return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey)
   }
 
-  static sortFields(fields: Field[]) {
+  sortFields(fields: Field[]) {
     fields.sort((a, b) => {
       if (a.required && !b.required) {
         return -1
@@ -208,7 +208,7 @@ export default class OptionsSchemaParser {
     })
   }
 
-  static fillFieldValues(opts: {
+  fillFieldValues(opts: {
     field: Field,
     options: OptionValues[],
     requiresWindowsImage: boolean,
@@ -232,7 +232,7 @@ export default class OptionsSchemaParser {
     }
   }
 
-  static getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
+  getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
       ...defaultGetDestinationEnv(
         options,
@@ -247,7 +247,7 @@ export default class OptionsSchemaParser {
     return env
   }
 
-  static getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
+  getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
     const payload: any = {}
     if (!networkMappings?.length) {
       return payload
@@ -270,7 +270,7 @@ export default class OptionsSchemaParser {
     return payload
   }
 
-  static getStorageMap(
+  getStorageMap(
     defaultStorage: { value: string | null, busType?: string | null } | undefined,
     storageMap?: StorageMap[] | null,
     configDefault?: string | null,
@@ -325,7 +325,7 @@ export default class OptionsSchemaParser {
     return payload
   }
 
-  static getUserScripts(
+  getUserScripts(
     uploadedUserScripts: InstanceScript[],
     removedUserScripts: InstanceScript[],
     userScriptData: UserScriptData | null | undefined,

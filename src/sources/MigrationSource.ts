@@ -231,12 +231,11 @@ class MigrationSource {
     }
 
     if (opts.uploadedScripts?.length || opts.removedScripts?.length || migration.user_scripts) {
-      payload.migration.user_scripts = DefaultOptionsSchemaPlugin
-        .getUserScripts(
-          opts.uploadedScripts || [],
-          opts.removedScripts || [],
-          migration.user_scripts,
-        )
+      payload.migration.user_scripts = new DefaultOptionsSchemaPlugin().getUserScripts(
+        opts.uploadedScripts || [],
+        opts.removedScripts || [],
+        migration.user_scripts,
+      )
     }
 
     const response = await Api.send({
@@ -289,8 +288,7 @@ class MigrationSource {
     })
 
     if (uploadedUserScripts.length || removedUserScripts.length || userScriptData) {
-      payload.migration.user_scripts = DefaultOptionsSchemaPlugin
-        .getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
+      payload.migration.user_scripts = new DefaultOptionsSchemaPlugin().getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
     }
 
     if (Object.keys(minionPoolMappings).length) {

@@ -12,23 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { InstanceScript } from '@src/@types/Instance'
-import type { Field } from '@src/@types/Field'
-import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
-import type { NetworkMap } from '@src/@types/Network'
-import { UserScriptData } from '@src/@types/MainItem'
-import DefaultOptionsSchemaPlugin, {
-  defaultFillMigrationImageMapValues,
-  defaultFillFieldValues,
-  defaultGetDestinationEnv,
-  defaultGetMigrationImageMap,
-} from '../default/OptionsSchemaPlugin'
+import OptionsSchemaParserBase from '../default/OptionsSchemaPlugin'
 
-export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
-
-  static parseSchemaToFields(opts: {
+export default class OptionsSchemaParser extends OptionsSchemaParserBase {
+  override parseSchemaToFields(opts: {
     schema: SchemaProperties,
     schemaDefinitions?: SchemaDefinitions | null | undefined,
     dictionaryKey?: string,
@@ -38,58 +26,6 @@ export default class OptionsSchemaParser {
     if (schemaDefinitions?.azure_image?.required) {
       schemaDefinitions.azure_image.required = []
     }
-    return DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
-  }
-
-  static sortFields(fields: Field[]) {
-    DefaultOptionsSchemaPlugin.sortFields(fields)
-  }
-
-  static fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
-    const { field, options, requiresWindowsImage } = opts
-    const option = options.find(f => f.name === field.name)
-    if (!option) {
-      return
-    }
-    if (!defaultFillMigrationImageMapValues({
-      field,
-      option,
-      migrationImageMapFieldName: DefaultOptionsSchemaPlugin.migrationImageMapFieldName,
-      requiresWindowsImage,
-    })) {
-      defaultFillFieldValues(field, option)
-    }
-  }
-
-  static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
-    const env = {
-      ...defaultGetDestinationEnv(options, oldOptions),
-      ...defaultGetMigrationImageMap(
-        options,
-        oldOptions,
-        DefaultOptionsSchemaPlugin.migrationImageMapFieldName,
-      ),
-    }
-    return env
-  }
-
-  static getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
-    return DefaultOptionsSchemaPlugin.getNetworkMap(networkMappings)
-  }
-
-  static getStorageMap(
-    defaultStorage: { value: string | null, busType?: string | null },
-    storageMap: StorageMap[] | null,
-    configDefault?: string | null,
-  ) {
-    return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)
-  }
-
-  static getUserScripts(
-    uploadedUserScripts: InstanceScript[],
-    removedUserScripts: InstanceScript[],
-    userScriptData: UserScriptData | null | undefined,
-  ) {
-    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
+    return super.parseSchemaToFields(opts)
   }
 }

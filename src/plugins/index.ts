@@ -42,11 +42,11 @@ const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj
 export const ConnectionSchemaPlugin = {
   for: (provider: ProviderTypes) => {
     const map = {
-      default: DefaultConnectionSchemaPlugin,
-      azure: AzureConnectionSchemaPlugin,
-      openstack: OpenstackConnectionSchemaPlugin,
-      oci: OciConnectionSchemaPlugin,
-      kubevirt: KubevirtConnectionSchemaPlugin,
+      default: new DefaultConnectionSchemaPlugin(),
+      azure: new AzureConnectionSchemaPlugin(),
+      openstack: new OpenstackConnectionSchemaPlugin(),
+      oci: new OciConnectionSchemaPlugin(),
+      kubevirt: new KubevirtConnectionSchemaPlugin(),
     }
     if (hasKey(map, provider)) {
       return map[provider]
@@ -58,13 +58,13 @@ export const ConnectionSchemaPlugin = {
 export const OptionsSchemaPlugin = {
   for: (provider: ProviderTypes) => {
     const map = {
-      default: DefaultOptionsSchemaPlugin,
-      aws: AwsOptionsSchemaPlugin,
-      oracle_vm: OvmOptionsSchemaPlugin,
-      openstack: OpenstackOptionsSchemaPlugin,
-      vmware_vsphere: VmwareOptionsSchemaPlugin,
-      ovirt: OvirtOptionsSchemaPlugin,
-      azure: AzureOptionsSchemaPlugin,
+      default: new DefaultOptionsSchemaPlugin(),
+      aws: new AwsOptionsSchemaPlugin(),
+      oracle_vm: new OvmOptionsSchemaPlugin(),
+      openstack: new OpenstackOptionsSchemaPlugin(),
+      vmware_vsphere: new VmwareOptionsSchemaPlugin(),
+      ovirt: new OvirtOptionsSchemaPlugin(),
+      azure: new AzureOptionsSchemaPlugin(),
     }
     if (hasKey(map, provider)) {
       return map[provider]
@@ -90,8 +90,8 @@ export const ContentPlugin = {
 export const InstanceInfoPlugin = {
   for: (provider: ProviderTypes) => {
     const map = {
-      default: DefaultInstanceInfoPlugin,
-      oci: OciInstanceInfoPlugin,
+      default: new DefaultInstanceInfoPlugin(),
+      oci: new OciInstanceInfoPlugin(),
     }
     if (hasKey(map, provider)) {
       return map[provider]
@@ -103,8 +103,8 @@ export const InstanceInfoPlugin = {
 export const MinionPoolSchemaPlugin = {
   for: (provider: ProviderTypes) => {
     const map = {
-      default: DefaultMinionPoolSchemaPlugin,
-      openstack: OpenstackMinionPoolSchemaPlugin,
+      default: new DefaultMinionPoolSchemaPlugin(),
+      openstack: new OpenstackMinionPoolSchemaPlugin(),
     }
     if (hasKey(map, provider)) {
       return map[provider]

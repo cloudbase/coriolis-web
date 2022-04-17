@@ -36,10 +36,8 @@ class WizardSource {
     const {
       type, data, defaultStorage, storageMap, uploadedUserScripts,
     } = opts
-    const sourceParser = data.source
-      ? OptionsSchemaPlugin.for(data.source.type) : DefaultOptionsSchemaParser
-    const destParser = data.target
-      ? OptionsSchemaPlugin.for(data.target.type) : DefaultOptionsSchemaParser
+    const sourceParser = data.source ? OptionsSchemaPlugin.for(data.source.type) : new DefaultOptionsSchemaParser()
+    const destParser = data.target ? OptionsSchemaPlugin.for(data.target.type) : new DefaultOptionsSchemaParser()
     const payload: any = {}
     payload[type] = {
       origin_endpoint_id: data.source ? data.source.id : 'null',

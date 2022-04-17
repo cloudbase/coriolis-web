@@ -12,29 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { InstanceScript } from '@src/@types/Instance'
 import type { Field } from '@src/@types/Field'
-import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
+import type { OptionValues } from '@src/@types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
-import type { NetworkMap } from '@src/@types/Network'
-import { UserScriptData } from '@src/@types/MainItem'
-import DefaultOptionsSchemaPlugin, {
+import OptionsSchemaPluginBase, {
   defaultFillMigrationImageMapValues,
   defaultFillFieldValues,
   defaultGetDestinationEnv,
   defaultGetMigrationImageMap,
 } from '../default/OptionsSchemaPlugin'
 
-export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = 'migr_template_map'
+export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
+  override migrationImageMapFieldName = 'migr_template_map'
 
-  static parseSchemaToFields(opts: {
+  override parseSchemaToFields(opts: {
     schema: SchemaProperties,
     schemaDefinitions?: SchemaDefinitions | null | undefined,
     dictionaryKey?: string,
     requiresWindowsImage?: boolean,
   }) {
-    const fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
+    const fields = super.parseSchemaToFields(opts)
     fields.forEach(f => {
       if (
         f.name !== 'migr_template_username_map'
@@ -64,11 +61,8 @@ export default class OptionsSchemaParser {
     return fields
   }
 
-  static sortFields(fields: Field[]) {
-    DefaultOptionsSchemaPlugin.sortFields(fields)
-  }
-
-  static fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
+  // @TODO - check if this override is necessary, aka this.migrationImageMapFieldName is used from this class
+  override fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
     const { field, options, requiresWindowsImage } = opts
 
     const option = options.find(f => f.name === field.name)
@@ -85,7 +79,8 @@ export default class OptionsSchemaParser {
     }
   }
 
-  static getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
+  // @TODO - check if this override is necessary, aka this.migrationImageMapFieldName is used from this class
+  override getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
       ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
@@ -95,25 +90,5 @@ export default class OptionsSchemaParser {
       ),
     }
     return env
-  }
-
-  static getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
-    return DefaultOptionsSchemaPlugin.getNetworkMap(networkMappings)
-  }
-
-  static getStorageMap(
-    defaultStorage?: { value: string | null, busType?: string | null },
-    storageMap?: StorageMap[] | null,
-    configDefault?: string | null,
-  ) {
-    return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)
-  }
-
-  static getUserScripts(
-    uploadedUserScripts: InstanceScript[],
-    removedUserScripts: InstanceScript[],
-    userScriptData: UserScriptData | null | undefined,
-  ) {
-    return DefaultOptionsSchemaPlugin.getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
   }
 }

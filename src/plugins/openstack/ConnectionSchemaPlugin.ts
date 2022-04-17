@@ -15,8 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Schema } from '@src/@types/Schema'
 import type { Field } from '@src/@types/Field'
 import type { Endpoint } from '@src/@types/Endpoint'
-
-import DefaultConnectionSchemaParser from '@src/plugins/default/ConnectionSchemaPlugin'
+import ConnectionSchemaParserBase from '@src/plugins/default/ConnectionSchemaPlugin'
 
 const customSort = (fields: Field[]) => {
   const sortPriority: any = {
@@ -48,9 +47,9 @@ const customSort = (fields: Field[]) => {
   return fields
 }
 
-export default class ConnectionSchemaParser {
-  static parseSchemaToFields(schema: Schema): Field[] {
-    const fields = DefaultConnectionSchemaParser.parseSchemaToFields(schema)
+export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
+  override parseSchemaToFields(schema: Schema): Field[] {
+    const fields = super.parseSchemaToFields(schema)
     const identityField = fields.find(f => f.name === 'identity_api_version')
     if (identityField && !identityField.default) {
       identityField.default = identityField.minimum
@@ -83,7 +82,7 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: Schema) {
+  override parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: Schema) {
     if (data.openstack_use_current_user) {
       return {}
     }
@@ -91,11 +90,11 @@ export default class ConnectionSchemaParser {
     delete data.project_domain
     // eslint-disable-next-line no-param-reassign
     delete data.user_domain
-    const payload = DefaultConnectionSchemaParser.parseConnectionInfoToPayload(data, schema)
+    const payload = super.parseConnectionInfoToPayload(data, schema)
     return payload
   }
 
-  static parseConnectionResponse(endpoint: Endpoint) {
+  override parseConnectionResponse(endpoint: Endpoint) {
     if (!endpoint.connection_info || Object.keys(endpoint.connection_info).length === 0) {
       return {
         openstack_use_current_user: true,
