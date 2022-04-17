@@ -98,6 +98,7 @@ type Props = {
   emptyListExtraMessage?: string,
   emptyListButtonLabel?: string,
   onEmptyListButtonClick?: () => void,
+  mainListWrapperRef?: React.RefObject<HTMLDivElement>,
 }
 @observer
 class MainList extends React.Component<Props> {
@@ -180,7 +181,7 @@ class MainList extends React.Component<Props> {
     }
 
     return (
-      <Wrapper>
+      <Wrapper ref={this.props.mainListWrapperRef}>
         {this.props.loading || this.props.items.length === 0 || this.props.showEmptyList
           ? <Separator /> : null}
         {renderContent()}
