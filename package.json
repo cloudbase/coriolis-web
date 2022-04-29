@@ -111,6 +111,7 @@
   },
   "resolutions": {
     "ansi-regex": "^5.0.1",
+    "async": "^2.6.4",
     "base64url": "^3.0.0",
     "glob-parent": "^5.1.2",
     "hosted-git-info": "^2.8.9",
