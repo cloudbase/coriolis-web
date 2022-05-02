@@ -275,12 +275,11 @@ class ReplicaSource {
     }
 
     if (updateData.uploadedScripts?.length || updateData.removedScripts?.length) {
-      payload.replica.user_scripts = DefaultOptionsSchemaPlugin
-        .getUserScripts(
-          updateData.uploadedScripts || [],
-          updateData.removedScripts || [],
-          replica.user_scripts,
-        )
+      payload.replica.user_scripts = new DefaultOptionsSchemaPlugin().getUserScripts(
+        updateData.uploadedScripts || [],
+        updateData.removedScripts || [],
+        replica.user_scripts,
+      )
     }
 
     const response = await Api.send({

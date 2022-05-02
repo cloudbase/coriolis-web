@@ -15,26 +15,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import type { Schema } from '@src/@types/Schema'
 import type { Field } from '@src/@types/Field'
 
-import DefaultConnectionSchemaParser from '@src/plugins/default/ConnectionSchemaPlugin'
-import { Endpoint } from '@src/@types/Endpoint'
+import ConnectionSchemaParserBase from '@src/plugins/default/ConnectionSchemaPlugin'
 
-export default class ConnectionSchemaParser {
-  static parseSchemaToFields(schema: Schema): Field[] {
-    const fields = DefaultConnectionSchemaParser.parseSchemaToFields(schema)
+export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
+  override parseSchemaToFields(schema: Schema): Field[] {
+    const fields = super.parseSchemaToFields(schema)
     const kubeConfigField = fields.find(f => f.name === 'kube_config')
     if (kubeConfigField) {
       kubeConfigField.useFile = true
     }
 
     return fields
-  }
-
-  static parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: Schema) {
-    const payload = DefaultConnectionSchemaParser.parseConnectionInfoToPayload(data, schema)
-    return payload
-  }
-
-  static parseConnectionResponse(endpoint: Endpoint) {
-    return endpoint
   }
 }

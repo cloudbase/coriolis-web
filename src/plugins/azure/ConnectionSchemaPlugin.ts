@@ -12,8 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Endpoint } from '@src/@types/Endpoint'
-import {
+import ConnectionSchemaParserBase, {
   connectionSchemaToFields,
   defaultSchemaToFields,
   fieldsToPayload,
@@ -88,8 +87,8 @@ const azureConnectionParse = (
   return [radioGroup, cloudProfileDropdown]
 }
 
-export default class ConnectionSchemaParser {
-  static parseSchemaToFields(schema: any) {
+export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
+  override parseSchemaToFields(schema: any) {
     let fields = azureConnectionParse(schema)
 
     fields = [
@@ -100,7 +99,7 @@ export default class ConnectionSchemaParser {
     return fields
   }
 
-  static parseConnectionInfoToPayload(data: any, schema: any) {
+  override parseConnectionInfoToPayload(data: any, schema: any) {
     const connectionInfo: any = fieldsToPayload(data, schema)
     const loginType = data.login_type || 'user_credentials'
     connectionInfo[loginType] = fieldsToPayload(data, schema.properties[loginType])
@@ -131,9 +130,5 @@ export default class ConnectionSchemaParser {
     }
 
     return connectionInfo
-  }
-
-  static parseConnectionResponse(endpoint: Endpoint) {
-    return endpoint
   }
 }

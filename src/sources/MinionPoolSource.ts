@@ -179,7 +179,7 @@ class MinionPoolSource {
     } = config
     const payload = {
       minion_pool: {
-        ...DefaultMinionPoolSchemaPlugin.getMinionPoolEnv(defaultSchema, data),
+        ...new DefaultMinionPoolSchemaPlugin().getMinionPoolEnv(defaultSchema, data),
         endpoint_id: endpointId,
         environment_options: SchemaParser.getMinionPoolEnv(provider, envSchema, data),
       },
@@ -203,7 +203,7 @@ class MinionPoolSource {
     } = config
     const payload = {
       minion_pool: {
-        ...DefaultMinionPoolSchemaPlugin.getMinionPoolEnv(defaultSchema, data),
+        ...new DefaultMinionPoolSchemaPlugin().getMinionPoolEnv(defaultSchema, data),
         environment_options: SchemaParser.getMinionPoolEnv(provider, envSchema, data),
       },
     }

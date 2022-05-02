@@ -13,9 +13,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { Instance } from '@src/@types/Instance'
+import InstanceInfoPluginBase from '@src/plugins/default/InstanceInfoPlugin'
 
-export default class InstanceInfoPlugin {
-  static parseInstance(instance: Instance): Instance {
+export default class InstanceInfoPlugin extends InstanceInfoPluginBase {
+  override parseInstance(instance: Instance): Instance {
     const rootDisk = instance.devices.disks[0]
     if (rootDisk) {
       rootDisk.disabled = {
