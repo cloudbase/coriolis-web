@@ -140,7 +140,6 @@ const ListItem = styled.div<any>`
   transition: all ${ThemeProps.animations.swift};
   padding-left: ${(props: any) => props.paddingLeft}px;
   word-break: break-word;
-  ${props => (props.disabled ? css`cursor: default;` : '')}
 
   &:first-child {
     border-top-left-radius: ${ThemeProps.borderRadius};
@@ -159,6 +158,14 @@ const ListItem = styled.div<any>`
       stroke: white;
     }
   }
+
+  ${props => (props.disabled ? css`
+    cursor: default;
+    &:hover {
+      background: white;
+      color: ${ThemePalette.grayscale[3]};
+    }
+  ` : '')}
 `
 const SubtitleLabel = styled.div`
   display: flex;

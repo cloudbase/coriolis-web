@@ -91,13 +91,13 @@ class WizardStore {
   @action fillWithDefaultValues(direction: 'source' | 'destination', schema: Field[]) {
     const data: { [prop: string]: any } = (direction === 'source' ? this.data.sourceOptions : this.data.destOptions) || {}
 
-    schema.forEach(field => {
-      if (data[field.name] !== undefined) {
-        return
+    const shouldSetDefault = (field: Field, parentData: { [prop: string]: any }): { should: boolean, value?: any } => {
+      if (parentData[field.name] !== undefined) {
+        return { should: false }
       }
       const fieldDefault = field.default
       if (fieldDefault == null) {
-        return
+        return { should: false }
       }
       if (field.enum) {
         const isDefaultInEnum = field.enum.find(item => {
@@ -113,10 +113,38 @@ class WizardStore {
 
         // Don't use the default if it can't be found in the enum list.
         if (isDefaultInEnum) {
-          data[field.name] = field.default
+          return { should: true, value: field.default }
         }
       } else {
-        data[field.name] = field.default
+        return { should: true, value: field.default }
+      }
+      return { should: false }
+    }
+
+    const setObjectDefault = (subFieldProperty: Field, parentFieldName: string) => {
+      const shouldSetDefaultResult = shouldSetDefault(subFieldProperty, data[parentFieldName] || {})
+      if (shouldSetDefaultResult.should) {
+        data[parentFieldName] = data[parentFieldName] || {}
+        data[parentFieldName][subFieldProperty.name] = shouldSetDefaultResult.value
+      }
+    }
+
+    schema.forEach(field => {
+      if (field.subFields && data[field.name] !== undefined) {
+        const subField = field.subFields.find(sf => sf.name === `${data[field.name]}_options`)
+        if (subField) {
+          subField.properties?.forEach(subFieldProperty => {
+            setObjectDefault(subFieldProperty, subFieldProperty.groupName!)
+          })
+        }
+        return
+      }
+      field.properties?.forEach(subFieldProperty => {
+        setObjectDefault(subFieldProperty, field.name)
+      })
+      const shouldSetDefaultResult = shouldSetDefault(field, data)
+      if (shouldSetDefaultResult.should) {
+        data[field.name] = shouldSetDefaultResult.value
       }
     })
 

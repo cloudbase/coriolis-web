@@ -129,6 +129,10 @@ class WizardPage extends React.Component<Props, State> {
       .filter(p => p.id !== 'storage' || hasStorageMapping())
   }
 
+  get requiresWindowsImage() {
+    return Boolean(wizardStore.data.selectedInstances?.find(i => i.os_type === 'windows'))
+  }
+
   setTransferItemTitle() {
     const selectedInstance = wizardStore.data?.selectedInstances?.[0]
     let title = selectedInstance?.name || selectedInstance?.instance_name || selectedInstance?.id
@@ -278,6 +282,7 @@ class WizardPage extends React.Component<Props, State> {
       providerName: target.type,
       optionsType: 'destination',
       useCache: true,
+      requiresWindowsImage: this.requiresWindowsImage,
     })
     wizardStore.fillWithDefaultValues('destination', providerStore.destinationSchema)
     // Preload destination options values
@@ -286,6 +291,7 @@ class WizardPage extends React.Component<Props, State> {
       endpointId: target.id,
       providerName: target.type,
       useCache: true,
+      requiresWindowsImage: this.requiresWindowsImage,
     })
     wizardStore.fillWithDefaultValues('destination', providerStore.destinationSchema)
     await this.loadExtraOptions(null, 'destination')
@@ -358,6 +364,9 @@ class WizardPage extends React.Component<Props, State> {
   handleSourceOptionsChange(field: Field, value: any, parentFieldName?: string) {
     wizardStore.updateData({ selectedInstances: [] })
     wizardStore.updateSourceOptions({ field, value, parentFieldName })
+    if (field.subFields) {
+      wizardStore.fillWithDefaultValues('source', providerStore.sourceSchema)
+    }
     if (field.type !== 'string' || field.enum) {
       this.loadExtraOptions(field, 'source')
     }
@@ -409,6 +418,7 @@ class WizardPage extends React.Component<Props, State> {
     await providerStore.loadOptionsSchema({
       providerName: endpoint.type,
       optionsType,
+      requiresWindowsImage: this.requiresWindowsImage,
     })
     const getSchema = () => (optionsType === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema)
     wizardStore.fillWithDefaultValues(optionsType, getSchema())
@@ -417,6 +427,7 @@ class WizardPage extends React.Component<Props, State> {
       optionsType,
       endpointId: endpoint.id,
       providerName: endpoint.type,
+      requiresWindowsImage: this.requiresWindowsImage,
     })
     wizardStore.fillWithDefaultValues(optionsType, getSchema())
 
@@ -454,6 +465,7 @@ class WizardPage extends React.Component<Props, State> {
       providerName: endpoint.type,
       envData,
       useCache,
+      requiresWindowsImage: this.requiresWindowsImage,
     })
     wizardStore.fillWithDefaultValues(type, getSchema())
   }
@@ -464,6 +476,7 @@ class WizardPage extends React.Component<Props, State> {
         providerName: endpoint.type,
         optionsType,
         useCache: true,
+        requiresWindowsImage: this.requiresWindowsImage,
       })
       const getSchema = () => (optionsType === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema)
       wizardStore.fillWithDefaultValues(optionsType, getSchema())
@@ -472,6 +485,7 @@ class WizardPage extends React.Component<Props, State> {
         optionsType,
         endpointId: endpoint.id,
         providerName: endpoint.type,
+        requiresWindowsImage: this.requiresWindowsImage,
         useCache: true,
       })
       wizardStore.fillWithDefaultValues(optionsType, getSchema())
@@ -581,6 +595,7 @@ class WizardPage extends React.Component<Props, State> {
       }
       this.handleCreationSuccess([item])
     } catch (err) {
+      console.error(err)
       this.setState({ nextButtonDisabled: false })
     }
   }

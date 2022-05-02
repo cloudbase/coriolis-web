@@ -4,20 +4,13 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-    // Launch Chrome like this: "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
     {
-      "type": "chrome",
+      "type": "pwa-msedge",
       "request": "attach",
-      "name": "Attach to Chrome",
+      "runtimeExecutable": "stable",
+      "name": "Attach to Edge",
       "port": 9222,
       "urlFilter": "http://localhost:3001/*",
-      "webRoot": "${workspaceFolder}"
-    },
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Launch Chrome against localhost",
-      "url": "http://localhost:3001",
       "webRoot": "${workspaceFolder}"
     },
   ]

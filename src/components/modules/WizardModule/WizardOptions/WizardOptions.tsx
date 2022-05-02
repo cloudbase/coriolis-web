@@ -352,6 +352,7 @@ class WizardOptions extends React.Component<Props> {
         minimum={field.minimum}
         maximum={field.maximum}
         label={field.label || LabelDictionary.get(field.name, this.props.dictionaryKey)}
+        warning={field.warning}
         description={field.description
           || LabelDictionary.getDescription(field.name, this.props.dictionaryKey)}
         password={this.isPassword(field.name)}
@@ -388,11 +389,13 @@ class WizardOptions extends React.Component<Props> {
 
     let fieldsSchema: Field[] = this.getDefaultSimpleFieldsSchema()
 
-    fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => f.required))
+    const isRequired = (f: Field) => f.required || f.properties?.some(p => p.required)
+
+    fieldsSchema = fieldsSchema.concat(this.props.fields.filter(isRequired))
 
     if (this.props.useAdvancedOptions) {
       fieldsSchema = fieldsSchema.concat(this.getDefaultAdvancedFieldsSchema())
-      fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => !f.required))
+      fieldsSchema = fieldsSchema.concat(this.props.fields.filter(f => !isRequired(f)))
     }
 
     const nonNullableBooleans: string[] = fieldsSchema.filter(f => f.type === 'boolean' && f.nullableBoolean === false).map(f => f.name)

@@ -120,7 +120,7 @@ const WizardTypeIcon = styled.div<any>`
 export const isOptionsPageValid = (data: any, schema: Field[]) => {
   const isValid = (field: Field): boolean => {
     if (data) {
-      const fieldValue = data[field.name]
+      const fieldValue = field.groupName ? data[field.groupName]?.[field.name] : data[field.name]
       if (fieldValue === null) {
         return false
       }
@@ -138,15 +138,22 @@ export const isOptionsPageValid = (data: any, schema: Field[]) => {
 
   let required = schema.filter(f => f.required && f.type !== 'object')
   schema.forEach(f => {
-    if (f.type === 'object' && f.properties && f.properties.filter && f.properties.filter(p => isValid(p)).length > 0) {
-      required = required.concat(f.properties.filter(p => p.required))
+    if (f.type === 'object' && f.properties) {
+      required = required.concat(f.properties?.filter(p => p.required).map(p => ({ ...p, groupName: f.name })))
     }
 
-    if (f.enum && f.subFields) {
-      const value = data && data[f.name]
-      const subField = f.subFields.find(sf => sf.name === `${String(value)}_options`)
-      if (subField && subField.properties) {
-        required = required.concat(subField.properties.filter(p => p.required))
+    if (f.subFields) {
+      if (f.enum) {
+        const value = data && data[f.name]
+        const subField = f.subFields.find(sf => sf.name === `${String(value)}_options`)
+        if (subField?.properties) {
+          required = required.concat(subField.properties.filter(p => p.required))
+        }
+      } else if (f.type === 'boolean') {
+        const subField = data?.[f.name] ? f.subFields[1] : f.subFields[0]
+        if (subField.properties) {
+          required = required.concat(subField.properties.filter(p => p.required))
+        }
       }
     }
   })

@@ -185,7 +185,7 @@ class MinionPoolStore {
     }
     this.minionPoolEnvSchema.forEach(field => {
       const parser = OptionsSchemaPlugin.for(provider)
-      parser.fillFieldValues(field, options)
+      parser.fillFieldValues({ field, options, requiresWindowsImage: false })
     })
     this.minionPoolEnvSchema = [...this.minionPoolEnvSchema]
   }

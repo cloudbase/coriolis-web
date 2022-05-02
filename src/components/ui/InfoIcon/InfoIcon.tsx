@@ -32,7 +32,7 @@ type Props = {
   marginLeft?: number | null,
   marginBottom?: number | null,
   className?: string,
-  style?: any,
+  style?: React.CSSProperties,
   warning?: boolean,
   filled?: boolean,
 }

@@ -24,10 +24,12 @@ import AzureContentPlugin from './azure/ContentPlugin'
 import OpenstackContentPlugin from './openstack/ContentPlugin'
 
 import DefaultOptionsSchemaPlugin from './default/OptionsSchemaPlugin'
+import AwsOptionsSchemaPlugin from './aws/OptionsSchemaPlugin'
 import OvmOptionsSchemaPlugin from './ovm/OptionsSchemaPlugin'
 import VmwareOptionsSchemaPlugin from './vmware_vsphere/OptionsSchemaPlugin'
 import OpenstackOptionsSchemaPlugin from './openstack/OptionsSchemaPlugin'
 import OvirtOptionsSchemaPlugin from './ovirt/OptionsSchemaPlugin'
+import AzureOptionsSchemaPlugin from './azure/OptionsSchemaPlugin'
 
 import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
 import OciInstanceInfoPlugin from './oci/InstanceInfoPlugin'
@@ -57,10 +59,12 @@ export const OptionsSchemaPlugin = {
   for: (provider: ProviderTypes) => {
     const map = {
       default: DefaultOptionsSchemaPlugin,
+      aws: AwsOptionsSchemaPlugin,
       oracle_vm: OvmOptionsSchemaPlugin,
       openstack: OpenstackOptionsSchemaPlugin,
       vmware_vsphere: VmwareOptionsSchemaPlugin,
       ovirt: OvirtOptionsSchemaPlugin,
+      azure: AzureOptionsSchemaPlugin,
     }
     if (hasKey(map, provider)) {
       return map[provider]

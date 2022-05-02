@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2021  Cloudbase Solutions SRL
+Copyright (C) 2022  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -13,20 +13,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { InstanceScript } from '@src/@types/Instance'
-import type { Field } from '@src/@types/Field'
+import { Field } from '@src/@types/Field'
 import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
 import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
 import type { NetworkMap } from '@src/@types/Network'
 import { UserScriptData } from '@src/@types/MainItem'
 import DefaultOptionsSchemaPlugin, {
-  defaultFillMigrationImageMapValues,
-  defaultFillFieldValues,
   defaultGetDestinationEnv,
   defaultGetMigrationImageMap,
+  defaultFillFieldValues,
+  defaultFillMigrationImageMapValues,
+  removeExportImageFieldValues,
 } from '../default/OptionsSchemaPlugin'
 
 export default class OptionsSchemaParser {
-  static migrationImageMapFieldName = 'migr_template_map'
+  static migrationImageMapFieldName = DefaultOptionsSchemaPlugin.migrationImageMapFieldName
 
   static parseSchemaToFields(opts: {
     schema: SchemaProperties,
@@ -34,43 +35,30 @@ export default class OptionsSchemaParser {
     dictionaryKey?: string,
     requiresWindowsImage?: boolean,
   }) {
-    const fields = DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
-    fields.forEach(f => {
-      if (
-        f.name !== 'migr_template_username_map'
-        && f.name !== 'migr_template_password_map'
-        && f.name !== 'migr_template_map'
-      ) {
-        return
-      }
-
-      const password = f.name === 'migr_template_password_map'
-      f.properties = [
-        {
-          type: 'string',
-          name: 'windows',
-          required: opts.requiresWindowsImage,
-          password,
-        },
-        {
-          type: 'string',
-          name: 'linux',
-          required: true,
-          password,
-        },
-      ]
-    })
-
+    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
+    const exportImage = fields.find(f => f.name === 'export_image')
+    if (exportImage) {
+      exportImage.required = true
+    }
     return fields
   }
 
   static sortFields(fields: Field[]) {
     DefaultOptionsSchemaPlugin.sortFields(fields)
+    fields.sort((f1, f2) => {
+      // sort region first
+      if (f1.name === 'region') {
+        return -1
+      }
+      if (f2.name === 'region') {
+        return 1
+      }
+      return 0
+    })
   }
 
   static fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
     const { field, options, requiresWindowsImage } = opts
-
     const option = options.find(f => f.name === field.name)
     if (!option) {
       return
@@ -82,10 +70,11 @@ export default class OptionsSchemaParser {
       requiresWindowsImage,
     })) {
       defaultFillFieldValues(field, option)
+      removeExportImageFieldValues(field)
     }
   }
 
-  static getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
+  static getDestinationEnv(options: { [prop: string]: any } | null, oldOptions?: any) {
     const env = {
       ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
@@ -97,13 +86,13 @@ export default class OptionsSchemaParser {
     return env
   }
 
-  static getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
+  static getNetworkMap(networkMappings: NetworkMap[] | null) {
     return DefaultOptionsSchemaPlugin.getNetworkMap(networkMappings)
   }
 
   static getStorageMap(
-    defaultStorage?: { value: string | null, busType?: string | null },
-    storageMap?: StorageMap[] | null,
+    defaultStorage: { value: string | null, busType?: string | null },
+    storageMap: StorageMap[] | null,
     configDefault?: string | null,
   ) {
     return DefaultOptionsSchemaPlugin.getStorageMap(defaultStorage, storageMap, configDefault)

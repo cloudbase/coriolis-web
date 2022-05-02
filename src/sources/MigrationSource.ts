@@ -180,9 +180,7 @@ class MigrationSource {
       || (opts.updatedStorageMappings && opts.updatedStorageMappings.length)) {
       payload.migration.storage_mappings = {
         ...opts.storageMappings,
-        ...destParser
-          .getStorageMap(opts.updatedDefaultStorage
-            || opts.defaultStorage, opts.updatedStorageMappings),
+        ...destParser.getStorageMap(opts.updatedDefaultStorage || opts.defaultStorage, opts.updatedStorageMappings),
       }
     }
     const { migration } = opts

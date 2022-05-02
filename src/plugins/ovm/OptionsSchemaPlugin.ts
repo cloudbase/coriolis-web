@@ -28,12 +28,24 @@ import DefaultOptionsSchemaPlugin, {
 export default class OptionsSchemaParser {
   static migrationImageMapFieldName = 'migr_template_map'
 
-  static parseSchemaToFields(
+  static parseSchemaToFields(opts: {
     schema: SchemaProperties,
-    schemaDefinitions: SchemaDefinitions | null | undefined,
-    dictionaryKey: string,
-  ) {
-    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    schemaDefinitions?: SchemaDefinitions | null | undefined,
+    dictionaryKey?: string,
+    requiresWindowsImage?: boolean,
+  }) {
+    const fields: Field[] = DefaultOptionsSchemaPlugin.parseSchemaToFields(opts)
+    const makeRequired = (fieldName: string) => {
+      const field = fields.find(f => f.name === fieldName)
+      if (field) {
+        field.required = true
+      }
+    }
+
+    makeRequired('export_template')
+    makeRequired('export_template_username')
+    makeRequired('export_template_password')
+
     const useCoriolisExporterField = fields.find(f => f.name === 'use_coriolis_exporter')
     if (useCoriolisExporterField) {
       const usableFields: Field[] = [
@@ -72,11 +84,13 @@ export default class OptionsSchemaParser {
         {
           type: 'string',
           name: 'windows',
+          required: opts.requiresWindowsImage,
           password,
         },
         {
           type: 'string',
           name: 'linux',
+          required: true,
           password,
         },
       ]
@@ -89,12 +103,25 @@ export default class OptionsSchemaParser {
     DefaultOptionsSchemaPlugin.sortFields(fields)
   }
 
-  static fillFieldValues(field: Field, options: OptionValues[]) {
+  static fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
+    const { field, options, requiresWindowsImage } = opts
+
     if (field.name === 'use_coriolis_exporter') {
       field.subFields?.forEach(sf => {
         if (sf.properties) {
           sf.properties.forEach(f => {
-            DefaultOptionsSchemaPlugin.fillFieldValues(f, options, f.name.split('/')[1])
+            DefaultOptionsSchemaPlugin.fillFieldValues({
+              field: f, options, customFieldName: f.name.split('/')[1], requiresWindowsImage,
+            })
+            if (f.name === 'export_template' && f.enum) {
+              f.enum = f.enum.map(newF => (typeof newF !== 'string' ? {
+                ...newF,
+                // @ts-ignore
+                disabled: newF.os_type !== 'linux' && newF.os_type !== 'unknown',
+                // @ts-ignore
+                subtitleLabel: newF.os_type !== 'linux' && newF.os_type !== 'unknown' ? `Source plugins rely on a Linux-based temporary virtual machine to perform data exports, but the platform reports this image to be of OS type '${newF.os_type}'.` : '',
+              } : newF))
+            }
           })
         }
       })
@@ -103,11 +130,12 @@ export default class OptionsSchemaParser {
       if (!option) {
         return
       }
-      if (!defaultFillMigrationImageMapValues(
+      if (!defaultFillMigrationImageMapValues({
         field,
         option,
-        this.migrationImageMapFieldName,
-      )) {
+        migrationImageMapFieldName: this.migrationImageMapFieldName,
+        requiresWindowsImage,
+      })) {
         defaultFillFieldValues(field, option)
       }
     }
