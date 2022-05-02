@@ -62,6 +62,8 @@ type State = {
 }
 @observer
 class FilterList extends React.Component<Props, State> {
+  mainListWrapperRef: React.RefObject<HTMLDivElement> = React.createRef()
+
   state: State = {
     items: [],
     filterStatus: 'all',
@@ -194,6 +196,7 @@ class FilterList extends React.Component<Props, State> {
       if (this.props.onPaginatedItemsChange) {
         this.props.onPaginatedItemsChange(this.paginatedItems)
       }
+      this.mainListWrapperRef.current?.scrollTo(0, 0)
     })
   }
 
@@ -240,6 +243,7 @@ class FilterList extends React.Component<Props, State> {
           largeDropdownActionItems={this.props.largeDropdownActionItems}
         />
         <MainList
+          mainListWrapperRef={this.mainListWrapperRef}
           loading={this.props.loading}
           items={this.paginatedItems}
           selectedItems={this.state.selectedItems}
