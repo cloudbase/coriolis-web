@@ -55,12 +55,6 @@ export const loginButtons = [
   // },
 ]
 
-export const env = {
-  name: process.env.NODE_ENV || 'development',
-  isDev: process.env.NODE_ENV !== 'production',
-  isBrowser: typeof window !== 'undefined',
-}
-
 export const executionOptions = [
   {
     name: 'shutdown_instances',
