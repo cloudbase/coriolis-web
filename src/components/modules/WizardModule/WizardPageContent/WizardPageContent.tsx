@@ -49,6 +49,7 @@ import networkStore from '@src/stores/NetworkStore'
 import { ProviderTypes } from '@src/@types/Providers'
 import minionPoolStore from '@src/stores/MinionPoolStore'
 import LoadingButton from '@src/components/ui/LoadingButton'
+import notificationStore from '@src/stores/NotificationStore'
 import transferItemIcon from './images/transferItemIcon'
 
 const Wrapper = styled.div<any>`
@@ -117,60 +118,6 @@ const WizardTypeIcon = styled.div<any>`
   align-items: center;
   margin: 0 32px;
 `
-export const isOptionsPageValid = (data: any, schema: Field[]) => {
-  const isValid = (field: Field): boolean => {
-    if (data) {
-      const fieldValue = field.groupName ? data[field.groupName]?.[field.name] : data[field.name]
-      if (fieldValue === null) {
-        return false
-      }
-      if (fieldValue === undefined) {
-        return field.default != null
-      }
-      return Boolean(fieldValue)
-    }
-    return field.default != null
-  }
-
-  if (!schema || schema.length === 0) {
-    return true
-  }
-
-  let required = schema.filter(f => f.required && f.type !== 'object')
-  schema.forEach(f => {
-    if (f.type === 'object' && f.properties) {
-      required = required.concat(f.properties?.filter(p => p.required).map(p => ({ ...p, groupName: f.name })))
-    }
-
-    if (f.subFields) {
-      if (f.enum) {
-        const value = data && data[f.name]
-        const subField = f.subFields.find(sf => sf.name === `${String(value)}_options`)
-        if (subField?.properties) {
-          required = required.concat(subField.properties.filter(p => p.required))
-        }
-      } else if (f.type === 'boolean') {
-        const subField = data?.[f.name] ? f.subFields[1] : f.subFields[0]
-        if (subField.properties) {
-          required = required.concat(subField.properties.filter(p => p.required))
-        }
-      }
-    }
-  })
-
-  let validFieldsCount = 0
-  required.forEach(f => {
-    if (isValid(f)) {
-      validFieldsCount += 1
-    }
-  })
-
-  if (validFieldsCount === required.length) {
-    return true
-  }
-
-  return false
-}
 type Props = {
   page: { id: string, title: string },
   type: 'replica' | 'migration',
@@ -225,6 +172,8 @@ class WizardPageContent extends React.Component<Props, State> {
     useAdvancedOptions: false,
     timezone: 'local',
   }
+
+  optionsRef?: WizardOptions | null
 
   componentDidMount() {
     this.props.onContentRef(this)
@@ -290,7 +239,15 @@ class WizardPageContent extends React.Component<Props, State> {
     return false
   }
 
-  isNextButtonDisabled() {
+  handleAdvancedOptionsToggle(useAdvancedOptions: boolean) {
+    this.setState({ useAdvancedOptions })
+  }
+
+  handleTimezoneChange(timezone: TimezoneValue) {
+    this.setState({ timezone })
+  }
+
+  get nextButtonDisabled() {
     if (this.props.nextButtonDisabled) {
       return true
     }
@@ -302,17 +259,7 @@ class WizardPageContent extends React.Component<Props, State> {
         return !this.props.wizardData.target
       case 'vms':
         return !this.props.wizardData.selectedInstances
-          || !this.props.wizardData.selectedInstances.length
-      case 'source-options':
-        return !isOptionsPageValid(
-          this.props.wizardData.sourceOptions,
-          this.props.providerStore.sourceSchema,
-        )
-      case 'dest-options':
-        return !isOptionsPageValid(
-          this.props.wizardData.destOptions,
-          this.props.providerStore.destinationSchema,
-        )
+        || !this.props.wizardData.selectedInstances.length
       case 'networks':
         return !this.isNetworksPageValid()
       default:
@@ -320,12 +267,16 @@ class WizardPageContent extends React.Component<Props, State> {
     }
   }
 
-  handleAdvancedOptionsToggle(useAdvancedOptions: boolean) {
-    this.setState({ useAdvancedOptions })
-  }
-
-  handleTimezoneChange(timezone: TimezoneValue) {
-    this.setState({ timezone })
+  handleNextClick() {
+    let goNext = true
+    if (this.optionsRef?.highlightFields()) {
+      goNext = false
+    }
+    if (goNext) {
+      this.props.onNextClick()
+    } else {
+      notificationStore.alert('Please fill the required fields', 'error')
+    }
   }
 
   renderHeader() {
@@ -463,6 +414,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'source-options':
         body = (
           <WizardOptions
+            ref={ref => { this.optionsRef = ref }}
             loading={this.areOptionsLoading('source')}
             minionPools={this.props.minionPoolStore.minionPools
               .filter(m => m.platform === 'source' && m.endpoint_id === this.props.wizardData.source?.id)}
@@ -483,6 +435,7 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'dest-options':
         body = (
           <WizardOptions
+            ref={ref => { this.optionsRef = ref }}
             loading={this.areOptionsLoading('destination')}
             minionPools={this.props.minionPoolStore.minionPools
               .filter(m => m.platform === 'destination' && m.endpoint_id === this.props.wizardData.target?.id)}
@@ -608,8 +561,8 @@ class WizardPageContent extends React.Component<Props, State> {
           <LoadingButton>Loading ...</LoadingButton>
         ) : (
           <Button
-            onClick={this.props.onNextClick}
-            disabled={this.isNextButtonDisabled()}
+            onClick={() => { this.handleNextClick() }}
+            disabled={this.nextButtonDisabled}
           >{isLastPage ? 'Finish' : 'Next'}
           </Button>
         )}

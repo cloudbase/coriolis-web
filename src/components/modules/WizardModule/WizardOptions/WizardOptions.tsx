@@ -123,7 +123,52 @@ const NoSourceFieldsSubMessage = styled.div<any>`
 `
 
 export const shouldRenderField = (field: Field) => (field.type !== 'array' || (field.enum && field.enum.length && field.enum.length > 0))
-    && (field.type !== 'object' || field.properties)
+  && (field.type !== 'object' || field.properties)
+
+export const findInvalidFields = (data: any, schema: Field[]): Field[] => {
+  const isInvalid = (field: Field): boolean => {
+    if (data) {
+      const fieldValue = field.groupName ? data[field.groupName]?.[field.name] : data[field.name]
+      if (fieldValue === null) {
+        return true
+      }
+      if (fieldValue === undefined) {
+        return field.default == null
+      }
+      return !fieldValue
+    }
+    return field.default == null
+  }
+
+  if (!schema || schema.length === 0) {
+    return []
+  }
+
+  let required = schema.filter(f => f.required && f.type !== 'object')
+  schema.forEach(f => {
+    if (f.type === 'object' && f.properties) {
+      required = required.concat(f.properties?.filter(p => p.required).map(p => ({ ...p, groupName: f.name })))
+    }
+
+    if (f.subFields) {
+      if (f.enum) {
+        const value = data && data[f.name]
+        const subField = f.subFields.find(sf => sf.name === `${String(value)}_options`)
+        if (subField?.properties) {
+          required = required.concat(subField.properties.filter(p => p.required))
+        }
+      } else if (f.type === 'boolean') {
+        const subField = data?.[f.name] ? f.subFields[1] : f.subFields[0]
+        if (subField.properties) {
+          required = required.concat(subField.properties.filter(p => p.required))
+        }
+      }
+    }
+  })
+
+  return required.filter(isInvalid)
+}
+
 type FieldRender = {
   field: Field,
   component: React.ReactNode,
@@ -157,8 +202,15 @@ type Props = {
   optionsLoadingSkipFields?: string[],
   dictionaryKey: string,
 }
+type State = {
+  highlightedFields: Field[],
+}
 @observer
 class WizardOptions extends React.Component<Props> {
+  state: State = {
+    highlightedFields: [],
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.handleResize)
   }
@@ -289,6 +341,16 @@ class WizardOptions extends React.Component<Props> {
     this.setState({})
   }
 
+  // Called only by parent components
+  // eslint-disable-next-line
+  highlightFields(): boolean {
+    const highlightedFields: Field[] = findInvalidFields(this.props.data, this.props.fields)
+
+    this.setState({ highlightedFields })
+
+    return highlightedFields.length > 0
+  }
+
   generateGroups(fields: FieldRender[]) {
     let groups: Array<{ fields: FieldRender[], name?: string }> = [{ fields }]
 
@@ -362,6 +424,7 @@ class WizardOptions extends React.Component<Props> {
         width={this.props.fieldWidth || ThemeProps.inputSizes.wizard.width}
         nullableBoolean={field.nullableBoolean}
         disabled={field.disabled}
+        highlight={Boolean(this.state.highlightedFields.find(f => f.name === field.name || f.groupName === field.name))}
         disabledLoading={this.props.optionsLoading
           && !optionsLoadingReqFields.find(fn => fn === field.name)}
         // eslint-disable-next-line react/jsx-props-no-spreading

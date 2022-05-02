@@ -25,11 +25,16 @@ import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
 import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown'
 import { Field, EnumItem, isEnumSeparator } from '@src/@types/Field'
 
-const Wrapper = styled.div<any>`
+const Wrapper = styled.div<{
+  width?: number,
+  highlight?: boolean,
+  disabled?: boolean,
+  disabledLoading?: boolean
+}>`
   display: flex;
   ${props => (props.width ? `width: ${props.width - 2}px;` : '')}
   flex-direction: column;
-  border: 1px solid ${ThemePalette.grayscale[2]};
+  border: 1px solid ${props => (props.highlight ? ThemePalette.alert : ThemePalette.grayscale[2])};
   border-radius: ${ThemeProps.borderRadius};
   ${props => (props.disabled ? css`
     opacity: 0.5;
@@ -70,6 +75,7 @@ const Row = styled.div<any>`
 `
 type Props = {
   properties: Field[],
+  highlight?: boolean,
   onChange: (property: Field, value: any) => void,
   valueCallback: (property: Field) => any,
   hideRequiredSymbol?: boolean,
@@ -200,6 +206,7 @@ class PropertiesTable extends React.Component<Props> {
         disabled={this.props.disabled}
         disabledLoading={this.props.disabledLoading}
         width={width}
+        highlight={this.props.highlight}
       >
         {this.props.properties.map(prop => (
           <Row key={prop.name}>
