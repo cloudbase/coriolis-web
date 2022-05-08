@@ -53,6 +53,7 @@ const Fields = styled.div<any>`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  padding-right: 4px;
 `
 const Group = styled.div<any>`
   display: flex;
