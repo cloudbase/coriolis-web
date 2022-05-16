@@ -83,6 +83,10 @@ const FilterListWrap = (options?: {
 )
 
 describe('FilterList', () => {
+  beforeAll(() => {
+    window.HTMLElement.prototype.scrollTo = jest.fn()
+  })
+
   it('renders all elements', () => {
     render(FilterListWrap())
     const filterItems = TestUtils.selectAll('MainListFilter__FilterItem')
