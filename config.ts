@@ -128,7 +128,7 @@ const conf: Config = {
   // By default, if a field name contains `password` in it (ex.: `user_password`),
   // it will be rendered as a password input
   // If the field doesn't contain `password` in its name, the following list will be used instead
-  passwordFields: ['private_key_passphrase', 'secret_access_key'],
+  passwordFields: ['private_key_passphrase', 'secret_access_key', 'client_secret'],
 
   // The number of items per page applicable to main lists:
   // replicas, migrations, endpoints, users etc.
