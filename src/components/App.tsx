@@ -215,7 +215,7 @@ class App extends React.Component<{}, State> {
             {renderOptionalRoute({ name: 'planning', component: AssessmentDetailsPage, path: '/assessment/:info' })}
             {renderOptionalRoute({ name: 'users', component: UsersPage, exact: true })}
             {renderOptionalRoute({ name: 'users', component: UserDetailsPage, path: '/users/:id' })}
-            {renderOptionalRoute({ name: 'users', component: ProjectsPage, exact: true })}
+            {renderOptionalRoute({ name: 'projects', component: ProjectsPage, exact: true })}
             {renderOptionalRoute({ name: 'projects', component: ProjectDetailsPage, path: '/projects/:id' })}
             {renderOptionalRoute({ name: 'logging', component: LogsPage })}
             {renderRoute('/streamlog', LogStreamPage)}
