@@ -184,11 +184,19 @@ class TransferItemModal extends React.Component<Props, State> {
   }
 
   getSelectedNetworks(): NetworkMap[] {
-    let selectedNetworks: NetworkMap[] = []
+    const selectedNetworks: NetworkMap[] = []
     const networkMap: any = this.props.replica.network_map
 
     if (networkMap) {
       Object.keys(networkMap).forEach(sourceNetworkName => {
+        // if the network mapping was updated, just use the new mapping instead of the old one
+        const updatedMapping = this.state.selectedNetworks.find(m => m.sourceNic.network_name === sourceNetworkName)
+        if (updatedMapping) {
+          selectedNetworks.push(updatedMapping)
+          return
+        }
+
+        // add extra information to the current network mapping
         const destNetObj: any = networkMap[sourceNetworkName]
         const portKeyInfo = NetworkUtils.getPortKeyNetworkId(this.props.networks, destNetObj)
         const destNetId = String(typeof destNetObj === 'string' || !destNetObj
@@ -216,10 +224,12 @@ class TransferItemModal extends React.Component<Props, State> {
         selectedNetworks.push(mapping)
       })
     }
-    selectedNetworks = selectedNetworks.map(mapping => {
-      const updatedMapping = this.state.selectedNetworks
-        .find(m => m.sourceNic.network_name === mapping.sourceNic.network_name)
-      return updatedMapping || mapping
+
+    // add any new networks mappings that were not in the original network mappings
+    this.state.selectedNetworks.forEach(mapping => {
+      if (!selectedNetworks.find(m => m.sourceNic.network_name === mapping.sourceNic.network_name)) {
+        selectedNetworks.push(mapping)
+      }
     })
     return selectedNetworks
   }
