@@ -22,7 +22,7 @@ import DetailsContentHeader from '@src/components/modules/DetailsModule/DetailsC
 import Modal from '@src/components/ui/Modal'
 import AlertModal from '@src/components/ui/AlertModal'
 
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
 import userStore from '@src/stores/UserStore'
 import endpointStore from '@src/stores/EndpointStore'

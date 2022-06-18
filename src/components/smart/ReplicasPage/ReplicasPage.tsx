@@ -26,7 +26,7 @@ import ReplicaExecutionOptions from '@src/components/modules/TransferModule/Repl
 import ReplicaMigrationOptions from '@src/components/modules/TransferModule/ReplicaMigrationOptions'
 import DeleteReplicaModal from '@src/components/modules/TransferModule/DeleteReplicaModal'
 
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 import type { Field } from '@src/@types/Field'
 import type { InstanceScript } from '@src/@types/Instance'
 

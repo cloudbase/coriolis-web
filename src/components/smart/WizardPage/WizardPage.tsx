@@ -441,6 +441,9 @@ class WizardPage extends React.Component<Props, State> {
     if (type === 'migration' || type === 'replica') {
       this.setState({ type })
     }
+    if (wizardStore.currentPage.id !== wizardPages[0].id) {
+      this.loadDataForPage(wizardStore.currentPage)
+    }
   }
 
   async loadExtraOptions(field: Field | null, type: 'source' | 'destination', useCache: boolean = true) {
@@ -520,6 +523,15 @@ class WizardPage extends React.Component<Props, State> {
         break
       }
       case 'target': {
+        // If page was set from 'Permalink' directly to 'Target', we may not have the needed data already loaded
+        providerStore.loadProviders()
+        if (!minionPoolStore.minionPools.length) {
+          minionPoolStore.loadMinionPools()
+        }
+        if (!endpointStore.endpoints.length) {
+          endpointStore.getEndpoints()
+        }
+
         const target = wizardStore.data.target
         if (!target) {
           return

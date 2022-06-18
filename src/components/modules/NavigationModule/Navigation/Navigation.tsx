@@ -37,6 +37,7 @@ import userImage from './images/user-menu.svg'
 import logsImage from './images/logs-menu.svg'
 import dashboardImage from './images/dashboard-menu.svg'
 import minionPoolsImage from './images/minion-pool-menu.svg'
+import bareMetalServersImage from './images/bare-metal-servers.svg'
 
 const isCollapsed = (props: any) => props.collapsed
   || (window.outerWidth <= ThemeProps.mobileMaxWidth)
@@ -114,7 +115,7 @@ const MenuItem = styled(Link)<{ selected?: boolean | null }>`
   cursor: pointer;
   margin-top: 26px;
   text-decoration: none;
-  width: 145px;
+  width: 160px;
   margin-left: 32px;
 `
 const SmallMenu = styled.div<any>`
@@ -393,6 +394,9 @@ class Navigation extends React.Component<Props> {
                 break
               case 'minion-pools':
                 menuImage = minionPoolsImage
+                break
+              case 'bare-metal-servers':
+                menuImage = bareMetalServersImage
                 break
               case 'planning':
                 menuImage = planningImage

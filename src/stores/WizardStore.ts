@@ -350,9 +350,12 @@ class WizardStore {
       return
     }
     this.data = state.data
-    this.schedules = state.schedules
-    this.storageMap = state.storageMap
+    this.schedules = state.schedules || []
+    this.storageMap = state.storageMap || []
     this.defaultStorage = state.defaultStorage
+    if (state.currentPage) {
+      this.setCurrentPage(state.currentPage)
+    }
   }
 
   @action cancelUploadedScript(global: string | null, instanceName: string | null) {

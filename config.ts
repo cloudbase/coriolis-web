@@ -9,6 +9,7 @@ const conf: Config = {
     // Enabling users and projects page by default
     // 'users',
     // 'projects',
+    // 'bare-metal-servers',
   ],
 
   // Whether to show the user domain name input when logging in
@@ -37,6 +38,11 @@ const conf: Config = {
   // fit into a page, the latter number will be used.
   // - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
   instancesListBackgroundLoading: { default: 10, ovm: Infinity, 'hyper-v': Infinity },
+
+  /**
+   * The name of the Coriolis Bare Metal Hub enpoint used for doing Coriolis Bare Metal server operations.
+   */
+  bareMetalEndpointName: 'appliance-metal-hub',
 
   /**
    * The list of providers for which and extra source or destination options API call will be made,
@@ -122,6 +128,9 @@ const conf: Config = {
     metal: 'Bare Metal',
   },
 
+  // The list of providers for which to disable setting the 'Execute Now Options' field
+  providersDisabledExecuteOptions: ['metal'],
+
   // The list of the users to hide in the UI
   hiddenUsers: ['barbican', 'coriolis'],
 
@@ -143,6 +152,7 @@ const conf: Config = {
     coriolisLogs: '{BASE_URL}/logs',
     coriolisLogStreamBaseUrl: '{BASE_URL}',
     coriolisLicensing: '{BASE_URL}/licensing',
+    metalhub: '{BASE_URL}/metal-hub',
     cloudbaseEmailEndpoint: 'http://localhost:3334',
   },
 }

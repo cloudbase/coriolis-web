@@ -16,7 +16,7 @@ import React, { useState } from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import MainListFilter from '@src/components/ui/Lists/MainListFilter'
-import { Action } from '@src/components/ui/Dropdowns/ActionDropdown'
+import { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 import TestUtils from '@tests/TestUtils'
 import { ThemePalette } from '@src/components/Theme'
 
@@ -27,7 +27,7 @@ const FILTER_ITEMS = [
   { label: 'Items 3', value: 'item-3' },
 ]
 
-const ACTIONS: Action[] = [
+const ACTIONS: DropdownAction[] = [
   {
     label: 'Action 1',
     title: 'Action 1 Description',

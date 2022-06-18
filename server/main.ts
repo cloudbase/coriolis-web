@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import express from 'express'
 import path from 'path'
 
-import router from './api/router'
-import azureProxy from './azureProxy'
+import apiRouter from './api/router'
+import proxyRouter from './proxies/router'
 
 export default () => {
   const app = express()
@@ -25,9 +25,9 @@ export default () => {
 
   app.use(express.static('dist'))
 
-  azureProxy(app)
+  app.use('/proxy', proxyRouter)
 
-  app.use('/api', router)
+  app.use('/api', apiRouter)
 
   app.get('*', (_, res) => {
     res.sendFile(path.resolve(__dirname, '../dist', 'index.html'))

@@ -283,7 +283,7 @@ class PageHeader extends React.Component<Props, State> {
 
   async handleProjectChange(project: Project) {
     await userStore.switchProject(project.id)
-    projectStore.getProjects()
+    await projectStore.getProjects()
     notificationStore.loadData(true)
 
     if (this.props.onProjectChange) {

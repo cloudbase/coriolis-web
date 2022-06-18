@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom'
 
 import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
 import ActionDropdown from '@src/components/ui/Dropdowns/ActionDropdown'
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 

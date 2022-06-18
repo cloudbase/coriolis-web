@@ -23,6 +23,7 @@ export const navigationMenu: NavigationMenuType[] = [
   { label: 'Migrations', value: 'migrations' },
   { label: 'Cloud Endpoints', value: 'endpoints' },
   { label: 'Minion Pools', value: 'minion-pools' },
+  { label: 'Bare Metal Servers', value: 'bare-metal-servers' },
 
   // Optional pages
   { label: 'Planning', value: 'planning' },

@@ -1,0 +1,6 @@
+{
+  "name": "MetalHubListHeader",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MetalHubListHeader.tsx"
+}

@@ -65,6 +65,78 @@ type Props = {
   handleValidateClick: () => void
   handleCancelClick: () => void
 }
+
+export const findInvalidFields = (schema: Field[], getFieldValue: (field: Field | null) => any) => {
+  const invalidFields = schema.filter(field => {
+    if (field.required) {
+      const value = getFieldValue(field)
+      return !value || value.length === 0
+    }
+    return false
+  }).map(f => f.name)
+
+  return invalidFields
+}
+
+export const renderFields = (opts: {
+  schema: Field[],
+  disabled: boolean,
+  invalidFields: string[],
+  getFieldValue: (field: Field | null) => any,
+  handleFieldChange: (field: Field | null, value: any) => void,
+}) => {
+  const {
+    schema, disabled, invalidFields, getFieldValue, handleFieldChange,
+  } = opts
+  const rows: JSX.Element[] = []
+  let lastField: JSX.Element
+  let i = 0
+  schema.forEach((field, schemaIndex) => {
+    const isPassword = Boolean(configLoader.config.passwordFields.find(fn => field.name === fn))
+        || field.name.indexOf('password') > -1
+    const currentField = (
+      <FieldStyled
+        {...field}
+        label={field.title || LabelDictionary.get(field.name)}
+        width={ThemeProps.inputSizes.large.width}
+        disabled={disabled}
+        password={isPassword}
+        highlight={invalidFields.findIndex(fn => fn === field.name) > -1}
+        value={getFieldValue(field)}
+        onChange={value => { handleFieldChange(field, value) }}
+      />
+    )
+    const pushRow = (field1: React.ReactNode, field2?: React.ReactNode) => {
+      rows.push((
+        <Row key={field.name}>
+          {field1}
+          {field2}
+        </Row>
+      ))
+    }
+    if (field.useTextArea) {
+      pushRow(currentField)
+      i -= 1
+    } else if (i % 2 !== 0) {
+      pushRow(lastField, currentField)
+    } else if (schemaIndex === schema.length - 1) {
+      pushRow(currentField)
+      if (field.useTextArea) {
+        i -= 1
+      }
+    } else {
+      lastField = currentField
+    }
+    i += 1
+  })
+
+  return (
+    <Fields>
+      {rows}
+    </Fields>
+  )
+}
+
 class ContentPlugin extends React.Component<Props> {
   componentDidMount() {
     this.props.onRef(this)
@@ -75,66 +147,16 @@ class ContentPlugin extends React.Component<Props> {
   }
 
   // eslint-disable-next-line react/no-unused-class-component-methods
-  findInvalidFields = () => {
-    const invalidFields = this.props.connectionInfoSchema.filter(field => {
-      if (field.required) {
-        const value = this.props.getFieldValue(field)
-        return !value || value.length === 0
-      }
-      return false
-    }).map(f => f.name)
-
-    return invalidFields
-  }
+  findInvalidFields = () => findInvalidFields(this.props.connectionInfoSchema, this.props.getFieldValue)
 
   renderFields() {
-    const rows: JSX.Element[] = []
-    let lastField: JSX.Element
-    let i = 0
-    this.props.connectionInfoSchema.forEach((field, schemaIndex) => {
-      const isPassword = Boolean(configLoader.config.passwordFields.find(fn => field.name === fn))
-        || field.name.indexOf('password') > -1
-      const currentField = (
-        <FieldStyled
-          {...field}
-          label={field.title || LabelDictionary.get(field.name)}
-          width={ThemeProps.inputSizes.large.width}
-          disabled={this.props.disabled}
-          password={isPassword}
-          highlight={this.props.invalidFields.findIndex(fn => fn === field.name) > -1}
-          value={this.props.getFieldValue(field)}
-          onChange={value => { this.props.handleFieldChange(field, value) }}
-        />
-      )
-      const pushRow = (field1: React.ReactNode, field2?: React.ReactNode) => {
-        rows.push((
-          <Row key={field.name}>
-            {field1}
-            {field2}
-          </Row>
-        ))
-      }
-      if (field.useTextArea) {
-        pushRow(currentField)
-        i -= 1
-      } else if (i % 2 !== 0) {
-        pushRow(lastField, currentField)
-      } else if (schemaIndex === this.props.connectionInfoSchema.length - 1) {
-        pushRow(currentField)
-        if (field.useTextArea) {
-          i -= 1
-        }
-      } else {
-        lastField = currentField
-      }
-      i += 1
+    return renderFields({
+      schema: this.props.connectionInfoSchema,
+      disabled: this.props.disabled,
+      invalidFields: this.props.invalidFields,
+      getFieldValue: this.props.getFieldValue,
+      handleFieldChange: this.props.handleFieldChange,
     })
-
-    return (
-      <Fields>
-        {rows}
-      </Fields>
-    )
   }
 
   render() {

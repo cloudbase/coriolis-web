@@ -28,6 +28,7 @@ import MessagePage from '@src/components/smart/MessagePage'
 import ReplicaDetailsPage from '@src/components/smart/ReplicaDetailsPage'
 import MigrationsPage from '@src/components/smart/MigrationsPage'
 import MigrationDetailsPage from '@src/components/smart/MigrationDetailsPage'
+import MetalHubServersPage from '@src/components/smart/MetalHubServersPage'
 import EndpointsPage from '@src/components/smart/EndpointsPage'
 import EndpointDetailsPage from '@src/components/smart/EndpointDetailsPage'
 import AssessmentsPage from '@src/components/smart/AssessmentsPage'
@@ -50,6 +51,7 @@ import configLoader from '@src/utils/Config'
 import { navigationMenu } from '@src/constants'
 import userStore from '@src/stores/UserStore'
 import SetupPage from '@src/components/smart/SetupPage'
+import MetalHubServerDetailsPage from '@src/components/smart/MetalHubServerDetailsPage'
 
 const GlobalStyle = createGlobalStyle`
  ${Fonts}
@@ -210,6 +212,8 @@ class App extends React.Component<{}, State> {
             {renderRoute('/minion-pools', MinionPoolsPage, true)}
             {renderRoute('/minion-pools/:id', MinionPoolDetailsPage, true)}
             {renderRoute('/minion-pools/:id/:page', MinionPoolDetailsPage)}
+            {renderRoute('/bare-metal-servers', MetalHubServersPage, true)}
+            {renderRoute('/bare-metal-servers/:id', MetalHubServerDetailsPage)}
             {renderRoute('/wizard/:type', WizardPage)}
             {renderOptionalRoute({ name: 'planning', component: AssessmentsPage })}
             {renderOptionalRoute({ name: 'planning', component: AssessmentDetailsPage, path: '/assessment/:info' })}

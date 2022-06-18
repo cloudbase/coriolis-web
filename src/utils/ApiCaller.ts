@@ -57,6 +57,10 @@ class ApiCaller {
     return cookie.get('projectId') || 'undefined'
   }
 
+  removeFromCache(url: string) {
+    cacher.remove(url)
+  }
+
   cancelRequests(cancelRequestId: string) {
     const filteredCancelables = cancelables.filter(r => r.requestId === cancelRequestId)
     filteredCancelables.forEach(c => {

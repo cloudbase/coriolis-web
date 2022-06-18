@@ -20,6 +20,7 @@ export type Services = {
   coriolisLogs: string,
   coriolisLogStreamBaseUrl: string,
   coriolisLicensing: string,
+  metalhub: string,
   cloudbaseEmailEndpoint: string
 }
 
@@ -35,9 +36,11 @@ export type Config = {
   extraOptionsApiCalls: ExtraOption[],
   providerSortPriority: { [providerName in ProviderTypes]: number },
   providerNames: { [providerName in ProviderTypes]: string }
+  providersDisabledExecuteOptions: [ProviderTypes],
   hiddenUsers: string[],
   passwordFields: string[],
   mainListItemsPerPage: number,
   servicesUrls: Services,
   maxMinionPoolEventsPerPage: number,
+  bareMetalEndpointName: string,
 }

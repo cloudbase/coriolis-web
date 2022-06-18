@@ -460,6 +460,7 @@ class WizardPageContent extends React.Component<Props, State> {
             }}
             layout="page"
             dictionaryKey={`${this.props.wizardData.target ? this.props.wizardData.target.type : ''}-destination`}
+            executeNowOptionsDisabled={!this.props.providerStore.hasExecuteNowOptions(this.props.wizardData.source!.type)}
           />
         )
         break

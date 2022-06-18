@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import express from 'express'
 
 import MsRest from 'ms-rest-azure'
-import bodyParser from 'body-parser'
 import axios from 'axios'
 
 const forwardHeaders = ['authorization']
@@ -24,10 +23,8 @@ const buildError = (message: any) => ({
   error: { message: `Proxy - ${message}` },
 })
 
-export default (app: express.Application) => {
-  const jsonParser = bodyParser.json()
-
-  app.post('/azure-login', jsonParser, (req, res) => {
+export default (router: express.Router) => {
+  router.post('/azure/login', (req, res) => {
     const handleResponse = (err: any, credentials: any) => {
       if (err) {
         console.log(err)
@@ -48,7 +45,7 @@ export default (app: express.Application) => {
     }
   })
 
-  app.get('/proxy/*', (req, res) => {
+  router.get('/azure/*', (req, res) => {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
     const url = Buffer.from(req.url.substr('/proxy/'.length), 'base64').toString()
     const headers: any = {}

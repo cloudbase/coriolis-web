@@ -52,7 +52,7 @@ class ApiCallerHandlers {
       })
     }
 
-    if (error.request.responseURL.indexOf('/proxy/') === -1 && error.request.responseURL.indexOf('/azure-login') === -1) {
+    if (error.request.responseURL.indexOf('/proxy/azure/') === -1 && error.request.responseURL.indexOf('/proxy/azure/login') === -1) {
       redirect(error.response.status)
     }
 

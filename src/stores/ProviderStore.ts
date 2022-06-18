@@ -288,6 +288,10 @@ class ProviderStore {
 
   getOptionsValuesLastDirection: 'source' | 'destination' | '' = ''
 
+  hasExecuteNowOptions(provider: ProviderTypes) {
+    return configLoader.config.providersDisabledExecuteOptions.indexOf(provider) === -1
+  }
+
   async getOptionsValues(config: {
     optionsType: 'source' | 'destination',
     endpointId: string,

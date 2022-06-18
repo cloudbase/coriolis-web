@@ -8,7 +8,10 @@ module.exports = merge(common, {
     port: 3001,
     hot: true,
     historyApiFallback: true,
-    proxy: { '/api': `http://localhost:${process.env.PORT || 3000}` },
+    proxy: {
+      '/api': `http://localhost:${process.env.PORT || 3000}`,
+      '/proxy': `http://localhost:${process.env.PORT || 3000}`,
+    },
     stats: 'minimal',
   },
 })
