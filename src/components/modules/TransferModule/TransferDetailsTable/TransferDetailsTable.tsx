@@ -34,7 +34,7 @@ import networkIcon from './images/network.svg'
 import storageIcon from './images/storage.svg'
 import arrowIcon from './images/arrow.svg'
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {
     transition: height 0.4s ease-in-out;
   }
@@ -42,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
 const Wrapper = styled.div<any>`
   margin: 24px 0;
 `
-const ArrowStyled = styled(Arrow)`
+export const ArrowStyled = styled(Arrow)`
   position: absolute;
   left: -24px;
 `
@@ -72,7 +72,7 @@ const InstanceName = styled.div<any>`
 const InstanceBody = styled.div<any>`
   font-size: 14px;
 `
-const Row = styled.div<any>`
+export const Row = styled.div`
   position: relative;
   padding: 8px 0;
   border-bottom: 1px solid white;
@@ -90,29 +90,29 @@ const Row = styled.div<any>`
   }
   cursor: pointer;
 `
-const RowHeader = styled.div<any>`
+export const RowHeader = styled.div`
   display: flex;
   align-items: center;
   padding: 0 16px;
 `
-const RowHeaderColumn = styled.div<any>`
+export const RowHeaderColumn = styled.div`
   display: flex;
   align-items: center;
   ${ThemeProps.exactWidth('50%')}
   &:last-child { margin-left: 19px; }
 `
-const HeaderName = styled.div<any>`
+export const HeaderName = styled.div<{ source?: boolean }>`
   overflow: hidden;
   text-overflow: ellipsis;
   ${props => ThemeProps.exactWidth(`calc(100% - ${props.source ? 120 : 8}px)`)}
 `
-const RowBody = styled.div<any>`
+export const RowBody = styled.div`
   display: flex;
   color: ${ThemePalette.grayscale[5]};
   padding: 0 16px;
   margin-top: 4px;
 `
-const RowBodyColumn = styled.div<any>`
+export const RowBodyColumn = styled.div`
   &:first-child {
     ${ThemeProps.exactWidth('calc(50% - 70px)')}
     margin-right: 88px;
@@ -121,7 +121,7 @@ const RowBodyColumn = styled.div<any>`
     ${ThemeProps.exactWidth('calc(50% - 16px)')}
   }
 `
-const RowBodyColumnValue = styled.div<any>`
+export const RowBodyColumnValue = styled.div`
   overflow-wrap: break-word;
 `
 const getHeaderIcon = (icon: 'instance' | 'network' | 'storage'): string => {
@@ -134,13 +134,13 @@ const getHeaderIcon = (icon: 'instance' | 'network' | 'storage'): string => {
       return storageIcon
   }
 }
-const HeaderIcon = styled.div<any>`
+export const HeaderIcon = styled.div<{ icon: 'instance' | 'network' | 'storage' }>`
   width: 16px;
   height: 16px;
   background: url('${props => getHeaderIcon(props.icon)}') center no-repeat;
   margin-right: 16px;
 `
-const ArrowIcon = styled.div<any>`
+export const ArrowIcon = styled.div`
   width: 32px;
   height: 16px;
   background: url('${arrowIcon}') center no-repeat;

@@ -30,7 +30,7 @@ const assessedVmsUrl = ({ ...other }) => `${assessmentDetailsUrl({ ...other })}/
 
 class Util {
   static buildUrl(baseUrl: string, apiVersion?: string): string {
-    const url = `/proxy/${DomUtils.encodeToBase64Url(`${azureUrl + baseUrl}?api-version=${apiVersion || defaultApiVersion}`)}`
+    const url = `/proxy/azure/${DomUtils.encodeToBase64Url(`${azureUrl + baseUrl}?api-version=${apiVersion || defaultApiVersion}`)}`
     return url
   }
 
@@ -76,7 +76,7 @@ class Util {
 class AzureSource {
   static authenticate(connectionInfo: any): Promise<any> {
     return Api.send({
-      url: '/azure-login',
+      url: '/proxy/azure/login',
       method: 'POST',
       data: connectionInfo,
     }).then(response => {

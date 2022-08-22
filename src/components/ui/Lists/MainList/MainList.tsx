@@ -99,6 +99,7 @@ type Props = {
   emptyListButtonLabel?: string,
   onEmptyListButtonClick?: () => void,
   mainListWrapperRef?: React.RefObject<HTMLDivElement>,
+  emptyListComponent?: React.ReactNode,
 }
 @observer
 class MainList extends React.Component<Props> {
@@ -139,6 +140,10 @@ class MainList extends React.Component<Props> {
   }
 
   renderEmptyList() {
+    if (this.props.emptyListComponent) {
+      return this.props.emptyListComponent
+    }
+
     const renderImage = () => {
       if (this.props.emptyListImage) {
         return <EmptyListImage source={this.props.emptyListImage} />

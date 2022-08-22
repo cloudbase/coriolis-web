@@ -47,6 +47,16 @@ class Cacher {
 
     localStorage.setItem(STORE, JSON.stringify(storage))
   }
+
+  remove(keyStartsWith: string) {
+    const storage: Cache = JSON.parse(localStorage.getItem(STORE) || '{}')
+    Object.keys(storage).forEach(key => {
+      if (key.startsWith(keyStartsWith)) {
+        delete storage[key]
+      }
+    })
+    localStorage.setItem(STORE, JSON.stringify(storage))
+  }
 }
 
 export default new Cacher()

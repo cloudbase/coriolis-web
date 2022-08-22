@@ -182,6 +182,7 @@ type Props = {
   selectedInstances?: Instance[] | null,
   showSeparatePerVm?: boolean
   data?: { [prop: string]: any } | null,
+  executeNowOptionsDisabled?: boolean,
   getFieldValue?: (
     fieldName: string,
     defaultValue: any,
@@ -298,8 +299,8 @@ class WizardOptions extends React.Component<Props> {
         name: 'execute_now_options',
         type: 'object',
         properties: executionOptions,
-        disabled: !executeNowValue,
-        description: !executeNowValue ? 'Enable \'Execute Now\' to set \'Execute Now Options\'' : `Set the options for ${this.props.wizardType} execution`,
+        disabled: !executeNowValue || this.props.executeNowOptionsDisabled,
+        description: this.props.executeNowOptionsDisabled ? 'The \'Execute Now Options\' are disabled for the source provider' : !executeNowValue ? 'Enable \'Execute Now\' to set \'Execute Now Options\'' : `Set the options for ${this.props.wizardType} execution`,
       })
     } else if (this.props.wizardType === 'migration' || this.props.wizardType === 'migration-destination-options-edit') {
       fieldsSchema = [...fieldsSchema, ...migrationFields]

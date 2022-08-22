@@ -22,6 +22,7 @@ import KubevirtConnectionSchemaPlugin from './kubevirt/ConnectionSchemaPlugin'
 import DefaultContentPlugin from './default/ContentPlugin'
 import AzureContentPlugin from './azure/ContentPlugin'
 import OpenstackContentPlugin from './openstack/ContentPlugin'
+import MetalContentPlugin from './metal/ContentPlugin'
 
 import DefaultOptionsSchemaPlugin from './default/OptionsSchemaPlugin'
 import AwsOptionsSchemaPlugin from './aws/OptionsSchemaPlugin'
@@ -79,6 +80,7 @@ export const ContentPlugin = {
       default: DefaultContentPlugin,
       azure: AzureContentPlugin,
       openstack: OpenstackContentPlugin,
+      metal: MetalContentPlugin,
     }
     if (hasKey(map, provider)) {
       return map[provider]

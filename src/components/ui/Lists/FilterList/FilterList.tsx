@@ -18,7 +18,7 @@ import styled from 'styled-components'
 
 import MainListFilter from '@src/components/ui/Lists/MainListFilter'
 import Pagination from '@src/components/ui/Pagination'
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 import type { ItemComponentProps } from '@src/components/ui/Lists/MainList'
 import MainList from '@src/components/ui/Lists/MainList'
 
@@ -48,9 +48,11 @@ type Props = {
   emptyListMessage?: string,
   emptyListExtraMessage?: string,
   emptyListButtonLabel?: string,
+  emptyListComponent?: React.ReactNode,
   onEmptyListButtonClick?: () => void,
   customFilterComponent?: React.ReactNode,
-  largeDropdownActionItems?: boolean
+  largeDropdownActionItems?: boolean,
+  listHeaderComponent?: React.ReactNode,
 }
 type State = {
   items: any[],
@@ -242,6 +244,7 @@ class FilterList extends React.Component<Props, State> {
           dropdownActions={this.props.dropdownActions || []}
           largeDropdownActionItems={this.props.largeDropdownActionItems}
         />
+        {this.props.listHeaderComponent || null}
         <MainList
           mainListWrapperRef={this.mainListWrapperRef}
           loading={this.props.loading}
@@ -255,6 +258,7 @@ class FilterList extends React.Component<Props, State> {
           emptyListMessage={this.props.emptyListMessage}
           emptyListExtraMessage={this.props.emptyListExtraMessage}
           emptyListButtonLabel={this.props.emptyListButtonLabel}
+          emptyListComponent={this.props.emptyListComponent}
           onEmptyListButtonClick={this.props.onEmptyListButtonClick}
         />
         {this.renderPagination()}

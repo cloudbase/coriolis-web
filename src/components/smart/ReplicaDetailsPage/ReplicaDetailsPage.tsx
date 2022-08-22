@@ -31,7 +31,7 @@ import type { InstanceScript } from '@src/@types/Instance'
 import type { Execution } from '@src/@types/Execution'
 import type { Schedule } from '@src/@types/Schedule'
 import type { Field } from '@src/@types/Field'
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
 import replicaStore from '@src/stores/ReplicaStore'
 import migrationStore from '@src/stores/MigrationStore'

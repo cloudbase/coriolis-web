@@ -58,4 +58,5 @@ The following is the list of environment variables and their default values:
 NODE_ENV='production'
 CORIOLIS_URL='<your-coriolis-url>'
 MOD_JSON='<path-to-json>'
+CA_FINGERPRINT='<path to CA fingerprint file used by metal hub agent>'
 ```

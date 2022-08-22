@@ -22,6 +22,10 @@ import { ProviderTypes } from '@src/@types/Providers'
 import DomUtils from '@src/utils/DomUtils'
 
 class InstanceSource {
+  removeInstancesFromCache(endpointId: string) {
+    Api.removeFromCache(`${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`)
+  }
+
   async loadInstancesChunk(opts: {
     endpointId: string,
     chunkSize: number,

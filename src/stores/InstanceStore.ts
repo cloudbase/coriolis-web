@@ -119,10 +119,10 @@ class InstanceStore {
         instances, instancesCount: instances.length + invalidInstances.length, chunkCount, reload,
       })
       if (shouldContinue) {
-        loadNextChunk(instances[instances.length - 1].id)
+        await loadNextChunk(instances[instances.length - 1].id)
       }
     }
-    loadNextChunk()
+    await loadNextChunk()
   }
 
   @action loadInstancesInChunksSuccess(opts: {

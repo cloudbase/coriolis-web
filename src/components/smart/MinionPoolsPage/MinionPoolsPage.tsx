@@ -24,7 +24,7 @@ import Navigation from '@src/components/modules/NavigationModule/Navigation'
 import FilterList from '@src/components/ui/Lists/FilterList'
 import PageHeader from '@src/components/smart/PageHeader'
 
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
 import projectStore from '@src/stores/ProjectStore'
 

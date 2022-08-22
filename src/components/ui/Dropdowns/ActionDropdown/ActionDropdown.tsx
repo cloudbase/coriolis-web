@@ -53,7 +53,7 @@ const ListStyle = css`
   border: none;
 `
 export const TEST_ID = 'actionDropdown'
-export type Action = {
+export type DropdownAction = {
   label: string,
   color?: string,
   action: () => void,
@@ -64,7 +64,7 @@ export type Action = {
 }
 export type Props = {
   label: string,
-  actions: Action[],
+  actions: DropdownAction[],
   style?: any,
   largeItems?: boolean
 }
@@ -143,14 +143,14 @@ class ActionDropdown extends React.Component<Props, State> {
     this.setState(prevState => ({ showDropdownList: !prevState.showDropdownList }))
   }
 
-  handleItemMouseHover(action: Action, index: number, isEnter: boolean) {
+  handleItemMouseHover(action: DropdownAction, index: number, isEnter: boolean) {
     if (!this.tipRef || index !== 0 || action.disabled) {
       return
     }
     this.tipRef.style.background = isEnter ? ThemePalette.grayscale[0] : ThemePalette.grayscale[1]
   }
 
-  handleItemClick(action: Action) {
+  handleItemClick(action: DropdownAction) {
     if (action.disabled) {
       return
     }

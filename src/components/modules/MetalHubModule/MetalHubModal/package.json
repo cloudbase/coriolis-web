@@ -1,0 +1,6 @@
+{
+  "name": "MetalHubModal",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MetalHubModal.tsx"
+}

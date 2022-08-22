@@ -23,7 +23,7 @@ import ReloadButton from '@src/components/ui/ReloadButton'
 
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 
-import type { Action as DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
 
 const Wrapper = styled.div<any>`
   display: flex;

@@ -1,0 +1,6 @@
+{
+  "name": "MetalHubServerDetailsPage",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./MetalHubServerDetailsPage.tsx"
+}
