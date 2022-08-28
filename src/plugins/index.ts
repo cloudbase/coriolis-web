@@ -30,6 +30,7 @@ import OvmOptionsSchemaPlugin from './ovm/OptionsSchemaPlugin'
 import VmwareOptionsSchemaPlugin from './vmware_vsphere/OptionsSchemaPlugin'
 import OpenstackOptionsSchemaPlugin from './openstack/OptionsSchemaPlugin'
 import OlvmOptionsSchemaPlugin from './olvm/OptionsSchemaPlugin'
+import RhevOptionsSchemaPlugin from './rhev/OptionsSchemaPlugin'
 import AzureOptionsSchemaPlugin from './azure/OptionsSchemaPlugin'
 
 import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
@@ -65,6 +66,7 @@ export const OptionsSchemaPlugin = {
       openstack: new OpenstackOptionsSchemaPlugin(),
       vmware_vsphere: new VmwareOptionsSchemaPlugin(),
       olvm: new OlvmOptionsSchemaPlugin(),
+      rhev: new RhevOptionsSchemaPlugin(),
       azure: new AzureOptionsSchemaPlugin(),
     }
     if (hasKey(map, provider)) {
