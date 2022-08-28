@@ -28,7 +28,7 @@ import AwsOptionsSchemaPlugin from './aws/OptionsSchemaPlugin'
 import OvmOptionsSchemaPlugin from './ovm/OptionsSchemaPlugin'
 import VmwareOptionsSchemaPlugin from './vmware_vsphere/OptionsSchemaPlugin'
 import OpenstackOptionsSchemaPlugin from './openstack/OptionsSchemaPlugin'
-import OvirtOptionsSchemaPlugin from './ovirt/OptionsSchemaPlugin'
+import OlvmOptionsSchemaPlugin from './olvm/OptionsSchemaPlugin'
 import AzureOptionsSchemaPlugin from './azure/OptionsSchemaPlugin'
 
 import DefaultInstanceInfoPlugin from './default/InstanceInfoPlugin'
@@ -63,7 +63,7 @@ export const OptionsSchemaPlugin = {
       oracle_vm: new OvmOptionsSchemaPlugin(),
       openstack: new OpenstackOptionsSchemaPlugin(),
       vmware_vsphere: new VmwareOptionsSchemaPlugin(),
-      ovirt: new OvirtOptionsSchemaPlugin(),
+      olvm: new OlvmOptionsSchemaPlugin(),
       azure: new AzureOptionsSchemaPlugin(),
     }
     if (hasKey(map, provider)) {
