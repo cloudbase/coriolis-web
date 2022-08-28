@@ -140,6 +140,10 @@ class TransferItemModal extends React.Component<Props, State> {
     this.loadData(true)
   }
 
+  get requiresWindowsImage() {
+    return this.props.instancesDetails.some(i => i.os_type === 'windows')
+  }
+
   getStorageMap(storageBackends: StorageBackend[]): StorageMap[] {
     const storageMap: StorageMap[] = []
     const currentStorage = this.props.replica.storage_mappings
@@ -356,6 +360,7 @@ class TransferItemModal extends React.Component<Props, State> {
     try {
       await providerStore.loadOptionsSchema({
         providerName: endpoint.type,
+        requiresWindowsImage: this.requiresWindowsImage,
         optionsType,
         useCache,
       })
@@ -373,6 +378,7 @@ class TransferItemModal extends React.Component<Props, State> {
       endpointId: endpoint.id,
       providerName: endpoint.type,
       useCache,
+      requiresWindowsImage: this.requiresWindowsImage,
     })
   }
 
@@ -401,6 +407,7 @@ class TransferItemModal extends React.Component<Props, State> {
       providerName: endpoint.type,
       useCache,
       envData,
+      requiresWindowsImage: this.requiresWindowsImage,
     })
     if (type === 'destination') {
       networkStore.loadNetworks(endpoint.id, envData, { cache: true })
