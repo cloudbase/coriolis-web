@@ -109,7 +109,7 @@ const conf: Config = {
     oci: 3,
     opc: 3,
     oracle_vm: 3,
-    ovirt: 3,
+    olvm: 3,
     metal: 4,
   },
 
@@ -124,7 +124,7 @@ const conf: Config = {
     oci: 'OCI',
     opc: 'Oracle Cloud',
     oracle_vm: 'Oracle VM',
-    ovirt: 'OLVM',
+    olvm: 'OLVM',
     metal: 'Bare Metal',
   },
 

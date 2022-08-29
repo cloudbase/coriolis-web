@@ -25,11 +25,13 @@ const getBaseUrl = () => {
 }
 
 const modServicesUrls = (configServices: Services, servicesMod?: Services): Services => {
-  const services: any = { ...configServices }
-  const localServicesMod: any = servicesMod
+  const services = { ...configServices }
+
   Object.keys(services).forEach(key => {
-    services[key] = ((servicesMod && localServicesMod[key]) ? localServicesMod[key] : services[key])
-      .replace('{BASE_URL}', getBaseUrl())
+    const typedKey = key as keyof Services
+    services[typedKey] = (
+      servicesMod && servicesMod[typedKey] ? servicesMod[typedKey] : services[typedKey]
+    ).replace('{BASE_URL}', getBaseUrl())
   })
   return services
 }
