@@ -33,7 +33,6 @@ import fieldHelper from '@src/@types/Field'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import DateUtils from '@src/utils/DateUtils'
 import LabelDictionary from '@src/utils/LabelDictionary'
-import { OptionsSchemaPlugin } from '@src/plugins'
 
 import { TransferItem } from '@src/@types/MainItem'
 import { MinionPool } from '@src/@types/MinionPool'
@@ -203,8 +202,6 @@ class MainDetails extends React.Component<Props, State> {
     }
 
     let properties: any[] = []
-    const plugin = endpoint && OptionsSchemaPlugin.for(endpoint.type)
-    const migrationImageMapFieldName = plugin && plugin.migrationImageMapFieldName
     let dictionaryKey = ''
     if (endpoint) {
       dictionaryKey = `${endpoint.type}-${type}`
@@ -224,13 +221,9 @@ class MainDetails extends React.Component<Props, State> {
           if (p === 'disk_mappings' || p === 'backend_mappings') {
             return null
           }
-          let fieldName = pn
-          if (migrationImageMapFieldName && fieldName === migrationImageMapFieldName) {
-            fieldName = p
-          }
           return {
             label: `${label} - ${LabelDictionary.get(p)}`,
-            value: getValue(fieldName, value[p]),
+            value: getValue(p, value[p]),
           }
         }))
       } else {
