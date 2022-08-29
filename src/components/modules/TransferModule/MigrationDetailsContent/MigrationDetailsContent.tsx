@@ -119,6 +119,7 @@ class MigrationDetailsContent extends React.Component<Props> {
       <Tasks
         items={this.props.item.tasks}
         loading={this.props.detailsLoading}
+        instancesDetails={this.props.instancesDetails}
       />
     )
   }

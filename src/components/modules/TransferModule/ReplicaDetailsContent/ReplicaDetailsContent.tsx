@@ -201,6 +201,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         loading={this.props.executionsLoading || this.props.detailsLoading}
         onChange={this.props.onExecutionChange}
         tasksLoading={this.props.executionsTasksLoading}
+        instancesDetails={this.props.instancesDetails}
       />
     )
   }

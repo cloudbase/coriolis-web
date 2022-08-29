@@ -21,6 +21,7 @@ import TaskItem from '@src/components/modules/TransferModule/TaskItem'
 import type { Task } from '@src/@types/Task'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import { Instance } from '@src/@types/Instance'
 
 const ColumnWidths = ['26%', '18%', '36%', '20%']
 
@@ -50,6 +51,7 @@ const Body = styled.div<any>``
 
 type Props = {
   items: Task[],
+  instancesDetails: Instance[],
   loading?: boolean,
 }
 type State = {
@@ -155,6 +157,7 @@ class Tasks extends React.Component<Props, State> {
             onMouseUp={e => this.handleItemMouseUp(e, item)}
             key={item.id}
             item={item}
+            instancesDetails={this.props.instancesDetails}
             columnWidths={ColumnWidths}
             open={Boolean(this.state.openedItems.find(i => i.id === item.id))}
             onDependsOnClick={id => { this.handleDependsOnClick(id) }}
