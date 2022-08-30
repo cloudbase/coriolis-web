@@ -110,6 +110,7 @@ const conf: Config = {
     opc: 3,
     oracle_vm: 3,
     olvm: 3,
+    rhev: 3,
     metal: 4,
   },
 
@@ -126,6 +127,7 @@ const conf: Config = {
     oracle_vm: 'Oracle VM',
     olvm: 'OLVM',
     metal: 'Bare Metal',
+    rhev: 'Red Hat',
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field
