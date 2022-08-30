@@ -34,13 +34,14 @@ export const getFieldChangeOptions = (config: {
   data: any,
   field: Field | null,
   type: 'source' | 'destination',
+  parentFieldName?: string,
 }) => {
   const {
-    providerName, schema, data, field, type,
+    providerName, schema, data, field, type, parentFieldName,
   } = config
   const providerWithEnvOptions = configLoader.config.extraOptionsApiCalls
     .find(p => p.name === providerName && p.types.find(t => t === type))
-
+  const fieldName = parentFieldName || field?.name || ''
   if (!providerName || !providerWithEnvOptions) {
     return null
   }
@@ -80,12 +81,11 @@ export const getFieldChangeOptions = (config: {
   const requiredValidFields = requiredFields.filter(filterValidField)
   const relistValidFields = relistFields?.filter(filterValidField)
 
-  const relistField = relistFields?.find(fn => fn === field?.name)
+  const relistField = relistFields?.find(fn => fn === fieldName)
 
-  const isCurrentFieldValid = field ? (
-    requiredValidFields.find(fn => fn === field.name)
-    || relistField
-  ) : true
+  const isCurrentFieldValid = field
+    ? requiredValidFields.find(fn => fn === fieldName) || relistField
+    : true
   if (requiredValidFields.length !== requiredFields.length || !isCurrentFieldValid) {
     return null
   }
