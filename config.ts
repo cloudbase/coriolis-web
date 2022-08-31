@@ -45,8 +45,8 @@ const conf: Config = {
   bareMetalEndpointName: 'appliance-metal-hub',
 
   /**
-   * The list of providers for which and extra source or destination options API call will be made,
-   * if the required fields have any value set.
+   * The list of providers for which and extra source or destination options API call will be made.
+   * The API call will be made only if all the required fields have values.
    * If `requiredValues` is provided, the field specified there needs to have a
    * certain value (specified in values)
    * in order to make the options API call.
@@ -83,6 +83,7 @@ const conf: Config = {
       name: 'oci',
       types: ['destination'],
       requiredFields: ['compartment', 'availability_domain', 'vcn_compartment'],
+      relistFields: ['migr_image_map', 'migr_image'],
     },
     {
       name: 'vmware_vsphere',

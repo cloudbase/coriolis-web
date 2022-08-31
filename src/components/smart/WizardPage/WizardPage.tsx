@@ -220,6 +220,7 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   handleBackClick() {
+    this.setState({ nextButtonDisabled: false })
     const currentPageIndex = this.pages.findIndex(p => p.id === wizardStore.currentPage.id)
 
     if (currentPageIndex === 0) {
@@ -270,7 +271,7 @@ class WizardPage extends React.Component<Props, State> {
       useCache: true,
     })
     wizardStore.fillWithDefaultValues('source', providerStore.sourceSchema)
-    await this.loadExtraOptions(null, 'source')
+    await this.loadExtraOptions({ type: 'source' })
   }
 
   async handleTargetEndpointChange(target: EndpointType) {
@@ -294,7 +295,7 @@ class WizardPage extends React.Component<Props, State> {
       requiresWindowsImage: this.requiresWindowsImage,
     })
     wizardStore.fillWithDefaultValues('destination', providerStore.destinationSchema)
-    await this.loadExtraOptions(null, 'destination')
+    await this.loadExtraOptions({ type: 'destination' })
   }
 
   handleAddEndpoint(newEndpointType: ProviderTypes, newEndpointFromSource: boolean) {
@@ -356,7 +357,7 @@ class WizardPage extends React.Component<Props, State> {
     // which there potentially other destination options for the new
     // chosen value from the enum
     if (field.type !== 'string' || field.enum) {
-      this.loadExtraOptions(field, 'destination')
+      this.loadExtraOptions({ field, type: 'destination', parentFieldName })
     }
     wizardStore.updateUrlState()
   }
@@ -368,7 +369,7 @@ class WizardPage extends React.Component<Props, State> {
       wizardStore.fillWithDefaultValues('source', providerStore.sourceSchema)
     }
     if (field.type !== 'string' || field.enum) {
-      this.loadExtraOptions(field, 'source')
+      this.loadExtraOptions({ field, type: 'source', parentFieldName })
     }
     wizardStore.updateUrlState()
   }
@@ -431,7 +432,7 @@ class WizardPage extends React.Component<Props, State> {
     })
     wizardStore.fillWithDefaultValues(optionsType, getSchema())
 
-    await this.loadExtraOptions(null, optionsType, false)
+    await this.loadExtraOptions({ type: optionsType, useCache: false })
   }
 
   initializeState(match: any) {
@@ -446,7 +447,15 @@ class WizardPage extends React.Component<Props, State> {
     }
   }
 
-  async loadExtraOptions(field: Field | null, type: 'source' | 'destination', useCache: boolean = true) {
+  async loadExtraOptions(opts: {
+    field?: Field,
+    type: 'source' | 'destination',
+    useCache?: boolean,
+    parentFieldName?: string,
+  }) {
+    const {
+      field, type, useCache, parentFieldName,
+    } = opts
     const endpoint = type === 'source' ? wizardStore.data.source : wizardStore.data.target
     if (!endpoint) {
       return
@@ -455,21 +464,30 @@ class WizardPage extends React.Component<Props, State> {
     const envData = getFieldChangeOptions({
       providerName: endpoint.type,
       schema: getSchema(),
-      data: type === 'source' ? wizardStore.data.sourceOptions : wizardStore.data.destOptions,
-      field,
+      data:
+        type === 'source'
+          ? wizardStore.data.sourceOptions
+          : wizardStore.data.destOptions,
+      field: field || null,
       type,
+      parentFieldName,
     })
     if (!envData) {
       return
     }
-    await providerStore.getOptionsValues({
-      optionsType: type,
-      endpointId: endpoint.id,
-      providerName: endpoint.type,
-      envData,
-      useCache,
-      requiresWindowsImage: this.requiresWindowsImage,
-    })
+    try {
+      await providerStore.getOptionsValues({
+        optionsType: type,
+        endpointId: endpoint.id,
+        providerName: endpoint.type,
+        envData,
+        useCache: useCache !== false,
+        requiresWindowsImage: this.requiresWindowsImage,
+      })
+    } catch (err) {
+      this.setState({ nextButtonDisabled: true })
+    }
+
     wizardStore.fillWithDefaultValues(type, getSchema())
   }
 
@@ -493,7 +511,7 @@ class WizardPage extends React.Component<Props, State> {
       })
       wizardStore.fillWithDefaultValues(optionsType, getSchema())
 
-      await this.loadExtraOptions(null, optionsType)
+      await this.loadExtraOptions({ type: optionsType })
     }
 
     switch (page.id) {

@@ -334,7 +334,7 @@ class TransferItemModal extends React.Component<Props, State> {
       const endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
       try {
         await this.loadOptions(endpoint, type, useCache)
-        this.loadExtraOptions(null, type, useCache)
+        this.loadExtraOptions({ type, useCache })
       } catch (err) {
         if (type === 'source') {
           this.setState(prevState => {
@@ -376,7 +376,15 @@ class TransferItemModal extends React.Component<Props, State> {
     })
   }
 
-  loadExtraOptions(field: Field | null, type: 'source' | 'destination', useCache?: boolean) {
+  loadExtraOptions(opts: {
+    field?: Field,
+    type: 'source' | 'destination',
+    useCache?: boolean,
+    parentFieldName?: string
+  }) {
+    const {
+      field, type, useCache, parentFieldName,
+    } = opts
     const endpoint = type === 'source' ? this.props.sourceEndpoint : this.props.destinationEndpoint
     const env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
     const stateEnv = type === 'source' ? this.state.sourceData : this.state.destinationData
@@ -388,8 +396,9 @@ class TransferItemModal extends React.Component<Props, State> {
         ...env,
         ...stateEnv,
       },
-      field,
+      field: field || null,
       type,
+      parentFieldName,
     })
 
     if (!envData) {
@@ -509,7 +518,7 @@ class TransferItemModal extends React.Component<Props, State> {
 
     const handleStateUpdate = () => {
       if (field.type !== 'string' || field.enum) {
-        this.loadExtraOptions(field, type)
+        this.loadExtraOptions({ field, type, parentFieldName })
       }
       this.validateOptions(type)
     }
