@@ -139,8 +139,10 @@ class ProjectStore {
         }
         this.updating = false
       })
+      return addedProject
     } catch (e) {
       runInAction(() => { this.updating = false })
+      throw e
     }
   }
 }
