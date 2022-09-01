@@ -697,6 +697,7 @@ class TransferItemModal extends React.Component<Props, State> {
         optionsLoadingSkipFields={[...optionsLoadingSkipFields, 'description', 'execute_now',
           'execute_now_options', ...migrationFields.map(f => f.name)]}
         dictionaryKey={dictionaryKey}
+        executeNowOptionsDisabled={!providerStore.hasExecuteNowOptions(this.props.sourceEndpoint.type)}
       />
     )
   }

@@ -53,6 +53,7 @@ const FieldInputStyled = styled(FieldInput)`
 `
 type Props = {
   options?: { [prop: string]: any } | null,
+  disableExecutionOptions: boolean,
   onChange?: (fieldName: string, fieldValue: string) => void,
   executionLabel: string,
   onCancelClick: () => void,
@@ -117,6 +118,8 @@ class ReplicaExecutionOptions extends React.Component<Props, State> {
               value={this.getFieldValue(field)}
               label={LabelDictionary.get(field.name)}
               onChange={value => this.handleValueChange(field, value)}
+              disabled={this.props.disableExecutionOptions}
+              description={this.props.disableExecutionOptions ? 'The execution options are disabled for the source provider' : ''}
             />
           ))}
         </Form>

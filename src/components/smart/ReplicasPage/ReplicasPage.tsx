@@ -313,6 +313,13 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       atLeaseOneIsRunning = atLeaseOneIsRunning || status === 'RUNNING' || status === 'AWAITING_MINION_ALLOCATIONS'
     })
 
+    const replicasWithDisabledExecutionOptions = this.state.selectedReplicas
+      .filter(replica => configLoader.config.providersDisabledExecuteOptions.find(
+        p => p === endpointStore.endpoints.find(
+          e => e.id === replica.origin_endpoint_id,
+        )?.type,
+      ))
+
     const BulkActions: DropdownAction[] = [{
       label: 'Execute',
       action: () => { this.setState({ showExecutionOptionsModal: true }) },
@@ -345,11 +352,19 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               loading={replicaStore.loading}
               items={replicaStore.replicas}
               dropdownActions={BulkActions}
-              onItemClick={item => { this.handleItemClick(item) }}
-              onReloadButtonClick={() => { this.handleReloadButtonClick() }}
+              onItemClick={item => {
+                this.handleItemClick(item)
+              }}
+              onReloadButtonClick={() => {
+                this.handleReloadButtonClick()
+              }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
-              onSelectedItemsChange={selectedReplicas => { this.setState({ selectedReplicas }) }}
-              onPaginatedItemsChange={paginatedReplicas => { this.handlePaginatedItemsChange(paginatedReplicas) }}
+              onSelectedItemsChange={selectedReplicas => {
+                this.setState({ selectedReplicas })
+              }}
+              onPaginatedItemsChange={paginatedReplicas => {
+                this.handlePaginatedItemsChange(paginatedReplicas)
+              }}
               renderItemComponent={options => (
                 <TransferListItem
                   {...options}
@@ -373,15 +388,23 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               emptyListMessage="It seems like you don’t have any Replicas in this project."
               emptyListExtraMessage="The Coriolis Replica is obtained by replicating incrementally the virtual machines data from the source cloud endpoint to the target."
               emptyListButtonLabel="Create a Replica"
-              onEmptyListButtonClick={() => { this.handleEmptyListButtonClick() }}
+              onEmptyListButtonClick={() => {
+                this.handleEmptyListButtonClick()
+              }}
             />
           )}
           headerComponent={(
             <PageHeader
               title="Coriolis Replicas"
-              onProjectChange={() => { this.handleProjectChange() }}
-              onModalOpen={() => { this.handleModalOpen() }}
-              onModalClose={() => { this.handleModalClose() }}
+              onProjectChange={() => {
+                this.handleProjectChange()
+              }}
+              onModalOpen={() => {
+                this.handleModalOpen()
+              }}
+              onModalClose={() => {
+                this.handleModalClose()
+              }}
             />
           )}
         />
@@ -390,8 +413,12 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
             isMultiReplicaSelection
             hasDisks={replicaStore.replicasWithDisks.length > 0}
             loading={replicaStore.replicasWithDisksLoading}
-            onRequestClose={() => { this.setState({ showDeleteReplicasModal: false }) }}
-            onDeleteReplica={() => { this.deleteSelectedReplicas() }}
+            onRequestClose={() => {
+              this.setState({ showDeleteReplicasModal: false })
+            }}
+            onDeleteReplica={() => {
+              this.deleteSelectedReplicas()
+            }}
             onDeleteDisks={() => {
               this.deleteReplicasDisks(replicaStore.replicasWithDisks)
             }}
@@ -403,19 +430,30 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
             title="Cancel Executions?"
             message="Are you sure you want to cancel the selected replicas executions?"
             extraMessage=" "
-            onConfirmation={() => { this.cancelExecutions() }}
-            onRequestClose={() => { this.setState({ showCancelExecutionModal: false }) }}
+            onConfirmation={() => {
+              this.cancelExecutions()
+            }}
+            onRequestClose={() => {
+              this.setState({ showCancelExecutionModal: false })
+            }}
           />
         ) : null}
         {this.state.showExecutionOptionsModal ? (
           <Modal
             isOpen
             title="New Executions for Selected Replicas"
-            onRequestClose={() => { this.setState({ showExecutionOptionsModal: false }) }}
+            onRequestClose={() => {
+              this.setState({ showExecutionOptionsModal: false })
+            }}
           >
             <ReplicaExecutionOptions
-              onCancelClick={() => { this.setState({ showExecutionOptionsModal: false }) }}
-              onExecuteClick={fields => { this.executeSelectedReplicas(fields) }}
+              disableExecutionOptions={replicasWithDisabledExecutionOptions.length === this.state.selectedReplicas.length}
+              onCancelClick={() => {
+                this.setState({ showExecutionOptionsModal: false })
+              }}
+              onExecuteClick={fields => {
+                this.executeSelectedReplicas(fields)
+              }}
             />
           </Modal>
         ) : null}
@@ -424,7 +462,10 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
             isOpen
             title="Create Migrations from Selected Replicas"
             onRequestClose={() => {
-              this.setState({ showCreateMigrationsModal: false, modalIsOpen: false })
+              this.setState({
+                showCreateMigrationsModal: false,
+                modalIsOpen: false,
+              })
             }}
           >
             <ReplicaMigrationOptions
@@ -433,9 +474,17 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
               onCancelClick={() => {
-                this.setState({ showCreateMigrationsModal: false, modalIsOpen: false })
+                this.setState({
+                  showCreateMigrationsModal: false,
+                  modalIsOpen: false,
+                })
               }}
-              onMigrateClick={options => { this.migrateSelectedReplicas(options.fields, options.uploadedUserScripts) }}
+              onMigrateClick={options => {
+                this.migrateSelectedReplicas(
+                  options.fields,
+                  options.uploadedUserScripts,
+                )
+              }}
             />
           </Modal>
         ) : null}
@@ -445,8 +494,12 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
             title="Delete Selected Replicas Disks?"
             message="Are you sure you want to delete the selected replicas' disks?"
             extraMessage="Deleting Coriolis Replica Disks is permanent!"
-            onConfirmation={() => { this.deleteReplicasDisks(this.state.selectedReplicas) }}
-            onRequestClose={() => { this.setState({ showDeleteDisksModal: false }) }}
+            onConfirmation={() => {
+              this.deleteReplicasDisks(this.state.selectedReplicas)
+            }}
+            onRequestClose={() => {
+              this.setState({ showDeleteDisksModal: false })
+            }}
           />
         ) : null}
       </Wrapper>

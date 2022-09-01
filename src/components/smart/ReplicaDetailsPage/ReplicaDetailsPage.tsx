@@ -605,7 +605,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           pageHeaderComponent={(
             <DetailsPageHeader
               user={userStore.loggedUser}
-              onUserItemClick={item => { this.handleUserItemClick(item) }}
+              onUserItemClick={item => {
+                this.handleUserItemClick(item)
+              }}
             />
           )}
           contentHeaderComponent={(
@@ -625,67 +627,123 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               item={replica}
               itemId={this.replicaId}
               instancesDetails={instanceStore.instancesDetails}
-              instancesDetailsLoading={instanceStore.loadingInstancesDetails || endpointStore.storageLoading || providerStore.providersLoading}
+              instancesDetailsLoading={
+                instanceStore.loadingInstancesDetails
+                || endpointStore.storageLoading
+                || providerStore.providersLoading
+              }
               endpoints={endpointStore.endpoints}
               storageBackends={endpointStore.storageBackends}
               scheduleStore={scheduleStore}
               networks={networkStore.networks}
               minionPools={minionPoolStore.minionPools}
-              detailsLoading={replicaStore.replicaDetailsLoading || endpointStore.loading
-                || minionPoolStore.loadingMinionPools || this.state.initialLoading}
+              detailsLoading={
+                replicaStore.replicaDetailsLoading
+                || endpointStore.loading
+                || minionPoolStore.loadingMinionPools
+                || this.state.initialLoading
+              }
               sourceSchema={providerStore.sourceSchema}
-              sourceSchemaLoading={providerStore.sourceSchemaLoading
-              || providerStore.sourceOptionsPrimaryLoading
-              || providerStore.sourceOptionsSecondaryLoading}
+              sourceSchemaLoading={
+                providerStore.sourceSchemaLoading
+                || providerStore.sourceOptionsPrimaryLoading
+                || providerStore.sourceOptionsSecondaryLoading
+              }
               destinationSchema={providerStore.destinationSchema}
-              destinationSchemaLoading={providerStore.destinationSchemaLoading
-              || providerStore.destinationOptionsPrimaryLoading
-              || providerStore.destinationOptionsSecondaryLoading}
-              executionsLoading={replicaStore.startingExecution
-                || replicaStore.replicaDetailsLoading}
-              onExecutionChange={id => { this.handleExecutionChange(id) }}
+              destinationSchemaLoading={
+                providerStore.destinationSchemaLoading
+                || providerStore.destinationOptionsPrimaryLoading
+                || providerStore.destinationOptionsSecondaryLoading
+              }
+              executionsLoading={
+                replicaStore.startingExecution
+                || replicaStore.replicaDetailsLoading
+              }
+              onExecutionChange={id => {
+                this.handleExecutionChange(id)
+              }}
               executions={replicaStore.replicaDetails?.executions || []}
-              executionsTasksLoading={replicaStore.executionsTasksLoading
-                || replicaStore.replicaDetailsLoading || replicaStore.startingExecution}
+              executionsTasksLoading={
+                replicaStore.executionsTasksLoading
+                || replicaStore.replicaDetailsLoading
+                || replicaStore.startingExecution
+              }
               executionsTasks={replicaStore.executionsTasks}
               page={this.props.match.params.page || ''}
-              onCancelExecutionClick={(e, f) => { this.handleCancelExecution(e, f) }}
-              onDeleteExecutionClick={execution => { this.handleDeleteExecutionClick(execution) }}
-              onExecuteClick={() => { this.handleExecuteClick() }}
-              onCreateMigrationClick={() => { this.handleCreateMigrationClick() }}
-              onDeleteReplicaClick={() => { this.handleDeleteReplicaClick() }}
-              onAddScheduleClick={schedule => { this.handleAddScheduleClick(schedule) }}
+              onCancelExecutionClick={(e, f) => {
+                this.handleCancelExecution(e, f)
+              }}
+              onDeleteExecutionClick={execution => {
+                this.handleDeleteExecutionClick(execution)
+              }}
+              onExecuteClick={() => {
+                this.handleExecuteClick()
+              }}
+              onCreateMigrationClick={() => {
+                this.handleCreateMigrationClick()
+              }}
+              onDeleteReplicaClick={() => {
+                this.handleDeleteReplicaClick()
+              }}
+              onAddScheduleClick={schedule => {
+                this.handleAddScheduleClick(schedule)
+              }}
               onScheduleChange={(scheduleId, data, forceSave) => {
                 this.handleScheduleChange(scheduleId, data, forceSave)
               }}
-              onScheduleRemove={scheduleId => { this.handleScheduleRemove(scheduleId) }}
-              onScheduleSave={s => { this.handleScheduleSave(s) }}
+              onScheduleRemove={scheduleId => {
+                this.handleScheduleRemove(scheduleId)
+              }}
+              onScheduleSave={s => {
+                this.handleScheduleSave(s)
+              }}
             />
           )}
         />
         <Modal
           isOpen={this.state.showOptionsModal}
           title="New Execution"
-          onRequestClose={() => { this.handleCloseOptionsModal() }}
+          onRequestClose={() => {
+            this.handleCloseOptionsModal()
+          }}
         >
           <ReplicaExecutionOptions
-            onCancelClick={() => { this.handleCloseOptionsModal() }}
-            onExecuteClick={fields => { this.executeReplica(fields) }}
+            disableExecutionOptions={configLoader.config.providersDisabledExecuteOptions.some(
+              p => p
+                === endpointStore.endpoints.find(
+                  e => e.id === replicaStore.replicaDetails?.origin_endpoint_id,
+                )?.type,
+            )}
+            onCancelClick={() => {
+              this.handleCloseOptionsModal()
+            }}
+            onExecuteClick={fields => {
+              this.executeReplica(fields)
+            }}
           />
         </Modal>
         {this.state.showMigrationModal ? (
           <Modal
             isOpen
             title="Create Migration from Replica"
-            onRequestClose={() => { this.handleCloseMigrationModal() }}
+            onRequestClose={() => {
+              this.handleCloseMigrationModal()
+            }}
           >
             <ReplicaMigrationOptions
               transferItem={this.replica}
-              minionPools={minionPoolStore.minionPools.filter(m => m.endpoint_id === this.replica?.destination_endpoint_id && m.platform === 'destination')}
+              minionPools={minionPoolStore.minionPools.filter(
+                m => m.endpoint_id === this.replica?.destination_endpoint_id
+                  && m.platform === 'destination',
+              )}
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
-              onCancelClick={() => { this.handleCloseMigrationModal() }}
-              onMigrateClick={opts => { this.migrateReplica(opts) }}
+              onCancelClick={() => {
+                this.handleCloseMigrationModal()
+              }}
+              onMigrateClick={opts => {
+                this.migrateReplica(opts)
+              }}
             />
           </Modal>
         ) : null}
@@ -694,15 +752,23 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           title="Delete Execution?"
           message="Are you sure you want to delete this execution?"
           extraMessage="Deleting a Coriolis Execution is permanent!"
-          onConfirmation={() => { this.handleDeleteExecutionConfirmation() }}
-          onRequestClose={() => { this.handleCloseExecutionConfirmation() }}
+          onConfirmation={() => {
+            this.handleDeleteExecutionConfirmation()
+          }}
+          onRequestClose={() => {
+            this.handleCloseExecutionConfirmation()
+          }}
         />
         {this.state.showDeleteReplicaConfirmation ? (
           <DeleteReplicaModal
             hasDisks={replicaStore.testReplicaHasDisks(this.replica)}
             onRequestClose={() => this.handleCloseDeleteReplicaConfirmation()}
-            onDeleteReplica={() => { this.handleDeleteReplicaConfirmation() }}
-            onDeleteDisks={() => { this.handleDeleteReplicaDisksConfirmation() }}
+            onDeleteReplica={() => {
+              this.handleDeleteReplicaConfirmation()
+            }}
+            onDeleteDisks={() => {
+              this.handleDeleteReplicaDisksConfirmation()
+            }}
           />
         ) : null}
         <AlertModal
@@ -710,16 +776,24 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           title="Delete Replica Disks?"
           message="Are you sure you want to delete this replica's disks?"
           extraMessage="Deleting Coriolis Replica Disks is permanent!"
-          onConfirmation={() => { this.handleDeleteReplicaDisksConfirmation() }}
-          onRequestClose={() => { this.handleCloseDeleteReplicaDisksConfirmation() }}
+          onConfirmation={() => {
+            this.handleDeleteReplicaDisksConfirmation()
+          }}
+          onRequestClose={() => {
+            this.handleCloseDeleteReplicaDisksConfirmation()
+          }}
         />
         <AlertModal
           isOpen={this.state.showCancelConfirmation}
           title="Cancel Execution?"
           message="Are you sure you want to cancel the current execution?"
           extraMessage=" "
-          onConfirmation={() => { this.handleCancelConfirmation() }}
-          onRequestClose={() => { this.handleCloseCancelConfirmation() }}
+          onConfirmation={() => {
+            this.handleCancelConfirmation()
+          }}
+          onRequestClose={() => {
+            this.handleCloseCancelConfirmation()
+          }}
         />
         <AlertModal
           isOpen={this.state.showForceCancelConfirmation}
@@ -729,8 +803,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 The execution is currently being cancelled.
 Would you like to force its cancellation?
 Note that this may lead to scheduled cleanup tasks being forcibly skipped, and thus manual cleanup of temporary resources on the source/destination platforms may be required.`}
-          onConfirmation={() => { this.handleCancelConfirmation(true) }}
-          onRequestClose={() => { this.handleCloseCancelConfirmation() }}
+          onConfirmation={() => {
+            this.handleCancelConfirmation(true)
+          }}
+          onRequestClose={() => {
+            this.handleCloseCancelConfirmation()
+          }}
         />
         {this.renderEditReplica()}
       </Wrapper>

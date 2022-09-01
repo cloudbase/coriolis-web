@@ -12,6 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { Field } from '@src/@types/Field'
 import { WizardPage } from './@types/WizardData'
 
 export type NavigationMenuType = {
@@ -65,7 +66,7 @@ export const executionOptions = [
   },
 ]
 
-export const migrationFields = [
+export const migrationFields: Field[] = [
   {
     name: 'shutdown_instances',
     type: 'boolean',

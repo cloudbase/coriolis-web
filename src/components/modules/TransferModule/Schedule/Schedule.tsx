@@ -108,6 +108,7 @@ type Props = {
   schedules: ScheduleType[] | null,
   unsavedSchedules: ScheduleType[],
   timezone: TimeZoneValue,
+  disableExecutionOptions: boolean,
   onTimezoneChange: (timezone: TimeZoneValue) => void,
   onAddScheduleClick: (schedule: ScheduleType) => void,
   onChange: (scheduleId: string, schedule: ScheduleType, forceSave?: boolean) => void,
@@ -339,6 +340,7 @@ class Schedule extends React.Component<Props, State> {
             onRequestClose={() => { this.handleCloseOptionsModal() }}
           >
             <ReplicaExecutionOptions
+              disableExecutionOptions={this.props.disableExecutionOptions}
               options={this.state.executionOptions}
               onChange={(fieldName, value) => {
                 this.handleExecutionOptionsChange(fieldName, value)
