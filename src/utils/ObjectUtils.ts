@@ -24,7 +24,11 @@ class ObjectUtils {
     return value != null
   }
 
-  static flatten(object: any, appendParentPath?: boolean, parent?: string): any {
+  static flatten(
+    object: any,
+    appendParentPath?: boolean,
+    parent?: string,
+  ): any {
     let result: any = {}
 
     Object.keys(object).forEach(k => {
@@ -72,10 +76,16 @@ class ObjectUtils {
   }
 
   static async wait(ms: number) {
-    return new Promise<void>(r => { setTimeout(() => r(), ms) })
+    return new Promise<void>(r => {
+      setTimeout(() => r(), ms)
+    })
   }
 
-  static async waitFor(predicate: () => boolean, timeoutMs: number = 15000, tryEvery: number = 1000) {
+  static async waitFor(
+    predicate: () => boolean,
+    timeoutMs: number = 15000,
+    tryEvery: number = 1000,
+  ) {
     const startTime = new Date().getTime()
     const testLoop = async () => {
       if (predicate()) {
@@ -100,7 +110,11 @@ class ObjectUtils {
     return value.charAt(0).toUpperCase() + value.slice(1)
   }
 
-  static async retry(retryFunction: () => Promise<any>, retryEvery: number = 1000, retryCount: number = 3): Promise<any> {
+  static async retry(
+    retryFunction: () => Promise<any>,
+    retryEvery: number = 1000,
+    retryCount: number = 3,
+  ): Promise<any> {
     let currentTry = 0
     const retryLoop = async (): Promise<any> => {
       try {
@@ -121,6 +135,32 @@ class ObjectUtils {
     }
 
     return retryLoop()
+  }
+
+  static isObject(item: any) {
+    return item && typeof item === 'object' && !Array.isArray(item)
+  }
+
+  static mergeDeep(target: any, ...sources: any[]): any {
+    if (!sources.length) {
+      return target
+    }
+    const source = sources.shift()
+
+    if (this.isObject(target) && this.isObject(source)) {
+      Object.keys(source).forEach(key => {
+        if (this.isObject(source[key])) {
+          if (!target[key]) {
+            Object.assign(target, { [key]: {} })
+          }
+          this.mergeDeep(target[key], source[key])
+        } else {
+          Object.assign(target, { [key]: source[key] })
+        }
+      })
+    }
+
+    return this.mergeDeep(target, ...sources)
   }
 }
 

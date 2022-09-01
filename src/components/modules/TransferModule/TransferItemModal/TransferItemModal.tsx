@@ -51,6 +51,7 @@ import minionPoolStore from '@src/stores/MinionPoolStore'
 import WizardScripts from '@src/components/modules/WizardModule/WizardScripts'
 import networkStore from '@src/stores/NetworkStore'
 import { ThemeProps } from '@src/components/Theme'
+import ObjectUtils from '@src/utils/ObjectUtils'
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -392,10 +393,7 @@ class TransferItemModal extends React.Component<Props, State> {
     const envData = getFieldChangeOptions({
       providerName: endpoint.type,
       schema: type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema,
-      data: {
-        ...env,
-        ...stateEnv,
-      },
+      data: ObjectUtils.mergeDeep(env, stateEnv),
       field: field || null,
       type,
       parentFieldName,
@@ -458,10 +456,7 @@ class TransferItemModal extends React.Component<Props, State> {
     const env = type === 'source' ? this.props.replica.source_environment : this.props.replica.destination_environment
     const data = type === 'source' ? this.state.sourceData : this.state.destinationData
     const schema = type === 'source' ? providerStore.sourceSchema : providerStore.destinationSchema
-    const invalidFields = findInvalidFields({
-      ...env,
-      ...data,
-    }, schema)
+    const invalidFields = findInvalidFields(ObjectUtils.mergeDeep(env, data), schema)
 
     this.setState({ updateDisabled: invalidFields.length > 0 })
   }
