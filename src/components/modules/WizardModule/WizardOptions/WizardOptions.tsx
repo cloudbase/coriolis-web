@@ -49,11 +49,11 @@ const Options = styled.div<any>`
   min-height: 0;
 `
 const Fields = styled.div<any>`
-  ${props => (props.padding ? `padding: ${props.padding}px;` : '')}
+  ${props => (props.layout === 'page' ? '' : 'padding: 32px;')}
   display: flex;
   flex-direction: column;
   overflow: auto;
-  padding-right: 4px;
+  padding-right: ${props => (props.layout === 'page' ? 4 : 24)}px;
 `
 const Group = styled.div<any>`
   display: flex;
@@ -510,7 +510,7 @@ class WizardOptions extends React.Component<Props> {
 
     const groups = this.generateGroups(fields)
     return (
-      <Fields ref={this.props.onScrollableRef} padding={this.props.layout === 'page' ? null : 32}>
+      <Fields ref={this.props.onScrollableRef} layout={this.props.layout}>
         {groups.map((g, i) => {
           const getColumnInGroup = (field: any, fieldIndex: number) => (
             g.name ? fieldIndex % 2 : field.column
