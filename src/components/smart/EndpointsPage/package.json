@@ -2,6 +2,5 @@
   "name": "EndpointsPage",
   "version": "0.0.0",
   "private": true,
-  "main":"./EndpointsPage.tsx"
+  "main": "./EndpointsPage.tsx"
 }
-

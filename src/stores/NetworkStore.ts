@@ -12,34 +12,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, action, runInAction } from 'mobx'
-import type { Network } from '@src/@types/Network'
-import NetworkSource from '@src/sources/NetworkSource'
+import { observable, action, runInAction } from "mobx";
+import type { Network } from "@src/@types/Network";
+import NetworkSource from "@src/sources/NetworkSource";
 
 class NetworkStore {
-  @observable networks: Network[] = []
+  @observable networks: Network[] = [];
 
-  @observable loading: boolean = false
+  @observable loading = false;
 
-  cachedId: string = ''
+  cachedId = "";
 
-  @action async loadNetworks(endpointId: string, environment: any, options?: {
-    cache?: boolean,
-    quietError?: boolean,
-  }) {
-    this.loading = true
-    this.networks = []
+  @action async loadNetworks(
+    endpointId: string,
+    environment: any,
+    options?: {
+      cache?: boolean;
+      quietError?: boolean;
+    }
+  ) {
+    this.loading = true;
+    this.networks = [];
 
     try {
-      const networks = await NetworkSource.loadNetworks(endpointId, environment, options)
+      const networks = await NetworkSource.loadNetworks(
+        endpointId,
+        environment,
+        options
+      );
       runInAction(() => {
-        this.loading = false
-        this.networks = networks
-      })
+        this.loading = false;
+        this.networks = networks;
+      });
     } catch (e) {
-      this.loading = false
+      this.loading = false;
     }
   }
 }
 
-export default new NetworkStore()
+export default new NetworkStore();

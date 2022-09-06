@@ -2,6 +2,5 @@
   "name": "WizardNetworks",
   "version": "0.0.0",
   "private": true,
-  "main":"./WizardNetworks.tsx"
+  "main": "./WizardNetworks.tsx"
 }
-

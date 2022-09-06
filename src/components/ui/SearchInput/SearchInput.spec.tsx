@@ -12,46 +12,51 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import userEvent from '@testing-library/user-event'
-import { ThemeProps } from '@src/components/Theme'
-import SearchInput from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import userEvent from "@testing-library/user-event";
+import { ThemeProps } from "@src/components/Theme";
+import SearchInput from ".";
 
-describe('SearchInput', () => {
-  it('renders the value', () => {
-    render(<SearchInput value="test value" />)
-    expect(TestUtils.selectInput('TextInput__Input')!.value).toBe('test value')
-  })
+describe("SearchInput", () => {
+  it("renders the value", () => {
+    render(<SearchInput value="test value" />);
+    expect(TestUtils.selectInput("TextInput__Input")!.value).toBe("test value");
+  });
 
-  it('fires change on input change', () => {
-    const onChange = jest.fn()
-    render(<SearchInput onChange={onChange} />)
-    userEvent.paste(TestUtils.selectInput('TextInput__Input')!, 'test value')
-    expect(onChange).toHaveBeenCalledWith('test value')
-  })
+  it("fires change on input change", () => {
+    const onChange = jest.fn();
+    render(<SearchInput onChange={onChange} />);
+    userEvent.paste(TestUtils.selectInput("TextInput__Input")!, "test value");
+    expect(onChange).toHaveBeenCalledWith("test value");
+  });
 
-  it('opens on button click', async () => {
-    render(<SearchInput />)
-    const style = () => window.getComputedStyle(TestUtils.selectInput('TextInput__Input')!)
-    expect(style().width).toBe('50px')
-    TestUtils.select('SearchButton__Wrapper')!.click()
+  it("opens on button click", async () => {
+    render(<SearchInput />);
+    const style = () =>
+      window.getComputedStyle(TestUtils.selectInput("TextInput__Input")!);
+    expect(style().width).toBe("50px");
+    TestUtils.select("SearchButton__Wrapper")!.click();
     // wait 500 ms for animation
-    await new Promise(resolve => { setTimeout(resolve, 500) })
-    expect(style().width).toBe(`${ThemeProps.inputSizes.regular.width}px`)
-  })
+    await new Promise(resolve => {
+      setTimeout(resolve, 500);
+    });
+    expect(style().width).toBe(`${ThemeProps.inputSizes.regular.width}px`);
+  });
 
-  it('renders open when it has alwaysOpen prop', () => {
-    render(<SearchInput alwaysOpen />)
-    const style = window.getComputedStyle(TestUtils.selectInput('TextInput__Input')!)
-    expect(style.width).toBe(`${ThemeProps.inputSizes.regular.width}px`)
-  })
+  it("renders open when it has alwaysOpen prop", () => {
+    render(<SearchInput alwaysOpen />);
+    const style = window.getComputedStyle(
+      TestUtils.selectInput("TextInput__Input")!
+    );
+    expect(style.width).toBe(`${ThemeProps.inputSizes.regular.width}px`);
+  });
 
-  it('renders loading state', () => {
-    const { rerender } = render(<SearchInput loading />)
-    expect(TestUtils.select('StatusIcon__Wrapper')).toBeTruthy()
-    rerender(<SearchInput />)
-    expect(TestUtils.select('StatusIcon__Wrapper')).toBeFalsy()
-  })
-})
+  it("renders loading state", () => {
+    const { rerender } = render(<SearchInput loading />);
+    expect(TestUtils.select("StatusIcon__Wrapper")).toBeTruthy();
+    rerender(<SearchInput />);
+    expect(TestUtils.select("StatusIcon__Wrapper")).toBeFalsy();
+  });
+});

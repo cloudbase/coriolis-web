@@ -12,58 +12,64 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Field } from '@src/@types/Field'
-import type { OptionValues } from '@src/@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
+import { Field } from "@src/@types/Field";
+import type { OptionValues } from "@src/@types/Endpoint";
+import type { SchemaProperties, SchemaDefinitions } from "@src/@types/Schema";
 import OptionsSchemaPluginBase, {
   defaultFillFieldValues,
   defaultFillMigrationImageMapValues,
   removeExportImageFieldValues,
-} from '../default/OptionsSchemaPlugin'
+} from "../default/OptionsSchemaPlugin";
 
 export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
   override parseSchemaToFields(opts: {
-    schema: SchemaProperties,
-    schemaDefinitions?: SchemaDefinitions | null | undefined,
-    dictionaryKey?: string,
-    requiresWindowsImage?: boolean,
+    schema: SchemaProperties;
+    schemaDefinitions?: SchemaDefinitions | null | undefined;
+    dictionaryKey?: string;
+    requiresWindowsImage?: boolean;
   }) {
-    const fields: Field[] = super.parseSchemaToFields(opts)
-    const exportImage = fields.find(f => f.name === 'export_image')
+    const fields: Field[] = super.parseSchemaToFields(opts);
+    const exportImage = fields.find(f => f.name === "export_image");
     if (exportImage) {
-      exportImage.required = true
+      exportImage.required = true;
     }
-    return fields
+    return fields;
   }
 
   override sortFields(fields: Field[]) {
-    super.sortFields(fields)
+    super.sortFields(fields);
     fields.sort((f1, f2) => {
       // sort region first
-      if (f1.name === 'region') {
-        return -1
+      if (f1.name === "region") {
+        return -1;
       }
-      if (f2.name === 'region') {
-        return 1
+      if (f2.name === "region") {
+        return 1;
       }
-      return 0
-    })
+      return 0;
+    });
   }
 
-  override fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
-    const { field, options, requiresWindowsImage } = opts
-    const option = options.find(f => f.name === field.name)
+  override fillFieldValues(opts: {
+    field: Field;
+    options: OptionValues[];
+    requiresWindowsImage: boolean;
+  }) {
+    const { field, options, requiresWindowsImage } = opts;
+    const option = options.find(f => f.name === field.name);
     if (!option) {
-      return
+      return;
     }
-    if (!defaultFillMigrationImageMapValues({
-      field,
-      option,
-      migrationImageMapFieldName: this.migrationImageMapFieldName,
-      requiresWindowsImage,
-    })) {
-      defaultFillFieldValues(field, option)
-      removeExportImageFieldValues(field)
+    if (
+      !defaultFillMigrationImageMapValues({
+        field,
+        option,
+        migrationImageMapFieldName: this.migrationImageMapFieldName,
+        requiresWindowsImage,
+      })
+    ) {
+      defaultFillFieldValues(field, option);
+      removeExportImageFieldValues(field);
     }
   }
 }

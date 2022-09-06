@@ -13,30 +13,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 export type Project = {
-  id: string,
-  name: string,
-  enabled?: boolean,
-  description?: string,
-}
+  id: string;
+  name: string;
+  enabled?: boolean;
+  description?: string;
+};
 
 export type Role = {
-  id: string,
-  name: string,
-}
+  id: string;
+  name: string;
+};
 
 export type RoleAssignment = {
   scope: {
     project?: {
-      id: string,
-      name: string,
-    },
-  },
+      id: string;
+      name: string;
+    };
+  };
   role: {
-    id: string,
-    name: string,
-  },
+    id: string;
+    name: string;
+  };
   user: {
-    id: string,
-    name: string,
-  },
-}
+    id: string;
+    name: string;
+  };
+};

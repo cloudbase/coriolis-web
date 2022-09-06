@@ -12,33 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import RadioInput from '@src/components/ui/RadioInput'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import RadioInput from "@src/components/ui/RadioInput";
+import TestUtils from "@tests/TestUtils";
 
-describe('RadioInput', () => {
-  it('renders', () => {
-    render(
-      <RadioInput
-        label="Label"
-        checked
-        onChange={() => {}}
-      />,
-    )
-    expect(TestUtils.select('RadioInput__Text')?.textContent).toBe('Label')
-  })
+describe("RadioInput", () => {
+  it("renders", () => {
+    render(<RadioInput label="Label" checked onChange={() => {}} />);
+    expect(TestUtils.select("RadioInput__Text")?.textContent).toBe("Label");
+  });
 
-  it('renders disabled loading animation', () => {
+  it("renders disabled loading animation", () => {
     render(
-      <RadioInput
-        label="Label"
-        checked
-        onChange={() => {}}
-        disabledLoading
-      />,
-    )
-    const style = window.getComputedStyle(TestUtils.select('RadioInput__Wrapper')!)
-    expect(style.animation).toContain('opacityToggle')
-  })
-})
+      <RadioInput label="Label" checked onChange={() => {}} disabledLoading />
+    );
+    const style = window.getComputedStyle(
+      TestUtils.select("RadioInput__Wrapper")!
+    );
+    expect(style.animation).toContain("opacityToggle");
+  });
+});

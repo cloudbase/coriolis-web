@@ -12,30 +12,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import type { Project } from '@src/@types/Project'
-import type { Field as FieldType } from '@src/@types/Field'
-import Button from '@src/components/ui/Button'
-import Modal from '@src/components/ui/Modal'
-import FieldInput from '@src/components/ui/FieldInput'
+import type { Project } from "@src/@types/Project";
+import type { Field as FieldType } from "@src/@types/Field";
+import Button from "@src/components/ui/Button";
+import Modal from "@src/components/ui/Modal";
+import FieldInput from "@src/components/ui/FieldInput";
 
-import LabelDictionary from '@src/utils/LabelDictionary'
-import KeyboardManager from '@src/utils/KeyboardManager'
-import { ThemeProps } from '@src/components/Theme'
-import projectImage from './images/project.svg'
+import LabelDictionary from "@src/utils/LabelDictionary";
+import KeyboardManager from "@src/utils/KeyboardManager";
+import { ThemeProps } from "@src/components/Theme";
+import projectImage from "./images/project.svg";
 
 const Wrapper = styled.div<any>`
   padding: 48px 32px 32px 32px;
-`
+`;
 const Image = styled.div<any>`
   width: 96px;
   height: 96px;
-  background: url('${projectImage}') center no-repeat;
+  background: url("${projectImage}") center no-repeat;
   margin: 0 auto;
-`
+`;
 const Form = styled.div<any>`
   display: flex;
   justify-content: space-between;
@@ -45,72 +45,76 @@ const Form = styled.div<any>`
   > div {
     margin-top: 16px;
   }
-`
+`;
 const Buttons = styled.div<any>`
   margin-top: 32px;
   display: flex;
   justify-content: space-between;
-`
+`;
 
 type Props = {
-  project?: Project | null,
-  isNewProject?: boolean,
-  loading: boolean,
-  onRequestClose: () => void,
-  onUpdateClick: (project: Project) => void,
-}
+  project?: Project | null;
+  isNewProject?: boolean;
+  loading: boolean;
+  onRequestClose: () => void;
+  onUpdateClick: (project: Project) => void;
+};
 
 type State = {
-  name: string,
-  enabled?: boolean,
-  highlightFieldNames: string[],
-  description?: string,
-}
+  name: string;
+  enabled?: boolean;
+  highlightFieldNames: string[];
+  description?: string;
+};
 @observer
 class ProjectModal extends React.Component<Props, State> {
   UNSAFE_componentWillMount() {
     this.setState({
-      name: this.props.project ? this.props.project.name : '',
-      description: this.props.project ? this.props.project.description : '',
+      name: this.props.project ? this.props.project.name : "",
+      description: this.props.project ? this.props.project.description : "",
       enabled: this.props.project ? this.props.project.enabled : true,
       highlightFieldNames: [],
-    })
+    });
   }
 
   componentDidMount() {
-    KeyboardManager.onEnter('projectModal', () => {
-      this.handleUpdateClick()
-    }, 2)
+    KeyboardManager.onEnter(
+      "projectModal",
+      () => {
+        this.handleUpdateClick();
+      },
+      2
+    );
   }
 
   componentWillUnmount() {
-    KeyboardManager.removeKeyDown('projectModal')
+    KeyboardManager.removeKeyDown("projectModal");
   }
 
   handleUpdateClick() {
     if (this.highlightFields()) {
-      return
+      return;
     }
 
     this.props.onUpdateClick({
-      id: '',
+      id: "",
       name: this.state.name,
       description: this.state.description,
       enabled: this.state.enabled,
-    })
+    });
   }
 
   highlightFields() {
-    const highlightFieldNames = []
+    const highlightFieldNames = [];
     if (!this.state.name) {
-      highlightFieldNames.push('project_name')
+      highlightFieldNames.push("project_name");
     }
     if (highlightFieldNames.length > 0) {
-      this.setState({ highlightFieldNames })
-      return true
+      this.setState({ highlightFieldNames });
+      return true;
     }
-    this.setState({ highlightFieldNames: [] })
-    return false
+    this.setState({ highlightFieldNames: [] });
+    return false;
   }
 
   renderField(field: FieldType, value: any, onChange: (value: any) => void) {
@@ -119,74 +123,74 @@ class ProjectModal extends React.Component<Props, State> {
         layout="modal"
         key={field.name}
         name={field.name}
-        type={field.type || 'string'}
+        type={field.type || "string"}
         value={value}
         label={LabelDictionary.get(field.name)}
         onChange={onChange}
         width={ThemeProps.inputSizes.large.width}
         disabled={this.props.loading}
         required={field.required}
-        highlight={Boolean(this.state.highlightFieldNames.find(n => n === field.name))}
+        highlight={Boolean(
+          this.state.highlightFieldNames.find(n => n === field.name)
+        )}
       />
-    )
+    );
   }
 
   renderForm() {
     const fields = [
       this.renderField(
-        { name: 'project_name', required: true },
+        { name: "project_name", required: true },
         this.state.name,
-        name => { this.setState({ name }) },
+        name => {
+          this.setState({ name });
+        }
       ),
       this.renderField(
-        { name: 'description' },
+        { name: "description" },
         this.state.description,
-        description => { this.setState({ description }) },
+        description => {
+          this.setState({ description });
+        }
       ),
       this.renderField(
-        { name: 'Enabled', type: 'boolean' },
+        { name: "Enabled", type: "boolean" },
         this.state.enabled,
-        enabled => { this.setState({ enabled }) },
+        enabled => {
+          this.setState({ enabled });
+        }
       ),
-    ]
+    ];
 
-    return (
-      <Form>
-        {fields}
-      </Form>
-    )
+    return <Form>{fields}</Form>;
   }
 
   render() {
-    const label = this.props.isNewProject ? 'New Project' : 'Update Project'
+    const label = this.props.isNewProject ? "New Project" : "Update Project";
 
     return (
-      <Modal
-        isOpen
-        title={label}
-        onRequestClose={this.props.onRequestClose}
-      >
+      <Modal isOpen title={label} onRequestClose={this.props.onRequestClose}>
         <Wrapper>
           <Image />
           {this.renderForm()}
           <Buttons>
-            <Button
-              secondary
-              large
-              onClick={this.props.onRequestClose}
-            >Cancel
+            <Button secondary large onClick={this.props.onRequestClose}>
+              Cancel
             </Button>
             <Button
               large
               disabled={this.props.loading}
-              onClick={() => { this.handleUpdateClick() }}
-            >{label}
+              onClick={() => {
+                this.handleUpdateClick();
+              }}
+            >
+              {label}
             </Button>
           </Buttons>
         </Wrapper>
       </Modal>
-    )
+    );
   }
 }
 
-export default ProjectModal
+export default ProjectModal;

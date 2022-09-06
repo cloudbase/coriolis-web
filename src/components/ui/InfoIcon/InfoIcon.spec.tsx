@@ -12,22 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import InfoIcon from '@src/components/ui/InfoIcon'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import InfoIcon from "@src/components/ui/InfoIcon";
+import TestUtils from "@tests/TestUtils";
 
-describe('InfoIcon', () => {
-  it('renders with data tip and apropriate icons', () => {
-    const { rerender } = render(<InfoIcon text="info text" />)
-    expect(TestUtils.select('InfoIcon__Wrapper')?.getAttribute('data-tip')).toBe('info text')
-    const style = () => window.getComputedStyle(TestUtils.select('InfoIcon__Wrapper')!)
-    expect(style().backgroundImage).toBe('url(question.svg)')
+describe("InfoIcon", () => {
+  it("renders with data tip and apropriate icons", () => {
+    const { rerender } = render(<InfoIcon text="info text" />);
+    expect(
+      TestUtils.select("InfoIcon__Wrapper")?.getAttribute("data-tip")
+    ).toBe("info text");
+    const style = () =>
+      window.getComputedStyle(TestUtils.select("InfoIcon__Wrapper")!);
+    expect(style().backgroundImage).toBe("url(question.svg)");
 
-    rerender(<InfoIcon text="info text" warning />)
-    expect(style().backgroundImage).toBe('url(warning.svg)')
+    rerender(<InfoIcon text="info text" warning />);
+    expect(style().backgroundImage).toBe("url(warning.svg)");
 
-    rerender(<InfoIcon text="info text" filled />)
-    expect(style().backgroundImage).toBe('url(question-filled.svg)')
-  })
-})
+    rerender(<InfoIcon text="info text" filled />);
+    expect(style().backgroundImage).toBe("url(question-filled.svg)");
+  });
+});

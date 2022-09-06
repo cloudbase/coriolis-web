@@ -12,47 +12,47 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
-import Navigation from '@src/components/modules/NavigationModule/Navigation'
-import FilterList from '@src/components/ui/Lists/FilterList'
-import PageHeader from '@src/components/smart/PageHeader'
-import ProjectListItem from '@src/components/modules/ProjectModule/ProjectListItem'
+import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
+import Navigation from "@src/components/modules/NavigationModule/Navigation";
+import FilterList from "@src/components/ui/Lists/FilterList";
+import PageHeader from "@src/components/smart/PageHeader";
+import ProjectListItem from "@src/components/modules/ProjectModule/ProjectListItem";
 
-import type { Project, RoleAssignment } from '@src/@types/Project'
+import type { Project, RoleAssignment } from "@src/@types/Project";
 
-import projectStore from '@src/stores/ProjectStore'
-import userStore from '@src/stores/UserStore'
-import configLoader from '@src/utils/Config'
+import projectStore from "@src/stores/ProjectStore";
+import userStore from "@src/stores/UserStore";
+import configLoader from "@src/utils/Config";
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 
 type State = {
-  modalIsOpen: boolean,
-}
+  modalIsOpen: boolean;
+};
 @observer
 class ProjectsPage extends React.Component<{ history: any }, State> {
   state = {
     modalIsOpen: false,
-  }
+  };
 
-  pollTimeout: number = 0
+  pollTimeout = 0;
 
-  stopPolling: boolean = false
+  stopPolling = false;
 
   componentDidMount() {
-    document.title = 'Projects'
+    document.title = "Projects";
 
-    this.stopPolling = false
-    this.pollData(true)
+    this.stopPolling = false;
+    this.pollData(true);
   }
 
   componentWillUnmount() {
-    clearTimeout(this.pollTimeout)
-    this.stopPolling = true
+    clearTimeout(this.pollTimeout);
+    this.stopPolling = true;
   }
 
   getMembers(projectId: string): number {
@@ -60,57 +60,66 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
       .filter(a => a.scope.project?.id === projectId)
       .reduce((uniqueRoles, role) => {
         if (!uniqueRoles.find(p => p.user.id === role.user.id)) {
-          uniqueRoles.push(role)
+          uniqueRoles.push(role);
         }
-        return uniqueRoles
-      }, [] as RoleAssignment[])
-      .length
+        return uniqueRoles;
+      }, [] as RoleAssignment[]).length;
   }
 
   isCurrentProject(projectId: string): boolean {
-    const project = userStore.loggedUser && userStore.loggedUser.project
-      ? userStore.loggedUser.project : null
-    return project ? project.id === projectId : false
+    const project =
+      userStore.loggedUser && userStore.loggedUser.project
+        ? userStore.loggedUser.project
+        : null;
+    return project ? project.id === projectId : false;
   }
 
   handleModalOpen() {
-    this.setState({ modalIsOpen: true })
+    this.setState({ modalIsOpen: true });
   }
 
   handleModalClose() {
     this.setState({ modalIsOpen: false }, () => {
-      this.pollData()
-    })
+      this.pollData();
+    });
   }
 
   handleReloadButtonClick() {
-    projectStore.getProjects({ showLoading: true })
-    projectStore.getRoleAssignments()
+    projectStore.getProjects({ showLoading: true });
+    projectStore.getRoleAssignments();
   }
 
   async handleSwitchProjectClick(projectId: string) {
-    await userStore.switchProject(projectId)
-    projectStore.getProjects()
+    await userStore.switchProject(projectId);
+    projectStore.getProjects();
   }
 
   async pollData(showLoading?: boolean) {
     if (this.state.modalIsOpen || this.stopPolling) {
-      return
+      return;
     }
 
     await Promise.all([
       projectStore.getProjects({ showLoading, skipLog: true }),
       projectStore.getRoleAssignments({ skipLog: true }),
-    ])
-    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    ]);
+    this.pollTimeout = window.setTimeout(() => {
+      this.pollData();
+    }, configLoader.config.requestPollTimeout);
   }
 
-  itemFilterFunction(item: Project, _?: string | null, filterText?: string): boolean {
-    const usabledFilterText = (filterText && filterText.toLowerCase()) || ''
+  itemFilterFunction(
+    item: Project,
+    _?: string | null,
+    filterText?: string
+  ): boolean {
+    const usabledFilterText = (filterText && filterText.toLowerCase()) || "";
     return (
-      item.name.toLowerCase().indexOf(usabledFilterText) > -1
-      || (item.description ? item.description.toLowerCase().indexOf(usabledFilterText) > -1 : false)
-    )
+      item.name.toLowerCase().indexOf(usabledFilterText) > -1 ||
+      (item.description
+        ? item.description.toLowerCase().indexOf(usabledFilterText) > -1
+        : false)
+    );
   }
 
   render() {
@@ -119,36 +128,48 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
         <MainTemplate
           navigationComponent={<Navigation currentPage="projects" />}
           listNoMargin
-          listComponent={(
+          listComponent={
             <FilterList
-              filterItems={[{ label: 'All', value: 'all' }]}
+              filterItems={[{ label: "All", value: "all" }]}
               selectionLabel="user"
               loading={projectStore.loading}
               items={projectStore.projects}
-              onItemClick={(user: Project) => { this.props.history.push(`/projects/${user.id}`) }}
-              onReloadButtonClick={() => { this.handleReloadButtonClick() }}
+              onItemClick={(user: Project) => {
+                this.props.history.push(`/projects/${user.id}`);
+              }}
+              onReloadButtonClick={() => {
+                this.handleReloadButtonClick();
+              }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={component => (
                 <ProjectListItem
                   {...component}
                   getMembers={projectId => this.getMembers(projectId)}
-                  isCurrentProject={projectId => this.isCurrentProject(projectId)}
-                  onSwitchProjectClick={projectId => this.handleSwitchProjectClick(projectId)}
+                  isCurrentProject={projectId =>
+                    this.isCurrentProject(projectId)
+                  }
+                  onSwitchProjectClick={projectId =>
+                    this.handleSwitchProjectClick(projectId)
+                  }
                 />
               )}
             />
-          )}
-          headerComponent={(
+          }
+          headerComponent={
             <PageHeader
               title="Projects"
-              onModalOpen={() => { this.handleModalOpen() }}
-              onModalClose={() => { this.handleModalClose() }}
+              onModalOpen={() => {
+                this.handleModalOpen();
+              }}
+              onModalClose={() => {
+                this.handleModalClose();
+              }}
             />
-          )}
+          }
         />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default ProjectsPage
+export default ProjectsPage;

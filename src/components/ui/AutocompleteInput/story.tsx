@@ -12,17 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import AutocompleteInput from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import AutocompleteInput from ".";
 
 type State = {
-  value: string,
-}
+  value: string;
+};
 class Wrapper extends React.Component<any, State> {
   state = {
-    value: '',
-  }
+    value: "",
+  };
 
   render() {
     return (
@@ -30,16 +30,14 @@ class Wrapper extends React.Component<any, State> {
         large
         disabledLoading={this.props.disabledLoading}
         value={this.state.value}
-        onChange={value => { this.setState({ value }) }}
+        onChange={value => {
+          this.setState({ value });
+        }}
       />
-    )
+    );
   }
 }
 
-storiesOf('AutocompleteInput', module)
-  .add('default', () => (
-    <Wrapper />
-  ))
-  .add('disabled loading', () => (
-    <Wrapper disabledLoading />
-  ))
+storiesOf("AutocompleteInput", module)
+  .add("default", () => <Wrapper />)
+  .add("disabled loading", () => <Wrapper disabledLoading />);

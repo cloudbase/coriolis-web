@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import type { User } from '@src/@types/User'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import type { User } from "@src/@types/User";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import userImage from './images/user.svg'
+import userImage from "./images/user.svg";
 
 const Content = styled.div<any>`
   display: flex;
@@ -34,7 +34,7 @@ const Content = styled.div<any>`
   &:hover {
     background: ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const Wrapper = styled.div<any>`
   display: flex;
   align-items: center;
@@ -42,57 +42,60 @@ const Wrapper = styled.div<any>`
   &:last-child ${Content} {
     border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const Image = styled.div<any>`
   min-width: 48px;
   height: 48px;
-  background: url('${userImage}') no-repeat center;
+  background: url("${userImage}") no-repeat center;
   margin-right: 16px;
-`
+`;
 const Title = styled.div<any>`
   flex-grow: 1;
   overflow: hidden;
   margin-right: 48px;
   min-width: 100px;
-`
+`;
 const TitleLabel = styled.div<any>`
   font-size: 16px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-`
+`;
 const Subtitle = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
   margin-top: 3px;
-`
+`;
 const ItemLabel = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
-`
+`;
 const ItemValue = styled.div<any>`
   color: ${ThemePalette.primary};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`
-const bodyWidth = 620
+`;
+const bodyWidth = 620;
 const Body = styled.div<any>`
   ${ThemeProps.exactWidth(`${bodyWidth}px`)}
   display: flex;
-`
+`;
 const Data = styled.div<any>`
-  ${props => ThemeProps.exactWidth(`${Math.floor(bodyWidth / (100 / props.percentage)) - 68}px`)}
+  ${props =>
+    ThemeProps.exactWidth(
+      `${Math.floor(bodyWidth / (100 / props.percentage)) - 68}px`
+    )}
   margin: 0 32px;
 
   &:last-child {
     margin-right: 0;
   }
-`
+`;
 
 type Props = {
-  item: User,
-  onClick: () => void,
-  getProjectName: (projectId: string | null | undefined) => string,
-}
+  item: User;
+  onClick: () => void;
+  getProjectName: (projectId: string | null | undefined) => string;
+};
 @observer
 class UserListItem extends React.Component<Props> {
   render() {
@@ -107,9 +110,7 @@ class UserListItem extends React.Component<Props> {
           <Body>
             <Data percentage={45}>
               <ItemLabel>Email</ItemLabel>
-              <ItemValue>
-                {this.props.item.email || '-'}
-              </ItemValue>
+              <ItemValue>{this.props.item.email || "-"}</ItemValue>
             </Data>
             <Data percentage={35}>
               <ItemLabel>Primary Project</ItemLabel>
@@ -119,15 +120,13 @@ class UserListItem extends React.Component<Props> {
             </Data>
             <Data percentage={20}>
               <ItemLabel>Enabled</ItemLabel>
-              <ItemValue>
-                {this.props.item.enabled ? 'Yes' : 'No'}
-              </ItemValue>
+              <ItemValue>{this.props.item.enabled ? "Yes" : "No"}</ItemValue>
             </Data>
           </Body>
         </Content>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default UserListItem
+export default UserListItem;

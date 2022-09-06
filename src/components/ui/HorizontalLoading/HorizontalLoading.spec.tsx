@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import HorizontalLoading from '@src/components/ui/HorizontalLoading'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import HorizontalLoading from "@src/components/ui/HorizontalLoading";
+import TestUtils from "@tests/TestUtils";
 
-describe('HorizontalLoading', () => {
-  it('renders', () => {
-    render(<HorizontalLoading />)
-    expect(TestUtils.select('HorizontalLoading__Wrapper')).toBeTruthy()
-  })
-})
+describe("HorizontalLoading", () => {
+  it("renders", () => {
+    render(<HorizontalLoading />);
+    expect(TestUtils.select("HorizontalLoading__Wrapper")).toBeTruthy();
+  });
+});

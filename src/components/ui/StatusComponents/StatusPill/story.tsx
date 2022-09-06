@@ -12,77 +12,65 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { storiesOf } from '@storybook/react'
-import StatusPill from '.'
+import React from "react";
+import styled from "styled-components";
+import { storiesOf } from "@storybook/react";
+import StatusPill from ".";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-wrap: wrap;
-`
+`;
 const STATUSES = [
-  'UNEXECUTED',
-  'SCHEDULED',
-  'UNSCHEDULED',
-  'COMPLETED',
-  'STARTING',
-  'RUNNING',
-  'PENDING',
-  'CANCELLING',
-  'CANCELLING_AFTER_COMPLETION',
-  'CANCELED',
-  'CANCELED_AFTER_COMPLETION',
-  'CANCELED_FOR_DEBUGGING',
-  'FORCE_CANCELED',
-  'FAILED_TO_CANCEL',
-  'ERROR',
-  'FAILED_TO_SCHEDULE',
-  'DEADLOCKED',
-  'STRANDED_AFTER_DEADLOCK',
-  'AWAITING_MINION_ALLOCATIONS',
-  'ERROR_ALLOCATING_MINIONS',
+  "UNEXECUTED",
+  "SCHEDULED",
+  "UNSCHEDULED",
+  "COMPLETED",
+  "STARTING",
+  "RUNNING",
+  "PENDING",
+  "CANCELLING",
+  "CANCELLING_AFTER_COMPLETION",
+  "CANCELED",
+  "CANCELED_AFTER_COMPLETION",
+  "CANCELED_FOR_DEBUGGING",
+  "FORCE_CANCELED",
+  "FAILED_TO_CANCEL",
+  "ERROR",
+  "FAILED_TO_SCHEDULE",
+  "DEADLOCKED",
+  "STRANDED_AFTER_DEADLOCK",
+  "AWAITING_MINION_ALLOCATIONS",
+  "ERROR_ALLOCATING_MINIONS",
   // Minion Pool statuses
-  'INITIALIZED',
-  'UNINITIALIZED',
-  'UNINITIALIZING',
-  'INITIALIZING',
-  'DEALLOCATING',
-  'DEALLOCATED',
-  'ALLOCATING',
-  'ALLOCATED',
-  'RECONFIGURING',
-  'IN_USE',
-  'HEALTHCHECKING',
-]
+  "INITIALIZED",
+  "UNINITIALIZED",
+  "UNINITIALIZING",
+  "INITIALIZING",
+  "DEALLOCATING",
+  "DEALLOCATED",
+  "ALLOCATING",
+  "ALLOCATED",
+  "RECONFIGURING",
+  "IN_USE",
+  "HEALTHCHECKING",
+];
 
 const renderAllStatuses = (small?: boolean) => (
   <Wrapper>
     {STATUSES.map(status => (
-      <span style={{ marginLeft: '16px', marginBottom: '16px' }} key={status}>
+      <span style={{ marginLeft: "16px", marginBottom: "16px" }} key={status}>
         {status}
-        <StatusPill
-          key={status}
-          status={status}
-          small={small || false}
-        />
+        <StatusPill key={status} status={status} small={small || false} />
       </span>
     ))}
   </Wrapper>
-)
+);
 
-storiesOf('StatusPill', module)
-  .add('all statuses', () => renderAllStatuses())
-  .add('all statuses small', () => renderAllStatuses(true))
-  .add('paused', () => (
-    <StatusPill status="PAUSED" />
-  ))
-  .add('info', () => (
-    <StatusPill status="INFO" />
-  ))
-  .add('info secondary', () => (
-    <StatusPill status="INFO" secondary />
-  ))
-  .add('info alert', () => (
-    <StatusPill status="INFO" alert />
-  ))
+storiesOf("StatusPill", module)
+  .add("all statuses", () => renderAllStatuses())
+  .add("all statuses small", () => renderAllStatuses(true))
+  .add("paused", () => <StatusPill status="PAUSED" />)
+  .add("info", () => <StatusPill status="INFO" />)
+  .add("info secondary", () => <StatusPill status="INFO" secondary />)
+  .add("info alert", () => <StatusPill status="INFO" alert />);

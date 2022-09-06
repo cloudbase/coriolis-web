@@ -12,83 +12,86 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import ActionDropdown, { DropdownAction } from './ActionDropdown'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import ActionDropdown, { DropdownAction } from "./ActionDropdown";
 
 const ACTIONS: DropdownAction[] = [
   {
-    label: 'Action 1',
-    title: 'Action 1 Description',
+    label: "Action 1",
+    title: "Action 1 Description",
     action: jest.fn(),
   },
   {
-    label: 'Action 2',
+    label: "Action 2",
     disabled: true,
     action: jest.fn(),
-
   },
   {
-    label: 'Action 3',
+    label: "Action 3",
     loading: true,
     action: jest.fn(),
   },
   {
-    label: 'Action 4',
+    label: "Action 4",
     hidden: true,
     action: jest.fn(),
   },
-]
+];
 
-describe('ActionDropdown', () => {
-  it('renders button label', () => {
-    const { rerender } = render(<ActionDropdown actions={ACTIONS} />)
-    expect(TestUtils.select('DropdownButton__Label')?.textContent).toBe('Actions')
-    rerender(<ActionDropdown actions={ACTIONS} label="Actions Label" />)
-    expect(TestUtils.select('DropdownButton__Label')?.textContent).toBe('Actions Label')
-  })
+describe("ActionDropdown", () => {
+  it("renders button label", () => {
+    const { rerender } = render(<ActionDropdown actions={ACTIONS} />);
+    expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
+      "Actions"
+    );
+    rerender(<ActionDropdown actions={ACTIONS} label="Actions Label" />);
+    expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
+      "Actions Label"
+    );
+  });
 
-  it('renders only visible actions', () => {
-    render(<ActionDropdown actions={ACTIONS} />)
-    TestUtils.select('DropdownButton__Wrapper')!.click()
-    expect(TestUtils.selectAll('ActionDropdown__ListItem').length).toBe(3)
-    TestUtils.selectAll('ActionDropdown__ListItem').forEach((item, index) => {
-      expect(item.textContent).toBe(ACTIONS[index].label)
-    })
-  })
+  it("renders only visible actions", () => {
+    render(<ActionDropdown actions={ACTIONS} />);
+    TestUtils.select("DropdownButton__Wrapper")!.click();
+    expect(TestUtils.selectAll("ActionDropdown__ListItem").length).toBe(3);
+    TestUtils.selectAll("ActionDropdown__ListItem").forEach((item, index) => {
+      expect(item.textContent).toBe(ACTIONS[index].label);
+    });
+  });
 
-  it('renders actions with props', () => {
-    render(<ActionDropdown actions={ACTIONS} />)
-    TestUtils.select('DropdownButton__Wrapper')!.click()
-    TestUtils.selectAll('ActionDropdown__ListItem').forEach((item, index) => {
+  it("renders actions with props", () => {
+    render(<ActionDropdown actions={ACTIONS} />);
+    TestUtils.select("DropdownButton__Wrapper")!.click();
+    TestUtils.selectAll("ActionDropdown__ListItem").forEach((item, index) => {
       if (ACTIONS[index].disabled) {
-        expect(item.hasAttribute('disabled')).toBe(true)
+        expect(item.hasAttribute("disabled")).toBe(true);
       } else {
-        expect(item.hasAttribute('disabled')).toBe(false)
+        expect(item.hasAttribute("disabled")).toBe(false);
       }
       if (ACTIONS[index].title) {
-        expect(item.getAttribute('title')).toBe(ACTIONS[index].title)
+        expect(item.getAttribute("title")).toBe(ACTIONS[index].title);
       }
       if (ACTIONS[index].loading) {
-        expect(TestUtils.select('StatusIcon__Wrapper', item)).toBeTruthy()
+        expect(TestUtils.select("StatusIcon__Wrapper", item)).toBeTruthy();
       } else {
-        expect(TestUtils.select('StatusIcon__Wrapper', item)).toBeFalsy()
+        expect(TestUtils.select("StatusIcon__Wrapper", item)).toBeFalsy();
       }
-    })
-  })
+    });
+  });
 
-  it('fires click events correctly', () => {
-    render(<ActionDropdown actions={ACTIONS} />)
-    TestUtils.select('DropdownButton__Wrapper')!.click()
-    TestUtils.selectAll('ActionDropdown__ListItem').forEach((item, index) => {
-      item.click()
+  it("fires click events correctly", () => {
+    render(<ActionDropdown actions={ACTIONS} />);
+    TestUtils.select("DropdownButton__Wrapper")!.click();
+    TestUtils.selectAll("ActionDropdown__ListItem").forEach((item, index) => {
+      item.click();
       if (ACTIONS[index].disabled || ACTIONS[index].loading) {
-        expect(ACTIONS[index].action).not.toHaveBeenCalled()
+        expect(ACTIONS[index].action).not.toHaveBeenCalled();
       } else {
-        TestUtils.select('DropdownButton__Wrapper')!.click()
-        expect(ACTIONS[index].action).toHaveBeenCalled()
+        TestUtils.select("DropdownButton__Wrapper")!.click();
+        expect(ACTIONS[index].action).toHaveBeenCalled();
       }
-    })
-  })
-})
+    });
+  });
+});

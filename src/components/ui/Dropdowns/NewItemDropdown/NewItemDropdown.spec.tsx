@@ -12,36 +12,38 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
+import React from "react";
+import { render } from "@testing-library/react";
 
-import TestUtils from '@tests/TestUtils'
-import NewItemDropdown from '.'
+import TestUtils from "@tests/TestUtils";
+import NewItemDropdown from ".";
 
-jest.mock('react-router-dom', () => ({
-  Link: 'div',
-}))
+jest.mock("react-router-dom", () => ({
+  Link: "div",
+}));
 
-describe('NewItemDropdown', () => {
-  it('renders new button', () => {
-    render(<NewItemDropdown onChange={() => { }} />)
-    expect(TestUtils.select('DropdownButton__Label')?.textContent).toBe('New')
-  })
+describe("NewItemDropdown", () => {
+  it("renders new button", () => {
+    render(<NewItemDropdown onChange={() => {}} />);
+    expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe("New");
+  });
 
-  it('fires change', () => {
-    const onChange = jest.fn()
-    render(<NewItemDropdown onChange={onChange} />)
-    TestUtils.select('DropdownButton__Wrapper')!.click()
-    TestUtils.selectAll('NewItemDropdown__ListItem')[2].click()
-    expect(onChange).toBeCalledWith(expect.objectContaining({ value: 'endpoint' }))
-  })
+  it("fires change", () => {
+    const onChange = jest.fn();
+    render(<NewItemDropdown onChange={onChange} />);
+    TestUtils.select("DropdownButton__Wrapper")!.click();
+    TestUtils.selectAll("NewItemDropdown__ListItem")[2].click();
+    expect(onChange).toBeCalledWith(
+      expect.objectContaining({ value: "endpoint" })
+    );
+  });
 
-  it('has list items with \'to\' property', () => {
-    render(<NewItemDropdown onChange={() => { }} />)
-    TestUtils.select('DropdownButton__Wrapper')!.click()
-    const listItems = TestUtils.selectAll('NewItemDropdown__ListItem')
-    expect(listItems[0].getAttribute('to')).toBe('/wizard/migration')
-    expect(listItems[1].getAttribute('to')).toBe('/wizard/replica')
-    expect(listItems[2].getAttribute('to')).toBe('#')
-  })
-})
+  it("has list items with 'to' property", () => {
+    render(<NewItemDropdown onChange={() => {}} />);
+    TestUtils.select("DropdownButton__Wrapper")!.click();
+    const listItems = TestUtils.selectAll("NewItemDropdown__ListItem");
+    expect(listItems[0].getAttribute("to")).toBe("/wizard/migration");
+    expect(listItems[1].getAttribute("to")).toBe("/wizard/replica");
+    expect(listItems[2].getAttribute("to")).toBe("#");
+  });
+});

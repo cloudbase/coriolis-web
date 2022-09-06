@@ -12,49 +12,53 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import sinon from 'sinon'
-import { shallow } from 'enzyme'
-import TW from '@src/utils/TestWrapper'
-import AutocompleteInput from '.'
+import React from "react";
+import sinon from "sinon";
+import { shallow } from "enzyme";
+import TW from "@src/utils/TestWrapper";
+import AutocompleteInput from ".";
 
 type Props = {
-  value: string,
-  customRef?: (ref: HTMLElement) => void,
-  ref?: (ref: HTMLElement) => void,
-  onChange: (value: string) => void,
-  onClick?: () => void,
-  disabled?: boolean,
-  width?: number,
-  large?: boolean,
-  onFocus?: () => void,
-  highlight?: boolean,
-}
+  value: string;
+  customRef?: (ref: HTMLElement) => void;
+  ref?: (ref: HTMLElement) => void;
+  onChange: (value: string) => void;
+  onClick?: () => void;
+  disabled?: boolean;
+  width?: number;
+  large?: boolean;
+  onFocus?: () => void;
+  highlight?: boolean;
+};
 
-const wrap = (props: Props) => new TW(shallow(
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <AutocompleteInput {...props} />,
-), 'acInput')
+const wrap = (props: Props) =>
+  new TW(
+    shallow(
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <AutocompleteInput {...props} />
+    ),
+    "acInput"
+  );
 
-describe('AutocompleteInput Component', () => {
-  it('renders input with correct data', () => {
+describe("AutocompleteInput Component", () => {
+  it("renders input with correct data", () => {
     const wrapper = wrap({
-      value: 'value',
-      onChange: () => { },
-    })
+      value: "value",
+      onChange: () => {},
+    });
 
-    expect(wrapper.find('text').prop('embedded')).toBe(true)
-    expect(wrapper.find('text').prop('value')).toBe('value')
-  })
+    expect(wrapper.find("text").prop("embedded")).toBe(true);
+    expect(wrapper.find("text").prop("value")).toBe("value");
+  });
 
-  it('dispatches click', () => {
-    const onClick = sinon.spy()
+  it("dispatches click", () => {
+    const onClick = sinon.spy();
     const wrapper = wrap({
-      value: 'value',
-      onChange: () => { },
+      value: "value",
+      onChange: () => {},
       onClick,
-    })
-    wrapper.find('arrow').click()
-    expect(onClick.calledOnce).toBe(true)
-  })
-})
+    });
+    wrapper.find("arrow").click();
+    expect(onClick.calledOnce).toBe(true);
+  });
+});

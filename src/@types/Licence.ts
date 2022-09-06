@@ -13,22 +13,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 export type Licence = {
-  applianceId: string,
-  earliestLicenceExpiryDate: Date,
-  latestLicenceExpiryDate: Date,
-  currentPerformedMigrations: number,
-  currentPerformedReplicas: number,
-  lifetimePerformedMigrations: number,
-  lifetimePerformedReplicas: number,
-  currentAvailableMigrations: number,
-  currentAvailableReplicas: number,
-  lifetimeAvailableMigrations: number,
-  lifetimeAvailableReplicas: number,
-}
+  applianceId: string;
+  earliestLicenceExpiryDate: Date;
+  latestLicenceExpiryDate: Date;
+  currentPerformedMigrations: number;
+  currentPerformedReplicas: number;
+  lifetimePerformedMigrations: number;
+  lifetimePerformedReplicas: number;
+  currentAvailableMigrations: number;
+  currentAvailableReplicas: number;
+  lifetimeAvailableMigrations: number;
+  lifetimeAvailableReplicas: number;
+};
 
 export type LicenceServerStatus = {
-  hostname: string,
-  multi_appliance: boolean,
-  supported_licence_versions: string[],
-  server_local_time: string
-}
+  hostname: string;
+  multi_appliance: boolean;
+  supported_licence_versions: string[];
+  server_local_time: string;
+};

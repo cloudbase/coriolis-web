@@ -12,18 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Task } from './Task'
+import { Task } from "./Task";
 
 export type Execution = {
-  id: string,
-  number: number,
-  status: string,
-  created_at: Date,
-  updated_at: Date,
-  deleted_at?: Date,
-  type: 'replica_execution' | 'replica_disks_delete' | 'replica_deploy' | 'replica_update'
-}
+  id: string;
+  number: number;
+  status: string;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at?: Date;
+  type:
+    | "replica_execution"
+    | "replica_disks_delete"
+    | "replica_deploy"
+    | "replica_update";
+};
 
 export type ExecutionTasks = Execution & {
-  tasks: Task[]
-}
+  tasks: Task[];
+};

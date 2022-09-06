@@ -12,40 +12,38 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TW from '@src/utils/TestWrapper'
-import DetailsContentHeader from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TW from "@src/utils/TestWrapper";
+import DetailsContentHeader from ".";
 
-const wrap = props => new TW(shallow(
+const wrap = props =>
+  new TW(shallow(<DetailsContentHeader {...props} />), "dcHeader");
 
-  <DetailsContentHeader {...props} />
-), 'dcHeader')
+const item = {
+  origin_endpoint_id: "openstack",
+  destination_endpoint_id: "azure",
+  instances: ["The instance title"],
+  type: "item type",
+  executions: [{ status: "COMPLETED", created_at: new Date() }],
+};
 
-let item = {
-  origin_endpoint_id: 'openstack',
-  destination_endpoint_id: 'azure',
-  instances: ['The instance title'],
-  type: 'item type',
-  executions: [{ status: 'COMPLETED', created_at: new Date() }],
-}
+describe("DetailsContentHeader Component", () => {
+  it("renders title", () => {
+    const wrapper = wrap({ item });
+    expect(wrapper.findText("title")).toBe(item.instances[0]);
+  });
 
-describe('DetailsContentHeader Component', () => {
-  it('renders title', () => {
-    let wrapper = wrap({ item })
-    expect(wrapper.findText('title')).toBe(item.instances[0])
-  })
+  it("renders with no action button", () => {
+    const wrapper = wrap({ item });
+    expect(wrapper.find("actionButton").length).toBe(0);
+    expect(wrapper.find("cancelButton").length).toBe(0);
+  });
 
-  it('renders with no action button', () => {
-    let wrapper = wrap({ item })
-    expect(wrapper.find('actionButton').length).toBe(0)
-    expect(wrapper.find('cancelButton').length).toBe(0)
-  })
-
-  it('renders with action button, if there are dropdown actions', () => {
-    let wrapper = wrap({ item, dropdownActions: [] })
-    expect(wrapper.find('actionButton').length).toBe(1)
-  })
+  it("renders with action button, if there are dropdown actions", () => {
+    const wrapper = wrap({ item, dropdownActions: [] });
+    expect(wrapper.find("actionButton").length).toBe(1);
+  });
 
   // it('dispatches back button click', () => {
   //   let onBackButonClick = sinon.spy()
@@ -54,30 +52,31 @@ describe('DetailsContentHeader Component', () => {
   //   expect(onBackButonClick.called).toBe(true)
   // })
 
-  it('renders correct INFO pill', () => {
-    let wrapper = wrap({ item, primaryInfoPill: true })
-    expect(wrapper.find('infoPill').prop('primary')).toBe(true)
-    expect(wrapper.find('infoPill').prop('label')).toBe('ITEM TYPE')
-    expect(wrapper.find('infoPill').prop('alert')).toBe(undefined)
+  it("renders correct INFO pill", () => {
+    let wrapper = wrap({ item, primaryInfoPill: true });
+    expect(wrapper.find("infoPill").prop("primary")).toBe(true);
+    expect(wrapper.find("infoPill").prop("label")).toBe("ITEM TYPE");
+    expect(wrapper.find("infoPill").prop("alert")).toBe(undefined);
 
-    wrapper = wrap({ item, alertInfoPill: true })
-    expect(wrapper.find('infoPill').prop('alert')).toBe(true)
-  })
+    wrapper = wrap({ item, alertInfoPill: true });
+    expect(wrapper.find("infoPill").prop("alert")).toBe(true);
+  });
 
-  it('renders correct STATUS pill', () => {
-    let wrapper = wrap({ item })
-    expect(wrapper.findPartialId('statusPill-').prop('status')).toBe('COMPLETED')
-    let newItem = { ...item, executions: [...item.executions] }
-    newItem.executions.push({ status: 'RUNNING', created_at: new Date() })
-    wrapper = wrap({ item: newItem })
-    expect(wrapper.findPartialId('statusPill-').prop('status')).toBe('RUNNING')
-  })
+  it("renders correct STATUS pill", () => {
+    let wrapper = wrap({ item });
+    expect(wrapper.findPartialId("statusPill-").prop("status")).toBe(
+      "COMPLETED"
+    );
+    const newItem = { ...item, executions: [...item.executions] };
+    newItem.executions.push({ status: "RUNNING", created_at: new Date() });
+    wrapper = wrap({ item: newItem });
+    expect(wrapper.findPartialId("statusPill-").prop("status")).toBe("RUNNING");
+  });
 
-  it('renders item description', () => {
-    let wrapper = wrap({ item: { ...item, description: 'item description' } })
-    expect(wrapper.findText('description')).toBe('item description')
-  })
-})
-
-
-
+  it("renders item description", () => {
+    const wrapper = wrap({
+      item: { ...item, description: "item description" },
+    });
+    expect(wrapper.findText("description")).toBe("item description");
+  });
+});

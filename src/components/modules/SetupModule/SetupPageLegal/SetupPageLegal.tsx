@@ -12,51 +12,59 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import { ProviderTypes } from '@src/@types/Providers'
-import configLoader from '@src/utils/Config'
-import { CustomerInfoTrial, SetupPageLicenceType } from '@src/@types/InitialSetup'
-import SetupPageInputWrapper from '@src/components/modules/SetupModule/ui/SetupPageInputWrapper'
-import RadioInput from '@src/components/ui/RadioInput'
-import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
-import SetupPageTitle from '@src/components/modules/SetupModule/ui/SetupPageTitle'
-import Checkbox from '@src/components/ui/Checkbox'
-import { LEGAL_URLS } from '@src/constants'
-import OpenInNewIcon from '@src/components/ui/OpenInNewIcon'
-import transferItemIcon from './resources/transferItemIcon'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import { ProviderTypes } from "@src/@types/Providers";
+import configLoader from "@src/utils/Config";
+import {
+  CustomerInfoTrial,
+  SetupPageLicenceType,
+} from "@src/@types/InitialSetup";
+import SetupPageInputWrapper from "@src/components/modules/SetupModule/ui/SetupPageInputWrapper";
+import RadioInput from "@src/components/ui/RadioInput";
+import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
+import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import SetupPageTitle from "@src/components/modules/SetupModule/ui/SetupPageTitle";
+import Checkbox from "@src/components/ui/Checkbox";
+import { LEGAL_URLS } from "@src/constants";
+import OpenInNewIcon from "@src/components/ui/OpenInNewIcon";
+import transferItemIcon from "./resources/transferItemIcon";
 
-const Wrapper = styled.div``
-const TrialForm = styled.div``
+const Wrapper = styled.div``;
+const TrialForm = styled.div``;
 const AgreementForm = styled.div`
   margin-top: 24px;
   > div {
     margin-top: 8px;
   }
-`
+`;
 const RadioGroup = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 4px;
-`
+`;
 const RadioInputLabel = styled.div`
   display: flex;
-`
+`;
 const TransferItemIcon = styled.div`
-  ${ThemeProps.exactSize('16px')}
+  ${ThemeProps.exactSize("16px")}
   display: flex;
   align-items: center;
   margin-right: 4px;
-`
+`;
 const PlatformItemRenderer = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 const PlatformLogoBackground = styled.div<{ whiteBackground: boolean }>`
-  ${props => (props.whiteBackground ? css`background: white;` : '')}
+  ${props =>
+    props.whiteBackground
+      ? css`
+          background: white;
+        `
+      : ""}
   margin-left: -15px;
   margin-top: -7px;
   padding-top: 7px;
@@ -67,112 +75,137 @@ const PlatformLogoBackground = styled.div<{ whiteBackground: boolean }>`
   > div:first-child {
     transform: scale(0.6);
   }
-`
+`;
 const CheckboxWrapper = styled.div`
   display: flex;
-`
+`;
 const CheckboxLabel = styled.div`
   margin-left: 8px;
   cursor: pointer;
   display: inline-block;
-`
+`;
 const CheckboxLink = styled.a`
   display: inline-block;
   color: ${ThemePalette.primary};
   cursor: pointer;
   text-decoration: none;
-`
+`;
 const OpenInNewIconWrapper = styled.div`
-  ${ThemeProps.exactSize('16px')}
+  ${ThemeProps.exactSize("16px")}
   display: inline-block;
   position: relative;
   top: 9px;
   margin-top: -12px;
   transform: scale(0.6);
-`
+`;
 
-const SOURCE_PLATFORMS: ProviderTypes[] = ['aws', 'openstack', 'vmware_vsphere', 'azure', 'hyper-v', 'oci', 'oracle_vm']
-const DESTINATION_PLATFORMS: ProviderTypes[] = ['aws', 'openstack', 'vmware_vsphere', 'azure', 'scvmm', 'oci', 'opc', 'oracle_vm']
+const SOURCE_PLATFORMS: ProviderTypes[] = [
+  "aws",
+  "openstack",
+  "vmware_vsphere",
+  "azure",
+  "hyper-v",
+  "oci",
+  "oracle_vm",
+];
+const DESTINATION_PLATFORMS: ProviderTypes[] = [
+  "aws",
+  "openstack",
+  "vmware_vsphere",
+  "azure",
+  "scvmm",
+  "oci",
+  "opc",
+  "oracle_vm",
+];
 
-type PlatformDropdownItemType = { value: ProviderTypes | null, label: string }
+type PlatformDropdownItemType = { value: ProviderTypes | null; label: string };
 
 const preparePlatformItems = (providers: ProviderTypes[]) => {
   const mappedItems = providers.map(provider => ({
     value: provider,
     label: configLoader.config.providerNames[provider],
-  }))
-  const sortPriority = configLoader.config.providerSortPriority
+  }));
+  const sortPriority = configLoader.config.providerSortPriority;
   mappedItems.sort((a, b) => {
     if (sortPriority[a.value] && sortPriority[b.value]) {
-      return (sortPriority[a.value] - sortPriority[b.value]) || a.value.localeCompare(b.value)
+      return (
+        sortPriority[a.value] - sortPriority[b.value] ||
+        a.value.localeCompare(b.value)
+      );
     }
     if (sortPriority[a.value]) {
-      return -1
+      return -1;
     }
     if (sortPriority[b.value]) {
-      return 1
+      return 1;
     }
-    return a.value.localeCompare(b.value)
-  })
-  const mappedItemsNullabled = mappedItems as PlatformDropdownItemType[]
-  mappedItemsNullabled.unshift({ value: null, label: 'Choose Platform' })
-  return mappedItemsNullabled
-}
-const getPlatformLabelForValue = (value: ProviderTypes | null) => (value ? configLoader.config.providerNames[value] : 'Choose Platform')
+    return a.value.localeCompare(b.value);
+  });
+  const mappedItemsNullabled = mappedItems as PlatformDropdownItemType[];
+  mappedItemsNullabled.unshift({ value: null, label: "Choose Platform" });
+  return mappedItemsNullabled;
+};
+const getPlatformLabelForValue = (value: ProviderTypes | null) =>
+  value ? configLoader.config.providerNames[value] : "Choose Platform";
 
 type State = {
-  privacyAgreement: boolean
-  eulaAgreement: boolean
-}
+  privacyAgreement: boolean;
+  eulaAgreement: boolean;
+};
 
 type Props = {
-  licenceType: SetupPageLicenceType
-  customerInfoTrial: CustomerInfoTrial
-  onCustomerInfoChange: (field: keyof CustomerInfoTrial, value: any) => void
-  onLegalChange: (accepted: boolean) => void
-}
+  licenceType: SetupPageLicenceType;
+  customerInfoTrial: CustomerInfoTrial;
+  onCustomerInfoChange: (field: keyof CustomerInfoTrial, value: any) => void;
+  onLegalChange: (accepted: boolean) => void;
+};
 
 @observer
 class SetupPageLegal extends React.Component<Props, State> {
   state = {
     privacyAgreement: false,
     eulaAgreement: false,
-  } as State
+  } as State;
 
-  _sourcePlatformItems: PlatformDropdownItemType[] = []
+  _sourcePlatformItems: PlatformDropdownItemType[] = [];
 
-  _destinationPlatformItems: PlatformDropdownItemType[] = []
+  _destinationPlatformItems: PlatformDropdownItemType[] = [];
 
   get sourcePlatformItems() {
     if (this._sourcePlatformItems.length) {
-      return this._sourcePlatformItems
+      return this._sourcePlatformItems;
     }
-    this._sourcePlatformItems = preparePlatformItems(SOURCE_PLATFORMS)
-    return this._sourcePlatformItems
+    this._sourcePlatformItems = preparePlatformItems(SOURCE_PLATFORMS);
+    return this._sourcePlatformItems;
   }
 
   get destinationPlatformItems() {
     if (this._destinationPlatformItems.length) {
-      return this._destinationPlatformItems
+      return this._destinationPlatformItems;
     }
-    this._destinationPlatformItems = preparePlatformItems(DESTINATION_PLATFORMS)
-    return this._destinationPlatformItems
+    this._destinationPlatformItems = preparePlatformItems(
+      DESTINATION_PLATFORMS
+    );
+    return this._destinationPlatformItems;
   }
 
   handleLegalChange() {
-    this.props.onLegalChange(this.state.privacyAgreement && this.state.eulaAgreement)
+    this.props.onLegalChange(
+      this.state.privacyAgreement && this.state.eulaAgreement
+    );
   }
 
   handlePrivacyChange(privacyAgreement: boolean) {
     this.setState({ privacyAgreement }, () => {
-      this.handleLegalChange()
-    })
+      this.handleLegalChange();
+    });
   }
 
   handleEulaChange(eulaAgreement: boolean) {
     this.setState({ eulaAgreement }, () => {
-      this.handleLegalChange()
-    })
+      this.handleLegalChange();
+    });
   }
 
   renderTrialForm() {
@@ -181,43 +214,49 @@ class SetupPageLegal extends React.Component<Props, State> {
         <SetupPageInputWrapper label="Interested in">
           <RadioGroup>
             <RadioInput
-              label={(
+              label={
                 <RadioInputLabel>
                   <TransferItemIcon
-                    dangerouslySetInnerHTML={{ __html: transferItemIcon(ThemePalette.primary) }}
+                    dangerouslySetInnerHTML={{
+                      __html: transferItemIcon(ThemePalette.primary),
+                    }}
                   />
                   Migrations
                 </RadioInputLabel>
-              )}
-              checked={this.props.customerInfoTrial.interestedIn === 'migrations'}
+              }
+              checked={
+                this.props.customerInfoTrial.interestedIn === "migrations"
+              }
               onChange={checked => {
                 if (checked) {
-                  this.props.onCustomerInfoChange('interestedIn', 'migrations')
+                  this.props.onCustomerInfoChange("interestedIn", "migrations");
                 }
               }}
             />
             <RadioInput
-              label={(
+              label={
                 <RadioInputLabel>
                   <TransferItemIcon
-                    dangerouslySetInnerHTML={{ __html: transferItemIcon(ThemePalette.alert) }}
+                    dangerouslySetInnerHTML={{
+                      __html: transferItemIcon(ThemePalette.alert),
+                    }}
                   />
                   Replicas
                 </RadioInputLabel>
-              )}
-              checked={this.props.customerInfoTrial.interestedIn === 'replicas'}
+              }
+              checked={this.props.customerInfoTrial.interestedIn === "replicas"}
               onChange={checked => {
                 if (checked) {
-                  this.props.onCustomerInfoChange('interestedIn', 'replicas')
+                  this.props.onCustomerInfoChange("interestedIn", "replicas");
                 }
               }}
             />
             <RadioInput
               label="Both"
-              checked={this.props.customerInfoTrial.interestedIn === 'both'}
+              checked={this.props.customerInfoTrial.interestedIn === "both"}
               onChange={checked => {
                 if (checked) {
-                  this.props.onCustomerInfoChange('interestedIn', 'both')
+                  this.props.onCustomerInfoChange("interestedIn", "both");
                 }
               }}
             />
@@ -231,19 +270,20 @@ class SetupPageLegal extends React.Component<Props, State> {
             labelRenderer={(item: PlatformDropdownItemType, idx: number) => (
               <PlatformItemRenderer>
                 <PlatformLogoBackground whiteBackground={idx > 0}>
-                  <EndpointLogos
-                    endpoint={item.value}
-                    height={32}
-                  />
+                  <EndpointLogos endpoint={item.value} height={32} />
                 </PlatformLogoBackground>
                 {item.label}
               </PlatformItemRenderer>
             )}
             selectedItem={{
               value: this.props.customerInfoTrial.sourcePlatform,
-              label: getPlatformLabelForValue(this.props.customerInfoTrial.sourcePlatform),
+              label: getPlatformLabelForValue(
+                this.props.customerInfoTrial.sourcePlatform
+              ),
             }}
-            onChange={item => { this.props.onCustomerInfoChange('sourcePlatform', item.value) }}
+            onChange={item => {
+              this.props.onCustomerInfoChange("sourcePlatform", item.value);
+            }}
           />
         </SetupPageInputWrapper>
         <SetupPageInputWrapper label="Destination Platform">
@@ -254,69 +294,106 @@ class SetupPageLegal extends React.Component<Props, State> {
             labelRenderer={(item: PlatformDropdownItemType, idx: number) => (
               <PlatformItemRenderer>
                 <PlatformLogoBackground whiteBackground={idx > 0}>
-                  <EndpointLogos
-                    endpoint={item.value}
-                    height={32}
-                  />
+                  <EndpointLogos endpoint={item.value} height={32} />
                 </PlatformLogoBackground>
                 {item.label}
               </PlatformItemRenderer>
             )}
             selectedItem={{
               value: this.props.customerInfoTrial.destinationPlatform,
-              label: getPlatformLabelForValue(this.props.customerInfoTrial.destinationPlatform),
+              label: getPlatformLabelForValue(
+                this.props.customerInfoTrial.destinationPlatform
+              ),
             }}
-            onChange={item => { this.props.onCustomerInfoChange('destinationPlatform', item.value) }}
+            onChange={item => {
+              this.props.onCustomerInfoChange(
+                "destinationPlatform",
+                item.value
+              );
+            }}
           />
         </SetupPageInputWrapper>
       </TrialForm>
-    )
+    );
   }
 
   render() {
     return (
       <Wrapper>
-        <SetupPageTitle title={this.props.licenceType === 'trial' ? 'Coriolis® Trial License' : 'Coriolis® Agreement'} />
-        {this.props.licenceType === 'trial' ? this.renderTrialForm() : null}
+        <SetupPageTitle
+          title={
+            this.props.licenceType === "trial"
+              ? "Coriolis® Trial License"
+              : "Coriolis® Agreement"
+          }
+        />
+        {this.props.licenceType === "trial" ? this.renderTrialForm() : null}
         <AgreementForm>
           <CheckboxWrapper>
             <Checkbox
               checked={this.state.privacyAgreement}
-              onChange={privacyAgreement => { this.handlePrivacyChange(privacyAgreement) }}
+              onChange={privacyAgreement => {
+                this.handlePrivacyChange(privacyAgreement);
+              }}
             />
-            <CheckboxLabel onClick={() => { this.handlePrivacyChange(!this.state.privacyAgreement) }}>
-              By submitting I agree to the usage of my data according to the&nbsp;
+            <CheckboxLabel
+              onClick={() => {
+                this.handlePrivacyChange(!this.state.privacyAgreement);
+              }}
+            >
+              By submitting I agree to the usage of my data according to
+              the&nbsp;
               <CheckboxLink
                 href={LEGAL_URLS.privacy}
                 target="_blank"
-                onClick={e => { e.stopPropagation() }}
+                onClick={e => {
+                  e.stopPropagation();
+                }}
               >
                 Privacy Policy
-                <OpenInNewIconWrapper dangerouslySetInnerHTML={{ __html: OpenInNewIcon(ThemePalette.primary) }} />
-              </CheckboxLink>.
+                <OpenInNewIconWrapper
+                  dangerouslySetInnerHTML={{
+                    __html: OpenInNewIcon(ThemePalette.primary),
+                  }}
+                />
+              </CheckboxLink>
+              .
             </CheckboxLabel>
           </CheckboxWrapper>
           <CheckboxWrapper>
             <Checkbox
               checked={this.state.eulaAgreement}
-              onChange={eulaAgreement => { this.handleEulaChange(eulaAgreement) }}
+              onChange={eulaAgreement => {
+                this.handleEulaChange(eulaAgreement);
+              }}
             />
-            <CheckboxLabel onClick={() => { this.handleEulaChange(!this.state.eulaAgreement) }}>
+            <CheckboxLabel
+              onClick={() => {
+                this.handleEulaChange(!this.state.eulaAgreement);
+              }}
+            >
               By submitting I agree to the&nbsp;
               <CheckboxLink
                 href={LEGAL_URLS.eula}
                 target="_blank"
-                onClick={e => { e.stopPropagation() }}
+                onClick={e => {
+                  e.stopPropagation();
+                }}
               >
                 Coriolis® EULA
-                <OpenInNewIconWrapper dangerouslySetInnerHTML={{ __html: OpenInNewIcon(ThemePalette.primary) }} />
-              </CheckboxLink>.
+                <OpenInNewIconWrapper
+                  dangerouslySetInnerHTML={{
+                    __html: OpenInNewIcon(ThemePalette.primary),
+                  }}
+                />
+              </CheckboxLink>
+              .
             </CheckboxLabel>
           </CheckboxWrapper>
         </AgreementForm>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SetupPageLegal
+export default SetupPageLegal;

@@ -2,6 +2,5 @@
   "name": "WizardPageContent",
   "version": "0.0.0",
   "private": true,
-  "main":"./WizardPageContent.tsx"
+  "main": "./WizardPageContent.tsx"
 }
-

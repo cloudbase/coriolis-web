@@ -2,6 +2,5 @@
   "name": "ReplicasPage",
   "version": "0.0.0",
   "private": true,
-  "main":"./ReplicasPage.tsx"
+  "main": "./ReplicasPage.tsx"
 }
-

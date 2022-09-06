@@ -12,35 +12,38 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
-import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import Button from '@src/components/ui/Button'
+import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Button from "@src/components/ui/Button";
 
-import type { Endpoint } from '@src/@types/Endpoint'
-import { ProviderTypes } from '@src/@types/Providers'
+import type { Endpoint } from "@src/@types/Endpoint";
+import { ProviderTypes } from "@src/@types/Providers";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  ${props => (props.isCentered ? css`
-    justify-content: center;
-    align-items: center;
-  ` : '')}
-`
+  ${props =>
+    props.isCentered
+      ? css`
+          justify-content: center;
+          align-items: center;
+        `
+      : ""}
+`;
 const Item = styled.div<any>`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 const EndpointLogosStyled = styled(EndpointLogos)`
   margin-bottom: 32px;
-`
+`;
 const Row = styled.div<any>`
   display: flex;
   flex-shrink: 0;
@@ -48,52 +51,55 @@ const Row = styled.div<any>`
   &:last-child {
     margin-bottom: 0;
   }
-  ${props => (props.isIncomplete ? css`
-    justify-content: center;
-    ${Item} {
-      margin-right: 112px;
-      &:last-child {
-        margin-right: 0px;
-      }
-    }
-  ` : css`
-    justify-content: space-between;
-  `)}
-`
+  ${props =>
+    props.isIncomplete
+      ? css`
+          justify-content: center;
+          ${Item} {
+            margin-right: 112px;
+            &:last-child {
+              margin-right: 0px;
+            }
+          }
+        `
+      : css`
+          justify-content: space-between;
+        `}
+`;
 
 type Props = {
-  providers: ProviderTypes[],
-  endpoints: Endpoint[],
-  loading: boolean,
-  selectedEndpoint?: Endpoint | null,
-  otherEndpoint?: Endpoint | null,
-  onChange: (endpoint: Endpoint) => void,
-  onAddEndpoint: (provider: ProviderTypes) => void,
-}
+  providers: ProviderTypes[];
+  endpoints: Endpoint[];
+  loading: boolean;
+  selectedEndpoint?: Endpoint | null;
+  otherEndpoint?: Endpoint | null;
+  onChange: (endpoint: Endpoint) => void;
+  onAddEndpoint: (provider: ProviderTypes) => void;
+};
 @observer
 class WizardEndpointList extends React.Component<Props> {
   handleOnChange(selectedItem: Endpoint | null, provider: ProviderTypes) {
-    if (selectedItem && selectedItem.id !== 'addNew') {
-      this.props.onChange(selectedItem)
-      return
+    if (selectedItem && selectedItem.id !== "addNew") {
+      this.props.onChange(selectedItem);
+      return;
     }
 
-    this.props.onAddEndpoint(provider)
+    this.props.onAddEndpoint(provider);
   }
 
   renderProvider(provider: ProviderTypes) {
-    const otherEndpoint = this.props.otherEndpoint
-    let items: any = this.props.endpoints
-      .filter(e => e.type === provider && (!otherEndpoint || otherEndpoint.id !== e.id))
-    const selectedItem = this.props.selectedEndpoint
-      && this.props.selectedEndpoint.type === provider
-      ? this.props.selectedEndpoint : null
-    let actionInput = null
+    const otherEndpoint = this.props.otherEndpoint;
+    let items: any = this.props.endpoints.filter(
+      e => e.type === provider && (!otherEndpoint || otherEndpoint.id !== e.id)
+    );
+    const selectedItem =
+      this.props.selectedEndpoint &&
+      this.props.selectedEndpoint.type === provider
+        ? this.props.selectedEndpoint
+        : null;
+    let actionInput = null;
     if (items.length > 0) {
-      items = [
-        ...items,
-        { id: 'addNew', name: 'Add new ...', provider },
-      ]
+      items = [...items, { id: "addNew", name: "Add new ...", provider }];
 
       actionInput = (
         <Dropdown
@@ -105,24 +111,27 @@ class WizardEndpointList extends React.Component<Props> {
           centered
           selectedItem={selectedItem}
           onChange={item => {
-            if (item.id === 'addNew') {
-              this.handleOnChange(null, item.provider)
+            if (item.id === "addNew") {
+              this.handleOnChange(null, item.provider);
             } else {
-              this.handleOnChange(item, item.provider)
+              this.handleOnChange(item, item.provider);
             }
           }}
         />
-      )
+      );
     } else {
       actionInput = (
         <Button
           secondary
           hollow
           hoverPrimary
-          onClick={() => { this.props.onAddEndpoint(provider) }}
-        >Add
+          onClick={() => {
+            this.props.onAddEndpoint(provider);
+          }}
+        >
+          Add
         </Button>
-      )
+      );
     }
 
     return (
@@ -134,40 +143,41 @@ class WizardEndpointList extends React.Component<Props> {
         />
         {actionInput}
       </Item>
-    )
+    );
   }
 
   renderProviders() {
     if (this.props.loading) {
-      return null
+      return null;
     }
 
-    const itemsPerRow = 3
-    let lastItems: JSX.Element[] = []
-    const rows: JSX.Element[] = []
+    const itemsPerRow = 3;
+    let lastItems: JSX.Element[] = [];
+    const rows: JSX.Element[] = [];
     this.props.providers.forEach((provider, i) => {
-      lastItems.push(this.renderProvider(provider))
-      const isIncomplete = i === this.props.providers.length - 1 && lastItems.length < itemsPerRow
+      lastItems.push(this.renderProvider(provider));
+      const isIncomplete =
+        i === this.props.providers.length - 1 && lastItems.length < itemsPerRow;
       if (i % itemsPerRow === itemsPerRow - 1 || isIncomplete) {
-        rows.push((
+        rows.push(
           // eslint-disable-next-line react/no-array-index-key
           <Row key={i} isIncomplete={isIncomplete}>
             {lastItems}
           </Row>
-        ))
-        lastItems = []
+        );
+        lastItems = [];
       }
-    })
+    });
 
-    return rows
+    return rows;
   }
 
   renderLoading() {
     if (!this.props.loading) {
-      return null
+      return null;
     }
 
-    return <StatusImage style={{ marginTop: '-48px' }} loading />
+    return <StatusImage style={{ marginTop: "-48px" }} loading />;
   }
 
   render() {
@@ -176,8 +186,8 @@ class WizardEndpointList extends React.Component<Props> {
         {this.renderLoading()}
         {this.renderProviders()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default WizardEndpointList
+export default WizardEndpointList;

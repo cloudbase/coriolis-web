@@ -12,22 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import CopyButton from './CopyButton'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import CopyButton from "./CopyButton";
 
-describe('CopyButton', () => {
-  it('renders with no opacity', () => {
-    render(<CopyButton />)
-    expect(window.getComputedStyle(TestUtils.select('CopyButton__Wrapper')!).opacity).toBe('0')
-  })
+describe("CopyButton", () => {
+  it("renders with no opacity", () => {
+    render(<CopyButton />);
+    expect(
+      window.getComputedStyle(TestUtils.select("CopyButton__Wrapper")!).opacity
+    ).toBe("0");
+  });
 
-  it('dispatches click', () => {
-    const onClick = jest.fn()
-    render(<CopyButton onClick={onClick} />)
-    const button = TestUtils.select('CopyButton__Wrapper') as HTMLElement
-    button.click()
-    expect(onClick).toHaveBeenCalled()
-  })
-})
+  it("dispatches click", () => {
+    const onClick = jest.fn();
+    render(<CopyButton onClick={onClick} />);
+    const button = TestUtils.select("CopyButton__Wrapper") as HTMLElement;
+    button.click();
+    expect(onClick).toHaveBeenCalled();
+  });
+});

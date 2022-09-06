@@ -12,79 +12,82 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
-import PasswordValue from '@src/components/ui/PasswordValue'
-import Button from '@src/components/ui/Button'
-import CopyValue from '@src/components/ui/CopyValue'
-import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import PasswordValue from "@src/components/ui/PasswordValue";
+import Button from "@src/components/ui/Button";
+import CopyValue from "@src/components/ui/CopyValue";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
-import type { Endpoint } from '@src/@types/Endpoint'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import DateUtils from '@src/utils/DateUtils'
-import LabelDictionary from '@src/utils/LabelDictionary'
-import configLoader from '@src/utils/Config'
-import { Region } from '@src/@types/Region'
+import type { Endpoint } from "@src/@types/Endpoint";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import DateUtils from "@src/utils/DateUtils";
+import LabelDictionary from "@src/utils/LabelDictionary";
+import configLoader from "@src/utils/Config";
+import { Region } from "@src/@types/Region";
 import {
-  getTransferItemTitle, MigrationItem, ReplicaItem, TransferItem,
-} from '@src/@types/MainItem'
-import { Field as FieldType } from '@src/@types/Field'
-import DomUtils from '@src/utils/DomUtils'
+  getTransferItemTitle,
+  MigrationItem,
+  ReplicaItem,
+  TransferItem,
+} from "@src/@types/MainItem";
+import { Field as FieldType } from "@src/@types/Field";
+import DomUtils from "@src/utils/DomUtils";
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
   padding-left: 126px;
-`
+`;
 const Info = styled.div<any>`
   display: flex;
   flex-wrap: wrap;
   margin-top: 32px;
   margin-left: -32px;
-`
+`;
 const Field = styled.div<any>`
-  ${ThemeProps.exactWidth('calc(50% - 32px)')}
+  ${ThemeProps.exactWidth("calc(50% - 32px)")}
   margin-bottom: 32px;
   margin-left: 32px;
-`
+`;
 const Label = styled.div<any>`
   font-size: 10px;
   font-weight: ${ThemeProps.fontWeights.medium};
   color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 3px;
-`
-const Value = styled.div<any>``
+`;
+const Value = styled.div<any>``;
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
   margin-top: 64px;
-`
-const MainButtons = styled.div<any>``
-const DeleteButton = styled.div<any>``
+`;
+const MainButtons = styled.div<any>``;
+const DeleteButton = styled.div<any>``;
 const LoadingWrapper = styled.div<any>`
   display: flex;
   justify-content: center;
   width: 100%;
   margin: 32px 0 64px 0;
-`
+`;
 const LinkStyled = styled(Link)`
   color: ${ThemePalette.primary};
   text-decoration: none;
   cursor: pointer;
-`
+`;
 const TransferItems = styled.div`
   max-height: 200px;
   overflow: auto;
-`
+`;
 const TransferItemWrapper = styled.div`
   margin-bottom: 4px;
-`
+`;
 
 const DownloadLink = styled.div`
   display: inline-block;
@@ -93,87 +96,94 @@ const DownloadLink = styled.div`
   :hover {
     text-decoration: underline;
   }
-`
+`;
 
 type Props = {
-  item: Endpoint | null,
-  regions: Region[],
-  connectionInfo: Endpoint['connection_info'] | null,
-  loading: boolean,
-  usage: { migrations: MigrationItem[], replicas: ReplicaItem[] },
-  connectionInfoSchema: FieldType[],
-  onDeleteClick: () => void,
-  onValidateClick: () => void,
-}
+  item: Endpoint | null;
+  regions: Region[];
+  connectionInfo: Endpoint["connection_info"] | null;
+  loading: boolean;
+  usage: { migrations: MigrationItem[]; replicas: ReplicaItem[] };
+  connectionInfoSchema: FieldType[];
+  onDeleteClick: () => void;
+  onValidateClick: () => void;
+};
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
-  renderedKeys!: { [prop: string]: boolean }
+  renderedKeys!: { [prop: string]: boolean };
 
   renderDownloadValue(value: string, fieldName: string) {
-    const endpoint = this.props.item
+    const endpoint = this.props.item;
     if (!endpoint) {
-      return null
+      return null;
     }
     return (
-      <DownloadLink onClick={() => {
-        DomUtils.download(value, fieldName)
-      }}
-      >Download
+      <DownloadLink
+        onClick={() => {
+          DomUtils.download(value, fieldName);
+        }}
+      >
+        Download
       </DownloadLink>
-    )
+    );
   }
 
   renderConnectionInfoLoading() {
     if (!this.props.loading) {
-      return null
+      return null;
     }
 
     return (
       <LoadingWrapper>
         <StatusImage loading />
       </LoadingWrapper>
-    )
+    );
   }
 
   renderConnectionInfo(connectionInfo: any): React.ReactNode {
     if (!connectionInfo) {
-      return null
+      return null;
     }
 
     return Object.keys(connectionInfo).map(key => {
-      let value = connectionInfo[key]
+      let value = connectionInfo[key];
 
-      if (key === 'secret_ref') {
-        return null
+      if (key === "secret_ref") {
+        return null;
       }
 
-      if (typeof connectionInfo[key] === 'object') {
-        return this.renderConnectionInfo(connectionInfo[key])
+      if (typeof connectionInfo[key] === "object") {
+        return this.renderConnectionInfo(connectionInfo[key]);
       }
 
       if (this.renderedKeys[key]) {
-        return null
+        return null;
       }
 
-      this.renderedKeys[key] = true
+      this.renderedKeys[key] = true;
 
       if (value === true) {
-        value = 'Yes'
+        value = "Yes";
       } else if (value === false) {
-        value = 'No'
+        value = "No";
       } else if (!value) {
-        value = '-'
+        value = "-";
       }
 
-      let valueElement = null
-      const schemaField = this.props.connectionInfoSchema.find(f => f.name === key)
+      let valueElement = null;
+      const schemaField = this.props.connectionInfoSchema.find(
+        f => f.name === key
+      );
 
-      if (configLoader.config.passwordFields.find(fn => fn === key) || key.indexOf('password') > -1) {
-        valueElement = <PasswordValue value={value} />
+      if (
+        configLoader.config.passwordFields.find(fn => fn === key) ||
+        key.indexOf("password") > -1
+      ) {
+        valueElement = <PasswordValue value={value} />;
       } else if (schemaField?.useFile) {
-        valueElement = this.renderDownloadValue(value, key)
+        valueElement = this.renderDownloadValue(value, key);
       } else {
-        valueElement = this.renderValue(value)
+        valueElement = this.renderValue(value);
       }
 
       return (
@@ -181,60 +191,70 @@ class EndpointDetailsContent extends React.Component<Props> {
           <Label>{LabelDictionary.get(key)}</Label>
           {valueElement}
         </Field>
-      )
-    })
+      );
+    });
   }
 
   renderButtons() {
     return (
       <Buttons>
         <MainButtons>
-          <Button onClick={this.props.onValidateClick}>Validate Endpoint</Button>
+          <Button onClick={this.props.onValidateClick}>
+            Validate Endpoint
+          </Button>
         </MainButtons>
         <DeleteButton>
-          <Button hollow alert onClick={this.props.onDeleteClick}>Delete Endpoint</Button>
+          <Button hollow alert onClick={this.props.onDeleteClick}>
+            Delete Endpoint
+          </Button>
         </DeleteButton>
       </Buttons>
-    )
+    );
   }
 
   renderValue(value: string) {
-    return <CopyValue value={value} maxWidth="90%" />
+    return <CopyValue value={value} maxWidth="90%" />;
   }
 
   renderRegions() {
     return (
       <span>
-        {this.props.item?.mapped_regions.map(regionId => this.props.regions.find(r => r.id === regionId)?.name).join(', ') || '-'}
+        {this.props.item?.mapped_regions
+          .map(
+            regionId => this.props.regions.find(r => r.id === regionId)?.name
+          )
+          .join(", ") || "-"}
       </span>
-    )
+    );
   }
 
   renderUsage(items: TransferItem[]) {
     return (
       <TransferItems>
         {items.map(item => (
-          <TransferItemWrapper>
-            <LinkStyled
-              key={item.id}
-              to={`/${item.type}s/${item.id}`}
-            >
+          <TransferItemWrapper key={item.id}>
+            <LinkStyled to={`/${item.type}s/${item.id}`}>
               {getTransferItemTitle(item)}
             </LinkStyled>
           </TransferItemWrapper>
         ))}
       </TransferItems>
-    )
+    );
   }
 
   render() {
-    this.renderedKeys = {}
+    this.renderedKeys = {};
     const {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      type, name, description, created_at, id,
-    } = this.props.item || {}
-    const usage: TransferItem[] = this.props.usage.replicas
-      .concat(this.props.usage.migrations as any[])
+      type,
+      name,
+      description,
+      created_at,
+      id,
+    } = this.props.item || {};
+    const usage: TransferItem[] = this.props.usage.replicas.concat(
+      this.props.usage.migrations as any[]
+    );
 
     return (
       <Wrapper>
@@ -242,15 +262,19 @@ class EndpointDetailsContent extends React.Component<Props> {
         <Info>
           <Field>
             <Label>Id</Label>
-            {this.renderValue(id || '')}
+            {this.renderValue(id || "")}
           </Field>
           <Field>
             <Label>Name</Label>
-            {this.renderValue(name || '')}
+            {this.renderValue(name || "")}
           </Field>
           <Field>
             <Label>Type</Label>
-            {this.renderValue(this.props.item ? configLoader.config.providerNames[this.props.item.type] : '')}
+            {this.renderValue(
+              this.props.item
+                ? configLoader.config.providerNames[this.props.item.type]
+                : ""
+            )}
           </Field>
           <Field>
             <Label>Coriolis Regions</Label>
@@ -258,23 +282,31 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Description</Label>
-            {description ? <CopyMultilineValue value={description} /> : <Value>-</Value>}
+            {description ? (
+              <CopyMultilineValue value={description} />
+            ) : (
+              <Value>-</Value>
+            )}
           </Field>
           <Field>
             <Label>Created</Label>
-            {this.renderValue(DateUtils.getLocalTime(created_at).format('DD/MM/YYYY HH:mm'))}
+            {this.renderValue(
+              DateUtils.getLocalTime(created_at).format("DD/MM/YYYY HH:mm")
+            )}
           </Field>
           <Field>
             <Label>Used in replicas/migrations ({usage.length})</Label>
             {usage.length > 0 ? this.renderUsage(usage) : <Value>-</Value>}
           </Field>
-          {!this.props.connectionInfo ? this.renderConnectionInfoLoading() : null}
+          {!this.props.connectionInfo
+            ? this.renderConnectionInfoLoading()
+            : null}
           {this.renderConnectionInfo(this.props.connectionInfo)}
         </Info>
         {this.renderButtons()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default EndpointDetailsContent
+export default EndpointDetailsContent;

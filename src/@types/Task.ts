@@ -13,21 +13,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 export type ProgressUpdate = {
-  index: number,
-  message: string,
-  created_at: Date,
-  total_steps: number | null
-  current_step: number | null
-}
+  index: number;
+  message: string;
+  created_at: Date;
+  total_steps: number | null;
+  current_step: number | null;
+};
 
 export type Task = {
-  id: string,
-  status: string,
-  created_at: Date,
-  updated_at: Date,
-  progress_updates: ProgressUpdate[],
-  task_type: string,
-  instance: string,
-  depends_on: string[],
-  exception_details: string,
-}
+  id: string;
+  status: string;
+  created_at: Date;
+  updated_at: Date;
+  progress_updates: ProgressUpdate[];
+  task_type: string;
+  instance: string;
+  depends_on: string[];
+  exception_details: string;
+};

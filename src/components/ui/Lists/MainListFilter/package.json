@@ -2,6 +2,5 @@
   "name": "MainListFilter",
   "version": "0.0.0",
   "private": true,
-  "main":"./MainListFilter.tsx"
+  "main": "./MainListFilter.tsx"
 }
-

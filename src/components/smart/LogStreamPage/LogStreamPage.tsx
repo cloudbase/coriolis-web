@@ -12,100 +12,100 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import StreamText from '@src/components/smart/LogsPage/StreamText'
+import StreamText from "@src/components/smart/LogsPage/StreamText";
 
-import logStore from '@src/stores/LogStore'
+import logStore from "@src/stores/LogStore";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   min-height: 0;
   padding: 16px;
-`
+`;
 
 type State = {
-  logName: string,
-  severityLevel: number,
-  isStreaming: boolean,
-}
+  logName: string;
+  severityLevel: number;
+  isStreaming: boolean;
+};
 @observer
-class LogStreamPage extends React.Component<{}, State> {
+class LogStreamPage extends React.Component<Record<string, never>, State> {
   state: State = {
-    logName: 'All Logs',
+    logName: "All Logs",
     severityLevel: 6,
     isStreaming: true,
-  }
+  };
 
   UNSAFE_componentWillMount() {
-    let logName = 'All Logs'
-    let severityLevel = 6
+    let logName = "All Logs";
+    let severityLevel = 6;
 
-    const logNameExp = /logName=(.*?)(?:&|$)/
-    const severityExp = /severity=(.*?)(?:&|$)/
-    const logNameMatch = logNameExp.exec(window.location.search)
-    const severityMatch = severityExp.exec(window.location.search)
+    const logNameExp = /logName=(.*?)(?:&|$)/;
+    const severityExp = /severity=(.*?)(?:&|$)/;
+    const logNameMatch = logNameExp.exec(window.location.search);
+    const severityMatch = severityExp.exec(window.location.search);
 
     if (logNameMatch) {
-      logName = decodeURIComponent(logNameMatch[1])
+      logName = decodeURIComponent(logNameMatch[1]);
     }
     if (severityMatch) {
-      severityLevel = Number(severityMatch[1])
+      severityLevel = Number(severityMatch[1]);
     }
 
-    this.setState({ logName, severityLevel })
+    this.setState({ logName, severityLevel });
 
-    logStore.getLogs({ showLoading: logStore.logs.length === 0 })
-    logStore.startLiveFeed({ logName, severityLevel })
+    logStore.getLogs({ showLoading: logStore.logs.length === 0 });
+    logStore.startLiveFeed({ logName, severityLevel });
   }
 
   componentDidMount() {
-    document.title = 'Coriolis Logs Stream'
+    document.title = "Coriolis Logs Stream";
   }
 
   componentWillUnmount() {
-    logStore.stopLiveFeed()
-    logStore.clearLiveFeed()
+    logStore.stopLiveFeed();
+    logStore.clearLiveFeed();
   }
 
   handleClearClick() {
-    logStore.clearLiveFeed()
+    logStore.clearLiveFeed();
   }
 
   handleStopPlayClick() {
     if (this.state.isStreaming) {
-      logStore.stopLiveFeed()
+      logStore.stopLiveFeed();
     } else {
       logStore.startLiveFeed({
         logName: this.state.logName,
         severityLevel: this.state.severityLevel,
-      })
+      });
     }
 
     this.setState(prevState => ({
       isStreaming: !prevState.isStreaming,
-    }))
+    }));
   }
 
   handleLogNameChange(logName: string) {
-    this.setState({ logName })
-    logStore.stopLiveFeed()
+    this.setState({ logName });
+    logStore.stopLiveFeed();
     logStore.startLiveFeed({
       logName,
       severityLevel: this.state.severityLevel,
-    })
+    });
   }
 
   handleSeverityLevelChange(severityLevel: number) {
-    this.setState({ severityLevel })
-    logStore.stopLiveFeed()
+    this.setState({ severityLevel });
+    logStore.stopLiveFeed();
     logStore.startLiveFeed({
       logName: this.state.logName,
       severityLevel,
-    })
+    });
   }
 
   render() {
@@ -113,19 +113,27 @@ class LogStreamPage extends React.Component<{}, State> {
       <Wrapper>
         <StreamText
           logName={this.state.logName}
-          logs={[{ log_name: 'All Logs' }, ...logStore.logs]}
+          logs={[{ log_name: "All Logs" }, ...logStore.logs]}
           severityLevel={this.state.severityLevel}
           liveFeed={logStore.liveFeed}
-          onLogNameChange={logName => { this.handleLogNameChange(logName) }}
-          onSeverityLevelChange={level => { this.handleSeverityLevelChange(level) }}
+          onLogNameChange={logName => {
+            this.handleLogNameChange(logName);
+          }}
+          onSeverityLevelChange={level => {
+            this.handleSeverityLevelChange(level);
+          }}
           disableOpenInNewWindow
-          onClearClick={() => { this.handleClearClick() }}
-          stopPlayLabel={this.state.isStreaming ? 'Stop' : 'Start'}
-          onStopPlayClick={() => { this.handleStopPlayClick() }}
+          onClearClick={() => {
+            this.handleClearClick();
+          }}
+          stopPlayLabel={this.state.isStreaming ? "Stop" : "Start"}
+          onStopPlayClick={() => {
+            this.handleStopPlayClick();
+          }}
         />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default LogStreamPage
+export default LogStreamPage;

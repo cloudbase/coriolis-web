@@ -12,29 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import UserDropdown from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import UserDropdown from ".";
 
 const user: any = {
-  name: 'User name',
-  email: 'email@email.com',
-}
-storiesOf('UserDropdown', module)
-  .add('default', () => (
-    <div style={{ marginLeft: '100px' }}>
-      <UserDropdown
-        user={user}
-        onItemClick={() => {}}
-      />
+  name: "User name",
+  email: "email@email.com",
+};
+storiesOf("UserDropdown", module)
+  .add("default", () => (
+    <div style={{ marginLeft: "100px" }}>
+      <UserDropdown user={user} onItemClick={() => {}} />
     </div>
   ))
-  .add('white', () => (
-    <div style={{ marginLeft: '100px' }}>
-      <UserDropdown
-        white
-        user={user}
-        onItemClick={() => { }}
-      />
+  .add("white", () => (
+    <div style={{ marginLeft: "100px" }}>
+      <UserDropdown white user={user} onItemClick={() => {}} />
     </div>
-  ))
+  ));

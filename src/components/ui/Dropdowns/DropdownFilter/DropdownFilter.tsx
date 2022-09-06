@@ -12,23 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import autobind from 'autobind-decorator'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import autobind from "autobind-decorator";
 
-import SearchInput from '@src/components/ui/SearchInput'
+import SearchInput from "@src/components/ui/SearchInput";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
-import filterImage from './images/filter'
+import filterImage from "./images/filter";
 
-const border = '1px solid rgba(216, 219, 226, 0.4)'
+const border = "1px solid rgba(216, 219, 226, 0.4)";
 
 const Wrapper = styled.div<any>`
   position: relative;
   margin-top: -1px;
-`
+`;
 const Button = styled.div<any>`
   width: 16px;
   height: 16px;
@@ -36,7 +36,7 @@ const Button = styled.div<any>`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const List = styled.div<any>`
   position: absolute;
   top: 24px;
@@ -47,7 +47,7 @@ const List = styled.div<any>`
   border-radius: 4px;
   border: ${border};
   box-shadow: 0 0 4px 0 rgba(32, 34, 52, 0.13);
-`
+`;
 const Tip = styled.div<any>`
   position: absolute;
   top: -6px;
@@ -60,64 +60,70 @@ const Tip = styled.div<any>`
   border-bottom: 1px solid transparent;
   border-right: 1px solid transparent;
   transform: rotate(45deg);
-`
+`;
 const ListItems = styled.div<any>`
   width: 199px;
   height: 32px;
-`
+`;
 
 type Props = {
-  searchPlaceholder?: string,
-  searchValue?: string,
-  onSearchChange?: (value: string) => void,
-}
+  searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+};
 type State = {
-  showDropdownList: boolean
-}
+  showDropdownList: boolean;
+};
 @observer
 class DropdownFilter extends React.Component<Props, State> {
   static defaultProps = {
-    searchPlaceholder: 'Filter',
-  }
+    searchPlaceholder: "Filter",
+  };
 
   state: State = {
     showDropdownList: false,
-  }
+  };
 
-  itemMouseDown: boolean | undefined
+  itemMouseDown: boolean | undefined;
 
   componentDidMount() {
-    window.addEventListener('mousedown', this.handlePageClick, false)
+    window.addEventListener("mousedown", this.handlePageClick, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('mousedown', this.handlePageClick, false)
+    window.removeEventListener("mousedown", this.handlePageClick, false);
   }
 
   @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
-      this.setState({ showDropdownList: false })
+      this.setState({ showDropdownList: false });
     }
   }
 
   handleButtonClick() {
-    this.setState(prevState => ({ showDropdownList: !prevState.showDropdownList }))
+    this.setState(prevState => ({
+      showDropdownList: !prevState.showDropdownList,
+    }));
   }
 
   handleCloseClick() {
-    this.setState({ showDropdownList: false })
+    this.setState({ showDropdownList: false });
   }
 
   renderList() {
     if (!this.state.showDropdownList) {
-      return null
+      return null;
     }
 
     return (
       <List
-        onMouseDown={() => { this.itemMouseDown = true }}
-        onMouseUp={() => { this.itemMouseDown = false }}
+        onMouseDown={() => {
+          this.itemMouseDown = true;
+        }}
+        onMouseUp={() => {
+          this.itemMouseDown = false;
+        }}
       >
         <Tip />
         <ListItems>
@@ -130,25 +136,36 @@ class DropdownFilter extends React.Component<Props, State> {
             useFilterIcon
             focusOnMount
             disablePrimary
-            onCloseClick={() => { this.handleCloseClick() }}
+            onCloseClick={() => {
+              this.handleCloseClick();
+            }}
           />
         </ListItems>
       </List>
-    )
+    );
   }
 
   renderButton() {
     return (
       <Button
-        onMouseDown={() => { this.itemMouseDown = true }}
-        onMouseUp={() => { this.itemMouseDown = false }}
-        onClick={() => { this.handleButtonClick() }}
+        onMouseDown={() => {
+          this.itemMouseDown = true;
+        }}
+        onMouseUp={() => {
+          this.itemMouseDown = false;
+        }}
+        onClick={() => {
+          this.handleButtonClick();
+        }}
         dangerouslySetInnerHTML={{
-          __html:
-            filterImage(this.props.searchValue ? ThemePalette.primary : ThemePalette.grayscale[5]),
+          __html: filterImage(
+            this.props.searchValue
+              ? ThemePalette.primary
+              : ThemePalette.grayscale[5]
+          ),
         }}
       />
-    )
+    );
   }
 
   render() {
@@ -157,8 +174,8 @@ class DropdownFilter extends React.Component<Props, State> {
         {this.renderButton()}
         {this.renderList()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default DropdownFilter
+export default DropdownFilter;

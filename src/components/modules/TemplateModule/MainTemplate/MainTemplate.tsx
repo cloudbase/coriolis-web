@@ -12,17 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import styled from 'styled-components'
-import { ThemeProps } from '@src/components/Theme'
+import * as React from "react";
+import styled from "styled-components";
+import { ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   display: flex;
   height: 100%;
-`
+`;
 const Navigation = styled.div<any>`
   display: flex;
-`
+`;
 const Content = styled.div<any>`
   padding: 0 64px 0 64px;
   display: flex;
@@ -33,26 +33,26 @@ const Content = styled.div<any>`
   @media (max-width: ${ThemeProps.mobileMaxWidth}px) {
     padding: 0 32px 0 48px;
   }
-`
+`;
 const List = styled.div<any>`
   padding-bottom: 0;
-  margin-left: ${props => (props.noMargin ? 0 : '-32px')};
+  margin-left: ${props => (props.noMargin ? 0 : "-32px")};
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
-`
-const Header = styled.div<any>``
+`;
+const Header = styled.div<any>``;
 const Footer = styled.div<any>`
   flex-shrink: 0;
-`
+`;
 
 type Props = {
-  navigationComponent: React.ReactNode,
-  headerComponent: React.ReactNode,
-  listComponent: React.ReactNode,
-  listNoMargin?: boolean,
-}
+  navigationComponent: React.ReactNode;
+  headerComponent: React.ReactNode;
+  listComponent: React.ReactNode;
+  listNoMargin?: boolean;
+};
 const MainTemplate = (props: Props) => (
   <Wrapper>
     <Navigation>{props.navigationComponent}</Navigation>
@@ -62,6 +62,6 @@ const MainTemplate = (props: Props) => (
       <Footer />
     </Content>
   </Wrapper>
-)
+);
 
-export default MainTemplate
+export default MainTemplate;

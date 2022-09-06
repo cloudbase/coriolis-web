@@ -12,65 +12,69 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import moment from 'moment'
-import TW from '@src/utils/TestWrapper'
-import MainDetails from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import moment from "moment";
+import TW from "@src/utils/TestWrapper";
+import MainDetails from ".";
 
-const wrap = props => new TW(shallow(
+const wrap = props =>
+  new TW(shallow(<MainDetails {...props} />), "mainDetails");
 
-  <MainDetails {...props} />
-), 'mainDetails')
-
-let endpoints = [
-  { id: 'endpoint-1', name: 'Endpoint OPS', type: 'openstack' },
-  { id: 'endpoint-2', name: 'Endpoint AZURE', type: 'azure' },
-]
-let item = {
-  origin_endpoint_id: 'endpoint-1',
-  destination_endpoint_id: 'endpoint-2',
-  id: 'item-id',
+const endpoints = [
+  { id: "endpoint-1", name: "Endpoint OPS", type: "openstack" },
+  { id: "endpoint-2", name: "Endpoint AZURE", type: "azure" },
+];
+const item = {
+  origin_endpoint_id: "endpoint-1",
+  destination_endpoint_id: "endpoint-2",
+  id: "item-id",
   created_at: new Date(2017, 10, 24, 16, 15),
-  instances: ['instance_1'],
-  type: 'Replica',
-  notes: 'A description',
-}
-let instancesDetails = [
+  instances: ["instance_1"],
+  type: "Replica",
+  notes: "A description",
+};
+const instancesDetails = [
   {
-    instance_name: 'instance_1',
-    devices: { nics: [{ network_name: 'network_1' }] },
+    instance_name: "instance_1",
+    devices: { nics: [{ network_name: "network_1" }] },
   },
-]
+];
 
-describe('MainDetails Component', () => {
-  it('renders with endpoint missing', () => {
-    let wrapper = wrap({ item: {}, endpoints: [] })
-    expect(wrapper.findText('missing-source')).toBe('<StatusIcon />Endpoint is missing')
-    expect(wrapper.findText('missing-target')).toBe('<StatusIcon />Endpoint is missing')
-  })
+describe("MainDetails Component", () => {
+  it("renders with endpoint missing", () => {
+    const wrapper = wrap({ item: {}, endpoints: [] });
+    expect(wrapper.findText("missing-source")).toBe(
+      "<StatusIcon />Endpoint is missing"
+    );
+    expect(wrapper.findText("missing-target")).toBe(
+      "<StatusIcon />Endpoint is missing"
+    );
+  });
 
-  it('renders endpoint info', () => {
-    let wrapper = wrap({ item, endpoints, instancesDetails })
-    expect(wrapper.find('id').prop('value')).toBe('item-id')
-    const localDate = moment(item.created_at).add(-new Date().getTimezoneOffset(), 'minutes')
-    expect(wrapper.find('created').prop('value')).toBe(localDate.format('YYYY-MM-DD HH:mm:ss'))
+  it("renders endpoint info", () => {
+    const wrapper = wrap({ item, endpoints, instancesDetails });
+    expect(wrapper.find("id").prop("value")).toBe("item-id");
+    const localDate = moment(item.created_at).add(
+      -new Date().getTimezoneOffset(),
+      "minutes"
+    );
+    expect(wrapper.find("created").prop("value")).toBe(
+      localDate.format("YYYY-MM-DD HH:mm:ss")
+    );
     // expect(wrapper.find('name-source').shallow.dive().dive().text()).toBe('Endpoint OPS')
     // expect(wrapper.findText('name-target')).toBe('Endpoint AZURE')
-    expect(wrapper.find('description').prop('value')).toBe('A description')
-  })
+    expect(wrapper.find("description").prop("value")).toBe("A description");
+  });
 
-  it('renders endpoints logos', () => {
-    let wrapper = wrap({ item, endpoints, instancesDetails })
-    expect(wrapper.find('sourceLogo').prop('endpoint')).toBe('openstack')
-    expect(wrapper.find('targetLogo').prop('endpoint')).toBe('azure')
-  })
+  it("renders endpoints logos", () => {
+    const wrapper = wrap({ item, endpoints, instancesDetails });
+    expect(wrapper.find("sourceLogo").prop("endpoint")).toBe("openstack");
+    expect(wrapper.find("targetLogo").prop("endpoint")).toBe("azure");
+  });
 
-  it('renders loading', () => {
-    let wrapper = wrap({ item: {}, endpoints: [], loading: true })
-    expect(wrapper.find('loading').length).toBe(1)
-  })
-})
-
-
-
+  it("renders loading", () => {
+    const wrapper = wrap({ item: {}, endpoints: [], loading: true });
+    expect(wrapper.find("loading").length).toBe(1);
+  });
+});

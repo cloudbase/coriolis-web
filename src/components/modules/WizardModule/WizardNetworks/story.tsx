@@ -14,35 +14,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import WizardNetworks from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import WizardNetworks from ".";
 
 const networks: any = [
-  { name: 'network 1', value: 'n-1' },
-  { name: 'network 2', value: 'n-2' },
-]
+  { name: "network 1", value: "n-1" },
+  { name: "network 2", value: "n-2" },
+];
 
 const instancesDetails: any = [
   {
-    devices: { nics: [{ network_name: 'network 1', id: 'n-1' }] },
-    instance_name: 'Instance name 1',
+    devices: { nics: [{ network_name: "network 1", id: "n-1" }] },
+    instance_name: "Instance name 1",
   },
   {
-    devices: { nics: [{ network_name: 'network 2', id: 'n-2' }] },
-    instance_name: 'Instance name 2',
+    devices: { nics: [{ network_name: "network 2", id: "n-2" }] },
+    instance_name: "Instance name 2",
   },
-]
+];
 
 const selectedNetworks: any = [
   {
-    sourceNic: { id: 'n-2' },
-    targetNetwork: { name: 'network 1' },
+    sourceNic: { id: "n-2" },
+    targetNetwork: { name: "network 1" },
   },
-]
-const props: any = {}
-storiesOf('WizardNetworks', module)
-  .add('default', () => (
+];
+const props: any = {};
+storiesOf("WizardNetworks", module)
+  .add("default", () => (
     <WizardNetworks
       networks={networks}
       instancesDetails={instancesDetails}
@@ -50,7 +50,7 @@ storiesOf('WizardNetworks', module)
       {...props}
     />
   ))
-  .add('loading', () => (
+  .add("loading", () => (
     <WizardNetworks
       networks={networks}
       instancesDetails={instancesDetails}
@@ -59,11 +59,11 @@ storiesOf('WizardNetworks', module)
       loading
     />
   ))
-  .add('render no nics', () => (
+  .add("render no nics", () => (
     <WizardNetworks
       networks={networks}
       instancesDetails={[{ ...instancesDetails[0], devices: { nics: [] } }]}
       {...props}
       selectedNetworks={selectedNetworks}
     />
-  ))
+  ));

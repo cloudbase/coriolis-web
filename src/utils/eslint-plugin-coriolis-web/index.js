@@ -1,5 +1,6 @@
-'use strict';
+"use strict";
 
-const requireIndex = require('requireindex')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const requireIndex = require("requireindex");
 
-module.exports.rules = requireIndex(__dirname + '/rules')
+module.exports.rules = requireIndex(__dirname + "/rules");

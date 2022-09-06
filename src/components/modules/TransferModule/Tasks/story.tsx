@@ -12,73 +12,74 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import Tasks from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Tasks from ".";
 
 const items: any = [
   {
     progress_updates: [
-      { message: 'the task has a progress of 10%', created_at: new Date() },
+      { message: "the task has a progress of 10%", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'COMPLETED',
+    exception_details: "Exception details",
+    status: "COMPLETED",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-1',
-    task_type: 'Task name 1',
+    depends_on: ["depends on id"],
+    id: "task-1",
+    task_type: "Task name 1",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'CANCELED',
+    exception_details: "Exception details",
+    status: "CANCELED",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-2',
-    task_type: 'Task name 2',
+    depends_on: ["depends on id"],
+    id: "task-2",
+    task_type: "Task name 2",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'ERROR',
+    exception_details: "Exception details",
+    status: "ERROR",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-3',
-    task_type: 'Task name 3',
+    depends_on: ["depends on id"],
+    id: "task-3",
+    task_type: "Task name 3",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'RUNNING',
+    exception_details: "Exception details",
+    status: "RUNNING",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-4',
-    task_type: 'Task name 4',
+    depends_on: ["depends on id"],
+    id: "task-4",
+    task_type: "Task name 4",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'PENDING',
+    exception_details: "Exception details",
+    status: "PENDING",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-5',
-    task_type: 'Task name 5',
+    depends_on: ["depends on id"],
+    id: "task-5",
+    task_type: "Task name 5",
   },
-]
+];
 
-storiesOf('Tasks', module)
-  .add('default', () => (
-    <div style={{ width: '800px' }}><Tasks items={items} loading={false} /></div>
-  ))
+storiesOf("Tasks", module).add("default", () => (
+  <div style={{ width: "800px" }}>
+    <Tasks instancesDetails={[]} items={items} loading={false} />
+  </div>
+));

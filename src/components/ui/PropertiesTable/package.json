@@ -2,6 +2,5 @@
   "name": "PropertiesTable",
   "version": "0.0.0",
   "private": true,
-  "main":"./PropertiesTable.tsx"
+  "main": "./PropertiesTable.tsx"
 }
-

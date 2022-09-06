@@ -12,49 +12,49 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import * as React from "react";
+import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
-import CopyValue from '@src/components/ui/CopyValue'
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
-import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
+import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import CopyValue from "@src/components/ui/CopyValue";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
 
-import type { Endpoint } from '@src/@types/Endpoint'
-import type { Field as FieldType } from '@src/@types/Field'
-import fieldHelper from '@src/@types/Field'
+import type { Endpoint } from "@src/@types/Endpoint";
+import type { Field as FieldType } from "@src/@types/Field";
+import fieldHelper from "@src/@types/Field";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import DateUtils from '@src/utils/DateUtils'
-import LabelDictionary from '@src/utils/LabelDictionary'
-import { OptionsSchemaPlugin } from '@src/plugins'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import DateUtils from "@src/utils/DateUtils";
+import LabelDictionary from "@src/utils/LabelDictionary";
+import { OptionsSchemaPlugin } from "@src/plugins";
 
-import { TransferItem, ReplicaItem, MigrationItem } from '@src/@types/MainItem'
-import { MinionPool } from '@src/@types/MinionPool'
+import { TransferItem, ReplicaItem, MigrationItem } from "@src/@types/MainItem";
+import { MinionPool } from "@src/@types/MinionPool";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   padding-bottom: 48px;
-`
+`;
 const ColumnsLayout = styled.div<any>`
   display: flex;
-`
+`;
 const Column = styled.div<any>`
   ${props => ThemeProps.exactWidth(props.width)}
-`
+`;
 const Row = styled.div<any>`
   margin-bottom: 32px;
   &:last-child {
     margin-bottom: 16px;
   }
-`
+`;
 const Field = styled.div<any>`
   display: flex;
   flex-direction: column;
-`
+`;
 const Label = styled.div<any>`
   font-size: 10px;
   color: ${ThemePalette.grayscale[3]};
@@ -62,35 +62,36 @@ const Label = styled.div<any>`
   text-transform: uppercase;
   display: flex;
   align-items: center;
-`
+`;
 const StatusIconStub = styled.div<any>`
-  ${ThemeProps.exactSize('16px')}
-`
+  ${ThemeProps.exactSize("16px")}
+`;
 const Value = styled.div<any>`
-  display: ${props => (props.flex ? 'flex' : props.block ? 'block' : 'inline-table')};
+  display: ${props =>
+    props.flex ? "flex" : props.block ? "block" : "inline-table"};
   margin-top: 3px;
-  ${props => (props.capitalize ? 'text-transform: capitalize;' : '')}
-`
+  ${props => (props.capitalize ? "text-transform: capitalize;" : "")}
+`;
 const ValueLink = styled(Link)`
   display: flex;
   margin-top: 3px;
   color: ${ThemePalette.primary};
   text-decoration: none;
   cursor: pointer;
-`
-const PropertiesTable = styled.div<any>``
+`;
+const PropertiesTable = styled.div<any>``;
 const PropertyRow = styled.div<any>`
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
-`
-const PropertyText = css``
+`;
+const PropertyText = css``;
 const PropertyName = styled.div<any>`
   ${PropertyText}
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 50%;
-`
+`;
 const PropertyValue = styled.div<any>`
   ${PropertyText}
   color: ${ThemePalette.grayscale[4]};
@@ -99,139 +100,175 @@ const PropertyValue = styled.div<any>`
   text-overflow: ellipsis;
   max-width: calc(50% + 16px);
   margin-right: -16px;
-`
+`;
 
 type Props = {
-  item?: MinionPool | null,
-  replicas: ReplicaItem[]
-  migrations: MigrationItem[]
-  schema: FieldType[],
-  schemaLoading: boolean,
-  endpoints: Endpoint[],
-  bottomControls: React.ReactNode,
-}
+  item?: MinionPool | null;
+  replicas: ReplicaItem[];
+  migrations: MigrationItem[];
+  schema: FieldType[];
+  schemaLoading: boolean;
+  endpoints: Endpoint[];
+  bottomControls: React.ReactNode;
+};
 @observer
 class MinionPoolMainDetails extends React.Component<Props> {
   getEndpoint(): Endpoint | undefined {
-    const endpoint = this.props.endpoints
-      .find(e => e.id === this.props.item?.endpoint_id)
-    return endpoint
+    const endpoint = this.props.endpoints.find(
+      e => e.id === this.props.item?.endpoint_id
+    );
+    return endpoint;
   }
 
   renderLastExecutionTime() {
-    return this.props.item?.updated_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.updated_at).format('YYYY-MM-DD HH:mm:ss')) : '-'
+    return this.props.item?.updated_at
+      ? this.renderValue(
+          DateUtils.getLocalTime(this.props.item.updated_at).format(
+            "YYYY-MM-DD HH:mm:ss"
+          )
+        )
+      : "-";
   }
 
   renderValue(value: string, capitalize?: boolean) {
-    return <CopyValue value={value} maxWidth="90%" capitalize={capitalize} />
+    return <CopyValue value={value} maxWidth="90%" capitalize={capitalize} />;
   }
 
   renderEndpointLink(): React.ReactNode {
     const endpointIsMissing = (
       <Value flex>
-        <StatusIcon style={{ marginRight: '8px' }} status="ERROR" />Endpoint is missing
+        <StatusIcon style={{ marginRight: "8px" }} status="ERROR" />
+        Endpoint is missing
       </Value>
-    )
+    );
 
-    const endpoint = this.getEndpoint()
+    const endpoint = this.getEndpoint();
 
     if (endpoint) {
-      return <ValueLink to={`/endpoints/${endpoint.id}`}>{endpoint.name}</ValueLink>
+      return (
+        <ValueLink to={`/endpoints/${endpoint.id}`}>{endpoint.name}</ValueLink>
+      );
     }
 
-    return endpointIsMissing
+    return endpointIsMissing;
   }
 
   renderPropertiesTable(propertyNames: string[]) {
-    const endpoint = this.getEndpoint()
+    const endpoint = this.getEndpoint();
 
     const getValue = (name: string, value: any) => {
-      if (value.join && value.length && value[0].destination && value[0].source) {
-        return value.map((v: { source: any; destination: any }) => `${v.source}=${v.destination}`).join(', ')
+      if (
+        value.join &&
+        value.length &&
+        value[0].destination &&
+        value[0].source
+      ) {
+        return value
+          .map(
+            (v: { source: any; destination: any }) =>
+              `${v.source}=${v.destination}`
+          )
+          .join(", ");
       }
-      const schema = this.props.schema
+      const schema = this.props.schema;
       return fieldHelper.getValueAlias({
-        name, value, fields: schema, targetProvider: endpoint && endpoint.type,
-      })
-    }
+        name,
+        value,
+        fields: schema,
+        targetProvider: endpoint && endpoint.type,
+      });
+    };
 
-    let properties: any[] = []
-    const plugin = endpoint && OptionsSchemaPlugin.for(endpoint.type)
-    const migrationImageMapFieldName = plugin && plugin.migrationImageMapFieldName
-    let dictionaryKey = ''
+    let properties: any[] = [];
+    const plugin = endpoint && OptionsSchemaPlugin.for(endpoint.type);
+    const migrationImageMapFieldName =
+      plugin && plugin.migrationImageMapFieldName;
+    let dictionaryKey = "";
     if (endpoint) {
-      dictionaryKey = `${endpoint.type}-minion-pool`
+      dictionaryKey = `${endpoint.type}-minion-pool`;
     }
-    const environment = this.props.item?.environment_options
+    const environment = this.props.item?.environment_options;
     propertyNames.forEach(pn => {
-      const value = environment ? environment[pn] : ''
-      const label = LabelDictionary.get(pn, dictionaryKey)
+      const value = environment ? environment[pn] : "";
+      const label = LabelDictionary.get(pn, dictionaryKey);
 
       if (value && value.join) {
         value.forEach((v: any, i: number) => {
-          const useLabel = i === 0 ? label : ''
-          properties.push({ label: useLabel, value: v })
-        })
-      } else if (value && typeof value === 'object') {
-        properties = properties.concat(Object.keys(value).map(p => {
-          if (p === 'disk_mappings') {
-            return null
-          }
-          let fieldName = pn
-          if (migrationImageMapFieldName && fieldName === migrationImageMapFieldName) {
-            fieldName = p
-          }
-          return {
-            label: `${label} - ${LabelDictionary.get(p)}`,
-            value: getValue(fieldName, value[p]),
-          }
-        }))
+          const useLabel = i === 0 ? label : "";
+          properties.push({ label: useLabel, value: v });
+        });
+      } else if (value && typeof value === "object") {
+        properties = properties.concat(
+          Object.keys(value).map(p => {
+            if (p === "disk_mappings") {
+              return null;
+            }
+            let fieldName = pn;
+            if (
+              migrationImageMapFieldName &&
+              fieldName === migrationImageMapFieldName
+            ) {
+              fieldName = p;
+            }
+            return {
+              label: `${label} - ${LabelDictionary.get(p)}`,
+              value: getValue(fieldName, value[p]),
+            };
+          })
+        );
       } else {
-        properties.push({ label, value: getValue(pn, value) })
+        properties.push({ label, value: getValue(pn, value) });
       }
-    })
+    });
 
     return (
       <PropertiesTable>
-        {properties.filter(Boolean).filter(p => p.value != null && p.value !== '').map(prop => (
-          <PropertyRow key={prop.label}>
-            <PropertyName>{prop.label}</PropertyName>
-            <PropertyValue>
-              <CopyValue value={prop.value} />
-            </PropertyValue>
-          </PropertyRow>
-        ))}
+        {properties
+          .filter(Boolean)
+          .filter(p => p.value != null && p.value !== "")
+          .map(prop => (
+            <PropertyRow key={prop.label}>
+              <PropertyName>{prop.label}</PropertyName>
+              <PropertyValue>
+                <CopyValue value={prop.value} />
+              </PropertyValue>
+            </PropertyRow>
+          ))}
       </PropertiesTable>
-    )
+    );
   }
 
   renderUsage(items: TransferItem[]) {
     return items.map(item => (
-      <div>
-        <ValueLink
-          key={item.id}
-          to={`/${item.type}s/${item.id}`}
-        >
+      <div key={item.id}>
+        <ValueLink to={`/${item.type}s/${item.id}`}>
           {item.instances[0]}
         </ValueLink>
       </div>
-    ))
+    ));
   }
 
   renderTable() {
-    const endpoint = this.getEndpoint()
-    const lastUpdated = this.renderLastExecutionTime()
+    const endpoint = this.getEndpoint();
+    const lastUpdated = this.renderLastExecutionTime();
 
     const getPropertyNames = () => {
-      const env = this.props.item?.environment_options
-      return env ? Object.keys(env).filter(k => k !== 'network_map' && (
-        k !== 'storage_mappings'
-        || (env[k] != null && typeof env[k] === 'object' && Object.keys(env[k]).length > 0)
-      )) : []
-    }
+      const env = this.props.item?.environment_options;
+      return env
+        ? Object.keys(env).filter(
+            k =>
+              k !== "network_map" &&
+              (k !== "storage_mappings" ||
+                (env[k] != null &&
+                  typeof env[k] === "object" &&
+                  Object.keys(env[k]).length > 0))
+          )
+        : [];
+    };
 
-    const usage: TransferItem[] = this.props.replicas
-      .concat(this.props.migrations as any[])
+    const usage: TransferItem[] = this.props.replicas.concat(
+      this.props.migrations as any[]
+    );
 
     return (
       <ColumnsLayout>
@@ -243,44 +280,48 @@ class MinionPoolMainDetails extends React.Component<Props> {
             </Field>
           </Row>
           <Row>
-            <EndpointLogos
-              endpoint={(endpoint ? endpoint.type : '') as any}
-            />
+            <EndpointLogos endpoint={(endpoint ? endpoint.type : "") as any} />
           </Row>
           <Row>
             <Field>
               <Label>Id</Label>
-              {this.renderValue(this.props.item?.id || '-')}
+              {this.renderValue(this.props.item?.id || "-")}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Pool Platform</Label>
-              {this.renderValue(this.props.item?.platform || '-', true)}
+              {this.renderValue(this.props.item?.platform || "-", true)}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Pool OS Type</Label>
-              {this.renderValue(this.props.item?.os_type || '-', true)}
+              {this.renderValue(this.props.item?.os_type || "-", true)}
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Created</Label>
-              {this.props.item?.created_at ? this.renderValue(DateUtils.getLocalTime(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')) : <Value>-</Value>}
+              {this.props.item?.created_at ? (
+                this.renderValue(
+                  DateUtils.getLocalTime(this.props.item.created_at).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )
+                )
+              ) : (
+                <Value>-</Value>
+              )}
             </Field>
           </Row>
-          {this.props.item?.notes
-            ? (
-              <Row>
-                <Field>
-                  <Label>Notes</Label>
-                  <CopyMultilineValue value={this.props.item.notes} />
-                </Field>
-              </Row>
-            )
-            : null}
+          {this.props.item?.notes ? (
+            <Row>
+              <Field>
+                <Label>Notes</Label>
+                <CopyMultilineValue value={this.props.item.notes} />
+              </Field>
+            </Row>
+          ) : null}
           {lastUpdated ? (
             <Row>
               <Field>
@@ -301,45 +342,56 @@ class MinionPoolMainDetails extends React.Component<Props> {
           {getPropertyNames().length > 0 ? (
             <Row>
               <Field>
-                <Label>Environment options {this.props.schemaLoading ? (
-                  <StatusIcon status="RUNNING" style={{ marginLeft: '8px' }} />
-                ) : <StatusIconStub />}
+                <Label>
+                  Environment options{" "}
+                  {this.props.schemaLoading ? (
+                    <StatusIcon
+                      status="RUNNING"
+                      style={{ marginLeft: "8px" }}
+                    />
+                  ) : (
+                    <StatusIconStub />
+                  )}
                 </Label>
-                <Value block>{this.renderPropertiesTable(getPropertyNames())}</Value>
+                <Value block>
+                  {this.renderPropertiesTable(getPropertyNames())}
+                </Value>
               </Field>
             </Row>
           ) : null}
           <Row>
             <Field>
               <Label>Minimum Minions</Label>
-              <Value>{this.props.item?.minimum_minions || '1'}</Value>
+              <Value>{this.props.item?.minimum_minions || "1"}</Value>
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Maximum Minions</Label>
-              <Value>{this.props.item?.maximum_minions || '1'}</Value>
+              <Value>{this.props.item?.maximum_minions || "1"}</Value>
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Minion Max Idle Time (s)</Label>
-              <Value>{this.props.item?.minion_max_idle_time || '-'}</Value>
+              <Value>{this.props.item?.minion_max_idle_time || "-"}</Value>
             </Field>
           </Row>
           <Row>
             <Field>
               <Label>Minion Retention Strategy</Label>
-              <Value>{this.props.item?.minion_retention_strategy || 'delete'}</Value>
+              <Value>
+                {this.props.item?.minion_retention_strategy || "delete"}
+              </Value>
             </Field>
           </Row>
         </Column>
       </ColumnsLayout>
-    )
+    );
   }
 
   renderBottomControls() {
-    return this.props.bottomControls
+    return this.props.bottomControls;
   }
 
   render() {
@@ -348,8 +400,8 @@ class MinionPoolMainDetails extends React.Component<Props> {
         {this.renderTable()}
         {this.renderBottomControls()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MinionPoolMainDetails
+export default MinionPoolMainDetails;

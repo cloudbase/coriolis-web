@@ -12,165 +12,186 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import {
-  action, observable, runInAction, computed,
-} from 'mobx'
-import { MinionPool, MinionPoolDetails } from '@src/@types/MinionPool'
-import MinionPoolSource from '@src/sources/MinionPoolSource'
-import { Field } from '@src/@types/Field'
-import { Providers, ProviderTypes } from '@src/@types/Providers'
-import { OptionsSchemaPlugin } from '@src/plugins'
-import { providerTypes } from '@src/constants'
-import apiCaller from '@src/utils/ApiCaller'
-import { Endpoint, OptionValues } from '@src/@types/Endpoint'
+import { action, observable, runInAction, computed } from "mobx";
+import { MinionPool, MinionPoolDetails } from "@src/@types/MinionPool";
+import MinionPoolSource from "@src/sources/MinionPoolSource";
+import { Field } from "@src/@types/Field";
+import { Providers, ProviderTypes } from "@src/@types/Providers";
+import { OptionsSchemaPlugin } from "@src/plugins";
+import { providerTypes } from "@src/constants";
+import apiCaller from "@src/utils/ApiCaller";
+import { Endpoint, OptionValues } from "@src/@types/Endpoint";
 
-export type MinionPoolAction = 'allocate' | 'deallocate' | 'refresh'
+export type MinionPoolAction = "allocate" | "deallocate" | "refresh";
 
 export const MinionPoolStoreUtils = {
-  isActive: (minionPool: MinionPool) => minionPool.status === 'ALLOCATED' || minionPool.status === 'SCALING' || minionPool.status === 'RESCALING',
-}
+  isActive: (minionPool: MinionPool) =>
+    minionPool.status === "ALLOCATED" ||
+    minionPool.status === "SCALING" ||
+    minionPool.status === "RESCALING",
+};
 
 class MinionPoolStore {
   @observable
-    loadingMinionPools: boolean = false
+  loadingMinionPools = false;
 
   @observable
-    minionPools: MinionPool[] = []
+  minionPools: MinionPool[] = [];
 
   @observable
-    loadingMinionPoolDetails: boolean = false
+  loadingMinionPoolDetails = false;
 
   @observable
-    minionPoolDetails: MinionPoolDetails | null = null
+  minionPoolDetails: MinionPoolDetails | null = null;
 
   @observable
-    loadingMinionPoolSchema: boolean = false
+  loadingMinionPoolSchema = false;
 
   @observable
-    minionPoolDefaultSchema: Field[] = []
+  minionPoolDefaultSchema: Field[] = [];
 
   @observable
-    minionPoolEnvSchema: Field[] = []
+  minionPoolEnvSchema: Field[] = [];
 
   @observable
-    optionsPrimaryLoading: boolean = false
+  optionsPrimaryLoading = false;
 
   @observable
-    optionsSecondaryLoading: boolean = false
+  optionsSecondaryLoading = false;
 
   @computed
   get minionPoolCombinedSchema() {
-    return this.minionPoolDefaultSchema.concat(this.minionPoolEnvSchema)
+    return this.minionPoolDefaultSchema.concat(this.minionPoolEnvSchema);
   }
 
   @action
-  async loadMinionPools(options?: { showLoading?: boolean, skipLog?: boolean }) {
+  async loadMinionPools(options?: {
+    showLoading?: boolean;
+    skipLog?: boolean;
+  }) {
     if (options?.showLoading) {
-      this.loadingMinionPools = true
+      this.loadingMinionPools = true;
     }
 
     try {
-      const minionPools = await MinionPoolSource.loadMinionPools({ skipLog: options?.skipLog })
+      const minionPools = await MinionPoolSource.loadMinionPools({
+        skipLog: options?.skipLog,
+      });
 
       runInAction(() => {
-        this.minionPools = minionPools
-      })
+        this.minionPools = minionPools;
+      });
     } finally {
       runInAction(() => {
-        this.loadingMinionPools = false
-      })
+        this.loadingMinionPools = false;
+      });
     }
   }
 
   @action
-  async loadMinionPoolDetails(id: string, options?: { showLoading?: boolean, skipLog?: boolean }) {
+  async loadMinionPoolDetails(
+    id: string,
+    options?: { showLoading?: boolean; skipLog?: boolean }
+  ) {
     if (options?.showLoading) {
-      this.loadingMinionPoolDetails = true
+      this.loadingMinionPoolDetails = true;
     }
 
     try {
-      const minionPool = await MinionPoolSource.loadMinionPoolDetails(
-        id,
-        { skipLog: options?.skipLog },
-      )
+      const minionPool = await MinionPoolSource.loadMinionPoolDetails(id, {
+        skipLog: options?.skipLog,
+      });
 
       runInAction(() => {
-        this.minionPoolDetails = minionPool
-      })
+        this.minionPoolDetails = minionPool;
+      });
     } finally {
       runInAction(() => {
-        this.loadingMinionPoolDetails = false
-      })
+        this.loadingMinionPoolDetails = false;
+      });
     }
   }
 
   @action clearMinionPoolDetails() {
-    this.minionPoolDetails = null
+    this.minionPoolDetails = null;
   }
 
   @action
-  async loadMinionPoolSchema(provider: ProviderTypes, platform: 'source' | 'destination') {
-    this.loadingMinionPoolSchema = true
+  async loadMinionPoolSchema(
+    provider: ProviderTypes,
+    platform: "source" | "destination"
+  ) {
+    this.loadingMinionPoolSchema = true;
 
-    this.minionPoolDefaultSchema = MinionPoolSource.getMinionPoolDefaultSchema()
+    this.minionPoolDefaultSchema =
+      MinionPoolSource.getMinionPoolDefaultSchema();
 
     try {
-      const schema = await MinionPoolSource.loadMinionPoolSchema(provider, platform)
+      const schema = await MinionPoolSource.loadMinionPoolSchema(
+        provider,
+        platform
+      );
 
       runInAction(() => {
-        this.minionPoolEnvSchema = schema
-      })
+        this.minionPoolEnvSchema = schema;
+      });
     } finally {
       runInAction(() => {
-        this.loadingMinionPoolSchema = false
-      })
+        this.loadingMinionPoolSchema = false;
+      });
     }
   }
 
-  private getOptionsValuesLastReqId: string = ''
+  private getOptionsValuesLastReqId = "";
 
   async loadOptions(config: {
-    endpoint: Endpoint,
-    providers: Providers,
-    optionsType: 'source' | 'destination',
-    envData?: { [prop: string]: any } | null,
-    useCache?: boolean,
+    endpoint: Endpoint;
+    providers: Providers;
+    optionsType: "source" | "destination";
+    envData?: { [prop: string]: any } | null;
+    useCache?: boolean;
   }) {
-    const {
-      optionsType, endpoint, envData, useCache, providers,
-    } = config
-    const providerType = optionsType === 'source' ? providerTypes.SOURCE_OPTIONS : providerTypes.DESTINATION_OPTIONS
+    const { optionsType, endpoint, envData, useCache, providers } = config;
+    const providerType =
+      optionsType === "source"
+        ? providerTypes.SOURCE_OPTIONS
+        : providerTypes.DESTINATION_OPTIONS;
 
-    const providerWithExtraOptions = providers[endpoint.type].types.find(t => t === providerType)
+    const providerWithExtraOptions = providers[endpoint.type].types.find(
+      t => t === providerType
+    );
     if (!providerWithExtraOptions) {
-      return
+      return;
     }
 
-    let canceled = false
-    apiCaller.cancelRequests(endpoint.id)
+    let canceled = false;
+    apiCaller.cancelRequests(endpoint.id);
 
-    this.optionsPrimaryLoading = !envData
-    this.optionsSecondaryLoading = !!envData
+    this.optionsPrimaryLoading = !envData;
+    this.optionsSecondaryLoading = !!envData;
 
-    const reqId = `${(endpoint.id)}-${providerType}`
-    this.getOptionsValuesLastReqId = reqId
+    const reqId = `${endpoint.id}-${providerType}`;
+    this.getOptionsValuesLastReqId = reqId;
 
     try {
       const options = await MinionPoolSource.loadOptions({
-        optionsType, endpoint, envData, useCache,
-      })
+        optionsType,
+        endpoint,
+        envData,
+        useCache,
+      });
       this.getOptionsValuesSuccess(
         endpoint.type,
         options,
-        this.getOptionsValuesLastReqId === reqId,
-      )
+        this.getOptionsValuesLastReqId === reqId
+      );
     } catch (err) {
-      canceled = err ? err.canceled : false
-      throw err
+      canceled = err ? err.canceled : false;
+      throw err;
     } finally {
       if (!canceled && this.getOptionsValuesLastReqId === reqId) {
-        this.optionsPrimaryLoading = false
-        this.optionsSecondaryLoading = false
+        this.optionsPrimaryLoading = false;
+        this.optionsSecondaryLoading = false;
       }
     }
   }
@@ -178,16 +199,16 @@ class MinionPoolStore {
   @action getOptionsValuesSuccess(
     provider: ProviderTypes,
     options: OptionValues[],
-    isValid: boolean,
+    isValid: boolean
   ) {
     if (!isValid) {
-      return
+      return;
     }
     this.minionPoolEnvSchema.forEach(field => {
-      const parser = OptionsSchemaPlugin.for(provider)
-      parser.fillFieldValues({ field, options, requiresWindowsImage: false })
-    })
-    this.minionPoolEnvSchema = [...this.minionPoolEnvSchema]
+      const parser = OptionsSchemaPlugin.for(provider);
+      parser.fillFieldValues({ field, options, requiresWindowsImage: false });
+    });
+    this.minionPoolEnvSchema = [...this.minionPoolEnvSchema];
   }
 
   @action
@@ -197,7 +218,7 @@ class MinionPoolStore {
       defaultSchema: this.minionPoolDefaultSchema,
       envSchema: this.minionPoolEnvSchema,
       provider,
-    })
+    });
   }
 
   @action
@@ -208,17 +229,25 @@ class MinionPoolStore {
       defaultSchema: this.minionPoolDefaultSchema,
       envSchema: this.minionPoolEnvSchema,
       provider,
-    })
+    });
   }
 
   @action
-  async runAction(minionPoolId: string, minionPoolAction: MinionPoolAction, actionOptions?: any) {
-    return MinionPoolSource.runAction(minionPoolId, minionPoolAction, actionOptions)
+  async runAction(
+    minionPoolId: string,
+    minionPoolAction: MinionPoolAction,
+    actionOptions?: any
+  ) {
+    return MinionPoolSource.runAction(
+      minionPoolId,
+      minionPoolAction,
+      actionOptions
+    );
   }
 
   async deleteMinionPool(minionPoolId: string) {
-    return MinionPoolSource.deleteMinionPool(minionPoolId)
+    return MinionPoolSource.deleteMinionPool(minionPoolId);
   }
 }
 
-export default new MinionPoolStore()
+export default new MinionPoolStore();

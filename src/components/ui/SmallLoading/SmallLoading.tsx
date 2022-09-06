@@ -12,27 +12,36 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${ThemeProps.exactSize('28px')}
+  ${ThemeProps.exactSize("28px")}
   background-repeat: no-repeat;
   background-position: center;
-`
+`;
 const ProgressSvgWrapper = styled.svg<any>`
-  ${ThemeProps.exactSize('100%')}
+  ${ThemeProps.exactSize("100%")}
   transform: rotate(-90deg);
-  ${(props: any) => (props.spinning ? css`animation: rotate 1s linear infinite;` : '')}
+  ${(props: any) =>
+    props.spinning
+      ? css`
+          animation: rotate 1s linear infinite;
+        `
+      : ""}
   @keyframes rotate {
-    0% {transform: rotate(0deg);}
-    100% {transform: rotate(360deg);}
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
-`
+`;
 const ProgressText = styled.div<any>`
   color: ${ThemePalette.primary};
   font-size: 9px;
@@ -41,19 +50,20 @@ const ProgressText = styled.div<any>`
   position: absolute;
   width: 100%;
   text-align: center;
-`
-const CircleProgressBar = styled.circle``
+`;
+const CircleProgressBar = styled.circle``;
 
-export const TEST_ID = 'smallLoading'
+export const TEST_ID = "smallLoading";
 
 export type Props = {
-  loadingProgress: number,
-}
+  loadingProgress: number;
+};
 
 @observer
 class SmallLoading extends React.Component<Props> {
   renderProgressImage() {
-    const progress = this.props.loadingProgress > -1 ? this.props.loadingProgress : 25
+    const progress =
+      this.props.loadingProgress > -1 ? this.props.loadingProgress : 25;
 
     return (
       <ProgressSvgWrapper
@@ -80,23 +90,24 @@ class SmallLoading extends React.Component<Props> {
             fill="transparent"
             stroke={ThemePalette.primary}
             strokeDasharray="100 100"
-            strokeDashoffset={300 - ((progress / 100) * 82)}
+            strokeDashoffset={300 - (progress / 100) * 82}
           />
         </g>
       </ProgressSvgWrapper>
-    )
+    );
   }
 
   renderProgressText() {
     if (this.props.loadingProgress === -1) {
-      return null
+      return null;
     }
 
     return (
       <ProgressText>
-        {this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
+        {this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}
+        %
       </ProgressText>
-    )
+    );
   }
 
   render() {
@@ -105,8 +116,8 @@ class SmallLoading extends React.Component<Props> {
         {this.renderProgressImage()}
         {this.renderProgressText()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SmallLoading
+export default SmallLoading;

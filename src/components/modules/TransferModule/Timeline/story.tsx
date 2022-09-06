@@ -12,42 +12,46 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import { Execution } from '@src/@types/Execution'
-import Timeline from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import { Execution } from "@src/@types/Execution";
+import Timeline from ".";
 
 const items: any = [
-  { id: 'item-1', status: 'ERROR', created_at: new Date() },
-  { id: 'item-2', status: 'COMPLETED', created_at: new Date() },
-  { id: 'item-3', status: 'RUNNING', created_at: new Date() },
-]
+  { id: "item-1", status: "ERROR", created_at: new Date() },
+  { id: "item-2", status: "COMPLETED", created_at: new Date() },
+  { id: "item-3", status: "RUNNING", created_at: new Date() },
+];
 
 class Wrapper extends React.Component<any> {
-  state = { selectedItem: items[2] }
+  state = { selectedItem: items[2] };
 
   handleItemClick(selectedItem: Execution) {
-    this.setState({ selectedItem })
+    this.setState({ selectedItem });
   }
 
   handlePreviousClick() {
-    const selectedIndex = items.findIndex((e: { id: any }) => e.id === this.state.selectedItem.id)
+    const selectedIndex = items.findIndex(
+      (e: { id: any }) => e.id === this.state.selectedItem.id
+    );
 
     if (selectedIndex === 0) {
-      return
+      return;
     }
 
-    this.setState({ selectedItem: items[selectedIndex - 1] })
+    this.setState({ selectedItem: items[selectedIndex - 1] });
   }
 
   handleNextClick() {
-    const selectedIndex = items.findIndex((e: { id: any }) => e.id === this.state.selectedItem.id)
+    const selectedIndex = items.findIndex(
+      (e: { id: any }) => e.id === this.state.selectedItem.id
+    );
 
     if (selectedIndex >= items.length - 1) {
-      return
+      return;
     }
 
-    this.setState({ selectedItem: items[selectedIndex + 1] })
+    this.setState({ selectedItem: items[selectedIndex + 1] });
   }
 
   render() {
@@ -55,24 +59,30 @@ class Wrapper extends React.Component<any> {
       <Timeline
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
-        onPreviousClick={() => { this.handlePreviousClick() }}
-        onNextClick={() => { this.handleNextClick() }}
-        onItemClick={item => { this.handleItemClick(item) }}
+        onPreviousClick={() => {
+          this.handlePreviousClick();
+        }}
+        onNextClick={() => {
+          this.handleNextClick();
+        }}
+        onItemClick={item => {
+          this.handleItemClick(item);
+        }}
         selectedItem={this.state.selectedItem}
         items={items}
       />
-    )
+    );
   }
 }
 
-storiesOf('Timeline', module)
-  .add('default', () => (
-    <div style={{ width: '800px' }}>
+storiesOf("Timeline", module)
+  .add("default", () => (
+    <div style={{ width: "800px" }}>
       <Timeline />
     </div>
   ))
-  .add('with items', () => (
-    <div style={{ width: '800px' }}>
+  .add("with items", () => (
+    <div style={{ width: "800px" }}>
       <Wrapper />
     </div>
-  ))
+  ));

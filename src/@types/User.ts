@@ -12,26 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Project } from './Project'
+import type { Project } from "./Project";
 
 export type User = {
-  scoped?: boolean,
-  project: Project,
-  email: string,
-  name: string,
-  id: string,
-  description?: string,
-  enabled?: boolean,
-  project_id?: string,
-  domain_id?: string,
-  isAdmin?: boolean | null,
-  password?: string,
-  extra?: any,
-  token?: string
-}
+  scoped?: boolean;
+  project: Project;
+  email: string;
+  name: string;
+  id: string;
+  description?: string;
+  enabled?: boolean;
+  project_id?: string;
+  domain_id?: string;
+  isAdmin?: boolean | null;
+  password?: string;
+  extra?: any;
+  token?: string;
+};
 
 export type Credentials = {
-  name: string,
-  password: string,
-  domain: string,
-}
+  name: string;
+  password: string;
+  domain: string;
+};

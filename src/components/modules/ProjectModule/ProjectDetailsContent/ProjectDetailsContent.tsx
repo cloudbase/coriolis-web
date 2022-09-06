@@ -12,70 +12,80 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import React from "react";
+import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import AlertModal from '@src/components/ui/AlertModal'
-import Table from '@src/components/ui/Table'
-import CopyValue from '@src/components/ui/CopyValue'
-import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
-import Button from '@src/components/ui/Button'
+import AlertModal from "@src/components/ui/AlertModal";
+import Table from "@src/components/ui/Table";
+import CopyValue from "@src/components/ui/CopyValue";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
+import Button from "@src/components/ui/Button";
 
-import type { Project, RoleAssignment, Role } from '@src/@types/Project'
-import type { User } from '@src/@types/User'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import type { Project, RoleAssignment, Role } from "@src/@types/Project";
+import type { User } from "@src/@types/User";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
   padding-left: 126px;
-`
+`;
 const Info = styled.div<any>`
   display: flex;
   flex-wrap: wrap;
   margin-top: 32px;
   margin-left: -32px;
-`
+`;
 const Field = styled.div<any>`
-  ${ThemeProps.exactWidth('calc(50% - 32px)')}
+  ${ThemeProps.exactWidth("calc(50% - 32px)")}
   margin-bottom: 32px;
   margin-left: 32px;
-`
-const Value = styled.div<any>``
+`;
+const Value = styled.div<any>``;
 const Label = styled.div<any>`
   font-size: 10px;
   font-weight: ${ThemeProps.fontWeights.medium};
   color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 3px;
-`
+`;
 const LoadingWrapper = styled.div<any>`
   display: flex;
   justify-content: center;
   width: 100%;
   margin: 32px 0 64px 0;
-`
+`;
 const TableStyled = styled(Table)`
   margin-top: 42px;
   margin-bottom: 32px;
-`
+`;
 const Buttons = styled.div<any>`
   margin-top: 64px;
   display: flex;
   justify-content: space-between;
-`
+`;
 const UserColumn = styled.div<any>`
-  ${props => (props.disabled ? css`color: ${ThemePalette.grayscale[3]};` : '')}
-`
+  ${props =>
+    props.disabled
+      ? css`
+          color: ${ThemePalette.grayscale[3]};
+        `
+      : ""}
+`;
 const UserName = styled(Link)<any>`
-  ${props => (props.disabled ? css`opacity: 0.7;` : '')}
+  ${props =>
+    props.disabled
+      ? css`
+          opacity: 0.7;
+        `
+      : ""}
   color: ${ThemePalette.primary};
   text-decoration: none;
-`
+`;
 const ButtonsColumn = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -86,61 +96,61 @@ const ButtonsColumn = styled.div<any>`
       margin-bottom: 0;
     }
   }
-`
+`;
 
 type Props = {
-  project: Project | null,
-  loading: boolean,
-  users: User[],
-  usersLoading: boolean,
-  roleAssignments: RoleAssignment[],
-  roles: Role[],
-  loggedUserId: string,
-  onEnableUser: (user: User) => void,
-  onRemoveUser: (user: User) => void,
-  onUserRoleChange: (user: User, roleId: string, toggled: boolean) => void,
-  onAddMemberClick: () => void,
-  onDeleteClick: () => void,
-}
+  project: Project | null;
+  loading: boolean;
+  users: User[];
+  usersLoading: boolean;
+  roleAssignments: RoleAssignment[];
+  roles: Role[];
+  loggedUserId: string;
+  onEnableUser: (user: User) => void;
+  onRemoveUser: (user: User) => void;
+  onUserRoleChange: (user: User, roleId: string, toggled: boolean) => void;
+  onAddMemberClick: () => void;
+  onDeleteClick: () => void;
+};
 type State = {
-  showRemoveUserAlert: boolean,
-}
+  showRemoveUserAlert: boolean;
+};
 @observer
 class ProjectDetailsContent extends React.Component<Props, State> {
   state = {
     showRemoveUserAlert: false,
-  }
+  };
 
-  selectedUser: User | null = null
+  selectedUser: User | null = null;
 
   handleRemoveUserAction(user: User) {
-    this.selectedUser = user
-    this.setState({ showRemoveUserAlert: true })
+    this.selectedUser = user;
+    this.setState({ showRemoveUserAlert: true });
   }
 
-  handleUserAction(user: User, item: { label: string, value: string }) {
+  handleUserAction(user: User, item: { label: string; value: string }) {
     switch (item.value) {
-      case 'enable':
-        this.props.onEnableUser(user)
-        break
-      case 'remove':
-        this.handleRemoveUserAction(user)
-        break
+      case "enable":
+        this.props.onEnableUser(user);
+        break;
+      case "remove":
+        this.handleRemoveUserAction(user);
+        break;
       default:
-        break
+        break;
     }
   }
 
   handleRemoveUserConfirmation() {
     if (this.selectedUser) {
-      this.props.onRemoveUser(this.selectedUser)
+      this.props.onRemoveUser(this.selectedUser);
     }
 
-    this.setState({ showRemoveUserAlert: false })
+    this.setState({ showRemoveUserAlert: false });
   }
 
   handleCloseRemoveUserConfirmation() {
-    this.setState({ showRemoveUserAlert: false })
+    this.setState({ showRemoveUserAlert: false });
   }
 
   renderLoading() {
@@ -148,37 +158,37 @@ class ProjectDetailsContent extends React.Component<Props, State> {
       <LoadingWrapper>
         <StatusImage />
       </LoadingWrapper>
-    )
+    );
   }
 
   renderButtons() {
-    if (this.props.loading) return null
+    if (this.props.loading) return null;
 
     return (
       <Buttons>
         <ButtonsColumn>
-          <Button
-            onClick={this.props.onAddMemberClick}
-          >Add Member
-          </Button>
+          <Button onClick={this.props.onAddMemberClick}>Add Member</Button>
         </ButtonsColumn>
         <ButtonsColumn>
           <Button
             alert
             hollow
-            onClick={() => { this.props.onDeleteClick() }}
-          >Delete Project
+            onClick={() => {
+              this.props.onDeleteClick();
+            }}
+          >
+            Delete Project
           </Button>
         </ButtonsColumn>
       </Buttons>
-    )
+    );
   }
 
   renderInfo() {
     if (this.props.loading || !this.props.project) {
-      return null
+      return null;
     }
-    const project = this.props.project
+    const project = this.props.project;
 
     return (
       <Info>
@@ -189,10 +199,10 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         <Field>
           <Label>Description</Label>
           {project.description ? (
-            <CopyMultilineValue
-              value={project.description}
-            />
-          ) : <Value>-</Value>}
+            <CopyMultilineValue value={project.description} />
+          ) : (
+            <Value>-</Value>
+          )}
         </Field>
         <Field>
           <Label>ID</Label>
@@ -200,50 +210,58 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         </Field>
         <Field>
           <Label>Enabled</Label>
-          <Value>{project.enabled ? 'Yes' : 'No'}</Value>
+          <Value>{project.enabled ? "Yes" : "No"}</Value>
         </Field>
       </Info>
-    )
+    );
   }
 
   renderUsers() {
     if (this.props.usersLoading || this.props.loading) {
-      return null
+      return null;
     }
-    const rows: React.ReactNode[][] = []
+    const rows: React.ReactNode[][] = [];
     const actions = (user: User) => [
       {
-        label: `${user.enabled ? 'Disable' : 'Enable'} User`,
-        value: 'enable',
-      }, {
-        label: 'Remove',
-        value: 'remove',
+        label: `${user.enabled ? "Disable" : "Enable"} User`,
+        value: "enable",
       },
-    ]
-    const getUserRoles = (user: RoleAssignment['user']) => {
-      const projectId = this.props.project ? this.props.project.id : ''
+      {
+        label: "Remove",
+        value: "remove",
+      },
+    ];
+    const getUserRoles = (user: RoleAssignment["user"]) => {
+      const projectId = this.props.project ? this.props.project.id : "";
       const roles = this.props.roleAssignments
         .filter(a => a.scope.project && a.scope.project.id === projectId)
         .filter(a => a.user.id === user.id)
-        .map(a => ({ value: a.role.id, label: a.role.name }))
-      return roles
-    }
+        .map(a => ({ value: a.role.id, label: a.role.name }));
+      return roles;
+    };
     const allRoles = this.props.roles
-      .filter(r => r.name !== 'key-manager:service-admin')
-      .map(r => ({ value: r.id, label: r.name }))
+      .filter(r => r.name !== "key-manager:service-admin")
+      .map(r => ({ value: r.id, label: r.name }));
 
     this.props.users.forEach(user => {
-      const userActions = actions(user)
-      const userRoles = getUserRoles(user)
+      const userActions = actions(user);
+      const userRoles = getUserRoles(user);
       const columns = [
         <UserName
+          key="username"
           disabled={!user.enabled}
           to={`/users/${user.id}`}
-        >{user.name}
+        >
+          {user.name}
         </UserName>,
         <DropdownLink
+          key="roles"
           width="214px"
-          getLabel={() => (userRoles.length > 0 ? userRoles.map(r => r.label).join(', ') : 'No roles')}
+          getLabel={() =>
+            userRoles.length > 0
+              ? userRoles.map(r => r.label).join(", ")
+              : "No roles"
+          }
           selectedItems={userRoles.map(r => r.value)}
           listWidth="120px"
           multipleSelection
@@ -255,44 +273,56 @@ class ProjectDetailsContent extends React.Component<Props, State> {
             this.props.onUserRoleChange(
               user,
               item.value,
-              !userRoles.find(i => i.value === item.value),
-            )
+              !userRoles.find(i => i.value === item.value)
+            );
           }}
         />,
-        <UserColumn disabled={!user.enabled}>{user.enabled ? 'Enabled' : 'Disabled'}</UserColumn>,
+        <UserColumn key="enabled" disabled={!user.enabled}>
+          {user.enabled ? "Enabled" : "Disabled"}
+        </UserColumn>,
         <DropdownLink
+          key="actions"
           noCheckmark
           width="82px"
           items={userActions}
           selectedItem=""
           selectItemLabel="Actions"
           listWidth="120px"
-          onChange={item => { this.handleUserAction(user, item) }}
+          onChange={item => {
+            this.handleUserAction(user, item);
+          }}
           disabled={user.id === this.props.loggedUserId}
           style={{ opacity: user.id === this.props.loggedUserId ? 0.7 : 1 }}
-          itemStyle={item => `color: ${item.value === 'remove' ? ThemePalette.alert : ThemePalette.black};`}
+          itemStyle={item =>
+            `color: ${
+              item.value === "remove" ? ThemePalette.alert : ThemePalette.black
+            };`
+          }
         />,
-      ]
-      rows.push(columns)
-    })
+      ];
+      rows.push(columns);
+    });
 
     return (
       <TableStyled
-        header={['Member', 'Roles', 'Status', '']}
+        header={["Member", "Roles", "Status", ""]}
         items={rows}
         noItemsLabel="No members available!"
-        columnsStyle={[css`color: ${ThemePalette.black};`]}
+        columnsStyle={[
+          css`
+            color: ${ThemePalette.black};
+          `,
+        ]}
       />
-    )
+    );
   }
 
   renderValue(value: string) {
-    return value !== '-' ? (
-      <CopyValue
-        value={value}
-        maxWidth="90%"
-      />
-    ) : <Value>{value}</Value>
+    return value !== "-" ? (
+      <CopyValue value={value} maxWidth="90%" />
+    ) : (
+      <Value>{value}</Value>
+    );
   }
 
   render() {
@@ -301,7 +331,9 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         {this.renderInfo()}
         {this.props.loading ? this.renderLoading() : null}
         {this.renderUsers()}
-        {!this.props.loading && this.props.usersLoading ? this.renderLoading() : null}
+        {!this.props.loading && this.props.usersLoading
+          ? this.renderLoading()
+          : null}
         {this.renderButtons()}
         {this.state.showRemoveUserAlert ? (
           <AlertModal
@@ -309,13 +341,17 @@ class ProjectDetailsContent extends React.Component<Props, State> {
             title="Remove User?"
             message="Are you sure you want to remove this user from the project?"
             extraMessage=" "
-            onConfirmation={() => { this.handleRemoveUserConfirmation() }}
-            onRequestClose={() => { this.handleCloseRemoveUserConfirmation() }}
+            onConfirmation={() => {
+              this.handleRemoveUserConfirmation();
+            }}
+            onRequestClose={() => {
+              this.handleCloseRemoveUserConfirmation();
+            }}
           />
         ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default ProjectDetailsContent
+export default ProjectDetailsContent;

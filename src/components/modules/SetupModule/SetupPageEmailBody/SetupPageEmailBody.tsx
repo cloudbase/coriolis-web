@@ -12,132 +12,183 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import { CustomerInfoBasic, CustomerInfoTrial, SetupPageLicenceType } from '@src/@types/InitialSetup'
-import { customerInfoSetupStoreValueToString } from '@src/stores/SetupStore'
-import notificationStore from '@src/stores/NotificationStore'
-import { ThemePalette } from '@src/components/Theme'
-import SetupPageServerError from '@src/components/modules/SetupModule/ui/SetupPageServerError'
-import SetupPageInputWrapper from '@src/components/modules/SetupModule/ui/SetupPageInputWrapper'
-import CopyButton from '@src/components/ui/CopyButton'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import {
+  CustomerInfoBasic,
+  CustomerInfoTrial,
+  SetupPageLicenceType,
+} from "@src/@types/InitialSetup";
+import { customerInfoSetupStoreValueToString } from "@src/stores/SetupStore";
+import notificationStore from "@src/stores/NotificationStore";
+import { ThemePalette } from "@src/components/Theme";
+import SetupPageServerError from "@src/components/modules/SetupModule/ui/SetupPageServerError";
+import SetupPageInputWrapper from "@src/components/modules/SetupModule/ui/SetupPageInputWrapper";
+import CopyButton from "@src/components/ui/CopyButton";
 
-const Wrapper = styled.div``
+const Wrapper = styled.div``;
 const Link = styled.a`
   color: ${ThemePalette.primary};
   text-decoration: none;
-`
-const EmailBody = styled.div``
-const EmailSubject = styled.div``
+`;
+const EmailBody = styled.div``;
+const EmailSubject = styled.div``;
 const EmailContent = styled.div`
   background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   padding: 4px;
-`
-const EmailBodyContent = styled.div``
+`;
+const EmailBodyContent = styled.div``;
 const CopyLink = styled.div`
   width: 220px;
   cursor: pointer;
   margin-top: 8px;
   display: flex;
   margin-bottom: 16px;
-`
+`;
 
 type Props = {
-  customerInfoBasic: CustomerInfoBasic
-  customerInfoTrial: CustomerInfoTrial
-  licenceType: SetupPageLicenceType
-  applianceId: string
-}
+  customerInfoBasic: CustomerInfoBasic;
+  customerInfoTrial: CustomerInfoTrial;
+  licenceType: SetupPageLicenceType;
+  applianceId: string;
+};
 
 @observer
 class SetupPageEmailBody extends React.Component<Props> {
-  emailTemplate: HTMLElement | null = null
+  emailTemplate: HTMLElement | null = null;
 
   handleCopy(event?: React.ClipboardEvent) {
-    event?.preventDefault()
+    event?.preventDefault();
 
     if (!this.emailTemplate) {
-      return
+      return;
     }
 
     try {
-      const range = document.createRange()
-      range.selectNode(this.emailTemplate)
-      window.getSelection()?.removeAllRanges()
-      window.getSelection()?.addRange(range)
-      document.execCommand('copy')
+      const range = document.createRange();
+      range.selectNode(this.emailTemplate);
+      window.getSelection()?.removeAllRanges();
+      window.getSelection()?.addRange(range);
+      document.execCommand("copy");
       if (!event) {
-        notificationStore.alert('The email body was succesfully copied to clipboard', 'success')
+        notificationStore.alert(
+          "The email body was succesfully copied to clipboard",
+          "success"
+        );
       }
     } catch (err) {
-      notificationStore.alert('Error copying to clipboard', 'error')
+      notificationStore.alert("Error copying to clipboard", "error");
     }
   }
 
   render() {
     const emailTemplate = (
       <div>
-        Hi,<br /><br />
-        I would like to request a Coriolis Licence with the following info:<br /><br />
-        <b>Full Name</b>: {this.props.customerInfoBasic.fullName}<br />
-        <b>Email</b>: {this.props.customerInfoBasic.email}<br />
-        <b>Company</b>: {this.props.customerInfoBasic.company}<br />
-        <b>Country</b>: {this.props.customerInfoBasic.country}<br />
-        {this.props.licenceType === 'trial' ? (
+        Hi,
+        <br />
+        <br />
+        I would like to request a Coriolis Licence with the following info:
+        <br />
+        <br />
+        <b>Full Name</b>: {this.props.customerInfoBasic.fullName}
+        <br />
+        <b>Email</b>: {this.props.customerInfoBasic.email}
+        <br />
+        <b>Company</b>: {this.props.customerInfoBasic.company}
+        <br />
+        <b>Country</b>: {this.props.customerInfoBasic.country}
+        <br />
+        {this.props.licenceType === "trial" ? (
           <>
-            <b>Interested In</b>: {customerInfoSetupStoreValueToString('interestedIn', this.props.customerInfoTrial.interestedIn)}<br />
-            <b>Source Platform</b>: {customerInfoSetupStoreValueToString('sourcePlatform', this.props.customerInfoTrial.sourcePlatform)}<br />
-            <b>Destination Platform</b>: {customerInfoSetupStoreValueToString('destinationPlatform', this.props.customerInfoTrial.destinationPlatform)}<br />
+            <b>Interested In</b>:{" "}
+            {customerInfoSetupStoreValueToString(
+              "interestedIn",
+              this.props.customerInfoTrial.interestedIn
+            )}
+            <br />
+            <b>Source Platform</b>:{" "}
+            {customerInfoSetupStoreValueToString(
+              "sourcePlatform",
+              this.props.customerInfoTrial.sourcePlatform
+            )}
+            <br />
+            <b>Destination Platform</b>:{" "}
+            {customerInfoSetupStoreValueToString(
+              "destinationPlatform",
+              this.props.customerInfoTrial.destinationPlatform
+            )}
+            <br />
           </>
         ) : null}
-        <b>Licence Type</b>: {this.props.licenceType}<br />
-        <b>Appliance ID</b>: {this.props.applianceId}<br />
+        <b>Licence Type</b>: {this.props.licenceType}
         <br />
-        Regards,<br />
+        <b>Appliance ID</b>: {this.props.applianceId}
+        <br />
+        <br />
+        Regards,
+        <br />
         {this.props.customerInfoBasic.fullName}
       </div>
-    )
+    );
     return (
       <Wrapper>
-        <SetupPageServerError style={{ marginTop: '-16px' }}>
-          <p>There was an error submitting the form to Cloudbase Solutions support.</p>
-          <p>Please send the following email body to <Link href="mailto:support@cloudbase.it" target="_blank">support@cloudbase.it</Link>.</p>
+        <SetupPageServerError style={{ marginTop: "-16px" }}>
+          <p>
+            There was an error submitting the form to Cloudbase Solutions
+            support.
+          </p>
+          <p>
+            Please send the following email body to{" "}
+            <Link href="mailto:support@cloudbase.it" target="_blank">
+              support@cloudbase.it
+            </Link>
+            .
+          </p>
         </SetupPageServerError>
         <EmailBody>
           <EmailSubject>
             <SetupPageInputWrapper label="Subject">
-              <EmailContent>
-                Coriolis Licence Request
-              </EmailContent>
+              <EmailContent>Coriolis Licence Request</EmailContent>
             </SetupPageInputWrapper>
           </EmailSubject>
           <EmailBodyContent>
             <SetupPageInputWrapper label="Body">
-              <EmailContent onCopy={e => { this.handleCopy(e) }}>
+              <EmailContent
+                onCopy={e => {
+                  this.handleCopy(e);
+                }}
+              >
                 {emailTemplate}
               </EmailContent>
             </SetupPageInputWrapper>
-            <CopyLink onClick={() => { this.handleCopy() }}>
-              <CopyButton style={{ opacity: 1, marginRight: '8px' }} />Copy email body to clipboard
+            <CopyLink
+              onClick={() => {
+                this.handleCopy();
+              }}
+            >
+              <CopyButton style={{ opacity: 1, marginRight: "8px" }} />
+              Copy email body to clipboard
             </CopyLink>
           </EmailBodyContent>
         </EmailBody>
         <div
           style={{
-            position: 'absolute',
-            top: '-100000px',
-            color: 'black',
-            background: 'white',
+            position: "absolute",
+            top: "-100000px",
+            color: "black",
+            background: "white",
           }}
-          ref={ref => { this.emailTemplate = ref }}
+          ref={ref => {
+            this.emailTemplate = ref;
+          }}
         >
           {emailTemplate}
         </div>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SetupPageEmailBody
+export default SetupPageEmailBody;

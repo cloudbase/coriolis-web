@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '@src/utils/ApiCaller'
+import Api from "@src/utils/ApiCaller";
 
-import configLoader from '@src/utils/Config'
-import { Region } from '@src/@types/Region'
+import configLoader from "@src/utils/Config";
+import { Region } from "@src/@types/Region";
 
 class RegionSource {
   async getRegions(): Promise<Region[]> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/regions`,
-    })
-    return response.data.regions
+    });
+    return response.data.regions;
   }
 }
 
-export default new RegionSource()
+export default new RegionSource();

@@ -12,46 +12,51 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from 'moment'
+import moment from "moment";
 
-import { OptionsSchemaPlugin } from '@src/plugins'
-import DefaultOptionsSchemaPlugin from '@src/plugins/default/OptionsSchemaPlugin'
+import { OptionsSchemaPlugin } from "@src/plugins";
+import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin";
 
-import Api from '@src/utils/ApiCaller'
-import type { InstanceScript } from '@src/@types/Instance'
-import type { Field } from '@src/@types/Field'
-import type { NetworkMap } from '@src/@types/Network'
-import type { Endpoint, StorageMap } from '@src/@types/Endpoint'
+import Api from "@src/utils/ApiCaller";
+import type { InstanceScript } from "@src/@types/Instance";
+import type { Field } from "@src/@types/Field";
+import type { NetworkMap } from "@src/@types/Network";
+import type { Endpoint, StorageMap } from "@src/@types/Endpoint";
 
-import configLoader from '@src/utils/Config'
-import { ProgressUpdate, Task } from '@src/@types/Task'
+import configLoader from "@src/utils/Config";
+import { ProgressUpdate, Task } from "@src/@types/Task";
 import {
-  MigrationItem, MigrationItemOptions, MigrationItemDetails, UserScriptData,
-} from '@src/@types/MainItem'
+  MigrationItem,
+  MigrationItemOptions,
+  MigrationItemDetails,
+  UserScriptData,
+} from "@src/@types/MainItem";
 
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from '@src/components/modules/WizardModule/WizardOptions'
-import { sortTasks } from './ReplicaSource'
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
+import { sortTasks } from "./ReplicaSource";
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates: ProgressUpdate[]) {
     if (!updates) {
-      return
+      return;
     }
     updates.sort((a, b) => {
-      const sortNull = !a && b ? 1 : a && !b ? -1 : !a && !b ? 0 : false
+      const sortNull = !a && b ? 1 : a && !b ? -1 : !a && !b ? 0 : false;
       if (sortNull !== false) {
-        return sortNull
+        return sortNull;
       }
-      return a.index - b.index
-    })
+      return a.index - b.index;
+    });
   }
 
   static sortMigrations(migrations: any[]) {
-    migrations.sort((a: any, b: any) => moment(b.created_at).diff(moment(a.created_at)))
+    migrations.sort((a: any, b: any) =>
+      moment(b.created_at).diff(moment(a.created_at))
+    );
 
     migrations.forEach((migration: { tasks: Task[] }) => {
-      sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)
-    })
+      sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates);
+    });
   }
 }
 
@@ -60,32 +65,44 @@ class MigrationSource {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
       skipLog,
-    })
-    const migrations = response.data.migrations
-    MigrationSourceUtils.sortMigrations(migrations)
-    return migrations
+    });
+    const migrations = response.data.migrations;
+    MigrationSourceUtils.sortMigrations(migrations);
+    return migrations;
   }
 
-  async getMigration(migrationId: string, skipLog?: boolean): Promise<MigrationItemDetails> {
+  async getMigration(
+    migrationId: string,
+    skipLog?: boolean
+  ): Promise<MigrationItemDetails> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}`,
       skipLog,
       cancelId: migrationId,
-    })
-    const migration = response.data.migration
-    sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates)
-    return migration
+    });
+    const migration = response.data.migration;
+    sortTasks(migration.tasks, MigrationSourceUtils.sortTaskUpdates);
+    return migration;
   }
 
-  async recreateFullCopy(migration: MigrationItemOptions): Promise<MigrationItem> {
+  async recreateFullCopy(
+    migration: MigrationItemOptions
+  ): Promise<MigrationItem> {
     const {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      origin_endpoint_id, destination_endpoint_id, destination_environment,
+      origin_endpoint_id,
+      destination_endpoint_id,
+      destination_environment,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      network_map, instances, storage_mappings, notes, destination_minion_pool_id,
+      network_map,
+      instances,
+      storage_mappings,
+      notes,
+      destination_minion_pool_id,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      origin_minion_pool_id, instance_osmorphing_minion_pool_mappings,
-    } = migration
+      origin_minion_pool_id,
+      instance_osmorphing_minion_pool_mappings,
+    } = migration;
 
     const payload: any = {
       migration: {
@@ -100,216 +117,255 @@ class MigrationSource {
         origin_minion_pool_id,
         instance_osmorphing_minion_pool_mappings,
       },
-    }
+    };
 
     if (migration.skip_os_morphing != null) {
-      payload.migration.skip_os_morphing = migration.skip_os_morphing
+      payload.migration.skip_os_morphing = migration.skip_os_morphing;
     }
 
     if (migration.source_environment) {
-      payload.migration.source_environment = migration.source_environment
+      payload.migration.source_environment = migration.source_environment;
     }
 
-    payload.migration.shutdown_instances = Boolean(migration.shutdown_instances)
-    payload.migration.replication_count = migration.replication_count || 2
+    payload.migration.shutdown_instances = Boolean(
+      migration.shutdown_instances
+    );
+    payload.migration.replication_count = migration.replication_count || 2;
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
-      method: 'POST',
+      method: "POST",
       data: payload,
-    })
-    return response.data.migration
+    });
+    return response.data.migration;
   }
 
   async recreate(opts: {
-    sourceEndpoint: Endpoint,
-    destEndpoint: Endpoint,
-    instanceNames: string[],
-    destEnv: { [prop: string]: any } | null,
-    updatedDestEnv: { [prop: string]: any } | null,
-    sourceEnv?: { [prop: string]: any } | null,
-    updatedSourceEnv?: { [prop: string]: any } | null,
-    storageMappings?: { [prop: string]: any } | null,
-    updatedStorageMappings: StorageMap[] | null,
-    defaultStorage?: { value: string | null, busType?: string | null },
-    updatedDefaultStorage?: { value: string | null, busType?: string | null },
-    networkMappings?: any,
-    updatedNetworkMappings: NetworkMap[] | null,
-    defaultSkipOsMorphing: boolean | null,
-    replicationCount?: number | null,
-    migration: MigrationItemDetails,
-    uploadedScripts: InstanceScript[]
-    removedScripts: InstanceScript[]
+    sourceEndpoint: Endpoint;
+    destEndpoint: Endpoint;
+    instanceNames: string[];
+    destEnv: { [prop: string]: any } | null;
+    updatedDestEnv: { [prop: string]: any } | null;
+    sourceEnv?: { [prop: string]: any } | null;
+    updatedSourceEnv?: { [prop: string]: any } | null;
+    storageMappings?: { [prop: string]: any } | null;
+    updatedStorageMappings: StorageMap[] | null;
+    defaultStorage?: { value: string | null; busType?: string | null };
+    updatedDefaultStorage?: { value: string | null; busType?: string | null };
+    networkMappings?: any;
+    updatedNetworkMappings: NetworkMap[] | null;
+    defaultSkipOsMorphing: boolean | null;
+    replicationCount?: number | null;
+    migration: MigrationItemDetails;
+    uploadedScripts: InstanceScript[];
+    removedScripts: InstanceScript[];
   }): Promise<MigrationItemDetails> {
     const getValue = (fieldName: string): string | null => {
-      const updatedDestEnv = opts.updatedDestEnv && opts.updatedDestEnv[fieldName]
-      return updatedDestEnv != null ? updatedDestEnv
-        : (opts.destEnv && opts.destEnv[fieldName])
-    }
+      const updatedDestEnv =
+        opts.updatedDestEnv && opts.updatedDestEnv[fieldName];
+      return updatedDestEnv != null
+        ? updatedDestEnv
+        : opts.destEnv && opts.destEnv[fieldName];
+    };
 
-    const sourceParser = OptionsSchemaPlugin.for(opts.sourceEndpoint.type)
-    const destParser = OptionsSchemaPlugin.for(opts.destEndpoint.type)
-    const payload: any = {}
+    const sourceParser = OptionsSchemaPlugin.for(opts.sourceEndpoint.type);
+    const destParser = OptionsSchemaPlugin.for(opts.destEndpoint.type);
+    const payload: any = {};
 
     payload.migration = {
       origin_endpoint_id: opts.sourceEndpoint.id,
       destination_endpoint_id: opts.destEndpoint.id,
-      shutdown_instances: Boolean(opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances),
-      replication_count: (opts.updatedDestEnv
-        && opts.updatedDestEnv.replication_count) || opts.replicationCount || 2,
+      shutdown_instances: Boolean(
+        opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances
+      ),
+      replication_count:
+        (opts.updatedDestEnv && opts.updatedDestEnv.replication_count) ||
+        opts.replicationCount ||
+        2,
       instances: opts.instanceNames,
-      notes: getValue('title') || getValue('notes') || '',
-    }
+      notes: getValue("title") || getValue("notes") || "",
+    };
 
-    const skipOsMorphingValue = getValue('skip_os_morphing')
+    const skipOsMorphingValue = getValue("skip_os_morphing");
     if (skipOsMorphingValue != null) {
-      payload.migration.skip_os_morphing = skipOsMorphingValue
+      payload.migration.skip_os_morphing = skipOsMorphingValue;
     } else if (opts.defaultSkipOsMorphing != null) {
-      payload.migration.skip_os_morphing = opts.defaultSkipOsMorphing
+      payload.migration.skip_os_morphing = opts.defaultSkipOsMorphing;
     }
 
-    if (opts.networkMappings
-      || (opts.updatedNetworkMappings && opts.updatedNetworkMappings.length)) {
+    if (
+      opts.networkMappings ||
+      (opts.updatedNetworkMappings && opts.updatedNetworkMappings.length)
+    ) {
       payload.migration.network_map = {
         ...opts.networkMappings,
         ...destParser.getNetworkMap(opts.updatedNetworkMappings),
-      }
+      };
     }
 
-    if ((opts.storageMappings && Object.keys(opts.storageMappings).length)
-      || (opts.updatedStorageMappings && opts.updatedStorageMappings.length)) {
+    if (
+      (opts.storageMappings && Object.keys(opts.storageMappings).length) ||
+      (opts.updatedStorageMappings && opts.updatedStorageMappings.length)
+    ) {
       payload.migration.storage_mappings = {
         ...opts.storageMappings,
-        ...destParser.getStorageMap(opts.updatedDefaultStorage || opts.defaultStorage, opts.updatedStorageMappings),
-      }
+        ...destParser.getStorageMap(
+          opts.updatedDefaultStorage || opts.defaultStorage,
+          opts.updatedStorageMappings
+        ),
+      };
     }
-    const { migration } = opts
+    const { migration } = opts;
     const sourceEnv: any = {
       ...opts.sourceEnv,
-    }
+    };
     const updatedSourceEnv = opts.updatedSourceEnv
-      ? sourceParser.getDestinationEnv(opts.updatedSourceEnv) : {}
-    const sourceMinionPoolId = opts?.updatedSourceEnv?.minion_pool_id
-      || migration.origin_minion_pool_id
+      ? sourceParser.getDestinationEnv(opts.updatedSourceEnv)
+      : {};
+    const sourceMinionPoolId =
+      opts?.updatedSourceEnv?.minion_pool_id || migration.origin_minion_pool_id;
     if (sourceMinionPoolId) {
-      payload.migration.origin_minion_pool_id = sourceMinionPoolId
+      payload.migration.origin_minion_pool_id = sourceMinionPoolId;
     }
     payload.migration.source_environment = {
       ...sourceEnv,
       ...updatedSourceEnv,
-    }
+    };
 
     const destEnv: any = {
       ...opts.destEnv,
-    }
+    };
     const updatedDestEnv = opts.updatedDestEnv
-      ? sourceParser.getDestinationEnv(opts.updatedDestEnv) : {}
-    const destMinionPoolId = opts?.updatedDestEnv?.minion_pool_id
-      || migration.destination_minion_pool_id
+      ? sourceParser.getDestinationEnv(opts.updatedDestEnv)
+      : {};
+    const destMinionPoolId =
+      opts?.updatedDestEnv?.minion_pool_id ||
+      migration.destination_minion_pool_id;
     if (destMinionPoolId) {
-      payload.migration.destination_minion_pool_id = destMinionPoolId
+      payload.migration.destination_minion_pool_id = destMinionPoolId;
     }
 
-    const updatedDestEnvMappings = updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
-    const oldMappings = migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {}
-    const mergedMappings = { ...oldMappings, ...updatedDestEnvMappings }
+    const updatedDestEnvMappings =
+      updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {};
+    const oldMappings =
+      migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] || {};
+    const mergedMappings = { ...oldMappings, ...updatedDestEnvMappings };
     if (Object.keys(mergedMappings).length) {
-      const newMappings: any = {}
+      const newMappings: any = {};
       Object.keys(mergedMappings).forEach(k => {
         if (mergedMappings[k] !== null) {
-          newMappings[k] = mergedMappings[k]
+          newMappings[k] = mergedMappings[k];
         }
-      })
-      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings
+      });
+      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings;
     }
 
-    delete updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]
+    delete updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS];
 
     payload.migration.destination_environment = {
       ...destEnv,
       ...updatedDestEnv,
-    }
+    };
 
-    if (opts.uploadedScripts?.length || opts.removedScripts?.length || migration.user_scripts) {
-      payload.migration.user_scripts = new DefaultOptionsSchemaPlugin().getUserScripts(
-        opts.uploadedScripts || [],
-        opts.removedScripts || [],
-        migration.user_scripts,
-      )
+    if (
+      opts.uploadedScripts?.length ||
+      opts.removedScripts?.length ||
+      migration.user_scripts
+    ) {
+      payload.migration.user_scripts =
+        new DefaultOptionsSchemaPlugin().getUserScripts(
+          opts.uploadedScripts || [],
+          opts.removedScripts || [],
+          migration.user_scripts
+        );
     }
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
-      method: 'POST',
+      method: "POST",
       data: payload,
-    })
-    return response.data.migration
+    });
+    return response.data.migration;
   }
 
   async cancel(migrationId: string, force?: boolean | null): Promise<string> {
-    const data: any = { cancel: null }
+    const data: any = { cancel: null };
     if (force) {
-      data.cancel = { force: true }
+      data.cancel = { force: true };
     }
     await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}/actions`,
-      method: 'POST',
+      method: "POST",
       data,
-    })
-    return migrationId
+    });
+    return migrationId;
   }
 
   async delete(migrationId: string): Promise<string> {
     await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations/${migrationId}`,
-      method: 'DELETE',
-    })
-    return migrationId
+      method: "DELETE",
+    });
+    return migrationId;
   }
 
   async migrateReplica(opts: {
-    replicaId: string,
-    options: Field[],
-    uploadedUserScripts: InstanceScript[],
-    removedUserScripts: InstanceScript[],
-    userScriptData: UserScriptData | null | undefined,
-    minionPoolMappings: { [instance: string]: string },
+    replicaId: string;
+    options: Field[];
+    uploadedUserScripts: InstanceScript[];
+    removedUserScripts: InstanceScript[];
+    userScriptData: UserScriptData | null | undefined;
+    minionPoolMappings: { [instance: string]: string };
   }): Promise<MigrationItem> {
     const {
-      replicaId, options, uploadedUserScripts, removedUserScripts, userScriptData, minionPoolMappings,
-    } = opts
+      replicaId,
+      options,
+      uploadedUserScripts,
+      removedUserScripts,
+      userScriptData,
+      minionPoolMappings,
+    } = opts;
     const payload: any = {
       migration: {
         replica_id: replicaId,
       },
-    }
+    };
     options.forEach(o => {
-      payload.migration[o.name] = o.value || o.default || false
-    })
+      payload.migration[o.name] = o.value || o.default || false;
+    });
 
-    if (uploadedUserScripts.length || removedUserScripts.length || userScriptData) {
-      payload.migration.user_scripts = new DefaultOptionsSchemaPlugin().getUserScripts(uploadedUserScripts, removedUserScripts, userScriptData)
+    if (
+      uploadedUserScripts.length ||
+      removedUserScripts.length ||
+      userScriptData
+    ) {
+      payload.migration.user_scripts =
+        new DefaultOptionsSchemaPlugin().getUserScripts(
+          uploadedUserScripts,
+          removedUserScripts,
+          userScriptData
+        );
     }
 
     if (Object.keys(minionPoolMappings).length) {
-      const newMappings: any = {}
+      const newMappings: any = {};
       Object.keys(minionPoolMappings).forEach(k => {
         if (minionPoolMappings[k] !== null) {
-          newMappings[k] = minionPoolMappings[k]
+          newMappings[k] = minionPoolMappings[k];
         }
-      })
-      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings
+      });
+      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings;
     } else {
-      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = null
+      payload.migration[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = null;
     }
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/migrations`,
-      method: 'POST',
+      method: "POST",
       data: payload,
-    })
-    return response.data.migration
+    });
+    return response.data.migration;
   }
 }
 
-export default new MigrationSource()
+export default new MigrationSource();

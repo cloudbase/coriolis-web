@@ -12,117 +12,126 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
-import Navigation from '@src/components/modules/NavigationModule/Navigation'
-import FilterList from '@src/components/ui/Lists/FilterList'
-import UserListItem from '@src/components/modules/UserModule/UserListItem'
+import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
+import Navigation from "@src/components/modules/NavigationModule/Navigation";
+import FilterList from "@src/components/ui/Lists/FilterList";
+import UserListItem from "@src/components/modules/UserModule/UserListItem";
 
-import type { User } from '@src/@types/User'
+import type { User } from "@src/@types/User";
 
-import projectStore from '@src/stores/ProjectStore'
-import userStore from '@src/stores/UserStore'
-import configLoader from '@src/utils/Config'
-import PageHeader from '@src/components/smart/PageHeader'
+import projectStore from "@src/stores/ProjectStore";
+import userStore from "@src/stores/UserStore";
+import configLoader from "@src/utils/Config";
+import PageHeader from "@src/components/smart/PageHeader";
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 
 type State = {
-  modalIsOpen: boolean,
-}
+  modalIsOpen: boolean;
+};
 @observer
 class UsersPage extends React.Component<{ history: any }, State> {
   state = {
     modalIsOpen: false,
-  }
+  };
 
-  pollTimeout: number = 0
+  pollTimeout = 0;
 
-  stopPolling: boolean = false
+  stopPolling = false;
 
   componentDidMount() {
-    document.title = 'Users'
+    document.title = "Users";
 
-    projectStore.getProjects()
-    userStore.getAllUsers()
+    projectStore.getProjects();
+    userStore.getAllUsers();
 
-    this.stopPolling = false
-    this.pollData(true)
+    this.stopPolling = false;
+    this.pollData(true);
   }
 
   componentWillUnmount() {
-    clearTimeout(this.pollTimeout)
-    this.stopPolling = true
+    clearTimeout(this.pollTimeout);
+    this.stopPolling = true;
   }
 
   getProjectName(projectId?: string | null): string {
     if (!projectId) {
-      return '-'
+      return "-";
     }
-    const project = projectStore.projects.find(p => p.id === projectId)
-    return project ? project.name : '-'
+    const project = projectStore.projects.find(p => p.id === projectId);
+    return project ? project.name : "-";
   }
 
   handleModalOpen() {
-    this.setState({ modalIsOpen: true })
+    this.setState({ modalIsOpen: true });
   }
 
   handleModalClose() {
     this.setState({ modalIsOpen: false }, () => {
-      this.pollData()
-    })
+      this.pollData();
+    });
   }
 
   handleReloadButtonClick() {
-    projectStore.getProjects()
-    userStore.getAllUsers({ showLoading: true })
+    projectStore.getProjects();
+    userStore.getAllUsers({ showLoading: true });
   }
 
   async pollData(showLoading?: boolean) {
     if (this.state.modalIsOpen || this.stopPolling) {
-      return
+      return;
     }
 
-    await userStore.getAllUsers({ showLoading, skipLog: true })
-    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    await userStore.getAllUsers({ showLoading, skipLog: true });
+    this.pollTimeout = window.setTimeout(() => {
+      this.pollData();
+    }, configLoader.config.requestPollTimeout);
   }
 
-  itemFilterFunction(item: User, filterItem?: string | null, filterText?: string): boolean {
-    const usableFilterText = (filterText && filterText.toLowerCase()) || ''
+  itemFilterFunction(
+    item: User,
+    filterItem?: string | null,
+    filterText?: string
+  ): boolean {
+    const usableFilterText = (filterText && filterText.toLowerCase()) || "";
     return (
-      (
-        filterItem === 'all'
-        || item.project_id === filterItem
-      ) && (
-        item.name.toLowerCase().indexOf(usableFilterText) > -1
-        || (
-          item.description ? item.description.toLowerCase().indexOf(usableFilterText) > -1 : false
-        )
-        || (item.email ? item.email.toLowerCase().indexOf(usableFilterText) > -1 : false)
-      ))
+      (filterItem === "all" || item.project_id === filterItem) &&
+      (item.name.toLowerCase().indexOf(usableFilterText) > -1 ||
+        (item.description
+          ? item.description.toLowerCase().indexOf(usableFilterText) > -1
+          : false) ||
+        (item.email
+          ? item.email.toLowerCase().indexOf(usableFilterText) > -1
+          : false))
+    );
   }
 
   render() {
     const filterItems = projectStore.projects
       .map(p => ({ label: p.name, value: p.id }))
-      .sort((a, b) => a.label.localeCompare(b.label))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
     return (
       <Wrapper>
         <MainTemplate
           navigationComponent={<Navigation currentPage="users" />}
           listNoMargin
-          listComponent={(
+          listComponent={
             <FilterList
-              filterItems={[{ label: 'All', value: 'all' }].concat(filterItems)}
+              filterItems={[{ label: "All", value: "all" }].concat(filterItems)}
               selectionLabel="user"
               loading={userStore.allUsersLoading}
               items={userStore.users}
-              onItemClick={(user: User) => { this.props.history.push(`/users/${user.id}`) }}
-              onReloadButtonClick={() => { this.handleReloadButtonClick() }}
+              onItemClick={(user: User) => {
+                this.props.history.push(`/users/${user.id}`);
+              }}
+              onReloadButtonClick={() => {
+                this.handleReloadButtonClick();
+              }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={component => (
                 <UserListItem
@@ -131,18 +140,22 @@ class UsersPage extends React.Component<{ history: any }, State> {
                 />
               )}
             />
-          )}
-          headerComponent={(
+          }
+          headerComponent={
             <PageHeader
               title="Users"
-              onModalOpen={() => { this.handleModalOpen() }}
-              onModalClose={() => { this.handleModalClose() }}
+              onModalOpen={() => {
+                this.handleModalOpen();
+              }}
+              onModalClose={() => {
+                this.handleModalClose();
+              }}
             />
-          )}
+          }
         />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default UsersPage
+export default UsersPage;

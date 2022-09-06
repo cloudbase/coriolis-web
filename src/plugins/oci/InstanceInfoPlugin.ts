@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Instance } from '@src/@types/Instance'
-import InstanceInfoPluginBase from '@src/plugins/default/InstanceInfoPlugin'
+import type { Instance } from "@src/@types/Instance";
+import InstanceInfoPluginBase from "@src/plugins/default/InstanceInfoPlugin";
 
 export default class InstanceInfoPlugin extends InstanceInfoPluginBase {
   override parseInstance(instance: Instance): Instance {
-    const rootDisk = instance.devices.disks[0]
+    const rootDisk = instance.devices.disks[0];
     if (rootDisk) {
       rootDisk.disabled = {
-        message: 'Storage types cannot be selected for root disks on OCI',
-        info: 'The storage type of the root disk on OCI depends on the launch mode of the new VM. Coriolis determines a launch mode depending on the source VM\'s firmware and the target environment configuration.',
-      }
+        message: "Storage types cannot be selected for root disks on OCI",
+        info: "The storage type of the root disk on OCI depends on the launch mode of the new VM. Coriolis determines a launch mode depending on the source VM's firmware and the target environment configuration.",
+      };
     }
-    return instance
+    return instance;
   }
 }

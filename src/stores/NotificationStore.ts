@@ -12,46 +12,57 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, action } from 'mobx'
+import { observable, action } from "mobx";
 
-import type { AlertInfo, AlertInfoLevel, NotificationItemData } from '@src/@types/NotificationItem'
-import NotificationSource from '@src/sources/NotificationSource'
+import type {
+  AlertInfo,
+  AlertInfoLevel,
+  NotificationItemData,
+} from "@src/@types/NotificationItem";
+import NotificationSource from "@src/sources/NotificationSource";
 
 class NotificationStore {
-  @observable alerts: AlertInfo[] = []
+  @observable alerts: AlertInfo[] = [];
 
-  @observable notificationItems: NotificationItemData[] = []
+  @observable notificationItems: NotificationItemData[] = [];
 
-  @observable loading: boolean = false
+  @observable loading = false;
 
-  visibleErrors: string[] = []
+  visibleErrors: string[] = [];
 
-  @action alert(message: string, level?: AlertInfoLevel, options?: AlertInfo['options']) {
+  @action alert(
+    message: string,
+    level?: AlertInfoLevel,
+    options?: AlertInfo["options"]
+  ) {
     if (this.visibleErrors.find(e => e === message)) {
-      return
+      return;
     }
 
-    this.alerts.push({ message, level, options })
+    this.alerts.push({ message, level, options });
 
-    if (level === 'error') {
-      this.visibleErrors.push(message)
+    if (level === "error") {
+      this.visibleErrors.push(message);
       setTimeout(() => {
-        this.visibleErrors = this.visibleErrors.filter(e => e !== message)
-      }, 10000)
+        this.visibleErrors = this.visibleErrors.filter(e => e !== message);
+      }, 10000);
     }
   }
 
   @action async loadData(showLoading?: boolean) {
-    this.loading = Boolean(showLoading)
-    const data = await NotificationSource.loadData()
-    this.loading = false
-    this.notificationItems = data
+    this.loading = Boolean(showLoading);
+    const data = await NotificationSource.loadData();
+    this.loading = false;
+    this.notificationItems = data;
   }
 
   @action saveSeen() {
-    this.notificationItems = this.notificationItems.map(item => ({ ...item, unseen: false }))
-    NotificationSource.saveSeen(this.notificationItems)
+    this.notificationItems = this.notificationItems.map(item => ({
+      ...item,
+      unseen: false,
+    }));
+    NotificationSource.saveSeen(this.notificationItems);
   }
 }
 
-export default new NotificationStore()
+export default new NotificationStore();

@@ -12,118 +12,140 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import styled, { css } from 'styled-components'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import * as React from "react";
+import styled, { css } from "styled-components";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import closeImage from './images/close.svg'
-import requiredImage from './images/required.svg'
+import closeImage from "./images/close.svg";
+import requiredImage from "./images/required.svg";
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${props => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
-`
+  ${props =>
+    props.disabledLoading ? ThemeProps.animations.disabledLoading : ""}
+`;
 const Required = styled.div<any>`
   position: absolute;
   width: 8px;
   height: 8px;
   right: ${props => props.right}px;
   top: 12px;
-  background: url('${requiredImage}') center no-repeat;
-`
+  background: url("${requiredImage}") center no-repeat;
+`;
 const getInputWidth = (props: any) => {
   if (props.width) {
-    return typeof props.width === 'number' ? `${props.width}px` : props.width
+    return typeof props.width === "number" ? `${props.width}px` : props.width;
   }
 
   if (props.large) {
-    return `${ThemeProps.inputSizes.large.width}px`
+    return `${ThemeProps.inputSizes.large.width}px`;
   }
 
-  return `${ThemeProps.inputSizes.regular.width}px`
-}
+  return `${ThemeProps.inputSizes.regular.width}px`;
+};
 const borderColor = (
   props: any,
-  defaultColor: string | undefined | null = ThemePalette.grayscale[3],
-) => (props.highlight ? ThemePalette.alert : defaultColor)
+  defaultColor: string | undefined | null = ThemePalette.grayscale[3]
+) => (props.highlight ? ThemePalette.alert : defaultColor);
 const Input = styled.input<any>`
   width: ${props => getInputWidth(props)};
-  height: ${props => props.height || `${ThemeProps.inputSizes.regular.height}px`};
-  line-height: ${props => props.lineHeight || 'normal'};
+  height: ${props =>
+    props.height || `${ThemeProps.inputSizes.regular.height}px`};
+  line-height: ${props => props.lineHeight || "normal"};
   border-radius: ${ThemeProps.borderRadius};
-  background-color: #FFF;
-  border: ${props => (props.embedded ? 0 : css`1px solid ${borderColor(props)}`)};
-  border-top-left-radius: ${props => (props.embedded ? 0 : ThemeProps.borderRadius)};
+  background-color: #fff;
+  border: ${props =>
+    props.embedded ? 0 : css`1px solid ${borderColor(props)}`};
+  border-top-left-radius: ${props =>
+    props.embedded ? 0 : ThemeProps.borderRadius};
   border-top-right-radius: ${ThemeProps.borderRadius};
-  border-bottom-left-radius: ${props => (props.embedded ? 0 : ThemeProps.borderRadius)};
+  border-bottom-left-radius: ${props =>
+    props.embedded ? 0 : ThemeProps.borderRadius};
   border-bottom-right-radius: ${ThemeProps.borderRadius};
   color: ${ThemePalette.black};
-  padding: 0 8px 0 ${props => (props.embedded ? 0 : '16px')};
+  padding: 0 8px 0 ${props => (props.embedded ? 0 : "16px")};
   font-size: inherit;
   transition: all ${ThemeProps.animations.swift};
   box-sizing: border-box;
   &:hover {
-    border-color: ${props => borderColor(props, props.disablePrimary ? null : ThemePalette.primary)};
+    border-color: ${props =>
+      borderColor(props, props.disablePrimary ? null : ThemePalette.primary)};
   }
   &:focus {
-    border-color: ${props => borderColor(props, props.disablePrimary ? null : ThemePalette.primary)};
+    border-color: ${props =>
+      borderColor(props, props.disablePrimary ? null : ThemePalette.primary)};
     outline: none;
   }
   &:disabled {
-    color: ${props => (!props.embedded ? ThemePalette.grayscale[3] : 'inherit')};
-    border-color: ${props => (!props.embedded ? ThemePalette.grayscale[0] : 'inherit')};
-    background-color: ${props => (!props.embedded ? ThemePalette.grayscale[0] : 'inherit')};
+    color: ${props =>
+      !props.embedded ? ThemePalette.grayscale[3] : "inherit"};
+    border-color: ${props =>
+      !props.embedded ? ThemePalette.grayscale[0] : "inherit"};
+    background-color: ${props =>
+      !props.embedded ? ThemePalette.grayscale[0] : "inherit"};
   }
   &::placeholder {
     color: ${ThemePalette.grayscale[3]};
   }
-`
+`;
 export const Close = styled.div<any>`
-  display: ${props => (props.show ? 'block' : 'none')};
+  display: ${props => (props.show ? "block" : "none")};
   width: 16px;
   height: 16px;
-  background: url('${closeImage}') center no-repeat;
+  background: url("${closeImage}") center no-repeat;
   position: absolute;
   top: 8px;
   right: 8px;
   cursor: pointer;
-`
+`;
 
 type Props = {
-  _ref?: (ref: HTMLElement) => void,
-  disabled?: boolean,
-  highlight?: boolean,
-  large?: boolean,
-  onChange?: (e: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }) => void,
-  placeholder?: string,
-  type?: string,
-  value?: string,
-  showClose?: boolean,
-  onCloseClick?: () => void,
-  embedded?: boolean,
-  width?: string | number,
-  height?: string,
-  style?: React.CSSProperties,
-  lineHeight?: string,
-  required?: boolean,
-  disabledLoading?: boolean,
-  onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
-  onFocus?: () => void,
-  onBlur?: () => void,
-  autoComplete?: string
-}
+  _ref?: (ref: HTMLElement) => void;
+  disabled?: boolean;
+  highlight?: boolean;
+  large?: boolean;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }
+  ) => void;
+  placeholder?: string;
+  type?: string;
+  value?: string;
+  showClose?: boolean;
+  onCloseClick?: () => void;
+  embedded?: boolean;
+  width?: string | number;
+  height?: string;
+  style?: React.CSSProperties;
+  lineHeight?: string;
+  required?: boolean;
+  disabledLoading?: boolean;
+  onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  autoComplete?: string;
+};
 const TextInput = (props: Props) => {
   const {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    _ref, value, onChange, showClose, onCloseClick,
-    disabled, disabledLoading, embedded, onInputKeyDown,
-  } = props
-  const actualDisabled = disabled || disabledLoading
-  let input: { focus: () => void }
+    _ref,
+    value,
+    onChange,
+    showClose,
+    onCloseClick,
+    disabled,
+    disabledLoading,
+    embedded,
+    onInputKeyDown,
+  } = props;
+  const actualDisabled = disabled || disabledLoading;
+  let input: { focus: () => void };
   return (
     <Wrapper disabledLoading={disabledLoading}>
       <Input
-        ref={(ref: HTMLElement) => { input = ref; if (_ref) _ref(ref) }}
+        ref={(ref: HTMLElement) => {
+          input = ref;
+          if (_ref) _ref(ref);
+        }}
         type="text"
         value={value}
         onChange={onChange}
@@ -134,16 +156,16 @@ const TextInput = (props: Props) => {
       />
       {props.required ? <Required right={embedded ? -24 : -16} /> : null}
       <Close
-        show={showClose && value !== '' && value !== undefined}
+        show={showClose && value !== "" && value !== undefined}
         onClick={() => {
-          input.focus()
+          input.focus();
 
-          if (onChange) onChange({ target: { value: '' } })
-          if (onCloseClick) onCloseClick()
+          if (onChange) onChange({ target: { value: "" } });
+          if (onCloseClick) onCloseClick();
         }}
       />
     </Wrapper>
-  )
-}
+  );
+};
 
-export default TextInput
+export default TextInput;

@@ -12,42 +12,44 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import sinon from 'sinon'
-import TW from '@src/utils/TestWrapper'
-import ChooseProvider from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import sinon from "sinon";
+import TW from "@src/utils/TestWrapper";
+import ChooseProvider from ".";
 
-const wrap = props => new TW(shallow(
-  
-  <ChooseProvider {...props} />
-), 'cProvider')
+const wrap = props =>
+  new TW(shallow(<ChooseProvider {...props} />), "cProvider");
 
-let providers = ['azure', 'openstack', 'opc', 'oracle_vm', 'vmware_vsphere', 'aws']
+const providers = [
+  "azure",
+  "openstack",
+  "opc",
+  "oracle_vm",
+  "vmware_vsphere",
+  "aws",
+];
 
-describe('ChooseProvider Component', () => {
-  it('renders all given providers', () => {
-    let wrapper = wrap({ providers })
+describe("ChooseProvider Component", () => {
+  it("renders all given providers", () => {
+    const wrapper = wrap({ providers });
     providers.forEach(key => {
-      expect(wrapper.find(`endpointLogo-${key}`).prop('endpoint')).toBe(key)
-    })
-  })
+      expect(wrapper.find(`endpointLogo-${key}`).prop("endpoint")).toBe(key);
+    });
+  });
 
-  it('dispatches provider click', () => {
-    let onProviderClick = sinon.spy()
-    let wrapper = wrap({ providers, onProviderClick })
-    wrapper.find('endpointLogo-opc').click()
-    expect(onProviderClick.calledOnce).toBe(true)
-    expect(onProviderClick.args[0][0]).toBe('opc')
-  })
+  it("dispatches provider click", () => {
+    const onProviderClick = sinon.spy();
+    const wrapper = wrap({ providers, onProviderClick });
+    wrapper.find("endpointLogo-opc").click();
+    expect(onProviderClick.calledOnce).toBe(true);
+    expect(onProviderClick.args[0][0]).toBe("opc");
+  });
 
-  it('dispatches cancel click', () => {
-    let onCancelClick = sinon.spy()
-    let wrapper = wrap({ providers, onCancelClick })
-    wrapper.find('cancelButton').click()
-    expect(onCancelClick.calledOnce).toBe(true)
-  })
-})
-
-
-
+  it("dispatches cancel click", () => {
+    const onCancelClick = sinon.spy();
+    const wrapper = wrap({ providers, onCancelClick });
+    wrapper.find("cancelButton").click();
+    expect(onCancelClick.calledOnce).toBe(true);
+  });
+});

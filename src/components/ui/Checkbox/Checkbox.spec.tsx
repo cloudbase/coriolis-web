@@ -12,28 +12,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import React from "react";
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-import TestUtils from '@tests/TestUtils'
-import Checkbox from './Checkbox'
+import TestUtils from "@tests/TestUtils";
+import Checkbox from "./Checkbox";
 
-describe('Checkbox', () => {
-  it('dispatches change on space key', () => {
-    const onChange = jest.fn()
-    const { rerender } = render(<Checkbox onChange={onChange} />)
-    userEvent.type(TestUtils.select('Checkbox__Wrapper')!, ' ')
-    expect(onChange).toHaveBeenCalledWith(true)
-    rerender(<Checkbox onChange={onChange} checked />)
-    userEvent.type(TestUtils.select('Checkbox__Wrapper')!, ' ')
-    expect(onChange).toHaveBeenCalledWith(false)
-  })
+describe("Checkbox", () => {
+  it("dispatches change on space key", () => {
+    const onChange = jest.fn();
+    const { rerender } = render(<Checkbox onChange={onChange} />);
+    userEvent.type(TestUtils.select("Checkbox__Wrapper")!, " ");
+    expect(onChange).toHaveBeenCalledWith(true);
+    rerender(<Checkbox onChange={onChange} checked />);
+    userEvent.type(TestUtils.select("Checkbox__Wrapper")!, " ");
+    expect(onChange).toHaveBeenCalledWith(false);
+  });
 
-  it('doesn\'t dispatch change if disabled', () => {
-    const onChange = jest.fn()
-    render(<Checkbox onChange={onChange} disabled />)
-    userEvent.type(TestUtils.select('Checkbox__Wrapper')!, ' ')
-    expect(onChange).not.toHaveBeenCalled()
-  })
-})
+  it("doesn't dispatch change if disabled", () => {
+    const onChange = jest.fn();
+    render(<Checkbox onChange={onChange} disabled />);
+    userEvent.type(TestUtils.select("Checkbox__Wrapper")!, " ");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});

@@ -13,4 +13,4 @@ export default `<?xml version="1.0" encoding="UTF-8"?>
             <circle class="circle" id="Oval-5" stroke="#F91661" stroke-width="1.5" cx="48" cy="48" r="47"></circle>
         </g>
     </g>
-</svg>`
+</svg>`;

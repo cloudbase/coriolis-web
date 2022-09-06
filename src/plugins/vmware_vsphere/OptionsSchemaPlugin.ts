@@ -12,83 +12,92 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Field } from '@src/@types/Field'
-import type { OptionValues } from '@src/@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
+import type { Field } from "@src/@types/Field";
+import type { OptionValues } from "@src/@types/Endpoint";
+import type { SchemaProperties, SchemaDefinitions } from "@src/@types/Schema";
 import OptionsSchemaPluginBase, {
   defaultFillMigrationImageMapValues,
   defaultFillFieldValues,
   defaultGetDestinationEnv,
   defaultGetMigrationImageMap,
-} from '../default/OptionsSchemaPlugin'
+} from "../default/OptionsSchemaPlugin";
 
 export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
-  override migrationImageMapFieldName = 'migr_template_map'
+  override migrationImageMapFieldName = "migr_template_map";
 
   override parseSchemaToFields(opts: {
-    schema: SchemaProperties,
-    schemaDefinitions?: SchemaDefinitions | null | undefined,
-    dictionaryKey?: string,
-    requiresWindowsImage?: boolean,
+    schema: SchemaProperties;
+    schemaDefinitions?: SchemaDefinitions | null | undefined;
+    dictionaryKey?: string;
+    requiresWindowsImage?: boolean;
   }) {
-    const fields = super.parseSchemaToFields(opts)
+    const fields = super.parseSchemaToFields(opts);
     fields.forEach(f => {
       if (
-        f.name !== 'migr_template_username_map'
-        && f.name !== 'migr_template_password_map'
-        && f.name !== 'migr_template_map'
+        f.name !== "migr_template_username_map" &&
+        f.name !== "migr_template_password_map" &&
+        f.name !== "migr_template_map"
       ) {
-        return
+        return;
       }
 
-      const password = f.name === 'migr_template_password_map'
+      const password = f.name === "migr_template_password_map";
       f.properties = [
         {
-          type: 'string',
-          name: 'windows',
+          type: "string",
+          name: "windows",
           required: opts.requiresWindowsImage,
           password,
         },
         {
-          type: 'string',
-          name: 'linux',
+          type: "string",
+          name: "linux",
           required: true,
           password,
         },
-      ]
-    })
+      ];
+    });
 
-    return fields
+    return fields;
   }
 
   // @TODO - check if this override is necessary, aka this.migrationImageMapFieldName is used from this class
-  override fillFieldValues(opts: { field: Field, options: OptionValues[], requiresWindowsImage: boolean }) {
-    const { field, options, requiresWindowsImage } = opts
+  override fillFieldValues(opts: {
+    field: Field;
+    options: OptionValues[];
+    requiresWindowsImage: boolean;
+  }) {
+    const { field, options, requiresWindowsImage } = opts;
 
-    const option = options.find(f => f.name === field.name)
+    const option = options.find(f => f.name === field.name);
     if (!option) {
-      return
+      return;
     }
-    if (!defaultFillMigrationImageMapValues({
-      field,
-      option,
-      migrationImageMapFieldName: this.migrationImageMapFieldName,
-      requiresWindowsImage,
-    })) {
-      defaultFillFieldValues(field, option)
+    if (
+      !defaultFillMigrationImageMapValues({
+        field,
+        option,
+        migrationImageMapFieldName: this.migrationImageMapFieldName,
+        requiresWindowsImage,
+      })
+    ) {
+      defaultFillFieldValues(field, option);
     }
   }
 
   // @TODO - check if this override is necessary, aka this.migrationImageMapFieldName is used from this class
-  override getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
+  override getDestinationEnv(
+    options?: { [prop: string]: any } | null,
+    oldOptions?: any
+  ) {
     const env = {
       ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
         options,
         oldOptions,
-        this.migrationImageMapFieldName,
+        this.migrationImageMapFieldName
       ),
-    }
-    return env
+    };
+    return env;
   }
 }

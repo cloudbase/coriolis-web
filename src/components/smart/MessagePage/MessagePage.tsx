@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import EmptyTemplate from '@src/components/modules/TemplateModule/EmptyTemplate'
-import { ThemePalette } from '@src/components/Theme'
+import React from "react";
+import styled from "styled-components";
+import EmptyTemplate from "@src/components/modules/TemplateModule/EmptyTemplate";
+import { ThemePalette } from "@src/components/Theme";
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
-import fingerprintImage from './images/fingerprint'
+import fingerprintImage from "./images/fingerprint";
 
 const Wrapper = styled.div<any>`
   position: absolute;
@@ -31,7 +31,7 @@ const Wrapper = styled.div<any>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
+`;
 const FingerPrintAnimation = styled.div<any>`
   margin-bottom: 32px;
   --animation-delay: 150ms;
@@ -53,21 +53,21 @@ const FingerPrintAnimation = styled.div<any>`
       opacity: 0;
     }
   }
-`
+`;
 const Title = styled.div<any>`
   font-size: 21px;
   color: ${ThemePalette.grayscale[4]};
-`
+`;
 const Message = styled.div<any>`
   margin-top: 16px;
   color: ${ThemePalette.grayscale[8]};
-`
+`;
 type Props = {
-  title?: string,
-  subtitle?: string,
-  showAuthAnimation?: boolean,
-  showDenied?: boolean,
-}
+  title?: string;
+  subtitle?: string;
+  showAuthAnimation?: boolean;
+  showDenied?: boolean;
+};
 const NotFoundPage = (props: Props) => (
   <EmptyTemplate>
     <Wrapper>
@@ -77,12 +77,15 @@ const NotFoundPage = (props: Props) => (
         />
       ) : null}
       {props.showDenied ? (
-        <StatusImage status="ERROR" style={{ marginBottom: '32px' }} />
+        <StatusImage status="ERROR" style={{ marginBottom: "32px" }} />
       ) : null}
-      <Title>{props.title || 'Page Not Found'}</Title>
-      <Message>{props.subtitle || 'Sorry, but the page you are trying to view does not exist.'}</Message>
+      <Title>{props.title || "Page Not Found"}</Title>
+      <Message>
+        {props.subtitle ||
+          "Sorry, but the page you are trying to view does not exist."}
+      </Message>
     </Wrapper>
   </EmptyTemplate>
-)
+);
 
-export default NotFoundPage
+export default NotFoundPage;

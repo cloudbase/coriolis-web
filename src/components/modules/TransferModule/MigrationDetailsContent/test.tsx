@@ -12,68 +12,66 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import sinon from 'sinon'
-import TW from '@src/utils/TestWrapper'
-import MigrationDetailsContent from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import sinon from "sinon";
+import TW from "@src/utils/TestWrapper";
+import MigrationDetailsContent from ".";
 
-const wrap = props => new TW(shallow(
+const wrap = props =>
+  new TW(shallow(<MigrationDetailsContent {...props} />), "mdContent");
 
-  <MigrationDetailsContent {...props} />
-), 'mdContent')
-
-let tasks = [
+const tasks = [
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'RUNNING',
+    exception_details: "Exception details",
+    status: "RUNNING",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-2',
-    task_type: 'Task name 2',
+    depends_on: ["depends on id"],
+    id: "task-2",
+    task_type: "Task name 2",
   },
-]
-let endpoints = [
-  { id: 'endpoint-1', name: 'Endpoint OPS', type: 'openstack' },
-  { id: 'endpoint-2', name: 'Endpoint AZURE', type: 'azure' },
-]
-let item = {
-  origin_endpoint_id: 'endpoint-1',
-  destination_endpoint_id: 'endpoint-2',
-  id: 'item-id',
+];
+const endpoints = [
+  { id: "endpoint-1", name: "Endpoint OPS", type: "openstack" },
+  { id: "endpoint-2", name: "Endpoint AZURE", type: "azure" },
+];
+const item = {
+  origin_endpoint_id: "endpoint-1",
+  destination_endpoint_id: "endpoint-2",
+  id: "item-id",
   created_at: new Date(2017, 10, 24, 16, 15),
   tasks,
-  destination_environment: { description: 'A description' },
-  type: 'Migration',
-}
+  destination_environment: { description: "A description" },
+  type: "Migration",
+};
 
-describe('MigrationDetailsContent Component', () => {
-  it('renders main details page', () => {
-    let wrapper = wrap({ endpoints, item, page: '' })
-    expect(wrapper.find('mainDetails').prop('item').id).toBe('item-id')
-  })
+describe("MigrationDetailsContent Component", () => {
+  it("renders main details page", () => {
+    const wrapper = wrap({ endpoints, item, page: "" });
+    expect(wrapper.find("mainDetails").prop("item").id).toBe("item-id");
+  });
 
-  it('renders tasks page', () => {
-    let wrapper = wrap({ endpoints, item, page: 'tasks' })
-    expect(wrapper.find('tasks').prop('items')[0].id).toBe('task-2')
-  })
+  it("renders tasks page", () => {
+    const wrapper = wrap({ endpoints, item, page: "tasks" });
+    expect(wrapper.find("tasks").prop("items")[0].id).toBe("task-2");
+  });
 
-  it('renders details loading', () => {
-    let wrapper = wrap({ endpoints, item, page: '', detailsLoading: true })
-    expect(wrapper.find('mainDetails').prop('loading')).toBe(true)
-  })
+  it("renders details loading", () => {
+    const wrapper = wrap({ endpoints, item, page: "", detailsLoading: true });
+    expect(wrapper.find("mainDetails").prop("loading")).toBe(true);
+  });
 
-  it('dispatches delete click', () => {
-    let onDeleteMigrationClick = sinon.spy()
-    let wrapper = wrap({ endpoints, item, page: '', onDeleteMigrationClick })
-    wrapper.find('mainDetails').prop('bottomControls').props.children.props.onClick()
-    expect(onDeleteMigrationClick.calledOnce).toBe(true)
-  })
-})
-
-
-
+  it("dispatches delete click", () => {
+    const onDeleteMigrationClick = sinon.spy();
+    const wrapper = wrap({ endpoints, item, page: "", onDeleteMigrationClick });
+    wrapper
+      .find("mainDetails")
+      .prop("bottomControls")
+      .props.children.props.onClick();
+    expect(onDeleteMigrationClick.calledOnce).toBe(true);
+  });
+});

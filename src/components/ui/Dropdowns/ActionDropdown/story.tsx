@@ -12,26 +12,35 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import { ThemePalette } from '@src/components/Theme'
-import ActionDropdown from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import { ThemePalette } from "@src/components/Theme";
+import ActionDropdown from ".";
 
-const actions = [{
-  label: 'Execute',
-  color: ThemePalette.primary,
-  action: () => { console.log('execute clicked') },
-  disabled: true,
-}, {
-  label: 'Edit',
-  action: () => { console.log('Edit clicked') },
-}, {
-  label: 'Delete',
-  color: ThemePalette.alert,
-  action: () => { console.log('Delete clicked') },
-}]
+const actions = [
+  {
+    label: "Execute",
+    color: ThemePalette.primary,
+    action: () => {
+      console.log("execute clicked");
+    },
+    disabled: true,
+  },
+  {
+    label: "Edit",
+    action: () => {
+      console.log("Edit clicked");
+    },
+  },
+  {
+    label: "Delete",
+    color: ThemePalette.alert,
+    action: () => {
+      console.log("Delete clicked");
+    },
+  },
+];
 
-storiesOf('ActionDropdown', module)
-  .add('default', () => (
-    <ActionDropdown actions={actions} />
-  ))
+storiesOf("ActionDropdown", module).add("default", () => (
+  <ActionDropdown actions={actions} />
+));

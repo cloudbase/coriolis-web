@@ -12,21 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import LoginForm from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import LoginForm from ".";
 
-const props: any = {}
-storiesOf('LoginForm', module)
-  .add('default', () => (
-    <LoginForm {...props} />
-  ))
-  .add('loading', () => (
-    <LoginForm loading {...props} />
-  ))
-  .add('incorrect credentials', () => (
+const props: any = {};
+storiesOf("LoginForm", module)
+  .add("default", () => <LoginForm {...props} />)
+  .add("loading", () => <LoginForm loading {...props} />)
+  .add("incorrect credentials", () => (
     <LoginForm loginFailedResponse={{ status: 401 }} {...props} />
   ))
-  .add('server error', () => (
-    <LoginForm loginFailedResponse={{}} {...props} />
-  ))
+  .add("server error", () => <LoginForm loginFailedResponse={{}} {...props} />);

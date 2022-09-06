@@ -24,28 +24,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export type SchemaProperties = {
   properties: {
-    [prop: string]: {
-      type: 'array',
-      items: {
-        type: string,
-      },
-    } | {
-      type: string,
-      enum?: string[],
-      default?: any,
-    } | {
-      $ref: string,
-    },
-  },
-  required: string[],
-  type?: string,
-}
+    [prop: string]:
+      | {
+          type: "array";
+          items: {
+            type: string;
+          };
+        }
+      | {
+          type: string;
+          enum?: string[];
+          default?: any;
+        }
+      | {
+          $ref: string;
+        };
+  };
+  required: string[];
+  type?: string;
+};
 
 export type SchemaDefinitions = {
-  [prop: string]: SchemaProperties,
-}
+  [prop: string]: SchemaProperties;
+};
 
 export type Schema = {
-  oneOf: SchemaProperties[],
-  definitions?: SchemaDefinitions,
-}
+  oneOf: SchemaProperties[];
+  definitions?: SchemaDefinitions;
+};

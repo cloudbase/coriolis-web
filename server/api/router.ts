@@ -12,23 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import express from 'express'
-import bodyParser from 'body-parser'
+import express from "express";
+import bodyParser from "body-parser";
 
-import LogosApi from './LogosApi'
-import ConfigApi from './ConfigApi'
+import LogosApi from "./LogosApi";
+import ConfigApi from "./ConfigApi";
 
-import packageJson from '../../package.json'
+import packageJson from "../../package.json";
 
-const router = express.Router()
+const router = express.Router();
 
-router.use(bodyParser.json())
+router.use(bodyParser.json());
 
-router.get('/version', (_, res) => {
-  res.json({ version: packageJson.version })
-})
+router.get("/version", (_, res) => {
+  res.json({ version: packageJson.version });
+});
 
-ConfigApi(router)
-LogosApi(router)
+ConfigApi(router);
+LogosApi(router);
 
-export default router
+export default router;

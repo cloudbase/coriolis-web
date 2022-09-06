@@ -12,41 +12,37 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TW from '@src/utils/TestWrapper'
-import TaskItem from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TW from "@src/utils/TestWrapper";
+import TaskItem from ".";
 
-const wrap = props => new TW(shallow(
+const wrap = props => new TW(shallow(<TaskItem {...props} />), "taskItem");
 
-  <TaskItem {...props} />
-), 'taskItem')
-
-let item = {
+const item = {
   progress_updates: [
-    { message: 'the task has a progress of 50%', created_at: new Date() },
-    { message: 'the task is almost done', created_at: new Date() },
+    { message: "the task has a progress of 50%", created_at: new Date() },
+    { message: "the task is almost done", created_at: new Date() },
   ],
-  exception_details: 'Exception details',
-  status: 'RUNNING',
+  exception_details: "Exception details",
+  status: "RUNNING",
   created_at: new Date(),
-  depends_on: ['depends on id'],
-  id: 'item-id',
-  task_type: 'Task name',
-}
-let columnWidths = ['26%', '18%', '36%', '20%']
+  depends_on: ["depends on id"],
+  id: "item-id",
+  task_type: "Task name",
+};
+const columnWidths = ["26%", "18%", "36%", "20%"];
 
-describe('TaskItem Component', () => {
-  it('renders progress updates', () => {
-    let wrapper = wrap({ item, columnWidths, open: true })
-    expect(wrapper.findText('progressUpdateMessage-1')).toBe('the task is almost done')
-  })
+describe("TaskItem Component", () => {
+  it("renders progress updates", () => {
+    const wrapper = wrap({ item, columnWidths, open: true });
+    expect(wrapper.findText("progressUpdateMessage-1")).toBe(
+      "the task is almost done"
+    );
+  });
 
-  it('renders progress bar', () => {
-    let wrapper = wrap({ item, columnWidths, open: true })
-    expect(wrapper.find('progressBar-0').prop('progress')).toBe(50)
-  })
-})
-
-
-
+  it("renders progress bar", () => {
+    const wrapper = wrap({ item, columnWidths, open: true });
+    expect(wrapper.find("progressBar-0").prop("progress")).toBe(50);
+  });
+});

@@ -12,19 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Schema } from '@src/@types/Schema'
-import type { Field } from '@src/@types/Field'
+import type { Schema } from "@src/@types/Schema";
+import type { Field } from "@src/@types/Field";
 
-import ConnectionSchemaParserBase from '@src/plugins/default/ConnectionSchemaPlugin'
+import ConnectionSchemaParserBase from "@src/plugins/default/ConnectionSchemaPlugin";
 
 export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
   override parseSchemaToFields(schema: Schema): Field[] {
-    const fields = super.parseSchemaToFields(schema)
-    const privateKeyField = fields.find(f => f.name === 'private_key_data')
+    const fields = super.parseSchemaToFields(schema);
+    const privateKeyField = fields.find(f => f.name === "private_key_data");
     if (privateKeyField) {
-      privateKeyField.useTextArea = true
+      privateKeyField.useTextArea = true;
     }
 
-    return fields
+    return fields;
   }
 }

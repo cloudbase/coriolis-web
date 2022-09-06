@@ -12,50 +12,56 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import EndpointListItem from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import EndpointListItem from ".";
 
-storiesOf('EnpointListItem', module)
-  .add('openstack', () => (
+storiesOf("EnpointListItem", module)
+  .add("openstack", () => (
     <EndpointListItem
-      item={{
-        name: 'Endpoint 1',
-        type: 'openstack',
-        created_at: new Date(),
-        description: 'description',
-      } as any}
+      item={
+        {
+          name: "Endpoint 1",
+          type: "openstack",
+          created_at: new Date(),
+          description: "description",
+        } as any
+      }
       getUsage={() => ({ migrationsCount: 12, replicasCount: 2 })}
-      onClick={() => { }}
+      onClick={() => {}}
       selected={false}
       onSelectedChange={() => {}}
     />
   ))
-  .add('aws', () => (
+  .add("aws", () => (
     <EndpointListItem
-      item={{
-        name: 'Endpoint 1',
-        type: 'aws',
-        created_at: new Date(),
-        description: 'description',
-      } as any}
+      item={
+        {
+          name: "Endpoint 1",
+          type: "aws",
+          created_at: new Date(),
+          description: "description",
+        } as any
+      }
       getUsage={() => ({ migrationsCount: 12, replicasCount: 2 })}
-      onClick={() => { }}
+      onClick={() => {}}
       selected={false}
-      onSelectedChange={() => { }}
+      onSelectedChange={() => {}}
     />
   ))
-  .add('azure', () => (
+  .add("azure", () => (
     <EndpointListItem
-      item={{
-        name: 'Endpoint 1',
-        type: 'azure',
-        created_at: new Date(),
-        description: 'description',
-      } as any}
+      item={
+        {
+          name: "Endpoint 1",
+          type: "azure",
+          created_at: new Date(),
+          description: "description",
+        } as any
+      }
       getUsage={() => ({ migrationsCount: 12, replicasCount: 2 })}
-      onClick={() => { }}
+      onClick={() => {}}
       selected={false}
-      onSelectedChange={() => { }}
+      onSelectedChange={() => {}}
     />
-  ))
+  ));

@@ -12,63 +12,69 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import Button from '@src/components/ui/Button'
+import Button from "@src/components/ui/Button";
 
-import KeyboardManager from '@src/utils/KeyboardManager'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import FieldInput from '@src/components/ui/FieldInput'
-import Modal from '@src/components/ui/Modal'
+import KeyboardManager from "@src/utils/KeyboardManager";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import FieldInput from "@src/components/ui/FieldInput";
+import Modal from "@src/components/ui/Modal";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 32px 32px 32px;
-`
+`;
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 32px;
-`
+`;
 const Description = styled.div`
   margin-top: 32px;
-`
+`;
 const Form = styled.div<any>`
   height: 120px;
-`
+`;
 const FieldInputStyled = styled(FieldInput)`
   width: 319px;
   justify-content: space-between;
-`
+`;
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
   width: 100%;
-`
+`;
 type Props = {
-  onCancelClick: () => void,
-  onExecuteClick: (force: boolean) => void,
-}
+  onCancelClick: () => void;
+  onExecuteClick: (force: boolean) => void;
+};
 type State = {
-  force: boolean,
-}
+  force: boolean;
+};
 @observer
 class MinionPoolConfirmationModal extends React.Component<Props, State> {
   state: State = {
     force: false,
-  }
+  };
 
   componentDidMount() {
-    KeyboardManager.onEnter('minion-pool-confirmation', () => { this.props.onExecuteClick(this.state.force) }, 2)
+    KeyboardManager.onEnter(
+      "minion-pool-confirmation",
+      () => {
+        this.props.onExecuteClick(this.state.force);
+      },
+      2
+    );
   }
 
   componentWillUnmount() {
-    KeyboardManager.removeKeyDown('minion-pool-confirmation')
+    KeyboardManager.removeKeyDown("minion-pool-confirmation");
   }
 
   render() {
@@ -81,7 +87,9 @@ class MinionPoolConfirmationModal extends React.Component<Props, State> {
         <Wrapper>
           <Header>
             <StatusImage status="CONFIRMATION" />
-            <Description>Are you sure you want to deallocate the minion pool?</Description>
+            <Description>
+              Are you sure you want to deallocate the minion pool?
+            </Description>
           </Header>
           <Form>
             <FieldInputStyled
@@ -91,20 +99,27 @@ class MinionPoolConfirmationModal extends React.Component<Props, State> {
               layout="page"
               value={this.state.force}
               label="Force"
-              onChange={value => { this.setState({ force: value }) }}
+              onChange={value => {
+                this.setState({ force: value });
+              }}
             />
           </Form>
           <Buttons>
-            <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
+            <Button secondary onClick={this.props.onCancelClick}>
+              Cancel
+            </Button>
             <Button
-              onClick={() => { this.props.onExecuteClick(this.state.force) }}
-            >Deallocate
+              onClick={() => {
+                this.props.onExecuteClick(this.state.force);
+              }}
+            >
+              Deallocate
             </Button>
           </Buttons>
         </Wrapper>
       </Modal>
-    )
+    );
   }
 }
 
-export default MinionPoolConfirmationModal
+export default MinionPoolConfirmationModal;

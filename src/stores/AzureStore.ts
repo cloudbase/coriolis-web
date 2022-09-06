@@ -12,261 +12,279 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, action } from 'mobx'
-import cookie from 'js-cookie'
+import { observable, action } from "mobx";
+import cookie from "js-cookie";
 
-import AzureSource from '@src/sources/AzureSource'
-import type { Assessment, VmItem, AzureLocation } from '@src/@types/Assessment'
-import type { NetworkMap } from '@src/@types/Network'
-import type { Endpoint } from '@src/@types/Endpoint'
+import AzureSource from "@src/sources/AzureSource";
+import type { Assessment, VmItem, AzureLocation } from "@src/@types/Assessment";
+import type { NetworkMap } from "@src/@types/Network";
+import type { Endpoint } from "@src/@types/Endpoint";
 
 export type LocalData = {
-  endpoint: Endpoint,
-  sourceEndpoint: Endpoint | null,
-  connectionInfo: any,
-  resourceGroupName: string,
-  locationName: string,
-  assessmentName: string,
-  groupName: string,
-  projectName: string,
-  selectedVmSizes: { [prop: string]: string },
-  selectedVms: string[],
-  selectedNetworks: NetworkMap[],
-  [prop: string]: any,
-}
+  endpoint: Endpoint;
+  sourceEndpoint: Endpoint | null;
+  connectionInfo: any;
+  resourceGroupName: string;
+  locationName: string;
+  assessmentName: string;
+  groupName: string;
+  projectName: string;
+  selectedVmSizes: { [prop: string]: string };
+  selectedVms: string[];
+  selectedNetworks: NetworkMap[];
+  [prop: string]: any;
+};
 
 class AzureLocalStorage {
   static loadLocalData(assessmentName: string): LocalData | undefined {
-    const localDataArray: LocalData[] = JSON.parse(localStorage.getItem(`assessments-${cookie.get('projectId') || ''}`) || '[]')
-    return localDataArray.find(a => a.assessmentName === assessmentName)
+    const localDataArray: LocalData[] = JSON.parse(
+      localStorage.getItem(`assessments-${cookie.get("projectId") || ""}`) ||
+        "[]"
+    );
+    return localDataArray.find(a => a.assessmentName === assessmentName);
   }
 
   static setLocalData(data: LocalData) {
-    const localDataArray: LocalData[] = JSON.parse(localStorage.getItem(`assessments-${cookie.get('projectId') || ''}`) || '[]')
-    const assessmentIndex = localDataArray.findIndex(a => a.assessmentName === data.assessmentName)
+    const localDataArray: LocalData[] = JSON.parse(
+      localStorage.getItem(`assessments-${cookie.get("projectId") || ""}`) ||
+        "[]"
+    );
+    const assessmentIndex = localDataArray.findIndex(
+      a => a.assessmentName === data.assessmentName
+    );
     if (assessmentIndex > -1) {
-      localDataArray.splice(assessmentIndex, 1)
+      localDataArray.splice(assessmentIndex, 1);
     }
-    localDataArray.push(data)
-    localStorage.setItem(`assessments-${cookie.get('projectId') || ''}`, JSON.stringify(localDataArray))
+    localDataArray.push(data);
+    localStorage.setItem(
+      `assessments-${cookie.get("projectId") || ""}`,
+      JSON.stringify(localDataArray)
+    );
   }
 }
 
 class AzureStore {
-  @observable authenticating: boolean = false
+  @observable authenticating = false;
 
-  @observable loadingResourceGroups: boolean = false
+  @observable loadingResourceGroups = false;
 
-  @observable assessmentResourceGroups: Assessment['group'][] = []
+  @observable assessmentResourceGroups: Assessment["group"][] = [];
 
-  @observable coriolisResourceGroups: string[] = []
+  @observable coriolisResourceGroups: string[] = [];
 
-  @observable loadingAssessments: boolean = false
+  @observable loadingAssessments = false;
 
-  @observable loadingAssessmentDetails: boolean = false
+  @observable loadingAssessmentDetails = false;
 
-  @observable assessmentDetails: Assessment | null = null
+  @observable assessmentDetails: Assessment | null = null;
 
-  @observable assessments: Assessment[] = []
+  @observable assessments: Assessment[] = [];
 
-  @observable loadingAssessedVms: boolean = false
+  @observable loadingAssessedVms = false;
 
-  @observable assessedVms: VmItem[] = []
+  @observable assessedVms: VmItem[] = [];
 
-  @observable loadingVmSizes: boolean = false
+  @observable loadingVmSizes = false;
 
   // @observable vmSizes: VmSize[] = []
-  @observable assessmentsProjectId: string = ''
+  @observable assessmentsProjectId = "";
 
-  @observable locations: AzureLocation[] = []
+  @observable locations: AzureLocation[] = [];
 
-  @observable localData: LocalData | null | undefined = null
+  @observable localData: LocalData | null | undefined = null;
 
-  @observable vmSizes: string[] = []
+  @observable vmSizes: string[] = [];
 
   @action loadLocalData(assessmentName: string): boolean {
-    this.localData = AzureLocalStorage.loadLocalData(assessmentName)
-    return Boolean(this.localData)
+    this.localData = AzureLocalStorage.loadLocalData(assessmentName);
+    return Boolean(this.localData);
   }
 
   @action setLocalData(data: LocalData) {
-    const newData = data
-    newData.selectedVmSizes = data.selectedVmSizes || {}
-    newData.selectedVms = data.selectedVms || []
-    newData.selectedNetworks = data.selectedNetworks || []
+    const newData = data;
+    newData.selectedVmSizes = data.selectedVmSizes || {};
+    newData.selectedVms = data.selectedVms || [];
+    newData.selectedNetworks = data.selectedNetworks || [];
 
-    this.localData = newData
-    AzureLocalStorage.setLocalData(newData)
+    this.localData = newData;
+    AzureLocalStorage.setLocalData(newData);
   }
 
   @action updateResourceGroup(resourceGroupName: string) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.resourceGroupName = resourceGroupName
-    AzureLocalStorage.setLocalData(this.localData)
+    this.localData.resourceGroupName = resourceGroupName;
+    AzureLocalStorage.setLocalData(this.localData);
   }
 
   @action updateNetworkMap(selectedNetworks: NetworkMap[]) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.selectedNetworks = selectedNetworks
-    AzureLocalStorage.setLocalData(this.localData)
+    this.localData.selectedNetworks = selectedNetworks;
+    AzureLocalStorage.setLocalData(this.localData);
   }
 
   @action updateSourceEndpoint(sourceEndpoint: Endpoint | null) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.sourceEndpoint = sourceEndpoint
-    AzureLocalStorage.setLocalData(this.localData)
+    this.localData.sourceEndpoint = sourceEndpoint;
+    AzureLocalStorage.setLocalData(this.localData);
   }
 
   @action updateSelectedVms(selectedVms: string[]) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.selectedVms = selectedVms
-    AzureLocalStorage.setLocalData(this.localData)
+    this.localData.selectedVms = selectedVms;
+    AzureLocalStorage.setLocalData(this.localData);
   }
 
   @action updateVmSize(vmId: string, vmSize: string) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.selectedVmSizes[vmId] = vmSize
+    this.localData.selectedVmSizes[vmId] = vmSize;
     if (this.localData) {
-      AzureLocalStorage.setLocalData(this.localData)
+      AzureLocalStorage.setLocalData(this.localData);
     }
   }
 
   @action updateVmSizes(vmSizes: { [prop: string]: string }) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.selectedVmSizes = vmSizes
-    AzureLocalStorage.setLocalData(this.localData)
+    this.localData.selectedVmSizes = vmSizes;
+    AzureLocalStorage.setLocalData(this.localData);
   }
 
   @action updateLocation(locationName: string) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.locationName = locationName
-    AzureLocalStorage.setLocalData(this.localData)
+    this.localData.locationName = locationName;
+    AzureLocalStorage.setLocalData(this.localData);
   }
 
   @action updateTargetEndpoint(endpoint: Endpoint) {
     if (!this.localData) {
-      return
+      return;
     }
-    this.localData.endpoint = endpoint
-    AzureLocalStorage.setLocalData(this.localData)
+    this.localData.endpoint = endpoint;
+    AzureLocalStorage.setLocalData(this.localData);
   }
 
   @action async authenticate(connectionInfo: any): Promise<void> {
-    this.authenticating = true
+    this.authenticating = true;
     try {
-      await AzureSource.authenticate(connectionInfo)
-      this.authenticating = false
-      return await Promise.resolve()
+      await AzureSource.authenticate(connectionInfo);
+      this.authenticating = false;
+      return await Promise.resolve();
     } catch (e) {
-      this.authenticating = false
-      return Promise.reject()
+      this.authenticating = false;
+      return Promise.reject();
     }
   }
 
   @action async getResourceGroups(subscriptionId: string): Promise<void> {
-    this.loadingResourceGroups = true
+    this.loadingResourceGroups = true;
 
     try {
-      const groups = await AzureSource.getResourceGroups(subscriptionId)
-      this.loadingResourceGroups = false
-      this.assessmentResourceGroups = groups
+      const groups = await AzureSource.getResourceGroups(subscriptionId);
+      this.loadingResourceGroups = false;
+      this.assessmentResourceGroups = groups;
     } catch (e) {
-      this.loadingResourceGroups = false
+      this.loadingResourceGroups = false;
     }
   }
 
   @action isLoadedForCurrentProject() {
-    return this.assessmentsProjectId === (cookie.get('projectId') || 'null')
+    return this.assessmentsProjectId === (cookie.get("projectId") || "null");
   }
 
   @action async getAssessments(opts: {
-    subscriptionId: string,
-    resourceGroupName: string,
-    projectId: string,
-    backgroundLoading?: boolean,
-    skipLog?: boolean
+    subscriptionId: string;
+    resourceGroupName: string;
+    projectId: string;
+    backgroundLoading?: boolean;
+    skipLog?: boolean;
   }): Promise<void> {
     const {
-      subscriptionId, resourceGroupName, projectId, backgroundLoading, skipLog,
-    } = opts
-    let cookieProjectId = cookie.get('projectId') || 'null'
+      subscriptionId,
+      resourceGroupName,
+      projectId,
+      backgroundLoading,
+      skipLog,
+    } = opts;
+    let cookieProjectId = cookie.get("projectId") || "null";
     if (projectId !== cookieProjectId) {
-      return Promise.resolve()
+      return Promise.resolve();
     }
 
     if (!backgroundLoading) {
-      this.loadingAssessments = true
+      this.loadingAssessments = true;
     }
-    const assessments = await AzureSource
-      .getAssessments(subscriptionId, resourceGroupName, skipLog)
-    this.loadingAssessments = false
-    cookieProjectId = cookie.get('projectId') || 'null'
+    const assessments = await AzureSource.getAssessments(
+      subscriptionId,
+      resourceGroupName,
+      skipLog
+    );
+    this.loadingAssessments = false;
+    cookieProjectId = cookie.get("projectId") || "null";
     if (projectId !== cookieProjectId) {
-      return Promise.resolve()
+      return Promise.resolve();
     }
-    this.assessmentsProjectId = cookieProjectId
-    this.assessments = assessments
-    return Promise.resolve()
+    this.assessmentsProjectId = cookieProjectId;
+    this.assessments = assessments;
+    return Promise.resolve();
   }
 
   @action async getAssessmentDetails(info: Assessment): Promise<void> {
-    this.loadingAssessmentDetails = true
+    this.loadingAssessmentDetails = true;
     try {
-      const assessment = await AzureSource.getAssessmentDetails(info)
-      this.loadingAssessmentDetails = false
-      this.assessmentDetails = assessment
+      const assessment = await AzureSource.getAssessmentDetails(info);
+      this.loadingAssessmentDetails = false;
+      this.assessmentDetails = assessment;
     } catch (e) {
-      this.loadingAssessmentDetails = false
+      this.loadingAssessmentDetails = false;
     }
   }
 
   @action saveLocations(locations: AzureLocation[]) {
-    this.locations = locations
+    this.locations = locations;
   }
 
   @action saveResourceGroups(resourceGroups: string[]) {
-    this.coriolisResourceGroups = resourceGroups
+    this.coriolisResourceGroups = resourceGroups;
   }
 
   @action saveTargetVmSizes(targetVmSizes: string[]) {
-    this.vmSizes = targetVmSizes
+    this.vmSizes = targetVmSizes;
   }
 
   @action setLocation(location: string) {
     if (!this.localData || this.localData.locationName) {
-      return
+      return;
     }
-    this.localData.locationName = location
+    this.localData.locationName = location;
   }
 
   @action clearAssessmentDetails() {
-    this.assessmentDetails = null
-    this.assessedVms = []
+    this.assessmentDetails = null;
+    this.assessedVms = [];
   }
 
   @action async getAssessedVms(info: Assessment): Promise<void> {
-    this.loadingAssessedVms = true
+    this.loadingAssessedVms = true;
 
     try {
-      const vms = await AzureSource.getAssessedVms(info)
-      this.loadingAssessedVms = false
-      this.assessedVms = vms
+      const vms = await AzureSource.getAssessedVms(info);
+      this.loadingAssessedVms = false;
+      this.assessedVms = vms;
     } catch (e) {
-      this.loadingAssessedVms = false
+      this.loadingAssessedVms = false;
     }
   }
 
@@ -282,15 +300,15 @@ class AzureStore {
   // }
 
   @action clearAssessedVms() {
-    this.assessedVms = []
+    this.assessedVms = [];
   }
 
   @action clearAssessments() {
-    this.assessmentResourceGroups = []
-    this.assessments = []
-    this.locations = []
-    this.coriolisResourceGroups = []
+    this.assessmentResourceGroups = [];
+    this.assessments = [];
+    this.locations = [];
+    this.coriolisResourceGroups = [];
   }
 }
 
-export default new AzureStore()
+export default new AzureStore();

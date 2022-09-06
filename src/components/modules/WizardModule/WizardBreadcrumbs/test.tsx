@@ -12,23 +12,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import WizardBreadcrumbs from '.'
-import TW from '@src/utils/TestWrapper'
-import { wizardPages } from '@src/constants'
+import React from "react";
+import { shallow } from "enzyme";
+import WizardBreadcrumbs from ".";
+import TW from "@src/utils/TestWrapper";
+import { wizardPages } from "@src/constants";
 
-const wrap = props => new TW(
-  shallow(<WizardBreadcrumbs pages={wizardPages} destinationProvider="oci" sourceProvider="vmware_vsphere" {...props} />),
-  'wBreadCrumbs'
-)
+const wrap = props =>
+  new TW(
+    shallow(
+      <WizardBreadcrumbs
+        pages={wizardPages}
+        destinationProvider="oci"
+        sourceProvider="vmware_vsphere"
+        {...props}
+      />
+    ),
+    "wBreadCrumbs"
+  );
 
-describe('WizardBreadcrumbs Component', () => {
-  it('has correct page selected', () => {
-    let wrapper = wrap({ selected: wizardPages[3] })
-    expect(wrapper.findText(`name-${wizardPages[3].id}`)).toBe(wizardPages[3].breadcrumb)
-  })
-})
-
-
-
+describe("WizardBreadcrumbs Component", () => {
+  it("has correct page selected", () => {
+    const wrapper = wrap({ selected: wizardPages[3] });
+    expect(wrapper.findText(`name-${wizardPages[3].id}`)).toBe(
+      wizardPages[3].breadcrumb
+    );
+  });
+});

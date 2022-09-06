@@ -8,4 +8,4 @@ export default (color: string) => `<?xml version="1.0" encoding="UTF-8"?>
             <polyline id="Rectangle-Copy" transform="translate(6.000000, 7.500000) rotate(315.000000) translate(-6.000000, -7.500000) " points="9.8890873 3.6109127 9.8890873 11.3890873 2.1109127 11.3890873"></polyline>
         </g>
     </g>
-</svg>`
+</svg>`;

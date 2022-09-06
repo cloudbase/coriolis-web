@@ -12,34 +12,33 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import LoginOptions from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import LoginOptions from ".";
 
 const buttons = [
   {
-    name: 'Google',
-    id: 'google',
-    url: '',
+    name: "Google",
+    id: "google",
+    url: "",
   },
   {
-    name: 'Microsoft',
-    id: 'microsoft',
-    url: '',
+    name: "Microsoft",
+    id: "microsoft",
+    url: "",
   },
   {
-    name: 'Facebook',
-    id: 'facebook',
-    url: '',
+    name: "Facebook",
+    id: "facebook",
+    url: "",
   },
   {
-    name: 'GitHub',
-    id: 'github',
-    url: '',
+    name: "GitHub",
+    id: "github",
+    url: "",
   },
-]
+];
 
-storiesOf('LoginOptions', module)
-  .add('default', () => (
-    <LoginOptions buttons={buttons} />
-  ))
+storiesOf("LoginOptions", module).add("default", () => (
+  <LoginOptions buttons={buttons} />
+));

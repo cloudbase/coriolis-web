@@ -27,6 +27,6 @@ const menu = () => `
         </g>
     </g>
 </svg>
-`
+`;
 
-export default menu
+export default menu;

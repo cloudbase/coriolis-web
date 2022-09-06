@@ -12,33 +12,33 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import errorImage from './images/error'
-import successImage from './images/success'
-import loadingImage from './images/loading'
-import questionImage from './images/question'
+import errorImage from "./images/error";
+import successImage from "./images/success";
+import loadingImage from "./images/loading";
+import questionImage from "./images/question";
 
 type Props = {
-  status?: string,
-  loading?: boolean,
-  loadingProgress?: number,
-  size?: number,
-  style?: any,
-}
+  status?: string;
+  loading?: boolean;
+  loadingProgress?: number;
+  size?: number;
+  style?: any;
+};
 const Wrapper = styled.div<any>`
   position: relative;
   ${(props: any) => ThemeProps.exactSize(`${props.size}px`)}
   background-repeat: no-repeat;
   background-position: center;
-`
+`;
 const ProgressSvgWrapper = styled.svg<any>`
-  ${ThemeProps.exactSize('100%')}
+  ${ThemeProps.exactSize("100%")}
   transform: rotate(-90deg);
-`
+`;
 const ProgressText = styled.div<any>`
   color: ${ThemePalette.primary};
   font-size: 18px;
@@ -46,10 +46,10 @@ const ProgressText = styled.div<any>`
   position: absolute;
   width: 100%;
   text-align: center;
-`
+`;
 const CircleProgressBar = styled.circle`
   transition: stroke-dashoffset ${ThemeProps.animations.swift};
-`
+`;
 const dashAnimationStyle = css`
   .circle {
     stroke-dasharray: 300;
@@ -66,26 +66,36 @@ const dashAnimationStyle = css`
     animation: appear 300ms ease-in-out 100ms forwards;
   }
   @keyframes appear {
-    to { fill-opacity: 1; }
+    to {
+      fill-opacity: 1;
+    }
   }
   @keyframes circleDash {
-    to { stroke-dashoffset: 600; }
+    to {
+      stroke-dashoffset: 600;
+    }
   }
   @keyframes pathDash {
-    to { stroke-dashoffset: 120; }
+    to {
+      stroke-dashoffset: 120;
+    }
   }
-`
+`;
 const loadingAnimationStyle = css`
   animation: rotate 1s linear infinite;
   @keyframes rotate {
-    0% {transform: rotate(0deg);}
-    100% {transform: rotate(360deg);}
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
-`
+`;
 const Image = styled.div<any>`
   ${(props: any) => ThemeProps.exactSize(`${props.size}px`)}
   ${(props: any) => props.cssStyle}
-`
+`;
 const Images: any = {
   COMPLETED: {
     image: successImage,
@@ -103,16 +113,23 @@ const Images: any = {
     image: questionImage,
     style: dashAnimationStyle,
   },
-}
+};
 @observer
 class StatusImage extends React.Component<Props> {
   static defaultProps = {
-    status: 'RUNNING',
-  }
+    status: "RUNNING",
+  };
 
   renderProgressImage() {
     return (
-      <ProgressSvgWrapper id="svg" width="96" height="96" viewPort="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <ProgressSvgWrapper
+        id="svg"
+        width="96"
+        height="96"
+        viewPort="0 0 96 96"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <g strokeWidth="2">
           <circle
             r="47"
@@ -128,50 +145,54 @@ class StatusImage extends React.Component<Props> {
             fill="transparent"
             stroke={ThemePalette.primary}
             strokeDasharray="300 1000"
-            strokeDashoffset={300 - ((this.props.loadingProgress || 0) * 3)}
+            strokeDashoffset={300 - (this.props.loadingProgress || 0) * 3}
           />
         </g>
       </ProgressSvgWrapper>
-    )
+    );
   }
 
   renderProgressText() {
     return (
       <ProgressText>
-        {this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}%
+        {this.props.loadingProgress ? this.props.loadingProgress.toFixed(0) : 0}
+        %
       </ProgressText>
-    )
+    );
   }
 
   render() {
-    let status = this.props.status || 'QUESTION'
-    status = status.toUpperCase()
-    status = status === 'SUCCESS' ? 'COMPLETED' : status
-    status = status === 'CONFIRMATION' ? 'QUESTION' : status
+    let status = this.props.status || "QUESTION";
+    status = status.toUpperCase();
+    status = status === "SUCCESS" ? "COMPLETED" : status;
+    status = status === "CONFIRMATION" ? "QUESTION" : status;
     if (this.props.loading) {
-      status = 'RUNNING'
-      if (this.props.loadingProgress !== undefined && this.props.loadingProgress > -1) {
-        status = 'PROGRESS'
+      status = "RUNNING";
+      if (
+        this.props.loadingProgress !== undefined &&
+        this.props.loadingProgress > -1
+      ) {
+        status = "PROGRESS";
       }
     }
-    let image = status !== 'PROGRESS' ? Images[status].image : null
+    let image = status !== "PROGRESS" ? Images[status].image : null;
     if (image instanceof Function) {
-      image = image(this.props.size || 96)
+      image = image(this.props.size || 96);
     }
     return (
       <Wrapper size={this.props.size || 96} style={this.props.style}>
-        {status !== 'PROGRESS' ? (
+        {status !== "PROGRESS" ? (
           <Image
             dangerouslySetInnerHTML={{ __html: image }}
             cssStyle={Images[status].style}
             size={this.props.size || 96}
           />
         ) : null}
-        {status === 'PROGRESS' ? this.renderProgressImage() : null}
-        {status === 'PROGRESS' ? this.renderProgressText() : null}
+        {status === "PROGRESS" ? this.renderProgressImage() : null}
+        {status === "PROGRESS" ? this.renderProgressText() : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default StatusImage
+export default StatusImage;

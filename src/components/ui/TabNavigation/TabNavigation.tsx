@@ -12,54 +12,56 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import * as React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
-`
+`;
 const Header = styled.div<any>`
   display: flex;
   flex-shrink: 0;
-`
+`;
 const HeaderItem = styled.div<any>`
   display: flex;
-  color: ${props => (props.selected ? ThemePalette.primary : 'inherit')};
+  color: ${props => (props.selected ? ThemePalette.primary : "inherit")};
   min-width: 96px;
   justify-content: center;
-  border-bottom: 1px solid ${props => (props.selected ? ThemePalette.primary : 'transparent')};
+  border-bottom: 1px solid
+    ${props => (props.selected ? ThemePalette.primary : "transparent")};
   padding: 4px 4px 8px 4px;
   cursor: pointer;
   margin-right: 16px;
   &:hover {
-    border-bottom: 1px solid ${props => (props.selected ? ThemePalette.primary : '#e6e7ea')};
+    border-bottom: 1px solid
+      ${props => (props.selected ? ThemePalette.primary : "#e6e7ea")};
   }
   transition: all ${ThemeProps.animations.swift};
-`
+`;
 const Body = styled.div<any>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
-`
+`;
 
 export type TabItem = {
-  label: string,
-  value: string,
-}
+  label: string;
+  value: string;
+};
 
 type Props = {
-  tabItems: TabItem[],
-  selectedTabValue: string,
-  children: React.ReactNode,
-  onChange: (tabValue: string) => void,
-}
+  tabItems: TabItem[];
+  selectedTabValue: string;
+  children: React.ReactNode;
+  onChange: (tabValue: string) => void;
+};
 
 @observer
 class TabNavigation extends React.Component<Props> {
@@ -71,18 +73,18 @@ class TabNavigation extends React.Component<Props> {
             <HeaderItem
               key={item.value}
               selected={item.value === this.props.selectedTabValue}
-              onClick={() => { this.props.onChange(item.value) }}
+              onClick={() => {
+                this.props.onChange(item.value);
+              }}
             >
               {item.label}
             </HeaderItem>
           ))}
         </Header>
-        <Body>
-          {this.props.children}
-        </Body>
+        <Body>{this.props.children}</Body>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default TabNavigation
+export default TabNavigation;

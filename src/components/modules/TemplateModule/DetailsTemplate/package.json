@@ -2,6 +2,5 @@
   "name": "DetailsTemplate",
   "version": "0.0.0",
   "private": true,
-  "main":"./DetailsTemplate.tsx"
+  "main": "./DetailsTemplate.tsx"
 }
-

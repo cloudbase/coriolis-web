@@ -12,20 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import TabNavigation from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import TabNavigation from ".";
 
-storiesOf('TabNavigation', module)
-  .add('default', () => (
-    <TabNavigation
-      tabItems={[
-        { label: 'Downloads', value: 'download' },
-        { label: 'Stream', value: 'stream' },
-      ]}
-      selectedTabValue="download"
-      onChange={() => { }}
-    >
-      Content
-    </TabNavigation>
-  ))
+storiesOf("TabNavigation", module).add("default", () => (
+  <TabNavigation
+    tabItems={[
+      { label: "Downloads", value: "download" },
+      { label: "Stream", value: "stream" },
+    ]}
+    selectedTabValue="download"
+    onChange={() => {}}
+  >
+    Content
+  </TabNavigation>
+));

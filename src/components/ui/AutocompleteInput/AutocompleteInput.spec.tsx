@@ -12,25 +12,32 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import AutocompleteInput from './AutocompleteInput'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import AutocompleteInput from "./AutocompleteInput";
 
-describe('AutocompleteInput', () => {
-  it('renders correct data', () => {
-    render(<AutocompleteInput value="searching" onChange={() => { }} />)
-    expect(TestUtils.selectInput('TextInput__Input')!.value).toBe('searching')
-  })
+describe("AutocompleteInput", () => {
+  it("renders correct data", () => {
+    render(<AutocompleteInput value="searching" onChange={() => {}} />);
+    expect(TestUtils.selectInput("TextInput__Input")!.value).toBe("searching");
+  });
 
-  it('calls focus and blur', () => {
-    const onFocus = jest.fn()
-    const onBlur = jest.fn()
-    render(<AutocompleteInput value="" onChange={() => { }} onFocus={onFocus} onBlur={onBlur} />)
-    const inputElement = TestUtils.select('TextInput__Input')
-    inputElement?.focus()
-    expect(onFocus).toHaveBeenCalled()
-    inputElement?.blur()
-    expect(onBlur).toHaveBeenCalled()
-  })
-})
+  it("calls focus and blur", () => {
+    const onFocus = jest.fn();
+    const onBlur = jest.fn();
+    render(
+      <AutocompleteInput
+        value=""
+        onChange={() => {}}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      />
+    );
+    const inputElement = TestUtils.select("TextInput__Input");
+    inputElement?.focus();
+    expect(onFocus).toHaveBeenCalled();
+    inputElement?.blur();
+    expect(onBlur).toHaveBeenCalled();
+  });
+});

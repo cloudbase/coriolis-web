@@ -12,27 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import moment from 'moment'
-import DatetimePicker from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import moment from "moment";
+import DatetimePicker from ".";
 
 const Wrapper = (props: any) => (
-  <div
-    style={{ marginLeft: '100px' }}
-  >
+  <div style={{ marginLeft: "100px" }}>
     <DatetimePicker
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
-      onChange={() => { }}
+      onChange={() => {}}
     />
   </div>
-)
+);
 
-storiesOf('DatetimePicker', module)
-  .add('default', () => (
-    <Wrapper />
-  ))
-  .add('disabled dates', () => (
-    <Wrapper isValidDate={(currentDate: { isAfter: (arg0: moment.Moment) => any }) => currentDate.isAfter(moment().subtract(1, 'minute'))} />
-  ))
+storiesOf("DatetimePicker", module)
+  .add("default", () => <Wrapper />)
+  .add("disabled dates", () => (
+    <Wrapper
+      isValidDate={(currentDate: { isAfter: (arg0: moment.Moment) => any }) =>
+        currentDate.isAfter(moment().subtract(1, "minute"))
+      }
+    />
+  ));

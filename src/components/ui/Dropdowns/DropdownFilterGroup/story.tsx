@@ -12,25 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import DropdownFilterGroup from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import DropdownFilterGroup from ".";
 
 const dropdowns = [
   {
-    key: 'dropdown1',
-    items: [{ label: 'The Label', value: 'the_value' }],
+    key: "dropdown1",
+    items: [{ label: "The Label", value: "the_value" }],
   },
   {
-    key: 'dropdown2',
-    items: [{ label: 'The Label', value: 'the_value' }],
-    selectedItem: 'the_value',
+    key: "dropdown2",
+    items: [{ label: "The Label", value: "the_value" }],
+    selectedItem: "the_value",
   },
-]
+];
 
-storiesOf('DropdownFilterGroup', module)
-  .add('default', () => (
-    <div style={{ width: '800px' }}>
-      <DropdownFilterGroup items={dropdowns} />
-    </div>
-  ))
+storiesOf("DropdownFilterGroup", module).add("default", () => (
+  <div style={{ width: "800px" }}>
+    <DropdownFilterGroup items={dropdowns} />
+  </div>
+));

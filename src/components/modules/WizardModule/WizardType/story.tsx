@@ -12,28 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import WizardType from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import WizardType from ".";
 
 class Wrapper extends React.Component {
-  state = { isReplica: false }
+  state = { isReplica: false };
 
   handleChange(isReplica: boolean | null) {
-    this.setState({ isReplica })
+    this.setState({ isReplica });
   }
 
   render() {
     return (
       <WizardType
-        selected={this.state.isReplica ? 'replica' : 'migration'}
-        onChange={isReplica => { this.handleChange(isReplica) }}
+        selected={this.state.isReplica ? "replica" : "migration"}
+        onChange={isReplica => {
+          this.handleChange(isReplica);
+        }}
       />
-    )
+    );
   }
 }
 
-storiesOf('WizardType', module)
-  .add('default', () => (
-    <Wrapper />
-  ))
+storiesOf("WizardType", module).add("default", () => <Wrapper />);

@@ -12,23 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled, { css } from 'styled-components'
+import React from "react";
+import styled, { css } from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import arrowImage from './images/arrow'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import arrowImage from "./images/arrow";
 
 const getLabelColor = (props: any) => {
   if (props.disabled) {
-    return ThemePalette.grayscale[3]
+    return ThemePalette.grayscale[3];
   }
 
   if (props.primary || props.secondary) {
-    return 'white'
+    return "white";
   }
 
-  return ThemePalette.black
-}
+  return ThemePalette.black;
+};
 const Label = styled.div<any>`
   color: ${(props: any) => getLabelColor(props)};
   margin: 0 32px 0 ${(props: any) => (props.embedded ? 0 : 16)}px;
@@ -36,109 +36,122 @@ const Label = styled.div<any>`
   text-overflow: ellipsis;
   white-space: nowrap;
   flex-grow: 1;
-  ${(props: any) => (props.useBold ? `font-weight: ${ThemeProps.fontWeights.medium};` : '')}
-  ${(props: any) => (props.centered ? 'text-align: center;' : '')}
-`
+  ${(props: any) =>
+    props.useBold ? `font-weight: ${ThemeProps.fontWeights.medium};` : ""}
+  ${(props: any) => (props.centered ? "text-align: center;" : "")}
+`;
 
 const getBackgroundColor = (props: any) => {
   if (props.embedded) {
-    return 'white'
+    return "white";
   }
 
   if (props.disabled) {
-    return ThemePalette.grayscale[0]
+    return ThemePalette.grayscale[0];
   }
 
   if (props.secondary) {
-    return ThemePalette.secondaryLight
+    return ThemePalette.secondaryLight;
   }
 
   if (props.primary) {
-    return ThemePalette.primary
+    return ThemePalette.primary;
   }
 
-  return 'white'
-}
+  return "white";
+};
 const getArrowColor = (props: any) => {
   if (props.disabled) {
-    return ThemePalette.grayscale[3]
+    return ThemePalette.grayscale[3];
   }
 
   if (props.primary || props.secondary) {
-    return 'white'
+    return "white";
   }
 
   if (props.outline) {
-    return ThemePalette.primary
+    return ThemePalette.primary;
   }
 
-  return ThemePalette.black
-}
+  return ThemePalette.black;
+};
 const getWidth = (props: any) => {
   if (props.large) {
-    return ThemeProps.inputSizes.large.width - 2
+    return ThemeProps.inputSizes.large.width - 2;
   }
   if (props.width) {
-    return props.width - 2
+    return props.width - 2;
   }
-  return ThemeProps.inputSizes.regular.width - 2
-}
+  return ThemeProps.inputSizes.regular.width - 2;
+};
 const borderColor = (props: any) => {
   if (props.highlight) {
-    return ThemePalette.alert
+    return ThemePalette.alert;
   }
   if (props.disabled) {
-    return ThemePalette.grayscale[0]
+    return ThemePalette.grayscale[0];
   }
   if (props.primary) {
-    return ThemePalette.primary
+    return ThemePalette.primary;
   }
   if (props.secondary) {
-    return ThemePalette.secondaryLight
+    return ThemePalette.secondaryLight;
   }
   if (props.outline) {
-    return ThemePalette.primary
+    return ThemePalette.primary;
   }
-  return ThemePalette.grayscale[3]
-}
+  return ThemePalette.grayscale[3];
+};
 const backgroundHover = (props: any) => {
   if (props.disabled || props.embedded) {
-    return ''
+    return "";
   }
   if (props.secondary) {
-    return ThemePalette.secondaryLight
+    return ThemePalette.secondaryLight;
   }
-  return ThemePalette.primary
-}
+  return ThemePalette.primary;
+};
 
 const Wrapper = styled.div<any>`
   display: flex;
   align-items: center;
   position: relative;
   width: ${(props: any) => getWidth(props)}px;
-  height: ${(props: any) => (props.large ? ThemeProps.inputSizes.large.height - 2
-    : ThemeProps.inputSizes.regular.height - 2)}px;
+  height: ${(props: any) =>
+    props.large
+      ? ThemeProps.inputSizes.large.height - 2
+      : ThemeProps.inputSizes.regular.height - 2}px;
   border: 1px solid ${props => borderColor(props)};
   border-radius: ${ThemeProps.borderRadius};
-  cursor: ${(props: any) => (props.disabled ? 'default' : 'pointer')};
+  cursor: ${(props: any) => (props.disabled ? "default" : "pointer")};
   transition: all ${ThemeProps.animations.swift};
   background: ${props => getBackgroundColor(props)};
-  ${(props: any) => (props.embedded ? css`
-    border: 0;
-    width: calc(100% + 8px);
-  ` : '')}
+  ${(props: any) =>
+    props.embedded
+      ? css`
+          border: 0;
+          width: calc(100% + 8px);
+        `
+      : ""}
 
-  #dropdown-arrow-image {stroke: ${(props: any) => getArrowColor(props)};}
+  #dropdown-arrow-image {
+    stroke: ${(props: any) => getArrowColor(props)};
+  }
   &:hover {
-    #dropdown-arrow-image {stroke: ${(props: any) => (props.disabled ? '' : props.embedded ? '' : 'white')};}
+    #dropdown-arrow-image {
+      stroke: ${(props: any) =>
+        props.disabled ? "" : props.embedded ? "" : "white"};
+    }
     background: ${(props: any) => backgroundHover(props)};
   }
 
   &:hover ${Label} {
-    color: ${(props: any) => (props.disabled ? '' : props.embedded ? '' : 'white')};
+    color: ${(props: any) =>
+      props.disabled ? "" : props.embedded ? "" : "white"};
   }
-  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
-`
+  ${(props: any) =>
+    props.disabledLoading ? ThemeProps.animations.disabledLoading : ""}
+`;
 const Arrow = styled.div<any>`
   position: absolute;
   right: 8px;
@@ -148,30 +161,30 @@ const Arrow = styled.div<any>`
   height: 16px;
   justify-content: center;
   align-items: center;
-`
+`;
 type Props = {
-  value: string,
-  onClick?: (event: Event) => void,
-  customRef?: (ref: HTMLElement) => void,
-  ref?: (ref: HTMLElement) => void,
-  arrowRef?: (ref: HTMLElement) => void,
-  className?: string,
-  disabled?: boolean,
-  disabledLoading?: boolean,
-  embedded?: boolean,
-  highlight?: boolean,
-  secondary?: boolean,
-  centered?: boolean,
-  outline?: boolean,
-  primary?: boolean,
-  width?: number,
-  useBold?: boolean,
-  onMouseDown?: () => void,
-  onMouseUp?: () => void,
-}
+  value: string;
+  onClick?: (event: Event) => void;
+  customRef?: (ref: HTMLElement) => void;
+  ref?: (ref: HTMLElement) => void;
+  arrowRef?: (ref: HTMLElement) => void;
+  className?: string;
+  disabled?: boolean;
+  disabledLoading?: boolean;
+  embedded?: boolean;
+  highlight?: boolean;
+  secondary?: boolean;
+  centered?: boolean;
+  outline?: boolean;
+  primary?: boolean;
+  width?: number;
+  useBold?: boolean;
+  onMouseDown?: () => void;
+  onMouseUp?: () => void;
+};
 class DropdownButton extends React.Component<Props> {
   render() {
-    const disabled = this.props.disabled || this.props.disabledLoading
+    const disabled = this.props.disabled || this.props.disabledLoading;
     return (
       <Wrapper
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -180,20 +193,20 @@ class DropdownButton extends React.Component<Props> {
         disabledLoading={this.props.disabledLoading}
         ref={(e: HTMLElement) => {
           if (this.props.customRef) {
-            this.props.customRef(e)
+            this.props.customRef(e);
           } else if (this.props.ref) {
-            this.props.ref(e)
+            this.props.ref(e);
           }
         }}
         onClick={(e: Event) => {
-          if (!disabled && this.props.onClick) this.props.onClick(e)
+          if (!disabled && this.props.onClick) this.props.onClick(e);
         }}
       >
         <Label
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
-          onClick={() => { }}
-          ref={() => { }}
+          onClick={() => {}}
+          ref={() => {}}
           disabled={disabled}
         >
           {this.props.value}
@@ -201,14 +214,16 @@ class DropdownButton extends React.Component<Props> {
         <Arrow
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
-          ref={(ref: HTMLElement) => { if (this.props.arrowRef) this.props.arrowRef(ref) }}
-          onClick={() => { }}
+          ref={(ref: HTMLElement) => {
+            if (this.props.arrowRef) this.props.arrowRef(ref);
+          }}
+          onClick={() => {}}
           disabled={disabled}
           dangerouslySetInnerHTML={{ __html: arrowImage }}
         />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default DropdownButton
+export default DropdownButton;

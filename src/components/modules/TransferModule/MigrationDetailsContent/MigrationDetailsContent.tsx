@@ -12,83 +12,81 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import Button from '@src/components/ui/Button'
-import DetailsNavigation from '@src/components/modules/NavigationModule/DetailsNavigation'
-import MainDetails from '@src/components/modules/TransferModule/MainDetails'
-import Tasks from '@src/components/modules/TransferModule/Tasks'
+import Button from "@src/components/ui/Button";
+import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
+import MainDetails from "@src/components/modules/TransferModule/MainDetails";
+import Tasks from "@src/components/modules/TransferModule/Tasks";
 
-import type { Instance } from '@src/@types/Instance'
-import type { Endpoint, StorageBackend } from '@src/@types/Endpoint'
-import type { Field } from '@src/@types/Field'
-import { MigrationItemDetails } from '@src/@types/MainItem'
-import { MinionPool } from '@src/@types/MinionPool'
-import { Network } from '@src/@types/Network'
-import { ThemeProps } from '@src/components/Theme'
+import type { Instance } from "@src/@types/Instance";
+import type { Endpoint, StorageBackend } from "@src/@types/Endpoint";
+import type { Field } from "@src/@types/Field";
+import { MigrationItemDetails } from "@src/@types/MainItem";
+import { MinionPool } from "@src/@types/MinionPool";
+import { Network } from "@src/@types/Network";
+import { ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
-`
+`;
 
 const Buttons = styled.div<any>`
   margin-top: 24px;
   & > button:last-child {
     float: right;
   }
-`
+`;
 const DetailsBody = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
-`
+`;
 
 const NavigationItems = [
   {
-    label: 'Migration',
-    value: '',
-  }, {
-    label: 'Tasks',
-    value: 'tasks',
+    label: "Migration",
+    value: "",
   },
-]
+  {
+    label: "Tasks",
+    value: "tasks",
+  },
+];
 
 type Props = {
-  item: MigrationItemDetails | null,
-  itemId: string
-  minionPools: MinionPool[]
-  detailsLoading: boolean,
-  storageBackends: StorageBackend[]
-  instancesDetails: Instance[],
-  instancesDetailsLoading: boolean,
-  networks: Network[],
-  sourceSchema: Field[],
-  sourceSchemaLoading: boolean,
-  destinationSchema: Field[],
-  destinationSchemaLoading: boolean,
-  endpoints: Endpoint[],
-  page: string,
-  onDeleteMigrationClick: () => void,
-}
+  item: MigrationItemDetails | null;
+  itemId: string;
+  minionPools: MinionPool[];
+  detailsLoading: boolean;
+  storageBackends: StorageBackend[];
+  instancesDetails: Instance[];
+  instancesDetailsLoading: boolean;
+  networks: Network[];
+  sourceSchema: Field[];
+  sourceSchemaLoading: boolean;
+  destinationSchema: Field[];
+  destinationSchemaLoading: boolean;
+  endpoints: Endpoint[];
+  page: string;
+  onDeleteMigrationClick: () => void;
+};
 @observer
 class MigrationDetailsContent extends React.Component<Props> {
   renderBottomControls() {
     return (
       <Buttons>
-        <Button
-          alert
-          hollow
-          onClick={this.props.onDeleteMigrationClick}
-        >Delete Migration
+        <Button alert hollow onClick={this.props.onDeleteMigrationClick}>
+          Delete Migration
         </Button>
       </Buttons>
-    )
+    );
   }
 
   renderMainDetails() {
-    if (this.props.page !== '') {
-      return null
+    if (this.props.page !== "") {
+      return null;
     }
 
     return (
@@ -107,12 +105,16 @@ class MigrationDetailsContent extends React.Component<Props> {
         bottomControls={this.renderBottomControls()}
         loading={this.props.detailsLoading}
       />
-    )
+    );
   }
 
   renderTasks() {
-    if (this.props.page !== 'tasks' || !this.props.item || !this.props.item.tasks) {
-      return null
+    if (
+      this.props.page !== "tasks" ||
+      !this.props.item ||
+      !this.props.item.tasks
+    ) {
+      return null;
     }
 
     return (
@@ -121,7 +123,7 @@ class MigrationDetailsContent extends React.Component<Props> {
         loading={this.props.detailsLoading}
         instancesDetails={this.props.instancesDetails}
       />
-    )
+    );
   }
 
   render() {
@@ -138,8 +140,8 @@ class MigrationDetailsContent extends React.Component<Props> {
           {this.renderTasks()}
         </DetailsBody>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MigrationDetailsContent
+export default MigrationDetailsContent;

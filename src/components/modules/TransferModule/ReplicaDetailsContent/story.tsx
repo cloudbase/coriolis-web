@@ -14,73 +14,96 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import ReplicaDetailsContent from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import ReplicaDetailsContent from ".";
 
 const tasks: any = [
   {
     progress_updates: [
-      { message: 'the task has a progress of 10%', created_at: new Date() },
+      { message: "the task has a progress of 10%", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'COMPLETED',
+    exception_details: "Exception details",
+    status: "COMPLETED",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-1',
-    task_type: 'Task name 1',
+    depends_on: ["depends on id"],
+    id: "task-1",
+    task_type: "Task name 1",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'RUNNING',
+    exception_details: "Exception details",
+    status: "RUNNING",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-2',
-    task_type: 'Task name 2',
+    depends_on: ["depends on id"],
+    id: "task-2",
+    task_type: "Task name 2",
   },
-]
+];
 const endpoints: any = [
-  { id: 'endpoint-1', name: 'Endpoint OPS', type: 'openstack' },
-  { id: 'endpoint-2', name: 'Endpoint AZURE', type: 'azure' },
-]
+  { id: "endpoint-1", name: "Endpoint OPS", type: "openstack" },
+  { id: "endpoint-2", name: "Endpoint AZURE", type: "azure" },
+];
 const item: any = {
-  origin_endpoint_id: 'endpoint-1',
-  destination_endpoint_id: 'endpoint-2',
-  id: 'item-id',
+  origin_endpoint_id: "endpoint-1",
+  destination_endpoint_id: "endpoint-2",
+  id: "item-id",
   created_at: new Date(2017, 10, 24, 16, 15),
-  info: { instance: { export_info: { devices: { nics: [{ network_name: 'map_1' }] } } } },
-  destination_environment: {
-    description: 'A description',
-    network_map: {
-      map_1: 'Mapping 1',
+  info: {
+    instance: {
+      export_info: { devices: { nics: [{ network_name: "map_1" }] } },
     },
   },
-  type: 'Replica',
+  destination_environment: {
+    description: "A description",
+    network_map: {
+      map_1: "Mapping 1",
+    },
+  },
+  type: "Replica",
   executions: [
-    { id: 'execution-1', status: 'ERROR', created_at: new Date() },
-    { id: 'execution-2', status: 'COMPLETED', created_at: new Date() },
-    { id: 'execution-2-1', status: 'CANCELED', created_at: new Date() },
+    { id: "execution-1", status: "ERROR", created_at: new Date() },
+    { id: "execution-2", status: "COMPLETED", created_at: new Date() },
+    { id: "execution-2-1", status: "CANCELED", created_at: new Date() },
     {
-      id: 'execution-3', status: 'RUNNING', created_at: new Date(), tasks,
+      id: "execution-3",
+      status: "RUNNING",
+      created_at: new Date(),
+      tasks,
     },
   ],
-}
-const props: any = {}
-storiesOf('ReplicaDetailsContent', module)
-  .add('default', () => (
-    <ReplicaDetailsContent item={item} endpoints={endpoints} page="" {...props} />
+};
+const props: any = {};
+storiesOf("ReplicaDetailsContent", module)
+  .add("default", () => (
+    <ReplicaDetailsContent
+      item={item}
+      endpoints={endpoints}
+      page=""
+      {...props}
+    />
   ))
-  .add('details loading', () => (
-    <ReplicaDetailsContent item={item} endpoints={endpoints} page="" detailsLoading {...props} />
+  .add("details loading", () => (
+    <ReplicaDetailsContent
+      item={item}
+      endpoints={endpoints}
+      page=""
+      detailsLoading
+      {...props}
+    />
   ))
-  .add('executions', () => (
-    <ReplicaDetailsContent item={item} endpoints={endpoints} page="executions" {...props} />
+  .add("executions", () => (
+    <ReplicaDetailsContent
+      item={item}
+      endpoints={endpoints}
+      page="executions"
+      {...props}
+    />
   ))
-  .add('schedule', () => (
+  .add("schedule", () => (
     <ReplicaDetailsContent
       item={item}
       endpoints={endpoints}
@@ -88,4 +111,4 @@ storiesOf('ReplicaDetailsContent', module)
       scheduleStore={{ schedules: [] }}
       {...props}
     />
-  ))
+  ));

@@ -11,41 +11,48 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-import Api from '@src/utils/ApiCaller'
+import Api from "@src/utils/ApiCaller";
 
-import configLoader from '@src/utils/Config'
+import configLoader from "@src/utils/Config";
 
-import type { Licence, LicenceServerStatus } from '@src/@types/Licence'
+import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
 
 class LicenceSource {
   async loadAppliancesIds(config?: {
-    skipLog?: boolean,
-    quietError?: boolean
+    skipLog?: boolean;
+    quietError?: boolean;
   }): Promise<string[]> {
-    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances`
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances`;
     const response = await Api.send({
       url,
       quietError: config?.quietError,
       skipLog: config?.skipLog,
-    })
-    return response.data.appliances.map((a: any) => a.id)
+    });
+    return response.data.appliances.map((a: any) => a.id);
   }
 
   async loadLicenceServerStatus(config?: {
-    skipLog?: boolean,
-    quietError?: boolean
+    skipLog?: boolean;
+    quietError?: boolean;
   }): Promise<LicenceServerStatus> {
-    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/status`
-    const response = await Api.send({ url, quietError: config?.quietError, skipLog: config?.skipLog })
-    const status: LicenceServerStatus = response.data.status
-    status.supported_licence_versions.sort((a, b) => b.localeCompare(a))
-    return response.data.status
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/status`;
+    const response = await Api.send({
+      url,
+      quietError: config?.quietError,
+      skipLog: config?.skipLog,
+    });
+    const status: LicenceServerStatus = response.data.status;
+    status.supported_licence_versions.sort((a, b) => b.localeCompare(a));
+    return response.data.status;
   }
 
-  async loadLicenceInfo(applianceId: string, skipLog?: boolean | null): Promise<Licence> {
-    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/status`
-    const response = await Api.send({ url, quietError: true, skipLog })
-    const root = response.data.appliance_licence_status
+  async loadLicenceInfo(
+    applianceId: string,
+    skipLog?: boolean | null
+  ): Promise<Licence> {
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/status`;
+    const response = await Api.send({ url, quietError: true, skipLog });
+    const root = response.data.appliance_licence_status;
     const licence: Licence = {
       applianceId: root.appliance_id,
       earliestLicenceExpiryDate: new Date(root.earliest_licence_expiry_time),
@@ -58,20 +65,20 @@ class LicenceSource {
       currentAvailableReplicas: root.current_available_replicas,
       lifetimeAvailableMigrations: root.lifetime_available_migrations,
       lifetimeAvailableReplicas: root.lifetime_available_replicas,
-    }
+    };
 
-    return licence
+    return licence;
   }
 
   async addLicence(licence: string, applianceId: string) {
-    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/licences`
+    const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/licences`;
     await Api.send({
       url,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-pem-file' },
+      method: "POST",
+      headers: { "Content-Type": "application/x-pem-file" },
       data: licence,
-    })
+    });
   }
 }
 
-export default new LicenceSource()
+export default new LicenceSource();

@@ -12,30 +12,37 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observer } from 'mobx-react'
-import React from 'react'
-import styled from 'styled-components'
-import { ThemeProps } from '@src/components/Theme'
-import questionFilledImage from './images/question-filled.svg'
-import questionImage from './images/question.svg'
-import warningImage from './images/warning.svg'
+import { observer } from "mobx-react";
+import React from "react";
+import styled from "styled-components";
+import { ThemeProps } from "@src/components/Theme";
+import questionFilledImage from "./images/question-filled.svg";
+import questionImage from "./images/question.svg";
+import warningImage from "./images/warning.svg";
 
 const Wrapper = styled.div<any>`
-  ${ThemeProps.exactSize('16px')}
-  background: url('${(props: any) => (props.warning ? warningImage : props.filled ? questionFilledImage : questionImage)}') center no-repeat;
+  ${ThemeProps.exactSize("16px")}
+  background: url('${(props: any) =>
+    props.warning
+      ? warningImage
+      : props.filled
+      ? questionFilledImage
+      : questionImage}') center no-repeat;
   display: inline-block;
-  margin-left: ${(props: any) => (props.marginLeft != null ? `${props.marginLeft}px` : '4px')};
-  margin-bottom: ${(props: any) => (props.marginBottom != null ? `${props.marginBottom}px` : '-4px')};
-`
+  margin-left: ${(props: any) =>
+    props.marginLeft != null ? `${props.marginLeft}px` : "4px"};
+  margin-bottom: ${(props: any) =>
+    props.marginBottom != null ? `${props.marginBottom}px` : "-4px"};
+`;
 type Props = {
-  text: string,
-  marginLeft?: number | null,
-  marginBottom?: number | null,
-  className?: string,
-  style?: React.CSSProperties,
-  warning?: boolean,
-  filled?: boolean,
-}
+  text: string;
+  marginLeft?: number | null;
+  marginBottom?: number | null;
+  className?: string;
+  style?: React.CSSProperties;
+  warning?: boolean;
+  filled?: boolean;
+};
 @observer
 class InfoIcon extends React.Component<Props> {
   render() {
@@ -49,8 +56,8 @@ class InfoIcon extends React.Component<Props> {
         filled={this.props.filled}
         style={this.props.style}
       />
-    )
+    );
   }
 }
 
-export default InfoIcon
+export default InfoIcon;

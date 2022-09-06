@@ -12,59 +12,59 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import CopyValue from '@src/components/ui/CopyValue'
-import CopyMultilineValue from '@src/components/ui/CopyMultilineValue'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import Button from '@src/components/ui/Button'
+import CopyValue from "@src/components/ui/CopyValue";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Button from "@src/components/ui/Button";
 
-import type { User } from '@src/@types/User'
-import type { Project } from '@src/@types/Project'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import type { User } from "@src/@types/User";
+import type { Project } from "@src/@types/Project";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
   padding-left: 126px;
-`
+`;
 const Info = styled.div<any>`
   display: flex;
   flex-wrap: wrap;
   margin-top: 32px;
   margin-left: -32px;
-`
+`;
 const LinkStyled = styled(Link)`
   color: ${ThemePalette.primary};
   text-decoration: none;
-`
+`;
 const Field = styled.div<any>`
-  ${ThemeProps.exactWidth('calc(50% - 32px)')}
+  ${ThemeProps.exactWidth("calc(50% - 32px)")}
   margin-bottom: 32px;
   margin-left: 32px;
-`
-const Value = styled.div<any>``
+`;
+const Value = styled.div<any>``;
 const Label = styled.div<any>`
   font-size: 10px;
   font-weight: ${ThemeProps.fontWeights.medium};
   color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 3px;
-`
+`;
 const LoadingWrapper = styled.div<any>`
   display: flex;
   justify-content: center;
   width: 100%;
   margin: 32px 0 64px 0;
-`
+`;
 const Buttons = styled.div<any>`
   margin-top: 64px;
   display: flex;
   justify-content: space-between;
-`
+`;
 const ButtonsColumn = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -75,87 +75,97 @@ const ButtonsColumn = styled.div<any>`
       margin-bottom: 0;
     }
   }
-`
+`;
 
-export const TEST_ID = 'userDetailsContent'
+export const TEST_ID = "userDetailsContent";
 
 export type Props = {
-  user: User | null,
-  loading: boolean,
-  projects: Project[],
-  userProjects: Project[],
-  isLoggedUser: boolean,
-  onUpdatePasswordClick: () => void,
-  onDeleteClick: () => void,
-}
+  user: User | null;
+  loading: boolean;
+  projects: Project[];
+  userProjects: Project[];
+  isLoggedUser: boolean;
+  onUpdatePasswordClick: () => void;
+  onDeleteClick: () => void;
+};
 
 @observer
 class UserDetailsContent extends React.Component<Props> {
   renderLoading() {
     if (!this.props.loading) {
-      return null
+      return null;
     }
 
     return (
       <LoadingWrapper>
         <StatusImage />
       </LoadingWrapper>
-    )
+    );
   }
 
   renderButtons() {
-    if (this.props.loading) return null
+    if (this.props.loading) return null;
 
     return (
       <Buttons>
         <ButtonsColumn>
-          <Button
-            hollow
-            onClick={this.props.onUpdatePasswordClick}
-          >Change password
+          <Button hollow onClick={this.props.onUpdatePasswordClick}>
+            Change password
           </Button>
         </ButtonsColumn>
         <ButtonsColumn>
           <Button
             alert
             hollow
-            onClick={() => { this.props.onDeleteClick() }}
+            onClick={() => {
+              this.props.onDeleteClick();
+            }}
             disabled={this.props.isLoggedUser}
-          >Delete user
+          >
+            Delete user
           </Button>
         </ButtonsColumn>
       </Buttons>
-    )
+    );
   }
 
-  renderUserProjects(projects: { label: string, id: string }[]): React.ReactNode {
+  renderUserProjects(
+    projects: { label: string; id: string }[]
+  ): React.ReactNode {
     return projects.map((project, i) => (
       <span key={project.id}>
         {project.label ? (
           <LinkStyled to={`/projects/${project.id}`}>
             {project.label}
           </LinkStyled>
-        ) : project.id}
-        {i < projects.length - 1 ? ', ' : ''}
+        ) : (
+          project.id
+        )}
+        {i < projects.length - 1 ? ", " : ""}
       </span>
-    ))
+    ));
   }
 
   renderInfo() {
     if (this.props.loading || !this.props.user) {
-      return null
+      return null;
     }
 
-    const user = this.props.user
-    const primaryProject = this.props.projects.find(p => user.project_id === p.id)
-    const primaryProjectName = primaryProject ? primaryProject.name : user.project_id
-    const userProjects: { label: string, id: string }[] = this.props.userProjects.map(up => {
-      const projectInfo = this.props.projects.find(p => p.id === up.id)
-      if (projectInfo) {
-        return { label: projectInfo.name, id: up.id }
-      }
-      return { label: '', id: up.id }
-    })
+    const user = this.props.user;
+    const primaryProject = this.props.projects.find(
+      p => user.project_id === p.id
+    );
+    const primaryProjectName = primaryProject
+      ? primaryProject.name
+      : user.project_id;
+    const userProjects: { label: string; id: string }[] =
+      this.props.userProjects.map(up => {
+        const projectInfo = this.props.projects.find(p => p.id === up.id);
+        if (projectInfo) {
+          return { label: projectInfo.name, id: up.id };
+        }
+        return { label: "", id: up.id };
+      });
 
     return (
       <Info>
@@ -165,7 +175,11 @@ class UserDetailsContent extends React.Component<Props> {
         </Field>
         <Field>
           <Label>Description</Label>
-          {user.description ? <CopyMultilineValue value={user.description} /> : <Value>-</Value>}
+          {user.description ? (
+            <CopyMultilineValue value={user.description} />
+          ) : (
+            <Value>-</Value>
+          )}
         </Field>
         <Field>
           <Label>ID</Label>
@@ -173,31 +187,34 @@ class UserDetailsContent extends React.Component<Props> {
         </Field>
         <Field>
           <Label>Email</Label>
-          {this.renderValue(user.email || '-')}
+          {this.renderValue(user.email || "-")}
         </Field>
         <Field>
           <Label>Primary Project</Label>
-          {this.renderValue(primaryProjectName || '-')}
+          {this.renderValue(primaryProjectName || "-")}
         </Field>
         <Field>
           <Label>Project Membership</Label>
-          {userProjects.length > 0 ? this.renderUserProjects(userProjects) : <Value>-</Value>}
+          {userProjects.length > 0 ? (
+            this.renderUserProjects(userProjects)
+          ) : (
+            <Value>-</Value>
+          )}
         </Field>
         <Field>
           <Label>Enabled</Label>
-          <Value>{user.enabled ? 'Yes' : 'No'}</Value>
+          <Value>{user.enabled ? "Yes" : "No"}</Value>
         </Field>
       </Info>
-    )
+    );
   }
 
   renderValue(value: string) {
-    return value !== '-' ? (
-      <CopyValue
-        value={value}
-        maxWidth="90%"
-      />
-    ) : <Value>{value}</Value>
+    return value !== "-" ? (
+      <CopyValue value={value} maxWidth="90%" />
+    ) : (
+      <Value>{value}</Value>
+    );
   }
 
   render() {
@@ -207,8 +224,8 @@ class UserDetailsContent extends React.Component<Props> {
         {this.renderLoading()}
         {this.renderButtons()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default UserDetailsContent
+export default UserDetailsContent;

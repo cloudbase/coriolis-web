@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import SearchButton from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import SearchButton from ".";
 
-describe('SearchButton', () => {
-  it('renders', () => {
-    render(<SearchButton />)
-    expect(TestUtils.select('SearchButton__Icon')).toBeTruthy()
-  })
-})
+describe("SearchButton", () => {
+  it("renders", () => {
+    render(<SearchButton />);
+    expect(TestUtils.select("SearchButton__Icon")).toBeTruthy();
+  });
+});

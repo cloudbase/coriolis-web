@@ -12,28 +12,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import express from 'express'
-import path from 'path'
+import express from "express";
+import path from "path";
 
-import apiRouter from './api/router'
-import proxyRouter from './proxies/router'
+import apiRouter from "./api/router";
+import proxyRouter from "./proxies/router";
 
 export default () => {
-  const app = express()
+  const app = express();
 
-  const PORT = process.env.PORT || 3000
+  const PORT = process.env.PORT || 3000;
 
-  app.use(express.static('dist'))
+  app.use(express.static("dist"));
 
-  app.use('/proxy', proxyRouter)
+  app.use("/proxy", proxyRouter);
 
-  app.use('/api', apiRouter)
+  app.use("/api", apiRouter);
 
-  app.get('*', (_, res) => {
-    res.sendFile(path.resolve(__dirname, '../dist', 'index.html'))
-  })
+  app.get("*", (_, res) => {
+    res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
+  });
 
   app.listen(PORT, () => {
-    console.log(`Express server is up on port ${PORT}`)
-  })
-}
+    console.log(`Express server is up on port ${PORT}`);
+  });
+};

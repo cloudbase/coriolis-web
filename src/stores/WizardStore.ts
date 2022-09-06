@@ -12,311 +12,363 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, action, runInAction } from 'mobx'
+import { observable, action, runInAction } from "mobx";
 
-import type { WizardData, WizardPage } from '@src/@types/WizardData'
-import type { Instance, InstanceScript } from '@src/@types/Instance'
-import type { Field } from '@src/@types/Field'
-import type { NetworkMap } from '@src/@types/Network'
-import type { StorageMap } from '@src/@types/Endpoint'
-import type { Schedule } from '@src/@types/Schedule'
-import { wizardPages } from '@src/constants'
-import source from '@src/sources/WizardSource'
-import { TransferItem } from '@src/@types/MainItem'
-import notificationStore from './NotificationStore'
+import type { WizardData, WizardPage } from "@src/@types/WizardData";
+import type { Instance, InstanceScript } from "@src/@types/Instance";
+import type { Field } from "@src/@types/Field";
+import type { NetworkMap } from "@src/@types/Network";
+import type { StorageMap } from "@src/@types/Endpoint";
+import type { Schedule } from "@src/@types/Schedule";
+import { wizardPages } from "@src/constants";
+import source from "@src/sources/WizardSource";
+import { TransferItem } from "@src/@types/MainItem";
+import notificationStore from "./NotificationStore";
 
 const updateOptions = (
   oldOptions: { [prop: string]: any } | null | undefined,
-  data: { field: Field, value: any, parentFieldName: string | undefined },
+  data: { field: Field; value: any; parentFieldName: string | undefined }
 ) => {
-  const options: any = oldOptions ? { ...oldOptions } : {}
-  if (data.field.type === 'array') {
-    const oldValues: string[] = options[data.field.name] || []
+  const options: any = oldOptions ? { ...oldOptions } : {};
+  if (data.field.type === "array") {
+    const oldValues: string[] = options[data.field.name] || [];
     if (oldValues.find(v => v === data.value)) {
-      options[data.field.name] = oldValues.filter(v => v !== data.value)
+      options[data.field.name] = oldValues.filter(v => v !== data.value);
     } else {
-      options[data.field.name] = [...oldValues, data.value]
+      options[data.field.name] = [...oldValues, data.value];
     }
   } else if (data.field.groupName) {
     if (!options[data.field.groupName]) {
-      options[data.field.groupName] = {}
+      options[data.field.groupName] = {};
     }
-    options[data.field.groupName][data.field.name] = data.value
+    options[data.field.groupName][data.field.name] = data.value;
   } else if (data.parentFieldName) {
     if (!options[data.parentFieldName]) {
-      options[data.parentFieldName] = {}
+      options[data.parentFieldName] = {};
     }
-    options[data.parentFieldName][data.field.name] = data.value
+    options[data.parentFieldName][data.field.name] = data.value;
   } else {
-    options[data.field.name] = data.value
+    options[data.field.name] = data.value;
   }
 
   if (data.field.subFields) {
     data.field.subFields.forEach(subField => {
-      const subFieldKeys = Object.keys(options).filter(k => k.indexOf(subField.name) > -1)
+      const subFieldKeys = Object.keys(options).filter(
+        k => k.indexOf(subField.name) > -1
+      );
       subFieldKeys.forEach(k => {
-        delete options[k]
-      })
-    })
+        delete options[k];
+      });
+    });
   }
 
-  return options
-}
+  return options;
+};
 
 class WizardStore {
-  @observable data: WizardData = {}
+  @observable data: WizardData = {};
 
-  @observable schedules: Schedule[] = []
+  @observable schedules: Schedule[] = [];
 
-  @observable defaultStorage: { value: string | null, busType?: string | null } | undefined
+  @observable defaultStorage:
+    | { value: string | null; busType?: string | null }
+    | undefined;
 
-  @observable storageMap: StorageMap[] = []
+  @observable storageMap: StorageMap[] = [];
 
-  @observable currentPage: WizardPage = wizardPages[0]
+  @observable currentPage: WizardPage = wizardPages[0];
 
-  @observable createdItem: TransferItem | null = null
+  @observable createdItem: TransferItem | null = null;
 
-  @observable creatingItem: boolean = false
+  @observable creatingItem = false;
 
-  @observable createdItems: Array<TransferItem | null> | null = null
+  @observable createdItems: Array<TransferItem | null> | null = null;
 
-  @observable creatingItems: boolean = false
+  @observable creatingItems = false;
 
-  @observable uploadedUserScripts: InstanceScript[] = []
+  @observable uploadedUserScripts: InstanceScript[] = [];
 
   @action updateData(data: WizardData) {
-    this.data = { ...this.data, ...data }
+    this.data = { ...this.data, ...data };
   }
 
-  @action fillWithDefaultValues(direction: 'source' | 'destination', schema: Field[]) {
-    const data: { [prop: string]: any } = (direction === 'source' ? this.data.sourceOptions : this.data.destOptions) || {}
+  @action fillWithDefaultValues(
+    direction: "source" | "destination",
+    schema: Field[]
+  ) {
+    const data: { [prop: string]: any } =
+      (direction === "source"
+        ? this.data.sourceOptions
+        : this.data.destOptions) || {};
 
-    const shouldSetDefault = (field: Field, parentData: { [prop: string]: any }): { should: boolean, value?: any } => {
+    const shouldSetDefault = (
+      field: Field,
+      parentData: { [prop: string]: any }
+    ): { should: boolean; value?: any } => {
       if (parentData[field.name] !== undefined) {
-        return { should: false }
+        return { should: false };
       }
-      const fieldDefault = field.default
+      const fieldDefault = field.default;
       if (fieldDefault == null) {
-        return { should: false }
+        return { should: false };
       }
       if (field.enum) {
         const isDefaultInEnum = field.enum.find(item => {
-          const enumItem: any = item
+          const enumItem: any = item;
           if (fieldDefault.id != null) {
             return enumItem.id != null
-              ? enumItem.id === fieldDefault.id : enumItem === fieldDefault.id
+              ? enumItem.id === fieldDefault.id
+              : enumItem === fieldDefault.id;
           }
           return enumItem.id != null
-            ? (enumItem.id === fieldDefault || enumItem.name === fieldDefault)
-            : enumItem === fieldDefault
-        })
+            ? enumItem.id === fieldDefault || enumItem.name === fieldDefault
+            : enumItem === fieldDefault;
+        });
 
         // Don't use the default if it can't be found in the enum list.
         if (isDefaultInEnum) {
-          return { should: true, value: field.default }
+          return { should: true, value: field.default };
         }
       } else {
-        return { should: true, value: field.default }
+        return { should: true, value: field.default };
       }
-      return { should: false }
-    }
+      return { should: false };
+    };
 
-    const setObjectDefault = (subFieldProperty: Field, parentFieldName: string) => {
-      const shouldSetDefaultResult = shouldSetDefault(subFieldProperty, data[parentFieldName] || {})
+    const setObjectDefault = (
+      subFieldProperty: Field,
+      parentFieldName: string
+    ) => {
+      const shouldSetDefaultResult = shouldSetDefault(
+        subFieldProperty,
+        data[parentFieldName] || {}
+      );
       if (shouldSetDefaultResult.should) {
-        data[parentFieldName] = data[parentFieldName] || {}
-        data[parentFieldName][subFieldProperty.name] = shouldSetDefaultResult.value
+        data[parentFieldName] = data[parentFieldName] || {};
+        data[parentFieldName][subFieldProperty.name] =
+          shouldSetDefaultResult.value;
       }
-    }
+    };
 
     schema.forEach(field => {
       if (field.subFields && data[field.name] !== undefined) {
-        const subField = field.subFields.find(sf => sf.name === `${data[field.name]}_options`)
+        const subField = field.subFields.find(
+          sf => sf.name === `${data[field.name]}_options`
+        );
         if (subField) {
           subField.properties?.forEach(subFieldProperty => {
-            setObjectDefault(subFieldProperty, subFieldProperty.groupName!)
-          })
+            setObjectDefault(subFieldProperty, subFieldProperty.groupName!);
+          });
         }
-        return
+        return;
       }
       field.properties?.forEach(subFieldProperty => {
-        setObjectDefault(subFieldProperty, field.name)
-      })
-      const shouldSetDefaultResult = shouldSetDefault(field, data)
+        setObjectDefault(subFieldProperty, field.name);
+      });
+      const shouldSetDefaultResult = shouldSetDefault(field, data);
       if (shouldSetDefaultResult.should) {
-        data[field.name] = shouldSetDefaultResult.value
+        data[field.name] = shouldSetDefaultResult.value;
       }
-    })
+    });
 
-    if (direction === 'source') {
-      this.data.sourceOptions = data
+    if (direction === "source") {
+      this.data.sourceOptions = data;
     } else {
-      this.data.destOptions = data
+      this.data.destOptions = data;
     }
   }
 
   @action toggleInstanceSelection(instance: Instance) {
     if (!this.data.selectedInstances) {
-      this.data.selectedInstances = [instance]
-      return
+      this.data.selectedInstances = [instance];
+      return;
     }
 
     if (this.data.selectedInstances.find(i => i.id === instance.id)) {
-      this.data.selectedInstances = this.data.selectedInstances.filter(i => i.id !== instance.id)
+      this.data.selectedInstances = this.data.selectedInstances.filter(
+        i => i.id !== instance.id
+      );
     } else {
-      this.data.selectedInstances = [...this.data.selectedInstances, instance]
+      this.data.selectedInstances = [...this.data.selectedInstances, instance];
     }
   }
 
   @action clearData() {
-    this.data = {}
-    this.currentPage = wizardPages[0]
-    this.clearStorageMap()
+    this.data = {};
+    this.currentPage = wizardPages[0];
+    this.clearStorageMap();
   }
 
   @action setCurrentPage(page: WizardPage) {
-    this.currentPage = page
+    this.currentPage = page;
   }
 
   @action updateSourceOptions(data: {
-    field: Field,
-    value: any
-    parentFieldName: string | undefined
+    field: Field;
+    value: any;
+    parentFieldName: string | undefined;
   }) {
-    this.data = { ...this.data }
-    this.data.sourceOptions = updateOptions(this.data.sourceOptions, data)
+    this.data = { ...this.data };
+    this.data.sourceOptions = updateOptions(this.data.sourceOptions, data);
   }
 
   @action updateDestOptionsRaw(fieldName: string, fieldValue: any) {
-    const currentData = { ...this.data }
-    const currentDestOptions: any = { ...currentData.destOptions }
-    currentDestOptions[fieldName] = fieldValue
-    currentData.destOptions = currentDestOptions
-    this.data = currentData
+    const currentData = { ...this.data };
+    const currentDestOptions: any = { ...currentData.destOptions };
+    currentDestOptions[fieldName] = fieldValue;
+    currentData.destOptions = currentDestOptions;
+    this.data = currentData;
   }
 
   @action updateDestOptions(data: {
-    field: Field,
-    value: any,
-    parentFieldName: string | undefined
+    field: Field;
+    value: any;
+    parentFieldName: string | undefined;
   }) {
-    this.data = { ...this.data }
-    this.data.destOptions = updateOptions(this.data.destOptions, data)
+    this.data = { ...this.data };
+    this.data.destOptions = updateOptions(this.data.destOptions, data);
   }
 
   @action updateNetworks(network: NetworkMap) {
     if (!this.data.networks) {
-      this.data.networks = []
+      this.data.networks = [];
     }
 
-    this.data.networks = this.data.networks
-      .filter(n => n.sourceNic.network_name !== network.sourceNic.network_name)
-    this.data.networks.push(network)
+    this.data.networks = this.data.networks.filter(
+      n => n.sourceNic.network_name !== network.sourceNic.network_name
+    );
+    this.data.networks.push(network);
   }
 
-  @action updateDefaultStorage(defaultStorage: { value: string | null, busType?: string | null }) {
-    this.defaultStorage = defaultStorage
+  @action updateDefaultStorage(defaultStorage: {
+    value: string | null;
+    busType?: string | null;
+  }) {
+    this.defaultStorage = defaultStorage;
   }
 
   @action updateStorage(storage: StorageMap) {
-    const diskFieldName = storage.type === 'backend' ? 'storage_backend_identifier' : 'id'
-    this.storageMap = this.storageMap
-      .filter(n => n.type !== storage.type
-        || String(n.source[diskFieldName]) !== String(storage.source[diskFieldName]))
-    this.storageMap.push(storage)
+    const diskFieldName =
+      storage.type === "backend" ? "storage_backend_identifier" : "id";
+    this.storageMap = this.storageMap.filter(
+      n =>
+        n.type !== storage.type ||
+        String(n.source[diskFieldName]) !==
+          String(storage.source[diskFieldName])
+    );
+    this.storageMap.push(storage);
   }
 
   @action clearStorageMap() {
-    this.storageMap = []
-    this.defaultStorage = undefined
+    this.storageMap = [];
+    this.defaultStorage = undefined;
   }
 
   @action addSchedule(schedule: Schedule) {
-    this.schedules.push({ id: new Date().getTime().toString(), schedule: schedule.schedule })
+    this.schedules.push({
+      id: new Date().getTime().toString(),
+      schedule: schedule.schedule,
+    });
   }
 
   @action updateSchedule(scheduleId: string, data: Schedule) {
     this.schedules = this.schedules.map(schedule => {
       if (schedule.id !== scheduleId) {
-        return schedule
+        return schedule;
       }
       if (data.schedule) {
         // eslint-disable-next-line no-param-reassign
         schedule.schedule = {
           ...schedule.schedule,
           ...data.schedule,
-        }
+        };
       } else {
         // eslint-disable-next-line no-param-reassign
         schedule = {
           ...schedule,
           ...data,
-        }
+        };
       }
-      return schedule
-    })
+      return schedule;
+    });
   }
 
   @action removeSchedule(scheduleId: string) {
-    this.schedules = this.schedules.filter(s => s.id !== scheduleId)
+    this.schedules = this.schedules.filter(s => s.id !== scheduleId);
   }
 
   @action async create(opts: {
-    type: string,
-    data: WizardData,
-    defaultStorage: { value: string | null, busType?: string | null } | undefined,
-    storageMap: StorageMap[],
-    uploadedUserScripts: InstanceScript[],
+    type: string;
+    data: WizardData;
+    defaultStorage:
+      | { value: string | null; busType?: string | null }
+      | undefined;
+    storageMap: StorageMap[];
+    uploadedUserScripts: InstanceScript[];
   }): Promise<void> {
-    const {
-      type, data, defaultStorage, storageMap, uploadedUserScripts,
-    } = opts
-    this.creatingItem = true
+    const { type, data, defaultStorage, storageMap, uploadedUserScripts } =
+      opts;
+    this.creatingItem = true;
 
     try {
       const item: TransferItem = await source.create({
-        type, data, defaultStorage, storageMap, uploadedUserScripts,
-      })
-      runInAction(() => { this.createdItem = item })
+        type,
+        data,
+        defaultStorage,
+        storageMap,
+        uploadedUserScripts,
+      });
+      runInAction(() => {
+        this.createdItem = item;
+      });
     } finally {
-      runInAction(() => { this.creatingItem = false })
+      runInAction(() => {
+        this.creatingItem = false;
+      });
     }
   }
 
   @action async createMultiple(opts: {
-    type: string,
-    data: WizardData,
-    defaultStorage: { value: string | null, busType?: string | null } | undefined,
-    storageMap: StorageMap[],
-    uploadedUserScripts: InstanceScript[],
+    type: string;
+    data: WizardData;
+    defaultStorage:
+      | { value: string | null; busType?: string | null }
+      | undefined;
+    storageMap: StorageMap[];
+    uploadedUserScripts: InstanceScript[];
   }): Promise<boolean> {
-    const {
-      type, data, defaultStorage, storageMap, uploadedUserScripts,
-    } = opts
-    this.creatingItems = true
+    const { type, data, defaultStorage, storageMap, uploadedUserScripts } =
+      opts;
+    this.creatingItems = true;
 
     try {
       const items = await source.createMultiple({
-        type, data, defaultStorage, storageMap, uploadedUserScripts,
-      })
-      const nullItemsCount = items.filter(i => i === null).length
+        type,
+        data,
+        defaultStorage,
+        storageMap,
+        uploadedUserScripts,
+      });
+      const nullItemsCount = items.filter(i => i === null).length;
       if (items && nullItemsCount === 0) {
-        runInAction(() => { this.createdItems = items })
-        return true
+        runInAction(() => {
+          this.createdItems = items;
+        });
+        return true;
       }
-      let errorMessage: any = null
-      let alertOptions = null
+      let errorMessage: any = null;
+      let alertOptions = null;
       if (!items || nullItemsCount === items.length) {
-        errorMessage = `No ${type}s could be created`
+        errorMessage = `No ${type}s could be created`;
       } else {
-        errorMessage = `Some ${type}s couldn't be created.`
+        errorMessage = `Some ${type}s couldn't be created.`;
         alertOptions = {
           action: {
-            label: 'View details',
+            label: "View details",
             callback: () => ({
               request: {
-                url: '[MULTIPLE]',
-                method: 'POST',
+                url: "[MULTIPLE]",
+                method: "POST",
                 message: `Error creating some ${type}s`,
                 data: {
                   created: items.filter(Boolean).length,
@@ -326,12 +378,14 @@ class WizardStore {
               error: { message: errorMessage },
             }),
           },
-        }
+        };
       }
-      notificationStore.alert(errorMessage, 'error', alertOptions)
-      return false
+      notificationStore.alert(errorMessage, "error", alertOptions);
+      return false;
     } finally {
-      runInAction(() => { this.creatingItems = false })
+      runInAction(() => {
+        this.creatingItems = false;
+      });
     }
   }
 
@@ -341,38 +395,39 @@ class WizardStore {
       schedules: this.schedules,
       storageMap: this.storageMap,
       defaultStorage: this.defaultStorage,
-    })
+    });
   }
 
   @action getUrlState() {
-    const state = source.getUrlState()
+    const state = source.getUrlState();
     if (!state) {
-      return
+      return;
     }
-    this.data = state.data
-    this.schedules = state.schedules || []
-    this.storageMap = state.storageMap || []
-    this.defaultStorage = state.defaultStorage
+    this.data = state.data;
+    this.schedules = state.schedules || [];
+    this.storageMap = state.storageMap || [];
+    this.defaultStorage = state.defaultStorage;
     if (state.currentPage) {
-      this.setCurrentPage(state.currentPage)
+      this.setCurrentPage(state.currentPage);
     }
   }
 
-  @action cancelUploadedScript(global: string | null, instanceName: string | null) {
-    this.uploadedUserScripts = this.uploadedUserScripts
-      .filter(s => (global ? s.global !== global : s.instanceId !== instanceName))
+  @action cancelUploadedScript(
+    global: string | null,
+    instanceName: string | null
+  ) {
+    this.uploadedUserScripts = this.uploadedUserScripts.filter(s =>
+      global ? s.global !== global : s.instanceId !== instanceName
+    );
   }
 
   @action uploadUserScript(instanceScript: InstanceScript) {
-    this.uploadedUserScripts = [
-      ...this.uploadedUserScripts,
-      instanceScript,
-    ]
+    this.uploadedUserScripts = [...this.uploadedUserScripts, instanceScript];
   }
 
   @action clearUploadedUserScripts() {
-    this.uploadedUserScripts = []
+    this.uploadedUserScripts = [];
   }
 }
 
-export default new WizardStore()
+export default new WizardStore();

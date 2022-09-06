@@ -12,88 +12,94 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import styled from 'styled-components'
+import * as React from "react";
+import styled from "styled-components";
 
-import configLoader from '@src/utils/Config'
-import LabelDictionary from '@src/utils/LabelDictionary'
+import configLoader from "@src/utils/Config";
+import LabelDictionary from "@src/utils/LabelDictionary";
 
-import FieldInput from '@src/components/ui/FieldInput'
-import type { Field } from '@src/@types/Field'
+import FieldInput from "@src/components/ui/FieldInput";
+import type { Field } from "@src/@types/Field";
 
-import { Endpoint, Validation } from '@src/@types/Endpoint'
-import { ThemeProps } from '@src/components/Theme'
+import { Endpoint, Validation } from "@src/@types/Endpoint";
+import { ThemeProps } from "@src/components/Theme";
 
 export const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   min-height: 0;
-`
+`;
 export const Fields = styled.div<any>`
   display: flex;
   margin-top: 32px;
   padding: 0 32px;
   flex-direction: column;
   overflow: auto;
-`
+`;
 export const FieldStyled = styled(FieldInput)`
-  min-width: ${props => (props.useTextArea ? '100%' : '224px')};
+  min-width: ${props => (props.useTextArea ? "100%" : "224px")};
   max-width: ${ThemeProps.inputSizes.large.width}px;
   margin-bottom: 16px;
-`
+`;
 export const Row = styled.div<any>`
   display: flex;
   flex-shrink: 0;
   justify-content: space-between;
-`
+`;
 
 type Props = {
-  connectionInfoSchema: Field[],
-  validation: Validation | null,
-  invalidFields: string[],
-  getFieldValue: (field: Field | null) => any,
-  handleFieldChange: (field: Field | null, value: any) => void,
-  disabled: boolean,
-  cancelButtonText: string,
-  validating: boolean,
-  onRef: (contentPlugin: any) => void,
-  handleFieldsChange: (items: { field: Field, value: any }[]) => void,
-  originalConnectionInfo: Endpoint['connection_info'],
-  onResizeUpdate: (scrollOffset: number) => void,
-  scrollableRef: (ref: HTMLElement) => void,
-  highlightRequired: () => void
-  handleValidateClick: () => void
-  handleCancelClick: () => void
-}
+  connectionInfoSchema: Field[];
+  validation: Validation | null;
+  invalidFields: string[];
+  getFieldValue: (field: Field | null) => any;
+  handleFieldChange: (field: Field | null, value: any) => void;
+  disabled: boolean;
+  cancelButtonText: string;
+  validating: boolean;
+  onRef: (contentPlugin: any) => void;
+  handleFieldsChange: (items: { field: Field; value: any }[]) => void;
+  originalConnectionInfo: Endpoint["connection_info"];
+  onResizeUpdate: (scrollOffset: number) => void;
+  scrollableRef: (ref: HTMLElement) => void;
+  highlightRequired: () => void;
+  handleValidateClick: () => void;
+  handleCancelClick: () => void;
+};
 
-export const findInvalidFields = (schema: Field[], getFieldValue: (field: Field | null) => any) => {
-  const invalidFields = schema.filter(field => {
-    if (field.required) {
-      const value = getFieldValue(field)
-      return !value || value.length === 0
-    }
-    return false
-  }).map(f => f.name)
+export const findInvalidFields = (
+  schema: Field[],
+  getFieldValue: (field: Field | null) => any
+) => {
+  const invalidFields = schema
+    .filter(field => {
+      if (field.required) {
+        const value = getFieldValue(field);
+        return !value || value.length === 0;
+      }
+      return false;
+    })
+    .map(f => f.name);
 
-  return invalidFields
-}
+  return invalidFields;
+};
 
 export const renderFields = (opts: {
-  schema: Field[],
-  disabled: boolean,
-  invalidFields: string[],
-  getFieldValue: (field: Field | null) => any,
-  handleFieldChange: (field: Field | null, value: any) => void,
+  schema: Field[];
+  disabled: boolean;
+  invalidFields: string[];
+  getFieldValue: (field: Field | null) => any;
+  handleFieldChange: (field: Field | null, value: any) => void;
 }) => {
-  const {
-    schema, disabled, invalidFields, getFieldValue, handleFieldChange,
-  } = opts
-  const rows: JSX.Element[] = []
-  let lastField: JSX.Element
-  let i = 0
+  const { schema, disabled, invalidFields, getFieldValue, handleFieldChange } =
+    opts;
+  const rows: JSX.Element[] = [];
+  let lastField: JSX.Element;
+  let i = 0;
   schema.forEach((field, schemaIndex) => {
-    const isPassword = Boolean(configLoader.config.passwordFields.find(fn => field.name === fn))
-        || field.name.indexOf('password') > -1
+    const isPassword =
+      Boolean(
+        configLoader.config.passwordFields.find(fn => field.name === fn)
+      ) || field.name.indexOf("password") > -1;
     const currentField = (
       <FieldStyled
         {...field}
@@ -103,51 +109,53 @@ export const renderFields = (opts: {
         password={isPassword}
         highlight={invalidFields.findIndex(fn => fn === field.name) > -1}
         value={getFieldValue(field)}
-        onChange={value => { handleFieldChange(field, value) }}
+        onChange={value => {
+          handleFieldChange(field, value);
+        }}
       />
-    )
+    );
     const pushRow = (field1: React.ReactNode, field2?: React.ReactNode) => {
-      rows.push((
+      rows.push(
         <Row key={field.name}>
           {field1}
           {field2}
         </Row>
-      ))
-    }
+      );
+    };
     if (field.useTextArea) {
-      pushRow(currentField)
-      i -= 1
+      pushRow(currentField);
+      i -= 1;
     } else if (i % 2 !== 0) {
-      pushRow(lastField, currentField)
+      pushRow(lastField, currentField);
     } else if (schemaIndex === schema.length - 1) {
-      pushRow(currentField)
+      pushRow(currentField);
       if (field.useTextArea) {
-        i -= 1
+        i -= 1;
       }
     } else {
-      lastField = currentField
+      lastField = currentField;
     }
-    i += 1
-  })
+    i += 1;
+  });
 
-  return (
-    <Fields>
-      {rows}
-    </Fields>
-  )
-}
+  return <Fields>{rows}</Fields>;
+};
 
 class ContentPlugin extends React.Component<Props> {
   componentDidMount() {
-    this.props.onRef(this)
+    this.props.onRef(this);
   }
 
   componentWillUnmount() {
-    this.props.onRef(undefined)
+    this.props.onRef(undefined);
   }
 
   // eslint-disable-next-line react/no-unused-class-component-methods
-  findInvalidFields = () => findInvalidFields(this.props.connectionInfoSchema, this.props.getFieldValue)
+  findInvalidFields = () =>
+    findInvalidFields(
+      this.props.connectionInfoSchema,
+      this.props.getFieldValue
+    );
 
   renderFields() {
     return renderFields({
@@ -156,16 +164,12 @@ class ContentPlugin extends React.Component<Props> {
       invalidFields: this.props.invalidFields,
       getFieldValue: this.props.getFieldValue,
       handleFieldChange: this.props.handleFieldChange,
-    })
+    });
   }
 
   render() {
-    return (
-      <Wrapper>
-        {this.renderFields()}
-      </Wrapper>
-    )
+    return <Wrapper>{this.renderFields()}</Wrapper>;
   }
 }
 
-export default ContentPlugin
+export default ContentPlugin;

@@ -2,6 +2,5 @@
   "name": "NotificationDropdown",
   "version": "0.0.0",
   "private": true,
-  "main":"./NotificationDropdown.tsx"
+  "main": "./NotificationDropdown.tsx"
 }
-

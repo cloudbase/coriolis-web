@@ -12,129 +12,145 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, runInAction, action } from 'mobx'
-import cookie from 'js-cookie'
-import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
+import { observable, runInAction, action } from "mobx";
+import cookie from "js-cookie";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
-import type { Log } from '@src/@types/Log'
+import type { Log } from "@src/@types/Log";
 
-import configLoader from '@src/utils/Config'
+import configLoader from "@src/utils/Config";
 
-import apiCaller from '@src/utils/ApiCaller'
-import DateUtils from '@src/utils/DateUtils'
-import DomUtils from '@src/utils/DomUtils'
-import notificationStore from './NotificationStore'
+import apiCaller from "@src/utils/ApiCaller";
+import DateUtils from "@src/utils/DateUtils";
+import DomUtils from "@src/utils/DomUtils";
+import notificationStore from "./NotificationStore";
 
-const MAX_STREAM_LINES = 200
+const MAX_STREAM_LINES = 200;
 class LogStore {
-  @observable logs: Log[] = []
+  @observable logs: Log[] = [];
 
-  @observable loading: boolean = false
+  @observable loading = false;
 
-  @observable liveFeed: string[] = []
+  @observable liveFeed: string[] = [];
 
-  @observable generatingDiagnostics: boolean = false
+  @observable generatingDiagnostics = false;
 
   @action async getLogs(options?: { showLoading?: boolean }) {
     if (options && options.showLoading) {
-      this.loading = true
+      this.loading = true;
     }
     try {
-      const response = await apiCaller.send({ url: configLoader.config.servicesUrls.coriolisLogs })
+      const response = await apiCaller.send({
+        url: configLoader.config.servicesUrls.coriolisLogs,
+      });
       runInAction(() => {
-        this.logs = response.data.logs
-        this.loading = false
-      })
+        this.logs = response.data.logs;
+        this.loading = false;
+      });
     } finally {
       runInAction(() => {
-        this.loading = false
-      })
+        this.loading = false;
+      });
     }
   }
 
-  @action download(logName: string, startDate?: Date | null, endDate?: Date | null) {
-    const token = cookie.get('token') || 'null'
-    let url = `${configLoader.config.servicesUrls.coriolisLogs}/${logName}?auth_type=keystone&auth_token=${token}`
+  @action download(
+    logName: string,
+    startDate?: Date | null,
+    endDate?: Date | null
+  ) {
+    const token = cookie.get("token") || "null";
+    let url = `${configLoader.config.servicesUrls.coriolisLogs}/${logName}?auth_type=keystone&auth_token=${token}`;
     if (startDate) {
-      url += `&start_date=${DateUtils.toUnix(startDate)}`
+      url += `&start_date=${DateUtils.toUnix(startDate)}`;
     }
     if (endDate) {
-      url += `&end_date=${DateUtils.toUnix(endDate)}`
+      url += `&end_date=${DateUtils.toUnix(endDate)}`;
     }
 
-    DomUtils.executeDownloadLink(url)
+    DomUtils.executeDownloadLink(url);
   }
 
   @action async downloadDiagnostics() {
-    this.generatingDiagnostics = true
-    const baseUrl = `${configLoader.config.servicesUrls.coriolis}/${apiCaller.projectId}`
+    this.generatingDiagnostics = true;
+    const baseUrl = `${configLoader.config.servicesUrls.coriolis}/${apiCaller.projectId}`;
     const [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
       apiCaller.send({ url: `${baseUrl}/diagnostics` }),
       apiCaller.send({ url: `${baseUrl}/replicas?show_deleted=true` }),
       apiCaller.send({ url: `${baseUrl}/migrations?show_deleted=true` }),
-    ])
+    ]);
 
-    const zip = new JSZip()
-    zip.file('diagnostics.json', JSON.stringify(diagnosticsResp.data))
-    zip.file('replicas.json', JSON.stringify(replicasResp.data))
-    zip.file('migrations.json', JSON.stringify(migrationsResp.data))
-    const zipContent = await zip.generateAsync({ type: 'blob' })
-    saveAs(zipContent, 'diagnostics.zip')
+    const zip = new JSZip();
+    zip.file("diagnostics.json", JSON.stringify(diagnosticsResp.data));
+    zip.file("replicas.json", JSON.stringify(replicasResp.data));
+    zip.file("migrations.json", JSON.stringify(migrationsResp.data));
+    const zipContent = await zip.generateAsync({ type: "blob" });
+    saveAs(zipContent, "diagnostics.zip");
     runInAction(() => {
-      this.generatingDiagnostics = false
-    })
+      this.generatingDiagnostics = false;
+    });
   }
 
-  socket!: WebSocket
+  socket!: WebSocket;
 
-  startLiveFeed(options: { logName: string, severityLevel: number }) {
-    const { logName, severityLevel } = options
-    const token = cookie.get('token') || 'null'
-    let wsUrl
-    if (configLoader.config.servicesUrls.coriolisLogStreamBaseUrl === '') {
-      wsUrl = `wss://${window.location.host}`
+  startLiveFeed(options: { logName: string; severityLevel: number }) {
+    const { logName, severityLevel } = options;
+    const token = cookie.get("token") || "null";
+    let wsUrl;
+    if (configLoader.config.servicesUrls.coriolisLogStreamBaseUrl === "") {
+      wsUrl = `wss://${window.location.host}`;
     } else {
-      wsUrl = configLoader.config.servicesUrls.coriolisLogStreamBaseUrl.replace('https', 'wss')
+      wsUrl = configLoader.config.servicesUrls.coriolisLogStreamBaseUrl.replace(
+        "https",
+        "wss"
+      );
     }
 
-    let url = `${wsUrl}/log-stream?auth_type=keystone`
-    url += `&auth_token=${token}&severity=${severityLevel}`
+    let url = `${wsUrl}/log-stream?auth_type=keystone`;
+    url += `&auth_token=${token}&severity=${severityLevel}`;
 
-    if (logName !== 'All Logs') {
-      url += `&app_name=${logName}`
+    if (logName !== "All Logs") {
+      url += `&app_name=${logName}`;
     }
 
-    this.socket = new WebSocket(url)
-    this.socket.onopen = () => { console.log('WS Log connection open') }
+    this.socket = new WebSocket(url);
+    this.socket.onopen = () => {
+      console.log("WS Log connection open");
+    };
     this.socket.onmessage = e => {
-      if (typeof e.data === 'string') {
-        this.addToLiveFeed(JSON.parse(e.data))
+      if (typeof e.data === "string") {
+        this.addToLiveFeed(JSON.parse(e.data));
       }
-    }
-    this.socket.onclose = () => { console.log('WS Log connection closed') }
+    };
+    this.socket.onclose = () => {
+      console.log("WS Log connection closed");
+    };
     this.socket.onerror = (e: any) => {
-      notificationStore.alert(`WebSocket error: ${e.message}`, 'error')
-    }
+      notificationStore.alert(`WebSocket error: ${e.message}`, "error");
+    };
   }
 
   @action addToLiveFeed(feed: { message: string }) {
-    this.liveFeed = [...this.liveFeed, feed.message]
+    this.liveFeed = [...this.liveFeed, feed.message];
     if (this.liveFeed.length > MAX_STREAM_LINES) {
-      this.liveFeed = [...this.liveFeed
-        .filter((_, i) => i > this.liveFeed.length - MAX_STREAM_LINES)]
+      this.liveFeed = [
+        ...this.liveFeed.filter(
+          (_, i) => i > this.liveFeed.length - MAX_STREAM_LINES
+        ),
+      ];
     }
   }
 
   @action clearLiveFeed() {
-    this.liveFeed = []
+    this.liveFeed = [];
   }
 
   @action stopLiveFeed() {
     if (this.socket) {
-      this.socket.close()
+      this.socket.close();
     }
   }
 }
 
-export default new LogStore()
+export default new LogStore();

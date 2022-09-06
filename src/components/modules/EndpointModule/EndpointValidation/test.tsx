@@ -12,43 +12,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TW from '@src/utils/TestWrapper'
-import EndpointValidation from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TW from "@src/utils/TestWrapper";
+import EndpointValidation from ".";
 
-const wrap = props => new TW(shallow(
-  
-  <EndpointValidation {...props} />
-), 'eValidation')
+const wrap = props =>
+  new TW(shallow(<EndpointValidation {...props} />), "eValidation");
 
-describe('EndpointValidation Component', () => {
-  it('renders loading', () => {
-    let wrapper = wrap({ loading: true })
-    expect(wrapper.find('status').prop('loading')).toBe(true)
-    expect(wrapper.findText('title')).toBe('Validating Endpoint')
-  })
+describe("EndpointValidation Component", () => {
+  it("renders loading", () => {
+    const wrapper = wrap({ loading: true });
+    expect(wrapper.find("status").prop("loading")).toBe(true);
+    expect(wrapper.findText("title")).toBe("Validating Endpoint");
+  });
 
-  it('renders valid', () => {
-    let wrapper = wrap({ validation: { valid: true } })
-    expect(wrapper.find('status').prop('status')).toBe('COMPLETED')
-    expect(wrapper.findText('title')).toBe('Endpoint is Valid')
-  })
+  it("renders valid", () => {
+    const wrapper = wrap({ validation: { valid: true } });
+    expect(wrapper.find("status").prop("status")).toBe("COMPLETED");
+    expect(wrapper.findText("title")).toBe("Endpoint is Valid");
+  });
 
-  it('renders failed with default message', () => {
-    let wrapper = wrap({ validation: {} })
-    expect(wrapper.find('status').prop('status')).toBe('ERROR')
-    expect(wrapper.findText('title')).toBe('Validation Failed')
-    expect(wrapper.findText('errorMessage')).toBe('An unexpected error occurred.<CopyButton />')
-  })
+  it("renders failed with default message", () => {
+    const wrapper = wrap({ validation: {} });
+    expect(wrapper.find("status").prop("status")).toBe("ERROR");
+    expect(wrapper.findText("title")).toBe("Validation Failed");
+    expect(wrapper.findText("errorMessage")).toBe(
+      "An unexpected error occurred.<CopyButton />"
+    );
+  });
 
-  it('renders failed with custom message', () => {
-    let wrapper = wrap({ validation: { message: 'custom_message' } })
-    expect(wrapper.find('status').prop('status')).toBe('ERROR')
-    expect(wrapper.findText('title')).toBe('Validation Failed')
-    expect(wrapper.findText('errorMessage')).toBe('custom_message<CopyButton />')
-  })
-})
-
-
-
+  it("renders failed with custom message", () => {
+    const wrapper = wrap({ validation: { message: "custom_message" } });
+    expect(wrapper.find("status").prop("status")).toBe("ERROR");
+    expect(wrapper.findText("title")).toBe("Validation Failed");
+    expect(wrapper.findText("errorMessage")).toBe(
+      "custom_message<CopyButton />"
+    );
+  });
+});

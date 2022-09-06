@@ -12,16 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import { MetalHubServer } from '@src/@types/MetalHub'
-import moment from 'moment'
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
-import serverImage from './images/server.svg'
+import { MetalHubServer } from "@src/@types/MetalHub";
+import moment from "moment";
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import serverImage from "./images/server.svg";
 
 const Content = styled.div<any>`
   display: flex;
@@ -36,7 +36,7 @@ const Content = styled.div<any>`
   &:hover {
     background: ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const Wrapper = styled.div<any>`
   display: flex;
   align-items: center;
@@ -44,38 +44,38 @@ const Wrapper = styled.div<any>`
   &:last-child ${Content} {
     border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const Image = styled.div`
   min-width: 48px;
   height: 48px;
-  background: url('${serverImage}') no-repeat center;
+  background: url("${serverImage}") no-repeat center;
   margin-right: 16px;
-`
+`;
 const Title = styled.div`
   flex-grow: 1;
   overflow: hidden;
   margin-right: 48px;
   min-width: 100px;
-`
+`;
 const TitleLabel = styled.div`
   font-size: 16px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-`
+`;
 const ItemLabel = styled.div`
   color: ${ThemePalette.grayscale[4]};
-`
+`;
 const ItemValue = styled.div`
   color: ${ThemePalette.primary};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`
+`;
 const Body = styled.div`
-  ${ThemeProps.exactWidth('642px')}
+  ${ThemeProps.exactWidth("642px")}
   display: flex;
-`
+`;
 const Data = styled.div<{ width: number }>`
   width: ${props => props.width}px;
   margin: 0 32px;
@@ -83,12 +83,12 @@ const Data = styled.div<{ width: number }>`
   &:last-child {
     margin-right: 0;
   }
-`
+`;
 
 type Props = {
-  item: MetalHubServer,
-  onClick: () => void,
-}
+  item: MetalHubServer;
+  onClick: () => void;
+};
 @observer
 class MetalHubServerListItem extends React.Component<Props> {
   render() {
@@ -97,37 +97,47 @@ class MetalHubServerListItem extends React.Component<Props> {
         <Content onClick={this.props.onClick}>
           <Image />
           <Title>
-            <TitleLabel>{this.props.item.hostname || 'No Hostname'}</TitleLabel>
+            <TitleLabel>{this.props.item.hostname || "No Hostname"}</TitleLabel>
             {this.props.item.active ? (
-              <StatusPill style={{ marginTop: '4px' }} status="COMPLETED" label="Active" />
+              <StatusPill
+                style={{ marginTop: "4px" }}
+                status="COMPLETED"
+                label="Active"
+              />
             ) : (
-              <StatusPill style={{ marginTop: '4px' }} status="ERROR" label="Inactive" />
+              <StatusPill
+                style={{ marginTop: "4px" }}
+                status="ERROR"
+                label="Inactive"
+              />
             )}
           </Title>
           <Body>
             <Data width={500}>
               <ItemLabel>API Endpoint</ItemLabel>
-              <ItemValue>
-                {this.props.item.api_endpoint}
-              </ItemValue>
+              <ItemValue>{this.props.item.api_endpoint}</ItemValue>
             </Data>
             <Data width={145}>
               <ItemLabel>Created At</ItemLabel>
               <ItemValue>
-                {moment(this.props.item.created_at).format('YYYY-MM-DD HH:mm:ss')}
+                {moment(this.props.item.created_at).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )}
               </ItemValue>
             </Data>
             <Data width={145}>
               <ItemLabel>Updated At</ItemLabel>
               <ItemValue>
-                {moment(this.props.item.updated_at).format('YYYY-MM-DD HH:mm:ss')}
+                {moment(this.props.item.updated_at).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )}
               </ItemValue>
             </Data>
           </Body>
         </Content>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MetalHubServerListItem
+export default MetalHubServerListItem;

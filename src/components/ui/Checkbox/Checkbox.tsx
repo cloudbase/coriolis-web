@@ -12,87 +12,94 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import checkmarkImage from './images/checkmark.svg'
+import checkmarkImage from "./images/checkmark.svg";
 
 const CheckmarkImage = styled.div<any>`
   width: 10px;
   height: 7px;
-  background: url('${checkmarkImage}') no-repeat center;
+  background: url("${checkmarkImage}") no-repeat center;
   transform: scale(0);
   transition: transform 250ms cubic-bezier(0, 1.4, 1, 1);
-`
+`;
 const Wrapper = styled.div<any>`
   display: flex;
-  ${(props: any) => (props.disabled ? '' : 'cursor: pointer;')}
-  ${(props: any) => (props.disabled ? 'opacity: 0.9;' : '')}
+  ${(props: any) => (props.disabled ? "" : "cursor: pointer;")}
+  ${(props: any) => (props.disabled ? "opacity: 0.9;" : "")}
   justify-content: center;
   align-items: center;
-  ${ThemeProps.exactSize('16px')}
+  ${ThemeProps.exactSize("16px")}
   border: 1px solid ${ThemePalette.grayscale[3]};
   border-radius: 3px;
   background: white;
   transition: all ${ThemeProps.animations.swift};
-  ${(props: any) => (props.checked ? css`
-    border-color: ${ThemePalette.primary};
-    background: ${ThemePalette.primary};
-    ${CheckmarkImage} {
-      transform: scale(1);
-    }
-  ` : '')}
+  ${(props: any) =>
+    props.checked
+      ? css`
+          border-color: ${ThemePalette.primary};
+          background: ${ThemePalette.primary};
+          ${CheckmarkImage} {
+            transform: scale(1);
+          }
+        `
+      : ""}
   :focus {
     border: 1px solid ${ThemePalette.primary};
     outline: none;
   }
-`
+`;
 
 type Props = {
-  className?: string,
-  checked?: boolean,
-  disabled?: boolean,
-  onChange?: (checked: boolean) => void,
-  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void,
-  onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void,
-}
+  className?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  onChange?: (checked: boolean) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
+};
 @observer
 class Checkbox extends React.Component<Props> {
   handleClick() {
     if (this.props.disabled || !this.props.onChange) {
-      return
+      return;
     }
 
-    this.props.onChange(!this.props.checked)
+    this.props.onChange(!this.props.checked);
   }
 
   handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key !== ' ') {
-      return
+    if (e.key !== " ") {
+      return;
     }
-    e.preventDefault()
-    this.handleClick()
+    e.preventDefault();
+    this.handleClick();
   }
 
   render() {
     return (
       <Wrapper
         className={this.props.className}
-        onClick={() => { this.handleClick() }}
+        onClick={() => {
+          this.handleClick();
+        }}
         checked={this.props.checked}
         disabled={this.props.disabled}
         tabIndex={0}
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => { this.handleKeyDown(e) }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          this.handleKeyDown(e);
+        }}
         onMouseDown={this.props.onMouseDown}
         onMouseUp={this.props.onMouseUp}
       >
         <CheckmarkImage />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default Checkbox
+export default Checkbox;

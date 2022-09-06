@@ -12,20 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import Arrow from '@src/components/ui/Arrow'
+import Arrow from "@src/components/ui/Arrow";
 
-import { ThemePalette } from '@src/components/Theme'
-import type { WizardPage } from '@src/@types/WizardData'
+import { ThemePalette } from "@src/components/Theme";
+import type { WizardPage } from "@src/@types/WizardData";
 
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
-`
-const ArrowStyled = styled(Arrow)``
+`;
+const ArrowStyled = styled(Arrow)``;
 const Breadcrumb = styled.div<any>`
   display: flex;
   align-items: center;
@@ -34,15 +34,16 @@ const Breadcrumb = styled.div<any>`
   &:last-child ${ArrowStyled} {
     display: none;
   }
-`
+`;
 const Name = styled.div<any>`
-  color: ${props => (props.selected ? ThemePalette.primary : ThemePalette.black)};
-`
+  color: ${props =>
+    props.selected ? ThemePalette.primary : ThemePalette.black};
+`;
 
 type Props = {
-  selected: { id: string },
-  pages: WizardPage[],
-}
+  selected: { id: string };
+  pages: WizardPage[];
+};
 @observer
 class WizardBreadcrumbs extends React.Component<Props> {
   render() {
@@ -50,13 +51,18 @@ class WizardBreadcrumbs extends React.Component<Props> {
       <Wrapper>
         {this.props.pages.map(page => (
           <Breadcrumb key={page.id}>
-            <Name selected={this.props.selected.id === page.id}>{page.breadcrumb}</Name>
-            <ArrowStyled primary={this.props.selected.id === page.id} useDefaultCursor />
+            <Name selected={this.props.selected.id === page.id}>
+              {page.breadcrumb}
+            </Name>
+            <ArrowStyled
+              primary={this.props.selected.id === page.id}
+              useDefaultCursor
+            />
           </Breadcrumb>
         ))}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default WizardBreadcrumbs
+export default WizardBreadcrumbs;

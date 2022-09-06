@@ -12,8 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import styled from 'styled-components'
+import * as React from "react";
+import styled from "styled-components";
 
 const Wrapper = styled.div<any>`
   position: absolute;
@@ -22,25 +22,25 @@ const Wrapper = styled.div<any>`
   right: 0;
   bottom: 0;
   min-width: 900px;
-`
-const PageHeader = styled.div<any>``
+`;
+const PageHeader = styled.div<any>``;
 const PageContent = styled.div<any>`
   position: absolute;
   top: 64px;
   left: 0;
   right: 0;
   bottom: 0;
-`
+`;
 
 type Props = {
-  pageHeaderComponent: React.ReactNode,
-  pageContentComponent: React.ReactNode,
-}
+  pageHeaderComponent: React.ReactNode;
+  pageContentComponent: React.ReactNode;
+};
 const WizardTemplate = (props: Props) => (
   <Wrapper>
     <PageHeader>{props.pageHeaderComponent}</PageHeader>
     <PageContent>{props.pageContentComponent}</PageContent>
   </Wrapper>
-)
+);
 
-export default WizardTemplate
+export default WizardTemplate;

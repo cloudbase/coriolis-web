@@ -14,138 +14,151 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
+import React from "react";
+import { storiesOf } from "@storybook/react";
 
-import WizardOptions from '.'
+import WizardOptions from ".";
 
 const fields: any = [
   {
-    name: 'integer with small min max',
-    type: 'integer',
+    name: "integer with small min max",
+    type: "integer",
     minimum: 10,
     maximum: 20,
   },
   {
-    name: 'integer with min',
-    type: 'integer',
+    name: "integer with min",
+    type: "integer",
     minimum: 10,
   },
   {
-    name: 'integer with max',
-    type: 'integer',
+    name: "integer with max",
+    type: "integer",
     maximum: 20,
   },
   {
-    name: 'list_all_destination_networks',
-    type: 'boolean',
+    name: "list_all_destination_networks",
+    type: "boolean",
   },
   {
-    name: 'migr_worker_use_config_drive',
-    type: 'boolean',
+    name: "migr_worker_use_config_drive",
+    type: "boolean",
   },
   {
-    name: 'set_dhcp',
-    type: 'boolean',
+    name: "set_dhcp",
+    type: "boolean",
   },
   {
-    name: 'enum_field',
-    type: 'string',
-    enum: ['enum 1', 'enum 2', 'enum 3'],
+    name: "enum_field",
+    type: "string",
+    enum: ["enum 1", "enum 2", "enum 3"],
   },
   {
-    name: 'long list',
-    type: 'string',
-    enum: ['enum 1', 'enum 2', 'enum 3', 'enum 4', 'enum 5', 'enum 6', 'enum 7', 'enum 8'],
+    name: "long list",
+    type: "string",
+    enum: [
+      "enum 1",
+      "enum 2",
+      "enum 3",
+      "enum 4",
+      "enum 5",
+      "enum 6",
+      "enum 7",
+      "enum 8",
+    ],
   },
   {
-    name: 'enum_field_autocomplete',
-    type: 'string',
-    enum: ['enum 1', 'enum 2', 'enum 3', 'enum 4', 'enum 5', 'enum 6', 'enum 7', 'enum 8', 'enum 9', 'enum 10'],
+    name: "enum_field_autocomplete",
+    type: "string",
+    enum: [
+      "enum 1",
+      "enum 2",
+      "enum 3",
+      "enum 4",
+      "enum 5",
+      "enum 6",
+      "enum 7",
+      "enum 8",
+      "enum 9",
+      "enum 10",
+    ],
   },
   {
-    name: 'string_field_with_default',
-    type: 'string',
-    default: 'default',
+    name: "string_field_with_default",
+    type: "string",
+    default: "default",
   },
   {
     required: true,
-    name: 'required_string_field',
-    type: 'string',
+    name: "required_string_field",
+    type: "string",
   },
   {
-    name: 'boolean_field',
-    type: 'boolean',
+    name: "boolean_field",
+    type: "boolean",
   },
   {
-    name: 'boolean_field_2',
-    type: 'boolean',
+    name: "boolean_field_2",
+    type: "boolean",
   },
   {
-    name: 'strict_boolean_field',
-    type: 'strict-boolean',
+    name: "strict_boolean_field",
+    type: "strict-boolean",
   },
-]
+];
 // configLoader.config = { passwordFields: [] }
-const props: any = {}
+const props: any = {};
 class Wrapper extends React.Component<any, any> {
   state = {
     useAdvancedOptions: true,
     data: {},
-  }
+  };
 
   handleChange(field: any, value: any) {
     this.setState((prevState: any) => {
-      const data: any = { ...prevState.data }
-      data[field.name] = value
-      return { data }
-    })
+      const data: any = { ...prevState.data };
+      data[field.name] = value;
+      return { data };
+    });
   }
 
   render() {
     return (
-      <div style={{ width: '1024px', display: 'flex', justifyContent: 'center' }}>
+      <div
+        style={{ width: "1024px", display: "flex", justifyContent: "center" }}
+      >
         <WizardOptions
           {...this.props}
           data={this.state.data}
-          onChange={(field, value) => { this.handleChange(field, value) }}
+          onChange={(field, value) => {
+            this.handleChange(field, value);
+          }}
           useAdvancedOptions={this.state.useAdvancedOptions}
           onAdvancedOptionsToggle={isAdvanced => {
-            this.setState({ useAdvancedOptions: isAdvanced })
+            this.setState({ useAdvancedOptions: isAdvanced });
           }}
           {...props}
         />
       </div>
-    )
+    );
   }
 }
 
-storiesOf('WizardOptions', module)
-  .add('replica', () => (
-    <Wrapper
-      fields={fields}
-      selectedInstances={[]}
-      wizardType="replica"
-    />
+storiesOf("WizardOptions", module)
+  .add("replica", () => (
+    <Wrapper fields={fields} selectedInstances={[]} wizardType="replica" />
   ))
-  .add('migration', () => (
-    <Wrapper
-      fields={fields}
-      selectedInstances={[]}
-      wizardType="migration"
-    />
+  .add("migration", () => (
+    <Wrapper fields={fields} selectedInstances={[]} wizardType="migration" />
   ))
-  .add('multiple instances', () => (
-    <Wrapper
-      fields={fields}
-      selectedInstances={[{}, {}]}
-    />
+  .add("multiple instances", () => (
+    <Wrapper fields={fields} selectedInstances={[{}, {}]} />
   ))
-  .add('loading', () => (
+  .add("loading", () => (
     <Wrapper
       fields={fields}
       selectedInstances={[]}
       wizardType="replica"
       optionsLoading
     />
-  ))
+  ));

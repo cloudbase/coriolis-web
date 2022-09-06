@@ -12,20 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
-import OptionsSchemaParserBase from '../default/OptionsSchemaPlugin'
+import type { SchemaProperties, SchemaDefinitions } from "@src/@types/Schema";
+import OptionsSchemaParserBase from "../default/OptionsSchemaPlugin";
 
 export default class OptionsSchemaParser extends OptionsSchemaParserBase {
   override parseSchemaToFields(opts: {
-    schema: SchemaProperties,
-    schemaDefinitions?: SchemaDefinitions | null | undefined,
-    dictionaryKey?: string,
-    requiresWindowsImage?: boolean,
+    schema: SchemaProperties;
+    schemaDefinitions?: SchemaDefinitions | null | undefined;
+    dictionaryKey?: string;
+    requiresWindowsImage?: boolean;
   }) {
-    const { schemaDefinitions } = opts
+    const { schemaDefinitions } = opts;
     if (schemaDefinitions?.azure_image?.required) {
-      schemaDefinitions.azure_image.required = []
+      schemaDefinitions.azure_image.required = [];
     }
-    return super.parseSchemaToFields(opts)
+    return super.parseSchemaToFields(opts);
   }
 }

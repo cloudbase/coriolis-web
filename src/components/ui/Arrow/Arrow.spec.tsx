@@ -12,35 +12,45 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import { ThemePalette } from '@src/components/Theme'
-import Arrow from './Arrow'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import { ThemePalette } from "@src/components/Theme";
+import Arrow from "./Arrow";
 
-describe('Arrow', () => {
+describe("Arrow", () => {
   it.each`
     orientation
-    ${'up'}
-    ${'down'}
-    ${'left'}
-    ${'right'}
-  `('renders the $orientation orientation', ({ orientation }) => {
-    render(<Arrow orientation={orientation} />)
-    expect(TestUtils.select('Arrow__Wrapper')?.getAttribute('orientation')).toBe(orientation)
-  })
+    ${"up"}
+    ${"down"}
+    ${"left"}
+    ${"right"}
+  `("renders the $orientation orientation", ({ orientation }) => {
+    render(<Arrow orientation={orientation} />);
+    expect(
+      TestUtils.select("Arrow__Wrapper")?.getAttribute("orientation")
+    ).toBe(orientation);
+  });
 
-  it('renderes with primary colors', () => {
-    const { rerender } = render(<Arrow primary />)
-    expect(document.querySelector(`g[stroke="${ThemePalette.primary}"]`)).toBeTruthy()
-    rerender(<Arrow />)
-    expect(document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`)).toBeTruthy()
-  })
+  it("renderes with primary colors", () => {
+    const { rerender } = render(<Arrow primary />);
+    expect(
+      document.querySelector(`g[stroke="${ThemePalette.primary}"]`)
+    ).toBeTruthy();
+    rerender(<Arrow />);
+    expect(
+      document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`)
+    ).toBeTruthy();
+  });
 
-  it('renderes with primary colors', () => {
-    const { rerender } = render(<Arrow primary />)
-    expect(document.querySelector(`g[stroke="${ThemePalette.primary}"]`)).toBeTruthy()
-    rerender(<Arrow />)
-    expect(document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`)).toBeTruthy()
-  })
-})
+  it("renderes with primary colors", () => {
+    const { rerender } = render(<Arrow primary />);
+    expect(
+      document.querySelector(`g[stroke="${ThemePalette.primary}"]`)
+    ).toBeTruthy();
+    rerender(<Arrow />);
+    expect(
+      document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`)
+    ).toBeTruthy();
+  });
+});

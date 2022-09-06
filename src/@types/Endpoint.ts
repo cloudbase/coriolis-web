@@ -12,79 +12,88 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Disk } from './Instance'
-import type { ProviderTypes } from './Providers'
+import type { Disk } from "./Instance";
+import type { ProviderTypes } from "./Providers";
 
 export type Validation = {
-  valid: boolean,
-  message: string,
-}
+  valid: boolean;
+  message: string;
+};
 
 export type Endpoint = {
-  id: string,
-  name: string,
-  description: string,
-  type: ProviderTypes,
-  created_at: Date,
-  mapped_regions: string[],
+  id: string;
+  name: string;
+  description: string;
+  type: ProviderTypes;
+  created_at: Date;
+  mapped_regions: string[];
   connection_info: {
-    secret_ref?: string,
-    host?: string,
-    [prop: string]: any
-  },
-  [prop: string]: any
-}
+    secret_ref?: string;
+    host?: string;
+    [prop: string]: any;
+  };
+  [prop: string]: any;
+};
 
 export type MultiValidationItem = {
-  endpoint: Endpoint,
-  validation?: Validation,
-  validating: boolean,
-}
+  endpoint: Endpoint;
+  validation?: Validation;
+  validating: boolean;
+};
 
 export type OptionValues = {
-  name: string,
-  values: string[] | { name: string, id: string, [prop: string]: any }[],
-  config_default: string | { name: string, id: string },
-}
+  name: string;
+  values: string[] | { name: string; id: string; [prop: string]: any }[];
+  config_default: string | { name: string; id: string };
+};
 
 export type StorageBackend = {
-  id: string | null,
-  name: string,
+  id: string | null;
+  name: string;
   additional_provider_properties?: {
-    supported_bus_types?: string[]
-  }
-}
+    supported_bus_types?: string[];
+  };
+};
 
 export type Storage = {
-  storage_backends: StorageBackend[],
-  config_default?: string,
-}
+  storage_backends: StorageBackend[];
+  config_default?: string;
+};
 
 export type StorageMap = {
-  type: 'backend' | 'disk',
-  source: Disk,
-  target: StorageBackend,
-  targetBusType?: string | null
-}
+  type: "backend" | "disk";
+  source: Disk;
+  target: StorageBackend;
+  targetBusType?: string | null;
+};
 
 export const EndpointUtils = {
-  getBusTypeStorageId: (storageBackends: StorageBackend[], id: string | null): { busType: string | null, id: string | null } => {
-    const idMatches = /(.*):(.*)/.exec(String(id))
+  getBusTypeStorageId: (
+    storageBackends: StorageBackend[],
+    id: string | null
+  ): { busType: string | null; id: string | null } => {
+    const idMatches = /(.*):(.*)/.exec(String(id));
     if (!idMatches) {
-      return { busType: null, id }
+      return { busType: null, id };
     }
-    const actualId = idMatches[1]
-    const busType = idMatches[2]
+    const actualId = idMatches[1];
+    const busType = idMatches[2];
 
     for (let i = 0; i < storageBackends.length; i += 1) {
       if (storageBackends[i].id === actualId) {
-        if (storageBackends[i].additional_provider_properties?.supported_bus_types?.find(p => p === busType)) {
-          return { id: actualId, busType }
+        if (
+          storageBackends[
+            i
+          ].additional_provider_properties?.supported_bus_types?.find(
+            p => p === busType
+          )
+        ) {
+          return { id: actualId, busType };
         }
-        return { id: actualId, busType: null }
+        return { id: actualId, busType: null };
       }
     }
 
-    return { id, busType: null }
+    return { id, busType: null };
   },
-}
+};

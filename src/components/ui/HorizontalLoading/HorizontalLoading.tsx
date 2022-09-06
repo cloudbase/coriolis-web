@@ -12,16 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
+import React from "react";
+import styled from "styled-components";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   position: relative;
   height: 2px;
   overflow: hidden;
-`
+`;
 const Loader = styled.div<any>`
   width: 8px;
   height: 2px;
@@ -29,18 +29,22 @@ const Loader = styled.div<any>`
   position: absolute;
   animation: move 1s linear infinite;
   @keyframes move {
-    0% {left: -8px;}
-    100% {left: 100%;}
+    0% {
+      left: -8px;
+    }
+    100% {
+      left: 100%;
+    }
   }
-`
+`;
 type Props = {
-  style?: any,
-}
+  style?: any;
+};
 
 const HorizontalLoading = (props: Props) => (
   <Wrapper style={props.style}>
     <Loader />
   </Wrapper>
-)
+);
 
-export default HorizontalLoading
+export default HorizontalLoading;

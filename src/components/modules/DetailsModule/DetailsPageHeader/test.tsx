@@ -12,46 +12,45 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import sinon from 'sinon'
-import TW from '@src/utils/TestWrapper'
-import type { User } from '@src/@types/User'
-import DetailsPageHeader from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import sinon from "sinon";
+import TW from "@src/utils/TestWrapper";
+import type { User } from "@src/@types/User";
+import DetailsPageHeader from ".";
 
 type Props = {
-  user?: User | null,
-}
+  user?: User | null;
+};
 
-const wrap = (props: Props) => new TW(shallow(
-  <DetailsPageHeader
-    onUserItemClick={() => { }}
-    testMode
-    {...props}
-  />
-), 'dpHeader')
+const wrap = (props: Props) =>
+  new TW(
+    shallow(
+      <DetailsPageHeader onUserItemClick={() => {}} testMode {...props} />
+    ),
+    "dpHeader"
+  );
 
-let user = {
-  name: 'User name',
-  email: 'email@email.com',
-  id: 'user',
-  project: { id: '', name: '' },
-}
+const user = {
+  name: "User name",
+  email: "email@email.com",
+  id: "user",
+  project: { id: "", name: "" },
+};
 
-describe('DetailsPageHeader Component', () => {
-  it('renders with given user', () => {
-    let wrapper = wrap({ user })
-    expect(wrapper.find('userDropdown').prop('user').name).toBe(user.name)
-    expect(wrapper.find('userDropdown').prop('user').email).toBe(user.email)
-  })
+describe("DetailsPageHeader Component", () => {
+  it("renders with given user", () => {
+    const wrapper = wrap({ user });
+    expect(wrapper.find("userDropdown").prop("user").name).toBe(user.name);
+    expect(wrapper.find("userDropdown").prop("user").email).toBe(user.email);
+  });
 
-  it('dispatches user item click', () => {
-    let onUserItemClick = sinon.spy()
-    let wrapper = wrap({ user, onUserItemClick })
-    wrapper.find('userDropdown').simulate('itemClick', { value: '', label: '' })
-    expect(onUserItemClick.called).toBe(true)
-  })
-})
-
-
-
+  it("dispatches user item click", () => {
+    const onUserItemClick = sinon.spy();
+    const wrapper = wrap({ user, onUserItemClick });
+    wrapper
+      .find("userDropdown")
+      .simulate("itemClick", { value: "", label: "" });
+    expect(onUserItemClick.called).toBe(true);
+  });
+});

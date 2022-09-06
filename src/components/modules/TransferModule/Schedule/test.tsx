@@ -12,71 +12,91 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import moment from 'moment'
-import sinon from 'sinon'
-import TW from '@src/utils/TestWrapper'
-import Schedule from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import moment from "moment";
+import sinon from "sinon";
+import TW from "@src/utils/TestWrapper";
+import Schedule from ".";
 
-const wrap = props => new TW(shallow(<Schedule {...props} />), 'schedule')
+const wrap = props => new TW(shallow(<Schedule {...props} />), "schedule");
 
-let schedules = [
-  { id: 's-1', schedule: { dom: 4, dow: 3, month: 2, hour: 13, minute: 29 }, expiration_date: new Date(2017, 10, 27, 17, 19) },
-  { id: 's-2', enabled: true, schedule: { dom: 2, dow: 3, month: 2, hour: 13, minute: 29 }, expiration_date: new Date() },
-]
+const schedules = [
+  {
+    id: "s-1",
+    schedule: { dom: 4, dow: 3, month: 2, hour: 13, minute: 29 },
+    expiration_date: new Date(2017, 10, 27, 17, 19),
+  },
+  {
+    id: "s-2",
+    enabled: true,
+    schedule: { dom: 2, dow: 3, month: 2, hour: 13, minute: 29 },
+    expiration_date: new Date(),
+  },
+];
 
-describe('Schedule Component', () => {
-  it('renders no schedules', () => {
-    let wrapper = wrap({ schedules: [] })
-    expect(wrapper.findText('noScheduleTitle')).toBe('This Replica has no Schedules.')
-  })
+describe("Schedule Component", () => {
+  it("renders no schedules", () => {
+    const wrapper = wrap({ schedules: [] });
+    expect(wrapper.findText("noScheduleTitle")).toBe(
+      "This Replica has no Schedules."
+    );
+  });
 
-  it('dispaches no schedules `Add schedule` click', () => {
-    let onAddScheduleClick = sinon.spy()
-    let wrapper = wrap({ onAddScheduleClick })
-    wrapper.find('noScheduleAddButton').click()
-    expect(onAddScheduleClick.calledOnce).toBe(true)
-  })
+  it("dispaches no schedules `Add schedule` click", () => {
+    const onAddScheduleClick = sinon.spy();
+    const wrapper = wrap({ onAddScheduleClick });
+    wrapper.find("noScheduleAddButton").click();
+    expect(onAddScheduleClick.calledOnce).toBe(true);
+  });
 
-  it('renders correct number of schedules', () => {
-    let wrapper = wrap({ schedules })
+  it("renders correct number of schedules", () => {
+    const wrapper = wrap({ schedules });
     schedules.forEach(schedule => {
-      expect(wrapper.find(`item-${schedule.id}`).prop('item').id).toBe(schedule.id)
-    })
-  })
+      expect(wrapper.find(`item-${schedule.id}`).prop("item").id).toBe(
+        schedule.id
+      );
+    });
+  });
 
-  it('dispatches timezone change', () => {
-    let onTimezoneChange = sinon.spy()
-    let wrapper = wrap({ schedules, onTimezoneChange })
-    wrapper.find('timezoneDropdown').simulate('change', { value: schedules[0] })
-    expect(onTimezoneChange.calledOnce).toBe(true)
-  })
+  it("dispatches timezone change", () => {
+    const onTimezoneChange = sinon.spy();
+    const wrapper = wrap({ schedules, onTimezoneChange });
+    wrapper
+      .find("timezoneDropdown")
+      .simulate("change", { value: schedules[0] });
+    expect(onTimezoneChange.calledOnce).toBe(true);
+  });
 
-  it('dispatches Add schedule click from list of schedules with local timezone', () => {
-    let onAddScheduleClick = sinon.spy()
-    let wrapper = wrap({ schedules, onAddScheduleClick, timezone: 'local' })
-    wrapper.find('addScheduleButton').click()
-    let localHours = moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())).add(new Date().getTimezoneOffset(), 'minutes').hours()
-    expect(onAddScheduleClick.args[0][0].schedule.hour).toBe(localHours)
-  })
+  it("dispatches Add schedule click from list of schedules with local timezone", () => {
+    const onAddScheduleClick = sinon.spy();
+    const wrapper = wrap({ schedules, onAddScheduleClick, timezone: "local" });
+    wrapper.find("addScheduleButton").click();
+    const localHours = moment(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()
+      )
+    )
+      .add(new Date().getTimezoneOffset(), "minutes")
+      .hours();
+    expect(onAddScheduleClick.args[0][0].schedule.hour).toBe(localHours);
+  });
 
-  it('renders correct timezone in footer', () => {
-    let wrapper = wrap({ schedules, timezone: 'utc' })
-    expect(wrapper.find('timezoneDropdown').prop('selectedItem')).toBe('utc')
-  })
+  it("renders correct timezone in footer", () => {
+    const wrapper = wrap({ schedules, timezone: "utc" });
+    expect(wrapper.find("timezoneDropdown").prop("selectedItem")).toBe("utc");
+  });
 
-  it('has add button disabled while adding a schedule', () => {
-    let wrapper = wrap({ schedules, adding: true })
-    expect(wrapper.find('addScheduleButton').prop('disabled')).toBe(true)
-    expect(wrapper.find('loadingStatus').length).toBe(0)
-  })
+  it("has add button disabled while adding a schedule", () => {
+    const wrapper = wrap({ schedules, adding: true });
+    expect(wrapper.find("addScheduleButton").prop("disabled")).toBe(true);
+    expect(wrapper.find("loadingStatus").length).toBe(0);
+  });
 
-  it('renders loading', () => {
-    let wrapper = wrap({ schedules: [], loading: true })
-    expect(wrapper.find('loadingStatus').length).toBe(1)
-  })
-})
-
-
-
+  it("renders loading", () => {
+    const wrapper = wrap({ schedules: [], loading: true });
+    expect(wrapper.find("loadingStatus").length).toBe(1);
+  });
+});

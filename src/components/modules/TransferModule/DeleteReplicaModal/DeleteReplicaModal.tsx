@@ -12,15 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import Modal from '@src/components/ui/Modal'
-import Button from '@src/components/ui/Button'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Modal from "@src/components/ui/Modal";
+import Button from "@src/components/ui/Button";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -28,56 +28,56 @@ const Wrapper = styled.div<any>`
   align-items: center;
   justify-content: center;
   padding: 48px;
-`
+`;
 const Message = styled.div<any>`
   font-size: 18px;
   text-align: center;
   margin-top: 48px;
-`
+`;
 const ExtraMessage = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
   margin: 11px 0 48px 0;
   text-align: center;
   font-size: 12px;
-`
+`;
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: flex-end;
-`
+`;
 const ButtonsColumn = styled.div<any>`
   display: flex;
   flex-direction: column;
-`
+`;
 const Loading = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 64px;
-`
+`;
 const LoadingMessage = styled.div`
   max-width: 100%;
   overflow: auto;
   margin-top: 48px;
   text-align: center;
-`
+`;
 const LoadingTitle = styled.div`
   font-size: 18px;
   margin-bottom: 8px;
-`
+`;
 const LoadingSubtitle = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
-`
+`;
 
 type Props = {
-  hasDisks: boolean,
-  isMultiReplicaSelection?: boolean,
-  loading?: boolean
-  onDeleteReplica: () => void,
-  onDeleteDisks: () => void,
-  onRequestClose: () => void,
-}
+  hasDisks: boolean;
+  isMultiReplicaSelection?: boolean;
+  loading?: boolean;
+  onDeleteReplica: () => void;
+  onDeleteDisks: () => void;
+  onRequestClose: () => void;
+};
 
 @observer
 class DeleteReplicaModal extends React.Component<Props> {
@@ -86,31 +86,30 @@ class DeleteReplicaModal extends React.Component<Props> {
       if (this.props.isMultiReplicaSelection) {
         return (
           <ExtraMessage>
-            Some of the selected Replicas have been executed at
-            least once and thus may have disks created on the destination platform.
-            If those Replicas are to be deleted now, the disks on the destination will persist.
-            If this is not desired, please use the &quot;Delete Replica Disks&quot;
-            option to delete those disks before deleting the Replicas themselves.
+            Some of the selected Replicas have been executed at least once and
+            thus may have disks created on the destination platform. If those
+            Replicas are to be deleted now, the disks on the destination will
+            persist. If this is not desired, please use the &quot;Delete Replica
+            Disks&quot; option to delete those disks before deleting the
+            Replicas themselves.
           </ExtraMessage>
-        )
+        );
       }
 
       return (
         <ExtraMessage>
-          This Replica has been executed at least once and thus may
-          have disks created on the destination platform.
-          If the Replica is to be deleted now, the disks on the destination will persist.
-          If this is not desired, please use the &quot;Delete Replica Disks&quot; option
-          to delete the disks before deleting the Replica itself.
+          This Replica has been executed at least once and thus may have disks
+          created on the destination platform. If the Replica is to be deleted
+          now, the disks on the destination will persist. If this is not
+          desired, please use the &quot;Delete Replica Disks&quot; option to
+          delete the disks before deleting the Replica itself.
         </ExtraMessage>
-      )
+      );
     }
 
     return (
-      <ExtraMessage>
-        Deleting a Coriolis Replica is permanent!
-      </ExtraMessage>
-    )
+      <ExtraMessage>Deleting a Coriolis Replica is permanent!</ExtraMessage>
+    );
   }
 
   renderLoading() {
@@ -122,54 +121,53 @@ class DeleteReplicaModal extends React.Component<Props> {
           <LoadingSubtitle>Please wait ...</LoadingSubtitle>
         </LoadingMessage>
       </Loading>
-    )
+    );
   }
 
   renderContent() {
-    const message = this.props.isMultiReplicaSelection ? 'Are you sure you want to delete the selected replicas?' : 'Are you sure you want to delete this replica?'
+    const message = this.props.isMultiReplicaSelection
+      ? "Are you sure you want to delete the selected replicas?"
+      : "Are you sure you want to delete this replica?";
 
     return (
       <Wrapper>
         <StatusImage status="QUESTION" />
         <Message>{message}</Message>
-        { this.renderExtraMessage() }
+        {this.renderExtraMessage()}
         <Buttons>
-          <Button secondary onClick={this.props.onRequestClose}>Cancel</Button>
+          <Button secondary onClick={this.props.onRequestClose}>
+            Cancel
+          </Button>
           <ButtonsColumn>
             {this.props.hasDisks ? (
               <Button
                 onClick={this.props.onDeleteDisks}
                 hollow
-                style={{ marginBottom: '16px' }}
+                style={{ marginBottom: "16px" }}
                 alert
               >
                 Delete Replica Disks
               </Button>
             ) : null}
-            <Button
-              onClick={this.props.onDeleteReplica}
-              alert
-            >
-              Delete Replica{this.props.isMultiReplicaSelection ? 's' : ''}
+            <Button onClick={this.props.onDeleteReplica} alert>
+              Delete Replica{this.props.isMultiReplicaSelection ? "s" : ""}
             </Button>
           </ButtonsColumn>
         </Buttons>
       </Wrapper>
-    )
+    );
   }
 
   render() {
-    const title = this.props.isMultiReplicaSelection ? 'Delete Selected Replicas?' : 'Delete Replica?'
+    const title = this.props.isMultiReplicaSelection
+      ? "Delete Selected Replicas?"
+      : "Delete Replica?";
     return (
-      <Modal
-        isOpen
-        title={title}
-        onRequestClose={this.props.onRequestClose}
-      >
+      <Modal isOpen title={title} onRequestClose={this.props.onRequestClose}>
         {this.props.loading ? this.renderLoading() : this.renderContent()}
       </Modal>
-    )
+    );
   }
 }
 
-export default DeleteReplicaModal
+export default DeleteReplicaModal;

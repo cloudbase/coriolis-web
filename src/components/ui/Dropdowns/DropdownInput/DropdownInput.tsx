@@ -12,63 +12,70 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
-import TextInput from '@src/components/ui/TextInput'
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
+import TextInput from "@src/components/ui/TextInput";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import arrowImage from './images/arrow'
-import requiredImage from './images/required.svg'
+import arrowImage from "./images/arrow";
+import requiredImage from "./images/required.svg";
 
 const Wrapper = styled.div<any>`
   display: flex;
   align-items: center;
-  border: 1px solid ${(props: any) => (props.disabled ? ThemePalette.grayscale[0] : props.highlight ? ThemePalette.alert : ThemePalette.grayscale[3])};
+  border: 1px solid
+    ${(props: any) =>
+      props.disabled
+        ? ThemePalette.grayscale[0]
+        : props.highlight
+        ? ThemePalette.alert
+        : ThemePalette.grayscale[3]};
   border-radius: ${ThemeProps.borderRadius};
   height: ${ThemeProps.inputSizes.regular.height - 2}px;
   position: relative;
-`
+`;
 const Required = styled.div<any>`
   position: absolute;
   width: 8px;
   height: 8px;
   right: -16px;
   top: 12px;
-  background: url('${requiredImage}') center no-repeat;
-`
+  background: url("${requiredImage}") center no-repeat;
+`;
 const linkButtonStyle = (props: any) => ({
-  width: '60px',
-  height: '14px',
-  padding: '8px',
-  background: props.disabled ? ThemePalette.grayscale[0] : ThemePalette.grayscale[1],
+  width: "60px",
+  height: "14px",
+  padding: "8px",
+  background: props.disabled
+    ? ThemePalette.grayscale[0]
+    : ThemePalette.grayscale[1],
   borderTopLeftRadius: ThemeProps.borderRadius,
   borderBottomLeftRadius: ThemeProps.borderRadius,
-  justifyContent: 'center',
-})
+  justifyContent: "center",
+});
 type ItemType = {
-  label: string,
-  value: string,
-  [other: string]: any,
-}
+  label: string;
+  value: string;
+  [other: string]: any;
+};
 type Props = {
-  items: ItemType[],
-  selectedItem: string,
-  onItemChange: (item: ItemType) => void,
-  inputValue: string,
-  onInputChange: (value: string) => void,
-  placeholder?: string,
-  highlight?: boolean,
-  disabled?: boolean,
-  disabledLoading?: boolean,
-  required?: boolean,
-}
-type State = {}
+  items: ItemType[];
+  selectedItem: string;
+  onItemChange: (item: ItemType) => void;
+  inputValue: string;
+  onInputChange: (value: string) => void;
+  placeholder?: string;
+  highlight?: boolean;
+  disabled?: boolean;
+  disabledLoading?: boolean;
+  required?: boolean;
+};
 @observer
-class DropdownInput extends React.Component<Props, State> {
+class DropdownInput extends React.Component<Props> {
   render() {
     return (
       <Wrapper highlight={this.props.highlight} disabled={this.props.disabled}>
@@ -85,16 +92,18 @@ class DropdownInput extends React.Component<Props, State> {
         <TextInput
           embedded
           width="146px"
-          style={{ paddingLeft: '8px', height: '30px' }}
+          style={{ paddingLeft: "8px", height: "30px" }}
           value={this.props.inputValue}
-          onChange={e => { this.props.onInputChange(e.target.value) }}
+          onChange={e => {
+            this.props.onInputChange(e.target.value);
+          }}
           placeholder={this.props.placeholder}
           disabled={this.props.disabled}
         />
         {this.props.required ? <Required /> : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default DropdownInput
+export default DropdownInput;

@@ -12,38 +12,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
 
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import Button from '@src/components/ui/Button'
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Button from "@src/components/ui/Button";
 import {
-  InfoColumn, MainItemInfo, ItemReplicaBadge, ItemTitle, ItemDescription,
-} from '@src/components/ui/Dropdowns/NotificationDropdown'
+  InfoColumn,
+  MainItemInfo,
+  ItemReplicaBadge,
+  ItemTitle,
+  ItemDescription,
+} from "@src/components/ui/Dropdowns/NotificationDropdown";
 
-import type { NotificationItemData } from '@src/@types/NotificationItem'
+import type { NotificationItemData } from "@src/@types/NotificationItem";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import replicaImage from './images/replica.svg'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import replicaImage from "./images/replica.svg";
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;
-`
+`;
 const Title = styled.div<any>`
   font-size: 24px;
   font-weight: ${ThemeProps.fontWeights.light};
   margin-bottom: 12px;
-`
+`;
 const Module = styled.div<any>`
   background: ${ThemePalette.grayscale[0]};
   display: flex;
   overflow: hidden;
   border-radius: ${ThemeProps.borderRadius};
   height: 273px;
-`
+`;
 const LoadingWrapper = styled.div<any>`
   width: 100%;
   height: 100%;
@@ -51,13 +55,13 @@ const LoadingWrapper = styled.div<any>`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-`
+`;
 const List = styled.div<any>`
   width: 100%;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-`
+`;
 const ListItem = styled(Link)`
   padding: 8px 16px 8px 16px;
   cursor: pointer;
@@ -69,37 +73,45 @@ const ListItem = styled(Link)`
   &:hover {
     background: ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const NoItems = styled.div<any>`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-`
+`;
 const ReplicaImage = styled.div<any>`
-  ${ThemeProps.exactSize('148px')}
+  ${ThemeProps.exactSize("148px")}
   background: url('${replicaImage}') center no-repeat;
-`
+`;
 const Message = styled.div<any>`
   text-align: center;
   margin-bottom: 32px;
-`
+`;
 
 type Props = {
-  notificationItems: NotificationItemData[],
-  style?: React.CSSProperties | null,
-  loading?: boolean,
-  large?: boolean,
-  onNewClick?: () => void,
-}
+  notificationItems: NotificationItemData[];
+  style?: React.CSSProperties | null;
+  loading?: boolean;
+  large?: boolean;
+  onNewClick?: () => void;
+};
 @observer
 class DashboardActivity extends React.Component<Props> {
   renderList() {
     return (
       <List>
         {this.props.notificationItems
-          .filter((_, i) => i < (this.props.large ? 10 : 5)).map((item, i) => {
-            const executionsHref = item.status === 'RUNNING' ? item.type === 'replica' ? '/executions' : item.type === 'migration' ? '/tasks' : '' : ''
+          .filter((_, i) => i < (this.props.large ? 10 : 5))
+          .map((item, i) => {
+            const executionsHref =
+              item.status === "RUNNING"
+                ? item.type === "replica"
+                  ? "/executions"
+                  : item.type === "migration"
+                  ? "/tasks"
+                  : ""
+                : "";
 
             return (
               <ListItem
@@ -107,41 +119,40 @@ class DashboardActivity extends React.Component<Props> {
                 to={`/${item.type}s/${item.id}${executionsHref}`}
                 style={{
                   width: `calc(${this.props.large ? 50 : 100}% - 32px)`,
-                  paddingTop: (i === 0 || i === 5) ? '16px' : '8px',
+                  paddingTop: i === 0 || i === 5 ? "16px" : "8px",
                 }}
               >
                 <InfoColumn>
                   <MainItemInfo>
                     <StatusIcon status={item.status} hollow />
-                    <ItemReplicaBadge
-                      type={item.type}
-                    >{item.type === 'replica' ? 'RE' : 'MI'}
+                    <ItemReplicaBadge type={item.type}>
+                      {item.type === "replica" ? "RE" : "MI"}
                     </ItemReplicaBadge>
                     <ItemTitle nowrap>{item.name}</ItemTitle>
                   </MainItemInfo>
                   <ItemDescription>{item.description}</ItemDescription>
                 </InfoColumn>
               </ListItem>
-            )
+            );
           })}
       </List>
-    )
+    );
   }
 
   renderNoItems() {
     return (
       <NoItems>
         <ReplicaImage />
-        <Message>There is no recent activity<br />in this project.</Message>
-        <Button
-          hollow
-          primary
-          transparent
-          onClick={this.props.onNewClick}
-        >New Replica / Migration
+        <Message>
+          There is no recent activity
+          <br />
+          in this project.
+        </Message>
+        <Button hollow primary transparent onClick={this.props.onNewClick}>
+          New Replica / Migration
         </Button>
       </NoItems>
-    )
+    );
   }
 
   renderLoading() {
@@ -149,7 +160,7 @@ class DashboardActivity extends React.Component<Props> {
       <LoadingWrapper>
         <StatusImage status="RUNNING" />
       </LoadingWrapper>
-    )
+    );
   }
 
   render() {
@@ -158,12 +169,14 @@ class DashboardActivity extends React.Component<Props> {
         <Title>Recent Activity</Title>
         <Module>
           {this.props.notificationItems.length === 0 && this.props.loading
-            ? this.renderLoading() : this.props.notificationItems.length
-              ? this.renderList() : this.renderNoItems()}
+            ? this.renderLoading()
+            : this.props.notificationItems.length
+            ? this.renderList()
+            : this.renderNoItems()}
         </Module>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default DashboardActivity
+export default DashboardActivity;

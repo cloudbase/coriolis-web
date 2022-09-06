@@ -14,37 +14,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import WizardSummary from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import WizardSummary from ".";
 
 const data: any = {
   options: {
-    description: 'A description',
-    field_name: 'Field name value',
+    description: "A description",
+    field_name: "Field name value",
   },
   selectedInstances: [
     {
-      flavor_name: 'flavor name', id: 'i-1', name: 'name', num_cpu: 2, memory_mb: 1024,
+      flavor_name: "flavor name",
+      id: "i-1",
+      name: "name",
+      num_cpu: 2,
+      memory_mb: 1024,
     },
   ],
   networks: [
     {
-      sourceNic: { id: 's-1', network_name: 'n-1' },
-      targetNetwork: { name: 'target network' },
+      sourceNic: { id: "s-1", network_name: "n-1" },
+      targetNetwork: { name: "target network" },
     },
   ],
   source: {
-    type: 'openstack',
-    name: 'source name',
+    type: "openstack",
+    name: "source name",
   },
   target: {
-    type: 'azure',
-    name: 'target name',
+    type: "azure",
+    name: "target name",
   },
   schedules: [
     {
-      id: 's-1',
+      id: "s-1",
       schedule: {
         month: 2,
         dom: 14,
@@ -54,24 +58,16 @@ const data: any = {
       },
     },
   ],
-}
-const props: any = {}
-storiesOf('WizardSummary', module)
-  .add('replica', () => (
-    <div style={{ width: '800px' }}>
-      <WizardSummary
-        wizardType="replica"
-        data={data}
-        {...props}
-      />
+};
+const props: any = {};
+storiesOf("WizardSummary", module)
+  .add("replica", () => (
+    <div style={{ width: "800px" }}>
+      <WizardSummary wizardType="replica" data={data} {...props} />
     </div>
   ))
-  .add('migration', () => (
-    <div style={{ width: '800px' }}>
-      <WizardSummary
-        wizardType="migration"
-        data={data}
-        {...props}
-      />
+  .add("migration", () => (
+    <div style={{ width: "800px" }}>
+      <WizardSummary wizardType="migration" data={data} {...props} />
     </div>
-  ))
+  ));

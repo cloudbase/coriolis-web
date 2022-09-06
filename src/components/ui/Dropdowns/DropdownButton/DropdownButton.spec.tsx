@@ -12,31 +12,39 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import DropdownButton from "@src/components/ui/Dropdowns/DropdownButton";
+import TestUtils from "@tests/TestUtils";
 
-describe('DropdownButton', () => {
-  it('renders the value', () => {
-    render(<DropdownButton value="The Value" />)
-    expect(TestUtils.select('DropdownButton__Label')?.textContent).toBe('The Value')
-  })
+describe("DropdownButton", () => {
+  it("renders the value", () => {
+    render(<DropdownButton value="The Value" />);
+    expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
+      "The Value"
+    );
+  });
 
-  it('fires click on click', () => {
-    const onClick = jest.fn()
-    const { getByText } = render(<DropdownButton value="The Value" onClick={onClick} />)
-    getByText('The Value').click()
-    expect(onClick).toHaveBeenCalled()
-  })
+  it("fires click on click", () => {
+    const onClick = jest.fn();
+    const { getByText } = render(
+      <DropdownButton value="The Value" onClick={onClick} />
+    );
+    getByText("The Value").click();
+    expect(onClick).toHaveBeenCalled();
+  });
 
-  it('doesn\'t fire click if disabled or disabledLoading', () => {
-    const onClick = jest.fn()
-    const { getByText, rerender } = render(<DropdownButton value="The Value" onClick={onClick} disabled />)
-    getByText('The Value').click()
-    expect(onClick).not.toHaveBeenCalled()
-    rerender(<DropdownButton value="The Value" onClick={onClick} disabledLoading />)
-    getByText('The Value').click()
-    expect(onClick).not.toHaveBeenCalled()
-  })
-})
+  it("doesn't fire click if disabled or disabledLoading", () => {
+    const onClick = jest.fn();
+    const { getByText, rerender } = render(
+      <DropdownButton value="The Value" onClick={onClick} disabled />
+    );
+    getByText("The Value").click();
+    expect(onClick).not.toHaveBeenCalled();
+    rerender(
+      <DropdownButton value="The Value" onClick={onClick} disabledLoading />
+    );
+    getByText("The Value").click();
+    expect(onClick).not.toHaveBeenCalled();
+  });
+});

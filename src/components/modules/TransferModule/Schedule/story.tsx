@@ -14,43 +14,56 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styled from 'styled-components'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import styled from "styled-components";
 
-import Schedule from '.'
+import Schedule from ".";
 
 const Wrapper = styled.div<any>`
   padding: 32px;
   background: white;
-`
-const props: any = {}
-storiesOf('Schedule', module)
-  .add('no schedules', () => (
-    <Wrapper><Schedule {...props} /></Wrapper>
-  ))
-  .add('no schedules secondary', () => (
-    <Wrapper><Schedule secondaryEmpty {...props} /></Wrapper>
-  ))
-  .add('some values', () => (
-    <Wrapper><Schedule
-      onChange={() => { }}
-      schedules={[
-        {
-          schedule: {
-            dom: 2, dow: 3, month: 2, hour: 13, minute: 29,
-          },
-          expiration_date: new Date(),
-        },
-        {
-          enabled: true,
-          schedule: {
-            dom: 2, dow: 3, month: 2, hour: 13, minute: 29,
-          },
-          expiration_date: new Date(),
-        },
-      ]}
-      {...props}
-    />
+`;
+const props: any = {};
+storiesOf("Schedule", module)
+  .add("no schedules", () => (
+    <Wrapper>
+      <Schedule {...props} />
     </Wrapper>
   ))
+  .add("no schedules secondary", () => (
+    <Wrapper>
+      <Schedule secondaryEmpty {...props} />
+    </Wrapper>
+  ))
+  .add("some values", () => (
+    <Wrapper>
+      <Schedule
+        onChange={() => {}}
+        schedules={[
+          {
+            schedule: {
+              dom: 2,
+              dow: 3,
+              month: 2,
+              hour: 13,
+              minute: 29,
+            },
+            expiration_date: new Date(),
+          },
+          {
+            enabled: true,
+            schedule: {
+              dom: 2,
+              dow: 3,
+              month: 2,
+              hour: 13,
+              minute: 29,
+            },
+            expiration_date: new Date(),
+          },
+        ]}
+        {...props}
+      />
+    </Wrapper>
+  ));

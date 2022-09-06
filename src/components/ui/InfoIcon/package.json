@@ -2,6 +2,5 @@
   "name": "InfoIcon",
   "version": "0.0.0",
   "private": true,
-  "main":"./InfoIcon.tsx"
+  "main": "./InfoIcon.tsx"
 }
-

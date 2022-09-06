@@ -2,6 +2,5 @@
   "name": "AssessmentsPage",
   "version": "0.0.0",
   "private": true,
-  "main":"./AssessmentsPage.tsx"
+  "main": "./AssessmentsPage.tsx"
 }
-

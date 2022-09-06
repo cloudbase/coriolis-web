@@ -12,26 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import Panel from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Panel from ".";
 
 const navigationItems = [
-  { value: 'dest_options', label: 'Destination Options' },
-  { value: 'network', label: 'Network Mapping' },
-  { value: 'storage', label: 'Storage Mapping' },
-]
+  { value: "dest_options", label: "Destination Options" },
+  { value: "network", label: "Network Mapping" },
+  { value: "storage", label: "Storage Mapping" },
+];
 
-storiesOf('Panel', module)
-  .add('default', () => (
-    <div style={{ width: '800px', height: '560px' }}>
-      <Panel
-        content={<div>Content</div>}
-        navigationItems={navigationItems}
-        selectedValue="network"
-        onChange={item => console.log(item, 'clicked')}
-        onReloadClick={() => { }}
-        reloadLabel=""
-      />
-    </div>
-  ))
+storiesOf("Panel", module).add("default", () => (
+  <div style={{ width: "800px", height: "560px" }}>
+    <Panel
+      content={<div>Content</div>}
+      navigationItems={navigationItems}
+      selectedValue="network"
+      onChange={item => console.log(item, "clicked")}
+      onReloadClick={() => {}}
+      reloadLabel=""
+    />
+  </div>
+));

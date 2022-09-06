@@ -12,54 +12,50 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import DropdownLink from '@src/components/ui/Dropdowns/DropdownLink'
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
-const Wrapper = styled.div<any>``
-const Dropdowns = styled.div<any>``
+const Wrapper = styled.div<any>``;
+const Dropdowns = styled.div<any>``;
 const DropdownLinkStyled = styled(DropdownLink)`
   margin-right: 32px;
   position: relative;
 
   &:after {
     position: absolute;
-    content: '';
+    content: "";
     width: 1px;
     height: 18px;
     background: ${ThemePalette.grayscale[4]};
     right: -16px;
     top: -1px;
   }
-`
+`;
 
 type Props = {
-  items: (DropdownLink['props'] & { key: string })[]
-}
+  items: (DropdownLink["props"] & { key: string })[];
+};
 @observer
 class DropdownFilterGroup extends React.Component<Props> {
   renderDropdowns() {
     return (
       <Dropdowns>
-        {
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          this.props.items.map(config => <DropdownLinkStyled {...config} />)
-}
+        {this.props.items.map(config => (
+          // eslint-disable-next-line react/jsx-key
+          <DropdownLinkStyled {...config} />
+        ))}
       </Dropdowns>
-    )
+    );
   }
 
   render() {
-    return (
-      <Wrapper>
-        {this.renderDropdowns()}
-      </Wrapper>
-    )
+    return <Wrapper>{this.renderDropdowns()}</Wrapper>;
   }
 }
 
-export default DropdownFilterGroup
+export default DropdownFilterGroup;

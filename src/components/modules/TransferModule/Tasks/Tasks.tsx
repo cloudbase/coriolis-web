@@ -12,121 +12,126 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import TaskItem from '@src/components/modules/TransferModule/TaskItem'
+import TaskItem from "@src/components/modules/TransferModule/TaskItem";
 
-import type { Task } from '@src/@types/Task'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import { Instance } from '@src/@types/Instance'
+import type { Task } from "@src/@types/Task";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import { Instance } from "@src/@types/Instance";
 
-const ColumnWidths = ['26%', '18%', '36%', '20%']
+const ColumnWidths = ["26%", "18%", "36%", "20%"];
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 const ContentWrapper = styled.div`
   background: ${ThemePalette.grayscale[1]};
-`
+`;
 const LoadingWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 64px;
-`
+`;
 const Header = styled.div<any>`
   display: flex;
   border-bottom: 1px solid ${ThemePalette.grayscale[5]};
   padding: 4px 8px;
-`
+`;
 const HeaderData = styled.div<any>`
   width: ${props => props.width};
   font-size: 10px;
   color: ${ThemePalette.grayscale[5]};
   font-weight: ${ThemeProps.fontWeights.medium};
   text-transform: uppercase;
-`
-const Body = styled.div<any>``
+`;
+const Body = styled.div<any>``;
 
 type Props = {
-  items: Task[],
-  instancesDetails: Instance[],
-  loading?: boolean,
-}
+  items: Task[];
+  instancesDetails: Instance[];
+  loading?: boolean;
+};
 type State = {
-  openedItems: Task[],
-}
+  openedItems: Task[];
+};
 @observer
 class Tasks extends React.Component<Props, State> {
   state: State = {
     openedItems: [],
-  }
+  };
 
-  dragStartPosition: { x: number, y: number } | null = null
+  dragStartPosition: { x: number; y: number } | null = null;
 
   UNSAFE_componentWillMount() {
-    this.UNSAFE_componentWillReceiveProps(this.props)
+    this.UNSAFE_componentWillReceiveProps(this.props);
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
     this.setState(prevState => {
-      let openedItems = prevState.openedItems
+      let openedItems = prevState.openedItems;
 
       props.items.forEach(item => {
-        if (item.status === 'RUNNING') {
-          openedItems.push(item)
-          return
+        if (item.status === "RUNNING") {
+          openedItems.push(item);
+          return;
         }
 
         // Close items that were previously in RUNNING state, but they no longer are
-        const oldItem = this.props.items.find(i => i.id === item.id)
-        if (oldItem && oldItem.status === 'RUNNING') {
-          openedItems = openedItems.filter(i => i.id !== oldItem.id)
+        const oldItem = this.props.items.find(i => i.id === item.id);
+        if (oldItem && oldItem.status === "RUNNING") {
+          openedItems = openedItems.filter(i => i.id !== oldItem.id);
         }
-      })
+      });
 
-      return { openedItems }
-    })
+      return { openedItems };
+    });
   }
 
   get isLoading() {
-    return this.props.loading || this.props.items.length === 0
+    return this.props.loading || this.props.items.length === 0;
   }
 
   handleItemMouseDown(e: React.MouseEvent<HTMLDivElement>) {
-    this.dragStartPosition = { x: e.screenX, y: e.screenY }
+    this.dragStartPosition = { x: e.screenX, y: e.screenY };
   }
 
   handleItemMouseUp(e: React.MouseEvent<HTMLDivElement>, item: Task) {
-    this.dragStartPosition = this.dragStartPosition || { x: e.screenX, y: e.screenY }
+    this.dragStartPosition = this.dragStartPosition || {
+      x: e.screenX,
+      y: e.screenY,
+    };
 
-    if (this.dragStartPosition
-      && Math.abs(this.dragStartPosition.x - e.screenX) < 3
-      && Math.abs(this.dragStartPosition.y - e.screenY) < 3) {
-      this.toggleItem(item)
+    if (
+      this.dragStartPosition &&
+      Math.abs(this.dragStartPosition.x - e.screenX) < 3 &&
+      Math.abs(this.dragStartPosition.y - e.screenY) < 3
+    ) {
+      this.toggleItem(item);
     }
 
-    this.dragStartPosition = null
+    this.dragStartPosition = null;
   }
 
   handleDependsOnClick(id: string) {
-    const item = this.props.items.find(i => i.id === id)
-    if (item) this.toggleItem(item)
+    const item = this.props.items.find(i => i.id === id);
+    if (item) this.toggleItem(item);
   }
 
   toggleItem(item: Task) {
     this.setState(prevState => {
-      let openedItems = prevState.openedItems
+      let openedItems = prevState.openedItems;
       if (openedItems.find(i => i.id === item.id)) {
-        openedItems = openedItems.filter(i => i.id !== item.id)
+        openedItems = openedItems.filter(i => i.id !== item.id);
       } else {
-        openedItems = openedItems.filter(i => i.status === 'RUNNING')
-        openedItems.push(item)
+        openedItems = openedItems.filter(i => i.status === "RUNNING");
+        openedItems.push(item);
       }
 
-      return { openedItems }
-    })
+      return { openedItems };
+    });
   }
 
   renderLoading() {
@@ -134,7 +139,7 @@ class Tasks extends React.Component<Props, State> {
       <LoadingWrapper>
         <StatusImage loading />
       </LoadingWrapper>
-    )
+    );
   }
 
   renderHeader() {
@@ -145,7 +150,7 @@ class Tasks extends React.Component<Props, State> {
         <HeaderData width={ColumnWidths[2]}>Latest Message</HeaderData>
         <HeaderData width={ColumnWidths[3]}>Timestamp</HeaderData>
       </Header>
-    )
+    );
   }
 
   renderBody() {
@@ -160,11 +165,13 @@ class Tasks extends React.Component<Props, State> {
             instancesDetails={this.props.instancesDetails}
             columnWidths={ColumnWidths}
             open={Boolean(this.state.openedItems.find(i => i.id === item.id))}
-            onDependsOnClick={id => { this.handleDependsOnClick(id) }}
+            onDependsOnClick={id => {
+              this.handleDependsOnClick(id);
+            }}
           />
         ))}
       </Body>
-    )
+    );
   }
 
   renderContent() {
@@ -173,7 +180,7 @@ class Tasks extends React.Component<Props, State> {
         {this.renderHeader()}
         {this.renderBody()}
       </ContentWrapper>
-    )
+    );
   }
 
   render() {
@@ -182,8 +189,8 @@ class Tasks extends React.Component<Props, State> {
         {!this.isLoading ? this.renderContent() : null}
         {this.isLoading ? this.renderLoading() : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default Tasks
+export default Tasks;

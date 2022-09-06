@@ -12,66 +12,59 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { storiesOf } from '@storybook/react'
-import StatusIcon from '.'
+import React from "react";
+import styled from "styled-components";
+import { storiesOf } from "@storybook/react";
+import StatusIcon from ".";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-wrap: wrap;
-`
+`;
 
 const STATUSES = [
-  'UNEXECUTED',
-  'SCHEDULED',
-  'UNSCHEDULED',
-  'COMPLETED',
-  'STARTING',
-  'RUNNING',
-  'PENDING',
-  'CANCELLING',
-  'CANCELLING_AFTER_COMPLETION',
-  'CANCELED',
-  'CANCELED_AFTER_COMPLETION',
-  'CANCELED_FOR_DEBUGGING',
-  'FORCE_CANCELED',
-  'FAILED_TO_CANCEL',
-  'WARNING',
-  'FAILED_TO_SCHEDULE',
-  'ERROR',
-  'DEADLOCKED',
-  'STRANDED_AFTER_DEADLOCK',
-]
+  "UNEXECUTED",
+  "SCHEDULED",
+  "UNSCHEDULED",
+  "COMPLETED",
+  "STARTING",
+  "RUNNING",
+  "PENDING",
+  "CANCELLING",
+  "CANCELLING_AFTER_COMPLETION",
+  "CANCELED",
+  "CANCELED_AFTER_COMPLETION",
+  "CANCELED_FOR_DEBUGGING",
+  "FORCE_CANCELED",
+  "FAILED_TO_CANCEL",
+  "WARNING",
+  "FAILED_TO_SCHEDULE",
+  "ERROR",
+  "DEADLOCKED",
+  "STRANDED_AFTER_DEADLOCK",
+];
 
-storiesOf('StatusIcon', module)
-  .add('all statuses', () => (
+storiesOf("StatusIcon", module)
+  .add("all statuses", () => (
     <Wrapper>
       {STATUSES.map(status => (
-        <span style={{ marginLeft: '16px', marginBottom: '16px' }}>
+        <span key={status} style={{ marginLeft: "16px", marginBottom: "16px" }}>
           {status}
-          <StatusIcon
-            key={status}
-            status={status}
-          />
+          <StatusIcon key={status} status={status} />
         </span>
       ))}
     </Wrapper>
   ))
-  .add('completed hollow', () => (
-    <StatusIcon status="COMPLETED" hollow />
-  ))
-  .add('error hollow', () => (
-    <StatusIcon status="ERROR" hollow />
-  ))
-  .add('running white background', () => (
+  .add("completed hollow", () => <StatusIcon status="COMPLETED" hollow />)
+  .add("error hollow", () => <StatusIcon status="ERROR" hollow />)
+  .add("running white background", () => (
     <Wrapper>
       <StatusIcon status="RUNNING" useBackground />
       <StatusIcon status="CANCELLING" useBackground />
     </Wrapper>
   ))
-  .add('info hollow', () => (
+  .add("info hollow", () => (
     <Wrapper>
       <StatusIcon status="INFO" hollow />
     </Wrapper>
-  ))
+  ));

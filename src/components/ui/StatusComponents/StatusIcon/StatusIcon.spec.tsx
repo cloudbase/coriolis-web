@@ -12,46 +12,62 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import { ThemePalette } from '@src/components/Theme'
-import StatusIcon from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import { ThemePalette } from "@src/components/Theme";
+import StatusIcon from ".";
 
-import progressImage from './images/progress'
+import progressImage from "./images/progress";
 
-describe('StatusIcon', () => {
-  it('renders RUNNING status', () => {
-    render(<StatusIcon status="RUNNING" />)
-    const background = window.getComputedStyle(TestUtils.select('StatusIcon__Wrapper')!).backgroundImage
-    expect(background).toContain(encodeURIComponent(progressImage(ThemePalette.grayscale[3], ThemePalette.primary)))
-  })
-
-  it.each`
-    status         | image
-    ${'ERROR'}     | ${'error.svg'}
-    ${'COMPLETED'} | ${'success.svg'}
-    ${'SCHEDULED'} | ${'pending.svg'}
-  `('renders $image image for $status status', ({ status, image }) => {
-    render(<StatusIcon status={status} />)
-    const background = window.getComputedStyle(TestUtils.select('StatusIcon__Wrapper')!).backgroundImage
-    expect(background).toBe(`url(${image})`)
-  })
+describe("StatusIcon", () => {
+  it("renders RUNNING status", () => {
+    render(<StatusIcon status="RUNNING" />);
+    const background = window.getComputedStyle(
+      TestUtils.select("StatusIcon__Wrapper")!
+    ).backgroundImage;
+    expect(background).toContain(
+      encodeURIComponent(
+        progressImage(ThemePalette.grayscale[3], ThemePalette.primary)
+      )
+    );
+  });
 
   it.each`
     status         | image
-    ${'COMPLETED'} | ${'success-hollow.svg'}
-    ${'ERROR'}     | ${'error-hollow.svg'}
-    ${'INFO'}      | ${'warning-hollow.svg'}
-  `('renders hollow image $image for $status status', ({ status, image }) => {
-    render(<StatusIcon status={status} hollow />)
-    const background = window.getComputedStyle(TestUtils.select('StatusIcon__Wrapper')!).backgroundImage
-    expect(background).toBe(`url(${image})`)
-  })
+    ${"ERROR"}     | ${"error.svg"}
+    ${"COMPLETED"} | ${"success.svg"}
+    ${"SCHEDULED"} | ${"pending.svg"}
+  `("renders $image image for $status status", ({ status, image }) => {
+    render(<StatusIcon status={status} />);
+    const background = window.getComputedStyle(
+      TestUtils.select("StatusIcon__Wrapper")!
+    ).backgroundImage;
+    expect(background).toBe(`url(${image})`);
+  });
 
-  it('uses white background if specified', () => {
-    render(<StatusIcon status="CANCELLING" useBackground />)
-    const background = window.getComputedStyle(TestUtils.select('StatusIcon__Wrapper')!).backgroundImage
-    expect(background).toContain(encodeURIComponent(progressImage(ThemePalette.grayscale[3], ThemePalette.warning, true)))
-  })
-})
+  it.each`
+    status         | image
+    ${"COMPLETED"} | ${"success-hollow.svg"}
+    ${"ERROR"}     | ${"error-hollow.svg"}
+    ${"INFO"}      | ${"warning-hollow.svg"}
+  `("renders hollow image $image for $status status", ({ status, image }) => {
+    render(<StatusIcon status={status} hollow />);
+    const background = window.getComputedStyle(
+      TestUtils.select("StatusIcon__Wrapper")!
+    ).backgroundImage;
+    expect(background).toBe(`url(${image})`);
+  });
+
+  it("uses white background if specified", () => {
+    render(<StatusIcon status="CANCELLING" useBackground />);
+    const background = window.getComputedStyle(
+      TestUtils.select("StatusIcon__Wrapper")!
+    ).backgroundImage;
+    expect(background).toContain(
+      encodeURIComponent(
+        progressImage(ThemePalette.grayscale[3], ThemePalette.warning, true)
+      )
+    );
+  });
+});

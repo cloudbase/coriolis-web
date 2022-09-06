@@ -12,22 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   margin-top: 16px;
-`
+`;
 const Label = styled.div`
   text-transform: uppercase;
   font-size: 9px;
-`
-const Input = styled.div``
+`;
+const Input = styled.div``;
 type Props = {
-  label: string
-  style?: React.CSSProperties
-}
+  label: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+};
 
 @observer
 class SetupPageInputWrapper extends React.Component<Props> {
@@ -37,8 +38,8 @@ class SetupPageInputWrapper extends React.Component<Props> {
         <Label>{this.props.label}</Label>
         <Input>{this.props.children}</Input>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SetupPageInputWrapper
+export default SetupPageInputWrapper;

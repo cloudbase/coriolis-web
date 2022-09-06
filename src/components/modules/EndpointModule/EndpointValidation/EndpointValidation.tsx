@@ -12,52 +12,52 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import Button from '@src/components/ui/Button'
-import CopyButton from '@src/components/ui/CopyButton'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
+import Button from "@src/components/ui/Button";
+import CopyButton from "@src/components/ui/CopyButton";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
-import { ThemePalette } from '@src/components/Theme'
-import type { Validation as ValidationType } from '@src/@types/Endpoint'
+import { ThemePalette } from "@src/components/Theme";
+import type { Validation as ValidationType } from "@src/@types/Endpoint";
 
-import notificationStore from '@src/stores/NotificationStore'
-import DomUtils from '@src/utils/DomUtils'
+import notificationStore from "@src/stores/NotificationStore";
+import DomUtils from "@src/utils/DomUtils";
 
 const Wrapper = styled.div<any>`
   padding: 48px 32px 32px 32px;
-`
+`;
 const contentStyle = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 const Loading = styled.div<any>`
   ${contentStyle}
-`
+`;
 const Validation = styled.div<any>`
   ${contentStyle}
-`
+`;
 const Message = styled.div<any>`
   max-width: 100%;
   overflow: auto;
   margin-top: 48px;
   text-align: center;
-`
+`;
 const Title = styled.div<any>`
   font-size: 18px;
   margin-bottom: 8px;
-`
+`;
 const Subtitle = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
-`
+`;
 const Buttons = styled.div<any>`
   margin-top: 48px;
   display: flex;
-  justify-content: ${props => (props.center ? 'center' : 'space-between')};
-`
+  justify-content: ${props => (props.center ? "center" : "space-between")};
+`;
 const Error = styled.div<any>`
   text-align: left;
   cursor: pointer;
@@ -69,29 +69,29 @@ const Error = styled.div<any>`
     background-position-y: 4px;
     margin-left: 4px;
   }
-`
+`;
 
 type Props = {
-  loading: boolean,
-  validation?: ValidationType | null,
-  onCancelClick: () => void,
-  onRetryClick: () => void,
-}
+  loading: boolean;
+  validation?: ValidationType | null;
+  onCancelClick: () => void;
+  onRetryClick: () => void;
+};
 @observer
 class EndpointValidation extends React.Component<Props> {
   handleCopyClick(message: string) {
-    const succesful = DomUtils.copyTextToClipboard(message)
+    const succesful = DomUtils.copyTextToClipboard(message);
 
     if (succesful) {
-      notificationStore.alert('The value has been copied to clipboard.')
+      notificationStore.alert("The value has been copied to clipboard.");
     } else {
-      notificationStore.alert('The value couldn\'t be copied', 'error')
+      notificationStore.alert("The value couldn't be copied", "error");
     }
   }
 
   renderLoading() {
     if (!this.props.loading) {
-      return null
+      return null;
     }
 
     return (
@@ -102,12 +102,16 @@ class EndpointValidation extends React.Component<Props> {
           <Subtitle>Please wait ...</Subtitle>
         </Message>
       </Loading>
-    )
+    );
   }
 
   renderSuccessValidationMessage() {
-    if (!this.props.validation || !this.props.validation.valid || this.props.loading) {
-      return null
+    if (
+      !this.props.validation ||
+      !this.props.validation.valid ||
+      this.props.loading
+    ) {
+      return null;
     }
 
     return (
@@ -118,44 +122,64 @@ class EndpointValidation extends React.Component<Props> {
           <Subtitle>All tests passed succesfully.</Subtitle>
         </Message>
       </Validation>
-    )
+    );
   }
 
   renderFailedValidationMessage() {
-    if (!this.props.validation || this.props.validation.valid || this.props.loading) {
-      return null
+    if (
+      !this.props.validation ||
+      this.props.validation.valid ||
+      this.props.loading
+    ) {
+      return null;
     }
 
-    const message = this.props.validation.message || 'An unexpected error occurred.'
+    const message =
+      this.props.validation.message || "An unexpected error occurred.";
 
     return (
       <Validation>
         <StatusImage status="ERROR" />
         <Message>
           <Title>Validation Failed</Title>
-          <Error onClick={() => { this.handleCopyClick(message) }}>
-            {message}<CopyButton />
+          <Error
+            onClick={() => {
+              this.handleCopyClick(message);
+            }}
+          >
+            {message}
+            <CopyButton />
           </Error>
         </Message>
       </Validation>
-    )
+    );
   }
 
   renderButtons() {
-    if (!this.props.loading && this.props.validation && this.props.validation.valid) {
+    if (
+      !this.props.loading &&
+      this.props.validation &&
+      this.props.validation.valid
+    ) {
       return (
         <Buttons center>
-          <Button secondary onClick={this.props.onCancelClick}>Dismiss</Button>
+          <Button secondary onClick={this.props.onCancelClick}>
+            Dismiss
+          </Button>
         </Buttons>
-      )
+      );
     }
 
     return (
       <Buttons>
-        <Button secondary onClick={this.props.onCancelClick}>Cancel</Button>
-        <Button disabled={this.props.loading} onClick={this.props.onRetryClick}>Retry</Button>
+        <Button secondary onClick={this.props.onCancelClick}>
+          Cancel
+        </Button>
+        <Button disabled={this.props.loading} onClick={this.props.onRetryClick}>
+          Retry
+        </Button>
       </Buttons>
-    )
+    );
   }
 
   render() {
@@ -166,8 +190,8 @@ class EndpointValidation extends React.Component<Props> {
         {this.renderSuccessValidationMessage()}
         {this.renderButtons()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default EndpointValidation
+export default EndpointValidation;

@@ -12,343 +12,408 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Utils from '@src/utils/ObjectUtils'
+import Utils from "@src/utils/ObjectUtils";
 
-import { Field, isEnumSeparator } from '@src/@types/Field'
-import type { OptionValues, StorageMap } from '@src/@types/Endpoint'
-import type { SchemaProperties, SchemaDefinitions } from '@src/@types/Schema'
-import type { NetworkMap } from '@src/@types/Network'
-import type { InstanceScript } from '@src/@types/Instance'
-import { executionOptions, migrationFields } from '@src/constants'
-import { UserScriptData } from '@src/@types/MainItem'
-import { defaultSchemaToFields } from './ConnectionSchemaPlugin'
+import { Field, isEnumSeparator } from "@src/@types/Field";
+import type { OptionValues, StorageMap } from "@src/@types/Endpoint";
+import type { SchemaProperties, SchemaDefinitions } from "@src/@types/Schema";
+import type { NetworkMap } from "@src/@types/Network";
+import type { InstanceScript } from "@src/@types/Instance";
+import { executionOptions, migrationFields } from "@src/constants";
+import { UserScriptData } from "@src/@types/MainItem";
+import { defaultSchemaToFields } from "./ConnectionSchemaPlugin";
 
-const migrationImageOsTypes = ['windows', 'linux']
+const migrationImageOsTypes = ["windows", "linux"];
 
 export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
-  if (field.type === 'string') {
-    field.enum = [...option.values]
+  if (field.type === "string") {
+    field.enum = [...option.values];
     if (option.config_default) {
-      field.default = typeof option.config_default === 'string' ? option.config_default : option.config_default.id
+      field.default =
+        typeof option.config_default === "string"
+          ? option.config_default
+          : option.config_default.id;
     }
   }
-  if (field.type === 'array') {
-    field.enum = [...option.values]
+  if (field.type === "array") {
+    field.enum = [...option.values];
   }
-  if (field.type === 'boolean' && option.config_default != null) {
-    field.default = typeof option.config_default === 'boolean' ? option.config_default : option.config_default === 'true'
+  if (field.type === "boolean" && option.config_default != null) {
+    field.default =
+      typeof option.config_default === "boolean"
+        ? option.config_default
+        : option.config_default === "true";
   }
-}
+};
 
 export const removeExportImageFieldValues = (field: Field) => {
-  if (field.name === 'export_image') {
+  if (field.name === "export_image") {
     field.enum = field.enum?.filter(exportImageValue => {
-      if (typeof exportImageValue === 'string' || isEnumSeparator(exportImageValue)) {
-        return true
+      if (
+        typeof exportImageValue === "string" ||
+        isEnumSeparator(exportImageValue)
+      ) {
+        return true;
       }
-      // @ts-ignore
-      const isLinux = exportImageValue.os_type === 'linux' || exportImageValue.os_type === 'unknown'
+      const isLinux =
+        exportImageValue.os_type === "linux" ||
+        exportImageValue.os_type === "unknown";
       if (!isLinux) {
-        field.warning = 'Only Linux images are listed.'
+        field.warning = "Only Linux images are listed.";
       }
-      return isLinux
-    })
+      return isLinux;
+    });
   }
-}
+};
 
 export const defaultFillMigrationImageMapValues = (opts: {
-  field: Field,
-  option: OptionValues,
-  migrationImageMapFieldName: string,
-  requiresWindowsImage: boolean,
+  field: Field;
+  option: OptionValues;
+  migrationImageMapFieldName: string;
+  requiresWindowsImage: boolean;
 }): boolean => {
-  const {
-    field, option, migrationImageMapFieldName, requiresWindowsImage,
-  } = opts
+  const { field, option, migrationImageMapFieldName, requiresWindowsImage } =
+    opts;
   if (field.name !== migrationImageMapFieldName) {
-    return false
+    return false;
   }
   field.properties = migrationImageOsTypes.map(os => {
     const values = (option.values as any)
-      .filter((v: { os_type: string }) => v.os_type === os || v.os_type === 'unknown')
+      .filter(
+        (v: { os_type: string }) => v.os_type === os || v.os_type === "unknown"
+      )
       .sort((v1: { os_type: string }, v2: { os_type: string }) => {
-        if (v1.os_type === 'unknown' && v2.os_type !== 'unknown') {
-          return 1
-        } if (v1.os_type !== 'unknown' && v2.os_type === 'unknown') {
-          return -1
+        if (v1.os_type === "unknown" && v2.os_type !== "unknown") {
+          return 1;
         }
-        return 0
-      })
-    const unknownIndex = values.findIndex((v: { os_type: string }) => v.os_type === 'unknown')
-    if (unknownIndex > -1 && values.filter((v: { os_type: string }) => v.os_type === 'unknown').length < values.length) {
-      values.splice(unknownIndex, 0, { separator: true })
+        if (v1.os_type !== "unknown" && v2.os_type === "unknown") {
+          return -1;
+        }
+        return 0;
+      });
+    const unknownIndex = values.findIndex(
+      (v: { os_type: string }) => v.os_type === "unknown"
+    );
+    if (
+      unknownIndex > -1 &&
+      values.filter((v: { os_type: string }) => v.os_type === "unknown")
+        .length < values.length
+    ) {
+      values.splice(unknownIndex, 0, { separator: true });
     }
 
-    let defaultValue = null
-    if (option?.config_default && Object.prototype.hasOwnProperty.call(option.config_default, os)) {
+    let defaultValue = null;
+    if (
+      option?.config_default &&
+      Object.prototype.hasOwnProperty.call(option.config_default, os)
+    ) {
       // @ts-ignore
-      defaultValue = option.config_default[os]
+      defaultValue = option.config_default[os];
     }
 
     return {
       name: os,
-      type: 'string',
+      type: "string",
       enum: values,
       default: defaultValue,
-      required: os === 'linux' || (requiresWindowsImage && os === 'windows'),
-    }
-  })
-  return true
-}
+      required: os === "linux" || (requiresWindowsImage && os === "windows"),
+    };
+  });
+  return true;
+};
 
 export const defaultGetDestinationEnv = (
   options?: { [prop: string]: any } | null,
-  oldOptions?: { [prop: string]: any } | null,
+  oldOptions?: { [prop: string]: any } | null
 ): any => {
-  const env: any = {}
-  const specialOptions = ['execute_now', 'execute_now_options', 'separate_vm', 'skip_os_morphing', 'title', 'minion_pool_id']
+  const env: any = {};
+  const specialOptions = [
+    "execute_now",
+    "execute_now_options",
+    "separate_vm",
+    "skip_os_morphing",
+    "title",
+    "minion_pool_id",
+  ]
     .concat(migrationFields.map(f => f.name))
     .concat(executionOptions.map(o => o.name))
-    .concat(migrationImageOsTypes)
+    .concat(migrationImageOsTypes);
 
   if (!options) {
-    return env
+    return env;
   }
 
   Object.keys(options).forEach(optionName => {
-    const value = options[optionName]
-    if (specialOptions.find(o => o === optionName) || value == null || value === '') {
-      return
+    const value = options[optionName];
+    if (
+      specialOptions.find(o => o === optionName) ||
+      value == null ||
+      value === ""
+    ) {
+      return;
     }
     if (Array.isArray(value)) {
-      env[optionName] = value
-    } else if (typeof value === 'object') {
-      const oldValue = oldOptions?.[optionName] || {}
-      const mergedValue: any = { ...oldValue, ...value }
-      const newValue: any = {}
+      env[optionName] = value;
+    } else if (typeof value === "object") {
+      const oldValue = oldOptions?.[optionName] || {};
+      const mergedValue: any = { ...oldValue, ...value };
+      const newValue: any = {};
       Object.keys(mergedValue).forEach(k => {
         if (mergedValue[k] !== null) {
-          newValue[k] = mergedValue[k]
+          newValue[k] = mergedValue[k];
         }
-      })
-      env[optionName] = newValue
+      });
+      env[optionName] = newValue;
     } else {
-      env[optionName] = options ? Utils.trim(optionName, value) : null
+      env[optionName] = options ? Utils.trim(optionName, value) : null;
     }
-  })
-  return env
-}
+  });
+  return env;
+};
 
 export const defaultGetMigrationImageMap = (
   options: { [prop: string]: any } | null | undefined,
   oldOptions: any,
-  migrationImageMapFieldName: string,
+  migrationImageMapFieldName: string
 ) => {
-  const env: any = {}
-  const usableOptions = options
+  const env: any = {};
+  const usableOptions = options;
   if (!usableOptions) {
-    return env
+    return env;
   }
 
-  const hasMigrationMap = Object.keys(usableOptions).find(k => k === migrationImageMapFieldName)
+  const hasMigrationMap = Object.keys(usableOptions).find(
+    k => k === migrationImageMapFieldName
+  );
   if (!hasMigrationMap) {
-    return env
+    return env;
   }
   migrationImageOsTypes.forEach(os => {
-    let value = usableOptions[migrationImageMapFieldName][os]
+    let value = usableOptions[migrationImageMapFieldName][os];
 
     // Make sure the migr. image mapping has all the OSes filled,
     // even if only one OS mapping was updated,
     // ie. don't send just the updated OS map to the server, send them all if one was updated.
     if (!value) {
-      value = oldOptions?.[migrationImageMapFieldName]?.[os]
+      value = oldOptions?.[migrationImageMapFieldName]?.[os];
       if (!value) {
-        return
+        return;
       }
     }
 
     if (!env[migrationImageMapFieldName]) {
-      env[migrationImageMapFieldName] = {}
+      env[migrationImageMapFieldName] = {};
     }
 
-    env[migrationImageMapFieldName][os] = value
-  })
+    env[migrationImageMapFieldName][os] = value;
+  });
 
-  return env
-}
+  return env;
+};
 
 export default class OptionsSchemaParserBase {
-  migrationImageMapFieldName = 'migr_image_map'
+  migrationImageMapFieldName = "migr_image_map";
 
   parseSchemaToFields(opts: {
-    schema: SchemaProperties,
-    schemaDefinitions?: SchemaDefinitions | null,
-    dictionaryKey?: string,
-    requiresWindowsImage?: boolean,
+    schema: SchemaProperties;
+    schemaDefinitions?: SchemaDefinitions | null;
+    dictionaryKey?: string;
+    requiresWindowsImage?: boolean;
   }) {
-    const {
-      schema, schemaDefinitions, dictionaryKey,
-    } = opts
-    return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey)
+    const { schema, schemaDefinitions, dictionaryKey } = opts;
+    return defaultSchemaToFields(schema, schemaDefinitions, dictionaryKey);
   }
 
   sortFields(fields: Field[]) {
     fields.sort((a, b) => {
       if (a.required && !b.required) {
-        return -1
+        return -1;
       }
 
       if (!a.required && b.required) {
-        return 1
+        return 1;
       }
 
-      return a.name.localeCompare(b.name)
-    })
+      return a.name.localeCompare(b.name);
+    });
   }
 
   fillFieldValues(opts: {
-    field: Field,
-    options: OptionValues[],
-    requiresWindowsImage: boolean,
-    customFieldName?: string,
+    field: Field;
+    options: OptionValues[];
+    requiresWindowsImage: boolean;
+    customFieldName?: string;
   }) {
-    const {
-      field, options, requiresWindowsImage, customFieldName,
-    } = opts
+    const { field, options, requiresWindowsImage, customFieldName } = opts;
 
-    const option = options.find(f => (customFieldName ? f.name === customFieldName : f.name === field.name))
+    const option = options.find(f =>
+      customFieldName ? f.name === customFieldName : f.name === field.name
+    );
     if (!option) {
-      return
+      return;
     }
-    if (!defaultFillMigrationImageMapValues({
-      field,
-      option,
-      migrationImageMapFieldName: this.migrationImageMapFieldName,
-      requiresWindowsImage,
-    })) {
-      defaultFillFieldValues(field, option)
+    if (
+      !defaultFillMigrationImageMapValues({
+        field,
+        option,
+        migrationImageMapFieldName: this.migrationImageMapFieldName,
+        requiresWindowsImage,
+      })
+    ) {
+      defaultFillFieldValues(field, option);
     }
   }
 
-  getDestinationEnv(options?: { [prop: string]: any } | null, oldOptions?: any) {
+  getDestinationEnv(
+    options?: { [prop: string]: any } | null,
+    oldOptions?: any
+  ) {
     const env = {
-      ...defaultGetDestinationEnv(
-        options,
-        oldOptions,
-      ),
+      ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
         options,
         oldOptions,
-        this.migrationImageMapFieldName,
+        this.migrationImageMapFieldName
       ),
-    }
-    return env
+    };
+    return env;
   }
 
   getNetworkMap(networkMappings: NetworkMap[] | null | undefined) {
-    const payload: any = {}
+    const payload: any = {};
     if (!networkMappings?.length) {
-      return payload
+      return payload;
     }
-    const hasSecurityGroups = Boolean(networkMappings.find(nm => nm.targetNetwork!.security_groups))
+    const hasSecurityGroups = Boolean(
+      networkMappings.find(nm => nm.targetNetwork!.security_groups)
+    );
     networkMappings.forEach(mapping => {
-      let target
+      let target;
       if (hasSecurityGroups) {
         target = {
           id: mapping.targetNetwork!.id,
-          security_groups: mapping.targetSecurityGroups ? mapping.targetSecurityGroups.map(s => (typeof s === 'string' ? s : s.id)) : [],
-        }
+          security_groups: mapping.targetSecurityGroups
+            ? mapping.targetSecurityGroups.map(s =>
+                typeof s === "string" ? s : s.id
+              )
+            : [],
+        };
       } else if (mapping.targetPortKey != null) {
-        target = `${mapping.targetNetwork!.id}:${mapping.targetPortKey}`
+        target = `${mapping.targetNetwork!.id}:${mapping.targetPortKey}`;
       } else {
-        target = mapping.targetNetwork!.id
+        target = mapping.targetNetwork!.id;
       }
-      payload[mapping.sourceNic.network_name] = target
-    })
-    return payload
+      payload[mapping.sourceNic.network_name] = target;
+    });
+    return payload;
   }
 
   getStorageMap(
-    defaultStorage: { value: string | null, busType?: string | null } | undefined,
+    defaultStorage:
+      | { value: string | null; busType?: string | null }
+      | undefined,
     storageMap?: StorageMap[] | null,
-    configDefault?: string | null,
+    configDefault?: string | null
   ) {
     if (!defaultStorage?.value && !storageMap) {
-      return null
+      return null;
     }
 
-    const payload: any = {}
+    const payload: any = {};
     if (defaultStorage?.value) {
-      payload.default = defaultStorage.value
+      payload.default = defaultStorage.value;
       if (defaultStorage.busType) {
-        payload.default += `:${defaultStorage.busType}`
+        payload.default += `:${defaultStorage.busType}`;
       }
     }
 
     if (!storageMap) {
-      return payload
+      return payload;
     }
 
     storageMap.forEach(mapping => {
       if (mapping.target.id === null && !configDefault) {
-        return
+        return;
       }
 
       const getDestination = () => {
-        let destination = mapping.target.id === null ? configDefault : mapping.target.name
+        let destination =
+          mapping.target.id === null ? configDefault : mapping.target.name;
         if (mapping.targetBusType) {
-          destination += `:${mapping.targetBusType}`
+          destination += `:${mapping.targetBusType}`;
         }
-        return destination
-      }
+        return destination;
+      };
 
-      if (mapping.type === 'backend') {
+      if (mapping.type === "backend") {
         if (!payload.backend_mappings) {
-          payload.backend_mappings = []
+          payload.backend_mappings = [];
         }
         payload.backend_mappings.push({
           source: mapping.source.storage_backend_identifier,
           destination: getDestination(),
-        })
+        });
       } else {
         if (!payload.disk_mappings) {
-          payload.disk_mappings = []
+          payload.disk_mappings = [];
         }
         payload.disk_mappings.push({
           disk_id: mapping.source.id.toString(),
           destination: getDestination(),
-        })
+        });
       }
-    })
-    return payload
+    });
+    return payload;
   }
 
   getUserScripts(
     uploadedUserScripts: InstanceScript[],
     removedUserScripts: InstanceScript[],
-    userScriptData: UserScriptData | null | undefined,
+    userScriptData: UserScriptData | null | undefined
   ) {
-    const payload: any = userScriptData || {}
+    const payload: any = userScriptData || {};
 
-    const setPayload = (scripts: InstanceScript[], scriptProp: 'global' | 'instanceId', payloadProp: 'global' | 'instances') => {
+    const setPayload = (
+      scripts: InstanceScript[],
+      scriptProp: "global" | "instanceId",
+      payloadProp: "global" | "instances"
+    ) => {
       if (!scripts.length) {
-        return
+        return;
       }
-      payload[payloadProp] = payload[payloadProp] || {}
+      payload[payloadProp] = payload[payloadProp] || {};
       scripts.forEach(script => {
-        const scriptValue = script[scriptProp]
+        const scriptValue = script[scriptProp];
         if (!scriptValue) {
-          throw new Error(`The uploaded script structure is missing the '${scriptProp}' property`)
+          throw new Error(
+            `The uploaded script structure is missing the '${scriptProp}' property`
+          );
         }
-        payload[payloadProp][scriptValue] = script.scriptContent
-      })
-    }
+        payload[payloadProp][scriptValue] = script.scriptContent;
+      });
+    };
 
-    setPayload(removedUserScripts.filter(s => s.global), 'global', 'global')
-    setPayload(removedUserScripts.filter(s => s.instanceId), 'instanceId', 'instances')
-    setPayload(uploadedUserScripts.filter(s => s.global), 'global', 'global')
-    setPayload(uploadedUserScripts.filter(s => s.instanceId), 'instanceId', 'instances')
+    setPayload(
+      removedUserScripts.filter(s => s.global),
+      "global",
+      "global"
+    );
+    setPayload(
+      removedUserScripts.filter(s => s.instanceId),
+      "instanceId",
+      "instances"
+    );
+    setPayload(
+      uploadedUserScripts.filter(s => s.global),
+      "global",
+      "global"
+    );
+    setPayload(
+      uploadedUserScripts.filter(s => s.instanceId),
+      "instanceId",
+      "instances"
+    );
 
-    return payload
+    return payload;
   }
 }

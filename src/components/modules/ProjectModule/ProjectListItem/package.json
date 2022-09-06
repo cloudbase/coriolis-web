@@ -2,6 +2,5 @@
   "name": "ProjectListItem",
   "version": "0.0.0",
   "private": true,
-  "main":"./ProjectListItem.tsx"
+  "main": "./ProjectListItem.tsx"
 }
-

@@ -12,20 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import styled from 'styled-components'
+import * as React from "react";
+import styled from "styled-components";
 
 const Wrapper = styled.div<any>`
   display: flex;
-`
+`;
 
 type Props = {
-  children: React.ReactNode,
-}
-const EmptyTemplate = (props: Props) => (
-  <Wrapper>
-    {props.children}
-  </Wrapper>
-)
+  children: React.ReactNode;
+};
+const EmptyTemplate = (props: Props) => <Wrapper>{props.children}</Wrapper>;
 
-export default EmptyTemplate
+export default EmptyTemplate;

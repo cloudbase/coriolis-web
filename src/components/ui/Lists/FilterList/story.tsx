@@ -14,56 +14,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import FilterList from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import FilterList from ".";
 
 const items: any = [
-  { id: 'item-1', label: 'Item 1' },
-  { id: 'item-2', label: 'Item 2' },
-  { id: 'item-3', label: 'Item 3' },
-  { id: 'item-3-a', label: 'Item 3-a' },
-]
+  { id: "item-1", label: "Item 1" },
+  { id: "item-2", label: "Item 2" },
+  { id: "item-3", label: "Item 3" },
+  { id: "item-3-a", label: "Item 3-a" },
+];
 
 const filterItems: any = [
-  { label: 'All', value: 'all' },
-  { label: 'Items 1', value: 'item-1' },
-  { label: 'Items 2', value: 'item-2' },
-  { label: 'Items 3', value: 'item-3' },
-]
+  { label: "All", value: "all" },
+  { label: "Items 1", value: "item-1" },
+  { label: "Items 2", value: "item-2" },
+  { label: "Items 3", value: "item-3" },
+];
 
-const actions: any = [{ label: 'action', value: 'action' }]
-const props: any = {}
-const itemFilterFunction = (
-  item: any,
-  filterStatus: any,
-  filterText: any,
-) => {
+const actions: any = [{ label: "action", value: "action" }];
+const props: any = {};
+const itemFilterFunction = (item: any, filterStatus: any, filterText: any) => {
   if (
-    (filterStatus !== 'all' && item.id.indexOf(filterStatus) === -1)
-    || (item.label.toLowerCase().indexOf(filterText) === -1)
+    (filterStatus !== "all" && item.id.indexOf(filterStatus) === -1) ||
+    item.label.toLowerCase().indexOf(filterText) === -1
   ) {
-    return false
+    return false;
   }
 
-  return true
-}
+  return true;
+};
 
-storiesOf('FilterList', module)
-  .add('default', () => (
-    <div style={{ width: '800px' }}>
+storiesOf("FilterList", module)
+  .add("default", () => (
+    <div style={{ width: "800px" }}>
       <FilterList
         items={items}
         actions={actions}
         filterItems={filterItems}
-        renderItemComponent={options => <div {...options}>{options.item.label}</div>}
+        renderItemComponent={options => (
+          <div {...options}>{options.item.label}</div>
+        )}
         itemFilterFunction={(...args) => itemFilterFunction(...args)}
         {...props}
       />
     </div>
   ))
-  .add('empty list', () => (
-    <div style={{ width: '800px' }}>
+  .add("empty list", () => (
+    <div style={{ width: "800px" }}>
       <FilterList
         items={[]}
         filterItems={filterItems}
@@ -72,7 +70,6 @@ storiesOf('FilterList', module)
         emptyListExtraMessage="Empty list extra message"
         emptyListButtonLabel="Create"
         {...props}
-
       />
     </div>
-  ))
+  ));

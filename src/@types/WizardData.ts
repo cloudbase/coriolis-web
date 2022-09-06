@@ -12,22 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Instance } from './Instance'
-import type { NetworkMap } from './Network'
-import type { Endpoint } from './Endpoint'
+import type { Instance } from "./Instance";
+import type { NetworkMap } from "./Network";
+import type { Endpoint } from "./Endpoint";
 
 export type WizardData = {
-  destOptions?: { [prop: string]: any } | null,
-  sourceOptions?: { [prop: string]: any } | null,
-  selectedInstances?: Instance[] | null,
-  networks?: NetworkMap[] | null,
-  source?: Endpoint | null,
-  target?: Endpoint | null,
-}
+  destOptions?: { [prop: string]: any } | null;
+  sourceOptions?: { [prop: string]: any } | null;
+  selectedInstances?: Instance[] | null;
+  networks?: NetworkMap[] | null;
+  source?: Endpoint | null;
+  target?: Endpoint | null;
+};
 
 export type WizardPage = {
-  id: string,
-  title: string,
-  breadcrumb: string,
-  excludeFrom?: 'replica' | 'migration',
-}
+  id: string;
+  title: string;
+  breadcrumb: string;
+  excludeFrom?: "replica" | "migration";
+};

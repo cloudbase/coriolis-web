@@ -12,123 +12,139 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, action, runInAction } from 'mobx'
+import { observable, action, runInAction } from "mobx";
 
-import source from '@src/sources/MetalHubSource'
-import { MetalHubServer } from '@src/@types/MetalHub'
+import source from "@src/sources/MetalHubSource";
+import { MetalHubServer } from "@src/@types/MetalHub";
 
 class MetalHubStore {
-  @observable servers: MetalHubServer[] = []
+  @observable servers: MetalHubServer[] = [];
 
-  @observable loadingServers: boolean = false
+  @observable loadingServers = false;
 
-  @observable loadingServersError: string = ''
+  @observable loadingServersError = "";
 
-  @observable fingerprint: string = ''
+  @observable fingerprint = "";
 
-  @observable loadingFingerprint: boolean = false
+  @observable loadingFingerprint = false;
 
-  @observable loadingFingerprintError: string = ''
+  @observable loadingFingerprintError = "";
 
-  @observable loadingNewServer: boolean = false
+  @observable loadingNewServer = false;
 
-  @observable serverDetails: MetalHubServer | null = null
+  @observable serverDetails: MetalHubServer | null = null;
 
-  @observable loadingServerDetails: boolean = false
+  @observable loadingServerDetails = false;
 
-  @observable updatingServer: boolean = false
+  @observable updatingServer = false;
 
-  @observable refreshingServer: boolean = false
+  @observable refreshingServer = false;
 
   async getMetalHubEndpoint() {
-    return source.getMetalHubEndpoint()
+    return source.getMetalHubEndpoint();
   }
 
-  @action async getServers(options?: { showLoading?: boolean, skipLog?: boolean }) {
+  @action async getServers(options?: {
+    showLoading?: boolean;
+    skipLog?: boolean;
+  }) {
     if (options?.showLoading) {
-      this.loadingServers = true
+      this.loadingServers = true;
     }
     try {
-      const servers = await source.getServers(options?.skipLog)
+      const servers = await source.getServers(options?.skipLog);
       runInAction(() => {
-        this.servers = servers
-        this.loadingServersError = ''
-      })
+        this.servers = servers;
+        this.loadingServersError = "";
+      });
     } finally {
-      runInAction(() => { this.loadingServers = false })
+      runInAction(() => {
+        this.loadingServers = false;
+      });
     }
   }
 
   @action async loadFingerprint() {
-    this.loadingFingerprint = true
+    this.loadingFingerprint = true;
     try {
-      const fingerprint = await source.loadFingerprint()
+      const fingerprint = await source.loadFingerprint();
       runInAction(() => {
-        this.fingerprint = fingerprint
-        this.loadingFingerprintError = ''
-      })
+        this.fingerprint = fingerprint;
+        this.loadingFingerprintError = "";
+      });
     } catch (err) {
       runInAction(() => {
-        this.loadingFingerprintError = err.data?.error?.message || err.message || ''
-      })
+        this.loadingFingerprintError =
+          err.data?.error?.message || err.message || "";
+      });
     } finally {
-      runInAction(() => { this.loadingFingerprint = false })
+      runInAction(() => {
+        this.loadingFingerprint = false;
+      });
     }
   }
 
   @action async addServer(endpoint: string) {
-    this.loadingNewServer = true
+    this.loadingNewServer = true;
     try {
-      const addedServer = await source.addServer(endpoint)
+      const addedServer = await source.addServer(endpoint);
       runInAction(() => {
-        this.servers.push(addedServer)
-      })
+        this.servers.push(addedServer);
+      });
     } finally {
-      runInAction(() => { this.loadingNewServer = false })
+      runInAction(() => {
+        this.loadingNewServer = false;
+      });
     }
   }
 
   @action async getServerDetails(serverId: number) {
-    this.loadingServerDetails = true
+    this.loadingServerDetails = true;
 
     try {
-      const server = await source.getServerDetails(serverId)
+      const server = await source.getServerDetails(serverId);
       runInAction(() => {
-        this.serverDetails = server
-      })
+        this.serverDetails = server;
+      });
     } finally {
-      runInAction(() => { this.loadingServerDetails = false })
+      runInAction(() => {
+        this.loadingServerDetails = false;
+      });
     }
   }
 
   @action async deleteServer(serverId: number) {
-    await source.deleteServer(serverId)
+    await source.deleteServer(serverId);
   }
 
   clearServerDetails() {
-    this.serverDetails = null
+    this.serverDetails = null;
   }
 
   @action async patchServer(serverId: number, apiEndpoint: string) {
-    this.updatingServer = true
+    this.updatingServer = true;
     try {
-      await source.patchServer(serverId, apiEndpoint)
+      await source.patchServer(serverId, apiEndpoint);
     } finally {
-      runInAction(() => { this.updatingServer = false })
+      runInAction(() => {
+        this.updatingServer = false;
+      });
     }
   }
 
   @action async refreshServer(serverId: number) {
-    this.refreshingServer = true
+    this.refreshingServer = true;
     try {
-      const server = await source.refreshServer(serverId)
+      const server = await source.refreshServer(serverId);
       runInAction(() => {
-        this.serverDetails = server
-      })
+        this.serverDetails = server;
+      });
     } finally {
-      runInAction(() => { this.refreshingServer = false })
+      runInAction(() => {
+        this.refreshingServer = false;
+      });
     }
   }
 }
 
-export default new MetalHubStore()
+export default new MetalHubStore();

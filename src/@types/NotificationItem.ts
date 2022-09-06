@@ -12,34 +12,34 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export type AlertInfoLevel = 'success' | 'error' | 'info' | 'warning'
+export type AlertInfoLevel = "success" | "error" | "info" | "warning";
 
 export type AlertInfoOptions = {
   action?: {
-    label: string,
-    callback: () => any,
-  }
-}
+    label: string;
+    callback: () => any;
+  };
+};
 
 export type AlertInfo = {
-  options?: AlertInfoOptions | null,
-  message: string,
-  title?: string,
-  id?: string,
-  level?: AlertInfoLevel,
-}
+  options?: AlertInfoOptions | null;
+  message: string;
+  title?: string;
+  id?: string;
+  level?: AlertInfoLevel;
+};
 
 export type NotificationItemData = {
-  id: string,
-  name: string,
-  description: string,
-  type: string,
-  status: string,
-  unseen?: boolean,
-  updatedAt?: string,
-}
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  status: string;
+  unseen?: boolean;
+  updatedAt?: string;
+};
 
 export type NotificationItem = {
-  projectId: string,
-  items: NotificationItemData[],
-}
+  projectId: string;
+  items: NotificationItemData[];
+};

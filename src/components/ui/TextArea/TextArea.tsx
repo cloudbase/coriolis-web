@@ -12,44 +12,48 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import requiredImage from './images/required.svg'
+import requiredImage from "./images/required.svg";
 
 const Wrapper = styled.div<any>`
   position: relative;
-  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
-`
+  ${(props: any) =>
+    props.disabledLoading ? ThemeProps.animations.disabledLoading : ""}
+`;
 const Required = styled.div<any>`
   position: absolute;
   width: 8px;
   height: 8px;
   right: -16px;
   top: 12px;
-  background: url('${requiredImage}') center no-repeat;
-`
+  background: url("${requiredImage}") center no-repeat;
+`;
 
 const getInputWidth = (props: any) => {
   if (props.width) {
-    return props.width
+    return props.width;
   }
 
   if (props.large) {
-    return `${ThemeProps.inputSizes.large.width}px`
+    return `${ThemeProps.inputSizes.large.width}px`;
   }
 
-  return `${ThemeProps.inputSizes.regular.width}px`
-}
+  return `${ThemeProps.inputSizes.regular.width}px`;
+};
 
 const Input = styled.textarea<any>`
   width: ${(props: any) => getInputWidth(props)};
-  height: ${(props: any) => props.height || `${ThemeProps.inputSizes.regular.height * 2}px`};
+  height: ${(props: any) =>
+    props.height || `${ThemeProps.inputSizes.regular.height * 2}px`};
   border-radius: ${ThemeProps.borderRadius};
-  background-color: #FFF;
-  border: 1px solid ${props => (props.highlight ? ThemePalette.alert : ThemePalette.grayscale[3])};
+  background-color: #fff;
+  border: 1px solid
+    ${props =>
+      props.highlight ? ThemePalette.alert : ThemePalette.grayscale[3]};
   color: ${ThemePalette.black};
   padding: 8px;
   font-size: inherit;
@@ -57,10 +61,12 @@ const Input = styled.textarea<any>`
   box-sizing: border-box;
   font-family: monospace;
   &:hover {
-    border-color: ${props => (props.highlight ? ThemePalette.alert : ThemePalette.primary)};
+    border-color: ${props =>
+      props.highlight ? ThemePalette.alert : ThemePalette.primary};
   }
   &:focus {
-    border-color: ${props => (props.highlight ? ThemePalette.alert : ThemePalette.primary)};
+    border-color: ${props =>
+      props.highlight ? ThemePalette.alert : ThemePalette.primary};
     outline: none;
   }
   &:disabled {
@@ -71,7 +77,7 @@ const Input = styled.textarea<any>`
   &::placeholder {
     color: ${ThemePalette.grayscale[3]};
   }
-`
+`;
 @observer
 class TextArea extends React.Component<any> {
   render() {
@@ -84,16 +90,16 @@ class TextArea extends React.Component<any> {
           disabledLoading={this.props.disabledLoading}
           ref={(r: any) => {
             if (this.props.ref) {
-              this.props.ref(r)
+              this.props.ref(r);
             } else if (this.props.customRef) {
-              this.props.customRef(r)
+              this.props.customRef(r);
             }
           }}
         />
         {this.props.required ? <Required /> : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default TextArea
+export default TextArea;

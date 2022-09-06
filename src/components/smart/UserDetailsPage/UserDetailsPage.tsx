@@ -12,127 +12,139 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import type { User } from '@src/@types/User'
-import DetailsTemplate from '@src/components/modules/TemplateModule/DetailsTemplate'
-import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader'
-import DetailsContentHeader from '@src/components/modules/DetailsModule/DetailsContentHeader'
-import UserDetailsContent from '@src/components/modules/UserModule/UserDetailsContent'
-import UserModal from '@src/components/modules/UserModule/UserModal'
-import AlertModal from '@src/components/ui/AlertModal'
+import type { User } from "@src/@types/User";
+import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
+import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
+import UserDetailsContent from "@src/components/modules/UserModule/UserDetailsContent";
+import UserModal from "@src/components/modules/UserModule/UserModal";
+import AlertModal from "@src/components/ui/AlertModal";
 
-import userStore from '@src/stores/UserStore'
-import projectStore from '@src/stores/ProjectStore'
+import userStore from "@src/stores/UserStore";
+import projectStore from "@src/stores/ProjectStore";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
-import userImage from './images/user.svg'
+import userImage from "./images/user.svg";
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: { params: { id: string } },
-  history: any,
-}
+  match: { params: { id: string } };
+  history: any;
+};
 type State = {
-  showUserModal: boolean,
-  editPassword: boolean,
-  showDeleteAlert: boolean,
-}
+  showUserModal: boolean;
+  editPassword: boolean;
+  showDeleteAlert: boolean;
+};
 @observer
 class UserDetailsPage extends React.Component<Props, State> {
   state = {
     showUserModal: false,
     editPassword: false,
     showDeleteAlert: false,
-  }
+  };
 
   componentDidMount() {
-    document.title = 'User Details'
+    document.title = "User Details";
 
-    this.loadData()
+    this.loadData();
   }
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadData(newProps.match.params.id)
+      this.loadData(newProps.match.params.id);
     }
   }
 
   componentWillUnmount() {
-    userStore.clearUserDetails()
-    userStore.clearProjects()
+    userStore.clearUserDetails();
+    userStore.clearProjects();
   }
 
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
-      case 'signout':
-        userStore.logout()
-        break
+      case "signout":
+        userStore.logout();
+        break;
       default:
     }
   }
 
   handleEditClick() {
-    this.setState({ showUserModal: true })
+    this.setState({ showUserModal: true });
   }
 
   async handleDeleteConfirmation() {
-    await userStore.delete(this.props.match.params.id)
-    this.props.history.push('/users')
+    await userStore.delete(this.props.match.params.id);
+    this.props.history.push("/users");
   }
 
   handleUserEditModalClose() {
-    this.setState({ showUserModal: false, editPassword: false })
+    this.setState({ showUserModal: false, editPassword: false });
   }
 
   async handleUserUpdateClick(user: User) {
-    await userStore.update(this.props.match.params.id, user)
-    userStore.getProjects(this.props.match.params.id)
-    this.setState({ showUserModal: false, editPassword: false })
+    await userStore.update(this.props.match.params.id, user);
+    userStore.getProjects(this.props.match.params.id);
+    this.setState({ showUserModal: false, editPassword: false });
   }
 
   handleUpdatePasswordClick() {
-    this.setState({ showUserModal: true, editPassword: true })
+    this.setState({ showUserModal: true, editPassword: true });
   }
 
   handleDeleteClick() {
-    this.setState({ showDeleteAlert: true })
+    this.setState({ showDeleteAlert: true });
   }
 
   loadData(id?: string) {
-    projectStore.getProjects()
-    userStore.getProjects(id || this.props.match.params.id)
-    userStore.getUserInfo(id || this.props.match.params.id)
+    projectStore.getProjects();
+    userStore.getProjects(id || this.props.match.params.id);
+    userStore.getUserInfo(id || this.props.match.params.id);
   }
 
   render() {
-    const dropdownActions = [{
-      label: 'Change password',
-      color: ThemePalette.primary,
-      action: () => { this.handleUpdatePasswordClick() },
-    }, {
-      label: 'Edit user',
-      action: () => { this.handleEditClick() },
-    }, {
-      label: 'Delete user',
-      color: ThemePalette.alert,
-      action: () => { this.handleDeleteClick() },
-    }]
+    const dropdownActions = [
+      {
+        label: "Change password",
+        color: ThemePalette.primary,
+        action: () => {
+          this.handleUpdatePasswordClick();
+        },
+      },
+      {
+        label: "Edit user",
+        action: () => {
+          this.handleEditClick();
+        },
+      },
+      {
+        label: "Delete user",
+        color: ThemePalette.alert,
+        action: () => {
+          this.handleDeleteClick();
+        },
+      },
+    ];
 
     return (
       <Wrapper>
         <DetailsTemplate
-          pageHeaderComponent={(
+          pageHeaderComponent={
             <DetailsPageHeader
               user={userStore.loggedUser}
-              onUserItemClick={item => { this.handleUserItemClick(item) }}
+              onUserItemClick={item => {
+                this.handleUserItemClick(item);
+              }}
             />
-          )}
-          contentHeaderComponent={(
+          }
+          contentHeaderComponent={
             <DetailsContentHeader
               itemTitle={userStore.userDetails?.name}
               itemType="user"
@@ -140,30 +152,44 @@ class UserDetailsPage extends React.Component<Props, State> {
               typeImage={userImage}
               dropdownActions={dropdownActions}
             />
-          )}
-          contentComponent={(
+          }
+          contentComponent={
             <UserDetailsContent
-              onDeleteClick={() => { this.handleDeleteClick() }}
+              onDeleteClick={() => {
+                this.handleDeleteClick();
+              }}
               user={userStore.userDetails}
-              isLoggedUser={userStore.loggedUser && userStore.userDetails
-                ? userStore.loggedUser.id === userStore.userDetails.id : false}
+              isLoggedUser={
+                userStore.loggedUser && userStore.userDetails
+                  ? userStore.loggedUser.id === userStore.userDetails.id
+                  : false
+              }
               loading={userStore.userDetailsLoading}
               userProjects={userStore.projects}
               projects={projectStore.projects}
-              onUpdatePasswordClick={() => { this.handleUpdatePasswordClick() }}
+              onUpdatePasswordClick={() => {
+                this.handleUpdatePasswordClick();
+              }}
             />
-          )}
+          }
         />
         {this.state.showUserModal && userStore.userDetails ? (
           <UserModal
             user={userStore.userDetails}
-            isLoggedUser={userStore.loggedUser && userStore.userDetails
-              ? userStore.loggedUser.id === userStore.userDetails.id : false}
+            isLoggedUser={
+              userStore.loggedUser && userStore.userDetails
+                ? userStore.loggedUser.id === userStore.userDetails.id
+                : false
+            }
             loading={userStore.updating}
             projects={projectStore.projects}
             editPassword={this.state.editPassword}
-            onRequestClose={() => { this.handleUserEditModalClose() }}
-            onUpdateClick={user => { this.handleUserUpdateClick(user) }}
+            onRequestClose={() => {
+              this.handleUserEditModalClose();
+            }}
+            onUpdateClick={user => {
+              this.handleUserUpdateClick(user);
+            }}
           />
         ) : null}
         {this.state.showDeleteAlert ? (
@@ -172,13 +198,17 @@ class UserDetailsPage extends React.Component<Props, State> {
             title="Delete User?"
             message="Are you sure you want to delete this user?"
             extraMessage="Deleting a Coriolis User is permanent!"
-            onConfirmation={() => { this.handleDeleteConfirmation() }}
-            onRequestClose={() => { this.setState({ showDeleteAlert: false }) }}
+            onConfirmation={() => {
+              this.handleDeleteConfirmation();
+            }}
+            onRequestClose={() => {
+              this.setState({ showDeleteAlert: false });
+            }}
           />
         ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default UserDetailsPage
+export default UserDetailsPage;
