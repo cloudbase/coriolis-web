@@ -28,6 +28,7 @@ import notificationStore from '@src/stores/NotificationStore'
 import DomUtils from '@src/utils/DomUtils'
 import { ThemePalette, ThemeProps } from '@src/components/Theme'
 import DateUtils from '@src/utils/DateUtils'
+import { Instance } from '@src/@types/Instance'
 
 const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {
@@ -153,6 +154,7 @@ type Props = {
   columnWidths: string[],
   item: Task,
   open: boolean,
+  instancesDetails: Instance[],
   onDependsOnClick: (id: string) => void,
   onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void
@@ -202,6 +204,9 @@ class TaskItem extends React.Component<Props> {
     const date = this.props.item.updated_at
       ? this.props.item.updated_at : this.props.item.created_at
 
+    const instance = this.props.instancesDetails.find(i => i.id === this.props.item.instance)
+    const instanceLabel = instance?.instance_name || instance?.name || this.props.item.instance
+
     return (
       <Header>
         <HeaderData capitalize width={this.props.columnWidths[0]} black>
@@ -210,8 +215,8 @@ class TaskItem extends React.Component<Props> {
             <TitleText>{this.props.item.task_type.replace(/_/g, ' ').toLowerCase()}</TitleText>
           </Title>
         </HeaderData>
-        <HeaderData width={this.props.columnWidths[1]}>
-          {this.props.item.instance}
+        <HeaderData title={instanceLabel} width={this.props.columnWidths[1]}>
+          {instanceLabel}
         </HeaderData>
         <HeaderData width={this.props.columnWidths[2]}>
           {this.getLastMessage()}

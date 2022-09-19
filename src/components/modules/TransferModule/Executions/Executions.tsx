@@ -27,6 +27,7 @@ import type { Execution, ExecutionTasks } from '@src/@types/Execution'
 import { ThemePalette } from '@src/components/Theme'
 import DateUtils from '@src/utils/DateUtils'
 
+import { Instance } from '@src/@types/Instance'
 import executionImage from './images/execution.svg'
 
 const Wrapper = styled.div<any>``
@@ -88,6 +89,7 @@ type Props = {
   executionsTasks: ExecutionTasks[],
   loading: boolean,
   tasksLoading: boolean,
+  instancesDetails: Instance[],
   onChange: (executionId: string) => void,
   onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
   onDeleteExecutionClick?: (execution: Execution | null) => void,
@@ -335,6 +337,7 @@ class Executions extends React.Component<Props, State> {
     return (
       <Tasks
         loading={this.props.tasksLoading}
+        instancesDetails={this.props.instancesDetails}
         items={this.props.executionsTasks
           .find(e => e.id === this.state.selectedExecution?.id)?.tasks || []}
       />
