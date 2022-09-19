@@ -42,6 +42,7 @@ import MinionPoolModal from '@src/components/modules/MinionModule/MinionPoolModa
 import ObjectUtils from '@src/utils/ObjectUtils'
 import regionStore from '@src/stores/RegionStore'
 import AboutModal from '@src/components/smart/AboutModal'
+import Config from '@src/utils/Config'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -91,6 +92,7 @@ type State = {
   uploadedEndpoint: EndpointType | null,
   multiValidating: boolean,
   selectedMinionPoolPlatform: 'source' | 'destination'
+  addingProject: boolean
 }
 @observer
 class PageHeader extends React.Component<Props, State> {
@@ -108,6 +110,7 @@ class PageHeader extends React.Component<Props, State> {
     showAddLicenceModal: false,
     multiValidating: false,
     selectedMinionPoolPlatform: 'source',
+    addingProject: false,
   }
 
   pollTimeout!: number
@@ -181,6 +184,7 @@ class PageHeader extends React.Component<Props, State> {
         if (this.props.onModalOpen) {
           this.props.onModalOpen()
         }
+        endpointStore.getEndpoints()
         this.setState({ showProjectModal: true })
         break
       case 'licence':
@@ -314,11 +318,26 @@ class PageHeader extends React.Component<Props, State> {
   }
 
   async handleProjectModalUpdateClick(project: Project) {
-    await projectStore.add(project)
-    if (this.props.onModalClose) {
-      this.props.onModalClose()
+    try {
+      this.setState({ addingProject: true })
+      const newProject = await projectStore.add(project)
+
+      const bareMetalEndpoint = endpointStore.endpoints.find(e => e.name === Config.config.bareMetalEndpointName)
+      if (bareMetalEndpoint) {
+        await endpointStore.duplicate({
+          shouldSwitchProject: true,
+          onSwitchProject: () => userStore.switchProject(newProject.id),
+          endpoints: [bareMetalEndpoint],
+        })
+      }
+    } finally {
+      if (this.props.onModalClose) {
+        this.props.onModalClose()
+      }
+      this.setState({ showProjectModal: false, addingProject: false }, () => {
+        this.pollData()
+      })
     }
-    this.setState({ showProjectModal: false }, () => { this.pollData() })
   }
 
   async pollData(showLoading?: boolean) {
@@ -436,7 +455,7 @@ class PageHeader extends React.Component<Props, State> {
         {this.state.showProjectModal ? (
           <ProjectModal
             isNewProject
-            loading={projectStore.updating}
+            loading={this.state.addingProject}
             onRequestClose={() => { this.handleProjectModalClose() }}
             onUpdateClick={project => { this.handleProjectModalUpdateClick(project) }}
           />
