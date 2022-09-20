@@ -2,6 +2,5 @@
   "name": "WizardOptions",
   "version": "0.0.0",
   "private": true,
-  "main":"./WizardOptions.tsx"
+  "main": "./WizardOptions.tsx"
 }
-

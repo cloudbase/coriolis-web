@@ -12,77 +12,77 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
+import React from "react";
+import { storiesOf } from "@storybook/react";
 
-import WizardStorage from '.'
+import WizardStorage from ".";
 
 const instancesDetails: any = [
   {
-    id: '1',
+    id: "1",
     devices: {
       nics: [],
       disks: [
         {
-          id: 'disk-1',
-          name: 'Disk 1',
-          storage_backend_identifier: 'backend-1',
+          id: "disk-1",
+          name: "Disk 1",
+          storage_backend_identifier: "backend-1",
         },
       ],
     },
-    instance_name: 'Instance name 1',
-    flavor_name: 'Instance name 1',
-    name: 'Instance name 1',
+    instance_name: "Instance name 1",
+    flavor_name: "Instance name 1",
+    name: "Instance name 1",
     num_cpu: 2,
     memory_mb: 1024,
-    os_type: 'windows',
+    os_type: "windows",
   },
   {
-    id: '2',
+    id: "2",
     devices: {
       nics: [],
       disks: [],
     },
-    instance_name: 'Instance name 2',
-    flavor_name: 'Instance name 2',
-    name: 'Instance name 2',
+    instance_name: "Instance name 2",
+    flavor_name: "Instance name 2",
+    name: "Instance name 2",
     num_cpu: 4,
     memory_mb: 2048,
-    os_type: 'linux',
+    os_type: "linux",
   },
-]
+];
 const storageBackends: any = [
   {
-    id: 'backend-1',
-    name: 'Backend 1',
+    id: "backend-1",
+    name: "Backend 1",
   },
   {
-    id: 'backend-2',
-    name: 'Backend 2',
+    id: "backend-2",
+    name: "Backend 2",
   },
-]
-storiesOf('WizardStorage', module)
-  .add('page', () => (
+];
+storiesOf("WizardStorage", module)
+  .add("page", () => (
     <WizardStorage
       loading={false}
       storageBackends={storageBackends}
       instancesDetails={instancesDetails}
       storageMap={null}
       defaultStorageLayout="page"
-      defaultStorage={{ value: 'backend-1' }}
-      onDefaultStorageChange={() => { }}
-      onChange={() => { }}
+      defaultStorage={{ value: "backend-1" }}
+      onDefaultStorageChange={() => {}}
+      onChange={() => {}}
     />
   ))
-  .add('modal', () => (
+  .add("modal", () => (
     <WizardStorage
       loading={false}
       storageBackends={storageBackends}
       instancesDetails={instancesDetails}
       storageMap={null}
       defaultStorageLayout="modal"
-      defaultStorage={{ value: 'backend-1' }}
-      onDefaultStorageChange={() => { }}
-      onChange={() => { }}
+      defaultStorage={{ value: "backend-1" }}
+      onDefaultStorageChange={() => {}}
+      onChange={() => {}}
     />
-  ))
+  ));

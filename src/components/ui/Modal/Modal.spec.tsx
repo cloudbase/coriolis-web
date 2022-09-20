@@ -12,22 +12,33 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import Modal from '@src/components/ui/Modal'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import Modal from "@src/components/ui/Modal";
+import TestUtils from "@tests/TestUtils";
 
-describe('Modal', () => {
-  it('renders content', () => {
-    render(<Modal isOpen title="Test Title"><div className="content">Test Content</div></Modal>)
-    expect(TestUtils.select('ReactModal__Content')!.querySelector('.content')!.textContent).toBe('Test Content')
-    expect(TestUtils.select('Modal__Title')!.textContent).toBe('Test Title')
-  })
+describe("Modal", () => {
+  it("renders content", () => {
+    render(
+      <Modal isOpen title="Test Title">
+        <div className="content">Test Content</div>
+      </Modal>
+    );
+    expect(
+      TestUtils.select("ReactModal__Content")!.querySelector(".content")!
+        .textContent
+    ).toBe("Test Content");
+    expect(TestUtils.select("Modal__Title")!.textContent).toBe("Test Title");
+  });
 
-  it('requests close on overlay click', () => {
-    const onRequestClose = jest.fn()
-    render(<Modal isOpen onRequestClose={onRequestClose}><div>Test Content</div></Modal>)
-    TestUtils.select('ReactModal__Overlay')!.click()
-    expect(onRequestClose).toHaveBeenCalled()
-  })
-})
+  it("requests close on overlay click", () => {
+    const onRequestClose = jest.fn();
+    render(
+      <Modal isOpen onRequestClose={onRequestClose}>
+        <div>Test Content</div>
+      </Modal>
+    );
+    TestUtils.select("ReactModal__Overlay")!.click();
+    expect(onRequestClose).toHaveBeenCalled();
+  });
+});

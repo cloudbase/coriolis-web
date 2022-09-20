@@ -12,22 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import { ThemeProps } from '@src/components/Theme'
-import copyImage from './images/copy.svg'
+import { ThemeProps } from "@src/components/Theme";
+import copyImage from "./images/copy.svg";
 
 const Wrapper = styled.span`
   opacity: 0;
   min-width: 16px;
   height: 16px;
   display: inline-block;
-  background: url('${copyImage}') no-repeat;
+  background: url("${copyImage}") no-repeat;
   background-position-y: 2px;
   transition: all ${ThemeProps.animations.swift};
-`
+`;
 
 @observer
 class CopyButton extends React.Component<any> {
@@ -35,8 +35,8 @@ class CopyButton extends React.Component<any> {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Wrapper {...this.props} />
-    )
+    );
   }
 }
 
-export default CopyButton
+export default CopyButton;

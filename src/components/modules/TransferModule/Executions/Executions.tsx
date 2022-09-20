@@ -12,233 +12,263 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import CopyValue from '@src/components/ui/CopyValue'
-import Button from '@src/components/ui/Button'
-import Timeline from '@src/components/modules/TransferModule/Timeline'
-import Tasks from '@src/components/modules/TransferModule/Tasks'
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import CopyValue from "@src/components/ui/CopyValue";
+import Button from "@src/components/ui/Button";
+import Timeline from "@src/components/modules/TransferModule/Timeline";
+import Tasks from "@src/components/modules/TransferModule/Tasks";
 
-import type { Execution, ExecutionTasks } from '@src/@types/Execution'
-import { ThemePalette } from '@src/components/Theme'
-import DateUtils from '@src/utils/DateUtils'
+import type { Execution, ExecutionTasks } from "@src/@types/Execution";
+import { ThemePalette } from "@src/components/Theme";
+import DateUtils from "@src/utils/DateUtils";
 
-import { Instance } from '@src/@types/Instance'
-import executionImage from './images/execution.svg'
+import { Instance } from "@src/@types/Instance";
+import executionImage from "./images/execution.svg";
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 const LoadingWrapper = styled.div<any>`
   margin-top: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 const LoadingText = styled.div<any>`
   margin-top: 38px;
   font-size: 18px;
-`
+`;
 const ExecutionInfo = styled.div<any>`
   background: ${ThemePalette.grayscale[1]};
   padding: 24px 16px;
   display: flex;
   align-items: center;
   margin-top: 16px;
-`
+`;
 const ExecutionInfoNumber = styled.div<any>`
   font-size: 16px;
   padding-right: 24px;
-`
+`;
 const ExecutionInfoDate = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
   margin-right: 16px;
-`
+`;
 const ExecutionInfoId = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
   display: flex;
   margin-right: 16px;
   flex-grow: 1;
-`
+`;
 const NoExecutions = styled.div<any>`
   background: ${ThemePalette.grayscale[7]};
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-bottom: 74px;
-`
+`;
 const ExecutionImage = styled.div<any>`
   width: 96px;
   height: 96px;
-  background: url('${executionImage}');
+  background: url("${executionImage}");
   margin: 106px 0 43px 0;
-`
+`;
 const NoExecutionTitle = styled.div<any>`
   font-size: 18px;
   margin-bottom: 10px;
-`
+`;
 const NoExecutionText = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
   margin-bottom: 48px;
-`
+`;
 
 type Props = {
-  executions: Execution[],
-  executionsTasks: ExecutionTasks[],
-  loading: boolean,
-  tasksLoading: boolean,
-  instancesDetails: Instance[],
-  onChange: (executionId: string) => void,
-  onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
-  onDeleteExecutionClick?: (execution: Execution | null) => void,
-  onExecuteClick?: () => void,
-}
+  executions: Execution[];
+  executionsTasks: ExecutionTasks[];
+  loading: boolean;
+  tasksLoading: boolean;
+  instancesDetails: Instance[];
+  onChange: (executionId: string) => void;
+  onCancelExecutionClick: (
+    execution: Execution | null,
+    force?: boolean
+  ) => void;
+  onDeleteExecutionClick?: (execution: Execution | null) => void;
+  onExecuteClick?: () => void;
+};
 type State = {
-  selectedExecution: Execution | null,
-}
+  selectedExecution: Execution | null;
+};
 @observer
 class Executions extends React.Component<Props, State> {
   state: State = {
     selectedExecution: null,
-  }
+  };
 
   UNSAFE_componentWillMount() {
-    this.setSelectedExecution(this.props)
+    this.setSelectedExecution(this.props);
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
-    this.setSelectedExecution(props)
+    this.setSelectedExecution(props);
   }
 
   setSelectedExecution(props: Props) {
-    const lastExecution = this.getLastExecution(props)
-    let selectExecution: Execution | null | undefined = null
+    const lastExecution = this.getLastExecution(props);
+    let selectExecution: Execution | null | undefined = null;
 
     if (props.executions && this.props.executions) {
-      if (this.props.executions.length !== props.executions.length
-        && lastExecution && lastExecution.status === 'RUNNING') {
-        selectExecution = lastExecution
+      if (
+        this.props.executions.length !== props.executions.length &&
+        lastExecution &&
+        lastExecution.status === "RUNNING"
+      ) {
+        selectExecution = lastExecution;
       }
 
       if (this.props.executions.length > props.executions.length) {
-        const isSelectedAvailable = props.executions.find(e => this.state.selectedExecution
-          && e.id === this.state.selectedExecution.id)
+        const isSelectedAvailable = props.executions.find(
+          e =>
+            this.state.selectedExecution &&
+            e.id === this.state.selectedExecution.id
+        );
         if (!isSelectedAvailable) {
           const lastIndex = this.props.executions
-            ? this.props.executions
-              .findIndex(e => this.state.selectedExecution
-              && e.id === this.state.selectedExecution.id) : -1
+            ? this.props.executions.findIndex(
+                e =>
+                  this.state.selectedExecution &&
+                  e.id === this.state.selectedExecution.id
+              )
+            : -1;
           if (props.executions.length) {
             if (props.executions.length - 1 >= lastIndex) {
-              selectExecution = props.executions[lastIndex]
+              selectExecution = props.executions[lastIndex];
             } else {
-              selectExecution = props.executions[lastIndex - 1]
+              selectExecution = props.executions[lastIndex - 1];
             }
           }
         }
       }
     }
-    const currentSelectedExecution = this.state.selectedExecution
+    const currentSelectedExecution = this.state.selectedExecution;
     if (!currentSelectedExecution) {
-      this.setState({
-        selectedExecution: lastExecution || null,
-      }, () => {
-        this.handleChange(lastExecution)
-      })
+      this.setState(
+        {
+          selectedExecution: lastExecution || null,
+        },
+        () => {
+          this.handleChange(lastExecution);
+        }
+      );
     } else if (selectExecution) {
-      this.setState({
-        selectedExecution: selectExecution,
-      }, () => {
-        this.handleChange(selectExecution)
-      })
+      this.setState(
+        {
+          selectedExecution: selectExecution,
+        },
+        () => {
+          this.handleChange(selectExecution);
+        }
+      );
     } else if (this.hasExecutions(props)) {
-      selectExecution = (props.executions
-        .find(e => e.id === currentSelectedExecution.id)) || lastExecution
-      this.setState({
-        selectedExecution: selectExecution || null,
-      }, () => {
-        this.handleChange(selectExecution)
-      })
+      selectExecution =
+        props.executions.find(e => e.id === currentSelectedExecution.id) ||
+        lastExecution;
+      this.setState(
+        {
+          selectedExecution: selectExecution || null,
+        },
+        () => {
+          this.handleChange(selectExecution);
+        }
+      );
     } else {
-      this.setState({ selectedExecution: null })
+      this.setState({ selectedExecution: null });
     }
   }
 
   getLastExecution(props: Props) {
     if (this.hasExecutions(props)) {
-      return props.executions[props.executions.length - 1]
+      return props.executions[props.executions.length - 1];
     }
-    return null
+    return null;
   }
 
   hasExecutions(props: Props) {
-    return Boolean(props.executions.length)
+    return Boolean(props.executions.length);
   }
 
   handleChange(execution?: Execution | null) {
     if (!execution) {
-      return
+      return;
     }
 
-    this.props.onChange(execution.id)
+    this.props.onChange(execution.id);
   }
 
   handlePreviousExecutionClick() {
-    const currentSelectedExecution = this.state.selectedExecution
+    const currentSelectedExecution = this.state.selectedExecution;
     if (!this.props.executions.length || !currentSelectedExecution) {
-      return
+      return;
     }
 
-    const selectedIndex = this.props
-      .executions.findIndex(e => e.id === currentSelectedExecution.id)
+    const selectedIndex = this.props.executions.findIndex(
+      e => e.id === currentSelectedExecution.id
+    );
 
     if (selectedIndex === 0) {
-      return
+      return;
     }
 
-    this.setState({
-      selectedExecution: this.props.executions[selectedIndex - 1],
-    }, () => {
-      this.handleChange(this.props.executions[selectedIndex - 1])
-    })
+    this.setState(
+      {
+        selectedExecution: this.props.executions[selectedIndex - 1],
+      },
+      () => {
+        this.handleChange(this.props.executions[selectedIndex - 1]);
+      }
+    );
   }
 
   handleNextExecutionClick() {
-    const currentSelectedExecution = this.state.selectedExecution
+    const currentSelectedExecution = this.state.selectedExecution;
     if (!this.props.executions.length || !currentSelectedExecution) {
-      return
+      return;
     }
-    const selectedIndex = this.props.executions
-      .findIndex(e => e.id === currentSelectedExecution.id)
+    const selectedIndex = this.props.executions.findIndex(
+      e => e.id === currentSelectedExecution.id
+    );
 
     if (selectedIndex >= this.props.executions.length - 1) {
-      return
+      return;
     }
 
-    this.setState({ selectedExecution: this.props.executions[selectedIndex + 1] }, () => {
-      this.handleChange(this.props.executions[selectedIndex + 1])
-    })
+    this.setState(
+      { selectedExecution: this.props.executions[selectedIndex + 1] },
+      () => {
+        this.handleChange(this.props.executions[selectedIndex + 1]);
+      }
+    );
   }
 
   handleTimelineItemClick(item: Execution) {
     this.setState({ selectedExecution: item }, () => {
-      this.handleChange(item)
-    })
+      this.handleChange(item);
+    });
   }
 
   handleCancelExecutionClick() {
-    this.props.onCancelExecutionClick(this.state.selectedExecution)
+    this.props.onCancelExecutionClick(this.state.selectedExecution);
   }
 
   handleForceCancelExecutionClick() {
-    this.props.onCancelExecutionClick(this.state.selectedExecution, true)
+    this.props.onCancelExecutionClick(this.state.selectedExecution, true);
   }
 
   renderLoading() {
     if (!this.props.loading) {
-      return null
+      return null;
     }
 
     return (
@@ -246,117 +276,155 @@ class Executions extends React.Component<Props, State> {
         <StatusImage loading />
         <LoadingText>Loading executions...</LoadingText>
       </LoadingWrapper>
-    )
+    );
   }
 
   renderTimeline() {
     if (this.props.loading) {
-      return null
+      return null;
     }
 
     return (
       <Timeline
         items={this.props.executions}
         selectedItem={this.state.selectedExecution}
-        onPreviousClick={() => { this.handlePreviousExecutionClick() }}
-        onNextClick={() => { this.handleNextExecutionClick() }}
-        onItemClick={item => { this.handleTimelineItemClick(item) }}
+        onPreviousClick={() => {
+          this.handlePreviousExecutionClick();
+        }}
+        onNextClick={() => {
+          this.handleNextExecutionClick();
+        }}
+        onItemClick={item => {
+          this.handleTimelineItemClick(item);
+        }}
       />
-    )
+    );
   }
 
   renderExecutionInfoButton() {
     if (!this.state.selectedExecution) {
-      return null
+      return null;
     }
 
-    if (this.state.selectedExecution.status === 'RUNNING' || this.state.selectedExecution.status === 'AWAITING_MINION_ALLOCATIONS') {
+    if (
+      this.state.selectedExecution.status === "RUNNING" ||
+      this.state.selectedExecution.status === "AWAITING_MINION_ALLOCATIONS"
+    ) {
       return (
         <Button
           secondary
           hollow
-          onClick={() => { this.handleCancelExecutionClick() }}
-        >Cancel Execution
+          onClick={() => {
+            this.handleCancelExecutionClick();
+          }}
+        >
+          Cancel Execution
         </Button>
-      )
+      );
     }
 
-    if (this.state.selectedExecution.status === 'CANCELLING') {
+    if (this.state.selectedExecution.status === "CANCELLING") {
       return (
         <Button
           secondary
           hollow
-          onClick={() => { this.handleForceCancelExecutionClick() }}
-        >Force Cancel Execution
+          onClick={() => {
+            this.handleForceCancelExecutionClick();
+          }}
+        >
+          Force Cancel Execution
         </Button>
-      )
+      );
     }
 
-    const onDeleteExecutionClick = this.props.onDeleteExecutionClick
+    const onDeleteExecutionClick = this.props.onDeleteExecutionClick;
     if (!onDeleteExecutionClick) {
-      return null
+      return null;
     }
     return (
       <Button
         alert
         hollow
-        onClick={() => { onDeleteExecutionClick(this.state.selectedExecution) }}
-      >Delete Execution
+        onClick={() => {
+          onDeleteExecutionClick(this.state.selectedExecution);
+        }}
+      >
+        Delete Execution
       </Button>
-    )
+    );
   }
 
   renderExecutionInfo() {
     if (!this.state.selectedExecution || this.props.loading) {
-      return null
+      return null;
     }
 
     return (
       <ExecutionInfo>
-        <ExecutionInfoNumber>Execution #{this.state.selectedExecution.number}</ExecutionInfoNumber>
-        <StatusPill style={{ marginRight: '16px' }} small status={this.state.selectedExecution.status} />
+        <ExecutionInfoNumber>
+          Execution #{this.state.selectedExecution.number}
+        </ExecutionInfoNumber>
+        <StatusPill
+          style={{ marginRight: "16px" }}
+          small
+          status={this.state.selectedExecution.status}
+        />
         <ExecutionInfoDate>
-          {DateUtils.getLocalTime(this.state.selectedExecution.created_at).format('DD MMMM YYYY HH:mm')}
+          {DateUtils.getLocalTime(
+            this.state.selectedExecution.created_at
+          ).format("DD MMMM YYYY HH:mm")}
         </ExecutionInfoDate>
         <ExecutionInfoId>
-          ID:&nbsp;<CopyValue
+          ID:&nbsp;
+          <CopyValue
             width="186px"
-            value={this.state.selectedExecution ? this.state.selectedExecution.id : ''}
+            value={
+              this.state.selectedExecution
+                ? this.state.selectedExecution.id
+                : ""
+            }
           />
         </ExecutionInfoId>
         {this.renderExecutionInfoButton()}
       </ExecutionInfo>
-    )
+    );
   }
 
   renderTasks() {
     if (this.props.loading || this.props.executions.length === 0) {
-      return null
+      return null;
     }
 
     return (
       <Tasks
         loading={this.props.tasksLoading}
         instancesDetails={this.props.instancesDetails}
-        items={this.props.executionsTasks
-          .find(e => e.id === this.state.selectedExecution?.id)?.tasks || []}
+        items={
+          this.props.executionsTasks.find(
+            e => e.id === this.state.selectedExecution?.id
+          )?.tasks || []
+        }
       />
-    )
+    );
   }
 
   renderNoExecution() {
     if (this.hasExecutions(this.props) || this.props.loading) {
-      return null
+      return null;
     }
 
     return (
       <NoExecutions>
         <ExecutionImage />
-        <NoExecutionTitle>It looks like there are no executions in this replica.</NoExecutionTitle>
-        <NoExecutionText>This replica has not been executed yet.</NoExecutionText>
+        <NoExecutionTitle>
+          It looks like there are no executions in this replica.
+        </NoExecutionTitle>
+        <NoExecutionText>
+          This replica has not been executed yet.
+        </NoExecutionText>
         <Button onClick={this.props.onExecuteClick}>Execute Now</Button>
       </NoExecutions>
-    )
+    );
   }
 
   render() {
@@ -368,8 +436,8 @@ class Executions extends React.Component<Props, State> {
         {this.renderTasks()}
         {this.renderNoExecution()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default Executions
+export default Executions;

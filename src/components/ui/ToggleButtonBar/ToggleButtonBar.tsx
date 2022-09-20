@@ -12,21 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
-`
+`;
 const Item = styled.div<any>`
   width: 112px;
   height: 14px;
-  background: ${(props: any) => (props.selected ? ThemePalette.primary : 'white')};
-  color: ${(props: any) => (props.selected ? 'white' : ThemePalette.primary)};
+  background: ${(props: any) =>
+    props.selected ? ThemePalette.primary : "white"};
+  color: ${(props: any) => (props.selected ? "white" : ThemePalette.primary)};
   border: 1px solid ${ThemePalette.primary};
   border-right: 1px solid white;
   text-align: center;
@@ -48,59 +49,64 @@ const Item = styled.div<any>`
   }
   outline: none;
   :focus {
-    ${(props: any) => (!props.selected ? css`background: ${ThemePalette.primary}44;` : '')}
+    ${(props: any) =>
+      !props.selected
+        ? css`
+            background: ${ThemePalette.primary}44;
+          `
+        : ""}
   }
-`
+`;
 
-type ItemType = { value: string, label: string }
+type ItemType = { value: string; label: string };
 type Props = {
-  items: Array<ItemType>,
-  selectedValue?: string,
-  onChange?: (item: ItemType) => void,
-  className?: string,
-  style?: React.CSSProperties,
-}
+  items: Array<ItemType>;
+  selectedValue?: string;
+  onChange?: (item: ItemType) => void;
+  className?: string;
+  style?: React.CSSProperties;
+};
 @observer
 class ToggleButtonBar extends React.Component<Props> {
   change(item: ItemType) {
     if (this.props.onChange) {
-      this.props.onChange(item)
+      this.props.onChange(item);
     }
   }
 
   handleKeyPress(e: React.KeyboardEvent<HTMLDivElement>, item: ItemType) {
-    if (e.key !== ' ') {
-      return
+    if (e.key !== " ") {
+      return;
     }
-    e.preventDefault()
-    this.change(item)
+    e.preventDefault();
+    this.change(item);
   }
 
   render() {
     if (!this.props.items) {
-      return null
+      return null;
     }
 
     return (
-      <Wrapper
-        className={this.props.className}
-        style={this.props.style}
-      >
+      <Wrapper className={this.props.className} style={this.props.style}>
         {this.props.items.map(item => (
           <Item
             key={item.value}
             selected={this.props.selectedValue === item.value}
-            onClick={() => { this.change(item) }}
+            onClick={() => {
+              this.change(item);
+            }}
             tabIndex={0}
             onKeyPress={(e: React.KeyboardEvent<HTMLDivElement>) => {
-              this.handleKeyPress(e, item)
+              this.handleKeyPress(e, item);
             }}
-          >{item.label}
+          >
+            {item.label}
           </Item>
         ))}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default ToggleButtonBar
+export default ToggleButtonBar;

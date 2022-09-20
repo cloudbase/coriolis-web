@@ -24,4 +24,4 @@ export default (color: string) => `
         </g>
     </g>
 </svg>
-`
+`;

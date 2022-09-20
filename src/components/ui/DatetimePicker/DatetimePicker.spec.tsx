@@ -12,50 +12,44 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import moment from 'moment'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import DatetimePicker from './DatetimePicker'
+import React from "react";
+import moment from "moment";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import DatetimePicker from "./DatetimePicker";
 
-const DATE = new Date('2021-11-12T12:32:44.426Z')
+const DATE = new Date("2021-11-12T12:32:44.426Z");
 
-describe('DatetimePicker', () => {
-  it('renders date value in UTC timezone in dropdown label', () => {
-    render(
-      <DatetimePicker
-        onChange={() => { }}
-        timezone="utc"
-        value={DATE}
-      />,
-    )
+describe("DatetimePicker", () => {
+  it("renders date value in UTC timezone in dropdown label", () => {
+    render(<DatetimePicker onChange={() => {}} timezone="utc" value={DATE} />);
 
     const expected = moment(DATE)
-      .add(new Date().getTimezoneOffset(), 'minutes')
-      .format('DD/MM/YYYY hh:mm A')
+      .add(new Date().getTimezoneOffset(), "minutes")
+      .format("DD/MM/YYYY hh:mm A");
 
-    expect(TestUtils.select('DropdownButton__Label')?.innerHTML).toEqual(expected)
-  })
+    expect(TestUtils.select("DropdownButton__Label")?.innerHTML).toEqual(
+      expected
+    );
+  });
 
-  it('changes the date', () => {
-    render(
-      <DatetimePicker
-        onChange={() => { }}
-        timezone="utc"
-        value={DATE}
-      />,
-    )
-    expect(TestUtils.select('DatetimePicker__Portal')).toBeNull()
-    TestUtils.select('DropdownButton__Wrapper')?.click()
-    expect(TestUtils.select('DatetimePicker__Portal')).not.toBeNull()
-    const firstDay = document.querySelector<HTMLElement>('td.rdtDay[data-value="1"]')
-    firstDay?.click()
+  it("changes the date", () => {
+    render(<DatetimePicker onChange={() => {}} timezone="utc" value={DATE} />);
+    expect(TestUtils.select("DatetimePicker__Portal")).toBeNull();
+    TestUtils.select("DropdownButton__Wrapper")?.click();
+    expect(TestUtils.select("DatetimePicker__Portal")).not.toBeNull();
+    const firstDay = document.querySelector<HTMLElement>(
+      'td.rdtDay[data-value="1"]'
+    );
+    firstDay?.click();
 
     const expected = moment(DATE)
-      .set('date', 1)
-      .add(new Date().getTimezoneOffset(), 'minutes')
-      .format('DD/MM/YYYY hh:mm A')
+      .set("date", 1)
+      .add(new Date().getTimezoneOffset(), "minutes")
+      .format("DD/MM/YYYY hh:mm A");
 
-    expect(TestUtils.select('DropdownButton__Label')?.innerHTML).toEqual(expected)
-  })
-})
+    expect(TestUtils.select("DropdownButton__Label")?.innerHTML).toEqual(
+      expected
+    );
+  });
+});

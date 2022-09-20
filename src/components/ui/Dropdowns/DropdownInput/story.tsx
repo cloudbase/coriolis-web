@@ -12,58 +12,61 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import DropdownInput from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import DropdownInput from ".";
 
-const items = [{
-  label: 'Name',
-  value: 'name',
-}, {
-  label: 'ID',
-  value: 'id',
-}]
+const items = [
+  {
+    label: "Name",
+    value: "name",
+  },
+  {
+    label: "ID",
+    value: "id",
+  },
+];
 type Props = {
-  disabled?: boolean,
-  required?: boolean,
-  highlight?: boolean,
-}
+  disabled?: boolean;
+  required?: boolean;
+  highlight?: boolean;
+};
 type State = {
-  selectedItem: string,
-  inputValue: string
-}
+  selectedItem: string;
+  inputValue: string;
+};
 class Wrapper extends React.Component<Props, State> {
   state = {
-    selectedItem: 'id',
-    inputValue: '',
-  }
+    selectedItem: "id",
+    inputValue: "",
+  };
 
   render() {
     return (
-      <div style={{ marginLeft: '128px', background: 'white', padding: '42px' }}>
+      <div
+        style={{ marginLeft: "128px", background: "white", padding: "42px" }}
+      >
         <DropdownInput
           items={items}
           selectedItem={this.state.selectedItem}
-          onItemChange={item => { this.setState({ selectedItem: item.value }) }}
+          onItemChange={item => {
+            this.setState({ selectedItem: item.value });
+          }}
           inputValue={this.state.inputValue}
-          onInputChange={inputValue => { this.setState({ inputValue }) }}
-          placeholder={this.state.selectedItem === 'id' ? 'The ID' : 'The Name'}
+          onInputChange={inputValue => {
+            this.setState({ inputValue });
+          }}
+          placeholder={this.state.selectedItem === "id" ? "The ID" : "The Name"}
           disabled={this.props.disabled}
           highlight={this.props.highlight}
           required={this.props.required}
         />
       </div>
-    )
+    );
   }
 }
 
-storiesOf('DropdownInput', module)
-  .add('default', () => (
-    <Wrapper />
-  ))
-  .add('disabled', () => (
-    <Wrapper disabled />
-  ))
-  .add('required highlighted', () => (
-    <Wrapper required highlight />
-  ))
+storiesOf("DropdownInput", module)
+  .add("default", () => <Wrapper />)
+  .add("disabled", () => <Wrapper disabled />)
+  .add("required highlighted", () => <Wrapper required highlight />);

@@ -12,47 +12,44 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import { css } from 'styled-components'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import Table from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import { css } from "styled-components";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Table from ".";
 
 const items = [
-  ['item-1', 'item-2', 'item-3', 'item-4', 'item-5'],
-  ['item-6', 'item-7', 'item-8', 'item-9', 'item-10'],
-  ['item-6', 'item-7', 'item-8', 'item-9', 'item-10'],
-  ['item-6', 'item-7', 'item-8', 'item-9', 'item-10'],
-]
-const header = ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5']
+  ["item-1", "item-2", "item-3", "item-4", "item-5"],
+  ["item-6", "item-7", "item-8", "item-9", "item-10"],
+  ["item-6", "item-7", "item-8", "item-9", "item-10"],
+  ["item-6", "item-7", "item-8", "item-9", "item-10"],
+];
+const header = ["Header 1", "Header 2", "Header 3", "Header 4", "Header 5"];
 
-storiesOf('Table', module)
-  .add('default', () => (
-    <div style={{ width: '800px' }}>
-      <Table
-        header={header}
-        items={items}
-      />
+storiesOf("Table", module)
+  .add("default", () => (
+    <div style={{ width: "800px" }}>
+      <Table header={header} items={items} />
     </div>
   ))
-  .add('secondary', () => (
-    <div style={{ width: '800px' }}>
-      <Table
-        header={header}
-        items={items}
-        useSecondaryStyle
-      />
+  .add("secondary", () => (
+    <div style={{ width: "800px" }}>
+      <Table header={header} items={items} useSecondaryStyle />
     </div>
   ))
-  .add('styled column', () => (
-    <div style={{ width: '800px' }}>
+  .add("styled column", () => (
+    <div style={{ width: "800px" }}>
       <Table
         header={header}
         items={items}
         columnsStyle={[
-          css`font-weight: ${ThemeProps.fontWeights.medium};`,
-          css`color: ${ThemePalette.alert};`,
+          css`
+            font-weight: ${ThemeProps.fontWeights.medium};
+          `,
+          css`
+            color: ${ThemePalette.alert};
+          `,
         ]}
       />
     </div>
-  ))
+  ));

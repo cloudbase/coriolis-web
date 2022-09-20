@@ -12,20 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import ProgressBar from '@src/components/ui/ProgressBar'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import ProgressBar from "@src/components/ui/ProgressBar";
+import TestUtils from "@tests/TestUtils";
 
-describe('ProgressBar', () => {
-  it('renders the progress indicator with the correct width', () => {
-    render(<ProgressBar progress={33} />)
-    const style = window.getComputedStyle(TestUtils.select('ProgressBar__Progress-')!)
-    expect(style.width).toBe('33%')
-  })
+describe("ProgressBar", () => {
+  it("renders the progress indicator with the correct width", () => {
+    render(<ProgressBar progress={33} />);
+    const style = window.getComputedStyle(
+      TestUtils.select("ProgressBar__Progress-")!
+    );
+    expect(style.width).toBe("33%");
+  });
 
-  it('shows progress label', () => {
-    render(<ProgressBar progress={33} useLabel />)
-    expect(TestUtils.select('ProgressBar__ProgressLabel')?.textContent).toBe('33 %')
-  })
-})
+  it("shows progress label", () => {
+    render(<ProgressBar progress={33} useLabel />);
+    expect(TestUtils.select("ProgressBar__ProgressLabel")?.textContent).toBe(
+      "33 %"
+    );
+  });
+});

@@ -2,6 +2,5 @@
   "name": "UserDropdown",
   "version": "0.0.0",
   "private": true,
-  "main":"./UserDropdown.tsx"
+  "main": "./UserDropdown.tsx"
 }
-

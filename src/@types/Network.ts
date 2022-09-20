@@ -12,47 +12,52 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Nic } from './Instance'
+import type { Nic } from "./Instance";
 
-export type SecurityGroup = string | {
-  id: string,
-  name: string,
-}
+export type SecurityGroup =
+  | string
+  | {
+      id: string;
+      name: string;
+    };
 
 export type Network = {
-  name: string,
-  id: string,
+  name: string;
+  id: string;
   // The `security_groups` field is currently used only by OCI
-  security_groups?: SecurityGroup[],
+  security_groups?: SecurityGroup[];
   // The `port_keys` field is currenlty used only by VMWare
-  port_keys?: string[],
-}
+  port_keys?: string[];
+};
 
 export type NetworkMap = {
-  sourceNic: Nic,
-  targetNetwork: Network | null,
-  targetSecurityGroups?: SecurityGroup[] | null,
-  targetPortKey?: string | null
-}
+  sourceNic: Nic;
+  targetNetwork: Network | null;
+  targetSecurityGroups?: SecurityGroup[] | null;
+  targetPortKey?: string | null;
+};
 
 export const NetworkUtils = {
-  getPortKeyNetworkId: (networks: Network[], id: string): { portKey: string | null, id: string } => {
-    const idMatches = /(.*):(.*)/.exec(String(id))
+  getPortKeyNetworkId: (
+    networks: Network[],
+    id: string
+  ): { portKey: string | null; id: string } => {
+    const idMatches = /(.*):(.*)/.exec(String(id));
     if (!idMatches) {
-      return { portKey: null, id }
+      return { portKey: null, id };
     }
-    const actualId = idMatches[1]
-    const portKey = idMatches[2]
+    const actualId = idMatches[1];
+    const portKey = idMatches[2];
 
     for (let i = 0; i < networks.length; i += 1) {
       if (networks[i].id === actualId) {
         if (networks[i].port_keys?.find(p => p === portKey)) {
-          return { id: actualId, portKey }
+          return { id: actualId, portKey };
         }
-        return { id: actualId, portKey: null }
+        return { id: actualId, portKey: null };
       }
     }
 
-    return { id, portKey: null }
+    return { id, portKey: null };
   },
-}
+};

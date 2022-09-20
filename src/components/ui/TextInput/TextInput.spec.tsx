@@ -12,50 +12,60 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import { ThemePalette } from '@src/components/Theme'
-import TextInput from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import { ThemePalette } from "@src/components/Theme";
+import TextInput from ".";
 
-describe('TextInput', () => {
-  it('renders required', () => {
-    const { rerender } = render(<TextInput />)
-    expect(TestUtils.select('TextInput__Required')).toBeFalsy()
-    rerender(<TextInput required />)
-    expect(TestUtils.select('TextInput__Required')).toBeTruthy()
-  })
+describe("TextInput", () => {
+  it("renders required", () => {
+    const { rerender } = render(<TextInput />);
+    expect(TestUtils.select("TextInput__Required")).toBeFalsy();
+    rerender(<TextInput required />);
+    expect(TestUtils.select("TextInput__Required")).toBeTruthy();
+  });
 
-  it('renders highlight', () => {
-    const { rerender } = render(<TextInput />)
-    const getBorderColor = () => window.getComputedStyle(TestUtils.select('TextInput__Input')!).borderColor.toUpperCase()
-    expect(getBorderColor()).toBe(ThemePalette.grayscale[3])
+  it("renders highlight", () => {
+    const { rerender } = render(<TextInput />);
+    const getBorderColor = () =>
+      window
+        .getComputedStyle(TestUtils.select("TextInput__Input")!)
+        .borderColor.toUpperCase();
+    expect(getBorderColor()).toBe(ThemePalette.grayscale[3]);
 
-    rerender(<TextInput highlight />)
-    expect(getBorderColor()).toBe(ThemePalette.alert)
-  })
+    rerender(<TextInput highlight />);
+    expect(getBorderColor()).toBe(ThemePalette.alert);
+  });
 
-  it('shows close', () => {
-    const { rerender } = render(<TextInput value="" onChange={() => { }} />)
-    const getCloseEl = () => TestUtils.select('TextInput__Close')!
-    const getDisplay = () => window.getComputedStyle(getCloseEl()).display
-    expect(getDisplay()).toBe('none')
+  it("shows close", () => {
+    const { rerender } = render(<TextInput value="" onChange={() => {}} />);
+    const getCloseEl = () => TestUtils.select("TextInput__Close")!;
+    const getDisplay = () => window.getComputedStyle(getCloseEl()).display;
+    expect(getDisplay()).toBe("none");
 
-    rerender(<TextInput showClose value="" onChange={() => { }} />)
-    expect(getDisplay()).toBe('none')
+    rerender(<TextInput showClose value="" onChange={() => {}} />);
+    expect(getDisplay()).toBe("none");
 
-    const onCloseClick = jest.fn()
-    rerender(<TextInput showClose onCloseClick={onCloseClick} value="sample" onChange={() => {}} />)
-    expect(getDisplay()).toBe('block')
-    getCloseEl().click()
-    expect(onCloseClick).toHaveBeenCalled()
-  })
+    const onCloseClick = jest.fn();
+    rerender(
+      <TextInput
+        showClose
+        onCloseClick={onCloseClick}
+        value="sample"
+        onChange={() => {}}
+      />
+    );
+    expect(getDisplay()).toBe("block");
+    getCloseEl().click();
+    expect(onCloseClick).toHaveBeenCalled();
+  });
 
-  it('renders password', () => {
-    const { rerender } = render(<TextInput />)
-    expect(TestUtils.selectInput('TextInput__Input')!.type).toBe('text')
+  it("renders password", () => {
+    const { rerender } = render(<TextInput />);
+    expect(TestUtils.selectInput("TextInput__Input")!.type).toBe("text");
 
-    rerender(<TextInput type="password" />)
-    expect(TestUtils.selectInput('TextInput__Input')!.type).toBe('password')
-  })
-})
+    rerender(<TextInput type="password" />);
+    expect(TestUtils.selectInput("TextInput__Input")!.type).toBe("password");
+  });
+});

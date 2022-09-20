@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { css } from 'styled-components'
+import { css } from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import arrowImage from './images/arrow.svg'
+import arrowImage from "./images/arrow.svg";
 
 const style = css`
   .rdtPicker {
@@ -27,7 +27,7 @@ const style = css`
     position: relative;
 
     &:after {
-      content: ' ';
+      content: " ";
       position: absolute;
       top: -9px;
       right: 16px;
@@ -80,7 +80,7 @@ const style = css`
             padding: 0;
             justify-content: center;
             align-items: center;
-            ${ThemeProps.exactWidth('24px')}
+            ${ThemeProps.exactWidth("24px")}
             height: 24px;
             border: 1px solid transparent;
             border-radius: 50%;
@@ -115,11 +115,12 @@ const style = css`
       color: ${ThemePalette.grayscale[4]};
     }
 
-    .rdtPrev, .rdtNext {
+    .rdtPrev,
+    .rdtNext {
       width: 16px;
       height: 16px;
       padding: 16px;
-      background: url('${arrowImage}') center no-repeat;
+      background: url("${arrowImage}") center no-repeat;
       cursor: pointer;
 
       span {
@@ -135,7 +136,7 @@ const style = css`
       font-size: 10px;
       font-weight: ${ThemeProps.fontWeights.medium};
       color: ${ThemePalette.grayscale[3]};
-      ${ThemeProps.exactWidth('25px')};
+      ${ThemeProps.exactWidth("25px")};
       margin-right: 7px;
       display: flex;
       justify-content: center;
@@ -146,7 +147,9 @@ const style = css`
       }
     }
 
-    .rdtDay.rdtOld, .rdtDay.rdtDisabled, .rdtDay.rdtNew {
+    .rdtDay.rdtOld,
+    .rdtDay.rdtDisabled,
+    .rdtDay.rdtNew {
       color: ${ThemePalette.grayscale[3]};
     }
 
@@ -202,7 +205,7 @@ const style = css`
         color: transparent;
         width: 25px;
         height: 16px;
-        background: url('${arrowImage}') center no-repeat;
+        background: url("${arrowImage}") center no-repeat;
         margin: auto;
         user-select: none;
 
@@ -224,6 +227,6 @@ const style = css`
       }
     }
   }
-`
+`;
 
-export default style
+export default style;

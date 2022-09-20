@@ -12,55 +12,57 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
-  ${ThemeProps.exactWidth('128px')}
+  ${ThemeProps.exactWidth("128px")}
   display: flex;
   flex-direction: column;
-`
+`;
 const Item = styled(Link)<any>`
   font-size: 16px;
-  color: ${props => (props.selected ? ThemePalette.primary : ThemePalette.grayscale[4])};
+  color: ${props =>
+    props.selected ? ThemePalette.primary : ThemePalette.grayscale[4]};
   cursor: pointer;
   margin-bottom: 13px;
   text-decoration: none;
-`
-type ItemType = { label: string, value: string }
+`;
+type ItemType = { label: string; value: string };
 type Props = {
-  items: ItemType[],
-  selectedValue?: string,
-  itemId?: string,
-  itemType?: string,
-  customHref?: (item: ItemType) => string | null,
-}
+  items: ItemType[];
+  selectedValue?: string;
+  itemId?: string;
+  itemType?: string;
+  customHref?: (item: ItemType) => string | null;
+};
 @observer
 class DetailsNavigation extends React.Component<Props> {
   renderItems() {
-    return (
-      this.props.items.map(item => (
-        <Item
-          selected={item.value === this.props.selectedValue}
-          key={item.value || item.label}
-          to={this.props.customHref ? this.props.customHref(item) : `/${this.props.itemType || ''}s/${this.props.itemId || ''}${(item.value && '/') || ''}${item.value}`}
-        >{item.label}
-        </Item>
-      ))
-    )
+    return this.props.items.map(item => (
+      <Item
+        selected={item.value === this.props.selectedValue}
+        key={item.value || item.label}
+        to={
+          this.props.customHref
+            ? this.props.customHref(item)
+            : `/${this.props.itemType || ""}s/${this.props.itemId || ""}${
+                (item.value && "/") || ""
+              }${item.value}`
+        }
+      >
+        {item.label}
+      </Item>
+    ));
   }
 
   render() {
-    return (
-      <Wrapper>
-        {this.renderItems()}
-      </Wrapper>
-    )
+    return <Wrapper>{this.renderItems()}</Wrapper>;
   }
 }
 
-export default DetailsNavigation
+export default DetailsNavigation;

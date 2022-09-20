@@ -12,14 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const image = (bigColor: string, smallColor: string, useWhiteBackground?: boolean | null) => `
+const image = (
+  bigColor: string,
+  smallColor: string,
+  useWhiteBackground?: boolean | null
+) => `
   <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g>
       <circle fill="none" stroke="${bigColor}" stroke-width="2"  cx="8" cy="8" r="7"></circle>
       <path d="M 15 8 A 7 7 0 0 0 8 1" fill="none" stroke="${smallColor}" stroke-width="2" />
-      ${useWhiteBackground ? '<circle fill="white" cx="8" cy="8" r="6"></circle>' : ''}
+      ${
+        useWhiteBackground
+          ? '<circle fill="white" cx="8" cy="8" r="6"></circle>'
+          : ""
+      }
     </g>
   </svg>
-`
+`;
 
-export default image
+export default image;

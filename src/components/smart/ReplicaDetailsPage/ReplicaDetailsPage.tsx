@@ -12,67 +12,67 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import DetailsTemplate from '@src/components/modules/TemplateModule/DetailsTemplate'
-import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader'
-import DetailsContentHeader from '@src/components/modules/DetailsModule/DetailsContentHeader'
-import ReplicaDetailsContent from '@src/components/modules/TransferModule/ReplicaDetailsContent'
-import Modal from '@src/components/ui/Modal'
-import ReplicaExecutionOptions from '@src/components/modules/TransferModule/ReplicaExecutionOptions'
-import AlertModal from '@src/components/ui/AlertModal'
-import TransferItemModal from '@src/components/modules/TransferModule/TransferItemModal'
-import ReplicaMigrationOptions from '@src/components/modules/TransferModule/ReplicaMigrationOptions'
-import DeleteReplicaModal from '@src/components/modules/TransferModule/DeleteReplicaModal'
+import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
+import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
+import ReplicaDetailsContent from "@src/components/modules/TransferModule/ReplicaDetailsContent";
+import Modal from "@src/components/ui/Modal";
+import ReplicaExecutionOptions from "@src/components/modules/TransferModule/ReplicaExecutionOptions";
+import AlertModal from "@src/components/ui/AlertModal";
+import TransferItemModal from "@src/components/modules/TransferModule/TransferItemModal";
+import ReplicaMigrationOptions from "@src/components/modules/TransferModule/ReplicaMigrationOptions";
+import DeleteReplicaModal from "@src/components/modules/TransferModule/DeleteReplicaModal";
 
-import type { InstanceScript } from '@src/@types/Instance'
-import type { Execution } from '@src/@types/Execution'
-import type { Schedule } from '@src/@types/Schedule'
-import type { Field } from '@src/@types/Field'
-import type { DropdownAction } from '@src/components/ui/Dropdowns/ActionDropdown'
+import type { InstanceScript } from "@src/@types/Instance";
+import type { Execution } from "@src/@types/Execution";
+import type { Schedule } from "@src/@types/Schedule";
+import type { Field } from "@src/@types/Field";
+import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
 
-import replicaStore from '@src/stores/ReplicaStore'
-import migrationStore from '@src/stores/MigrationStore'
-import userStore from '@src/stores/UserStore'
-import endpointStore from '@src/stores/EndpointStore'
-import scheduleStore from '@src/stores/ScheduleStore'
-import instanceStore from '@src/stores/InstanceStore'
-import networkStore from '@src/stores/NetworkStore'
-import notificationStore from '@src/stores/NotificationStore'
-import providerStore from '@src/stores/ProviderStore'
+import replicaStore from "@src/stores/ReplicaStore";
+import migrationStore from "@src/stores/MigrationStore";
+import userStore from "@src/stores/UserStore";
+import endpointStore from "@src/stores/EndpointStore";
+import scheduleStore from "@src/stores/ScheduleStore";
+import instanceStore from "@src/stores/InstanceStore";
+import networkStore from "@src/stores/NetworkStore";
+import notificationStore from "@src/stores/NotificationStore";
+import providerStore from "@src/stores/ProviderStore";
 
-import configLoader from '@src/utils/Config'
-import { providerTypes } from '@src/constants'
+import configLoader from "@src/utils/Config";
+import { providerTypes } from "@src/constants";
 
-import { ThemePalette } from '@src/components/Theme'
-import { getTransferItemTitle, ReplicaItemDetails } from '@src/@types/MainItem'
-import ObjectUtils from '@src/utils/ObjectUtils'
-import minionPoolStore from '@src/stores/MinionPoolStore'
-import replicaImage from './images/replica.svg'
+import { ThemePalette } from "@src/components/Theme";
+import { getTransferItemTitle, ReplicaItemDetails } from "@src/@types/MainItem";
+import ObjectUtils from "@src/utils/ObjectUtils";
+import minionPoolStore from "@src/stores/MinionPoolStore";
+import replicaImage from "./images/replica.svg";
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: { params: { id: string, page: string | null } },
-  history: any,
-}
+  match: { params: { id: string; page: string | null } };
+  history: any;
+};
 type State = {
-  showOptionsModal: boolean,
-  showMigrationModal: boolean,
-  showEditModal: boolean,
-  showDeleteExecutionConfirmation: boolean,
-  showForceCancelConfirmation: boolean,
-  showDeleteReplicaConfirmation: boolean,
-  showDeleteReplicaDisksConfirmation: boolean,
-  confirmationItem?: ReplicaItemDetails | null | Execution | null,
-  showCancelConfirmation: boolean,
-  isEditable: boolean,
-  isEditableLoading: boolean,
-  pausePolling: boolean,
-  initialLoading: boolean,
-}
+  showOptionsModal: boolean;
+  showMigrationModal: boolean;
+  showEditModal: boolean;
+  showDeleteExecutionConfirmation: boolean;
+  showForceCancelConfirmation: boolean;
+  showDeleteReplicaConfirmation: boolean;
+  showDeleteReplicaDisksConfirmation: boolean;
+  confirmationItem?: ReplicaItemDetails | null | Execution | null;
+  showCancelConfirmation: boolean;
+  isEditable: boolean;
+  isEditableLoading: boolean;
+  pausePolling: boolean;
+  initialLoading: boolean;
+};
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
   state: State = {
@@ -89,159 +89,203 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     isEditableLoading: true,
     pausePolling: false,
     initialLoading: true,
-  }
+  };
 
-  stopPolling: boolean | null = null
+  stopPolling: boolean | null = null;
 
   componentDidMount() {
-    document.title = 'Replica Details'
+    document.title = "Replica Details";
 
     const loadReplica = async () => {
-      await endpointStore.getEndpoints({ showLoading: true })
-      this.setState({ initialLoading: false })
+      await endpointStore.getEndpoints({ showLoading: true });
+      this.setState({ initialLoading: false });
       this.loadReplicaWithInstances({
         cache: true,
         showLoading: true,
         onDetailsLoaded: async () => {
           if (!this.replica) {
-            return
+            return;
           }
-          const sourceEndpoint = endpointStore.endpoints.find(e => e.id === this.replica!.origin_endpoint_id)
-          const destinationEndpoint = endpointStore.endpoints.find(e => e.id === this.replica!.destination_endpoint_id)
+          const sourceEndpoint = endpointStore.endpoints.find(
+            e => e.id === this.replica!.origin_endpoint_id
+          );
+          const destinationEndpoint = endpointStore.endpoints.find(
+            e => e.id === this.replica!.destination_endpoint_id
+          );
           if (!sourceEndpoint || !destinationEndpoint) {
-            return
+            return;
           }
-          const loadOptions = async (optionsType: 'source' | 'destination') => {
-            const providerName = optionsType === 'source' ? sourceEndpoint.type : destinationEndpoint.type
+          const loadOptions = async (optionsType: "source" | "destination") => {
+            const providerName =
+              optionsType === "source"
+                ? sourceEndpoint.type
+                : destinationEndpoint.type;
             // This allows the values to be displayed with their allocated names instead of their IDs
             await providerStore.loadOptionsSchema({
               providerName,
               optionsType,
               useCache: true,
               quietError: true,
-            })
+            });
             const getOptionsValuesConfig = {
               optionsType,
-              endpointId: optionsType === 'source' ? this.replica!.origin_endpoint_id : this.replica!.destination_endpoint_id,
+              endpointId:
+                optionsType === "source"
+                  ? this.replica!.origin_endpoint_id
+                  : this.replica!.destination_endpoint_id,
               providerName,
               useCache: true,
               quietError: true,
               allowMultiple: true,
-            }
+            };
             // For some providers, the API doesn't return the required fields values
             // if those required fields are sent in env data,
             // so to retrieve those values a request without env data must be made
-            await providerStore.getOptionsValues(getOptionsValuesConfig)
+            await providerStore.getOptionsValues(getOptionsValuesConfig);
             await providerStore.getOptionsValues({
               ...getOptionsValuesConfig,
-              envData: optionsType === 'source' ? this.replica!.source_environment : this.replica!.destination_environment,
-            })
-          }
+              envData:
+                optionsType === "source"
+                  ? this.replica!.source_environment
+                  : this.replica!.destination_environment,
+            });
+          };
 
           await Promise.all([
-            loadOptions('source'),
-            loadOptions('destination'),
-          ])
+            loadOptions("source"),
+            loadOptions("destination"),
+          ]);
         },
-      })
-    }
+      });
+    };
 
     const loadReplicaAndPollData = async () => {
-      await loadReplica()
-      this.pollData()
-    }
-    loadReplicaAndPollData()
-    scheduleStore.getSchedules(this.replicaId)
+      await loadReplica();
+      this.pollData();
+    };
+    loadReplicaAndPollData();
+    scheduleStore.getSchedules(this.replicaId);
   }
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadReplicaWithInstances({ cache: true, replicaId: newProps.match.params.id })
-      scheduleStore.getSchedules(newProps.match.params.id)
+      this.loadReplicaWithInstances({
+        cache: true,
+        replicaId: newProps.match.params.id,
+      });
+      scheduleStore.getSchedules(newProps.match.params.id);
     }
   }
 
   componentWillUnmount() {
-    replicaStore.cancelReplicaDetails()
-    replicaStore.clearDetails()
-    scheduleStore.clearUnsavedSchedules()
-    this.stopPolling = true
+    replicaStore.cancelReplicaDetails();
+    replicaStore.clearDetails();
+    scheduleStore.clearUnsavedSchedules();
+    this.stopPolling = true;
   }
 
   get replicaId() {
-    if (!this.props.match || !this.props.match.params || !this.props.match.params.id) {
-      throw new Error('Invalid replica id')
+    if (
+      !this.props.match ||
+      !this.props.match.params ||
+      !this.props.match.params.id
+    ) {
+      throw new Error("Invalid replica id");
     }
-    return this.props.match.params.id
+    return this.props.match.params.id;
   }
 
   get replica() {
-    return replicaStore.replicaDetails
+    return replicaStore.replicaDetails;
   }
 
   getLastExecution() {
     if (this.replica?.executions?.length) {
-      return this.replica.executions[this.replica.executions.length - 1]
+      return this.replica.executions[this.replica.executions.length - 1];
     }
-    return null
+    return null;
   }
 
   getStatus() {
-    return this.getLastExecution()?.status
+    return this.getLastExecution()?.status;
   }
 
   async loadIsEditable(replicaDetails: ReplicaItemDetails) {
-    const targetEndpointId = replicaDetails.destination_endpoint_id
-    const sourceEndpointId = replicaDetails.origin_endpoint_id
-    await ObjectUtils.waitFor(() => endpointStore.endpoints.length > 0)
-    const sourceEndpoint = endpointStore.endpoints.find(e => e.id === sourceEndpointId)
-    const targetEndpoint = endpointStore.endpoints.find(e => e.id === targetEndpointId)
+    const targetEndpointId = replicaDetails.destination_endpoint_id;
+    const sourceEndpointId = replicaDetails.origin_endpoint_id;
+    await ObjectUtils.waitFor(() => endpointStore.endpoints.length > 0);
+    const sourceEndpoint = endpointStore.endpoints.find(
+      e => e.id === sourceEndpointId
+    );
+    const targetEndpoint = endpointStore.endpoints.find(
+      e => e.id === targetEndpointId
+    );
     if (!sourceEndpoint || !targetEndpoint || !providerStore.providers) {
-      return
+      return;
     }
-    const sourceProviderTypes = providerStore.providers[sourceEndpoint.type]
-    const targetProviderTypes = providerStore.providers[targetEndpoint.type]
-    const isEditable = sourceProviderTypes && targetProviderTypes
-      ? !!sourceProviderTypes.types.find(t => t === providerTypes.SOURCE_UPDATE)
-      && !!targetProviderTypes.types.find(t => t === providerTypes.TARGET_UPDATE)
-      : false
+    const sourceProviderTypes = providerStore.providers[sourceEndpoint.type];
+    const targetProviderTypes = providerStore.providers[targetEndpoint.type];
+    const isEditable =
+      sourceProviderTypes && targetProviderTypes
+        ? !!sourceProviderTypes.types.find(
+            t => t === providerTypes.SOURCE_UPDATE
+          ) &&
+          !!targetProviderTypes.types.find(
+            t => t === providerTypes.TARGET_UPDATE
+          )
+        : false;
 
-    this.setState({ isEditable, isEditableLoading: false })
+    this.setState({ isEditable, isEditableLoading: false });
   }
 
   async loadReplicaWithInstances(options: {
-    cache: boolean,
-    replicaId?: string,
-    showLoading?: boolean,
-    onDetailsLoaded?: () => void,
+    cache: boolean;
+    replicaId?: string;
+    showLoading?: boolean;
+    onDetailsLoaded?: () => void;
   }) {
-    await replicaStore.getReplicaDetails({ replicaId: options.replicaId || this.replicaId, showLoading: options.showLoading })
-    const replica = this.replica
+    await replicaStore.getReplicaDetails({
+      replicaId: options.replicaId || this.replicaId,
+      showLoading: options.showLoading,
+    });
+    const replica = this.replica;
     if (!replica) {
-      return null
+      return null;
     }
     if (options.onDetailsLoaded) {
-      options.onDetailsLoaded()
+      options.onDetailsLoaded();
     }
-    minionPoolStore.loadMinionPools()
+    minionPoolStore.loadMinionPools();
 
-    await providerStore.loadProviders()
+    await providerStore.loadProviders();
 
-    this.loadIsEditable(replica)
+    this.loadIsEditable(replica);
 
-    networkStore.loadNetworks(replica.destination_endpoint_id, replica.destination_environment, {
-      quietError: true,
-      cache: options.cache,
-    })
+    networkStore.loadNetworks(
+      replica.destination_endpoint_id,
+      replica.destination_environment,
+      {
+        quietError: true,
+        cache: options.cache,
+      }
+    );
 
-    const targetEndpoint = endpointStore.endpoints.find(e => e.id === replica.destination_endpoint_id)
+    const targetEndpoint = endpointStore.endpoints.find(
+      e => e.id === replica.destination_endpoint_id
+    );
 
-    const hasStorageMap = targetEndpoint ? (providerStore.providers && providerStore.providers[targetEndpoint.type]
-      ? !!providerStore.providers[targetEndpoint.type]
-        .types.find(t => t === providerTypes.STORAGE)
-      : false) : false
+    const hasStorageMap = targetEndpoint
+      ? providerStore.providers && providerStore.providers[targetEndpoint.type]
+        ? !!providerStore.providers[targetEndpoint.type].types.find(
+            t => t === providerTypes.STORAGE
+          )
+        : false
+      : false;
     if (hasStorageMap) {
-      endpointStore.loadStorage(replica.destination_endpoint_id, replica.destination_environment)
+      endpointStore.loadStorage(
+        replica.destination_endpoint_id,
+        replica.destination_environment
+      );
     }
 
     instanceStore.loadInstancesDetails({
@@ -251,120 +295,136 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       quietError: false,
       env: replica.source_environment,
       targetProvider: targetEndpoint?.type,
-    })
-    return replica
+    });
+    return replica;
   }
 
   isExecuteDisabled() {
-    const replica = this.replica
+    const replica = this.replica;
     if (!replica) {
-      return true
+      return true;
     }
-    const originEndpoint = endpointStore.endpoints.find(e => e.id === replica.origin_endpoint_id)
-    const targetEndpoint = endpointStore.endpoints
-      .find(e => e.id === replica.destination_endpoint_id)
-    const status = this.getStatus()
+    const originEndpoint = endpointStore.endpoints.find(
+      e => e.id === replica.origin_endpoint_id
+    );
+    const targetEndpoint = endpointStore.endpoints.find(
+      e => e.id === replica.destination_endpoint_id
+    );
+    const status = this.getStatus();
 
-    return Boolean(!originEndpoint || !targetEndpoint || status === 'RUNNING' || status === 'CANCELLING' || status === 'AWAITING_MINION_ALLOCATIONS')
+    return Boolean(
+      !originEndpoint ||
+        !targetEndpoint ||
+        status === "RUNNING" ||
+        status === "CANCELLING" ||
+        status === "AWAITING_MINION_ALLOCATIONS"
+    );
   }
 
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
-      case 'signout':
-        userStore.logout()
-        break
+      case "signout":
+        userStore.logout();
+        break;
       default:
     }
   }
 
   handleExecuteClick() {
-    this.setState({ showOptionsModal: true })
+    this.setState({ showOptionsModal: true });
   }
 
   handleCloseOptionsModal() {
-    this.setState({ showOptionsModal: false })
+    this.setState({ showOptionsModal: false });
   }
 
   handleDeleteExecutionConfirmation() {
-    const replica = this.replica
+    const replica = this.replica;
     if (!this.state.confirmationItem || !replica) {
-      return
+      return;
     }
-    replicaStore.deleteExecution(replica.id, this.state.confirmationItem.id)
-    this.handleCloseExecutionConfirmation()
+    replicaStore.deleteExecution(replica.id, this.state.confirmationItem.id);
+    this.handleCloseExecutionConfirmation();
   }
 
   handleDeleteExecutionClick(execution?: Execution | null) {
     this.setState({
       showDeleteExecutionConfirmation: true,
       confirmationItem: execution,
-    })
+    });
   }
 
   handleCloseExecutionConfirmation() {
     this.setState({
       showDeleteExecutionConfirmation: false,
       confirmationItem: null,
-    })
+    });
   }
 
   handleDeleteReplicaClick() {
-    this.setState({ showDeleteReplicaConfirmation: true })
+    this.setState({ showDeleteReplicaConfirmation: true });
   }
 
   handleDeleteReplicaDisksClick() {
-    this.setState({ showDeleteReplicaDisksConfirmation: true })
+    this.setState({ showDeleteReplicaDisksConfirmation: true });
   }
 
   handleDeleteReplicaConfirmation() {
-    this.setState({ showDeleteReplicaConfirmation: false })
-    const replica = this.replica
+    this.setState({ showDeleteReplicaConfirmation: false });
+    const replica = this.replica;
     if (!replica) {
-      return
+      return;
     }
-    this.props.history.push('/replicas')
-    replicaStore.delete(replica.id)
+    this.props.history.push("/replicas");
+    replicaStore.delete(replica.id);
   }
 
   handleCloseDeleteReplicaConfirmation() {
-    this.setState({ showDeleteReplicaConfirmation: false })
+    this.setState({ showDeleteReplicaConfirmation: false });
   }
 
   handleDeleteReplicaDisksConfirmation() {
     this.setState({
-      showDeleteReplicaDisksConfirmation: false, showDeleteReplicaConfirmation: false,
-    })
-    const replica = this.replica
+      showDeleteReplicaDisksConfirmation: false,
+      showDeleteReplicaConfirmation: false,
+    });
+    const replica = this.replica;
     if (!replica) {
-      return
+      return;
     }
-    replicaStore.deleteDisks(replica.id)
-    this.props.history.push(`/replicas/${replica.id}/executions`)
+    replicaStore.deleteDisks(replica.id);
+    this.props.history.push(`/replicas/${replica.id}/executions`);
   }
 
   handleCloseDeleteReplicaDisksConfirmation() {
-    this.setState({ showDeleteReplicaDisksConfirmation: false })
+    this.setState({ showDeleteReplicaDisksConfirmation: false });
   }
 
   handleCloseMigrationModal() {
-    this.setState({ showMigrationModal: false, pausePolling: false })
+    this.setState({ showMigrationModal: false, pausePolling: false });
   }
 
   handleCreateMigrationClick() {
-    this.setState({ showMigrationModal: true, pausePolling: true })
+    this.setState({ showMigrationModal: true, pausePolling: true });
   }
 
   handleReplicaEditClick() {
-    this.setState({ showEditModal: true, pausePolling: true })
+    this.setState({ showEditModal: true, pausePolling: true });
   }
 
   handleAddScheduleClick(schedule: Schedule) {
-    scheduleStore.addSchedule(this.replicaId, schedule)
+    scheduleStore.addSchedule(this.replicaId, schedule);
   }
 
-  handleScheduleChange(scheduleId: string | null, data: Schedule, forceSave?: boolean) {
-    const oldData = scheduleStore.schedules.find(s => s.id === scheduleId)
-    const unsavedData = scheduleStore.unsavedSchedules.find(s => s.id === scheduleId)
+  handleScheduleChange(
+    scheduleId: string | null,
+    data: Schedule,
+    forceSave?: boolean
+  ) {
+    const oldData = scheduleStore.schedules.find(s => s.id === scheduleId);
+    const unsavedData = scheduleStore.unsavedSchedules.find(
+      s => s.id === scheduleId
+    );
 
     if (scheduleId) {
       scheduleStore.updateSchedule({
@@ -374,7 +434,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         oldData,
         unsavedData,
         forceSave,
-      })
+      });
     }
   }
 
@@ -387,25 +447,28 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         oldData: schedule,
         unsavedData: schedule,
         forceSave: true,
-      })
+      });
     }
   }
 
   handleScheduleRemove(scheduleId: string | null) {
     if (scheduleId) {
-      scheduleStore.removeSchedule(this.replicaId, scheduleId)
+      scheduleStore.removeSchedule(this.replicaId, scheduleId);
     }
   }
 
   handleCancelLastExecutionClick(force?: boolean) {
-    this.handleCancelExecution(this.getLastExecution(), force)
+    this.handleCancelExecution(this.getLastExecution(), force);
   }
 
-  handleCancelExecution(confirmationItem?: Execution | null, force?: boolean | null) {
+  handleCancelExecution(
+    confirmationItem?: Execution | null,
+    force?: boolean | null
+  ) {
     if (force) {
-      this.setState({ confirmationItem, showForceCancelConfirmation: true })
+      this.setState({ confirmationItem, showForceCancelConfirmation: true });
     } else {
-      this.setState({ confirmationItem, showCancelConfirmation: true })
+      this.setState({ confirmationItem, showCancelConfirmation: true });
     }
   }
 
@@ -413,48 +476,51 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.setState({
       showForceCancelConfirmation: false,
       showCancelConfirmation: false,
-    })
+    });
   }
 
   handleCancelConfirmation(force?: boolean) {
-    const replica = this.replica
+    const replica = this.replica;
     if (!this.state.confirmationItem || !replica) {
-      return
+      return;
     }
     replicaStore.cancelExecution({
       replicaId: replica.id,
       executionId: this.state.confirmationItem.id,
       force,
-    })
+    });
     this.setState({
       showForceCancelConfirmation: false,
       showCancelConfirmation: false,
-    })
+    });
   }
 
   migrateReplica(opts: {
-    fields: Field[],
-    uploadedUserScripts: InstanceScript[],
-    removedUserScripts: InstanceScript[],
-    minionPoolMappings: { [instance: string]: string },
+    fields: Field[];
+    uploadedUserScripts: InstanceScript[];
+    removedUserScripts: InstanceScript[];
+    minionPoolMappings: { [instance: string]: string };
   }) {
-    this.migrate(opts)
-    this.handleCloseMigrationModal()
+    this.migrate(opts);
+    this.handleCloseMigrationModal();
   }
 
   async migrate(opts: {
-    fields: Field[],
-    uploadedUserScripts: InstanceScript[],
-    removedUserScripts: InstanceScript[],
-    minionPoolMappings: { [instance: string]: string },
+    fields: Field[];
+    uploadedUserScripts: InstanceScript[];
+    removedUserScripts: InstanceScript[];
+    minionPoolMappings: { [instance: string]: string };
   }) {
-    const replica = this.replica
+    const replica = this.replica;
     if (!replica) {
-      return
+      return;
     }
     const {
-      fields, uploadedUserScripts, removedUserScripts, minionPoolMappings,
-    } = opts
+      fields,
+      uploadedUserScripts,
+      removedUserScripts,
+      minionPoolMappings,
+    } = opts;
     const migration = await migrationStore.migrateReplica({
       replicaId: replica.id,
       fields,
@@ -462,81 +528,96 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       removedUserScripts,
       userScriptData: replica.user_scripts,
       minionPoolMappings,
-    })
-    notificationStore.alert('Migration successfully created from replica.', 'success', {
-      action: {
-        label: 'View Migration Status',
-        callback: () => {
-          this.props.history.push(`/migrations/${migration.id}/tasks/`)
+    });
+    notificationStore.alert(
+      "Migration successfully created from replica.",
+      "success",
+      {
+        action: {
+          label: "View Migration Status",
+          callback: () => {
+            this.props.history.push(`/migrations/${migration.id}/tasks/`);
+          },
         },
-      },
-    })
+      }
+    );
   }
 
   executeReplica(fields: Field[]) {
-    const replica = this.replica
+    const replica = this.replica;
     if (!replica) {
-      return
+      return;
     }
-    replicaStore.execute(replica.id, fields)
-    this.handleCloseOptionsModal()
-    this.props.history.push(`/replicas/${replica.id}/executions`)
+    replicaStore.execute(replica.id, fields);
+    this.handleCloseOptionsModal();
+    this.props.history.push(`/replicas/${replica.id}/executions`);
   }
 
   async pollData() {
     if (this.state.pausePolling || this.stopPolling) {
-      return
+      return;
     }
 
     await Promise.all([
       replicaStore.getReplicaDetails({
-        replicaId: this.replicaId, polling: true,
+        replicaId: this.replicaId,
+        polling: true,
       }),
       (async () => {
-        if (window.location.pathname.indexOf('executions') > -1) {
-          await replicaStore.getExecutionTasks({ replicaId: this.replicaId, polling: true })
+        if (window.location.pathname.indexOf("executions") > -1) {
+          await replicaStore.getExecutionTasks({
+            replicaId: this.replicaId,
+            polling: true,
+          });
         }
       })(),
-    ])
+    ]);
 
-    setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    setTimeout(() => {
+      this.pollData();
+    }, configLoader.config.requestPollTimeout);
   }
 
   closeEditModal() {
     this.setState({ showEditModal: false, pausePolling: false }, () => {
-      this.pollData()
-    })
+      this.pollData();
+    });
   }
 
   handleEditReplicaReload() {
-    this.loadReplicaWithInstances({ cache: false })
+    this.loadReplicaWithInstances({ cache: false });
   }
 
   handleUpdateComplete(redirectTo: string) {
-    this.props.history.push(redirectTo)
-    this.closeEditModal()
+    this.props.history.push(redirectTo);
+    this.closeEditModal();
   }
 
   async handleExecutionChange(executionId: string) {
-    await ObjectUtils.waitFor(() => Boolean(replicaStore.replicaDetails))
+    await ObjectUtils.waitFor(() => Boolean(replicaStore.replicaDetails));
     if (!replicaStore.replicaDetails?.id) {
-      return
+      return;
     }
-    replicaStore.getExecutionTasks({ replicaId: replicaStore.replicaDetails.id, executionId })
+    replicaStore.getExecutionTasks({
+      replicaId: replicaStore.replicaDetails.id,
+      executionId,
+    });
   }
 
   renderEditReplica() {
-    const replica = this.replica
+    const replica = this.replica;
     if (!replica) {
-      return null
+      return null;
     }
-    const sourceEndpoint = endpointStore.endpoints
-      .find(e => e.id === replica.origin_endpoint_id)
-    const destinationEndpoint = endpointStore.endpoints
-      .find(e => e.id === replica.destination_endpoint_id)
+    const sourceEndpoint = endpointStore.endpoints.find(
+      e => e.id === replica.origin_endpoint_id
+    );
+    const destinationEndpoint = endpointStore.endpoints.find(
+      e => e.id === replica.destination_endpoint_id
+    );
 
     if (!this.state.showEditModal || !destinationEndpoint || !sourceEndpoint) {
-      return null
+      return null;
     }
 
     return (
@@ -544,73 +625,99 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         isOpen
         type="replica"
         sourceEndpoint={sourceEndpoint}
-        onUpdateComplete={url => { this.handleUpdateComplete(url) }}
-        onRequestClose={() => { this.closeEditModal() }}
+        onUpdateComplete={url => {
+          this.handleUpdateComplete(url);
+        }}
+        onRequestClose={() => {
+          this.closeEditModal();
+        }}
         replica={replica}
         destinationEndpoint={destinationEndpoint}
         instancesDetails={instanceStore.instancesDetails}
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
         networks={networkStore.networks}
         networksLoading={networkStore.loading}
-        onReloadClick={() => { this.handleEditReplicaReload() }}
+        onReloadClick={() => {
+          this.handleEditReplicaReload();
+        }}
       />
-    )
+    );
   }
 
   render() {
-    const editTitle = providerStore.providersLoading ? 'Loading providers data' : !this.state.isEditable ? 'One of the platform plugins doesn\'t support editing replica option.' : null
+    const editTitle = providerStore.providersLoading
+      ? "Loading providers data"
+      : !this.state.isEditable
+      ? "One of the platform plugins doesn't support editing replica option."
+      : null;
     const dropdownActions: DropdownAction[] = [
       {
-        label: 'Execute',
-        action: () => { this.handleExecuteClick() },
+        label: "Execute",
+        action: () => {
+          this.handleExecuteClick();
+        },
         hidden: this.isExecuteDisabled(),
       },
       {
-        label: 'Cancel',
-        hidden: this.getStatus() !== 'RUNNING' && this.getStatus() !== 'AWAITING_MINION_ALLOCATIONS',
-        action: () => { this.handleCancelLastExecutionClick() },
+        label: "Cancel",
+        hidden:
+          this.getStatus() !== "RUNNING" &&
+          this.getStatus() !== "AWAITING_MINION_ALLOCATIONS",
+        action: () => {
+          this.handleCancelLastExecutionClick();
+        },
       },
       {
-        label: 'Force Cancel',
-        hidden: this.getStatus() !== 'CANCELLING',
-        action: () => { this.handleCancelLastExecutionClick(true) },
+        label: "Force Cancel",
+        hidden: this.getStatus() !== "CANCELLING",
+        action: () => {
+          this.handleCancelLastExecutionClick(true);
+        },
       },
       {
-        label: 'Create Migration',
+        label: "Create Migration",
         color: ThemePalette.primary,
-        action: () => { this.handleCreateMigrationClick() },
+        action: () => {
+          this.handleCreateMigrationClick();
+        },
       },
       {
-        label: 'Edit',
+        label: "Edit",
         title: editTitle,
-        action: () => { this.handleReplicaEditClick() },
+        action: () => {
+          this.handleReplicaEditClick();
+        },
         disabled: !this.state.isEditable,
         loading: this.state.isEditableLoading,
       },
       {
-        label: 'Delete Disks',
-        action: () => { this.handleDeleteReplicaDisksClick() },
+        label: "Delete Disks",
+        action: () => {
+          this.handleDeleteReplicaDisksClick();
+        },
       },
       {
-        label: 'Delete Replica',
+        label: "Delete Replica",
         color: ThemePalette.alert,
-        action: () => { this.handleDeleteReplicaClick() },
+        action: () => {
+          this.handleDeleteReplicaClick();
+        },
       },
-    ]
-    const replica = this.replica
+    ];
+    const replica = this.replica;
 
     return (
       <Wrapper>
         <DetailsTemplate
-          pageHeaderComponent={(
+          pageHeaderComponent={
             <DetailsPageHeader
               user={userStore.loggedUser}
               onUserItemClick={item => {
-                this.handleUserItemClick(item)
+                this.handleUserItemClick(item);
               }}
             />
-          )}
-          contentHeaderComponent={(
+          }
+          contentHeaderComponent={
             <DetailsContentHeader
               statusPill={replica?.last_execution_status}
               itemTitle={getTransferItemTitle(this.replica)}
@@ -621,16 +728,16 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               typeImage={replicaImage}
               alertInfoPill
             />
-          )}
-          contentComponent={(
+          }
+          contentComponent={
             <ReplicaDetailsContent
               item={replica}
               itemId={this.replicaId}
               instancesDetails={instanceStore.instancesDetails}
               instancesDetailsLoading={
-                instanceStore.loadingInstancesDetails
-                || endpointStore.storageLoading
-                || providerStore.providersLoading
+                instanceStore.loadingInstancesDetails ||
+                endpointStore.storageLoading ||
+                providerStore.providersLoading
               }
               endpoints={endpointStore.endpoints}
               storageBackends={endpointStore.storageBackends}
@@ -638,87 +745,88 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               networks={networkStore.networks}
               minionPools={minionPoolStore.minionPools}
               detailsLoading={
-                replicaStore.replicaDetailsLoading
-                || endpointStore.loading
-                || minionPoolStore.loadingMinionPools
-                || this.state.initialLoading
+                replicaStore.replicaDetailsLoading ||
+                endpointStore.loading ||
+                minionPoolStore.loadingMinionPools ||
+                this.state.initialLoading
               }
               sourceSchema={providerStore.sourceSchema}
               sourceSchemaLoading={
-                providerStore.sourceSchemaLoading
-                || providerStore.sourceOptionsPrimaryLoading
-                || providerStore.sourceOptionsSecondaryLoading
+                providerStore.sourceSchemaLoading ||
+                providerStore.sourceOptionsPrimaryLoading ||
+                providerStore.sourceOptionsSecondaryLoading
               }
               destinationSchema={providerStore.destinationSchema}
               destinationSchemaLoading={
-                providerStore.destinationSchemaLoading
-                || providerStore.destinationOptionsPrimaryLoading
-                || providerStore.destinationOptionsSecondaryLoading
+                providerStore.destinationSchemaLoading ||
+                providerStore.destinationOptionsPrimaryLoading ||
+                providerStore.destinationOptionsSecondaryLoading
               }
               executionsLoading={
-                replicaStore.startingExecution
-                || replicaStore.replicaDetailsLoading
+                replicaStore.startingExecution ||
+                replicaStore.replicaDetailsLoading
               }
               onExecutionChange={id => {
-                this.handleExecutionChange(id)
+                this.handleExecutionChange(id);
               }}
               executions={replicaStore.replicaDetails?.executions || []}
               executionsTasksLoading={
-                replicaStore.executionsTasksLoading
-                || replicaStore.replicaDetailsLoading
-                || replicaStore.startingExecution
+                replicaStore.executionsTasksLoading ||
+                replicaStore.replicaDetailsLoading ||
+                replicaStore.startingExecution
               }
               executionsTasks={replicaStore.executionsTasks}
-              page={this.props.match.params.page || ''}
+              page={this.props.match.params.page || ""}
               onCancelExecutionClick={(e, f) => {
-                this.handleCancelExecution(e, f)
+                this.handleCancelExecution(e, f);
               }}
               onDeleteExecutionClick={execution => {
-                this.handleDeleteExecutionClick(execution)
+                this.handleDeleteExecutionClick(execution);
               }}
               onExecuteClick={() => {
-                this.handleExecuteClick()
+                this.handleExecuteClick();
               }}
               onCreateMigrationClick={() => {
-                this.handleCreateMigrationClick()
+                this.handleCreateMigrationClick();
               }}
               onDeleteReplicaClick={() => {
-                this.handleDeleteReplicaClick()
+                this.handleDeleteReplicaClick();
               }}
               onAddScheduleClick={schedule => {
-                this.handleAddScheduleClick(schedule)
+                this.handleAddScheduleClick(schedule);
               }}
               onScheduleChange={(scheduleId, data, forceSave) => {
-                this.handleScheduleChange(scheduleId, data, forceSave)
+                this.handleScheduleChange(scheduleId, data, forceSave);
               }}
               onScheduleRemove={scheduleId => {
-                this.handleScheduleRemove(scheduleId)
+                this.handleScheduleRemove(scheduleId);
               }}
               onScheduleSave={s => {
-                this.handleScheduleSave(s)
+                this.handleScheduleSave(s);
               }}
             />
-          )}
+          }
         />
         <Modal
           isOpen={this.state.showOptionsModal}
           title="New Execution"
           onRequestClose={() => {
-            this.handleCloseOptionsModal()
+            this.handleCloseOptionsModal();
           }}
         >
           <ReplicaExecutionOptions
             disableExecutionOptions={configLoader.config.providersDisabledExecuteOptions.some(
-              p => p
-                === endpointStore.endpoints.find(
-                  e => e.id === replicaStore.replicaDetails?.origin_endpoint_id,
-                )?.type,
+              p =>
+                p ===
+                endpointStore.endpoints.find(
+                  e => e.id === replicaStore.replicaDetails?.origin_endpoint_id
+                )?.type
             )}
             onCancelClick={() => {
-              this.handleCloseOptionsModal()
+              this.handleCloseOptionsModal();
             }}
             onExecuteClick={fields => {
-              this.executeReplica(fields)
+              this.executeReplica(fields);
             }}
           />
         </Modal>
@@ -727,22 +835,23 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             isOpen
             title="Create Migration from Replica"
             onRequestClose={() => {
-              this.handleCloseMigrationModal()
+              this.handleCloseMigrationModal();
             }}
           >
             <ReplicaMigrationOptions
               transferItem={this.replica}
               minionPools={minionPoolStore.minionPools.filter(
-                m => m.endpoint_id === this.replica?.destination_endpoint_id
-                  && m.platform === 'destination',
+                m =>
+                  m.endpoint_id === this.replica?.destination_endpoint_id &&
+                  m.platform === "destination"
               )}
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
               onCancelClick={() => {
-                this.handleCloseMigrationModal()
+                this.handleCloseMigrationModal();
               }}
               onMigrateClick={opts => {
-                this.migrateReplica(opts)
+                this.migrateReplica(opts);
               }}
             />
           </Modal>
@@ -753,10 +862,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           message="Are you sure you want to delete this execution?"
           extraMessage="Deleting a Coriolis Execution is permanent!"
           onConfirmation={() => {
-            this.handleDeleteExecutionConfirmation()
+            this.handleDeleteExecutionConfirmation();
           }}
           onRequestClose={() => {
-            this.handleCloseExecutionConfirmation()
+            this.handleCloseExecutionConfirmation();
           }}
         />
         {this.state.showDeleteReplicaConfirmation ? (
@@ -764,10 +873,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             hasDisks={replicaStore.testReplicaHasDisks(this.replica)}
             onRequestClose={() => this.handleCloseDeleteReplicaConfirmation()}
             onDeleteReplica={() => {
-              this.handleDeleteReplicaConfirmation()
+              this.handleDeleteReplicaConfirmation();
             }}
             onDeleteDisks={() => {
-              this.handleDeleteReplicaDisksConfirmation()
+              this.handleDeleteReplicaDisksConfirmation();
             }}
           />
         ) : null}
@@ -777,10 +886,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           message="Are you sure you want to delete this replica's disks?"
           extraMessage="Deleting Coriolis Replica Disks is permanent!"
           onConfirmation={() => {
-            this.handleDeleteReplicaDisksConfirmation()
+            this.handleDeleteReplicaDisksConfirmation();
           }}
           onRequestClose={() => {
-            this.handleCloseDeleteReplicaDisksConfirmation()
+            this.handleCloseDeleteReplicaDisksConfirmation();
           }}
         />
         <AlertModal
@@ -789,10 +898,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
           message="Are you sure you want to cancel the current execution?"
           extraMessage=" "
           onConfirmation={() => {
-            this.handleCancelConfirmation()
+            this.handleCancelConfirmation();
           }}
           onRequestClose={() => {
-            this.handleCloseCancelConfirmation()
+            this.handleCloseCancelConfirmation();
           }}
         />
         <AlertModal
@@ -804,16 +913,16 @@ The execution is currently being cancelled.
 Would you like to force its cancellation?
 Note that this may lead to scheduled cleanup tasks being forcibly skipped, and thus manual cleanup of temporary resources on the source/destination platforms may be required.`}
           onConfirmation={() => {
-            this.handleCancelConfirmation(true)
+            this.handleCancelConfirmation(true);
           }}
           onRequestClose={() => {
-            this.handleCloseCancelConfirmation()
+            this.handleCloseCancelConfirmation();
           }}
         />
         {this.renderEditReplica()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default ReplicaDetailsPage
+export default ReplicaDetailsPage;

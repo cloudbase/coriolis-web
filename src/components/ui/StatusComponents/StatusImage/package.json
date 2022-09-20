@@ -2,6 +2,5 @@
   "name": "StatusImage",
   "version": "0.0.0",
   "private": true,
-  "main":"./StatusImage.tsx"
+  "main": "./StatusImage.tsx"
 }
-

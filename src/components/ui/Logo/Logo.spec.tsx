@@ -12,20 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import Logo from '@src/components/ui/Logo'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import Logo from "@src/components/ui/Logo";
+import TestUtils from "@tests/TestUtils";
 
-jest.mock('react-router-dom', () => ({ Link: 'a' }))
-describe('Logo', () => {
-  it('renders', () => {
-    render(<Logo />)
-    expect(TestUtils.select('Logo__Coriolis')).toBeTruthy()
-  })
+jest.mock("react-router-dom", () => ({ Link: "a" }));
+describe("Logo", () => {
+  it("renders", () => {
+    render(<Logo />);
+    expect(TestUtils.select("Logo__Coriolis")).toBeTruthy();
+  });
 
-  it('accepts custom \'to\' property', () => {
-    render(<Logo to="#testing" />)
-    expect(TestUtils.select('Logo__LinkStyled')?.getAttribute('to')).toBe('#testing')
-  })
-})
+  it("accepts custom 'to' property", () => {
+    render(<Logo to="#testing" />);
+    expect(TestUtils.select("Logo__LinkStyled")?.getAttribute("to")).toBe(
+      "#testing"
+    );
+  });
+});

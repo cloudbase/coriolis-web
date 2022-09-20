@@ -12,19 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TestWrapper from '@src/utils/TestWrapper'
-import DetailsNavigation from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TestWrapper from "@src/utils/TestWrapper";
+import DetailsNavigation from ".";
 
-const wrap = props => new TestWrapper(shallow(<DetailsNavigation {...props} />), 'detailsNavigation')
+const wrap = props =>
+  new TestWrapper(
+    shallow(<DetailsNavigation {...props} />),
+    "detailsNavigation"
+  );
 const items = [
-  { label: 'Item 1', value: 'item-1' },
-  { label: 'Item 2', value: 'item-2' },
-  { label: 'Item 3', value: 'item-3' },
-]
+  { label: "Item 1", value: "item-1" },
+  { label: "Item 2", value: "item-2" },
+  { label: "Item 3", value: "item-3" },
+];
 
-describe('DetailsNavigation Component', () => {
+describe("DetailsNavigation Component", () => {
   // it('renders 3 items', () => {
   //   let wrapper = wrap({ items})
   //   console.log(wrapper.find('dn-wrapper').debug())
@@ -33,16 +37,19 @@ describe('DetailsNavigation Component', () => {
   //   // })
   // })
 
-  it('has items with correct href attribute', () => {
-    let wrapper = wrap({ items, itemType: 'replica', itemId: 'item-id' })
-    expect(wrapper.find(items[0].value).prop('to')).toBe('/replica/item-1/item-id')
-  })
+  it("has items with correct href attribute", () => {
+    const wrapper = wrap({ items, itemType: "replica", itemId: "item-id" });
+    expect(wrapper.find(items[0].value).prop("to")).toBe(
+      "/replica/item-1/item-id"
+    );
+  });
 
-  it('has items with correct href attribute, if items have no value', () => {
-    let wrapper = wrap({ items: [{ label: 'Item 1', value: '' }], itemType: 'migration', itemId: 'item-id' })
-    expect(wrapper.find('').prop('to')).toBe('/migration/item-id')
-  })
-})
-
-
-
+  it("has items with correct href attribute, if items have no value", () => {
+    const wrapper = wrap({
+      items: [{ label: "Item 1", value: "" }],
+      itemType: "migration",
+      itemId: "item-id",
+    });
+    expect(wrapper.find("").prop("to")).toBe("/migration/item-id");
+  });
+});

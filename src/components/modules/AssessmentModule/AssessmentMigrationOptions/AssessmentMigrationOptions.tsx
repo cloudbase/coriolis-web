@@ -12,21 +12,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import Button from '@src/components/ui/Button'
-import FieldInput from '@src/components/ui/FieldInput'
-import ToggleButtonBar from '@src/components/ui/ToggleButtonBar'
+import Button from "@src/components/ui/Button";
+import FieldInput from "@src/components/ui/FieldInput";
+import ToggleButtonBar from "@src/components/ui/ToggleButtonBar";
 
-import type { Field } from '@src/@types/Field'
+import type { Field } from "@src/@types/Field";
 
-import { ThemeProps } from '@src/components/Theme'
+import { ThemeProps } from "@src/components/Theme";
 
-import LabelDictionary from '@src/utils/LabelDictionary'
+import LabelDictionary from "@src/utils/LabelDictionary";
 
-import assessmentImage from './images/assessment.svg'
+import assessmentImage from "./images/assessment.svg";
 
 const Wrapper = styled.div<any>`
   padding: 48px 32px 32px 32px;
@@ -34,15 +34,15 @@ const Wrapper = styled.div<any>`
   flex-direction: column;
   align-items: center;
   min-height: 0;
-`
+`;
 const Image = styled.div<any>`
   width: 96px;
   height: 96px;
-  background: url('${assessmentImage}') center no-repeat;
-`
+  background: url("${assessmentImage}") center no-repeat;
+`;
 const ToggleButtonBarStyled = styled(ToggleButtonBar)`
   margin-top: 48px;
-`
+`;
 const Fields = styled.div<any>`
   display: flex;
   margin-top: 32px;
@@ -50,59 +50,59 @@ const Fields = styled.div<any>`
   overflow: auto;
   width: 100%;
   min-height: 0;
-`
+`;
 const FieldStyled = styled(FieldInput)`
   ${ThemeProps.exactWidth(`${ThemeProps.inputSizes.large.width}px`)}
   margin-bottom: 16px;
-`
+`;
 const Row = styled.div<any>`
   display: flex;
   flex-shrink: 0;
   justify-content: space-between;
-`
+`;
 
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
   width: 100%;
   margin-top: 32px;
-`
+`;
 
 const generalFields = [
   {
-    name: 'use_replica',
-    type: 'boolean',
+    name: "use_replica",
+    type: "boolean",
   },
   {
-    name: 'separate_vm',
-    type: 'boolean',
+    name: "separate_vm",
+    type: "boolean",
   },
-]
+];
 const replicaFields = [
   {
-    name: 'shutdown_instances',
-    type: 'boolean',
+    name: "shutdown_instances",
+    type: "boolean",
   },
-]
+];
 const migrationFields = [
   {
-    name: 'skip_os_morphing',
-    type: 'boolean',
+    name: "skip_os_morphing",
+    type: "boolean",
   },
-]
+];
 
 type Props = {
-  onCancelClick: () => void,
-  onExecuteClick: (fieldValues: { [prop: string]: any }) => void,
-  executeButtonDisabled: boolean,
-  replicaSchema: Field[],
-  migrationSchema: Field[],
-  onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
-}
+  onCancelClick: () => void;
+  onExecuteClick: (fieldValues: { [prop: string]: any }) => void;
+  executeButtonDisabled: boolean;
+  replicaSchema: Field[];
+  migrationSchema: Field[];
+  onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void;
+};
 type State = {
-  fieldValues: { [prop: string]: any },
-  showAdvancedOptions: boolean,
-}
+  fieldValues: { [prop: string]: any };
+  showAdvancedOptions: boolean;
+};
 @observer
 class AssessmentMigrationOptions extends React.Component<Props, State> {
   state: State = {
@@ -113,31 +113,34 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
       skip_os_morphing: false,
     },
     showAdvancedOptions: false,
-  }
+  };
 
   // scrollableRef: HTMLElement | undefined | null
 
   getFieldValue(fieldName: string) {
     if (this.state.fieldValues[fieldName] != null) {
-      return this.state.fieldValues[fieldName]
+      return this.state.fieldValues[fieldName];
     }
-    return null
+    return null;
   }
 
   getObjectFieldValue(fieldName: string, propName: string) {
-    return this.state.fieldValues[fieldName] && this.state.fieldValues[fieldName][propName]
+    return (
+      this.state.fieldValues[fieldName] &&
+      this.state.fieldValues[fieldName][propName]
+    );
   }
 
   handleValueChange(fieldName: string, value: any) {
     this.setState(prevState => {
-      const fieldValues = { ...prevState.fieldValues }
+      const fieldValues = { ...prevState.fieldValues };
       if (value != null) {
-        fieldValues[fieldName] = value
+        fieldValues[fieldName] = value;
       } else {
-        delete fieldValues[fieldName]
+        delete fieldValues[fieldName];
       }
-      return { fieldValues }
-    })
+      return { fieldValues };
+    });
   }
 
   // UNSAFE_componentDidUpdate(_: Props, prevState: State) {
@@ -149,46 +152,47 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
 
   handleObjectValueChange(fieldName: string, propName: string, value: any) {
     this.setState(prevState => {
-      const fieldValues = { ...prevState.fieldValues }
+      const fieldValues = { ...prevState.fieldValues };
       if (!fieldValues[fieldName]) {
-        fieldValues[fieldName] = {}
+        fieldValues[fieldName] = {};
       }
-      fieldValues[fieldName][propName] = value
-      return { fieldValues }
-    })
+      fieldValues[fieldName][propName] = value;
+      return { fieldValues };
+    });
   }
 
   renderFields() {
-    let fields: any = generalFields
-    const useReplica = this.getFieldValue('use_replica')
-    const skipFields = ['location', 'resource_group', 'network_map', 'storage_map', 'vm_size', 'worker_size']
+    let fields: any = generalFields;
+    const useReplica = this.getFieldValue("use_replica");
+    const skipFields = [
+      "location",
+      "resource_group",
+      "network_map",
+      "storage_map",
+      "vm_size",
+      "worker_size",
+    ];
     // eslint-disable-next-line no-shadow
-    const cleanup = (cleanupFields: any[]) => cleanupFields.filter((f: {
-      name: string
-    }) => !skipFields
-      .find(n => n === f.name)).map((f: { type: string; nullableBoolean: boolean }) => {
-      if (f.type === 'boolean') {
-        // eslint-disable-next-line no-param-reassign
-        f.nullableBoolean = true
-      }
-      return { ...f }
-    })
+    const cleanup = (cleanupFields: any[]) =>
+      cleanupFields
+        .filter((f: { name: string }) => !skipFields.find(n => n === f.name))
+        .map((f: { type: string; nullableBoolean: boolean }) => {
+          if (f.type === "boolean") {
+            // eslint-disable-next-line no-param-reassign
+            f.nullableBoolean = true;
+          }
+          return { ...f };
+        });
 
     if (useReplica) {
-      fields = [...fields, ...replicaFields]
+      fields = [...fields, ...replicaFields];
       if (this.state.showAdvancedOptions) {
-        fields = [
-          ...fields,
-          ...cleanup(this.props.replicaSchema),
-        ]
+        fields = [...fields, ...cleanup(this.props.replicaSchema)];
       }
     } else {
-      fields = [...fields, ...migrationFields]
+      fields = [...fields, ...migrationFields];
       if (this.state.showAdvancedOptions) {
-        fields = [
-          ...fields,
-          ...cleanup(this.props.migrationSchema),
-        ]
+        fields = [...fields, ...cleanup(this.props.migrationSchema)];
       }
     }
 
@@ -196,43 +200,49 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
       boolean: 1,
       string: 2,
       object: 3,
-    }
+    };
     fields.sort((a: any, b: any) => {
       if (sortPriority[a.type] && sortPriority[b.type]) {
-        return sortPriority[a.type] - sortPriority[b.type]
+        return sortPriority[a.type] - sortPriority[b.type];
       }
       if (sortPriority[a.type]) {
-        return -1
+        return -1;
       }
       if (sortPriority[b.type]) {
-        return 1
+        return 1;
       }
-      return a.name.localeCompare(b.name)
-    })
+      return a.name.localeCompare(b.name);
+    });
 
-    const rows: JSX.Element[] = []
-    let lastField: JSX.Element
+    const rows: JSX.Element[] = [];
+    let lastField: JSX.Element;
     fields.forEach((field: any, index: number) => {
-      let additionalProps
-      if (field.type === 'object' && field.properties) {
+      let additionalProps;
+      if (field.type === "object" && field.properties) {
         additionalProps = {
-          valueCallback: (
-            callbackField: { name: string },
-          ) => this.getObjectFieldValue(field.name, callbackField.name),
+          valueCallback: (callbackField: { name: string }) =>
+            this.getObjectFieldValue(field.name, callbackField.name),
           onChange: (value: any, callbackField: { name: string }) => {
-            const propName = callbackField.name.substr(callbackField.name.lastIndexOf('/') + 1)
-            this.handleObjectValueChange(field.name, propName, value)
+            const propName = callbackField.name.substr(
+              callbackField.name.lastIndexOf("/") + 1
+            );
+            this.handleObjectValueChange(field.name, propName, value);
           },
-          properties: field.properties.map((p: any) => ({ ...p, required: false })),
-        }
+          properties: field.properties.map((p: any) => ({
+            ...p,
+            required: false,
+          })),
+        };
       } else {
-        const value = this.getFieldValue(field.name)
+        const value = this.getFieldValue(field.name);
         additionalProps = {
           value,
           // eslint-disable-next-line no-shadow
-          onChange: (changeValue: any) => { this.handleValueChange(field.name, changeValue) },
+          onChange: (changeValue: any) => {
+            this.handleValueChange(field.name, changeValue);
+          },
           type: field.type,
-        }
+        };
       }
 
       const currentField = (
@@ -244,30 +254,28 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
           {...additionalProps}
           label={field.label || LabelDictionary.get(field.name)}
         />
-      )
+      );
       const pushRow = (field1: React.ReactNode, field2?: React.ReactNode) => {
-        rows.push((
+        rows.push(
           <Row key={field.name}>
             {field1}
             {field2}
           </Row>
-        ))
-      }
+        );
+      };
       if (index === fields.length - 1 && index % 2 === 0) {
-        pushRow(currentField)
+        pushRow(currentField);
       } else if (index % 2 !== 0) {
-        pushRow(lastField, currentField)
+        pushRow(lastField, currentField);
       } else {
-        lastField = currentField
+        lastField = currentField;
       }
-    })
+    });
 
     return (
       // <Fields ref={(ref: HTMLElement | null | undefined) => { this.scrollableRef = ref }}>
-      <Fields>
-        {rows}
-      </Fields>
-    )
+      <Fields>{rows}</Fields>
+    );
   }
 
   render() {
@@ -275,28 +283,39 @@ class AssessmentMigrationOptions extends React.Component<Props, State> {
       <Wrapper>
         <Image />
         <ToggleButtonBarStyled
-          items={[{ label: 'Basic', value: 'basic' }, { label: 'Advanced', value: 'advanced' }]}
-          selectedValue={this.state.showAdvancedOptions ? 'advanced' : 'basic'}
-          onChange={item => { this.setState({ showAdvancedOptions: item.value === 'advanced' }) }}
+          items={[
+            { label: "Basic", value: "basic" },
+            { label: "Advanced", value: "advanced" },
+          ]}
+          selectedValue={this.state.showAdvancedOptions ? "advanced" : "basic"}
+          onChange={item => {
+            this.setState({ showAdvancedOptions: item.value === "advanced" });
+          }}
         />
         {this.renderFields()}
         <Buttons>
           <Button
             large
             secondary
-            onClick={() => { this.props.onCancelClick() }}
-          >Cancel
+            onClick={() => {
+              this.props.onCancelClick();
+            }}
+          >
+            Cancel
           </Button>
           <Button
             large
-            onClick={() => { this.props.onExecuteClick(this.state.fieldValues) }}
+            onClick={() => {
+              this.props.onExecuteClick(this.state.fieldValues);
+            }}
             disabled={this.props.executeButtonDisabled}
-          >Execute
+          >
+            Execute
           </Button>
         </Buttons>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default AssessmentMigrationOptions
+export default AssessmentMigrationOptions;

@@ -12,25 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import Tooltip from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Tooltip from ".";
 
-describe('Tooltip', () => {
-  it('renders', async () => {
+describe("Tooltip", () => {
+  it("renders", async () => {
     render(
       <div>
         <div>
-          <div className="tooltip-anchor" data-tip="Tooltip text">Tooltip</div>
+          <div className="tooltip-anchor" data-tip="Tooltip text">
+            Tooltip
+          </div>
         </div>
         <Tooltip />
-      </div>,
-    )
-    expect(document.querySelector('.reactTooltip')).toBeFalsy()
+      </div>
+    );
+    expect(document.querySelector(".reactTooltip")).toBeFalsy();
 
-    userEvent.hover(document.querySelector('.tooltip-anchor')!)
-    expect(document.querySelector('.reactTooltip')).toBeTruthy()
-    expect(document.querySelector('.reactTooltip')!.textContent).toContain('Tooltip text')
-  })
-})
+    userEvent.hover(document.querySelector(".tooltip-anchor")!);
+    expect(document.querySelector(".reactTooltip")).toBeTruthy();
+    expect(document.querySelector(".reactTooltip")!.textContent).toContain(
+      "Tooltip text"
+    );
+  });
+});

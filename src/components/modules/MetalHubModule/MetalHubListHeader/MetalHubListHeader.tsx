@@ -12,13 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
-import CopyValue from '@src/components/ui/CopyValue'
-import Button from '@src/components/ui/Button'
-import { ThemePalette } from '@src/components/Theme'
-import InfoIcon from '@src/components/ui/InfoIcon'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
+import CopyValue from "@src/components/ui/CopyValue";
+import Button from "@src/components/ui/Button";
+import { ThemePalette } from "@src/components/Theme";
+import InfoIcon from "@src/components/ui/InfoIcon";
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,52 +26,64 @@ const Wrapper = styled.div`
   justify-content: flex-end;
   margin-top: -70px;
   margin-bottom: 32px;
-`
+`;
 const FingerPrint = styled.div`
   margin-right: 32px;
-`
+`;
 const FingerPrintLabel = styled.div`
   font-size: 10px;
   font-weight: 500;
   color: ${ThemePalette.grayscale[3]};
   text-transform: uppercase;
   margin-bottom: 3px;
-`
-const FingerPrintValue = styled.div``
+`;
+const FingerPrintValue = styled.div``;
 
 type Props = {
-  hideButton: boolean
-  error: string
-  fingerprint: string
-  onCreateClick: () => void
-}
+  hideButton: boolean;
+  error: string;
+  fingerprint: string;
+  onCreateClick: () => void;
+};
 
 @observer
 class MetalHubListHeader extends React.Component<Props> {
   renderContent() {
-    let valueContent: React.ReactNode = this.props.error
+    let valueContent: React.ReactNode = this.props.error;
 
     if (!this.props.error) {
-      const cleanFingerprint = this.props.fingerprint.replace(/\n/g, '')
-      const fingerprintShortened = `${cleanFingerprint.slice(0, 12)}...${cleanFingerprint.slice(-12)}`
-      valueContent = <CopyValue value={cleanFingerprint} label={fingerprintShortened} />
+      const cleanFingerprint = this.props.fingerprint.replace(/\n/g, "");
+      const fingerprintShortened = `${cleanFingerprint.slice(
+        0,
+        12
+      )}...${cleanFingerprint.slice(-12)}`;
+      valueContent = (
+        <CopyValue value={cleanFingerprint} label={fingerprintShortened} />
+      );
     }
     return (
       <FingerPrint>
-        <FingerPrintLabel>Coriolis Bare Metal Hub Fingerprint <InfoIcon text="The fingerprint is used when installing the agent on the Bare Metal" /> </FingerPrintLabel>
+        <FingerPrintLabel>
+          Coriolis Bare Metal Hub Fingerprint{" "}
+          <InfoIcon text="The fingerprint is used when installing the agent on the Bare Metal" />{" "}
+        </FingerPrintLabel>
         <FingerPrintValue>{valueContent}</FingerPrintValue>
       </FingerPrint>
-    )
+    );
   }
 
   render() {
     return (
       <Wrapper>
         {this.renderContent()}
-        {!this.props.hideButton ? <Button hollow onClick={this.props.onCreateClick}>Add a Bare Metal Server</Button> : null}
+        {!this.props.hideButton ? (
+          <Button hollow onClick={this.props.onCreateClick}>
+            Add a Bare Metal Server
+          </Button>
+        ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MetalHubListHeader
+export default MetalHubListHeader;

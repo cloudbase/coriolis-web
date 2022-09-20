@@ -12,21 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import ChooseProvider from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import ChooseProvider from ".";
 
 const providers: any = {
-  azure: { },
-  openstack: { },
-  opc: { },
-  oracle_vm: { },
-  vmware_vsphere: { },
-  aws: { },
-}
-const props: any = {}
-storiesOf('ChooseProvider', module)
-  .add('all', () => (
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    <ChooseProvider {...props} providers={providers} />
-  ))
+  azure: {},
+  openstack: {},
+  opc: {},
+  oracle_vm: {},
+  vmware_vsphere: {},
+  aws: {},
+};
+const props: any = {};
+storiesOf("ChooseProvider", module).add("all", () => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <ChooseProvider {...props} providers={providers} />
+));

@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import { ThemePalette } from '@src/components/Theme'
-import Arrow from '@src/components/ui/Arrow'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import { ThemePalette } from "@src/components/Theme";
+import Arrow from "@src/components/ui/Arrow";
 
 const Wrapper = styled.div`
   color: ${ThemePalette.primary};
@@ -32,25 +32,21 @@ const Wrapper = styled.div`
   &:hover {
     background: rgba(255, 255, 255, 0.2);
   }
-`
+`;
 type Props = {
-  onClick: () => void
-}
+  onClick: () => void;
+};
 
 @observer
 class SetupPageBackButton extends React.Component<Props> {
   render() {
     return (
       <Wrapper onClick={this.props.onClick}>
-        <Arrow
-          orientation="left"
-          primary
-          style={{ marginRight: '4px' }}
-        />
+        <Arrow orientation="left" primary style={{ marginRight: "4px" }} />
         Back
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SetupPageBackButton
+export default SetupPageBackButton;

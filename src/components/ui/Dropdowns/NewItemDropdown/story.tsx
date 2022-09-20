@@ -12,11 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import NewItemDropdown from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import NewItemDropdown from ".";
 
-storiesOf('NewItemDropdown', module)
-  .add('default', () => (
-    <div style={{ marginLeft: '100px' }}><NewItemDropdown onChange={() => { }} /></div>
-  ))
+storiesOf("NewItemDropdown", module).add("default", () => (
+  <div style={{ marginLeft: "100px" }}>
+    <NewItemDropdown onChange={() => {}} />
+  </div>
+));

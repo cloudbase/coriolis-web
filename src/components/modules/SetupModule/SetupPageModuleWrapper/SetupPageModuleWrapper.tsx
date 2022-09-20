@@ -12,10 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import { ThemeProps } from '@src/components/Theme'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import { ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div`
   background: rgba(221, 224, 229, 0.5);
@@ -23,19 +23,19 @@ const Wrapper = styled.div`
   border-radius: 8px;
   color: white;
   margin-top: 32px;
-  ${ThemeProps.exactWidth('450px')}
-`
-const Content = styled.div``
+  ${ThemeProps.exactWidth("450px")}
+`;
+const Content = styled.div``;
 const Actions = styled.div`
   margin-top: 24px;
   display: flex;
-`
+`;
 
 type Props = {
-  children: React.ReactNode
-  actions: React.ReactNode
-  actionsWrapperStyle?: React.CSSProperties
-}
+  children: React.ReactNode;
+  actions: React.ReactNode;
+  actionsWrapperStyle?: React.CSSProperties;
+};
 
 @observer
 class SetupPageModuleWrapper extends React.Component<Props> {
@@ -43,12 +43,10 @@ class SetupPageModuleWrapper extends React.Component<Props> {
     return (
       <Wrapper>
         <Content>{this.props.children}</Content>
-        <Actions>
-          {this.props.actions}
-        </Actions>
+        <Actions>{this.props.actions}</Actions>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SetupPageModuleWrapper
+export default SetupPageModuleWrapper;

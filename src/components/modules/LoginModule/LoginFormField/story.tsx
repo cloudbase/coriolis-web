@@ -12,11 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import LoginFormField from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import LoginFormField from ".";
 
-storiesOf('LoginFormField', module)
-  .add('default', () => (
-    <LoginFormField label="Username" onChange={() => {}} value="" />
-  ))
+storiesOf("LoginFormField", module).add("default", () => (
+  <LoginFormField label="Username" onChange={() => {}} value="" />
+));

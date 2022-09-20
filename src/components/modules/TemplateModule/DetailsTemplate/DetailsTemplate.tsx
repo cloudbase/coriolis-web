@@ -12,34 +12,34 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import styled from 'styled-components'
+import * as React from "react";
+import styled from "styled-components";
 
 const Wrapper = styled.div<any>`
   min-width: 1100px;
   min-height: 0;
-`
-const PageHeader = styled.div<any>``
-const ContentHeader = styled.div<any>``
+`;
+const PageHeader = styled.div<any>``;
+const ContentHeader = styled.div<any>``;
 const Content = styled.div<any>`
   padding: 32px 0;
   display: flex;
   flex-direction: column;
   min-height: 0;
-`
+`;
 type Props = {
-  pageHeaderComponent: React.ReactNode,
-  contentHeaderComponent: React.ReactNode,
-  contentComponent: React.ReactNode,
-  style?: any,
-  contentStyle?: any,
-}
+  pageHeaderComponent: React.ReactNode;
+  contentHeaderComponent: React.ReactNode;
+  contentComponent: React.ReactNode;
+  style?: any;
+  contentStyle?: any;
+};
 const DetailsTemplate = (props: Props) => (
   <Wrapper style={props.style}>
     <PageHeader>{props.pageHeaderComponent}</PageHeader>
     <ContentHeader>{props.contentHeaderComponent}</ContentHeader>
     <Content style={props.contentStyle}>{props.contentComponent}</Content>
   </Wrapper>
-)
+);
 
-export default DetailsTemplate
+export default DetailsTemplate;

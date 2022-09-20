@@ -12,145 +12,160 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, action, runInAction } from 'mobx'
+import { observable, action, runInAction } from "mobx";
 
-import ReplicaSource from '@src/sources/ReplicaSource'
+import ReplicaSource from "@src/sources/ReplicaSource";
 import type {
-  UpdateData, ReplicaItem, ReplicaItemDetails,
-} from '@src/@types/MainItem'
-import type { Execution, ExecutionTasks } from '@src/@types/Execution'
-import type { Endpoint } from '@src/@types/Endpoint'
-import type { Field } from '@src/@types/Field'
-import apiCaller from '@src/utils/ApiCaller'
-import notificationStore from './NotificationStore'
+  UpdateData,
+  ReplicaItem,
+  ReplicaItemDetails,
+} from "@src/@types/MainItem";
+import type { Execution, ExecutionTasks } from "@src/@types/Execution";
+import type { Endpoint } from "@src/@types/Endpoint";
+import type { Field } from "@src/@types/Field";
+import apiCaller from "@src/utils/ApiCaller";
+import notificationStore from "./NotificationStore";
 
 class ReplicaStoreUtils {
   static getNewReplica(
     replicaDetails: ReplicaItemDetails,
-    execution: Execution,
+    execution: Execution
   ): ReplicaItemDetails {
     if (replicaDetails.executions) {
       return {
         ...replicaDetails,
-        executions: [...replicaDetails.executions.filter(e => e.id !== execution.id), execution],
-      }
+        executions: [
+          ...replicaDetails.executions.filter(e => e.id !== execution.id),
+          execution,
+        ],
+      };
     }
 
     return {
       ...replicaDetails,
       executions: [execution],
-    }
+    };
   }
 }
 
 class ReplicaStore {
-  @observable replicas: ReplicaItem[] = []
+  @observable replicas: ReplicaItem[] = [];
 
-  @observable loading: boolean = false
+  @observable loading = false;
 
-  @observable replicaDetails: ReplicaItemDetails | null = null
+  @observable replicaDetails: ReplicaItemDetails | null = null;
 
-  @observable replicaDetailsLoading: boolean = false
+  @observable replicaDetailsLoading = false;
 
-  @observable executionsTasks: ExecutionTasks[] = []
+  @observable executionsTasks: ExecutionTasks[] = [];
 
-  @observable executionsTasksLoading: boolean = false
+  @observable executionsTasksLoading = false;
 
-  @observable backgroundLoading: boolean = false
+  @observable backgroundLoading = false;
 
-  @observable startingExecution: boolean = false
+  @observable startingExecution = false;
 
-  @observable replicasWithDisks: ReplicaItemDetails[] = []
+  @observable replicasWithDisks: ReplicaItemDetails[] = [];
 
-  @observable replicasWithDisksLoading: boolean = false
+  @observable replicasWithDisksLoading = false;
 
-  replicasLoaded: boolean = false
+  replicasLoaded = false;
 
-  addExecution: { replicaId: string, execution: Execution } | null = null
+  addExecution: { replicaId: string; execution: Execution } | null = null;
 
-  @action async getReplicas(
-    options?: { showLoading?: boolean, skipLog?: boolean, quietError?: boolean },
-  ): Promise<void> {
-    this.backgroundLoading = true
+  @action async getReplicas(options?: {
+    showLoading?: boolean;
+    skipLog?: boolean;
+    quietError?: boolean;
+  }): Promise<void> {
+    this.backgroundLoading = true;
 
     if ((options && options.showLoading) || !this.replicasLoaded) {
-      this.loading = true
+      this.loading = true;
     }
 
     try {
-      const replicas = await ReplicaSource.getReplicas(options && options.skipLog, options && options.quietError)
-      this.getReplicasSuccess(replicas)
+      const replicas = await ReplicaSource.getReplicas(
+        options && options.skipLog,
+        options && options.quietError
+      );
+      this.getReplicasSuccess(replicas);
     } finally {
-      this.getReplicasDone()
+      this.getReplicasDone();
     }
   }
 
   @action cancelReplicaDetails() {
     if (this.replicaDetails?.id) {
-      apiCaller.cancelRequests(this.replicaDetails?.id)
+      apiCaller.cancelRequests(this.replicaDetails?.id);
     }
-    this.replicaDetailsLoading = false
+    this.replicaDetailsLoading = false;
   }
 
   @action async getReplicaDetails(options: {
-    replicaId: string, showLoading?: boolean, polling?: boolean,
+    replicaId: string;
+    showLoading?: boolean;
+    polling?: boolean;
   }) {
-    const { replicaId, showLoading, polling } = options
+    const { replicaId, showLoading, polling } = options;
 
     if (showLoading) {
-      this.replicaDetailsLoading = true
+      this.replicaDetailsLoading = true;
     }
 
     try {
-      const replica = await ReplicaSource.getReplicaDetails({ replicaId, polling })
+      const replica = await ReplicaSource.getReplicaDetails({
+        replicaId,
+        polling,
+      });
 
       runInAction(() => {
-        this.replicaDetails = replica
-      })
+        this.replicaDetails = replica;
+      });
     } finally {
       runInAction(() => {
-        this.replicaDetailsLoading = false
-      })
+        this.replicaDetailsLoading = false;
+      });
     }
   }
 
   @action clearDetails() {
-    this.replicaDetails = null
+    this.replicaDetails = null;
   }
 
   @action getReplicasSuccess(replicas: ReplicaItem[]) {
-    this.replicasLoaded = true
-    this.replicas = replicas
+    this.replicasLoaded = true;
+    this.replicas = replicas;
   }
 
   @action getReplicasDone() {
-    this.loading = false
-    this.backgroundLoading = false
+    this.loading = false;
+    this.backgroundLoading = false;
   }
 
-  private currentlyLoadingExecution: string = ''
+  private currentlyLoadingExecution = "";
 
-  @action async getExecutionTasks(
-    options: {
-      replicaId: string,
-      executionId?: string,
-      polling?: boolean,
-    },
-  ) {
-    const {
-      replicaId, executionId, polling,
-    } = options
+  @action async getExecutionTasks(options: {
+    replicaId: string;
+    executionId?: string;
+    polling?: boolean;
+  }) {
+    const { replicaId, executionId, polling } = options;
 
     if (!polling && this.currentlyLoadingExecution === executionId) {
-      return
+      return;
     }
-    this.currentlyLoadingExecution = polling ? this.currentlyLoadingExecution : executionId || ''
+    this.currentlyLoadingExecution = polling
+      ? this.currentlyLoadingExecution
+      : executionId || "";
     if (!this.currentlyLoadingExecution) {
-      return
+      return;
     }
 
-    if (!this.executionsTasks.find(e => e.id === this.currentlyLoadingExecution)) {
-      this.executionsTasksLoading = true
+    if (
+      !this.executionsTasks.find(e => e.id === this.currentlyLoadingExecution)
+    ) {
+      this.executionsTasksLoading = true;
     }
 
     try {
@@ -158,127 +173,148 @@ class ReplicaStore {
         replicaId,
         executionId: this.currentlyLoadingExecution,
         polling,
-      })
+      });
       runInAction(() => {
         this.executionsTasks = [
-          ...this.executionsTasks.filter(e => e.id !== this.currentlyLoadingExecution),
+          ...this.executionsTasks.filter(
+            e => e.id !== this.currentlyLoadingExecution
+          ),
           executionTasks,
-        ]
-      })
+        ];
+      });
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
       runInAction(() => {
-        this.executionsTasksLoading = false
-      })
+        this.executionsTasksLoading = false;
+      });
     }
   }
 
   @action async execute(replicaId: string, fields?: Field[]): Promise<void> {
-    this.startingExecution = true
+    this.startingExecution = true;
 
-    const execution = await ReplicaSource.execute(replicaId, fields)
-    this.executeSuccess(replicaId, execution)
+    const execution = await ReplicaSource.execute(replicaId, fields);
+    this.executeSuccess(replicaId, execution);
   }
 
   @action executeSuccess(replicaId: string, execution: Execution) {
     if (this.replicaDetails?.id === replicaId) {
-      const updatedReplica = ReplicaStoreUtils.getNewReplica(this.replicaDetails, execution)
-      this.replicaDetails = updatedReplica
+      const updatedReplica = ReplicaStoreUtils.getNewReplica(
+        this.replicaDetails,
+        execution
+      );
+      this.replicaDetails = updatedReplica;
     }
-    this.getExecutionTasks({ replicaId, executionId: execution.id })
+    this.getExecutionTasks({ replicaId, executionId: execution.id });
 
-    this.startingExecution = false
+    this.startingExecution = false;
   }
 
-  async cancelExecution(
-    options: { replicaId: string, executionId?: string, force?: boolean },
-  ): Promise<void> {
-    await ReplicaSource.cancelExecution(options)
+  async cancelExecution(options: {
+    replicaId: string;
+    executionId?: string;
+    force?: boolean;
+  }): Promise<void> {
+    await ReplicaSource.cancelExecution(options);
     if (options.force) {
-      notificationStore.alert('Force cancelled', 'success')
+      notificationStore.alert("Force cancelled", "success");
     } else {
-      notificationStore.alert('Cancelled', 'success')
+      notificationStore.alert("Cancelled", "success");
     }
   }
 
   async deleteExecution(replicaId: string, executionId: string): Promise<void> {
-    await ReplicaSource.deleteExecution(replicaId, executionId)
-    this.deleteExecutionSuccess(replicaId, executionId)
+    await ReplicaSource.deleteExecution(replicaId, executionId);
+    this.deleteExecutionSuccess(replicaId, executionId);
   }
 
   @action deleteExecutionSuccess(replicaId: string, executionId: string) {
-    let executions = []
+    let executions = [];
 
     if (this.replicaDetails?.id === replicaId) {
-      executions = [...this.replicaDetails.executions.filter(e => e.id !== executionId)]
-      this.replicaDetails.executions = executions
+      executions = [
+        ...this.replicaDetails.executions.filter(e => e.id !== executionId),
+      ];
+      this.replicaDetails.executions = executions;
     }
     if (executionId === this.currentlyLoadingExecution) {
-      this.currentlyLoadingExecution = ''
+      this.currentlyLoadingExecution = "";
     }
   }
 
   async delete(replicaId: string) {
-    await ReplicaSource.delete(replicaId)
-    runInAction(() => { this.replicas = this.replicas.filter(r => r.id !== replicaId) })
+    await ReplicaSource.delete(replicaId);
+    runInAction(() => {
+      this.replicas = this.replicas.filter(r => r.id !== replicaId);
+    });
   }
 
   async deleteDisks(replicaId: string) {
-    const execution = await ReplicaSource.deleteDisks(replicaId)
-    this.deleteDisksSuccess(replicaId, execution)
+    const execution = await ReplicaSource.deleteDisks(replicaId);
+    this.deleteDisksSuccess(replicaId, execution);
   }
 
   @action deleteDisksSuccess(replicaId: string, execution: Execution) {
     if (this.replicaDetails?.id === replicaId) {
-      const updatedReplica = ReplicaStoreUtils
-        .getNewReplica(this.replicaDetails, execution)
-      this.replicaDetails = updatedReplica
+      const updatedReplica = ReplicaStoreUtils.getNewReplica(
+        this.replicaDetails,
+        execution
+      );
+      this.replicaDetails = updatedReplica;
     }
   }
 
   async update(options: {
-    replica: ReplicaItemDetails,
-    sourceEndpoint: Endpoint,
-    destinationEndpoint: Endpoint,
-    updateData: UpdateData,
-    defaultStorage: { value: string | null, busType?: string | null },
-    storageConfigDefault: string,
+    replica: ReplicaItemDetails;
+    sourceEndpoint: Endpoint;
+    destinationEndpoint: Endpoint;
+    updateData: UpdateData;
+    defaultStorage: { value: string | null; busType?: string | null };
+    storageConfigDefault: string;
   }) {
-    await ReplicaSource.update(options)
+    await ReplicaSource.update(options);
   }
 
   testReplicaHasDisks(replica: ReplicaItemDetails | null) {
     if (!replica || !replica.executions || replica.executions.length === 0) {
-      return false
+      return false;
     }
-    if (!replica.executions.find(e => e.type === 'replica_execution')) {
-      return false
+    if (!replica.executions.find(e => e.type === "replica_execution")) {
+      return false;
     }
-    const lastExecution = replica.executions[replica.executions.length - 1]
-    if (lastExecution.type === 'replica_disks_delete' && lastExecution.status === 'COMPLETED') {
-      return false
+    const lastExecution = replica.executions[replica.executions.length - 1];
+    if (
+      lastExecution.type === "replica_disks_delete" &&
+      lastExecution.status === "COMPLETED"
+    ) {
+      return false;
     }
-    return true
+    return true;
   }
 
   @action
   async loadHaveReplicasDisks(replicas: ReplicaItem[]) {
-    this.replicasWithDisksLoading = true
+    this.replicasWithDisksLoading = true;
 
     try {
-      const replicaDetails = await Promise.all(replicas
-        .map(replica => ReplicaSource.getReplicaDetails({ replicaId: replica.id })))
+      const replicaDetails = await Promise.all(
+        replicas.map(replica =>
+          ReplicaSource.getReplicaDetails({ replicaId: replica.id })
+        )
+      );
 
       runInAction(() => {
-        this.replicasWithDisks = replicaDetails.filter(r => this.testReplicaHasDisks(r))
-      })
+        this.replicasWithDisks = replicaDetails.filter(r =>
+          this.testReplicaHasDisks(r)
+        );
+      });
     } finally {
       runInAction(() => {
-        this.replicasWithDisksLoading = false
-      })
+        this.replicasWithDisksLoading = false;
+      });
     }
   }
 }
 
-export default new ReplicaStore()
+export default new ReplicaStore();

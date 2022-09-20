@@ -2,6 +2,5 @@
   "name": "ReplicaDetailsContent",
   "version": "0.0.0",
   "private": true,
-  "main":"./ReplicaDetailsContent.tsx"
+  "main": "./ReplicaDetailsContent.tsx"
 }
-

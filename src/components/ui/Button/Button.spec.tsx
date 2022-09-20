@@ -12,26 +12,38 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import { ThemePalette } from '@src/components/Theme'
-import Button from './Button'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import { ThemePalette } from "@src/components/Theme";
+import Button from "./Button";
 
-describe('Button', () => {
-  it('should render with different style props', () => {
-    const { rerender } = render(<Button disabled />)
-    expect(document.querySelector('button')?.hasAttribute('disabled')).toBeTruthy()
-    expect(TestUtils.rgbToHex(window.getComputedStyle(document.querySelector('button')!).backgroundColor)).toBe(ThemePalette.primary)
+describe("Button", () => {
+  it("should render with different style props", () => {
+    const { rerender } = render(<Button disabled />);
+    expect(
+      document.querySelector("button")?.hasAttribute("disabled")
+    ).toBeTruthy();
+    expect(
+      TestUtils.rgbToHex(
+        window.getComputedStyle(document.querySelector("button")!)
+          .backgroundColor
+      )
+    ).toBe(ThemePalette.primary);
 
-    rerender(<Button secondary />)
-    expect(TestUtils.rgbToHex(window.getComputedStyle(document.querySelector('button')!).backgroundColor)).toBe(ThemePalette.secondaryLight)
-  })
+    rerender(<Button secondary />);
+    expect(
+      TestUtils.rgbToHex(
+        window.getComputedStyle(document.querySelector("button")!)
+          .backgroundColor
+      )
+    ).toBe(ThemePalette.secondaryLight);
+  });
 
-  it('fires click', () => {
-    const onClick = jest.fn()
-    render(<Button onClick={onClick} />)
-    document.querySelector('button')?.click()
-    expect(onClick).toHaveBeenCalled()
-  })
-})
+  it("fires click", () => {
+    const onClick = jest.fn();
+    render(<Button onClick={onClick} />);
+    document.querySelector("button")?.click();
+    expect(onClick).toHaveBeenCalled();
+  });
+});

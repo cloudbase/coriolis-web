@@ -12,37 +12,43 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import Switch from '@src/components/ui/Switch'
-import TextInput from '@src/components/ui/TextInput'
+import Switch from "@src/components/ui/Switch";
+import TextInput from "@src/components/ui/TextInput";
 
-import LabelDictionary from '@src/utils/LabelDictionary'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
-import AutocompleteDropdown from '@src/components/ui/Dropdowns/AutocompleteDropdown'
-import { Field, EnumItem, isEnumSeparator } from '@src/@types/Field'
+import LabelDictionary from "@src/utils/LabelDictionary";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
+import AutocompleteDropdown from "@src/components/ui/Dropdowns/AutocompleteDropdown";
+import { Field, EnumItem, isEnumSeparator } from "@src/@types/Field";
 
 const Wrapper = styled.div<{
-  width?: number,
-  highlight?: boolean,
-  disabled?: boolean,
-  disabledLoading?: boolean
+  width?: number;
+  highlight?: boolean;
+  disabled?: boolean;
+  disabledLoading?: boolean;
 }>`
   display: flex;
-  ${props => (props.width ? `width: ${props.width - 2}px;` : '')}
+  ${props => (props.width ? `width: ${props.width - 2}px;` : "")}
   flex-direction: column;
-  border: 1px solid ${props => (props.highlight ? ThemePalette.alert : ThemePalette.grayscale[2])};
+  border: 1px solid
+    ${props =>
+      props.highlight ? ThemePalette.alert : ThemePalette.grayscale[2]};
   border-radius: ${ThemeProps.borderRadius};
-  ${props => (props.disabled ? css`
-    opacity: 0.5;
-  ` : '')}
-  ${props => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
-`
+  ${props =>
+    props.disabled
+      ? css`
+          opacity: 0.5;
+        `
+      : ""}
+  ${props =>
+    props.disabledLoading ? ThemeProps.animations.disabledLoading : ""}
+`;
 const Column = styled.div<any>`
-  ${ThemeProps.exactWidth('calc(50% - 24px)')}
+  ${ThemeProps.exactWidth("calc(50% - 24px)")}
   height: 32px;
   padding: 0 8px 0 16px;
   display: flex;
@@ -54,11 +60,14 @@ const Column = styled.div<any>`
     min-width: 0;
   }
 
-  ${props => (props.header ? css`
-    color: ${ThemePalette.grayscale[4]};
-    background: ${ThemePalette.grayscale[7]};
-  ` : '')}
-`
+  ${props =>
+    props.header
+      ? css`
+          color: ${ThemePalette.grayscale[4]};
+          background: ${ThemePalette.grayscale[7]};
+        `
+      : ""}
+`;
 const Row = styled.div<any>`
   display: flex;
   align-items: center;
@@ -72,29 +81,31 @@ const Row = styled.div<any>`
   &:last-child ${Column} {
     border-bottom-left-radius: ${ThemeProps.borderRadius};
   }
-`
+`;
 type Props = {
-  properties: Field[],
-  highlight?: boolean,
-  onChange: (property: Field, value: any) => void,
-  valueCallback: (property: Field) => any,
-  hideRequiredSymbol?: boolean,
-  disabled?: boolean,
-  disabledLoading?: boolean,
-  labelRenderer?: ((propName: string) => string) | null,
-  width?: number,
-}
+  properties: Field[];
+  highlight?: boolean;
+  onChange: (property: Field, value: any) => void;
+  valueCallback: (property: Field) => any;
+  hideRequiredSymbol?: boolean;
+  disabled?: boolean;
+  disabledLoading?: boolean;
+  labelRenderer?: ((propName: string) => string) | null;
+  width?: number;
+};
 @observer
 class PropertiesTable extends React.Component<Props> {
   getName(propName: string): string {
     if (this.props.labelRenderer) {
-      return this.props.labelRenderer(propName)
+      return this.props.labelRenderer(propName);
     }
 
-    if (propName.indexOf('/') > -1) {
-      return LabelDictionary.get(propName.substr(propName.lastIndexOf('/') + 1))
+    if (propName.indexOf("/") > -1) {
+      return LabelDictionary.get(
+        propName.substr(propName.lastIndexOf("/") + 1)
+      );
     }
-    return LabelDictionary.get(propName)
+    return LabelDictionary.get(propName);
   }
 
   renderSwitch(prop: Field, opts: { triState: boolean }) {
@@ -105,9 +116,11 @@ class PropertiesTable extends React.Component<Props> {
         triState={opts.triState}
         height={16}
         checked={this.props.valueCallback(prop)}
-        onChange={checked => { this.props.onChange(prop, checked) }}
+        onChange={checked => {
+          this.props.onChange(prop, checked);
+        }}
       />
-    )
+    );
   }
 
   renderTextInput(prop: Field) {
@@ -115,41 +128,47 @@ class PropertiesTable extends React.Component<Props> {
       <TextInput
         width="100%"
         embedded
-        type={prop.password ? 'password' : 'text'}
+        type={prop.password ? "password" : "text"}
         value={this.props.valueCallback(prop)}
-        onChange={e => { this.props.onChange(prop, e.target.value) }}
+        onChange={e => {
+          this.props.onChange(prop, e.target.value);
+        }}
         placeholder={this.getName(prop.name)}
-        required={typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false}
+        required={
+          typeof prop.required === "boolean" && !this.props.hideRequiredSymbol
+            ? prop.required
+            : false
+        }
         disabled={this.props.disabledLoading}
       />
-    )
+    );
   }
 
   renderEnumDropdown(prop: Field) {
     if (!prop.enum) {
-      return null
+      return null;
     }
     let items = prop.enum.map((e: EnumItem) => {
-      if (typeof e === 'string') {
+      if (typeof e === "string") {
         return {
           label: this.getName(e),
           value: e,
-        }
-      } if (isEnumSeparator(e)) {
-        return { separator: true }
+        };
+      }
+      if (isEnumSeparator(e)) {
+        return { separator: true };
       }
       return {
         label: e.name,
         value: e.id,
-      }
-    })
+      };
+    });
 
-    items = [
-      { label: 'Choose a value', value: null },
-      ...items,
-    ]
+    items = [{ label: "Choose a value", value: null }, ...items];
 
-    const selectedItem = items.find(i => !i.separator && i.value === this.props.valueCallback(prop))
+    const selectedItem = items.find(
+      i => !i.separator && i.value === this.props.valueCallback(prop)
+    );
 
     const commonProps = {
       embedded: true,
@@ -158,8 +177,11 @@ class PropertiesTable extends React.Component<Props> {
       items,
       disabled: this.props.disabledLoading,
       onChange: (item: { value: any }) => this.props.onChange(prop, item.value),
-      required: typeof prop.required === 'boolean' && !this.props.hideRequiredSymbol ? prop.required : false,
-    }
+      required:
+        typeof prop.required === "boolean" && !this.props.hideRequiredSymbol
+          ? prop.required
+          : false,
+    };
     if (items.length < 10) {
       return (
         <Dropdown
@@ -168,7 +190,7 @@ class PropertiesTable extends React.Component<Props> {
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...commonProps}
         />
-      )
+      );
     }
     return (
       <AutocompleteDropdown
@@ -176,31 +198,38 @@ class PropertiesTable extends React.Component<Props> {
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...commonProps}
       />
-    )
+    );
   }
 
   renderInput(prop: Field) {
-    let input = null
+    let input = null;
     switch (prop.type) {
-      case 'boolean':
-        input = this.renderSwitch(prop, { triState: Boolean(prop.nullableBoolean) })
-        break
-      case 'string':
+      case "boolean":
+        input = this.renderSwitch(prop, {
+          triState: Boolean(prop.nullableBoolean),
+        });
+        break;
+      case "string":
         if (prop.enum) {
-          input = this.renderEnumDropdown(prop)
+          input = this.renderEnumDropdown(prop);
         } else {
-          input = this.renderTextInput(prop)
+          input = this.renderTextInput(prop);
         }
-        break
+        break;
       default:
     }
 
-    return input
+    return input;
   }
 
   render() {
-    const hasRequiredInputs = this.props.properties.some(prop => prop.required && prop.type === 'string')
-    const width = this.props.width && hasRequiredInputs ? this.props.width - 20 : this.props.width
+    const hasRequiredInputs = this.props.properties.some(
+      prop => prop.required && prop.type === "string"
+    );
+    const width =
+      this.props.width && hasRequiredInputs
+        ? this.props.width - 20
+        : this.props.width;
     return (
       <Wrapper
         disabled={this.props.disabled}
@@ -219,8 +248,8 @@ class PropertiesTable extends React.Component<Props> {
           </Row>
         ))}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default PropertiesTable
+export default PropertiesTable;

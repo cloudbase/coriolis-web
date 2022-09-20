@@ -12,39 +12,39 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import type { User } from '@src/@types/User'
-import type { Project, Role } from '@src/@types/Project'
-import DetailsTemplate from '@src/components/modules/TemplateModule/DetailsTemplate'
-import DetailsPageHeader from '@src/components/modules/DetailsModule/DetailsPageHeader'
-import DetailsContentHeader from '@src/components/modules/DetailsModule/DetailsContentHeader'
-import ProjectDetailsContent from '@src/components/modules/ProjectModule/ProjectDetailsContent'
-import ProjectModal from '@src/components/modules/ProjectModule/ProjectModal'
-import ProjectMemberModal from '@src/components/modules/ProjectModule/ProjectMemberModal'
-import AlertModal from '@src/components/ui/AlertModal'
+import type { User } from "@src/@types/User";
+import type { Project, Role } from "@src/@types/Project";
+import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
+import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
+import ProjectDetailsContent from "@src/components/modules/ProjectModule/ProjectDetailsContent";
+import ProjectModal from "@src/components/modules/ProjectModule/ProjectModal";
+import ProjectMemberModal from "@src/components/modules/ProjectModule/ProjectMemberModal";
+import AlertModal from "@src/components/ui/AlertModal";
 
-import projectStore from '@src/stores/ProjectStore'
-import userStore from '@src/stores/UserStore'
+import projectStore from "@src/stores/ProjectStore";
+import userStore from "@src/stores/UserStore";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
-import projectImage from './images/project.svg'
+import projectImage from "./images/project.svg";
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: { params: { id: string } },
-  history: any,
-}
+  match: { params: { id: string } };
+  history: any;
+};
 type State = {
-  showProjectModal: boolean,
-  showAddMemberModal: boolean,
-  showDeleteProjectAlert: boolean,
-  addingMember: boolean,
-}
+  showProjectModal: boolean;
+  showAddMemberModal: boolean;
+  showDeleteProjectAlert: boolean;
+  addingMember: boolean;
+};
 @observer
 class ProjectDetailsPage extends React.Component<Props, State> {
   state = {
@@ -52,146 +52,167 @@ class ProjectDetailsPage extends React.Component<Props, State> {
     showAddMemberModal: false,
     showDeleteProjectAlert: false,
     addingMember: false,
-  }
+  };
 
   componentDidMount() {
-    document.title = 'Project Details'
+    document.title = "Project Details";
 
-    this.loadData()
+    this.loadData();
   }
 
   componentWillUnmount() {
-    projectStore.clearProjectDetails()
+    projectStore.clearProjectDetails();
   }
 
   handleUserItemClick(item: { value: string }) {
     switch (item.value) {
-      case 'signout':
-        userStore.logout()
-        break
+      case "signout":
+        userStore.logout();
+        break;
       default:
     }
   }
 
   async handleEnableUser(user: User) {
-    const enabled = !user.enabled
+    const enabled = !user.enabled;
 
-    await userStore.update(user.id, { enabled })
-    projectStore.getUsers(this.props.match.params.id)
+    await userStore.update(user.id, { enabled });
+    projectStore.getUsers(this.props.match.params.id);
   }
 
   async handleUserRoleChange(user: User, roleId: string, toggled: boolean) {
-    const projectId = this.props.match.params.id
+    const projectId = this.props.match.params.id;
     if (toggled) {
-      await projectStore.assignUserRole(projectId, user.id, roleId)
+      await projectStore.assignUserRole(projectId, user.id, roleId);
     } else {
-      await projectStore.removeUserRole(projectId, user.id, roleId)
+      await projectStore.removeUserRole(projectId, user.id, roleId);
     }
-    projectStore.getRoleAssignments()
+    projectStore.getRoleAssignments();
   }
 
   handleRemoveUser(user: User) {
     const roles = projectStore.roleAssignments
-      .filter(a => a.scope.project && a.scope.project.id === this.props.match.params.id)
+      .filter(
+        a =>
+          a.scope.project && a.scope.project.id === this.props.match.params.id
+      )
       .filter(a => a.user.id === user.id)
-      .map(ra => ra.role.id)
-    projectStore.removeUser(this.props.match.params.id, user.id, roles)
+      .map(ra => ra.role.id);
+    projectStore.removeUser(this.props.match.params.id, user.id, roles);
   }
 
   handleEditProjectClick() {
-    this.setState({ showProjectModal: true })
+    this.setState({ showProjectModal: true });
   }
 
   handleProjectModalClose() {
-    this.setState({ showProjectModal: false })
+    this.setState({ showProjectModal: false });
   }
 
   async handleProjectUpdateClick(project: Project) {
-    await projectStore.update(this.props.match.params.id, project)
-    this.setState({ showProjectModal: false })
+    await projectStore.update(this.props.match.params.id, project);
+    this.setState({ showProjectModal: false });
   }
 
   async handleDeleteConfirmation() {
-    this.setState({ showDeleteProjectAlert: false })
+    this.setState({ showDeleteProjectAlert: false });
 
-    await projectStore.delete(this.props.match.params.id)
+    await projectStore.delete(this.props.match.params.id);
     if (
-      userStore.loggedUser
-      && this.props.match.params.id === userStore.loggedUser.project.id
-      && projectStore.projects.length > 0
+      userStore.loggedUser &&
+      this.props.match.params.id === userStore.loggedUser.project.id &&
+      projectStore.projects.length > 0
     ) {
-      await userStore.switchProject(projectStore.projects[0].id)
-      projectStore.getProjects()
-      this.props.history.push('/projects')
+      await userStore.switchProject(projectStore.projects[0].id);
+      projectStore.getProjects();
+      this.props.history.push("/projects");
     } else {
-      this.props.history.push('/projects')
+      this.props.history.push("/projects");
     }
   }
 
   async handleAddMemberClick() {
-    await userStore.getAllUsers()
-    this.setState({ showAddMemberModal: true })
+    await userStore.getAllUsers();
+    this.setState({ showAddMemberModal: true });
   }
 
   async handleAddMember(user: User, isNew: boolean, roles: Role[]) {
     const assign = async (userId: string) => {
-      await Promise.all(roles.map(async r => {
-        await userStore.assignUserToProjectWithRole(userId, this.props.match.params.id, r.id)
-      }))
-      this.loadData()
-      this.setState({ addingMember: false, showAddMemberModal: false })
-    }
+      await Promise.all(
+        roles.map(async r => {
+          await userStore.assignUserToProjectWithRole(
+            userId,
+            this.props.match.params.id,
+            r.id
+          );
+        })
+      );
+      this.loadData();
+      this.setState({ addingMember: false, showAddMemberModal: false });
+    };
 
-    this.setState({ addingMember: true })
+    this.setState({ addingMember: true });
 
     if (!isNew) {
-      assign(user.id)
-      return
+      assign(user.id);
+      return;
     }
 
-    const addedUser: User | null = await userStore.add(user)
+    const addedUser: User | null = await userStore.add(user);
     if (addedUser) {
-      assign(addedUser.id)
+      assign(addedUser.id);
     }
   }
 
   handleDeleteProjectClick() {
-    this.setState({ showDeleteProjectAlert: true })
+    this.setState({ showDeleteProjectAlert: true });
   }
 
   loadData() {
-    const projectId = this.props.match.params.id
-    projectStore.getProjects()
-    projectStore.getProjectDetails(projectId)
-    projectStore.getUsers(projectId, true)
-    projectStore.getRoleAssignments()
-    projectStore.getRoles()
+    const projectId = this.props.match.params.id;
+    projectStore.getProjects();
+    projectStore.getProjectDetails(projectId);
+    projectStore.getUsers(projectId, true);
+    projectStore.getRoleAssignments();
+    projectStore.getRoles();
   }
 
   render() {
-    const dropdownActions = [{
-      label: 'Add Member',
-      color: ThemePalette.primary,
-      action: () => { this.handleAddMemberClick() },
-    }, {
-      label: 'Edit Project',
-      action: () => { this.handleEditProjectClick() },
-    }, {
-      label: 'Delete Project',
-      color: ThemePalette.alert,
-      action: () => { this.handleDeleteProjectClick() },
-    }]
+    const dropdownActions = [
+      {
+        label: "Add Member",
+        color: ThemePalette.primary,
+        action: () => {
+          this.handleAddMemberClick();
+        },
+      },
+      {
+        label: "Edit Project",
+        action: () => {
+          this.handleEditProjectClick();
+        },
+      },
+      {
+        label: "Delete Project",
+        color: ThemePalette.alert,
+        action: () => {
+          this.handleDeleteProjectClick();
+        },
+      },
+    ];
 
     return (
       <Wrapper>
         <DetailsTemplate
-          pageHeaderComponent={(
+          pageHeaderComponent={
             <DetailsPageHeader
               user={userStore.loggedUser}
-              onUserItemClick={item => { this.handleUserItemClick(item) }}
+              onUserItemClick={item => {
+                this.handleUserItemClick(item);
+              }}
             />
-          )}
-          contentHeaderComponent={(
+          }
+          contentHeaderComponent={
             <DetailsContentHeader
               itemTitle={projectStore.projectDetails?.name}
               itemType="project"
@@ -199,8 +220,8 @@ class ProjectDetailsPage extends React.Component<Props, State> {
               dropdownActions={dropdownActions}
               typeImage={projectImage}
             />
-          )}
-          contentComponent={(
+          }
+          contentComponent={
             <ProjectDetailsContent
               project={projectStore.projectDetails}
               loading={projectStore.loading}
@@ -208,23 +229,33 @@ class ProjectDetailsPage extends React.Component<Props, State> {
               usersLoading={projectStore.usersLoading}
               roleAssignments={projectStore.roleAssignments}
               roles={projectStore.roles}
-              loggedUserId={userStore.loggedUser ? userStore.loggedUser.id : ''}
-              onEnableUser={user => { this.handleEnableUser(user) }}
-              onRemoveUser={user => { this.handleRemoveUser(user) }}
-              onAddMemberClick={() => { this.handleAddMemberClick() }}
+              loggedUserId={userStore.loggedUser ? userStore.loggedUser.id : ""}
+              onEnableUser={user => {
+                this.handleEnableUser(user);
+              }}
+              onRemoveUser={user => {
+                this.handleRemoveUser(user);
+              }}
+              onAddMemberClick={() => {
+                this.handleAddMemberClick();
+              }}
               onUserRoleChange={(user, roleId, toggled) => {
-                this.handleUserRoleChange(user, roleId, toggled)
+                this.handleUserRoleChange(user, roleId, toggled);
               }}
               onDeleteClick={() => this.handleDeleteProjectClick()}
             />
-          )}
+          }
         />
         {this.state.showProjectModal ? (
           <ProjectModal
             loading={projectStore.updating}
             project={projectStore.projectDetails}
-            onRequestClose={() => { this.handleProjectModalClose() }}
-            onUpdateClick={project => { this.handleProjectUpdateClick(project) }}
+            onRequestClose={() => {
+              this.handleProjectModalClose();
+            }}
+            onUpdateClick={project => {
+              this.handleProjectUpdateClick(project);
+            }}
           />
         ) : null}
         {this.state.showAddMemberModal ? (
@@ -232,33 +263,47 @@ class ProjectDetailsPage extends React.Component<Props, State> {
             loading={this.state.addingMember}
             roles={projectStore.roles}
             projects={projectStore.projects}
-            users={userStore.users.filter(u => !projectStore.users.find(pu => pu.id === u.id))}
-            onAddClick={(user, isNew, roles) => { this.handleAddMember(user, isNew, roles) }}
-            onRequestClose={() => { this.setState({ showAddMemberModal: false }) }}
+            users={userStore.users.filter(
+              u => !projectStore.users.find(pu => pu.id === u.id)
+            )}
+            onAddClick={(user, isNew, roles) => {
+              this.handleAddMember(user, isNew, roles);
+            }}
+            onRequestClose={() => {
+              this.setState({ showAddMemberModal: false });
+            }}
           />
         ) : null}
-        {this.state.showDeleteProjectAlert && projectStore.projects.length > 1 ? (
+        {this.state.showDeleteProjectAlert &&
+        projectStore.projects.length > 1 ? (
           <AlertModal
             isOpen
             title="Delete Project?"
             message="Are you sure you want to delete this project?"
             extraMessage="Deleting a Coriolis Project is permanent!"
-            onConfirmation={() => { this.handleDeleteConfirmation() }}
-            onRequestClose={() => { this.setState({ showDeleteProjectAlert: false }) }}
+            onConfirmation={() => {
+              this.handleDeleteConfirmation();
+            }}
+            onRequestClose={() => {
+              this.setState({ showDeleteProjectAlert: false });
+            }}
           />
-        ) : this.state.showDeleteProjectAlert && projectStore.projects.length === 1 ? (
+        ) : this.state.showDeleteProjectAlert &&
+          projectStore.projects.length === 1 ? (
           <AlertModal
             isOpen
             type="error"
             title="Error deleting project"
             message="The project can't be deleted"
             extraMessage="You can't delete the last project since you'll no longer be able to log in"
-            onRequestClose={() => { this.setState({ showDeleteProjectAlert: false }) }}
+            onRequestClose={() => {
+              this.setState({ showDeleteProjectAlert: false });
+            }}
           />
         ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default ProjectDetailsPage
+export default ProjectDetailsPage;

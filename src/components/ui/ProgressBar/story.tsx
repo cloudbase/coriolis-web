@@ -12,24 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
+import React from "react";
+import { storiesOf } from "@storybook/react";
 
-import ProgressBar from '.'
+import ProgressBar from ".";
 
 // eslint-disable-next-line react/jsx-props-no-spreading
-const Wrapper = (props: any) => <div style={{ width: '800px' }}><ProgressBar {...props} /></div>
+const Wrapper = (props: any) => (
+  <div style={{ width: "800px" }}>
+    <ProgressBar {...props} />
+  </div>
+);
 
-storiesOf('ProgressBar', module)
-  .add('default 100%', () => (
-    <Wrapper />
-  ))
-  .add('50%', () => (
-    <Wrapper progress={50} />
-  ))
-  .add('10%', () => (
-    <Wrapper progress={10} />
-  ))
-  .add('0%', () => (
-    <Wrapper progress={0} />
-  ))
+storiesOf("ProgressBar", module)
+  .add("default 100%", () => <Wrapper />)
+  .add("50%", () => <Wrapper progress={50} />)
+  .add("10%", () => <Wrapper progress={10} />)
+  .add("0%", () => <Wrapper progress={0} />);

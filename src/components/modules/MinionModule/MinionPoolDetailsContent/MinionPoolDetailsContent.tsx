@@ -12,37 +12,37 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import Button from '@src/components/ui/Button'
-import DetailsNavigation from '@src/components/modules/NavigationModule/DetailsNavigation'
-import type { Endpoint } from '@src/@types/Endpoint'
-import type { Field } from '@src/@types/Field'
-import { ReplicaItem, MigrationItem } from '@src/@types/MainItem'
-import { MinionPoolDetails } from '@src/@types/MinionPool'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import { ThemeProps } from '@src/components/Theme'
-import MinionPoolMachines from './MinionPoolMachines'
-import MinionPoolEvents from './MinionPoolEvents'
-import MinionPoolMainDetails from './MinionPoolMainDetails'
+import Button from "@src/components/ui/Button";
+import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
+import type { Endpoint } from "@src/@types/Endpoint";
+import type { Field } from "@src/@types/Field";
+import { ReplicaItem, MigrationItem } from "@src/@types/MainItem";
+import { MinionPoolDetails } from "@src/@types/MinionPool";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import { ThemeProps } from "@src/components/Theme";
+import MinionPoolMachines from "./MinionPoolMachines";
+import MinionPoolEvents from "./MinionPoolEvents";
+import MinionPoolMainDetails from "./MinionPoolMainDetails";
 
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
-`
+`;
 const Loading = styled.div<any>`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 200px;
-`
+`;
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
   margin-top: 64px;
-`
+`;
 const ButtonColumn = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -52,52 +52,53 @@ const ButtonColumn = styled.div<any>`
       margin-top: 0;
     }
   }
-`
+`;
 const DetailsBody = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
-`
+`;
 
 const NavigationItems = [
   {
-    label: 'Minion Pool',
-    value: '',
+    label: "Minion Pool",
+    value: "",
   },
   {
-    label: 'Machines',
-    value: 'machines',
+    label: "Machines",
+    value: "machines",
   },
   {
-    label: 'Events',
-    value: 'events',
+    label: "Events",
+    value: "events",
   },
-]
+];
 
 type Props = {
-  item?: MinionPoolDetails | null,
-  itemId: string
-  replicas: ReplicaItem[],
-  migrations: MigrationItem[]
-  endpoints: Endpoint[],
-  schema: Field[],
-  schemaLoading: boolean,
-  loading: boolean,
-  page: string,
-  onAllocate: () => void,
-  onDeleteMinionPoolClick: () => void,
-}
+  item?: MinionPoolDetails | null;
+  itemId: string;
+  replicas: ReplicaItem[];
+  migrations: MigrationItem[];
+  endpoints: Endpoint[];
+  schema: Field[];
+  schemaLoading: boolean;
+  loading: boolean;
+  page: string;
+  onAllocate: () => void;
+  onDeleteMinionPoolClick: () => void;
+};
 @observer
 class MinionPoolDetailsContent extends React.Component<Props> {
   isEndpointMissing() {
-    const endpoint = this.props.endpoints
-      .find(e => e.id === this.props.item?.endpoint_id)
+    const endpoint = this.props.endpoints.find(
+      e => e.id === this.props.item?.endpoint_id
+    );
 
-    return Boolean(!endpoint)
+    return Boolean(!endpoint);
   }
 
   renderBottomControls() {
-    const status = this.props.item?.status
-    const deleteEnabled = status === 'DEALLOCATED' || status === 'ERROR'
-    const deallocated = this.props.item?.status === 'DEALLOCATED'
+    const status = this.props.item?.status;
+    const deleteEnabled = status === "DEALLOCATED" || status === "ERROR";
+    const deallocated = this.props.item?.status === "DEALLOCATED";
 
     return (
       <Buttons>
@@ -106,8 +107,11 @@ class MinionPoolDetailsContent extends React.Component<Props> {
             primary
             hollow
             disabled={this.isEndpointMissing() || !deallocated}
-            onClick={() => { this.props.onAllocate() }}
-          >Allocate
+            onClick={() => {
+              this.props.onAllocate();
+            }}
+          >
+            Allocate
           </Button>
         </ButtonColumn>
         <ButtonColumn>
@@ -116,11 +120,12 @@ class MinionPoolDetailsContent extends React.Component<Props> {
             hollow
             disabled={!deleteEnabled}
             onClick={this.props.onDeleteMinionPoolClick}
-          >Delete Minion Pool
+          >
+            Delete Minion Pool
           </Button>
         </ButtonColumn>
       </Buttons>
-    )
+    );
   }
 
   renderLoading() {
@@ -128,12 +133,12 @@ class MinionPoolDetailsContent extends React.Component<Props> {
       <Loading>
         <StatusImage loading />
       </Loading>
-    )
+    );
   }
 
   renderMachines() {
-    if (this.props.page !== 'machines') {
-      return null
+    if (this.props.page !== "machines") {
+      return null;
     }
 
     return (
@@ -142,20 +147,20 @@ class MinionPoolDetailsContent extends React.Component<Props> {
         replicas={this.props.replicas}
         migrations={this.props.migrations}
       />
-    )
+    );
   }
 
   renderEvents() {
-    if (this.props.page !== 'events') {
-      return null
+    if (this.props.page !== "events") {
+      return null;
     }
 
-    return <MinionPoolEvents item={this.props.item} />
+    return <MinionPoolEvents item={this.props.item} />;
   }
 
   renderMainDetails() {
-    if (this.props.page !== '') {
-      return null
+    if (this.props.page !== "") {
+      return null;
     }
 
     return (
@@ -168,7 +173,7 @@ class MinionPoolDetailsContent extends React.Component<Props> {
         endpoints={this.props.endpoints}
         bottomControls={this.renderBottomControls()}
       />
-    )
+    );
   }
 
   render() {
@@ -187,8 +192,8 @@ class MinionPoolDetailsContent extends React.Component<Props> {
           {this.props.loading ? this.renderLoading() : null}
         </DetailsBody>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MinionPoolDetailsContent
+export default MinionPoolDetailsContent;

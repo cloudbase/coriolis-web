@@ -12,16 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import express from 'express'
-import bodyParser from 'body-parser'
-import metalHubProxy from './metalHubProxy'
-import azureProxy from './azureProxy'
+import express from "express";
+import bodyParser from "body-parser";
+import metalHubProxy from "./metalHubProxy";
+import azureProxy from "./azureProxy";
 
-const router = express.Router()
+const router = express.Router();
 
-router.use(bodyParser.json())
+router.use(bodyParser.json());
 
-azureProxy(router)
-metalHubProxy(router)
+azureProxy(router);
+metalHubProxy(router);
 
-export default router
+export default router;

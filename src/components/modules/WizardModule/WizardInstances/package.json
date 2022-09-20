@@ -2,6 +2,5 @@
   "name": "WizardInstances",
   "version": "0.0.0",
   "private": true,
-  "main":"./WizardInstances.tsx"
+  "main": "./WizardInstances.tsx"
 }
-

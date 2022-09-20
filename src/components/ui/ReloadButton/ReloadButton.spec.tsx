@@ -12,23 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import ReloadButton from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import ReloadButton from ".";
 
-describe('ReloadButton', () => {
-  it('fires click', () => {
-    const onClick = jest.fn()
-    render(<ReloadButton onClick={onClick} />)
-    TestUtils.select('ReloadButton__Wrapper')!.click()
-    expect(onClick).toHaveBeenCalled()
-  })
+describe("ReloadButton", () => {
+  it("fires click", () => {
+    const onClick = jest.fn();
+    render(<ReloadButton onClick={onClick} />);
+    TestUtils.select("ReloadButton__Wrapper")!.click();
+    expect(onClick).toHaveBeenCalled();
+  });
 
-  it('shows click animation', () => {
-    render(<ReloadButton onClick={() => { }} />)
-    expect(TestUtils.select('ReloadButton__Wrapper')!.classList).not.toContain('reload-animation')
-    TestUtils.select('ReloadButton__Wrapper')!.click()
-    expect(TestUtils.select('ReloadButton__Wrapper')!.classList).toContain('reload-animation')
-  })
-})
+  it("shows click animation", () => {
+    render(<ReloadButton onClick={() => {}} />);
+    expect(TestUtils.select("ReloadButton__Wrapper")!.classList).not.toContain(
+      "reload-animation"
+    );
+    TestUtils.select("ReloadButton__Wrapper")!.click();
+    expect(TestUtils.select("ReloadButton__Wrapper")!.classList).toContain(
+      "reload-animation"
+    );
+  });
+});

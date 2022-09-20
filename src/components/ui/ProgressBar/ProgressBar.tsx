@@ -12,36 +12,36 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 const ProgressLabel = styled.div`
   text-align: right;
   min-width: 36px;
   font-size: 12px;
-`
+`;
 const ProgressBarWrapper = styled.div`
   background: white;
   flex-grow: 1;
-`
+`;
 const Progress = styled.div<{ width: number }>`
   height: 2px;
   background: ${ThemePalette.primary};
   transition: all ${ThemeProps.animations.swift};
   width: ${props => props.width}%;
-`
+`;
 type Props = {
-  progress: number,
-  style?: React.CSSProperties
-  useLabel?: boolean
-}
+  progress: number;
+  style?: React.CSSProperties;
+  useLabel?: boolean;
+};
 @observer
 class ProgressBar extends React.Component<Props> {
   render() {
@@ -54,8 +54,8 @@ class ProgressBar extends React.Component<Props> {
           <ProgressLabel>{this.props.progress} %</ProgressLabel>
         ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default ProgressBar
+export default ProgressBar;

@@ -12,25 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import autobind from 'autobind-decorator'
+import React from "react";
+import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import autobind from "autobind-decorator";
 
-import DropdownButton from '@src/components/ui/Dropdowns/DropdownButton'
+import DropdownButton from "@src/components/ui/Dropdowns/DropdownButton";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import userStore from '@src/stores/UserStore'
-import configLoader from '@src/utils/Config'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import userStore from "@src/stores/UserStore";
+import configLoader from "@src/utils/Config";
 
-import { navigationMenu } from '@src/constants'
-import migrationImage from './images/migration.svg'
-import replicaImage from './images/replica.svg'
-import endpointImage from './images/endpoint.svg'
-import userImage from './images/user.svg'
-import projectImage from './images/project.svg'
-import minionPoolImage from './images/minion-pool.svg'
+import { navigationMenu } from "@src/constants";
+import migrationImage from "./images/migration.svg";
+import replicaImage from "./images/replica.svg";
+import endpointImage from "./images/endpoint.svg";
+import userImage from "./images/user.svg";
+import projectImage from "./images/project.svg";
+import minionPoolImage from "./images/minion-pool.svg";
 
 const ICON_MAP = {
   migration: migrationImage,
@@ -39,11 +39,11 @@ const ICON_MAP = {
   minionPool: minionPoolImage,
   user: userImage,
   project: projectImage,
-}
+};
 
 const Wrapper = styled.div<any>`
   position: relative;
-`
+`;
 const List = styled.div<any>`
   cursor: pointer;
   background: ${ThemePalette.grayscale[1]};
@@ -54,7 +54,7 @@ const List = styled.div<any>`
   top: 45px;
   z-index: 10;
   ${ThemeProps.boxShadow}
-`
+`;
 const ListItem = styled(Link)`
   display: flex;
   align-items: center;
@@ -74,13 +74,14 @@ const ListItem = styled(Link)`
     border-top-left-radius: ${ThemeProps.borderRadius};
     border-top-right-radius: ${ThemeProps.borderRadius};
     &:after {
-      content: ' ';
+      content: " ";
       position: absolute;
       width: 10px;
       height: 10px;
       background: ${ThemePalette.grayscale[1]};
       border: 1px solid ${ThemePalette.grayscale[1]};
-      border-color: transparent transparent ${ThemePalette.grayscale[1]} ${ThemePalette.grayscale[1]};
+      border-color: transparent transparent ${ThemePalette.grayscale[1]}
+        ${ThemePalette.grayscale[1]};
       transform: rotate(135deg);
       right: 10px;
       top: -6px;
@@ -89,163 +90,187 @@ const ListItem = styled(Link)`
     &:hover:after {
       background: ${ThemePalette.grayscale[0]};
       border: 1px solid ${ThemePalette.grayscale[0]};
-      border-color: transparent transparent ${ThemePalette.grayscale[0]} ${ThemePalette.grayscale[0]};
+      border-color: transparent transparent ${ThemePalette.grayscale[0]}
+        ${ThemePalette.grayscale[0]};
     }
   }
-`
+`;
 
 const Icon = styled.div<{ iconName: keyof typeof ICON_MAP }>`
   min-width: 48px;
   height: 48px;
-  background: url('${props => ICON_MAP[props.iconName]}') no-repeat center;
+  background: url("${props => ICON_MAP[props.iconName]}") no-repeat center;
   margin: 16px;
-`
+`;
 const Content = styled.div<any>`
   padding-right: 16px;
-`
+`;
 const Title = styled.div<any>`
   font-size: 16px;
   margin-bottom: 8px;
-`
+`;
 const Description = styled.div<any>`
   font-size: 12px;
   color: ${ThemePalette.grayscale[4]};
-`
+`;
 
 export type ItemType = {
-  href?: string,
-  iconName: keyof typeof ICON_MAP,
-  title: string,
-  description: string,
-  value?: string,
-  disabled?: boolean,
-  requiresAdmin?: boolean,
-}
+  href?: string;
+  iconName: keyof typeof ICON_MAP;
+  title: string;
+  description: string;
+  value?: string;
+  disabled?: boolean;
+  requiresAdmin?: boolean;
+};
 type Props = {
-  onChange: (item: ItemType) => void,
-}
+  onChange: (item: ItemType) => void;
+};
 type State = {
-  showDropdownList: boolean,
-}
+  showDropdownList: boolean;
+};
 @observer
 class NewItemDropdown extends React.Component<Props, State> {
   state = {
     showDropdownList: false,
-  }
+  };
 
-  itemMouseDown: boolean | undefined
+  itemMouseDown: boolean | undefined;
 
   componentDidMount() {
-    window.addEventListener('mousedown', this.handlePageClick, false)
+    window.addEventListener("mousedown", this.handlePageClick, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('mousedown', this.handlePageClick, false)
+    window.removeEventListener("mousedown", this.handlePageClick, false);
   }
 
   @autobind
   handlePageClick() {
     if (!this.itemMouseDown) {
-      this.setState({ showDropdownList: false })
+      this.setState({ showDropdownList: false });
     }
   }
 
   handleButtonClick() {
-    this.setState(prev => ({ showDropdownList: !prev.showDropdownList }))
+    this.setState(prev => ({ showDropdownList: !prev.showDropdownList }));
   }
 
   handleItemClick(item: ItemType) {
-    this.setState({ showDropdownList: false })
+    this.setState({ showDropdownList: false });
 
     if (this.props.onChange) {
-      this.props.onChange(item)
+      this.props.onChange(item);
     }
   }
 
   renderList() {
     if (!this.state.showDropdownList) {
-      return null
+      return null;
     }
 
-    const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false
-    const disabledPages = configLoader.config ? configLoader.config.disabledPages : []
+    const isAdmin = userStore.loggedUser ? userStore.loggedUser.isAdmin : false;
+    const disabledPages = configLoader.config
+      ? configLoader.config.disabledPages
+      : [];
     const items: ItemType[] = [
       {
-        title: 'Migration',
-        href: '/wizard/migration',
-        description: 'Migrate VMs between two clouds',
-        iconName: 'migration',
+        title: "Migration",
+        href: "/wizard/migration",
+        description: "Migrate VMs between two clouds",
+        iconName: "migration",
       },
       {
-        title: 'Replica',
-        href: '/wizard/replica',
-        description: 'Incrementally replicate VMs between two clouds',
-        iconName: 'replica',
+        title: "Replica",
+        href: "/wizard/replica",
+        description: "Incrementally replicate VMs between two clouds",
+        iconName: "replica",
       },
       {
-        title: 'Endpoint',
-        value: 'endpoint',
-        description: 'Add connection information for a cloud',
-        iconName: 'endpoint',
+        title: "Endpoint",
+        value: "endpoint",
+        description: "Add connection information for a cloud",
+        iconName: "endpoint",
       },
       {
-        title: 'Minion Pool',
-        value: 'minionPool',
-        description: 'Create a new Coriolis Minion Pool',
-        iconName: 'minionPool',
+        title: "Minion Pool",
+        value: "minionPool",
+        description: "Create a new Coriolis Minion Pool",
+        iconName: "minionPool",
       },
       {
-        title: 'User',
-        value: 'user',
-        description: 'Create a new Coriolis user',
-        iconName: 'user',
-        disabled: Boolean(navigationMenu.find(i => i.value === 'users'
-        && (disabledPages.find(p => p === 'users') || (i.requiresAdmin && !isAdmin)))),
+        title: "User",
+        value: "user",
+        description: "Create a new Coriolis user",
+        iconName: "user",
+        disabled: Boolean(
+          navigationMenu.find(
+            i =>
+              i.value === "users" &&
+              (disabledPages.find(p => p === "users") ||
+                (i.requiresAdmin && !isAdmin))
+          )
+        ),
       },
       {
-        title: 'Project',
-        value: 'project',
-        description: 'Create a new Coriolis project',
-        iconName: 'project',
-        disabled: Boolean(navigationMenu.find(i => i.value === 'projects'
-        && (disabledPages.find(p => p === 'users') || (i.requiresAdmin && !isAdmin)))),
+        title: "Project",
+        value: "project",
+        description: "Create a new Coriolis project",
+        iconName: "project",
+        disabled: Boolean(
+          navigationMenu.find(
+            i =>
+              i.value === "projects" &&
+              (disabledPages.find(p => p === "users") ||
+                (i.requiresAdmin && !isAdmin))
+          )
+        ),
       },
-    ]
+    ];
 
     const list = (
       <List>
-        {
-          items.filter(i => (i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true))
-            .map(item => (
-              <ListItem
-                key={item.title}
-                onMouseDown={() => { this.itemMouseDown = true }}
-                onMouseUp={() => { this.itemMouseDown = false }}
-                to={item.href || '#'}
-                onClick={() => { this.handleItemClick(item) }}
-              >
-                <Icon
-                  iconName={item.iconName}
-                />
-                <Content>
-                  <Title>{item.title}</Title>
-                  <Description>{item.description}</Description>
-                </Content>
-              </ListItem>
-            ))
-}
+        {items
+          .filter(i =>
+            i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true
+          )
+          .map(item => (
+            <ListItem
+              key={item.title}
+              onMouseDown={() => {
+                this.itemMouseDown = true;
+              }}
+              onMouseUp={() => {
+                this.itemMouseDown = false;
+              }}
+              to={item.href || "#"}
+              onClick={() => {
+                this.handleItemClick(item);
+              }}
+            >
+              <Icon iconName={item.iconName} />
+              <Content>
+                <Title>{item.title}</Title>
+                <Description>{item.description}</Description>
+              </Content>
+            </ListItem>
+          ))}
       </List>
-    )
+    );
 
-    return list
+    return list;
   }
 
   render() {
     return (
       <Wrapper>
         <DropdownButton
-          onMouseDown={() => { this.itemMouseDown = true }}
-          onMouseUp={() => { this.itemMouseDown = false }}
+          onMouseDown={() => {
+            this.itemMouseDown = true;
+          }}
+          onMouseUp={() => {
+            this.itemMouseDown = false;
+          }}
           onClick={() => this.handleButtonClick()}
           value="New"
           primary
@@ -253,8 +278,8 @@ class NewItemDropdown extends React.Component<Props, State> {
         />
         {this.renderList()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default NewItemDropdown
+export default NewItemDropdown;

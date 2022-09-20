@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import CopyButton from '@src/components/ui/CopyButton'
-import DomUtils from '@src/utils/DomUtils'
-import notificationStore from '@src/stores/NotificationStore'
+import CopyButton from "@src/components/ui/CopyButton";
+import DomUtils from "@src/utils/DomUtils";
+import notificationStore from "@src/stores/NotificationStore";
 
 const CopyButtonStyled = styled(CopyButton)`
   background-position-y: 4px;
   margin-left: 4px;
-`
+`;
 const Wrapper = styled.div<any>`
   cursor: pointer;
   word-break: break-word;
@@ -31,47 +31,49 @@ const Wrapper = styled.div<any>`
   &:hover ${CopyButtonStyled} {
     opacity: 1;
   }
-`
+`;
 
 type Props = {
-  value: string | null | undefined,
-  onCopy?: (value: string) => void,
-  useDangerousHtml?: boolean,
-}
+  value: string | null | undefined;
+  onCopy?: (value: string) => void;
+  useDangerousHtml?: boolean;
+};
 @observer
 class CopyMultineValue extends React.Component<Props> {
   handleCopy() {
-    let { value } = this.props
+    let { value } = this.props;
     if (!value) {
-      return
+      return;
     }
     if (this.props.useDangerousHtml) {
-      value = value.replace(/<br\s*\/>/g, '\n').replace(/<.*?>/g, '')
+      value = value.replace(/<br\s*\/>/g, "\n").replace(/<.*?>/g, "");
     }
 
-    const succesful = DomUtils.copyTextToClipboard(value)
-    if (this.props.onCopy) this.props.onCopy(value)
+    const succesful = DomUtils.copyTextToClipboard(value);
+    if (this.props.onCopy) this.props.onCopy(value);
 
     if (succesful) {
-      notificationStore.alert('The message has been copied to clipboard.')
+      notificationStore.alert("The message has been copied to clipboard.");
     }
   }
 
   render() {
-    let text: React.ReactNode = this.props.value
+    let text: React.ReactNode = this.props.value;
     if (this.props.useDangerousHtml) {
-      text = <span dangerouslySetInnerHTML={{ __html: text as string }} />
+      text = <span dangerouslySetInnerHTML={{ __html: text as string }} />;
     }
 
     return (
       <Wrapper
-        onClick={() => { this.handleCopy() }}
+        onClick={() => {
+          this.handleCopy();
+        }}
       >
         {text}
         <CopyButtonStyled />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default CopyMultineValue
+export default CopyMultineValue;

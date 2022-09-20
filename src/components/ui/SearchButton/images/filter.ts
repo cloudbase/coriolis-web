@@ -15,6 +15,6 @@ const filter = (color: string) => `
         </g>
     </g>
 </svg>
-`
+`;
 
-export default filter
+export default filter;

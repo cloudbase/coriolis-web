@@ -12,67 +12,67 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Endpoint } from './Endpoint'
-import type { Instance } from './Instance'
-import type { NetworkMap } from './Network'
+import type { Endpoint } from "./Endpoint";
+import type { Instance } from "./Instance";
+import type { NetworkMap } from "./Network";
 
 export type VmSize = {
-  name: string,
-  size?: string,
-}
+  name: string;
+  size?: string;
+};
 
 export type AzureLocation = {
-  id: string,
-  name: string,
-}
+  id: string;
+  name: string;
+};
 
 export type Group = {
-  id: string,
-  name: string,
-}
+  id: string;
+  name: string;
+};
 
 export type VmItem = {
-  id: string,
+  id: string;
   properties: {
-    recommendedSize: string,
+    recommendedSize: string;
     disks: {
       [diskName: string]: {
-        recommendedDiskType: string,
-      },
-    },
-    datacenterManagementServerName: string,
-    datacenterMachineArmId: string,
-    displayName: string,
-    operatingSystemName: string,
-  },
-}
+        recommendedDiskType: string;
+      };
+    };
+    datacenterManagementServerName: string;
+    datacenterMachineArmId: string;
+    displayName: string;
+    operatingSystemName: string;
+  };
+};
 
 export type Assessment = {
-  name: string,
-  id: string,
-  projectName: string,
-  resourceGroupName: string,
-  groupName: string,
-  assessmentName: string,
-  location: string,
+  name: string;
+  id: string;
+  projectName: string;
+  resourceGroupName: string;
+  groupName: string;
+  assessmentName: string;
+  location: string;
   project: {
-    name: string,
-  },
-  group: Group,
+    name: string;
+  };
+  group: Group;
   properties: {
-    status: string,
-    updatedTimestamp: string,
-    azureLocation: string,
-    numberOfMachines: string,
-  },
-  connectionInfo: { subscription_id: string } & Endpoint['connection_info'],
-}
+    status: string;
+    updatedTimestamp: string;
+    azureLocation: string;
+    numberOfMachines: string;
+  };
+  connectionInfo: { subscription_id: string } & Endpoint["connection_info"];
+};
 
 export type MigrationInfo = {
-  source: Endpoint | null,
-  target: Endpoint,
-  selectedInstances: Instance[],
-  fieldValues: { [fieldValue: string]: any },
-  networks: NetworkMap[],
-  vmSizes: { [vmSize: string]: VmSize },
-}
+  source: Endpoint | null;
+  target: Endpoint;
+  selectedInstances: Instance[];
+  fieldValues: { [fieldValue: string]: any };
+  networks: NetworkMap[];
+  vmSizes: { [vmSize: string]: VmSize };
+};

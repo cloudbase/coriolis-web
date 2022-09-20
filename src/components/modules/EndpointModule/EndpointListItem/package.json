@@ -2,6 +2,5 @@
   "name": "EndpointListItem",
   "version": "0.0.0",
   "private": true,
-  "main":"./EndpointListItem.tsx"
+  "main": "./EndpointListItem.tsx"
 }
-

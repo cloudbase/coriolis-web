@@ -12,26 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { storiesOf } from '@storybook/react'
-import Switch from '.'
+import * as React from "react";
+import { storiesOf } from "@storybook/react";
+import Switch from ".";
 
 type Props = {
-  disabled?: boolean,
-  disabledLoading?: boolean,
-  secondary?: boolean,
-  triState?: boolean,
-  big?: boolean,
-  height?: number,
-}
+  disabled?: boolean;
+  disabledLoading?: boolean;
+  secondary?: boolean;
+  triState?: boolean;
+  big?: boolean;
+  height?: number;
+};
 
 class Wrapper extends React.Component<Props> {
   state = {
     checked: false,
-  }
+  };
 
   handleChange(checked: boolean | null) {
-    this.setState({ checked })
+    this.setState({ checked });
   }
 
   render() {
@@ -40,17 +40,19 @@ class Wrapper extends React.Component<Props> {
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         checked={this.state.checked}
-        onChange={checked => { this.handleChange(checked) }}
+        onChange={checked => {
+          this.handleChange(checked);
+        }}
       />
-    )
+    );
   }
 }
 
-storiesOf('Switch', module)
-  .add('default', () => <Wrapper />)
-  .add('disabled', () => <Wrapper disabled />)
-  .add('disabled loading', () => <Wrapper disabledLoading />)
-  .add('secondary', () => <Wrapper secondary />)
-  .add('tri-state', () => <Wrapper triState />)
-  .add('colored', () => <Wrapper big />)
-  .add('small', () => <Wrapper height={16} />)
+storiesOf("Switch", module)
+  .add("default", () => <Wrapper />)
+  .add("disabled", () => <Wrapper disabled />)
+  .add("disabled loading", () => <Wrapper disabledLoading />)
+  .add("secondary", () => <Wrapper secondary />)
+  .add("tri-state", () => <Wrapper triState />)
+  .add("colored", () => <Wrapper big />)
+  .add("small", () => <Wrapper height={16} />);

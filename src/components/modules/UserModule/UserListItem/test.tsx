@@ -12,49 +12,49 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import sinon from 'sinon'
-import TW from '@src/utils/TestWrapper'
-import type { User } from '@src/@types/User'
-import UserListItem from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import sinon from "sinon";
+import TW from "@src/utils/TestWrapper";
+import type { User } from "@src/@types/User";
+import UserListItem from ".";
 
 type Props = {
-  item: User,
-  onClick: () => void,
-  getProjectName: (projectId: string | null) => string,
-}
+  item: User;
+  onClick: () => void;
+  getProjectName: (projectId: string | null) => string;
+};
 
-const wrap = (props: Props) => new TW(shallow(
-  <UserListItem {...props} />
-), 'ulItem')
+const wrap = (props: Props) =>
+  new TW(shallow(<UserListItem {...props} />), "ulItem");
 
 const user = {
-  id: 'id',
-  name: 'User Name',
-  description: 'user description',
-  email: 'user@email.com',
-  project_id: 'project_id',
+  id: "id",
+  name: "User Name",
+  description: "user description",
+  email: "user@email.com",
+  project_id: "project_id",
   enabled: true,
-  project: { name: '', id: '' },
-}
-describe('UserListItem Component', () => {
-  it('renders with correct data', () => {
-    let wrapper = wrap({ item: user, onClick: () => { }, getProjectName: id => `project ${id || ''}` })
-    expect(wrapper.findText('name')).toBe(user.name)
-    expect(wrapper.findText('description')).toBe(user.description)
-    expect(wrapper.findText('email')).toBe(user.email)
-    expect(wrapper.findText('project')).toBe('project project_id')
-    expect(wrapper.findText('enabled')).toBe('Yes')
-  })
+  project: { name: "", id: "" },
+};
+describe("UserListItem Component", () => {
+  it("renders with correct data", () => {
+    const wrapper = wrap({
+      item: user,
+      onClick: () => {},
+      getProjectName: id => `project ${id || ""}`,
+    });
+    expect(wrapper.findText("name")).toBe(user.name);
+    expect(wrapper.findText("description")).toBe(user.description);
+    expect(wrapper.findText("email")).toBe(user.email);
+    expect(wrapper.findText("project")).toBe("project project_id");
+    expect(wrapper.findText("enabled")).toBe("Yes");
+  });
 
-  it('dispatches click', () => {
-    let onClick = sinon.spy()
-    let wrapper = wrap({ item: user, onClick, getProjectName: () => '' })
-    wrapper.find('content').click()
-    expect(onClick.calledOnce).toBe(true)
-  })
-})
-
-
-
+  it("dispatches click", () => {
+    const onClick = sinon.spy();
+    const wrapper = wrap({ item: user, onClick, getProjectName: () => "" });
+    wrapper.find("content").click();
+    expect(onClick.calledOnce).toBe(true);
+  });
+});

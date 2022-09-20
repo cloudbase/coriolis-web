@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import DropdownFilter from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import DropdownFilter from ".";
 
 class Wrapper extends React.Component {
   state = {
-    value: '',
-  }
+    value: "",
+  };
 
   render() {
     return (
@@ -27,15 +27,16 @@ class Wrapper extends React.Component {
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         searchValue={this.state.value}
-        onSearchChange={(value: string) => { this.setState({ value }) }}
+        onSearchChange={(value: string) => {
+          this.setState({ value });
+        }}
       />
-    )
+    );
   }
 }
 
-storiesOf('DropdownFilter', module)
-  .add('default', () => (
-    <div style={{ marginLeft: '300px' }}>
-      <Wrapper />
-    </div>
-  ))
+storiesOf("DropdownFilter", module).add("default", () => (
+  <div style={{ marginLeft: "300px" }}>
+    <Wrapper />
+  </div>
+));

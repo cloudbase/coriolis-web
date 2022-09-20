@@ -12,20 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import WizardEndpointList from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import WizardEndpointList from ".";
 
-const providers: any = ['openstack', 'azure', 'aws', 'opc', 'oracle_vm', 'vmware_vsphere']
+const providers: any = [
+  "openstack",
+  "azure",
+  "aws",
+  "opc",
+  "oracle_vm",
+  "vmware_vsphere",
+];
 
 const endpoints: any = [
-  { id: 'e-1', name: 'An endpoint', type: 'openstack' },
-  { id: 'e-2', name: 'Another endpoint', type: 'azure' },
-  { id: 'e-3', name: 'Yet another endpoint', type: 'azure' },
-]
-const props: any = {}
-storiesOf('WizardEndpointList', module)
-  .add('default', () => (
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    <WizardEndpointList providers={providers} endpoints={endpoints} {...props} />
-  ))
+  { id: "e-1", name: "An endpoint", type: "openstack" },
+  { id: "e-2", name: "Another endpoint", type: "azure" },
+  { id: "e-3", name: "Yet another endpoint", type: "azure" },
+];
+const props: any = {};
+storiesOf("WizardEndpointList", module).add("default", () => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <WizardEndpointList providers={providers} endpoints={endpoints} {...props} />
+));

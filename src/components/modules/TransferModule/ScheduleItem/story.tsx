@@ -12,42 +12,44 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import ScheduleItem from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import ScheduleItem from ".";
 
-const colWidths = ['6%', '18%', '10%', '18%', '10%', '10%', '23%', '5%']
+const colWidths = ["6%", "18%", "10%", "18%", "10%", "10%", "23%", "5%"];
 
 const Wrapper = (props: any) => (
-  <div style={{ width: '924px' }}>
+  <div style={{ width: "924px" }}>
     <ScheduleItem
       saving={false}
       enabling={false}
       deleting={false}
-      onChange={() => { }}
-      onDeleteClick={() => { }}
-      onSaveSchedule={() => { }}
-      onShowOptionsClick={() => { }}
+      onChange={() => {}}
+      onDeleteClick={() => {}}
+      onSaveSchedule={() => {}}
+      onShowOptionsClick={() => {}}
       unsavedSchedules={[]}
       timezone="local"
       colWidths={colWidths}
       item={{
-        id: 'schedule-1',
+        id: "schedule-1",
         enabled: props.enabled,
         schedule: {
-          hour: 1, minute: 1, dow: 2, dom: 3, month: 5,
+          hour: 1,
+          minute: 1,
+          dow: 2,
+          dom: 3,
+          month: 5,
         },
         expiration_date: new Date(2018, 3, 25, 4, 0, 0),
         shutdown_instances: props.shutdown_instances,
       }}
     />
   </div>
-)
+);
 
-storiesOf('ScheduleItem', module)
-  .add('default', () => (
-    <Wrapper enabled={false} shutdown_instances={false} />
-  ))
-  .add('enabled with shutdown_instances', () => (
+storiesOf("ScheduleItem", module)
+  .add("default", () => <Wrapper enabled={false} shutdown_instances={false} />)
+  .add("enabled with shutdown_instances", () => (
     <Wrapper enabled shutdown_instances />
-  ))
+  ));

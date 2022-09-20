@@ -12,88 +12,105 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import { NotificationItemData } from '@src/@types/NotificationItem'
-import progressImage from '@src/components/ui/StatusComponents/StatusIcon/images/progress'
-import { ThemePalette } from '@src/components/Theme'
-import DashboardActivity from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import { NotificationItemData } from "@src/@types/NotificationItem";
+import progressImage from "@src/components/ui/StatusComponents/StatusIcon/images/progress";
+import { ThemePalette } from "@src/components/Theme";
+import DashboardActivity from ".";
 
-const encodedProgressImage = encodeURIComponent(progressImage(ThemePalette.grayscale[3], ThemePalette.primary))
+const encodedProgressImage = encodeURIComponent(
+  progressImage(ThemePalette.grayscale[3], ThemePalette.primary)
+);
 
-jest.mock('react-router-dom', () => ({ Link: 'a' }))
+jest.mock("react-router-dom", () => ({ Link: "a" }));
 
 const ITEMS: NotificationItemData[] = [
   {
-    id: '1',
-    type: 'replica',
-    status: 'ERROR',
-    name: 'Replica 1',
-    description: 'Replica 1 description',
+    id: "1",
+    type: "replica",
+    status: "ERROR",
+    name: "Replica 1",
+    description: "Replica 1 description",
   },
   {
-    id: '2',
-    type: 'migration',
-    status: 'RUNNING',
-    name: 'Migration 1',
-    description: 'Migration 1 description',
+    id: "2",
+    type: "migration",
+    status: "RUNNING",
+    name: "Migration 1",
+    description: "Migration 1 description",
   },
   {
-    id: '3',
-    type: 'migration',
-    status: 'COMPLETED',
-    name: 'Migration 2',
-    description: 'Migration 2 description',
+    id: "3",
+    type: "migration",
+    status: "COMPLETED",
+    name: "Migration 2",
+    description: "Migration 2 description",
   },
-]
+];
 
-describe('DashboardActivity', () => {
-  it('renders no recent activity', () => {
-    render(<DashboardActivity notificationItems={[]} />)
-    expect(TestUtils.select('DashboardActivity__Message')!.textContent).toContain('There is no recent activity')
-  })
+describe("DashboardActivity", () => {
+  it("renders no recent activity", () => {
+    render(<DashboardActivity notificationItems={[]} />);
+    expect(
+      TestUtils.select("DashboardActivity__Message")!.textContent
+    ).toContain("There is no recent activity");
+  });
 
-  it('fires new click', () => {
-    const onNewClick = jest.fn()
-    render(<DashboardActivity notificationItems={[]} onNewClick={onNewClick} />)
-    TestUtils.select('Button__StyledButton')!.click()
-    expect(onNewClick).toHaveBeenCalled()
-  })
+  it("fires new click", () => {
+    const onNewClick = jest.fn();
+    render(
+      <DashboardActivity notificationItems={[]} onNewClick={onNewClick} />
+    );
+    TestUtils.select("Button__StyledButton")!.click();
+    expect(onNewClick).toHaveBeenCalled();
+  });
 
-  it('renders loading', () => {
-    const { rerender } = render(<DashboardActivity notificationItems={[]} loading />)
-    expect(TestUtils.select('DashboardActivity__LoadingWrapper')).toBeTruthy()
+  it("renders loading", () => {
+    const { rerender } = render(
+      <DashboardActivity notificationItems={[]} loading />
+    );
+    expect(TestUtils.select("DashboardActivity__LoadingWrapper")).toBeTruthy();
 
-    rerender(<DashboardActivity notificationItems={[]} />)
-    expect(TestUtils.select('DashboardActivity__LoadingWrapper')).toBeFalsy()
-  })
+    rerender(<DashboardActivity notificationItems={[]} />);
+    expect(TestUtils.select("DashboardActivity__LoadingWrapper")).toBeFalsy();
+  });
 
-  it('renders all items', () => {
-    render(<DashboardActivity notificationItems={ITEMS} />)
+  it("renders all items", () => {
+    render(<DashboardActivity notificationItems={ITEMS} />);
 
-    const listItemsEl = TestUtils.selectAll('DashboardActivity__ListItem')
-    expect(listItemsEl.length).toBe(ITEMS.length)
-  })
+    const listItemsEl = TestUtils.selectAll("DashboardActivity__ListItem");
+    expect(listItemsEl.length).toBe(ITEMS.length);
+  });
 
   it.each`
     idx  | href                     | expectedStatusIcon
-    ${0} | ${'/replicas/1'}         | ${'error-hollow.svg'}
-    ${1} | ${'/migrations/2/tasks'} | ${encodedProgressImage}
-    ${2} | ${'/migrations/3'}       | ${'success-hollow.svg'}
-  `('renders item with href $href', ({
-    idx, href, expectedStatusIcon,
-  }) => {
-    render(<DashboardActivity notificationItems={ITEMS} />)
+    ${0} | ${"/replicas/1"}         | ${"error-hollow.svg"}
+    ${1} | ${"/migrations/2/tasks"} | ${encodedProgressImage}
+    ${2} | ${"/migrations/3"}       | ${"success-hollow.svg"}
+  `("renders item with href $href", ({ idx, href, expectedStatusIcon }) => {
+    render(<DashboardActivity notificationItems={ITEMS} />);
 
-    const itemElement = TestUtils.selectAll('DashboardActivity__ListItem')[idx]
-    expect(itemElement.getAttribute('to')).toBe(href)
+    const itemElement = TestUtils.selectAll("DashboardActivity__ListItem")[idx];
+    expect(itemElement.getAttribute("to")).toBe(href);
 
-    const background = window.getComputedStyle(TestUtils.select('StatusIcon__Wrapper', itemElement)!).background
-    expect(background).toContain(expectedStatusIcon)
+    const background = window.getComputedStyle(
+      TestUtils.select("StatusIcon__Wrapper", itemElement)!
+    ).background;
+    expect(background).toContain(expectedStatusIcon);
 
-    expect(TestUtils.select('NotificationDropdown__ItemReplicaBadge', itemElement)!.textContent).toContain(ITEMS[idx].type === 'replica' ? 'RE' : 'MI')
-    expect(TestUtils.select('NotificationDropdown__ItemTitle', itemElement)!.textContent).toContain(ITEMS[idx].name)
-    expect(TestUtils.select('NotificationDropdown__ItemDescription', itemElement)!.textContent).toContain(ITEMS[idx].description)
-  })
-})
+    expect(
+      TestUtils.select("NotificationDropdown__ItemReplicaBadge", itemElement)!
+        .textContent
+    ).toContain(ITEMS[idx].type === "replica" ? "RE" : "MI");
+    expect(
+      TestUtils.select("NotificationDropdown__ItemTitle", itemElement)!
+        .textContent
+    ).toContain(ITEMS[idx].name);
+    expect(
+      TestUtils.select("NotificationDropdown__ItemDescription", itemElement)!
+        .textContent
+    ).toContain(ITEMS[idx].description);
+  });
+});

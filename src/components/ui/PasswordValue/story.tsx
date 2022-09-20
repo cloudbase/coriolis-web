@@ -12,11 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import PasswordValue from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import PasswordValue from ".";
 
-storiesOf('PasswordValue', module)
-  .add('default', () => (
-    <PasswordValue value="password" />
-  ))
+storiesOf("PasswordValue", module).add("default", () => (
+  <PasswordValue value="password" />
+));

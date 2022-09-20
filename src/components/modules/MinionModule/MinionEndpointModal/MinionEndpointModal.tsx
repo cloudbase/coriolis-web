@@ -12,30 +12,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import { CSSTransitionGroup } from 'react-transition-group'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import { CSSTransitionGroup } from "react-transition-group";
 
-import Modal from '@src/components/ui/Modal'
-import { Providers, ProviderTypes } from '@src/@types/Providers'
-import { Endpoint } from '@src/@types/Endpoint'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import Switch from '@src/components/ui/Switch'
-import { providerTypes } from '@src/constants'
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
-import Dropdown from '@src/components/ui/Dropdowns/Dropdown'
-import Button from '@src/components/ui/Button'
-import { ThemePalette } from '@src/components/Theme'
+import Modal from "@src/components/ui/Modal";
+import { Providers, ProviderTypes } from "@src/@types/Providers";
+import { Endpoint } from "@src/@types/Endpoint";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Switch from "@src/components/ui/Switch";
+import { providerTypes } from "@src/constants";
+import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
+import Button from "@src/components/ui/Button";
+import { ThemePalette } from "@src/components/Theme";
 
-const Wrapper = styled.div``
+const Wrapper = styled.div``;
 const LoadingWrapper = styled.div`
   margin: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-`
+`;
 const ContentWrapper = styled.div`
   padding: 48px;
   > span {
@@ -47,18 +47,18 @@ const ContentWrapper = styled.div`
       margin-left: 24px;
     }
   }
-`
+`;
 const NoEndpoints = styled.div`
   padding: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-`
+`;
 const NoEndpointsMessage = styled.div`
   text-align: center;
   margin-top: 48px;
-`
+`;
 const ProviderWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -78,50 +78,56 @@ const ProviderWrapper = styled.div`
     opacity: 1;
     transition: opacity 250ms ease-out;
   }
-`
+`;
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 16px 32px 32px 32px;
-`
+`;
 const PoolPlatformWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 32px 0 64px 0;
-`
+`;
 const PoolPlatformOptions = styled.div`
   display: flex;
   align-items: center;
-`
-const PoolPlatformOption = styled.div``
+`;
+const PoolPlatformOption = styled.div``;
 const SwitchWrapper = styled.div`
   margin: 0 16px;
-`
+`;
 
 type Props = {
-  providers: Providers | null
-  endpoints: Endpoint[]
-  loading: boolean
-  onRequestClose: () => void
-  onSelectEndpoint: (endpoint: Endpoint, platform: 'source' | 'destination') => void
-}
+  providers: Providers | null;
+  endpoints: Endpoint[];
+  loading: boolean;
+  onRequestClose: () => void;
+  onSelectEndpoint: (
+    endpoint: Endpoint,
+    platform: "source" | "destination"
+  ) => void;
+};
 
 type State = {
-  selectedEndpoint: Endpoint | null
-  platform: 'source' | 'destination'
-}
+  selectedEndpoint: Endpoint | null;
+  platform: "source" | "destination";
+};
 
 @observer
 class MinionEndpointModal extends React.Component<Props, State> {
   state: State = {
     selectedEndpoint: null,
-    platform: 'source',
-  }
+    platform: "source",
+  };
 
   handleNextClick() {
-    this.props.onSelectEndpoint(this.state.selectedEndpoint!, this.state.platform)
+    this.props.onSelectEndpoint(
+      this.state.selectedEndpoint!,
+      this.state.platform
+    );
   }
 
   renderNoEndpoints() {
@@ -129,11 +135,11 @@ class MinionEndpointModal extends React.Component<Props, State> {
       <NoEndpoints>
         <StatusImage status="ERROR" />
         <NoEndpointsMessage>
-          Please create a Coriolis Endpoint with Minion Pool support
-          before creating a Coriolis Minion Pool.
+          Please create a Coriolis Endpoint with Minion Pool support before
+          creating a Coriolis Minion Pool.
         </NoEndpointsMessage>
       </NoEndpoints>
-    )
+    );
   }
 
   renderPoolPlatform() {
@@ -144,39 +150,46 @@ class MinionEndpointModal extends React.Component<Props, State> {
           <SwitchWrapper>
             <Switch
               big
-              checked={this.state.platform === 'destination'}
+              checked={this.state.platform === "destination"}
               checkedColor={ThemePalette.primary}
               uncheckedColor={ThemePalette.primary}
               onChange={value => {
                 this.setState({
-                  platform: value ? 'destination' : 'source',
-                })
+                  platform: value ? "destination" : "source",
+                });
               }}
             />
           </SwitchWrapper>
           <PoolPlatformOption>Destination Minion Pool</PoolPlatformOption>
         </PoolPlatformOptions>
       </PoolPlatformWrapper>
-    )
+    );
   }
 
   renderContent() {
     if (!this.props.providers) {
-      return this.renderNoEndpoints()
+      return this.renderNoEndpoints();
     }
 
-    const availableProviders = Object.keys(this.props.providers).filter((name: any) => {
-      const providerName = name as ProviderTypes
-      const providerType = this.state.platform === 'source' ? providerTypes.SOURCE_MINION_POOL : providerTypes.DESTINATION_MINION_POOL
-      const types = this.props.providers?.[providerName].types.indexOf(providerType)
-      return types && types > -1
-    })
+    const availableProviders = Object.keys(this.props.providers).filter(
+      (name: any) => {
+        const providerName = name as ProviderTypes;
+        const providerType =
+          this.state.platform === "source"
+            ? providerTypes.SOURCE_MINION_POOL
+            : providerTypes.DESTINATION_MINION_POOL;
+        const types =
+          this.props.providers?.[providerName].types.indexOf(providerType);
+        return types && types > -1;
+      }
+    );
 
-    const availableEndpoints = this.props.endpoints
-      .filter(e => availableProviders.indexOf(e.type) > -1)
+    const availableEndpoints = this.props.endpoints.filter(
+      e => availableProviders.indexOf(e.type) > -1
+    );
 
     if (availableProviders.length === 0 || availableEndpoints.length === 0) {
-      return this.renderNoEndpoints()
+      return this.renderNoEndpoints();
     }
 
     return (
@@ -193,22 +206,30 @@ class MinionEndpointModal extends React.Component<Props, State> {
               <EndpointLogos
                 height={128}
                 endpoint={providerName}
-                style={{ marginBottom: '16px' }}
+                style={{ marginBottom: "16px" }}
               />
               <Dropdown
-                items={this.props.endpoints.filter(e => e.type === providerName)}
+                items={this.props.endpoints.filter(
+                  e => e.type === providerName
+                )}
                 valueField="id"
                 labelField="name"
                 noSelectionMessage="Choose an endpoint"
                 centered
-                selectedItem={this.state.selectedEndpoint?.type === providerName ? this.state.selectedEndpoint : null}
-                onChange={endpoint => { this.setState({ selectedEndpoint: endpoint }) }}
+                selectedItem={
+                  this.state.selectedEndpoint?.type === providerName
+                    ? this.state.selectedEndpoint
+                    : null
+                }
+                onChange={endpoint => {
+                  this.setState({ selectedEndpoint: endpoint });
+                }}
               />
             </ProviderWrapper>
           ))}
         </CSSTransitionGroup>
       </ContentWrapper>
-    )
+    );
   }
 
   renderLoading() {
@@ -216,7 +237,7 @@ class MinionEndpointModal extends React.Component<Props, State> {
       <LoadingWrapper>
         <StatusImage loading />
       </LoadingWrapper>
-    )
+    );
   }
 
   render() {
@@ -231,19 +252,23 @@ class MinionEndpointModal extends React.Component<Props, State> {
           {this.props.loading ? this.renderLoading() : null}
           {!this.props.loading ? this.renderPoolPlatform() : null}
           <ButtonWrapper>
-            <Button secondary onClick={this.props.onRequestClose}>Cancel</Button>
+            <Button secondary onClick={this.props.onRequestClose}>
+              Cancel
+            </Button>
             <Button
               primary
               disabled={!this.state.selectedEndpoint}
-              onClick={() => { this.handleNextClick() }}
+              onClick={() => {
+                this.handleNextClick();
+              }}
             >
               Next
             </Button>
           </ButtonWrapper>
         </Wrapper>
       </Modal>
-    )
+    );
   }
 }
 
-export default MinionEndpointModal
+export default MinionEndpointModal;

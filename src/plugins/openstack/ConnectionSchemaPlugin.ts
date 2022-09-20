@@ -12,10 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import type { Schema } from '@src/@types/Schema'
-import type { Field } from '@src/@types/Field'
-import type { Endpoint } from '@src/@types/Endpoint'
-import ConnectionSchemaParserBase from '@src/plugins/default/ConnectionSchemaPlugin'
+import type { Schema } from "@src/@types/Schema";
+import type { Field } from "@src/@types/Field";
+import type { Endpoint } from "@src/@types/Endpoint";
+import ConnectionSchemaParserBase from "@src/plugins/default/ConnectionSchemaPlugin";
 
 const customSort = (fields: Field[]) => {
   const sortPriority: any = {
@@ -30,78 +30,96 @@ const customSort = (fields: Field[]) => {
     identity_api_version: 8,
     project_domain: 9,
     user_domain: 10,
-  }
+  };
   fields.sort((a, b) => {
     if (sortPriority[a.name] && sortPriority[b.name]) {
-      return sortPriority[a.name] - sortPriority[b.name]
+      return sortPriority[a.name] - sortPriority[b.name];
     }
     if (sortPriority[a.name]) {
-      return -1
+      return -1;
     }
     if (sortPriority[b.name]) {
-      return 1
+      return 1;
     }
-    return a.name.localeCompare(b.name)
-  })
+    return a.name.localeCompare(b.name);
+  });
 
-  return fields
-}
+  return fields;
+};
 
 export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
   override parseSchemaToFields(schema: Schema): Field[] {
-    const fields = super.parseSchemaToFields(schema)
-    const identityField = fields.find(f => f.name === 'identity_api_version')
+    const fields = super.parseSchemaToFields(schema);
+    const identityField = fields.find(f => f.name === "identity_api_version");
     if (identityField && !identityField.default) {
-      identityField.default = identityField.minimum
+      identityField.default = identityField.minimum;
     }
 
-    fields.find(f => f.name === 'ceph_options')?.properties?.forEach(f => { f.name = `ceph_options/${f.name}` })
+    fields
+      .find(f => f.name === "ceph_options")
+      ?.properties?.forEach(f => {
+        f.name = `ceph_options/${f.name}`;
+      });
 
-    const createInputChoice = (name: string, field1Name: string, field2Name: string) => {
-      const field1 = fields.find(f => f.name === field1Name)
-      const field2 = fields.find(f => f.name === field2Name)
+    const createInputChoice = (
+      name: string,
+      field1Name: string,
+      field2Name: string
+    ) => {
+      const field1 = fields.find(f => f.name === field1Name);
+      const field2 = fields.find(f => f.name === field2Name);
       if (field1 && field2) {
-        field1.label = 'Name'
-        field2.label = 'ID'
+        field1.label = "Name";
+        field2.label = "ID";
         const field: Field = {
           name,
-          type: 'input-choice',
+          type: "input-choice",
           items: [field1, field2],
-        }
-        fields.push(field)
+        };
+        fields.push(field);
       }
-    }
-    createInputChoice('project_domain', 'project_domain_name', 'project_domain_id')
-    createInputChoice('user_domain', 'user_domain_name', 'user_domain_id')
+    };
+    createInputChoice(
+      "project_domain",
+      "project_domain_name",
+      "project_domain_id"
+    );
+    createInputChoice("user_domain", "user_domain_name", "user_domain_id");
 
-    customSort(fields)
+    customSort(fields);
     fields.push({
-      name: 'openstack_use_current_user',
-      type: 'boolean',
-    })
-    return fields
+      name: "openstack_use_current_user",
+      type: "boolean",
+    });
+    return fields;
   }
 
-  override parseConnectionInfoToPayload(data: { [prop: string]: any }, schema: Schema) {
+  override parseConnectionInfoToPayload(
+    data: { [prop: string]: any },
+    schema: Schema
+  ) {
     if (data.openstack_use_current_user) {
-      return {}
+      return {};
     }
     // eslint-disable-next-line no-param-reassign
-    delete data.project_domain
+    delete data.project_domain;
     // eslint-disable-next-line no-param-reassign
-    delete data.user_domain
-    const payload = super.parseConnectionInfoToPayload(data, schema)
-    return payload
+    delete data.user_domain;
+    const payload = super.parseConnectionInfoToPayload(data, schema);
+    return payload;
   }
 
   override parseConnectionResponse(endpoint: Endpoint) {
-    if (!endpoint.connection_info || Object.keys(endpoint.connection_info).length === 0) {
+    if (
+      !endpoint.connection_info ||
+      Object.keys(endpoint.connection_info).length === 0
+    ) {
       return {
         openstack_use_current_user: true,
         ...endpoint,
-      }
+      };
     }
 
-    return endpoint
+    return endpoint;
   }
 }

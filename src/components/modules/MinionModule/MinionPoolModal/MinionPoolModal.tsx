@@ -12,27 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
-import { observe } from 'mobx'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
+import { observe } from "mobx";
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import Button from '@src/components/ui/Button'
-import LoadingButton from '@src/components/ui/LoadingButton'
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Button from "@src/components/ui/Button";
+import LoadingButton from "@src/components/ui/LoadingButton";
 
-import type { Endpoint as EndpointType } from '@src/@types/Endpoint'
-import { Field, isEnumSeparator } from '@src/@types/Field'
-import ObjectUtils from '@src/utils/ObjectUtils'
-import KeyboardManager from '@src/utils/KeyboardManager'
-import minionPoolStore from '@src/stores/MinionPoolStore'
+import type { Endpoint as EndpointType } from "@src/@types/Endpoint";
+import { Field, isEnumSeparator } from "@src/@types/Field";
+import ObjectUtils from "@src/utils/ObjectUtils";
+import KeyboardManager from "@src/utils/KeyboardManager";
+import minionPoolStore from "@src/stores/MinionPoolStore";
 
-import notificationStore from '@src/stores/NotificationStore'
-import providerStore, { getFieldChangeOptions } from '@src/stores/ProviderStore'
-import { MinionPool } from '@src/@types/MinionPool'
-import { ThemeProps } from '@src/components/Theme'
-import minionPoolImage from './images/minion-pool.svg'
-import MinionPoolModalContent from './MinionPoolModalContent'
+import notificationStore from "@src/stores/NotificationStore";
+import providerStore, {
+  getFieldChangeOptions,
+} from "@src/stores/ProviderStore";
+import { MinionPool } from "@src/@types/MinionPool";
+import { ThemeProps } from "@src/components/Theme";
+import minionPoolImage from "./images/minion-pool.svg";
+import MinionPoolModalContent from "./MinionPoolModalContent";
 
 const Wrapper = styled.div<any>`
   padding: 24px 0 32px 0;
@@ -40,85 +42,89 @@ const Wrapper = styled.div<any>`
   align-items: center;
   flex-direction: column;
   min-height: 0;
-`
+`;
 const MinionPoolImageWrapper = styled.div`
-  ${ThemeProps.exactSize('128px')}
+  ${ThemeProps.exactSize("128px")}
   background: url('${minionPoolImage}') center no-repeat;
-`
+`;
 const Content = styled.div<any>`
   width: 100%;
   display: flex;
   flex-direction: column;
   min-height: 0;
-`
+`;
 const LoadingWrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 32px 0;
-`
+`;
 const LoadingText = styled.div<any>`
   font-size: 18px;
   margin-top: 32px;
-`
+`;
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
   margin-top: 32px;
   flex-shrink: 0;
   padding: 0 32px;
-`
+`;
 
 type Props = {
-  cancelButtonText: string,
-  endpoint: EndpointType,
-  minionPool?: MinionPool | null,
-  editableData?: any | null
-  platform: 'source' | 'destination',
-  onCancelClick: () => void,
-  onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void,
-  onRequestClose: () => void,
-  onUpdateComplete?: (redirectoTo: string) => void,
-}
+  cancelButtonText: string;
+  endpoint: EndpointType;
+  minionPool?: MinionPool | null;
+  editableData?: any | null;
+  platform: "source" | "destination";
+  onCancelClick: () => void;
+  onResizeUpdate?: (scrollableRef: HTMLElement, scrollOffset?: number) => void;
+  onRequestClose: () => void;
+  onUpdateComplete?: (redirectoTo: string) => void;
+};
 type State = {
-  invalidFields: any[],
-  editableData: any | null
-  saving: boolean
-}
+  invalidFields: any[];
+  editableData: any | null;
+  saving: boolean;
+};
 @observer
 class MinionPoolModal extends React.Component<Props, State> {
   static defaultProps = {
-    cancelButtonText: 'Cancel',
-  }
+    cancelButtonText: "Cancel",
+  };
 
   state: State = {
     invalidFields: [],
     editableData: null,
     saving: false,
-  }
+  };
 
-  scrollableRef!: HTMLElement
+  scrollableRef!: HTMLElement;
 
-  minionPoolStoreObserver!: () => void
+  minionPoolStoreObserver!: () => void;
 
   UNSAFE_componentWillMount() {
-    this.UNSAFE_componentWillReceiveProps(this.props)
+    this.UNSAFE_componentWillReceiveProps(this.props);
     this.minionPoolStoreObserver = observe(minionPoolStore, () => {
-      if (this.props.onResizeUpdate) this.props.onResizeUpdate(this.scrollableRef)
-    })
+      if (this.props.onResizeUpdate)
+        this.props.onResizeUpdate(this.scrollableRef);
+    });
   }
 
   componentDidMount() {
     const loadSchema = async () => {
       if (!this.props.endpoint) {
-        return
+        return;
       }
-      await minionPoolStore.loadMinionPoolSchema(this.props.endpoint.type, this.props.platform)
+      await minionPoolStore.loadMinionPoolSchema(
+        this.props.endpoint.type,
+        this.props.platform
+      );
 
-      await providerStore.loadProviders()
-      const providers = providerStore.providers
+      await providerStore.loadProviders();
+      const providers = providerStore.providers;
       if (!providers) {
-        return
+        return;
       }
       await minionPoolStore.loadOptions({
         providers,
@@ -126,14 +132,18 @@ class MinionPoolModal extends React.Component<Props, State> {
         endpoint: this.props.endpoint,
         envData: this.envData,
         useCache: true,
-      })
+      });
 
-      this.fillRequiredDefaults()
-    }
-    loadSchema()
-    KeyboardManager.onEnter('minion-pool', () => {
-      this.create()
-    }, 2)
+      this.fillRequiredDefaults();
+    };
+    loadSchema();
+    KeyboardManager.onEnter(
+      "minion-pool",
+      () => {
+        this.create();
+      },
+      2
+    );
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
@@ -143,7 +153,7 @@ class MinionPoolModal extends React.Component<Props, State> {
           ...ObjectUtils.flatten(props.editableData || {}),
           ...prevState.editableData,
         },
-      }))
+      }));
     }
 
     if (props.platform) {
@@ -152,101 +162,113 @@ class MinionPoolModal extends React.Component<Props, State> {
           ...prevState.editableData,
           platform: props.platform,
         },
-      }))
+      }));
     }
 
-    if (props.onResizeUpdate) props.onResizeUpdate(this.scrollableRef)
+    if (props.onResizeUpdate) props.onResizeUpdate(this.scrollableRef);
   }
 
   componentWillUnmount() {
-    KeyboardManager.removeKeyDown('minion-pool')
-    this.minionPoolStoreObserver()
+    KeyboardManager.removeKeyDown("minion-pool");
+    this.minionPoolStoreObserver();
   }
 
   get isLoading() {
-    return minionPoolStore.loadingMinionPoolSchema
-      || minionPoolStore.loadingMinionPools
-      || minionPoolStore.optionsPrimaryLoading
-      || providerStore.providersLoading
+    return (
+      minionPoolStore.loadingMinionPoolSchema ||
+      minionPoolStore.loadingMinionPools ||
+      minionPoolStore.optionsPrimaryLoading ||
+      providerStore.providersLoading
+    );
   }
 
   get envData() {
-    let envData: any = null
+    let envData: any = null;
     Object.keys(this.state.editableData).forEach(prop => {
       if (!minionPoolStore.minionPoolDefaultSchema.find(f => f.name === prop)) {
-        envData = envData || {}
-        envData[prop] = this.state.editableData[prop]
+        envData = envData || {};
+        envData[prop] = this.state.editableData[prop];
       }
-    })
-    return envData
+    });
+    return envData;
   }
 
   getFieldValue(field?: Field | null) {
     if (!field || !this.state.editableData) {
-      return ''
+      return "";
     }
     if (this.state.editableData[field.name] != null) {
-      return this.state.editableData[field.name]
+      return this.state.editableData[field.name];
     }
 
-    if (Object.keys(field).find(k => k === 'default')) {
-      return field.default
+    if (Object.keys(field).find(k => k === "default")) {
+      return field.default;
     }
 
-    if (field.type === 'integer' || field.type === 'boolean') {
-      return null
+    if (field.type === "integer" || field.type === "boolean") {
+      return null;
     }
-    return ''
+    return "";
   }
 
   findInvalidFields = () => {
-    const invalidFields = minionPoolStore.minionPoolCombinedSchema.filter(field => {
-      if (field.required) {
-        const value = this.getFieldValue(field)
-        if (value === null || value === '' || value.length === 0) {
-          return true
+    const invalidFields = minionPoolStore.minionPoolCombinedSchema
+      .filter(field => {
+        if (field.required) {
+          const value = this.getFieldValue(field);
+          if (value === null || value === "" || value.length === 0) {
+            return true;
+          }
+          if (!field.enum) {
+            return false;
+          }
+          // When loading new options as a result of destination options calls,
+          // the value stored in the state may no longer be found in the field's enum.
+          // Example: When changing the AD of an OCI minion pool,
+          // although the Subnet ID may show 'Choose Value', the modal would still let you hit 'Update'.
+          if (
+            !field.enum.find(f =>
+              !isEnumSeparator(f)
+                ? typeof f === "string"
+                  ? f === value
+                  : f.value === value || f.id === value
+                : false
+            )
+          ) {
+            return true;
+          }
         }
-        if (!field.enum) {
-          return false
-        }
-        // When loading new options as a result of destination options calls,
-        // the value stored in the state may no longer be found in the field's enum.
-        // Example: When changing the AD of an OCI minion pool,
-        // although the Subnet ID may show 'Choose Value', the modal would still let you hit 'Update'.
-        if (!field.enum.find(f => (!isEnumSeparator(f) ? (typeof f === 'string' ? f === value : (f.value === value || f.id === value)) : false))) {
-          return true
-        }
-      }
-      return false
-    }).map(f => f.name)
+        return false;
+      })
+      .map(f => f.name);
 
-    return invalidFields
-  }
+    return invalidFields;
+  };
 
   highlightRequired() {
-    const invalidFields = this.findInvalidFields()
-    this.setState({ invalidFields })
+    const invalidFields = this.findInvalidFields();
+    this.setState({ invalidFields });
     if (invalidFields.length > 0) {
-      notificationStore.alert('Please fill the required fields', 'error')
-      return true
+      notificationStore.alert("Please fill the required fields", "error");
+      return true;
     }
-    return false
+    return false;
   }
 
   async create() {
     if (this.highlightRequired()) {
-      return
+      return;
     }
-    this.setState({ saving: true })
+    this.setState({ saving: true });
     try {
       if (this.props.minionPool?.id) {
-        await this.update()
+        await this.update();
       } else {
-        await this.add()
+        await this.add();
       }
     } catch (err) {
-      console.error(err)
-      this.setState({ saving: false })
+      console.error(err);
+      this.setState({ saving: false });
     }
   }
 
@@ -254,45 +276,55 @@ class MinionPoolModal extends React.Component<Props, State> {
     const stateMinionPool = {
       ...this.state.editableData,
       id: this.props.minionPool?.id,
-    }
-    delete stateMinionPool.platform
-    delete stateMinionPool.endpoint_id
-    await minionPoolStore.update(this.props.endpoint.type, stateMinionPool)
+    };
+    delete stateMinionPool.platform;
+    delete stateMinionPool.endpoint_id;
+    await minionPoolStore.update(this.props.endpoint.type, stateMinionPool);
     if (this.props.onUpdateComplete) {
-      this.props.onUpdateComplete(`/minion-pools/${this.props.minionPool?.id}`)
+      this.props.onUpdateComplete(`/minion-pools/${this.props.minionPool?.id}`);
     }
   }
 
   async add() {
-    await minionPoolStore.add(this.props.endpoint.type, this.props.endpoint.id, this.state.editableData)
-    notificationStore.alert('Minion Pool created', 'success')
-    this.props.onRequestClose()
+    await minionPoolStore.add(
+      this.props.endpoint.type,
+      this.props.endpoint.id,
+      this.state.editableData
+    );
+    notificationStore.alert("Minion Pool created", "success");
+    this.props.onRequestClose();
   }
 
   fillRequiredDefaults() {
     this.setState(prevState => {
-      const minionPool: any = { ...prevState.editableData }
-      const requiredFieldsDefaults = minionPoolStore.minionPoolCombinedSchema
-        .filter(f => f.required && f.default != null)
+      const minionPool: any = { ...prevState.editableData };
+      const requiredFieldsDefaults =
+        minionPoolStore.minionPoolCombinedSchema.filter(
+          f => f.required && f.default != null
+        );
       requiredFieldsDefaults.forEach(f => {
         if (minionPool[f.name] == null) {
-          minionPool[f.name] = f.default
+          minionPool[f.name] = f.default;
         }
-      })
-      return { editableData: minionPool }
-    })
+      });
+      return { editableData: minionPool };
+    });
   }
 
-  async loadExtraOptions(field: Field | null, type: 'source' | 'destination', useCache: boolean = true) {
+  async loadExtraOptions(
+    field: Field | null,
+    type: "source" | "destination",
+    useCache = true
+  ) {
     const envData = getFieldChangeOptions({
       providerName: this.props.endpoint.type,
       schema: minionPoolStore.minionPoolEnvSchema,
       data: this.envData,
       field,
       type,
-    })
+    });
     if (!envData) {
-      return
+      return;
     }
     await minionPoolStore.loadOptions({
       providers: providerStore.providers!,
@@ -300,45 +332,47 @@ class MinionPoolModal extends React.Component<Props, State> {
       endpoint: this.props.endpoint,
       envData,
       useCache,
-    })
-    this.fillRequiredDefaults()
+    });
+    this.fillRequiredDefaults();
   }
 
   handleFieldChange(field: Field, value: any) {
-    this.setState(prevState => {
-      const minionPool: any = { ...prevState.editableData }
+    this.setState(
+      prevState => {
+        const minionPool: any = { ...prevState.editableData };
 
-      if (field.type === 'array') {
-        const arrayItems = minionPool[field.name] || []
-        value = arrayItems.find((v: any) => v === value)
-          ? arrayItems.filter((v: any) => v !== value) : [...arrayItems, value]
+        if (field.type === "array") {
+          const arrayItems = minionPool[field.name] || [];
+          value = arrayItems.find((v: any) => v === value)
+            ? arrayItems.filter((v: any) => v !== value)
+            : [...arrayItems, value];
+        }
+
+        minionPool[field.name] = value;
+
+        return { editableData: minionPool };
+      },
+      () => {
+        if (field.type !== "string" || field.enum) {
+          this.loadExtraOptions(field, this.props.platform, true);
+        }
       }
-
-      minionPool[field.name] = value
-
-      return { editableData: minionPool }
-    }, () => {
-      if (field.type !== 'string' || field.enum) {
-        this.loadExtraOptions(field, this.props.platform, true)
-      }
-    })
+    );
   }
 
   handleCancelClick() {
-    this.props.onCancelClick()
+    this.props.onCancelClick();
   }
 
   renderButtons() {
     let actionButton = (
-      <Button
-        large
-        onClick={() => this.create()}
-      >Save
+      <Button large onClick={() => this.create()}>
+        Save
       </Button>
-    )
+    );
 
     if (this.state.saving) {
-      actionButton = <LoadingButton large>Saving ...</LoadingButton>
+      actionButton = <LoadingButton large>Saving ...</LoadingButton>;
     }
 
     return (
@@ -347,13 +381,14 @@ class MinionPoolModal extends React.Component<Props, State> {
           large
           secondary
           onClick={() => {
-            this.handleCancelClick()
+            this.handleCancelClick();
           }}
-        >{this.props.cancelButtonText}
+        >
+          {this.props.cancelButtonText}
         </Button>
         {actionButton}
       </Buttons>
-    )
+    );
   }
 
   renderContent() {
@@ -363,8 +398,13 @@ class MinionPoolModal extends React.Component<Props, State> {
           endpoint={this.props.endpoint}
           platform={this.props.platform}
           optionsLoading={minionPoolStore.optionsSecondaryLoading}
-          optionsLoadingSkipFields={minionPoolStore.minionPoolDefaultSchema.map(f => f.name)}
-          envOptionsDisabled={this.props.minionPool != null && this.props.minionPool.status !== 'DEALLOCATED'}
+          optionsLoadingSkipFields={minionPoolStore.minionPoolDefaultSchema.map(
+            f => f.name
+          )}
+          envOptionsDisabled={
+            this.props.minionPool != null &&
+            this.props.minionPool.status !== "DEALLOCATED"
+          }
           defaultSchema={minionPoolStore.minionPoolDefaultSchema}
           envSchema={minionPoolStore.minionPoolEnvSchema}
           invalidFields={this.state.invalidFields}
@@ -373,21 +413,27 @@ class MinionPoolModal extends React.Component<Props, State> {
           getFieldValue={field => this.getFieldValue(field)}
           onFieldChange={(field, value) => {
             if (field) {
-              this.handleFieldChange(field, value)
+              this.handleFieldChange(field, value);
             }
           }}
-          onCreateClick={() => { this.create() }}
-          onCancelClick={() => { this.handleCancelClick() }}
-          scrollableRef={ref => { this.scrollableRef = ref }}
+          onCreateClick={() => {
+            this.create();
+          }}
+          onCancelClick={() => {
+            this.handleCancelClick();
+          }}
+          scrollableRef={ref => {
+            this.scrollableRef = ref;
+          }}
           onResizeUpdate={() => {
             if (this.props.onResizeUpdate) {
-              this.props.onResizeUpdate(this.scrollableRef)
+              this.props.onResizeUpdate(this.scrollableRef);
             }
           }}
         />
         {this.renderButtons()}
       </Content>
-    )
+    );
   }
 
   renderLoading() {
@@ -396,7 +442,7 @@ class MinionPoolModal extends React.Component<Props, State> {
         <StatusImage loading />
         <LoadingText>Loading Pool Options ...</LoadingText>
       </LoadingWrapper>
-    )
+    );
   }
 
   render() {
@@ -406,8 +452,8 @@ class MinionPoolModal extends React.Component<Props, State> {
         {!this.isLoading ? this.renderContent() : null}
         {this.isLoading ? this.renderLoading() : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MinionPoolModal
+export default MinionPoolModal;

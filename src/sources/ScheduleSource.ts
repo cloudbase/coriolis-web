@@ -12,144 +12,175 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from 'moment'
+import moment from "moment";
 
-import Api from '@src/utils/ApiCaller'
-import configLoader from '@src/utils/Config'
-import DateUtils from '@src/utils/DateUtils'
-import type { Schedule } from '@src/@types/Schedule'
+import Api from "@src/utils/ApiCaller";
+import configLoader from "@src/utils/Config";
+import DateUtils from "@src/utils/DateUtils";
+import type { Schedule } from "@src/@types/Schedule";
 
 class ScheduleSource {
-  async scheduleSinge(replicaId: string, scheduleData: Schedule): Promise<Schedule> {
+  async scheduleSinge(
+    replicaId: string,
+    scheduleData: Schedule
+  ): Promise<Schedule> {
     const payload: any = {
       schedule: {},
       expiration_date: null,
       enabled: scheduleData.enabled == null ? false : scheduleData.enabled,
-      shutdown_instance: scheduleData.shutdown_instances == null
-        ? false : scheduleData.shutdown_instances,
-    }
+      shutdown_instance:
+        scheduleData.shutdown_instances == null
+          ? false
+          : scheduleData.shutdown_instances,
+    };
 
     if (scheduleData.expiration_date) {
-      payload.expiration_date = moment(scheduleData.expiration_date).toISOString()
+      payload.expiration_date = moment(
+        scheduleData.expiration_date
+      ).toISOString();
     }
 
     if (scheduleData.schedule != null) {
       Object.keys(scheduleData.schedule).forEach(prop => {
-        const scheduleDataAny: any = scheduleData
-        if (scheduleDataAny.schedule && scheduleDataAny.schedule[prop] != null) {
-          payload.schedule[prop] = scheduleDataAny.schedule[prop]
+        const scheduleDataAny: any = scheduleData;
+        if (
+          scheduleDataAny.schedule &&
+          scheduleDataAny.schedule[prop] != null
+        ) {
+          payload.schedule[prop] = scheduleDataAny.schedule[prop];
         }
-      })
+      });
     }
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
-      method: 'POST',
+      method: "POST",
       data: payload,
-    })
-    return response.data.schedule
+    });
+    return response.data.schedule;
   }
 
-  async scheduleMultiple(replicaId: string, schedules: Schedule[]): Promise<Schedule[]> {
-    const scheduledSchedules: Schedule[] = await Promise.all(schedules.map(async schedule => {
-      const scheduledSchedule: Schedule = await this.scheduleSinge(replicaId, schedule)
-      return scheduledSchedule
-    }))
-    return scheduledSchedules
+  async scheduleMultiple(
+    replicaId: string,
+    schedules: Schedule[]
+  ): Promise<Schedule[]> {
+    const scheduledSchedules: Schedule[] = await Promise.all(
+      schedules.map(async schedule => {
+        const scheduledSchedule: Schedule = await this.scheduleSinge(
+          replicaId,
+          schedule
+        );
+        return scheduledSchedule;
+      })
+    );
+    return scheduledSchedules;
   }
 
-  async getSchedules(replicaId: string, opts?: { skipLog?: boolean }): Promise<Schedule[]> {
+  async getSchedules(
+    replicaId: string,
+    opts?: { skipLog?: boolean }
+  ): Promise<Schedule[]> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       skipLog: opts && opts.skipLog,
-    })
-    const schedules = [...response.data.schedules]
+    });
+    const schedules = [...response.data.schedules];
     schedules.forEach(s => {
       if (s.expiration_date) {
         // eslint-disable-next-line no-param-reassign
-        s.expiration_date = DateUtils.getLocalTime(s.expiration_date)
+        s.expiration_date = DateUtils.getLocalTime(s.expiration_date);
       }
       if (s.shutdown_instance) {
         // eslint-disable-next-line no-param-reassign
-        s.shutdown_instances = s.shutdown_instance
+        s.shutdown_instances = s.shutdown_instance;
       }
-    })
-    schedules.sort((a, b) => moment(a.created_at).diff(b.created_at))
-    return schedules
+    });
+    schedules.sort((a, b) => moment(a.created_at).diff(b.created_at));
+    return schedules;
   }
 
   async addSchedule(replicaId: string, schedule: Schedule): Promise<Schedule> {
     const payload: any = {
       schedule: { hour: 0, minute: 0 },
       enabled: false,
-    }
+    };
     if (schedule && schedule.schedule) {
-      payload.schedule = { ...schedule.schedule }
+      payload.schedule = { ...schedule.schedule };
     }
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
-      method: 'POST',
+      method: "POST",
       data: payload,
-    })
-    return response.data.schedule
+    });
+    return response.data.schedule;
   }
 
   async removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
     await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
-      method: 'DELETE',
-    })
+      method: "DELETE",
+    });
   }
 
   async updateSchedule(opts: {
-    replicaId: string,
-    scheduleId: string,
-    scheduleData: Schedule,
-    scheduleOldData: Schedule | null | undefined,
-    unsavedData: Schedule | null | undefined,
+    replicaId: string;
+    scheduleId: string;
+    scheduleData: Schedule;
+    scheduleOldData: Schedule | null | undefined;
+    unsavedData: Schedule | null | undefined;
   }): Promise<Schedule> {
     const {
-      replicaId, scheduleId, scheduleData, scheduleOldData, unsavedData,
-    } = opts
-    const payload: any = {}
+      replicaId,
+      scheduleId,
+      scheduleData,
+      scheduleOldData,
+      unsavedData,
+    } = opts;
+    const payload: any = {};
     if (scheduleData.enabled != null) {
-      payload.enabled = scheduleData.enabled
+      payload.enabled = scheduleData.enabled;
     }
     if (scheduleData.shutdown_instances != null) {
-      payload.shutdown_instance = scheduleData.shutdown_instances
+      payload.shutdown_instance = scheduleData.shutdown_instances;
     }
     if (unsavedData && unsavedData.expiration_date) {
-      payload.expiration_date = moment(unsavedData.expiration_date).toISOString()
+      payload.expiration_date = moment(
+        unsavedData.expiration_date
+      ).toISOString();
     }
-    if (unsavedData && unsavedData.schedule != null && Object.keys(unsavedData.schedule).length) {
+    if (
+      unsavedData &&
+      unsavedData.schedule != null &&
+      Object.keys(unsavedData.schedule).length
+    ) {
       if (scheduleOldData) {
-        payload.schedule = { ...scheduleOldData.schedule }
+        payload.schedule = { ...scheduleOldData.schedule };
       }
       Object.keys(unsavedData.schedule).forEach(prop => {
-        const unsavedDataAny: any = unsavedData
+        const unsavedDataAny: any = unsavedData;
         if (unsavedDataAny?.schedule && unsavedDataAny.schedule[prop] != null) {
-          payload.schedule[prop] = unsavedDataAny.schedule[prop]
+          payload.schedule[prop] = unsavedDataAny.schedule[prop];
         } else {
-          delete payload.schedule[prop]
+          delete payload.schedule[prop];
         }
-      })
+      });
     }
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
-      method: 'PUT',
+      method: "PUT",
       data: payload,
-    })
-    const s = { ...response.data.schedule }
+    });
+    const s = { ...response.data.schedule };
     if (s.expiration_date) {
-      s.expiration_date = DateUtils.getLocalTime(s.expiration_date)
+      s.expiration_date = DateUtils.getLocalTime(s.expiration_date);
     }
     if (s.shutdown_instance) {
-      s.shutdown_instances = s.shutdown_instance
+      s.shutdown_instances = s.shutdown_instance;
     }
-    return s
+    return s;
   }
 }
 
-export default new ScheduleSource()
+export default new ScheduleSource();

@@ -12,54 +12,58 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled, { css } from 'styled-components'
-import { Link } from 'react-router-dom'
+import React from "react";
+import styled, { css } from "styled-components";
+import { Link } from "react-router-dom";
 
-import { ThemeProps } from '@src/components/Theme'
-import coriolisLargeImage from './images/coriolis-large.svg'
-import coriolisSmallImage from './images/coriolis-small.svg'
-import coriolisSmallBlackImage from './images/coriolis-small-black.svg'
+import { ThemeProps } from "@src/components/Theme";
+import coriolisLargeImage from "./images/coriolis-large.svg";
+import coriolisSmallImage from "./images/coriolis-small.svg";
+import coriolisSmallBlackImage from "./images/coriolis-small-black.svg";
 
 const largeProps = css`
   width: 256px;
   height: 307px;
-  background: url('${coriolisLargeImage}') center no-repeat;
-`
+  background: url("${coriolisLargeImage}") center no-repeat;
+`;
 
 const smallProps = css`
   width: 245px;
   height: 48px;
-  background: url('${coriolisSmallImage}') center no-repeat;
-`
+  background: url("${coriolisSmallImage}") center no-repeat;
+`;
 
 const smallblackProps = css`
   width: 245px;
   height: 48px;
-  background: url('${coriolisSmallBlackImage}') center no-repeat;
-`
+  background: url("${coriolisSmallBlackImage}") center no-repeat;
+`;
 const LinkStyled = styled(Link)`
   transition: all ${ThemeProps.animations.swift};
-`
+`;
 const Coriolis = styled.div<any>`
-  ${props => (props.small ? smallProps : props.smallblack ? smallblackProps : largeProps)}
-  ${props => (!props.large && !props.small && !props.smallblack ? css`
-    @media (max-height: 760px) {
-      width: 246px;
-      height: 42px;
-      background: url('${coriolisSmallImage}') center no-repeat;
-    }
-  ` : '')}
-`
+  ${props =>
+    props.small ? smallProps : props.smallblack ? smallblackProps : largeProps}
+  ${props =>
+    !props.large && !props.small && !props.smallblack
+      ? css`
+          @media (max-height: 760px) {
+            width: 246px;
+            height: 42px;
+            background: url("${coriolisSmallImage}") center no-repeat;
+          }
+        `
+      : ""}
+`;
 
 type Props = {
-  small?: boolean,
-  smallblack?: boolean,
-  large?: boolean,
-  customRef?: (ref: HTMLElement) => void,
-  to?: string,
-  className?: string,
-}
+  small?: boolean;
+  smallblack?: boolean;
+  large?: boolean;
+  customRef?: (ref: HTMLElement) => void;
+  to?: string;
+  className?: string;
+};
 
 class Logo extends React.Component<Props> {
   render() {
@@ -69,26 +73,24 @@ class Logo extends React.Component<Props> {
         small={this.props.small}
         smallblack={this.props.smallblack}
       />
-    )
+    );
     const logoWrapper = this.props.to ? (
-      <LinkStyled to={this.props.to}>
-        {coriolisLogo}
-      </LinkStyled>
+      <LinkStyled to={this.props.to}>{coriolisLogo}</LinkStyled>
     ) : (
-      <div>
-        {coriolisLogo}
-      </div>
-    )
+      <div>{coriolisLogo}</div>
+    );
     return (
       <div
         style={{ transition: `all ${ThemeProps.animations.swift}` }}
         className={this.props.className}
-        ref={ref => { if (this.props.customRef && ref) this.props.customRef(ref) }}
+        ref={ref => {
+          if (this.props.customRef && ref) this.props.customRef(ref);
+        }}
       >
         {logoWrapper}
       </div>
-    )
+    );
   }
 }
 
-export default Logo
+export default Logo;

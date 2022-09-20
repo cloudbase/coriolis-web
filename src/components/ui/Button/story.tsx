@@ -12,26 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import Button from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Button from ".";
 
-storiesOf('Button', module)
-  .add('primary', () => (
-    <Button>Hello</Button>
+storiesOf("Button", module)
+  .add("primary", () => <Button>Hello</Button>)
+  .add("secondary", () => <Button secondary>Hello</Button>)
+  .add("alert", () => <Button alert>Hello</Button>)
+  .add("hollow primary", () => <Button hollow>Hello</Button>)
+  .add("hollow secondary", () => (
+    <Button hollow secondary>
+      Hello
+    </Button>
   ))
-  .add('secondary', () => (
-    <Button secondary>Hello</Button>
-  ))
-  .add('alert', () => (
-    <Button alert>Hello</Button>
-  ))
-  .add('hollow primary', () => (
-    <Button hollow>Hello</Button>
-  ))
-  .add('hollow secondary', () => (
-    <Button hollow secondary>Hello</Button>
-  ))
-  .add('hollow alert', () => (
-    <Button hollow alert>Hello</Button>
-  ))
+  .add("hollow alert", () => (
+    <Button hollow alert>
+      Hello
+    </Button>
+  ));

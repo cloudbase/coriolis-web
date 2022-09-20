@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import errorIcon from './resources/error.svg'
+import errorIcon from "./resources/error.svg";
 
 const Wrapper = styled.div<{ showBackground?: boolean }>`
   display: flex;
@@ -24,35 +24,44 @@ const Wrapper = styled.div<{ showBackground?: boolean }>`
   align-items: center;
   margin-top: 4px;
   margin-bottom: 16px;
-  ${props => (props.showBackground ? css`background: rgba(255, 0, 0, 0.1);` : '')}
+  ${props =>
+    props.showBackground
+      ? css`
+          background: rgba(255, 0, 0, 0.1);
+        `
+      : ""}
   border-radius: 4px;
   padding: 8px;
-`
+`;
 const ServerErrorIcon = styled.div`
   width: 26px;
   height: 26px;
   margin-bottom: 4px;
-  background-image: url('${errorIcon}');
-`
+  background-image: url("${errorIcon}");
+`;
 const ServerErrorText = styled.div`
   margin-top: 4px;
   text-align: center;
-`
+`;
 type Props = {
-  showBackground?: boolean
-  style?: React.CSSProperties
-}
+  showBackground?: boolean;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+};
 
 @observer
 class SetupPageServerError extends React.Component<Props> {
   render() {
     return (
-      <Wrapper style={this.props.style} showBackground={this.props.showBackground}>
+      <Wrapper
+        style={this.props.style}
+        showBackground={this.props.showBackground}
+      >
         <ServerErrorIcon />
         <ServerErrorText>{this.props.children}</ServerErrorText>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SetupPageServerError
+export default SetupPageServerError;

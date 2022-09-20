@@ -2,6 +2,5 @@
   "name": "LoadingButton",
   "version": "0.0.0",
   "private": true,
-  "main":"./LoadingButton.tsx"
+  "main": "./LoadingButton.tsx"
 }
-

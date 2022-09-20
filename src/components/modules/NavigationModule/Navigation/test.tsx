@@ -12,21 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TW from '@src/utils/TestWrapper'
-import Navigation from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TW from "@src/utils/TestWrapper";
+import Navigation from ".";
 
-const wrap = props => new TW(shallow(<Navigation {...props} />), 'navigation')
+const wrap = props => new TW(shallow(<Navigation {...props} />), "navigation");
 
-describe('Navigation Component', () => {
-  it('selects the current page', () => {
-    let wrapper = wrap({ currentPage: 'endpoints' })
-    expect(wrapper.find('item-endpoints').prop('selected')).toBe(true)
-    expect(wrapper.find('item-replicas').prop('selected')).toBe(false)
-    expect(wrapper.find('item-migrations').prop('selected')).toBe(false)
-  })
-})
-
-
-
+describe("Navigation Component", () => {
+  it("selects the current page", () => {
+    const wrapper = wrap({ currentPage: "endpoints" });
+    expect(wrapper.find("item-endpoints").prop("selected")).toBe(true);
+    expect(wrapper.find("item-replicas").prop("selected")).toBe(false);
+    expect(wrapper.find("item-migrations").prop("selected")).toBe(false);
+  });
+});

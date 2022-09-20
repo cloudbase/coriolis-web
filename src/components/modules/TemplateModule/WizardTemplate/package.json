@@ -2,6 +2,5 @@
   "name": "WizardTemplate",
   "version": "0.0.0",
   "private": true,
-  "main":"./WizardTemplate.tsx"
+  "main": "./WizardTemplate.tsx"
 }
-

@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import Button from '@src/components/ui/Button'
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Button from "@src/components/ui/Button";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   margin-top: 8px;
@@ -28,33 +28,33 @@ const Wrapper = styled.div<any>`
   flex-direction: column;
   flex-grow: 1;
   min-width: 900px;
-`
+`;
 const Separator = styled.div<any>`
   height: 1px;
-  background: ${ThemePalette.grayscale[1]};;
-`
+  background: ${ThemePalette.grayscale[1]}; ;
+`;
 const Loading = styled.div<any>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-`
+`;
 const LoadingText = styled.div<any>`
   font-size: 18px;
   margin-top: 39px;
-`
+`;
 const List = styled.div<any>`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   overflow: hidden;
-`
+`;
 
 const NoResults = styled.div<any>`
   margin-top: 39px;
   text-align: center;
-`
+`;
 const EmptyList = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -62,66 +62,72 @@ const EmptyList = styled.div<any>`
   flex-shrink: 0;
   justify-content: center;
   flex-grow: 1;
-`
+`;
 const EmptyListImage = styled.div<any>`
   width: 96px;
   height: 96px;
-  background: url('${props => props.source}') center no-repeat;
+  background: url("${props => props.source}") center no-repeat;
   background-size: contain;
   margin-bottom: 46px;
-`
+`;
 const EmptyListMessage = styled.div<any>`
   font-size: 18px;
-`
+`;
 const EmptyListExtraMessage = styled.div<any>`
   max-width: 700px;
   text-align: center;
   margin: 10px 0 25px 0;
-`
+`;
 export type ItemComponentProps = {
-  key: string,
-  item: any,
-  selected: boolean,
-  onClick: () => void,
-  onSelectedChange: (checked: boolean) => void
-}
+  key: string;
+  item: any;
+  selected: boolean;
+  onClick: () => void;
+  onSelectedChange: (checked: boolean) => void;
+};
 type Props = {
-  items: any[],
-  selectedItems: any[],
-  loading: boolean,
-  onSelectedChange: (item: any, checked: boolean) => void,
-  onItemClick: (item: any) => void,
-  renderItemComponent: (componentProps: ItemComponentProps) => React.ReactNode,
-  showEmptyList: boolean,
-  emptyListImage?: string | null,
-  emptyListMessage?: string,
-  emptyListExtraMessage?: string,
-  emptyListButtonLabel?: string,
-  onEmptyListButtonClick?: () => void,
-  mainListWrapperRef?: React.RefObject<HTMLDivElement>,
-  emptyListComponent?: React.ReactNode,
-}
+  items: any[];
+  selectedItems: any[];
+  loading: boolean;
+  onSelectedChange: (item: any, checked: boolean) => void;
+  onItemClick: (item: any) => void;
+  renderItemComponent: (componentProps: ItemComponentProps) => React.ReactNode;
+  showEmptyList: boolean;
+  emptyListImage?: string | null;
+  emptyListMessage?: string;
+  emptyListExtraMessage?: string;
+  emptyListButtonLabel?: string;
+  onEmptyListButtonClick?: () => void;
+  mainListWrapperRef?: React.RefObject<HTMLDivElement>;
+  emptyListComponent?: React.ReactNode;
+};
 @observer
 class MainList extends React.Component<Props> {
   renderList() {
     if (!this.props.items || this.props.items.length === 0) {
-      return null
+      return null;
     }
 
     return (
       <List>
         {this.props.items.map(item => {
-          const selected = Boolean(this.props.selectedItems.find(i => i.id === item.id))
+          const selected = Boolean(
+            this.props.selectedItems.find(i => i.id === item.id)
+          );
           return this.props.renderItemComponent({
             key: item.id,
             item,
             selected,
-            onClick: () => { this.props.onItemClick(item) },
-            onSelectedChange: checked => { this.props.onSelectedChange(item, checked) },
-          })
+            onClick: () => {
+              this.props.onItemClick(item);
+            },
+            onSelectedChange: checked => {
+              this.props.onSelectedChange(item, checked);
+            },
+          });
         })}
       </List>
-    )
+    );
   }
 
   renderLoading() {
@@ -130,69 +136,76 @@ class MainList extends React.Component<Props> {
         <StatusImage loading />
         <LoadingText>Loading ...</LoadingText>
       </Loading>
-    )
+    );
   }
 
   renderNoResults() {
-    return (
-      <NoResults>No results</NoResults>
-    )
+    return <NoResults>No results</NoResults>;
   }
 
   renderEmptyList() {
     if (this.props.emptyListComponent) {
-      return this.props.emptyListComponent
+      return this.props.emptyListComponent;
     }
 
     const renderImage = () => {
       if (this.props.emptyListImage) {
-        return <EmptyListImage source={this.props.emptyListImage} />
+        return <EmptyListImage source={this.props.emptyListImage} />;
       }
-      return null
-    }
+      return null;
+    };
 
     const renderButton = () => {
       if (this.props.emptyListButtonLabel) {
-        return <Button onClick={this.props.onEmptyListButtonClick}>{this.props.emptyListButtonLabel}</Button>
+        return (
+          <Button onClick={this.props.onEmptyListButtonClick}>
+            {this.props.emptyListButtonLabel}
+          </Button>
+        );
       }
-      return null
-    }
+      return null;
+    };
 
     return (
       <EmptyList>
         {renderImage()}
         <EmptyListMessage>{this.props.emptyListMessage}</EmptyListMessage>
-        <EmptyListExtraMessage>{this.props.emptyListExtraMessage}</EmptyListExtraMessage>
+        <EmptyListExtraMessage>
+          {this.props.emptyListExtraMessage}
+        </EmptyListExtraMessage>
         {renderButton()}
       </EmptyList>
-    )
+    );
   }
 
   render() {
     const renderContent = () => {
       if (this.props.loading) {
-        return this.renderLoading()
+        return this.renderLoading();
       }
 
       if (this.props.showEmptyList) {
-        return this.renderEmptyList()
+        return this.renderEmptyList();
       }
 
       if (this.props.items.length === 0) {
-        return this.renderNoResults()
+        return this.renderNoResults();
       }
 
-      return this.renderList()
-    }
+      return this.renderList();
+    };
 
     return (
       <Wrapper ref={this.props.mainListWrapperRef}>
-        {this.props.loading || this.props.items.length === 0 || this.props.showEmptyList
-          ? <Separator /> : null}
+        {this.props.loading ||
+        this.props.items.length === 0 ||
+        this.props.showEmptyList ? (
+          <Separator />
+        ) : null}
         {renderContent()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MainList
+export default MainList;

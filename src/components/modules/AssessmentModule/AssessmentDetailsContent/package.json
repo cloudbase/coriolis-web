@@ -2,6 +2,5 @@
   "name": "AssessmentDetailsContent",
   "version": "0.0.0",
   "private": true,
-  "main":"./AssessmentDetailsContent.tsx"
+  "main": "./AssessmentDetailsContent.tsx"
 }
-

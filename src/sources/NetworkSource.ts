@@ -12,30 +12,36 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '@src/utils/ApiCaller'
-import type { Network } from '@src/@types/Network'
+import Api from "@src/utils/ApiCaller";
+import type { Network } from "@src/@types/Network";
 
-import configLoader from '@src/utils/Config'
-import DomUtils from '@src/utils/DomUtils'
+import configLoader from "@src/utils/Config";
+import DomUtils from "@src/utils/DomUtils";
 
 class NetworkSource {
-  async loadNetworks(enpointId: string, environment: { [prop: string]: any } | null, options?: {
-    quietError?: boolean,
-    cache?: boolean,
-  }): Promise<Network[]> {
-    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`
+  async loadNetworks(
+    enpointId: string,
+    environment: { [prop: string]: any } | null,
+    options?: {
+      quietError?: boolean;
+      cache?: boolean;
+    }
+  ): Promise<Network[]> {
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`;
     if (environment) {
-      url = `${url}?env=${DomUtils.encodeToBase64Url(environment)}`
+      url = `${url}?env=${DomUtils.encodeToBase64Url(environment)}`;
     }
     const response = await Api.send({
       url,
       quietError: options && options.quietError,
       cache: options && options.cache,
-    })
-    const networks: Network[] = response.data.networks.filter((n: any) => n.name.indexOf('coriolis-migrnet') === -1)
-    networks.sort((a, b) => a.name.localeCompare(b.name))
-    return networks
+    });
+    const networks: Network[] = response.data.networks.filter(
+      (n: any) => n.name.indexOf("coriolis-migrnet") === -1
+    );
+    networks.sort((a, b) => a.name.localeCompare(b.name));
+    return networks;
   }
 }
 
-export default new NetworkSource()
+export default new NetworkSource();

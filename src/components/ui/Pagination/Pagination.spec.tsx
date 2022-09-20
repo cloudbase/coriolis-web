@@ -12,79 +12,81 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import Pagination from '@src/components/ui/Pagination'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import Pagination from "@src/components/ui/Pagination";
+import TestUtils from "@tests/TestUtils";
 
-const PaginationWithDefaultProps = (props: Partial<Pagination['props']>) => (
+const PaginationWithDefaultProps = (props: Partial<Pagination["props"]>) => (
   <Pagination
     currentPage={2}
     totalPages={10}
-    onPreviousClick={props.onPreviousClick || (() => { })}
-    onNextClick={props.onNextClick || (() => { })}
+    onPreviousClick={props.onPreviousClick || (() => {})}
+    onNextClick={props.onNextClick || (() => {})}
     nextDisabled={props.nextDisabled || false}
     previousDisabled={props.previousDisabled || false}
     loading={props.loading || false}
   />
-)
+);
 
-describe('Pagination', () => {
-  it('renders', () => {
-    render(<PaginationWithDefaultProps />)
-    expect(TestUtils.select('Pagination__PageNumber')?.textContent).toBe('2 of 10')
-  })
+describe("Pagination", () => {
+  it("renders", () => {
+    render(<PaginationWithDefaultProps />);
+    expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
+      "2 of 10"
+    );
+  });
 
-  it('handles previous and next click', () => {
-    const onPreviousClick = jest.fn()
-    const onNextClick = jest.fn()
+  it("handles previous and next click", () => {
+    const onPreviousClick = jest.fn();
+    const onNextClick = jest.fn();
     render(
       <PaginationWithDefaultProps
         onPreviousClick={onPreviousClick}
         onNextClick={onNextClick}
-      />,
-    )
-    TestUtils.select('Pagination__PagePrevious')!.click()
-    expect(onPreviousClick).toHaveBeenCalled()
-    TestUtils.select('Pagination__PageNext')!.click()
-    expect(onNextClick).toHaveBeenCalled()
-  })
+      />
+    );
+    TestUtils.select("Pagination__PagePrevious")!.click();
+    expect(onPreviousClick).toHaveBeenCalled();
+    TestUtils.select("Pagination__PageNext")!.click();
+    expect(onNextClick).toHaveBeenCalled();
+  });
 
-  it('handles disabled states', () => {
-    let onPreviousClick = jest.fn()
-    let onNextClick = jest.fn()
+  it("handles disabled states", () => {
+    let onPreviousClick = jest.fn();
+    let onNextClick = jest.fn();
     const { rerender } = render(
       <PaginationWithDefaultProps
         onPreviousClick={onPreviousClick}
         previousDisabled
         onNextClick={onNextClick}
-      />,
-    )
-    TestUtils.select('Pagination__PagePrevious')!.click()
-    expect(onPreviousClick).not.toHaveBeenCalled()
-    TestUtils.select('Pagination__PageNext')!.click()
-    expect(onNextClick).toHaveBeenCalled()
+      />
+    );
+    TestUtils.select("Pagination__PagePrevious")!.click();
+    expect(onPreviousClick).not.toHaveBeenCalled();
+    TestUtils.select("Pagination__PageNext")!.click();
+    expect(onNextClick).toHaveBeenCalled();
 
-    onPreviousClick = jest.fn()
-    onNextClick = jest.fn()
+    onPreviousClick = jest.fn();
+    onNextClick = jest.fn();
     rerender(
       <PaginationWithDefaultProps
         onPreviousClick={onPreviousClick}
         onNextClick={onNextClick}
         nextDisabled
-      />,
-    )
-    TestUtils.select('Pagination__PagePrevious')!.click()
-    expect(onPreviousClick).toHaveBeenCalled()
-    TestUtils.select('Pagination__PageNext')!.click()
-    expect(onNextClick).not.toHaveBeenCalled()
-  })
+      />
+    );
+    TestUtils.select("Pagination__PagePrevious")!.click();
+    expect(onPreviousClick).toHaveBeenCalled();
+    TestUtils.select("Pagination__PageNext")!.click();
+    expect(onNextClick).not.toHaveBeenCalled();
+  });
 
-  it('shows loading', () => {
-    const { rerender } = render(<PaginationWithDefaultProps />)
-    expect(TestUtils.select('HorizontalLoading__Wrapper')).toBeFalsy()
+  it("shows loading", () => {
+    const { rerender } = render(<PaginationWithDefaultProps />);
+    expect(TestUtils.select("HorizontalLoading__Wrapper")).toBeFalsy();
 
-    rerender(<PaginationWithDefaultProps loading />)
-    expect(TestUtils.select('HorizontalLoading__Wrapper')).toBeTruthy()
-  })
-})
+    rerender(<PaginationWithDefaultProps loading />);
+    expect(TestUtils.select("HorizontalLoading__Wrapper")).toBeTruthy();
+  });
+});

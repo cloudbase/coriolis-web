@@ -14,28 +14,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import WizardInstances from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import WizardInstances from ".";
 
 const instances: any = [
   {
-    id: 'i-1', flavor_name: 'Flavor name', instance_name: 'Instance name 1', num_cpu: 3, memory_mb: 1024,
+    id: "i-1",
+    flavor_name: "Flavor name",
+    instance_name: "Instance name 1",
+    num_cpu: 3,
+    memory_mb: 1024,
   },
   {
-    id: 'i-2', flavor_name: 'Flavor name', instance_name: 'Instance name 2', num_cpu: 3, memory_mb: 1024,
+    id: "i-2",
+    flavor_name: "Flavor name",
+    instance_name: "Instance name 2",
+    num_cpu: 3,
+    memory_mb: 1024,
   },
   {
-    id: 'i-3', flavor_name: 'Flavor name', instance_name: 'Instance name 3', num_cpu: 3, memory_mb: 1024,
+    id: "i-3",
+    flavor_name: "Flavor name",
+    instance_name: "Instance name 3",
+    num_cpu: 3,
+    memory_mb: 1024,
   },
-]
-const props: any = {}
-storiesOf('WizardInstances', module)
-  .add('default', () => (
-    <div style={{ width: '800px' }}><WizardInstances instances={instances} currentPage={1} {...props} /></div>
+];
+const props: any = {};
+storiesOf("WizardInstances", module)
+  .add("default", () => (
+    <div style={{ width: "800px" }}>
+      <WizardInstances instances={instances} currentPage={1} {...props} />
+    </div>
   ))
-  .add('some selection', () => (
-    <div style={{ width: '800px' }}>
+  .add("some selection", () => (
+    <div style={{ width: "800px" }}>
       <WizardInstances
         instances={instances}
         currentPage={1}
@@ -44,8 +58,8 @@ storiesOf('WizardInstances', module)
       />
     </div>
   ))
-  .add('searching', () => (
-    <div style={{ width: '800px' }}>
+  .add("searching", () => (
+    <div style={{ width: "800px" }}>
       <WizardInstances
         instances={instances}
         currentPage={1}
@@ -54,8 +68,8 @@ storiesOf('WizardInstances', module)
       />
     </div>
   ))
-  .add('loading page', () => (
-    <div style={{ width: '800px' }}>
+  .add("loading page", () => (
+    <div style={{ width: "800px" }}>
       <WizardInstances
         instances={instances}
         currentPage={1}
@@ -64,8 +78,8 @@ storiesOf('WizardInstances', module)
       />
     </div>
   ))
-  .add('loading', () => (
-    <div style={{ width: '800px' }}>
+  .add("loading", () => (
+    <div style={{ width: "800px" }}>
       <WizardInstances
         instances={instances}
         currentPage={1}
@@ -74,8 +88,8 @@ storiesOf('WizardInstances', module)
       />
     </div>
   ))
-  .add('reloading', () => (
-    <div style={{ width: '800px' }}>
+  .add("reloading", () => (
+    <div style={{ width: "800px" }}>
       <WizardInstances
         instances={instances}
         currentPage={1}
@@ -84,17 +98,13 @@ storiesOf('WizardInstances', module)
       />
     </div>
   ))
-  .add('no instances', () => (
-    <div style={{ width: '800px' }}>
-      <WizardInstances
-        instances={[]}
-        currentPage={1}
-        {...props}
-      />
+  .add("no instances", () => (
+    <div style={{ width: "800px" }}>
+      <WizardInstances instances={[]} currentPage={1} {...props} />
     </div>
   ))
-  .add('search no found', () => (
-    <div style={{ width: '800px' }}>
+  .add("search no found", () => (
+    <div style={{ width: "800px" }}>
       <WizardInstances
         instances={[]}
         currentPage={1}
@@ -102,4 +112,4 @@ storiesOf('WizardInstances', module)
         {...props}
       />
     </div>
-  ))
+  ));

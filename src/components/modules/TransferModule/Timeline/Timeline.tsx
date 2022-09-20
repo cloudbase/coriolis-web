@@ -12,27 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import type { Execution } from '@src/@types/Execution'
-import Arrow from '@src/components/ui/Arrow'
-import StatusIcon from '@src/components/ui/StatusComponents/StatusIcon'
+import type { Execution } from "@src/@types/Execution";
+import Arrow from "@src/components/ui/Arrow";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import DateUtils from '@src/utils/DateUtils'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import DateUtils from "@src/utils/DateUtils";
 
-const ITEM_GAP = 96
+const ITEM_GAP = 96;
 
 const ArrowStyled = styled(Arrow)<any>`
   opacity: ${props => (props.forceShow ? 1 : 0)};
   position: absolute;
   top: 0;
   transition: all ${ThemeProps.animations.swift};
-  ${props => (props.orientation === 'left' ? 'left: -19px;' : '')}
-  ${props => (props.orientation === 'right' ? 'right: -19px;' : '')}
-`
+  ${props => (props.orientation === "left" ? "left: -19px;" : "")}
+  ${props => (props.orientation === "right" ? "right: -19px;" : "")}
+`;
 const Wrapper = styled.div<any>`
   position: relative;
   height: 30px;
@@ -40,30 +40,30 @@ const Wrapper = styled.div<any>`
   &:hover ${ArrowStyled} {
     opacity: 1;
   }
-`
+`;
 const MainLine = styled.div<any>`
   width: 100%;
   padding-top: 7px;
   display: flex;
-`
+`;
 const ProgressLine = styled.div<any>`
   border-bottom: 2px solid ${ThemePalette.primary};
   transition: all ${ThemeProps.animations.swift};
-`
+`;
 const EndLine = styled.div<any>`
   border-bottom: 2px solid ${ThemePalette.grayscale[2]};
   transition: all ${ThemeProps.animations.swift};
-`
+`;
 const ItemsWrapper = styled.div<any>`
   overflow: hidden;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-`
+`;
 const Items = styled.div<any>`
   display: flex;
-`
+`;
 const Item = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -72,115 +72,147 @@ const Item = styled.div<any>`
   cursor: pointer;
   min-width: 75px;
   max-width: 75px;
-`
+`;
 const ItemLabel = styled.div<any>`
   font-size: 12px;
   color: ${ThemePalette.grayscale[4]};
   margin-top: 2px;
-  ${props => (props.selected ? `color: ${ThemePalette.black};` : '')}
-  ${props => (props.selected ? `font-weight: ${ThemeProps.fontWeights.medium};` : '')}
-`
+  ${props => (props.selected ? `color: ${ThemePalette.black};` : "")}
+  ${props =>
+    props.selected ? `font-weight: ${ThemeProps.fontWeights.medium};` : ""}
+`;
 
 type Props = {
-  items?: Execution[] | null,
-  selectedItem?: Execution | null,
-  onPreviousClick?: () => void,
-  onNextClick?: () => void,
-  onItemClick?: (item: Execution) => void,
-}
+  items?: Execution[] | null;
+  selectedItem?: Execution | null;
+  onPreviousClick?: () => void;
+  onNextClick?: () => void;
+  onItemClick?: (item: Execution) => void;
+};
 @observer
 class Timeline extends React.Component<Props> {
-  itemsRef: HTMLElement | null | undefined
+  itemsRef: HTMLElement | null | undefined;
 
-  progressLineRef: HTMLElement | null | undefined
+  progressLineRef: HTMLElement | null | undefined;
 
-  wrapperRef: HTMLElement | null | undefined
+  wrapperRef: HTMLElement | null | undefined;
 
-  itemRef: HTMLElement | null | undefined
+  itemRef: HTMLElement | null | undefined;
 
-  endLineRef: HTMLElement | null | undefined
+  endLineRef: HTMLElement | null | undefined;
 
   componentDidMount() {
-    this.moveToSelectedItem()
+    this.moveToSelectedItem();
 
     if (!this.itemsRef) {
-      return
+      return;
     }
-    this.itemsRef.style.transition = `all ${ThemeProps.animations.swift}`
+    this.itemsRef.style.transition = `all ${ThemeProps.animations.swift}`;
   }
 
   componentDidUpdate() {
     if (this.itemsRef && !this.itemsRef.style.transition) {
-      this.itemsRef.style.transition = `all ${ThemeProps.animations.swift}`
+      this.itemsRef.style.transition = `all ${ThemeProps.animations.swift}`;
     }
 
-    this.moveToSelectedItem()
+    this.moveToSelectedItem();
   }
 
   moveToSelectedItem() {
-    if (!this.progressLineRef || !this.endLineRef || !this.props.items || !this.wrapperRef) {
-      return
+    if (
+      !this.progressLineRef ||
+      !this.endLineRef ||
+      !this.props.items ||
+      !this.wrapperRef
+    ) {
+      return;
     }
-    const selectedItem = this.props.selectedItem
+    const selectedItem = this.props.selectedItem;
     if (!this.itemRef || !selectedItem || !this.itemsRef) {
-      this.progressLineRef.style.width = '0'
-      this.endLineRef.style.width = '100%'
-      return
+      this.progressLineRef.style.width = "0";
+      this.endLineRef.style.width = "100%";
+      return;
     }
 
-    const itemIndex = this.props.items.findIndex(i => i.id === selectedItem.id)
-    const halfWidth = this.wrapperRef.offsetWidth / 2
-    const itemGap = this.itemRef.offsetWidth + ITEM_GAP
-    const itemHalfWidth = this.itemRef.offsetWidth / 2
-    const offset = (halfWidth - (itemGap * itemIndex)) - itemHalfWidth
+    const itemIndex = this.props.items.findIndex(i => i.id === selectedItem.id);
+    const halfWidth = this.wrapperRef.offsetWidth / 2;
+    const itemGap = this.itemRef.offsetWidth + ITEM_GAP;
+    const itemHalfWidth = this.itemRef.offsetWidth / 2;
+    const offset = halfWidth - itemGap * itemIndex - itemHalfWidth;
 
-    this.itemsRef.style.marginLeft = `${offset}px`
+    this.itemsRef.style.marginLeft = `${offset}px`;
 
-    const lastItemPos = (itemGap * (this.props.items.length - 1)) + offset + itemHalfWidth
-    this.progressLineRef.style.width = `${lastItemPos}px`
-    this.endLineRef.style.width = `${Math.max(this.wrapperRef.offsetWidth - lastItemPos, 0)}px`
+    const lastItemPos =
+      itemGap * (this.props.items.length - 1) + offset + itemHalfWidth;
+    this.progressLineRef.style.width = `${lastItemPos}px`;
+    this.endLineRef.style.width = `${Math.max(
+      this.wrapperRef.offsetWidth - lastItemPos,
+      0
+    )}px`;
   }
 
   renderMainLine() {
     return (
       <MainLine>
-        <ProgressLine ref={(line: HTMLElement | null | undefined) => {
-          this.progressLineRef = line
-        }}
+        <ProgressLine
+          ref={(line: HTMLElement | null | undefined) => {
+            this.progressLineRef = line;
+          }}
         />
-        <EndLine ref={(line: HTMLElement | null | undefined) => { this.endLineRef = line }} />
+        <EndLine
+          ref={(line: HTMLElement | null | undefined) => {
+            this.endLineRef = line;
+          }}
+        />
       </MainLine>
-    )
+    );
   }
 
   renderItems() {
     if (!this.props.items || !this.props.items.length) {
-      return null
+      return null;
     }
 
     return (
       <ItemsWrapper>
-        <Items ref={(items: HTMLElement | null | undefined) => { this.itemsRef = items }}>
+        <Items
+          ref={(items: HTMLElement | null | undefined) => {
+            this.itemsRef = items;
+          }}
+        >
           {this.props.items.map(item => (
             <Item
               key={item.id}
-              ref={(ref: HTMLElement | null | undefined) => { this.itemRef = ref }}
-              onClick={() => { if (this.props.onItemClick) this.props.onItemClick(item) }}
+              ref={(ref: HTMLElement | null | undefined) => {
+                this.itemRef = ref;
+              }}
+              onClick={() => {
+                if (this.props.onItemClick) this.props.onItemClick(item);
+              }}
             >
               <StatusIcon status={item.status} useBackground />
-              <ItemLabel selected={this.props.selectedItem && this.props.selectedItem.id === item.id}>
-                {DateUtils.getLocalTime(item.created_at).format('DD MMM YYYY')}
+              <ItemLabel
+                selected={
+                  this.props.selectedItem &&
+                  this.props.selectedItem.id === item.id
+                }
+              >
+                {DateUtils.getLocalTime(item.created_at).format("DD MMM YYYY")}
               </ItemLabel>
             </Item>
           ))}
         </Items>
       </ItemsWrapper>
-    )
+    );
   }
 
   render() {
     return (
-      <Wrapper ref={(w: HTMLElement | null | undefined) => { this.wrapperRef = w }}>
+      <Wrapper
+        ref={(w: HTMLElement | null | undefined) => {
+          this.wrapperRef = w;
+        }}
+      >
         <ArrowStyled
           orientation="left"
           forceShow={!this.props.items || !this.props.items.length}
@@ -195,8 +227,8 @@ class Timeline extends React.Component<Props> {
           onClick={this.props.onNextClick}
         />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default Timeline
+export default Timeline;

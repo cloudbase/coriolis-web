@@ -12,23 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import DomUtils from '@src/utils/DomUtils'
-import CopyValue from './CopyValue'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import DomUtils from "@src/utils/DomUtils";
+import CopyValue from "./CopyValue";
 
-jest.mock('../../../utils/DomUtils')
+jest.mock("../../../utils/DomUtils");
 
-describe('CopyValue', () => {
-  it('copies value to clipboard', () => {
-    render(<CopyValue value="value" />)
-    TestUtils.select('CopyValue__Wrapper')!.click()
-    expect(DomUtils.copyTextToClipboard).toHaveBeenCalledWith('value')
-  })
+describe("CopyValue", () => {
+  it("copies value to clipboard", () => {
+    render(<CopyValue value="value" />);
+    TestUtils.select("CopyValue__Wrapper")!.click();
+    expect(DomUtils.copyTextToClipboard).toHaveBeenCalledWith("value");
+  });
 
-  it('capitalizes the value', () => {
-    render(<CopyValue capitalize value="value" />)
-    expect(window.getComputedStyle(TestUtils.select('CopyValue__Wrapper')!).textTransform).toBe('capitalize')
-  })
-})
+  it("capitalizes the value", () => {
+    render(<CopyValue capitalize value="value" />);
+    expect(
+      window.getComputedStyle(TestUtils.select("CopyValue__Wrapper")!)
+        .textTransform
+    ).toBe("capitalize");
+  });
+});

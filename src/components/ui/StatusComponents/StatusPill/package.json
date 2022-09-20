@@ -2,6 +2,5 @@
   "name": "StatusPill",
   "version": "0.0.0",
   "private": true,
-  "main":"./StatusPill.tsx"
+  "main": "./StatusPill.tsx"
 }
-

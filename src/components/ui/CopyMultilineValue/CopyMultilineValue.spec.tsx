@@ -12,27 +12,33 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import DomUtils from '@src/utils/DomUtils'
-import CopyMultineValue from './CopyMultilineValue'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import DomUtils from "@src/utils/DomUtils";
+import CopyMultineValue from "./CopyMultilineValue";
 
-jest.mock('../../../utils/DomUtils')
+jest.mock("../../../utils/DomUtils");
 
-describe('CopyMultilineValue', () => {
-  it('copies value to clipboard', () => {
-    const onCopy = jest.fn()
-    render(<CopyMultineValue value="test value" onCopy={onCopy} />)
-    TestUtils.select('CopyMultilineValue__Wrapper')!.click()
-    expect(DomUtils.copyTextToClipboard).toHaveBeenCalledWith('test value')
-    expect(onCopy).toHaveBeenCalledWith('test value')
-  })
+describe("CopyMultilineValue", () => {
+  it("copies value to clipboard", () => {
+    const onCopy = jest.fn();
+    render(<CopyMultineValue value="test value" onCopy={onCopy} />);
+    TestUtils.select("CopyMultilineValue__Wrapper")!.click();
+    expect(DomUtils.copyTextToClipboard).toHaveBeenCalledWith("test value");
+    expect(onCopy).toHaveBeenCalledWith("test value");
+  });
 
-  it('transforms dangerous HTML', () => {
-    const onCopy = jest.fn()
-    render(<CopyMultineValue useDangerousHtml onCopy={onCopy} value="this<br />is <b>OK</b>" />)
-    TestUtils.select('CopyMultilineValue__Wrapper')!.click()
-    expect(onCopy).toHaveBeenCalledWith('this\nis OK')
-  })
-})
+  it("transforms dangerous HTML", () => {
+    const onCopy = jest.fn();
+    render(
+      <CopyMultineValue
+        useDangerousHtml
+        onCopy={onCopy}
+        value="this<br />is <b>OK</b>"
+      />
+    );
+    TestUtils.select("CopyMultilineValue__Wrapper")!.click();
+    expect(onCopy).toHaveBeenCalledWith("this\nis OK");
+  });
+});

@@ -13,51 +13,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 export type Nic = {
-  id: string,
-  network_name: string,
-  ip_addresses?: string[],
-  mac_address: string,
-  network_id: string,
-}
+  id: string;
+  network_name: string;
+  ip_addresses?: string[];
+  mac_address: string;
+  network_id: string;
+};
 
 export type Disk = {
-  id: string,
-  name?: string,
-  storage_backend_identifier?: string,
-  format?: string,
-  guest_device?: string,
-  size_bytes?: number,
+  id: string;
+  name?: string;
+  storage_backend_identifier?: string;
+  format?: string;
+  guest_device?: string;
+  size_bytes?: number;
   disabled?: {
-    message: string,
-    info?: string,
-  },
-}
+    message: string;
+    info?: string;
+  };
+};
 
 export type Instance = {
-  id: string,
-  name: string,
-  flavor_name: string,
-  instance_name?: string | null,
-  num_cpu: number,
-  memory_mb: number,
-  os_type: string,
+  id: string;
+  name: string;
+  flavor_name: string;
+  instance_name?: string | null;
+  num_cpu: number;
+  memory_mb: number;
+  os_type: string;
   devices: {
-    nics: Nic[],
-    disks: Disk[],
-  },
-}
+    nics: Nic[];
+    disks: Disk[];
+  };
+};
 
 export type InstanceBase = {
-  id: string
-} & Partial<Instance>
+  id: string;
+} & Partial<Instance>;
 
 export type InstanceScript = {
-  global?: 'windows' | 'linux' | null,
-  instanceId?: string | null,
-  scriptContent: string | null,
-  fileName: string | null,
-}
+  global?: "windows" | "linux" | null;
+  instanceId?: string | null;
+  scriptContent: string | null;
+  fileName: string | null;
+};
 
 export const InstanceUtils = {
-  shortenId: (id: string) => id.replace(/(^.*?)-.*-(.*$)/, '$1-...-$2'),
-}
+  shortenId: (id: string) => id.replace(/(^.*?)-.*-(.*$)/, "$1-...-$2"),
+};

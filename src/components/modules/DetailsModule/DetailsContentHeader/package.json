@@ -2,6 +2,5 @@
   "name": "DetailsContentHeader",
   "version": "0.0.0",
   "private": true,
-  "main":"./DetailsContentHeader.tsx"
+  "main": "./DetailsContentHeader.tsx"
 }
-

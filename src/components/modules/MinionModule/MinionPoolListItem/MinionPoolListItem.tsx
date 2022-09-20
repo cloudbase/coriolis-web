@@ -12,24 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import Checkbox from '@src/components/ui/Checkbox'
-import StatusPill from '@src/components/ui/StatusComponents/StatusPill'
-import EndpointLogos from '@src/components/modules/EndpointModule/EndpointLogos'
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import Checkbox from "@src/components/ui/Checkbox";
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import DateUtils from '@src/utils/DateUtils'
-import { MinionPool } from '@src/@types/MinionPool'
-import { ProviderTypes } from '@src/@types/Providers'
-import itemImage from './images/minion-pool-list-item.svg'
+import DateUtils from "@src/utils/DateUtils";
+import { MinionPool } from "@src/@types/MinionPool";
+import { ProviderTypes } from "@src/@types/Providers";
+import itemImage from "./images/minion-pool-list-item.svg";
 
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => (props.checked ? 1 : 0)};
   transition: all ${ThemeProps.animations.swift};
-`
+`;
 const Content = styled.div<any>`
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@ const Content = styled.div<any>`
   &:hover {
     background: ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const Wrapper = styled.div<any>`
   display: flex;
   align-items: center;
@@ -56,113 +56,121 @@ const Wrapper = styled.div<any>`
   &:last-child ${Content} {
     border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
-`
+`;
 
 const Image = styled.div`
   min-width: 48px;
   height: 48px;
-  background: url('${itemImage}') no-repeat center;
+  background: url("${itemImage}") no-repeat center;
   margin-right: 16px;
-`
+`;
 const Title = styled.div<any>`
   flex-grow: 1;
   overflow: hidden;
   margin-right: 48px;
   min-width: 100px;
-`
+`;
 const TitleLabel = styled.div<any>`
   font-size: 16px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-`
+`;
 const StatusWrapper = styled.div<any>`
   display: flex;
   margin-top: 8px;
-`
+`;
 const EndpointImage = styled.div<any>`
   display: flex;
   align-items: center;
   margin-right: 48px;
-`
+`;
 const ItemLabel = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
-`
+`;
 const ItemValue = styled.div<any>`
   color: ${ThemePalette.primary};
-`
+`;
 const Column = styled.div`
   align-self: start;
-`
+`;
 
 type Props = {
-  item: MinionPool,
-  onClick: () => void,
-  selected: boolean,
-  endpointType: (endpointId: string) => ProviderTypes | string,
-  onSelectedChange: (value: boolean) => void,
-}
+  item: MinionPool;
+  onClick: () => void;
+  selected: boolean;
+  endpointType: (endpointId: string) => ProviderTypes | string;
+  onSelectedChange: (value: boolean) => void;
+};
 @observer
 class MinionPoolListItem extends React.Component<Props> {
   getStatus() {
-    return this.props.item.status
+    return this.props.item.status;
   }
 
   renderCreationDate() {
     return (
-      <Column style={{ minWidth: '170px', maxWidth: '170px', marginRight: '25px' }}>
-        <ItemLabel>
-          Created
-        </ItemLabel>
+      <Column
+        style={{ minWidth: "170px", maxWidth: "170px", marginRight: "25px" }}
+      >
+        <ItemLabel>Created</ItemLabel>
         <ItemValue>
-          {DateUtils.getLocalTime(this.props.item.created_at).format('DD MMMM YYYY, HH:mm')}
+          {DateUtils.getLocalTime(this.props.item.created_at).format(
+            "DD MMMM YYYY, HH:mm"
+          )}
         </ItemValue>
       </Column>
-    )
+    );
   }
 
   renderUpdateDate() {
     return (
-      <Column style={{ minWidth: '170px', maxWidth: '170px', marginRight: '25px' }}>
-        <ItemLabel>
-          Updated
-        </ItemLabel>
+      <Column
+        style={{ minWidth: "170px", maxWidth: "170px", marginRight: "25px" }}
+      >
+        <ItemLabel>Updated</ItemLabel>
         <ItemValue>
-          {this.props.item.updated_at ? DateUtils.getLocalTime(this.props.item.updated_at).format('DD MMMM YYYY, HH:mm') : '-'}
+          {this.props.item.updated_at
+            ? DateUtils.getLocalTime(this.props.item.updated_at).format(
+                "DD MMMM YYYY, HH:mm"
+              )
+            : "-"}
         </ItemValue>
       </Column>
-    )
+    );
   }
 
   renderCreatedCount() {
-    const createdCount = this.props.item.minion_machines.filter(m => m.allocation_status === 'IN_USE' || m.allocation_status === 'AVAILABLE').length
-    const totalCount = this.props.item.minion_machines.length
+    const createdCount = this.props.item.minion_machines.filter(
+      m =>
+        m.allocation_status === "IN_USE" || m.allocation_status === "AVAILABLE"
+    ).length;
+    const totalCount = this.props.item.minion_machines.length;
 
     return (
-      <Column style={{ minWidth: '150px', maxWidth: '150px' }}>
-        <ItemLabel>
-          Allocated
-        </ItemLabel>
+      <Column style={{ minWidth: "150px", maxWidth: "150px" }}>
+        <ItemLabel>Allocated</ItemLabel>
         <ItemValue
           style={{
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
+            textOverflow: "ellipsis",
+            overflow: "hidden",
           }}
         >
-          {createdCount} of {totalCount} machines<br />({this.props.item.maximum_minions} maximum)
+          {createdCount} of {totalCount} machines
+          <br />({this.props.item.maximum_minions} maximum)
         </ItemValue>
       </Column>
-    )
+    );
   }
 
   render() {
-    const endpointType = this.props.endpointType(this.props.item.endpoint_id)
+    const endpointType = this.props.endpointType(this.props.item.endpoint_id);
     const endpointImage = (
       <EndpointImage>
         <EndpointLogos height={42} endpoint={endpointType} />
       </EndpointImage>
-    )
-    const status = this.getStatus()
+    );
+    const status = this.getStatus();
 
     return (
       <Wrapper>
@@ -176,10 +184,7 @@ class MinionPoolListItem extends React.Component<Props> {
             <TitleLabel>{this.props.item.name}</TitleLabel>
             <StatusWrapper>
               {status ? (
-                <StatusPill
-                  status={status}
-                  style={{ marginRight: '8px' }}
-                />
+                <StatusPill status={status} style={{ marginRight: "8px" }} />
               ) : null}
             </StatusWrapper>
           </Title>
@@ -189,8 +194,8 @@ class MinionPoolListItem extends React.Component<Props> {
           {this.renderCreatedCount()}
         </Content>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MinionPoolListItem
+export default MinionPoolListItem;

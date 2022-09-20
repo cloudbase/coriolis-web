@@ -12,22 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import { waitFor } from '@testing-library/dom'
-import userEvent from '@testing-library/user-event'
-import FileInput from '@src/components/ui/FileInput'
-import TestUtils from '@tests/TestUtils'
+import React from "react";
+import { render } from "@testing-library/react";
+import { waitFor } from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
+import FileInput from "@src/components/ui/FileInput";
+import TestUtils from "@tests/TestUtils";
 
-describe('FileInput', () => {
-  it('uploads file', async () => {
-    const onUpload = jest.fn()
-    render(<FileInput onUpload={onUpload} />)
-    userEvent.upload(
-      TestUtils.select('FileInput__FakeFileInput')!,
-      [new File(['test-content'], 'test.txt', { type: 'text/plain' })],
-    )
-    await waitFor(() => expect(onUpload).toHaveBeenCalledWith('test-content'))
-    expect(TestUtils.select('FileInput__FileName')?.textContent).toBe('test.txt')
-  })
-})
+describe("FileInput", () => {
+  it("uploads file", async () => {
+    const onUpload = jest.fn();
+    render(<FileInput onUpload={onUpload} />);
+    userEvent.upload(TestUtils.select("FileInput__FakeFileInput")!, [
+      new File(["test-content"], "test.txt", { type: "text/plain" }),
+    ]);
+    await waitFor(() => expect(onUpload).toHaveBeenCalledWith("test-content"));
+    expect(TestUtils.select("FileInput__FileName")?.textContent).toBe(
+      "test.txt"
+    );
+  });
+});

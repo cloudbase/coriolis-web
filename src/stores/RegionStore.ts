@@ -12,38 +12,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { observable, action, runInAction } from 'mobx'
-import { Endpoint } from '@src/@types/Endpoint'
-import { Region } from '@src/@types/Region'
-import regionSource from '@src/sources/RegionSource'
+import { observable, action, runInAction } from "mobx";
+import { Endpoint } from "@src/@types/Endpoint";
+import { Region } from "@src/@types/Region";
+import regionSource from "@src/sources/RegionSource";
 
 class RegionStore {
-  @observable regions: Region[] = []
+  @observable regions: Region[] = [];
 
-  @observable loading = false
+  @observable loading = false;
 
   @action async getRegions() {
-    this.loading = true
+    this.loading = true;
     try {
-      const regions = await regionSource.getRegions()
+      const regions = await regionSource.getRegions();
       runInAction(() => {
-        this.regions = regions
-      })
-      return regions
+        this.regions = regions;
+      });
+      return regions;
     } finally {
       runInAction(() => {
-        this.loading = false
-      })
+        this.loading = false;
+      });
     }
   }
 
   async setEndpointRegionExport(endpoint: Endpoint) {
     if (!endpoint.mapped_regions?.length) {
-      return
+      return;
     }
-    const regions = this.regions.length ? this.regions : await this.getRegions()
-    endpoint.mapped_regions = endpoint.mapped_regions.map(id => regions.find(r => r.id === id)?.name || id)
+    const regions = this.regions.length
+      ? this.regions
+      : await this.getRegions();
+    endpoint.mapped_regions = endpoint.mapped_regions.map(
+      id => regions.find(r => r.id === id)?.name || id
+    );
   }
 }
 
-export default new RegionStore()
+export default new RegionStore();

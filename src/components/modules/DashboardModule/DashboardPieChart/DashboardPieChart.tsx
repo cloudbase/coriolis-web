@@ -12,16 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import autobind from 'autobind-decorator'
-import { ThemeProps } from '@src/components/Theme'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import autobind from "autobind-decorator";
+import { ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   position: relative;
   display: flex;
-`
+`;
 const OuterShadow = styled.div<any>`
   position: absolute;
   top: 0;
@@ -30,7 +30,7 @@ const OuterShadow = styled.div<any>`
   border-radius: 50%;
   ${ThemeProps.boxShadow}
   pointer-events: none;
-`
+`;
 const InnerShadow = styled.div<any>`
   position: absolute;
   top: calc(50% - ${props => props.size}px);
@@ -39,183 +39,194 @@ const InnerShadow = styled.div<any>`
   border-radius: 50%;
   box-shadow: inset rgba(0, 0, 0, 0.1) 0 0 6px 2px;
   pointer-events: none;
-`
-const Canvas = styled.canvas``
+`;
+const Canvas = styled.canvas``;
 
-export type DataItem = { value: number, [prop: string]: any }
+export type DataItem = { value: number; [prop: string]: any };
 type Props = {
-  size: number,
-  data: any[],
+  size: number;
+  data: any[];
   holeStyle?: {
-    radius: number,
-    color: string,
-  },
-  colors: string[],
-  onMouseOver?: (item: DataItem, positionX: number, positionY: number) => void,
-  onMouseLeave?: () => void,
-  customRef?: (ref: HTMLElement) => void,
-}
+    radius: number;
+    color: string;
+  };
+  colors: string[];
+  onMouseOver?: (item: DataItem, positionX: number, positionY: number) => void;
+  onMouseLeave?: () => void;
+  customRef?: (ref: HTMLElement) => void;
+};
 
 @observer
 class DashboardPieChart extends React.Component<Props> {
-  canvas: HTMLCanvasElement | null | undefined
+  canvas: HTMLCanvasElement | null | undefined;
 
-  angles: number[] = []
+  angles: number[] = [];
 
-  topData: DataItem[] = []
+  topData: DataItem[] = [];
 
-  sum: number = 0
+  sum = 0;
 
   componentDidMount() {
-    this.drawChart()
-    const canvas = this.canvas
+    this.drawChart();
+    const canvas = this.canvas;
     if (!canvas) {
-      return
+      return;
     }
-    canvas.addEventListener('mousemove', this.handleMouseMove)
-    canvas.addEventListener('mouseleave', this.handleMouseLeave)
+    canvas.addEventListener("mousemove", this.handleMouseMove);
+    canvas.addEventListener("mouseleave", this.handleMouseLeave);
   }
 
   UNSAFE_componentWillReceiveProps() {
-    this.drawChart()
+    this.drawChart();
   }
 
   componentDidUpdate() {
-    this.drawChart()
+    this.drawChart();
   }
 
   componentWillUnmount() {
-    const canvas = this.canvas
+    const canvas = this.canvas;
     if (!canvas) {
-      return
+      return;
     }
-    canvas.removeEventListener('mousemove', this.handleMouseMove)
-    canvas.removeEventListener('mouseleave', this.handleMouseLeave)
+    canvas.removeEventListener("mousemove", this.handleMouseMove);
+    canvas.removeEventListener("mouseleave", this.handleMouseLeave);
   }
 
   @autobind
   handleMouseMove(evt: MouseEvent) {
-    const canvas = this.canvas
-    const onMouseOver = this.props.onMouseOver
+    const canvas = this.canvas;
+    const onMouseOver = this.props.onMouseOver;
     if (!canvas || !onMouseOver) {
-      return
+      return;
     }
-    const mouseX = evt.offsetX
-    const mouseY = evt.offsetY
-    const item = this.detectHit(mouseX * 2, mouseY * 2)
+    const mouseX = evt.offsetX;
+    const mouseY = evt.offsetY;
+    const item = this.detectHit(mouseX * 2, mouseY * 2);
     if (item) {
-      onMouseOver(item, mouseX, mouseY)
+      onMouseOver(item, mouseX, mouseY);
     } else if (this.props.onMouseLeave) {
-      this.props.onMouseLeave()
+      this.props.onMouseLeave();
     }
   }
 
   @autobind
   handleMouseLeave() {
     if (this.props.onMouseLeave) {
-      this.props.onMouseLeave()
+      this.props.onMouseLeave();
     }
   }
 
   drawChart() {
-    const canvas = this.canvas
+    const canvas = this.canvas;
     if (!canvas) {
-      return
+      return;
     }
-    canvas.style.width = `${this.props.size}px`
-    canvas.style.height = `${this.props.size}px`
+    canvas.style.width = `${this.props.size}px`;
+    canvas.style.height = `${this.props.size}px`;
 
-    this.topData = this.props.data.sort((a, b) => b.value - a.value).slice(0, 6)
-    this.sum = this.topData.reduce((total, item) => total + item.value, 0)
+    this.topData = this.props.data
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 6);
+    this.sum = this.topData.reduce((total, item) => total + item.value, 0);
     if (this.sum === 0) {
-      this.angles = this.topData.map(() => Math.PI * ((1 / this.topData.length) * 2))
+      this.angles = this.topData.map(
+        () => Math.PI * ((1 / this.topData.length) * 2)
+      );
     } else {
-      this.angles = this.topData.map(item => Math.PI * ((item.value / this.sum) * 2))
+      this.angles = this.topData.map(
+        item => Math.PI * ((item.value / this.sum) * 2)
+      );
     }
-    const halfSize = this.props.size / 2
-    const ctx = canvas.getContext('2d')
+    const halfSize = this.props.size / 2;
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
-      return
+      return;
     }
-    ctx.setTransform(1, 0, 0, 1, 0, 0)
-    ctx.clearRect(0, 0, this.props.size * 2, this.props.size * 2)
-    ctx.scale(2, 2)
-    let beginAngle = Math.PI
-    let endAngle = Math.PI
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.props.size * 2, this.props.size * 2);
+    ctx.scale(2, 2);
+    let beginAngle = Math.PI;
+    let endAngle = Math.PI;
     for (let i = 0; i < this.angles.length; i += 1) {
-      beginAngle = endAngle
-      endAngle += this.angles[i]
+      beginAngle = endAngle;
+      endAngle += this.angles[i];
 
-      ctx.beginPath()
-      ctx.fillStyle = this.props.colors[i % this.props.colors.length]
-      ctx.moveTo(halfSize, halfSize)
-      ctx.arc(halfSize, halfSize, halfSize, beginAngle, endAngle)
-      ctx.fill()
+      ctx.beginPath();
+      ctx.fillStyle = this.props.colors[i % this.props.colors.length];
+      ctx.moveTo(halfSize, halfSize);
+      ctx.arc(halfSize, halfSize, halfSize, beginAngle, endAngle);
+      ctx.fill();
     }
-    const holeStyle = this.props.holeStyle
+    const holeStyle = this.props.holeStyle;
     if (!holeStyle) {
-      return
+      return;
     }
-    ctx.beginPath()
-    ctx.fillStyle = holeStyle.color
-    ctx.moveTo(halfSize, halfSize)
-    ctx.arc(halfSize, halfSize, holeStyle.radius, 0, 2 * Math.PI)
-    ctx.fill()
+    ctx.beginPath();
+    ctx.fillStyle = holeStyle.color;
+    ctx.moveTo(halfSize, halfSize);
+    ctx.arc(halfSize, halfSize, holeStyle.radius, 0, 2 * Math.PI);
+    ctx.fill();
   }
 
   detectHit(x: number, y: number): any {
-    const canvas = this.canvas
+    const canvas = this.canvas;
     if (!canvas) {
-      return null
+      return null;
     }
 
-    const halfSize = this.props.size / 2
-    const ctx = canvas.getContext('2d')
+    const halfSize = this.props.size / 2;
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
-      return null
+      return null;
     }
-    const holeStyle = this.props.holeStyle
+    const holeStyle = this.props.holeStyle;
     if (holeStyle) {
-      ctx.beginPath()
-      ctx.moveTo(halfSize, halfSize)
-      ctx.arc(halfSize, halfSize, holeStyle.radius, 0, 2 * Math.PI)
+      ctx.beginPath();
+      ctx.moveTo(halfSize, halfSize);
+      ctx.arc(halfSize, halfSize, holeStyle.radius, 0, 2 * Math.PI);
       if (ctx.isPointInPath(x, y)) {
-        return null
+        return null;
       }
     }
 
-    let beginAngle = Math.PI
-    let endAngle = Math.PI
+    let beginAngle = Math.PI;
+    let endAngle = Math.PI;
     for (let i = 0; i < this.angles.length; i += 1) {
-      beginAngle = endAngle
-      endAngle += this.angles[i]
+      beginAngle = endAngle;
+      endAngle += this.angles[i];
 
-      ctx.beginPath()
-      ctx.moveTo(halfSize, halfSize)
-      ctx.arc(halfSize, halfSize, halfSize, beginAngle, endAngle)
+      ctx.beginPath();
+      ctx.moveTo(halfSize, halfSize);
+      ctx.arc(halfSize, halfSize, halfSize, beginAngle, endAngle);
       if (ctx.isPointInPath(x, y)) {
-        return this.topData[i]
+        return this.topData[i];
       }
     }
-    return null
+    return null;
   }
 
   render() {
     return (
-      <Wrapper ref={(ref: HTMLElement) => {
-        if (this.props.customRef) this.props.customRef(ref)
-      }}
+      <Wrapper
+        ref={(ref: HTMLElement) => {
+          if (this.props.customRef) this.props.customRef(ref);
+        }}
       >
         <Canvas
           width={this.props.size * 2}
           height={this.props.size * 2}
-          ref={ref => { this.canvas = ref }}
+          ref={ref => {
+            this.canvas = ref;
+          }}
         />
         <OuterShadow size={this.props.size} />
-        {this.props.holeStyle ? <InnerShadow size={this.props.holeStyle.radius} /> : null}
+        {this.props.holeStyle ? (
+          <InnerShadow size={this.props.holeStyle.radius} />
+        ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default DashboardPieChart
+export default DashboardPieChart;

@@ -12,92 +12,102 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled, { css } from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled, { css } from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import requiredImage from './images/required.svg'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import requiredImage from "./images/required.svg";
 
 const Wrapper = styled.div<any>`
   position: relative;
   display: flex;
   height: ${ThemeProps.inputSizes.regular.height}px;
   align-items: center;
-  ${(props: any) => (props.highlight ? css`
-    border: 1px solid ${ThemePalette.alert};
-    height: ${ThemeProps.inputSizes.regular.height - 2}px;
-    border-radius: ${ThemeProps.borderRadius};
-  ` : '')}
-  ${(props: any) => (props.disabled ? 'opacity: 0.5;' : '')}
-  ${(props: any) => (props.justifyContent ? `justify-content: ${props.justifyContent};` : '')}
-  ${(props: any) => (props.width ? `width: ${props.width};` : '')}
-  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
-`
+  ${(props: any) =>
+    props.highlight
+      ? css`
+          border: 1px solid ${ThemePalette.alert};
+          height: ${ThemeProps.inputSizes.regular.height - 2}px;
+          border-radius: ${ThemeProps.borderRadius};
+        `
+      : ""}
+  ${(props: any) => (props.disabled ? "opacity: 0.5;" : "")}
+  ${(props: any) =>
+    props.justifyContent ? `justify-content: ${props.justifyContent};` : ""}
+  ${(props: any) => (props.width ? `width: ${props.width};` : "")}
+  ${(props: any) =>
+    props.disabledLoading ? ThemeProps.animations.disabledLoading : ""}
+`;
 const Required = styled.div<any>`
   position: absolute;
   width: 8px;
   height: 8px;
   right: -16px;
   top: 12px;
-  background: url('${requiredImage}') center no-repeat;
-`
+  background: url("${requiredImage}") center no-repeat;
+`;
 const InputWrapper = styled.div<any>`
   position: relative;
   width: ${(props: any) => props.height * 2}px;
   height: ${(props: any) => props.height}px;
-  ${(props: any) => (!props.disabled ? 'cursor: pointer;' : '')};
+  ${(props: any) => (!props.disabled ? "cursor: pointer;" : "")};
   :focus {
-    ${(props: any) => ((props.disabled || props.disabledLoading) ? css`outline: none;` : '')}
+    ${(props: any) =>
+      props.disabled || props.disabledLoading
+        ? css`
+            outline: none;
+          `
+        : ""}
   }
-`
+`;
 const inputBackground = (props: any) => {
   if (props.checkedColor && props.checked) {
-    return props.checkedColor
+    return props.checkedColor;
   }
   if (props.uncheckedColor && !props.checked) {
-    return props.uncheckedColor
+    return props.uncheckedColor;
   }
 
   if (props.big) {
     if (props.checked) {
-      return ThemePalette.alert
+      return ThemePalette.alert;
     }
-    return ThemePalette.primary
+    return ThemePalette.primary;
   }
 
   if (props.secondary && props.checked) {
-    return ThemePalette.grayscale[5]
+    return ThemePalette.grayscale[5];
   }
 
   if (props.checked) {
-    return ThemePalette.primary
+    return ThemePalette.primary;
   }
 
-  return 'white'
-}
+  return "white";
+};
 const getInputBorderColor = (props: any) => {
   if (props.checkedColor && props.checked) {
-    return props.checkedColor
+    return props.checkedColor;
   }
   if (props.uncheckedColor && !props.checked) {
-    return props.uncheckedColor
+    return props.uncheckedColor;
   }
 
   if (props.big && props.checked) {
-    return ThemePalette.alert
+    return ThemePalette.alert;
   }
 
   if (props.secondary) {
-    return ThemePalette.grayscale[5]
+    return ThemePalette.grayscale[5];
   }
 
   if (props.triState && props.checked == null) {
-    return ThemePalette.grayscale[2]
+    return ThemePalette.grayscale[2];
   }
 
-  return ThemePalette.primary
-}
+  return ThemePalette.primary;
+};
 const InputBackground = styled.div<any>`
   position: absolute;
   top: 0;
@@ -108,18 +118,18 @@ const InputBackground = styled.div<any>`
   background: ${props => inputBackground(props)};
   border-radius: 50px;
   border: 1px solid ${props => getInputBorderColor(props)};
-`
+`;
 const getThumbLeft = (props: any) => {
   if (props.checked) {
-    return props.height - 1
+    return props.height - 1;
   }
 
   if (props.triState && props.checked == null) {
-    return (props.height / 2) - 1
+    return props.height / 2 - 1;
   }
 
-  return -1
-}
+  return -1;
+};
 const InputThumb = styled.div<any>`
   position: absolute;
   width: ${(props: any) => props.height - 2}px;
@@ -130,87 +140,90 @@ const InputThumb = styled.div<any>`
   background: white;
   border: 1px solid ${props => getInputBorderColor(props)};
   border-radius: 50%;
-`
+`;
 const Label = styled.div<any>`
   margin-left: 16px;
-  ${(props: any) => (props.secondary ? `color: ${ThemePalette.grayscale[4]};` : '')}
+  ${(props: any) =>
+    props.secondary ? `color: ${ThemePalette.grayscale[4]};` : ""}
   white-space: nowrap;
-`
+`;
 const LeftLabel = styled.div<any>`
   margin-right: 16px;
   color: ${ThemePalette.grayscale[4]};
   white-space: nowrap;
-`
+`;
 
 type Props = {
-  onChange: (checked: boolean | null) => void,
-  checked: boolean | null,
-  disabled?: boolean,
-  disabledLoading?: boolean,
-  triState?: boolean,
-  leftLabel?: boolean,
-  secondary?: boolean,
-  noLabel?: boolean,
-  height: number,
-  width?: string,
-  justifyContent?: string,
-  big?: boolean,
-  checkedLabel?: string,
-  uncheckedLabel?: string,
-  style?: React.CSSProperties,
-  required?: boolean,
-  highlight?: boolean,
-  checkedColor?: string,
-  uncheckedColor?: string,
-}
+  onChange: (checked: boolean | null) => void;
+  checked: boolean | null;
+  disabled?: boolean;
+  disabledLoading?: boolean;
+  triState?: boolean;
+  leftLabel?: boolean;
+  secondary?: boolean;
+  noLabel?: boolean;
+  height: number;
+  width?: string;
+  justifyContent?: string;
+  big?: boolean;
+  checkedLabel?: string;
+  uncheckedLabel?: string;
+  style?: React.CSSProperties;
+  required?: boolean;
+  highlight?: boolean;
+  checkedColor?: string;
+  uncheckedColor?: string;
+};
 type State = {
-  lastChecked: boolean | null | undefined,
-}
+  lastChecked: boolean | null | undefined;
+};
 @observer
 class Switch extends React.Component<Props, State> {
   static defaultProps = {
-    checkedLabel: 'Yes',
-    uncheckedLabel: 'No',
+    checkedLabel: "Yes",
+    uncheckedLabel: "No",
     height: 24,
-  }
+  };
 
   state = {
     lastChecked: null,
-  }
+  };
 
   getLabel() {
-    let label = this.props.checked ? this.props.checkedLabel : this.props.uncheckedLabel
+    let label = this.props.checked
+      ? this.props.checkedLabel
+      : this.props.uncheckedLabel;
     if (this.props.triState && this.props.checked == null) {
-      label = 'Not Set'
+      label = "Not Set";
     }
 
-    return label
+    return label;
   }
 
   handleInputChange() {
     if (this.props.disabled || this.props.disabledLoading) {
-      return
+      return;
     }
 
     if (this.props.triState) {
       if (this.props.checked === true || this.props.checked === false) {
-        this.setState({ lastChecked: this.props.checked })
-        this.props.onChange(null)
+        this.setState({ lastChecked: this.props.checked });
+        this.props.onChange(null);
       } else {
-        this.props.onChange(!this.state.lastChecked)
+        this.props.onChange(!this.state.lastChecked);
       }
     } else {
-      this.props.onChange(!this.props.checked)
+      this.props.onChange(!this.props.checked);
     }
   }
 
   handleKeyDown(evt: KeyboardEvent) {
-    if (evt.key !== ' ') {
-      return
+    if (evt.key !== " ") {
+      return;
     }
-    evt.preventDefault()
+    evt.preventDefault();
 
-    this.handleInputChange()
+    this.handleInputChange();
   }
 
   renderInput() {
@@ -221,9 +234,13 @@ class Switch extends React.Component<Props, State> {
         height={this.props.height}
         secondary={this.props.secondary}
         disabled={this.props.disabled || this.props.disabledLoading}
-        onClick={() => { this.handleInputChange() }}
+        onClick={() => {
+          this.handleInputChange();
+        }}
         tabIndex={0}
-        onKeyDown={(evt: KeyboardEvent) => { this.handleKeyDown(evt) }}
+        onKeyDown={(evt: KeyboardEvent) => {
+          this.handleKeyDown(evt);
+        }}
       >
         <InputBackground
           triState={this.props.triState}
@@ -245,27 +262,23 @@ class Switch extends React.Component<Props, State> {
           />
         </InputBackground>
       </InputWrapper>
-    )
+    );
   }
 
   renderLeftLabel() {
     if (!this.props.leftLabel || this.props.noLabel) {
-      return null
+      return null;
     }
 
-    return (
-      <LeftLabel>{this.getLabel()}</LeftLabel>
-    )
+    return <LeftLabel>{this.getLabel()}</LeftLabel>;
   }
 
   renderRightLabel() {
     if (this.props.big || this.props.leftLabel || this.props.noLabel) {
-      return null
+      return null;
     }
 
-    return (
-      <Label secondary={this.props.secondary}>{this.getLabel()}</Label>
-    )
+    return <Label secondary={this.props.secondary}>{this.getLabel()}</Label>;
   }
 
   render() {
@@ -284,8 +297,8 @@ class Switch extends React.Component<Props, State> {
         {this.renderRightLabel()}
         {this.props.required ? <Required /> : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default Switch
+export default Switch;

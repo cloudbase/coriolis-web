@@ -12,14 +12,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import SmallLoading from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import SmallLoading from ".";
 
-storiesOf('SmallLoading', module)
-  .add('default', () => (
-    <SmallLoading loadingProgress={8} />
-  ))
-  .add('spinning', () => (
-    <SmallLoading loadingProgress={-1} />
-  ))
+storiesOf("SmallLoading", module)
+  .add("default", () => <SmallLoading loadingProgress={8} />)
+  .add("spinning", () => <SmallLoading loadingProgress={-1} />);

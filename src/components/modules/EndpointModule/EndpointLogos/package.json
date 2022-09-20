@@ -2,6 +2,5 @@
   "name": "EndpointLogos",
   "version": "0.0.0",
   "private": true,
-  "main":"./EndpointLogos.tsx"
+  "main": "./EndpointLogos.tsx"
 }
-

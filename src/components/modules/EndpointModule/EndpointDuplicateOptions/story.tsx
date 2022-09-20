@@ -12,30 +12,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import Component from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Component from ".";
 
-storiesOf('EndpointDuplicateOptions', module)
-  .add('default', () => (
-    <div style={{ width: '576px', background: 'white' }}>
+storiesOf("EndpointDuplicateOptions", module)
+  .add("default", () => (
+    <div style={{ width: "576px", background: "white" }}>
       <Component
         duplicating={false}
-        onCancelClick={() => { }}
-        onDuplicateClick={() => { }}
-        projects={[{ name: 'admin', id: 'admin' }]}
+        onCancelClick={() => {}}
+        onDuplicateClick={() => {}}
+        projects={[{ name: "admin", id: "admin" }]}
         selectedProjectId="admin"
       />
     </div>
   ))
-  .add('duplicating', () => (
-    <div style={{ width: '576px' }}>
+  .add("duplicating", () => (
+    <div style={{ width: "576px" }}>
       <Component
         duplicating
-        onCancelClick={() => { }}
-        onDuplicateClick={() => { }}
-        projects={[{ name: 'admin', id: 'admin' }]}
+        onCancelClick={() => {}}
+        onDuplicateClick={() => {}}
+        projects={[{ name: "admin", id: "admin" }]}
         selectedProjectId="admin"
       />
     </div>
-  ))
+  ));

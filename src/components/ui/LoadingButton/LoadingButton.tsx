@@ -12,45 +12,48 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import Button from '@src/components/ui/Button'
+import Button from "@src/components/ui/Button";
 
-import { ThemeProps } from '@src/components/Theme'
-import loadingImage from './images/loading.svg'
+import { ThemeProps } from "@src/components/Theme";
+import loadingImage from "./images/loading.svg";
 
 const ButtonStyled = styled(Button)`
   position: relative;
-`
+`;
 const Loading = styled.span`
   position: absolute;
   top: 8px;
   right: 8px;
   width: 16px;
   height: 16px;
-  background: url('${loadingImage}') center no-repeat;
+  background: url("${loadingImage}") center no-repeat;
   ${ThemeProps.animations.rotation}
-`
+`;
 
 type Props = {
-  children: React.ReactNode,
-  large?: boolean
-  onClick?: () => void
-  style?: React.CSSProperties
-  width?: string
-}
+  children: React.ReactNode;
+  large?: boolean;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+  width?: string;
+};
 @observer
 class LoadingButton extends React.Component<Props> {
   render() {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <ButtonStyled {...this.props} disabled>
-        <span>{this.props.children}<Loading /></span>
+        <span>
+          {this.props.children}
+          <Loading />
+        </span>
       </ButtonStyled>
-    )
+    );
   }
 }
 
-export default LoadingButton
+export default LoadingButton;

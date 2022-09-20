@@ -13,27 +13,31 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import EndpointDetailsContent from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import EndpointDetailsContent from ".";
 
 const item: any = {
-  name: 'Name',
-  type: 'openstack',
-  description: 'Description',
+  name: "Name",
+  type: "openstack",
+  description: "Description",
   created_at: new Date(),
-}
+};
 
 const connectionInfo: any = {
-  username: 'username',
-  password: 'password123',
-  details: 'other details',
-}
-const props: any = {}
-storiesOf('EndpointDetailsContent', module)
-  .add('connection info loading', () => (
+  username: "username",
+  password: "password123",
+  details: "other details",
+};
+const props: any = {};
+storiesOf("EndpointDetailsContent", module)
+  .add("connection info loading", () => (
     <EndpointDetailsContent item={item} loading {...props} />
   ))
-  .add('with connection info', () => (
-    <EndpointDetailsContent item={item} connectionInfo={connectionInfo} {...props} />
-  ))
+  .add("with connection info", () => (
+    <EndpointDetailsContent
+      item={item}
+      connectionInfo={connectionInfo}
+      {...props}
+    />
+  ));

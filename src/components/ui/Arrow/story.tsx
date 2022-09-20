@@ -12,17 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import Arrow from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Arrow from ".";
 
-storiesOf('Arrow', module)
-  .add('default', () => (
-    <Arrow />
-  ))
-  .add('primary', () => (
-    <Arrow primary />
-  ))
-  .add('different orientation', () => (
-    <Arrow orientation="up" />
-  ))
+storiesOf("Arrow", module)
+  .add("default", () => <Arrow />)
+  .add("primary", () => <Arrow primary />)
+  .add("different orientation", () => <Arrow orientation="up" />);

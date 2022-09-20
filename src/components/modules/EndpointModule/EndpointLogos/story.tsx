@@ -12,28 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styled from 'styled-components'
-import EndpointLogos from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import styled from "styled-components";
+import EndpointLogos from ".";
 
 const Wrapper = styled.div<any>`
   display: flex;
   flex-wrap: wrap;
   margin-left: -32px;
   margin-top: -32px;
-  ${(props: any) => (props.background ? `background: ${props.background};` : '')}
+  ${(props: any) =>
+    props.background ? `background: ${props.background};` : ""}
 
   > div {
     margin-left: 32px;
     margin-top: 32px;
   }
-`
+`;
 const wrap = (opts: {
-  endpoint: string | null | undefined,
-  height: number | undefined,
-  disabled?: boolean,
-  white?: boolean,
+  endpoint: string | null | undefined;
+  height: number | undefined;
+  disabled?: boolean;
+  white?: boolean;
 }) => (
   <EndpointLogos
     endpoint={opts.endpoint as any}
@@ -42,66 +43,58 @@ const wrap = (opts: {
     white={opts.white}
     baseUrl="http://localhost:3000"
   />
-)
+);
 const providers = [
-  'aws',
-  'azure',
-  'opc',
-  'openstack',
-  'oracle_vm',
-  'oci',
-  'vmware_vsphere',
-  'Generic Cloud',
-  'hyper-v',
-  'scvmm',
-]
+  "aws",
+  "azure",
+  "opc",
+  "openstack",
+  "oracle_vm",
+  "oci",
+  "vmware_vsphere",
+  "Generic Cloud",
+  "hyper-v",
+  "scvmm",
+];
 
-storiesOf('EndpointLogos', module)
-  .add('32px', () => {
-    const height = 32
+storiesOf("EndpointLogos", module)
+  .add("32px", () => {
+    const height = 32;
     return (
-      <Wrapper>
-        {providers.map(p => wrap({ endpoint: p, height }))}
-      </Wrapper>
-    )
+      <Wrapper>{providers.map(p => wrap({ endpoint: p, height }))}</Wrapper>
+    );
   })
-  .add('32px - white', () => {
-    const height = 32
+  .add("32px - white", () => {
+    const height = 32;
     return (
       <Wrapper background="#202134">
         {providers.map(p => wrap({ endpoint: p, height, white: true }))}
       </Wrapper>
-    )
+    );
   })
-  .add('42px', () => {
-    const height = 42
+  .add("42px", () => {
+    const height = 42;
     return (
-      <Wrapper>
-        {providers.map(p => wrap({ endpoint: p, height }))}
-      </Wrapper>
-    )
+      <Wrapper>{providers.map(p => wrap({ endpoint: p, height }))}</Wrapper>
+    );
   })
-  .add('64px', () => {
-    const height = 64
+  .add("64px", () => {
+    const height = 64;
     return (
-      <Wrapper>
-        {providers.map(p => wrap({ endpoint: p, height }))}
-      </Wrapper>
-    )
+      <Wrapper>{providers.map(p => wrap({ endpoint: p, height }))}</Wrapper>
+    );
   })
-  .add('128px', () => {
-    const height = 128
+  .add("128px", () => {
+    const height = 128;
     return (
-      <Wrapper>
-        {providers.map(p => wrap({ endpoint: p, height }))}
-      </Wrapper>
-    )
+      <Wrapper>{providers.map(p => wrap({ endpoint: p, height }))}</Wrapper>
+    );
   })
-  .add('128px - disabled', () => {
-    const height = 128
+  .add("128px - disabled", () => {
+    const height = 128;
     return (
       <Wrapper>
         {providers.map(p => wrap({ endpoint: p, height, disabled: true }))}
       </Wrapper>
-    )
-  })
+    );
+  });

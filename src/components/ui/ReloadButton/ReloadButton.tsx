@@ -12,55 +12,58 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled, { createGlobalStyle } from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled, { createGlobalStyle } from "styled-components";
 
-import reloadImage from './images/reload.svg'
+import reloadImage from "./images/reload.svg";
 
 const Wrapper = styled.div<any>`
   width: 16px;
   height: 16px;
-  background: url('${reloadImage}') no-repeat center;
+  background: url("${reloadImage}") no-repeat center;
   cursor: pointer;
-`
+`;
 
 const GlobalStyle = createGlobalStyle`
   .reload-animation {
     transform: rotate(360deg);
     transition: transform 1s cubic-bezier(0, 1.4, 1, 1);
   }
-`
+`;
 
 type Props = {
-  onClick: () => void,
-  style?: React.CSSProperties
-}
+  onClick: () => void;
+  style?: React.CSSProperties;
+};
 @observer
 class ReloadButton extends React.Component<Props> {
-  wrapper: HTMLElement | undefined | null
+  wrapper: HTMLElement | undefined | null;
 
-  timeout: number | undefined | null
+  timeout: number | undefined | null;
 
   onClick() {
     if (this.timeout) {
-      return
+      return;
     }
 
     if (this.props.onClick) {
-      this.props.onClick()
+      this.props.onClick();
     }
 
-    const nonNullWrapper = this.wrapper
+    const nonNullWrapper = this.wrapper;
     if (!nonNullWrapper) {
-      return
+      return;
     }
 
-    nonNullWrapper.className += ' reload-animation'
+    nonNullWrapper.className += " reload-animation";
     this.timeout = window.setTimeout(() => {
-      nonNullWrapper.className = nonNullWrapper.className.substr(0, nonNullWrapper.className.indexOf(' reload-animation'))
-      this.timeout = null
-    }, 1000)
+      nonNullWrapper.className = nonNullWrapper.className.substr(
+        0,
+        nonNullWrapper.className.indexOf(" reload-animation")
+      );
+      this.timeout = null;
+    }, 1000);
   }
 
   render() {
@@ -68,14 +71,18 @@ class ReloadButton extends React.Component<Props> {
       <>
         <GlobalStyle />
         <Wrapper
-          ref={(div: HTMLElement | null | undefined) => { this.wrapper = div }}
+          ref={(div: HTMLElement | null | undefined) => {
+            this.wrapper = div;
+          }}
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
-          onClick={() => { this.onClick() }}
+          onClick={() => {
+            this.onClick();
+          }}
         />
       </>
-    )
+    );
   }
 }
 
-export default ReloadButton
+export default ReloadButton;

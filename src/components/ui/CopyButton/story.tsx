@@ -12,11 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styled from 'styled-components'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import styled from "styled-components";
 
-import CopyButton from '.'
+import CopyButton from ".";
 
 const Wrapper = styled.div<any>`
   cursor: pointer;
@@ -29,9 +29,11 @@ const Wrapper = styled.div<any>`
     background-position-y: 4px;
     margin-left: 4px;
   }
-`
+`;
 
-storiesOf('CopyButton', module)
-  .add('default', () => (
-    <Wrapper>Hover here<CopyButton /></Wrapper>
-  ))
+storiesOf("CopyButton", module).add("default", () => (
+  <Wrapper>
+    Hover here
+    <CopyButton />
+  </Wrapper>
+));

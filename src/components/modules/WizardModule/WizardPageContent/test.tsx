@@ -12,29 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TW from '@src/utils/TestWrapper'
-import WizardPageContent from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TW from "@src/utils/TestWrapper";
+import WizardPageContent from ".";
 
-const wrap = (props: any) => new TW(shallow(
-  <WizardPageContent
-    wizardData={{}}
-    onContentRef={() => { }}
-    {...props}
-  />
-), 'wpContent')
+const wrap = (props: any) =>
+  new TW(
+    shallow(
+      <WizardPageContent wizardData={{}} onContentRef={() => {}} {...props} />
+    ),
+    "wpContent"
+  );
 
-describe('WizardPageContent Component', () => {
-  it('renders wizard type page', () => {
+describe("WizardPageContent Component", () => {
+  it("renders wizard type page", () => {
     const wrapper = wrap({
-      page: { id: 'type', title: 'Wizard Type' },
-      type: 'replica',
-    })
-    expect(wrapper.findText('header')).toBe('Wizard Type Replica')
-    expect(wrapper.shallow.find('WizardType').prop('selected')).toBe('replica')
-  })
-})
-
-
-
+      page: { id: "type", title: "Wizard Type" },
+      type: "replica",
+    });
+    expect(wrapper.findText("header")).toBe("Wizard Type Replica");
+    expect(wrapper.shallow.find("WizardType").prop("selected")).toBe("replica");
+  });
+});

@@ -12,28 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import UserListItem from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import UserListItem from ".";
 
 const user: any = {
-  id: 'id',
-  name: 'User Name',
-  description: 'user description',
-  email: 'user@email.com',
-  project_id: 'project_id',
+  id: "id",
+  name: "User Name",
+  description: "user description",
+  email: "user@email.com",
+  project_id: "project_id",
   enabled: true,
-  project: { name: '', id: '' },
-}
+  project: { name: "", id: "" },
+};
 const Wrapper = () => (
   <UserListItem
     item={user}
-    getProjectName={() => 'project name'}
-    onClick={() => { }}
+    getProjectName={() => "project name"}
+    onClick={() => {}}
   />
-)
+);
 
-storiesOf('UserListItem', module)
-  .add('default', () => (
-    <Wrapper />
-  ))
+storiesOf("UserListItem", module).add("default", () => <Wrapper />);

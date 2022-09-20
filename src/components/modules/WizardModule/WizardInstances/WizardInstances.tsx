@@ -12,40 +12,40 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import Checkbox from '@src/components/ui/Checkbox'
-import ReloadButton from '@src/components/ui/ReloadButton'
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import Button from '@src/components/ui/Button'
-import SearchInput from '@src/components/ui/SearchInput'
-import InfoIcon from '@src/components/ui/InfoIcon'
-import Pagination from '@src/components/ui/Pagination'
+import Checkbox from "@src/components/ui/Checkbox";
+import ReloadButton from "@src/components/ui/ReloadButton";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Button from "@src/components/ui/Button";
+import SearchInput from "@src/components/ui/SearchInput";
+import InfoIcon from "@src/components/ui/InfoIcon";
+import Pagination from "@src/components/ui/Pagination";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
-import type { Instance as InstanceType } from '@src/@types/Instance'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import type { Instance as InstanceType } from "@src/@types/Instance";
 
-import instanceImage from './images/instance.svg'
-import bigInstanceImage from './images/instance-big.svg'
+import instanceImage from "./images/instance.svg";
+import bigInstanceImage from "./images/instance-big.svg";
 
 const Wrapper = styled.div<any>`
   width: 100%;
   display: flex;
   flex-direction: column;
-`
+`;
 const LoadingWrapper = styled.div<any>`
   margin-top: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 const InstancesWrapper = styled.div<any>`
   margin-left: -32px;
   flex-grow: 1;
   overflow: auto;
-`
+`;
 const InstanceContent = styled.div<any>`
   display: flex;
   align-items: center;
@@ -58,7 +58,7 @@ const InstanceContent = styled.div<any>`
   &:hover {
     background: ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const CheckboxStyled = styled(Checkbox)`
   opacity: 0;
   transition: all ${ThemeProps.animations.swift};
@@ -66,7 +66,7 @@ const CheckboxStyled = styled(Checkbox)`
   :focus {
     opacity: 1;
   }
-`
+`;
 const Instance = styled.div<any>`
   display: flex;
   align-items: center;
@@ -74,7 +74,7 @@ const Instance = styled.div<any>`
   cursor: pointer;
 
   ${CheckboxStyled} {
-    ${props => (props.selected ? 'opacity: 1;' : '')}
+    ${props => (props.selected ? "opacity: 1;" : "")}
   }
 
   &:hover ${CheckboxStyled} {
@@ -84,153 +84,160 @@ const Instance = styled.div<any>`
   &:last-child ${InstanceContent} {
     border-bottom: 1px solid ${ThemePalette.grayscale[1]};
   }
-`
+`;
 const LoadingText = styled.div<any>`
   margin-top: 38px;
   font-size: 18px;
-`
+`;
 export const Image = styled.div<any>`
-  ${ThemeProps.exactSize('48px')}
+  ${ThemeProps.exactSize("48px")}
   background: url('${instanceImage}') center no-repeat;
-`
+`;
 const Label = styled.div<any>`
   flex-grow: 1;
   margin: 0 16px;
   display: flex;
   flex-direction: column;
-`
-const LabelTitle = styled.div``
+`;
+const LabelTitle = styled.div``;
 const LabelSubtitle = styled.div`
   color: ${ThemePalette.grayscale[4]};
   overflow-wrap: anywhere;
-`
+`;
 const Details = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
   min-width: 160px;
   text-align: right;
-`
+`;
 const FiltersWrapper = styled.div<any>`
   padding: 8px 0 0 8px;
   min-height: 24px;
   margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
-`
+`;
 const SearchInputInfo = styled.div<any>`
   display: flex;
   align-items: center;
-`
+`;
 const FilterInfo = styled.div<any>`
   display: flex;
   color: ${ThemePalette.grayscale[4]};
-`
-const SelectionInfo = styled.div<any>``
+`;
+const SelectionInfo = styled.div<any>``;
 const FilterSeparator = styled.div<any>`
   margin: 0 14px 0 16px;
-`
+`;
 const Reloading = styled.div<any>`
   margin: 32px auto 0 auto;
   flex-grow: 1;
-`
+`;
 const SearchNotFound = styled.div<any>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  ${props => (props.marginTop ? 'margin-top: 64px;' : '')}
+  ${props => (props.marginTop ? "margin-top: 64px;" : "")}
   > * {
     margin-bottom: 42px;
   }
-`
+`;
 const SearchNotFoundText = styled.div<any>`
   font-size: 18px;
-`
+`;
 const SearchNotFoundSubtitle = styled.div<any>`
   color: ${ThemePalette.grayscale[4]};
   margin-top: -32px;
   text-align: center;
-`
+`;
 const BigInstanceImage = styled.div<any>`
-  ${ThemeProps.exactSize('96px')}
+  ${ThemeProps.exactSize("96px")}
   background: url('${bigInstanceImage}') center no-repeat;
-`
+`;
 
 type Props = {
-  instances: InstanceType[],
-  selectedInstances?: InstanceType[] | null,
-  currentPage: number,
-  instancesPerPage: number,
-  loading: boolean,
-  chunksLoading: boolean,
-  searching: boolean,
-  searchNotFound: boolean,
-  reloading: boolean,
-  hasSourceOptions: boolean,
-  searchText?: string,
-  onSearchInputChange: (value: string) => void,
-  onReloadClick: () => void,
-  onInstanceClick: (instance: InstanceType) => void,
-  onPageClick: (page: number) => void,
-}
+  instances: InstanceType[];
+  selectedInstances?: InstanceType[] | null;
+  currentPage: number;
+  instancesPerPage: number;
+  loading: boolean;
+  chunksLoading: boolean;
+  searching: boolean;
+  searchNotFound: boolean;
+  reloading: boolean;
+  hasSourceOptions: boolean;
+  searchText?: string;
+  onSearchInputChange: (value: string) => void;
+  onReloadClick: () => void;
+  onInstanceClick: (instance: InstanceType) => void;
+  onPageClick: (page: number) => void;
+};
 type State = {
-  searchText: string,
-}
+  searchText: string;
+};
 
 @observer
 class WizardInstances extends React.Component<Props, State> {
   state = {
-    searchText: '',
-  }
+    searchText: "",
+  };
 
-  timeout!: number
+  timeout!: number;
 
-  isCheckboxMouseDown: boolean = false
+  isCheckboxMouseDown = false;
 
   componentWillUnmount() {
-    this.props.onSearchInputChange('')
+    this.props.onSearchInputChange("");
   }
 
   handleSeachInputChange(searchText: string) {
-    clearTimeout(this.timeout)
-    this.setState({ searchText })
+    clearTimeout(this.timeout);
+    this.setState({ searchText });
     this.timeout = window.setTimeout(() => {
-      this.props.onSearchInputChange(searchText)
-    }, 500)
+      this.props.onSearchInputChange(searchText);
+    }, 500);
   }
 
   handlePreviousPageClick() {
-    this.props.onPageClick(this.props.currentPage - 1)
+    this.props.onPageClick(this.props.currentPage - 1);
   }
 
   handleNextPageClick() {
-    this.props.onPageClick(this.props.currentPage + 1)
+    this.props.onPageClick(this.props.currentPage + 1);
   }
 
   areNoInstances() {
-    return !this.props.loading && !this.props.searchNotFound && !this.props.reloading
-      && this.props.instances.length === 0 && !this.props.searching
+    return (
+      !this.props.loading &&
+      !this.props.searchNotFound &&
+      !this.props.reloading &&
+      this.props.instances.length === 0 &&
+      !this.props.searching
+    );
   }
 
   renderNoInstances() {
     if (!this.areNoInstances()) {
-      return null
+      return null;
     }
 
-    let subtitle
+    let subtitle;
 
     if (this.props.hasSourceOptions) {
       subtitle = (
         <SearchNotFoundSubtitle>
-          Some platforms require pre-inputting parameters
-          like location or resource containers for listing instances.
-          <br />Please check that all of the options from the previous screen are correct.
+          Some platforms require pre-inputting parameters like location or
+          resource containers for listing instances.
+          <br />
+          Please check that all of the options from the previous screen are
+          correct.
         </SearchNotFoundSubtitle>
-      )
+      );
     } else {
       subtitle = (
         <SearchNotFoundSubtitle>
           You can retry the search or choose another Endpoint
         </SearchNotFoundSubtitle>
-      )
+      );
     }
 
     return (
@@ -240,25 +247,34 @@ class WizardInstances extends React.Component<Props, State> {
           It seems like you don’t have any Instances in this Endpoint
         </SearchNotFoundText>
         {subtitle}
-        <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry Search</Button>
+        <Button
+          hollow
+          onClick={() => {
+            this.props.onReloadClick();
+          }}
+        >
+          Retry Search
+        </Button>
       </SearchNotFound>
-    )
+    );
   }
 
   renderSearchNotFound() {
     if (!this.props.searchNotFound) {
-      return null
+      return null;
     }
 
-    let subtitle = null
+    let subtitle = null;
     if (this.props.hasSourceOptions) {
       subtitle = (
         <SearchNotFoundSubtitle>
-          Some platforms require pre-inputting parameters like location or resource containers for
-          <br />listing instances.
-          Please check that all of the options from the previous screen are correct.
+          Some platforms require pre-inputting parameters like location or
+          resource containers for
+          <br />
+          listing instances. Please check that all of the options from the
+          previous screen are correct.
         </SearchNotFoundSubtitle>
-      )
+      );
     }
 
     return (
@@ -266,26 +282,33 @@ class WizardInstances extends React.Component<Props, State> {
         <StatusImage status="ERROR" />
         <SearchNotFoundText>Your search returned no results</SearchNotFoundText>
         {subtitle}
-        <Button hollow onClick={() => { this.props.onReloadClick() }}>Retry</Button>
+        <Button
+          hollow
+          onClick={() => {
+            this.props.onReloadClick();
+          }}
+        >
+          Retry
+        </Button>
       </SearchNotFound>
-    )
+    );
   }
 
   renderReloading() {
     if (!this.props.reloading) {
-      return null
+      return null;
     }
 
     return (
       <Reloading>
         <StatusImage loading />
       </Reloading>
-    )
+    );
   }
 
   renderLoading() {
     if (!this.props.loading) {
-      return null
+      return null;
     }
 
     return (
@@ -293,39 +316,55 @@ class WizardInstances extends React.Component<Props, State> {
         <StatusImage loading />
         <LoadingText>Loading instances...</LoadingText>
       </LoadingWrapper>
-    )
+    );
   }
 
   renderInstances() {
-    if (this.props.loading || this.props.searchNotFound
-      || this.props.reloading || this.areNoInstances()) {
-      return null
+    if (
+      this.props.loading ||
+      this.props.searchNotFound ||
+      this.props.reloading ||
+      this.areNoInstances()
+    ) {
+      return null;
     }
-    const startIdx = (this.props.currentPage - 1) * this.props.instancesPerPage
-    const endIdx = startIdx + (this.props.instancesPerPage - 1)
-    const filteredInstances = this.props.instances
-      .filter((_, idx) => idx >= startIdx && idx <= endIdx)
+    const startIdx = (this.props.currentPage - 1) * this.props.instancesPerPage;
+    const endIdx = startIdx + (this.props.instancesPerPage - 1);
+    const filteredInstances = this.props.instances.filter(
+      (_, idx) => idx >= startIdx && idx <= endIdx
+    );
 
     return (
       <InstancesWrapper>
         {filteredInstances.map(instance => {
-          const selected = Boolean(this.props.selectedInstances
-            && this.props.selectedInstances.find(i => i.id === instance.id))
-          const flavorName = instance.flavor_name ? ` | ${instance.flavor_name}` : ''
-          const instanceId = instance.instance_name || instance.id
+          const selected = Boolean(
+            this.props.selectedInstances &&
+              this.props.selectedInstances.find(i => i.id === instance.id)
+          );
+          const flavorName = instance.flavor_name
+            ? ` | ${instance.flavor_name}`
+            : "";
+          const instanceId = instance.instance_name || instance.id;
           return (
             <Instance
               key={instance.id}
               onMouseDown={() => {
-                if (!this.isCheckboxMouseDown) this.props.onInstanceClick(instance)
+                if (!this.isCheckboxMouseDown)
+                  this.props.onInstanceClick(instance);
               }}
               selected={selected}
             >
               <CheckboxStyled
                 checked={selected}
-                onChange={() => { this.props.onInstanceClick(instance) }}
-                onMouseDown={() => { this.isCheckboxMouseDown = true }}
-                onMouseUp={() => { this.isCheckboxMouseDown = false }}
+                onChange={() => {
+                  this.props.onInstanceClick(instance);
+                }}
+                onMouseDown={() => {
+                  this.isCheckboxMouseDown = true;
+                }}
+                onMouseUp={() => {
+                  this.isCheckboxMouseDown = false;
+                }}
               />
               <InstanceContent>
                 <Image />
@@ -338,26 +377,30 @@ class WizardInstances extends React.Component<Props, State> {
                 <Details>{`${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM${flavorName}`}</Details>
               </InstanceContent>
             </Instance>
-          )
+          );
         })}
       </InstancesWrapper>
-    )
+    );
   }
 
   renderFilters() {
     if (this.props.loading || this.areNoInstances()) {
-      return null
+      return null;
     }
 
-    const count = this.props.selectedInstances ? this.props.selectedInstances.length : 0
-    const plural = count === 1 ? '' : 's'
+    const count = this.props.selectedInstances
+      ? this.props.selectedInstances.length
+      : 0;
+    const plural = count === 1 ? "" : "s";
 
     return (
       <FiltersWrapper>
         <SearchInputInfo>
           <SearchInput
             alwaysOpen
-            onChange={searchText => { this.handleSeachInputChange(searchText) }}
+            onChange={searchText => {
+              this.handleSeachInputChange(searchText);
+            }}
             value={this.state.searchText}
             loading={this.props.searching}
             placeholder="Search VMs"
@@ -372,40 +415,55 @@ class WizardInstances extends React.Component<Props, State> {
           ) : null}
         </SearchInputInfo>
         <FilterInfo>
-          <SelectionInfo>{count} instance{plural} selected</SelectionInfo>
+          <SelectionInfo>
+            {count} instance{plural} selected
+          </SelectionInfo>
           <FilterSeparator>|</FilterSeparator>
           <ReloadButton
-            onClick={() => { this.props.onReloadClick() }}
+            onClick={() => {
+              this.props.onReloadClick();
+            }}
           />
         </FilterInfo>
       </FiltersWrapper>
-    )
+    );
   }
 
   renderPagination() {
-    if (this.props.loading || this.props.searchNotFound
-      || this.props.reloading || this.areNoInstances()) {
-      return null
+    if (
+      this.props.loading ||
+      this.props.searchNotFound ||
+      this.props.reloading ||
+      this.areNoInstances()
+    ) {
+      return null;
     }
 
-    const hasNextPage = this.props.currentPage
-      * this.props.instancesPerPage < this.props.instances.length
-    const areAllDisabled = this.props.searching
-    const isPreviousDisabled = this.props.currentPage === 1 || areAllDisabled
-    const isNextDisabled = !hasNextPage || areAllDisabled
+    const hasNextPage =
+      this.props.currentPage * this.props.instancesPerPage <
+      this.props.instances.length;
+    const areAllDisabled = this.props.searching;
+    const isPreviousDisabled = this.props.currentPage === 1 || areAllDisabled;
+    const isNextDisabled = !hasNextPage || areAllDisabled;
 
     return (
       <Pagination
-        style={{ margin: '32px 0 16px 0' }}
+        style={{ margin: "32px 0 16px 0" }}
         previousDisabled={isPreviousDisabled}
-        onPreviousClick={() => { this.handlePreviousPageClick() }}
+        onPreviousClick={() => {
+          this.handlePreviousPageClick();
+        }}
         currentPage={this.props.currentPage}
-        totalPages={Math.ceil(this.props.instances.length / this.props.instancesPerPage)}
+        totalPages={Math.ceil(
+          this.props.instances.length / this.props.instancesPerPage
+        )}
         loading={this.props.chunksLoading}
         nextDisabled={isNextDisabled}
-        onNextClick={() => { this.handleNextPageClick() }}
+        onNextClick={() => {
+          this.handleNextPageClick();
+        }}
       />
-    )
+    );
   }
 
   render() {
@@ -419,8 +477,8 @@ class WizardInstances extends React.Component<Props, State> {
         {this.renderPagination()}
         {this.renderNoInstances()}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default WizardInstances
+export default WizardInstances;

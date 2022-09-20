@@ -12,18 +12,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import Logo from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Logo from ".";
 
-storiesOf('Logo', module)
-  .add('Small White', () => (
-    <Logo small />
-  ))
-  .add('Large White', () => (
-    <Logo large />
-  ))
+storiesOf("Logo", module)
+  .add("Small White", () => <Logo small />)
+  .add("Large White", () => <Logo large />)
 
-  .add('Small Black', () => (
-    <Logo smallblack />
-  ))
+  .add("Small Black", () => <Logo smallblack />);

@@ -12,63 +12,63 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import React from "react";
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-import TestUtils from '@tests/TestUtils'
+import TestUtils from "@tests/TestUtils";
 
-import DropdownInput from '.'
+import DropdownInput from ".";
 
 const ITEMS = [
-  { label: 'Item 1', value: 'item-1' },
-  { label: 'Item 2', value: 'item-2' },
-  { label: 'Item 3', value: 'item-3' },
-]
+  { label: "Item 1", value: "item-1" },
+  { label: "Item 2", value: "item-2" },
+  { label: "Item 3", value: "item-3" },
+];
 
-describe('DropdownInput', () => {
-  it('renders with the correct item label', () => {
+describe("DropdownInput", () => {
+  it("renders with the correct item label", () => {
     render(
       <DropdownInput
         items={ITEMS}
         selectedItem={ITEMS[1].value}
-        onInputChange={() => { }}
-        onItemChange={() => { }}
+        onInputChange={() => {}}
+        onItemChange={() => {}}
         inputValue="test"
-      />,
-    )
-    expect(TestUtils.select('DropdownLink__Label')?.textContent).toBe('Item 2')
-    expect(TestUtils.selectInput('TextInput__Input')!.value).toBe('test')
-  })
+      />
+    );
+    expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe("Item 2");
+    expect(TestUtils.selectInput("TextInput__Input")!.value).toBe("test");
+  });
 
-  it('fires input change', () => {
-    const onInputChange = jest.fn()
+  it("fires input change", () => {
+    const onInputChange = jest.fn();
     render(
       <DropdownInput
         items={ITEMS}
         selectedItem={ITEMS[1].value}
         onInputChange={onInputChange}
-        onItemChange={() => { }}
+        onItemChange={() => {}}
         inputValue="test"
-      />,
-    )
-    userEvent.type(TestUtils.select('TextInput__Input')!, 'test2')
-    expect(onInputChange).toHaveBeenCalledWith('test2')
-  })
+      />
+    );
+    userEvent.type(TestUtils.select("TextInput__Input")!, "test2");
+    expect(onInputChange).toHaveBeenCalledWith("test2");
+  });
 
-  it('fires item change', () => {
-    const onItemChange = jest.fn()
+  it("fires item change", () => {
+    const onItemChange = jest.fn();
     render(
       <DropdownInput
         items={ITEMS}
         selectedItem={ITEMS[1].value}
-        onInputChange={() => { }}
+        onInputChange={() => {}}
         onItemChange={onItemChange}
         inputValue="test"
-      />,
-    )
-    userEvent.click(TestUtils.select('DropdownLink__Label')!)
-    userEvent.click(TestUtils.selectAll('DropdownLink__ListItem-')[1])
-    expect(onItemChange).toHaveBeenCalledWith(ITEMS[1])
-  })
-})
+      />
+    );
+    userEvent.click(TestUtils.select("DropdownLink__Label")!);
+    userEvent.click(TestUtils.selectAll("DropdownLink__ListItem-")[1]);
+    expect(onItemChange).toHaveBeenCalledWith(ITEMS[1]);
+  });
+});

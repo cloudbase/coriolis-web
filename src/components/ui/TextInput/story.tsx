@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import styled from 'styled-components'
-import TextInput from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import styled from "styled-components";
+import TextInput from ".";
 
 const Wrapper = styled.div<any>`
   display: inline-block;
-`
+`;
 class StatefulInput extends React.Component<any> {
   state = {
-    value: '',
-  }
+    value: "",
+  };
 
   render() {
     return (
@@ -31,31 +31,47 @@ class StatefulInput extends React.Component<any> {
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         value={this.state.value}
-        onChange={e => { this.setState({ value: e.target.value }) }}
+        onChange={e => {
+          this.setState({ value: e.target.value });
+        }}
       />
-    )
+    );
   }
 }
 
-storiesOf('TextInput', module)
-  .add('default', () => (
-    <Wrapper><TextInput /></Wrapper>
+storiesOf("TextInput", module)
+  .add("default", () => (
+    <Wrapper>
+      <TextInput />
+    </Wrapper>
   ))
-  .add('disabled', () => (
-    <Wrapper><TextInput disabled /></Wrapper>
+  .add("disabled", () => (
+    <Wrapper>
+      <TextInput disabled />
+    </Wrapper>
   ))
-  .add('disabled loading', () => (
-    <Wrapper><TextInput disabledLoading /></Wrapper>
+  .add("disabled loading", () => (
+    <Wrapper>
+      <TextInput disabledLoading />
+    </Wrapper>
   ))
-  .add('required', () => (
-    <Wrapper><TextInput required /></Wrapper>
+  .add("required", () => (
+    <Wrapper>
+      <TextInput required />
+    </Wrapper>
   ))
-  .add('highlight', () => (
-    <Wrapper><TextInput required highlight /></Wrapper>
+  .add("highlight", () => (
+    <Wrapper>
+      <TextInput required highlight />
+    </Wrapper>
   ))
-  .add('large', () => (
-    <Wrapper><TextInput large /></Wrapper>
+  .add("large", () => (
+    <Wrapper>
+      <TextInput large />
+    </Wrapper>
   ))
-  .add('with close', () => (
-    <Wrapper><StatefulInput showClose /></Wrapper>
-  ))
+  .add("with close", () => (
+    <Wrapper>
+      <StatefulInput showClose />
+    </Wrapper>
+  ));

@@ -12,28 +12,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
-import SetupPageTitle from '@src/components/modules/SetupModule/ui/SetupPageTitle'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
+import SetupPageTitle from "@src/components/modules/SetupModule/ui/SetupPageTitle";
 
-const Wrapper = styled.div``
-
-type Props = {}
+const Wrapper = styled.div``;
 
 @observer
-class SetupPageWelcome extends React.Component<Props> {
+class SetupPageWelcome extends React.Component {
   render() {
     return (
       <Wrapper>
         <SetupPageTitle title="Welcome to Coriolis®" />
         <p>
-          Coriolis® is a fully distributed and scalable system that provides both “lift-and-shift” migration services (CMaaS) and cross-site disaster
-          recovery features (DRaaS) between a source cloud platform and an independent destination cloud platform.
+          Coriolis® is a fully distributed and scalable system that provides
+          both “lift-and-shift” migration services (CMaaS) and cross-site
+          disaster recovery features (DRaaS) between a source cloud platform and
+          an independent destination cloud platform.
         </p>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SetupPageWelcome
+export default SetupPageWelcome;

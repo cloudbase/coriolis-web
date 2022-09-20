@@ -12,23 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import DropdownButton from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import DropdownButton from ".";
 
-storiesOf('DropdownButton', module)
-  .add('default', () => (
-    <DropdownButton value="Dropdown Button" />
-  ))
-  .add('primary', () => (
-    <DropdownButton primary value="Dropdown Button" />
-  ))
-  .add('disabled', () => (
-    <DropdownButton disabled value="Dropdown Button" />
-  ))
-  .add('disabled loading', () => (
+storiesOf("DropdownButton", module)
+  .add("default", () => <DropdownButton value="Dropdown Button" />)
+  .add("primary", () => <DropdownButton primary value="Dropdown Button" />)
+  .add("disabled", () => <DropdownButton disabled value="Dropdown Button" />)
+  .add("disabled loading", () => (
     <DropdownButton disabledLoading value="Dropdown Button" />
   ))
-  .add('secondary centered', () => (
+  .add("secondary centered", () => (
     <DropdownButton secondary centered value="Dropdown Button" />
-  ))
+  ));

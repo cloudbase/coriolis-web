@@ -2,6 +2,5 @@
   "name": "AssessmentListItem",
   "version": "0.0.0",
   "private": true,
-  "main":"./AssessmentListItem.tsx"
+  "main": "./AssessmentListItem.tsx"
 }
-

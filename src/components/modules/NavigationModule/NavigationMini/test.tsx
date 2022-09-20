@@ -12,25 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
+import React from "react";
+import { shallow } from "enzyme";
 
-import TW from '@src/utils/TestWrapper'
-import NavigationMini, { TEST_ID } from '.'
+import TW from "@src/utils/TestWrapper";
+import NavigationMini, { TEST_ID } from ".";
 
-const wrap = () => new TW(shallow(
-  <NavigationMini />
-), TEST_ID)
+const wrap = () => new TW(shallow(<NavigationMini />), TEST_ID);
 
-describe('NavigationMini Component', () => {
-  it('toggles the navigation state', () => {
-    let wrapper = wrap()
-    let button = () => wrapper.find('toggleButton')
-    expect(button().prop('open')).toBe(false)
-    button().simulate('click')
-    expect(button().prop('open')).toBe(true)
-  })
-})
-
-
-
+describe("NavigationMini Component", () => {
+  it("toggles the navigation state", () => {
+    const wrapper = wrap();
+    const button = () => wrapper.find("toggleButton");
+    expect(button().prop("open")).toBe(false);
+    button().simulate("click");
+    expect(button().prop("open")).toBe(true);
+  });
+});

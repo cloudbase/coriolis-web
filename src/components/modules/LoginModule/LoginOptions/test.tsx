@@ -12,46 +12,46 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TestWrapper from '@src/utils/TestWrapper'
-import LoginOptions from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TestWrapper from "@src/utils/TestWrapper";
+import LoginOptions from ".";
 
-const wrap = props => new TestWrapper(shallow(<LoginOptions {...props} />), 'loginOptions')
+const wrap = props =>
+  new TestWrapper(shallow(<LoginOptions {...props} />), "loginOptions");
 
-let buttons = [
+const buttons = [
   {
-    name: 'Google',
-    id: 'google',
-    url: '',
+    name: "Google",
+    id: "google",
+    url: "",
   },
   {
-    name: 'Microsoft',
-    id: 'microsoft',
-    url: '',
+    name: "Microsoft",
+    id: "microsoft",
+    url: "",
   },
   {
-    name: 'Facebook',
-    id: 'facebook',
-    url: '',
+    name: "Facebook",
+    id: "facebook",
+    url: "",
   },
   {
-    name: 'GitHub',
-    id: 'github',
-    url: '',
+    name: "GitHub",
+    id: "github",
+    url: "",
   },
-]
+];
 
-describe('LoginOptions Component', () => {
-  it('renders with all buttons', () => {
-    let wrapper = wrap({ buttons })
-    expect(wrapper.findPartialId('button').length).toBe(4)
+describe("LoginOptions Component", () => {
+  it("renders with all buttons", () => {
+    const wrapper = wrap({ buttons });
+    expect(wrapper.findPartialId("button").length).toBe(4);
     buttons.forEach(button => {
-      expect(wrapper.findText(`button-${button.id}`)).toBe(`<styled.div />Sign in with ${button.name}`)
-      expect(wrapper.find(`logo-${button.id}`).prop('id')).toBe(button.id)
-    })
-  })
-})
-
-
-
+      expect(wrapper.findText(`button-${button.id}`)).toBe(
+        `<styled.div />Sign in with ${button.name}`
+      );
+      expect(wrapper.find(`logo-${button.id}`).prop("id")).toBe(button.id);
+    });
+  });
+});

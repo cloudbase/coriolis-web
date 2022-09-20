@@ -12,21 +12,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import ToggleButtonBar from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import ToggleButtonBar from ".";
 
 class Wrapper extends React.Component {
   state = {
     items: [
-      { label: 'Tab 1', value: 'tab_1' },
-      { label: 'Tab 2', value: 'tab_2' },
+      { label: "Tab 1", value: "tab_1" },
+      { label: "Tab 2", value: "tab_2" },
     ],
-    selectedValue: 'tab_1',
-  }
+    selectedValue: "tab_1",
+  };
 
   handleChange(item: any) {
-    this.setState({ selectedValue: item.value })
+    this.setState({ selectedValue: item.value });
   }
 
   render() {
@@ -36,11 +36,8 @@ class Wrapper extends React.Component {
         selectedValue={this.state.selectedValue}
         onChange={item => this.handleChange(item)}
       />
-    )
+    );
   }
 }
 
-storiesOf('ToggleButtonBar', module)
-  .add('default', () => (
-    <Wrapper />
-  ))
+storiesOf("ToggleButtonBar", module).add("default", () => <Wrapper />);

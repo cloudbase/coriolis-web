@@ -12,40 +12,43 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import TaskItem from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import TaskItem from ".";
 
 const item: any = {
   progress_updates: [
-    { message: 'the task has a progress of 50%', created_at: new Date() },
-    { message: 'the task is almost done', created_at: new Date() },
+    { message: "the task has a progress of 50%", created_at: new Date() },
+    { message: "the task is almost done", created_at: new Date() },
     {
-      message: 'Transferring changed areas of Cinder volume \'ca816553-a616-413e-a078-9a19e1da5326\'',
+      message:
+        "Transferring changed areas of Cinder volume 'ca816553-a616-413e-a078-9a19e1da5326'",
       created_at: new Date(),
       total_steps: 5,
       current_step: 2,
     },
     {
-      message: 'Transferring changed areas of Cinder volume \'ca816553-a616-413e-a078-9a19e1da5326\'',
+      message:
+        "Transferring changed areas of Cinder volume 'ca816553-a616-413e-a078-9a19e1da5326'",
       created_at: new Date(),
       total_steps: 5,
       current_step: 7,
     },
   ],
-  exception_details: 'Exception details',
-  status: 'RUNNING',
+  exception_details: "Exception details",
+  status: "RUNNING",
   created_at: new Date(),
-  depends_on: ['depends on id'],
-  id: 'item-id',
-  task_type: 'Task name',
-}
-const columnWidths = ['26%', '18%', '36%', '20%']
+  depends_on: ["depends on id"],
+  id: "item-id",
+  task_type: "Task name",
+};
+const columnWidths = ["26%", "18%", "36%", "20%"];
 
-storiesOf('TaskItem', module)
-  .add('running', () => (
-    <div style={{ width: '800px' }}>
+storiesOf("TaskItem", module)
+  .add("running", () => (
+    <div style={{ width: "800px" }}>
       <TaskItem
+        instancesDetails={[]}
         item={item}
         columnWidths={columnWidths}
         open
@@ -53,55 +56,59 @@ storiesOf('TaskItem', module)
       />
     </div>
   ))
-  .add('closed', () => (
-    <div style={{ width: '800px' }}>
+  .add("closed", () => (
+    <div style={{ width: "800px" }}>
       <TaskItem
+        instancesDetails={[]}
         item={item}
         columnWidths={columnWidths}
-        onDependsOnClick={() => { }}
+        onDependsOnClick={() => {}}
         open={false}
       />
     </div>
   ))
-  .add('completed', () => {
-    const newItem = { ...item }
-    newItem.status = 'COMPLETED'
+  .add("completed", () => {
+    const newItem = { ...item };
+    newItem.status = "COMPLETED";
     return (
-      <div style={{ width: '800px' }}>
+      <div style={{ width: "800px" }}>
         <TaskItem
+          instancesDetails={[]}
           item={newItem}
           columnWidths={columnWidths}
-          onDependsOnClick={() => { }}
+          onDependsOnClick={() => {}}
           open
         />
       </div>
-    )
+    );
   })
-  .add('canceled', () => {
-    const newItem = { ...item }
-    newItem.status = 'CANCELED'
+  .add("canceled", () => {
+    const newItem = { ...item };
+    newItem.status = "CANCELED";
     return (
-      <div style={{ width: '800px' }}>
+      <div style={{ width: "800px" }}>
         <TaskItem
+          instancesDetails={[]}
           item={newItem}
           columnWidths={columnWidths}
-          onDependsOnClick={() => { }}
+          onDependsOnClick={() => {}}
           open
         />
       </div>
-    )
+    );
   })
-  .add('error', () => {
-    const newItem = { ...item }
-    newItem.status = 'ERROR'
+  .add("error", () => {
+    const newItem = { ...item };
+    newItem.status = "ERROR";
     return (
-      <div style={{ width: '800px' }}>
+      <div style={{ width: "800px" }}>
         <TaskItem
+          instancesDetails={[]}
           item={newItem}
           columnWidths={columnWidths}
-          onDependsOnClick={() => { }}
+          onDependsOnClick={() => {}}
           open
         />
       </div>
-    )
-  })
+    );
+  });

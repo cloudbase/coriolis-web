@@ -2,6 +2,5 @@
   "name": "NewItemDropdown",
   "version": "0.0.0",
   "private": true,
-  "main":"./NewItemDropdown.tsx"
+  "main": "./NewItemDropdown.tsx"
 }
-

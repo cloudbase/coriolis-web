@@ -12,51 +12,38 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import StatusImage from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import StatusImage from ".";
 
 type State = {
-  loadingProgress: number,
-}
-class LoadingProgress extends React.Component<{}, State> {
+  loadingProgress: number;
+};
+class LoadingProgress extends React.Component<Record<string, never>, State> {
   state = {
     loadingProgress: 50,
-  }
+  };
 
   componentDidMount() {
     setInterval(() => {
-      this.setState(prevState => ({ loadingProgress: prevState.loadingProgress === 50 ? 75 : 50 }))
-    }, 1000)
+      this.setState(prevState => ({
+        loadingProgress: prevState.loadingProgress === 50 ? 75 : 50,
+      }));
+    }, 1000);
   }
 
   render() {
-    return <StatusImage loading loadingProgress={this.state.loadingProgress} />
+    return <StatusImage loading loadingProgress={this.state.loadingProgress} />;
   }
 }
 
-storiesOf('StatusImage', module)
-  .add('completed', () => (
-    <StatusImage status="COMPLETED" />
+storiesOf("StatusImage", module)
+  .add("completed", () => <StatusImage status="COMPLETED" />)
+  .add("running", () => <StatusImage status="RUNNING" />)
+  .add("running - custom size", () => (
+    <StatusImage status="RUNNING" size={48} />
   ))
-  .add('running', () => (
-    <StatusImage status="RUNNING" />
-  ))
-  .add('running - custom size', () => (
-    <StatusImage
-      status="RUNNING"
-      size={48}
-    />
-  ))
-  .add('loading progress', () => (
-    <StatusImage loading loadingProgress={45} />
-  ))
-  .add('loading progress animated', () => (
-    <LoadingProgress />
-  ))
-  .add('error', () => (
-    <StatusImage status="ERROR" />
-  ))
-  .add('question', () => (
-    <StatusImage status="QUESTION" />
-  ))
+  .add("loading progress", () => <StatusImage loading loadingProgress={45} />)
+  .add("loading progress animated", () => <LoadingProgress />)
+  .add("error", () => <StatusImage status="ERROR" />)
+  .add("question", () => <StatusImage status="QUESTION" />);

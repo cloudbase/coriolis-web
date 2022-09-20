@@ -12,102 +12,98 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import TW from '@src/utils/TestWrapper'
-import Tasks from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import TW from "@src/utils/TestWrapper";
+import Tasks from ".";
 
-const wrap = props => new TW(shallow(
-  
-  <Tasks {...props} />
-), 'tasks')
+const wrap = props => new TW(shallow(<Tasks {...props} />), "tasks");
 
-let items = [
+const items = [
   {
     progress_updates: [
-      { message: 'the task has a progress of 10%', created_at: new Date() },
+      { message: "the task has a progress of 10%", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'COMPLETED',
+    exception_details: "Exception details",
+    status: "COMPLETED",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-1',
-    task_type: 'Task name 1',
+    depends_on: ["depends on id"],
+    id: "task-1",
+    task_type: "Task name 1",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'CANCELED',
+    exception_details: "Exception details",
+    status: "CANCELED",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-2',
-    task_type: 'Task name 2',
+    depends_on: ["depends on id"],
+    id: "task-2",
+    task_type: "Task name 2",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'ERROR',
+    exception_details: "Exception details",
+    status: "ERROR",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-3',
-    task_type: 'Task name 3',
+    depends_on: ["depends on id"],
+    id: "task-3",
+    task_type: "Task name 3",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'RUNNING',
+    exception_details: "Exception details",
+    status: "RUNNING",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-4',
-    task_type: 'Task name 4',
+    depends_on: ["depends on id"],
+    id: "task-4",
+    task_type: "Task name 4",
   },
   {
     progress_updates: [
-      { message: 'the task has a progress of 50%', created_at: new Date() },
-      { message: 'the task is almost done', created_at: new Date() },
+      { message: "the task has a progress of 50%", created_at: new Date() },
+      { message: "the task is almost done", created_at: new Date() },
     ],
-    exception_details: 'Exception details',
-    status: 'PENDING',
+    exception_details: "Exception details",
+    status: "PENDING",
     created_at: new Date(),
-    depends_on: ['depends on id'],
-    id: 'task-5',
-    task_type: 'Task name 5',
+    depends_on: ["depends on id"],
+    id: "task-5",
+    task_type: "Task name 5",
   },
-]
+];
 
-describe('Tasks Component', () => {
-  it('renders correct number of task items', () => {
-    let wrapper = wrap({ items })
+describe("Tasks Component", () => {
+  it("renders correct number of task items", () => {
+    const wrapper = wrap({ items });
     items.forEach(item => {
-      expect(wrapper.find(`item-${item.id}`).prop('item').id).toBe(item.id)
-    })
-  })
+      expect(wrapper.find(`item-${item.id}`).prop("item").id).toBe(item.id);
+    });
+  });
 
-  it('renders only running task opened', () => {
-    let wrapper = wrap({ items })
-    expect(wrapper.find('item-task-1').prop('open')).toBe(false)
-    expect(wrapper.find('item-task-2').prop('open')).toBe(false)
-    expect(wrapper.find('item-task-3').prop('open')).toBe(false)
-    expect(wrapper.find('item-task-4').prop('open')).toBe(true)
-    expect(wrapper.find('item-task-5').prop('open')).toBe(false)
-  })
+  it("renders only running task opened", () => {
+    const wrapper = wrap({ items });
+    expect(wrapper.find("item-task-1").prop("open")).toBe(false);
+    expect(wrapper.find("item-task-2").prop("open")).toBe(false);
+    expect(wrapper.find("item-task-3").prop("open")).toBe(false);
+    expect(wrapper.find("item-task-4").prop("open")).toBe(true);
+    expect(wrapper.find("item-task-5").prop("open")).toBe(false);
+  });
 
-  it('renders correct info in task item', () => {
-    let wrapper = wrap({ items })
-    expect(wrapper.find('item-task-3').prop('item').id).toBe('task-3')
-    expect(wrapper.find('item-task-5').prop('item').task_type).toBe('Task name 5')
-    expect(wrapper.find('item-task-1').prop('item').status).toBe('COMPLETED')
-  })
-})
-
-
-
+  it("renders correct info in task item", () => {
+    const wrapper = wrap({ items });
+    expect(wrapper.find("item-task-3").prop("item").id).toBe("task-3");
+    expect(wrapper.find("item-task-5").prop("item").task_type).toBe(
+      "Task name 5"
+    );
+    expect(wrapper.find("item-task-1").prop("item").status).toBe("COMPLETED");
+  });
+});

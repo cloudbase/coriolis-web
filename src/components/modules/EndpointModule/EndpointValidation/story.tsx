@@ -14,21 +14,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import EndpointValidation from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import EndpointValidation from ".";
 
-const props: any = {}
-storiesOf('EndpointValidation', module)
-  .add('validating', () => (
-    <div style={{ width: '526px' }}><EndpointValidation loading {...props} /></div>
+const props: any = {};
+storiesOf("EndpointValidation", module)
+  .add("validating", () => (
+    <div style={{ width: "526px" }}>
+      <EndpointValidation loading {...props} />
+    </div>
   ))
-  .add('valid', () => (
-    <div style={{ width: '526px' }}><EndpointValidation validation={{ valid: true }} {...props} /></div>
+  .add("valid", () => (
+    <div style={{ width: "526px" }}>
+      <EndpointValidation validation={{ valid: true }} {...props} />
+    </div>
   ))
-  .add('failed', () => (
-    <div style={{ width: '526px' }}><EndpointValidation validation={{}} {...props} /></div>
+  .add("failed", () => (
+    <div style={{ width: "526px" }}>
+      <EndpointValidation validation={{}} {...props} />
+    </div>
   ))
-  .add('failed custom message', () => (
-    <div style={{ width: '526px' }}><EndpointValidation validation={{ message: 'Failed because of reasons' }} {...props} /></div>
-  ))
+  .add("failed custom message", () => (
+    <div style={{ width: "526px" }}>
+      <EndpointValidation
+        validation={{ message: "Failed because of reasons" }}
+        {...props}
+      />
+    </div>
+  ));

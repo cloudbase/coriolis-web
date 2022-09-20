@@ -12,45 +12,53 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import Api from '@src/utils/ApiCaller'
-import type { Instance } from '@src/@types/Instance'
+import Api from "@src/utils/ApiCaller";
+import type { Instance } from "@src/@types/Instance";
 
-import configLoader from '@src/utils/Config'
+import configLoader from "@src/utils/Config";
 
-import { InstanceInfoPlugin } from '@src/plugins'
-import { ProviderTypes } from '@src/@types/Providers'
-import DomUtils from '@src/utils/DomUtils'
+import { InstanceInfoPlugin } from "@src/plugins";
+import { ProviderTypes } from "@src/@types/Providers";
+import DomUtils from "@src/utils/DomUtils";
 
 class InstanceSource {
   removeInstancesFromCache(endpointId: string) {
-    Api.removeFromCache(`${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`)
+    Api.removeFromCache(
+      `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
+    );
   }
 
   async loadInstancesChunk(opts: {
-    endpointId: string,
-    chunkSize: number,
-    lastInstanceId?: string,
-    cancelId?: string,
-    searchText?: string,
-    env?: any,
-    cache?: boolean,
+    endpointId: string;
+    chunkSize: number;
+    lastInstanceId?: string;
+    cancelId?: string;
+    searchText?: string;
+    env?: any;
+    cache?: boolean;
   }): Promise<[Instance[], Instance[]]> {
     const {
-      endpointId, chunkSize, lastInstanceId, cache, cancelId, env, searchText,
-    } = opts
-    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
-    let queryParams: { [prop: string]: string | number } = {}
+      endpointId,
+      chunkSize,
+      lastInstanceId,
+      cache,
+      cancelId,
+      env,
+      searchText,
+    } = opts;
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`;
+    let queryParams: { [prop: string]: string | number } = {};
 
     if (chunkSize !== Infinity) {
       queryParams = {
         limit: chunkSize,
-      }
+      };
 
       if (lastInstanceId) {
         queryParams = {
           ...queryParams,
           marker: lastInstanceId,
-        }
+        };
       }
     }
 
@@ -58,55 +66,71 @@ class InstanceSource {
       queryParams = {
         ...queryParams,
         name: searchText,
-      }
+      };
     }
 
     if (env) {
       queryParams = {
         ...queryParams,
         env: DomUtils.encodeToBase64Url(env),
-      }
+      };
     }
 
-    const keys = Object.keys(queryParams)
-    url = `${url}${keys.length > 0 ? '?' : ''}${keys.map(p => `${p}=${queryParams[p]}`).join('&')}`
+    const keys = Object.keys(queryParams);
+    url = `${url}${keys.length > 0 ? "?" : ""}${keys
+      .map(p => `${p}=${queryParams[p]}`)
+      .join("&")}`;
 
-    const response = await Api.send({ url, cancelId, cache })
-    const rawinstances: Instance[] = response.data.instances
-    const invalidInstances: Instance[] = []
+    const response = await Api.send({ url, cancelId, cache });
+    const rawinstances: Instance[] = response.data.instances;
+    const invalidInstances: Instance[] = [];
     const instances = rawinstances.filter(instance => {
       if (!instance.id) {
-        invalidInstances.push(instance)
-        return false
+        invalidInstances.push(instance);
+        return false;
       }
-      return true
-    })
-    return [instances, invalidInstances]
+      return true;
+    });
+    return [instances, invalidInstances];
   }
 
-  async loadInstances(endpointId: string, cache?: boolean | null): Promise<Instance[]> {
-    Api.cancelRequests(endpointId)
-    const url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
-    const response = await Api.send({ url, cancelId: endpointId, cache })
-    return response.data.instances
+  async loadInstances(
+    endpointId: string,
+    cache?: boolean | null
+  ): Promise<Instance[]> {
+    Api.cancelRequests(endpointId);
+    const url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`;
+    const response = await Api.send({ url, cancelId: endpointId, cache });
+    return response.data.instances;
   }
 
   async loadInstanceDetails(opts: {
-    endpointId: string,
-    instanceId: string,
-    targetProvider?: ProviderTypes | null,
-    reqId: number,
-    quietError?: boolean,
-    env?: any,
-    cache?: boolean | null,
-    skipLog?: boolean | null,
-  }): Promise<{ instance?: Instance, reqId: number }> {
+    endpointId: string;
+    instanceId: string;
+    targetProvider?: ProviderTypes | null;
+    reqId: number;
+    quietError?: boolean;
+    env?: any;
+    cache?: boolean | null;
+    skipLog?: boolean | null;
+  }): Promise<{ instance?: Instance; reqId: number }> {
     const {
-      endpointId, instanceId, targetProvider, reqId, quietError, env, cache, skipLog,
-    } = opts
-    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances/${DomUtils.encodeToBase64Url(instanceId)}`
+      endpointId,
+      instanceId,
+      targetProvider,
+      reqId,
+      quietError,
+      env,
+      cache,
+      skipLog,
+    } = opts;
+    let url = `${configLoader.config.servicesUrls.coriolis}/${
+      Api.projectId
+    }/endpoints/${endpointId}/instances/${DomUtils.encodeToBase64Url(
+      instanceId
+    )}`;
     if (env) {
-      url += `?env=${DomUtils.encodeToBase64Url(env)}`
+      url += `?env=${DomUtils.encodeToBase64Url(env)}`;
     }
     const response = await Api.send({
       url,
@@ -114,17 +138,18 @@ class InstanceSource {
       quietError,
       cache,
       skipLog,
-    })
+    });
 
-    const instanceInfoParser = targetProvider && InstanceInfoPlugin.for(targetProvider)
-    const instance = instanceInfoParser?.parseInstance(response.data.instance)
+    const instanceInfoParser =
+      targetProvider && InstanceInfoPlugin.for(targetProvider);
+    const instance = instanceInfoParser?.parseInstance(response.data.instance);
 
-    return { instance, reqId }
+    return { instance, reqId };
   }
 
   cancelInstancesDetailsRequests(reqId: number) {
-    Api.cancelRequests(`instanceDetail-${reqId}`)
+    Api.cancelRequests(`instanceDetail-${reqId}`);
   }
 }
 
-export default new InstanceSource()
+export default new InstanceSource();

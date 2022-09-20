@@ -12,50 +12,50 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
-import Navigation from '@src/components/modules/NavigationModule/Navigation'
-import FilterList from '@src/components/ui/Lists/FilterList'
-import PageHeader from '@src/components/smart/PageHeader'
-import EndpointListItem from '@src/components/modules/EndpointModule/EndpointListItem'
-import AlertModal from '@src/components/ui/AlertModal'
-import Modal from '@src/components/ui/Modal'
-import ChooseProvider from '@src/components/modules/EndpointModule/ChooseProvider'
-import EndpointModal from '@src/components/modules/EndpointModule/EndpointModal'
-import type { Endpoint as EndpointType } from '@src/@types/Endpoint'
+import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
+import Navigation from "@src/components/modules/NavigationModule/Navigation";
+import FilterList from "@src/components/ui/Lists/FilterList";
+import PageHeader from "@src/components/smart/PageHeader";
+import EndpointListItem from "@src/components/modules/EndpointModule/EndpointListItem";
+import AlertModal from "@src/components/ui/AlertModal";
+import Modal from "@src/components/ui/Modal";
+import ChooseProvider from "@src/components/modules/EndpointModule/ChooseProvider";
+import EndpointModal from "@src/components/modules/EndpointModule/EndpointModal";
+import type { Endpoint as EndpointType } from "@src/@types/Endpoint";
 
-import projectStore from '@src/stores/ProjectStore'
-import userStore from '@src/stores/UserStore'
-import endpointStore from '@src/stores/EndpointStore'
-import migrationStore from '@src/stores/MigrationStore'
-import replicaStore from '@src/stores/ReplicaStore'
-import providerStore from '@src/stores/ProviderStore'
-import EndpointDuplicateOptions from '@src/components/modules/EndpointModule/EndpointDuplicateOptions'
+import projectStore from "@src/stores/ProjectStore";
+import userStore from "@src/stores/UserStore";
+import endpointStore from "@src/stores/EndpointStore";
+import migrationStore from "@src/stores/MigrationStore";
+import replicaStore from "@src/stores/ReplicaStore";
+import providerStore from "@src/stores/ProviderStore";
+import EndpointDuplicateOptions from "@src/components/modules/EndpointModule/EndpointDuplicateOptions";
 
-import configLoader from '@src/utils/Config'
-import { ThemePalette } from '@src/components/Theme'
-import { ProviderTypes } from '@src/@types/Providers'
-import regionStore from '@src/stores/RegionStore'
-import endpointImage from './images/endpoint-large.svg'
+import configLoader from "@src/utils/Config";
+import { ThemePalette } from "@src/components/Theme";
+import { ProviderTypes } from "@src/@types/Providers";
+import regionStore from "@src/stores/RegionStore";
+import endpointImage from "./images/endpoint-large.svg";
 
-const Wrapper = styled.div<any>``
+const Wrapper = styled.div<any>``;
 
 type State = {
-  selectedEndpoints: EndpointType[],
-  showChooseProviderModal: boolean,
-  showEndpointModal: boolean,
-  providerType: ProviderTypes | null,
-  showEndpointsInUseModal: boolean,
-  modalIsOpen: boolean,
-  showDeleteEndpointsModal: boolean,
-  showDuplicateModal: boolean,
-  duplicating: boolean,
-  uploadedEndpoint: EndpointType | null,
-  multiValidating: boolean,
-}
+  selectedEndpoints: EndpointType[];
+  showChooseProviderModal: boolean;
+  showEndpointModal: boolean;
+  providerType: ProviderTypes | null;
+  showEndpointsInUseModal: boolean;
+  modalIsOpen: boolean;
+  showDeleteEndpointsModal: boolean;
+  showDuplicateModal: boolean;
+  duplicating: boolean;
+  uploadedEndpoint: EndpointType | null;
+  multiValidating: boolean;
+};
 @observer
 class EndpointsPage extends React.Component<{ history: any }, State> {
   state: State = {
@@ -70,114 +70,124 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     selectedEndpoints: [],
     uploadedEndpoint: null,
     multiValidating: false,
-  }
+  };
 
-  pollTimeout: number = 0
+  pollTimeout = 0;
 
-  stopPolling: boolean = false
+  stopPolling = false;
 
   componentDidMount() {
-    document.title = 'Coriolis Endpoints'
+    document.title = "Coriolis Endpoints";
 
-    projectStore.getProjects()
+    projectStore.getProjects();
 
-    this.stopPolling = false
-    this.pollData(true)
+    this.stopPolling = false;
+    this.pollData(true);
   }
 
   componentWillUnmount() {
-    clearTimeout(this.pollTimeout)
-    this.stopPolling = true
+    clearTimeout(this.pollTimeout);
+    this.stopPolling = true;
   }
 
   getFilterItems() {
     const providers = endpointStore.endpoints.reduce((p, endpoint) => {
       if (!p.find(p2 => p2.value === endpoint.type)) {
-        p.push({ label: configLoader.config.providerNames[endpoint.type], value: endpoint.type })
+        p.push({
+          label: configLoader.config.providerNames[endpoint.type],
+          value: endpoint.type,
+        });
       }
-      return p
-    }, [] as { label: string, value: ProviderTypes }[])
-    providers.sort((a, b) => a.label.localeCompare(b.label))
-    return [{ label: 'All', value: 'all' }, ...providers]
+      return p;
+    }, [] as { label: string; value: ProviderTypes }[]);
+    providers.sort((a, b) => a.label.localeCompare(b.label));
+    return [{ label: "All", value: "all" }, ...providers];
   }
 
   getEndpointUsage(endpointId: string) {
     const replicasCount = replicaStore.replicas.filter(
-      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId,
-    ).length
+      r =>
+        r.origin_endpoint_id === endpointId ||
+        r.destination_endpoint_id === endpointId
+    ).length;
     const migrationsCount = migrationStore.migrations.filter(
-      r => r.origin_endpoint_id === endpointId || r.destination_endpoint_id === endpointId,
-    ).length
+      r =>
+        r.origin_endpoint_id === endpointId ||
+        r.destination_endpoint_id === endpointId
+    ).length;
 
-    return { migrationsCount, replicasCount }
+    return { migrationsCount, replicasCount };
   }
 
   handleProjectChange() {
-    endpointStore.getEndpoints({ showLoading: true })
-    migrationStore.getMigrations()
-    replicaStore.getReplicas()
+    endpointStore.getEndpoints({ showLoading: true });
+    migrationStore.getMigrations();
+    replicaStore.getReplicas();
   }
 
   handleReloadButtonClick() {
-    projectStore.getProjects()
-    endpointStore.getEndpoints({ showLoading: true })
-    migrationStore.getMigrations()
-    replicaStore.getReplicas()
+    projectStore.getProjects();
+    endpointStore.getEndpoints({ showLoading: true });
+    migrationStore.getMigrations();
+    replicaStore.getReplicas();
   }
 
   handleItemClick(item: EndpointType) {
-    this.props.history.push(`/endpoints/${item.id}`)
+    this.props.history.push(`/endpoints/${item.id}`);
   }
 
   async duplicate(projectId: string) {
-    this.setState({ modalIsOpen: false, duplicating: true })
+    this.setState({ modalIsOpen: false, duplicating: true });
 
-    const shouldSwitchProject = projectId !== (userStore.loggedUser ? userStore.loggedUser.project.id : '')
-    const endpoints = endpointStore.endpoints
-      .filter(e => this.state.selectedEndpoints.find(se => se.id === e.id))
+    const shouldSwitchProject =
+      projectId !==
+      (userStore.loggedUser ? userStore.loggedUser.project.id : "");
+    const endpoints = endpointStore.endpoints.filter(e =>
+      this.state.selectedEndpoints.find(se => se.id === e.id)
+    );
 
     await endpointStore.duplicate({
       shouldSwitchProject,
       endpoints,
       onSwitchProject: async () => {
-        await userStore.switchProject(projectId)
-        this.handleProjectChange()
+        await userStore.switchProject(projectId);
+        this.handleProjectChange();
       },
-    })
-    this.pollData(true)
-    this.setState({ showDuplicateModal: false, duplicating: false })
+    });
+    this.pollData(true);
+    this.setState({ showDuplicateModal: false, duplicating: false });
   }
 
   deleteSelectedEndpoints() {
     this.state.selectedEndpoints.forEach(endpoint => {
-      endpointStore.delete(endpoint)
-    })
-    this.setState({ showDeleteEndpointsModal: false })
+      endpointStore.delete(endpoint);
+    });
+    this.setState({ showDeleteEndpointsModal: false });
   }
 
   handleEmptyListButtonClick() {
-    providerStore.loadProviders()
-    regionStore.getRegions()
-    this.setState({ showChooseProviderModal: true })
+    providerStore.loadProviders();
+    regionStore.getRegions();
+    this.setState({ showChooseProviderModal: true });
   }
 
   handleRemoveEndpoint(endpoint: EndpointType) {
-    endpointStore.delete(endpoint)
+    endpointStore.delete(endpoint);
   }
 
   async handleValidateMultipleEndpoints(endpoints: EndpointType[]) {
-    this.setState({ multiValidating: true })
-    const addedEndpoints = await endpointStore.addMultiple(endpoints)
-    await endpointStore.validateMultiple(addedEndpoints)
-    this.setState({ multiValidating: false })
+    this.setState({ multiValidating: true });
+    const addedEndpoints = await endpointStore.addMultiple(endpoints);
+    await endpointStore.validateMultiple(addedEndpoints);
+    this.setState({ multiValidating: false });
   }
 
   handleResetValidation() {
-    endpointStore.resetMultiValidation()
+    endpointStore.resetMultiValidation();
   }
 
   handleCloseChooseProviderModal() {
-    this.setState({ showChooseProviderModal: false })
+    this.setState({ showChooseProviderModal: false });
   }
 
   handleProviderClick(providerType: ProviderTypes) {
@@ -186,115 +196,139 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       showEndpointModal: true,
       uploadedEndpoint: null,
       providerType,
-    })
+    });
   }
 
   handleUploadEndpoint(endpoint: EndpointType) {
-    endpointStore.setConnectionInfo(endpoint.connection_info)
+    endpointStore.setConnectionInfo(endpoint.connection_info);
     this.setState({
       showChooseProviderModal: false,
       showEndpointModal: true,
       providerType: endpoint.type,
       uploadedEndpoint: endpoint,
-    })
+    });
   }
 
   handleCloseEndpointModal() {
-    this.setState({ showEndpointModal: false })
+    this.setState({ showEndpointModal: false });
   }
 
   handleModalOpen() {
-    this.setState({ modalIsOpen: true })
+    this.setState({ modalIsOpen: true });
   }
 
   handleModalClose() {
     this.setState({ modalIsOpen: false }, () => {
-      this.pollData()
-    })
+      this.pollData();
+    });
   }
 
   handleExportToJson() {
     if (this.state.selectedEndpoints.length === 1) {
-      endpointStore.exportToJson(this.state.selectedEndpoints[0])
+      endpointStore.exportToJson(this.state.selectedEndpoints[0]);
     } else {
-      endpointStore.exportToZip(this.state.selectedEndpoints)
+      endpointStore.exportToZip(this.state.selectedEndpoints);
     }
   }
 
   handleDeleteAction() {
     const endpointsInUse = this.state.selectedEndpoints.filter(endpoint => {
-      const endpointUsage = this.getEndpointUsage(endpoint.id)
-      return endpointUsage.migrationsCount > 0 || endpointUsage.replicasCount > 0
-    })
+      const endpointUsage = this.getEndpointUsage(endpoint.id);
+      return (
+        endpointUsage.migrationsCount > 0 || endpointUsage.replicasCount > 0
+      );
+    });
 
     if (endpointsInUse.length > 0) {
-      this.setState({ showEndpointsInUseModal: true })
+      this.setState({ showEndpointsInUseModal: true });
     } else {
-      this.setState({ showDeleteEndpointsModal: true })
+      this.setState({ showDeleteEndpointsModal: true });
     }
   }
 
-  async pollData(showLoading: boolean = false) {
+  async pollData(showLoading = false) {
     if (this.state.modalIsOpen || this.stopPolling) {
-      return
+      return;
     }
 
     await Promise.all([
       endpointStore.getEndpoints({ showLoading, skipLog: true }),
       migrationStore.getMigrations({ skipLog: true }),
       replicaStore.getReplicas({ skipLog: true }),
-    ])
-    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    ]);
+    this.pollTimeout = window.setTimeout(() => {
+      this.pollData();
+    }, configLoader.config.requestPollTimeout);
   }
 
-  itemFilterFunction(item: any, filterItem?: string | null, filterText?: string) {
-    const endpoint: EndpointType = item
-    const usableFilterText = filterText || ''
-    if ((filterItem !== 'all' && (endpoint.type !== filterItem))
-      || (endpoint.name.toLowerCase().indexOf(usableFilterText) === -1
-      && (!endpoint.description || endpoint.description.toLowerCase()
-        .indexOf(usableFilterText) === -1))
+  itemFilterFunction(
+    item: any,
+    filterItem?: string | null,
+    filterText?: string
+  ) {
+    const endpoint: EndpointType = item;
+    const usableFilterText = filterText || "";
+    if (
+      (filterItem !== "all" && endpoint.type !== filterItem) ||
+      (endpoint.name.toLowerCase().indexOf(usableFilterText) === -1 &&
+        (!endpoint.description ||
+          endpoint.description.toLowerCase().indexOf(usableFilterText) === -1))
     ) {
-      return false
+      return false;
     }
 
-    return true
+    return true;
   }
 
   render() {
-    const items: any = endpointStore.endpoints
-    const selectedProjectId = userStore.loggedUser ? userStore.loggedUser.project.id : ''
-    const BulkActions = [{
-      label: 'Duplicate',
-      action: () => { this.setState({ showDuplicateModal: true, modalIsOpen: true }) },
-
-    }, {
-      label: 'Download .endpoint files',
-      action: () => { this.handleExportToJson() },
-    }, {
-      label: 'Delete Endpoint',
-      color: ThemePalette.alert,
-      action: () => { this.handleDeleteAction() },
-    }]
+    const items: any = endpointStore.endpoints;
+    const selectedProjectId = userStore.loggedUser
+      ? userStore.loggedUser.project.id
+      : "";
+    const BulkActions = [
+      {
+        label: "Duplicate",
+        action: () => {
+          this.setState({ showDuplicateModal: true, modalIsOpen: true });
+        },
+      },
+      {
+        label: "Download .endpoint files",
+        action: () => {
+          this.handleExportToJson();
+        },
+      },
+      {
+        label: "Delete Endpoint",
+        color: ThemePalette.alert,
+        action: () => {
+          this.handleDeleteAction();
+        },
+      },
+    ];
 
     return (
       <Wrapper>
         <MainTemplate
           navigationComponent={<Navigation currentPage="endpoints" />}
-          listComponent={(
+          listComponent={
             <FilterList
               filterItems={this.getFilterItems()}
               selectionLabel="endpoint"
               loading={endpointStore.loading}
               items={items}
               onItemClick={item => {
-                const anyItem: any = item
-                const endpoint: EndpointType = anyItem
-                this.handleItemClick(endpoint)
+                const anyItem: any = item;
+                const endpoint: EndpointType = anyItem;
+                this.handleItemClick(endpoint);
               }}
               dropdownActions={BulkActions}
-              onSelectedItemsChange={selectedEndpoints => { this.setState({ selectedEndpoints }) }}
-              onReloadButtonClick={() => { this.handleReloadButtonClick() }}
+              onSelectedItemsChange={selectedEndpoints => {
+                this.setState({ selectedEndpoints });
+              }}
+              onReloadButtonClick={() => {
+                this.handleReloadButtonClick();
+              }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={options => (
                 <EndpointListItem
@@ -307,17 +341,25 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
               emptyListMessage="You don’t have any Cloud Endpoints in this project."
               emptyListExtraMessage="A Cloud Endpoint is used for the source or target of a Replica/Migration."
               emptyListButtonLabel="Add Endpoint"
-              onEmptyListButtonClick={() => { this.handleEmptyListButtonClick() }}
+              onEmptyListButtonClick={() => {
+                this.handleEmptyListButtonClick();
+              }}
             />
-          )}
-          headerComponent={(
+          }
+          headerComponent={
             <PageHeader
               title="Coriolis Endpoints"
-              onProjectChange={() => { this.handleProjectChange() }}
-              onModalOpen={() => { this.handleModalOpen() }}
-              onModalClose={() => { this.handleModalClose() }}
+              onProjectChange={() => {
+                this.handleProjectChange();
+              }}
+              onModalOpen={() => {
+                this.handleModalOpen();
+              }}
+              onModalClose={() => {
+                this.handleModalClose();
+              }}
             />
-          )}
+          }
         />
         {this.state.showDeleteEndpointsModal ? (
           <AlertModal
@@ -325,39 +367,59 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
             title="Delete Endpoints?"
             message="Are you sure you want to delete the selected endpoints?"
             extraMessage="Deleting a Coriolis Cloud Endpoint is permanent!"
-            onConfirmation={() => { this.deleteSelectedEndpoints() }}
-            onRequestClose={() => { this.setState({ showDeleteEndpointsModal: false }) }}
+            onConfirmation={() => {
+              this.deleteSelectedEndpoints();
+            }}
+            onRequestClose={() => {
+              this.setState({ showDeleteEndpointsModal: false });
+            }}
           />
         ) : null}
         <Modal
           isOpen={this.state.showChooseProviderModal}
           title="New Cloud Endpoint"
-          onRequestClose={() => { this.handleCloseChooseProviderModal() }}
+          onRequestClose={() => {
+            this.handleCloseChooseProviderModal();
+          }}
         >
           <ChooseProvider
-            onCancelClick={() => { this.handleCloseChooseProviderModal() }}
+            onCancelClick={() => {
+              this.handleCloseChooseProviderModal();
+            }}
             regions={regionStore.regions}
             providers={providerStore.providerNames}
             loading={providerStore.providersLoading || regionStore.loading}
-            onUploadEndpoint={endpoint => { this.handleUploadEndpoint(endpoint) }}
-            onProviderClick={providerName => { this.handleProviderClick(providerName) }}
+            onUploadEndpoint={endpoint => {
+              this.handleUploadEndpoint(endpoint);
+            }}
+            onProviderClick={providerName => {
+              this.handleProviderClick(providerName);
+            }}
             multiValidating={this.state.multiValidating}
             onValidateMultipleEndpoints={endpoints => {
-              this.handleValidateMultipleEndpoints(endpoints)
+              this.handleValidateMultipleEndpoints(endpoints);
             }}
             multiValidation={endpointStore.multiValidation}
-            onRemoveEndpoint={e => { this.handleRemoveEndpoint(e) }}
-            onResetValidation={() => { this.handleResetValidation() }}
+            onRemoveEndpoint={e => {
+              this.handleRemoveEndpoint(e);
+            }}
+            onResetValidation={() => {
+              this.handleResetValidation();
+            }}
           />
         </Modal>
         <Modal
           isOpen={this.state.showEndpointModal}
           title="New Cloud Endpoint"
-          onRequestClose={() => { this.handleCloseEndpointModal() }}
+          onRequestClose={() => {
+            this.handleCloseEndpointModal();
+          }}
         >
           <EndpointModal
             type={this.state.providerType}
-            onCancelClick={() => { this.handleCloseEndpointModal() }}
+            onCancelClick={() => {
+              this.handleCloseEndpointModal();
+            }}
             endpoint={this.state.uploadedEndpoint}
             isNewEndpoint={Boolean(this.state.uploadedEndpoint)}
           />
@@ -368,26 +430,34 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
           title="Endpoints are in use"
           message="Some of the selected endpoints can't be deleted because they are in use by replicas or migrations."
           extraMessage="You must first delete the replicas or migrations which use these endpoints."
-          onRequestClose={() => { this.setState({ showEndpointsInUseModal: false }) }}
+          onRequestClose={() => {
+            this.setState({ showEndpointsInUseModal: false });
+          }}
         />
         {this.state.showDuplicateModal ? (
           <Modal
             isOpen
             title="Duplicate Endpoint"
-            onRequestClose={() => { this.setState({ showDuplicateModal: false }) }}
+            onRequestClose={() => {
+              this.setState({ showDuplicateModal: false });
+            }}
           >
             <EndpointDuplicateOptions
               duplicating={this.state.duplicating}
               projects={projectStore.projects}
               selectedProjectId={selectedProjectId}
-              onCancelClick={() => { this.setState({ showDuplicateModal: false }) }}
-              onDuplicateClick={projectId => { this.duplicate(projectId) }}
+              onCancelClick={() => {
+                this.setState({ showDuplicateModal: false });
+              }}
+              onDuplicateClick={projectId => {
+                this.duplicate(projectId);
+              }}
             />
           </Modal>
         ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default EndpointsPage
+export default EndpointsPage;

@@ -12,156 +12,157 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import configLoader from './Config'
+import configLoader from "./Config";
 
 export type FileContent = {
-  name: string,
-  content: string,
-}
+  name: string;
+  content: string;
+};
 
 class ObjectUtils {
   static notEmpty<T>(value: T | null | undefined): value is T {
-    return value != null
+    return value != null;
   }
 
   static flatten(
     object: any,
     appendParentPath?: boolean,
-    parent?: string,
+    parent?: string
   ): any {
-    let result: any = {}
+    let result: any = {};
 
     Object.keys(object).forEach(k => {
-      if (typeof object[k] === 'object' && !Array.isArray(object[k])) {
+      if (typeof object[k] === "object" && !Array.isArray(object[k])) {
         if (object[k]) {
           result = {
             ...result,
             ...this.flatten(object[k], appendParentPath, k),
-          }
+          };
         }
       } else {
-        let key = k
+        let key = k;
         if (appendParentPath && parent) {
-          key = `${parent}/${k}`
+          key = `${parent}/${k}`;
         }
-        result[key] = object[k]
+        result[key] = object[k];
       }
-    })
+    });
 
     if (Object.keys(result).length === 0) {
-      return null
+      return null;
     }
 
-    return result
+    return result;
   }
 
   static skipFields(object: any, fieldNames: string[]) {
-    const result: any = {}
+    const result: any = {};
 
     if (Object.keys(object).length === 0) {
-      return null
+      return null;
     }
 
     Object.keys(object).forEach(k => {
       if (!fieldNames.find(fn => fn === k)) {
-        result[k] = object[k]
+        result[k] = object[k];
       }
-    })
+    });
 
     if (Object.keys(result).length === 0) {
-      return null
+      return null;
     }
 
-    return result
+    return result;
   }
 
   static async wait(ms: number) {
     return new Promise<void>(r => {
-      setTimeout(() => r(), ms)
-    })
+      setTimeout(() => r(), ms);
+    });
   }
 
   static async waitFor(
     predicate: () => boolean,
-    timeoutMs: number = 15000,
-    tryEvery: number = 1000,
+    timeoutMs = 15000,
+    tryEvery = 1000
   ) {
-    const startTime = new Date().getTime()
+    const startTime = new Date().getTime();
     const testLoop = async () => {
       if (predicate()) {
-        return
+        return;
       }
       if (new Date().getTime() - startTime > timeoutMs) {
-        throw new Error(`Timeout: waiting for more than ${timeoutMs} ms`)
+        throw new Error(`Timeout: waiting for more than ${timeoutMs} ms`);
       }
-      await this.wait(tryEvery)
-      await testLoop()
-    }
-    await testLoop()
+      await this.wait(tryEvery);
+      await testLoop();
+    };
+    await testLoop();
   }
 
   static trim(fieldName: string, value: any): any {
-    const isPassword = configLoader.config.passwordFields.find(p => p === fieldName)
-      || fieldName.toLowerCase().indexOf('password') > -1
-    return typeof value === 'string' && !isPassword ? value.trim() : value
+    const isPassword =
+      configLoader.config.passwordFields.find(p => p === fieldName) ||
+      fieldName.toLowerCase().indexOf("password") > -1;
+    return typeof value === "string" && !isPassword ? value.trim() : value;
   }
 
   static capitalizeFirstLetter(value: string): string {
-    return value.charAt(0).toUpperCase() + value.slice(1)
+    return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
   static async retry(
     retryFunction: () => Promise<any>,
-    retryEvery: number = 1000,
-    retryCount: number = 3,
+    retryEvery = 1000,
+    retryCount = 3
   ): Promise<any> {
-    let currentTry = 0
+    let currentTry = 0;
     const retryLoop = async (): Promise<any> => {
       try {
-        currentTry += 1
+        currentTry += 1;
         if (currentTry > 1) {
-          console.log('Retrying... ', currentTry)
+          console.log("Retrying... ", currentTry);
         }
-        const result = await retryFunction()
-        return result
+        const result = await retryFunction();
+        return result;
       } catch (err) {
         if (currentTry >= retryCount) {
-          console.error(`Retry failed after ${retryCount} attempts.`)
-          throw err
+          console.error(`Retry failed after ${retryCount} attempts.`);
+          throw err;
         }
-        await this.wait(retryEvery)
-        return retryLoop()
+        await this.wait(retryEvery);
+        return retryLoop();
       }
-    }
+    };
 
-    return retryLoop()
+    return retryLoop();
   }
 
   static isObject(item: any) {
-    return item && typeof item === 'object' && !Array.isArray(item)
+    return item && typeof item === "object" && !Array.isArray(item);
   }
 
   static mergeDeep(target: any, ...sources: any[]): any {
     if (!sources.length) {
-      return target
+      return target;
     }
-    const source = sources.shift()
+    const source = sources.shift();
 
     if (this.isObject(target) && this.isObject(source)) {
       Object.keys(source).forEach(key => {
         if (this.isObject(source[key])) {
           if (!target[key]) {
-            Object.assign(target, { [key]: {} })
+            Object.assign(target, { [key]: {} });
           }
-          this.mergeDeep(target[key], source[key])
+          this.mergeDeep(target[key], source[key]);
         } else {
-          Object.assign(target, { [key]: source[key] })
+          Object.assign(target, { [key]: source[key] });
         }
-      })
+      });
     }
 
-    return this.mergeDeep(target, ...sources)
+    return this.mergeDeep(target, ...sources);
   }
 }
 
-export default ObjectUtils
+export default ObjectUtils;

@@ -12,68 +12,89 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { ConnectionSchemaPlugin, MinionPoolSchemaPlugin, OptionsSchemaPlugin } from '@src/plugins'
-import type { Schema } from '@src/@types/Schema'
-import type { Endpoint } from '@src/@types/Endpoint'
-import { ProviderTypes } from '@src/@types/Providers'
-import { Field } from '@src/@types/Field'
+import {
+  ConnectionSchemaPlugin,
+  MinionPoolSchemaPlugin,
+  OptionsSchemaPlugin,
+} from "@src/plugins";
+import type { Schema } from "@src/@types/Schema";
+import type { Endpoint } from "@src/@types/Endpoint";
+import { ProviderTypes } from "@src/@types/Providers";
+import { Field } from "@src/@types/Field";
 
 class SchemaParser {
-  static storedConnectionsSchemas: any = {}
+  static storedConnectionsSchemas: any = {};
 
   static connectionSchemaToFields(provider: ProviderTypes, schema: Schema) {
     if (!this.storedConnectionsSchemas[provider]) {
-      this.storedConnectionsSchemas[provider] = schema
+      this.storedConnectionsSchemas[provider] = schema;
     }
 
-    const parsers = ConnectionSchemaPlugin.for(provider)
-    const fields = parsers.parseSchemaToFields(schema)
+    const parsers = ConnectionSchemaPlugin.for(provider);
+    const fields = parsers.parseSchemaToFields(schema);
 
-    return fields
+    return fields;
   }
 
-  static optionsSchemaToFields(opts: { provider: ProviderTypes, schema: any, dictionaryKey: string, requiresWindowsImage?: boolean }) {
-    const {
-      provider, schema, dictionaryKey, requiresWindowsImage,
-    } = opts
-    const parser = OptionsSchemaPlugin.for(provider)
-    const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema
+  static optionsSchemaToFields(opts: {
+    provider: ProviderTypes;
+    schema: any;
+    dictionaryKey: string;
+    requiresWindowsImage?: boolean;
+  }) {
+    const { provider, schema, dictionaryKey, requiresWindowsImage } = opts;
+    const parser = OptionsSchemaPlugin.for(provider);
+    const schemaRoot = schema.oneOf ? schema.oneOf[0] : schema;
     const fields = parser.parseSchemaToFields({
-      schema: schemaRoot, schemaDefinitions: schema.definitions, dictionaryKey, requiresWindowsImage,
-    })
-    parser.sortFields(fields)
-    return fields
+      schema: schemaRoot,
+      schemaDefinitions: schema.definitions,
+      dictionaryKey,
+      requiresWindowsImage,
+    });
+    parser.sortFields(fields);
+    return fields;
   }
 
   static connectionInfoToPayload(data: { [prop: string]: any }) {
-    const storedSchema = this.storedConnectionsSchemas[data.type]
-      || this.storedConnectionsSchemas.general
-    const parsers = ConnectionSchemaPlugin.for(data.type)
-    const payload = parsers.parseConnectionInfoToPayload(data, storedSchema)
+    const storedSchema =
+      this.storedConnectionsSchemas[data.type] ||
+      this.storedConnectionsSchemas.general;
+    const parsers = ConnectionSchemaPlugin.for(data.type);
+    const payload = parsers.parseConnectionInfoToPayload(data, storedSchema);
 
-    return payload
+    return payload;
   }
 
   static parseConnectionResponse(endpoint: Endpoint) {
-    return ConnectionSchemaPlugin.for(endpoint.type).parseConnectionResponse(endpoint)
+    return ConnectionSchemaPlugin.for(endpoint.type).parseConnectionResponse(
+      endpoint
+    );
   }
 
   static getMinionPoolToOptionsQuery(env: any, provider: ProviderTypes) {
-    const parsers = MinionPoolSchemaPlugin.for(provider)
-    return parsers.getMinionPoolToOptionsQuery(env)
+    const parsers = MinionPoolSchemaPlugin.for(provider);
+    return parsers.getMinionPoolToOptionsQuery(env);
   }
 
-  static minionPoolOptionsSchemaToFields(provider: ProviderTypes, schema: any, dictionaryKey: string) {
-    let fields = this.optionsSchemaToFields({ provider, schema, dictionaryKey })
-    const parsers = MinionPoolSchemaPlugin.for(provider)
-    fields = parsers.minionPoolTransformOptionsFields(fields)
-    return fields
+  static minionPoolOptionsSchemaToFields(
+    provider: ProviderTypes,
+    schema: any,
+    dictionaryKey: string
+  ) {
+    let fields = this.optionsSchemaToFields({
+      provider,
+      schema,
+      dictionaryKey,
+    });
+    const parsers = MinionPoolSchemaPlugin.for(provider);
+    fields = parsers.minionPoolTransformOptionsFields(fields);
+    return fields;
   }
 
   static getMinionPoolEnv(provider: ProviderTypes, schema: Field[], data: any) {
-    const parsers = MinionPoolSchemaPlugin.for(provider)
-    return parsers.getMinionPoolEnv(schema, data)
+    const parsers = MinionPoolSchemaPlugin.for(provider);
+    return parsers.getMinionPoolEnv(schema, data);
   }
 }
 
-export { SchemaParser }
+export { SchemaParser };

@@ -12,28 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import Checkbox from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Checkbox from ".";
 
 class Wrapper extends React.Component {
-  state = { checked: false }
+  state = { checked: false };
 
   handleChange(checked: boolean) {
-    this.setState({ checked })
+    this.setState({ checked });
   }
 
   render() {
     return (
       <Checkbox
         checked={this.state.checked}
-        onChange={checked => { this.handleChange(checked) }}
+        onChange={checked => {
+          this.handleChange(checked);
+        }}
       />
-    )
+    );
   }
 }
 
-storiesOf('Checkbox', module)
-  .add('default', () => (
-    <Wrapper />
-  ))
+storiesOf("Checkbox", module).add("default", () => <Wrapper />);

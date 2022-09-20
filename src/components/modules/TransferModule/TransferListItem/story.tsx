@@ -12,46 +12,46 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import TransferListItem from './TransferListItem'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import TransferListItem from "./TransferListItem";
 
 const item: any = {
-  origin_endpoint_id: 'openstack',
-  destination_endpoint_id: 'azure',
-  instances: ['instance name'],
-  executions: [{ status: 'COMPLETED', created_at: new Date() }],
-}
+  origin_endpoint_id: "openstack",
+  destination_endpoint_id: "azure",
+  instances: ["instance name"],
+  executions: [{ status: "COMPLETED", created_at: new Date() }],
+};
 const item2: any = {
-  origin_endpoint_id: 'openstack',
-  destination_endpoint_id: 'azure',
-  instances: ['instance name'],
-  executions: [{ status: 'RUNNING', created_at: new Date() }],
-}
-const endpointType = (id: any) => id
+  origin_endpoint_id: "openstack",
+  destination_endpoint_id: "azure",
+  instances: ["instance name"],
+  executions: [{ status: "RUNNING", created_at: new Date() }],
+};
+const endpointType = (id: any) => id;
 
-storiesOf('MainListItem', module)
-  .add('completed', () => (
+storiesOf("MainListItem", module)
+  .add("completed", () => (
     <TransferListItem
       item={item}
       endpointType={endpointType}
       selected={false}
       image="image"
       onSelectedChange={() => {}}
-      onClick={() => { }}
+      onClick={() => {}}
       getUserName={id => id}
       userNameLoading={false}
     />
   ))
-  .add('running', () => (
+  .add("running", () => (
     <TransferListItem
       item={item2}
       endpointType={endpointType}
       selected={false}
       image="image"
-      onSelectedChange={() => { }}
-      onClick={() => { }}
+      onSelectedChange={() => {}}
+      onClick={() => {}}
       getUserName={id => id}
       userNameLoading={false}
     />
-  ))
+  ));

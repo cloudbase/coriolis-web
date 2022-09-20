@@ -2,6 +2,5 @@
   "name": "ScheduleItem",
   "version": "0.0.0",
   "private": true,
-  "main":"./ScheduleItem.tsx"
+  "main": "./ScheduleItem.tsx"
 }
-

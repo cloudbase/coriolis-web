@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import { ThemePalette } from '@src/components/Theme'
+import { ThemePalette } from "@src/components/Theme";
 
-import searchImage from './images/search'
-import filterImage from './images/filter'
+import searchImage from "./images/search";
+import filterImage from "./images/filter";
 
 const Wrapper = styled.div<any>`
   display: inline-block;
-`
+`;
 const Icon = styled.div<any>`
   width: 16px;
   height: 16px;
@@ -31,13 +31,13 @@ const Icon = styled.div<any>`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 type Props = {
-  className?: string,
-  primary?: boolean,
-  useFilterIcon?: boolean,
-}
+  className?: string;
+  primary?: boolean;
+  useFilterIcon?: boolean;
+};
 @observer
 class SearchButton extends React.Component<Props> {
   render() {
@@ -48,12 +48,16 @@ class SearchButton extends React.Component<Props> {
           dangerouslySetInnerHTML={{
             __html: this.props.useFilterIcon
               ? filterImage(ThemePalette.grayscale[3])
-              : searchImage(this.props.primary ? ThemePalette.primary : ThemePalette.grayscale[4]),
+              : searchImage(
+                  this.props.primary
+                    ? ThemePalette.primary
+                    : ThemePalette.grayscale[4]
+                ),
           }}
         />
       </Wrapper>
-    )
+    );
   }
 }
 
-export default SearchButton
+export default SearchButton;

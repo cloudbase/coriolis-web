@@ -14,24 +14,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint-disable react/jsx-props-no-spreading */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
-import { ThemePalette, ThemeProps } from '@src/components/Theme'
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
-import checkedImage from './images/checked.svg'
+import checkedImage from "./images/checked.svg";
 
 const Wrapper = styled.div<any>`
-  ${(props: any) => (props.disabled ? 'opacity: 0.5;' : '')}
-  ${(props: any) => (props.disabledLoading ? ThemeProps.animations.disabledLoading : '')}
-`
+  ${(props: any) => (props.disabled ? "opacity: 0.5;" : "")}
+  ${(props: any) =>
+    props.disabledLoading ? ThemeProps.animations.disabledLoading : ""}
+`;
 const LabelStyled = styled.label`
   display: flex;
-`
+`;
 const Text = styled.div<any>`
   margin-left: 16px;
-`
+`;
 const InputStyled = styled.input`
   width: 16px;
   height: 16px;
@@ -46,40 +47,43 @@ const InputStyled = styled.input`
   cursor: pointer;
 
   &:checked {
-    background: url('${checkedImage}') center no-repeat;
+    background: url("${checkedImage}") center no-repeat;
     border-color: transparent;
   }
-`
+`;
 
 type Props = {
-  label: React.ReactNode,
-  disabledLoading?: boolean,
-  disabled?: boolean,
-  checked?: boolean,
-  onChange?: (checked: boolean) => void,
-}
+  label: React.ReactNode;
+  disabledLoading?: boolean;
+  disabled?: boolean;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+};
 @observer
 class RadioInput extends React.Component<Props> {
   handleKeyDown(evt: React.KeyboardEvent<HTMLDivElement>) {
-    if (evt.key !== ' ') {
-      return
+    if (evt.key !== " ") {
+      return;
     }
-    evt.preventDefault()
+    evt.preventDefault();
     if (this.props.onChange) {
-      this.props.onChange(true)
+      this.props.onChange(true);
     }
   }
 
   render() {
-    const { onChange, ...props } = this.props
-    const disabled = this.props.disabled || this.props.disabledLoading
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { onChange, ...props } = this.props;
+    const disabled = this.props.disabled || this.props.disabledLoading;
     return (
       <Wrapper
         {...props}
         disabled={disabled}
         disabledLoading={this.props.disabledLoading}
         tabIndex={0}
-        onKeyDown={(evt: React.KeyboardEvent<HTMLDivElement>) => { this.handleKeyDown(evt) }}
+        onKeyDown={(evt: React.KeyboardEvent<HTMLDivElement>) => {
+          this.handleKeyDown(evt);
+        }}
       >
         <LabelStyled>
           <InputStyled
@@ -88,15 +92,15 @@ class RadioInput extends React.Component<Props> {
             disabled={disabled}
             onChange={e => {
               if (this.props.onChange) {
-                this.props.onChange(e.target.checked)
+                this.props.onChange(e.target.checked);
               }
             }}
           />
           <Text>{this.props.label}</Text>
         </LabelStyled>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default RadioInput
+export default RadioInput;

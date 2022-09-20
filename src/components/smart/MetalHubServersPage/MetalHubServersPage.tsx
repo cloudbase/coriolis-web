@@ -12,131 +12,144 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import MainTemplate from '@src/components/modules/TemplateModule/MainTemplate'
-import Navigation from '@src/components/modules/NavigationModule/Navigation'
-import FilterList from '@src/components/ui/Lists/FilterList'
-import PageHeader from '@src/components/smart/PageHeader'
-import configLoader from '@src/utils/Config'
-import metalHubStore from '@src/stores/MetalHubStore'
-import { MetalHubServer } from '@src/@types/MetalHub'
-import MetalHubServerListItem from '@src/components/modules/MetalHubModule/MetalHubListItem'
+import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
+import Navigation from "@src/components/modules/NavigationModule/Navigation";
+import FilterList from "@src/components/ui/Lists/FilterList";
+import PageHeader from "@src/components/smart/PageHeader";
+import configLoader from "@src/utils/Config";
+import metalHubStore from "@src/stores/MetalHubStore";
+import { MetalHubServer } from "@src/@types/MetalHub";
+import MetalHubServerListItem from "@src/components/modules/MetalHubModule/MetalHubListItem";
 
-import StatusImage from '@src/components/ui/StatusComponents/StatusImage'
-import MetalHubListHeader from '@src/components/modules/MetalHubModule/MetalHubListHeader'
-import projectStore from '@src/stores/ProjectStore'
-import MetalHubModal from '@src/components/modules/MetalHubModule/MetalHubModal'
-import emptyListImage from './images/server.svg'
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import MetalHubListHeader from "@src/components/modules/MetalHubModule/MetalHubListHeader";
+import projectStore from "@src/stores/ProjectStore";
+import MetalHubModal from "@src/components/modules/MetalHubModule/MetalHubModal";
+import emptyListImage from "./images/server.svg";
 
-const Wrapper = styled.div``
+const Wrapper = styled.div``;
 const ErrorWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
   justify-content: center;
-`
+`;
 const ErrorMessage = styled.div`
   margin-top: 24px;
   text-align: center;
   max-width: 600px;
-`
+`;
 
 type State = {
-  modalIsOpen: boolean,
-  showNewServerModal: boolean,
-}
+  modalIsOpen: boolean;
+  showNewServerModal: boolean;
+};
 @observer
 class MetalHubServersPage extends React.Component<{ history: any }, State> {
   state = {
     modalIsOpen: false,
     showNewServerModal: false,
-  }
+  };
 
-  pollTimeout: number = 0
+  pollTimeout = 0;
 
-  stopPolling: boolean = false
+  stopPolling = false;
 
   componentDidMount() {
-    document.title = 'Bare Metal Servers'
+    document.title = "Bare Metal Servers";
 
-    metalHubStore.loadFingerprint()
-    projectStore.getProjects()
+    metalHubStore.loadFingerprint();
+    projectStore.getProjects();
 
-    this.stopPolling = false
-    this.pollData(true)
+    this.stopPolling = false;
+    this.pollData(true);
   }
 
   componentWillUnmount() {
-    clearTimeout(this.pollTimeout)
-    this.stopPolling = true
+    clearTimeout(this.pollTimeout);
+    this.stopPolling = true;
   }
 
   handleModalOpen() {
-    this.setState({ modalIsOpen: true })
+    this.setState({ modalIsOpen: true });
   }
 
   handleModalClose() {
     this.setState({ modalIsOpen: false }, () => {
-      this.pollData()
-    })
+      this.pollData();
+    });
   }
 
   handleReloadButtonClick() {
-    metalHubStore.loadFingerprint()
-    metalHubStore.getServers({ showLoading: true })
+    metalHubStore.loadFingerprint();
+    metalHubStore.getServers({ showLoading: true });
   }
 
   handleEmptyListButtonClick() {
-    this.setState({ showNewServerModal: true, modalIsOpen: true })
+    this.setState({ showNewServerModal: true, modalIsOpen: true });
   }
 
   async handleNewServer(endpoint: string) {
-    await metalHubStore.addServer(endpoint)
-    this.setState({ showNewServerModal: false, modalIsOpen: false })
-    await metalHubStore.getServers()
+    await metalHubStore.addServer(endpoint);
+    this.setState({ showNewServerModal: false, modalIsOpen: false });
+    await metalHubStore.getServers();
   }
 
   handleProjectChange() {
-    metalHubStore.getServers({ showLoading: true })
+    metalHubStore.getServers({ showLoading: true });
   }
 
   async pollData(showLoading?: boolean) {
     if (this.state.modalIsOpen || this.stopPolling) {
-      return
+      return;
     }
 
-    await metalHubStore.getServers({ showLoading, skipLog: true })
-    this.pollTimeout = window.setTimeout(() => { this.pollData() }, configLoader.config.requestPollTimeout)
+    await metalHubStore.getServers({ showLoading, skipLog: true });
+    this.pollTimeout = window.setTimeout(() => {
+      this.pollData();
+    }, configLoader.config.requestPollTimeout);
   }
 
-  itemFilterFunction(item: MetalHubServer, status?: string | null, filterText?: string): boolean {
-    const usabledFilterText = filterText?.toLowerCase() || ''
+  itemFilterFunction(
+    item: MetalHubServer,
+    status?: string | null,
+    filterText?: string
+  ): boolean {
+    const usabledFilterText = filterText?.toLowerCase() || "";
 
-    const searchableFields: Array<keyof MetalHubServer> = ['hostname', 'api_endpoint']
+    const searchableFields: Array<keyof MetalHubServer> = [
+      "hostname",
+      "api_endpoint",
+    ];
     const filterCount = searchableFields.reduce((acc, key) => {
       if (!(item[key] as string)?.toLowerCase().includes(usabledFilterText)) {
-        return acc + 1
+        return acc + 1;
       }
-      return acc
-    }, 0)
-    let statusFilter = true
-    if (status !== 'all') {
-      statusFilter = status === 'active' ? item.active : !item.active
+      return acc;
+    }, 0);
+    let statusFilter = true;
+    if (status !== "all") {
+      statusFilter = status === "active" ? item.active : !item.active;
     }
-    return statusFilter && filterCount < searchableFields.length
+    return statusFilter && filterCount < searchableFields.length;
   }
 
   renderEmptyListComponent() {
     return metalHubStore.loadingServersError ? (
       <ErrorWrapper>
         <StatusImage status="ERROR" />
-        <ErrorMessage>Request failed with:<br />{metalHubStore.loadingServersError}</ErrorMessage>
+        <ErrorMessage>
+          Request failed with:
+          <br />
+          {metalHubStore.loadingServersError}
+        </ErrorMessage>
       </ErrorWrapper>
-    ) : null
+    ) : null;
   }
 
   render() {
@@ -145,51 +158,78 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
         <MainTemplate
           navigationComponent={<Navigation currentPage="bare-metal-servers" />}
           listNoMargin
-          listComponent={(
+          listComponent={
             <FilterList
-              filterItems={[{ label: 'All', value: 'all' }, { label: 'Active', value: 'active' }, { label: 'Inactive', value: 'inactive' }]}
+              filterItems={[
+                { label: "All", value: "all" },
+                { label: "Active", value: "active" },
+                { label: "Inactive", value: "inactive" },
+              ]}
               selectionLabel=""
               loading={metalHubStore.loadingServers}
               items={metalHubStore.servers}
-              listHeaderComponent={(
+              listHeaderComponent={
                 <MetalHubListHeader
                   fingerprint={metalHubStore.fingerprint}
                   error={metalHubStore.loadingFingerprintError}
                   hideButton={metalHubStore.servers.length === 0}
-                  onCreateClick={() => { this.setState({ showNewServerModal: true, modalIsOpen: true }) }}
+                  onCreateClick={() => {
+                    this.setState({
+                      showNewServerModal: true,
+                      modalIsOpen: true,
+                    });
+                  }}
                 />
-              )}
-              onItemClick={(server: MetalHubServer) => { this.props.history.push(`/bare-metal-servers/${server.id}`) }}
-              onReloadButtonClick={() => { this.handleReloadButtonClick() }}
+              }
+              onItemClick={(server: MetalHubServer) => {
+                this.props.history.push(`/bare-metal-servers/${server.id}`);
+              }}
+              onReloadButtonClick={() => {
+                this.handleReloadButtonClick();
+              }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
-              renderItemComponent={component => <MetalHubServerListItem {...component} />}
+              renderItemComponent={component => (
+                <MetalHubServerListItem {...component} />
+              )}
               emptyListImage={emptyListImage}
               emptyListComponent={this.renderEmptyListComponent()}
               emptyListMessage="It seems like you don't have any Bare Metal servers in this Hub."
               emptyListExtraMessage="A Bare Metal server is a virtual machine that is connected to your Coriolis Bare Metal Hub endpoint."
               emptyListButtonLabel="Add a Bare Metal server"
-              onEmptyListButtonClick={() => { this.handleEmptyListButtonClick() }}
+              onEmptyListButtonClick={() => {
+                this.handleEmptyListButtonClick();
+              }}
             />
-          )}
-          headerComponent={(
+          }
+          headerComponent={
             <PageHeader
               title="Coriolis Bare Metal Servers"
-              onModalOpen={() => { this.handleModalOpen() }}
-              onModalClose={() => { this.handleModalClose() }}
-              onProjectChange={() => { this.handleProjectChange() }}
+              onModalOpen={() => {
+                this.handleModalOpen();
+              }}
+              onModalClose={() => {
+                this.handleModalClose();
+              }}
+              onProjectChange={() => {
+                this.handleProjectChange();
+              }}
             />
-          )}
+          }
         />
         {this.state.showNewServerModal ? (
           <MetalHubModal
             loading={metalHubStore.loadingNewServer}
-            onAddClick={e => { this.handleNewServer(e) }}
-            onRequestClose={() => { this.setState({ showNewServerModal: false, modalIsOpen: false }) }}
+            onAddClick={e => {
+              this.handleNewServer(e);
+            }}
+            onRequestClose={() => {
+              this.setState({ showNewServerModal: false, modalIsOpen: false });
+            }}
           />
         ) : null}
       </Wrapper>
-    )
+    );
   }
 }
 
-export default MetalHubServersPage
+export default MetalHubServersPage;

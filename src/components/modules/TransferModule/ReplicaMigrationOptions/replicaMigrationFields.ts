@@ -12,22 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { Field } from '@src/@types/Field'
+import { Field } from "@src/@types/Field";
 
 const replicaMigrationFields: Field[] = [
   {
-    name: 'clone_disks',
-    type: 'boolean',
+    name: "clone_disks",
+    type: "boolean",
     value: true,
   },
   {
-    name: 'force',
-    type: 'boolean',
+    name: "force",
+    type: "boolean",
   },
   {
-    name: 'skip_os_morphing',
-    type: 'boolean',
+    name: "skip_os_morphing",
+    type: "boolean",
   },
-]
+];
 
-export default replicaMigrationFields
+export default replicaMigrationFields;

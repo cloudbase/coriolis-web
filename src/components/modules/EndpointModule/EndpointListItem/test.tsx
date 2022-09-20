@@ -12,42 +12,47 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { shallow } from 'enzyme'
-import sinon from 'sinon'
-import TestWrapper from '@src/utils/TestWrapper'
-import EndpointListItem from '.'
+import React from "react";
+import { shallow } from "enzyme";
+import sinon from "sinon";
+import TestWrapper from "@src/utils/TestWrapper";
+import EndpointListItem from ".";
 
-const wrap = props => new TestWrapper(shallow(
-  
-  (<EndpointListItem {...props} />)
-), 'endpointListItem')
+const wrap = props =>
+  new TestWrapper(shallow(<EndpointListItem {...props} />), "endpointListItem");
 
-describe('EndpointListItem Component', () => {
-  it('renders item properties', () => {
-    let wrapper = wrap({
-      item: { name: 'name-to-test', description: 'description-to-test' },
-      getUsage: () => { return {} },
-    })
-    expect(wrapper.findText('name')).toBe('name-to-test')
-    expect(wrapper.findText('description')).toBe('description-to-test')
-  })
+describe("EndpointListItem Component", () => {
+  it("renders item properties", () => {
+    const wrapper = wrap({
+      item: { name: "name-to-test", description: "description-to-test" },
+      getUsage: () => {
+        return {};
+      },
+    });
+    expect(wrapper.findText("name")).toBe("name-to-test");
+    expect(wrapper.findText("description")).toBe("description-to-test");
+  });
 
-  it('renders usage count', () => {
-    let wrapper = wrap({
+  it("renders usage count", () => {
+    const wrapper = wrap({
       item: {},
-      getUsage: () => { return { replicasCount: 12, migrationsCount: 11 } },
-    })
-    expect(wrapper.findText('usageCount')).toBe('11 migrations, 12 replicas')
-  })
+      getUsage: () => {
+        return { replicasCount: 12, migrationsCount: 11 };
+      },
+    });
+    expect(wrapper.findText("usageCount")).toBe("11 migrations, 12 replicas");
+  });
 
-  it('dispatches onClick', () => {
-    let onClick = sinon.spy()
-    let wrapper = wrap({ item: { name: 't' }, getUsage: () => { return {} }, onClick })
-    wrapper.find('content-t').simulate('click')
-    expect(onClick.calledOnce).toBe(true)
-  })
-})
-
-
-
+  it("dispatches onClick", () => {
+    const onClick = sinon.spy();
+    const wrapper = wrap({
+      item: { name: "t" },
+      getUsage: () => {
+        return {};
+      },
+      onClick,
+    });
+    wrapper.find("content-t").simulate("click");
+    expect(onClick.calledOnce).toBe(true);
+  });
+});

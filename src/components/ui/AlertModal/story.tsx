@@ -12,39 +12,39 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import AlertModal from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import AlertModal from ".";
 
-storiesOf('AlertModal', module)
-  .add('confirmation', () => (
+storiesOf("AlertModal", module)
+  .add("confirmation", () => (
     <AlertModal
       isOpen
       title="Alert title"
       message="Alert message"
       extraMessage="Extra message"
-      onConfirmation={() => { }}
-      onRequestClose={() => { }}
+      onConfirmation={() => {}}
+      onRequestClose={() => {}}
     />
   ))
-  .add('error', () => (
+  .add("error", () => (
     <AlertModal
       isOpen
       type="error"
       title="Alert title"
       message="Alert message"
       extraMessage="Extra message"
-      onConfirmation={() => { }}
-      onRequestClose={() => { }}
+      onConfirmation={() => {}}
+      onRequestClose={() => {}}
     />
   ))
-  .add('loading', () => (
+  .add("loading", () => (
     <AlertModal
       isOpen
       type="loading"
       title="Alert title"
       message="Loading message"
-      onConfirmation={() => { }}
-      onRequestClose={() => { }}
+      onConfirmation={() => {}}
+      onRequestClose={() => {}}
     />
-  ))
+  ));

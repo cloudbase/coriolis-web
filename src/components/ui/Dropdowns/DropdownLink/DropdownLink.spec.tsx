@@ -12,68 +12,78 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { render } from '@testing-library/react'
-import TestUtils from '@tests/TestUtils'
-import userEvent from '@testing-library/user-event'
-import { ThemeProps } from '@src/components/Theme'
-import DropdownLink from '.'
+import React from "react";
+import { render } from "@testing-library/react";
+import TestUtils from "@tests/TestUtils";
+import userEvent from "@testing-library/user-event";
+import { ThemeProps } from "@src/components/Theme";
+import DropdownLink from ".";
 
 const ITEMS = [
-  { label: 'Item 1', value: 'item1' },
-  { label: 'Item A2', value: 'item2' },
-  { label: 'Item A3', value: 'item3' },
-]
+  { label: "Item 1", value: "item1" },
+  { label: "Item A2", value: "item2" },
+  { label: "Item A3", value: "item3" },
+];
 
-describe('DropdownLink', () => {
-  it('renders select item label', () => {
-    render(<DropdownLink selectItemLabel="Select an item" items={ITEMS} />)
-    expect(TestUtils.select('DropdownLink__Label')?.textContent).toBe('Select an item')
-  })
+describe("DropdownLink", () => {
+  it("renders select item label", () => {
+    render(<DropdownLink selectItemLabel="Select an item" items={ITEMS} />);
+    expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
+      "Select an item"
+    );
+  });
 
-  it('renders no items label', () => {
-    render(<DropdownLink noItemsLabel="No items" items={[]} />)
-    expect(TestUtils.select('DropdownLink__Label')?.textContent).toBe('No items')
-  })
+  it("renders no items label", () => {
+    render(<DropdownLink noItemsLabel="No items" items={[]} />);
+    expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
+      "No items"
+    );
+  });
 
-  it('renders the selected item', () => {
-    render(<DropdownLink items={ITEMS} selectedItem={ITEMS[1].value} />)
-    expect(TestUtils.select('DropdownLink__Label')?.textContent).toBe(ITEMS[1].label)
-  })
+  it("renders the selected item", () => {
+    render(<DropdownLink items={ITEMS} selectedItem={ITEMS[1].value} />);
+    expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
+      ITEMS[1].label
+    );
+  });
 
-  it('fires selected item change', () => {
-    const onChange = jest.fn()
-    render(<DropdownLink items={ITEMS} onChange={onChange} />)
-    TestUtils.select('DropdownLink__LinkButton')?.click()
-    TestUtils.selectAll('DropdownLink__ListItem-')[1].click()
-    expect(onChange).toBeCalledWith(ITEMS[1])
-  })
+  it("fires selected item change", () => {
+    const onChange = jest.fn();
+    render(<DropdownLink items={ITEMS} onChange={onChange} />);
+    TestUtils.select("DropdownLink__LinkButton")?.click();
+    TestUtils.selectAll("DropdownLink__ListItem-")[1].click();
+    expect(onChange).toBeCalledWith(ITEMS[1]);
+  });
 
-  it('can be searchable', () => {
-    render(<DropdownLink items={ITEMS} searchable />)
-    TestUtils.select('DropdownLink__LinkButton')?.click()
-    const input = TestUtils.selectContains('SearchInput__Input')!
-    userEvent.type(input, 'A')
-    const listItems = () => TestUtils.selectAll('DropdownLink__ListItem-')
-    expect(listItems()).toHaveLength(2)
-    expect(listItems()[1].textContent).toBe(ITEMS[2].label)
-    userEvent.clear(input)
-    userEvent.type(input, 'item3')
-    expect(listItems()).toHaveLength(1)
-    expect(listItems()[0].textContent).toBe(ITEMS[2].label)
-    expect(TestUtils.select('DropdownLink__EmptySearch')).toBeFalsy()
-    userEvent.clear(input)
-    userEvent.type(input, 'giberrish')
-    expect(listItems()).toHaveLength(0)
-    expect(TestUtils.select('DropdownLink__EmptySearch')).toBeTruthy()
-  })
+  it("can be searchable", () => {
+    render(<DropdownLink items={ITEMS} searchable />);
+    TestUtils.select("DropdownLink__LinkButton")?.click();
+    const input = TestUtils.selectContains("SearchInput__Input")!;
+    userEvent.type(input, "A");
+    const listItems = () => TestUtils.selectAll("DropdownLink__ListItem-");
+    expect(listItems()).toHaveLength(2);
+    expect(listItems()[1].textContent).toBe(ITEMS[2].label);
+    userEvent.clear(input);
+    userEvent.type(input, "item3");
+    expect(listItems()).toHaveLength(1);
+    expect(listItems()[0].textContent).toBe(ITEMS[2].label);
+    expect(TestUtils.select("DropdownLink__EmptySearch")).toBeFalsy();
+    userEvent.clear(input);
+    userEvent.type(input, "giberrish");
+    expect(listItems()).toHaveLength(0);
+    expect(TestUtils.select("DropdownLink__EmptySearch")).toBeTruthy();
+  });
 
-  it('highlights the highlighted item', () => {
-    render(<DropdownLink items={ITEMS} highlightedItem={ITEMS[1].value} />)
-    TestUtils.select('DropdownLink__LinkButton')?.click()
-    const noHighlightStyle = window.getComputedStyle(TestUtils.selectAll('DropdownLink__ListItemLabel')[0])
-    const highlightStyle = window.getComputedStyle(TestUtils.selectAll('DropdownLink__ListItemLabel')[1])
-    expect(highlightStyle.fontWeight).not.toBe(noHighlightStyle.fontWeight)
-    expect(highlightStyle.fontWeight).toBe(`${ThemeProps.fontWeights.medium}`)
-  })
-})
+  it("highlights the highlighted item", () => {
+    render(<DropdownLink items={ITEMS} highlightedItem={ITEMS[1].value} />);
+    TestUtils.select("DropdownLink__LinkButton")?.click();
+    const noHighlightStyle = window.getComputedStyle(
+      TestUtils.selectAll("DropdownLink__ListItemLabel")[0]
+    );
+    const highlightStyle = window.getComputedStyle(
+      TestUtils.selectAll("DropdownLink__ListItemLabel")[1]
+    );
+    expect(highlightStyle.fontWeight).not.toBe(noHighlightStyle.fontWeight);
+    expect(highlightStyle.fontWeight).toBe(`${ThemeProps.fontWeights.medium}`);
+  });
+});

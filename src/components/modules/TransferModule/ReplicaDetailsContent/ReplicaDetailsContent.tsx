@@ -12,37 +12,37 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import styled from 'styled-components'
-import { observer } from 'mobx-react'
+import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 
-import scheduleStore from '@src/stores/ScheduleStore'
-import Button from '@src/components/ui/Button'
-import DetailsNavigation from '@src/components/modules/NavigationModule/DetailsNavigation'
-import MainDetails from '@src/components/modules/TransferModule/MainDetails'
-import Executions from '@src/components/modules/TransferModule/Executions'
-import Schedule from '@src/components/modules/TransferModule/Schedule'
-import type { Instance } from '@src/@types/Instance'
-import type { Endpoint, StorageBackend } from '@src/@types/Endpoint'
-import type { Execution, ExecutionTasks } from '@src/@types/Execution'
-import type { Network } from '@src/@types/Network'
-import type { Field } from '@src/@types/Field'
-import type { Schedule as ScheduleType } from '@src/@types/Schedule'
-import { ReplicaItemDetails } from '@src/@types/MainItem'
-import { MinionPool } from '@src/@types/MinionPool'
-import { ThemeProps } from '@src/components/Theme'
-import configLoader from '@src/utils/Config'
+import scheduleStore from "@src/stores/ScheduleStore";
+import Button from "@src/components/ui/Button";
+import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
+import MainDetails from "@src/components/modules/TransferModule/MainDetails";
+import Executions from "@src/components/modules/TransferModule/Executions";
+import Schedule from "@src/components/modules/TransferModule/Schedule";
+import type { Instance } from "@src/@types/Instance";
+import type { Endpoint, StorageBackend } from "@src/@types/Endpoint";
+import type { Execution, ExecutionTasks } from "@src/@types/Execution";
+import type { Network } from "@src/@types/Network";
+import type { Field } from "@src/@types/Field";
+import type { Schedule as ScheduleType } from "@src/@types/Schedule";
+import { ReplicaItemDetails } from "@src/@types/MainItem";
+import { MinionPool } from "@src/@types/MinionPool";
+import { ThemeProps } from "@src/components/Theme";
+import configLoader from "@src/utils/Config";
 
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
-`
+`;
 
 const Buttons = styled.div<any>`
   display: flex;
   justify-content: space-between;
   margin-top: 24px;
-`
+`;
 const ButtonColumn = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -52,86 +52,101 @@ const ButtonColumn = styled.div<any>`
       margin-top: 0;
     }
   }
-`
+`;
 const DetailsBody = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
-`
+`;
 
 const NavigationItems = [
   {
-    label: 'Replica',
-    value: '',
-  }, {
-    label: 'Executions',
-    value: 'executions',
-  }, {
-    label: 'Schedule',
-    value: 'schedule',
+    label: "Replica",
+    value: "",
   },
-]
+  {
+    label: "Executions",
+    value: "executions",
+  },
+  {
+    label: "Schedule",
+    value: "schedule",
+  },
+];
 
-type TimezoneValue = 'utc' | 'local'
+type TimezoneValue = "utc" | "local";
 type Props = {
-  item?: ReplicaItemDetails | null,
-  itemId: string
-  endpoints: Endpoint[],
-  sourceSchema: Field[],
-  sourceSchemaLoading: boolean,
-  destinationSchema: Field[],
-  destinationSchemaLoading: boolean,
-  networks: Network[],
-  instancesDetails: Instance[],
-  instancesDetailsLoading: boolean,
-  scheduleStore: typeof scheduleStore,
-  page: string,
-  detailsLoading: boolean,
-  executions: Execution[],
-  executionsLoading: boolean,
-  executionsTasksLoading: boolean,
-  executionsTasks: ExecutionTasks[],
-  minionPools: MinionPool[]
-  storageBackends: StorageBackend[]
-  onExecutionChange: (executionId: string) => void,
-  onCancelExecutionClick: (execution: Execution | null, force?: boolean) => void,
-  onDeleteExecutionClick: (execution: Execution | null) => void,
-  onExecuteClick: () => void,
-  onCreateMigrationClick: () => void,
-  onDeleteReplicaClick: () => void,
-  onAddScheduleClick: (schedule: ScheduleType) => void,
-  onScheduleChange: (scheduleId: string | null, data: ScheduleType, forceSave?: boolean) => void,
-  onScheduleRemove: (scheduleId: string | null) => void,
-  onScheduleSave: (schedule: ScheduleType) => void,
-}
+  item?: ReplicaItemDetails | null;
+  itemId: string;
+  endpoints: Endpoint[];
+  sourceSchema: Field[];
+  sourceSchemaLoading: boolean;
+  destinationSchema: Field[];
+  destinationSchemaLoading: boolean;
+  networks: Network[];
+  instancesDetails: Instance[];
+  instancesDetailsLoading: boolean;
+  scheduleStore: typeof scheduleStore;
+  page: string;
+  detailsLoading: boolean;
+  executions: Execution[];
+  executionsLoading: boolean;
+  executionsTasksLoading: boolean;
+  executionsTasks: ExecutionTasks[];
+  minionPools: MinionPool[];
+  storageBackends: StorageBackend[];
+  onExecutionChange: (executionId: string) => void;
+  onCancelExecutionClick: (
+    execution: Execution | null,
+    force?: boolean
+  ) => void;
+  onDeleteExecutionClick: (execution: Execution | null) => void;
+  onExecuteClick: () => void;
+  onCreateMigrationClick: () => void;
+  onDeleteReplicaClick: () => void;
+  onAddScheduleClick: (schedule: ScheduleType) => void;
+  onScheduleChange: (
+    scheduleId: string | null,
+    data: ScheduleType,
+    forceSave?: boolean
+  ) => void;
+  onScheduleRemove: (scheduleId: string | null) => void;
+  onScheduleSave: (schedule: ScheduleType) => void;
+};
 type State = {
-  timezone: TimezoneValue,
-}
+  timezone: TimezoneValue;
+};
 @observer
 class ReplicaDetailsContent extends React.Component<Props, State> {
   state: State = {
-    timezone: 'local',
-  }
+    timezone: "local",
+  };
 
   getLastExecution() {
-    return this.props.item && this.props.item.executions && this.props.item.executions.length
-      && this.props.item.executions[this.props.item.executions.length - 1]
+    return (
+      this.props.item &&
+      this.props.item.executions &&
+      this.props.item.executions.length &&
+      this.props.item.executions[this.props.item.executions.length - 1]
+    );
   }
 
   getStatus() {
-    const lastExecution = this.getLastExecution()
-    return lastExecution && lastExecution.status
+    const lastExecution = this.getLastExecution();
+    return lastExecution && lastExecution.status;
   }
 
   isEndpointMissing() {
-    const originEndpoint = this.props.endpoints
-      .find(e => this.props.item && e.id === this.props.item.origin_endpoint_id)
-    const targetEndpoint = this.props.endpoints
-      .find(e => this.props.item && e.id === this.props.item.destination_endpoint_id)
+    const originEndpoint = this.props.endpoints.find(
+      e => this.props.item && e.id === this.props.item.origin_endpoint_id
+    );
+    const targetEndpoint = this.props.endpoints.find(
+      e => this.props.item && e.id === this.props.item.destination_endpoint_id
+    );
 
-    return Boolean(!originEndpoint || !targetEndpoint)
+    return Boolean(!originEndpoint || !targetEndpoint);
   }
 
   handleTimezoneChange(timezone: TimezoneValue) {
-    this.setState({ timezone })
+    this.setState({ timezone });
   }
 
   renderBottomControls() {
@@ -140,32 +155,31 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         <ButtonColumn>
           <Button
             secondary
-            disabled={this.getStatus() === 'RUNNING'}
+            disabled={this.getStatus() === "RUNNING"}
             onClick={this.props.onExecuteClick}
-          >Execute Replica
+          >
+            Execute Replica
           </Button>
           <Button
             primary
             disabled={this.isEndpointMissing()}
             onClick={this.props.onCreateMigrationClick}
-          >Create Migration
+          >
+            Create Migration
           </Button>
         </ButtonColumn>
         <ButtonColumn>
-          <Button
-            alert
-            hollow
-            onClick={this.props.onDeleteReplicaClick}
-          >Delete Replica
+          <Button alert hollow onClick={this.props.onDeleteReplicaClick}>
+            Delete Replica
           </Button>
         </ButtonColumn>
       </Buttons>
-    )
+    );
   }
 
   renderMainDetails() {
-    if (this.props.page !== '') {
-      return null
+    if (this.props.page !== "") {
+      return null;
     }
 
     return (
@@ -184,12 +198,12 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         networks={this.props.networks}
         bottomControls={this.renderBottomControls()}
       />
-    )
+    );
   }
 
   renderExecutions() {
-    if (this.props.page !== 'executions') {
-      return null
+    if (this.props.page !== "executions") {
+      return null;
     }
 
     return (
@@ -204,21 +218,22 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         tasksLoading={this.props.executionsTasksLoading}
         instancesDetails={this.props.instancesDetails}
       />
-    )
+    );
   }
 
   renderSchedule() {
-    if (this.props.page !== 'schedule') {
-      return null
+    if (this.props.page !== "schedule") {
+      return null;
     }
 
     return (
       <Schedule
         disableExecutionOptions={configLoader.config.providersDisabledExecuteOptions.some(
-          p => p
-            === this.props.endpoints.find(
-              e => e.id === this.props.item?.origin_endpoint_id,
-            )?.type,
+          p =>
+            p ===
+            this.props.endpoints.find(
+              e => e.id === this.props.item?.origin_endpoint_id
+            )?.type
         )}
         schedules={this.props.scheduleStore.schedules}
         unsavedSchedules={this.props.scheduleStore.unsavedSchedules}
@@ -230,13 +245,13 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         onSaveSchedule={this.props.onScheduleSave}
         timezone={this.state.timezone}
         onTimezoneChange={timezone => {
-          this.handleTimezoneChange(timezone)
+          this.handleTimezoneChange(timezone);
         }}
         savingIds={this.props.scheduleStore.savingIds}
         enablingIds={this.props.scheduleStore.enablingIds}
         deletingIds={this.props.scheduleStore.deletingIds}
       />
-    )
+    );
   }
 
   render() {
@@ -254,8 +269,8 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
           {this.renderSchedule()}
         </DetailsBody>
       </Wrapper>
-    )
+    );
   }
 }
 
-export default ReplicaDetailsContent
+export default ReplicaDetailsContent;

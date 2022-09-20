@@ -12,28 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from 'react'
-import { observer } from 'mobx-react'
-import styled from 'styled-components'
+import * as React from "react";
+import { observer } from "mobx-react";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   font-size: 20px;
   text-align: center;
   margin-bottom: 24px;
-`
+`;
 type Props = {
-  title: string
-}
+  title: string;
+};
 
 @observer
 class SetupPageTitle extends React.Component<Props> {
   render() {
-    return (
-      <Wrapper>
-        {this.props.title}
-      </Wrapper>
-    )
+    return <Wrapper>{this.props.title}</Wrapper>;
   }
 }
 
-export default SetupPageTitle
+export default SetupPageTitle;

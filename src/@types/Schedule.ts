@@ -12,25 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export type ScheduleFieldName = 'hour' | 'minute' | 'month' | 'dow' | 'dom'
+export type ScheduleFieldName = "hour" | "minute" | "month" | "dow" | "dom";
 
 export type ScheduleInfo = {
-  hour?: number,
-  minute?: number,
-  month?: number,
-  dow?: number,
-  dom?: number,
-}
+  hour?: number;
+  minute?: number;
+  month?: number;
+  dow?: number;
+  dom?: number;
+};
 
 export type Schedule = {
-  id?: string,
-  enabled?: boolean | null,
-  schedule?: ScheduleInfo,
-  expiration_date?: Date,
-  shutdown_instances?: boolean,
-}
+  id?: string;
+  enabled?: boolean | null;
+  schedule?: ScheduleInfo;
+  expiration_date?: Date;
+  shutdown_instances?: boolean;
+};
 
 export type ScheduleBulkItem = {
-  replicaId: string,
-  schedules: Schedule[],
-}
+  replicaId: string;
+  schedules: Schedule[];
+};

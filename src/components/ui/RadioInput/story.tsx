@@ -12,15 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from 'react'
-import { storiesOf } from '@storybook/react'
-import RadioInput from '.'
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import RadioInput from ".";
 
-const props: any = {}
-storiesOf('RadioInput', module)
-  .add('default', () => (
-    <RadioInput label="Radio input" onChange={() => { }} {...props} />
+const props: any = {};
+storiesOf("RadioInput", module)
+  .add("default", () => (
+    <RadioInput label="Radio input" onChange={() => {}} {...props} />
   ))
-  .add('disabled loading', () => (
-    <RadioInput label="Radio input" onChange={() => { }} disabledLoading {...props} />
-  ))
+  .add("disabled loading", () => (
+    <RadioInput
+      label="Radio input"
+      onChange={() => {}}
+      disabledLoading
+      {...props}
+    />
+  ));
