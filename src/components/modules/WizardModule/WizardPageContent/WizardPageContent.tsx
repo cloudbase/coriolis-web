@@ -507,12 +507,15 @@ class WizardPageContent extends React.Component<Props, State> {
       case 'schedule':
         body = (
           <Schedule
+            disableExecutionOptions={configLoader.config.providersDisabledExecuteOptions.some(p => p === this.props.wizardData.source?.type)}
             schedules={this.props.schedules}
             onAddScheduleClick={this.props.onAddScheduleClick}
             onChange={this.props.onScheduleChange}
             onRemove={this.props.onScheduleRemove}
             timezone={this.state.timezone}
-            onTimezoneChange={timezone => { this.handleTimezoneChange(timezone) }}
+            onTimezoneChange={timezone => {
+              this.handleTimezoneChange(timezone)
+            }}
             secondaryEmpty
           />
         )

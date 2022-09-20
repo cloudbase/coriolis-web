@@ -31,6 +31,7 @@ import type { Schedule as ScheduleType } from '@src/@types/Schedule'
 import { ReplicaItemDetails } from '@src/@types/MainItem'
 import { MinionPool } from '@src/@types/MinionPool'
 import { ThemeProps } from '@src/components/Theme'
+import configLoader from '@src/utils/Config'
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -213,6 +214,12 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
 
     return (
       <Schedule
+        disableExecutionOptions={configLoader.config.providersDisabledExecuteOptions.some(
+          p => p
+            === this.props.endpoints.find(
+              e => e.id === this.props.item?.origin_endpoint_id,
+            )?.type,
+        )}
         schedules={this.props.scheduleStore.schedules}
         unsavedSchedules={this.props.scheduleStore.unsavedSchedules}
         adding={this.props.scheduleStore.adding}
@@ -222,7 +229,9 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
         onRemove={this.props.onScheduleRemove}
         onSaveSchedule={this.props.onScheduleSave}
         timezone={this.state.timezone}
-        onTimezoneChange={timezone => { this.handleTimezoneChange(timezone) }}
+        onTimezoneChange={timezone => {
+          this.handleTimezoneChange(timezone)
+        }}
         savingIds={this.props.scheduleStore.savingIds}
         enablingIds={this.props.scheduleStore.enablingIds}
         deletingIds={this.props.scheduleStore.deletingIds}
