@@ -174,16 +174,18 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
     });
   }
 
-  searchText(item: MigrationItem, text?: string) {
+  searchText(item: MigrationItem, text: string) {
     let result = false;
-    if (item.instances[0].toLowerCase().indexOf(text || "") > -1) {
+    if (item.instances[0].toLowerCase().indexOf(text) > -1) {
+      return true;
+    }
+    if (item.notes.toLowerCase().indexOf(text) > -1) {
       return true;
     }
     if (item.destination_environment) {
       Object.keys(item.destination_environment).forEach(prop => {
         if (
-          item.destination_environment[prop] &&
-          item.destination_environment[prop].toLowerCase &&
+          item.destination_environment[prop]?.toLowerCase &&
           item.destination_environment[prop].toLowerCase().indexOf(text) > -1
         ) {
           result = true;
@@ -200,7 +202,10 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
   ) {
     if (
       (filterStatus !== "all" && item.last_execution_status !== filterStatus) ||
-      !this.searchText(item, filterText)
+      !this.searchText(
+        item,
+        (filterText?.toLowerCase && filterText.toLowerCase()) || ""
+      )
     ) {
       return false;
     }
