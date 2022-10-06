@@ -241,8 +241,14 @@ class TaskItem extends React.Component<Props> {
     const instance = this.props.instancesDetails.find(
       i => i.id === this.props.item.instance
     );
-    const instanceLabel =
+    const instanceName =
       instance?.instance_name || instance?.name || this.props.item.instance;
+
+    // get the last '/' path from instance name
+    const instanceLabel =
+      instanceName.indexOf("/") > -1
+        ? `.../${instanceName.substring(instanceName.lastIndexOf("/") + 1)}`
+        : instanceName;
 
     return (
       <Header>
@@ -257,7 +263,7 @@ class TaskItem extends React.Component<Props> {
             </TitleText>
           </Title>
         </HeaderData>
-        <HeaderData title={instanceLabel} width={this.props.columnWidths[1]}>
+        <HeaderData title={instanceName} width={this.props.columnWidths[1]}>
           {instanceLabel}
         </HeaderData>
         <HeaderData width={this.props.columnWidths[2]}>
