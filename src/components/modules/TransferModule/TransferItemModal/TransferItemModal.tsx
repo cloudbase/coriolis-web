@@ -480,19 +480,20 @@ class TransferItemModal extends React.Component<Props, State> {
     const stateEnv =
       type === "source" ? this.state.sourceData : this.state.destinationData;
 
-    const envData = getFieldChangeOptions({
+    const envData = ObjectUtils.mergeDeep(env, stateEnv);
+    const changedEnvData = getFieldChangeOptions({
       providerName: endpoint.type,
       schema:
         type === "source"
           ? providerStore.sourceSchema
           : providerStore.destinationSchema,
-      data: ObjectUtils.mergeDeep(env, stateEnv),
+      data: envData,
       field: field || null,
       type,
       parentFieldName,
     });
 
-    if (!envData) {
+    if (!changedEnvData) {
       return;
     }
     providerStore.getOptionsValues({
@@ -879,7 +880,9 @@ class TransferItemModal extends React.Component<Props, State> {
           ...migrationFields.map(f => f.name),
         ]}
         dictionaryKey={dictionaryKey}
-        executeNowOptionsDisabled={!providerStore.hasExecuteNowOptions(this.props.sourceEndpoint.type)}
+        executeNowOptionsDisabled={
+          !providerStore.hasExecuteNowOptions(this.props.sourceEndpoint.type)
+        }
       />
     );
   }
