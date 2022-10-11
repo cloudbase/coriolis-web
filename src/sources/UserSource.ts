@@ -38,11 +38,11 @@ class UserSource {
     localStorage.setItem("userDomainName", domainName);
   }
 
-  getDomainName(): string {
-    return (
-      localStorage.getItem("userDomainName") ||
-      configLoader.config.defaultUserDomain
-    );
+  get domainName(): string {
+    return configLoader.config.showUserDomainInput
+      ? localStorage.getItem("userDomainName") ||
+          configLoader.config.defaultUserDomain
+      : configLoader.config.defaultUserDomain;
   }
 
   async login(userData: Credentials): Promise<any> {
