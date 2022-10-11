@@ -179,9 +179,6 @@ class MigrationStore {
       userScriptData,
       minionPoolMappings,
     });
-    runInAction(() => {
-      this.migrations = [migration, ...this.migrations];
-    });
     return migration;
   }
 
