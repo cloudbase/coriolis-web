@@ -52,7 +52,7 @@ class UserStore {
   @observable allUsersLoading = false;
 
   get domainName(): string {
-    return UserSource.getDomainName();
+    return UserSource.domainName;
   }
 
   saveDomainName(domainName: string) {
