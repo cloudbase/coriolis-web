@@ -879,7 +879,9 @@ class TransferItemModal extends React.Component<Props, State> {
           ...migrationFields.map(f => f.name),
         ]}
         dictionaryKey={dictionaryKey}
-        executeNowOptionsDisabled={!providerStore.hasExecuteNowOptions(this.props.sourceEndpoint.type)}
+        executeNowOptionsDisabled={
+          !providerStore.hasExecuteNowOptions(this.props.sourceEndpoint.type)
+        }
       />
     );
   }
@@ -985,7 +987,9 @@ class TransferItemModal extends React.Component<Props, State> {
           {this.isLoading() ? (
             <LoadingButton large>Loading ...</LoadingButton>
           ) : this.state.updating ? (
-            <LoadingButton large>Updating ...</LoadingButton>
+            <LoadingButton large>
+              {this.props.type === "replica" ? "Updating" : "Creating"} ...
+            </LoadingButton>
           ) : (
             <Button
               large
