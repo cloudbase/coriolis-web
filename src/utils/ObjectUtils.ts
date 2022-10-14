@@ -163,6 +163,10 @@ class ObjectUtils {
 
     return this.mergeDeep(target, ...sources);
   }
+
+  static clone(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
+  }
 }
 
 export default ObjectUtils;

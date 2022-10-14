@@ -473,10 +473,11 @@ class TransferItemModal extends React.Component<Props, State> {
       type === "source"
         ? this.props.sourceEndpoint
         : this.props.destinationEndpoint;
-    const env =
+    const env = ObjectUtils.clone(
       type === "source"
         ? this.props.replica.source_environment
-        : this.props.replica.destination_environment;
+        : this.props.replica.destination_environment
+    );
     const stateEnv =
       type === "source" ? this.state.sourceData : this.state.destinationData;
 
@@ -560,10 +561,12 @@ class TransferItemModal extends React.Component<Props, State> {
   }
 
   validateOptions(type: "source" | "destination") {
-    const env =
+    const env = ObjectUtils.clone(
       type === "source"
         ? this.props.replica.source_environment
-        : this.props.replica.destination_environment;
+        : this.props.replica.destination_environment
+    );
+
     const data =
       type === "source" ? this.state.sourceData : this.state.destinationData;
     const schema =
