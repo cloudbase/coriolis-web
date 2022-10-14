@@ -1,11 +1,10 @@
-import type { Config } from '@src/@types/Config'
+import type { Config } from "@src/@types/Config";
 
 const conf: Config = {
-
   // The list of pages which will not appear in the navigation menu
   // Remove or comment to enable them
   disabledPages: [
-    'planning',
+    "planning",
     // Enabling users and projects page by default
     // 'users',
     // 'projects',
@@ -16,11 +15,11 @@ const conf: Config = {
   showUserDomainInput: false,
 
   // The default user domain name used for logging in
-  defaultUserDomain: 'default',
+  defaultUserDomain: "default",
 
   // The name of the admin role, used for checking
   // if a user is allowed to do certain admin operations
-  adminRoleName: 'admin',
+  adminRoleName: "admin",
 
   // Shows the 'Use Current User/Project/Domain for Authentification' switch
   // when creating a new openstack endpoint
@@ -37,12 +36,16 @@ const conf: Config = {
   // - If the `default` value is lower than the number of instances that
   // fit into a page, the latter number will be used.
   // - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
-  instancesListBackgroundLoading: { default: 10, ovm: Infinity, 'hyper-v': Infinity },
+  instancesListBackgroundLoading: {
+    default: 10,
+    ovm: Infinity,
+    "hyper-v": Infinity,
+  },
 
   /**
    * The name of the Coriolis Bare Metal Hub enpoint used for doing Coriolis Bare Metal server operations.
    */
-  bareMetalEndpointName: 'appliance-metal-hub',
+  bareMetalEndpointName: "appliance-metal-hub",
 
   /**
    * The list of providers for which and extra source or destination options API call will be made.
@@ -54,42 +57,42 @@ const conf: Config = {
    */
   extraOptionsApiCalls: [
     {
-      name: 'openstack',
-      types: ['source'],
-      requiredFields: ['replica_export_mechanism'],
+      name: "openstack",
+      types: ["source"],
+      requiredFields: ["replica_export_mechanism"],
       requiredValues: [
         {
-          field: 'replica_export_mechanism',
-          values: ['swift_backups', 'ceph_backups', 'coriolis_backups'],
+          field: "replica_export_mechanism",
+          values: ["swift_backups", "ceph_backups", "coriolis_backups"],
         },
       ],
     },
     {
-      name: 'openstack',
-      types: ['destination'],
-      requiredFields: ['list_all_destination_networks'],
+      name: "openstack",
+      types: ["destination"],
+      requiredFields: ["list_all_destination_networks"],
     },
     {
-      name: 'aws',
-      types: ['source', 'destination'],
-      requiredFields: ['region'],
+      name: "aws",
+      types: ["source", "destination"],
+      requiredFields: ["region"],
     },
     {
-      name: 'azure',
-      types: ['source', 'destination'],
-      requiredFields: ['location', 'resource_group'],
+      name: "azure",
+      types: ["source", "destination"],
+      requiredFields: ["location", "resource_group"],
     },
     {
-      name: 'oci',
-      types: ['destination'],
-      requiredFields: ['compartment', 'availability_domain', 'vcn_compartment'],
-      relistFields: ['migr_image_map', 'migr_image'],
+      name: "oci",
+      types: ["destination"],
+      requiredFields: ["compartment", "availability_domain", "vcn_compartment"],
+      relistFields: ["migr_image_map", "migr_image"],
     },
     {
-      name: 'vmware_vsphere',
-      types: ['destination'],
-      requiredFields: ['import_datacenter'],
-      relistFields: ['import_cluster', 'migr_minion_cluster'],
+      name: "vmware_vsphere",
+      types: ["destination"],
+      requiredFields: ["import_datacenter"],
+      relistFields: ["import_cluster", "migr_minion_cluster"],
     },
   ],
 
@@ -104,7 +107,7 @@ const conf: Config = {
     openstack: 1,
     vmware_vsphere: 1,
     azure: 2,
-    'hyper-v': 2,
+    "hyper-v": 2,
     kubevirt: 2,
     scvmm: 2,
     oci: 3,
@@ -116,31 +119,35 @@ const conf: Config = {
   },
 
   providerNames: {
-    aws: 'AWS',
-    openstack: 'OpenStack',
-    vmware_vsphere: 'VMware',
-    azure: 'Azure',
-    'hyper-v': 'Hyper-V',
-    kubevirt: 'KubeVirt',
-    scvmm: 'SCVMM',
-    oci: 'OCI',
-    opc: 'Oracle Cloud',
-    oracle_vm: 'Oracle VM',
-    olvm: 'OLVM',
-    metal: 'Bare Metal',
-    rhev: 'Red Hat',
+    aws: "AWS",
+    openstack: "OpenStack",
+    vmware_vsphere: "VMware",
+    azure: "Azure",
+    "hyper-v": "Hyper-V",
+    kubevirt: "KubeVirt",
+    scvmm: "SCVMM",
+    oci: "OCI",
+    opc: "Oracle Cloud",
+    oracle_vm: "Oracle VM",
+    olvm: "OLVM",
+    metal: "Bare Metal",
+    rhev: "Red Hat",
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field
-  providersDisabledExecuteOptions: ['metal'],
+  providersDisabledExecuteOptions: ["metal"],
 
   // The list of the users to hide in the UI
-  hiddenUsers: ['barbican', 'coriolis'],
+  hiddenUsers: ["barbican", "coriolis"],
 
   // By default, if a field name contains `password` in it (ex.: `user_password`),
   // it will be rendered as a password input
   // If the field doesn't contain `password` in its name, the following list will be used instead
-  passwordFields: ['private_key_passphrase', 'secret_access_key', 'client_secret'],
+  passwordFields: [
+    "private_key_passphrase",
+    "secret_access_key",
+    "client_secret",
+  ],
 
   // The number of items per page applicable to main lists:
   // replicas, migrations, endpoints, users etc.
@@ -149,15 +156,15 @@ const conf: Config = {
   maxMinionPoolEventsPerPage: 50,
 
   servicesUrls: {
-    keystone: '{BASE_URL}/identity',
-    barbican: '{BASE_URL}/barbican',
-    coriolis: '{BASE_URL}/coriolis',
-    coriolisLogs: '{BASE_URL}/logs',
-    coriolisLogStreamBaseUrl: '{BASE_URL}',
-    coriolisLicensing: '{BASE_URL}/licensing',
-    metalhub: '{BASE_URL}/metal-hub',
-    cloudbaseEmailEndpoint: 'http://localhost:3334',
+    keystone: "{BASE_URL}/identity",
+    barbican: "{BASE_URL}/barbican",
+    coriolis: "{BASE_URL}/coriolis",
+    coriolisLogs: "{BASE_URL}/logs",
+    coriolisLogStreamBaseUrl: "{BASE_URL}",
+    coriolisLicensing: "{BASE_URL}/licensing",
+    metalhub: "{BASE_URL}/metal-hub",
+    cloudbaseEmailEndpoint: "http://localhost:3334",
   },
-}
+};
 
-export const config = conf
+export const config = conf;
