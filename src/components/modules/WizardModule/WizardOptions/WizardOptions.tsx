@@ -48,6 +48,7 @@ const Options = styled.div<any>`
   display: flex;
   flex-direction: column;
   min-height: 0;
+  height: 100%;
 `;
 const Fields = styled.div<any>`
   ${props => (props.layout === "page" ? "" : "padding: 32px;")}
@@ -55,6 +56,7 @@ const Fields = styled.div<any>`
   flex-direction: column;
   overflow: auto;
   padding-right: ${props => (props.layout === "page" ? 4 : 24)}px;
+  flex-grow: 1;
 `;
 const Group = styled.div<any>`
   display: flex;
