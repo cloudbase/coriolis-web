@@ -17,14 +17,16 @@ import type { Field } from "@src/@types/Field";
 
 import ConnectionSchemaParserBase from "@src/plugins/default/ConnectionSchemaPlugin";
 
+const TEXT_AREA_FIELDS = ["private_key_data", "custom_certificate_bundle"];
+
 export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
   override parseSchemaToFields(schema: Schema): Field[] {
     const fields = super.parseSchemaToFields(schema);
-    const privateKeyField = fields.find(f => f.name === "private_key_data");
-    if (privateKeyField) {
-      privateKeyField.useTextArea = true;
-    }
-
+    fields.forEach(field => {
+      if (TEXT_AREA_FIELDS.includes(field.name)) {
+        field.useTextArea = true;
+      }
+    });
     return fields;
   }
 }
