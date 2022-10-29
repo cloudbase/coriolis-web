@@ -17,26 +17,24 @@ import { observer } from "mobx-react";
 import styled from "styled-components";
 import Modal from "react-modal";
 import autobind from "autobind-decorator";
+import ReactTooltip from "react-tooltip";
 
 import KeyboardManager from "@src/utils/KeyboardManager";
 
 import { ThemeProps } from "@src/components/Theme";
-import headerBackground from "./images/header-background.png";
-import headerBackgroundWide from "./images/header-background-wide.png";
-import ReactTooltip from "react-tooltip";
+import backgroundImage from "@src/components/ui/Images/star-bg.jpg";
 
 const headerHeight = 48;
 
-const Title = styled.div<any>`
+const Title = styled.div`
   height: ${headerHeight}px;
   font-size: 24px;
   font-weight: ${ThemeProps.fontWeights.light};
   text-align: center;
   line-height: 48px;
   color: white;
-  background: url("${props =>
-      props.wide ? headerBackgroundWide : headerBackground}")
-    center/contain no-repeat;
+  background: url("${backgroundImage}") center no-repeat;
+  background-size: cover;
 `;
 
 type Props = {
@@ -44,7 +42,7 @@ type Props = {
   isOpen: boolean;
   contentLabel?: string;
   onRequestClose?: () => void;
-  contentStyle?: { [prop: string]: any };
+  contentWidth?: React.CSSProperties["width"];
   topBottomMargin?: number;
   title?: string;
   componentRef?: (ref: any) => void;
@@ -180,12 +178,12 @@ class NewModal extends React.Component<Props> {
     scrollableNode.scrollTop = scrollTop + scrollOffset;
   }
 
-  renderTitle(contentWidth: string) {
+  renderTitle() {
     if (!this.props.title) {
       return null;
     }
 
-    return <Title wide={contentWidth === "800px"}>{this.props.title}</Title>;
+    return <Title>{this.props.title}</Title>;
   }
 
   render() {
@@ -216,10 +214,9 @@ class NewModal extends React.Component<Props> {
       },
     };
 
-    modalStyle.content = {
-      ...modalStyle.content,
-      ...this.props.contentStyle,
-    };
+    if (this.props.contentWidth) {
+      modalStyle.content!.width = this.props.contentWidth;
+    }
 
     const children = React.Children.map(this.props.children, child =>
       React.cloneElement(child as React.ReactElement<any>, {
@@ -249,7 +246,7 @@ class NewModal extends React.Component<Props> {
         }}
         ariaHideApp={false}
       >
-        {this.renderTitle(modalStyle.content.width as string)}
+        {this.renderTitle()}
         {children}
       </Modal>
     );

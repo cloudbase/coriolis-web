@@ -51,8 +51,8 @@ const NavigationItemDiv = styled.div<any>`
         `
       : ""}
 `;
-const Content = styled.div<any>`
-  width: 576px;
+const Content = styled.div<{ width: "normal" | "wide" }>`
+  width: ${props => (props.width === "wide" ? "976px" : "576px")};
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -92,6 +92,7 @@ type Props = {
   selectedValue: string | null;
   onChange: (item: NavigationItem) => void;
   style?: any;
+  contentWidth?: "normal" | "wide";
   reloadLabel: string;
   onReloadClick: () => void;
 };
@@ -130,7 +131,9 @@ class Panel extends React.Component<Props> {
             </NavigationItemDiv>
           ))}
         </Navigation>
-        <Content>{this.props.content}</Content>
+        <Content width={this.props.contentWidth || "normal"}>
+          {this.props.content}
+        </Content>
         <ReloadButton
           onClick={() => {
             this.props.onReloadClick();
