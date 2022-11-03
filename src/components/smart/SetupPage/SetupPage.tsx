@@ -16,7 +16,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { observer } from "mobx-react";
 
-import backgroundImage from "@src/components/smart/LoginPage/images/star-bg.jpg";
+import backgroundImage from "@src/components/ui/Images/star-bg.jpg";
 import configLoader from "@src/utils/Config";
 import {
   CustomerInfoBasic,

@@ -102,6 +102,8 @@ const Buttons = styled.div<any>`
   justify-content: space-between;
 `;
 
+type Width = "normal" | "wide";
+
 type Props = {
   type?: "replica" | "migration";
   isOpen: boolean;
@@ -129,6 +131,7 @@ type State = {
   destinationFailedMessage: string | null;
   uploadedScripts: InstanceScript[];
   removedScripts: InstanceScript[];
+  width: Width;
 };
 
 @observer
@@ -146,12 +149,36 @@ class TransferItemModal extends React.Component<Props, State> {
     sourceFailed: false,
     destinationFailedMessage: null,
     removedScripts: [],
+    width: "normal",
   };
 
   scrollableRef: HTMLElement | null | undefined;
 
   UNSAFE_componentWillMount() {
     this.loadData(true);
+
+    this.updateAvailableWidth();
+    window.addEventListener("resize", this.handleResize.bind(this));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize.bind(this));
+  }
+
+  handleResize() {
+    this.updateAvailableWidth();
+  }
+
+  updateAvailableWidth() {
+    const RESIZE_BREAKPOINT = 1100;
+    if (window.innerWidth < RESIZE_BREAKPOINT && this.state.width === "wide") {
+      this.setState({ width: "normal" });
+    } else if (
+      window.innerWidth >= RESIZE_BREAKPOINT &&
+      this.state.width === "normal"
+    ) {
+      this.setState({ width: "wide" });
+    }
   }
 
   get requiresWindowsImage() {
@@ -866,7 +893,11 @@ class TransferItemModal extends React.Component<Props, State> {
           width: "100%",
           alignItems: "center",
         }}
-        fieldWidth={ThemeProps.inputSizes.large.width}
+        fieldWidth={
+          this.state.width === "wide"
+            ? ThemeProps.inputSizes.wizard.width
+            : ThemeProps.inputSizes.large.width
+        }
         onScrollableRef={ref => {
           this.scrollableRef = ref;
         }}
@@ -910,7 +941,7 @@ class TransferItemModal extends React.Component<Props, State> {
           this.handleStorageChange(mapping);
         }}
         style={{ padding: "32px 32px 0 32px", width: "calc(100% - 64px)" }}
-        titleWidth={160}
+        titleWidth={this.state.width === "normal" ? 160 : 320}
         onScrollableRef={ref => {
           this.scrollableRef = ref;
         }}
@@ -930,7 +961,7 @@ class TransferItemModal extends React.Component<Props, State> {
         }}
         selectedNetworks={this.getSelectedNetworks()}
         style={{ padding: "32px 32px 0 32px", width: "calc(100% - 64px)" }}
-        titleWidth={160}
+        titleWidth={this.state.width === "normal" ? 160 : 320}
       />
     );
   }
@@ -1064,11 +1095,12 @@ class TransferItemModal extends React.Component<Props, State> {
           this.props.type === "replica" ? "Edit Replica" : "Recreate Migration"
         }`}
         onRequestClose={this.props.onRequestClose}
-        contentStyle={{ width: "800px" }}
+        contentWidth={this.state.width === "normal" ? "800px" : "1074px"}
         onScrollableRef={() => this.scrollableRef}
         fixedHeight={512}
       >
         <Panel
+          contentWidth={this.state.width}
           navigationItems={navigationItems}
           content={this.renderContent()}
           onChange={navItem => {

@@ -23,7 +23,7 @@ import LoginForm from "@src/components/modules/LoginModule/LoginForm";
 import userStore from "@src/stores/UserStore";
 import configStore from "@src/utils/Config";
 
-import backgroundImage from "./images/star-bg.jpg";
+import backgroundImage from "@src/components/ui/Images/star-bg.jpg";
 import cbsImage from "./images/cbsl-logo.svg";
 
 const Wrapper = styled.div<any>`

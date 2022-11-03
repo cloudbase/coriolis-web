@@ -24,7 +24,7 @@ import configLoader from "@src/utils/Config";
 
 import { navigationMenu } from "@src/constants";
 import { ThemeProps } from "@src/components/Theme";
-import backgroundImage from "./images/star-bg.jpg";
+import backgroundImage from "@src/components/ui/Images/star-bg.jpg";
 import cbsImage from "./images/cbsl-logo.svg";
 import cbsImageSmall from "./images/cbsl-logo-small.svg";
 import tinyLogo from "./images/logo-small.svg";
