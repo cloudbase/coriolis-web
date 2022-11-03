@@ -23,6 +23,7 @@ import KeyboardManager from "@src/utils/KeyboardManager";
 import { ThemeProps } from "@src/components/Theme";
 import headerBackground from "./images/header-background.png";
 import headerBackgroundWide from "./images/header-background-wide.png";
+import ReactTooltip from "react-tooltip";
 
 const headerHeight = 48;
 
@@ -132,6 +133,16 @@ class NewModal extends React.Component<Props> {
     window.scroll(0, this.windowScrollY || 0);
   }
 
+  handleRequestClose() {
+    /** Remove existing tooltips. Tooltips are not automatically removed when a modal is closed
+     ** (for example when pressing ESC key while hovering over a tooltip) **/
+    ReactTooltip.hide();
+
+    if (this.props.onRequestClose) {
+      this.props.onRequestClose();
+    }
+  }
+
   @autobind
   positionModal(scrollOffset: number) {
     const overlay = this.overlayRef as HTMLDivElement;
@@ -232,7 +243,7 @@ class NewModal extends React.Component<Props> {
         isOpen={this.props.isOpen}
         contentLabel={this.props.contentLabel || this.props.title}
         style={modalStyle}
-        onRequestClose={this.props.onRequestClose}
+        onRequestClose={() => this.handleRequestClose()}
         onAfterOpen={() => {
           this.handleModalOpen();
         }}
