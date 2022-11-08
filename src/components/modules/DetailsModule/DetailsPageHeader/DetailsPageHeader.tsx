@@ -27,7 +27,7 @@ import type { User as UserType } from "@src/@types/User";
 import notificationStore from "@src/stores/NotificationStore";
 
 import backgroundImage from "@src/components/ui/Images/star-bg.jpg";
-import logoImage from "./images/logo.svg";
+import logoImage from "@src/components/ui/Images/logo.svg";
 
 const Wrapper = styled.div<any>`
   display: flex;
