@@ -22,10 +22,16 @@ import { MetalHubServer } from "@src/@types/MetalHub";
 import moment from "moment";
 import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import serverImage from "./images/server.svg";
+import Checkbox from "@src/components/ui/Checkbox";
 
+const CheckboxStyled = styled(Checkbox)`
+  opacity: ${props => (props.checked ? 1 : 0)};
+  transition: all ${ThemeProps.animations.swift};
+`;
 const Content = styled.div<any>`
   display: flex;
   align-items: center;
+  margin-left: 16px;
   border-top: 1px solid ${ThemePalette.grayscale[1]};
   padding: 8px 16px;
   cursor: pointer;
@@ -40,6 +46,10 @@ const Content = styled.div<any>`
 const Wrapper = styled.div<any>`
   display: flex;
   align-items: center;
+
+  &:hover ${CheckboxStyled} {
+    opacity: 1;
+  }
 
   &:last-child ${Content} {
     border-bottom: 1px solid ${ThemePalette.grayscale[1]};
@@ -77,7 +87,7 @@ const Body = styled.div`
   display: flex;
 `;
 const Data = styled.div<{ width: number }>`
-  width: ${props => props.width}px;
+  min-width: ${props => props.width}px;
   margin: 0 32px;
 
   &:last-child {
@@ -87,6 +97,8 @@ const Data = styled.div<{ width: number }>`
 
 type Props = {
   item: MetalHubServer;
+  selected: boolean;
+  onSelectedChange: (value: boolean) => void;
   onClick: () => void;
 };
 @observer
@@ -94,6 +106,10 @@ class MetalHubServerListItem extends React.Component<Props> {
   render() {
     return (
       <Wrapper>
+        <CheckboxStyled
+          checked={this.props.selected}
+          onChange={this.props.onSelectedChange}
+        />
         <Content onClick={this.props.onClick}>
           <Image />
           <Title>
@@ -113,7 +129,7 @@ class MetalHubServerListItem extends React.Component<Props> {
             )}
           </Title>
           <Body>
-            <Data width={500}>
+            <Data width={210}>
               <ItemLabel>API Endpoint</ItemLabel>
               <ItemValue>{this.props.item.api_endpoint}</ItemValue>
             </Data>
