@@ -46,7 +46,17 @@ class MetalHubSource {
       skipLog,
       quietError: true,
     });
-    return response.data;
+    const servers: MetalHubServer[] = response.data;
+    servers.sort((a, b) => {
+      if (new Date(a.updated_at) > new Date(b.updated_at)) {
+        return -1;
+      }
+      if (new Date(a.updated_at) < new Date(b.updated_at)) {
+        return 1;
+      }
+      return 0;
+    });
+    return servers;
   }
 
   async getServerDetails(serverId: number): Promise<MetalHubServer> {

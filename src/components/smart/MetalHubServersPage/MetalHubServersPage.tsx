@@ -30,6 +30,14 @@ import MetalHubListHeader from "@src/components/modules/MetalHubModule/MetalHubL
 import projectStore from "@src/stores/ProjectStore";
 import MetalHubModal from "@src/components/modules/MetalHubModule/MetalHubModal";
 import emptyListImage from "./images/server.svg";
+import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
+import AlertModal from "@src/components/ui/AlertModal";
+import { ThemePalette } from "@src/components/Theme";
+import instanceSource from "@src/sources/InstanceSource";
+import instanceStore from "@src/stores/InstanceStore";
+import notificationStore from "@src/stores/NotificationStore";
+import { WizardData } from "@src/@types/WizardData";
+import { wizardPages } from "@src/constants";
 
 const Wrapper = styled.div``;
 const ErrorWrapper = styled.div`
@@ -48,12 +56,16 @@ const ErrorMessage = styled.div`
 type State = {
   modalIsOpen: boolean;
   showNewServerModal: boolean;
+  selectedServers: number[];
+  showConfirmRemove: boolean;
 };
 @observer
 class MetalHubServersPage extends React.Component<{ history: any }, State> {
-  state = {
+  state: State = {
     modalIsOpen: false,
     showNewServerModal: false,
+    selectedServers: [],
+    showConfirmRemove: false,
   };
 
   pollTimeout = 0;
@@ -100,8 +112,67 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
     await metalHubStore.getServers();
   }
 
+  handleRemoveAction() {
+    this.setState({ showConfirmRemove: true });
+  }
+
   handleProjectChange() {
     metalHubStore.getServers({ showLoading: true });
+  }
+
+  async removeSelectedServers() {
+    this.setState({ showConfirmRemove: false });
+    await Promise.all(
+      this.state.selectedServers.map(async serverId => {
+        await metalHubStore.deleteServer(serverId);
+      })
+    );
+    metalHubStore.getServers({ showLoading: true });
+  }
+
+  async refreshServers() {
+    await Promise.all(
+      this.state.selectedServers.map(async serverId => {
+        await metalHubStore.refreshServer(serverId);
+      })
+    );
+    metalHubStore.getServers({ showLoading: true });
+  }
+
+  async create(type: "replica" | "migration") {
+    notificationStore.alert(`Preparing ${type}...`, "info");
+    const { selectedServers } = this.state;
+    const endpoint = await metalHubStore.getMetalHubEndpoint();
+
+    // Remove the instances from cache so that the wizard has the latest data before it's shown
+    instanceSource.removeInstancesFromCache(endpoint.id);
+    await instanceStore.loadInstancesInChunks({
+      endpoint,
+      vmsPerPage: Infinity,
+    });
+    // find all the selected servers in the background instances
+    const instances = instanceStore.backgroundInstances.filter(
+      i => selectedServers.map(s => String(s)).indexOf(i.id) > -1
+    );
+    if (instances.length !== selectedServers.length) {
+      notificationStore.alert(
+        `Could not find all instances on endpoint '${endpoint.name}'`,
+        "error"
+      );
+      throw new Error("Instances not found");
+    }
+    const data: WizardData = {
+      source: endpoint,
+      selectedInstances: instances,
+    };
+    this.props.history.push(
+      `/wizard/${type}/?d=${window.btoa(
+        JSON.stringify({
+          data,
+          currentPage: wizardPages.find(p => p.id === "target"),
+        })
+      )}`
+    );
   }
 
   async pollData(showLoading?: boolean) {
@@ -153,11 +224,45 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
   }
 
   render() {
+    const selectedServers = metalHubStore.servers.filter(s =>
+      this.state.selectedServers.includes(s.id)
+    );
+    const bulkActions: DropdownAction[] = [
+      {
+        label: "Create Replica",
+        color: ThemePalette.primary,
+        disabled: !selectedServers.every(s => s.active),
+        action: () => {
+          this.create("replica");
+        },
+      },
+      {
+        label: "Create Migration",
+        color: ThemePalette.primary,
+        disabled: !selectedServers.every(s => s.active),
+        action: () => {
+          this.create("migration");
+        },
+      },
+      {
+        label: "Refresh Servers",
+        action: () => {
+          this.refreshServers();
+        },
+      },
+      {
+        label: "Remove Servers",
+        color: ThemePalette.alert,
+        action: () => {
+          this.handleRemoveAction();
+        },
+      },
+    ];
+
     return (
       <Wrapper>
         <MainTemplate
           navigationComponent={<Navigation currentPage="bare-metal-servers" />}
-          listNoMargin
           listComponent={
             <FilterList
               filterItems={[
@@ -165,11 +270,18 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
                 { label: "Active", value: "active" },
                 { label: "Inactive", value: "inactive" },
               ]}
-              selectionLabel=""
+              dropdownActions={bulkActions}
+              selectionLabel="server"
               loading={metalHubStore.loadingServers}
               items={metalHubStore.servers}
+              onSelectedItemsChange={selectedServers => {
+                this.setState({
+                  selectedServers: selectedServers.map(s => s.id),
+                });
+              }}
               listHeaderComponent={
                 <MetalHubListHeader
+                  visible={this.state.selectedServers.length === 0}
                   fingerprint={metalHubStore.fingerprint}
                   error={metalHubStore.loadingFingerprintError}
                   hideButton={metalHubStore.servers.length === 0}
@@ -188,8 +300,8 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
                 this.handleReloadButtonClick();
               }}
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
-              renderItemComponent={component => (
-                <MetalHubServerListItem {...component} />
+              renderItemComponent={props => (
+                <MetalHubServerListItem {...props} />
               )}
               emptyListImage={emptyListImage}
               emptyListComponent={this.renderEmptyListComponent()}
@@ -224,6 +336,20 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
             }}
             onRequestClose={() => {
               this.setState({ showNewServerModal: false, modalIsOpen: false });
+            }}
+          />
+        ) : null}
+        {this.state.showConfirmRemove ? (
+          <AlertModal
+            isOpen
+            title="Remove Selected Bare Metal Servers?"
+            message="Are you sure you want to remove the selected Coriolis Bare Metal Servers?"
+            extraMessage="&nbsp;"
+            onConfirmation={() => {
+              this.removeSelectedServers();
+            }}
+            onRequestClose={() => {
+              this.setState({ showConfirmRemove: false });
             }}
           />
         ) : null}

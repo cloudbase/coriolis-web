@@ -17,15 +17,17 @@ import styled from "styled-components";
 import { observer } from "mobx-react";
 import CopyValue from "@src/components/ui/CopyValue";
 import Button from "@src/components/ui/Button";
-import { ThemePalette } from "@src/components/Theme";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import InfoIcon from "@src/components/ui/InfoIcon";
 
-const Wrapper = styled.div`
-  display: flex;
+const Wrapper = styled.div<{ visible: boolean }>`
+  display: ${props => (props.visible ? "flex" : "none")};
   align-items: center;
   justify-content: flex-end;
-  margin-top: -70px;
+  margin-top: -66px;
   margin-bottom: 32px;
+  margin-left: 320px;
+  transition: all ${ThemeProps.animations.swift};
 `;
 const FingerPrint = styled.div`
   margin-right: 32px;
@@ -43,6 +45,7 @@ type Props = {
   hideButton: boolean;
   error: string;
   fingerprint: string;
+  visible: boolean;
   onCreateClick: () => void;
 };
 
@@ -74,7 +77,7 @@ class MetalHubListHeader extends React.Component<Props> {
 
   render() {
     return (
-      <Wrapper>
+      <Wrapper visible={this.props.visible}>
         {this.renderContent()}
         {!this.props.hideButton ? (
           <Button hollow onClick={this.props.onCreateClick}>
