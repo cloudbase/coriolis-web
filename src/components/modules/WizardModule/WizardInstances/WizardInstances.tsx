@@ -30,6 +30,9 @@ import type { Instance as InstanceType } from "@src/@types/Instance";
 import instanceImage from "./images/instance.svg";
 import bigInstanceImage from "./images/instance-big.svg";
 
+const mbToGbString = (mb: number) =>
+  mb >= 1024 ? `${(mb / 1024).toFixed(2)} GB` : `${mb} MB`;
+
 const Wrapper = styled.div<any>`
   width: 100%;
   display: flex;
@@ -374,7 +377,11 @@ class WizardInstances extends React.Component<Props, State> {
                     <LabelSubtitle>{instanceId}</LabelSubtitle>
                   ) : null}
                 </Label>
-                <Details>{`${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM${flavorName}`}</Details>
+                <Details>
+                  {`${instance.num_cpu} vCPU | ${mbToGbString(
+                    instance.memory_mb
+                  )} RAM${flavorName}`}
+                </Details>
               </InstanceContent>
             </Instance>
           );
