@@ -26,6 +26,8 @@ import { ThemeProps } from "@src/components/Theme";
 import LoadingButton from "@src/components/ui/LoadingButton";
 import { MetalHubServer } from "@src/@types/MetalHub";
 import image from "./images/server.svg";
+import metalHubStore from "@src/stores/MetalHubStore";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 
 const Wrapper = styled.div`
   padding: 48px 32px 32px 32px;
@@ -51,25 +53,40 @@ const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+const Status = styled.div<any>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+`;
+const StatusHeader = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const StatusMessage = styled.div`
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  line-height: 12px;
+  flex-direction: column;
+  > div:first-child {
+    margin-bottom: 4px;
+  }
+`;
 
 type Props = {
-  loading: boolean;
+  server?: MetalHubServer;
+  loading?: boolean;
   onRequestClose: () => void;
-} & (
-  | {
-      server: MetalHubServer;
-      onEditClick: (apiEndpoint: string) => void;
-    }
-  | {
-      server?: undefined;
-      onAddClick: (apiEndpoint: string) => void;
-    }
-);
+  onUpdateDone: () => void;
+};
 
 type State = {
   host: string;
   port: string;
+  saving: boolean;
   highlightFieldNames: string[];
+  showSuccess: boolean;
 };
 @observer
 class MetalHubModal extends React.Component<Props, State> {
@@ -77,7 +94,13 @@ class MetalHubModal extends React.Component<Props, State> {
     host: "",
     port: "",
     highlightFieldNames: [],
+    saving: false,
+    showSuccess: false,
   };
+
+  get loading() {
+    return this.state.saving || this.props.loading;
+  }
 
   componentDidMount() {
     KeyboardManager.onEnter(
@@ -101,16 +124,33 @@ class MetalHubModal extends React.Component<Props, State> {
     KeyboardManager.removeKeyDown("MetalHubNewModal");
   }
 
-  handleAddClick() {
+  // Used to store the newly added server in case of validation error since a PATCH request is needed afterwards
+  serverAddedForValidation: number | null = null;
+
+  async handleAddClick() {
     if (this.highlightFields()) {
       return;
     }
 
     const endpointUrl = `https://${this.state.host}:${this.state.port}/api/v1`;
-    if (this.props.server) {
-      this.props.onEditClick(endpointUrl);
+    this.setState({ saving: true });
+    const serverId = this.props.server?.id || this.serverAddedForValidation;
+    let validationResult = false;
+    if (serverId) {
+      await metalHubStore.patchServer(serverId, endpointUrl);
+      validationResult = await metalHubStore.validateServer(serverId);
     } else {
-      this.props.onAddClick(endpointUrl);
+      const addedServer = await metalHubStore.addServer(endpointUrl);
+      this.serverAddedForValidation = addedServer.id;
+      validationResult = await metalHubStore.validateServer(addedServer.id);
+    }
+    if (!validationResult) {
+      this.setState({ saving: false });
+    } else {
+      this.setState({ saving: false, showSuccess: true });
+      setTimeout(() => {
+        this.props.onUpdateDone();
+      }, 2000);
     }
   }
 
@@ -151,7 +191,7 @@ class MetalHubModal extends React.Component<Props, State> {
         highlight={Boolean(
           this.state.highlightFieldNames.find(n => n === field.name)
         )}
-        disabledLoading={this.props.loading}
+        disabledLoading={this.loading || this.state.showSuccess}
       />
     );
   }
@@ -192,24 +232,56 @@ class MetalHubModal extends React.Component<Props, State> {
   renderButtons() {
     return (
       <Buttons>
-        <Button secondary large onClick={this.props.onRequestClose}>
+        <Button
+          secondary
+          large
+          onClick={this.props.onRequestClose}
+          disabled={this.state.showSuccess}
+        >
           Cancel
         </Button>
-        {this.props.loading ? (
-          <LoadingButton large>
-            {this.props.server ? "Updating ..." : "Adding ..."}
-          </LoadingButton>
+        {this.loading ? (
+          <LoadingButton large>Validating ...</LoadingButton>
         ) : (
           <Button
             large
             onClick={() => {
               this.handleAddClick();
             }}
+            disabled={this.state.showSuccess}
           >
-            {this.props.server ? "Update" : "Add"}
+            Validate and save
           </Button>
         )}
       </Buttons>
+    );
+  }
+
+  renderValidationStatus() {
+    if (
+      !this.state.saving &&
+      !this.state.showSuccess &&
+      !metalHubStore.validationError.length
+    ) {
+      return null;
+    }
+    const message = this.state.saving
+      ? "Validating ..."
+      : metalHubStore.validationError.length
+      ? metalHubStore.validationError.map(e => <div key="e">{e}</div>)
+      : "Validation successful";
+    const status = this.state.saving
+      ? "RUNNING"
+      : metalHubStore.validationError.length
+      ? "ERROR"
+      : "COMPLETED";
+    return (
+      <Status>
+        <StatusHeader>
+          <StatusIcon status={status} />
+          <StatusMessage>{message}</StatusMessage>
+        </StatusHeader>
+      </Status>
     );
   }
 
@@ -224,6 +296,7 @@ class MetalHubModal extends React.Component<Props, State> {
       >
         <Wrapper>
           <Image />
+          {this.renderValidationStatus()}
           {this.renderForm()}
           {this.renderButtons()}
         </Wrapper>

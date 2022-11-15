@@ -30,8 +30,6 @@ class MetalHubStore {
 
   @observable loadingFingerprintError = "";
 
-  @observable loadingNewServer = false;
-
   @observable serverDetails: MetalHubServer | null = null;
 
   @observable loadingServerDetails = false;
@@ -39,6 +37,10 @@ class MetalHubStore {
   @observable updatingServer = false;
 
   @observable refreshingServer = false;
+
+  @observable validating = false;
+
+  @observable validationError: string[] = [];
 
   async getMetalHubEndpoint() {
     return source.getMetalHubEndpoint();
@@ -85,17 +87,9 @@ class MetalHubStore {
   }
 
   @action async addServer(endpoint: string) {
-    this.loadingNewServer = true;
-    try {
-      const addedServer = await source.addServer(endpoint);
-      runInAction(() => {
-        this.servers.push(addedServer);
-      });
-    } finally {
-      runInAction(() => {
-        this.loadingNewServer = false;
-      });
-    }
+    const addedServer = await source.addServer(endpoint);
+    await this.getServers({ showLoading: false });
+    return addedServer;
   }
 
   @action async getServerDetails(serverId: number) {
@@ -132,13 +126,47 @@ class MetalHubStore {
     }
   }
 
-  @action async refreshServer(serverId: number) {
-    this.refreshingServer = true;
+  @action async validateServer(serverId: number) {
+    this.validating = true;
+    this.validationError = [];
+    const server = await this.refreshServer(serverId, { showLoading: false });
+    if (!server.active) {
+      let refreshedServer = server;
+      for (let i = 0; i < 5; i++) {
+        refreshedServer = await this.refreshServer(serverId, {
+          showLoading: false,
+        });
+        if (refreshedServer.active) {
+          break;
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      if (!refreshedServer.active) {
+        this.validating = false;
+        this.validationError = [
+          "Please verify IP / hostname, port.",
+          "Please ensure that Coriolis server agent is running.",
+        ];
+        return false;
+      }
+    }
+    this.validating = false;
+    return true;
+  }
+
+  @action async refreshServer(
+    serverId: number,
+    opts?: { showLoading?: boolean }
+  ) {
+    if (!opts || opts.showLoading) {
+      this.refreshingServer = true;
+    }
     try {
       const server = await source.refreshServer(serverId);
       runInAction(() => {
         this.serverDetails = server;
       });
+      return server;
     } finally {
       runInAction(() => {
         this.refreshingServer = false;

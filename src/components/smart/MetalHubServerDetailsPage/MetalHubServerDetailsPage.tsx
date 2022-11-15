@@ -46,7 +46,6 @@ type State = {
   creatingReplica: boolean;
   creatingMigration: boolean;
   showEditServerModal: boolean;
-  updatingServer: boolean;
 };
 @observer
 class MetalHubServerDetailsPage extends React.Component<Props, State> {
@@ -55,7 +54,6 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
     creatingReplica: false,
     creatingMigration: false,
     showEditServerModal: false,
-    updatingServer: false,
   };
 
   componentDidMount() {
@@ -151,14 +149,9 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  async handleEditServer(apiEndpoint: string) {
-    this.setState({ updatingServer: true });
-    await metalHubStore.patchServer(
-      metalHubStore.serverDetails!.id,
-      apiEndpoint
-    );
+  async handleUpdateDone() {
     await this.loadData();
-    this.setState({ showEditServerModal: false, updatingServer: false });
+    this.setState({ showEditServerModal: false });
   }
 
   render() {
@@ -258,10 +251,10 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
         ) : null}
         {this.state.showEditServerModal ? (
           <MetalHubModal
-            loading={this.state.updatingServer}
+            loading={metalHubStore.loadingServerDetails}
             server={metalHubStore.serverDetails!}
-            onEditClick={e => {
-              this.handleEditServer(e);
+            onUpdateDone={() => {
+              this.handleUpdateDone();
             }}
             onRequestClose={() => {
               this.setState({ showEditServerModal: false });
