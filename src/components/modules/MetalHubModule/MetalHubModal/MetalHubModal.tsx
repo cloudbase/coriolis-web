@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
 import { observer } from "mobx-react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import type { Field as FieldType } from "@src/@types/Field";
 import Button from "@src/components/ui/Button";
@@ -26,6 +26,8 @@ import { ThemeProps } from "@src/components/Theme";
 import LoadingButton from "@src/components/ui/LoadingButton";
 import { MetalHubServer } from "@src/@types/MetalHub";
 import image from "./images/server.svg";
+import metalHubStore from "@src/stores/MetalHubStore";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 
 const Wrapper = styled.div`
   padding: 48px 32px 32px 32px;
@@ -51,25 +53,70 @@ const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+const StatusHeader = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const StatusMessage = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  > div {
+    text-align: center;
+    &:first-child {
+      margin-bottom: 8px;
+    }
+  }
+`;
+const StatusIconStyled = styled(StatusIcon)``;
+const Status = styled.div<{ layout: "vertical" | "horizontal" }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+
+  ${StatusHeader} {
+    ${({ layout }) =>
+      layout === "vertical"
+        ? css`
+            flex-direction: column;
+          `
+        : ""}
+  }
+
+  ${StatusMessage} {
+    ${({ layout }) =>
+      layout === "horizontal"
+        ? css`
+            margin-left: 8px;
+          `
+        : ""}
+  }
+
+  ${StatusIconStyled} {
+    ${({ layout }) =>
+      layout === "vertical"
+        ? css`
+            margin-bottom: 8px;
+          `
+        : ""}
+  }
+`;
 
 type Props = {
-  loading: boolean;
+  server?: MetalHubServer;
+  loading?: boolean;
   onRequestClose: () => void;
-} & (
-  | {
-      server: MetalHubServer;
-      onEditClick: (apiEndpoint: string) => void;
-    }
-  | {
-      server?: undefined;
-      onAddClick: (apiEndpoint: string) => void;
-    }
-);
+  onUpdateDone: () => void;
+};
 
 type State = {
   host: string;
   port: string;
+  saving: boolean;
   highlightFieldNames: string[];
+  showSuccess: boolean;
 };
 @observer
 class MetalHubModal extends React.Component<Props, State> {
@@ -77,7 +124,13 @@ class MetalHubModal extends React.Component<Props, State> {
     host: "",
     port: "",
     highlightFieldNames: [],
+    saving: false,
+    showSuccess: false,
   };
+
+  get loading() {
+    return this.state.saving || this.props.loading;
+  }
 
   componentDidMount() {
     KeyboardManager.onEnter(
@@ -99,18 +152,39 @@ class MetalHubModal extends React.Component<Props, State> {
 
   componentWillUnmount() {
     KeyboardManager.removeKeyDown("MetalHubNewModal");
+    metalHubStore.clearValidationError();
   }
 
-  handleAddClick() {
+  // Used to store the newly added server in case of validation error since a PATCH request is needed afterwards
+  serverAddedForValidation: number | null = null;
+
+  async handleAddClick() {
     if (this.highlightFields()) {
       return;
     }
 
     const endpointUrl = `https://${this.state.host}:${this.state.port}/api/v1`;
-    if (this.props.server) {
-      this.props.onEditClick(endpointUrl);
-    } else {
-      this.props.onAddClick(endpointUrl);
+    this.setState({ saving: true });
+    const serverId = this.props.server?.id || this.serverAddedForValidation;
+    let validationResult = false;
+    try {
+      if (serverId) {
+        await metalHubStore.patchServer(serverId, endpointUrl);
+        validationResult = await metalHubStore.validateServer(serverId);
+      } else {
+        const addedServer = await metalHubStore.addServer(endpointUrl);
+        this.serverAddedForValidation = addedServer.id;
+        validationResult = await metalHubStore.validateServer(addedServer.id);
+      }
+    } finally {
+      if (!validationResult) {
+        this.setState({ saving: false });
+      } else {
+        this.setState({ saving: false, showSuccess: true });
+        setTimeout(() => {
+          this.props.onUpdateDone();
+        }, 2000);
+      }
     }
   }
 
@@ -151,7 +225,7 @@ class MetalHubModal extends React.Component<Props, State> {
         highlight={Boolean(
           this.state.highlightFieldNames.find(n => n === field.name)
         )}
-        disabledLoading={this.props.loading}
+        disabledLoading={this.loading || this.state.showSuccess}
       />
     );
   }
@@ -192,24 +266,56 @@ class MetalHubModal extends React.Component<Props, State> {
   renderButtons() {
     return (
       <Buttons>
-        <Button secondary large onClick={this.props.onRequestClose}>
+        <Button
+          secondary
+          large
+          onClick={this.props.onRequestClose}
+          disabled={this.state.showSuccess}
+        >
           Cancel
         </Button>
-        {this.props.loading ? (
-          <LoadingButton large>
-            {this.props.server ? "Updating ..." : "Adding ..."}
-          </LoadingButton>
+        {this.loading ? (
+          <LoadingButton large>Validating ...</LoadingButton>
         ) : (
           <Button
             large
             onClick={() => {
               this.handleAddClick();
             }}
+            disabled={this.state.showSuccess}
           >
-            {this.props.server ? "Update" : "Add"}
+            Validate and save
           </Button>
         )}
       </Buttons>
+    );
+  }
+
+  renderValidationStatus() {
+    if (
+      !this.state.saving &&
+      !this.state.showSuccess &&
+      !metalHubStore.validationError.length
+    ) {
+      return null;
+    }
+    const message = this.state.saving
+      ? "Validating ..."
+      : metalHubStore.validationError.length
+      ? metalHubStore.validationError.map(e => <div key="e">{e}</div>)
+      : "Validation successful";
+    const status = this.state.saving
+      ? "RUNNING"
+      : metalHubStore.validationError.length
+      ? "ERROR"
+      : "COMPLETED";
+    return (
+      <Status layout={status === "ERROR" ? "vertical" : "horizontal"}>
+        <StatusHeader>
+          <StatusIconStyled status={status} />
+          <StatusMessage>{message}</StatusMessage>
+        </StatusHeader>
+      </Status>
     );
   }
 
@@ -224,6 +330,7 @@ class MetalHubModal extends React.Component<Props, State> {
       >
         <Wrapper>
           <Image />
+          {this.renderValidationStatus()}
           {this.renderForm()}
           {this.renderButtons()}
         </Wrapper>
