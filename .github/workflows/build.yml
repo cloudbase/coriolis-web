@@ -1,0 +1,42 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16.x
+
+    - name: Install yarn
+      run: npm install -g yarn
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Check Typescript
+      run: yarn tsc
+
+    - name: Check ESLint
+      run: yarn eslint
+
+    - name: Check Prettier
+      run: yarn format
+
+    - name: Run unit tests
+      run: yarn test
+
+    - name: Install production dependencies
+      run: |
+        rm -rf node_modules
+        yarn install --production
+
+    - name: Build
+      run: yarn build
