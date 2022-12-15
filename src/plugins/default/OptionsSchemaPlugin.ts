@@ -145,11 +145,10 @@ export const defaultGetDestinationEnv = (
 
   Object.keys(options).forEach(optionName => {
     const value = options[optionName];
-    if (
-      specialOptions.find(o => o === optionName) ||
-      value == null ||
-      value === ""
-    ) {
+    const oldValue = oldOptions?.[optionName];
+    const noValue =
+      (value == null || value === "") && (oldValue == null || oldValue === "");
+    if (specialOptions.find(o => o === optionName) || noValue) {
       return;
     }
     if (Array.isArray(value)) {
