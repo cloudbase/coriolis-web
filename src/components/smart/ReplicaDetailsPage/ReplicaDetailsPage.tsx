@@ -40,7 +40,6 @@ import endpointStore from "@src/stores/EndpointStore";
 import scheduleStore from "@src/stores/ScheduleStore";
 import instanceStore from "@src/stores/InstanceStore";
 import networkStore from "@src/stores/NetworkStore";
-import notificationStore from "@src/stores/NotificationStore";
 import providerStore from "@src/stores/ProviderStore";
 
 import configLoader from "@src/utils/Config";
@@ -72,6 +71,7 @@ type State = {
   isEditableLoading: boolean;
   pausePolling: boolean;
   initialLoading: boolean;
+  migrating: boolean;
 };
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
@@ -89,6 +89,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     isEditableLoading: true,
     pausePolling: false,
     initialLoading: true,
+    migrating: false,
   };
 
   stopPolling: boolean | null = null;
@@ -494,17 +495,6 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       showCancelConfirmation: false,
     });
   }
-
-  migrateReplica(opts: {
-    fields: Field[];
-    uploadedUserScripts: InstanceScript[];
-    removedUserScripts: InstanceScript[];
-    minionPoolMappings: { [instance: string]: string };
-  }) {
-    this.migrate(opts);
-    this.handleCloseMigrationModal();
-  }
-
   async migrate(opts: {
     fields: Field[];
     uploadedUserScripts: InstanceScript[];
@@ -515,32 +505,26 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     if (!replica) {
       return;
     }
+    this.setState({ migrating: true });
     const {
       fields,
       uploadedUserScripts,
       removedUserScripts,
       minionPoolMappings,
     } = opts;
-    const migration = await migrationStore.migrateReplica({
-      replicaId: replica.id,
-      fields,
-      uploadedUserScripts,
-      removedUserScripts,
-      userScriptData: replica.user_scripts,
-      minionPoolMappings,
-    });
-    notificationStore.alert(
-      "Migration successfully created from replica.",
-      "success",
-      {
-        action: {
-          label: "View Migration Status",
-          callback: () => {
-            this.props.history.push(`/migrations/${migration.id}/tasks/`);
-          },
-        },
-      }
-    );
+    try {
+      const migration = await migrationStore.migrateReplica({
+        replicaId: replica.id,
+        fields,
+        uploadedUserScripts,
+        removedUserScripts,
+        userScriptData: replica.user_scripts,
+        minionPoolMappings,
+      });
+      this.props.history.push(`/migrations/${migration.id}/tasks/`);
+    } finally {
+      this.setState({ migrating: false });
+    }
   }
 
   executeReplica(fields: Field[]) {
@@ -850,8 +834,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               onCancelClick={() => {
                 this.handleCloseMigrationModal();
               }}
+              migrating={this.state.migrating}
               onMigrateClick={opts => {
-                this.migrateReplica(opts);
+                this.migrate(opts);
               }}
             />
           </Modal>

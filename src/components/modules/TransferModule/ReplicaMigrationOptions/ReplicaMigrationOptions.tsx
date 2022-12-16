@@ -32,6 +32,7 @@ import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/module
 import { ThemeProps } from "@src/components/Theme";
 import replicaMigrationFields from "./replicaMigrationFields";
 import replicaMigrationImage from "./images/replica-migration.svg";
+import LoadingButton from "@src/components/ui/LoadingButton";
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -82,6 +83,7 @@ type Props = {
   minionPools: MinionPool[];
   loadingInstances: boolean;
   defaultSkipOsMorphing?: boolean | null;
+  migrating?: boolean;
   onCancelClick: () => void;
   onMigrateClick: (opts: {
     fields: Field[];
@@ -322,13 +324,17 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
           <Button secondary onClick={this.props.onCancelClick}>
             Cancel
           </Button>
-          <Button
-            onClick={() => {
-              this.migrate();
-            }}
-          >
-            Migrate
-          </Button>
+          {this.props.migrating ? (
+            <LoadingButton>Migrating ...</LoadingButton>
+          ) : (
+            <Button
+              onClick={() => {
+                this.migrate();
+              }}
+            >
+              Migrate
+            </Button>
+          )}
         </Buttons>
       </Wrapper>
     );
