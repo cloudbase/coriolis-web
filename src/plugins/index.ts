@@ -17,6 +17,7 @@ import DefaultConnectionSchemaPlugin from "./default/ConnectionSchemaPlugin";
 import AzureConnectionSchemaPlugin from "./azure/ConnectionSchemaPlugin";
 import OpenstackConnectionSchemaPlugin from "./openstack/ConnectionSchemaPlugin";
 import OciConnectionSchemaPlugin from "./oci/ConnectionSchemaPlugin";
+import OpcaConnectionSchemaPlugin from "./opca/ConnectionSchemaPlugin";
 import KubevirtConnectionSchemaPlugin from "./kubevirt/ConnectionSchemaPlugin";
 
 import DefaultContentPlugin from "./default/ContentPlugin";
@@ -39,7 +40,8 @@ import OciInstanceInfoPlugin from "./oci/InstanceInfoPlugin";
 import DefaultMinionPoolSchemaPlugin from "./default/MinionPoolSchemaPlugin";
 import OpenstackMinionPoolSchemaPlugin from "./openstack/MinionPoolSchemaPlugin";
 
-const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj;
+const hasKey = <O extends object>(obj: O, key: keyof any): key is keyof O =>
+  key in obj;
 
 export const ConnectionSchemaPlugin = {
   for: (provider: ProviderTypes) => {
@@ -48,6 +50,7 @@ export const ConnectionSchemaPlugin = {
       azure: new AzureConnectionSchemaPlugin(),
       openstack: new OpenstackConnectionSchemaPlugin(),
       oci: new OciConnectionSchemaPlugin(),
+      opca: new OpcaConnectionSchemaPlugin(),
       kubevirt: new KubevirtConnectionSchemaPlugin(),
     };
     if (hasKey(map, provider)) {

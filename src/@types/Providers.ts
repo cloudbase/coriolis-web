@@ -16,6 +16,7 @@ export type ProviderTypes =
   | "azure"
   | "openstack"
   | "opc"
+  | "opca"
   | "oracle_vm"
   | "vmware_vsphere"
   | "aws"

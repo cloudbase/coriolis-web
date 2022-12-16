@@ -42,9 +42,12 @@ const ContentWrapper = styled.div`
     display: flex;
     justify-content: center;
     margin-left: -24px;
+    margin-top: -24px;
     transition: all 250ms ease-out;
+    flex-wrap: wrap;
     > div {
       margin-left: 24px;
+      margin-top: 24px;
     }
   }
 `;
