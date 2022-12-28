@@ -28,6 +28,8 @@ import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import type { Instance as InstanceType } from "@src/@types/Instance";
 
 import instanceImage from "./images/instance.svg";
+import instanceLinuxImage from "./images/instance-linux.svg";
+import instanceWindowsImage from "./images/instance-windows.svg";
 import bigInstanceImage from "./images/instance-big.svg";
 
 const mbToGbString = (mb: number) =>
@@ -92,9 +94,18 @@ const LoadingText = styled.div<any>`
   margin-top: 38px;
   font-size: 18px;
 `;
-export const Image = styled.div<any>`
+const getOsImage = (osType?: string) => {
+  if (osType === "linux") {
+    return instanceLinuxImage;
+  }
+  if (osType === "windows") {
+    return instanceWindowsImage;
+  }
+  return instanceImage;
+};
+export const InstanceImage = styled.div<{ os?: string }>`
   ${ThemeProps.exactSize("48px")}
-  background: url('${instanceImage}') center no-repeat;
+  background: url('${props => getOsImage(props.os)}') center no-repeat;
 `;
 const Label = styled.div<any>`
   flex-grow: 1;
@@ -370,7 +381,7 @@ class WizardInstances extends React.Component<Props, State> {
                 }}
               />
               <InstanceContent>
-                <Image />
+                <InstanceImage os={instance.os_type} />
                 <Label>
                   <LabelTitle>{instance.name}</LabelTitle>
                   {instanceId !== instance.name ? (

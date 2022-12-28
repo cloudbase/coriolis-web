@@ -18,7 +18,7 @@ import styled, { css } from "styled-components";
 
 import InfoIcon from "@src/components/ui/InfoIcon";
 import { Close as InputClose } from "@src/components/ui/TextInput";
-import { Image as InstanceImage } from "@src/components/modules/WizardModule/WizardInstances";
+import { InstanceImage } from "@src/components/modules/WizardModule/WizardInstances";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
