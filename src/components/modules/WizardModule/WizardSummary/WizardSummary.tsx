@@ -38,19 +38,13 @@ import { ProviderTypes } from "@src/@types/Providers";
 import configLoader from "@src/utils/Config";
 import networkArrowImage from "./images/network-arrow.svg";
 
-const Wrapper = styled.div<any>`
+const Wrapper = styled.div`
   width: 100%;
   display: flex;
+  justify-content: space-between;
 `;
-const Column = styled.div<any>`
-  width: 50%;
-
-  &:first-child {
-    margin-right: 160px;
-  }
-  &:last-child {
-    max-width: calc(50% - 160px);
-  }
+const Column = styled.div`
+  ${ThemeProps.exactWidth("calc(50% - 80px)")}
 `;
 const Section = styled.div<any>`
   margin-bottom: 42px;
