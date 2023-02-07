@@ -9,9 +9,8 @@ const isOnLoginPage = (): boolean =>
 const truncateUrl = (url: string): string => {
   const MAX_LENGTH = 100;
   let relativePath = url.replace(/http(s)?:\/\/.*?\//, "/");
-  relativePath += relativePath;
   if (relativePath.length > MAX_LENGTH) {
-    relativePath = `${relativePath.substr(0, MAX_LENGTH)}...`;
+    relativePath = `${relativePath.substring(0, MAX_LENGTH)}...`;
   }
   return relativePath;
 };
