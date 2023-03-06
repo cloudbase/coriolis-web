@@ -30,8 +30,6 @@ class MetalHubStore {
 
   @observable loadingFingerprintError = "";
 
-  @observable loadingNewServer = false;
-
   @observable serverDetails: MetalHubServer | null = null;
 
   @observable loadingServerDetails = false;
@@ -39,6 +37,10 @@ class MetalHubStore {
   @observable updatingServer = false;
 
   @observable refreshingServer = false;
+
+  @observable validating = false;
+
+  @observable validationError: string[] = [];
 
   async getMetalHubEndpoint() {
     return source.getMetalHubEndpoint();
@@ -85,17 +87,9 @@ class MetalHubStore {
   }
 
   @action async addServer(endpoint: string) {
-    this.loadingNewServer = true;
-    try {
-      const addedServer = await source.addServer(endpoint);
-      runInAction(() => {
-        this.servers.push(addedServer);
-      });
-    } finally {
-      runInAction(() => {
-        this.loadingNewServer = false;
-      });
-    }
+    const addedServer = await source.addServer(endpoint);
+    await this.getServers({ showLoading: false });
+    return addedServer;
   }
 
   @action async getServerDetails(serverId: number) {
@@ -130,20 +124,60 @@ class MetalHubStore {
         this.updatingServer = false;
       });
     }
+    await this.getServers({ showLoading: false });
   }
 
-  @action async refreshServer(serverId: number) {
-    this.refreshingServer = true;
+  @action async validateServer(serverId: number) {
+    this.validating = true;
+    this.validationError = [];
+
+    let server = await this.refreshServer(serverId, { showLoading: false });
+    if (server.active) {
+      this.validating = false;
+      return true;
+    }
+    for (let i = 0; i < 5; i++) {
+      server = await this.refreshServer(serverId, {
+        showLoading: false,
+      });
+      if (server.active) {
+        break;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    this.validating = false;
+    if (server.active) {
+      return true;
+    }
+    this.validationError = [
+      "Incorrect server hostname and/or port. Coriolis Snapshot Agent might be stopped.",
+      "Please ensure that the Coriolis Snapshot Agent is running on the specified hostname and port.",
+    ];
+    return false;
+  }
+
+  @action async refreshServer(
+    serverId: number,
+    opts?: { showLoading?: boolean }
+  ) {
+    if (!opts || opts.showLoading) {
+      this.refreshingServer = true;
+    }
     try {
       const server = await source.refreshServer(serverId);
       runInAction(() => {
         this.serverDetails = server;
       });
+      return server;
     } finally {
       runInAction(() => {
         this.refreshingServer = false;
       });
     }
+  }
+
+  @action clearValidationError() {
+    this.validationError = [];
   }
 }
 

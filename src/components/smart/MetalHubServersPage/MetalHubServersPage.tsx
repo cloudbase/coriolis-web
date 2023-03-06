@@ -106,10 +106,8 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
     this.setState({ showNewServerModal: true, modalIsOpen: true });
   }
 
-  async handleNewServer(endpoint: string) {
-    await metalHubStore.addServer(endpoint);
+  async handleNewServerDone() {
     this.setState({ showNewServerModal: false, modalIsOpen: false });
-    await metalHubStore.getServers();
   }
 
   handleRemoveAction() {
@@ -330,9 +328,8 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
         />
         {this.state.showNewServerModal ? (
           <MetalHubModal
-            loading={metalHubStore.loadingNewServer}
-            onAddClick={e => {
-              this.handleNewServer(e);
+            onUpdateDone={() => {
+              this.handleNewServerDone();
             }}
             onRequestClose={() => {
               this.setState({ showNewServerModal: false, modalIsOpen: false });
