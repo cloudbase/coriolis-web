@@ -89,6 +89,12 @@ const conf: Config = {
       relistFields: ["migr_image_map", "migr_image"],
     },
     {
+      name: "opca",
+      types: ["destination"],
+      requiredFields: ["compartment", "availability_domain", "vcn_compartment"],
+      relistFields: ["migr_image_map", "migr_image"],
+    },
+    {
       name: "vmware_vsphere",
       types: ["destination"],
       requiredFields: ["import_datacenter"],
@@ -114,6 +120,7 @@ const conf: Config = {
     opc: 3,
     oracle_vm: 3,
     olvm: 3,
+    opca: 3,
     rhev: 3,
     metal: 4,
   },
@@ -127,6 +134,7 @@ const conf: Config = {
     kubevirt: "KubeVirt",
     scvmm: "SCVMM",
     oci: "OCI",
+    opca: "Oracle PCA X9-2",
     opc: "Oracle Cloud",
     oracle_vm: "Oracle VM",
     olvm: "OLVM",
