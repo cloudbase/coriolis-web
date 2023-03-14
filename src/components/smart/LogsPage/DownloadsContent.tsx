@@ -22,9 +22,11 @@ import type { Log as LogType } from "@src/@types/Log";
 import { Close } from "@src/components/ui/TextInput";
 import DatetimePicker from "@src/components/ui/DatetimePicker";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import Button from "@src/components/ui/Button";
 
 import { ThemeProps } from "@src/components/Theme";
 import downloadImage from "./images/download.svg";
+import LoadingButton from "@src/components/ui/LoadingButton";
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -108,6 +110,7 @@ type Props = {
     endDate?: Date | null
   ) => void;
   generatingDiagnostics: boolean;
+  downloadingAll: boolean;
 };
 @observer
 class DownloadsContent extends React.Component<Props, State> {
@@ -229,6 +232,25 @@ class DownloadsContent extends React.Component<Props, State> {
           <StatusIcon status="UNSCHEDULED" />
           Start and End times must be set in server&apos;s timezone
         </InfoUtc>
+        {this.props.downloadingAll ? (
+          <LoadingButton style={{ marginTop: "32px" }}>
+            Generating Logs ...
+          </LoadingButton>
+        ) : (
+          <Button
+            style={{ marginTop: "32px" }}
+            onClick={() => {
+              this.props.onDownloadClick(
+                "__all__",
+                this.state.startDate,
+                this.state.endDate
+              );
+            }}
+          >
+            Download All Logs
+          </Button>
+        )}
+
         {this.renderLogs()}
       </Wrapper>
     );

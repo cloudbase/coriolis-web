@@ -24,9 +24,40 @@ import configLoader from "@src/utils/Config";
 import apiCaller from "@src/utils/ApiCaller";
 import DateUtils from "@src/utils/DateUtils";
 import DomUtils from "@src/utils/DomUtils";
+import ObjectUtils from "@src/utils/ObjectUtils";
 import notificationStore from "./NotificationStore";
 
 const MAX_STREAM_LINES = 200;
+
+const generateUrlForLog = (
+  logName: string,
+  startDate?: Date | null,
+  endDate?: Date | null
+): string => {
+  const token = cookie.get("token") || "null";
+  let url = `${configLoader.config.servicesUrls.coriolisLogs}/${logName}?auth_type=keystone&auth_token=${token}`;
+  if (startDate) {
+    url += `&start_date=${DateUtils.toUnix(startDate)}`;
+  }
+  if (endDate) {
+    url += `&end_date=${DateUtils.toUnix(endDate)}`;
+  }
+  return url;
+};
+
+const downloadDiagnosticsIntoZip = async (zipRef: JSZip): Promise<void> => {
+  const baseUrl = `${configLoader.config.servicesUrls.coriolis}/${apiCaller.projectId}`;
+  const [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
+    apiCaller.send({ url: `${baseUrl}/diagnostics` }),
+    apiCaller.send({ url: `${baseUrl}/replicas?show_deleted=true` }),
+    apiCaller.send({ url: `${baseUrl}/migrations?show_deleted=true` }),
+  ]);
+
+  zipRef.file("diagnostics.json", JSON.stringify(diagnosticsResp.data));
+  zipRef.file("replicas.json", JSON.stringify(replicasResp.data));
+  zipRef.file("migrations.json", JSON.stringify(migrationsResp.data));
+};
+
 class LogStore {
   @observable logs: Log[] = [];
 
@@ -35,6 +66,8 @@ class LogStore {
   @observable liveFeed: string[] = [];
 
   @observable generatingDiagnostics = false;
+
+  @observable downloadingAllLogs = false;
 
   @action async getLogs(options?: { showLoading?: boolean }) {
     if (options && options.showLoading) {
@@ -55,36 +88,43 @@ class LogStore {
     }
   }
 
+  @action async downloadAll(startDate?: Date | null, endDate?: Date | null) {
+    this.downloadingAllLogs = true;
+    await ObjectUtils.waitFor(() => this.logs.length > 0);
+    const logFilesResponses = await Promise.all(
+      this.logs.map(async log => ({
+        name: log.log_name,
+        content: await apiCaller.send({
+          url: generateUrlForLog(log.log_name, startDate, endDate),
+        }),
+      }))
+    );
+    const zip = new JSZip();
+    logFilesResponses.forEach(response => {
+      zip.file(`${response.name}.log`, response.content.data);
+    });
+    await downloadDiagnosticsIntoZip(zip);
+    const zipContent = await zip.generateAsync({ type: "blob" });
+    saveAs(zipContent, "logs.zip");
+    runInAction(() => {
+      this.downloadingAllLogs = false;
+    });
+  }
+
   @action download(
     logName: string,
     startDate?: Date | null,
     endDate?: Date | null
   ) {
-    const token = cookie.get("token") || "null";
-    let url = `${configLoader.config.servicesUrls.coriolisLogs}/${logName}?auth_type=keystone&auth_token=${token}`;
-    if (startDate) {
-      url += `&start_date=${DateUtils.toUnix(startDate)}`;
-    }
-    if (endDate) {
-      url += `&end_date=${DateUtils.toUnix(endDate)}`;
-    }
-
-    DomUtils.executeDownloadLink(url);
+    DomUtils.executeDownloadLink(
+      generateUrlForLog(logName, startDate, endDate)
+    );
   }
 
   @action async downloadDiagnostics() {
     this.generatingDiagnostics = true;
-    const baseUrl = `${configLoader.config.servicesUrls.coriolis}/${apiCaller.projectId}`;
-    const [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
-      apiCaller.send({ url: `${baseUrl}/diagnostics` }),
-      apiCaller.send({ url: `${baseUrl}/replicas?show_deleted=true` }),
-      apiCaller.send({ url: `${baseUrl}/migrations?show_deleted=true` }),
-    ]);
-
     const zip = new JSZip();
-    zip.file("diagnostics.json", JSON.stringify(diagnosticsResp.data));
-    zip.file("replicas.json", JSON.stringify(replicasResp.data));
-    zip.file("migrations.json", JSON.stringify(migrationsResp.data));
+    await downloadDiagnosticsIntoZip(zip);
     const zipContent = await zip.generateAsync({ type: "blob" });
     saveAs(zipContent, "diagnostics.zip");
     runInAction(() => {
