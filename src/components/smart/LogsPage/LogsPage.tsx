@@ -126,6 +126,11 @@ class LogsPage extends React.Component<Record<string, never>, State> {
     startDate?: Date | null,
     endDate?: Date | null
   ) {
+    if (logName === "__all__") {
+      logStore.downloadAll(startDate, endDate);
+      return;
+    }
+
     if (logName === "__diagnostics__") {
       logStore.downloadDiagnostics();
       return;
@@ -171,6 +176,7 @@ class LogsPage extends React.Component<Record<string, never>, State> {
           <TabContent>
             <DownloadContent
               logs={logStore.logs}
+              downloadingAll={logStore.downloadingAllLogs}
               onDownloadClick={(l, s, e) => {
                 this.handleDownloadClick(l, s, e);
               }}
