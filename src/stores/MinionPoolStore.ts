@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { action, observable, runInAction, computed } from "mobx";
 import { MinionPool, MinionPoolDetails } from "@src/@types/MinionPool";
 import MinionPoolSource from "@src/sources/MinionPoolSource";
-import { Field } from "@src/@types/Field";
+import { Field, isEnumSeparator } from "@src/@types/Field";
 import { Providers, ProviderTypes } from "@src/@types/Providers";
 import { OptionsSchemaPlugin } from "@src/plugins";
 import { providerTypes } from "@src/constants";
@@ -247,6 +247,37 @@ class MinionPoolStore {
 
   async deleteMinionPool(minionPoolId: string) {
     return MinionPoolSource.deleteMinionPool(minionPoolId);
+  }
+
+  @action
+  sortMigrImages(osType: "linux" | "windows") {
+    const migrImageField = this.minionPoolEnvSchema.find(
+      field => field.name === "migr_image"
+    );
+    if (!migrImageField || !migrImageField.enum) {
+      return;
+    }
+    migrImageField.enum = migrImageField.enum
+      .slice()
+      .filter(f => !isEnumSeparator(f))
+      .sort((a, b) => {
+        const anyA = a as any;
+        const anyB = b as any;
+        if (anyA.os_type === osType && anyB.os_type !== osType) {
+          return -1;
+        } else if (anyB.os_type === osType && anyA.os_type !== osType) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    const osIndex = migrImageField.enum.findIndex(
+      server => (server as any).os_type !== osType
+    );
+    if (osIndex > -1) {
+      migrImageField.enum.splice(osIndex, 0, { separator: true });
+    }
+    this.minionPoolEnvSchema = [...this.minionPoolEnvSchema];
   }
 }
 

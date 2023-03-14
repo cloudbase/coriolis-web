@@ -296,19 +296,30 @@ class MinionPoolModal extends React.Component<Props, State> {
   }
 
   fillRequiredDefaults() {
-    this.setState(prevState => {
-      const minionPool: any = { ...prevState.editableData };
-      const requiredFieldsDefaults =
-        minionPoolStore.minionPoolCombinedSchema.filter(
-          f => f.required && f.default != null
+    this.setState(
+      prevState => {
+        const minionPool: any = { ...prevState.editableData };
+        const requiredFieldsDefaults =
+          minionPoolStore.minionPoolCombinedSchema.filter(
+            f => f.required && f.default != null
+          );
+        requiredFieldsDefaults.forEach(f => {
+          if (minionPool[f.name] == null) {
+            minionPool[f.name] = f.default;
+          }
+        });
+        return { editableData: minionPool };
+      },
+      () => {
+        minionPoolStore.sortMigrImages(
+          this.getFieldValue(
+            minionPoolStore.minionPoolDefaultSchema.find(
+              f => f.name === "os_type"
+            )
+          )
         );
-      requiredFieldsDefaults.forEach(f => {
-        if (minionPool[f.name] == null) {
-          minionPool[f.name] = f.default;
-        }
-      });
-      return { editableData: minionPool };
-    });
+      }
+    );
   }
 
   async loadExtraOptions(
@@ -353,6 +364,9 @@ class MinionPoolModal extends React.Component<Props, State> {
         return { editableData: minionPool };
       },
       () => {
+        if (field.name === "os_type") {
+          minionPoolStore.sortMigrImages(value);
+        }
         if (field.type !== "string" || field.enum) {
           this.loadExtraOptions(field, this.props.platform, true);
         }
