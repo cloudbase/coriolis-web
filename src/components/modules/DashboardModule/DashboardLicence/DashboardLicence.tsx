@@ -56,7 +56,6 @@ const LicenceError = styled.span`
   }
 `;
 const ApplianceId = styled.div`
-  display: flex;
   margin-top: 16px;
 `;
 const AddLicenceButtonWrapper = styled.div`
@@ -232,10 +231,6 @@ class DashboardLicence extends React.Component<Props> {
 
   renderLicenceExpired(licence: Licence, serverStatus: LicenceServerStatus) {
     const applianceId = `${licence.applianceId}-licence${serverStatus.supported_licence_versions[0]}`;
-    const applianceLabel = applianceId.replace(
-      /(.*-.*-)(.*-.*)(-.*-.*)/,
-      "$1...$3"
-    );
     return (
       <LicenceError>
         <p>
@@ -243,12 +238,8 @@ class DashboardLicence extends React.Component<Props> {
           obtain a Coriolis® licence.
         </p>
         <ApplianceId>
-          Appliance ID:{" "}
-          <CopyValue
-            style={{ marginLeft: "8px" }}
-            value={applianceId}
-            label={applianceLabel}
-          />
+          Appliance ID:
+          <CopyValue value={applianceId} />
         </ApplianceId>
         <AddLicenceButtonWrapper>
           <Logo
