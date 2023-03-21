@@ -1,16 +1,16 @@
 export type MetalHubDisk = {
-  id: string;
+  id?: string;
   path: string;
-  name: string;
-  size: number;
-  physical_sector_size: number;
-  partitions: {
+  name?: string;
+  size?: number;
+  physical_sector_size?: number;
+  partitions?: {
     name: string;
-    path: string;
-    partition_uuid: string;
+    path?: string;
+    partition_uuid?: string;
     sectors: number;
     start_sector: number;
-    end_sector: number;
+    end_sector?: number;
   }[];
 };
 
