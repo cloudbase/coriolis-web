@@ -319,21 +319,29 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
     });
   }
 
-  renderPartitions(partitions: MetalHubDisk["partitions"], sectorSize: number) {
+  renderPartitions(
+    partitions: MetalHubDisk["partitions"] = [],
+    sectorSize = 0
+  ) {
     return partitions.map(partition => {
+      if (!partition.partition_uuid) {
+        return null;
+      }
+
       const isOpened = Boolean(
         this.state.openedRows.find(i => i === partition.partition_uuid)
       );
       const size = partition.sectors * sectorSize;
-      const sizeString =
-        size < 1024 * 1024 * 1024
+      const sizeString = sectorSize
+        ? size < 1024 * 1024 * 1024
           ? `${(size / 1024 / 1024).toFixed(2)} MB`
-          : `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
+          : `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
+        : "Size unavailable";
       return (
         <Row
           key={partition.partition_uuid}
           onClick={() => {
-            this.handleRowClick(partition.partition_uuid);
+            this.handleRowClick(partition.partition_uuid!);
           }}
         >
           <ArrowStyled
@@ -402,9 +410,11 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
             <TableHeader key={disk.id}>
               <TableHeaderInfo>
                 {disk.name}{" "}
-                <HeaderSubtitle>
-                  {(disk.size / 1024 / 1024 / 1024).toFixed(2)} GB
-                </HeaderSubtitle>
+                {disk.size ? (
+                  <HeaderSubtitle>
+                    {(disk.size / 1024 / 1024 / 1024).toFixed(2)} GB
+                  </HeaderSubtitle>
+                ) : null}
               </TableHeaderInfo>
               <TableBodyContent>
                 {this.renderPartitions(
