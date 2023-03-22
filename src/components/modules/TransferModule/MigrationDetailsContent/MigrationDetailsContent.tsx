@@ -109,11 +109,7 @@ class MigrationDetailsContent extends React.Component<Props> {
   }
 
   renderTasks() {
-    if (
-      this.props.page !== "tasks" ||
-      !this.props.item ||
-      !this.props.item.tasks
-    ) {
+    if (this.props.page !== "tasks" || !this.props.item?.tasks) {
       return null;
     }
 
