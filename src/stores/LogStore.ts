@@ -104,7 +104,10 @@ class LogStore {
       zip.file(`${response.name}.log`, response.content.data);
     });
     await downloadDiagnosticsIntoZip(zip);
-    const zipContent = await zip.generateAsync({ type: "blob" });
+    const zipContent = await zip.generateAsync({
+      type: "blob",
+      compression: "DEFLATE",
+    });
     saveAs(zipContent, "logs.zip");
     runInAction(() => {
       this.downloadingAllLogs = false;
@@ -125,7 +128,10 @@ class LogStore {
     this.generatingDiagnostics = true;
     const zip = new JSZip();
     await downloadDiagnosticsIntoZip(zip);
-    const zipContent = await zip.generateAsync({ type: "blob" });
+    const zipContent = await zip.generateAsync({
+      type: "blob",
+      compression: "DEFLATE",
+    });
     saveAs(zipContent, "diagnostics.zip");
     runInAction(() => {
       this.generatingDiagnostics = false;

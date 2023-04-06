@@ -223,7 +223,10 @@ class EndpointStore {
       })
     );
 
-    const content = await zip.generateAsync({ type: "blob" });
+    const content = await zip.generateAsync({
+      type: "blob",
+      compression: "DEFLATE",
+    });
     saveAs(content, "coriolis-endpoints.zip");
   }
 
