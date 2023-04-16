@@ -542,6 +542,8 @@ class WizardPage extends React.Component<Props, State> {
       return;
     }
     try {
+      this.setState({ nextButtonDisabled: false });
+
       await providerStore.getOptionsValues({
         optionsType: type,
         endpointId: endpoint.id,
