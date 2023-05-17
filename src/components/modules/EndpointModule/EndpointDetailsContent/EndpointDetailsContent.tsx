@@ -245,11 +245,10 @@ class EndpointDetailsContent extends React.Component<Props> {
   render() {
     this.renderedKeys = {};
     const {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       type,
       name,
       description,
-      created_at,
+      created_at: createdAt,
       id,
     } = this.props.item || {};
     const usage: TransferItem[] = this.props.usage.replicas.concat(
@@ -291,7 +290,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           <Field>
             <Label>Created</Label>
             {this.renderValue(
-              DateUtils.getLocalTime(created_at).format("DD/MM/YYYY HH:mm")
+              DateUtils.getLocalTime(createdAt).format("DD/MM/YYYY HH:mm")
             )}
           </Field>
           <Field>

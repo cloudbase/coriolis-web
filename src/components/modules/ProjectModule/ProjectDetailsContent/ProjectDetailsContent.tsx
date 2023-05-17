@@ -188,7 +188,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
     if (this.props.loading || !this.props.project) {
       return null;
     }
-    const project = this.props.project;
+    const { project } = this.props;
 
     return (
       <Info>

@@ -121,28 +121,23 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
   };
 
   getLastExecution() {
-    return (
-      this.props.item &&
-      this.props.item.executions &&
-      this.props.item.executions.length &&
-      this.props.item.executions[this.props.item.executions.length - 1]
-    );
+    return this.props.item?.executions?.length
+      ? this.props.item.executions[this.props.item.executions.length - 1]
+      : null;
   }
 
   getStatus() {
-    const lastExecution = this.getLastExecution();
-    return lastExecution && lastExecution.status;
+    return this.getLastExecution()?.status;
   }
 
   isEndpointMissing() {
-    const originEndpoint = this.props.endpoints.find(
-      e => this.props.item && e.id === this.props.item.origin_endpoint_id
+    return (
+      this.props.endpoints.filter(
+        e =>
+          e.id === this.props.item?.origin_endpoint_id ||
+          e.id === this.props.item?.destination_endpoint_id
+      ).length < 2
     );
-    const targetEndpoint = this.props.endpoints.find(
-      e => this.props.item && e.id === this.props.item.destination_endpoint_id
-    );
-
-    return Boolean(!originEndpoint || !targetEndpoint);
   }
 
   handleTimezoneChange(timezone: TimezoneValue) {

@@ -151,7 +151,7 @@ class UserDetailsContent extends React.Component<Props> {
       return null;
     }
 
-    const user = this.props.user;
+    const { user } = this.props;
     const primaryProject = this.props.projects.find(
       p => user.project_id === p.id
     );
