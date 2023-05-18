@@ -75,8 +75,9 @@ const StorageItem = styled.div<any>`
 `;
 const StorageImage = styled.div<any>`
   ${ThemeProps.exactSize("48px")}
-  background: url('${props =>
-    props.backend ? backendImage : diskImage}') center no-repeat;
+  background: url('
+    ${props => (props.backend ? backendImage : diskImage)}
+  ') center no-repeat;
   margin-right: 16px;
 `;
 const StorageTitle = styled.div<any>`
@@ -289,7 +290,7 @@ class WizardStorage extends React.Component<Props> {
           true,
         ];
       }
-      return [`${dashPaths[0]}-...-${dashPaths[1]}`, true];
+      return [`${dashPaths[0]}-...-${dashPaths[dashPaths.length - 1]}`, true];
     };
 
     return (
