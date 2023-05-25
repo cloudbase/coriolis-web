@@ -48,6 +48,7 @@ storiesOf("TaskItem", module)
   .add("running", () => (
     <div style={{ width: "800px" }}>
       <TaskItem
+        otherItems={[]}
         instancesDetails={[]}
         item={item}
         columnWidths={columnWidths}
@@ -59,6 +60,7 @@ storiesOf("TaskItem", module)
   .add("closed", () => (
     <div style={{ width: "800px" }}>
       <TaskItem
+        otherItems={[]}
         instancesDetails={[]}
         item={item}
         columnWidths={columnWidths}
@@ -73,6 +75,7 @@ storiesOf("TaskItem", module)
     return (
       <div style={{ width: "800px" }}>
         <TaskItem
+          otherItems={[]}
           instancesDetails={[]}
           item={newItem}
           columnWidths={columnWidths}
@@ -88,6 +91,7 @@ storiesOf("TaskItem", module)
     return (
       <div style={{ width: "800px" }}>
         <TaskItem
+          otherItems={[]}
           instancesDetails={[]}
           item={newItem}
           columnWidths={columnWidths}
@@ -103,6 +107,7 @@ storiesOf("TaskItem", module)
     return (
       <div style={{ width: "800px" }}>
         <TaskItem
+          otherItems={[]}
           instancesDetails={[]}
           item={newItem}
           columnWidths={columnWidths}

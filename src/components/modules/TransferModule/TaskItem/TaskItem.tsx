@@ -144,6 +144,7 @@ const Value = styled.div<any>`
 const DependsOnIds = styled.div<any>`
   display: flex;
   flex-direction: column;
+  text-transform: capitalize;
 `;
 const ExceptionText = styled.div<any>`
   cursor: pointer;
@@ -176,9 +177,18 @@ const ProgressUpdateValue = styled.div<any>`
   word-break: break-word;
 `;
 
+const getName = (taskType?: string) =>
+  taskType
+    ? taskType
+        .replace(/_/g, " ")
+        .toLowerCase()
+        .replace(/\b(?:os)\b/gi, "OS")
+    : "N/A";
+
 type Props = {
   columnWidths: string[];
   item: Task;
+  otherItems: Task[];
   open: boolean;
   instancesDetails: Instance[];
   onDependsOnClick: (id: string) => void;
@@ -258,9 +268,7 @@ class TaskItem extends React.Component<Props> {
               status={this.props.item.status}
               style={{ marginRight: "8px" }}
             />
-            <TitleText>
-              {this.props.item.task_type.replace(/_/g, " ").toLowerCase()}
-            </TitleText>
+            <TitleText>{getName(this.props.item.task_type)}</TitleText>
           </Title>
         </HeaderData>
         <HeaderData title={instanceName} width={this.props.columnWidths[1]}>
@@ -310,7 +318,9 @@ class TaskItem extends React.Component<Props> {
                 e.stopPropagation();
               }}
             >
-              {id}
+              {getName(
+                this.props.otherItems.find(item => item.id === id)?.task_type
+              )}
             </Value>
           ) : null
         )}

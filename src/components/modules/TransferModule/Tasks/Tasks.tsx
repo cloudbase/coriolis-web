@@ -162,6 +162,7 @@ class Tasks extends React.Component<Props, State> {
             onMouseUp={e => this.handleItemMouseUp(e, item)}
             key={item.id}
             item={item}
+            otherItems={this.props.items.filter(i => i.id !== item.id)}
             instancesDetails={this.props.instancesDetails}
             columnWidths={ColumnWidths}
             open={Boolean(this.state.openedItems.find(i => i.id === item.id))}
