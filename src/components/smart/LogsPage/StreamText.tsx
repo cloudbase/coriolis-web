@@ -19,6 +19,7 @@ import AnsiToHtml from "ansi-to-html";
 
 import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
 import Checkbox from "@src/components/ui/Checkbox";
+import SearchInput from "@src/components/ui/SearchInput";
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
@@ -34,10 +35,13 @@ const Wrapper = styled.div<any>`
 `;
 const Header = styled.div<any>`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   flex-shrink: 0;
   margin-bottom: 8px;
   align-items: center;
+`;
+const Column = styled.div`
+  display: flex;
 `;
 const DropdownLinkStyled = styled(DropdownLink)`
   margin-left: 16px;
@@ -74,6 +78,7 @@ const AutoscrollLabel = styled.div<any>`
 `;
 const FeedLine = styled.div<any>`
   word-break: break-word;
+  margin-bottom: 8px;
 `;
 const TextButton = styled.div<any>`
   color: ${ThemePalette.grayscale[3]};
@@ -88,14 +93,19 @@ const ERROR_COLOR = "#c80546";
 const INFO_COLOR = "#747474";
 const WARNING_COLOR = "#cb9002";
 const GlobalStyle = createGlobalStyle`
-  .streamTextPill-EMERGENCY { color: ${ERROR_COLOR}; }
-  .streamTextPill-ALERT { color: ${ERROR_COLOR}; }
-  .streamTextPill-CRITICAL { color: ${ERROR_COLOR}; }
-  .streamTextPill-ERROR { color: ${ERROR_COLOR}; }
-  .streamTextPill-WARNING { color: ${WARNING_COLOR}; }
-  .streamTextPill-NOTICE { color: ${WARNING_COLOR}; }
-  .streamTextPill-INFO { color: ${INFO_COLOR}; }
-  .streamTextPill-DEBUG { color: ${WARNING_COLOR}; }
+  .streamTextPill {
+    color: white;
+    padding: 2px;
+    border-radius: 4px;
+  }
+  .streamTextPill.EMERGENCY { background: ${ERROR_COLOR}; }
+  .streamTextPill.ALERT { background: ${ERROR_COLOR}; }
+  .streamTextPill.CRITICAL { background: ${ERROR_COLOR}; }
+  .streamTextPill.ERROR { background: ${ERROR_COLOR}; }
+  .streamTextPill.WARNING { background: ${WARNING_COLOR}; }
+  .streamTextPill.NOTICE { background: ${WARNING_COLOR}; }
+  .streamTextPill.INFO { background: ${INFO_COLOR}; }
+  .streamTextPill.DEBUG { background: ${INFO_COLOR}; }
 `;
 const SEVERITY_LEVELS = [
   { value: 0, label: "Emergency" },
@@ -112,6 +122,8 @@ type Props = {
   logs: Log[];
   logName: string;
   severityLevel: number;
+  search: string;
+  onSearchChange: (search: string) => void;
   onLogNameChange: (logName: string) => void;
   onSeverityLevelChange: (level: number) => void;
   disableOpenInNewWindow?: boolean;
@@ -187,33 +199,42 @@ class StreamText extends React.Component<Props, State> {
       <Wrapper>
         <GlobalStyle />
         <Header>
-          <TextButton onClick={this.props.onStopPlayClick}>
-            {this.props.stopPlayLabel}
-          </TextButton>
-          <TextButton onClick={this.props.onClearClick}>Clear</TextButton>
-          <DropdownLinkStyled
-            items={SEVERITY_LEVELS}
-            selectedItem={this.props.severityLevel}
-            onChange={item => {
-              this.props.onSeverityLevelChange(Number(item.value));
-            }}
-          />
-          <DropdownLinkStyled
-            items={this.props.logs.map(l => ({
-              label: l.log_name,
-              value: l.log_name,
-            }))}
-            selectedItem={this.props.logName}
-            onChange={item => {
-              this.props.onLogNameChange(String(item.value));
-            }}
-          />
-          {!this.props.disableOpenInNewWindow ? (
-            <OpenInNewWindow
-              href={`streamlog?logName=${this.props.logName}&severity=${this.props.severityLevel}`}
-              target="_blank"
+          <Column>
+            <SearchInput
+              alwaysOpen
+              value={this.props.search}
+              onChange={this.props.onSearchChange}
             />
-          ) : null}
+          </Column>
+          <Column>
+            <TextButton onClick={this.props.onStopPlayClick}>
+              {this.props.stopPlayLabel}
+            </TextButton>
+            <TextButton onClick={this.props.onClearClick}>Clear</TextButton>
+            <DropdownLinkStyled
+              items={SEVERITY_LEVELS}
+              selectedItem={this.props.severityLevel}
+              onChange={item => {
+                this.props.onSeverityLevelChange(Number(item.value));
+              }}
+            />
+            <DropdownLinkStyled
+              items={this.props.logs.map(l => ({
+                label: l.log_name,
+                value: l.log_name,
+              }))}
+              selectedItem={this.props.logName}
+              onChange={item => {
+                this.props.onLogNameChange(String(item.value));
+              }}
+            />
+            {!this.props.disableOpenInNewWindow ? (
+              <OpenInNewWindow
+                href={`streamlog?logName=${this.props.logName}&severity=${this.props.severityLevel}`}
+                target="_blank"
+              />
+            ) : null}
+          </Column>
         </Header>
         <Content
           ref={(ref: HTMLElement) => {
@@ -227,7 +248,7 @@ class StreamText extends React.Component<Props, State> {
             const exp =
               /(^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (.*?)\s/gm;
             const newFeed = feed
-              .replace(exp, '$1 <span class="streamTextPill-$2">$2</span> ')
+              .replace(exp, '$1 <span class="streamTextPill $2">$2</span> ')
               .replace(/\n/g, "<br />");
             return (
               <FeedLine
