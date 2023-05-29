@@ -323,14 +323,11 @@ class EndpointModal extends React.Component<Props, State> {
     if (!endpointStore.validation) {
       return;
     }
-
-    const succesful = DomUtils.copyTextToClipboard(
-      endpointStore.validation.message
+    DomUtils.copyTextToClipboard(
+      endpointStore.validation.message,
+      "The message has been copied to clipboard",
+      "Failed to copy the message to clipboard"
     );
-
-    if (succesful) {
-      notificationStore.alert("The message has been copied to clipboard.");
-    }
   }
 
   handleCancelClick() {

@@ -18,7 +18,6 @@ import styled from "styled-components";
 
 import CopyButton from "@src/components/ui/CopyButton";
 import DomUtils from "@src/utils/DomUtils";
-import notificationStore from "@src/stores/NotificationStore";
 
 const CopyButtonStyled = styled(CopyButton)`
   background-position-y: 4px;
@@ -49,12 +48,8 @@ class CopyMultineValue extends React.Component<Props> {
       value = value.replace(/<br\s*\/>/g, "\n").replace(/<.*?>/g, "");
     }
 
-    const succesful = DomUtils.copyTextToClipboard(value);
+    DomUtils.copyTextToClipboard(value);
     if (this.props.onCopy) this.props.onCopy(value);
-
-    if (succesful) {
-      notificationStore.alert("The message has been copied to clipboard.");
-    }
   }
 
   render() {

@@ -24,7 +24,6 @@ import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import CopyValue from "@src/components/ui/CopyValue";
 import ProgressBar from "@src/components/ui/ProgressBar";
 import CopyButton from "@src/components/ui/CopyButton";
-import notificationStore from "@src/stores/NotificationStore";
 import DomUtils from "@src/utils/DomUtils";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import DateUtils from "@src/utils/DateUtils";
@@ -226,11 +225,11 @@ class TaskItem extends React.Component<Props> {
   }
 
   handleExceptionTextClick(exceptionText: string) {
-    const succesful = DomUtils.copyTextToClipboard(exceptionText);
-
-    if (succesful) {
-      notificationStore.alert("The message has been copied to clipboard.");
-    }
+    DomUtils.copyTextToClipboard(
+      exceptionText,
+      "The message has been copied to clipboard",
+      "Failed to copy the message to clipboard"
+    );
   }
 
   renderHeader() {

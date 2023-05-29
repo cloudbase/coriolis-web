@@ -23,7 +23,6 @@ import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import { ThemePalette } from "@src/components/Theme";
 import type { Validation as ValidationType } from "@src/@types/Endpoint";
 
-import notificationStore from "@src/stores/NotificationStore";
 import DomUtils from "@src/utils/DomUtils";
 
 const Wrapper = styled.div<any>`
@@ -79,16 +78,6 @@ type Props = {
 };
 @observer
 class EndpointValidation extends React.Component<Props> {
-  handleCopyClick(message: string) {
-    const succesful = DomUtils.copyTextToClipboard(message);
-
-    if (succesful) {
-      notificationStore.alert("The value has been copied to clipboard.");
-    } else {
-      notificationStore.alert("The value couldn't be copied", "error");
-    }
-  }
-
   renderLoading() {
     if (!this.props.loading) {
       return null;
@@ -144,7 +133,7 @@ class EndpointValidation extends React.Component<Props> {
           <Title>Validation Failed</Title>
           <Error
             onClick={() => {
-              this.handleCopyClick(message);
+              DomUtils.copyTextToClipboard(message);
             }}
           >
             {message}

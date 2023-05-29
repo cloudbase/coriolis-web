@@ -13,6 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { Base64 } from "js-base64";
+import notificationStore from "@src/stores/NotificationStore";
 
 class DomUtils {
   static getScrollableParent(
@@ -90,37 +91,24 @@ class DomUtils {
   /**
    * Copies specified text to clipboard
    * @param {string} text The text to copy
+   * @param {string} successMessage The message to display on success
+   * @param {string} errorMessage The message to display on error
    * @return True if successful, false otherwise
    */
-  static copyTextToClipboard(text: string): boolean {
-    const textArea = document.createElement("textarea");
-    textArea.style.position = "fixed";
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.width = "2em";
-    textArea.style.height = "2em";
-    textArea.style.padding = "0";
-    textArea.style.border = "none";
-    textArea.style.outline = "none";
-    textArea.style.boxShadow = "none";
-    textArea.style.background = "transparent";
-
-    textArea.value = text;
-
-    if (document.body) document.body.appendChild(textArea);
-
-    textArea.select();
-
-    let successful;
-
+  static async copyTextToClipboard(
+    text: string,
+    successMessage = "The value has been copied to clipboard",
+    errorMessage = "Failed to copy the value to clipboard"
+  ): Promise<boolean> {
     try {
-      successful = document.execCommand("copy");
-    } catch (e) {
-      successful = false;
-    } finally {
-      if (document.body) document.body.removeChild(textArea);
+      await navigator.clipboard.writeText(text);
+      notificationStore.alert(successMessage);
+      return true;
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      notificationStore.alert(errorMessage, "error");
+      return false;
     }
-    return successful;
   }
 
   static download(text: string, fileName: string) {

@@ -24,7 +24,6 @@ import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos"
 import LoadingButton from "@src/components/ui/LoadingButton";
 
 import DomUtils from "@src/utils/DomUtils";
-import notificationStore from "@src/stores/NotificationStore";
 import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
 import { Region } from "@src/@types/Region";
 import deleteHoverImage from "./images/delete-hover.svg";
@@ -134,15 +133,13 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
   }
 
   copyErrorMessae(e: React.MouseEvent<HTMLDivElement>, message: string) {
-    if (e && e.stopPropagation) e.stopPropagation();
+    if (e?.stopPropagation) e.stopPropagation();
 
-    const succesful = DomUtils.copyTextToClipboard(message);
-
-    if (succesful) {
-      notificationStore.alert("The message has been copied to clipboard.");
-    } else {
-      notificationStore.alert("The message couldn't be copied", "error");
-    }
+    DomUtils.copyTextToClipboard(
+      message,
+      "The message has been copied to clipboard",
+      "Failed to copy the message to clipboard"
+    );
   }
 
   renderButtons() {
