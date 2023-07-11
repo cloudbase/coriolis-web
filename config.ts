@@ -123,6 +123,7 @@ const conf: Config = {
     opca: 3,
     rhev: 3,
     metal: 4,
+    lxd: 4,
   },
 
   providerNames: {
@@ -140,6 +141,7 @@ const conf: Config = {
     olvm: "OLVM",
     metal: "Bare Metal",
     rhev: "Red Hat",
+    lxd: "LXD",
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field
