@@ -313,7 +313,10 @@ class FieldInput extends React.Component<Props> {
     }
 
     const selectedItem = items.find(
-      i => !isEnumSeparator(i) && i.value === this.props.value
+      i =>
+        !isEnumSeparator(i) &&
+        // The default value might be set to an item's label instead of its value
+        (i.value === this.props.value || i.label === this.props.value)
     );
     const commonProps = {
       width: this.props.width,
