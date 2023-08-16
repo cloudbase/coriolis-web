@@ -23,10 +23,11 @@ import InfoIcon from "@src/components/ui/InfoIcon";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
-import CopyValue from "@src/components/ui/CopyValue";
 import Button from "@src/components/ui/Button";
 
 import licenceImage from "@src/components/modules/LicenceModule/images/licence";
+import CopyMultineValue from "@src/components/ui/CopyMultilineValue";
+import ObjectUtils from "@src/utils/ObjectUtils";
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;
@@ -48,6 +49,8 @@ const LicenceInfo = styled.div<any>`
   width: 100%;
 `;
 const LicenceError = styled.span`
+  display: flex;
+  flex-direction: column;
   p {
     margin: 16px 0 0 0;
     &:first-child {
@@ -55,11 +58,17 @@ const LicenceError = styled.span`
     }
   }
 `;
+const ApplianceIdWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+`;
 const ApplianceId = styled.div`
   margin-top: 16px;
 `;
 const AddLicenceButtonWrapper = styled.div`
-  margin-top: 32px;
+  margin-top: 16px;
   text-align: center;
 `;
 const TopInfo = styled.div<any>`
@@ -156,6 +165,35 @@ type Props = {
 };
 @observer
 class DashboardLicence extends React.Component<Props> {
+  buttonWrapperRef?: HTMLElement | null;
+  licenceLogoRef?: HTMLElement | null;
+
+  componentDidMount() {
+    const resetLayout = async () => {
+      await ObjectUtils.waitFor(
+        () => !!this.buttonWrapperRef && !!this.licenceLogoRef
+      );
+      this.resetLayout();
+    };
+    resetLayout();
+    window.addEventListener("resize", this.resetLayout.bind(this));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.resetLayout.bind(this));
+  }
+
+  resetLayout() {
+    if (!this.buttonWrapperRef || !this.licenceLogoRef) {
+      return;
+    }
+    if (this.buttonWrapperRef.getBoundingClientRect().width < 370) {
+      this.licenceLogoRef.style.display = "none";
+    } else {
+      this.licenceLogoRef.style.display = "block";
+    }
+  }
+
   renderLicenceStatusText(info: Licence): React.ReactNode {
     const graphDataRows = [
       [
@@ -237,20 +275,27 @@ class DashboardLicence extends React.Component<Props> {
           Please contact Cloudbase Solutions with your Appliance ID in order to
           obtain a Coriolis® licence.
         </p>
-        <ApplianceId>
-          Appliance ID:
-          <CopyValue value={applianceId} />
-        </ApplianceId>
-        <AddLicenceButtonWrapper>
-          <Logo
-            dangerouslySetInnerHTML={{
-              __html: licenceImage(ThemePalette.grayscale[5]),
-            }}
-          />
-          <Button primary onClick={this.props.onAddClick}>
-            Add Licence
-          </Button>
-        </AddLicenceButtonWrapper>
+        <ApplianceIdWrapper>
+          <ApplianceId>
+            Appliance ID:
+            <CopyMultineValue value={applianceId} />
+          </ApplianceId>
+          <AddLicenceButtonWrapper
+            ref={(ref: HTMLElement | null) => (this.buttonWrapperRef = ref)}
+          >
+            <Logo
+              ref={(ref: HTMLElement | null) => {
+                this.licenceLogoRef = ref;
+              }}
+              dangerouslySetInnerHTML={{
+                __html: licenceImage(ThemePalette.grayscale[5]),
+              }}
+            />
+            <Button primary onClick={this.props.onAddClick}>
+              Add Licence
+            </Button>
+          </AddLicenceButtonWrapper>
+        </ApplianceIdWrapper>
       </LicenceError>
     );
   }
