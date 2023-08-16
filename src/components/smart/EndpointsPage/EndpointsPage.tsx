@@ -94,7 +94,8 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     const providers = endpointStore.endpoints.reduce((p, endpoint) => {
       if (!p.find(p2 => p2.value === endpoint.type)) {
         p.push({
-          label: configLoader.config.providerNames[endpoint.type],
+          label:
+            configLoader.config.providerNames[endpoint.type] || endpoint.type,
           value: endpoint.type,
         });
       }
