@@ -50,14 +50,16 @@ type State = {
   streamLogName: string;
   streamSeverityLevel: number;
   isStreaming: boolean;
+  search: string;
 };
 @observer
 class LogsPage extends React.Component<Record<string, never>, State> {
-  state = {
+  state: State = {
     selectedTab: "downloads",
     streamLogName: "All Logs",
     streamSeverityLevel: 6,
     isStreaming: true,
+    search: "",
   };
 
   UNSAFE_componentWillMount() {
@@ -188,10 +190,16 @@ class LogsPage extends React.Component<Record<string, never>, State> {
         return (
           <TabContent>
             <StreamText
+              search={this.state.search}
+              onSearchChange={search => {
+                this.setState({ search });
+              }}
               logName={this.state.streamLogName}
               logs={[{ log_name: "All Logs" }, ...logStore.logs]}
               severityLevel={this.state.streamSeverityLevel}
-              liveFeed={logStore.liveFeed}
+              liveFeed={logStore.liveFeed.filter(l =>
+                l.includes(this.state.search)
+              )}
               onLogNameChange={logName => {
                 this.handleStreamLogNameChange(logName);
               }}

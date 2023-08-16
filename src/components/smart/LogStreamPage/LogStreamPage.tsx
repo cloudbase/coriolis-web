@@ -31,6 +31,7 @@ type State = {
   logName: string;
   severityLevel: number;
   isStreaming: boolean;
+  search: string;
 };
 @observer
 class LogStreamPage extends React.Component<Record<string, never>, State> {
@@ -38,6 +39,7 @@ class LogStreamPage extends React.Component<Record<string, never>, State> {
     logName: "All Logs",
     severityLevel: 6,
     isStreaming: true,
+    search: "",
   };
 
   UNSAFE_componentWillMount() {
@@ -112,10 +114,16 @@ class LogStreamPage extends React.Component<Record<string, never>, State> {
     return (
       <Wrapper>
         <StreamText
+          search={this.state.search}
+          onSearchChange={search => {
+            this.setState({ search });
+          }}
           logName={this.state.logName}
           logs={[{ log_name: "All Logs" }, ...logStore.logs]}
           severityLevel={this.state.severityLevel}
-          liveFeed={logStore.liveFeed}
+          liveFeed={logStore.liveFeed.filter(l =>
+            l.includes(this.state.search)
+          )}
           onLogNameChange={logName => {
             this.handleLogNameChange(logName);
           }}
