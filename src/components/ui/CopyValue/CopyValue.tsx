@@ -18,7 +18,6 @@ import styled, { css } from "styled-components";
 
 import CopyButton from "@src/components/ui/CopyButton";
 import DomUtils from "@src/utils/DomUtils";
-import notificationStore from "@src/stores/NotificationStore";
 
 const Wrapper = styled.div<any>`
   cursor: pointer;
@@ -57,14 +56,8 @@ class CopyValue extends React.Component<Props> {
   handleCopyIdClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e && e.stopPropagation) e.stopPropagation();
 
-    const succesful = DomUtils.copyTextToClipboard(this.props.value);
+    DomUtils.copyTextToClipboard(this.props.value);
     if (this.props.onCopy) this.props.onCopy(this.props.value);
-
-    if (succesful) {
-      notificationStore.alert("The value has been copied to clipboard.");
-    } else {
-      notificationStore.alert("The value couldn't be copied", "error");
-    }
   }
 
   render() {
