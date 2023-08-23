@@ -26,7 +26,8 @@ export type ProviderTypes =
   | "olvm"
   | "kubevirt"
   | "metal"
-  | "rhev";
+  | "rhev"
+  | "lxd";
 
 export type Providers = {
   [provider in ProviderTypes]: {
