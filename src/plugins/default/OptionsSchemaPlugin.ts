@@ -153,7 +153,7 @@ export const defaultGetDestinationEnv = (
     }
     if (Array.isArray(value)) {
       env[optionName] = value;
-    } else if (typeof value === "object") {
+    } else if (typeof value === "object" && value != null) {
       const oldValue = oldOptions?.[optionName] || {};
       const mergedValue: any = { ...oldValue, ...value };
       const newValue: any = {};
