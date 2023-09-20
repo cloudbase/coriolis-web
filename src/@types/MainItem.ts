@@ -71,7 +71,7 @@ type BaseItem = {
   id: string;
   name: string;
   description?: string;
-  notes: string;
+  notes: string | null;
   created_at: string;
   updated_at: string;
   origin_endpoint_id: string;

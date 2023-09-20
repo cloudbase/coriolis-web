@@ -307,7 +307,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     if (item.instances[0].toLowerCase().indexOf(text) > -1) {
       return true;
     }
-    if (item.notes.toLowerCase().indexOf(text) > -1) {
+    if (item.notes && item.notes.toLowerCase().indexOf(text) > -1) {
       return true;
     }
     if (item.destination_environment) {
