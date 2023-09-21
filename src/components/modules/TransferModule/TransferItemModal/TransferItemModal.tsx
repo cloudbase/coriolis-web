@@ -378,6 +378,9 @@ class TransferItemModal extends React.Component<Props, State> {
     }
 
     if (fieldName === "title") {
+      if (this.props.replica.notes) {
+        return this.props.replica.notes;
+      }
       let title = this.props.instancesDetails?.[0]?.name;
       if (
         this.props.instancesDetails &&

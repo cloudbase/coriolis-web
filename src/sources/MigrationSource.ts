@@ -183,7 +183,7 @@ class MigrationSource {
         opts.replicationCount ||
         2,
       instances: opts.instanceNames,
-      notes: getValue("title") || getValue("notes") || "",
+      notes: opts.updatedDestEnv?.title || opts.migration.notes || "",
     };
 
     const skipOsMorphingValue = getValue("skip_os_morphing");
