@@ -5,9 +5,10 @@ WORKDIR /root/coriolis-web
 COPY ./ .
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
+ENV NODE_ENV=production
 
-RUN yarn install --production --no-progress
-RUN yarn build
+RUN npm install
+RUN npm run build
 
-ENTRYPOINT [ "yarn", "start" ]
+ENTRYPOINT [ "npm", "run", "start" ]
 EXPOSE 3000

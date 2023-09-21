@@ -2,41 +2,40 @@ name: Build and Test
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16.x
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
 
-    - name: Install yarn
-      run: npm install -g yarn
+      - name: Install dependencies
+        run: npm install
 
-    - name: Install dependencies
-      run: yarn install
+      - name: Check Typescript
+        run: npm run tsc
 
-    - name: Check Typescript
-      run: yarn tsc
+      - name: Check ESLint
+        run: npm run eslint
 
-    - name: Check ESLint
-      run: yarn eslint
+      - name: Check Prettier
+        run: npm run format
 
-    - name: Check Prettier
-      run: yarn format
+      - name: Run unit tests
+        run: npm run test
 
-    - name: Run unit tests
-      run: yarn test
+      - name: Install production dependencies
+        run: |
+          rm -rf node_modules
+          npm install --omit=dev
 
-    - name: Install production dependencies
-      run: |
-        rm -rf node_modules
-        yarn install --production
-
-    - name: Build
-      run: yarn build
+      - name: Build
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
+        run: npm run build

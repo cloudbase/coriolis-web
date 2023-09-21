@@ -43,7 +43,7 @@
     "cypress": "^3.2.0",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-coriolis-web": "./src/utils/eslint-plugin-coriolis-web",
+    "eslint-plugin-coriolis-web": "file:src/utils/eslint-plugin-coriolis-web",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.7",
     "jest": "^27.3.1",
@@ -77,7 +77,7 @@
     "js-base64": "^3.5.2",
     "js-cookie": "^2.2.1",
     "jszip": "^3.8.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "mobx": "^5.15.4",
     "mobx-react": "^6.2.2",
     "moment": "^2.29.4",
@@ -100,7 +100,7 @@
     "rimraf": "^2.6.2",
     "styled-components": "^4.4.1",
     "tai-password-strength": "^1.1.2",
-    "ts-node": "10.4.0",
+    "ts-node": "^10.9.1",
     "typescript": "^4.5.3",
     "url-loader": "^4.1.0",
     "webpack": "^4.41.2",
@@ -108,7 +108,7 @@
     "webpack-dev-server": "^3.9.0",
     "webpack-merge": "^4.2.2"
   },
-  "resolutions": {
+  "overrides": {
     "ansi-regex": "^5.0.1",
     "async": "^2.6.4",
     "base64url": "^3.0.0",
@@ -126,7 +126,6 @@
     "nth-check": "^2.0.1",
     "prismjs": "^1.27.0",
     "postcss": "^8.2.13",
-    "lodash": "^4.17.21",
     "tar": "^4.4.18",
     "trim": "^0.0.3",
     "ua-parser-js": "^0.7.24",
