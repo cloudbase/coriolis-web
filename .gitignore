@@ -6,3 +6,12 @@ node_modules
 private/cypress/config.js
 .env
 .not-first-launch
+
+# yarn v3
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

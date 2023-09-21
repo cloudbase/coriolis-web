@@ -37,7 +37,7 @@ describe("Button", () => {
         window.getComputedStyle(document.querySelector("button")!)
           .backgroundColor
       )
-    ).toBe(ThemePalette.secondaryLight);
+    ).toBe(ThemePalette.grayscale[8]);
   });
 
   it("fires click", () => {

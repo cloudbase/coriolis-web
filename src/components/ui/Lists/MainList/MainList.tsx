@@ -31,7 +31,7 @@ const Wrapper = styled.div<any>`
 `;
 const Separator = styled.div<any>`
   height: 1px;
-  background: ${ThemePalette.grayscale[1]}; ;
+  background: ${ThemePalette.grayscale[1]};
 `;
 const Loading = styled.div<any>`
   display: flex;

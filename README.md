@@ -6,35 +6,38 @@ Web  GUI for [coriolis](https://github.com/cloudbase/coriolis)
 
 ## Install instructions
 
-- [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/lang/en/docs/install/) are required
+- Install [Node 18](https://nodejs.org/en/download)
 - clone repo
-- run `yarn install` or `yarn install --production` to install packages and dependencies for development or production mode
+- run `corepack enable` for yarn 3 support
+- run `yarn install` (development deps) or `yarn workspaces focus --all --production` (production deps)
 - set `CORIOLIS_URL` environment variable
 
 ## Build instructions
 
-- run `yarn build`
-- run `yarn start` to start the server
+Build the production version of the UI:
+
+- run `npm run build`
+- run `npm run start` to start the server
 
 Your server will be running at `http://localhost:3000/` (the port is configurable through `PORT` environment variable)
 
 ## Testing
 
-- unit tests can be run using `yarn test`
-- run `yarn test-release` to check for Typescript and ESLint errors, to run the unit tests and to build and start a production build.
+- unit tests can be run using `npm run test`
+- run `npm run test-release` to check for Typescript, ESLint and prettier errors. This will also run the unit tests and will try to build and start a production version. If eeverything is OK, it will revert to the development installation.
 
 ## Development mode
 
 - set env. variable `NODE_ENV='development'`
-- run `yarn client-dev` to start local development server (starts on port 3001)
-- run `yarn server-dev` to start the express server in development mode
+- run `npm run client-dev` to start local development server (starts on port 3001)
+- run `npm run server-dev` to start the express server in development mode
 
 To debug the client code using VS Code, simply run the project's launch configuration from the 'Run' menu (Ctrl+Shift+D).
-The last 2 `yarn ...` commands must be running in the background.
+The last 2 `npm run ...` commands must be running in the background.
 
-To debug the Node server using VS Code, run `yarn server-debug` instead of `yarn server-dev`.
+To debug the Node server using VS Code, run `npm run server-debug` instead of `npm run server-dev`.
 
-You can view some of the UIs components in the [Storybook](https://github.com/storybooks/storybook) by running `yarn storybook`
+You can view some of the UIs components in the [Storybook](https://github.com/storybooks/storybook) by running `npm run storybook`
 
 ## Modding
 

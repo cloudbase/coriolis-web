@@ -95,7 +95,7 @@ class NotificationsModule extends React.Component<
     errorInfo: null,
   };
 
-  notificationSystem!: NotificationSystem.System;
+  notificationSystem!: NotificationSystem;
 
   notificationsCount = 0;
 
@@ -168,7 +168,7 @@ class NotificationsModule extends React.Component<
       <Wrapper>
         <GlobalStyle />
         <NotificationSystem
-          ref={(n: NotificationSystem.System) => {
+          ref={(n: NotificationSystem) => {
             this.notificationSystem = n;
           }}
         />
