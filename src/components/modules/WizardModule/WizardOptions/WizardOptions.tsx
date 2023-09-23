@@ -299,6 +299,7 @@ class WizardOptions extends React.Component<Props> {
         type: "boolean",
         default: true,
         nullableBoolean: false,
+        description: `Whether or not to create a separate ${this.props.wizardType} for each selected VM`,
       });
     }
 
