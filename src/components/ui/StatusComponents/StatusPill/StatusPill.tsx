@@ -72,6 +72,7 @@ const statuses = (status: any) => {
     case "CANCELED_FOR_DEBUGGING":
     case "CANCELED_AFTER_COMPLETION":
     case "FORCE_CANCELED":
+    case "WARNING":
       return css`
         background: ${ThemePalette.warning};
         color: ${ThemePalette.black};

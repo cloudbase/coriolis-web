@@ -242,7 +242,7 @@ class TaskItem extends React.Component<Props> {
     );
   }
 
-  renderHeader() {
+  renderHeader(status: string) {
     const date = this.props.item.updated_at
       ? this.props.item.updated_at
       : this.props.item.created_at;
@@ -263,10 +263,7 @@ class TaskItem extends React.Component<Props> {
       <Header>
         <HeaderData capitalize width={this.props.columnWidths[0]} black>
           <Title>
-            <StatusIcon
-              status={this.props.item.status}
-              style={{ marginRight: "8px" }}
-            />
+            <StatusIcon status={status} style={{ marginRight: "8px" }} />
             <TitleText>{getName(this.props.item.task_type)}</TitleText>
           </Title>
         </HeaderData>
@@ -406,7 +403,7 @@ class TaskItem extends React.Component<Props> {
     return valueField;
   }
 
-  renderBody() {
+  renderBody(status: string) {
     const { columnWidths } = this.props;
     return (
       <Collapse isOpened={this.props.open}>
@@ -421,7 +418,7 @@ class TaskItem extends React.Component<Props> {
               <Row>
                 <RowData width={columnWidths[0]}>
                   <Label>Status</Label>
-                  <StatusPill small status={this.props.item.status} />
+                  <StatusPill small status={status} />
                 </RowData>
                 <RowData
                   width={`calc(${columnWidths[1]} + ${columnWidths[2]})`}
@@ -456,12 +453,17 @@ class TaskItem extends React.Component<Props> {
   }
 
   render() {
+    const status = this.props.item.progress_updates.some(update =>
+      update.message.startsWith("WARNING")
+    )
+      ? "WARNING"
+      : this.props.item.status;
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Wrapper {...this.props}>
         <GlobalStyle />
-        {this.renderHeader()}
-        {this.renderBody()}
+        {this.renderHeader(status)}
+        {this.renderBody(status)}
       </Wrapper>
     );
   }
