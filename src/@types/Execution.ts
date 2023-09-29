@@ -18,9 +18,9 @@ export type Execution = {
   id: string;
   number: number;
   status: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at?: Date;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
   type:
     | "replica_execution"
     | "replica_disks_delete"

@@ -12,34 +12,31 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from "moment";
+import { DateTime, Duration } from "luxon";
 
 class DateUtils {
-  static getLocalTime(rawDate: moment.MomentInput): moment.Moment {
-    const usableRawDate = rawDate || undefined;
-    return moment(usableRawDate).add(
-      -new Date().getTimezoneOffset(),
-      "minutes"
-    );
+  static getLocalDate(isoDate: string | Date) {
+    return this.getUtcDate(isoDate).toLocal();
   }
 
-  static getUtcTime(rawDate: moment.MomentInput): moment.Moment {
-    const usableRawDate = rawDate || undefined;
-    return moment(usableRawDate).add(new Date().getTimezoneOffset(), "minutes");
+  static getUtcDate(isoDate: string | Date) {
+    if (isoDate instanceof Date) {
+      return DateTime.fromJSDate(isoDate, { zone: "utc" });
+    }
+    return DateTime.fromISO(isoDate, { zone: "utc" });
   }
 
   static getLocalHour(hour: number): number {
-    return moment("00", "HH")
-      .add(-new Date().getTimezoneOffset(), "minutes")
-      .add(hour, "hours")
-      .get("hours");
+    return DateTime.utc()
+      .set({ hour: 0 })
+      .plus(Duration.fromObject({ hours: hour }))
+      .toLocal().hour;
   }
 
   static getUtcHour(hour: number): number {
-    return moment("00", "HH")
-      .add(new Date().getTimezoneOffset(), "minutes")
-      .add(hour, "hours")
-      .get("hours");
+    return DateTime.fromObject({ hour: 0 }, { zone: "local" })
+      .setZone("utc")
+      .plus(Duration.fromObject({ hours: hour })).hour;
   }
 
   static getOrdinalDay(number: number) {

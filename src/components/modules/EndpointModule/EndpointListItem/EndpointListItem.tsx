@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
-import type { Endpoint } from "@src/@types/Endpoint";
-import Checkbox from "@src/components/ui/Checkbox";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Checkbox from "@src/components/ui/Checkbox";
 import DateUtils from "@src/utils/DateUtils";
 
 import endpointImage from "./images/endpoint.svg";
 
+import type { Endpoint } from "@src/@types/Endpoint";
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => (props.checked ? 1 : 0)};
   transition: all ${ThemeProps.animations.swift};
@@ -119,8 +119,8 @@ class EndpointListItem extends React.Component<Props> {
           <Created>
             <ItemLabel>Created</ItemLabel>
             <ItemValue>
-              {DateUtils.getLocalTime(this.props.item.created_at).format(
-                "DD MMMM YYYY, HH:mm"
+              {DateUtils.getLocalDate(this.props.item.created_at).toFormat(
+                "dd LLLL yyyy, HH:mm"
               )}
             </ItemValue>
           </Created>

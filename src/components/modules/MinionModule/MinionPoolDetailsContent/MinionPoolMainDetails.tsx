@@ -12,28 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
 import styled, { css } from "styled-components";
 
+import fieldHelper from "@src/@types/Field";
+import { MigrationItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { MinionPool } from "@src/@types/MinionPool";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
 import CopyValue from "@src/components/ui/CopyValue";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
-import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
+import { OptionsSchemaPlugin } from "@src/plugins";
+import DateUtils from "@src/utils/DateUtils";
+import LabelDictionary from "@src/utils/LabelDictionary";
 
 import type { Endpoint } from "@src/@types/Endpoint";
 import type { Field as FieldType } from "@src/@types/Field";
-import fieldHelper from "@src/@types/Field";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import DateUtils from "@src/utils/DateUtils";
-import LabelDictionary from "@src/utils/LabelDictionary";
-import { OptionsSchemaPlugin } from "@src/plugins";
-
-import { TransferItem, ReplicaItem, MigrationItem } from "@src/@types/MainItem";
-import { MinionPool } from "@src/@types/MinionPool";
-
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -123,8 +120,8 @@ class MinionPoolMainDetails extends React.Component<Props> {
   renderLastExecutionTime() {
     return this.props.item?.updated_at
       ? this.renderValue(
-          DateUtils.getLocalTime(this.props.item.updated_at).format(
-            "YYYY-MM-DD HH:mm:ss"
+          DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
+            "yyyy-LL-dd HH:mm:ss"
           )
         )
       : "-";
@@ -305,8 +302,8 @@ class MinionPoolMainDetails extends React.Component<Props> {
               <Label>Created</Label>
               {this.props.item?.created_at ? (
                 this.renderValue(
-                  DateUtils.getLocalTime(this.props.item.created_at).format(
-                    "YYYY-MM-DD HH:mm:ss"
+                  DateUtils.getLocalDate(this.props.item.created_at).toFormat(
+                    "yyyy-LL-dd HH:mm:ss"
                   )
                 )
               ) : (

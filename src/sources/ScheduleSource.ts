@@ -12,13 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from "moment";
-
 import Api from "@src/utils/ApiCaller";
 import configLoader from "@src/utils/Config";
 import DateUtils from "@src/utils/DateUtils";
-import type { Schedule } from "@src/@types/Schedule";
 
+import type { Schedule } from "@src/@types/Schedule";
 class ScheduleSource {
   async scheduleSinge(
     replicaId: string,
@@ -35,7 +33,7 @@ class ScheduleSource {
     };
 
     if (scheduleData.expiration_date) {
-      payload.expiration_date = moment(
+      payload.expiration_date = new Date(
         scheduleData.expiration_date
       ).toISOString();
     }
@@ -84,18 +82,19 @@ class ScheduleSource {
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
       skipLog: opts && opts.skipLog,
     });
-    const schedules = [...response.data.schedules];
-    schedules.forEach(s => {
-      if (s.expiration_date) {
-        // eslint-disable-next-line no-param-reassign
-        s.expiration_date = DateUtils.getLocalTime(s.expiration_date);
-      }
-      if (s.shutdown_instance) {
-        // eslint-disable-next-line no-param-reassign
-        s.shutdown_instances = s.shutdown_instance;
-      }
-    });
-    schedules.sort((a, b) => moment(a.created_at).diff(b.created_at));
+
+    const schedules: any[] = response.data.schedules.map((s: any) => ({
+      ...s,
+      expiration_date: s.expiration_date
+        ? DateUtils.getUtcDate(s.expiration_date).toJSDate()
+        : undefined,
+      shutdown_instances:
+        s.shutdown_instance != null ? s.shutdown_instance : undefined,
+    }));
+    schedules.sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
     return schedules;
   }
 
@@ -144,8 +143,8 @@ class ScheduleSource {
     if (scheduleData.shutdown_instances != null) {
       payload.shutdown_instance = scheduleData.shutdown_instances;
     }
-    if (unsavedData && unsavedData.expiration_date) {
-      payload.expiration_date = moment(
+    if (unsavedData?.expiration_date) {
+      payload.expiration_date = new Date(
         unsavedData.expiration_date
       ).toISOString();
     }
@@ -174,7 +173,7 @@ class ScheduleSource {
     });
     const s = { ...response.data.schedule };
     if (s.expiration_date) {
-      s.expiration_date = DateUtils.getLocalTime(s.expiration_date);
+      s.expiration_date = DateUtils.getUtcDate(s.expiration_date);
     }
     if (s.shutdown_instance) {
       s.shutdown_instances = s.shutdown_instance;

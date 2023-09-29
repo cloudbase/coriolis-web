@@ -13,19 +13,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import * as React from "react";
-import styled, { createGlobalStyle, css } from "styled-components";
-import moment from "moment";
 import { Collapse } from "react-collapse";
-
 import { Link } from "react-router-dom";
+import styled, { createGlobalStyle, css } from "styled-components";
+
+import { MigrationItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
 import { MinionMachine, MinionPool } from "@src/@types/MinionPool";
-import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
-import { ItemReplicaBadge } from "@src/components/ui/Dropdowns/NotificationDropdown";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Arrow from "@src/components/ui/Arrow";
-
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
+import { ItemReplicaBadge } from "@src/components/ui/Dropdowns/NotificationDropdown";
 import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
-import { MigrationItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import DateUtils from "@src/utils/DateUtils";
+
 import networkImage from "./images/network.svg";
 
 const GlobalStyle = createGlobalStyle`
@@ -304,18 +304,24 @@ class MinionPoolMachines extends React.Component<Props, State> {
                 </MachineRow>
                 <MachineRow secondary>
                   Created At:{" "}
-                  {moment(machine.created_at).format("YYYY-MM-DD HH:mm:ss")}
+                  {DateUtils.getLocalDate(machine.created_at).toFormat(
+                    "yyyy-LL-dd HH:mm:ss"
+                  )}
                 </MachineRow>
                 {machine.updated_at ? (
                   <MachineRow secondary>
                     Updated At:{" "}
-                    {moment(machine.updated_at).format("YYYY-MM-DD HH:mm:ss")}
+                    {DateUtils.getLocalDate(machine.updated_at).toFormat(
+                      "yyyy-LL-dd HH:mm:ss"
+                    )}
                   </MachineRow>
                 ) : null}
                 {machine.last_used_at ? (
                   <MachineRow secondary>
                     Last Used At:{" "}
-                    {moment(machine.last_used_at).format("YYYY-MM-DD HH:mm:ss")}
+                    {DateUtils.getLocalDate(machine.last_used_at).toFormat(
+                      "yyyy-LL-dd HH:mm:ss"
+                    )}
                   </MachineRow>
                 ) : null}
                 {machine.allocated_action ? (

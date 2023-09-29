@@ -13,18 +13,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import * as React from "react";
-import moment from "moment";
 import styled from "styled-components";
+
 import {
   MinionPoolDetails,
   MinionPoolEventProgressUpdate,
 } from "@src/@types/MinionPool";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
-import Pagination from "@src/components/ui/Pagination";
-import configLoader from "@src/utils/Config";
 import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
 import InfoIcon from "@src/components/ui/InfoIcon";
+import Pagination from "@src/components/ui/Pagination";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import configLoader from "@src/utils/Config";
+import DateUtils from "@src/utils/DateUtils";
 
 const Wrapper = styled.div``;
 const Filters = styled.div`
@@ -242,7 +243,9 @@ class MinionPoolEvents extends React.Component<Props, State> {
                 <Message>{event.message}</Message>
               </RowData>
               <RowData width="192px" secondary>
-                {moment(event.created_at).format("YYYY-MM-DD HH:mm:ss")}
+                {DateUtils.getLocalDate(event.created_at).toFormat(
+                  "yyyy-LL-dd HH:mm:ss"
+                )}
               </RowData>
             </Row>
           );

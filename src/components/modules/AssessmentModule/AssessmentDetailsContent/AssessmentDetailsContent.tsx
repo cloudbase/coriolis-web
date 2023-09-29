@@ -12,30 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled, { css } from "styled-components";
-import moment from "moment";
-import { observer } from "mobx-react";
 
-import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
-import Button from "@src/components/ui/Button";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
-import Table from "@src/components/ui/Table";
 import AssessedVmListItem from "@src/components/modules/AssessmentModule/AssessedVmListItem";
-import DropdownFilter from "@src/components/ui/Dropdowns/DropdownFilter";
+import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
 import Checkbox from "@src/components/ui/Checkbox";
+import DropdownFilter from "@src/components/ui/Dropdowns/DropdownFilter";
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
 import SmallLoading from "@src/components/ui/SmallLoading";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Table from "@src/components/ui/Table";
+import DateUtils from "@src/utils/DateUtils";
+
+import arrowImage from "./images/arrow.svg";
+import azureMigrateImage from "./images/logo.svg";
 
 import type { Assessment, VmItem, AzureLocation } from "@src/@types/Assessment";
 import type { Endpoint } from "@src/@types/Endpoint";
 import type { Instance, Nic } from "@src/@types/Instance";
 import type { Network, NetworkMap } from "@src/@types/Network";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import azureMigrateImage from "./images/logo.svg";
-import arrowImage from "./images/arrow.svg";
-
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
@@ -264,9 +263,9 @@ class AssessmentDetailsContent extends React.Component<Props> {
               <Label>Last Update</Label>
               <Value>
                 {this.props.item
-                  ? moment(this.props.item.properties.updatedTimestamp).format(
-                      "YYYY-MM-DD HH:mm:ss"
-                    )
+                  ? DateUtils.getLocalDate(
+                      this.props.item.properties.updatedTimestamp
+                    ).toFormat("yyyy-LL-dd HH:mm:ss")
                   : "-"}
               </Value>
             </Field>

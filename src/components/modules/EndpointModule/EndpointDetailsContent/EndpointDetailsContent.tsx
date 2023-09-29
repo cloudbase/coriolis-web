@@ -12,33 +12,32 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
 import styled from "styled-components";
 
-import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
-import PasswordValue from "@src/components/ui/PasswordValue";
-import Button from "@src/components/ui/Button";
-import CopyValue from "@src/components/ui/CopyValue";
-import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-
-import type { Endpoint } from "@src/@types/Endpoint";
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import DateUtils from "@src/utils/DateUtils";
-import LabelDictionary from "@src/utils/LabelDictionary";
-import configLoader from "@src/utils/Config";
-import { Region } from "@src/@types/Region";
+import { Field as FieldType } from "@src/@types/Field";
 import {
   getTransferItemTitle,
   MigrationItem,
   ReplicaItem,
   TransferItem,
 } from "@src/@types/MainItem";
-import { Field as FieldType } from "@src/@types/Field";
+import { Region } from "@src/@types/Region";
+import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
+import CopyValue from "@src/components/ui/CopyValue";
+import PasswordValue from "@src/components/ui/PasswordValue";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import configLoader from "@src/utils/Config";
+import DateUtils from "@src/utils/DateUtils";
 import DomUtils from "@src/utils/DomUtils";
+import LabelDictionary from "@src/utils/LabelDictionary";
 
+import type { Endpoint } from "@src/@types/Endpoint";
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
@@ -290,7 +289,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           <Field>
             <Label>Created</Label>
             {this.renderValue(
-              DateUtils.getLocalTime(createdAt).format("DD/MM/YYYY HH:mm")
+              DateUtils.getLocalDate(createdAt!).toFormat("dd/LL/yyyy HH:mm")
             )}
           </Field>
           <Field>

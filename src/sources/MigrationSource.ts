@@ -12,28 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from "moment";
-
+import {
+  MigrationItem,
+  MigrationItemDetails,
+  MigrationItemOptions,
+  UserScriptData,
+} from "@src/@types/MainItem";
+import { ProgressUpdate, Task } from "@src/@types/Task";
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
 import { OptionsSchemaPlugin } from "@src/plugins";
 import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin";
-
 import Api from "@src/utils/ApiCaller";
+import configLoader from "@src/utils/Config";
+
+import { sortTasks } from "./ReplicaSource";
+
 import type { InstanceScript } from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 import type { NetworkMap } from "@src/@types/Network";
 import type { Endpoint, StorageMap } from "@src/@types/Endpoint";
-
-import configLoader from "@src/utils/Config";
-import { ProgressUpdate, Task } from "@src/@types/Task";
-import {
-  MigrationItem,
-  MigrationItemOptions,
-  MigrationItemDetails,
-  UserScriptData,
-} from "@src/@types/MainItem";
-
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
-import { sortTasks } from "./ReplicaSource";
 
 class MigrationSourceUtils {
   static sortTaskUpdates(updates: ProgressUpdate[]) {
@@ -50,8 +47,9 @@ class MigrationSourceUtils {
   }
 
   static sortMigrations(migrations: any[]) {
-    migrations.sort((a: any, b: any) =>
-      moment(b.created_at).diff(moment(a.created_at))
+    migrations.sort(
+      (a: any, b: any) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
     migrations.forEach((migration: { tasks: Task[] }) => {

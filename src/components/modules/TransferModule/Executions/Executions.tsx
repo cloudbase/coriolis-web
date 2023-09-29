@@ -12,24 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
-import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import CopyValue from "@src/components/ui/CopyValue";
-import Button from "@src/components/ui/Button";
-import Timeline from "@src/components/modules/TransferModule/Timeline";
+import { Instance } from "@src/@types/Instance";
 import Tasks from "@src/components/modules/TransferModule/Tasks";
-
-import type { Execution, ExecutionTasks } from "@src/@types/Execution";
+import Timeline from "@src/components/modules/TransferModule/Timeline";
 import { ThemePalette } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
+import CopyValue from "@src/components/ui/CopyValue";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import DateUtils from "@src/utils/DateUtils";
 
-import { Instance } from "@src/@types/Instance";
 import executionImage from "./images/execution.svg";
 
+import type { Execution, ExecutionTasks } from "@src/@types/Execution";
 const Wrapper = styled.div<any>``;
 const LoadingWrapper = styled.div<any>`
   margin-top: 32px;
@@ -370,9 +369,9 @@ class Executions extends React.Component<Props, State> {
           status={this.state.selectedExecution.status}
         />
         <ExecutionInfoDate>
-          {DateUtils.getLocalTime(
+          {DateUtils.getLocalDate(
             this.state.selectedExecution.created_at
-          ).format("DD MMMM YYYY HH:mm")}
+          ).toFormat("dd LLLL yyyy HH:mm")}
         </ExecutionInfoDate>
         <ExecutionInfoId>
           ID:&nbsp;

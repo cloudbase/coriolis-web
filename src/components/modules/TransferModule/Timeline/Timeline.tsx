@@ -12,17 +12,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
-import type { Execution } from "@src/@types/Execution";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Arrow from "@src/components/ui/Arrow";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import DateUtils from "@src/utils/DateUtils";
 
+import type { Execution } from "@src/@types/Execution";
 const ITEM_GAP = 96;
 
 const ArrowStyled = styled(Arrow)<any>`
@@ -197,7 +196,9 @@ class Timeline extends React.Component<Props> {
                   this.props.selectedItem.id === item.id
                 }
               >
-                {DateUtils.getLocalTime(item.created_at).format("DD MMM YYYY")}
+                {DateUtils.getLocalDate(item.created_at).toFormat(
+                  "dd LLL yyyy"
+                )}
               </ItemLabel>
             </Item>
           ))}

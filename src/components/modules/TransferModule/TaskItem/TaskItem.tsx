@@ -12,23 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
-import styled, { css, createGlobalStyle } from "styled-components";
+import React from "react";
 import { Collapse } from "react-collapse";
+import styled, { createGlobalStyle, css } from "styled-components";
 
-import type { ProgressUpdate, Task } from "@src/@types/Task";
-import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import { Instance } from "@src/@types/Instance";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Arrow from "@src/components/ui/Arrow";
-import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import CopyButton from "@src/components/ui/CopyButton";
 import CopyValue from "@src/components/ui/CopyValue";
 import ProgressBar from "@src/components/ui/ProgressBar";
-import CopyButton from "@src/components/ui/CopyButton";
-import DomUtils from "@src/utils/DomUtils";
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import DateUtils from "@src/utils/DateUtils";
-import { Instance } from "@src/@types/Instance";
+import DomUtils from "@src/utils/DomUtils";
 
+import type { ProgressUpdate, Task } from "@src/@types/Task";
 const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {
     transition: height 0.4s ease-in-out;
@@ -275,7 +275,7 @@ class TaskItem extends React.Component<Props> {
         </HeaderData>
         <HeaderData width={this.props.columnWidths[3]}>
           {date
-            ? DateUtils.getLocalTime(date).format("YYYY-MM-DD HH:mm:ss")
+            ? DateUtils.getLocalDate(date).toFormat("yyyy-LL-dd HH:mm:ss")
             : "-"}
         </HeaderData>
         <ArrowStyled
@@ -349,8 +349,8 @@ class TaskItem extends React.Component<Props> {
             >
               <ProgressUpdateDate width={this.props.columnWidths[0]}>
                 <span>
-                  {DateUtils.getLocalTime(update.created_at).format(
-                    "YYYY-MM-DD HH:mm:ss"
+                  {DateUtils.getLocalDate(update.created_at).toFormat(
+                    "yyyy-LL-dd HH:mm:ss"
                   )}
                 </span>
               </ProgressUpdateDate>

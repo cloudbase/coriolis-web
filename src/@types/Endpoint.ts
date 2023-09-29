@@ -25,7 +25,7 @@ export type Endpoint = {
   name: string;
   description: string;
   type: ProviderTypes;
-  created_at: Date;
+  created_at: string;
   mapped_regions: string[];
   connection_info: {
     secret_ref?: string;

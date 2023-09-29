@@ -12,26 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import { DateTime, Info } from "luxon";
 import { observer } from "mobx-react";
+import React from "react";
 import styled, { css } from "styled-components";
-import moment from "moment";
 
-import Switch from "@src/components/ui/Switch";
-import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
-import DatetimePicker from "@src/components/ui/DatetimePicker";
-import Button from "@src/components/ui/Button";
-import type { Schedule, ScheduleFieldName } from "@src/@types/Schedule";
-
-import { executionOptions } from "@src/constants";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import DateUtils from "@src/utils/DateUtils";
-import notificationStore from "@src/stores/NotificationStore";
+import Button from "@src/components/ui/Button";
+import DatetimePicker from "@src/components/ui/DatetimePicker";
+import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
-import deleteImage from "./images/delete.svg";
+import Switch from "@src/components/ui/Switch";
+import { executionOptions } from "@src/constants";
+import notificationStore from "@src/stores/NotificationStore";
+import DateUtils from "@src/utils/DateUtils";
+
 import deleteHoverImage from "./images/delete-hover.svg";
-import saveImage from "./images/save.svg";
+import deleteImage from "./images/delete.svg";
 import saveHoverImage from "./images/save-hover.svg";
+import saveImage from "./images/save.svg";
+
+import type { Schedule, ScheduleFieldName } from "@src/@types/Schedule";
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -156,9 +157,7 @@ class ScheduleItem extends React.Component<Props> {
 
   handleMonthChange(item: Field) {
     const month = item.value || 1;
-    const maxNumDays = moment()
-      .month(month - 1)
-      .daysInMonth();
+    const maxNumDays = DateTime.local().set({ month: month }).daysInMonth!;
     const change: Schedule = { schedule: { month: item.value } };
     if (
       this.props.item.schedule &&
@@ -173,8 +172,8 @@ class ScheduleItem extends React.Component<Props> {
   }
 
   handleExpirationDateChange(date: Date) {
-    const newDate = moment(date);
-    if (newDate.diff(new Date(), "minutes") < 60) {
+    const newDate = DateUtils.getLocalDate(date);
+    if (newDate.diff(DateTime.local(), "minutes").minutes < 60) {
       notificationStore.alert(
         "Please select a further expiration date.",
         "error"
@@ -182,7 +181,7 @@ class ScheduleItem extends React.Component<Props> {
       return;
     }
 
-    this.props.onChange({ expiration_date: newDate.toDate() });
+    this.props.onChange({ expiration_date: newDate.toJSDate() });
   }
 
   handleHourChange(hour: number) {
@@ -227,7 +226,7 @@ class ScheduleItem extends React.Component<Props> {
 
   renderMonthValue() {
     const items: any = [{ label: "Any", value: null }];
-    const months = moment.months();
+    const months = Info.months("long");
     months.forEach((label, value) => {
       items.push({ label, value: value + 1 });
     });
@@ -260,10 +259,7 @@ class ScheduleItem extends React.Component<Props> {
     const items: any = [{ label: "Any", value: null }];
     for (
       let i = 1;
-      i <=
-      moment()
-        .month(month - 1)
-        .daysInMonth();
+      i <= DateTime.local().set({ month: month }).daysInMonth!;
       i += 1
     ) {
       items.push({ label: i.toString(), value: i });
@@ -290,9 +286,9 @@ class ScheduleItem extends React.Component<Props> {
   renderDayOfWeekValue() {
     const items: any = [{ label: "Any", value: null }];
 
-    const days = moment.weekdays(true);
-    days.forEach((label, value) => {
-      items.push({ label, value });
+    const days = Info.weekdays("long");
+    days.forEach((label, index) => {
+      items.push({ label, value: index });
     });
 
     if (this.props.item.enabled || this.props.deleting) {
@@ -394,27 +390,29 @@ class ScheduleItem extends React.Component<Props> {
   renderExpirationValue() {
     const date =
       this.props.item.expiration_date &&
-      moment(this.props.item.expiration_date);
+      DateUtils.getLocalDate(this.props.item.expiration_date);
 
     if (this.props.item.enabled || this.props.deleting) {
       let labelDate = date;
       if (this.props.timezone === "utc" && date) {
-        labelDate = DateUtils.getUtcTime(date);
+        labelDate = date.setZone("utc");
       }
       return this.renderLabel({
-        label: (labelDate && labelDate.format("DD/MM/YYYY hh:mm A")) || "-",
+        label: (labelDate && labelDate.toFormat("dd/LL/yyyy hh:mm a")) || "-",
       });
     }
 
     return (
       <DatetimePicker
-        value={date ? date.toDate() : null}
+        value={date ? date.toJSDate() : null}
         timezone={this.props.timezone}
         useBold={this.shouldUseBold("expiration_date", true)}
         onChange={newDate => {
           this.handleExpirationDateChange(newDate);
         }}
-        isValidDate={newDate => moment(newDate).isAfter(moment())}
+        isValidDate={newDate =>
+          DateUtils.getLocalDate(newDate) > DateTime.local()
+        }
       />
     );
   }

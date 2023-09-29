@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 export type ProgressUpdate = {
   index: number;
   message: string;
-  created_at: Date;
+  created_at: string;
   total_steps: number | null;
   current_step: number | null;
 };
@@ -23,8 +23,8 @@ export type ProgressUpdate = {
 export type Task = {
   id: string;
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
   progress_updates: ProgressUpdate[];
   task_type: string;
   instance: string;

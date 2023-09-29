@@ -12,22 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { DateTime } from "luxon";
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
-import moment from "moment";
-
-import type { Log as LogType } from "@src/@types/Log";
-
-import { Close } from "@src/components/ui/TextInput";
-import DatetimePicker from "@src/components/ui/DatetimePicker";
-import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
-import Button from "@src/components/ui/Button";
 
 import { ThemeProps } from "@src/components/Theme";
-import downloadImage from "./images/download.svg";
+import Button from "@src/components/ui/Button";
+import DatetimePicker from "@src/components/ui/DatetimePicker";
 import LoadingButton from "@src/components/ui/LoadingButton";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import { Close } from "@src/components/ui/TextInput";
+import DateUtils from "@src/utils/DateUtils";
 
+import downloadImage from "./images/download.svg";
+
+import type { Log as LogType } from "@src/@types/Log";
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -128,6 +128,8 @@ class DownloadsContent extends React.Component<Props, State> {
   }
 
   renderDates() {
+    const toUtc = (date: Date) => DateUtils.getUtcDate(date);
+
     return (
       <Dates>
         <DateWrapper>
@@ -139,7 +141,7 @@ class DownloadsContent extends React.Component<Props, State> {
                 this.handleStartDateChange(date);
               }}
               timezone="utc"
-              isValidDate={date => moment(date).isBefore(moment())}
+              isValidDate={date => toUtc(date) < DateTime.utc()}
               dispatchChangeContinously
             />
             <CloseButton
@@ -159,14 +161,22 @@ class DownloadsContent extends React.Component<Props, State> {
                 this.handleEndDateChange(date);
               }}
               timezone="utc"
-              isValidDate={date =>
-                this.state.startDate
-                  ? moment(date).isBefore(moment()) &&
-                    moment(date).isAfter(
-                      moment(this.state.startDate).subtract(1, "day")
-                    )
-                  : moment(date).isBefore(moment())
-              }
+              isValidDate={date => {
+                const utcDate = toUtc(date);
+                const diffNow = utcDate.diffNow().milliseconds;
+                if (this.state.startDate) {
+                  // Convert the start date to UTC and subtract one day
+                  const startDate = toUtc(this.state.startDate).minus({
+                    days: 1,
+                  });
+                  // Return true if the selected date is before now and after the start date
+                  return (
+                    diffNow < 0 && utcDate.diff(startDate).milliseconds > 0
+                  );
+                }
+                // If no start date is set, return true if the selected date is before now
+                return diffNow < 0;
+              }}
               dispatchChangeContinously
             />
             <CloseButton

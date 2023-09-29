@@ -12,16 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import moment from "moment";
-
-import Api from "@src/utils/ApiCaller";
 import notificationStore from "@src/stores/NotificationStore";
-import ObjectUtils from "@src/utils/ObjectUtils";
-import type { Endpoint, Validation, Storage } from "@src/@types/Endpoint";
-
+import Api from "@src/utils/ApiCaller";
 import configLoader from "@src/utils/Config";
 import DomUtils from "@src/utils/DomUtils";
+import ObjectUtils from "@src/utils/ObjectUtils";
+
 import { SchemaParser } from "./Schemas";
+
+import type { Endpoint, Validation, Storage } from "@src/@types/Endpoint";
 
 const getBarbicanPayload = (data: any) => ({
   payload: JSON.stringify(data),
@@ -47,8 +46,9 @@ class EndpointSource {
       });
     }
 
-    connections.sort((c1, c2) =>
-      moment(c2.created_at).diff(moment(c1.created_at))
+    connections.sort(
+      (c1, c2) =>
+        new Date(c2.created_at).getTime() - new Date(c1.created_at).getTime()
     );
     return connections;
   }
