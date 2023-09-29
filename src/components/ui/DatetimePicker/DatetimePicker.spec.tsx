@@ -13,9 +13,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from "react";
-import moment from "moment";
+
+import DateUtils from "@src/utils/DateUtils";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
+
 import DatetimePicker from "./DatetimePicker";
 
 const DATE = new Date("2021-11-12T12:32:44.426Z");
@@ -24,9 +26,7 @@ describe("DatetimePicker", () => {
   it("renders date value in UTC timezone in dropdown label", () => {
     render(<DatetimePicker onChange={() => {}} timezone="utc" value={DATE} />);
 
-    const expected = moment(DATE)
-      .add(new Date().getTimezoneOffset(), "minutes")
-      .format("DD/MM/YYYY hh:mm A");
+    const expected = DateUtils.getUtcDate(DATE).toFormat("dd/LL/yyyy hh:mm a");
 
     expect(TestUtils.select("DropdownButton__Label")?.innerHTML).toEqual(
       expected
@@ -43,10 +43,9 @@ describe("DatetimePicker", () => {
     );
     firstDay?.click();
 
-    const expected = moment(DATE)
-      .set("date", 1)
-      .add(new Date().getTimezoneOffset(), "minutes")
-      .format("DD/MM/YYYY hh:mm A");
+    const expected = DateUtils.getUtcDate(DATE)
+      .set({ day: 1 })
+      .toFormat("dd/LL/yyyy hh:mm a");
 
     expect(TestUtils.select("DropdownButton__Label")?.innerHTML).toEqual(
       expected

@@ -64,11 +64,15 @@ const main = async () => {
     await spawnPromise("npm", ["run", "eslint"], "ESLint checks");
     await spawnPromise("npm", ["run", "format"], "Run prettier");
     await spawnPromise("npm", ["run", "test"], "Run unit tests");
-    await spawnPromise(
-      "npx",
-      ["rimraf", "node_modules"],
-      "Deleting node_modules"
-    );
+    try {
+      await spawnPromise(
+        "npx",
+        ["rimraf", "node_modules"],
+        "Deleting node_modules"
+      );
+    } catch (e) {
+      console.error(e);
+    }
     await spawnPromise(
       "yarn",
       ["workspaces", "focus", "--all", "--production"],

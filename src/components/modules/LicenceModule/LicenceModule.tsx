@@ -12,27 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from "react";
+import { DateTime } from "luxon";
 import { observer } from "mobx-react";
+import * as React from "react";
 import styled, { css } from "styled-components";
-import moment from "moment";
-
-import Button from "@src/components/ui/Button";
-import LoadingButton from "@src/components/ui/LoadingButton";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import TextArea from "@src/components/ui/TextArea";
-import CopyValue from "@src/components/ui/CopyValue";
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
+import CopyValue from "@src/components/ui/CopyValue";
+import LoadingButton from "@src/components/ui/LoadingButton";
+import OpenInNewIcon from "@src/components/ui/OpenInNewIcon";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import TextArea from "@src/components/ui/TextArea";
+import { LEGAL_URLS } from "@src/constants";
+import DateUtils from "@src/utils/DateUtils";
 import FileUtils from "@src/utils/FileUtils";
 
-import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
-
-// import OpenInNewIcon from '@src/components/ui/OpenInNewIcon'
-import OpenInNewIcon from "@src/components/ui/OpenInNewIcon";
-import { LEGAL_URLS } from "@src/constants";
 import licenceImage from "./images/licence";
 
+import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
 const Wrapper = styled.div<any>`
   min-height: 0;
   overflow: auto;
@@ -277,12 +275,13 @@ class LicenceModule extends React.Component<Props, State> {
   }
 
   renderExpiration(date: Date) {
-    const dateMoment = moment(date);
-    const days = dateMoment.diff(new Date(), "days");
+    const dateLuxon = DateUtils.getLocalDate(date);
+    const now = DateTime.local();
+    const days = Math.floor(dateLuxon.diff(now, "days").days);
     if (days === 0) {
       return (
         <span>
-          today at <b>{dateMoment.utc().format("HH:mm")} UTC</b>
+          today at <b>{dateLuxon.toUTC().toFormat("HH:mm")} UTC</b>
         </span>
       );
     }
@@ -290,7 +289,7 @@ class LicenceModule extends React.Component<Props, State> {
       <span>
         on{" "}
         <b>
-          {dateMoment.format("DD MMM YYYY")} ({days} days from now)
+          {dateLuxon.toFormat("dd LLL yyyy")} ({days} days from now)
         </b>
       </span>
     );

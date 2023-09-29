@@ -12,26 +12,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { DateTime } from "luxon";
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import moment from "moment-timezone";
-import { observer } from "mobx-react";
 
-import Button from "@src/components/ui/Button";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import Modal from "@src/components/ui/Modal";
-import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
-import AlertModal from "@src/components/ui/AlertModal";
 import ReplicaExecutionOptions from "@src/components/modules/TransferModule/ReplicaExecutionOptions";
 import ScheduleItem from "@src/components/modules/TransferModule/ScheduleItem";
-
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import AlertModal from "@src/components/ui/AlertModal";
+import Button from "@src/components/ui/Button";
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
+import LoadingButton from "@src/components/ui/LoadingButton";
+import Modal from "@src/components/ui/Modal";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import DateUtils from "@src/utils/DateUtils";
+
+import scheduleImage from "./images/schedule.svg";
+
 import type { Schedule as ScheduleType } from "@src/@types/Schedule";
 import type { Field } from "@src/@types/Field";
-
-import LoadingButton from "@src/components/ui/LoadingButton";
-import scheduleImage from "./images/schedule.svg";
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
@@ -353,7 +353,7 @@ class Schedule extends React.Component<Props, State> {
 
     const timezoneItems = [
       {
-        label: `${moment.tz(moment.tz.guess()).zoneAbbr()} (local time)`,
+        label: `${DateTime.local().toFormat("ZZZZ")} (local time)`,
         value: "local",
       },
       { label: "UTC", value: "utc" },

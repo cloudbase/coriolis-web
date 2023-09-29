@@ -12,31 +12,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import { Info } from "luxon";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
-import moment from "moment";
 
-import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
-
+import fieldHelper from "@src/@types/Field";
+import { MinionPool } from "@src/@types/MinionPool";
+import { ProviderTypes } from "@src/@types/Providers";
+import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
+import { getDisks } from "@src/components/modules/WizardModule/WizardStorage";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import LabelDictionary from "@src/utils/LabelDictionary";
-import DateUtils from "@src/utils/DateUtils";
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import { migrationFields } from "@src/constants";
+import configLoader from "@src/utils/Config";
+import DateUtils from "@src/utils/DateUtils";
+import LabelDictionary from "@src/utils/LabelDictionary";
+
+import networkArrowImage from "./images/network-arrow.svg";
+
 import type { Schedule } from "@src/@types/Schedule";
 import type { WizardData } from "@src/@types/WizardData";
 import type { StorageMap, StorageBackend } from "@src/@types/Endpoint";
 import type { Instance, Disk, InstanceScript } from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
-
-import fieldHelper from "@src/@types/Field";
-import { getDisks } from "@src/components/modules/WizardModule/WizardStorage";
-
-import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
-import { MinionPool } from "@src/@types/MinionPool";
-import { ProviderTypes } from "@src/@types/Providers";
-import configLoader from "@src/utils/Config";
-import networkArrowImage from "./images/network-arrow.svg";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -202,7 +201,7 @@ class WizardSummary extends React.Component<Props> {
       monthLabel = "Every month";
     } else {
       monthLabel = `Every ${
-        moment.months()[scheduleInfo.month ? scheduleInfo.month - 1 : 0]
+        Info.months()[scheduleInfo.month ? scheduleInfo.month - 1 : 0]
       }`;
     }
 
@@ -217,7 +216,7 @@ class WizardSummary extends React.Component<Props> {
     if (scheduleInfo.dow == null) {
       dayOfWeekLabel = "every weekday";
     } else {
-      dayOfWeekLabel = `every ${moment.weekdays(true)[scheduleInfo.dow]}`;
+      dayOfWeekLabel = `every ${Info.weekdays()[scheduleInfo.dow]}`;
     }
 
     const padNumber = (number: number) =>

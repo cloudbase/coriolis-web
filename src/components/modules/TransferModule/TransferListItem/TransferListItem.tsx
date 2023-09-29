@@ -12,17 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
-import Checkbox from "@src/components/ui/Checkbox";
-import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import { getTransferItemTitle, TransferItem } from "@src/@types/MainItem";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import { getTransferItemTitle, TransferItem } from "@src/@types/MainItem";
-
+import Checkbox from "@src/components/ui/Checkbox";
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import DateUtils from "@src/utils/DateUtils";
+
 import arrowImage from "./images/arrow.svg";
 import scheduleImage from "./images/schedule.svg";
 
@@ -129,8 +129,8 @@ class TransferListItem extends React.Component<Props> {
       >
         <ItemLabel>Created</ItemLabel>
         <ItemValue>
-          {DateUtils.getLocalTime(this.props.item.created_at).format(
-            "DD MMMM YYYY, HH:mm"
+          {DateUtils.getLocalDate(this.props.item.created_at).toFormat(
+            "dd LLLL yyyy, HH:mm"
           )}
         </ItemValue>
       </Column>
@@ -145,8 +145,8 @@ class TransferListItem extends React.Component<Props> {
         <ItemLabel>Updated</ItemLabel>
         <ItemValue>
           {this.props.item.updated_at
-            ? DateUtils.getLocalTime(this.props.item.updated_at).format(
-                "DD MMMM YYYY, HH:mm"
+            ? DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
+                "dd LLLL yyyy, HH:mm"
               )
             : "-"}
         </ItemValue>

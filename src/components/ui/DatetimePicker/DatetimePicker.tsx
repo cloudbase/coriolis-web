@@ -12,23 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { observer } from "mobx-react";
-import styled, { createGlobalStyle } from "styled-components";
-import Datetime from "react-datetime";
-import moment from "moment";
 import autobind from "autobind-decorator";
-
-import DropdownButton from "@src/components/ui/Dropdowns/DropdownButton";
-
-import DomUtils from "@src/utils/DomUtils";
-import DateUtils from "@src/utils/DateUtils";
+import { DateTime } from "luxon";
+import { observer } from "mobx-react";
+import React from "react";
+import Datetime from "react-datetime";
+import ReactDOM from "react-dom";
+import styled, { createGlobalStyle } from "styled-components";
 
 import { ThemeProps } from "@src/components/Theme";
-import style from "./style";
+import DropdownButton from "@src/components/ui/Dropdowns/DropdownButton";
+import DateUtils from "@src/utils/DateUtils";
+import DomUtils from "@src/utils/DomUtils";
 
-require("moment/locale/en-gb");
+import style from "./style";
 
 const GlobalStyle = createGlobalStyle`${style}`;
 
@@ -54,14 +51,14 @@ const DatetimeStyled = styled(Datetime)<any>`
 type Props = {
   value: Date | null;
   onChange: (date: Date) => void;
-  isValidDate?: (currentDate: Date, selectedDate: Date) => boolean;
+  isValidDate?: (currentDate: Date, selectedDate?: Date) => boolean;
   timezone: "utc" | "local";
   useBold?: boolean;
   dispatchChangeContinously?: boolean;
 };
 type State = {
   showPicker: boolean;
-  date: moment.Moment | null;
+  date: DateTime | null;
 };
 @observer
 class DatetimePicker extends React.Component<Props, State> {
@@ -80,7 +77,9 @@ class DatetimePicker extends React.Component<Props, State> {
 
   UNSAFE_componentWillMount() {
     if (this.props.value) {
-      this.setState({ date: moment(this.props.value) });
+      this.setState({
+        date: DateUtils.getLocalDate(this.props.value),
+      });
     }
   }
 
@@ -93,7 +92,11 @@ class DatetimePicker extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
-    this.setState({ date: newProps.value && moment(newProps.value) });
+    if (newProps.value?.getTime() !== this.props.value?.getTime()) {
+      this.setState({
+        date: newProps.value && DateUtils.getLocalDate(newProps.value),
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -134,7 +137,7 @@ class DatetimePicker extends React.Component<Props, State> {
     this.portalRef.style.left = `${leftOffset + window.pageXOffset}px`;
   }
 
-  isValidDate(currentDate: Date, selectedDate: Date): boolean {
+  isValidDate(currentDate: Date, selectedDate?: Date): boolean {
     if (!this.props.isValidDate) {
       return true;
     }
@@ -169,9 +172,9 @@ class DatetimePicker extends React.Component<Props, State> {
   }
 
   handleChange(newDate: Date) {
-    let date = moment(newDate);
+    let date = DateUtils.getLocalDate(newDate);
     if (this.props.timezone === "utc") {
-      date = DateUtils.getLocalTime(newDate);
+      date = date.setZone("utc");
     }
 
     this.setState({ date }, () => {
@@ -185,14 +188,14 @@ class DatetimePicker extends React.Component<Props, State> {
     if (
       this.state.date &&
       this.state.showPicker &&
-      this.state.date.toDate().getTime() !==
-        (this.props.value && this.props.value.getTime())
+      this.state.date.valueOf() !==
+        (this.props.value && this.props.value.valueOf())
     ) {
-      this.props.onChange(this.state.date.toDate());
+      this.props.onChange(this.state.date.toJSDate());
     }
   }
 
-  renderDateTimePicker(timezoneDate: moment.Moment | null) {
+  renderDateTimePicker(timezoneDate: DateTime | null) {
     if (!this.state.showPicker) {
       return null;
     }
@@ -206,16 +209,18 @@ class DatetimePicker extends React.Component<Props, State> {
       >
         <DatetimeStyled
           input={false}
-          value={timezoneDate}
+          value={timezoneDate?.toJSDate()}
           style={{ top: 0, right: 0 }}
-          onChange={(date: Date) => {
-            this.handleChange(date);
+          onChange={(date: any) => {
+            if (date) {
+              this.handleChange(date.toDate());
+            }
           }}
           dateFormat="DD/MM/YYYY"
           timeFormat="hh:mm A"
           locale="en-gb"
-          isValidDate={(currentDate: Date, selectedDate: Date) =>
-            this.isValidDate(currentDate, selectedDate)
+          isValidDate={(currentDate: any, selectedDate: any) =>
+            this.isValidDate(currentDate.toDate(), selectedDate?.toDate())
           }
         />
       </Portal>,
@@ -226,7 +231,7 @@ class DatetimePicker extends React.Component<Props, State> {
   render() {
     let timezoneDate = this.state.date;
     if (this.props.timezone === "utc" && timezoneDate) {
-      timezoneDate = DateUtils.getUtcTime(timezoneDate);
+      timezoneDate = timezoneDate.setZone("utc");
     }
 
     return (
@@ -239,9 +244,7 @@ class DatetimePicker extends React.Component<Props, State> {
             }}
             width={207}
             value={
-              (timezoneDate &&
-                moment(timezoneDate).format("DD/MM/YYYY hh:mm A")) ||
-              "-"
+              timezoneDate ? timezoneDate.toFormat("dd/LL/yyyy hh:mm a") : "-"
             }
             centered
             useBold={this.props.useBold}

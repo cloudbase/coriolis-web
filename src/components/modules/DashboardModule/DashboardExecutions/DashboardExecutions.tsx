@@ -12,18 +12,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from "react";
+import { DateTime, Duration } from "luxon";
 import { observer } from "mobx-react";
+import * as React from "react";
 import styled from "styled-components";
-import moment from "moment";
 
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
+import { MigrationItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
 import DashboardBarChart from "@src/components/modules/DashboardModule/DashboardBarChart";
-
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import DateUtils from "@src/utils/DateUtils";
 
-import { ReplicaItem, MigrationItem, TransferItem } from "@src/@types/MainItem";
 import emptyBackgroundImage from "./images/empty-background.svg";
 
 const INTERVALS = [
@@ -173,9 +173,9 @@ class DashboardExecutions extends React.Component<Props, State> {
 
     const periodUnit: any = this.state.selectedPeriod.split("-")[1];
     const periodValue: any = Number(this.state.selectedPeriod.split("-")[0]);
-    const oldestDate: Date = moment()
-      .subtract(periodValue, periodUnit)
-      .toDate();
+    const oldestDate: Date = DateTime.local()
+      .minus(Duration.fromObject({ [periodUnit]: periodValue }))
+      .toJSDate();
     creations = creations.filter(
       e => new Date(e.created_at).getTime() >= oldestDate.getTime()
     );
@@ -193,11 +193,12 @@ class DashboardExecutions extends React.Component<Props, State> {
       [period: string]: { replicas: number; migrations: number };
     } = {};
     transferItems.forEach(item => {
-      const date = moment(new Date(item.created_at));
+      const date = DateUtils.getUtcDate(item.created_at);
       const period: string =
         periodUnit === "days"
-          ? date.format("DD-MMM-YYYY_DD MMMM")
-          : date.format("MMM-YYYY_MMMM YYYY");
+          ? date.toFormat("dd-LLL-yyyy_dd LLLL")
+          : date.toFormat("LLL-yyyy_LLLL yyyy");
+
       if (!periods[period]) {
         periods[period] = { replicas: 0, migrations: 0 };
       }

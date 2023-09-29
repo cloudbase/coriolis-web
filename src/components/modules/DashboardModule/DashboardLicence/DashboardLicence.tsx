@@ -12,23 +12,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from "react";
 import { observer } from "mobx-react";
+import * as React from "react";
 import styled from "styled-components";
-import moment from "moment";
-
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import InfoIcon from "@src/components/ui/InfoIcon";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-
-import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
-import Button from "@src/components/ui/Button";
 
 import licenceImage from "@src/components/modules/LicenceModule/images/licence";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
 import CopyMultineValue from "@src/components/ui/CopyMultilineValue";
+import InfoIcon from "@src/components/ui/InfoIcon";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import DateUtils from "@src/utils/DateUtils";
 import ObjectUtils from "@src/utils/ObjectUtils";
 
+import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
 const Wrapper = styled.div<any>`
   flex-grow: 1;
 `;
@@ -217,16 +214,21 @@ class DashboardLicence extends React.Component<Props> {
         },
       ],
     ];
-    const expirationData = moment(info.earliestLicenceExpiryDate);
+    const expirationData = DateUtils.getLocalDate(
+      info.earliestLicenceExpiryDate
+    );
     return (
       <LicenceInfo>
         <TopInfo>
           <TopInfoText>Expires on</TopInfoText>
           <TopInfoDate>
             <TopInfoDateTop>
-              {expirationData.format("MMM")} &#39;{expirationData.format("YY")}
+              {expirationData.toFormat("LLL")} &#39;
+              {expirationData.toFormat("yy")}
             </TopInfoDateTop>
-            <TopInfoDateBottom>{expirationData.format("DD")}</TopInfoDateBottom>
+            <TopInfoDateBottom>
+              {expirationData.toFormat("dd")}
+            </TopInfoDateBottom>
           </TopInfoDate>
         </TopInfo>
         <Charts>

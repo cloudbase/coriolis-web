@@ -12,16 +12,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
+import { Collapse } from "react-collapse";
 import styled from "styled-components";
-import moment from "moment";
 
-import CopyValue from "@src/components/ui/CopyValue";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import Button from "@src/components/ui/Button";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import {
   MetalHubDisk,
   MetalHubNic,
@@ -39,9 +34,13 @@ import {
   RowHeader,
   RowHeaderColumn,
 } from "@src/components/modules/TransferModule/TransferDetailsTable";
-import { Collapse } from "react-collapse";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
+import CopyValue from "@src/components/ui/CopyValue";
 import LoadingButton from "@src/components/ui/LoadingButton";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import DateUtils from "@src/utils/DateUtils";
 
 const Wrapper = styled.div`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
@@ -229,13 +228,17 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
         <Field>
           <Label>Created At</Label>
           <Value>
-            {moment(server.created_at).format("YYYY-MM-DD HH:mm:ss")}
+            {DateUtils.getLocalDate(server.created_at).toFormat(
+              "yyyy-LL-dd HH:mm:ss"
+            )}
           </Value>
         </Field>
         <Field>
           <Label>Updated At</Label>
           <Value>
-            {moment(server.updated_at).format("YYYY-MM-DD HH:mm:ss")}
+            {DateUtils.getLocalDate(server.updated_at).toFormat(
+              "yyyy-LL-dd HH:mm:ss"
+            )}
           </Value>
         </Field>
         <Field>

@@ -12,17 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 import { MetalHubServer } from "@src/@types/MetalHub";
-import moment from "moment";
-import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
-import serverImage from "./images/server.svg";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Checkbox from "@src/components/ui/Checkbox";
+import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import DateUtils from "@src/utils/DateUtils";
+
+import serverImage from "./images/server.svg";
 
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => (props.checked ? 1 : 0)};
@@ -136,16 +136,16 @@ class MetalHubServerListItem extends React.Component<Props> {
             <Data width={145}>
               <ItemLabel>Created At</ItemLabel>
               <ItemValue>
-                {moment(this.props.item.created_at).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                {DateUtils.getLocalDate(this.props.item.created_at).toFormat(
+                  "yyyy-LL-dd HH:mm:ss"
                 )}
               </ItemValue>
             </Data>
             <Data width={145}>
               <ItemLabel>Updated At</ItemLabel>
               <ItemValue>
-                {moment(this.props.item.updated_at).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                {DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
+                  "yyyy-LL-dd HH:mm:ss"
                 )}
               </ItemValue>
             </Data>

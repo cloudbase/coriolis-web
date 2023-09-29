@@ -12,44 +12,42 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
-import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
-import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import { getTransferItemTitle, ReplicaItemDetails } from "@src/@types/MainItem";
 import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
-import ReplicaDetailsContent from "@src/components/modules/TransferModule/ReplicaDetailsContent";
-import Modal from "@src/components/ui/Modal";
-import ReplicaExecutionOptions from "@src/components/modules/TransferModule/ReplicaExecutionOptions";
-import AlertModal from "@src/components/ui/AlertModal";
-import TransferItemModal from "@src/components/modules/TransferModule/TransferItemModal";
-import ReplicaMigrationOptions from "@src/components/modules/TransferModule/ReplicaMigrationOptions";
+import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
 import DeleteReplicaModal from "@src/components/modules/TransferModule/DeleteReplicaModal";
+import ReplicaDetailsContent from "@src/components/modules/TransferModule/ReplicaDetailsContent";
+import ReplicaExecutionOptions from "@src/components/modules/TransferModule/ReplicaExecutionOptions";
+import ReplicaMigrationOptions from "@src/components/modules/TransferModule/ReplicaMigrationOptions";
+import TransferItemModal from "@src/components/modules/TransferModule/TransferItemModal";
+import { ThemePalette } from "@src/components/Theme";
+import AlertModal from "@src/components/ui/AlertModal";
+import Modal from "@src/components/ui/Modal";
+import { providerTypes } from "@src/constants";
+import endpointStore from "@src/stores/EndpointStore";
+import instanceStore from "@src/stores/InstanceStore";
+import migrationStore from "@src/stores/MigrationStore";
+import minionPoolStore from "@src/stores/MinionPoolStore";
+import networkStore from "@src/stores/NetworkStore";
+import providerStore from "@src/stores/ProviderStore";
+import replicaStore from "@src/stores/ReplicaStore";
+import scheduleStore from "@src/stores/ScheduleStore";
+import userStore from "@src/stores/UserStore";
+import configLoader from "@src/utils/Config";
+import ObjectUtils from "@src/utils/ObjectUtils";
+
+import replicaImage from "./images/replica.svg";
 
 import type { InstanceScript } from "@src/@types/Instance";
 import type { Execution } from "@src/@types/Execution";
 import type { Schedule } from "@src/@types/Schedule";
 import type { Field } from "@src/@types/Field";
 import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
-
-import replicaStore from "@src/stores/ReplicaStore";
-import migrationStore from "@src/stores/MigrationStore";
-import userStore from "@src/stores/UserStore";
-import endpointStore from "@src/stores/EndpointStore";
-import scheduleStore from "@src/stores/ScheduleStore";
-import instanceStore from "@src/stores/InstanceStore";
-import networkStore from "@src/stores/NetworkStore";
-import providerStore from "@src/stores/ProviderStore";
-
-import configLoader from "@src/utils/Config";
-import { providerTypes } from "@src/constants";
-
-import { ThemePalette } from "@src/components/Theme";
-import { getTransferItemTitle, ReplicaItemDetails } from "@src/@types/MainItem";
-import ObjectUtils from "@src/utils/ObjectUtils";
-import minionPoolStore from "@src/stores/MinionPoolStore";
-import replicaImage from "./images/replica.svg";
 
 const Wrapper = styled.div<any>``;
 
@@ -186,11 +184,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   get replicaId() {
-    if (
-      !this.props.match ||
-      !this.props.match.params ||
-      !this.props.match.params.id
-    ) {
+    if (!this.props.match?.params?.id) {
       throw new Error("Invalid replica id");
     }
     return this.props.match.params.id;
@@ -538,7 +532,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   }
 
   async pollData() {
-    if (this.state.pausePolling || this.stopPolling) {
+    if (
+      this.state.pausePolling ||
+      this.stopPolling ||
+      // Polling while on the schedule page is not needed and it can cause issues with the datetime pick component
+      this.props.match.params.page === "schedule"
+    ) {
       return;
     }
 
