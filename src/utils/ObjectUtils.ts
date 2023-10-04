@@ -83,18 +83,26 @@ class ObjectUtils {
 
   static async waitFor(
     predicate: () => boolean,
-    timeoutMs = 15000,
-    tryEvery = 1000
+    options?: {
+      timeoutMs?: number;
+      intervalMs?: number;
+      silent?: boolean;
+    }
   ) {
+    const { timeoutMs = 15000, intervalMs = 1000, silent } = options || {};
     const startTime = new Date().getTime();
     const testLoop = async () => {
       if (predicate()) {
         return;
       }
       if (new Date().getTime() - startTime > timeoutMs) {
-        throw new Error(`Timeout: waiting for more than ${timeoutMs} ms`);
+        if (!silent) {
+          throw new Error(`Timeout: waiting for more than ${timeoutMs} ms`);
+        }
+        console.log(`Timeout: waiting for more than ${timeoutMs} ms`);
+        return;
       }
-      await this.wait(tryEvery);
+      await this.wait(intervalMs);
       await testLoop();
     };
     await testLoop();

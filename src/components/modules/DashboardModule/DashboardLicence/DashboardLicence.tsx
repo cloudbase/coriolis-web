@@ -168,7 +168,10 @@ class DashboardLicence extends React.Component<Props> {
   componentDidMount() {
     const resetLayout = async () => {
       await ObjectUtils.waitFor(
-        () => !!this.buttonWrapperRef && !!this.licenceLogoRef
+        () => !!this.buttonWrapperRef && !!this.licenceLogoRef,
+        {
+          silent: true,
+        }
       );
       this.resetLayout();
     };

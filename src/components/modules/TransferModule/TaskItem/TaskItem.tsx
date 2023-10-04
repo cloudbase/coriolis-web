@@ -34,7 +34,7 @@ const GlobalStyle = createGlobalStyle`
     transition: height 0.4s ease-in-out;
   }
 `;
-const Wrapper = styled.div<any>`
+const Wrapper = styled.div<{ open: boolean }>`
   cursor: pointer;
   border-bottom: 1px solid white;
   transition: all ${ThemeProps.animations.swift};
@@ -459,8 +459,11 @@ class TaskItem extends React.Component<Props> {
       ? "WARNING"
       : this.props.item.status;
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      <Wrapper {...this.props}>
+      <Wrapper
+        open={this.props.open}
+        onMouseUp={this.props.onMouseUp}
+        onMouseDown={this.props.onMouseDown}
+      >
         <GlobalStyle />
         {this.renderHeader(status)}
         {this.renderBody(status)}

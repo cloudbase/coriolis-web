@@ -12,30 +12,34 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
-import styled from "styled-components";
 import autobind from "autobind-decorator";
 import { observer } from "mobx-react";
+import React from "react";
+import styled from "styled-components";
 
-import WizardTemplate from "@src/components/modules/TemplateModule/WizardTemplate";
+import { ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { ProviderTypes } from "@src/@types/Providers";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import EndpointModal from "@src/components/modules/EndpointModule/EndpointModal";
+import WizardTemplate from "@src/components/modules/TemplateModule/WizardTemplate";
+import { WizardNetworksChangeObject } from "@src/components/modules/WizardModule/WizardNetworks";
 import WizardPageContent from "@src/components/modules/WizardModule/WizardPageContent";
 import Modal from "@src/components/ui/Modal";
-import EndpointModal from "@src/components/modules/EndpointModule/EndpointModal";
-
-import userStore from "@src/stores/UserStore";
+import { executionOptions, providerTypes, wizardPages } from "@src/constants";
+import endpointStore from "@src/stores/EndpointStore";
+import instanceStore from "@src/stores/InstanceStore";
+import minionPoolStore from "@src/stores/MinionPoolStore";
+import networkStore from "@src/stores/NetworkStore";
+import notificationStore from "@src/stores/NotificationStore";
 import providerStore, {
   getFieldChangeOptions,
 } from "@src/stores/ProviderStore";
-import endpointStore from "@src/stores/EndpointStore";
-import wizardStore from "@src/stores/WizardStore";
-import instanceStore from "@src/stores/InstanceStore";
-import networkStore from "@src/stores/NetworkStore";
-import notificationStore from "@src/stores/NotificationStore";
-import scheduleStore from "@src/stores/ScheduleStore";
 import replicaStore from "@src/stores/ReplicaStore";
+import scheduleStore from "@src/stores/ScheduleStore";
+import userStore from "@src/stores/UserStore";
+import wizardStore from "@src/stores/WizardStore";
 import KeyboardManager from "@src/utils/KeyboardManager";
-import { wizardPages, executionOptions, providerTypes } from "@src/constants";
+import ObjectUtils from "@src/utils/ObjectUtils";
 
 import type {
   Endpoint as EndpointType,
@@ -45,12 +49,6 @@ import type { Instance, InstanceScript } from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 import type { Schedule } from "@src/@types/Schedule";
 import type { WizardPage as WizardPageType } from "@src/@types/WizardData";
-import ObjectUtils from "@src/utils/ObjectUtils";
-import { ProviderTypes } from "@src/@types/Providers";
-import { TransferItem, ReplicaItem } from "@src/@types/MainItem";
-import minionPoolStore from "@src/stores/MinionPoolStore";
-import { WizardNetworksChangeObject } from "@src/components/modules/WizardModule/WizardNetworks";
-
 const Wrapper = styled.div<any>``;
 
 type Props = {
@@ -150,15 +148,18 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   setTransferItemTitle() {
-    const selectedInstance = wizardStore.data?.selectedInstances?.[0];
-    let title =
-      selectedInstance?.name ||
-      selectedInstance?.instance_name ||
-      selectedInstance?.id;
     if (
-      wizardStore.data?.selectedInstances &&
-      wizardStore.data.selectedInstances.length > 1
+      !wizardStore.data?.selectedInstances ||
+      !wizardStore.data.selectedInstances.length
     ) {
+      return;
+    }
+    const selectedInstance = wizardStore.data.selectedInstances[0];
+    let title =
+      selectedInstance.name ||
+      selectedInstance.instance_name ||
+      selectedInstance.id;
+    if (wizardStore.data.selectedInstances.length > 1) {
       const shouldSeparateVm =
         wizardStore.data.destOptions?.separate_vm ||
         wizardStore.data.destOptions?.separate_vm === undefined;
