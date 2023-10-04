@@ -14,6 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from "react";
 import styled, { css } from "styled-components";
+
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 import closeImage from "./images/close.svg";
@@ -134,8 +135,8 @@ const TextInput = (props: Props) => {
     onCloseClick,
     disabled,
     disabledLoading,
-    embedded,
     onInputKeyDown,
+    ...otherProps
   } = props;
   const actualDisabled = disabled || disabledLoading;
   let input: { focus: () => void };
@@ -150,11 +151,11 @@ const TextInput = (props: Props) => {
         value={value}
         onChange={onChange}
         // eslint-disable-next-line react/jsx-props-no-spreading
-        {...props}
+        {...otherProps}
         onKeyDown={onInputKeyDown}
         disabled={actualDisabled}
       />
-      {props.required ? <Required right={embedded ? -24 : -16} /> : null}
+      {props.required ? <Required right={props.embedded ? -24 : -16} /> : null}
       <Close
         show={showClose && value !== "" && value !== undefined}
         onClick={() => {

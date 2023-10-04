@@ -13,29 +13,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import * as React from "react";
-import styled, { createGlobalStyle } from "styled-components";
 import { Collapse } from "react-collapse";
+import styled, { createGlobalStyle } from "styled-components";
 
-import Arrow from "@src/components/ui/Arrow";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-
+import { EndpointUtils, StorageBackend } from "@src/@types/Endpoint";
 import {
-  TransferNetworkMap,
   isNetworkMapSecurityGroups,
   isNetworkMapSourceDest,
   TransferItem,
+  TransferNetworkMap,
 } from "@src/@types/MainItem";
-import type { Instance, Nic, Disk } from "@src/@types/Instance";
-import { Network, NetworkUtils } from "@src/@types/Network";
-
 import { MinionPool } from "@src/@types/MinionPool";
-import { EndpointUtils, StorageBackend } from "@src/@types/Endpoint";
+import { Network, NetworkUtils } from "@src/@types/Network";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Arrow from "@src/components/ui/Arrow";
+
+import arrowIcon from "./images/arrow.svg";
 import instanceIcon from "./images/instance.svg";
 import networkIcon from "./images/network.svg";
 import storageIcon from "./images/storage.svg";
-import arrowIcon from "./images/arrow.svg";
 
+import type { Instance, Nic, Disk } from "@src/@types/Instance";
 export const GlobalStyle = createGlobalStyle`
   .ReactCollapse--collapse {
     transition: height 0.4s ease-in-out;
@@ -353,7 +351,7 @@ class TransferDetailsTable extends React.Component<Props, State> {
         this.renderRow({
           id: `${
             instance.instance_name || instance.id
-          }-${sourceName}-${destinationKey}`,
+          }-${sourceName}-${destinationKey}-${type}-${disk.size_bytes}`,
           icon: "storage",
           sourceName,
           destinationName,

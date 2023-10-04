@@ -12,28 +12,28 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from "react";
-import styled from "styled-components";
-import { observer } from "mobx-react";
-import { toJS } from "mobx";
 import autobind from "autobind-decorator";
+import { toJS } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
 import { CSSTransitionGroup } from "react-transition-group";
+import styled from "styled-components";
 
-import configLoader from "@src/utils/Config";
-import ToggleButtonBar from "@src/components/ui/ToggleButtonBar";
+import { MinionPool } from "@src/@types/MinionPool";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import FieldInput from "@src/components/ui/FieldInput";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import ToggleButtonBar from "@src/components/ui/ToggleButtonBar";
+import { executionOptions, migrationFields } from "@src/constants";
+import { MinionPoolStoreUtils } from "@src/stores/MinionPoolStore";
+import configLoader from "@src/utils/Config";
+import LabelDictionary from "@src/utils/LabelDictionary";
+
+import endpointImage from "./images/endpoint.svg";
+
 import type { Field } from "@src/@types/Field";
 import type { Instance } from "@src/@types/Instance";
 import type { StorageBackend } from "@src/@types/Endpoint";
-
-import { executionOptions, migrationFields } from "@src/constants";
-import LabelDictionary from "@src/utils/LabelDictionary";
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-
-import { MinionPool } from "@src/@types/MinionPool";
-import { MinionPoolStoreUtils } from "@src/stores/MinionPoolStore";
-import endpointImage from "./images/endpoint.svg";
 
 export const INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS =
   "instance_osmorphing_minion_pool_mappings";
@@ -634,7 +634,9 @@ class WizardOptions extends React.Component<Props> {
               key={g.name || 0}
               transitionName={i > 0 ? "field-group-transition" : ""}
               transitionAppear
+              transitionEnterTimeout={250}
               transitionAppearTimeout={250}
+              transitionLeaveTimeout={250}
               in={false}
             >
               <Group>

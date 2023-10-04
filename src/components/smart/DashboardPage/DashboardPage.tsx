@@ -12,25 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
-import replicaStore from "@src/stores/ReplicaStore";
-import migrationStore from "@src/stores/MigrationStore";
-import endpointStore from "@src/stores/EndpointStore";
-import userStore from "@src/stores/UserStore";
-import projectStore from "@src/stores/ProjectStore";
-import licenceStore from "@src/stores/LicenceStore";
-import notificationStore from "@src/stores/NotificationStore";
-
-import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
-import Navigation from "@src/components/modules/NavigationModule/Navigation";
-import PageHeader from "@src/components/smart/PageHeader";
 import DashboardContent from "@src/components/modules/DashboardModule/DashboardContent";
-
-import Utils from "@src/utils/ObjectUtils";
+import Navigation from "@src/components/modules/NavigationModule/Navigation";
+import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
+import PageHeader from "@src/components/smart/PageHeader";
+import endpointStore from "@src/stores/EndpointStore";
+import licenceStore from "@src/stores/LicenceStore";
+import migrationStore from "@src/stores/MigrationStore";
+import notificationStore from "@src/stores/NotificationStore";
+import projectStore from "@src/stores/ProjectStore";
+import replicaStore from "@src/stores/ReplicaStore";
+import userStore from "@src/stores/UserStore";
 import configLoader from "@src/utils/Config";
+import Utils from "@src/utils/ObjectUtils";
 
 const Wrapper = styled.div<any>``;
 
@@ -111,8 +109,10 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
   async loadAdminData(showLoading: boolean) {
     await Utils.waitFor(
       () => Boolean(userStore.loggedUser && userStore.loggedUser.isAdmin),
-      30000,
-      100
+      {
+        timeoutMs: 30000,
+        intervalMs: 100,
+      }
     );
     if (userStore.loggedUser?.isAdmin) {
       userStore.getAllUsers({ skipLog: true, showLoading });
