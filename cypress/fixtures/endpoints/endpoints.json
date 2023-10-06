@@ -1,0 +1,180 @@
+{
+  "endpoints": [
+    {
+      "created_at": "2023-09-15T11:46:10.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "6c603c28-ed7b-48da-96ec-db4c44b8c273",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/b5a461e3-d55c-4a46-bee0-49bd24e983a2"
+      },
+      "type": "azure",
+      "name": "coriolis-azure",
+      "description": "coriolis-azure",
+      "mapped_regions": ["4a0feabf-b3ab-43c8-8259-496d53466ba7"]
+    },
+    {
+      "created_at": "2023-09-15T11:46:10.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "4786df73-3e05-4fbd-9e52-37e819508d9a",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/1813b19e-9ea6-47e6-85a0-defb40022b21"
+      },
+      "type": "oracle_vm",
+      "name": "coriolis-ovm",
+      "description": null,
+      "mapped_regions": ["4a0feabf-b3ab-43c8-8259-496d53466ba7"]
+    },
+    {
+      "created_at": "2023-09-15T11:46:10.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "9ed32585-df97-4c46-852a-748e56e9c4d1",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/2d22111b-c73b-43f8-8ffa-c1e2000e8fe4"
+      },
+      "type": "hyper-v",
+      "name": "Hyper-V",
+      "description": null,
+      "mapped_regions": ["4a0feabf-b3ab-43c8-8259-496d53466ba7"]
+    },
+    {
+      "created_at": "2023-09-15T11:46:10.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "8ede076e-d941-4b16-8485-47234196b1a7",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/f47c07af-cf43-4419-ba4d-c4b1112e88b6"
+      },
+      "type": "vmware_vsphere",
+      "name": "vmware_vsphere_8.0",
+      "description": "cbsl vsphere8",
+      "mapped_regions": ["4a0feabf-b3ab-43c8-8259-496d53466ba7"]
+    },
+    {
+      "created_at": "2023-09-11T15:42:17.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "26df29ea-df07-4a6f-b659-4f6d81baa7a7",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/f55d91d7-3c63-48a8-9f36-07a07494935f"
+      },
+      "type": "metal",
+      "name": "appliance-metal-hub",
+      "description": null,
+      "mapped_regions": []
+    },
+    {
+      "created_at": "2023-09-15T11:46:10.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "551f525d-6bf8-4813-9306-3f242f54853c",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/7dd5e7be-c2ef-44ce-9b20-d56fca352cad"
+      },
+      "type": "oci",
+      "name": "oci",
+      "description": null,
+      "mapped_regions": []
+    },
+    {
+      "created_at": "2023-09-15T11:46:10.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "6d6aee40-0204-4ee6-96f3-14da916faeb4",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/07018644-7e52-4d18-9c16-024cb8ccf3ed"
+      },
+      "type": "openstack",
+      "name": "openstack-aio",
+      "description": null,
+      "mapped_regions": []
+    },
+    {
+      "created_at": "2023-09-15T11:46:11.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "72ebf901-85c8-4a7a-9842-cb058c38b65d",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/da175348-97f7-442a-878a-805654b1423b"
+      },
+      "type": "lxd",
+      "name": "MicroCloud",
+      "description": "",
+      "mapped_regions": []
+    },
+    {
+      "created_at": "2023-09-15T11:46:11.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "dc411abe-8113-4266-9664-72f080dd7cb5",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/438b9260-907d-41e6-b5a3-eea048340795"
+      },
+      "type": "olvm",
+      "name": "OLVM",
+      "description": "",
+      "mapped_regions": []
+    },
+    {
+      "created_at": "2023-09-29T14:44:12.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "f12b06da-5742-4383-9b2f-6fdae202903e",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/0d17a48d-482b-4b1e-98ba-ad46bbd49785"
+      },
+      "type": "aws",
+      "name": "aws",
+      "description": "Amazon Web Services",
+      "mapped_regions": []
+    },
+    {
+      "created_at": "2023-09-15T11:46:10.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",
+      "user_id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "project_id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "connection_info": {
+        "secret_ref": "http://127.0.0.1:9311/v1/secrets/62e55963-b9f1-4df7-8234-cb9e342744b1"
+      },
+      "type": "vmware_vsphere",
+      "name": "coriolis-vsphere",
+      "description": "coriolis-vsphere",
+      "mapped_regions": []
+    }
+  ]
+}

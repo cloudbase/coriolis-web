@@ -26,6 +26,14 @@ Your server will be running at `http://localhost:3000/` (the port is configurabl
 - unit tests can be run using `npm run test`
 - run `npm run test-release` to check for Typescript, ESLint and prettier errors. This will also run the unit tests and will try to build and start a production version. If eeverything is OK, it will revert to the development installation.
 
+### Integration tests
+
+Integration tests can be executed using `npm run e2e`. All API calls will be mocked, eliminating the need for a running Coriolis instance.
+
+To run the integration tests, you must set the environment variable `NODE_ENV='development'`, then execute `npm run build` and `npm run start`. It is also recommended to set `CORIOLIS_URL` to a non-existent URL (such as <https://invalidd.it/>) to prevent the UI from attempting to connect to a Coriolis instance for CORS checks. Although Cypress is configured to mock API calls, if a valid URL is set, the UI will still attempt to connect to it for CORS checks.
+
+You can also run the integration tests for easier debugging by using `npm run server-dev` and `npm run client-dev`, and by updating the `baseUrl` in `cypress.config.ts` to `<http://localhost:3001>`. The variables `NODE_ENV` and `CORIOLIS_URL`, as described above, are still required. Subsequently, execute the tests using `npx cypress open`. This procedure allows you to update the source code and see the changes reflected in the UI without having to rebuild and restart the server. Additionally, the tests will automatically re-run when you save a test file.
+
 ## Development mode
 
 - set env. variable `NODE_ENV='development'`

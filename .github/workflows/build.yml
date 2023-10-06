@@ -18,7 +18,7 @@ jobs:
       - name: Setup Corepack
         run: corepack enable
 
-      - name: Install dependencies
+      - name: Install development dependencies
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: yarn install
@@ -35,12 +35,36 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
+      - name: Development build
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
+          NODE_ENV: development
+        run: npm run build
+
+      - name: Run integration tests
+        env:
+          NODE_ENV: development
+          # needs an invalid URL to prevent CORS related delays
+          CORIOLIS_URL: http://invalidd.it/
+        run: |
+          touch .not-first-launch
+          npm run start &
+          sleep 5
+          npm run e2e
+
+      - name: Upload failure screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
       - name: Install production dependencies
         run: |
           rm -rf node_modules
           yarn workspaces focus --all --production
 
-      - name: Build
+      - name: Production build
         env:
           NODE_OPTIONS: "--openssl-legacy-provider"
         run: npm run build

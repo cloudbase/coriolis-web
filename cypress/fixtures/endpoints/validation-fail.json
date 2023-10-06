@@ -1,0 +1,6 @@
+{
+  "validate-connection": {
+    "valid": false,
+    "message": "Could not find requested endpoint in Service Catalog."
+  }
+}

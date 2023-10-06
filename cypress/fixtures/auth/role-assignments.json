@@ -1,0 +1,112 @@
+{
+  "role_assignments": [
+    {
+      "links": {
+        "assignment": "http://[redacted]/v3/projects/c7fc329e310e436ea7fa5e6e41c642c7/users/aa80baecc9ae4c02aff33695c5c2f84c/roles/7c27a0c3f8a84493bbf28b90de0c7438"
+      },
+      "scope": {
+        "project": {
+          "id": "c7fc329e310e436ea7fa5e6e41c642c7",
+          "name": "service",
+          "domain": {
+            "id": "default",
+            "name": "Default"
+          }
+        }
+      },
+      "user": {
+        "id": "aa80baecc9ae4c02aff33695c5c2f84c",
+        "name": "coriolis",
+        "domain": {
+          "id": "default",
+          "name": "Default"
+        }
+      },
+      "role": {
+        "id": "7c27a0c3f8a84493bbf28b90de0c7438",
+        "name": "admin"
+      }
+    },
+    {
+      "links": {
+        "assignment": "http://[redacted]/v3/projects/c7fc329e310e436ea7fa5e6e41c642c7/users/e26d485a4f31426a9dd8a3d697eb2f51/roles/7c27a0c3f8a84493bbf28b90de0c7438"
+      },
+      "scope": {
+        "project": {
+          "id": "c7fc329e310e436ea7fa5e6e41c642c7",
+          "name": "service",
+          "domain": {
+            "id": "default",
+            "name": "Default"
+          }
+        }
+      },
+      "user": {
+        "id": "e26d485a4f31426a9dd8a3d697eb2f51",
+        "name": "barbican",
+        "domain": {
+          "id": "default",
+          "name": "Default"
+        }
+      },
+      "role": {
+        "id": "7c27a0c3f8a84493bbf28b90de0c7438",
+        "name": "admin"
+      }
+    },
+    {
+      "links": {
+        "assignment": "http://[redacted]/v3/projects/a379d2b6bd8d4b898733fb1e1b7967f7/users/eff03964a29b4f89b9fefc4c16de5f4f/roles/7c27a0c3f8a84493bbf28b90de0c7438"
+      },
+      "scope": {
+        "project": {
+          "id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+          "name": "admin",
+          "domain": {
+            "id": "default",
+            "name": "Default"
+          }
+        }
+      },
+      "user": {
+        "id": "eff03964a29b4f89b9fefc4c16de5f4f",
+        "name": "admin",
+        "domain": {
+          "id": "default",
+          "name": "Default"
+        }
+      },
+      "role": {
+        "id": "7c27a0c3f8a84493bbf28b90de0c7438",
+        "name": "admin"
+      }
+    },
+    {
+      "links": {
+        "assignment": "http://[redacted]/v3/system/users/eff03964a29b4f89b9fefc4c16de5f4f/roles/7c27a0c3f8a84493bbf28b90de0c7438"
+      },
+      "scope": {
+        "system": {
+          "all": true
+        }
+      },
+      "user": {
+        "id": "eff03964a29b4f89b9fefc4c16de5f4f",
+        "name": "admin",
+        "domain": {
+          "id": "default",
+          "name": "Default"
+        }
+      },
+      "role": {
+        "id": "7c27a0c3f8a84493bbf28b90de0c7438",
+        "name": "admin"
+      }
+    }
+  ],
+  "links": {
+    "next": null,
+    "self": "http://[redacted]/v3/role_assignments?include_names",
+    "previous": null
+  }
+}

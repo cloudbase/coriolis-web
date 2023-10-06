@@ -1,0 +1,8 @@
+{
+  "status": {
+    "hostname": "coriolis",
+    "multi_appliance": false,
+    "supported_licence_versions": ["v2"],
+    "server_local_time": "2023-10-06T19:34:52.004947251Z"
+  }
+}

@@ -16,6 +16,7 @@
     "eslint": "npx eslint \"src/**\" \"server/**\"",
     "format": "prettier --check src/**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc",
     "test": "jest",
+    "e2e": "cypress run",
     "test-release": "node ./tests/testRelease",
     "test-coverage": "node ./tests/testCoverage",
     "storybook": "start-storybook"
@@ -43,6 +44,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
     "cross-spawn": "^7.0.3",
+    "cypress": "13.3.1",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-coriolis-web": "file:./src/utils/eslint-plugin-coriolis-web",

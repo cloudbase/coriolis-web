@@ -1,0 +1,23 @@
+{
+  "projects": [
+    {
+      "id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "name": "admin",
+      "domain_id": "default",
+      "description": "Bootstrap project for initializing the cloud.",
+      "enabled": true,
+      "parent_id": "default",
+      "is_domain": false,
+      "tags": [],
+      "options": {},
+      "links": {
+        "self": "http://[redacted]/v3/projects/a379d2b6bd8d4b898733fb1e1b7967f7"
+      }
+    }
+  ],
+  "links": {
+    "next": null,
+    "self": "http://[redacted]/v3/auth/projects",
+    "previous": null
+  }
+}

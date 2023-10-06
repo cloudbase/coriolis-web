@@ -304,7 +304,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
                 />
               )}
               emptyListImage={migrationLargeImage}
-              emptyListMessage="It seems like you don’t have any Migrations in this project."
+              emptyListMessage="It seems like you don't have any Migrations in this project."
               emptyListExtraMessage="A Coriolis Migration is a full virtual machine migration between two cloud endpoints."
               emptyListButtonLabel="Create a Migration"
               onEmptyListButtonClick={() => {
