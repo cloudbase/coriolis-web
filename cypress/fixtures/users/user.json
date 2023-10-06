@@ -1,0 +1,13 @@
+{
+  "user": {
+    "id": "eff03964a29b4f89b9fefc4c16de5f4f",
+    "name": "admin",
+    "domain_id": "default",
+    "enabled": true,
+    "password_expires_at": null,
+    "options": {},
+    "links": {
+      "self": "http://[redacted]/v3/users/eff03964a29b4f89b9fefc4c16de5f4f"
+    }
+  }
+}

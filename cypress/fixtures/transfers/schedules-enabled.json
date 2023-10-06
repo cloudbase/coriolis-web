@@ -1,0 +1,55 @@
+{
+  "schedules": [
+    {
+      "created_at": "2023-10-11T20:11:51.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "8d3277c9-7b71-4768-8719-f385b17f7bf7",
+      "replica_id": "5395842a-7006-41a3-95ac-e5083561a4d9",
+      "schedule": {
+        "hour": 21,
+        "minute": 0,
+        "month": 1
+      },
+      "expiration_date": null,
+      "enabled": true,
+      "shutdown_instance": false,
+      "trust_id": "81ddb3fe3e2f4a5d97e9a12debbaa5de"
+    },
+    {
+      "created_at": "2023-10-11T20:11:51.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "dc94b905-b4c8-4ed1-9d7b-2003dc17ca41",
+      "replica_id": "5395842a-7006-41a3-95ac-e5083561a4d9",
+      "schedule": {
+        "hour": 21,
+        "minute": 0,
+        "month": 2
+      },
+      "expiration_date": "2023-10-25T21:00:00.000000",
+      "enabled": false,
+      "shutdown_instance": true,
+      "trust_id": "ac764562f76d4947bbab15bcf5e722d2"
+    },
+    {
+      "created_at": "2023-10-11T20:11:51.000000",
+      "updated_at": null,
+      "deleted_at": null,
+      "deleted": "0",
+      "id": "e851e44f-b7a5-40ef-b81a-cd03bc4cf005",
+      "replica_id": "5395842a-7006-41a3-95ac-e5083561a4d9",
+      "schedule": {
+        "hour": 21,
+        "minute": 0,
+        "month": 3
+      },
+      "expiration_date": null,
+      "enabled": true,
+      "shutdown_instance": false,
+      "trust_id": "287b5eeb7d3e4967be0c87f6b6e42a70"
+    }
+  ]
+}

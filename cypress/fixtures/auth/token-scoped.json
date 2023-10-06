@@ -1,0 +1,210 @@
+{
+  "token": {
+    "methods": ["password", "token"],
+    "user": {
+      "domain": {
+        "id": "default",
+        "name": "Default"
+      },
+      "id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "name": "admin",
+      "password_expires_at": null
+    },
+    "audit_ids": ["7W-7RfFGSxak3AnVD7njxw", "5i9XBeTtTWWaLg4wNlerKA"],
+    "expires_at": "2023-10-07T19:34:50.000000Z",
+    "issued_at": "2023-10-06T19:34:50.000000Z",
+    "project": {
+      "domain": {
+        "id": "default",
+        "name": "Default"
+      },
+      "id": "a379d2b6bd8d4b898733fb1e1b7967f7",
+      "name": "admin"
+    },
+    "is_domain": false,
+    "roles": [
+      {
+        "id": "d6f18c23d2bf459e8ca869c616375d3d",
+        "name": "reader"
+      },
+      {
+        "id": "4e01db07623b43c0bcab64e34f3fc99d",
+        "name": "member"
+      },
+      {
+        "id": "7c27a0c3f8a84493bbf28b90de0c7438",
+        "name": "admin"
+      }
+    ],
+    "catalog": [
+      {
+        "endpoints": [
+          {
+            "id": "03ebe1c21bd944e7942efa4325a97b07",
+            "interface": "public",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:5000",
+            "region": "RegionOne"
+          },
+          {
+            "id": "24fa9bcb5a244e58b09e3f7670ffdb31",
+            "interface": "internal",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:5000",
+            "region": "RegionOne"
+          },
+          {
+            "id": "89c76368ac884052abbbff3ade5243c7",
+            "interface": "admin",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:35357",
+            "region": "RegionOne"
+          }
+        ],
+        "id": "0c4a61c8fddb4b85846ddd90749ff227",
+        "type": "identity",
+        "name": "keystone"
+      },
+      {
+        "endpoints": [
+          {
+            "id": "36c1b90e4e4f4f94b1658306585339d1",
+            "interface": "public",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9998/api/v1",
+            "region": "RegionOne"
+          },
+          {
+            "id": "451a587098e444fc8771819e75420a8f",
+            "interface": "admin",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9998/api/v1",
+            "region": "RegionOne"
+          },
+          {
+            "id": "522fdf7c40d14b91b4c81f6b61d8b86b",
+            "interface": "internal",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9998/api/v1",
+            "region": "RegionOne"
+          }
+        ],
+        "id": "854156989f86479db9a21f88bd9a3cb3",
+        "type": "coriolis-logger",
+        "name": "coriolis-logger"
+      },
+      {
+        "endpoints": [
+          {
+            "id": "96e04f2c563f430d99d156c9864a9b66",
+            "interface": "internal",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:37667/v2",
+            "region": "RegionOne"
+          },
+          {
+            "id": "b15f4869ce8a461797d6a9aa4e3bfaf4",
+            "interface": "admin",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:37667/v2",
+            "region": "RegionOne"
+          },
+          {
+            "id": "de3c07c114194fc787da0ecf4abea57d",
+            "interface": "public",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:37667/v2",
+            "region": "RegionOne"
+          }
+        ],
+        "id": "9390ffd8d769465f89fc2f71455c9bee",
+        "type": "coriolis-licensing",
+        "name": "coriolis-licensing"
+      },
+      {
+        "endpoints": [
+          {
+            "id": "1494d21bb15c4da9b5a87da8265c2d9d",
+            "interface": "public",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:7667/v1/a379d2b6bd8d4b898733fb1e1b7967f7",
+            "region": "RegionOne"
+          },
+          {
+            "id": "5979003c8dff49a08b15ce3b3e1773f6",
+            "interface": "admin",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:7667/v1/a379d2b6bd8d4b898733fb1e1b7967f7",
+            "region": "RegionOne"
+          },
+          {
+            "id": "ddf9740f27fe43ac8ff53a66408a08c6",
+            "interface": "internal",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:7667/v1/a379d2b6bd8d4b898733fb1e1b7967f7",
+            "region": "RegionOne"
+          }
+        ],
+        "id": "95160175eafc48938868d022772f72fa",
+        "type": "migration",
+        "name": "coriolis"
+      },
+      {
+        "endpoints": [
+          {
+            "id": "35ec1d67bb4c44ad9d3225968a22fe91",
+            "interface": "public",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9311",
+            "region": "RegionOne"
+          },
+          {
+            "id": "5b136b3f1de040a89b8e18c300307696",
+            "interface": "admin",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9311",
+            "region": "RegionOne"
+          },
+          {
+            "id": "d19561a127db4480930496ca91c267fb",
+            "interface": "internal",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9311",
+            "region": "RegionOne"
+          }
+        ],
+        "id": "c5febee4e98f420ea11fa3b684e7105b",
+        "type": "key-manager",
+        "name": "barbican"
+      },
+      {
+        "endpoints": [
+          {
+            "id": "56ec1c4005354452aaafbdd47724bdec",
+            "interface": "admin",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9900/api/v1",
+            "region": "RegionOne"
+          },
+          {
+            "id": "a94370b8b2304e969531fde981ccf242",
+            "interface": "internal",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9900/api/v1",
+            "region": "RegionOne"
+          },
+          {
+            "id": "cd9147782ec44d3b8277291fe696753b",
+            "interface": "public",
+            "region_id": "RegionOne",
+            "url": "http://127.0.0.1:9900/api/v1",
+            "region": "RegionOne"
+          }
+        ],
+        "id": "eda4476c83a34442bfd61f46f0e7af6a",
+        "type": "coriolis-metal-hub",
+        "name": "coriolis-metal-hub"
+      }
+    ]
+  }
+}

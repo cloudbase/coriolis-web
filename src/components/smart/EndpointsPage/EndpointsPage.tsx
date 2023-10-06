@@ -339,7 +339,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
                 />
               )}
               emptyListImage={endpointImage}
-              emptyListMessage="You don’t have any Cloud Endpoints in this project."
+              emptyListMessage="You don't have any Cloud Endpoints in this project."
               emptyListExtraMessage="A Cloud Endpoint is used for the source or target of a Replica/Migration."
               emptyListButtonLabel="Add Endpoint"
               onEmptyListButtonClick={() => {

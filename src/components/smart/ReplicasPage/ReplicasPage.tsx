@@ -348,7 +348,8 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     if (!bulkScheduleItem) {
       return false;
     }
-    return Boolean(bulkScheduleItem.schedules.find(s => s.enabled));
+    const result = Boolean(bulkScheduleItem.schedules.find(s => s.enabled));
+    return result;
   }
 
   render() {
@@ -459,7 +460,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
                 />
               )}
               emptyListImage={replicaLargeImage}
-              emptyListMessage="It seems like you don’t have any Replicas in this project."
+              emptyListMessage="It seems like you don't have any Replicas in this project."
               emptyListExtraMessage="The Coriolis Replica is obtained by replicating incrementally the virtual machines data from the source cloud endpoint to the target."
               emptyListButtonLabel="Create a Replica"
               onEmptyListButtonClick={() => {

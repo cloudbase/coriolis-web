@@ -155,7 +155,7 @@ class UserSource {
       cookie.remove("projectId");
       return;
     }
-    throw new Error();
+    throw new Error("No unscoped token");
   }
 
   async logout(): Promise<void> {

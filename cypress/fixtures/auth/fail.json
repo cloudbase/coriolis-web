@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": 401,
+    "message": "The request you have made requires authentication.",
+    "title": "Unauthorized"
+  }
+}

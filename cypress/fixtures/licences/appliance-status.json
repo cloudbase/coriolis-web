@@ -1,0 +1,15 @@
+{
+  "appliance_licence_status": {
+    "appliance_id": "29b06e8f-2ae3-4267-a1ec-c587e732391e",
+    "earliest_licence_expiry_time": "2024-09-09T11:58:40Z",
+    "latest_licence_expiry_time": "2024-09-09T11:58:40Z",
+    "current_performed_migrations": 5,
+    "current_performed_replicas": 1,
+    "lifetime_performed_migrations": 8,
+    "lifetime_performed_replicas": 2,
+    "current_available_migrations": 100,
+    "current_available_replicas": 100,
+    "lifetime_available_migrations": 100,
+    "lifetime_available_replicas": 100
+  }
+}

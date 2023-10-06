@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "id": "eff03964a29b4f89b9fefc4c16de5f4f",
+      "name": "admin",
+      "domain_id": "default",
+      "enabled": true,
+      "password_expires_at": null,
+      "options": {},
+      "links": {
+        "self": "http://[redacted]/v3/users/eff03964a29b4f89b9fefc4c16de5f4f"
+      }
+    },
+    {
+      "email": null,
+      "description": null,
+      "id": "e26d485a4f31426a9dd8a3d697eb2f51",
+      "name": "barbican",
+      "domain_id": "default",
+      "enabled": true,
+      "default_project_id": "c7fc329e310e436ea7fa5e6e41c642c7",
+      "password_expires_at": null,
+      "options": {},
+      "links": {
+        "self": "http://[redacted]/v3/users/e26d485a4f31426a9dd8a3d697eb2f51"
+      }
+    },
+    {
+      "email": "coriolis@localhost",
+      "description": null,
+      "id": "aa80baecc9ae4c02aff33695c5c2f84c",
+      "name": "coriolis",
+      "domain_id": "default",
+      "enabled": true,
+      "default_project_id": "c7fc329e310e436ea7fa5e6e41c642c7",
+      "password_expires_at": null,
+      "options": {},
+      "links": {
+        "self": "http://[redacted]/v3/users/aa80baecc9ae4c02aff33695c5c2f84c"
+      }
+    }
+  ],
+  "links": {
+    "next": null,
+    "self": "http://[redacted]/v3/users",
+    "previous": null
+  }
+}
