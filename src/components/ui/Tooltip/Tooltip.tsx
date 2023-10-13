@@ -21,48 +21,11 @@ import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const GlobalStyle = createGlobalStyle`
   .reactTooltip {
-    color: ${ThemePalette.grayscale[4]} !important;
-    background: ${ThemePalette.grayscale[1]} !important;
     max-width: 192px;
-    padding: 8px !important;
     box-shadow: 0 0 9px 1px rgba(32, 34, 52, 0.1);
-    opacity: 1 !important;
     z-index: 999999 !important;
     transition: opacity ${ThemeProps.animations.swift} !important;
   }
-  .place-right.reactTooltip {
-    margin-left: 12px !important;
-  }
-  .place-bottom.reactTooltip {
-    margin-left: 1px !important;
-  }
-  .place-top.reactTooltip:after {
-    border-top-color: ${ThemePalette.grayscale[1]} !important;
-    border-top-width: 8px !important;
-    bottom: -8px !important;
-  }
-  .place-bottom.reactTooltip:after {
-    border-bottom-color: ${ThemePalette.grayscale[1]} !important;
-    border-bottom-width: 8px !important;
-    top: -8px !important;
-  }
-  .place-left.reactTooltip:after {
-    border-left-color: ${ThemePalette.grayscale[1]} !important;
-    border-left-width: 8px !important;
-    border-bottom-width: 8px !important;
-    border-top-width: 8px !important;
-    right: -8px !important;
-    margin-top: -8px !important;
-  }
-  .place-right.reactTooltip:after {
-    border-right-color: ${ThemePalette.grayscale[1]} !important;
-    border-right-width: 8px !important;
-    border-top-width: 8px !important;
-    border-bottom-width: 8px !important;
-    left: -8px !important;
-    margin-top: -8px !important;
-  }
-
 `;
 
 @observer
@@ -81,8 +44,16 @@ class Tooltip extends React.Component {
   render() {
     return (
       <>
+        <ReactTooltip
+          place="right"
+          effect="solid"
+          multiline
+          className="reactTooltip"
+          backgroundColor={ThemePalette.grayscale[1]}
+          textColor={ThemePalette.grayscale[4]}
+          padding="8px"
+        />
         <GlobalStyle />
-        <ReactTooltip place="right" effect="solid" className="reactTooltip" />
       </>
     );
   }
