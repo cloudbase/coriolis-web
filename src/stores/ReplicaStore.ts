@@ -131,6 +131,7 @@ class ReplicaStore {
 
   @action clearDetails() {
     this.replicaDetails = null;
+    this.currentlyLoadingExecution = "";
   }
 
   @action getReplicasSuccess(replicas: ReplicaItem[]) {
