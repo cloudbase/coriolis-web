@@ -71,8 +71,6 @@ const NavigationStyled = styled(Navigation)<any>`
   z-index: 9;
 `;
 
-export const TEST_ID = "navigationMini";
-
 type State = {
   open: boolean;
 };

@@ -58,7 +58,7 @@ type Props = {
 
 @observer
 class DashboardPieChart extends React.Component<Props> {
-  canvas: HTMLCanvasElement | null | undefined;
+  canvas: HTMLCanvasElement | null = null;
 
   angles: number[] = [];
 

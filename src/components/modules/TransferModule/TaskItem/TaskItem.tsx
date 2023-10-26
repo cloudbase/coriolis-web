@@ -335,9 +335,6 @@ class TaskItem extends React.Component<Props> {
     return (
       <ProgressUpdates>
         {this.props.item.progress_updates.map((update, i) => {
-          if (!update) {
-            return <Value key={i}>N/A</Value>;
-          }
           const progressPercentage = this.getProgressPercentage(update);
 
           return (

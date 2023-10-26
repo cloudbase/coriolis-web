@@ -229,7 +229,7 @@ const CbsLogoSmall = styled.a<any>`
   display: flex;
   transition: opacity ${ANIMATION};
 `;
-export const TEST_ID = "navigation";
+
 type Props = {
   currentPage?: string;
   className?: string;

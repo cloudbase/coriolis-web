@@ -12,23 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
-import Button from "@src/components/ui/Button";
+import { MigrationItemDetails } from "@src/@types/MainItem";
+import { MinionPool } from "@src/@types/MinionPool";
+import { Network } from "@src/@types/Network";
 import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
 import MainDetails from "@src/components/modules/TransferModule/MainDetails";
 import Tasks from "@src/components/modules/TransferModule/Tasks";
+import { ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
 
 import type { Instance } from "@src/@types/Instance";
 import type { Endpoint, StorageBackend } from "@src/@types/Endpoint";
 import type { Field } from "@src/@types/Field";
-import { MigrationItemDetails } from "@src/@types/MainItem";
-import { MinionPool } from "@src/@types/MinionPool";
-import { Network } from "@src/@types/Network";
-import { ThemeProps } from "@src/components/Theme";
-
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;

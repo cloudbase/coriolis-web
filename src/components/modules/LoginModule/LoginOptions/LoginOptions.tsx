@@ -97,7 +97,7 @@ const Logo = styled.div<any>`
   margin: 0 8px 0 8px;
   ${props => buttonStyle(props.id, true)}
 `;
-type Props = {
+export type Props = {
   buttons?: { name: string; id: string }[];
 };
 const LoginOptions = (props: Props) => {

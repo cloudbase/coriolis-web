@@ -12,15 +12,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
-import type { User } from "@src/@types/User";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 import userImage from "./images/user.svg";
 
+import type { User } from "@src/@types/User";
 const Content = styled.div<any>`
   display: flex;
   align-items: center;

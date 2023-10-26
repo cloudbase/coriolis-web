@@ -141,7 +141,7 @@ type Props = {
   migrations: MigrationItem[];
   // eslint-disable-next-line react/no-unused-prop-types
   endpoints: Endpoint[];
-  style: any;
+  style: React.CSSProperties;
   loading: boolean;
   onNewClick: () => void;
 };

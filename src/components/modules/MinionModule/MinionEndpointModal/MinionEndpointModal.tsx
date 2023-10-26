@@ -183,7 +183,7 @@ class MinionEndpointModal extends React.Component<Props, State> {
             : providerTypes.DESTINATION_MINION_POOL;
         const types =
           this.props.providers?.[providerName].types.indexOf(providerType);
-        return types && types > -1;
+        return types != null && types > -1;
       }
     );
 

@@ -12,24 +12,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
+import { Disk, Instance, InstanceUtils } from "@src/@types/Instance";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
 import AutocompleteDropdown from "@src/components/ui/Dropdowns/AutocompleteDropdown";
 import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
 import InfoIcon from "@src/components/ui/InfoIcon";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import { Instance, Disk, InstanceUtils } from "@src/@types/Instance";
-import type { StorageBackend, StorageMap } from "@src/@types/Endpoint";
-
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import Button from "@src/components/ui/Button";
+
+import arrowImage from "./images/arrow.svg";
 import backendImage from "./images/backend.svg";
 import diskImage from "./images/disk.svg";
 import bigStorageImage from "./images/storage-big.svg";
-import arrowImage from "./images/arrow.svg";
+
+import type { StorageBackend, StorageMap } from "@src/@types/Endpoint";
 
 const Wrapper = styled.div<any>`
   width: 100%;
@@ -177,8 +177,6 @@ export const getDisks = (
   }
   return disks;
 };
-
-export const TEST_ID = "wizardStorage";
 
 export type Props = {
   storageBackends: StorageBackend[];

@@ -12,18 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
+import { Instance } from "@src/@types/Instance";
 import TaskItem from "@src/components/modules/TransferModule/TaskItem";
-
-import type { Task } from "@src/@types/Task";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import { Instance } from "@src/@types/Instance";
 
-const ColumnWidths = ["26%", "18%", "36%", "20%"];
+import type { Task } from "@src/@types/Task";
+const COLUMN_WIDTHS = ["26%", "18%", "36%", "20%"];
 
 const Wrapper = styled.div<any>``;
 const ContentWrapper = styled.div`
@@ -145,10 +144,10 @@ class Tasks extends React.Component<Props, State> {
   renderHeader() {
     return (
       <Header>
-        <HeaderData width={ColumnWidths[0]}>Task</HeaderData>
-        <HeaderData width={ColumnWidths[1]}>Instance</HeaderData>
-        <HeaderData width={ColumnWidths[2]}>Latest Message</HeaderData>
-        <HeaderData width={ColumnWidths[3]}>Timestamp</HeaderData>
+        <HeaderData width={COLUMN_WIDTHS[0]}>Task</HeaderData>
+        <HeaderData width={COLUMN_WIDTHS[1]}>Instance</HeaderData>
+        <HeaderData width={COLUMN_WIDTHS[2]}>Latest Message</HeaderData>
+        <HeaderData width={COLUMN_WIDTHS[3]}>Timestamp</HeaderData>
       </Header>
     );
   }
@@ -164,7 +163,7 @@ class Tasks extends React.Component<Props, State> {
             item={item}
             otherItems={this.props.items.filter(i => i.id !== item.id)}
             instancesDetails={this.props.instancesDetails}
-            columnWidths={ColumnWidths}
+            columnWidths={COLUMN_WIDTHS}
             open={Boolean(this.state.openedItems.find(i => i.id === item.id))}
             onDependsOnClick={id => {
               this.handleDependsOnClick(id);

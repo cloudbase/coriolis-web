@@ -156,7 +156,7 @@ type Props = {
   licence: Licence | null;
   licenceServerStatus: LicenceServerStatus | null;
   loading: boolean;
-  style: any;
+  style?: React.CSSProperties;
   licenceError: string | null;
   onAddClick: () => void;
 };

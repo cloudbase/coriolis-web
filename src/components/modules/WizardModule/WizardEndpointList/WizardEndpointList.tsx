@@ -12,18 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled, { css } from "styled-components";
 
+import { ProviderTypes } from "@src/@types/Providers";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
+import Button from "@src/components/ui/Button";
 import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import Button from "@src/components/ui/Button";
 
 import type { Endpoint } from "@src/@types/Endpoint";
-import { ProviderTypes } from "@src/@types/Providers";
-
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;

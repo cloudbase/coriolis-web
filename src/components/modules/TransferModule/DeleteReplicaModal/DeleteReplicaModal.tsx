@@ -12,15 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
-import Modal from "@src/components/ui/Modal";
-import Button from "@src/components/ui/Button";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-
 import { ThemePalette } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
+import Modal from "@src/components/ui/Modal";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
 const Wrapper = styled.div<any>`
   display: flex;

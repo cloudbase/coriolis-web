@@ -27,7 +27,7 @@ const Content = styled.div<any>`
   flex-direction: column;
   min-height: 0;
 `;
-type Props = {
+export type Props = {
   pageHeaderComponent: React.ReactNode;
   contentHeaderComponent: React.ReactNode;
   contentComponent: React.ReactNode;

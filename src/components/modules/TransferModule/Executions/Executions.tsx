@@ -129,16 +129,12 @@ class Executions extends React.Component<Props, State> {
 
       if (this.props.executions.length > props.executions.length) {
         const isSelectedAvailable = props.executions.find(
-          e =>
-            this.state.selectedExecution &&
-            e.id === this.state.selectedExecution.id
+          e => e.id === this.state.selectedExecution?.id
         );
         if (!isSelectedAvailable) {
           const lastIndex = this.props.executions
             ? this.props.executions.findIndex(
-                e =>
-                  this.state.selectedExecution &&
-                  e.id === this.state.selectedExecution.id
+                e => e.id === this.state.selectedExecution?.id
               )
             : -1;
           if (props.executions.length) {

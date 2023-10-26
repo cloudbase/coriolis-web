@@ -12,20 +12,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import * as React from "react";
 import { observer } from "mobx-react";
+import * as React from "react";
 import styled from "styled-components";
+
 import {
   CustomerInfoBasic,
   CustomerInfoTrial,
   SetupPageLicenceType,
 } from "@src/@types/InitialSetup";
-import { customerInfoSetupStoreValueToString } from "@src/stores/SetupStore";
-import notificationStore from "@src/stores/NotificationStore";
-import { ThemePalette } from "@src/components/Theme";
-import SetupPageServerError from "@src/components/modules/SetupModule/ui/SetupPageServerError";
 import SetupPageInputWrapper from "@src/components/modules/SetupModule/ui/SetupPageInputWrapper";
+import SetupPageServerError from "@src/components/modules/SetupModule/ui/SetupPageServerError";
+import { ThemePalette } from "@src/components/Theme";
 import CopyButton from "@src/components/ui/CopyButton";
+import { customerInfoSetupStoreValueToString } from "@src/stores/SetupStore";
+import DomUtils from "@src/utils/DomUtils";
 
 const Wrapper = styled.div``;
 const Link = styled.a`
@@ -59,28 +60,18 @@ type Props = {
 class SetupPageEmailBody extends React.Component<Props> {
   emailTemplate: HTMLElement | null = null;
 
-  handleCopy(event?: React.ClipboardEvent) {
+  async handleCopy(event?: React.ClipboardEvent) {
     event?.preventDefault();
 
     if (!this.emailTemplate) {
       return;
     }
 
-    try {
-      const range = document.createRange();
-      range.selectNode(this.emailTemplate);
-      window.getSelection()?.removeAllRanges();
-      window.getSelection()?.addRange(range);
-      document.execCommand("copy");
-      if (!event) {
-        notificationStore.alert(
-          "The email body was succesfully copied to clipboard",
-          "success"
-        );
-      }
-    } catch (err) {
-      notificationStore.alert("Error copying to clipboard", "error");
-    }
+    const range = document.createRange();
+    range.selectNode(this.emailTemplate);
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
+    await DomUtils.copyTextToClipboard(window.getSelection()?.toString() || "");
   }
 
   render() {

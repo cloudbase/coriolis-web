@@ -93,17 +93,6 @@ type State = {
   orderDir: OrderDir;
 };
 class MinionPoolEvents extends React.Component<Props, State> {
-  static sortData(
-    data: MinionPoolEventProgressUpdate[]
-  ): MinionPoolEventProgressUpdate[] {
-    return data
-      .slice()
-      .sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-  }
-
   state = {
     allEvents: [] as MinionPoolEventProgressUpdate[],
     prevLenghts: [0, 0],

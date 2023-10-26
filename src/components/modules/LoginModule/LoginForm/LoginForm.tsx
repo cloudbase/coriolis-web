@@ -87,7 +87,7 @@ type Props = {
   className: string;
   showUserDomainInput: boolean;
   loading: boolean;
-  loginFailedResponse: { status: string | number; message?: string };
+  loginFailedResponse: { status: string | number; message?: string } | null;
   domain: string;
   onDomainChange: (domain: string) => void;
   onFormSubmit: (credentials: { username: string; password: string }) => void;

@@ -133,7 +133,7 @@ type State = {
   executionOptions: { [prop: string]: any } | null;
 };
 
-const colWidths = ["6%", "18%", "10%", "18%", "10%", "10%", "23%", "5%"];
+const COL_WIDTHS = ["6%", "18%", "10%", "18%", "10%", "10%", "23%", "5%"];
 @observer
 class Schedule extends React.Component<Props, State> {
   static defaultProps = {
@@ -237,7 +237,7 @@ class Schedule extends React.Component<Props, State> {
     return (
       <Header>
         {headerLabels.map((l, i) => (
-          <HeaderData key={l} width={colWidths[i]}>
+          <HeaderData key={l} width={COL_WIDTHS[i]}>
             {l}
           </HeaderData>
         ))}
@@ -255,7 +255,7 @@ class Schedule extends React.Component<Props, State> {
         {this.props.schedules.map(schedule => (
           <ScheduleItem
             key={schedule.id}
-            colWidths={colWidths}
+            colWidths={COL_WIDTHS}
             item={schedule}
             unsavedSchedules={this.props.unsavedSchedules}
             timezone={this.props.timezone}

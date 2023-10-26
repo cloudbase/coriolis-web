@@ -13,8 +13,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from "react";
-import { render } from "@testing-library/react";
+
 import Logo from "@src/components/ui/Logo";
+import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 
 jest.mock("react-router-dom", () => ({ Link: "a" }));

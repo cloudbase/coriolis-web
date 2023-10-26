@@ -12,27 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
-import scheduleStore from "@src/stores/ScheduleStore";
-import Button from "@src/components/ui/Button";
+import { ReplicaItemDetails } from "@src/@types/MainItem";
+import { MinionPool } from "@src/@types/MinionPool";
 import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
-import MainDetails from "@src/components/modules/TransferModule/MainDetails";
 import Executions from "@src/components/modules/TransferModule/Executions";
+import MainDetails from "@src/components/modules/TransferModule/MainDetails";
 import Schedule from "@src/components/modules/TransferModule/Schedule";
+import { ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
+import scheduleStore from "@src/stores/ScheduleStore";
+import configLoader from "@src/utils/Config";
+
 import type { Instance } from "@src/@types/Instance";
 import type { Endpoint, StorageBackend } from "@src/@types/Endpoint";
 import type { Execution, ExecutionTasks } from "@src/@types/Execution";
 import type { Network } from "@src/@types/Network";
 import type { Field } from "@src/@types/Field";
 import type { Schedule as ScheduleType } from "@src/@types/Schedule";
-import { ReplicaItemDetails } from "@src/@types/MainItem";
-import { MinionPool } from "@src/@types/MinionPool";
-import { ThemeProps } from "@src/components/Theme";
-import configLoader from "@src/utils/Config";
-
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
