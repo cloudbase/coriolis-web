@@ -12,20 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
 import styled from "styled-components";
 
-import CopyValue from "@src/components/ui/CopyValue";
-import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
+import CopyValue from "@src/components/ui/CopyValue";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
 import type { User } from "@src/@types/User";
 import type { Project } from "@src/@types/Project";
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
   margin: 0 auto;
@@ -76,8 +75,6 @@ const ButtonsColumn = styled.div<any>`
     }
   }
 `;
-
-export const TEST_ID = "userDetailsContent";
 
 export type Props = {
   user: User | null;

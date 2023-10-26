@@ -154,7 +154,6 @@ export const ArrowIcon = styled.div`
   background: url("${arrowIcon}") center no-repeat;
   margin-left: 16px;
 `;
-export const TEST_ID = "mainDetailsTable";
 
 export type Props = {
   item?: TransferItem | null;

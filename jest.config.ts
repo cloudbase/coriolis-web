@@ -17,10 +17,29 @@ export default {
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
-  // collectCoverage: false,
+  collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
+  collectCoverageFrom: [
+    "**/*.tsx", // Include all .tsx files
+    "!**/AssessmentModule/**", // Exclude files within the AssessmentModule directory (this is a module that is not used in the app)
+    "!**/story.tsx", // Exclude all storybook files
+    "!**/test.tsx", // Exclude old test files
+    "!**/plugins/**", // Exclude files within the plugins directory
+    "!src/index.tsx", // Exclude the index.tsx file
+    "!**/App.tsx", // Exclude the App.tsx file
+    "!**/smart/**", // Exclude files within the smart directory (this is a directory that contains containers)
+    // other smart components
+    "!**/EndpointModal.tsx",
+    "!**/MinionPoolModal.tsx",
+    "!**/TransferItemModal.tsx",
+    "!**/Navigation.tsx",
+    "!**/NotificationsModule.tsx",
+    "!**/ProjectModal.tsx",
+    "!**/ProjectMemberModal.tsx",
+    "!**/UserModal.tsx",
+    "!**/WizardPageContent.tsx",
+  ],
 
   // The directory where Jest should output its coverage files
   // coverageDirectory: undefined,
@@ -31,15 +50,10 @@ export default {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  // coverageProvider: "babel",
 
   // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover"
-  // ],
+  coverageReporters: ["html", "text-summary"],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,

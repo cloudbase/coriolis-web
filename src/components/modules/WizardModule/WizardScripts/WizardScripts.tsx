@@ -12,23 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled, { css } from "styled-components";
 
-import InfoIcon from "@src/components/ui/InfoIcon";
-import { Close as InputClose } from "@src/components/ui/TextInput";
+import { UserScriptData } from "@src/@types/MainItem";
 import { InstanceImage } from "@src/components/modules/WizardModule/WizardInstances";
-import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
-
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import InfoIcon from "@src/components/ui/InfoIcon";
+import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import { Close as InputClose } from "@src/components/ui/TextInput";
+import DomUtils from "@src/utils/DomUtils";
 import FileUtils from "@src/utils/FileUtils";
 
-import type { Instance, InstanceScript } from "@src/@types/Instance";
-import { UserScriptData } from "@src/@types/MainItem";
-import DomUtils from "@src/utils/DomUtils";
 import scriptItemImage from "./images/script-item.svg";
 
+import type { Instance, InstanceScript } from "@src/@types/Instance";
 const Wrapper = styled.div<any>`
   width: 100%;
   display: flex;

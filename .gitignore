@@ -20,3 +20,7 @@ cypress/videos
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+
+# testing
+coverage

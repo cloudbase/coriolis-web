@@ -13,11 +13,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from "react";
-import { render } from "@testing-library/react";
-import TestUtils from "@tests/TestUtils";
+
 import { ThemePalette } from "@src/components/Theme";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import DashboardBarChart from ".";
+import TestUtils from "@tests/TestUtils";
+
+import DashboardBarChart from "./";
 
 const DATA: DashboardBarChart["props"]["data"] = [
   {
@@ -109,4 +111,139 @@ describe("DashboardBarChart", () => {
       );
     }
   );
+
+  it("does not render bars with height of 0%", () => {
+    const ZERO_DATA = [
+      {
+        label: "label 1",
+        values: [0, 0],
+      },
+      {
+        label: "label 2",
+        values: [20, 25],
+      },
+    ];
+
+    render(<DashboardBarChart data={ZERO_DATA} yNumTicks={3} />);
+
+    const firstStackedBars = TestUtils.selectAll(
+      "DashboardBarChart__StackedBar-",
+      TestUtils.selectAll("DashboardBarChart__Bar-")[0]
+    );
+    const secondStackedBars = TestUtils.selectAll(
+      "DashboardBarChart__StackedBar-",
+      TestUtils.selectAll("DashboardBarChart__Bar-")[1]
+    );
+
+    expect(firstStackedBars.length).toBe(0);
+    expect(secondStackedBars.length).toBe(ZERO_DATA[1].values.length);
+  });
+
+  it("renders half the bars if available width is less than 30 times the number of items", () => {
+    const originalInnerWidth = window.innerWidth;
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 29 * DATA.length,
+    });
+
+    render(<DashboardBarChart data={DATA} yNumTicks={3} />);
+
+    const bars = TestUtils.selectAll("DashboardBarChart__Bar-");
+
+    expect(bars.length).toBe(DATA.length / 2);
+
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: originalInnerWidth,
+    });
+  });
+
+  it("fires the onBarMouseLeave callback on bar mouse leave", () => {
+    const onBarMouseLeave = jest.fn();
+
+    render(
+      <DashboardBarChart
+        data={DATA}
+        yNumTicks={3}
+        onBarMouseLeave={onBarMouseLeave}
+      />
+    );
+
+    const bar = TestUtils.selectAll("DashboardBarChart__StackedBar-")[0];
+    userEvent.unhover(bar);
+
+    expect(onBarMouseLeave).toHaveBeenCalled();
+  });
+
+  it("calculates the correct position for bars", () => {
+    const onBarMouseEnter = jest.fn();
+    render(
+      <DashboardBarChart
+        data={DATA}
+        yNumTicks={3}
+        onBarMouseEnter={onBarMouseEnter}
+      />
+    );
+
+    const firstBar = TestUtils.selectAll("DashboardBarChart__StackedBar-")[0];
+    userEvent.hover(firstBar);
+
+    expect(onBarMouseEnter).toHaveBeenCalledWith({ x: 48, y: 65 }, DATA[0]);
+  });
+
+  it("recalculates ticks when new data is received", () => {
+    const { rerender } = render(
+      <DashboardBarChart data={DATA} yNumTicks={3} />
+    );
+
+    const bars = TestUtils.selectAll("DashboardBarChart__Bar-");
+    expect(bars.length).toBe(DATA.length);
+    expect(bars[0].textContent).toBe("label 1");
+    expect(bars[1].textContent).toBe("label 2");
+
+    const NEW_DATA = [
+      {
+        label: "label 3",
+        values: [10, 30],
+        data: "data 3",
+      },
+      {
+        label: "label 4",
+        values: [5, 20],
+        data: "data 4",
+      },
+    ];
+
+    // Mocking the offset width is necessary due to how the rendered
+    // output behaves within the @testing-library/react environment
+    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+      configurable: true,
+      value: 500,
+    });
+    rerender(<DashboardBarChart data={NEW_DATA} yNumTicks={3} />);
+
+    const newBars = TestUtils.selectAll("DashboardBarChart__Bar-");
+    expect(newBars.length).toBe(NEW_DATA.length);
+    expect(newBars[0].textContent).toBe("label 3");
+    expect(newBars[1].textContent).toBe("label 4");
+  });
+
+  it("does not fire any function when onBarMouseEnter is not provided", () => {
+    render(<DashboardBarChart data={DATA} yNumTicks={3} />);
+
+    const firstStackedBar = TestUtils.selectAll(
+      "DashboardBarChart__StackedBar-"
+    )[0];
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+    // Hover over the stacked bar
+    userEvent.hover(firstStackedBar);
+
+    // Assert that there were no console errors
+    expect(spy).not.toHaveBeenCalled();
+
+    spy.mockRestore();
+  });
 });

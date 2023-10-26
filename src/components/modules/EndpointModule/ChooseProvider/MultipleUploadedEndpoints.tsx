@@ -113,7 +113,7 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
     validationDone: false,
   };
 
-  UNSAFE_componentWillReceiveProps(prevProps: Props) {
+  componentDidUpdate(prevProps: Props) {
     if (prevProps.validating && !this.props.validating) {
       this.setState({ validationDone: true });
     }

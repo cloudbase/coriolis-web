@@ -12,21 +12,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
-import AutocompleteDropdown from "@src/components/ui/Dropdowns/AutocompleteDropdown";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import { Instance, InstanceUtils, Nic as NicType } from "@src/@types/Instance";
-import type { Network, NetworkMap, SecurityGroup } from "@src/@types/Network";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
+import AutocompleteDropdown from "@src/components/ui/Dropdowns/AutocompleteDropdown";
+import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
-import networkImage from "./images/network.svg";
-import bigNetworkImage from "./images/network-big.svg";
 import arrowImage from "./images/arrow.svg";
+import bigNetworkImage from "./images/network-big.svg";
+import networkImage from "./images/network.svg";
+
+import type { Network, NetworkMap, SecurityGroup } from "@src/@types/Network";
 
 const Wrapper = styled.div<any>`
   width: 100%;

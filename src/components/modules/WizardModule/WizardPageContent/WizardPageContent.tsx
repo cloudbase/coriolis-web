@@ -12,46 +12,44 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
+import { Endpoint, EndpointUtils, StorageMap } from "@src/@types/Endpoint";
+import { ProviderTypes } from "@src/@types/Providers";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
-import WizardType from "@src/components/modules/WizardModule/WizardType";
-import Button from "@src/components/ui/Button";
-import InfoIcon from "@src/components/ui/InfoIcon";
+import Schedule from "@src/components/modules/TransferModule/Schedule";
 import WizardBreadcrumbs from "@src/components/modules/WizardModule/WizardBreadcrumbs";
 import WizardEndpointList from "@src/components/modules/WizardModule/WizardEndpointList";
 import WizardInstances from "@src/components/modules/WizardModule/WizardInstances";
 import WizardNetworks, {
   WizardNetworksChangeObject,
 } from "@src/components/modules/WizardModule/WizardNetworks";
-import WizardStorage from "@src/components/modules/WizardModule/WizardStorage";
 import WizardOptions from "@src/components/modules/WizardModule/WizardOptions";
 import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
-import Schedule from "@src/components/modules/TransferModule/Schedule";
+import WizardStorage from "@src/components/modules/WizardModule/WizardStorage";
 import WizardSummary from "@src/components/modules/WizardModule/WizardSummary";
-
+import WizardType from "@src/components/modules/WizardModule/WizardType";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import { providerTypes, wizardPages, migrationFields } from "@src/constants";
+import Button from "@src/components/ui/Button";
+import InfoIcon from "@src/components/ui/InfoIcon";
+import LoadingButton from "@src/components/ui/LoadingButton";
+import { migrationFields, providerTypes, wizardPages } from "@src/constants";
+import endpointStore from "@src/stores/EndpointStore";
+import instanceStore from "@src/stores/InstanceStore";
+import minionPoolStore from "@src/stores/MinionPoolStore";
+import networkStore from "@src/stores/NetworkStore";
+import notificationStore from "@src/stores/NotificationStore";
+import providerStore from "@src/stores/ProviderStore";
 import configLoader from "@src/utils/Config";
 
+import transferItemIcon from "./images/transferItemIcon";
+
 import type { WizardData, WizardPage } from "@src/@types/WizardData";
-import { Endpoint, EndpointUtils, StorageMap } from "@src/@types/Endpoint";
 import type { Instance, InstanceScript } from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 import type { Schedule as ScheduleType } from "@src/@types/Schedule";
-import instanceStore from "@src/stores/InstanceStore";
-import providerStore from "@src/stores/ProviderStore";
-import endpointStore from "@src/stores/EndpointStore";
-import networkStore from "@src/stores/NetworkStore";
-
-import { ProviderTypes } from "@src/@types/Providers";
-import minionPoolStore from "@src/stores/MinionPoolStore";
-import LoadingButton from "@src/components/ui/LoadingButton";
-import notificationStore from "@src/stores/NotificationStore";
-import transferItemIcon from "./images/transferItemIcon";
-
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(`${parseInt(ThemeProps.contentWidth, 10) + 64}px`)}
   margin: 64px auto 32px auto;

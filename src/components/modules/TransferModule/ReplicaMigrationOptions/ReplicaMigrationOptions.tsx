@@ -12,28 +12,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
-import Button from "@src/components/ui/Button";
-import FieldInput from "@src/components/ui/FieldInput";
-import ToggleButtonBar from "@src/components/ui/ToggleButtonBar";
-import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
-
-import LabelDictionary from "@src/utils/LabelDictionary";
-import KeyboardManager from "@src/utils/KeyboardManager";
-
-import type { Field } from "@src/@types/Field";
-import type { Instance, InstanceScript } from "@src/@types/Instance";
 import { TransferItemDetails } from "@src/@types/MainItem";
 import { MinionPool } from "@src/@types/MinionPool";
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
+import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
 import { ThemeProps } from "@src/components/Theme";
-import replicaMigrationFields from "./replicaMigrationFields";
-import replicaMigrationImage from "./images/replica-migration.svg";
+import Button from "@src/components/ui/Button";
+import FieldInput from "@src/components/ui/FieldInput";
 import LoadingButton from "@src/components/ui/LoadingButton";
+import ToggleButtonBar from "@src/components/ui/ToggleButtonBar";
+import KeyboardManager from "@src/utils/KeyboardManager";
+import LabelDictionary from "@src/utils/LabelDictionary";
 
+import replicaMigrationImage from "./images/replica-migration.svg";
+import replicaMigrationFields from "./replicaMigrationFields";
+
+import type { Field } from "@src/@types/Field";
+import type { Instance, InstanceScript } from "@src/@types/Instance";
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -172,7 +171,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
     });
   }
 
-  handleCanceScript(global: string | null, instanceName: string | null) {
+  handleCancelScript(global: string | null, instanceName: string | null) {
     this.setState(prevState => ({
       uploadedScripts: prevState.uploadedScripts.filter(s =>
         global ? s.global !== global : s.instanceId !== instanceName
@@ -278,7 +277,7 @@ class ReplicaMigrationOptions extends React.Component<Props, State> {
           this.handleScriptRemove(s);
         }}
         onCancelScript={(g, i) => {
-          this.handleCanceScript(g, i);
+          this.handleCancelScript(g, i);
         }}
         uploadedScripts={this.state.uploadedScripts}
         removedScripts={this.state.removedScripts}

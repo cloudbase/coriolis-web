@@ -12,20 +12,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import autobind from "autobind-decorator";
+import { observer } from "mobx-react";
 import React from "react";
 import ReactDOM from "react-dom";
-import { observer } from "mobx-react";
 import styled, { css } from "styled-components";
-import autobind from "autobind-decorator";
 
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import DropdownButton from "@src/components/ui/Dropdowns/DropdownButton";
 import {
   List,
   ListItems,
   Tip,
 } from "@src/components/ui/Dropdowns/DropdownLink";
-
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 
 const Wrapper = styled.div<any>`
@@ -64,7 +63,7 @@ const ListStyle = css`
   ${ThemeProps.boxShadow}
   border: none;
 `;
-export const TEST_ID = "actionDropdown";
+
 export type DropdownAction = {
   label: string;
   color?: string;

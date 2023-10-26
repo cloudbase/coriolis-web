@@ -12,8 +12,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled, { css } from "styled-components";
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
@@ -52,8 +52,6 @@ const ProgressText = styled.div<any>`
   text-align: center;
 `;
 const CircleProgressBar = styled.circle``;
-
-export const TEST_ID = "smallLoading";
 
 export type Props = {
   loadingProgress: number;

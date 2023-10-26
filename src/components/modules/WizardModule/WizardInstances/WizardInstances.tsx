@@ -12,25 +12,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 
-import Checkbox from "@src/components/ui/Checkbox";
-import ReloadButton from "@src/components/ui/ReloadButton";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
-import SearchInput from "@src/components/ui/SearchInput";
+import Checkbox from "@src/components/ui/Checkbox";
 import InfoIcon from "@src/components/ui/InfoIcon";
 import Pagination from "@src/components/ui/Pagination";
+import ReloadButton from "@src/components/ui/ReloadButton";
+import SearchInput from "@src/components/ui/SearchInput";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import type { Instance as InstanceType } from "@src/@types/Instance";
-
-import instanceImage from "./images/instance.svg";
+import bigInstanceImage from "./images/instance-big.svg";
 import instanceLinuxImage from "./images/instance-linux.svg";
 import instanceWindowsImage from "./images/instance-windows.svg";
-import bigInstanceImage from "./images/instance-big.svg";
+import instanceImage from "./images/instance.svg";
+
+import type { Instance as InstanceType } from "@src/@types/Instance";
 
 const mbToGbString = (mb: number) =>
   mb >= 1024 ? `${(mb / 1024).toFixed(2)} GB` : `${mb} MB`;

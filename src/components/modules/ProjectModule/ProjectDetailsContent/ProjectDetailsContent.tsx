@@ -12,22 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { observer } from "mobx-react";
 import styled, { css } from "styled-components";
 
+import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import AlertModal from "@src/components/ui/AlertModal";
-import Table from "@src/components/ui/Table";
-import CopyValue from "@src/components/ui/CopyValue";
-import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
-import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
-import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
 import Button from "@src/components/ui/Button";
+import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
+import CopyValue from "@src/components/ui/CopyValue";
+import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
+import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
+import Table from "@src/components/ui/Table";
 
 import type { Project, RoleAssignment, Role } from "@src/@types/Project";
 import type { User } from "@src/@types/User";
-import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
@@ -170,13 +170,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
           <Button onClick={this.props.onAddMemberClick}>Add Member</Button>
         </ButtonsColumn>
         <ButtonsColumn>
-          <Button
-            alert
-            hollow
-            onClick={() => {
-              this.props.onDeleteClick();
-            }}
-          >
+          <Button alert hollow onClick={this.props.onDeleteClick}>
             Delete Project
           </Button>
         </ButtonsColumn>

@@ -63,7 +63,6 @@ type Props = {
     label: React.ReactNode;
     value: string;
   }) => void;
-  testMode?: boolean;
 };
 
 @observer
@@ -77,9 +76,6 @@ class DetailsPageHeader extends React.Component<Props, State> {
   stopPolling!: boolean;
 
   UNSAFE_componentWillMount() {
-    if (this.props.testMode) {
-      return;
-    }
     this.stopPolling = false;
     this.pollData(true);
   }

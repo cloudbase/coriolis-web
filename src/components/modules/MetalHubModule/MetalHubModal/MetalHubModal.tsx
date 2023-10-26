@@ -12,22 +12,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
 import { observer } from "mobx-react";
+import React from "react";
 import styled, { css } from "styled-components";
 
-import type { Field as FieldType } from "@src/@types/Field";
-import Button from "@src/components/ui/Button";
-import Modal from "@src/components/ui/Modal";
-import FieldInput from "@src/components/ui/FieldInput";
-
-import KeyboardManager from "@src/utils/KeyboardManager";
-import { ThemeProps } from "@src/components/Theme";
-import LoadingButton from "@src/components/ui/LoadingButton";
 import { MetalHubServer } from "@src/@types/MetalHub";
-import image from "./images/server.svg";
-import metalHubStore from "@src/stores/MetalHubStore";
+import { ThemeProps } from "@src/components/Theme";
+import Button from "@src/components/ui/Button";
+import FieldInput from "@src/components/ui/FieldInput";
+import LoadingButton from "@src/components/ui/LoadingButton";
+import Modal from "@src/components/ui/Modal";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
+import metalHubStore from "@src/stores/MetalHubStore";
+import KeyboardManager from "@src/utils/KeyboardManager";
+
+import image from "./images/server.svg";
+
+import type { Field as FieldType } from "@src/@types/Field";
 
 const Wrapper = styled.div`
   padding: 48px 32px 32px 32px;
@@ -302,7 +303,7 @@ class MetalHubModal extends React.Component<Props, State> {
     const message = this.state.saving
       ? "Validating ..."
       : metalHubStore.validationError.length
-      ? metalHubStore.validationError.map(e => <div key="e">{e}</div>)
+      ? metalHubStore.validationError.map(e => <div key={e}>{e}</div>)
       : "Validation successful";
     const status = this.state.saving
       ? "RUNNING"
