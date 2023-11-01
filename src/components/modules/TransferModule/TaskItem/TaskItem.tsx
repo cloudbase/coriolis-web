@@ -453,11 +453,14 @@ class TaskItem extends React.Component<Props> {
   }
 
   render() {
-    const status = this.props.item.progress_updates.some(update =>
-      update.message.startsWith("WARNING")
-    )
-      ? "WARNING"
-      : this.props.item.status;
+    const itemStatus = this.props.item.status;
+    const status =
+      itemStatus === "COMPLETED" &&
+      this.props.item.progress_updates.some(update =>
+        update.message.startsWith("WARNING")
+      )
+        ? "WARNING"
+        : itemStatus;
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Wrapper {...this.props}>
