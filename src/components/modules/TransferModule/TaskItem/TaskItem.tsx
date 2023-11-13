@@ -149,6 +149,7 @@ const ExceptionText = styled.div<any>`
   cursor: pointer;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: pre-line;
   &:hover > span {
     opacity: 1;
   }
@@ -166,6 +167,7 @@ const ProgressUpdateDiv = styled.div<any>`
 `;
 const ProgressUpdateDate = styled.div<any>`
   min-width: ${props => props.width || "auto"};
+  white-space: pre-line;
   & > span {
     margin-left: 24px;
   }
@@ -373,9 +375,9 @@ class TaskItem extends React.Component<Props> {
 
   renderExceptionDetails() {
     const exceptionsText =
-      this.props.item.exception_details &&
-      this.props.item.exception_details.length &&
-      this.props.item.exception_details;
+      this.props.item.exception_details?.length > 0
+        ? this.props.item.exception_details
+        : null;
 
     let valueField;
     if (!exceptionsText) {
