@@ -5080,12 +5080,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.21.1, axios@npm:^0.21.2":
+"axios@npm:^0.21.1":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
   dependencies:
     follow-redirects: ^1.14.0
   checksum: 44245f24ac971e7458f3120c92f9d66d1fc695e8b97019139de5b0cc65d9b8104647db01e5f46917728edfc0cfd88eb30fc4c55e6053eef4ace76768ce95ff3c
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.6.0":
+  version: 1.6.2
+  resolution: "axios@npm:1.6.2"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 4a7429e2b784be0f2902ca2680964391eae7236faa3967715f30ea45464b98ae3f1c6f631303b13dfe721b17126b01f486c7644b9ef276bfc63112db9fd379f8
   languageName: node
   linkType: hard
 
@@ -6649,7 +6660,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.36.2
     ansi-to-html: ^0.6.14
     autobind-decorator: ^2.1.0
-    axios: ^0.21.2
+    axios: ^1.6.0
     babel-loader: ^8.0.6
     babel-plugin-styled-components: ^1.10.6
     body-parser: ^1.18.2
@@ -7990,8 +8001,8 @@ __metadata:
 
 "eslint-plugin-coriolis-web@file:./src/utils/eslint-plugin-coriolis-web::locator=coriolis-web%40workspace%3A.":
   version: 0.0.0
-  resolution: "eslint-plugin-coriolis-web@file:./src/utils/eslint-plugin-coriolis-web#./src/utils/eslint-plugin-coriolis-web::hash=2f2a4c&locator=coriolis-web%40workspace%3A."
-  checksum: 53270112c732af777cdf8044e3f0c8af4bf377506dd298d924583c79635991d785ed4831e38cb3d4f55d311f0918ef7048c051a147d39f854308b85362f2c300
+  resolution: "eslint-plugin-coriolis-web@file:./src/utils/eslint-plugin-coriolis-web#./src/utils/eslint-plugin-coriolis-web::hash=7a9cfb&locator=coriolis-web%40workspace%3A."
+  checksum: aaef003db84f0c236ee53bb538d5f6d5ca289377b1381e54a8555580f87cbd933daaa1225d8fc529352403560e6a274470a4afb2045e7c03d633dd580c60cc98
   languageName: node
   linkType: hard
 
@@ -8779,7 +8790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.15.0":
   version: 1.15.3
   resolution: "follow-redirects@npm:1.15.3"
   peerDependenciesMeta:
@@ -14268,6 +14279,13 @@ __metadata:
   version: 1.0.0
   resolution: "proxy-from-env@npm:1.0.0"
   checksum: 292e28d1de0c315958d71d8315eb546dd3cd8c8cbc2dab7c54eeb9f5c17f421771964ad0b5e1f77011bab2305bdae42e1757ce33bdb1ccc3e87732322a8efcf1
+  languageName: node
+  linkType: hard
+
+"proxy-from-env@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "proxy-from-env@npm:1.1.0"
+  checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
   languageName: node
   linkType: hard
 
