@@ -133,19 +133,13 @@ export const shouldRenderField = (field: Field) =>
 
 export const findInvalidFields = (data: any, schema: Field[]): Field[] => {
   const isInvalid = (field: Field): boolean => {
-    if (data) {
-      const fieldValue = field.groupName
-        ? data[field.groupName]?.[field.name]
-        : data[field.name];
-      if (fieldValue === null) {
-        return true;
-      }
-      if (fieldValue === undefined) {
-        return field.default == null;
-      }
-      return !fieldValue;
+    if (field.groupName && data[field.groupName]?.[field.name] !== undefined) {
+      return !data[field.groupName][field.name];
+    } else if (data[field.name] !== undefined) {
+      return !data[field.name];
+    } else {
+      return !field.default;
     }
-    return field.default == null;
   };
 
   if (!schema || schema.length === 0) {
