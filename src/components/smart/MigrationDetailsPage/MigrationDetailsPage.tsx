@@ -12,37 +12,35 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { observer } from "mobx-react";
 
-import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
-import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import { getTransferItemTitle } from "@src/@types/MainItem";
 import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
+import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
+import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
 import MigrationDetailsContent from "@src/components/modules/TransferModule/MigrationDetailsContent";
-import AlertModal from "@src/components/ui/AlertModal";
-import TransferItemModal from "@src/components/modules/TransferModule/TransferItemModal";
-import Modal from "@src/components/ui/Modal";
 import ReplicaMigrationOptions from "@src/components/modules/TransferModule/ReplicaMigrationOptions";
-
-import migrationStore from "@src/stores/MigrationStore";
-import userStore from "@src/stores/UserStore";
+import TransferItemModal from "@src/components/modules/TransferModule/TransferItemModal";
+import { ThemePalette } from "@src/components/Theme";
+import AlertModal from "@src/components/ui/AlertModal";
+import Modal from "@src/components/ui/Modal";
+import { providerTypes } from "@src/constants";
 import endpointStore from "@src/stores/EndpointStore";
-import notificationStore from "@src/stores/NotificationStore";
-import networkStore from "@src/stores/NetworkStore";
 import instanceStore from "@src/stores/InstanceStore";
+import migrationStore from "@src/stores/MigrationStore";
+import minionPoolStore from "@src/stores/MinionPoolStore";
+import networkStore from "@src/stores/NetworkStore";
+import notificationStore from "@src/stores/NotificationStore";
 import providerStore from "@src/stores/ProviderStore";
+import userStore from "@src/stores/UserStore";
 import configLoader from "@src/utils/Config";
 
-import { ThemePalette } from "@src/components/Theme";
+import migrationImage from "./images/migration.svg";
 
 import type { Field } from "@src/@types/Field";
 import type { InstanceScript } from "@src/@types/Instance";
-import minionPoolStore from "@src/stores/MinionPoolStore";
-import { getTransferItemTitle } from "@src/@types/MainItem";
-import { providerTypes } from "@src/constants";
-import migrationImage from "./images/migration.svg";
-
 const Wrapper = styled.div<any>``;
 
 type Props = {
@@ -57,6 +55,7 @@ type State = {
   showFromReplicaModal: boolean;
   pausePolling: boolean;
   initialLoading: boolean;
+  migrating: boolean;
 };
 @observer
 class MigrationDetailsPage extends React.Component<Props, State> {
@@ -68,13 +67,41 @@ class MigrationDetailsPage extends React.Component<Props, State> {
     showFromReplicaModal: false,
     pausePolling: false,
     initialLoading: true,
+    migrating: false,
   };
 
   stopPolling: boolean | null = null;
 
-  UNSAFE_componentWillMount() {
+  timeoutRef: any = null;
+
+  componentDidMount() {
     document.title = "Migration Details";
 
+    this.loadMigrationAndPollData();
+  }
+
+  UNSAFE_componentWillReceiveProps(newProps: any) {
+    if (newProps.match.params.id === this.props.match.params.id) {
+      return;
+    }
+    this.timeoutRef && clearTimeout(this.timeoutRef);
+    migrationStore.cancelMigrationDetails();
+    migrationStore.clearDetails();
+    endpointStore.getEndpoints();
+    this.loadMigrationAndPollData();
+  }
+
+  componentWillUnmount() {
+    migrationStore.cancelMigrationDetails();
+    migrationStore.clearDetails();
+    this.stopPolling = true;
+  }
+
+  getStatus() {
+    return migrationStore.migrationDetails?.last_execution_status;
+  }
+
+  async loadMigrationAndPollData() {
     const loadMigration = async () => {
       await endpointStore.getEndpoints({ showLoading: true });
       this.setState({ initialLoading: false });
@@ -138,33 +165,8 @@ class MigrationDetailsPage extends React.Component<Props, State> {
         },
       });
     };
-    const loadMigrationAndPollData = async () => {
-      await loadMigration();
-      this.pollData();
-    };
-    loadMigrationAndPollData();
-  }
-
-  UNSAFE_componentWillReceiveProps(newProps: any) {
-    if (newProps.match.params.id === this.props.match.params.id) {
-      return;
-    }
-
-    endpointStore.getEndpoints();
-    this.loadMigrationWithInstances({
-      migrationId: newProps.match.params.id,
-      cache: true,
-    });
-  }
-
-  componentWillUnmount() {
-    migrationStore.cancelMigrationDetails();
-    migrationStore.clearDetails();
-    this.stopPolling = true;
-  }
-
-  getStatus() {
-    return migrationStore.migrationDetails?.last_execution_status;
+    await loadMigration();
+    this.pollData();
   }
 
   async loadMigrationWithInstances(options: {
@@ -258,10 +260,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
   }
 
   handleRecreateClick() {
-    const replicaId =
-      migrationStore.migrationDetails &&
-      migrationStore.migrationDetails.replica_id;
-    if (!replicaId) {
+    if (!migrationStore.migrationDetails?.replica_id) {
       this.setState({ showEditModal: true, pausePolling: true });
       return;
     }
@@ -307,20 +306,24 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       removedUserScripts,
       minionPoolMappings,
     } = opts;
-    const replicaId =
-      migrationStore.migrationDetails &&
-      migrationStore.migrationDetails.replica_id;
+    const replicaId = migrationStore.migrationDetails?.replica_id;
     if (!replicaId) {
       return;
     }
 
-    this.migrate({
-      replicaId,
-      fields,
-      uploadedUserScripts,
-      removedUserScripts,
-      minionPoolMappings,
-    });
+    this.setState({ migrating: true });
+    try {
+      const migration = await this.migrate({
+        replicaId,
+        fields,
+        uploadedUserScripts,
+        removedUserScripts,
+        minionPoolMappings,
+      });
+      this.props.history.push(`/migrations/${migration.id}/tasks`);
+    } finally {
+      this.setState({ migrating: false });
+    }
     this.handleCloseFromReplicaModal();
   }
 
@@ -346,7 +349,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       userScriptData: migrationStore.migrationDetails?.user_scripts,
       minionPoolMappings,
     });
-    this.props.history.push(`/migrations/${migration.id}/tasks`);
+    return migration;
   }
 
   async pollData() {
@@ -357,7 +360,7 @@ class MigrationDetailsPage extends React.Component<Props, State> {
       showLoading: false,
       skipLog: true,
     });
-    setTimeout(() => {
+    this.timeoutRef = setTimeout(() => {
       this.pollData();
     }, configLoader.config.requestPollTimeout);
   }
@@ -584,6 +587,7 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
               defaultSkipOsMorphing={migrationStore.getDefaultSkipOsMorphing(
                 migrationStore.migrationDetails
               )}
+              migrating={this.state.migrating}
             />
           </Modal>
         ) : null}
