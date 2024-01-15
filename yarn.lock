@@ -7998,8 +7998,8 @@ __metadata:
 
 "eslint-plugin-coriolis-web@file:./src/utils/eslint-plugin-coriolis-web::locator=coriolis-web%40workspace%3A.":
   version: 0.0.0
-  resolution: "eslint-plugin-coriolis-web@file:./src/utils/eslint-plugin-coriolis-web#./src/utils/eslint-plugin-coriolis-web::hash=11b726&locator=coriolis-web%40workspace%3A."
-  checksum: bb3a1dd0feae7faeac9e86b3b3be805a73ca7019130839e2fc5fa247276ddb8a3fd9c1fcca7390cdf1d65201483300df4beb8767c1de7e0d843aad494105c11a
+  resolution: "eslint-plugin-coriolis-web@file:./src/utils/eslint-plugin-coriolis-web#./src/utils/eslint-plugin-coriolis-web::hash=7a9cfb&locator=coriolis-web%40workspace%3A."
+  checksum: aaef003db84f0c236ee53bb538d5f6d5ca289377b1381e54a8555580f87cbd933daaa1225d8fc529352403560e6a274470a4afb2045e7c03d633dd580c60cc98
   languageName: node
   linkType: hard
 
@@ -8788,12 +8788,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0":
-  version: 1.15.3
-  resolution: "follow-redirects@npm:1.15.3"
+  version: 1.15.5
+  resolution: "follow-redirects@npm:1.15.5"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 584da22ec5420c837bd096559ebfb8fe69d82512d5585004e36a3b4a6ef6d5905780e0c74508c7b72f907d1fa2b7bd339e613859e9c304d0dc96af2027fd0231
+  checksum: 5ca49b5ce6f44338cbfc3546823357e7a70813cecc9b7b768158a1d32c1e62e7407c944402a918ea8c38ae2e78266312d617dc68783fac502cbb55e1047b34ec
   languageName: node
   linkType: hard
 
