@@ -5,7 +5,7 @@
    viewBox="0 0 21.166666 8.4666669"
    height="32"
    width="80"
-   sodipodi:docname="oci-32-white.svg"
+   sodipodi:docname="o3c-32-white.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -22,9 +22,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="6.0811185"
-     inkscape:cx="66.435147"
-     inkscape:cy="-5.2621898"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="62.402174"
+     inkscape:cy="-12.551145"
      inkscape:window-width="1920"
      inkscape:window-height="1004"
      inkscape:window-x="0"
@@ -32,12 +32,12 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2145" />
   <g
-     id="g938"
-     transform="translate(0,-0.13890619)"
+     id="g49526"
+     transform="translate(0,-0.10583352)"
      style="fill:#ffffff;fill-opacity:1">
     <g
        id="layer1"
-       transform="translate(0,0.26050424)"
+       transform="translate(0,0.12159805)"
        style="fill:#ffffff;fill-opacity:1">
       <g
          transform="matrix(0.26458333,0,0,0.26458333,1.3333333e-7,0.13229172)"
@@ -58,13 +58,13 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.69345px;line-height:1.25;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.317522"
        x="-0.068296142"
-       y="6.7050676"
+       y="6.7811637"
        id="text3317"
        transform="scale(1.045838,0.95617103)"><tspan
          sodipodi:role="line"
          id="tspan3315"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.69345px;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.317522"
          x="-0.068296142"
-         y="6.7050676">Compute Cloud@Customer</tspan></text>
+         y="6.7811637">Compute Cloud@Customer</tspan></text>
   </g>
 </svg>

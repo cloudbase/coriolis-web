@@ -17,6 +17,9 @@ export const PROVIDERS_MOCK: Providers = {
   opca: {
     types: [],
   },
+  o3c: {
+    types: [],
+  },
   oracle_vm: {
     types: [],
   },

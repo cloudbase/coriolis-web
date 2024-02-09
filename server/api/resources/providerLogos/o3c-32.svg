@@ -5,7 +5,7 @@
    viewBox="0 0 21.166666 8.4666669"
    height="32"
    width="80"
-   sodipodi:docname="oci-32-white.svg"
+   sodipodi:docname="o3c-32.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -22,9 +22,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="false"
-     inkscape:zoom="6.0811185"
-     inkscape:cx="66.435147"
-     inkscape:cy="-5.2621898"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="62.402174"
+     inkscape:cy="-12.551145"
      inkscape:window-width="1920"
      inkscape:window-height="1004"
      inkscape:window-x="0"
@@ -32,39 +32,35 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2145" />
   <g
-     id="g938"
-     transform="translate(0,-0.13890619)"
-     style="fill:#ffffff;fill-opacity:1">
+     id="g49526"
+     transform="translate(0,-0.10583352)">
     <g
        id="layer1"
-       transform="translate(0,0.26050424)"
-       style="fill:#ffffff;fill-opacity:1">
+       transform="translate(0,0.12159805)">
       <g
          transform="matrix(0.26458333,0,0,0.26458333,1.3333333e-7,0.13229172)"
          id="Provider/OracleCIC/ocic-32"
          stroke="none"
          stroke-width="1"
          fill="none"
-         fill-rule="evenodd"
-         style="fill:#ffffff;fill-opacity:1">
+         fill-rule="evenodd">
         <path
            d="m 70.958393,14.252943 c -1.481435,0 -2.738534,-0.980216 -3.122914,-2.332035 h 8.247519 L 77.21995,10.17385 h -9.384471 c 0.38438,-1.3437165 1.641479,-2.3318099 3.122914,-2.3318099 h 5.660821 l 1.14516,-1.7472822 h -6.934108 c -2.77068,0 -5.020417,2.221522 -5.020417,4.9566721 0,2.735151 2.249737,4.94857 5.020417,4.94857 h 5.949221 l 1.13718,-1.747057 z M 47.361223,16 c -2.770224,0 -5.020189,-2.213419 -5.020189,-4.94857 0,-2.7351501 2.249965,-4.9566721 5.020189,-4.9566721 h 6.926356 l -1.128972,1.7472822 h -5.66903 c -1.793771,0 -3.25104,1.4387 -3.25104,3.2093899 0,1.770691 1.457269,3.201513 3.25104,3.201513 h 6.958047 L 53.310672,16 Z M 10.719084,14.252943 c 1.794684,0 3.247849,-1.430822 3.247849,-3.201513 0,-1.7706899 -1.453165,-3.2093899 -3.247849,-3.2093899 h -5.57282 c -1.7935436,0 -3.2478482,1.4387 -3.2478482,3.2093899 0,1.770691 1.4543046,3.201513 3.2478482,3.201513 z M 5.0174535,16 C 2.247686,16 0,13.786581 0,11.05143 0,8.3162799 2.247686,6.0947579 5.0174535,6.0947579 h 5.8315815 c 2.770223,0 5.016314,2.221522 5.016314,4.9566721 0,2.735151 -2.246091,4.94857 -5.016314,4.94857 z M 25.333717,12.790385 c 1.873794,0 3.395126,-1.493844 3.395126,-3.3437623 0,-1.8496928 -1.521332,-3.3518648 -3.395126,-3.3518648 h -8.44176 V 16 h 1.928965 V 7.8420401 h 6.384669 c 0.896886,0 1.61754,0.7191249 1.61754,1.6045826 0,0.8854573 -0.720654,1.6048073 -1.61754,1.6048073 L 19.765684,11.043553 25.525907,16 h 2.802597 L 24.453018,12.790385 Z M 57.2582,14.252943 V 6.0947579 h -1.929877 v 8.9565371 c 0,0.245111 0.09621,0.482343 0.280419,0.664206 C 55.792724,15.897139 56.040998,16 56.313438,16 h 8.799694 l 1.13718,-1.747057 z M 33.637092,12.505886 h 5.148544 L 36.063289,8.1819082 31.06681,16 H 28.792906 L 34.870253,6.6088366 C 35.134486,6.2293547 35.574949,6 36.063289,6 c 0.472609,0 0.912845,0.2212519 1.16887,0.592856 L 43.333672,16 H 41.059768 L 39.986651,14.252943 H 34.774044 Z M 78.954639,8.0468223 c -0.571022,0 -1.037972,-0.4573062 -1.037972,-1.0235145 C 77.916667,6.4573062 78.383617,6 78.954639,6 79.53305,6 80,6.4573062 80,7.0233078 80,7.5895161 79.53305,8.0468223 78.954639,8.0468223 Z M 78.858167,6.413704 c 0.163179,0 0.229886,0.00723 0.304193,0.03637 0.20751,0.0653 0.229887,0.2467346 0.229887,0.3192671 0,0.014465 0,0.050835 -0.01499,0.09423 -0.0074,0.043602 -0.03715,0.1308065 -0.141014,0.1961064 -0.01457,0.00723 -0.02195,0.014465 -0.05172,0.02893 l 0.267039,0.471978 H 79.191914 L 78.954639,7.1249773 H 78.791671 V 7.5605858 H 78.561784 V 6.413704 Z m 0.0817,0.5226061 c 0.0741,-0.00723 0.148191,-0.00723 0.192733,-0.072739 0.02238,-0.02893 0.02977,-0.057861 0.02977,-0.1014629 0,-0.058067 -0.03715,-0.1089021 -0.08908,-0.1378325 -0.05193,-0.021904 -0.10365,-0.021904 -0.21511,-0.021904 h -0.0665 v 0.3339389 z m -0.800697,0.079765 c 0,0.4500736 0.363301,0.8057103 0.815474,0.8057103 0.459773,0 0.823074,-0.3556367 0.823074,-0.8057103 0,-0.4426343 -0.363301,-0.798271 -0.823074,-0.798271 -0.452173,0 -0.815474,0.3556367 -0.815474,0.798271 z"
            id="Combined-Shape-Copy"
-           fill="#616870"
-           style="fill:#ffffff;fill-opacity:1" />
+           fill="#616870" />
       </g>
     </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.69345px;line-height:1.25;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.317522"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.69345px;line-height:1.25;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#616870;fill-opacity:1;stroke-width:0.317522"
        x="-0.068296142"
-       y="6.7050676"
+       y="6.7811637"
        id="text3317"
        transform="scale(1.045838,0.95617103)"><tspan
          sodipodi:role="line"
          id="tspan3315"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.69345px;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.317522"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.69345px;font-family:FreeSans;-inkscape-font-specification:'FreeSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#616870;fill-opacity:1;stroke-width:0.317522"
          x="-0.068296142"
-         y="6.7050676">Compute Cloud@Customer</tspan></text>
+         y="6.7811637">Compute Cloud@Customer</tspan></text>
   </g>
 </svg>

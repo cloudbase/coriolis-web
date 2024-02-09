@@ -17,6 +17,7 @@ export type ProviderTypes =
   | "openstack"
   | "opc"
   | "opca"
+  | "o3c"
   | "oracle_vm"
   | "vmware_vsphere"
   | "aws"
