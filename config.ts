@@ -106,6 +106,12 @@ const conf: Config = {
       requiredFields: ["import_datacenter"],
       relistFields: ["import_cluster", "migr_minion_cluster"],
     },
+    {
+      name: "proxmox",
+      types: ["destination"],
+      requiredFields: ["import_node"],
+      relistFields: ["linux_template", "windows_template"],
+    },
   ],
 
   /*
@@ -128,6 +134,7 @@ const conf: Config = {
     olvm: 3,
     opca: 3,
     o3c: 3,
+    proxmox: 3,
     rhev: 3,
     metal: 4,
     lxd: 4,
@@ -150,6 +157,7 @@ const conf: Config = {
     metal: "Bare Metal",
     rhev: "Red Hat",
     lxd: "LXD",
+    proxmox: "Proxmox VE",
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field
