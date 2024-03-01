@@ -19,6 +19,7 @@ export type ProviderTypes =
   | "opca"
   | "o3c"
   | "oracle_vm"
+  | "proxmox"
   | "vmware_vsphere"
   | "aws"
   | "oci"
