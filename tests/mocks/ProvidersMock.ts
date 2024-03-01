@@ -38,6 +38,9 @@ export const PROVIDERS_MOCK: Providers = {
   olvm: {
     types: [],
   },
+  proxmox: {
+    types: [],
+  },
   kubevirt: {
     types: [],
   },
