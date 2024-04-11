@@ -187,6 +187,12 @@ class NewItemDropdown extends React.Component<Props, State> {
         iconName: "replica",
       },
       {
+        title: "Deployment",
+        href: "/wizard/deployment",
+        description: "Deploy an already synced Replica or Live Migration",
+        iconName: "replica",
+      },
+      {
         title: "Endpoint",
         value: "endpoint",
         description: "Add connection information for a cloud",
