@@ -26,6 +26,8 @@ import MessagePage from "@src/components/smart/MessagePage";
 import ReplicaDetailsPage from "@src/components/smart/ReplicaDetailsPage";
 import MigrationsPage from "@src/components/smart/MigrationsPage";
 import MigrationDetailsPage from "@src/components/smart/MigrationDetailsPage";
+import DeploymentsPage from "@src/components/smart/DeploymentsPage";
+import DeploymentDetailsPage from "@src/components/smart/DeploymentDetailsPage";
 import MetalHubServersPage from "@src/components/smart/MetalHubServersPage";
 import EndpointsPage from "@src/components/smart/EndpointsPage";
 import EndpointDetailsPage from "@src/components/smart/EndpointDetailsPage";
@@ -217,6 +219,9 @@ class App extends React.Component<Record<string, unknown>, State> {
             {renderRoute("/migrations", MigrationsPage, true)}
             {renderRoute("/migrations/:id", MigrationDetailsPage, true)}
             {renderRoute("/migrations/:id/:page", MigrationDetailsPage)}
+            {renderRoute("/deployments", DeploymentsPage, true)}
+            {renderRoute("/deployments/:id", DeploymentDetailsPage, true)}
+            {renderRoute("/deployments/:id/:page", DeploymentDetailsPage)}
             {renderRoute("/endpoints", EndpointsPage, true)}
             {renderRoute("/endpoints/:id", EndpointDetailsPage)}
             {renderRoute("/minion-pools", MinionPoolsPage, true)}
