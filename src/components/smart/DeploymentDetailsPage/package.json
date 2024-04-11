@@ -1,0 +1,6 @@
+{
+  "name": "DeploymentDetailsPage",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./DeploymentDetailsPage.tsx"
+}

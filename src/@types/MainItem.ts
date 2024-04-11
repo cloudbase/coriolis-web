@@ -116,7 +116,17 @@ export type MigrationItemOptions = MigrationItem & {
   shutdown_instances: boolean;
 };
 
-export type TransferItem = ReplicaItem | MigrationItem;
+export type DeploymentItem = BaseItem & {
+  type: "deployment";
+  replica_id?: string;
+};
+
+export type DeploymentItemOptions = DeploymentItem & {
+  skip_os_morphing: boolean;
+  shutdown_instances: boolean;
+};
+
+export type TransferItem = ReplicaItem | MigrationItem | DeploymentItem;
 
 export type ReplicaItemDetails = ReplicaItem & {
   executions: Execution[];
@@ -126,7 +136,11 @@ export type MigrationItemDetails = MigrationItem & {
   tasks: Task[];
 };
 
-export type TransferItemDetails = ReplicaItemDetails | MigrationItemDetails;
+export type DeploymentItemDetails = DeploymentItem & {
+  tasks: Task[];
+};
+
+export type TransferItemDetails = ReplicaItemDetails | MigrationItemDetails | DeploymentItemDetails;
 
 export const getTransferItemTitle = (item: TransferItem | null) => {
   if (!item) {
