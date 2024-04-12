@@ -160,7 +160,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
             disabled={this.isEndpointMissing()}
             onClick={this.props.onCreateDeploymentClick}
           >
-            Create Migration
+            Deploy Replica
           </Button>
         </ButtonColumn>
         <ButtonColumn>

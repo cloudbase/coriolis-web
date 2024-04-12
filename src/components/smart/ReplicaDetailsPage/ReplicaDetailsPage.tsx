@@ -42,6 +42,7 @@ import configLoader from "@src/utils/Config";
 import ObjectUtils from "@src/utils/ObjectUtils";
 
 import replicaImage from "./images/replica.svg";
+import liveMigrationImage from "./images/live_migration.svg";
 
 import type { InstanceScript } from "@src/@types/Instance";
 import type { Execution } from "@src/@types/Execution";
@@ -203,6 +204,24 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   getStatus() {
     return this.getLastExecution()?.status;
+  }
+
+  getReplicaItemType() {
+    let item_type = "replica";
+    let scenario = this.replica?.scenario;
+    if (scenario && scenario === "live_migration") {
+      item_type = "migration";
+    }
+    return item_type;
+  }
+
+  getReplicaImageType() {
+    let image = replicaImage;
+    let scenario = this.replica?.scenario;
+    if (scenario && scenario === "live_migration") {
+      image = liveMigrationImage;
+    }
+    return image;
   }
 
   async loadIsEditable(replicaDetails: ReplicaItemDetails) {
@@ -704,11 +723,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             <DetailsContentHeader
               statusPill={replica?.last_execution_status}
               itemTitle={getTransferItemTitle(this.replica)}
-              itemType="replica"
+              itemType={this.getReplicaItemType()}
               itemDescription={replica?.description}
               dropdownActions={dropdownActions}
               backLink="/replicas"
-              typeImage={replicaImage}
+              typeImage={this.getReplicaImageType()}
               alertInfoPill
             />
           }
