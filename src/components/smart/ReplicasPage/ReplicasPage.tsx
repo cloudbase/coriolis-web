@@ -23,7 +23,7 @@ import PageHeader from "@src/components/smart/PageHeader";
 import AlertModal from "@src/components/ui/AlertModal";
 import Modal from "@src/components/ui/Modal";
 import ReplicaExecutionOptions from "@src/components/modules/TransferModule/ReplicaExecutionOptions";
-import ReplicaMigrationOptions from "@src/components/modules/TransferModule/ReplicaMigrationOptions";
+import ReplicaDeploymentOptions from "@src/components/modules/TransferModule/ReplicaDeploymentOptions";
 import DeleteReplicaModal from "@src/components/modules/TransferModule/DeleteReplicaModal";
 
 import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
@@ -32,7 +32,7 @@ import type { InstanceScript } from "@src/@types/Instance";
 
 import projectStore from "@src/stores/ProjectStore";
 import replicaStore from "@src/stores/ReplicaStore";
-import migrationStore from "@src/stores/MigrationStore";
+import deploymentStore from "@src/stores/DeploymentStore";
 import scheduleStore from "@src/stores/ScheduleStore";
 import instanceStore from "@src/stores/InstanceStore";
 import endpointStore from "@src/stores/EndpointStore";
@@ -55,7 +55,7 @@ type State = {
   selectedReplicas: ReplicaItem[];
   showCancelExecutionModal: boolean;
   showExecutionOptionsModal: boolean;
-  showCreateMigrationsModal: boolean;
+  showCreateDeploymentsModal: boolean;
   showDeleteDisksModal: boolean;
   showDeleteReplicasModal: boolean;
 };
@@ -65,7 +65,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     modalIsOpen: false,
     selectedReplicas: [],
     showCancelExecutionModal: false,
-    showCreateMigrationsModal: false,
+    showCreateDeploymentsModal: false,
     showExecutionOptionsModal: false,
     showDeleteDisksModal: false,
     showDeleteReplicasModal: false,
@@ -155,16 +155,16 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     this.setState({ showExecutionOptionsModal: false });
   }
 
-  migrateSelectedReplicas(fields: Field[], uploadedScripts: InstanceScript[]) {
-    notificationStore.alert("Creating migrations from selected replicas");
-    this.migrate(fields, uploadedScripts);
-    this.setState({ showCreateMigrationsModal: false, modalIsOpen: false });
+  deploySelectedReplicas(fields: Field[], uploadedScripts: InstanceScript[]) {
+    notificationStore.alert("Creating deployments from selected replicas");
+    this.deploy(fields, uploadedScripts);
+    this.setState({ showCreateDeploymentsModal: false, modalIsOpen: false });
   }
 
-  async migrate(fields: Field[], uploadedScripts: InstanceScript[]) {
+  async deploy(fields: Field[], uploadedScripts: InstanceScript[]) {
     await Promise.all(
       this.state.selectedReplicas.map(replica =>
-        migrationStore.migrateReplica({
+        deploymentStore.deployReplica({
           replicaId: replica.id,
           fields,
           uploadedUserScripts: uploadedScripts.filter(
@@ -179,10 +179,10 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       )
     );
     notificationStore.alert(
-      "Migrations successfully created from replicas.",
+      "Deployments successfully created from replicas.",
       "success"
     );
-    this.props.history.push("/migrations");
+    this.props.history.push("/deployments");
   }
 
   handleShowDeleteReplicas() {
@@ -257,7 +257,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     });
   }
 
-  handleShowCreateMigrationsModal() {
+  handleShowCreateDeploymentsModal() {
     instanceStore.loadInstancesDetailsBulk(
       replicaStore.replicas.map(r => ({
         endpointId: r.origin_endpoint_id,
@@ -266,7 +266,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       }))
     );
 
-    this.setState({ showCreateMigrationsModal: true, modalIsOpen: true });
+    this.setState({ showCreateDeploymentsModal: true, modalIsOpen: true });
   }
 
   async pollData() {
@@ -393,10 +393,10 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         },
       },
       {
-        label: "Create Migrations",
+        label: "Deploy Replicas",
         color: ThemePalette.primary,
         action: () => {
-          this.handleShowCreateMigrationsModal();
+          this.handleShowCreateDeploymentsModal();
         },
       },
       {
@@ -535,30 +535,30 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
             />
           </Modal>
         ) : null}
-        {this.state.showCreateMigrationsModal ? (
+        {this.state.showCreateDeploymentsModal ? (
           <Modal
             isOpen
-            title="Create Migrations from Selected Replicas"
+            title="Deploy Selected Replicas"
             onRequestClose={() => {
               this.setState({
-                showCreateMigrationsModal: false,
+                showCreateDeploymentsModal: false,
                 modalIsOpen: false,
               });
             }}
           >
-            <ReplicaMigrationOptions
+            <ReplicaDeploymentOptions
               transferItem={null}
               minionPools={[]}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
               onCancelClick={() => {
                 this.setState({
-                  showCreateMigrationsModal: false,
+                  showCreateDeploymentsModal: false,
                   modalIsOpen: false,
                 });
               }}
-              onMigrateClick={options => {
-                this.migrateSelectedReplicas(
+              onDeployClick={options => {
+                this.deploySelectedReplicas(
                   options.fields,
                   options.uploadedUserScripts
                 );
