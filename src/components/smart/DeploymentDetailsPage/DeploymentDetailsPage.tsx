@@ -104,6 +104,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
 
   getDeploymentReplicaScenarioItemType(): string {
     let item_type = "replica";
+    console.log(this.deployment);
     let scenario = this.deployment?.replica_scenario_type;
     if (scenario && scenario === "live_migration") {
       item_type = "migration";
@@ -113,6 +114,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
 
   getReplicaTypePillShouldRed(): bool {
     let should_red = true;
+    console.log(this.deployment);
     let scenario = this.deployment?.replica_scenario_type;
     if (scenario && scenario === "live_migration") {
       should_red = false;
@@ -122,6 +124,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
 
   getDeploymentScenarioTypeImage(): string {
     let image = replicaDeploymentImage;
+    console.log(this.deployment);
     let scenario = this.deployment?.replica_scenario_type;
     if (scenario && scenario === "live_migration") {
       image = liveMigrationDeploymentImage;
