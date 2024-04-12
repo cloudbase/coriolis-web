@@ -286,7 +286,7 @@ class MigrationsPage extends React.Component<{ history: any }, State> {
               renderItemComponent={options => (
                 <TransferListItem
                   {...options}
-                  image={migrationItemImage}
+                  getListItemImage={item => migrationItemImage}
                   endpointType={id => {
                     const endpoint = this.getEndpoint(id);
                     if (endpoint) {

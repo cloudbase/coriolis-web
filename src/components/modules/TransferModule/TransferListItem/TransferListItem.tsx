@@ -109,7 +109,7 @@ type Props = {
   item: TransferItem;
   onClick: () => void;
   selected: boolean;
-  image: string;
+  getListItemImage: (item: TransferItem) => string;
   showScheduleIcon?: boolean;
   endpointType: (endpointId: string) => string;
   getUserName: (userId: string) => string | undefined;
@@ -120,6 +120,25 @@ type Props = {
 class TransferListItem extends React.Component<Props> {
   getStatus() {
     return this.props.item.last_execution_status;
+  }
+
+  getReplicaScenarioType() {
+    let scenario = "";
+    switch(this.props.item.type) {
+      case "replica":
+        scenario = this.props.item.scenario;
+        break;
+      case "deployment":
+        scenario = this.props.item.replica_scenario;
+        break;
+      case "migration":
+        if (this.props.item.replica_id) {
+          scenario = "replica";
+        }
+        break;
+      default:
+    }
+    return scenario;
   }
 
   renderCreationDate() {
@@ -196,7 +215,7 @@ class TransferListItem extends React.Component<Props> {
           onChange={this.props.onSelectedChange}
         />
         <Content onClick={this.props.onClick}>
-          <Image image={this.props.image} />
+          <Image image={this.props.getListItemImage(this.props.item)} />
           <Title>
             <TitleLabel>{getTransferItemTitle(this.props.item)}</TitleLabel>
             <StatusWrapper>
