@@ -206,7 +206,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     return this.getLastExecution()?.status;
   }
 
-  getReplicaItemType() {
+  getReplicaItemType(): string {
     let item_type = "replica";
     let scenario = this.replica?.scenario;
     if (scenario && scenario === "live_migration") {
@@ -215,7 +215,16 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     return item_type;
   }
 
-  getReplicaImageType() {
+  getReplicaTypePillShouldRed(): bool {
+    let should_red = true;
+    let scenario = this.replica?.scenario;
+    if (scenario && scenario === "live_migration") {
+      should_red = false;
+    }
+    return should_red;
+  }
+
+  getReplicaScenarioTypeImage(): string {
     let image = replicaImage;
     let scenario = this.replica?.scenario;
     if (scenario && scenario === "live_migration") {
@@ -727,8 +736,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               itemDescription={replica?.description}
               dropdownActions={dropdownActions}
               backLink="/replicas"
-              typeImage={this.getReplicaImageType()}
-              alertInfoPill
+              typeImage={this.getReplicaScenarioTypeImage()}
+              alertInfoPill={this.getReplicaTypePillShouldRed()}
+              primaryInfoPill={!this.getReplicaTypePillShouldRed()}
             />
           }
           contentComponent={
