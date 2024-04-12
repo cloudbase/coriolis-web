@@ -37,7 +37,8 @@ import providerStore from "@src/stores/ProviderStore";
 import userStore from "@src/stores/UserStore";
 import configLoader from "@src/utils/Config";
 
-import deploymentImage from "./images/deployment.svg";
+import replicaDeploymentImage from "./images/replica-deployment.svg";
+import liveMigrationDeploymentImage from "./images/live-migration-deployment.svg"
 
 import type { Field } from "@src/@types/Field";
 import type { InstanceScript } from "@src/@types/Instance";
@@ -101,7 +102,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     return deploymentStore.deploymentDetails?.last_execution_status;
   }
 
-  getDeploymentReplicaScenarioItemType() {
+  getDeploymentReplicaScenarioItemType(): string {
     let item_type = "replica";
     let scenario = this.deployment?.replica_scenario_type;
     if (scenario && scenario === "live_migration") {
@@ -117,6 +118,15 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
       should_red = false;
     }
     return should_red;
+  }
+
+  getDeploymentScenarioTypeImage(): string {
+    let image = replicaDeploymentImage;
+    let scenario = this.deployment?.replica_scenario_type;
+    if (scenario && scenario === "live_migration") {
+      image = liveMigrationDeploymentImage;
+    }
+    return image;
   }
 
   async loadDeploymentAndPollData() {
@@ -500,7 +510,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
               itemType={this.getDeploymentReplicaScenarioItemType()}
               itemDescription={deploymentStore.deploymentDetails?.description}
               backLink="/deployments"
-              typeImage={deploymentImage}
+              typeImage={this.getDeploymentScenarioTypeImage()}
               dropdownActions={dropdownActions}
               alertInfoPill={this.getReplicaTypePillShouldRed()}
               primaryInfoPill={!this.getReplicaTypePillShouldRed()}
