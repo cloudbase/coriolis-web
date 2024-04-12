@@ -34,7 +34,8 @@ import { DeploymentItem } from "@src/@types/MainItem";
 import userStore from "@src/stores/UserStore";
 import TransferListItem from "@src/components/modules/TransferModule/TransferListItem";
 import deploymentLargeImage from "./images/deployment-large.svg";
-import deploymentItemImage from "./images/deployment.svg";
+import replicaDeploymentItemImage from "./images/replica-deployment.svg";
+import liveMigrationDeploymentItemImage from "./images/live-migration-deployment.svg"
 
 const Wrapper = styled.div<any>``;
 
@@ -96,6 +97,19 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
     const deployment = deploymentStore.deployments.find(m => m.id === deploymentId);
     return deployment ? deployment.last_execution_status : "";
   }
+
+  getDeploymentReplicaType(deploymentId: string): string {
+    const deployment = deploymentStore.deployments.find(m => m.id === deploymentId);
+    return deployment ? deployment.replica_scenario_type : "";
+  }
+
+  getDeploymentItemImage(item: DeploymentItem): string {
+    let image = replicaDeploymentItemImage;
+    if (item.replica_scenario_type === "live_migration") {
+      image = liveMigrationDeploymentItemImage;
+    }
+    return image;
+ }
 
   handleProjectChange() {
     endpointStore.getEndpoints({ showLoading: true });
@@ -286,7 +300,9 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
               renderItemComponent={options => (
                 <TransferListItem
                   {...options}
-                  image={deploymentItemImage}
+                  getListItemImage={item => {
+                    return this.getDeploymentItemImage(item);
+                  }}
                   endpointType={id => {
                     const endpoint = this.getEndpoint(id);
                     if (endpoint) {
@@ -305,7 +321,7 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
               )}
               emptyListImage={deploymentLargeImage}
               emptyListMessage="It seems like you don't have any Deployments in this project."
-              emptyListExtraMessage="A Coriolis Deployment is a full virtual machine deployment between two cloud endpoints."
+              emptyListExtraMessage="A Coriolis Deployment is a deployment of a Replica between two cloud endpoints."
               emptyListButtonLabel="Create a Deployment"
               onEmptyListButtonClick={() => {
                 this.handleEmptyListButtonClick();

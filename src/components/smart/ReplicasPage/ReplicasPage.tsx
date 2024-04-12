@@ -45,6 +45,7 @@ import userStore from "@src/stores/UserStore";
 import TransferListItem from "@src/components/modules/TransferModule/TransferListItem";
 import replicaLargeImage from "./images/replica-large.svg";
 import replicaItemImage from "./images/replica.svg";
+import liveMigrationItemImage from "./images/live-migration.svg";
 
 const Wrapper = styled.div<any>``;
 
@@ -117,6 +118,14 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
   getStatus(replica?: ReplicaItem | null): string {
     return replica?.last_execution_status || "";
   }
+
+  getReplicaItemImage(item: ReplicaItem): string {
+    let image = replicaItemImage;
+    if (item.scenario === "live_migration") {
+      image = liveMigrationItemImage;
+    }
+    return image;
+ }
 
   handleProjectChange() {
     replicaStore.getReplicas();
@@ -441,7 +450,9 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               renderItemComponent={options => (
                 <TransferListItem
                   {...options}
-                  image={replicaItemImage}
+                  getListItemImage={item => {
+                    return this.getReplicaItemImage(item);
+                  }}
                   showScheduleIcon={this.isReplicaScheduled(options.item.id)}
                   endpointType={id => {
                     const endpoint = this.getEndpoint(id);
@@ -461,7 +472,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
               )}
               emptyListImage={replicaLargeImage}
               emptyListMessage="It seems like you don't have any Replicas in this project."
-              emptyListExtraMessage="The Coriolis Replica is obtained by replicating incrementally the virtual machines data from the source cloud endpoint to the target."
+              emptyListExtraMessage="A Coriolis Replica is obtained by replicating incrementally the virtual machines data from the source cloud endpoint to the target."
               emptyListButtonLabel="Create a Replica"
               onEmptyListButtonClick={() => {
                 this.handleEmptyListButtonClick();

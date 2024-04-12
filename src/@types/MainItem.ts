@@ -94,6 +94,7 @@ type BaseItem = {
 
 export type ReplicaItem = BaseItem & {
   type: "replica";
+  scenario?: string;
 };
 
 export type UserScriptData = {
@@ -118,7 +119,8 @@ export type MigrationItemOptions = MigrationItem & {
 
 export type DeploymentItem = BaseItem & {
   type: "deployment";
-  replica_id?: string;
+  replica_id: string;
+  replica_scenario: string;
 };
 
 export type DeploymentItemOptions = DeploymentItem & {
