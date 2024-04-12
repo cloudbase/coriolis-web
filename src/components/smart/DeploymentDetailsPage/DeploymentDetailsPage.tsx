@@ -101,6 +101,15 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     return deploymentStore.deploymentDetails?.last_execution_status;
   }
 
+  getReplicaTypePillShouldRed(): bool {
+    let should_red = true;
+    let scenario = this.deployment?.replica_scenario_type;
+    if (scenario && scenario === "live_migration") {
+      should_red = false;
+    }
+    return should_red;
+  }
+
   async loadDeploymentAndPollData() {
     const loadDeployment = async () => {
       await endpointStore.getEndpoints({ showLoading: true });
@@ -484,7 +493,8 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
               backLink="/deployments"
               typeImage={deploymentImage}
               dropdownActions={dropdownActions}
-              primaryInfoPill
+              alertInfoPill={this.getReplicaTypePillShouldRed()}
+              primaryInfoPill={!this.getReplicaTypePillShouldRed()}
             />
           }
           contentComponent={
