@@ -101,6 +101,15 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     return deploymentStore.deploymentDetails?.last_execution_status;
   }
 
+  getDeploymentReplicaScenarioItemType() {
+    let item_type = "replica";
+    let scenario = this.deployment?.replica_scenario_type;
+    if (scenario && scenario === "live_migration") {
+      item_type = "migration";
+    }
+    return item_type;
+  }
+
   getReplicaTypePillShouldRed(): bool {
     let should_red = true;
     let scenario = this.deployment?.replica_scenario_type;
@@ -488,7 +497,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
                 deploymentStore.deploymentDetails?.last_execution_status
               }
               itemTitle={getTransferItemTitle(deploymentStore.deploymentDetails)}
-              itemType="deployment"
+              itemType={this.getDeploymentReplicaScenarioItemType()}
               itemDescription={deploymentStore.deploymentDetails?.description}
               backLink="/deployments"
               typeImage={deploymentImage}
