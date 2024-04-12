@@ -100,7 +100,7 @@ type Props = {
   ) => void;
   onDeleteExecutionClick: (execution: Execution | null) => void;
   onExecuteClick: () => void;
-  onCreateMigrationClick: () => void;
+  onCreateDeploymentClick: () => void;
   onDeleteReplicaClick: () => void;
   onAddScheduleClick: (schedule: ScheduleType) => void;
   onScheduleChange: (
@@ -158,7 +158,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
           <Button
             primary
             disabled={this.isEndpointMissing()}
-            onClick={this.props.onCreateMigrationClick}
+            onClick={this.props.onCreateDeploymentClick}
           >
             Create Migration
           </Button>
