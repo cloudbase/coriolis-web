@@ -92,7 +92,7 @@ describe("ReplicaDetailsContent", () => {
       onCancelExecutionClick: jest.fn(),
       onDeleteExecutionClick: jest.fn(),
       onExecuteClick: jest.fn(),
-      onCreateMigrationClick: jest.fn(),
+      onCreateDeploymentClick: jest.fn(),
       onDeleteReplicaClick: jest.fn(),
       onAddScheduleClick: jest.fn(),
       onScheduleChange: jest.fn(),

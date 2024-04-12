@@ -23,7 +23,7 @@ import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTempl
 import DeleteReplicaModal from "@src/components/modules/TransferModule/DeleteReplicaModal";
 import ReplicaDetailsContent from "@src/components/modules/TransferModule/ReplicaDetailsContent";
 import ReplicaExecutionOptions from "@src/components/modules/TransferModule/ReplicaExecutionOptions";
-import ReplicaMigrationOptions from "@src/components/modules/TransferModule/ReplicaMigrationOptions";
+import ReplicaDeploymentOptions from "@src/components/modules/TransferModule/ReplicaDeploymentOptions";
 import TransferItemModal from "@src/components/modules/TransferModule/TransferItemModal";
 import { ThemePalette } from "@src/components/Theme";
 import AlertModal from "@src/components/ui/AlertModal";
@@ -31,7 +31,7 @@ import Modal from "@src/components/ui/Modal";
 import { providerTypes } from "@src/constants";
 import endpointStore from "@src/stores/EndpointStore";
 import instanceStore from "@src/stores/InstanceStore";
-import migrationStore from "@src/stores/MigrationStore";
+import deploymentStore from "@src/stores/DeploymentStore";
 import minionPoolStore from "@src/stores/MinionPoolStore";
 import networkStore from "@src/stores/NetworkStore";
 import providerStore from "@src/stores/ProviderStore";
@@ -57,7 +57,7 @@ type Props = {
 };
 type State = {
   showOptionsModal: boolean;
-  showMigrationModal: boolean;
+  showDeploymentModal: boolean;
   showEditModal: boolean;
   showDeleteExecutionConfirmation: boolean;
   showForceCancelConfirmation: boolean;
@@ -69,13 +69,13 @@ type State = {
   isEditableLoading: boolean;
   pausePolling: boolean;
   initialLoading: boolean;
-  migrating: boolean;
+  deploying: boolean;
 };
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
   state: State = {
     showOptionsModal: false,
-    showMigrationModal: false,
+    showDeploymentModal: false,
     showEditModal: false,
     showDeleteExecutionConfirmation: false,
     showDeleteReplicaConfirmation: false,
@@ -87,7 +87,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     isEditableLoading: true,
     pausePolling: false,
     initialLoading: true,
-    migrating: false,
+    deploying: false,
   };
 
   stopPolling: boolean | null = null;
@@ -395,12 +395,12 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     this.setState({ showDeleteReplicaDisksConfirmation: false });
   }
 
-  handleCloseMigrationModal() {
-    this.setState({ showMigrationModal: false, pausePolling: false });
+  handleCloseDeploymentModal() {
+    this.setState({ showDeploymentModal: false, pausePolling: false });
   }
 
-  handleCreateMigrationClick() {
-    this.setState({ showMigrationModal: true, pausePolling: true });
+  handleCreateDeploymentClick() {
+    this.setState({ showDeploymentModal: true, pausePolling: true });
   }
 
   handleReplicaEditClick() {
@@ -489,7 +489,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       showCancelConfirmation: false,
     });
   }
-  async migrate(opts: {
+  async deploy(opts: {
     fields: Field[];
     uploadedUserScripts: InstanceScript[];
     removedUserScripts: InstanceScript[];
@@ -499,7 +499,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     if (!replica) {
       return;
     }
-    this.setState({ migrating: true });
+    this.setState({ deploying: true });
     const {
       fields,
       uploadedUserScripts,
@@ -507,7 +507,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       minionPoolMappings,
     } = opts;
     try {
-      const migration = await migrationStore.migrateReplica({
+      const deployment = await deploymentStore.deployReplica({
         replicaId: replica.id,
         fields,
         uploadedUserScripts,
@@ -515,9 +515,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         userScriptData: replica.user_scripts,
         minionPoolMappings,
       });
-      this.props.history.push(`/migrations/${migration.id}/tasks/`);
+      this.props.history.push(`/deployments/${deployment.id}/tasks/`);
     } finally {
-      this.setState({ migrating: false });
+      this.setState({ deploying: false });
     }
   }
 
@@ -658,10 +658,10 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         },
       },
       {
-        label: "Create Migration",
+        label: "Create Deployment",
         color: ThemePalette.primary,
         action: () => {
-          this.handleCreateMigrationClick();
+          this.handleCreateDeploymentClick();
         },
       },
       {
@@ -769,8 +769,8 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               onExecuteClick={() => {
                 this.handleExecuteClick();
               }}
-              onCreateMigrationClick={() => {
-                this.handleCreateMigrationClick();
+              onCreateDeploymentClick={() => {
+                this.handleCreateDeploymentClick();
               }}
               onDeleteReplicaClick={() => {
                 this.handleDeleteReplicaClick();
@@ -813,15 +813,15 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             }}
           />
         </Modal>
-        {this.state.showMigrationModal ? (
+        {this.state.showDeploymentModal ? (
           <Modal
             isOpen
-            title="Create Migration from Replica"
+            title="Deploy Replica"
             onRequestClose={() => {
-              this.handleCloseMigrationModal();
+              this.handleCloseDeploymentModal();
             }}
           >
-            <ReplicaMigrationOptions
+            <ReplicaDeploymentOptions
               transferItem={this.replica}
               minionPools={minionPoolStore.minionPools.filter(
                 m =>
@@ -831,11 +831,11 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
               onCancelClick={() => {
-                this.handleCloseMigrationModal();
+                this.handleCloseDeploymentModal();
               }}
-              migrating={this.state.migrating}
-              onMigrateClick={opts => {
-                this.migrate(opts);
+              deploying={this.state.deploying}
+              onDeployClick={opts => {
+                this.deploy(opts);
               }}
             />
           </Modal>
