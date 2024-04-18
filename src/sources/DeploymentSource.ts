@@ -307,7 +307,7 @@ class DeploymentSource {
     return deploymentId;
   }
 
-  async migrateReplica(opts: {
+  async deployReplica(opts: {
     replicaId: string;
     options: Field[];
     uploadedUserScripts: InstanceScript[];
