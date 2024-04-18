@@ -16,7 +16,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
-import { getTransferItemTitle } from "@src/@types/MainItem";
+import { getTransferItemTitle, DeploymentItemDetails } from "@src/@types/MainItem";
 import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
@@ -102,30 +102,27 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     return deploymentStore.deploymentDetails?.last_execution_status;
   }
 
-  getDeploymentReplicaScenarioItemType(): string {
+  getDeploymentReplicaScenarioItemType(details: DeploymentItemDetails | null): string {
     let item_type = "replica";
-    console.log(this.deployment);
-    let scenario = this.deployment?.replica_scenario_type;
+    let scenario = details?.replica_scenario_type;
     if (scenario && scenario === "live_migration") {
       item_type = "migration";
     }
     return item_type;
   }
 
-  getReplicaTypePillShouldRed(): bool {
+  getReplicaTypePillShouldRed(details: DeploymentItemDetails | null): bool {
     let should_red = true;
-    console.log(this.deployment);
-    let scenario = this.deployment?.replica_scenario_type;
+    let scenario = details?.replica_scenario_type;
     if (scenario && scenario === "live_migration") {
       should_red = false;
     }
     return should_red;
   }
 
-  getDeploymentScenarioTypeImage(): string {
+  getDeploymentScenarioTypeImage(details: DeploymentItemDetails | null): string {
     let image = replicaDeploymentImage;
-    console.log(this.deployment);
-    let scenario = this.deployment?.replica_scenario_type;
+    let scenario = details?.replica_scenario_type;
     if (scenario && scenario === "live_migration") {
       image = liveMigrationDeploymentImage;
     }
@@ -510,13 +507,25 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
                 deploymentStore.deploymentDetails?.last_execution_status
               }
               itemTitle={getTransferItemTitle(deploymentStore.deploymentDetails)}
-              itemType={this.getDeploymentReplicaScenarioItemType()}
+              itemType={
+                this.getDeploymentReplicaScenarioItemType(
+                  deploymentStore.deploymentDetails)
+              }
               itemDescription={deploymentStore.deploymentDetails?.description}
               backLink="/deployments"
-              typeImage={this.getDeploymentScenarioTypeImage()}
+              typeImage={
+                this.getDeploymentScenarioTypeImage(
+                  deploymentStore.deploymentDetails)
+              }
               dropdownActions={dropdownActions}
-              alertInfoPill={this.getReplicaTypePillShouldRed()}
-              primaryInfoPill={!this.getReplicaTypePillShouldRed()}
+              alertInfoPill={
+                this.getReplicaTypePillShouldRed(
+                  deploymentStore.deploymentDetails)
+              }
+              primaryInfoPill={
+                !this.getReplicaTypePillShouldRed(
+                  deploymentStore.deploymentDetails)
+              }
             />
           }
           contentComponent={
@@ -561,7 +570,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
         <AlertModal
           isOpen={this.state.showDeleteDeploymentConfirmation}
           title="Delete Deployment?"
-          message="Are you sure you want to delete this deployment?"
+          message="Are you sure you want to delete this Deployment?"
           extraMessage="Deleting a Coriolis Deployment is permanent!"
           onConfirmation={() => {
             this.handleDeleteDeploymentConfirmation();
@@ -573,7 +582,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
         <AlertModal
           isOpen={this.state.showCancelConfirmation}
           title="Cancel Deployment?"
-          message="Are you sure you want to cancel the deployment?"
+          message="Are you sure you want to cancel the Deployment?"
           extraMessage=" "
           onConfirmation={() => {
             this.handleCancelConfirmation();
@@ -600,7 +609,7 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
         {this.state.showFromReplicaModal ? (
           <Modal
             isOpen
-            title="Recreate Deployment from Replica"
+            title="Recreate Deployment"
             onRequestClose={() => {
               this.handleCloseFromReplicaModal();
             }}
