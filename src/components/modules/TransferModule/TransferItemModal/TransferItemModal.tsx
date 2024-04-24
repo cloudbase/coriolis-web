@@ -632,11 +632,11 @@ class TransferItemModal extends React.Component<Props, State> {
         ? { ...this.state.sourceData }
         : { ...this.state.destinationData };
 
+    const replicaData: any =
+      type === "source"
+        ? this.props.replica.source_environment
+        : this.props.replica.destination_environment;
     if (field.type === "array") {
-      const replicaData: any =
-        type === "source"
-          ? this.props.replica.source_environment
-          : this.props.replica.destination_environment;
       const currentValues: string[] = data[field.name] || [];
       const oldValues: string[] = replicaData[field.name] || [];
       let values: string[] = currentValues;
@@ -654,7 +654,11 @@ class TransferItemModal extends React.Component<Props, State> {
       }
       data[field.groupName][field.name] = value;
     } else if (parentFieldName) {
-      data[parentFieldName] = data[parentFieldName] || {};
+      // NOTE(aznashwan): in order to prevent accidentally un-setting any
+      // existing fields from Object options from the previous Migration/Replica,
+      // we always re-merge all the values on an object field update.
+      data[parentFieldName] =
+        data[parentFieldName] || replicaData[parentFieldName] || {};
       data[parentFieldName][field.name] = value;
     } else {
       data[field.name] = value;
