@@ -261,6 +261,9 @@ class MainDetails extends React.Component<Props, State> {
             if (p === "disk_mappings" || p === "backend_mappings") {
               return null;
             }
+            if (value[p] == null || value[p] == undefined) {
+              return null;
+            }
             return {
               label: `${label} - ${LabelDictionary.get(p)}`,
               value: getValue(p, value[p]),
