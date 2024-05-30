@@ -174,22 +174,22 @@ class NewItemDropdown extends React.Component<Props, State> {
       ? configLoader.config.disabledPages
       : [];
     const items: ItemType[] = [
+      // {
+      //   title: "Migration",
+      //   href: "/wizard/migration",
+      //   description: "Migrate VMs between two clouds",
+      //   iconName: "migration",
+      // },
+      // {
+      //   title: "Deployment",
+      //   href: "/wizard/deployment",
+      //   description: "Deploy an already synced Replica or Live Migration",
+      //   iconName: "replica",
+      // },
       {
-        title: "Migration",
-        href: "/wizard/migration",
-        description: "Migrate VMs between two clouds",
-        iconName: "migration",
-      },
-      {
-        title: "Replica",
+        title: "Transfer",
         href: "/wizard/replica",
-        description: "Incrementally replicate VMs between two clouds",
-        iconName: "replica",
-      },
-      {
-        title: "Deployment",
-        href: "/wizard/deployment",
-        description: "Deploy an already synced Replica or Live Migration",
+        description: "Incrementally transfer VMs between two clouds",
         iconName: "replica",
       },
       {
