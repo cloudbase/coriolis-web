@@ -331,7 +331,7 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema.push(titleFieldSchema);
     }
 
-    if (this.props.wizardType === "replica") {
+    if (this.props.wizardType === "replica" || this.props.wizardType === "migration") {
       fieldsSchema.push({
         name: "execute_now",
         type: "boolean",
@@ -350,24 +350,25 @@ class WizardOptions extends React.Component<Props> {
           ? "Enable 'Execute Now' to set 'Execute Now Options'"
           : `Set the options for ${this.props.wizardType} execution`,
       });
-    } else if (
-      this.props.wizardType === "migration" ||
-      this.props.wizardType === "migration-destination-options-edit"
-    ) {
-      const shutdownInstanceField = migrationFields.find(
-        f => f.name === "shutdown_instances"
-      )!;
-      shutdownInstanceField.disabled = this.props.executeNowOptionsDisabled;
-      shutdownInstanceField.description = this.props.executeNowOptionsDisabled
-        ? "The 'Shutdown Instances' option is disabled for the source provider"
-        : shutdownInstanceField.description;
-      fieldsSchema = [
-        ...fieldsSchema,
-        ...migrationFields.map(f =>
-          f.name === "shutdown_instances" ? shutdownInstanceField : f
-        ),
-      ];
     }
+    // } else if (
+    //   this.props.wizardType === "migration" ||
+    //   this.props.wizardType === "migration-destination-options-edit"
+    // ) {
+    //   const shutdownInstanceField = migrationFields.find(
+    //     f => f.name === "shutdown_instances"
+    //   )!;
+    //   shutdownInstanceField.disabled = this.props.executeNowOptionsDisabled;
+    //   shutdownInstanceField.description = this.props.executeNowOptionsDisabled
+    //     ? "The 'Shutdown Instances' option is disabled for the source provider"
+    //     : shutdownInstanceField.description;
+    //   fieldsSchema = [
+    //     ...fieldsSchema,
+    //     ...migrationFields.map(f =>
+    //       f.name === "shutdown_instances" ? shutdownInstanceField : f
+    //     ),
+    //   ];
+    // }
 
     return fieldsSchema;
   }
