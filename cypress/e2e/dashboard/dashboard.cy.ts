@@ -58,7 +58,7 @@ describe("Dashboard", () => {
 
       cy.get("*[class^='DashboardLicence__ChartHeaderCurrent']").should(
         "contain.text",
-        `${applianceStatus.appliance_licence_status.current_performed_replicas} Used Replica ${applianceStatus.appliance_licence_status.current_performed_migrations} Used Migrations`
+        `${applianceStatus.appliance_licence_status.current_performed_replicas} Fulfilled Replica ${applianceStatus.appliance_licence_status.current_performed_migrations} Fulfilled Migrations`
       );
     });
 
