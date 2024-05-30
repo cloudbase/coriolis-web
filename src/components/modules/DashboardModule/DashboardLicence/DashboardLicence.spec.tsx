@@ -68,14 +68,14 @@ describe("DashboardLicence", () => {
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[0]
         .textContent
-    ).toBe("5 Used Replicas ");
+    ).toBe("5 Fulfilled Replicas ");
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-")[0].textContent
     ).toBe("Total 10");
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[1]
         .textContent
-    ).toBe("3 Used Migrations ");
+    ).toBe("3 Fulfilled Migrations ");
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-")[1].textContent
     ).toBe("Total 5");
@@ -176,6 +176,6 @@ describe("DashboardLicence", () => {
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[0]
         .textContent
-    ).toBe("1 Used Replica ");
+    ).toBe("1 Fuldilled Replica ");
   });
 });
