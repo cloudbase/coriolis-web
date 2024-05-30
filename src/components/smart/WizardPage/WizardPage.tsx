@@ -197,15 +197,13 @@ class WizardPage extends React.Component<Props, State> {
     );
     let schedulePromise = Promise.resolve();
 
-    if (this.state.type === "replica") {
-      items.forEach(replica => {
-        if (replica.type !== "replica") {
-          return;
-        }
-        this.executeCreatedReplica(replica);
-        schedulePromise = this.scheduleReplica(replica);
-      });
-    }
+    items.forEach(replica => {
+      if (replica.type !== "replica") {
+        return;
+      }
+      this.executeCreatedReplica(replica);
+      schedulePromise = this.scheduleReplica(replica);
+    });
 
     if (items.length === 1) {
       let location = `/replicas/${items[0].id}/executions`;

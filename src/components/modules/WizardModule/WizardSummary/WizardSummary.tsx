@@ -448,24 +448,24 @@ class WizardSummary extends React.Component<Props> {
       </Option>
     );
 
-    const migrationOptions = [
-      <Option key="shutdown">
-        <OptionLabel>Shutdown Instances</OptionLabel>
-        <OptionValue>
-          {this.getDefaultBooleanOption("shutdown_instances", false)
-            ? "Yes"
-            : "No"}
-        </OptionValue>
-      </Option>,
-      <Option key="count">
-        <OptionLabel>Replication Count</OptionLabel>
-        <OptionValue>
-          {(this.props.data.destOptions &&
-            this.props.data.destOptions.replication_count) ||
-            2}
-        </OptionValue>
-      </Option>,
-    ];
+    // const migrationOptions = [
+    //   <Option key="shutdown">
+    //     <OptionLabel>Shutdown Instances</OptionLabel>
+    //     <OptionValue>
+    //       {this.getDefaultBooleanOption("shutdown_instances", false)
+    //         ? "Yes"
+    //         : "No"}
+    //     </OptionValue>
+    //   </Option>,
+    //   <Option key="count">
+    //     <OptionLabel>Replication Count</OptionLabel>
+    //     <OptionValue>
+    //       {(this.props.data.destOptions &&
+    //         this.props.data.destOptions.replication_count) ||
+    //         2}
+    //     </OptionValue>
+    //   </Option>,
+    // ];
 
     const renderDefaultStorageOption = () => (
       <Option>
@@ -487,7 +487,7 @@ class WizardSummary extends React.Component<Props> {
         <SectionTitle>{type} Target Options</SectionTitle>
         <OptionsList>
           {this.props.wizardType === "replica" ? executeNowOption : null}
-          {this.props.wizardType === "migration" ? migrationOptions : null}
+          {this.props.wizardType === "migration" ? executeNowOption: null}
           {this.props.data.selectedInstances &&
           this.props.data.selectedInstances.length > 1
             ? separateVmOption
