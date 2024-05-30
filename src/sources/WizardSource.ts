@@ -43,8 +43,9 @@ class WizardSource {
     const destParser = data.target
       ? OptionsSchemaPlugin.for(data.target.type)
       : new DefaultOptionsSchemaParser();
-    const payload: any = {};
-    payload[type] = {
+
+    let payload: any = {};
+    payload = {
       origin_endpoint_id: data.source ? data.source.id : "null",
       destination_endpoint_id: data.target ? data.target.id : "null",
       network_map: destParser.getNetworkMap(data.networks),
@@ -56,20 +57,20 @@ class WizardSource {
     };
 
     if (data.destOptions && data.destOptions.skip_os_morphing != null) {
-      payload[type].skip_os_morphing = data.destOptions.skip_os_morphing;
+      payload.skip_os_morphing = data.destOptions.skip_os_morphing;
     }
 
     if (data.sourceOptions) {
       const sourceEnv = sourceParser.getDestinationEnv(data.sourceOptions);
       if (data.sourceOptions.minion_pool_id) {
-        payload[type].origin_minion_pool_id = data.sourceOptions.minion_pool_id;
+        payload.origin_minion_pool_id = data.sourceOptions.minion_pool_id;
       }
-      payload[type].source_environment = sourceEnv;
+      payload.source_environment = sourceEnv;
     }
 
     const destEnv = destParser.getDestinationEnv(data.destOptions);
     if (data.destOptions?.minion_pool_id) {
-      payload[type].destination_minion_pool_id =
+      payload.destination_minion_pool_id =
         data.destOptions.minion_pool_id;
     }
 
@@ -78,12 +79,12 @@ class WizardSource {
       Object.keys(poolMappings).forEach(instanceId => {
         if (
           poolMappings[instanceId] &&
-          payload[type].instances.find((i: string) => i === instanceId)
+          payload.instances.find((i: string) => i === instanceId)
         ) {
-          if (!payload[type][INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]) {
-            payload[type][INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = {};
+          if (!payload[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS]) {
+            payload[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = {};
           }
-          payload[type][INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS][instanceId] =
+          payload[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS][instanceId] =
             poolMappings[instanceId];
         }
       });
@@ -91,31 +92,32 @@ class WizardSource {
 
     delete destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS];
 
-    payload[type].destination_environment = destEnv;
+    payload.destination_environment = destEnv;
 
-    payload[type].shutdown_instances = Boolean(
+    payload.shutdown_instances = Boolean(
       data.destOptions && data.destOptions.shutdown_instances
     );
 
     if (uploadedUserScripts.length) {
-      payload[type].user_scripts = destParser.getUserScripts(
+      payload.user_scripts = destParser.getUserScripts(
         uploadedUserScripts,
         [],
         {}
       );
     }
 
-    if (type === "migration") {
-      payload[type].replication_count =
-        data.destOptions?.replication_count || 2;
-    }
+    const scenario = type == "replica"
+      ? "replica"
+      : "live_migration";
+    payload.scenario = scenario;
 
+    const payload_body_key = "replica";
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/${type}s`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas`,
       method: "POST",
-      data: payload,
+      data: { [payload_body_key]: payload },
     });
-    return response.data[type];
+    return response.data[payload_body_key];
   }
 
   async createMultiple(opts: {

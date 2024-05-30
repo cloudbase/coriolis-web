@@ -120,7 +120,7 @@ export const wizardPages: WizardPage[] = [
     id: "schedule",
     title: "Schedule",
     breadcrumb: "Schedule",
-    excludeFrom: "migration",
+    // excludeFrom: "migration",
   },
   { id: "summary", title: "Summary", breadcrumb: "Summary" },
 ];
