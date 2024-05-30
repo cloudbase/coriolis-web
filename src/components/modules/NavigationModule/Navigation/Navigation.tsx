@@ -410,10 +410,6 @@ class Navigation extends React.Component<Props> {
               bullet = "replica";
               menuImage = replicaImage;
               break;
-            case "migrations":
-              bullet = "migration";
-              menuImage = replicaImage;
-              break;
             case "deployments":
               bullet = "deployment";
               menuImage = replicaImage;

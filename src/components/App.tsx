@@ -24,8 +24,6 @@ import LoginPage from "@src/components/smart/LoginPage";
 import ReplicasPage from "@src/components/smart/ReplicasPage";
 import MessagePage from "@src/components/smart/MessagePage";
 import ReplicaDetailsPage from "@src/components/smart/ReplicaDetailsPage";
-import MigrationsPage from "@src/components/smart/MigrationsPage";
-import MigrationDetailsPage from "@src/components/smart/MigrationDetailsPage";
 import DeploymentsPage from "@src/components/smart/DeploymentsPage";
 import DeploymentDetailsPage from "@src/components/smart/DeploymentDetailsPage";
 import MetalHubServersPage from "@src/components/smart/MetalHubServersPage";
@@ -216,9 +214,6 @@ class App extends React.Component<Record<string, unknown>, State> {
             {renderRoute("/replicas", ReplicasPage, true)}
             {renderRoute("/replicas/:id", ReplicaDetailsPage, true)}
             {renderRoute("/replicas/:id/:page", ReplicaDetailsPage)}
-            {renderRoute("/migrations", MigrationsPage, true)}
-            {renderRoute("/migrations/:id", MigrationDetailsPage, true)}
-            {renderRoute("/migrations/:id/:page", MigrationDetailsPage)}
             {renderRoute("/deployments", DeploymentsPage, true)}
             {renderRoute("/deployments/:id", DeploymentDetailsPage, true)}
             {renderRoute("/deployments/:id/:page", DeploymentDetailsPage)}
