@@ -176,6 +176,6 @@ describe("DashboardLicence", () => {
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[0]
         .textContent
-    ).toBe("1 Fuldilled Replica ");
+    ).toBe("1 Fulfilled Replica ");
   });
 });
