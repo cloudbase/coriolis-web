@@ -130,13 +130,13 @@ const EmptyBackgroundImage = styled.div<any>`
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
   replicas: ReplicaItem[];
-  migrations: MigrationItem[];
+  migrations: ReplicaItem[];
   loading: boolean;
 };
 type GroupedData = {
   label: string;
   values: number[];
-  data?: string;
+  data?: string
 };
 type TooltipData = {
   title: string;
@@ -169,7 +169,7 @@ class DashboardExecutions extends React.Component<Props, State> {
   }
 
   groupCreations(props: Props) {
-    let creations: TransferItem[] = [...props.replicas, ...props.migrations];
+    let creations: ReplicaItem[] = [...props.replicas, ...props.migrations];
 
     const periodUnit: any = this.state.selectedPeriod.split("-")[1];
     const periodValue: any = Number(this.state.selectedPeriod.split("-")[0]);
@@ -187,7 +187,7 @@ class DashboardExecutions extends React.Component<Props, State> {
     this.groupByPeriod(creations, periodUnit);
   }
 
-  groupByPeriod(transferItems: TransferItem[], periodUnit: string) {
+  groupByPeriod(transferItems: ReplicaItem[], periodUnit: string) {
     const groupedData: GroupedData[] = [];
     const periods: {
       [period: string]: { replicas: number; migrations: number };
@@ -202,9 +202,9 @@ class DashboardExecutions extends React.Component<Props, State> {
       if (!periods[period]) {
         periods[period] = { replicas: 0, migrations: 0 };
       }
-      if (item.type === "replica") {
+      if (item.scenario === "replica") {
         periods[period].replicas += 1;
-      } else if (item.type === "migration") {
+      } else if (item.scenario === "live_migration") {
         periods[period].migrations += 1;
       }
     });

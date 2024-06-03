@@ -30,7 +30,7 @@ import type { Project } from "@src/@types/Project";
 import type { User } from "@src/@types/User";
 import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
 import type { NotificationItemData } from "@src/@types/NotificationItem";
-import { ReplicaItem, MigrationItem } from "@src/@types/MainItem";
+import { ReplicaItem, DeploymentItem } from "@src/@types/MainItem";
 
 const MIDDLE_WIDTHS = ["264px", "264px", "264px"];
 
@@ -53,11 +53,11 @@ const MiddleMobileLayout = styled.div<any>`
 
 type Props = {
   replicas: ReplicaItem[];
-  migrations: MigrationItem[];
+  deployments: DeploymentItem[];
   endpoints: Endpoint[];
   projects: Project[];
   replicasLoading: boolean;
-  migrationsLoading: boolean;
+  deploymentsLoading: boolean;
   endpointsLoading: boolean;
   usersLoading: boolean;
   projectsLoading: boolean;
@@ -127,11 +127,10 @@ class DashboardContent extends React.Component<Props, State> {
       <DashboardTopEndpoints
         key="top-endpoints"
         replicas={this.props.replicas}
-        migrations={this.props.migrations}
         endpoints={this.props.endpoints}
         loading={
           this.props.replicasLoading ||
-          this.props.migrationsLoading ||
+          this.props.deploymentsLoading ||
           this.props.endpointsLoading
         }
         style={{
@@ -175,21 +174,30 @@ class DashboardContent extends React.Component<Props, State> {
     );
   }
 
+  getReplicas() {
+    return this.props.replicas.filter(
+      (r: ReplicaItem) => r.scenario === "replica");
+  }
+
+  getLiveMigrations() {
+    return this.props.replicas.filter(
+      (r: ReplicaItem) => r.scenario === "live_migration");
+  }
+
   render() {
     let infoCountData = [
       {
         label: "Replicas",
-        value: this.props.replicas.length,
+        value: this.getReplicas().length,
         color: ThemePalette.alert,
         link: "/replicas",
         loading: this.props.replicasLoading,
       },
       {
         label: "Migrations",
-        value: this.props.migrations.length,
-        color: ThemePalette.primary,
-        link: "/migrations",
-        loading: this.props.migrationsLoading,
+        value: this.getLiveMigrations().length,
+        link: "/replicas",
+        loading: this.props.replicasLoading,
       },
       {
         label: "Endpoints",
@@ -224,9 +232,9 @@ class DashboardContent extends React.Component<Props, State> {
         <DashboardInfoCount data={infoCountData} />
         {this.renderMiddleModules()}
         <DashboardExecutions
-          replicas={this.props.replicas}
-          migrations={this.props.migrations}
-          loading={this.props.replicasLoading || this.props.migrationsLoading}
+          replicas={this.getReplicas()}
+          migrations={this.getLiveMigrations()}
+          loading={this.props.replicasLoading || this.props.deploymentsLoading}
         />
       </Wrapper>
     );

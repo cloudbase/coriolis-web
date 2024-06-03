@@ -22,7 +22,7 @@ import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import PageHeader from "@src/components/smart/PageHeader";
 import endpointStore from "@src/stores/EndpointStore";
 import licenceStore from "@src/stores/LicenceStore";
-import migrationStore from "@src/stores/MigrationStore";
+import deploymentStore from "@src/stores/DeploymentStore";
 import notificationStore from "@src/stores/NotificationStore";
 import projectStore from "@src/stores/ProjectStore";
 import replicaStore from "@src/stores/ReplicaStore";
@@ -100,7 +100,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
 
     await Promise.all([
       replicaStore.getReplicas({ skipLog: true, showLoading }),
-      migrationStore.getMigrations({ skipLog: true, showLoading }),
+      deploymentStore.getDeployments({ skipLog: true, showLoading }),
       endpointStore.getEndpoints({ skipLog: true, showLoading }),
       projectStore.getProjects({ skipLog: true, showLoading }),
     ]);
@@ -129,7 +129,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
           listComponent={
             <DashboardContent
               replicas={replicaStore.replicas}
-              migrations={migrationStore.migrations}
+              deployments={deploymentStore.deployments}
               endpoints={endpointStore.endpoints}
               users={userStore.users}
               projects={projectStore.projects}
@@ -141,7 +141,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               notificationItems={notificationStore.notificationItems}
               notificationItemsLoading={notificationStore.loading}
               endpointsLoading={endpointStore.loading}
-              migrationsLoading={migrationStore.loading}
+              deploymentsLoading={deploymentStore.loading}
               projectsLoading={projectStore.projects.length === 0}
               usersLoading={userStore.users.length === 0}
               licenceLoading={licenceStore.loadingLicenceInfo}
