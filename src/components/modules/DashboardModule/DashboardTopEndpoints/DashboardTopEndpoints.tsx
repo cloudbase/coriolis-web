@@ -26,7 +26,7 @@ import { ThemePalette, ThemeProps } from "@src/components/Theme";
 
 import type { Endpoint } from "@src/@types/Endpoint";
 
-import { ReplicaItem, MigrationItem, TransferItem } from "@src/@types/MainItem";
+import { ReplicaItem } from "@src/@types/MainItem";
 import endpointImage from "./images/endpoint.svg";
 
 const Wrapper = styled.div<any>`
@@ -131,14 +131,12 @@ const Message = styled.div<any>`
 type GroupedEndpoint = {
   endpoint: Endpoint;
   replicasCount: number;
-  migrationsCount: number;
+  deploymentsCount: number;
   value: number;
 };
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
   replicas: ReplicaItem[];
-  // eslint-disable-next-line react/no-unused-prop-types
-  migrations: MigrationItem[];
   // eslint-disable-next-line react/no-unused-prop-types
   endpoints: Endpoint[];
   style: React.CSSProperties;
@@ -178,21 +176,22 @@ class DashboardTopEndpoints extends React.Component<Props, State> {
 
   calculateGroupedEndpoints(props: Props) {
     const groupedEndpoints: GroupedEndpoint[] = [];
-    const count = (mainItems: TransferItem[], endpointId: string) =>
+    const count = (mainItems: ReplicaItem[], endpointId: string, scenario: string) =>
       mainItems.filter(
         r =>
-          r.destination_endpoint_id === endpointId ||
-          r.origin_endpoint_id === endpointId
+          r.scenario === scenario && (
+            r.destination_endpoint_id === endpointId ||
+            r.origin_endpoint_id === endpointId)
       ).length;
 
     props.endpoints.forEach(endpoint => {
-      const replicasCount = count(props.replicas, endpoint.id);
-      const migrationsCount = count(props.migrations, endpoint.id);
+      const replicasCount = count(props.replicas, endpoint.id, "replica");
+      const deploymentsCount = count(props.replicas, endpoint.id, "live_migration");
       groupedEndpoints.push({
         endpoint,
         replicasCount,
-        migrationsCount,
-        value: replicasCount + migrationsCount,
+        deploymentsCount,
+        value: replicasCount + deploymentsCount,
       });
     });
     this.setState({ groupedEndpoints });
@@ -263,7 +262,7 @@ class DashboardTopEndpoints extends React.Component<Props, State> {
           <TooltipRows>
             <TooltipRow>{groupedEndpoint.replicasCount} Replicas</TooltipRow>
             <TooltipRow>
-              {groupedEndpoint.migrationsCount} Migrations
+              {groupedEndpoint.deploymentsCount} Deployments
             </TooltipRow>
             <TooltipRow>{groupedEndpoint.value} Total</TooltipRow>
           </TooltipRows>
