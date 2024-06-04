@@ -318,13 +318,13 @@ class Schedule extends React.Component<Props, State> {
         <ScheduleImage />
         <NoSchedulesTitle>
           {this.props.secondaryEmpty
-            ? "Schedule this Replica"
-            : "This Replica has no Schedules."}
+            ? "Schedule this Transfer"
+            : "This Transfer has no Schedules."}
         </NoSchedulesTitle>
         <NoSchedulesSubtitle>
           {this.props.secondaryEmpty
-            ? "You can schedule this replica so that it executes automatically."
-            : "Add a new schedule so that the Replica executes automatically."}
+            ? "You can schedule this Transfer so that it executes automatically."
+            : "Add a new schedule so that the Transfer executes automatically."}
         </NoSchedulesSubtitle>
         {this.props.adding ? (
           <LoadingButton>Adding ...</LoadingButton>
