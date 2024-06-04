@@ -20,9 +20,7 @@ import styled from "styled-components";
 import { Field as FieldType } from "@src/@types/Field";
 import {
   getTransferItemTitle,
-  MigrationItem,
   ReplicaItem,
-  TransferItem,
 } from "@src/@types/MainItem";
 import { Region } from "@src/@types/Region";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
@@ -102,7 +100,7 @@ type Props = {
   regions: Region[];
   connectionInfo: Endpoint["connection_info"] | null;
   loading: boolean;
-  usage: { migrations: MigrationItem[]; replicas: ReplicaItem[] };
+  replicas: ReplicaItem[],
   connectionInfoSchema: FieldType[];
   onDeleteClick: () => void;
   onValidateClick: () => void;
@@ -227,12 +225,12 @@ class EndpointDetailsContent extends React.Component<Props> {
     );
   }
 
-  renderUsage(items: TransferItem[]) {
+  renderUsage(items: ReplicaItem[]) {
     return (
       <TransferItems>
         {items.map(item => (
           <TransferItemWrapper key={item.id}>
-            <LinkStyled to={`/${item.type}s/${item.id}`}>
+            <LinkStyled to={`/replicas/${item.id}`}>
               {getTransferItemTitle(item)}
             </LinkStyled>
           </TransferItemWrapper>
@@ -250,9 +248,6 @@ class EndpointDetailsContent extends React.Component<Props> {
       created_at: createdAt,
       id,
     } = this.props.item || {};
-    const usage: TransferItem[] = this.props.usage.replicas.concat(
-      this.props.usage.migrations as any[]
-    );
 
     return (
       <Wrapper>
@@ -293,8 +288,8 @@ class EndpointDetailsContent extends React.Component<Props> {
             )}
           </Field>
           <Field>
-            <Label>Used in replicas/migrations ({usage.length})</Label>
-            {usage.length > 0 ? this.renderUsage(usage) : <Value>-</Value>}
+            <Label>Used in transfers ({this.props.replicas.length})</Label>
+            {this.props.replicas.length > 0 ? this.renderUsage(this.props.replicas) : <Value>-</Value>}
           </Field>
           {!this.props.connectionInfo
             ? this.renderConnectionInfoLoading()

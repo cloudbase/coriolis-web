@@ -27,7 +27,7 @@ import EndpointModal from "@src/components/modules/EndpointModule/EndpointModal"
 import EndpointDuplicateOptions from "@src/components/modules/EndpointModule/EndpointDuplicateOptions";
 
 import endpointStore from "@src/stores/EndpointStore";
-import migrationStore from "@src/stores/MigrationStore";
+import deploymentStore from "@src/stores/DeploymentStore";
 import replicaStore from "@src/stores/ReplicaStore";
 import userStore from "@src/stores/UserStore";
 import projectStore from "@src/stores/ProjectStore";
@@ -37,7 +37,7 @@ import type { Endpoint as EndpointType } from "@src/@types/Endpoint";
 import { ThemePalette } from "@src/components/Theme";
 
 import regionStore from "@src/stores/RegionStore";
-import { MigrationItem, ReplicaItem } from "@src/@types/MainItem";
+import { DeploymentItem, ReplicaItem } from "@src/@types/MainItem";
 import providerStore from "@src/stores/ProviderStore";
 import endpointImage from "./images/endpoint.svg";
 
@@ -53,7 +53,7 @@ type State = {
   showEndpointModal: boolean;
   showEndpointInUseModal: boolean;
   showEndpointInUseLoadingModal: boolean;
-  endpointUsage: { replicas: ReplicaItem[]; migrations: MigrationItem[] };
+  endpointUsage: { replicas: ReplicaItem[]; deployments: DeploymentItem[] };
   showDuplicateModal: boolean;
   duplicating: boolean;
 };
@@ -67,7 +67,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     showEndpointInUseLoadingModal: false,
     showDuplicateModal: false,
     duplicating: false,
-    endpointUsage: { replicas: [], migrations: [] },
+    endpointUsage: { replicas: [], deployments: [] },
   };
 
   componentDidMount() {
@@ -87,20 +87,20 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     );
   }
 
-  getEndpointUsage(): { migrations: MigrationItem[]; replicas: ReplicaItem[] } {
+  getEndpointUsage(): { deployments: DeploymentItem[]; replicas: ReplicaItem[] } {
     const endpointId = this.props.match.params.id;
     const replicas = replicaStore.replicas.filter(
       r =>
         r.origin_endpoint_id === endpointId ||
         r.destination_endpoint_id === endpointId
     );
-    const migrations = migrationStore.migrations.filter(
+    const deployments = deploymentStore.deployments.filter(
       r =>
         r.origin_endpoint_id === endpointId ||
         r.destination_endpoint_id === endpointId
     );
 
-    return { migrations, replicas };
+    return { deployments, replicas };
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -117,12 +117,12 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
     await Promise.all([
       replicaStore.getReplicas(),
-      migrationStore.getMigrations(),
+      deploymentStore.getDeployments(),
     ]);
     const endpointUsage = this.getEndpointUsage();
 
     if (
-      endpointUsage.migrations.length === 0 &&
+      endpointUsage.deployments.length === 0 &&
       endpointUsage.replicas.length === 0
     ) {
       this.setState({
@@ -220,7 +220,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
     await Promise.all([
       replicaStore.getReplicas(),
-      migrationStore.getMigrations(),
+      deploymentStore.getDeployments(),
       regionStore.getRegions(),
     ]);
     this.setState({ endpointUsage: this.getEndpointUsage() });
@@ -306,7 +306,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
             <EndpointDetailsContent
               item={endpoint}
               regions={regionStore.regions}
-              usage={this.state.endpointUsage}
+              replicas={this.state.endpointUsage.replicas}
               loading={
                 endpointStore.connectionInfoLoading ||
                 endpointStore.loading ||
@@ -339,8 +339,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           type="error"
           isOpen={this.state.showEndpointInUseModal}
           title="Endpoint is in use"
-          message="The endpoint can't be deleted because it is in use by replicas or migrations."
-          extraMessage="You must first delete the replica or migration which uses this endpoint."
+          message="The endpoint can't be deleted because it is in use by replicas or deployments."
+          extraMessage="You must first delete the replica or deployment which uses this endpoint."
           onRequestClose={() => {
             this.handleCloseEndpointInUseModal();
           }}
