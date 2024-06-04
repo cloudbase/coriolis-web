@@ -206,11 +206,11 @@ class WizardPage extends React.Component<Props, State> {
     });
 
     if (items.length === 1) {
-      let location = `/replicas/${items[0].id}/executions`;
+      let location = `/transfers/${items[0].id}/executions`;
       await schedulePromise;
       this.props.history.push(location);
     } else {
-      this.props.history.push(`/replicas`);
+      this.props.history.push(`/transfers`);
     }
   }
 

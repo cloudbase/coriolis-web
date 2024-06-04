@@ -190,13 +190,13 @@ class DashboardContent extends React.Component<Props, State> {
         label: "Replicas",
         value: this.getReplicas().length,
         color: ThemePalette.alert,
-        link: "/replicas",
+        link: "/transfers",
         loading: this.props.replicasLoading,
       },
       {
         label: "Migrations",
         value: this.getLiveMigrations().length,
-        link: "/replicas",
+        link: "/transfers",
         loading: this.props.replicasLoading,
       },
       {

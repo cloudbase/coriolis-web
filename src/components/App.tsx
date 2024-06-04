@@ -211,9 +211,9 @@ class App extends React.Component<Record<string, unknown>, State> {
               <Route path="/login" component={LoginPage} />
             }
             {renderRoute("/dashboard", DashboardPage)}
-            {renderRoute("/replicas", ReplicasPage, true)}
-            {renderRoute("/replicas/:id", ReplicaDetailsPage, true)}
-            {renderRoute("/replicas/:id/:page", ReplicaDetailsPage)}
+            {renderRoute("/transfers", ReplicasPage, true)}
+            {renderRoute("/transfers/:id", ReplicaDetailsPage, true)}
+            {renderRoute("/transfers/:id/:page", ReplicaDetailsPage)}
             {renderRoute("/deployments", DeploymentsPage, true)}
             {renderRoute("/deployments/:id", DeploymentDetailsPage, true)}
             {renderRoute("/deployments/:id/:page", DeploymentDetailsPage)}

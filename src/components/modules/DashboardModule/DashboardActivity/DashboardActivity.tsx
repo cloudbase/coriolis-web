@@ -116,7 +116,7 @@ class DashboardActivity extends React.Component<Props> {
             return (
               <ListItem
                 key={item.id}
-                to={`/${item.type}s/${item.id}${executionsHref}`}
+                to={`/transfers/${item.id}${executionsHref}`}
                 style={{
                   width: `calc(${this.props.large ? 50 : 100}% - 32px)`,
                   paddingTop: i === 0 || i === 5 ? "16px" : "8px",

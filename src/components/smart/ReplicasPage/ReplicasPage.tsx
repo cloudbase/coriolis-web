@@ -83,7 +83,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
   paginatedReplicaIds: string[] = [];
 
   componentDidMount() {
-    document.title = "Coriolis Replicas";
+    document.title = "Coriolis Transfers";
 
     projectStore.getProjects();
     endpointStore.getEndpoints({ showLoading: true });
@@ -141,9 +141,9 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
 
   handleItemClick(item: ReplicaItem) {
     if (item.last_execution_status === "RUNNING") {
-      this.props.history.push(`/replicas/${item.id}/executions`);
+      this.props.history.push(`/transfers/${item.id}/executions`);
     } else {
-      this.props.history.push(`/replicas/${item.id}`);
+      this.props.history.push(`/transfers/${item.id}`);
     }
   }
 
@@ -160,12 +160,12 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         replicaStore.execute(replica.id, fields);
       }
     });
-    notificationStore.alert("Executing selected replicas");
+    notificationStore.alert("Executing selected transfers");
     this.setState({ showExecutionOptionsModal: false });
   }
 
   deploySelectedReplicas(fields: Field[], uploadedScripts: InstanceScript[]) {
-    notificationStore.alert("Creating deployments from selected replicas");
+    notificationStore.alert("Creating deployments from selected transfers");
     this.deploy(fields, uploadedScripts);
     this.setState({ showCreateDeploymentsModal: false, modalIsOpen: false });
   }
@@ -188,7 +188,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       )
     );
     notificationStore.alert(
-      "Deployments successfully created from replicas.",
+      "Deployments successfully created from transfers.",
       "success"
     );
     this.props.history.push("/deployments");
@@ -207,7 +207,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
       showDeleteDisksModal: false,
       showDeleteReplicasModal: false,
     });
-    notificationStore.alert("Deleting selected replicas' disks");
+    notificationStore.alert("Deleting selected transfers' disks");
   }
 
   cancelExecutions() {
@@ -402,7 +402,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         },
       },
       {
-        label: "Deploy Replicas",
+        label: "Deploy Transfers",
         color: ThemePalette.primary,
         action: () => {
           this.handleShowCreateDeploymentsModal();
@@ -415,7 +415,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         },
       },
       {
-        label: "Delete Replicas",
+        label: "Delete Transfers",
         color: ThemePalette.alert,
         action: () => {
           this.handleShowDeleteReplicas();
@@ -426,7 +426,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
     return (
       <Wrapper>
         <MainTemplate
-          navigationComponent={<Navigation currentPage="replicas" />}
+          navigationComponent={<Navigation currentPage="transfers" />}
           listComponent={
             <FilterList
               filterItems={this.getFilterItems()}
@@ -471,9 +471,9 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
                 />
               )}
               emptyListImage={replicaLargeImage}
-              emptyListMessage="It seems like you don't have any Replicas in this project."
-              emptyListExtraMessage="A Coriolis Replica is obtained by replicating incrementally the virtual machines data from the source cloud endpoint to the target."
-              emptyListButtonLabel="Create a Replica"
+              emptyListMessage="It seems like you don't have any Transfers in this project."
+              emptyListExtraMessage="A Coriolis Transfer is performed by replicating incrementally the virtual machines data from the source cloud endpoint to the target."
+              emptyListButtonLabel="Create a Transfer"
               onEmptyListButtonClick={() => {
                 this.handleEmptyListButtonClick();
               }}
@@ -481,7 +481,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
           }
           headerComponent={
             <PageHeader
-              title="Coriolis Replicas"
+              title="Coriolis Transfers"
               onProjectChange={() => {
                 this.handleProjectChange();
               }}
@@ -514,7 +514,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
           <AlertModal
             isOpen
             title="Cancel Executions?"
-            message="Are you sure you want to cancel the selected replicas executions?"
+            message="Are you sure you want to cancel the selected transfers' executions?"
             extraMessage=" "
             onConfirmation={() => {
               this.cancelExecutions();
@@ -527,7 +527,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         {this.state.showExecutionOptionsModal ? (
           <Modal
             isOpen
-            title="New Executions for Selected Replicas"
+            title="New Executions for Selected Transfers"
             onRequestClose={() => {
               this.setState({ showExecutionOptionsModal: false });
             }}
@@ -549,7 +549,7 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         {this.state.showCreateDeploymentsModal ? (
           <Modal
             isOpen
-            title="Deploy Selected Replicas"
+            title="Deploy Selected Transfers"
             onRequestClose={() => {
               this.setState({
                 showCreateDeploymentsModal: false,
@@ -580,9 +580,9 @@ class ReplicasPage extends React.Component<{ history: any }, State> {
         {this.state.showDeleteDisksModal ? (
           <AlertModal
             isOpen
-            title="Delete Selected Replicas Disks?"
-            message="Are you sure you want to delete the selected replicas' disks?"
-            extraMessage="Deleting Coriolis Replica Disks is permanent!"
+            title="Delete Selected Transfers' Disks?"
+            message="Are you sure you want to delete the selected transfers' disks?"
+            extraMessage="Deleting Coriolis Transfer Disks is permanent!"
             onConfirmation={() => {
               this.deleteReplicasDisks(this.state.selectedReplicas);
             }}

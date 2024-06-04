@@ -230,7 +230,7 @@ class EndpointDetailsContent extends React.Component<Props> {
       <TransferItems>
         {items.map(item => (
           <TransferItemWrapper key={item.id}>
-            <LinkStyled to={`/replicas/${item.id}`}>
+            <LinkStyled to={`/transfers/${item.id}`}>
               {getTransferItemTitle(item)}
             </LinkStyled>
           </TransferItemWrapper>
