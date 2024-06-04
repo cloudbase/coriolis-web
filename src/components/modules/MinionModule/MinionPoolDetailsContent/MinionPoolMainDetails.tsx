@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
 import fieldHelper from "@src/@types/Field";
-import { MigrationItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { DeploymentItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
 import { MinionPool } from "@src/@types/MinionPool";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
@@ -102,7 +102,7 @@ const PropertyValue = styled.div<any>`
 type Props = {
   item?: MinionPool | null;
   replicas: ReplicaItem[];
-  migrations: MigrationItem[];
+  deployments: DeploymentItem[];
   schema: FieldType[];
   schemaLoading: boolean;
   endpoints: Endpoint[];
@@ -178,8 +178,8 @@ class MinionPoolMainDetails extends React.Component<Props> {
 
     let properties: any[] = [];
     const plugin = endpoint && OptionsSchemaPlugin.for(endpoint.type);
-    const migrationImageMapFieldName =
-      plugin && plugin.migrationImageMapFieldName;
+    const deploymentImageMapFieldName =
+      plugin && plugin.deploymentImageMapFieldName;
     let dictionaryKey = "";
     if (endpoint) {
       dictionaryKey = `${endpoint.type}-minion-pool`;
@@ -202,8 +202,8 @@ class MinionPoolMainDetails extends React.Component<Props> {
             }
             let fieldName = pn;
             if (
-              migrationImageMapFieldName &&
-              fieldName === migrationImageMapFieldName
+              deploymentImageMapFieldName &&
+              fieldName === deploymentImageMapFieldName
             ) {
               fieldName = p;
             }
@@ -264,7 +264,7 @@ class MinionPoolMainDetails extends React.Component<Props> {
     };
 
     const usage: TransferItem[] = this.props.replicas.concat(
-      this.props.migrations as any[]
+      this.props.deployments as any[]
     );
 
     return (
@@ -329,7 +329,7 @@ class MinionPoolMainDetails extends React.Component<Props> {
           ) : null}
           <Row>
             <Field>
-              <Label>Used in Replicas/Migrations ({usage.length})</Label>
+              <Label>Used in Transfers ({usage.length})</Label>
               {usage.length > 0 ? this.renderUsage(usage) : <Value>-</Value>}
             </Field>
           </Row>

@@ -17,7 +17,7 @@ import { Collapse } from "react-collapse";
 import { Link } from "react-router-dom";
 import styled, { createGlobalStyle, css } from "styled-components";
 
-import { MigrationItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { DeploymentItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
 import { MinionMachine, MinionPool } from "@src/@types/MinionPool";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Arrow from "@src/components/ui/Arrow";
@@ -145,7 +145,7 @@ type FilterType = "all" | "allocated" | "not-allocated";
 type Props = {
   item?: MinionPool | null;
   replicas: ReplicaItem[];
-  migrations: MigrationItem[];
+  deployments: DeploymentItem[];
 };
 type State = {
   filterStatus: FilterType;
@@ -282,7 +282,7 @@ class MinionPoolMachines extends React.Component<Props, State> {
             transferItems.find(i => i.id === machine.allocated_action);
           const allocatedAction = machine.allocated_action
             ? findTransferItem(this.props.replicas) ||
-              findTransferItem(this.props.migrations)
+              findTransferItem(this.props.deployments)
             : null;
           return (
             <MachineWrapper key={machine.id}>
