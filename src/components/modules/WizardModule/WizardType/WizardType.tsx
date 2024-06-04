@@ -76,8 +76,14 @@ class WizardType extends React.Component<Props> {
           <Column alignRight width="50%">
             <Title>Coriolis Migration</Title>
             <Message selected={this.props.selected === "migration"}>
-              A Coriolis Migration is a full instance migration between two
-              cloud endpoints.
+              Coriolis Migrations allow for the incremental copying of
+              a virtual machine's data from the source environment to
+              disks in the target environment with zero downtime.
+              <br /><br />
+              Migrations can be synced (executed) any number of times,
+              but can be deployed in the target environment only once.
+              <br /><br />
+              Migrations are licenced one-time per each transferred VM.
             </Message>
           </Column>
           <Column alignCenter width="192px">
@@ -90,12 +96,15 @@ class WizardType extends React.Component<Props> {
           <Column width="50%">
             <Title>Coriolis Replica</Title>
             <Message selected={this.props.selected === "replica"}>
-              The Coriolis Replica is obtained by copying (replicating)
-              incrementally the virtual machines data from the source
-              environment to the target, without interfering with any running
-              workload. A migration replica can then be finalized by
-              automatically applying the required changes to adapt it to the
-              target environment (migration phase).
+              Coriolis Replicas allow for the incremental copying of
+              a virtual machine's data from the source environment to
+              disks in the target environment with zero downtime.
+              <br /><br />
+              Replicas can be synced (executed) any number of times,
+              and can be deployed in the target environment any time a
+              disaster recovery procedure is desired.
+              <br /><br />
+              Replicas are licenced monthly per each replicated VM.
             </Message>
           </Column>
         </Row>
