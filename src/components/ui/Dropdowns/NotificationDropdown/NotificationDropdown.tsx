@@ -274,6 +274,11 @@ class NotificationDropdown extends React.Component<Props, State> {
     const list = (
       <List>
         {this.props.items.map(item => {
+          const typeUrl =
+            item.type === "migration"
+              ? "deployments"
+              : "transfers";
+
           const executionsPath =
             item.status === "RUNNING"
               ? item.type === "replica"
@@ -295,13 +300,13 @@ class NotificationDropdown extends React.Component<Props, State> {
               onClick={() => {
                 this.handleItemClick();
               }}
-              to={`/${item.type}s/${item.id}${executionsPath}`}
+              to={`/${typeUrl}/${item.id}${executionsPath}`}
             >
               <InfoColumn>
                 <MainItemInfo>
                   <StatusIcon status={item.status} hollow />
                   <ItemReplicaBadge type={item.type}>
-                    {item.type === "replica" ? "RE" : "MI"}
+                    {item.type === "replica" ? "RE" : "DE"}
                   </ItemReplicaBadge>
                   <ItemTitle>{item.name}</ItemTitle>
                 </MainItemInfo>
