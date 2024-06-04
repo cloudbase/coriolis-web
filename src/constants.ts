@@ -23,7 +23,7 @@ export type NavigationMenuType = {
 };
 export const navigationMenu: NavigationMenuType[] = [
   { label: "Dashboard", value: "dashboard" },
-  { label: "Replicas", value: "replicas" },
+  { label: "Transfers", value: "transfers" },
   // { label: "Migrations", value: "migrations" },
   { label: "Deployments", value: "deployments" },
   { label: "Cloud Endpoints", value: "endpoints" },

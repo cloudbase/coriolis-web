@@ -718,7 +718,7 @@ class TransferItemModal extends React.Component<Props, State> {
         });
         this.props.onRequestClose();
         this.props.onUpdateComplete(
-          `/replicas/${this.props.replica.id}/executions`
+          `/transfers/${this.props.replica.id}/executions`
         );
       } catch (err) {
         this.setState({ updating: false });

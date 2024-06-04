@@ -256,7 +256,7 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
           items={NavigationItems}
           selectedValue={this.props.page}
           itemId={this.props.itemId}
-          itemType="replica"
+          itemType="transfer"
         />
         <DetailsBody>
           {this.renderMainDetails()}

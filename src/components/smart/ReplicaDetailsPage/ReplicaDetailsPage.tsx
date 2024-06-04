@@ -94,7 +94,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
   stopPolling: boolean | null = null;
 
   componentDidMount() {
-    document.title = "Replica Details";
+    document.title = "Transfer Details";
 
     const loadReplica = async () => {
       await endpointStore.getEndpoints({ showLoading: true });
@@ -186,7 +186,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
 
   get replicaId() {
     if (!this.props.match?.params?.id) {
-      throw new Error("Invalid replica id");
+      throw new Error("Invalid transfer id");
     }
     return this.props.match.params.id;
   }
@@ -398,7 +398,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     if (!replica) {
       return;
     }
-    this.props.history.push("/replicas");
+    this.props.history.push("/transfers");
     replicaStore.delete(replica.id);
   }
 
@@ -416,7 +416,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
       return;
     }
     replicaStore.deleteDisks(replica.id);
-    this.props.history.push(`/replicas/${replica.id}/executions`);
+    this.props.history.push(`/transfers/${replica.id}/executions`);
   }
 
   handleCloseDeleteReplicaDisksConfirmation() {
@@ -556,7 +556,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
     replicaStore.execute(replica.id, fields);
     this.handleCloseOptionsModal();
-    this.props.history.push(`/replicas/${replica.id}/executions`);
+    this.props.history.push(`/transfers/${replica.id}/executions`);
   }
 
   async pollData() {
@@ -659,7 +659,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     const editTitle = providerStore.providersLoading
       ? "Loading providers data"
       : !this.state.isEditable
-      ? "One of the platform plugins doesn't support editing replica option."
+      ? "One of the platform plugins doesn't support editing transfer option."
       : null;
     const dropdownActions: DropdownAction[] = [
       {
@@ -735,7 +735,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
               itemType={this.getReplicaItemType()}
               itemDescription={replica?.description}
               dropdownActions={dropdownActions}
-              backLink="/replicas"
+              backLink="/transfers"
               typeImage={this.getReplicaScenarioTypeImage()}
               alertInfoPill={this.getReplicaTypePillShouldRed()}
               primaryInfoPill={!this.getReplicaTypePillShouldRed()}
@@ -845,7 +845,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         {this.state.showDeploymentModal ? (
           <Modal
             isOpen
-            title="Deploy Replica"
+            title="Deploy Transfer"
             onRequestClose={() => {
               this.handleCloseDeploymentModal();
             }}
@@ -895,9 +895,9 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         ) : null}
         <AlertModal
           isOpen={this.state.showDeleteReplicaDisksConfirmation}
-          title="Delete Replica Disks?"
-          message="Are you sure you want to delete this replica's disks?"
-          extraMessage="Deleting Coriolis Replica Disks is permanent!"
+          title="Delete Transferred Disks?"
+          message="Are you sure you want to delete this tranfer's disks?"
+          extraMessage="Deleting Coriolis Transfer Disks is permanent!"
           onConfirmation={() => {
             this.handleDeleteReplicaDisksConfirmation();
           }}

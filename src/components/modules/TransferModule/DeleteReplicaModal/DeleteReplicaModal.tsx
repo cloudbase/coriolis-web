@@ -159,8 +159,8 @@ class DeleteReplicaModal extends React.Component<Props> {
 
   render() {
     const title = this.props.isMultiReplicaSelection
-      ? "Delete Selected Replicas?"
-      : "Delete Replica?";
+      ? "Delete Selected Transfers?"
+      : "Delete Transfer?";
     return (
       <Modal isOpen title={title} onRequestClose={this.props.onRequestClose}>
         {this.props.loading ? this.renderLoading() : this.renderContent()}
