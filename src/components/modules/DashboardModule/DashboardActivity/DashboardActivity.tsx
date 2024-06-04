@@ -149,7 +149,7 @@ class DashboardActivity extends React.Component<Props> {
           in this project.
         </Message>
         <Button hollow primary transparent onClick={this.props.onNewClick}>
-          New Replica / Migration
+          New Transfer
         </Button>
       </NoItems>
     );
