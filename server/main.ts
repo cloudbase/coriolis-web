@@ -21,7 +21,8 @@ import proxyRouter from "./proxies/router";
 export default () => {
   const app = express();
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = Number(process.env.PORT) || 3000;
+  const BIND = process.env.BIND || '127.0.0.1'
 
   app.use(express.static("dist"));
 
@@ -33,7 +34,7 @@ export default () => {
     res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
   });
 
-  app.listen(PORT, () => {
-    console.log(`Express server is up on port ${PORT}`);
+  app.listen(PORT, BIND, () => {
+    console.log(`Express server is up on ${BIND}:${PORT}`);
   });
 };
