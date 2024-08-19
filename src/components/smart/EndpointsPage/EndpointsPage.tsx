@@ -30,7 +30,7 @@ import type { Endpoint as EndpointType } from "@src/@types/Endpoint";
 import projectStore from "@src/stores/ProjectStore";
 import userStore from "@src/stores/UserStore";
 import endpointStore from "@src/stores/EndpointStore";
-import migrationStore from "@src/stores/MigrationStore";
+import deploymentStore from "@src/stores/DeploymentStore";
 import replicaStore from "@src/stores/ReplicaStore";
 import providerStore from "@src/stores/ProviderStore";
 import EndpointDuplicateOptions from "@src/components/modules/EndpointModule/EndpointDuplicateOptions";
@@ -108,13 +108,15 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   getEndpointUsage(endpointId: string) {
     const replicasCount = replicaStore.replicas.filter(
       r =>
-        r.origin_endpoint_id === endpointId ||
-        r.destination_endpoint_id === endpointId
+        (r.origin_endpoint_id === endpointId ||
+         r.destination_endpoint_id === endpointId) &&
+         r.scenario === "replica"
     ).length;
-    const migrationsCount = migrationStore.migrations.filter(
+    const migrationsCount = replicaStore.replicas.filter(
       r =>
-        r.origin_endpoint_id === endpointId ||
-        r.destination_endpoint_id === endpointId
+        (r.origin_endpoint_id === endpointId ||
+         r.destination_endpoint_id === endpointId) &&
+         r.scenario === "live_migration"
     ).length;
 
     return { migrationsCount, replicasCount };
@@ -122,14 +124,14 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
 
   handleProjectChange() {
     endpointStore.getEndpoints({ showLoading: true });
-    migrationStore.getMigrations();
+    deploymentStore.getDeployments();
     replicaStore.getReplicas();
   }
 
   handleReloadButtonClick() {
     projectStore.getProjects();
     endpointStore.getEndpoints({ showLoading: true });
-    migrationStore.getMigrations();
+    deploymentStore.getDeployments();
     replicaStore.getReplicas();
   }
 
@@ -254,7 +256,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
 
     await Promise.all([
       endpointStore.getEndpoints({ showLoading, skipLog: true }),
-      migrationStore.getMigrations({ skipLog: true }),
+      deploymentStore.getDeployments({ skipLog: true }),
       replicaStore.getReplicas({ skipLog: true }),
     ]);
     this.pollTimeout = window.setTimeout(() => {
