@@ -128,7 +128,7 @@ export type DeploymentItemOptions = DeploymentItem & {
   shutdown_instances: boolean;
 };
 
-export type TransferItem = ReplicaItem | MigrationItem | DeploymentItem;
+export type TransferItem = ReplicaItem | DeploymentItem;
 
 export type ReplicaItemDetails = ReplicaItem & {
   executions: Execution[];
@@ -142,7 +142,7 @@ export type DeploymentItemDetails = DeploymentItem & {
   tasks: Task[];
 };
 
-export type TransferItemDetails = ReplicaItemDetails | MigrationItemDetails | DeploymentItemDetails;
+export type TransferItemDetails = ReplicaItemDetails | DeploymentItemDetails;
 
 export const getTransferItemTitle = (item: TransferItem | null) => {
   if (!item) {

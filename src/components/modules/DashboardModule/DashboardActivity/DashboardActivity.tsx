@@ -104,11 +104,15 @@ class DashboardActivity extends React.Component<Props> {
         {this.props.notificationItems
           .filter((_, i) => i < (this.props.large ? 10 : 5))
           .map((item, i) => {
+            const actionHref =
+              item.type === "replica"
+                ? "transfers" : "deployments"
+
             const executionsHref =
               item.status === "RUNNING"
                 ? item.type === "replica"
                   ? "/executions"
-                  : item.type === "migration"
+                  : item.type === "deployment"
                   ? "/tasks"
                   : ""
                 : "";
@@ -116,7 +120,7 @@ class DashboardActivity extends React.Component<Props> {
             return (
               <ListItem
                 key={item.id}
-                to={`/transfers/${item.id}${executionsHref}`}
+                to={`/${actionHref}/${item.id}${executionsHref}`}
                 style={{
                   width: `calc(${this.props.large ? 50 : 100}% - 32px)`,
                   paddingTop: i === 0 || i === 5 ? "16px" : "8px",
@@ -126,7 +130,7 @@ class DashboardActivity extends React.Component<Props> {
                   <MainItemInfo>
                     <StatusIcon status={item.status} hollow />
                     <ItemReplicaBadge type={item.type}>
-                      {item.type === "replica" ? "RE" : "MI"}
+                      {item.type === "replica" ? "TR" : "DE"}
                     </ItemReplicaBadge>
                     <ItemTitle nowrap>{item.name}</ItemTitle>
                   </MainItemInfo>
