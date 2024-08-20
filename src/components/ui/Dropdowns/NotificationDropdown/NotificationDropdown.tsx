@@ -306,7 +306,7 @@ class NotificationDropdown extends React.Component<Props, State> {
                 <MainItemInfo>
                   <StatusIcon status={item.status} hollow />
                   <ItemReplicaBadge type={item.type}>
-                    {item.type === "replica" ? "RE" : "DE"}
+                    {item.type === "replica" ? "TR" : "DE"}
                   </ItemReplicaBadge>
                   <ItemTitle>{item.name}</ItemTitle>
                 </MainItemInfo>

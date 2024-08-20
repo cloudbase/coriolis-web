@@ -80,7 +80,7 @@ class NotificationStorage {
 class DataUtils {
   static getItemDescription(item: TransferItem) {
     let item_type = item.type === "replica"
-      ? "replica"
+      ? "transfer"
       : "deployment";
     return `New ${item_type} ${item.id.substr(
       0,
