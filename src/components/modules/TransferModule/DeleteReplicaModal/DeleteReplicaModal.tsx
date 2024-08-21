@@ -85,29 +85,29 @@ class DeleteReplicaModal extends React.Component<Props> {
       if (this.props.isMultiReplicaSelection) {
         return (
           <ExtraMessage>
-            Some of the selected Replicas have been executed at least once and
+            Some of the selected Transfer have been executed at least once and
             thus may have disks created on the destination platform. If those
-            Replicas are to be deleted now, the disks on the destination will
-            persist. If this is not desired, please use the &quot;Delete Replica
+            Transfers are to be deleted now, the disks on the destination will
+            persist. If this is not desired, please use the &quot;Delete Transfer
             Disks&quot; option to delete those disks before deleting the
-            Replicas themselves.
+            Transfers themselves.
           </ExtraMessage>
         );
       }
 
       return (
         <ExtraMessage>
-          This Replica has been executed at least once and thus may have disks
-          created on the destination platform. If the Replica is to be deleted
+          This Transfer has been executed at least once and thus may have disks
+          created on the destination platform. If the Transfer is to be deleted
           now, the disks on the destination will persist. If this is not
-          desired, please use the &quot;Delete Replica Disks&quot; option to
-          delete the disks before deleting the Replica itself.
+          desired, please use the &quot;Delete Transfer Disks&quot; option to
+          delete the disks before deleting the Transfer itself.
         </ExtraMessage>
       );
     }
 
     return (
-      <ExtraMessage>Deleting a Coriolis Replica is permanent!</ExtraMessage>
+      <ExtraMessage>Deleting a Coriolis Transfer is permanent!</ExtraMessage>
     );
   }
 
@@ -116,7 +116,7 @@ class DeleteReplicaModal extends React.Component<Props> {
       <Loading>
         <StatusImage loading />
         <LoadingMessage>
-          <LoadingTitle>Validating Replicas Details</LoadingTitle>
+          <LoadingTitle>Validating Transfer Details</LoadingTitle>
           <LoadingSubtitle>Please wait ...</LoadingSubtitle>
         </LoadingMessage>
       </Loading>
@@ -125,8 +125,8 @@ class DeleteReplicaModal extends React.Component<Props> {
 
   renderContent() {
     const message = this.props.isMultiReplicaSelection
-      ? "Are you sure you want to delete the selected replicas?"
-      : "Are you sure you want to delete this replica?";
+      ? "Are you sure you want to delete the selected transfers?"
+      : "Are you sure you want to delete this transfer?";
 
     return (
       <Wrapper>
@@ -145,11 +145,11 @@ class DeleteReplicaModal extends React.Component<Props> {
                 style={{ marginBottom: "16px" }}
                 alert
               >
-                Delete Replica Disks
+                Delete Transfer Disks
               </Button>
             ) : null}
             <Button onClick={this.props.onDeleteReplica} alert>
-              Delete Replica{this.props.isMultiReplicaSelection ? "s" : ""}
+              Delete Transfer{this.props.isMultiReplicaSelection ? "s" : ""}
             </Button>
           </ButtonsColumn>
         </Buttons>
