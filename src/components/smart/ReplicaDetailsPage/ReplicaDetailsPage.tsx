@@ -708,7 +708,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
         },
       },
       {
-        label: "Delete Replica",
+        label: "Delete",
         color: ThemePalette.alert,
         action: () => {
           this.handleDeleteReplicaClick();
