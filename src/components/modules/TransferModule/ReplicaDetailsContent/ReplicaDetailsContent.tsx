@@ -59,7 +59,7 @@ const DetailsBody = styled.div<any>`
 
 const NavigationItems = [
   {
-    label: "Replica",
+    label: "Transfer",
     value: "",
   },
   {
@@ -153,19 +153,19 @@ class ReplicaDetailsContent extends React.Component<Props, State> {
             disabled={this.getStatus() === "RUNNING"}
             onClick={this.props.onExecuteClick}
           >
-            Execute Replica
+            Execute
           </Button>
           <Button
             primary
             disabled={this.isEndpointMissing()}
             onClick={this.props.onCreateDeploymentClick}
           >
-            Deploy Replica
+            Deploy
           </Button>
         </ButtonColumn>
         <ButtonColumn>
           <Button alert hollow onClick={this.props.onDeleteReplicaClick}>
-            Delete Replica
+            Delete
           </Button>
         </ButtonColumn>
       </Buttons>
