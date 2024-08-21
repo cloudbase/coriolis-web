@@ -321,11 +321,7 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
               )}
               emptyListImage={deploymentLargeImage}
               emptyListMessage="It seems like you don't have any Deployments in this project."
-              emptyListExtraMessage="A Coriolis Deployment is a deployment of a Replica between two cloud endpoints."
-              emptyListButtonLabel="Create a Deployment"
-              onEmptyListButtonClick={() => {
-                this.handleEmptyListButtonClick();
-              }}
+              emptyListExtraMessage="A Coriolis Deployment is a deployment of a Transfer between two cloud endpoints."
             />
           }
           headerComponent={
