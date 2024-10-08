@@ -83,21 +83,20 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
           });
         }
       });
-    } else {
-      const option = options.find(f => f.name === field.name);
-      if (!option) {
-        return;
-      }
-      if (
-        !defaultFillMigrationImageMapValues({
-          field,
-          option,
-          migrationImageMapFieldName: this.migrationImageMapFieldName,
-          requiresWindowsImage,
-        })
-      ) {
-        defaultFillFieldValues(field, option);
-      }
+    }
+    const option = options.find(f => f.name === field.name);
+    if (!option) {
+      return;
+    }
+    if (
+      !defaultFillMigrationImageMapValues({
+        field,
+        option,
+        migrationImageMapFieldName: this.migrationImageMapFieldName,
+        requiresWindowsImage,
+      })
+    ) {
+      defaultFillFieldValues(field, option);
     }
   }
 }
