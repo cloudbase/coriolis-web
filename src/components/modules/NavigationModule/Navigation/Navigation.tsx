@@ -406,7 +406,7 @@ class Navigation extends React.Component<Props> {
               menuImage = dashboardImage;
               style = { width: "19px", height: "19px" };
               break;
-            case "replicas":
+            case "transfers":
               bullet = "replica";
               menuImage = replicaImage;
               break;
