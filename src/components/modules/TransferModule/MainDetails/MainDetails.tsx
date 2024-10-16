@@ -427,7 +427,7 @@ class MainDetails extends React.Component<Props, State> {
           this.props.item.replica_id ? (
             <Row>
               <Field>
-                <Label>Created from Replica</Label>
+                <Label>Created from Transfer</Label>
                 <ValueLink to={`/transfers/${this.props.item.replica_id}`}>
                   {this.props.item.replica_id}
                 </ValueLink>
