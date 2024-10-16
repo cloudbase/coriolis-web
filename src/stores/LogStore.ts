@@ -50,7 +50,7 @@ const downloadDiagnosticsIntoZip = async (zipRef: JSZip): Promise<void> => {
   const [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
     apiCaller.send({ url: `${baseUrl}/diagnostics` }),
     apiCaller.send({ url: `${baseUrl}/replicas?show_deleted=true` }),
-    apiCaller.send({ url: `${baseUrl}/migrations?show_deleted=true` }),
+    apiCaller.send({ url: `${baseUrl}/deployments?show_deleted=true` }),
   ]);
 
   zipRef.file("diagnostics.json", JSON.stringify(diagnosticsResp.data));
