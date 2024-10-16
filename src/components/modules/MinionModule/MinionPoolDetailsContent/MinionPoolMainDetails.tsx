@@ -236,13 +236,17 @@ class MinionPoolMainDetails extends React.Component<Props> {
   }
 
   renderUsage(items: TransferItem[]) {
-    return items.map(item => (
-      <div key={item.id}>
-        <ValueLink to={`/${item.type}s/${item.id}`}>
+    return items.map(item => {
+      const actionHref =
+        item.type === "replica"
+          ? "transfers" : "deployments"
+
+      return (<div key={item.id}>
+        <ValueLink to={`/${actionHref}/${item.id}`}>
           {item.instances[0]}
         </ValueLink>
-      </div>
-    ));
+      </div>);
+    });
   }
 
   renderTable() {
