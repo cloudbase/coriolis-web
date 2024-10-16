@@ -330,10 +330,10 @@ class MinionPoolMachines extends React.Component<Props, State> {
                     {allocatedAction ? (
                       <>
                         <ItemReplicaBadge style={{ margin: "0px 4px 0 5px" }}>
-                          {allocatedAction.type === "replica" ? "RE" : "MI"}
+                          {allocatedAction.type === "replica" ? "TR" : "DE"}
                         </ItemReplicaBadge>
                         <ValueLink
-                          to={`/${allocatedAction.type}s/${allocatedAction.id}`}
+                          to={`/${allocatedAction.type === "replica" ? "transfers" : "deployments"}/${allocatedAction.id}`}
                         >
                           {allocatedAction.instances[0]}
                         </ValueLink>
