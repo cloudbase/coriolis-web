@@ -1098,9 +1098,7 @@ class TransferItemModal extends React.Component<Props, State> {
     return (
       <Modal
         isOpen={this.props.isOpen}
-        title={`${
-          this.props.type === "replica" ? "Edit Replica" : "Recreate Migration"
-        }`}
+        title="Edit Transfer"
         onRequestClose={this.props.onRequestClose}
         contentWidth={this.state.width === "normal" ? "800px" : "1074px"}
         onScrollableRef={() => this.scrollableRef}
@@ -1117,11 +1115,7 @@ class TransferItemModal extends React.Component<Props, State> {
           onReloadClick={() => {
             this.handleReload();
           }}
-          reloadLabel={
-            this.props.type === "replica"
-              ? "Reload All Replica Options"
-              : "Reload All Migration Options"
-          }
+          reloadLabel="Reload All Options"
         />
       </Modal>
     );
