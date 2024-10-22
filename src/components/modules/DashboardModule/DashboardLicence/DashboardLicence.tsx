@@ -201,7 +201,7 @@ class DashboardLicence extends React.Component<Props> {
           color: ThemePalette.alert,
           current: info.currentPerformedReplicas,
           total: info.currentAvailableReplicas,
-          label: "Fulfilled Replica",
+          label: "Used Replica",
           info: `The number of replicas fulfilled over the number of replicas available in
           all currently active licences (including non-activated floating licences)`,
         },
@@ -211,7 +211,7 @@ class DashboardLicence extends React.Component<Props> {
           color: ThemePalette.primary,
           current: info.currentPerformedMigrations,
           total: info.currentAvailableMigrations,
-          label: "Fulfilled Migration",
+          label: "Used Migration",
           info: `The number of migrations fulfilled over the number of migrations available in
           all currently active licences (including non-activated floating licences)`,
         },
