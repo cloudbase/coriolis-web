@@ -71,6 +71,7 @@ type State = {
   pausePolling: boolean;
   initialLoading: boolean;
   deploying: boolean;
+  executing: boolean;
 };
 @observer
 class ReplicaDetailsPage extends React.Component<Props, State> {
@@ -89,6 +90,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     pausePolling: false,
     initialLoading: true,
     deploying: false,
+    executing: false,
   };
 
   stopPolling: boolean | null = null;
@@ -549,14 +551,20 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  executeReplica(fields: Field[]) {
+  async executeReplica(fields: Field[]) {
     const replica = this.replica;
     if (!replica) {
       return;
     }
-    replicaStore.execute(replica.id, fields);
-    this.handleCloseOptionsModal();
-    this.props.history.push(`/transfers/${replica.id}/executions`);
+    this.setState({ executing: true });
+    try {
+      await replicaStore.execute(replica.id, fields);
+
+      this.handleCloseOptionsModal();
+      this.props.history.push(`/transfers/${replica.id}/executions`);
+    } finally {
+      this.setState({ executing: false });
+    }
   }
 
   async pollData() {
@@ -840,6 +848,7 @@ class ReplicaDetailsPage extends React.Component<Props, State> {
             onExecuteClick={fields => {
               this.executeReplica(fields);
             }}
+            executing={this.state.executing}
           />
         </Modal>
         {this.state.showDeploymentModal ? (

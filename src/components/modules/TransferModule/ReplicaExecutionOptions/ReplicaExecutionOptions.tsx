@@ -25,6 +25,7 @@ import { executionOptions } from "@src/constants";
 import type { Field } from "@src/@types/Field";
 
 import executionImage from "./images/execution.svg";
+import LoadingButton from "@src/components/ui/LoadingButton/LoadingButton";
 
 const Wrapper = styled.div<any>`
   display: flex;
@@ -56,6 +57,7 @@ type Props = {
   disableExecutionOptions: boolean;
   onChange?: (fieldName: string, fieldValue: string) => void;
   executionLabel: string;
+  executing?: boolean;
   onCancelClick: () => void;
   onExecuteClick: (options: Field[]) => void;
 };
@@ -66,6 +68,7 @@ type State = {
 class ReplicaExecutionOptions extends React.Component<Props, State> {
   static defaultProps = {
     executionLabel: "Execute",
+    executing: false,
   };
 
   state: State = {
@@ -137,13 +140,17 @@ class ReplicaExecutionOptions extends React.Component<Props, State> {
           <Button secondary onClick={this.props.onCancelClick}>
             Cancel
           </Button>
-          <Button
-            onClick={() => {
-              this.props.onExecuteClick(this.state.fields);
-            }}
-          >
-            {this.props.executionLabel}
-          </Button>
+          {this.props.executing ? (
+            <LoadingButton>Executing ...</LoadingButton>
+          ) : (
+            <Button
+              onClick={() => {
+                this.props.onExecuteClick(this.state.fields);
+              }}
+            >
+              {this.props.executionLabel}
+            </Button>
+          )}
         </Buttons>
       </Wrapper>
     );
