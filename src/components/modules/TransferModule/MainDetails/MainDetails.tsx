@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
 import fieldHelper from "@src/@types/Field";
-import { TransferItem } from "@src/@types/MainItem";
+import { ActionItem } from "@src/@types/MainItem";
 import { MinionPool } from "@src/@types/MinionPool";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import TransferDetailsTable from "@src/components/modules/TransferModule/TransferDetailsTable";
@@ -128,7 +128,7 @@ const PropertyValue = styled.div<any>`
 `;
 
 type Props = {
-  item?: TransferItem | null;
+  item?: ActionItem | null;
   minionPools: MinionPool[];
   storageBackends: StorageBackend[];
   destinationSchema: FieldType[];
@@ -423,13 +423,13 @@ class MainDetails extends React.Component<Props, State> {
               </Field>
             </Row>
           ) : null}
-          {this.props.item?.type === "migration" &&
-          this.props.item.replica_id ? (
+          {this.props.item?.type === "deployment" &&
+          this.props.item.transfer_id ? (
             <Row>
               <Field>
                 <Label>Created from Transfer</Label>
-                <ValueLink to={`/transfers/${this.props.item.replica_id}`}>
-                  {this.props.item.replica_id}
+                <ValueLink to={`/transfers/${this.props.item.transfer_id}`}>
+                  {this.props.item.transfer_id}
                 </ValueLink>
               </Field>
             </Row>

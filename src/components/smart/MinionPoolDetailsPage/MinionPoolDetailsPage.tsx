@@ -34,12 +34,12 @@ import { ThemePalette } from "@src/components/Theme";
 import minionPoolStore from "@src/stores/MinionPoolStore";
 import MinionPoolModal from "@src/components/modules/MinionModule/MinionPoolModal";
 import MinionPoolDetailsContent from "@src/components/modules/MinionModule/MinionPoolDetailsContent";
-import replicaStore from "@src/stores/ReplicaStore";
+import transferStore from "@src/stores/TransferStore";
 import deploymentStore from "@src/stores/DeploymentStore";
 import MinionPoolConfirmationModal from "@src/components/modules/MinionModule/MinionPoolConfirmationModal";
 import providerStore from "@src/stores/ProviderStore";
 import { Field } from "@src/@types/Field";
-import { TransferItem } from "@src/@types/MainItem";
+import { ActionItem } from "@src/@types/MainItem";
 import minionPoolImage from "./images/minion-pool.svg";
 
 const Wrapper = styled.div<any>``;
@@ -135,7 +135,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
         showLoading: true,
       }),
-      replicaStore.getReplicas(),
+      transferStore.getTransfers(),
       deploymentStore.getDeployments(),
     ]);
     const minionPool = this.minionPool;
@@ -204,7 +204,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
         showLoading,
         skipLog: true,
       }),
-      replicaStore.getReplicas(),
+      transferStore.getTransfers(),
       deploymentStore.getDeployments(),
     ]);
 
@@ -354,7 +354,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       },
     ];
 
-    const checkPoolUsed = (i: TransferItem): Boolean|undefined => {
+    const checkPoolUsed = (i: ActionItem): Boolean|undefined => {
       return i.origin_minion_pool_id === this.minionPool?.id
         || i.destination_minion_pool_id === this.minionPool?.id
         || (i.instance_osmorphing_minion_pool_mappings
@@ -388,7 +388,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
             <MinionPoolDetailsContent
               item={this.minionPool}
               itemId={this.minionPoolId}
-              replicas={replicaStore.replicas.filter(checkPoolUsed)}
+              transfers={transferStore.transfers.filter(checkPoolUsed)}
               deployments={deploymentStore.deployments.filter(checkPoolUsed)}
               endpoints={endpointStore.endpoints}
               schema={minionPoolStore.minionPoolCombinedSchema}

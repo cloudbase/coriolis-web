@@ -23,7 +23,7 @@ import Button from "@src/components/ui/Button";
 import {
   InfoColumn,
   MainItemInfo,
-  ItemReplicaBadge,
+  ItemTransferBadge,
   ItemTitle,
   ItemDescription,
 } from "@src/components/ui/Dropdowns/NotificationDropdown";
@@ -31,7 +31,7 @@ import {
 import type { NotificationItemData } from "@src/@types/NotificationItem";
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
-import replicaImage from "./images/replica.svg";
+import transferImage from "./images/transfer.svg";
 
 const Wrapper = styled.div<any>`
   flex-grow: 1;
@@ -80,9 +80,9 @@ const NoItems = styled.div<any>`
   align-items: center;
   width: 100%;
 `;
-const ReplicaImage = styled.div<any>`
+const TransferImage = styled.div<any>`
   ${ThemeProps.exactSize("148px")}
-  background: url('${replicaImage}') center no-repeat;
+  background: url('${transferImage}') center no-repeat;
 `;
 const Message = styled.div<any>`
   text-align: center;
@@ -105,12 +105,12 @@ class DashboardActivity extends React.Component<Props> {
           .filter((_, i) => i < (this.props.large ? 10 : 5))
           .map((item, i) => {
             const actionHref =
-              item.type === "replica"
+              item.type === "transfer"
                 ? "transfers" : "deployments"
 
             const executionsHref =
               item.status === "RUNNING"
-                ? item.type === "replica"
+                ? item.type === "transfer"
                   ? "/executions"
                   : item.type === "deployment"
                   ? "/tasks"
@@ -129,9 +129,9 @@ class DashboardActivity extends React.Component<Props> {
                 <InfoColumn>
                   <MainItemInfo>
                     <StatusIcon status={item.status} hollow />
-                    <ItemReplicaBadge type={item.type}>
-                      {item.type === "replica" ? "TR" : "DE"}
-                    </ItemReplicaBadge>
+                    <ItemTransferBadge type={item.type}>
+                      {item.type === "transfer" ? "TR" : "DE"}
+                    </ItemTransferBadge>
                     <ItemTitle nowrap>{item.name}</ItemTitle>
                   </MainItemInfo>
                   <ItemDescription>{item.description}</ItemDescription>
@@ -146,7 +146,7 @@ class DashboardActivity extends React.Component<Props> {
   renderNoItems() {
     return (
       <NoItems>
-        <ReplicaImage />
+        <TransferImage />
         <Message>
           There is no recent activity
           <br />

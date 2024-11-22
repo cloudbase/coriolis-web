@@ -306,7 +306,7 @@ class ContentPlugin extends React.Component<Props, State> {
         label: "Use Ceph for Replication",
         type: "boolean",
         description:
-          "If performing Ceph-based Replicas from a source OpenStack, the Ceph configuration file and credentials for a user with read-only access to the Ceph pool used by Cinder backups/snapshots must be provided. Coriolis must be able to connect to the source OpenStack's Ceph RADOS cluster by being able to reach at least one Ceph- monitor host.For the easiest setup possible, simply using the same credentials used by the Cinder service(s) will work.",
+          "If performing Ceph-based replications from a source OpenStack, the Ceph configuration file and credentials for a user with read-only access to the Ceph pool used by Cinder backups/snapshots must be provided. Coriolis must be able to connect to the source OpenStack's Ceph RADOS cluster by being able to reach at least one Ceph- monitor host.For the easiest setup possible, simply using the same credentials used by the Cinder service(s) will work.",
       };
       fields.push(showCepthOptionsField);
     }

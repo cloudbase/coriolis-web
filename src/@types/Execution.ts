@@ -22,10 +22,10 @@ export type Execution = {
   updated_at: string;
   deleted_at?: string;
   type:
-    | "replica_execution"
-    | "replica_disks_delete"
-    | "replica_deploy"
-    | "replica_update";
+    | "transfer_execution"
+    | "transfer_disks_delete"
+    | "transfer_deploy"
+    | "transfer_update";
 };
 
 export type ExecutionTasks = Execution & {

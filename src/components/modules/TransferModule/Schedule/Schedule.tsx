@@ -17,7 +17,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
-import ReplicaExecutionOptions from "@src/components/modules/TransferModule/ReplicaExecutionOptions";
+import TransferExecutionOptions from "@src/components/modules/TransferModule/TransferExecutionOptions";
 import ScheduleItem from "@src/components/modules/TransferModule/ScheduleItem";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import AlertModal from "@src/components/ui/AlertModal";
@@ -407,7 +407,7 @@ class Schedule extends React.Component<Props, State> {
               this.handleCloseOptionsModal();
             }}
           >
-            <ReplicaExecutionOptions
+            <TransferExecutionOptions
               disableExecutionOptions={this.props.disableExecutionOptions}
               options={this.state.executionOptions}
               onChange={(fieldName, value) => {

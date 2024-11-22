@@ -16,7 +16,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
-import { getTransferItemTitle, TransferItem } from "@src/@types/MainItem";
+import { getTransferItemTitle, ActionItem } from "@src/@types/MainItem";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Checkbox from "@src/components/ui/Checkbox";
@@ -106,10 +106,10 @@ const Column = styled.div`
 `;
 
 type Props = {
-  item: TransferItem;
+  item: ActionItem;
   onClick: () => void;
   selected: boolean;
-  getListItemImage: (item: TransferItem) => string;
+  getListItemImage: (item: ActionItem) => string;
   showScheduleIcon?: boolean;
   endpointType: (endpointId: string) => string;
   getUserName: (userId: string) => string | undefined;
@@ -122,19 +122,14 @@ class TransferListItem extends React.Component<Props> {
     return this.props.item.last_execution_status;
   }
 
-  getReplicaScenarioType() {
+  getTransferScenarioType() {
     let scenario = "";
     switch(this.props.item.type) {
-      case "replica":
+      case "transfer":
         scenario = this.props.item.scenario;
         break;
       case "deployment":
-        scenario = this.props.item.replica_scenario;
-        break;
-      case "migration":
-        if (this.props.item.replica_id) {
-          scenario = "replica";
-        }
+        scenario = this.props.item.transfer_scenario;
         break;
       default:
     }
@@ -223,7 +218,7 @@ class TransferListItem extends React.Component<Props> {
                 <StatusPill status={status} style={{ marginRight: "8px" }} />
               ) : null}
               {this.props.showScheduleIcon ? (
-                <ScheduleImage data-tip="The Replica has scheduling enabled and will execute automatically" />
+                <ScheduleImage data-tip="The Transfer has scheduling enabled and will execute automatically" />
               ) : null}
             </StatusWrapper>
           </Title>

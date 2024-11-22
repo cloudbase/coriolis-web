@@ -31,7 +31,7 @@ import projectStore from "@src/stores/ProjectStore";
 import userStore from "@src/stores/UserStore";
 import endpointStore from "@src/stores/EndpointStore";
 import deploymentStore from "@src/stores/DeploymentStore";
-import replicaStore from "@src/stores/ReplicaStore";
+import transferStore from "@src/stores/TransferStore";
 import providerStore from "@src/stores/ProviderStore";
 import EndpointDuplicateOptions from "@src/components/modules/EndpointModule/EndpointDuplicateOptions";
 
@@ -106,13 +106,13 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 
   getEndpointUsage(endpointId: string) {
-    const replicasCount = replicaStore.replicas.filter(
+    const replicasCount = transferStore.transfers.filter(
       r =>
         (r.origin_endpoint_id === endpointId ||
          r.destination_endpoint_id === endpointId) &&
          r.scenario === "replica"
     ).length;
-    const migrationsCount = replicaStore.replicas.filter(
+    const migrationsCount = transferStore.transfers.filter(
       r =>
         (r.origin_endpoint_id === endpointId ||
          r.destination_endpoint_id === endpointId) &&
@@ -125,14 +125,14 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   handleProjectChange() {
     endpointStore.getEndpoints({ showLoading: true });
     deploymentStore.getDeployments();
-    replicaStore.getReplicas();
+    transferStore.getTransfers();
   }
 
   handleReloadButtonClick() {
     projectStore.getProjects();
     endpointStore.getEndpoints({ showLoading: true });
     deploymentStore.getDeployments();
-    replicaStore.getReplicas();
+    transferStore.getTransfers();
   }
 
   handleItemClick(item: EndpointType) {
@@ -257,7 +257,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     await Promise.all([
       endpointStore.getEndpoints({ showLoading, skipLog: true }),
       deploymentStore.getDeployments({ skipLog: true }),
-      replicaStore.getReplicas({ skipLog: true }),
+      transferStore.getTransfers({ skipLog: true }),
     ]);
     this.pollTimeout = window.setTimeout(() => {
       this.pollData();

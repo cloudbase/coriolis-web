@@ -17,7 +17,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
-import { ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { TransferItem, ActionItem } from "@src/@types/MainItem";
 import { ProviderTypes } from "@src/@types/Providers";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
 import EndpointModal from "@src/components/modules/EndpointModule/EndpointModal";
@@ -34,7 +34,7 @@ import notificationStore from "@src/stores/NotificationStore";
 import providerStore, {
   getFieldChangeOptions,
 } from "@src/stores/ProviderStore";
-import replicaStore from "@src/stores/ReplicaStore";
+import transferStore from "@src/stores/TransferStore";
 import scheduleStore from "@src/stores/ScheduleStore";
 import userStore from "@src/stores/UserStore";
 import wizardStore from "@src/stores/WizardStore";
@@ -188,7 +188,7 @@ class WizardPage extends React.Component<Props, State> {
     this.handleBackClick();
   }
 
-  async handleCreationSuccess(items: TransferItem[]) {
+  async handleCreationSuccess(items: ActionItem[]) {
     const typeLabel =
       this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1);
     notificationStore.alert(
@@ -197,12 +197,12 @@ class WizardPage extends React.Component<Props, State> {
     );
     let schedulePromise = Promise.resolve();
 
-    items.forEach(replica => {
-      if (replica.type !== "replica") {
+    items.forEach(transfer => {
+      if (transfer.type !== "transfer") {
         return;
       }
-      this.executeCreatedReplica(replica);
-      schedulePromise = this.scheduleReplica(replica);
+      this.executeCreatedTransfer(transfer);
+      schedulePromise = this.scheduleTransfer(transfer);
     });
 
     if (items.length === 1) {
@@ -766,15 +766,15 @@ class WizardPage extends React.Component<Props, State> {
     );
   }
 
-  scheduleReplica(replica: ReplicaItem): Promise<void> {
+  scheduleTransfer(transfer: TransferItem): Promise<void> {
     if (wizardStore.schedules.length === 0) {
       return Promise.resolve();
     }
 
-    return scheduleStore.scheduleMultiple(replica.id, wizardStore.schedules);
+    return scheduleStore.scheduleMultiple(transfer.id, wizardStore.schedules);
   }
 
-  executeCreatedReplica(replica: ReplicaItem) {
+  executeCreatedTransfer(transfer: TransferItem) {
     const options = wizardStore.data.destOptions;
     let executeNow = true;
     if (options && options.execute_now != null) {
@@ -792,7 +792,7 @@ class WizardPage extends React.Component<Props, State> {
       return field;
     });
 
-    replicaStore.execute(replica.id, executeNowOptions);
+    transferStore.execute(transfer.id, executeNowOptions);
   }
 
   handleCancelUploadedScript(

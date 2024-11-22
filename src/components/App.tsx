@@ -21,9 +21,9 @@ import { observe } from "mobx";
 import Fonts from "@src/components/ui/Fonts";
 import NotificationsModule from "@src/components/modules/NotificationsModule";
 import LoginPage from "@src/components/smart/LoginPage";
-import ReplicasPage from "@src/components/smart/ReplicasPage";
+import TransfersPage from "@src/components/smart/TransfersPage/TransfersPage";
 import MessagePage from "@src/components/smart/MessagePage";
-import ReplicaDetailsPage from "@src/components/smart/ReplicaDetailsPage";
+import TransferDetailsPage from "@src/components/smart/TransferDetailsPage/TransferDetailsPage";
 import DeploymentsPage from "@src/components/smart/DeploymentsPage";
 import DeploymentDetailsPage from "@src/components/smart/DeploymentDetailsPage";
 import MetalHubServersPage from "@src/components/smart/MetalHubServersPage";
@@ -211,9 +211,9 @@ class App extends React.Component<Record<string, unknown>, State> {
               <Route path="/login" component={LoginPage} />
             }
             {renderRoute("/dashboard", DashboardPage)}
-            {renderRoute("/transfers", ReplicasPage, true)}
-            {renderRoute("/transfers/:id", ReplicaDetailsPage, true)}
-            {renderRoute("/transfers/:id/:page", ReplicaDetailsPage)}
+            {renderRoute("/transfers", TransfersPage, true)}
+            {renderRoute("/transfers/:id", TransferDetailsPage, true)}
+            {renderRoute("/transfers/:id/:page", TransferDetailsPage)}
             {renderRoute("/deployments", DeploymentsPage, true)}
             {renderRoute("/deployments/:id", DeploymentDetailsPage, true)}
             {renderRoute("/deployments/:id/:page", DeploymentDetailsPage)}

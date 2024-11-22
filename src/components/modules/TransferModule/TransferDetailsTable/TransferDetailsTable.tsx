@@ -20,7 +20,7 @@ import { EndpointUtils, StorageBackend } from "@src/@types/Endpoint";
 import {
   isNetworkMapSecurityGroups,
   isNetworkMapSourceDest,
-  TransferItem,
+  ActionItem,
   TransferNetworkMap,
 } from "@src/@types/MainItem";
 import { MinionPool } from "@src/@types/MinionPool";
@@ -156,7 +156,7 @@ export const ArrowIcon = styled.div`
 `;
 
 export type Props = {
-  item?: TransferItem | null;
+  item?: ActionItem | null;
   instancesDetails: Instance[];
   networks?: Network[];
   minionPools: MinionPool[];
@@ -338,7 +338,7 @@ class TransferDetailsTable extends React.Component<Props, State> {
           destinationBody = destinationBody.concat(getBody(transferDisk));
         }
       } else if (
-        this.props.item?.type === "migration" &&
+        this.props.item?.type === "deployment" &&
         (this.props.item.last_execution_status === "RUNNING" ||
           this.props.item.last_execution_status ===
             "AWAITING_MINION_ALLOCATIONS")
@@ -446,7 +446,7 @@ class TransferDetailsTable extends React.Component<Props, State> {
             destinationBody = getBody(destinationNic);
           }
         } else if (
-          this.props.item?.type === "migration" &&
+          this.props.item?.type === "deployment" &&
           (this.props.item.last_execution_status === "RUNNING" ||
             this.props.item.last_execution_status ===
               "AWAITING_MINION_ALLOCATIONS")
@@ -501,7 +501,7 @@ class TransferDetailsTable extends React.Component<Props, State> {
       destinationName = transferResult.instance_name || transferResult.name;
       destinationBody = getBody(transferResult);
     } else if (
-      this.props.item?.type === "migration" &&
+      this.props.item?.type === "deployment" &&
       (this.props.item.last_execution_status === "RUNNING" ||
         this.props.item.last_execution_status === "AWAITING_MINION_ALLOCATIONS")
     ) {

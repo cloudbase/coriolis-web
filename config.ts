@@ -176,7 +176,7 @@ const conf: Config = {
   ],
 
   // The number of items per page applicable to main lists:
-  // replicas, migrations, endpoints, users etc.
+  // transfers, deployments, endpoints, users etc.
   mainListItemsPerPage: 20,
 
   maxMinionPoolEventsPerPage: 50,

@@ -83,7 +83,7 @@ type BaseItem = {
   destination_environment: { [prop: string]: any };
   source_environment: { [prop: string]: any };
   transfer_result: { [prop: string]: Instance } | null;
-  replication_count?: number;
+  // replication_count?: number;
   storage_mappings?: StorageMapping | null;
   network_map?: TransferNetworkMap;
   last_execution_status: string;
@@ -92,9 +92,9 @@ type BaseItem = {
   user_scripts?: UserScriptData;
 };
 
-export type ReplicaItem = BaseItem & {
-  type: "replica";
-  scenario?: string;
+export type TransferItem = BaseItem & {
+  type: "transfer";
+  scenario: string;
 };
 
 export type UserScriptData = {
@@ -107,20 +107,10 @@ export type UserScriptData = {
   };
 };
 
-export type MigrationItem = BaseItem & {
-  type: "migration";
-  replica_id?: string;
-};
-
-export type MigrationItemOptions = MigrationItem & {
-  skip_os_morphing: boolean;
-  shutdown_instances: boolean;
-};
-
 export type DeploymentItem = BaseItem & {
   type: "deployment";
-  replica_id: string;
-  replica_scenario: string;
+  transfer_id: string;
+  transfer_scenario: string;
 };
 
 export type DeploymentItemOptions = DeploymentItem & {
@@ -128,23 +118,19 @@ export type DeploymentItemOptions = DeploymentItem & {
   shutdown_instances: boolean;
 };
 
-export type TransferItem = ReplicaItem | DeploymentItem;
+export type ActionItem = TransferItem | DeploymentItem;
 
-export type ReplicaItemDetails = ReplicaItem & {
+export type TransferItemDetails = TransferItem & {
   executions: Execution[];
-};
-
-export type MigrationItemDetails = MigrationItem & {
-  tasks: Task[];
 };
 
 export type DeploymentItemDetails = DeploymentItem & {
   tasks: Task[];
 };
 
-export type TransferItemDetails = ReplicaItemDetails | DeploymentItemDetails;
+export type ActionItemDetails = TransferItemDetails | DeploymentItemDetails;
 
-export const getTransferItemTitle = (item: TransferItem | null) => {
+export const getTransferItemTitle = (item: ActionItem | null) => {
   if (!item) {
     return null;
   }

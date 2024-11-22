@@ -19,7 +19,7 @@ import type { OptionValues, StorageMap } from "@src/@types/Endpoint";
 import type { SchemaProperties, SchemaDefinitions } from "@src/@types/Schema";
 import type { NetworkMap } from "@src/@types/Network";
 import type { InstanceScript } from "@src/@types/Instance";
-import { executionOptions, migrationFields } from "@src/constants";
+import { executionOptions } from "@src/constants";
 import { UserScriptData } from "@src/@types/MainItem";
 import { defaultSchemaToFields } from "./ConnectionSchemaPlugin";
 
@@ -135,7 +135,6 @@ export const defaultGetDestinationEnv = (
     "title",
     "minion_pool_id",
   ]
-    .concat(migrationFields.map(f => f.name))
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes);
 

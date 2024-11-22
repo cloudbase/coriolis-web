@@ -21,7 +21,7 @@ import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsC
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
 import DeploymentDetailsContent from "@src/components/modules/TransferModule/DeploymentDetailsContent";
-import ReplicaDeploymentOptions from "@src/components/modules/TransferModule/ReplicaDeploymentOptions";
+import DeploymentOptions from "@src/components/modules/TransferModule/DeploymentOptions";
 import TransferItemModal from "@src/components/modules/TransferModule/TransferItemModal";
 import { ThemePalette } from "@src/components/Theme";
 import AlertModal from "@src/components/ui/AlertModal";
@@ -53,7 +53,7 @@ type State = {
   showCancelConfirmation: boolean;
   showForceCancelConfirmation: boolean;
   showEditModal: boolean;
-  showFromReplicaModal: boolean;
+  showFromTransferModal: boolean;
   pausePolling: boolean;
   initialLoading: boolean;
   deploying: boolean;
@@ -65,7 +65,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     showCancelConfirmation: false,
     showForceCancelConfirmation: false,
     showEditModal: false,
-    showFromReplicaModal: false,
+    showFromTransferModal: false,
     pausePolling: false,
     initialLoading: true,
     deploying: false,
@@ -102,18 +102,18 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     return deploymentStore.deploymentDetails?.last_execution_status;
   }
 
-  getDeploymentReplicaScenarioItemType(details: DeploymentItemDetails | null): string {
+  getDeploymentScenarioItemType(details: DeploymentItemDetails | null): string {
     let item_type = "replica";
-    let scenario = details?.replica_scenario_type;
+    let scenario = details?.transfer_scenario;
     if (scenario && scenario === "live_migration") {
       item_type = "migration";
     }
     return item_type;
   }
 
-  getReplicaTypePillShouldRed(details: DeploymentItemDetails | null): bool {
+  getTransferTypePillShouldRed(details: DeploymentItemDetails | null): boolean {
     let should_red = true;
-    let scenario = details?.replica_scenario_type;
+    let scenario = details?.transfer_scenario;
     if (scenario && scenario === "live_migration") {
       should_red = false;
     }
@@ -122,7 +122,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
 
   getDeploymentScenarioTypeImage(details: DeploymentItemDetails | null): string {
     let image = replicaDeploymentImage;
-    let scenario = details?.replica_scenario_type;
+    let scenario = details?.transfer_scenario;
     if (scenario && scenario === "live_migration") {
       image = liveMigrationDeploymentImage;
     }
@@ -288,15 +288,15 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
   }
 
   handleRecreateClick() {
-    if (!deploymentStore.deploymentDetails?.replica_id) {
+    if (!deploymentStore.deploymentDetails?.transfer_id) {
       this.setState({ showEditModal: true, pausePolling: true });
       return;
     }
-    this.setState({ showFromReplicaModal: true, pausePolling: true });
+    this.setState({ showFromTransferModal: true, pausePolling: true });
   }
 
-  handleCloseFromReplicaModal() {
-    this.setState({ showFromReplicaModal: false, pausePolling: false });
+  handleCloseFromTransferModal() {
+    this.setState({ showFromTransferModal: false, pausePolling: false });
   }
 
   handleCloseCancelConfirmation() {
@@ -322,7 +322,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     }
   }
 
-  async recreateFromReplica(opts: {
+  async recreateFromTransfer(opts: {
     fields: Field[];
     uploadedUserScripts: InstanceScript[];
     removedUserScripts: InstanceScript[];
@@ -334,15 +334,15 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
       removedUserScripts,
       minionPoolMappings,
     } = opts;
-    const replicaId = deploymentStore.deploymentDetails?.replica_id;
-    if (!replicaId) {
+    const transferId = deploymentStore.deploymentDetails?.transfer_id;
+    if (!transferId) {
       return;
     }
 
     this.setState({ deploying: true });
     try {
       const deployment = await this.deploy({
-        replicaId,
+        transferId: transferId,
         fields,
         uploadedUserScripts,
         removedUserScripts,
@@ -352,25 +352,25 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     } finally {
       this.setState({ deploying: false });
     }
-    this.handleCloseFromReplicaModal();
+    this.handleCloseFromTransferModal();
   }
 
   async deploy(opts: {
-    replicaId: string;
+    transferId: string;
     fields: Field[];
     uploadedUserScripts: InstanceScript[];
     removedUserScripts: InstanceScript[];
     minionPoolMappings: { [instance: string]: string };
   }) {
     const {
-      replicaId,
+      transferId: transferId,
       fields,
       uploadedUserScripts,
       removedUserScripts,
       minionPoolMappings,
     } = opts;
-    const deployment = await deploymentStore.deployReplica({
-      replicaId,
+    const deployment = await deploymentStore.deployTransfer({
+      transferId: transferId,
       fields,
       uploadedUserScripts,
       removedUserScripts,
@@ -399,7 +399,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     });
   }
 
-  handleEditReplicaReload() {
+  handleEditTransferReload() {
     this.loadDeploymentWithInstances({
       deploymentId: this.props.match.params.id,
       cache: false,
@@ -442,14 +442,14 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
           this.handleUpdateComplete(url);
         }}
         sourceEndpoint={sourceEndpoint}
-        replica={deploymentStore.deploymentDetails}
+        transfer={deploymentStore.deploymentDetails}
         destinationEndpoint={destinationEndpoint}
         instancesDetails={instanceStore.instancesDetails}
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
         networks={networkStore.networks}
         networksLoading={networkStore.loading}
         onReloadClick={() => {
-          this.handleEditReplicaReload();
+          this.handleEditTransferReload();
         }}
       />
     );
@@ -508,7 +508,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
               }
               itemTitle={getTransferItemTitle(deploymentStore.deploymentDetails)}
               itemType={
-                this.getDeploymentReplicaScenarioItemType(
+                this.getDeploymentScenarioItemType(
                   deploymentStore.deploymentDetails)
               }
               itemDescription={deploymentStore.deploymentDetails?.description}
@@ -519,11 +519,11 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
               }
               dropdownActions={dropdownActions}
               alertInfoPill={
-                this.getReplicaTypePillShouldRed(
+                this.getTransferTypePillShouldRed(
                   deploymentStore.deploymentDetails)
               }
               primaryInfoPill={
-                !this.getReplicaTypePillShouldRed(
+                !this.getTransferTypePillShouldRed(
                   deploymentStore.deploymentDetails)
               }
             />
@@ -606,22 +606,22 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
             this.handleCloseCancelConfirmation();
           }}
         />
-        {this.state.showFromReplicaModal ? (
+        {this.state.showFromTransferModal ? (
           <Modal
             isOpen
             title="Recreate Deployment"
             onRequestClose={() => {
-              this.handleCloseFromReplicaModal();
+              this.handleCloseFromTransferModal();
             }}
           >
-            <ReplicaDeploymentOptions
+            <DeploymentOptions
               transferItem={deploymentStore.deploymentDetails}
               minionPools={minionPoolStore.minionPools}
               onCancelClick={() => {
-                this.handleCloseFromReplicaModal();
+                this.handleCloseFromTransferModal();
               }}
               onDeployClick={opts => {
-                this.recreateFromReplica(opts);
+                this.recreateFromTransfer(opts);
               }}
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}

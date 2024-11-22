@@ -29,7 +29,7 @@ import cbsImage from "./images/cbsl-logo.svg";
 import cbsImageSmall from "./images/cbsl-logo-small.svg";
 import tinyLogo from "./images/logo-small.svg";
 
-import replicaImage from "./images/replica-menu.svg";
+import transferImage from "./images/transfer-menu.svg";
 import endpointImage from "./images/endpoint-menu.svg";
 import planningImage from "./images/planning-menu.svg";
 import projectImage from "./images/project-menu.svg";
@@ -179,7 +179,7 @@ const SmallMenuItemBullet = styled.div<any>`
   border-radius: 50%;
   position: absolute;
   left: -12px;
-  background: ${props => (props.bullet === "replica" ? "#E62565" : "#0044CA")};
+  background: ${props => (props.bullet === "transfer" ? "#E62565" : "#0044CA")};
 `;
 
 const MenuImage = styled.div<any>`
@@ -407,12 +407,12 @@ class Navigation extends React.Component<Props> {
               style = { width: "19px", height: "19px" };
               break;
             case "transfers":
-              bullet = "replica";
-              menuImage = replicaImage;
+              bullet = "transfer";
+              menuImage = transferImage;
               break;
             case "deployments":
               bullet = "deployment";
-              menuImage = replicaImage;
+              menuImage = transferImage;
               break;
             case "endpoints":
               menuImage = endpointImage;

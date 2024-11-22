@@ -24,7 +24,6 @@ export type NavigationMenuType = {
 export const navigationMenu: NavigationMenuType[] = [
   { label: "Dashboard", value: "dashboard" },
   { label: "Transfers", value: "transfers" },
-  // { label: "Migrations", value: "migrations" },
   { label: "Deployments", value: "deployments" },
   { label: "Cloud Endpoints", value: "endpoints" },
   { label: "Minion Pools", value: "minion-pools" },
@@ -41,8 +40,8 @@ export const navigationMenu: NavigationMenuType[] = [
 
 // https://github.com/cloudbase/coriolis/blob/master/coriolis/constants.py
 export const providerTypes = {
-  TARGET_REPLICA: 4,
-  SOURCE_REPLICA: 8,
+  TARGET_TRANSFER: 4,
+  SOURCE_TRANSFER: 8,
   CONNECTION: 16,
   DESTINATION_OPTIONS: 512,
   SOURCE_OPTIONS: 131072,
@@ -67,26 +66,6 @@ export const executionOptions = [
     type: "boolean",
     defaultValue: false,
     nullableBoolean: false,
-  },
-];
-
-export const migrationFields: Field[] = [
-  {
-    name: "shutdown_instances",
-    type: "boolean",
-    default: false,
-    nullableBoolean: false,
-    description:
-      "Whether or not Coriolis should power off the source VM before performing the final incremental sync. This guarantees consistency of the exported VM's filesystems, but implies downtime for the source VM during the final sync.",
-  },
-  {
-    name: "replication_count",
-    type: "integer",
-    minimum: 1,
-    maximum: 10,
-    default: 2,
-    description:
-      'The number of times to incrementally sync the disks of the source VM. This can be paired with "Shutdown Instances" to allow for the live syncing of the source VM, and shutting it off before the final incremental sync.',
   },
 ];
 
@@ -120,7 +99,6 @@ export const wizardPages: WizardPage[] = [
     id: "schedule",
     title: "Schedule",
     breadcrumb: "Schedule",
-    // excludeFrom: "migration",
   },
   { id: "summary", title: "Summary", breadcrumb: "Summary" },
 ];

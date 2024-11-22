@@ -47,15 +47,15 @@ const generateUrlForLog = (
 
 const downloadDiagnosticsIntoZip = async (zipRef: JSZip): Promise<void> => {
   const baseUrl = `${configLoader.config.servicesUrls.coriolis}/${apiCaller.projectId}`;
-  const [diagnosticsResp, replicasResp, migrationsResp] = await Promise.all([
+  const [diagnosticsResp, transfersResp, deploymentsResp] = await Promise.all([
     apiCaller.send({ url: `${baseUrl}/diagnostics` }),
-    apiCaller.send({ url: `${baseUrl}/replicas?show_deleted=true` }),
+    apiCaller.send({ url: `${baseUrl}/transfers?show_deleted=true` }),
     apiCaller.send({ url: `${baseUrl}/deployments?show_deleted=true` }),
   ]);
 
   zipRef.file("diagnostics.json", JSON.stringify(diagnosticsResp.data));
-  zipRef.file("replicas.json", JSON.stringify(replicasResp.data));
-  zipRef.file("migrations.json", JSON.stringify(migrationsResp.data));
+  zipRef.file("transfers.json", JSON.stringify(transfersResp.data));
+  zipRef.file("deployments.json", JSON.stringify(deploymentsResp.data));
 };
 
 class LogStore {

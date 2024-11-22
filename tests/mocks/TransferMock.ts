@@ -1,13 +1,13 @@
 import {
   MigrationItem,
   MigrationItemDetails,
-  ReplicaItem,
-  ReplicaItemDetails,
+  TransferItem,
+  TransferItemDetails,
 } from "@src/@types/MainItem";
 import { EXECUTION_MOCK, TASK_MOCK } from "@tests/mocks/ExecutionsMock";
 import { INSTANCE_MOCK } from "@tests/mocks/InstancesMock";
 
-export const REPLICA_MOCK: ReplicaItem = {
+export const REPLICA_MOCK: TransferItem = {
   id: "replica-id",
   name: "replica-name",
   type: "replica",
@@ -66,7 +66,7 @@ export const REPLICA_MOCK: ReplicaItem = {
   },
 };
 
-export const REPLICA_ITEM_DETAILS_MOCK: ReplicaItemDetails = {
+export const REPLICA_ITEM_DETAILS_MOCK: TransferItemDetails = {
   ...REPLICA_MOCK,
   executions: [EXECUTION_MOCK],
 };

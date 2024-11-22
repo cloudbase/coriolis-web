@@ -19,7 +19,7 @@
     "openstack": {
       "logos": {
         "height32": {
-          "_comment": "As seen in Wizard page breadcrumbs and Replicas page list item.",
+          "_comment": "As seen in Wizard page breadcrumbs and Transfers page list item.",
           "path": "/tmp/logos/logo.svg"
         },
         "height32white": {
@@ -31,7 +31,7 @@
           "path": "/tmp/logos/logo.svg"
         },
         "height64": {
-          "_comment": "As seen in Replica Details page and Endpoint Details page.",
+          "_comment": "As seen in Transfer Details page and Endpoint Details page.",
           "path": "/tmp/logos/logo.svg"
         },
         "height128": {

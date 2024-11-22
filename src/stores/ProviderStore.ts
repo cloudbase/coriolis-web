@@ -143,8 +143,6 @@ class ProviderStore {
 
   @observable sourceSchemaLoading = false;
 
-  lastDestinationSchemaType: "replica" | "migration" = "replica";
-
   @computed
   get providerNames(): ProviderTypes[] {
     if (!this.providers) {

@@ -24,7 +24,7 @@ import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import FieldInput from "@src/components/ui/FieldInput";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import ToggleButtonBar from "@src/components/ui/ToggleButtonBar";
-import { executionOptions, migrationFields } from "@src/constants";
+import { executionOptions } from "@src/constants";
 import { MinionPoolStoreUtils } from "@src/stores/MinionPoolStore";
 import configLoader from "@src/utils/Config";
 import LabelDictionary from "@src/utils/LabelDictionary";
@@ -297,10 +297,7 @@ class WizardOptions extends React.Component<Props> {
       });
     }
 
-    if (
-      this.props.wizardType === "migration" ||
-      this.props.wizardType === "migration-destination-options-edit"
-    ) {
+    if (this.props.wizardType === "migration-destination-options-edit") {
       fieldsSchema.push({
         name: "skip_os_morphing",
         type: "boolean",
@@ -351,24 +348,6 @@ class WizardOptions extends React.Component<Props> {
           : `Set the options for ${this.props.wizardType} execution`,
       });
     }
-    // } else if (
-    //   this.props.wizardType === "migration" ||
-    //   this.props.wizardType === "migration-destination-options-edit"
-    // ) {
-    //   const shutdownInstanceField = migrationFields.find(
-    //     f => f.name === "shutdown_instances"
-    //   )!;
-    //   shutdownInstanceField.disabled = this.props.executeNowOptionsDisabled;
-    //   shutdownInstanceField.description = this.props.executeNowOptionsDisabled
-    //     ? "The 'Shutdown Instances' option is disabled for the source provider"
-    //     : shutdownInstanceField.description;
-    //   fieldsSchema = [
-    //     ...fieldsSchema,
-    //     ...migrationFields.map(f =>
-    //       f.name === "shutdown_instances" ? shutdownInstanceField : f
-    //     ),
-    //   ];
-    // }
 
     return fieldsSchema;
   }

@@ -1,6 +1,0 @@
-{
-  "name": "ReplicaDetailsPage",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./ReplicaDetailsPage.tsx"
-}
