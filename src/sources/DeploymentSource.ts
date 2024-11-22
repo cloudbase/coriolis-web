@@ -25,7 +25,7 @@ import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin
 import Api from "@src/utils/ApiCaller";
 import configLoader from "@src/utils/Config";
 
-import { sortTasks } from "./ReplicaSource";
+import { sortTasks } from "./TransferSource";
 
 import type { InstanceScript } from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
@@ -128,7 +128,7 @@ class DeploymentSource {
     payload.deployment.shutdown_instances = Boolean(
       deployment.shutdown_instances
     );
-    payload.deployment.replication_count = deployment.replication_count || 2;
+    // payload.deployment.replication_count = deployment.replication_count || 2;
 
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/deployments`,
@@ -153,7 +153,7 @@ class DeploymentSource {
     networkMappings?: any;
     updatedNetworkMappings: NetworkMap[] | null;
     defaultSkipOsMorphing: boolean | null;
-    replicationCount?: number | null;
+    // replicationCount?: number | null;
     deployment: DeploymentItemDetails;
     uploadedScripts: InstanceScript[];
     removedScripts: InstanceScript[];
@@ -176,10 +176,10 @@ class DeploymentSource {
       shutdown_instances: Boolean(
         opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances
       ),
-      replication_count:
-        (opts.updatedDestEnv && opts.updatedDestEnv.replication_count) ||
-        opts.replicationCount ||
-        2,
+      // replication_count:
+      //   (opts.updatedDestEnv && opts.updatedDestEnv.replication_count) ||
+      //   opts.replicationCount ||
+      //   2,
       instances: opts.instanceNames,
       notes: opts.updatedDestEnv?.title || opts.deployment.notes || "",
     };
@@ -307,8 +307,8 @@ class DeploymentSource {
     return deploymentId;
   }
 
-  async deployReplica(opts: {
-    replicaId: string;
+  async deployTransfer(opts: {
+    transferId: string;
     options: Field[];
     uploadedUserScripts: InstanceScript[];
     removedUserScripts: InstanceScript[];
@@ -316,7 +316,7 @@ class DeploymentSource {
     minionPoolMappings: { [instance: string]: string };
   }): Promise<DeploymentItem> {
     const {
-      replicaId,
+      transferId: transferId,
       options,
       uploadedUserScripts,
       removedUserScripts,
@@ -325,7 +325,7 @@ class DeploymentSource {
     } = opts;
     const payload: any = {
       deployment: {
-        replica_id: replicaId,
+        transfer_id: transferId,
       },
     };
     options.forEach(o => {

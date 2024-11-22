@@ -17,12 +17,12 @@ import { Collapse } from "react-collapse";
 import { Link } from "react-router-dom";
 import styled, { createGlobalStyle, css } from "styled-components";
 
-import { DeploymentItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { DeploymentItem, TransferItem, ActionItem } from "@src/@types/MainItem";
 import { MinionMachine, MinionPool } from "@src/@types/MinionPool";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Arrow from "@src/components/ui/Arrow";
 import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
-import { ItemReplicaBadge } from "@src/components/ui/Dropdowns/NotificationDropdown";
+import { ItemTransferBadge } from "@src/components/ui/Dropdowns/NotificationDropdown";
 import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import DateUtils from "@src/utils/DateUtils";
 
@@ -144,7 +144,7 @@ const ValueLink = styled(Link)`
 type FilterType = "all" | "allocated" | "not-allocated";
 type Props = {
   item?: MinionPool | null;
-  replicas: ReplicaItem[];
+  transfers: TransferItem[];
   deployments: DeploymentItem[];
 };
 type State = {
@@ -278,10 +278,10 @@ class MinionPoolMachines extends React.Component<Props, State> {
     return (
       <MachinesWrapper>
         {this.filteredMachines.map(machine => {
-          const findTransferItem = (transferItems: TransferItem[]) =>
+          const findTransferItem = (transferItems: ActionItem[]) =>
             transferItems.find(i => i.id === machine.allocated_action);
           const allocatedAction = machine.allocated_action
-            ? findTransferItem(this.props.replicas) ||
+            ? findTransferItem(this.props.transfers) ||
               findTransferItem(this.props.deployments)
             : null;
           return (
@@ -329,11 +329,11 @@ class MinionPoolMachines extends React.Component<Props, State> {
                     Allocated Action:
                     {allocatedAction ? (
                       <>
-                        <ItemReplicaBadge style={{ margin: "0px 4px 0 5px" }}>
-                          {allocatedAction.type === "replica" ? "TR" : "DE"}
-                        </ItemReplicaBadge>
+                        <ItemTransferBadge style={{ margin: "0px 4px 0 5px" }}>
+                          {allocatedAction.type === "transfer" ? "TR" : "DE"}
+                        </ItemTransferBadge>
                         <ValueLink
-                          to={`/${allocatedAction.type === "replica" ? "transfers" : "deployments"}/${allocatedAction.id}`}
+                          to={`/${allocatedAction.type === "transfer" ? "transfers" : "deployments"}/${allocatedAction.id}`}
                         >
                           {allocatedAction.instances[0]}
                         </ValueLink>

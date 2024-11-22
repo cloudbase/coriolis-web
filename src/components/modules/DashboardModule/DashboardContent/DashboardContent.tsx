@@ -30,7 +30,7 @@ import type { Project } from "@src/@types/Project";
 import type { User } from "@src/@types/User";
 import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
 import type { NotificationItemData } from "@src/@types/NotificationItem";
-import { ReplicaItem, DeploymentItem } from "@src/@types/MainItem";
+import { TransferItem, DeploymentItem } from "@src/@types/MainItem";
 
 const MIDDLE_WIDTHS = ["264px", "264px", "264px"];
 
@@ -52,11 +52,11 @@ const MiddleMobileLayout = styled.div<any>`
 `;
 
 type Props = {
-  replicas: ReplicaItem[];
+  transfers: TransferItem[];
   deployments: DeploymentItem[];
   endpoints: Endpoint[];
   projects: Project[];
-  replicasLoading: boolean;
+  transfersLoading: boolean;
   deploymentsLoading: boolean;
   endpointsLoading: boolean;
   usersLoading: boolean;
@@ -69,7 +69,7 @@ type Props = {
   licenceError: string | null;
   notificationItems: NotificationItemData[];
   isAdmin: boolean;
-  onNewReplicaClick: () => void;
+  onNewTransferClick: () => void;
   onNewEndpointClick: () => void;
   onAddLicenceClick: () => void;
 };
@@ -122,14 +122,14 @@ class DashboardContent extends React.Component<Props, State> {
                 width: MIDDLE_WIDTHS[0],
               }
         }
-        onNewClick={this.props.onNewReplicaClick}
+        onNewClick={this.props.onNewTransferClick}
       />,
       <DashboardTopEndpoints
         key="top-endpoints"
-        replicas={this.props.replicas}
+        transfers={this.props.transfers}
         endpoints={this.props.endpoints}
         loading={
-          this.props.replicasLoading ||
+          this.props.transfersLoading ||
           this.props.deploymentsLoading ||
           this.props.endpointsLoading
         }
@@ -175,13 +175,13 @@ class DashboardContent extends React.Component<Props, State> {
   }
 
   getReplicas() {
-    return this.props.replicas.filter(
-      (r: ReplicaItem) => r.scenario === "replica");
+    return this.props.transfers.filter(
+      (r: TransferItem) => r.scenario === "replica");
   }
 
   getLiveMigrations() {
-    return this.props.replicas.filter(
-      (r: ReplicaItem) => r.scenario === "live_migration");
+    return this.props.transfers.filter(
+      (r: TransferItem) => r.scenario === "live_migration");
   }
 
   render() {
@@ -191,13 +191,13 @@ class DashboardContent extends React.Component<Props, State> {
         value: this.getReplicas().length,
         color: ThemePalette.alert,
         link: "/transfers",
-        loading: this.props.replicasLoading,
+        loading: this.props.transfersLoading,
       },
       {
         label: "Migrations",
         value: this.getLiveMigrations().length,
         link: "/transfers",
-        loading: this.props.replicasLoading,
+        loading: this.props.transfersLoading,
       },
       {
         label: "Endpoints",
@@ -234,7 +234,7 @@ class DashboardContent extends React.Component<Props, State> {
         <DashboardExecutions
           replicas={this.getReplicas()}
           migrations={this.getLiveMigrations()}
-          loading={this.props.replicasLoading || this.props.deploymentsLoading}
+          loading={this.props.transfersLoading || this.props.deploymentsLoading}
         />
       </Wrapper>
     );

@@ -35,7 +35,7 @@ describe("MinionPoolMainDetails", () => {
   beforeEach(() => {
     defaultProps = {
       item: MINION_POOL_MOCK,
-      replicas: [REPLICA_MOCK],
+      transfers: [REPLICA_MOCK],
       migrations: [MIGRATION_MOCK],
       schema: [],
       schemaLoading: false,

@@ -22,7 +22,7 @@ import type { WizardData } from "@src/@types/WizardData";
 import type { StorageMap } from "@src/@types/Endpoint";
 import type { InstanceScript } from "@src/@types/Instance";
 import DefaultOptionsSchemaParser from "@src/plugins/default/OptionsSchemaPlugin";
-import { TransferItem } from "@src/@types/MainItem";
+import { ActionItem } from "@src/@types/MainItem";
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
 
 class WizardSource {
@@ -34,7 +34,7 @@ class WizardSource {
       | undefined;
     storageMap: StorageMap[];
     uploadedUserScripts: InstanceScript[];
-  }): Promise<TransferItem> {
+  }): Promise<ActionItem> {
     const { type, data, defaultStorage, storageMap, uploadedUserScripts } =
       opts;
     const sourceParser = data.source
@@ -111,9 +111,9 @@ class WizardSource {
       : "live_migration";
     payload.scenario = scenario;
 
-    const payload_body_key = "replica";
+    const payload_body_key = "transfer";
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers`,
       method: "POST",
       data: { [payload_body_key]: payload },
     });
@@ -143,7 +143,7 @@ class WizardSource {
           instance.name || instance.instance_name || instance.id;
         newData.destOptions = newDestOptions;
 
-        let mainItem: TransferItem | null = null;
+        let mainItem: ActionItem | null = null;
         try {
           mainItem = await this.create({
             type,

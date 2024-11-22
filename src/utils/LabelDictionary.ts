@@ -79,13 +79,13 @@ const dictionary = {
     (e.g: migrating between two KVM-based OpenStacks from different vendors)`,
   },
   force: {
-    description: `Whether or not Coriolis should forcibly attempt the Replica Deployment process despite the Replica not having any successful Executions.
-    This is only recommended if it is known that the Replica disks were successfully synced but some latter cleanup steps failed (e.g: deleting source-side temporary resources).
-    This will not help if the Replica disks were never successfully synced.`,
+    description: `Whether or not Coriolis should forcibly attempt the Deployment process despite the Transfer not having any successful Executions.
+    This is only recommended if it is known that the Transfer disks were successfully synced but some latter cleanup steps failed (e.g: deleting source-side temporary resources).
+    This will not help if the Transfer disks were never successfully synced.`,
   },
   clone_disks: {
-    description: `Whether or not Coriolis should clone the Replica disks on the destination platforms before optionally performing the OSMorphing process and booting the final VM.
-    Skipping disk cloning leads to a shorter deployment time, but means that the Replica disks will be allocated to the new VM, and thus the next Replica Execution will have to sync the disks from scratch.`,
+    description: `Whether or not Coriolis should clone the Transfer disks on the destination platforms before optionally performing the OSMorphing process and booting the final VM.
+    Skipping disk cloning leads to a shorter deployment time, but means that the Transfer disks will be allocated to the new VM, and thus the next Transfer Execution will have to sync the disks from scratch.`,
   },
 };
 

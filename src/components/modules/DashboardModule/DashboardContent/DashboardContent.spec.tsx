@@ -35,11 +35,11 @@ describe("DashboardContent", () => {
 
   beforeEach(() => {
     defaultProps = {
-      replicas: [],
+      transfers: [],
       migrations: [],
       endpoints: [],
       projects: [],
-      replicasLoading: false,
+      transfersLoading: false,
       migrationsLoading: false,
       endpointsLoading: false,
       usersLoading: false,
@@ -52,7 +52,7 @@ describe("DashboardContent", () => {
       licenceError: null,
       notificationItems: [],
       isAdmin: false,
-      onNewReplicaClick: jest.fn(),
+      onNewTransferClick: jest.fn(),
       onNewEndpointClick: jest.fn(),
       onAddLicenceClick: jest.fn(),
     };

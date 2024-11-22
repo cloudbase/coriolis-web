@@ -240,7 +240,7 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
             isOpen
             title="Remove Bare Metal Server?"
             message="Are you sure you want to remove this server?"
-            extraMessage="By removing a server from the hub, Coriolis will not be able to migrate it or do any other replica executions of it."
+            extraMessage="By removing a server from the hub, Coriolis will not be able to migrate it or ensure disaster recovery of it."
             onConfirmation={() => {
               this.handleDeleteConfirmation();
             }}

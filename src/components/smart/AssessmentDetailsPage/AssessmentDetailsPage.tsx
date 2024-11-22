@@ -33,7 +33,7 @@ import azureStore from "@src/stores/AzureStore";
 import type { LocalData } from "@src/stores/AzureStore";
 import endpointStore from "@src/stores/EndpointStore";
 import notificationStore from "@src/stores/NotificationStore";
-import replicaStore from "@src/stores/ReplicaStore";
+import replicaStore from "@src/stores/TransferStore";
 import instanceStore from "@src/stores/InstanceStore";
 import networkStore from "@src/stores/NetworkStore";
 import userStore from "@src/stores/UserStore";

@@ -1,0 +1,6 @@
+{
+  "name": "TransfersPage",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./TransfersPage.tsx"
+}

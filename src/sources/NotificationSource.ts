@@ -19,8 +19,8 @@ import type {
   NotificationItem,
 } from "@src/@types/NotificationItem";
 import {
+  ActionItem,
   TransferItem,
-  ReplicaItem,
   getTransferItemTitle,
   DeploymentItem,
 } from "@src/@types/MainItem";
@@ -78,8 +78,8 @@ class NotificationStorage {
 }
 
 class DataUtils {
-  static getItemDescription(item: TransferItem) {
-    let item_type = item.type === "replica"
+  static getItemDescription(item: ActionItem) {
+    let item_type = item.type === "transfer"
       ? "transfer"
       : "deployment";
     return `New ${item_type} ${item.id.substr(
@@ -93,22 +93,22 @@ class DataUtils {
 
 class NotificationSource {
   async loadData(): Promise<NotificationItemData[]> {
-    const [deploymentsResponse, replicasResponse] = await Promise.all([
+    const [deploymentsResponse, transfersResponse] = await Promise.all([
       Api.send({
         url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/deployments`,
         skipLog: true,
         quietError: true,
       }),
       Api.send({
-        url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas`,
+        url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers`,
         skipLog: true,
         quietError: true,
       }),
     ]);
 
     const deployments: DeploymentItem[] = deploymentsResponse.data.deployments;
-    const replicas: ReplicaItem[] = replicasResponse.data.replicas;
-    const apiData = [...deployments, ...replicas];
+    const transfers: TransferItem[] = transfersResponse.data.transfers;
+    const apiData = [...deployments, ...transfers];
     apiData.sort(
       (a, b) =>
         new Date(b.updated_at || b.created_at).getTime() -

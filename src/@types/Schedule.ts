@@ -31,6 +31,6 @@ export type Schedule = {
 };
 
 export type ScheduleBulkItem = {
-  replicaId: string;
+  transferId: string;
   schedules: Schedule[];
 };

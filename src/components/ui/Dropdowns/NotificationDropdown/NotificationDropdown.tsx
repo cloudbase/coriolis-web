@@ -144,7 +144,7 @@ export const MainItemInfo = styled.div<any>`
     margin-right: 8px;
   }
 `;
-export const ItemReplicaBadge = styled.div<any>`
+export const ItemTransferBadge = styled.div<any>`
   background: "white";
   color: #7f8795;
   font-size: 9px;
@@ -275,15 +275,15 @@ class NotificationDropdown extends React.Component<Props, State> {
       <List>
         {this.props.items.map(item => {
           const typeUrl =
-            item.type === "migration"
+            item.type === "deployment"
               ? "deployments"
               : "transfers";
 
           const executionsPath =
             item.status === "RUNNING"
-              ? item.type === "replica"
+              ? item.type === "transfer"
                 ? "/executions"
-                : item.type === "migration"
+                : item.type === "deployment"
                 ? "/tasks"
                 : ""
               : "";
@@ -305,9 +305,9 @@ class NotificationDropdown extends React.Component<Props, State> {
               <InfoColumn>
                 <MainItemInfo>
                   <StatusIcon status={item.status} hollow />
-                  <ItemReplicaBadge type={item.type}>
-                    {item.type === "replica" ? "TR" : "DE"}
-                  </ItemReplicaBadge>
+                  <ItemTransferBadge type={item.type}>
+                    {item.type === "transfer" ? "TR" : "DE"}
+                  </ItemTransferBadge>
                   <ItemTitle>{item.name}</ItemTitle>
                 </MainItemInfo>
                 <ItemDescription>{item.description}</ItemDescription>

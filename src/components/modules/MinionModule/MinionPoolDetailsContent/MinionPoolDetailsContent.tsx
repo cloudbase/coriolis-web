@@ -20,7 +20,7 @@ import Button from "@src/components/ui/Button";
 import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
 import type { Endpoint } from "@src/@types/Endpoint";
 import type { Field } from "@src/@types/Field";
-import { ReplicaItem, DeploymentItem } from "@src/@types/MainItem";
+import { TransferItem, DeploymentItem } from "@src/@types/MainItem";
 import { MinionPoolDetails } from "@src/@types/MinionPool";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import { ThemeProps } from "@src/components/Theme";
@@ -75,7 +75,7 @@ const NavigationItems = [
 type Props = {
   item?: MinionPoolDetails | null;
   itemId: string;
-  replicas: ReplicaItem[];
+  transfers: TransferItem[];
   deployments: DeploymentItem[];
   endpoints: Endpoint[];
   schema: Field[];
@@ -144,7 +144,7 @@ class MinionPoolDetailsContent extends React.Component<Props> {
     return (
       <MinionPoolMachines
         item={this.props.item}
-        replicas={this.props.replicas}
+        transfers={this.props.transfers}
         deployments={this.props.deployments}
       />
     );
@@ -166,7 +166,7 @@ class MinionPoolDetailsContent extends React.Component<Props> {
     return (
       <MinionPoolMainDetails
         item={this.props.item}
-        replicas={this.props.replicas}
+        transfers={this.props.transfers}
         deployments={this.props.deployments}
         schema={this.props.schema}
         schemaLoading={this.props.schemaLoading}

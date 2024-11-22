@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
 import fieldHelper from "@src/@types/Field";
-import { DeploymentItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { DeploymentItem, TransferItem, ActionItem } from "@src/@types/MainItem";
 import { MinionPool } from "@src/@types/MinionPool";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
@@ -101,7 +101,7 @@ const PropertyValue = styled.div<any>`
 
 type Props = {
   item?: MinionPool | null;
-  replicas: ReplicaItem[];
+  transfers: TransferItem[];
   deployments: DeploymentItem[];
   schema: FieldType[];
   schemaLoading: boolean;
@@ -235,10 +235,10 @@ class MinionPoolMainDetails extends React.Component<Props> {
     );
   }
 
-  renderUsage(items: TransferItem[]) {
+  renderUsage(items: ActionItem[]) {
     return items.map(item => {
       const actionHref =
-        item.type === "replica"
+        item.type === "transfer"
           ? "transfers" : "deployments"
 
       return (<div key={item.id}>
@@ -267,7 +267,7 @@ class MinionPoolMainDetails extends React.Component<Props> {
         : [];
     };
 
-    const usage: TransferItem[] = this.props.replicas.concat(
+    const usage: ActionItem[] = this.props.transfers.concat(
       this.props.deployments as any[]
     );
 

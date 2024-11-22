@@ -44,7 +44,7 @@ describe("MinionPoolDetailsContent", () => {
     defaultProps = {
       item: MINION_POOL_DETAILS_MOCK,
       itemId: "minion-pool-id",
-      replicas: [REPLICA_MOCK],
+      transfers: [REPLICA_MOCK],
       migrations: [],
       endpoints: [OPENSTACK_ENDPOINT_MOCK],
       schema: [

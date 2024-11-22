@@ -22,7 +22,7 @@ import type { StorageMap } from "@src/@types/Endpoint";
 import type { Schedule } from "@src/@types/Schedule";
 import { wizardPages } from "@src/constants";
 import source from "@src/sources/WizardSource";
-import { TransferItem } from "@src/@types/MainItem";
+import { ActionItem } from "@src/@types/MainItem";
 import notificationStore from "./NotificationStore";
 
 const updateOptions = (
@@ -78,11 +78,11 @@ class WizardStore {
 
   @observable currentPage: WizardPage = wizardPages[0];
 
-  @observable createdItem: TransferItem | null = null;
+  @observable createdItem: ActionItem | null = null;
 
   @observable creatingItem = false;
 
-  @observable createdItems: Array<TransferItem | null> | null = null;
+  @observable createdItems: Array<ActionItem | null> | null = null;
 
   @observable creatingItems = false;
 
@@ -311,7 +311,7 @@ class WizardStore {
     this.creatingItem = true;
 
     try {
-      const item: TransferItem = await source.create({
+      const item: ActionItem = await source.create({
         type,
         data,
         defaultStorage,

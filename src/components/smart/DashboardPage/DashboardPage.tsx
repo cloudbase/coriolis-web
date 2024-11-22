@@ -25,7 +25,7 @@ import licenceStore from "@src/stores/LicenceStore";
 import deploymentStore from "@src/stores/DeploymentStore";
 import notificationStore from "@src/stores/NotificationStore";
 import projectStore from "@src/stores/ProjectStore";
-import replicaStore from "@src/stores/ReplicaStore";
+import transferStore from "@src/stores/TransferStore";
 import userStore from "@src/stores/UserStore";
 import configLoader from "@src/utils/Config";
 import Utils from "@src/utils/ObjectUtils";
@@ -99,7 +99,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
     this.loadAdminData(showLoading);
 
     await Promise.all([
-      replicaStore.getReplicas({ skipLog: true, showLoading }),
+      transferStore.getTransfers({ skipLog: true, showLoading }),
       deploymentStore.getDeployments({ skipLog: true, showLoading }),
       endpointStore.getEndpoints({ skipLog: true, showLoading }),
       projectStore.getProjects({ skipLog: true, showLoading }),
@@ -128,7 +128,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
           listNoMargin
           listComponent={
             <DashboardContent
-              replicas={replicaStore.replicas}
+              transfers={transferStore.transfers}
               deployments={deploymentStore.deployments}
               endpoints={endpointStore.endpoints}
               users={userStore.users}
@@ -146,8 +146,8 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               usersLoading={userStore.users.length === 0}
               licenceLoading={licenceStore.loadingLicenceInfo}
               licenceError={licenceStore.licenceInfoError}
-              replicasLoading={replicaStore.loading}
-              onNewReplicaClick={() => {
+              transfersLoading={transferStore.loading}
+              onNewTransferClick={() => {
                 this.props.history.push("/wizard/replica");
               }}
               onNewEndpointClick={() => {

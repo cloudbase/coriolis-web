@@ -53,14 +53,14 @@ class ScheduleStore {
   @observable deletingIds: string[] = [];
 
   @action async scheduleMultiple(
-    replicaId: string,
+    transferId: string,
     schedules: Schedule[]
   ): Promise<void> {
     this.scheduling = true;
 
     try {
       const scheduledSchedules: Schedule[] = await Source.scheduleMultiple(
-        replicaId,
+        transferId,
         schedules
       );
       runInAction(() => {
@@ -73,11 +73,11 @@ class ScheduleStore {
     }
   }
 
-  @action async getSchedules(replicaId: string): Promise<void> {
+  @action async getSchedules(transferId: string): Promise<void> {
     this.loading = true;
 
     try {
-      const schedules: Schedule[] = await Source.getSchedules(replicaId);
+      const schedules: Schedule[] = await Source.getSchedules(transferId);
       runInAction(() => {
         this.schedules = schedules;
       });
@@ -88,13 +88,13 @@ class ScheduleStore {
     }
   }
 
-  async getSchedulesBulk(replicaIds: string[]): Promise<void> {
+  async getSchedulesBulk(transferIds: string[]): Promise<void> {
     const bulkSchedules: ScheduleBulkItem[] = await Promise.all(
-      replicaIds.map(async replicaId => {
-        const schedules: Schedule[] = await Source.getSchedules(replicaId, {
+      transferIds.map(async transferId => {
+        const schedules: Schedule[] = await Source.getSchedules(transferId, {
           skipLog: true,
         });
-        return { replicaId, schedules };
+        return { transferId: transferId, schedules };
       })
     );
     runInAction(() => {
@@ -103,14 +103,14 @@ class ScheduleStore {
   }
 
   @action async addSchedule(
-    replicaId: string,
+    transferId: string,
     schedule: Schedule
   ): Promise<void> {
     this.adding = true;
 
     try {
       const addedSchedule: Schedule = await Source.addSchedule(
-        replicaId,
+        transferId,
         schedule
       );
       runInAction(() => {
@@ -124,12 +124,12 @@ class ScheduleStore {
   }
 
   @action async removeSchedule(
-    replicaId: string,
+    transferId: string,
     scheduleId: string
   ): Promise<void> {
     this.deletingIds.push(scheduleId);
     try {
-      await Source.removeSchedule(replicaId, scheduleId);
+      await Source.removeSchedule(transferId, scheduleId);
       runInAction(() => {
         this.schedules = this.schedules.filter(s => s.id !== scheduleId);
         this.unsavedSchedules = this.unsavedSchedules.filter(
@@ -144,14 +144,14 @@ class ScheduleStore {
   }
 
   @action async updateSchedule(opts: {
-    replicaId: string;
+    transferId: string;
     scheduleId: string;
     data: Schedule;
     oldData?: Schedule | null;
     unsavedData?: Schedule | null;
     forceSave?: boolean;
   }): Promise<void> {
-    const { replicaId, scheduleId, data, oldData, unsavedData, forceSave } =
+    const { transferId: transferId, scheduleId, data, oldData, unsavedData, forceSave } =
       opts;
 
     if (!forceSave) {
@@ -176,7 +176,7 @@ class ScheduleStore {
     }
     try {
       const schedule: Schedule = await Source.updateSchedule({
-        replicaId,
+        transferId: transferId,
         scheduleId,
         scheduleData: data,
         scheduleOldData: oldData,

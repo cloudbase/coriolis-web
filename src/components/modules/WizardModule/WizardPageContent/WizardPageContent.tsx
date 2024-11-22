@@ -35,7 +35,7 @@ import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
 import InfoIcon from "@src/components/ui/InfoIcon";
 import LoadingButton from "@src/components/ui/LoadingButton";
-import { migrationFields, providerTypes, wizardPages } from "@src/constants";
+import { providerTypes, wizardPages } from "@src/constants";
 import endpointStore from "@src/stores/EndpointStore";
 import instanceStore from "@src/stores/InstanceStore";
 import minionPoolStore from "@src/stores/MinionPoolStore";
@@ -197,8 +197,8 @@ class WizardPageContent extends React.Component<Props, State> {
 
   getProvidersType(type: string) {
     return type === "source"
-      ? providerTypes.SOURCE_REPLICA
-      : providerTypes.TARGET_REPLICA;
+      ? providerTypes.SOURCE_TRANSFER
+      : providerTypes.TARGET_TRANSFER;
   }
 
   getProviders(direction: string): ProviderTypes[] {
@@ -524,7 +524,6 @@ class WizardPageContent extends React.Component<Props, State> {
               "title",
               "execute_now",
               "execute_now_options",
-              ...migrationFields.map(f => f.name),
             ]}
             selectedInstances={this.props.wizardData.selectedInstances}
             showSeparatePerVm={Boolean(

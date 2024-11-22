@@ -84,7 +84,7 @@ class DeploymentStore {
     updatedDefaultStorage:
       | { value: string | null; busType?: string | null }
       | undefined;
-    replicationCount: number | null | undefined;
+    // replicationCount: number | null | undefined;
   }): Promise<DeploymentItemDetails> {
     const {
       deployment,
@@ -93,7 +93,7 @@ class DeploymentStore {
       updateData,
       defaultStorage,
       updatedDefaultStorage,
-      replicationCount,
+      // replicationCount,
     } = opts;
     const deploymentResult = await DeploymentSource.recreate({
       sourceEndpoint,
@@ -111,7 +111,7 @@ class DeploymentStore {
       networkMappings: deployment.network_map,
       updatedNetworkMappings: updateData.network,
       defaultSkipOsMorphing: this.getDefaultSkipOsMorphing(deployment),
-      replicationCount,
+      // replicationCount,
       uploadedScripts: updateData.uploadedScripts,
       removedScripts: updateData.removedScripts,
     });
@@ -155,8 +155,8 @@ class DeploymentStore {
     });
   }
 
-  @action async deployReplica(opts: {
-    replicaId: string;
+  @action async deployTransfer(opts: {
+    transferId: string;
     fields: Field[];
     uploadedUserScripts: InstanceScript[];
     removedUserScripts: InstanceScript[];
@@ -164,15 +164,15 @@ class DeploymentStore {
     minionPoolMappings: { [instance: string]: string };
   }) {
     const {
-      replicaId,
+      transferId: transferId,
       fields: options,
       uploadedUserScripts,
       removedUserScripts,
       userScriptData,
       minionPoolMappings,
     } = opts;
-    const deployment = await DeploymentSource.deployReplica({
-      replicaId,
+    const deployment = await DeploymentSource.deployTransfer({
+      transferId: transferId,
       options,
       uploadedUserScripts,
       removedUserScripts,

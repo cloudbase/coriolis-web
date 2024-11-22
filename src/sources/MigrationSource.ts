@@ -25,7 +25,7 @@ import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin
 import Api from "@src/utils/ApiCaller";
 import configLoader from "@src/utils/Config";
 
-import { sortTasks } from "./ReplicaSource";
+import { sortTasks } from "./TransferSource";
 
 import type { InstanceScript } from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";

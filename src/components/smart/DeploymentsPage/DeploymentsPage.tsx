@@ -29,7 +29,7 @@ import notificationStore from "@src/stores/NotificationStore";
 import configLoader from "@src/utils/Config";
 
 import { ThemePalette } from "@src/components/Theme";
-import replicaDeploymentFields from "@src/components/modules/TransferModule/ReplicaDeploymentOptions/replicaDeploymentFields";
+import deploymentFields from "@src/components/modules/TransferModule/DeploymentOptions/DeploymentFields";
 import { DeploymentItem } from "@src/@types/MainItem";
 import userStore from "@src/stores/UserStore";
 import TransferListItem from "@src/components/modules/TransferModule/TransferListItem";
@@ -98,14 +98,14 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
     return deployment ? deployment.last_execution_status : "";
   }
 
-  getDeploymentReplicaType(deploymentId: string): string {
+  getDeploymentType(deploymentId: string): string {
     const deployment = deploymentStore.deployments.find(m => m.id === deploymentId);
-    return deployment ? deployment.replica_scenario_type : "";
+    return deployment ? deployment.transfer_scenario : "";
   }
 
   getDeploymentItemImage(item: DeploymentItem): string {
     let image = replicaDeploymentItemImage;
-    if (item.replica_scenario_type === "live_migration") {
+    if (item.transfer_scenario === "live_migration") {
       image = liveMigrationDeploymentItemImage;
     }
     return image;
@@ -155,10 +155,10 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
 
     await Promise.all(
       this.state.selectedDeployments.map(async deployment => {
-        if (deployment.replica_id) {
-          await deploymentStore.deployReplica({
-            replicaId: deployment.replica_id,
-            fields: replicaDeploymentFields,
+        if (deployment.transfer_id) {
+          await deploymentStore.deployTransfer({
+            transferId: deployment.transfer_id,
+            fields: deploymentFields,
             uploadedUserScripts: [],
             removedUserScripts: [],
             userScriptData: deployment.user_scripts,
@@ -372,7 +372,7 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
             isOpen
             title="Recreate Selected Deployments?"
             message="Are you sure you want to recreate the selected deployments?"
-            extraMessage="Deployments created from replicas will be recreated using default options and regular deployments will be recreated using their original source and destination environment options."
+            extraMessage="Deployments will be recreated using current transfer source and destination options."
             onConfirmation={() => {
               this.recreateDeployments();
             }}

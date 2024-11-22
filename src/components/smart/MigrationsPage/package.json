@@ -1,6 +1,0 @@
-{
-  "name": "MigrationsPage",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./MigrationsPage.tsx"
-}

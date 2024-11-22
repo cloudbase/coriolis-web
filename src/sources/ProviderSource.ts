@@ -54,8 +54,8 @@ class ProviderSource {
     } = opts;
     const schemaTypeInt =
       optionsType === "source"
-        ? providerTypes.SOURCE_REPLICA
-        : providerTypes.TARGET_REPLICA;
+        ? providerTypes.SOURCE_TRANSFER
+        : providerTypes.TARGET_TRANSFER;
 
     try {
       const response = await Api.send({

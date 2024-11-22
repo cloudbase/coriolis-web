@@ -24,7 +24,6 @@ import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/module
 import { getDisks } from "@src/components/modules/WizardModule/WizardStorage";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
-import { migrationFields } from "@src/constants";
 import configLoader from "@src/utils/Config";
 import DateUtils from "@src/utils/DateUtils";
 import LabelDictionary from "@src/utils/LabelDictionary";
@@ -448,25 +447,6 @@ class WizardSummary extends React.Component<Props> {
       </Option>
     );
 
-    // const migrationOptions = [
-    //   <Option key="shutdown">
-    //     <OptionLabel>Shutdown Instances</OptionLabel>
-    //     <OptionValue>
-    //       {this.getDefaultBooleanOption("shutdown_instances", false)
-    //         ? "Yes"
-    //         : "No"}
-    //     </OptionValue>
-    //   </Option>,
-    //   <Option key="count">
-    //     <OptionLabel>Replication Count</OptionLabel>
-    //     <OptionValue>
-    //       {(this.props.data.destOptions &&
-    //         this.props.data.destOptions.replication_count) ||
-    //         2}
-    //     </OptionValue>
-    //   </Option>,
-    // ];
-
     const renderDefaultStorageOption = () => (
       <Option>
         <OptionLabel>Default Storage</OptionLabel>
@@ -498,7 +478,6 @@ class WizardSummary extends React.Component<Props> {
                 if (
                   optionName === "execute_now" ||
                   optionName === "separate_vm" ||
-                  migrationFields.find(f => f.name === optionName) ||
                   !data.destOptions ||
                   data.destOptions[optionName] == null ||
                   data.destOptions[optionName] === "" ||

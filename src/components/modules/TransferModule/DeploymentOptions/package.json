@@ -1,0 +1,6 @@
+{
+  "name": "DeploymentOptions",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./DeploymentOptions.tsx"
+}

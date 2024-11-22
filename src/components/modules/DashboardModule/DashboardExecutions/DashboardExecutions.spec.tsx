@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { DateTime } from "luxon";
 import React from "react";
 
-import { MigrationItem, ReplicaItem } from "@src/@types/MainItem";
+import { MigrationItem, TransferItem } from "@src/@types/MainItem";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TestUtils from "@tests/TestUtils";
@@ -23,7 +23,7 @@ import TestUtils from "@tests/TestUtils";
 import DashboardExecutions from "./DashboardExecutions";
 
 type BuildType<T extends "replica" | "migration"> = T extends "replica"
-  ? ReplicaItem
+  ? TransferItem
   : MigrationItem;
 
 const buildItem = <T extends "replica" | "migration">(

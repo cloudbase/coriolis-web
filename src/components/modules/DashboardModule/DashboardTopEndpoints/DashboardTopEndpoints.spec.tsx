@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 
 import { Endpoint } from "@src/@types/Endpoint";
-import { MigrationItem, ReplicaItem } from "@src/@types/MainItem";
+import { MigrationItem, TransferItem } from "@src/@types/MainItem";
 import { fireEvent, render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 
@@ -24,7 +24,7 @@ import DashboardTopEndpoints from "./DashboardTopEndpoints";
 jest.mock("react-router-dom", () => ({ Link: "a" }));
 
 type BuildType<T extends "replica" | "migration"> = T extends "replica"
-  ? ReplicaItem
+  ? TransferItem
   : MigrationItem;
 
 const buildItem = <T extends "replica" | "migration">(
@@ -64,7 +64,7 @@ const buildEndpoint = (id: string): Endpoint => ({
   connection_info: {},
 });
 
-const replicas: DashboardTopEndpoints["props"]["replicas"] = [
+const replicas: DashboardTopEndpoints["props"]["transfers"] = [
   buildItem("replica", "a", "b"),
   buildItem("replica", "a", "b"),
   buildItem("replica", "c", "d"),
@@ -86,7 +86,7 @@ const endpoints: DashboardTopEndpoints["props"]["endpoints"] = [
 
 describe("DashboardTopEndpoints", () => {
   const defaultProps: DashboardTopEndpoints["props"] = {
-    replicas,
+    transfers: replicas,
     migrations,
     endpoints,
     style: {},
@@ -98,7 +98,7 @@ describe("DashboardTopEndpoints", () => {
     render(
       <DashboardTopEndpoints
         {...defaultProps}
-        replicas={[]}
+        transfers={[]}
         migrations={[]}
         endpoints={[]}
         loading={true}
@@ -111,7 +111,7 @@ describe("DashboardTopEndpoints", () => {
     render(
       <DashboardTopEndpoints
         {...defaultProps}
-        replicas={[]}
+        transfers={[]}
         migrations={[]}
         endpoints={[]}
       />
@@ -125,7 +125,7 @@ describe("DashboardTopEndpoints", () => {
       <DashboardTopEndpoints
         {...defaultProps}
         onNewClick={onNewClickMock}
-        replicas={[]}
+        transfers={[]}
         migrations={[]}
         endpoints={[]}
       />

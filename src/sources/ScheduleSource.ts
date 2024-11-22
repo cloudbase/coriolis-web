@@ -19,7 +19,7 @@ import DateUtils from "@src/utils/DateUtils";
 import type { Schedule } from "@src/@types/Schedule";
 class ScheduleSource {
   async scheduleSinge(
-    replicaId: string,
+    transferId: string,
     scheduleData: Schedule
   ): Promise<Schedule> {
     const payload: any = {
@@ -51,7 +51,7 @@ class ScheduleSource {
     }
 
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/schedules`,
       method: "POST",
       data: payload,
     });
@@ -59,13 +59,13 @@ class ScheduleSource {
   }
 
   async scheduleMultiple(
-    replicaId: string,
+    transferId: string,
     schedules: Schedule[]
   ): Promise<Schedule[]> {
     const scheduledSchedules: Schedule[] = await Promise.all(
       schedules.map(async schedule => {
         const scheduledSchedule: Schedule = await this.scheduleSinge(
-          replicaId,
+          transferId,
           schedule
         );
         return scheduledSchedule;
@@ -75,11 +75,11 @@ class ScheduleSource {
   }
 
   async getSchedules(
-    replicaId: string,
+    transferId: string,
     opts?: { skipLog?: boolean }
   ): Promise<Schedule[]> {
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/schedules`,
       skipLog: opts && opts.skipLog,
     });
 
@@ -98,7 +98,7 @@ class ScheduleSource {
     return schedules;
   }
 
-  async addSchedule(replicaId: string, schedule: Schedule): Promise<Schedule> {
+  async addSchedule(transferId: string, schedule: Schedule): Promise<Schedule> {
     const payload: any = {
       schedule: { hour: 0, minute: 0 },
       enabled: false,
@@ -108,29 +108,29 @@ class ScheduleSource {
     }
 
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/schedules`,
       method: "POST",
       data: payload,
     });
     return response.data.schedule;
   }
 
-  async removeSchedule(replicaId: string, scheduleId: string): Promise<void> {
+  async removeSchedule(transferId: string, scheduleId: string): Promise<void> {
     await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/schedules/${scheduleId}`,
       method: "DELETE",
     });
   }
 
   async updateSchedule(opts: {
-    replicaId: string;
+    transferId: string;
     scheduleId: string;
     scheduleData: Schedule;
     scheduleOldData: Schedule | null | undefined;
     unsavedData: Schedule | null | undefined;
   }): Promise<Schedule> {
     const {
-      replicaId,
+      transferId: transferId,
       scheduleId,
       scheduleData,
       scheduleOldData,
@@ -167,7 +167,7 @@ class ScheduleSource {
     }
 
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/replicas/${replicaId}/schedules/${scheduleId}`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/schedules/${scheduleId}`,
       method: "PUT",
       data: payload,
     });

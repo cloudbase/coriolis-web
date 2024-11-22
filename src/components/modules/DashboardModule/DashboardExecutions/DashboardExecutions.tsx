@@ -17,7 +17,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import styled from "styled-components";
 
-import { MigrationItem, ReplicaItem, TransferItem } from "@src/@types/MainItem";
+import { TransferItem, ActionItem } from "@src/@types/MainItem";
 import DashboardBarChart from "@src/components/modules/DashboardModule/DashboardBarChart";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
@@ -129,8 +129,8 @@ const EmptyBackgroundImage = styled.div<any>`
 
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
-  replicas: ReplicaItem[];
-  migrations: ReplicaItem[];
+  replicas: TransferItem[];
+  migrations: TransferItem[];
   loading: boolean;
 };
 type GroupedData = {
@@ -169,7 +169,7 @@ class DashboardExecutions extends React.Component<Props, State> {
   }
 
   groupCreations(props: Props) {
-    let creations: ReplicaItem[] = [...props.replicas, ...props.migrations];
+    let creations: TransferItem[] = [...props.replicas, ...props.migrations];
 
     const periodUnit: any = this.state.selectedPeriod.split("-")[1];
     const periodValue: any = Number(this.state.selectedPeriod.split("-")[0]);
@@ -187,7 +187,7 @@ class DashboardExecutions extends React.Component<Props, State> {
     this.groupByPeriod(creations, periodUnit);
   }
 
-  groupByPeriod(transferItems: ReplicaItem[], periodUnit: string) {
+  groupByPeriod(transferItems: TransferItem[], periodUnit: string) {
     const groupedData: GroupedData[] = [];
     const periods: {
       [period: string]: { replicas: number; migrations: number };
