@@ -22,7 +22,6 @@ export default {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
     "**/*.tsx", // Include all .tsx files
-    "!**/AssessmentModule/**", // Exclude files within the AssessmentModule directory (this is a module that is not used in the app)
     "!**/story.tsx", // Exclude all storybook files
     "!**/test.tsx", // Exclude old test files
     "!**/plugins/**", // Exclude files within the plugins directory

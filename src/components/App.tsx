@@ -29,8 +29,6 @@ import DeploymentDetailsPage from "@src/components/smart/DeploymentDetailsPage";
 import MetalHubServersPage from "@src/components/smart/MetalHubServersPage";
 import EndpointsPage from "@src/components/smart/EndpointsPage";
 import EndpointDetailsPage from "@src/components/smart/EndpointDetailsPage";
-import AssessmentsPage from "@src/components/smart/AssessmentsPage";
-import AssessmentDetailsPage from "@src/components/smart/AssessmentDetailsPage";
 import UsersPage from "@src/components/smart/UsersPage";
 import UserDetailsPage from "@src/components/smart/UserDetailsPage";
 import ProjectsPage from "@src/components/smart/ProjectsPage";
@@ -225,15 +223,6 @@ class App extends React.Component<Record<string, unknown>, State> {
             {renderRoute("/bare-metal-servers", MetalHubServersPage, true)}
             {renderRoute("/bare-metal-servers/:id", MetalHubServerDetailsPage)}
             {renderRoute("/wizard/:type", WizardPage)}
-            {renderOptionalRoute({
-              name: "planning",
-              component: AssessmentsPage,
-            })}
-            {renderOptionalRoute({
-              name: "planning",
-              component: AssessmentDetailsPage,
-              path: "/assessment/:info",
-            })}
             {renderOptionalRoute({
               name: "users",
               component: UsersPage,
