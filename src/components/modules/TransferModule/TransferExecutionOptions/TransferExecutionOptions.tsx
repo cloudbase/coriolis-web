@@ -131,7 +131,7 @@ class TransferExecutionOptions extends React.Component<Props, State> {
               description={
                 this.props.disableExecutionOptions
                   ? "The execution options are disabled for the source provider"
-                  : ""
+                  : LabelDictionary.getDescription(field.name)
               }
             />
           ))}

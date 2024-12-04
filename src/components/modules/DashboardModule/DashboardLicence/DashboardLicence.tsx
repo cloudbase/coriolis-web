@@ -277,7 +277,7 @@ class DashboardLicence extends React.Component<Props> {
     return (
       <LicenceError>
         <p>
-          Please contact Cloudbase Solutions with your Appliance ID in order to
+          Please contact your Coriolis representative with the Appliance ID in order to
           obtain a Coriolis® licence.
         </p>
         <ApplianceIdWrapper>
