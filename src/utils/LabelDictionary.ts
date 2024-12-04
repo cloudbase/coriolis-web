@@ -69,7 +69,7 @@ const dictionary = {
   storage_endpoint: "Storage Endpoint Suffix",
   preserve_nic_ips: "Preserve NIC IPs",
   openstack_use_current_user:
-    "Use Current User/Project/Domain for Authentification",
+    "Use Current User/Project/Domain for Authentication",
   windows_os_image: "Windows OS",
   linux_os_image: "Linux OS",
   skip_os_morphing: {
@@ -87,6 +87,10 @@ const dictionary = {
     description: `Whether or not Coriolis should clone the Transfer disks on the destination platforms before optionally performing the OSMorphing process and booting the final VM.
     Skipping disk cloning leads to a shorter deployment time, but means that the Transfer disks will be allocated to the new VM, and thus the next Transfer Execution will have to sync the disks from scratch.`,
   },
+  shutdown_instances: {
+    label: "Shutdown Instance(s)",
+    description: "This option can be used before completing the Deployment on the target cloud. After the source instance(s) shutdown, a last snapshot will be executed, in order to transfer the last bits of data to the target cloud, and the source instance(s) will be left stopped."
+  }
 };
 
 const cache: {

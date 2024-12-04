@@ -299,7 +299,7 @@ class LicenceModule extends React.Component<Props, State> {
     if (
       new Date(info.earliestLicenceExpiryDate).getTime() < new Date().getTime()
     ) {
-      return "Please contact Cloudbase Solutions with your Appliance ID in order to obtain a Coriolis® licence";
+      return "Please contact your Coriolis representative with the Appliance ID in order to obtain a Coriolis® licence";
     }
     return (
       <LicenceRowDescription>
@@ -346,7 +346,7 @@ class LicenceModule extends React.Component<Props, State> {
         </LicenceRow>
         <LicenceRow>
           <OutsideLink href={LEGAL_URLS.eula} target="_blank">
-            Read Coriolis© EULA
+            Read the Coriolis© EULA
             <OpenInNewIconWrapper
               dangerouslySetInnerHTML={{
                 __html: OpenInNewIcon(ThemePalette.primary),
