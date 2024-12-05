@@ -44,8 +44,6 @@ import { TransferItem } from "@src/@types/MainItem";
 import userStore from "@src/stores/UserStore";
 import TransferListItem from "@src/components/modules/TransferModule/TransferListItem";
 import replicaLargeImage from "./images/replica-large.svg";
-import replicaItemImage from "./images/replica.svg";
-import liveMigrationItemImage from "./images/live-migration.svg";
 
 const Wrapper = styled.div<any>``;
 
@@ -118,14 +116,6 @@ class TransfersPage extends React.Component<{ history: any }, State> {
   getStatus(transfer?: TransferItem | null): string {
     return transfer?.last_execution_status || "";
   }
-
-  getTransferItemImage(item: TransferItem): string {
-    let image = replicaItemImage;
-    if (item.scenario === "live_migration") {
-      image = liveMigrationItemImage;
-    }
-    return image;
- }
 
   handleProjectChange() {
     transferStore.getTransfers();
@@ -450,9 +440,6 @@ class TransfersPage extends React.Component<{ history: any }, State> {
               renderItemComponent={options => (
                 <TransferListItem
                   {...options}
-                  getListItemImage={item => {
-                    return this.getTransferItemImage(item);
-                  }}
                   showScheduleIcon={this.isTransferScheduled(options.item.id)}
                   endpointType={id => {
                     const endpoint = this.getEndpoint(id);
