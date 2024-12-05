@@ -110,7 +110,7 @@ export type UserScriptData = {
 export type DeploymentItem = BaseItem & {
   type: "deployment";
   transfer_id: string;
-  transfer_scenario: string;
+  transfer_scenario_type: string;
 };
 
 export type DeploymentItemOptions = DeploymentItem & {

@@ -34,8 +34,6 @@ import { DeploymentItem } from "@src/@types/MainItem";
 import userStore from "@src/stores/UserStore";
 import TransferListItem from "@src/components/modules/TransferModule/TransferListItem";
 import deploymentLargeImage from "./images/deployment-large.svg";
-import replicaDeploymentItemImage from "./images/replica-deployment.svg";
-import liveMigrationDeploymentItemImage from "./images/live-migration-deployment.svg"
 
 const Wrapper = styled.div<any>``;
 
@@ -100,16 +98,8 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
 
   getDeploymentType(deploymentId: string): string {
     const deployment = deploymentStore.deployments.find(m => m.id === deploymentId);
-    return deployment ? deployment.transfer_scenario : "";
+    return deployment ? deployment.transfer_scenario_type : "";
   }
-
-  getDeploymentItemImage(item: DeploymentItem): string {
-    let image = replicaDeploymentItemImage;
-    if (item.transfer_scenario === "live_migration") {
-      image = liveMigrationDeploymentItemImage;
-    }
-    return image;
- }
 
   handleProjectChange() {
     endpointStore.getEndpoints({ showLoading: true });
@@ -300,9 +290,6 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
               renderItemComponent={options => (
                 <TransferListItem
                   {...options}
-                  getListItemImage={item => {
-                    return this.getDeploymentItemImage(item);
-                  }}
                   endpointType={id => {
                     const endpoint = this.getEndpoint(id);
                     if (endpoint) {

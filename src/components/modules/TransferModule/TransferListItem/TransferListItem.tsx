@@ -25,6 +25,8 @@ import DateUtils from "@src/utils/DateUtils";
 
 import arrowImage from "./images/arrow.svg";
 import scheduleImage from "./images/schedule.svg";
+import replicaItemImage from "./images/replica.svg";
+import liveMigrationItemImage from "./images/live-migration.svg";
 
 const CheckboxStyled = styled(Checkbox)`
   opacity: ${props => (props.checked ? 1 : 0)};
@@ -109,7 +111,6 @@ type Props = {
   item: ActionItem;
   onClick: () => void;
   selected: boolean;
-  getListItemImage: (item: ActionItem) => string;
   showScheduleIcon?: boolean;
   endpointType: (endpointId: string) => string;
   getUserName: (userId: string) => string | undefined;
@@ -129,11 +130,20 @@ class TransferListItem extends React.Component<Props> {
         scenario = this.props.item.scenario;
         break;
       case "deployment":
-        scenario = this.props.item.transfer_scenario;
+        scenario = this.props.item.transfer_scenario_type;
         break;
       default:
     }
     return scenario;
+  }
+
+  getListItemImage(): string {
+    let scenario = this.getTransferScenarioType();
+    let image = replicaItemImage;
+    if (scenario === "live_migration") {
+      image = liveMigrationItemImage;
+    }
+    return image;
   }
 
   renderCreationDate() {
@@ -210,7 +220,7 @@ class TransferListItem extends React.Component<Props> {
           onChange={this.props.onSelectedChange}
         />
         <Content onClick={this.props.onClick}>
-          <Image image={this.props.getListItemImage(this.props.item)} />
+          <Image image={this.getListItemImage()} />
           <Title>
             <TitleLabel>{getTransferItemTitle(this.props.item)}</TitleLabel>
             <StatusWrapper>
