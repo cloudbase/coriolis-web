@@ -17,7 +17,7 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import styled from "styled-components";
 
-import { TransferItem, ActionItem } from "@src/@types/MainItem";
+import { TransferItem } from "@src/@types/MainItem";
 import DashboardBarChart from "@src/components/modules/DashboardModule/DashboardBarChart";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";

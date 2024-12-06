@@ -17,7 +17,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { OPENSTACK_ENDPOINT_MOCK } from "@tests/mocks/EndpointsMock";
 import { MINION_POOL_DETAILS_MOCK } from "@tests/mocks/MinionPoolMock";
-import { REPLICA_MOCK } from "@tests/mocks/TransferMock";
+import { TRANSFER_MOCK } from "@tests/mocks/TransferMock";
 import TestUtils from "@tests/TestUtils";
 
 import MinionPoolDetailsContent from "./MinionPoolDetailsContent";
@@ -44,8 +44,8 @@ describe("MinionPoolDetailsContent", () => {
     defaultProps = {
       item: MINION_POOL_DETAILS_MOCK,
       itemId: "minion-pool-id",
-      transfers: [REPLICA_MOCK],
-      migrations: [],
+      transfers: [TRANSFER_MOCK],
+      deployments: [],
       endpoints: [OPENSTACK_ENDPOINT_MOCK],
       schema: [
         {

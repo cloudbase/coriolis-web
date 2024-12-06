@@ -17,16 +17,15 @@ import React from "react";
 import { render } from "@testing-library/react";
 
 import TransferListItem from ".";
-import { REPLICA_MOCK } from "@tests/mocks/TransferMock";
+import { TRANSFER_MOCK } from "@tests/mocks/TransferMock";
 
 describe("TransferListItem", () => {
   let defaultProps: TransferListItem["props"];
 
   beforeEach(() => {
     defaultProps = {
-      item: REPLICA_MOCK,
+      item: TRANSFER_MOCK,
       selected: false,
-      image: "image",
       userNameLoading: false,
       onSelectedChange: jest.fn(),
       endpointType: jest.fn(),
@@ -37,6 +36,6 @@ describe("TransferListItem", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(<TransferListItem {...defaultProps} />);
-    expect(getByText(REPLICA_MOCK.notes!)).toBeTruthy();
+    expect(getByText(TRANSFER_MOCK.notes!)).toBeTruthy();
   });
 });

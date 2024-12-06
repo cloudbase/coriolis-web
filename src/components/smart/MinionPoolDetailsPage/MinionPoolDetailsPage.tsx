@@ -355,11 +355,15 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     ];
 
     const checkPoolUsed = (i: ActionItem): Boolean|undefined => {
-      return i.origin_minion_pool_id === this.minionPool?.id
-        || i.destination_minion_pool_id === this.minionPool?.id
-        || (i.instance_osmorphing_minion_pool_mappings
-            && Object.values(i.instance_osmorphing_minion_pool_mappings).includes(
-              this.minionPool?.id));
+      return (
+        i.origin_minion_pool_id === this.minionPool?.id ||
+        i.destination_minion_pool_id === this.minionPool?.id ||
+        (i.instance_osmorphing_minion_pool_mappings &&
+          this.minionPool?.id &&
+          Object.values(i.instance_osmorphing_minion_pool_mappings).includes(
+            this.minionPool.id
+          ))
+      ) || undefined;
     }
 
     return (

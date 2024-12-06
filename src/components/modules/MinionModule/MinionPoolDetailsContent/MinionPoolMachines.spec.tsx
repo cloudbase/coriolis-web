@@ -16,7 +16,7 @@ import React from "react";
 
 import { render } from "@testing-library/react";
 import { MINION_POOL_MOCK } from "@tests/mocks/MinionPoolMock";
-import { MIGRATION_MOCK, REPLICA_MOCK } from "@tests/mocks/TransferMock";
+import { DEPLOYMENT_MOCK, TRANSFER_MOCK } from "@tests/mocks/TransferMock";
 import TestUtils from "@tests/TestUtils";
 
 import MinionPoolMachines from "./MinionPoolMachines";
@@ -29,8 +29,8 @@ describe("MinionPoolMachines", () => {
   beforeEach(() => {
     defaultProps = {
       item: MINION_POOL_MOCK,
-      transfers: [REPLICA_MOCK],
-      migrations: [MIGRATION_MOCK],
+      transfers: [TRANSFER_MOCK],
+      deployments: [DEPLOYMENT_MOCK],
     };
   });
 

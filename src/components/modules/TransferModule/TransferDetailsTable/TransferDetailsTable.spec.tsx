@@ -19,7 +19,7 @@ import { INSTANCE_MOCK } from "@tests/mocks/InstancesMock";
 import { MINION_POOL_MOCK } from "@tests/mocks/MinionPoolMock";
 import { NETWORK_MOCK } from "@tests/mocks/NetworksMock";
 import { STORAGE_BACKEND_MOCK } from "@tests/mocks/StoragesMock";
-import { REPLICA_MOCK } from "@tests/mocks/TransferMock";
+import { TRANSFER_MOCK } from "@tests/mocks/TransferMock";
 import TestUtils from "@tests/TestUtils";
 
 import TransferDetailsTable from "./";
@@ -29,7 +29,7 @@ describe("TransferDetailsTable", () => {
 
   beforeEach(() => {
     defaultProps = {
-      item: REPLICA_MOCK,
+      item: TRANSFER_MOCK,
       instancesDetails: [INSTANCE_MOCK],
       networks: [NETWORK_MOCK],
       minionPools: [MINION_POOL_MOCK],
@@ -48,7 +48,7 @@ describe("TransferDetailsTable", () => {
       <TransferDetailsTable
         {...defaultProps}
         item={{
-          ...REPLICA_MOCK,
+          ...TRANSFER_MOCK,
           transfer_result: null,
         }}
         instancesDetails={[

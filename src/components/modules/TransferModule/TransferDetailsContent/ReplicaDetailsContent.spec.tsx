@@ -29,7 +29,7 @@ import { INSTANCE_MOCK } from "@tests/mocks/InstancesMock";
 import { MINION_POOL_MOCK } from "@tests/mocks/MinionPoolMock";
 import { NETWORK_MOCK } from "@tests/mocks/NetworksMock";
 import { STORAGE_BACKEND_MOCK } from "@tests/mocks/StoragesMock";
-import { REPLICA_ITEM_DETAILS_MOCK } from "@tests/mocks/TransferMock";
+import { TRANSFER_ITEM_DETAILS_MOCK } from "@tests/mocks/TransferMock";
 
 import ReplicaDetailsContent from ".";
 
@@ -69,8 +69,8 @@ describe("ReplicaDetailsContent", () => {
 
   beforeEach(() => {
     defaultProps = {
-      item: REPLICA_ITEM_DETAILS_MOCK,
-      itemId: REPLICA_ITEM_DETAILS_MOCK.id,
+      item: TRANSFER_ITEM_DETAILS_MOCK,
+      itemId: TRANSFER_ITEM_DETAILS_MOCK.id,
       endpoints: [OPENSTACK_ENDPOINT_MOCK, VMWARE_ENDPOINT_MOCK],
       sourceSchema: [],
       sourceSchemaLoading: false,
@@ -93,7 +93,7 @@ describe("ReplicaDetailsContent", () => {
       onDeleteExecutionClick: jest.fn(),
       onExecuteClick: jest.fn(),
       onCreateDeploymentClick: jest.fn(),
-      onDeleteReplicaClick: jest.fn(),
+      onDeleteTransferClick: jest.fn(),
       onAddScheduleClick: jest.fn(),
       onScheduleChange: jest.fn(),
       onScheduleRemove: jest.fn(),
@@ -103,7 +103,7 @@ describe("ReplicaDetailsContent", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(<ReplicaDetailsContent {...defaultProps} />);
-    expect(getByText(REPLICA_ITEM_DETAILS_MOCK.id)).toBeTruthy();
+    expect(getByText(TRANSFER_ITEM_DETAILS_MOCK.id)).toBeTruthy();
   });
 
   it("renders executions page", () => {

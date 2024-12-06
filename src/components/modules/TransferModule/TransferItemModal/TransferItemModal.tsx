@@ -39,7 +39,6 @@ import WizardStorage from "@src/components/modules/WizardModule/WizardStorage";
 import type {
   UpdateData,
   ActionItemDetails,
-  DeploymentItemDetails,
 } from "@src/@types/MainItem";
 import {
   Endpoint,

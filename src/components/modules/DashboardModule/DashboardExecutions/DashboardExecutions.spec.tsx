@@ -15,24 +15,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { DateTime } from "luxon";
 import React from "react";
 
-import { MigrationItem, TransferItem } from "@src/@types/MainItem";
+import { TransferItem } from "@src/@types/MainItem";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TestUtils from "@tests/TestUtils";
 
 import DashboardExecutions from "./DashboardExecutions";
 
-type BuildType<T extends "replica" | "migration"> = T extends "replica"
-  ? TransferItem
-  : MigrationItem;
-
-const buildItem = <T extends "replica" | "migration">(
-  type: T,
+const transferItem = (
+  scenario: string,
   date: string
-): BuildType<T> => {
-  const item = {
+): TransferItem => {
+  return {
     id: "",
-    type,
+    type: "transfer",
     name: "",
     created_at: date,
     updated_at: date,
@@ -48,19 +44,19 @@ const buildItem = <T extends "replica" | "migration">(
     transfer_result: null,
     last_execution_status: "",
     user_id: "",
+    scenario,
   };
-  return item as BuildType<T>;
 };
 const now = DateTime.utc();
 const TWENTIETH = DateTime.utc(now.year, now.month, 20, 10, 0);
 const replicas: DashboardExecutions["props"]["replicas"] = [
-  buildItem("replica", TWENTIETH.minus({ days: 5 }).toISO()!),
-  buildItem("replica", TWENTIETH.toISO()!),
+  transferItem("replica", TWENTIETH.minus({ days: 5 }).toISO()!),
+  transferItem("replica", TWENTIETH.toISO()!),
 ];
 
 const migrations: DashboardExecutions["props"]["migrations"] = [
-  buildItem("migration", TWENTIETH.toISO()!),
-  buildItem("migration", TWENTIETH.minus({ months: 2 }).toISO()!),
+  transferItem("migration", TWENTIETH.toISO()!),
+  transferItem("migration", TWENTIETH.minus({ months: 2 }).toISO()!),
 ];
 
 describe("DashboardExecutions", () => {

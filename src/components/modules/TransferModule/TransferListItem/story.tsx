@@ -36,7 +36,6 @@ storiesOf("MainListItem", module)
       item={item}
       endpointType={endpointType}
       selected={false}
-      image="image"
       onSelectedChange={() => {}}
       onClick={() => {}}
       getUserName={id => id}
@@ -48,7 +47,6 @@ storiesOf("MainListItem", module)
       item={item2}
       endpointType={endpointType}
       selected={false}
-      image="image"
       onSelectedChange={() => {}}
       onClick={() => {}}
       getUserName={id => id}

@@ -196,6 +196,7 @@ class DashboardContent extends React.Component<Props, State> {
       {
         label: "Migrations",
         value: this.getLiveMigrations().length,
+        color: ThemePalette.primary,
         link: "/transfers",
         loading: this.props.transfersLoading,
       },
