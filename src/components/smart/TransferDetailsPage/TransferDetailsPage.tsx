@@ -20,7 +20,7 @@ import { getTransferItemTitle, TransferItemDetails } from "@src/@types/MainItem"
 import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
-import DeleteTransferModal from "@src/components/modules/TransferModule/DeleteTransferModal/DeleteTransferModal";
+import DeleteTransferModal from "@src/components/modules/TransferModule/DeleteTransferModal";
 import TransferDetailsContent from "@src/components/modules/TransferModule/TransferDetailsContent";
 import TransferExecutionOptions from "@src/components/modules/TransferModule/TransferExecutionOptions";
 import DeploymentOptions from "@src/components/modules/TransferModule/DeploymentOptions";
@@ -210,7 +210,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
 
   getTransferItemType(): string {
     let item_type = "replica";
-    let scenario = this.transfer?.scenario;
+    const scenario = this.transfer?.scenario;
     if (scenario && scenario === "live_migration") {
       item_type = "migration";
     }
@@ -219,7 +219,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
 
   getTransferTypePillShouldRed(): boolean {
     let should_red = true;
-    let scenario = this.transfer?.scenario;
+    const scenario = this.transfer?.scenario;
     if (scenario && scenario === "live_migration") {
       should_red = false;
     }
@@ -228,7 +228,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
 
   getTransferScenarioTypeImage(): string {
     let image = replicaImage;
-    let scenario = this.transfer?.scenario;
+    const scenario = this.transfer?.scenario;
     if (scenario && scenario === "live_migration") {
       image = liveMigrationImage;
     }

@@ -24,7 +24,7 @@ import AlertModal from "@src/components/ui/AlertModal";
 import Modal from "@src/components/ui/Modal";
 import TransferExecutionOptions from "@src/components/modules/TransferModule/TransferExecutionOptions";
 import DeploymentOptions from "@src/components/modules/TransferModule/DeploymentOptions";
-import DeleteTransferModal from "@src/components/modules/TransferModule/DeleteTransferModal/DeleteTransferModal";
+import DeleteTransferModal from "@src/components/modules/TransferModule/DeleteTransferModal";
 
 import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
 import type { Field } from "@src/@types/Field";

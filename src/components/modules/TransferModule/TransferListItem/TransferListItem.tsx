@@ -138,7 +138,7 @@ class TransferListItem extends React.Component<Props> {
   }
 
   getListItemImage(): string {
-    let scenario = this.getTransferScenarioType();
+    const scenario = this.getTransferScenarioType();
     let image = replicaItemImage;
     if (scenario === "live_migration") {
       image = liveMigrationItemImage;

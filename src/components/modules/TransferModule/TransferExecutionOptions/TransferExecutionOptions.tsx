@@ -25,7 +25,7 @@ import { executionOptions } from "@src/constants";
 import type { Field } from "@src/@types/Field";
 
 import executionImage from "./images/execution.svg";
-import LoadingButton from "@src/components/ui/LoadingButton/LoadingButton";
+import LoadingButton from "@src/components/ui/LoadingButton";
 
 const Wrapper = styled.div<any>`
   display: flex;

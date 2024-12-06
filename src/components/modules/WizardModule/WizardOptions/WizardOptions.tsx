@@ -263,7 +263,7 @@ class WizardOptions extends React.Component<Props> {
   }
 
   getDefaultSimpleFieldsSchema() {
-    let fieldsSchema: Field[] = [];
+    const fieldsSchema: Field[] = [];
 
     if (this.props.minionPools.length) {
       fieldsSchema.push({
