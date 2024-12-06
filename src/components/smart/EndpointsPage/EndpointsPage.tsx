@@ -109,14 +109,14 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
     const replicasCount = transferStore.transfers.filter(
       r =>
         (r.origin_endpoint_id === endpointId ||
-         r.destination_endpoint_id === endpointId) &&
-         r.scenario === "replica"
+          r.destination_endpoint_id === endpointId) &&
+        r.scenario === "replica"
     ).length;
     const migrationsCount = transferStore.transfers.filter(
       r =>
         (r.origin_endpoint_id === endpointId ||
-         r.destination_endpoint_id === endpointId) &&
-         r.scenario === "live_migration"
+          r.destination_endpoint_id === endpointId) &&
+        r.scenario === "live_migration"
     ).length;
 
     return { migrationsCount, replicasCount };

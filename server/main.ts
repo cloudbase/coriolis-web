@@ -22,7 +22,7 @@ export default () => {
   const app = express();
 
   const PORT = Number(process.env.PORT) || 3000;
-  const BIND = process.env.BIND || '127.0.0.1'
+  const BIND = process.env.BIND || "127.0.0.1";
 
   app.use(express.static("dist"));
 

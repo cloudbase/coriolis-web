@@ -109,7 +109,9 @@ describe("DashboardLicence", () => {
     expect(TestUtils.select("DashboardLicence__LicenceError-")).toBeTruthy();
     expect(
       TestUtils.select("DashboardLicence__LicenceError-")?.textContent
-    ).toContain("Please contact Cloudbase Solutions with your Appliance ID");
+    ).toContain(
+      "Please contact your Coriolis representative with the Appliance ID"
+    );
     expect(
       TestUtils.select("DashboardLicence__ApplianceId-")?.textContent
     ).toBe("Appliance ID:test-id-licencev2");

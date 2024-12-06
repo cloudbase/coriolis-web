@@ -92,12 +92,16 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
   }
 
   getStatus(deploymentId: string): string {
-    const deployment = deploymentStore.deployments.find(m => m.id === deploymentId);
+    const deployment = deploymentStore.deployments.find(
+      m => m.id === deploymentId
+    );
     return deployment ? deployment.last_execution_status : "";
   }
 
   getDeploymentType(deploymentId: string): string {
-    const deployment = deploymentStore.deployments.find(m => m.id === deploymentId);
+    const deployment = deploymentStore.deployments.find(
+      m => m.id === deploymentId
+    );
     return deployment ? deployment.transfer_scenario_type : "";
   }
 

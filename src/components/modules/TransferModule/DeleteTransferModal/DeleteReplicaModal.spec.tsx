@@ -45,7 +45,11 @@ describe("DeleteReplicaModal", () => {
 
   it("is multiple replica selection with disks", () => {
     render(
-      <DeleteTransferModal {...defaultProps} hasDisks isMultiTransferSelection />
+      <DeleteTransferModal
+        {...defaultProps}
+        hasDisks
+        isMultiTransferSelection
+      />
     );
     expect(
       TestUtils.select("DeleteReplicaModal__ExtraMessage")?.textContent

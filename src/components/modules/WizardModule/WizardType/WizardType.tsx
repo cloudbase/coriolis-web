@@ -76,13 +76,15 @@ class WizardType extends React.Component<Props> {
           <Column alignRight width="50%">
             <Title>Coriolis Migration</Title>
             <Message selected={this.props.selected === "migration"}>
-              Coriolis Migrations allow for the incremental copying of
-              a virtual machine&apos;s data from the source environment to
-              disks in the target environment with zero downtime.
-              <br /><br />
-              Migrations can be synced (executed) any number of times,
-              but can be deployed in the target environment only once.
-              <br /><br />
+              Coriolis Migrations allow for the incremental copying of a virtual
+              machine&apos;s data from the source environment to disks in the
+              target environment with zero downtime.
+              <br />
+              <br />
+              Migrations can be synced (executed) any number of times, but can
+              be deployed in the target environment only once.
+              <br />
+              <br />
               Migrations are licenced one-time per each transferred VM.
             </Message>
           </Column>
@@ -96,14 +98,16 @@ class WizardType extends React.Component<Props> {
           <Column width="50%">
             <Title>Coriolis Replica</Title>
             <Message selected={this.props.selected === "replica"}>
-              Coriolis Replicas allow for the incremental copying of
-              a virtual machine&apos;s data from the source environment to
-              disks in the target environment with zero downtime.
-              <br /><br />
-              Replicas can be synced (executed) any number of times,
-              and can be deployed in the target environment any time a
-              disaster recovery procedure is desired.
-              <br /><br />
+              Coriolis Replicas allow for the incremental copying of a virtual
+              machine&apos;s data from the source environment to disks in the
+              target environment with zero downtime.
+              <br />
+              <br />
+              Replicas can be synced (executed) any number of times, and can be
+              deployed in the target environment any time a disaster recovery
+              procedure is desired.
+              <br />
+              <br />
               Replicas are licenced monthly per each replicated VM.
             </Message>
           </Column>

@@ -93,7 +93,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
       this.migrationImageMapFieldName
     );
     console.log("RHEV Migration image map computation: ");
-    console.log(migration_image_map_opt)
+    console.log(migration_image_map_opt);
     const env = {
       ...defaultGetDestinationEnv(options, oldOptions),
       ...migration_image_map_opt,

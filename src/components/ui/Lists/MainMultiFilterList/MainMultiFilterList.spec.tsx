@@ -77,9 +77,9 @@ describe("MainMultiFilterList", () => {
     expect(
       TestUtils.select("SearchInput__Wrapper")?.querySelector("input")?.value
     ).toBe("test");
-    expect(TestUtils.select("MainMultiFilterList__SelectionText")?.textContent).toBe(
-      "1 of 3\u00a0test item(s) selected"
-    );
+    expect(
+      TestUtils.select("MainMultiFilterList__SelectionText")?.textContent
+    ).toBe("1 of 3\u00a0test item(s) selected");
   });
 
   it("renders actions", () => {
@@ -98,14 +98,18 @@ describe("MainMultiFilterList", () => {
 
   it("fires filter item click", () => {
     const onFilterItemClick = jest.fn();
-    render(<MainMultiFilterListWrapper onFilterItemClick={onFilterItemClick} />);
+    render(
+      <MainMultiFilterListWrapper onFilterItemClick={onFilterItemClick} />
+    );
     TestUtils.selectAll("MainMultiFilterList__FilterItem-")[1].click();
     expect(onFilterItemClick).toHaveBeenCalledWith(FILTER_ITEMS[1]);
   });
 
   it("has select all change", () => {
     const onSelectAllChange = jest.fn();
-    render(<MainMultiFilterListWrapper onSelectAllChange={onSelectAllChange} />);
+    render(
+      <MainMultiFilterListWrapper onSelectAllChange={onSelectAllChange} />
+    );
 
     const checkbox = TestUtils.select("Checkbox__Wrapper")!;
     const style = () => window.getComputedStyle(checkbox);
@@ -123,7 +127,9 @@ describe("MainMultiFilterList", () => {
 
   it("fires reload button click", () => {
     const onReloadButtonClick = jest.fn();
-    render(<MainMultiFilterListWrapper onReloadButtonClick={onReloadButtonClick} />);
+    render(
+      <MainMultiFilterListWrapper onReloadButtonClick={onReloadButtonClick} />
+    );
     TestUtils.select("ReloadButton__Wrapper")!.click();
     expect(onReloadButtonClick).toHaveBeenCalled();
   });

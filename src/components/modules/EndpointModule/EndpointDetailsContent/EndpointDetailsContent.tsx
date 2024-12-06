@@ -18,10 +18,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { Field as FieldType } from "@src/@types/Field";
-import {
-  getTransferItemTitle,
-  TransferItem,
-} from "@src/@types/MainItem";
+import { getTransferItemTitle, TransferItem } from "@src/@types/MainItem";
 import { Region } from "@src/@types/Region";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
@@ -100,7 +97,7 @@ type Props = {
   regions: Region[];
   connectionInfo: Endpoint["connection_info"] | null;
   loading: boolean;
-  transfers: TransferItem[],
+  transfers: TransferItem[];
   connectionInfoSchema: FieldType[];
   onDeleteClick: () => void;
   onValidateClick: () => void;
@@ -289,7 +286,11 @@ class EndpointDetailsContent extends React.Component<Props> {
           </Field>
           <Field>
             <Label>Used in transfers ({this.props.transfers.length})</Label>
-            {this.props.transfers.length > 0 ? this.renderUsage(this.props.transfers) : <Value>-</Value>}
+            {this.props.transfers.length > 0 ? (
+              this.renderUsage(this.props.transfers)
+            ) : (
+              <Value>-</Value>
+            )}
           </Field>
           {!this.props.connectionInfo
             ? this.renderConnectionInfoLoading()

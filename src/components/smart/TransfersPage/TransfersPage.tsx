@@ -355,7 +355,9 @@ class TransfersPage extends React.Component<{ history: any }, State> {
     let atLeastOneHasExecuteEnabled = false;
     let atLeaseOneIsRunning = false;
     this.state.selectedTransfers.forEach(transfer => {
-      const storeTransfer = transferStore.transfers.find(r => r.id === transfer.id);
+      const storeTransfer = transferStore.transfers.find(
+        r => r.id === transfer.id
+      );
       atLeastOneHasExecuteEnabled =
         atLeastOneHasExecuteEnabled || this.isExecuteEnabled(storeTransfer);
       const status = this.getStatus(storeTransfer);

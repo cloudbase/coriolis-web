@@ -81,7 +81,9 @@ describe("ReplicaDeploymentOptions", () => {
   });
 
   it("renders without crashing", () => {
-    const { getByText } = render(<ReplicaDeploymentOptions {...defaultProps} />);
+    const { getByText } = render(
+      <ReplicaDeploymentOptions {...defaultProps} />
+    );
     expect(getByText("Deploy")).toBeTruthy();
   });
 
@@ -147,7 +149,9 @@ describe("ReplicaDeploymentOptions", () => {
   });
 
   it("handles migrate click", () => {
-    const { getByText } = render(<ReplicaDeploymentOptions {...defaultProps} />);
+    const { getByText } = render(
+      <ReplicaDeploymentOptions {...defaultProps} />
+    );
     fireEvent.click(getByText("Deploy"));
     expect(defaultProps.onDeployClick).toHaveBeenCalled();
   });

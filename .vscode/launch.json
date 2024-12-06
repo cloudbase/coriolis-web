@@ -12,6 +12,6 @@
       "port": 9222,
       "urlFilter": "http://localhost:3001/*",
       "webRoot": "${workspaceFolder}"
-    },
+    }
   ]
 }

@@ -207,7 +207,10 @@ class TransferStore {
       );
       this.transferDetails = updatedTransfer;
     }
-    this.getExecutionTasks({ transferId: transferId, executionId: execution.id });
+    this.getExecutionTasks({
+      transferId: transferId,
+      executionId: execution.id,
+    });
 
     this.startingExecution = false;
   }
@@ -225,7 +228,10 @@ class TransferStore {
     }
   }
 
-  async deleteExecution(transferId: string, executionId: string): Promise<void> {
+  async deleteExecution(
+    transferId: string,
+    executionId: string
+  ): Promise<void> {
     await TransferSource.deleteExecution(transferId, executionId);
     this.deleteExecutionSuccess(transferId, executionId);
   }

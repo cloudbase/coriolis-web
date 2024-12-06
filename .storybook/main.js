@@ -1,8 +1,7 @@
-const baseConfig = require('../webpack.common')
-
+const baseConfig = require("../webpack.common");
 
 module.exports = {
-  stories: ['../src/**/story.tsx'],
+  stories: ["../src/**/story.tsx"],
   webpackFinal: config => {
     return {
       ...config,
@@ -13,14 +12,14 @@ module.exports = {
           {
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: require.resolve('babel-loader'),
+            loader: require.resolve("babel-loader"),
           },
-        ]
+        ],
       },
       resolve: {
         ...config.resolve,
-        ...baseConfig.resolve
+        ...baseConfig.resolve,
       },
-    }
-  }
-}
+    };
+  },
+};

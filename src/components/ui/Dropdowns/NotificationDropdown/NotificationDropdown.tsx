@@ -275,9 +275,7 @@ class NotificationDropdown extends React.Component<Props, State> {
       <List>
         {this.props.items.map(item => {
           const typeUrl =
-            item.type === "deployment"
-              ? "deployments"
-              : "transfers";
+            item.type === "deployment" ? "deployments" : "transfers";
 
           const executionsPath =
             item.status === "RUNNING"

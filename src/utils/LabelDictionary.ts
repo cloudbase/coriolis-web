@@ -89,8 +89,9 @@ const dictionary = {
   },
   shutdown_instances: {
     label: "Shutdown Instance(s)",
-    description: "This option can be used before completing the Deployment on the target cloud. After the source instance(s) shutdown, a last snapshot will be executed, in order to transfer the last bits of data to the target cloud, and the source instance(s) will be left stopped."
-  }
+    description:
+      "This option can be used before completing the Deployment on the target cloud. After the source instance(s) shutdown, a last snapshot will be executed, in order to transfer the last bits of data to the target cloud, and the source instance(s) will be left stopped.",
+  },
 };
 
 const cache: {

@@ -105,8 +105,7 @@ class DashboardActivity extends React.Component<Props> {
           .filter((_, i) => i < (this.props.large ? 10 : 5))
           .map((item, i) => {
             const actionHref =
-              item.type === "transfer"
-                ? "transfers" : "deployments"
+              item.type === "transfer" ? "transfers" : "deployments";
 
             const executionsHref =
               item.status === "RUNNING"
