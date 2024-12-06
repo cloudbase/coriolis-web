@@ -77,7 +77,7 @@ class WizardType extends React.Component<Props> {
             <Title>Coriolis Migration</Title>
             <Message selected={this.props.selected === "migration"}>
               Coriolis Migrations allow for the incremental copying of
-              a virtual machine's data from the source environment to
+              a virtual machine&apos;s data from the source environment to
               disks in the target environment with zero downtime.
               <br /><br />
               Migrations can be synced (executed) any number of times,
@@ -97,7 +97,7 @@ class WizardType extends React.Component<Props> {
             <Title>Coriolis Replica</Title>
             <Message selected={this.props.selected === "replica"}>
               Coriolis Replicas allow for the incremental copying of
-              a virtual machine's data from the source environment to
+              a virtual machine&apos;s data from the source environment to
               disks in the target environment with zero downtime.
               <br /><br />
               Replicas can be synced (executed) any number of times,

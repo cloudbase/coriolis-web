@@ -354,7 +354,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       },
     ];
 
-    const checkPoolUsed = (i: ActionItem): Boolean|undefined => {
+    const checkPoolUsed = (i: ActionItem): boolean|undefined => {
       return (
         i.origin_minion_pool_id === this.minionPool?.id ||
         i.destination_minion_pool_id === this.minionPool?.id ||

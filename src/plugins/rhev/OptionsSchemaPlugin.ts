@@ -87,7 +87,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
     options: { [prop: string]: any } | null,
     oldOptions?: any
   ) {
-    let migration_image_map_opt = defaultGetMigrationImageMap(
+    const migration_image_map_opt = defaultGetMigrationImageMap(
       options,
       oldOptions,
       this.migrationImageMapFieldName
