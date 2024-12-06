@@ -151,8 +151,14 @@ class ScheduleStore {
     unsavedData?: Schedule | null;
     forceSave?: boolean;
   }): Promise<void> {
-    const { transferId: transferId, scheduleId, data, oldData, unsavedData, forceSave } =
-      opts;
+    const {
+      transferId: transferId,
+      scheduleId,
+      data,
+      oldData,
+      unsavedData,
+      forceSave,
+    } = opts;
 
     if (!forceSave) {
       this.schedules = updateSchedule(this.schedules, scheduleId, data);

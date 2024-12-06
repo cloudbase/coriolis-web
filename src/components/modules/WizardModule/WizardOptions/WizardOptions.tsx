@@ -328,7 +328,10 @@ class WizardOptions extends React.Component<Props> {
       fieldsSchema.push(titleFieldSchema);
     }
 
-    if (this.props.wizardType === "replica" || this.props.wizardType === "migration") {
+    if (
+      this.props.wizardType === "replica" ||
+      this.props.wizardType === "migration"
+    ) {
       fieldsSchema.push({
         name: "execute_now",
         type: "boolean",

@@ -1,11 +1,7 @@
 {
   "config": {
     "_comment": "Add any `config.js` property here to override it.",
-    "disabledPages": [
-      "planning",
-      "users",
-      "projects"
-    ],
+    "disabledPages": ["planning", "users", "projects"],
     "servicesUrls": {
       "keystone": "{BASE_URL}/identity",
       "barbican": "{BASE_URL}/barbican",

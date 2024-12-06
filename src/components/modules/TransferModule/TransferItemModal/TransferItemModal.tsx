@@ -36,10 +36,7 @@ import WizardOptions, {
 } from "@src/components/modules/WizardModule/WizardOptions";
 import WizardStorage from "@src/components/modules/WizardModule/WizardStorage";
 
-import type {
-  UpdateData,
-  ActionItemDetails,
-} from "@src/@types/MainItem";
+import type { UpdateData, ActionItemDetails } from "@src/@types/MainItem";
 import {
   Endpoint,
   EndpointUtils,

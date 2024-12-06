@@ -66,7 +66,8 @@ export const executionOptions = [
     label: "Shutdown Instance(s)",
     defaultValue: false,
     nullableBoolean: false,
-    description: "When enabling this option, Coriolis will attempt to gracefully shut down the source instance(s), before syncing their data. This is recommended when executing Migrations, right before planning on completely Deploying on the destination cloud, as it will transfer the last chunks of data after the instance(s) have been shut down, and it leaves the source instance(s) off."
+    description:
+      "When enabling this option, Coriolis will attempt to gracefully shut down the source instance(s), before syncing their data. This is recommended when executing Migrations, right before planning on completely Deploying on the destination cloud, as it will transfer the last chunks of data after the instance(s) have been shut down, and it leaves the source instance(s) off.",
   },
 ];
 

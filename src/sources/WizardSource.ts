@@ -70,8 +70,7 @@ class WizardSource {
 
     const destEnv = destParser.getDestinationEnv(data.destOptions);
     if (data.destOptions?.minion_pool_id) {
-      payload.destination_minion_pool_id =
-        data.destOptions.minion_pool_id;
+      payload.destination_minion_pool_id = data.destOptions.minion_pool_id;
     }
 
     const poolMappings = destEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS];
@@ -106,9 +105,7 @@ class WizardSource {
       );
     }
 
-    const scenario = type == "replica"
-      ? "replica"
-      : "live_migration";
+    const scenario = type == "replica" ? "replica" : "live_migration";
     payload.scenario = scenario;
 
     const payload_body_key = "transfer";

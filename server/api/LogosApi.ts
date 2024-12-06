@@ -32,7 +32,7 @@ const getOptimalLogoHeightKey = (
 ): string => {
   let heightKeys = availableHeightKeys;
   if (style) {
-    const styledKeys = heightKeys.filter((k) =>
+    const styledKeys = heightKeys.filter(k =>
       style ? k.indexOf(style) > -1 : false
     );
     if (styledKeys.length) {

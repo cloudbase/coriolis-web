@@ -85,10 +85,10 @@ describe("DashboardActivity", () => {
   });
 
   it.each`
-    idx  | href                     | expectedStatusIcon
-    ${0} | ${"/replicas/1"}         | ${"error-hollow.svg"}
-    ${1} | ${"/migrations/2/tasks"} | ${encodedProgressImage}
-    ${2} | ${"/migrations/3"}       | ${"success-hollow.svg"}
+    idx  | href                | expectedStatusIcon
+    ${0} | ${"/deployments/1"} | ${"error-hollow.svg"}
+    ${1} | ${"/deployments/2"} | ${encodedProgressImage}
+    ${2} | ${"/deployments/3"} | ${"success-hollow.svg"}
   `("renders item with href $href", ({ idx, href, expectedStatusIcon }) => {
     render(<DashboardActivity notificationItems={ITEMS} />);
 

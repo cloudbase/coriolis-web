@@ -87,7 +87,10 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     );
   }
 
-  getEndpointUsage(): { deployments: DeploymentItem[]; transfers: TransferItem[] } {
+  getEndpointUsage(): {
+    deployments: DeploymentItem[];
+    transfers: TransferItem[];
+  } {
     const endpointId = this.props.match.params.id;
     const transfers = transferStore.transfers.filter(
       r =>

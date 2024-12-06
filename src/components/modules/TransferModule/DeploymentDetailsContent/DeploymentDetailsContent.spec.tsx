@@ -57,7 +57,9 @@ describe("DeploymentDetailsContent", () => {
   });
 
   it("renders without crashing", () => {
-    const { getByText } = render(<DeploymentDetailsContent {...defaultProps} />);
+    const { getByText } = render(
+      <DeploymentDetailsContent {...defaultProps} />
+    );
     expect(getByText(DEPLOYMENT_ITEM_DETAILS_MOCK.id)).toBeTruthy();
   });
 

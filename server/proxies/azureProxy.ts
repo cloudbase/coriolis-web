@@ -65,17 +65,17 @@ export default (router: express.Router) => {
       "base64"
     ).toString();
     const headers: any = {};
-    forwardHeaders.forEach((headerName) => {
+    forwardHeaders.forEach(headerName => {
       if (req.headers[headerName] != null) {
         headers[headerName] = req.headers[headerName];
       }
     });
 
     axios({ url, headers })
-      .then((response) => {
+      .then(response => {
         res.send(response.data);
       })
-      .catch((error) => {
+      .catch(error => {
         if (error.response) {
           res
             .status(error.response.status)

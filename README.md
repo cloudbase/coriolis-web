@@ -1,6 +1,6 @@
 # ![Coriolis Web](/src/components/ui/Logo/images/coriolis-small-black.svg)
 
-Web  GUI for [coriolis](https://github.com/cloudbase/coriolis)
+Web GUI for [coriolis](https://github.com/cloudbase/coriolis)
 
 [![Build and Test](https://github.com/cloudbase/coriolis-web/actions/workflows/build.yml/badge.svg)](https://github.com/cloudbase/coriolis-web/actions/workflows/build.yml) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 

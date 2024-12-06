@@ -174,9 +174,8 @@ export const defaultGetMigrationImageMap = (
   oldOptions: any,
   migrationImageMapFieldName: string
 ) => {
-
-  console.log("defaultGetMigrationImageMap called with old env: ")
-  console.log(oldOptions)
+  console.log("defaultGetMigrationImageMap called with old env: ");
+  console.log(oldOptions);
   const env: any = {};
   const usableOptions = options;
   if (!usableOptions) {

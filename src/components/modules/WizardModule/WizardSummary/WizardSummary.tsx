@@ -467,7 +467,7 @@ class WizardSummary extends React.Component<Props> {
         <SectionTitle>{type} Target Options</SectionTitle>
         <OptionsList>
           {this.props.wizardType === "replica" ? executeNowOption : null}
-          {this.props.wizardType === "migration" ? executeNowOption: null}
+          {this.props.wizardType === "migration" ? executeNowOption : null}
           {this.props.data.selectedInstances &&
           this.props.data.selectedInstances.length > 1
             ? separateVmOption

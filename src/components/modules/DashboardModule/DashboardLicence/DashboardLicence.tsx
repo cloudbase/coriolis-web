@@ -277,8 +277,8 @@ class DashboardLicence extends React.Component<Props> {
     return (
       <LicenceError>
         <p>
-          Please contact your Coriolis representative with the Appliance ID in order to
-          obtain a Coriolis® licence.
+          Please contact your Coriolis representative with the Appliance ID in
+          order to obtain a Coriolis® licence.
         </p>
         <ApplianceIdWrapper>
           <ApplianceId>

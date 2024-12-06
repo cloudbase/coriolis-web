@@ -237,15 +237,15 @@ class MinionPoolMainDetails extends React.Component<Props> {
 
   renderUsage(items: ActionItem[]) {
     return items.map(item => {
-      const actionHref =
-        item.type === "transfer"
-          ? "transfers" : "deployments"
+      const actionHref = item.type === "transfer" ? "transfers" : "deployments";
 
-      return (<div key={item.id}>
-        <ValueLink to={`/${actionHref}/${item.id}`}>
-          {item.instances[0]}
-        </ValueLink>
-      </div>);
+      return (
+        <div key={item.id}>
+          <ValueLink to={`/${actionHref}/${item.id}`}>
+            {item.instances[0]}
+          </ValueLink>
+        </div>
+      );
     });
   }
 

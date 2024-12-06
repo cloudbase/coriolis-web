@@ -22,10 +22,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DashboardExecutions from "./DashboardExecutions";
 
-const transferItem = (
-  scenario: string,
-  date: string
-): TransferItem => {
+const transferItem = (scenario: string, date: string): TransferItem => {
   return {
     id: "",
     type: "transfer",

@@ -102,11 +102,7 @@ describe("DashboardTopEndpoints", () => {
 
   it("should display no data message", () => {
     render(
-      <DashboardTopEndpoints
-        {...defaultProps}
-        transfers={[]}
-        endpoints={[]}
-      />
+      <DashboardTopEndpoints {...defaultProps} transfers={[]} endpoints={[]} />
     );
     expect(TestUtils.select("DashboardTopEndpoints__NoItems")).toBeTruthy();
   });

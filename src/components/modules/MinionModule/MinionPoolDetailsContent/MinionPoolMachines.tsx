@@ -333,7 +333,11 @@ class MinionPoolMachines extends React.Component<Props, State> {
                           {allocatedAction.type === "transfer" ? "TR" : "DE"}
                         </ItemTransferBadge>
                         <ValueLink
-                          to={`/${allocatedAction.type === "transfer" ? "transfers" : "deployments"}/${allocatedAction.id}`}
+                          to={`/${
+                            allocatedAction.type === "transfer"
+                              ? "transfers"
+                              : "deployments"
+                          }/${allocatedAction.id}`}
                         >
                           {allocatedAction.instances[0]}
                         </ValueLink>

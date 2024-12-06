@@ -221,7 +221,8 @@ class DeploymentSource {
       ? sourceParser.getDestinationEnv(opts.updatedSourceEnv)
       : {};
     const sourceMinionPoolId =
-      opts?.updatedSourceEnv?.minion_pool_id || deployment.origin_minion_pool_id;
+      opts?.updatedSourceEnv?.minion_pool_id ||
+      deployment.origin_minion_pool_id;
     if (sourceMinionPoolId) {
       payload.deployment.origin_minion_pool_id = sourceMinionPoolId;
     }
@@ -255,7 +256,8 @@ class DeploymentSource {
           newMappings[k] = mergedMappings[k];
         }
       });
-      payload.deployment[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings;
+      payload.deployment[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] =
+        newMappings;
     }
 
     delete updatedDestEnv[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS];
@@ -352,7 +354,8 @@ class DeploymentSource {
           newMappings[k] = minionPoolMappings[k];
         }
       });
-      payload.deployment[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = newMappings;
+      payload.deployment[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] =
+        newMappings;
     } else {
       payload.deployment[INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS] = null;
     }

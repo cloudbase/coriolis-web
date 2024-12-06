@@ -79,9 +79,7 @@ class NotificationStorage {
 
 class DataUtils {
   static getItemDescription(item: ActionItem) {
-    const item_type = item.type === "transfer"
-      ? "transfer"
-      : "deployment";
+    const item_type = item.type === "transfer" ? "transfer" : "deployment";
     return `New ${item_type} ${item.id.substr(
       0,
       7

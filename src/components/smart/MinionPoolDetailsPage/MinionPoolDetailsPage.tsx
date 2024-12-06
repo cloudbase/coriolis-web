@@ -354,7 +354,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       },
     ];
 
-    const checkPoolUsed = (i: ActionItem): boolean|undefined => {
+    const checkPoolUsed = (i: ActionItem): boolean | undefined => {
       return (
         i.origin_minion_pool_id === this.minionPool?.id ||
         i.destination_minion_pool_id === this.minionPool?.id ||
@@ -362,9 +362,10 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
           this.minionPool?.id &&
           Object.values(i.instance_osmorphing_minion_pool_mappings).includes(
             this.minionPool.id
-          ))
-      ) || undefined;
-    }
+          )) ||
+        undefined
+      );
+    };
 
     return (
       <Wrapper>

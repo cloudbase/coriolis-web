@@ -125,7 +125,7 @@ class TransferListItem extends React.Component<Props> {
 
   getTransferScenarioType() {
     let scenario = "";
-    switch(this.props.item.type) {
+    switch (this.props.item.type) {
       case "transfer":
         scenario = this.props.item.scenario;
         break;

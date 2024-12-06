@@ -88,9 +88,9 @@ class DeleteTransferModal extends React.Component<Props> {
             Some of the selected Transfer have been executed at least once and
             thus may have disks created on the destination platform. If those
             Transfers are to be deleted now, the disks on the destination will
-            persist. If this is not desired, please use the &quot;Delete Transfer
-            Disks&quot; option to delete those disks before deleting the
-            Transfers themselves.
+            persist. If this is not desired, please use the &quot;Delete
+            Transfer Disks&quot; option to delete those disks before deleting
+            the Transfers themselves.
           </ExtraMessage>
         );
       }

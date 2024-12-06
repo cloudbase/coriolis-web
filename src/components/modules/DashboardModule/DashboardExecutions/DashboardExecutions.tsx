@@ -136,7 +136,7 @@ type Props = {
 type GroupedData = {
   label: string;
   values: number[];
-  data?: string
+  data?: string;
 };
 type TooltipData = {
   title: string;

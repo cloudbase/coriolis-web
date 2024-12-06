@@ -176,17 +176,25 @@ class DashboardTopEndpoints extends React.Component<Props, State> {
 
   calculateGroupedEndpoints(props: Props) {
     const groupedEndpoints: GroupedEndpoint[] = [];
-    const count = (mainItems: TransferItem[], endpointId: string, scenario: string) =>
+    const count = (
+      mainItems: TransferItem[],
+      endpointId: string,
+      scenario: string
+    ) =>
       mainItems.filter(
         r =>
-          r.scenario === scenario && (
-            r.destination_endpoint_id === endpointId ||
+          r.scenario === scenario &&
+          (r.destination_endpoint_id === endpointId ||
             r.origin_endpoint_id === endpointId)
       ).length;
 
     props.endpoints.forEach(endpoint => {
       const replicasCount = count(props.transfers, endpoint.id, "replica");
-      const migrationsCount = count(props.transfers, endpoint.id, "live_migration");
+      const migrationsCount = count(
+        props.transfers,
+        endpoint.id,
+        "live_migration"
+      );
       groupedEndpoints.push({
         endpoint,
         replicasCount: replicasCount,

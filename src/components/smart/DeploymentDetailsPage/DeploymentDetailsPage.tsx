@@ -16,7 +16,10 @@ import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
-import { getTransferItemTitle, DeploymentItemDetails } from "@src/@types/MainItem";
+import {
+  getTransferItemTitle,
+  DeploymentItemDetails,
+} from "@src/@types/MainItem";
 import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
@@ -38,7 +41,7 @@ import userStore from "@src/stores/UserStore";
 import configLoader from "@src/utils/Config";
 
 import replicaDeploymentImage from "./images/replica-deployment.svg";
-import liveMigrationDeploymentImage from "./images/live-migration-deployment.svg"
+import liveMigrationDeploymentImage from "./images/live-migration-deployment.svg";
 
 import type { Field } from "@src/@types/Field";
 import type { InstanceScript } from "@src/@types/Instance";
@@ -120,7 +123,9 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     return should_red;
   }
 
-  getDeploymentScenarioTypeImage(details: DeploymentItemDetails | null): string {
+  getDeploymentScenarioTypeImage(
+    details: DeploymentItemDetails | null
+  ): string {
     let image = replicaDeploymentImage;
     const scenario = details?.transfer_scenario_type;
     if (scenario && scenario === "live_migration") {
@@ -506,25 +511,25 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
               statusPill={
                 deploymentStore.deploymentDetails?.last_execution_status
               }
-              itemTitle={getTransferItemTitle(deploymentStore.deploymentDetails)}
-              itemType={
-                this.getDeploymentScenarioItemType(
-                  deploymentStore.deploymentDetails)
-              }
+              itemTitle={getTransferItemTitle(
+                deploymentStore.deploymentDetails
+              )}
+              itemType={this.getDeploymentScenarioItemType(
+                deploymentStore.deploymentDetails
+              )}
               itemDescription={deploymentStore.deploymentDetails?.description}
               backLink="/deployments"
-              typeImage={
-                this.getDeploymentScenarioTypeImage(
-                  deploymentStore.deploymentDetails)
-              }
+              typeImage={this.getDeploymentScenarioTypeImage(
+                deploymentStore.deploymentDetails
+              )}
               dropdownActions={dropdownActions}
-              alertInfoPill={
-                this.getTransferTypePillShouldRed(
-                  deploymentStore.deploymentDetails)
-              }
+              alertInfoPill={this.getTransferTypePillShouldRed(
+                deploymentStore.deploymentDetails
+              )}
               primaryInfoPill={
                 !this.getTransferTypePillShouldRed(
-                  deploymentStore.deploymentDetails)
+                  deploymentStore.deploymentDetails
+                )
               }
             />
           }

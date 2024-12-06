@@ -176,12 +176,14 @@ class DashboardContent extends React.Component<Props, State> {
 
   getReplicas() {
     return this.props.transfers.filter(
-      (r: TransferItem) => r.scenario === "replica");
+      (r: TransferItem) => r.scenario === "replica"
+    );
   }
 
   getLiveMigrations() {
     return this.props.transfers.filter(
-      (r: TransferItem) => r.scenario === "live_migration");
+      (r: TransferItem) => r.scenario === "live_migration"
+    );
   }
 
   render() {

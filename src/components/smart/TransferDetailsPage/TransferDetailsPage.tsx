@@ -16,7 +16,10 @@ import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
-import { getTransferItemTitle, TransferItemDetails } from "@src/@types/MainItem";
+import {
+  getTransferItemTitle,
+  TransferItemDetails,
+} from "@src/@types/MainItem";
 import DetailsContentHeader from "@src/components/modules/DetailsModule/DetailsContentHeader";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
@@ -839,7 +842,8 @@ class TransferDetailsPage extends React.Component<Props, State> {
               p =>
                 p ===
                 endpointStore.endpoints.find(
-                  e => e.id === transferStore.transferDetails?.origin_endpoint_id
+                  e =>
+                    e.id === transferStore.transferDetails?.origin_endpoint_id
                 )?.type
             )}
             onCancelClick={() => {
