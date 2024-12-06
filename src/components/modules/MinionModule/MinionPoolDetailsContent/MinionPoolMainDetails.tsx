@@ -179,7 +179,7 @@ class MinionPoolMainDetails extends React.Component<Props> {
     let properties: any[] = [];
     const plugin = endpoint && OptionsSchemaPlugin.for(endpoint.type);
     const deploymentImageMapFieldName =
-      plugin && plugin.deploymentImageMapFieldName;
+      plugin && plugin.migrationImageMapFieldName;
     let dictionaryKey = "";
     if (endpoint) {
       dictionaryKey = `${endpoint.type}-minion-pool`;

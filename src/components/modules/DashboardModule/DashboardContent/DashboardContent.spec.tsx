@@ -36,11 +36,11 @@ describe("DashboardContent", () => {
   beforeEach(() => {
     defaultProps = {
       transfers: [],
-      migrations: [],
+      deployments: [],
       endpoints: [],
       projects: [],
       transfersLoading: false,
-      migrationsLoading: false,
+      deploymentsLoading: false,
       endpointsLoading: false,
       usersLoading: false,
       projectsLoading: false,

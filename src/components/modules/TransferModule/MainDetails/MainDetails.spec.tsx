@@ -22,7 +22,7 @@ import {
 import { INSTANCE_MOCK } from "@tests/mocks/InstancesMock";
 import { MINION_POOL_MOCK } from "@tests/mocks/MinionPoolMock";
 import { STORAGE_BACKEND_MOCK } from "@tests/mocks/StoragesMock";
-import { REPLICA_MOCK } from "@tests/mocks/TransferMock";
+import { TRANSFER_MOCK } from "@tests/mocks/TransferMock";
 import TestUtils from "@tests/TestUtils";
 
 import MainDetails from "./";
@@ -38,7 +38,7 @@ describe("MainDetails", () => {
 
   beforeEach(() => {
     defaultProps = {
-      item: REPLICA_MOCK,
+      item: TRANSFER_MOCK,
       minionPools: [MINION_POOL_MOCK],
       storageBackends: [STORAGE_BACKEND_MOCK],
       destinationSchema: [],
@@ -55,7 +55,7 @@ describe("MainDetails", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(<MainDetails {...defaultProps} />);
-    expect(getByText(REPLICA_MOCK.id)).toBeTruthy();
+    expect(getByText(TRANSFER_MOCK.id)).toBeTruthy();
     expect(getByText("Bottom controls")).toBeTruthy();
   });
 
@@ -63,7 +63,7 @@ describe("MainDetails", () => {
     const { getByText } = render(
       <MainDetails
         {...defaultProps}
-        item={{ ...REPLICA_MOCK, destination_endpoint_id: "missing" }}
+        item={{ ...TRANSFER_MOCK, destination_endpoint_id: "missing" }}
       />
     );
     expect(getByText("Endpoint is missing")).toBeTruthy();
@@ -79,7 +79,7 @@ describe("MainDetails", () => {
       <MainDetails
         {...defaultProps}
         item={{
-          ...REPLICA_MOCK,
+          ...TRANSFER_MOCK,
           last_execution_status: "ERROR_ALLOCATING_MINIONS",
         }}
       />
@@ -99,7 +99,7 @@ describe("MainDetails", () => {
 
     passwordEl.click();
     expect(
-      getByText(REPLICA_MOCK.destination_environment.password)
+      getByText(TRANSFER_MOCK.destination_environment.password)
     ).toBeTruthy();
   });
 });

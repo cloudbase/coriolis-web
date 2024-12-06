@@ -18,7 +18,7 @@ import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
 import { fireEvent, render } from "@testing-library/react";
 import { INSTANCE_MOCK } from "@tests/mocks/InstancesMock";
 import { MINION_POOL_MOCK } from "@tests/mocks/MinionPoolMock";
-import { REPLICA_ITEM_DETAILS_MOCK } from "@tests/mocks/TransferMock";
+import { TRANSFER_ITEM_DETAILS_MOCK } from "@tests/mocks/TransferMock";
 import TestUtils from "@tests/TestUtils";
 
 import ReplicaDeploymentOptions from ".";
@@ -68,7 +68,7 @@ describe("ReplicaDeploymentOptions", () => {
   beforeEach(() => {
     defaultProps = {
       instances: [INSTANCE_MOCK],
-      transferItem: REPLICA_ITEM_DETAILS_MOCK,
+      transferItem: TRANSFER_ITEM_DETAILS_MOCK,
       minionPools: [
         MINION_POOL_MOCK,
         { ...MINION_POOL_MOCK, id: "pool2", name: "Pool2" },

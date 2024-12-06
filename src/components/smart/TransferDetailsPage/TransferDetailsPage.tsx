@@ -217,7 +217,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
     return item_type;
   }
 
-  getTransferTypePillShouldRed(): bool {
+  getTransferTypePillShouldRed(): boolean {
     let should_red = true;
     let scenario = this.transfer?.scenario;
     if (scenario && scenario === "live_migration") {

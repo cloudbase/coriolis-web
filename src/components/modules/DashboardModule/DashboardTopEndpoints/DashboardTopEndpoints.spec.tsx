@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 
 import { Endpoint } from "@src/@types/Endpoint";
-import { MigrationItem, TransferItem } from "@src/@types/MainItem";
+import { DeploymentItem, TransferItem } from "@src/@types/MainItem";
 import { fireEvent, render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 
@@ -25,7 +25,7 @@ jest.mock("react-router-dom", () => ({ Link: "a" }));
 
 type BuildType<T extends "replica" | "migration"> = T extends "replica"
   ? TransferItem
-  : MigrationItem;
+  : DeploymentItem;
 
 const buildItem = <T extends "replica" | "migration">(
   type: T,
@@ -51,7 +51,7 @@ const buildItem = <T extends "replica" | "migration">(
     last_execution_status: "",
     user_id: "",
   };
-  return item as BuildType<T>;
+  return item as unknown as BuildType<T>;
 };
 
 const buildEndpoint = (id: string): Endpoint => ({
@@ -70,11 +70,6 @@ const replicas: DashboardTopEndpoints["props"]["transfers"] = [
   buildItem("replica", "c", "d"),
 ];
 
-const migrations: DashboardTopEndpoints["props"]["migrations"] = [
-  buildItem("migration", "e", "f"),
-  buildItem("migration", "e", "f"),
-  buildItem("migration", "e", "f"),
-];
 const endpoints: DashboardTopEndpoints["props"]["endpoints"] = [
   buildEndpoint("a"),
   buildEndpoint("b"),
@@ -87,7 +82,6 @@ const endpoints: DashboardTopEndpoints["props"]["endpoints"] = [
 describe("DashboardTopEndpoints", () => {
   const defaultProps: DashboardTopEndpoints["props"] = {
     transfers: replicas,
-    migrations,
     endpoints,
     style: {},
     loading: false,
@@ -99,7 +93,6 @@ describe("DashboardTopEndpoints", () => {
       <DashboardTopEndpoints
         {...defaultProps}
         transfers={[]}
-        migrations={[]}
         endpoints={[]}
         loading={true}
       />
@@ -112,7 +105,6 @@ describe("DashboardTopEndpoints", () => {
       <DashboardTopEndpoints
         {...defaultProps}
         transfers={[]}
-        migrations={[]}
         endpoints={[]}
       />
     );
@@ -126,7 +118,6 @@ describe("DashboardTopEndpoints", () => {
         {...defaultProps}
         onNewClick={onNewClickMock}
         transfers={[]}
-        migrations={[]}
         endpoints={[]}
       />
     );

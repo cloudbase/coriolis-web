@@ -1,19 +1,19 @@
 import {
-  MigrationItem,
-  MigrationItemDetails,
+  DeploymentItem,
+  DeploymentItemDetails,
   TransferItem,
   TransferItemDetails,
 } from "@src/@types/MainItem";
 import { EXECUTION_MOCK, TASK_MOCK } from "@tests/mocks/ExecutionsMock";
 import { INSTANCE_MOCK } from "@tests/mocks/InstancesMock";
 
-export const REPLICA_MOCK: TransferItem = {
-  id: "replica-id",
-  name: "replica-name",
-  type: "replica",
+export const TRANSFER_MOCK: TransferItem = {
+  id: "transfer-id",
+  name: "transfer-name",
+  type: "transfer",
   scenario: "replica",
-  description: "replica-description",
-  notes: "replica-notes",
+  description: "transfer-description",
+  notes: "transfer-notes",
   created_at: "2023-11-26T12:00:00Z",
   updated_at: "2023-11-26T12:00:00Z",
   origin_endpoint_id: "vmware",
@@ -66,37 +66,17 @@ export const REPLICA_MOCK: TransferItem = {
   },
 };
 
-export const REPLICA_ITEM_DETAILS_MOCK: TransferItemDetails = {
-  ...REPLICA_MOCK,
+export const TRANSFER_ITEM_DETAILS_MOCK: TransferItemDetails = {
+  ...TRANSFER_MOCK,
   executions: [EXECUTION_MOCK],
 };
 
-export const MIGRATION_MOCK: MigrationItem = {
-  id: "migration-id",
-  name: "migration-name",
-  type: "migration",
-  description: "migration-description",
-  notes: "migration-notes",
-  created_at: "2023-11-26T12:00:00Z",
-  updated_at: "2023-11-26T12:00:00Z",
-  origin_endpoint_id: "openstack",
-  destination_endpoint_id: "vmware",
-  origin_minion_pool_id: "origin-minion-pool-id",
-  destination_minion_pool_id: "destination-minion-pool-id",
-  instances: ["instance-id"],
-  info: {},
-  destination_environment: {},
-  source_environment: {},
-  transfer_result: {},
-  last_execution_status: "COMPLETED",
-  user_id: "user-id",
-};
-
-export const DEPLOYMENT_MOCK: DEPLOYMENT_ITEM = {
+export const DEPLOYMENT_MOCK: DeploymentItem = {
   id: "deployment-id",
   name: "deployment-name",
   type: "deployment",
-  replica_scenario_type: "replica",
+  transfer_id: "deployment-transfer-id",
+  transfer_scenario_type: "replica",
   description: "deployment-description",
   notes: "deployment-notes",
   created_at: "2023-11-26T12:00:00Z",
@@ -112,11 +92,6 @@ export const DEPLOYMENT_MOCK: DEPLOYMENT_ITEM = {
   transfer_result: {},
   last_execution_status: "COMPLETED",
   user_id: "user-id",
-};
-
-export const MIGRATION_ITEM_DETAILS_MOCK: MigrationItemDetails = {
-  ...MIGRATION_MOCK,
-  tasks: [{ ...TASK_MOCK, task_type: "migration_task" }],
 };
 
 export const DEPLOYMENT_ITEM_DETAILS_MOCK: DeploymentItemDetails = {

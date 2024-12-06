@@ -89,7 +89,7 @@ describe("EndpointDetailsContent", () => {
         },
       ],
       connectionInfo: null,
-      usage: USAGE as any,
+      transfers: USAGE as any,
       loading: false,
       connectionInfoSchema: [],
       onDeleteClick: jest.fn(),

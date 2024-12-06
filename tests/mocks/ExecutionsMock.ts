@@ -7,7 +7,7 @@ export const EXECUTION_MOCK: Execution = {
   status: "COMPLETED",
   created_at: "2023-11-26T12:00:00Z",
   updated_at: "2023-11-26T12:00:00Z",
-  type: "replica_execution",
+  type: "transfer_execution",
 };
 
 export const PROGRESS_UPDATE_MOCK: ProgressUpdate = {
