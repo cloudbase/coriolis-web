@@ -34,7 +34,7 @@ describe("NewItemDropdown", () => {
     TestUtils.select("DropdownButton__Wrapper")!.click();
     TestUtils.selectAll("NewItemDropdown__ListItem")[2].click();
     expect(onChange).toBeCalledWith(
-      expect.objectContaining({ value: "endpoint" })
+      expect.objectContaining({ value: "minionPool" })
     );
   });
 
@@ -42,8 +42,7 @@ describe("NewItemDropdown", () => {
     render(<NewItemDropdown onChange={() => {}} />);
     TestUtils.select("DropdownButton__Wrapper")!.click();
     const listItems = TestUtils.selectAll("NewItemDropdown__ListItem");
-    expect(listItems[0].getAttribute("to")).toBe("/wizard/migration");
-    expect(listItems[1].getAttribute("to")).toBe("/wizard/replica");
-    expect(listItems[2].getAttribute("to")).toBe("#");
+    expect(listItems[0].getAttribute("to")).toBe("/wizard/replica");
+    expect(listItems[1].getAttribute("to")).toBe("#");
   });
 });

@@ -136,11 +136,11 @@ describe("DashboardTopEndpoints", () => {
       TestUtils.selectAll(
         "DashboardTopEndpoints__LegendLabel-"
       )[0].attributes.getNamedItem("to")?.value
-    ).toBe("/endpoints/e");
+    ).toBe("/endpoints/a");
 
     expect(
       TestUtils.selectAll("DashboardTopEndpoints__LegendLabel-")[1].textContent
-    ).toBe("f-name");
+    ).toBe("b-name");
   });
 
   it("should call calculateGroupedEndpoints when component receives new props", () => {

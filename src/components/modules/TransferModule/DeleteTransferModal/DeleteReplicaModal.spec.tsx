@@ -19,7 +19,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DeleteTransferModal from "./DeleteTransferModal";
 
-describe("DeleteReplicaModal", () => {
+describe("DeleteTransferModal", () => {
   let defaultProps: DeleteTransferModal["props"];
 
   beforeEach(() => {
@@ -33,13 +33,13 @@ describe("DeleteReplicaModal", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(<DeleteTransferModal {...defaultProps} />);
-    expect(getByText("Delete Replica")).toBeTruthy();
+    expect(getByText("Delete Transfer")).toBeTruthy();
   });
 
   it("renders with disks", () => {
     render(<DeleteTransferModal {...defaultProps} hasDisks />);
     expect(
-      TestUtils.select("DeleteReplicaModal__ExtraMessage")?.textContent
+      TestUtils.select("DeleteTransferModal__ExtraMessage")?.textContent
     ).toContain("has been executed at least once");
   });
 
@@ -52,12 +52,12 @@ describe("DeleteReplicaModal", () => {
       />
     );
     expect(
-      TestUtils.select("DeleteReplicaModal__ExtraMessage")?.textContent
+      TestUtils.select("DeleteTransferModal__ExtraMessage")?.textContent
     ).toContain("have been executed at least once");
   });
 
   it("renders loading", () => {
     render(<DeleteTransferModal {...defaultProps} loading />);
-    expect(TestUtils.select("DeleteReplicaModal__Loading")).toBeTruthy();
+    expect(TestUtils.select("DeleteTransferModal__Loading")).toBeTruthy();
   });
 });

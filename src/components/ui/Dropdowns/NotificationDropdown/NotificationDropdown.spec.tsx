@@ -24,14 +24,14 @@ jest.mock("react-router-dom", () => ({ Link: "div" }));
 const ITEMS: NotificationItemData[] = [
   {
     id: "1",
-    type: "migration",
+    type: "transfer",
     name: "Notification 1",
     description: "Description 1",
     status: "COMPLETED",
   },
   {
     id: "2",
-    type: "replica",
+    type: "transfer",
     name: "Notification 2",
     description: "Description 2",
     status: "ERROR",
@@ -39,7 +39,7 @@ const ITEMS: NotificationItemData[] = [
   },
   {
     id: "3",
-    type: "replica",
+    type: "transfer",
     name: "Notification 3",
     description: "Description 3",
     status: "RUNNING",
@@ -66,9 +66,9 @@ describe("NotificationDropdown", () => {
       `/${ITEMS[2].type}s/${ITEMS[2].id}/executions`
     );
     expect(
-      TestUtils.select("NotificationDropdown__ItemReplicaBadge", listItems[2])!
+      TestUtils.select("NotificationDropdown__ItemTransferBadge", listItems[2])!
         .textContent
-    ).toBe("RE");
+    ).toBe("TR");
     expect(
       TestUtils.select("NotificationDropdown__ItemTitle", listItems[2])!
         .textContent

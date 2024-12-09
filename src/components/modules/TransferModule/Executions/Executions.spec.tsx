@@ -79,7 +79,7 @@ describe("Executions", () => {
     expect(getByText(EXECUTION_MOCK.id)).toBeTruthy();
 
     rerender(<Executions {...defaultProps} executions={[]} />);
-    expect(getByText("This replica has not been executed yet.")).toBeTruthy();
+    expect(getByText("This transfer has not been executed yet.")).toBeTruthy();
   });
 
   it("doesn't dispatch onChange if no executions", () => {

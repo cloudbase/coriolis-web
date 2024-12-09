@@ -99,7 +99,7 @@ describe("Schedule", () => {
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
       "Execution options"
     );
-    const modal = TestUtils.select("ReplicaExecutionOptions__Wrapper-")!;
+    const modal = TestUtils.select("TransferExecutionOptions__Wrapper-")!;
     TestUtils.select("Switch__InputWrapper-", modal)?.click();
     const yesButton = Array.from(modal.querySelectorAll("button")).find(
       el => el.textContent === "Save"
@@ -123,7 +123,7 @@ describe("Schedule", () => {
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
       "Execution options"
     );
-    const modal = TestUtils.select("ReplicaExecutionOptions__Wrapper-")!;
+    const modal = TestUtils.select("TransferExecutionOptions__Wrapper-")!;
     const noButton = Array.from(modal.querySelectorAll("button")).find(
       el => el.textContent === "Cancel"
     );
@@ -216,7 +216,7 @@ describe("Schedule", () => {
   it("renders secondary no schedules", () => {
     render(<Schedule {...defaultProps} schedules={[]} secondaryEmpty />);
     expect(TestUtils.select("Schedule__NoSchedules-")?.textContent).toContain(
-      "Schedule this Replica"
+      "Schedule this Transfer"
     );
   });
 
