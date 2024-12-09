@@ -412,10 +412,10 @@ class Executions extends React.Component<Props, State> {
       <NoExecutions>
         <ExecutionImage />
         <NoExecutionTitle>
-          It looks like there are no executions in this tranfer.
+          It looks like there are no executions in this transfer.
         </NoExecutionTitle>
         <NoExecutionText>
-          This tranfer has not been executed yet.
+          This transfer has not been executed yet.
         </NoExecutionText>
         <Button onClick={this.props.onExecuteClick}>Execute Now</Button>
       </NoExecutions>

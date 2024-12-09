@@ -101,9 +101,9 @@ describe("DashboardActivity", () => {
     expect(background).toContain(expectedStatusIcon);
 
     expect(
-      TestUtils.select("NotificationDropdown__ItemReplicaBadge", itemElement)!
+      TestUtils.select("NotificationDropdown__ItemTransferBadge", itemElement)!
         .textContent
-    ).toContain(ITEMS[idx].type === "replica" ? "RE" : "MI");
+    ).toContain(ITEMS[idx].type === "transfer" ? "TR" : "DE");
     expect(
       TestUtils.select("NotificationDropdown__ItemTitle", itemElement)!
         .textContent

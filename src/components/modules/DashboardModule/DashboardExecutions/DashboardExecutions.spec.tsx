@@ -52,8 +52,8 @@ const replicas: DashboardExecutions["props"]["replicas"] = [
 ];
 
 const migrations: DashboardExecutions["props"]["migrations"] = [
-  transferItem("migration", TWENTIETH.toISO()!),
-  transferItem("migration", TWENTIETH.minus({ months: 2 }).toISO()!),
+  transferItem("live_migration", TWENTIETH.toISO()!),
+  transferItem("live_migration", TWENTIETH.minus({ months: 2 }).toISO()!),
 ];
 
 describe("DashboardExecutions", () => {
@@ -240,6 +240,6 @@ describe("DashboardExecutions", () => {
       ],
     };
     render(<DashboardExecutions {...newProps} />);
-    expect(TestUtils.selectAll("DashboardBarChart__Bar-")).toHaveLength(1);
+    expect(TestUtils.selectAll("DashboardBarChart__Bar-")).toHaveLength(2);
   });
 });

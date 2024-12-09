@@ -155,7 +155,7 @@ Version: 2.0
 
     expect(
       TestUtils.select("LicenceModule__LicenceRowContent")?.textContent
-    ).toContain("Please contact Cloudbase Solutions");
+    ).toContain("Please contact your Coriolis representative");
   });
 
   it("renders licence error", () => {
