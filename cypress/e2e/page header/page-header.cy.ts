@@ -23,7 +23,7 @@ describe("Page header", () => {
   };
 
   it("switches project", () => {
-    cy.visit("/replicas");
+    cy.visit("/transfers");
     waitForAll();
 
     cy.get("div[class^='Dropdown__Wrapper']").contains("admin").click();
@@ -44,7 +44,7 @@ describe("Page header", () => {
   });
 
   it("redirects to user info", () => {
-    cy.visit("/replicas");
+    cy.visit("/transfers");
     waitForAll();
     cy.get("div[class^='UserDropdown__Wrapper']").click();
     cy.get("a[class^='UserDropdown__Username']").click();
@@ -52,7 +52,7 @@ describe("Page header", () => {
   });
 
   it("shows about coriolis", () => {
-    cy.visit("/replicas");
+    cy.visit("/transfers");
     waitForAll();
     cy.get("div[class^='UserDropdown__Wrapper']").click();
 
@@ -82,7 +82,7 @@ describe("Page header", () => {
   });
 
   it("redirects to help", () => {
-    cy.visit("/replicas", {
+    cy.visit("/transfers", {
       onBeforeLoad(win) {
         cy.stub(win, "open").as("winOpen");
       },
@@ -98,7 +98,7 @@ describe("Page header", () => {
   });
 
   it("logs out", () => {
-    cy.visit("/replicas");
+    cy.visit("/transfers");
     waitForAll();
 
     cy.get("div[class^='UserDropdown__Wrapper']").click();
