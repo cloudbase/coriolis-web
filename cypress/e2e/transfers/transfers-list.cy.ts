@@ -20,20 +20,20 @@ describe("Replicas list", () => {
   };
 
   it("renders empty list", () => {
-    cy.intercept(routeSelectors.REPLICAS, {
-      body: { replicas: [] },
-    }).as("replicas");
+    cy.intercept(routeSelectors.TRANSFERS, {
+      body: { transfers: [] },
+    }).as("transfers");
 
-    cy.visit("/replicas");
+    cy.visit("/transfers");
 
     waitForAll();
-    cy.wait(["@replicas"]);
+    cy.wait(["@transfers"]);
 
     cy.get("div[class^='MainList__EmptyListMessage']").should(
       "contain.text",
-      "don't have any Replicas in this project"
+      "don't have any Transfers in this project"
     );
-    cy.get("button").should("contain.text", "Create a Replica");
+    cy.get("button").should("contain.text", "Create a Transfer");
   });
 
   it("renders list with scheduled icon", () => {
@@ -46,14 +46,14 @@ describe("Replicas list", () => {
         "transfers/schedules-disabled",
       ],
       (results: any[]) => {
-        const replicas = results[0].replicas;
-        schedules = replicas.map((_, index) =>
+        const transfers = results[0].transfers;
+        schedules = transfers.map((_, index) =>
           index % 2 === 0 ? results[1].schedules : results[2].schedules
         );
 
-        for (const [index, replica] of replicas.entries()) {
+        for (const [index, transfer] of transfers.entries()) {
           const scheduleAlias = `schedule-${index}`;
-          cy.intercept(`**/coriolis/**/replicas/${replica.id}/schedules`, {
+          cy.intercept(`**/coriolis/**/transfers/${transfer.id}/schedules`, {
             body: {
               schedules: schedules[index],
             },
@@ -63,7 +63,7 @@ describe("Replicas list", () => {
       }
     );
 
-    cy.visit("/replicas");
+    cy.visit("/transfers");
     waitForAll();
     cy.wait(scheduleAliases);
 
@@ -87,12 +87,12 @@ describe("Replicas list", () => {
     cy.intercept(routeSelectors.SCHEDULES, {
       fixture: "transfers/schedules-enabled.json",
     }).as("schedules");
-    cy.visit("/replicas");
+    cy.visit("/transfers");
     waitForAll();
     cy.wait(["@schedules"]);
 
     cy.loadFixtures(["transfers/replicas"], (results: any[]) => {
-      const replicas = results[0].replicas;
+      const transfers = results[0].transfers;
 
       cy.get("div[class^='MainListFilter__FilterItem']")
         .contains("Error")
@@ -104,7 +104,7 @@ describe("Replicas list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        replicas.filter(r => r.last_execution_status === "COMPLETED").length
+        transfers.filter(r => r.last_execution_status === "COMPLETED").length
       );
 
       cy.get("div[class^='MainListFilter__FilterItem']")
@@ -112,20 +112,20 @@ describe("Replicas list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        replicas.length
+        transfers.length
       );
 
       cy.get("div[class^='SearchButton__Wrapper']").click();
       cy.get("input[class*='SearchInput']").type("ol88");
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        replicas.filter(r => r.instances.find(i => i.includes("ol88"))).length
+        transfers.filter(r => r.instances.find(i => i.includes("ol88"))).length
       );
 
       cy.get("div[class^='TextInput__Close']").click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        replicas.length
+        transfers.length
       );
     });
   });
@@ -134,33 +134,33 @@ describe("Replicas list", () => {
     cy.intercept(routeSelectors.SCHEDULES, {
       fixture: "transfers/schedules-enabled.json",
     }).as("schedules");
-    cy.visit("/replicas");
+    cy.visit("/transfers");
     waitForAll();
     cy.wait(["@schedules"]);
 
     cy.get("div[class*='TransferListItem__Checkbox']").eq(0).click();
     cy.get("div[class*='MainListFilter__SelectionText']").should(
       "contain.text",
-      "1 of 2"
+      "1 of 3"
     );
 
     cy.get("div[class^='ActionDropdown__Wrapper']").click();
     cy.loadFixtures(["transfers/replicas"], (results: any[]) => {
-      const replicas = results[0].replicas;
-      cy.intercept(`**/coriolis/**/replicas/${replicas[0].id}`, {
+      const transfers = results[0].transfers;
+      cy.intercept(`**/coriolis/**/transfers/${transfers[0].id}`, {
         fixture: "transfers/replica-unexecuted",
-      }).as("replica");
+      }).as("transfer");
 
       cy.get("div[class^='ActionDropdown__ListItem']")
-        .contains("Delete Replicas")
+        .contains("Delete Transfers")
         .click();
-      cy.wait(["@replica"]);
+      cy.wait(["@transfer"]);
 
-      cy.intercept("DELETE", `**/coriolis/**/replicas/${replicas[0].id}`, {
+      cy.intercept("DELETE", `**/coriolis/**/transfers/${transfers[0].id}`, {
         fixture: "transfers/replica-unexecuted",
-      }).as("delete-replica");
-      cy.get("button").contains("Delete Replica").click();
-      cy.wait(["@delete-replica"]);
+      }).as("delete-transfer");
+      cy.get("button").contains("Delete Transfer").click();
+      cy.wait(["@delete-transfer"]);
     });
   });
 });
