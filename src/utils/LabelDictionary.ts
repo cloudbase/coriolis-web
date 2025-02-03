@@ -92,6 +92,11 @@ const dictionary = {
     description:
       "This option can be used before completing the Deployment on the target cloud. After the source instance(s) shutdown, a last snapshot will be executed, in order to transfer the last bits of data to the target cloud, and the source instance(s) will be left stopped.",
   },
+  auto_deploy: {
+    label: "Auto Deploy",
+    description:
+      "When enabled, the transfer will automatically deploy the instances on the destination cloud after the transfer is complete.",
+  }
 };
 
 const cache: {
