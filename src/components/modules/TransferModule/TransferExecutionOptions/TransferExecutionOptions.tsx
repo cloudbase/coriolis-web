@@ -51,6 +51,7 @@ const Buttons = styled.div<any>`
 const FieldInputStyled = styled(FieldInput)`
   width: 319px;
   justify-content: space-between;
+  margin-bottom: 16px;
 `;
 type Props = {
   options?: { [prop: string]: any } | null;
