@@ -873,8 +873,7 @@ class TransferItemModal extends React.Component<Props, State> {
         optionsLoadingSkipFields={[
           ...optionsLoadingSkipFields,
           "description",
-          "execute_now",
-          "execute_now_options",
+          "execute_now"
         ]}
         dictionaryKey={dictionaryKey}
         executeNowOptionsDisabled={

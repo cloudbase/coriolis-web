@@ -338,18 +338,6 @@ class WizardOptions extends React.Component<Props> {
         default: true,
         nullableBoolean: false,
       });
-      const executeNowValue = this.getFieldValue("execute_now", true);
-      fieldsSchema.push({
-        name: "execute_now_options",
-        type: "object",
-        properties: executionOptions,
-        disabled: !executeNowValue || this.props.executeNowOptionsDisabled,
-        description: this.props.executeNowOptionsDisabled
-          ? "The 'Execute Now Options' are disabled for the source provider"
-          : !executeNowValue
-          ? "Enable 'Execute Now' to set 'Execute Now Options'"
-          : `Set the options for ${this.props.wizardType} execution`,
-      });
     }
 
     return fieldsSchema;
@@ -581,9 +569,6 @@ class WizardOptions extends React.Component<Props> {
         let column: number = i % 2;
         if (field.name === "execute_now") {
           executeNowColumn = column;
-        }
-        if (field.name === "execute_now_options") {
-          column = executeNowColumn;
         }
         const usableField = toJS(field);
         if (

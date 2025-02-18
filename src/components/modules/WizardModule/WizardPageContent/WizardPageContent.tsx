@@ -539,8 +539,7 @@ class WizardPageContent extends React.Component<Props, State> {
             optionsLoadingSkipFields={[
               ...getOptionsLoadingSkipFields("destination"),
               "title",
-              "execute_now",
-              "execute_now_options",
+              "execute_now"
             ]}
             selectedInstances={this.props.wizardData.selectedInstances}
             showSeparatePerVm={Boolean(
