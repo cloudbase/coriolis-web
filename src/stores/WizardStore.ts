@@ -229,6 +229,18 @@ class WizardStore {
     this.data.destOptions = updateOptions(this.data.destOptions, data);
   }
 
+  @action updateTransferExecutionOptions(data: {
+    field: Field;
+    value: any;
+    parentFieldName: string | undefined;
+  }) {
+    this.data = { ...this.data };
+    this.data.executeOptions = updateOptions(
+      this.data.executeOptions,
+      data
+    );
+  }
+
   @action updateNetworks(network: NetworkMap) {
     if (!this.data.networks) {
       this.data.networks = [];

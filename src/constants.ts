@@ -80,6 +80,38 @@ export const executionOptions = [
   }
 ];
 
+export const executeOptionsWithExecuteNow = [
+  ...executionOptions,
+  {
+    name: "execute_now",
+    type: "boolean",
+    label: "Execute Now",
+    defaultValue: true,
+    nullableBoolean: false,
+    description:
+      "When enabled, the transfer will be executed immediately after the options are configured.",
+  }
+];
+
+export const deploymentFields = [
+  {
+    name: "clone_disks",
+    type: "boolean",
+    label: "Clone Disks",
+    defaultValue: true,
+    nullableBoolean: false,
+    description: "When enabled, the disks will be cloned during the deployment.",
+  },
+  {
+    name: "skip_os_morphing",
+    type: "boolean",
+    label: "Skip OS Morphing",
+    defaultValue: false,
+    nullableBoolean: false,
+    description: "When enabled, OS morphing will be skipped during the deployment.",
+  }
+];
+
 export const wizardPages: WizardPage[] = [
   { id: "type", title: "New", breadcrumb: "Type" },
   {
@@ -111,6 +143,7 @@ export const wizardPages: WizardPage[] = [
     title: "Schedule",
     breadcrumb: "Schedule",
   },
+  { id: "execute", title: "Transfer Execution options", breadcrumb: "Execute" },
   { id: "summary", title: "Summary", breadcrumb: "Summary" },
 ];
 
