@@ -25,8 +25,8 @@ import WizardTemplate from "@src/components/modules/TemplateModule/WizardTemplat
 import { WizardNetworksChangeObject } from "@src/components/modules/WizardModule/WizardNetworks";
 import WizardPageContent from "@src/components/modules/WizardModule/WizardPageContent";
 import Modal from "@src/components/ui/Modal";
-import { executionOptions, providerTypes, wizardPages } from "@src/constants";
 import endpointStore from "@src/stores/EndpointStore";
+import { executeOptionsWithExecuteNow, deploymentFields, providerTypes, wizardPages } from "@src/constants";
 import instanceStore from "@src/stores/InstanceStore";
 import minionPoolStore from "@src/stores/MinionPoolStore";
 import networkStore from "@src/stores/NetworkStore";
@@ -423,6 +423,15 @@ class WizardPage extends React.Component<Props, State> {
     wizardStore.updateUrlState();
   }
 
+  handleTransferExecuteOptionsChange(field: Field, value: any) {
+    wizardStore.updateData({
+      executeOptions: {
+        ...wizardStore.data.executeOptions,
+        [field.name]: value,
+      },
+    });
+  }
+
   handleNetworkChange(changeObject: WizardNetworksChangeObject) {
     wizardStore.updateNetworks({
       sourceNic: changeObject.nic,
@@ -502,6 +511,15 @@ class WizardPage extends React.Component<Props, State> {
     }
     if (wizardStore.currentPage.id !== wizardPages[0].id) {
       this.loadDataForPage(wizardStore.currentPage);
+    }
+
+    if (!wizardStore.data.executeOptions) {
+      wizardStore.updateData({
+        executeOptions: [...executeOptionsWithExecuteNow, ...deploymentFields].reduce((acc, option) => {
+          acc[option.name] = option.defaultValue;
+          return acc;
+        }, {} as { [key: string]: any }),
+      });
     }
   }
 
@@ -784,8 +802,8 @@ class WizardPage extends React.Component<Props, State> {
       return;
     }
 
-    const executeNowOptions = executionOptions.map(field => {
-      const value = options?.execute_now_options?.[field.name];
+    const executeNowOptions = executeOptionsWithExecuteNow.map(field => {
+      const value = wizardStore.data.executeOptions?.[field.name];
       if (value != null) {
         return { name: field.name, value };
       }
@@ -910,6 +928,9 @@ class WizardPage extends React.Component<Props, State> {
               }}
               onUserScriptUpload={s => {
                 this.handleUserScriptUpload(s);
+              }}
+              onTransferExecuteOptionsChange={(field, value) => {
+                this.handleTransferExecuteOptionsChange(field, value);
               }}
             />
           }

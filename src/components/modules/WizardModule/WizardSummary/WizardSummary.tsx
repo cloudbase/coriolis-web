@@ -24,6 +24,7 @@ import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/module
 import { getDisks } from "@src/components/modules/WizardModule/WizardStorage";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
+import { deploymentFields } from "@src/constants";
 import configLoader from "@src/utils/Config";
 import DateUtils from "@src/utils/DateUtils";
 import LabelDictionary from "@src/utils/LabelDictionary";
@@ -174,6 +175,7 @@ type Props = {
   sourceSchema: Field[];
   destinationSchema: Field[];
   uploadedUserScripts: InstanceScript[];
+  executionOptions: Field[];
 };
 @observer
 class WizardSummary extends React.Component<Props> {
@@ -317,6 +319,46 @@ class WizardSummary extends React.Component<Props> {
             this.props.sourceSchema,
             provider
           )}
+        </OptionsList>
+      </Section>
+    );
+  }
+
+  hasDefaultValue(option: any): option is { defaultValue: boolean } {
+    return option && typeof option.defaultValue !== 'undefined';
+  }
+
+  renderTransferExecuteOptions() {
+    const type =
+      this.props.wizardType.charAt(0).toUpperCase() +
+      this.props.wizardType.substr(1);
+    const data = this.props.data;
+
+    if (!this.props.executionOptions || this.props.executionOptions.length === 0) {
+      return null;
+    }
+
+    const deploymentFieldNames = deploymentFields.map(f => f.name);
+    const filteredExecutionOptions = this.props.executionOptions.filter(
+      option => !deploymentFieldNames.includes(option.name)
+    );
+
+    const allOptions = [...filteredExecutionOptions, ...deploymentFields];
+
+    return (
+      <Section>
+        <SectionTitle>{type} Transfer Execution Options</SectionTitle>
+        <OptionsList>
+          {allOptions.map(option => (
+            <Option key={option.name}>
+              <OptionLabel>{option.label}</OptionLabel>
+              <OptionValue>
+                {data.executeOptions && data.executeOptions[option.name] !== undefined
+                  ? data.executeOptions[option.name] ? "Yes" : "No"
+                  : this.hasDefaultValue(option) && option.defaultValue ? "Yes" : "No"}
+              </OptionValue>
+            </Option>
+          ))}
         </OptionsList>
       </Section>
     );
@@ -764,6 +806,7 @@ class WizardSummary extends React.Component<Props> {
           {this.renderStorageSection("backend")}
           {this.renderStorageSection("disk")}
           {this.renderScheduleSection()}
+          {this.renderTransferExecuteOptions()}
         </Column>
       </Wrapper>
     );

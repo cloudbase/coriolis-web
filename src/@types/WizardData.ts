@@ -23,6 +23,7 @@ export type WizardData = {
   networks?: NetworkMap[] | null;
   source?: Endpoint | null;
   target?: Endpoint | null;
+  executeOptions?: { [prop: string]: any } | null;
 };
 
 export type WizardPage = {

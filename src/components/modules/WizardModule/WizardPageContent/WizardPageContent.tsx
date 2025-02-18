@@ -30,12 +30,13 @@ import WizardOptions from "@src/components/modules/WizardModule/WizardOptions";
 import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
 import WizardStorage from "@src/components/modules/WizardModule/WizardStorage";
 import WizardSummary from "@src/components/modules/WizardModule/WizardSummary";
+import WizardExecuteOptions from "@src/components/modules/WizardModule/WizardExecuteOptions/WizardExecuteOptions";
 import WizardType from "@src/components/modules/WizardModule/WizardType";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
 import InfoIcon from "@src/components/ui/InfoIcon";
 import LoadingButton from "@src/components/ui/LoadingButton";
-import { providerTypes, wizardPages } from "@src/constants";
+import { deploymentFields, executeOptionsWithExecuteNow, providerTypes, wizardPages } from "@src/constants";
 import endpointStore from "@src/stores/EndpointStore";
 import instanceStore from "@src/stores/InstanceStore";
 import minionPoolStore from "@src/stores/MinionPoolStore";
@@ -50,6 +51,7 @@ import type { WizardData, WizardPage } from "@src/@types/WizardData";
 import type { Instance, InstanceScript } from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 import type { Schedule as ScheduleType } from "@src/@types/Schedule";
+
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(`${parseInt(ThemeProps.contentWidth, 10) + 64}px`)}
   margin: 64px auto 32px auto;
@@ -171,6 +173,10 @@ type Props = {
   onCancelUploadedScript: (
     global: string | null,
     instanceName: string | null
+  ) => void;
+  onTransferExecuteOptionsChange: (
+    field: Field, 
+    value: any,
   ) => void;
 };
 type TimezoneValue = "local" | "utc";
@@ -451,6 +457,17 @@ class WizardPageContent extends React.Component<Props, State> {
           />
         );
         break;
+      case "execute":
+        body = (
+          <WizardExecuteOptions
+            options={[...executeOptionsWithExecuteNow, ...deploymentFields]}
+            wizardType={`${this.props.type}-execute`}
+            layout="page"
+            data={this.props.wizardData.executeOptions}
+            onChange={this.props.onTransferExecuteOptionsChange}
+          />
+        );
+        break;
       case "vms":
         body = (
           <WizardInstances
@@ -627,6 +644,7 @@ class WizardPageContent extends React.Component<Props, State> {
             destinationSchema={this.props.providerStore.destinationSchema}
             uploadedUserScripts={this.props.uploadedUserScripts}
             minionPools={this.props.minionPoolStore.minionPools}
+            executionOptions={[...executeOptionsWithExecuteNow, ...deploymentFields]}
           />
         );
         break;

@@ -24,6 +24,7 @@ import type { InstanceScript } from "@src/@types/Instance";
 import DefaultOptionsSchemaParser from "@src/plugins/default/OptionsSchemaPlugin";
 import { ActionItem } from "@src/@types/MainItem";
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
+import { deploymentFields, executionOptions } from "@src/constants";
 
 class WizardSource {
   async create(opts: {
@@ -104,6 +105,18 @@ class WizardSource {
         {}
       );
     }
+
+    executionOptions.forEach(option => {
+      if (data.executeOptions && data.executeOptions[option.name] !== undefined) {
+        payload[option.name] = data.executeOptions[option.name];
+      }
+    });
+
+    deploymentFields.forEach(option => {
+      if (data.executeOptions && data.executeOptions[option.name] !== undefined) {
+        payload[option.name] = data.executeOptions[option.name];
+      }
+    });
 
     const scenario = type == "replica" ? "replica" : "live_migration";
     payload.scenario = scenario;
