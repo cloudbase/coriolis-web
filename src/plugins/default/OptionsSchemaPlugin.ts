@@ -129,7 +129,6 @@ export const defaultGetDestinationEnv = (
   const env: any = {};
   const specialOptions = [
     "execute_now",
-    "execute_now_options",
     "separate_vm",
     "skip_os_morphing",
     "title",
