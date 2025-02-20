@@ -115,7 +115,6 @@ export type DeploymentItem = BaseItem & {
 
 export type DeploymentItemOptions = DeploymentItem & {
   skip_os_morphing: boolean;
-  shutdown_instances: boolean;
 };
 
 export type ActionItem = TransferItem | DeploymentItem;

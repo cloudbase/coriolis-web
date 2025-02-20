@@ -94,10 +94,6 @@ class WizardSource {
 
     payload.destination_environment = destEnv;
 
-    payload.shutdown_instances = Boolean(
-      data.destOptions && data.destOptions.shutdown_instances
-    );
-
     if (uploadedUserScripts.length) {
       payload.user_scripts = destParser.getUserScripts(
         uploadedUserScripts,
