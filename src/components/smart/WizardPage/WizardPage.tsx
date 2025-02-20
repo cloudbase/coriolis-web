@@ -26,7 +26,7 @@ import { WizardNetworksChangeObject } from "@src/components/modules/WizardModule
 import WizardPageContent from "@src/components/modules/WizardModule/WizardPageContent";
 import Modal from "@src/components/ui/Modal";
 import endpointStore from "@src/stores/EndpointStore";
-import { executeOptionsWithExecuteNow, deploymentFields, providerTypes, wizardPages } from "@src/constants";
+import { executeOptionsWithExecuteNow, deploymentFields, providerTypes, wizardPages, executionOptions } from "@src/constants";
 import instanceStore from "@src/stores/InstanceStore";
 import minionPoolStore from "@src/stores/MinionPoolStore";
 import networkStore from "@src/stores/NetworkStore";
@@ -793,7 +793,7 @@ class WizardPage extends React.Component<Props, State> {
   }
 
   executeCreatedTransfer(transfer: TransferItem) {
-    const options = wizardStore.data.destOptions;
+    const options = wizardStore.data.executeOptions;
     let executeNow = true;
     if (options && options.execute_now != null) {
       executeNow = options.execute_now;
@@ -802,7 +802,7 @@ class WizardPage extends React.Component<Props, State> {
       return;
     }
 
-    const executeNowOptions = executeOptionsWithExecuteNow.map(field => {
+    const executeNowOptions = executionOptions.map(field => {
       const value = wizardStore.data.executeOptions?.[field.name];
       if (value != null) {
         return { name: field.name, value };
