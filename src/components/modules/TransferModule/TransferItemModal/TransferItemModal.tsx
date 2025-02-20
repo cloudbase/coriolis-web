@@ -52,7 +52,7 @@ import {
   SecurityGroup,
 } from "@src/@types/Network";
 
-import { providerTypes } from "@src/constants";
+import { deploymentFields, providerTypes } from "@src/constants";
 import configLoader from "@src/utils/Config";
 import LoadingButton from "@src/components/ui/LoadingButton";
 import minionPoolStore from "@src/stores/MinionPoolStore";
@@ -60,6 +60,7 @@ import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
 import networkStore from "@src/stores/NetworkStore";
 import { ThemeProps } from "@src/components/Theme";
 import ObjectUtils from "@src/utils/ObjectUtils";
+import WizardExecuteOptions from "@src/components/modules/WizardModule/WizardExecuteOptions/WizardExecuteOptions";
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -117,6 +118,7 @@ type State = {
   selectedPanel: string | null;
   destinationData: any;
   sourceData: any;
+  deployData: any;
   updateDisabled: boolean;
   updating: boolean;
   selectedNetworks: NetworkMap[];
@@ -135,6 +137,7 @@ class TransferItemModal extends React.Component<Props, State> {
     selectedPanel: "source_options",
     destinationData: {},
     sourceData: {},
+    deployData: {},
     updateDisabled: false,
     updating: false,
     selectedNetworks: [],
@@ -337,6 +340,28 @@ class TransferItemModal extends React.Component<Props, State> {
       return buildDefaultStorage(endpointStore.storageConfigDefault);
     }
     return { value: null };
+  }
+
+  getDeployFieldValue(fieldName: string, defaultValue: any) {
+    const currentData = this.state.deployData;
+    if (fieldName === "clone_disks") {
+      if (currentData[fieldName] !== undefined) {
+        return currentData[fieldName];
+      }
+
+      return this.props.transfer.clone_disks !== undefined
+        ? this.props.transfer.clone_disks
+        : defaultValue;
+    }
+
+    if (fieldName === "skip_os_morphing") {
+      if (currentData[fieldName] !== undefined) {
+        return currentData[fieldName];
+      }
+      return this.props.transfer.skip_os_morphing !== undefined
+        ? this.props.transfer.skip_os_morphing
+        : defaultValue;
+    }
   }
 
   getFieldValue(opts: {
@@ -679,12 +704,19 @@ class TransferItemModal extends React.Component<Props, State> {
     }
   }
 
+  handleDeployFieldChange(field: Field, value: any) {
+    const data = this.state.deployData;
+    data[field.name] = value;
+    this.setState({ deployData: { ...this.state.deployData, ...data }});
+  }
+
   async handleUpdateClick() {
     this.setState({ updating: true });
 
     const updateData: UpdateData = {
       source: this.state.sourceData,
       destination: this.state.destinationData,
+      deploy: this.state.deployData,
       network:
         this.state.selectedNetworks.length > 0
           ? this.getSelectedNetworks()
@@ -952,6 +984,21 @@ class TransferItemModal extends React.Component<Props, State> {
     );
   }
 
+  renderDeployOptions() {
+    return (
+      <WizardExecuteOptions
+        options={[...deploymentFields]}
+        wizardType={"edit-deploy"}
+        layout={"modal"}
+        onChange={(f, v) => {
+          this.handleDeployFieldChange(f, v);
+        }}
+        data={this.state.deployData}
+        getFieldValue={(f, d) => this.getDeployFieldValue(f, d)}
+      />
+    )
+  }
+
   renderContent() {
     let content = null;
     switch (this.state.selectedPanel) {
@@ -969,6 +1016,9 @@ class TransferItemModal extends React.Component<Props, State> {
         break;
       case "storage_mapping":
         content = this.renderStorageMapping();
+        break;
+      case "deploy_options":
+        content = this.renderDeployOptions();
         break;
       default:
         content = null;
@@ -1048,6 +1098,11 @@ class TransferItemModal extends React.Component<Props, State> {
         loading: this.isLoadingStorage(),
       });
     }
+
+    navigationItems.push({
+      value: "deploy_options",
+      label: "Deploy Options"
+    })
 
     return (
       <Modal

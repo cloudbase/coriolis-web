@@ -298,6 +298,16 @@ class TransferSource {
       }
     }
 
+    if (Object.keys(updateData.deploy).length > 0) {
+      if (updateData.deploy.clone_disks !== undefined) {
+        payload.transfer.clone_disks = updateData.deploy.clone_disks;
+      }
+
+      if (updateData.deploy.skip_os_morphing !== undefined) {
+        payload.transfer.skip_os_morphing = updateData.deploy.skip_os_morphing;
+      }
+    }
+
     if (defaultStorage || updateData.storage.length > 0) {
       payload.transfer.storage_mappings = destinationParser.getStorageMap(
         defaultStorage,

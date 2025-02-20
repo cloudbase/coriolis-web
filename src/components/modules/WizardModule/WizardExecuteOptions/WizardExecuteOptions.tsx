@@ -142,13 +142,32 @@ class WizardExecuteOptions extends React.Component<Props, State> {
                     "When enabled, the instances will be shut down before the transfer is executed.",
             });
         }
+        else if (this.props.wizardType === "edit-deploy") {
+            fieldsSchema.push({
+                name: "clone_disks",
+                type: "boolean",
+                label: "Clone Disks",
+                nullableBoolean: false,
+                default: true,
+                description: "When enabled, the disks will be cloned during the deployment."
+            })
+
+            fieldsSchema.push({
+                name: "skip_os_morphing",
+                type: "boolean",
+                label: "Skip OS Morphing",
+                nullableBoolean: false,
+                default: false,
+                description: "When enabled, OS Morphing will be skipped during the deployment."
+            })
+        }
 
         return fieldsSchema;
     }
 
     generateGroups(fields: FieldRender[]) {
         let groups: Array<{ fields: FieldRender[]; name?: string }> = [{ fields }];
-    
+
         if (this.props.wizardType === "replica-execute" || this.props.wizardType === "migration-execute") {
             const deploymentFieldNames = deploymentFields.map(f => f.name);
             const deploymentFieldsInUse = fields.filter(f =>
@@ -177,13 +196,13 @@ class WizardExecuteOptions extends React.Component<Props, State> {
                 });
             }
         }
-    
+
         fields.forEach(f => {
             if (f.field.groupName) {
                 groups[0].fields = groups[0].fields
                     ? groups[0].fields.filter(gf => gf.field.name !== f.field.name)
                     : [];
-    
+
                 const group = groups.find(g => g.name && g.name === f.field.groupName);
                 if (!group) {
                     groups.push({
@@ -195,7 +214,7 @@ class WizardExecuteOptions extends React.Component<Props, State> {
                 }
             }
         });
-    
+
         return groups;
     }
 
