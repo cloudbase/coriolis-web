@@ -128,9 +128,7 @@ export const defaultGetDestinationEnv = (
 ): any => {
   const env: any = {};
   const specialOptions = [
-    "execute_now",
     "separate_vm",
-    "skip_os_morphing",
     "title",
     "minion_pool_id",
   ]

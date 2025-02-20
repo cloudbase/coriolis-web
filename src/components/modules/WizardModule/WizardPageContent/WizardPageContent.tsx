@@ -175,7 +175,7 @@ type Props = {
     instanceName: string | null
   ) => void;
   onTransferExecuteOptionsChange: (
-    field: Field, 
+    field: Field,
     value: any,
   ) => void;
 };
@@ -539,7 +539,6 @@ class WizardPageContent extends React.Component<Props, State> {
             optionsLoadingSkipFields={[
               ...getOptionsLoadingSkipFields("destination"),
               "title",
-              "execute_now"
             ]}
             selectedInstances={this.props.wizardData.selectedInstances}
             showSeparatePerVm={Boolean(

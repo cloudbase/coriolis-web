@@ -180,12 +180,12 @@ type Props = {
 @observer
 class WizardSummary extends React.Component<Props> {
   getDefaultBooleanOption(fieldName: string, defaultValue: boolean): boolean {
-    if (!this.props.data.destOptions) {
+    if (!this.props.data.executeOptions) {
       return defaultValue;
     }
 
-    if (this.props.data.destOptions[fieldName] != null) {
-      return this.props.data.destOptions[fieldName];
+    if (this.props.data.executeOptions[fieldName] != null) {
+      return this.props.data.executeOptions[fieldName];
     }
 
     return defaultValue;
@@ -518,7 +518,6 @@ class WizardSummary extends React.Component<Props> {
           {data.destOptions
             ? Object.keys(data.destOptions).map(optionName => {
                 if (
-                  optionName === "execute_now" ||
                   optionName === "separate_vm" ||
                   !data.destOptions ||
                   data.destOptions[optionName] == null ||
