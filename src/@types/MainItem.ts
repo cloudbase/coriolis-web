@@ -31,6 +31,7 @@ export type MainItemInfo = {
 export type UpdateData = {
   destination: any;
   source: any;
+  deploy: any;
   network: NetworkMap[];
   storage: StorageMap[];
   uploadedScripts: InstanceScript[];
@@ -90,6 +91,8 @@ type BaseItem = {
   user_id: string;
   instance_osmorphing_minion_pool_mappings?: { [instanceName: string]: string };
   user_scripts?: UserScriptData;
+  clone_disks: boolean;
+  skip_os_morphing: boolean;
 };
 
 export type TransferItem = BaseItem & {
