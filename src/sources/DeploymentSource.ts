@@ -125,9 +125,9 @@ class DeploymentSource {
       payload.deployment.source_environment = deployment.source_environment;
     }
 
-    payload.deployment.shutdown_instances = Boolean(
-      deployment.shutdown_instances
-    );
+    // payload.deployment.shutdown_instances = Boolean(
+    //   deployment.shutdown_instances
+    // );
     // payload.deployment.replication_count = deployment.replication_count || 2;
 
     const response = await Api.send({
@@ -173,9 +173,9 @@ class DeploymentSource {
     payload.deployment = {
       origin_endpoint_id: opts.sourceEndpoint.id,
       destination_endpoint_id: opts.destEndpoint.id,
-      shutdown_instances: Boolean(
-        opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances
-      ),
+      // shutdown_instances: Boolean(
+      //   opts.updatedDestEnv && opts.updatedDestEnv.shutdown_instances
+      // ),
       // replication_count:
       //   (opts.updatedDestEnv && opts.updatedDestEnv.replication_count) ||
       //   opts.replicationCount ||
