@@ -176,9 +176,13 @@ class Schedule extends React.Component<Props, State> {
 
   handleOptionsSave(fields: Field[]) {
     this.setState({ showOptionsModal: false });
+    let execOptions = this.state.executionOptions;
+    if (!execOptions) {
+      execOptions = {};
+    }
     const options: any = {};
     fields.forEach(f => {
-      options[f.name] = f.value || false;
+      options[f.name] = f.value || execOptions[f.name] || false;
     });
 
     if (this.state.selectedSchedule && this.state.selectedSchedule.id) {
