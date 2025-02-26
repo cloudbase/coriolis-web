@@ -292,6 +292,15 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     }
   }
 
+  handleShowExecutionClick() {
+    if (!deploymentStore.deploymentDetails?.deployer_id) {
+      return;
+    }
+    this.props.history.push(
+      `/transfers/${deploymentStore.deploymentDetails.transfer_id}/executions`
+    );
+  }
+
   handleRecreateClick() {
     if (!deploymentStore.deploymentDetails?.transfer_id) {
       this.setState({ showEditModal: true, pausePolling: true });
@@ -568,6 +577,9 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
               }
               onDeleteDeploymentClick={() => {
                 this.handleDeleteDeploymentClick();
+              }}
+              onShowExecutionClick={() => {
+                this.handleShowExecutionClick();
               }}
             />
           }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96px" height="96px" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Icon/Execution/96" stroke="#0044CA" stroke-width="1.5">
+            <g id="Group" transform="translate(6.000000, 0.000000)">
+                <path d="M46.0613983,6.19384586 C44.7249018,6.06560529 43.3701124,6 42,6 C18.8040405,6 0,24.8040405 0,48 C0,60.8664574 5.78554753,72.3816277 14.8970235,80.085892 M36.1894906,89.6013306 C38.0887008,89.8641606 40.0284869,90 42,90 L42,90 C65.1959595,90 84,71.1959595 84,48 C84,35.2367569 78.3069031,23.8032079 69.321609,16.1002526" id="Oval-6"></path>
+                <polyline id="Stroke-9-Copy" stroke-linejoin="round" points="41 94.9284632 35.5192308 89.689779 40.7431781 84.1935484"></polyline>
+                <polyline id="Stroke-9-Copy-2" stroke-linejoin="round" transform="translate(43.740385, 6.206167) scale(-1, 1) translate(-43.740385, -6.206167) " points="46.4807692 11.5736245 41 6.33494027 46.2239473 0.838709677"></polyline>
+                <path d="M42,31 L42,65" id="Line"></path>
+                <path d="M25,48 L59,48" id="Line-Copy"></path>
+            </g>
+        </g>
+    </g>
+</svg>

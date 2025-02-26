@@ -22,12 +22,16 @@ import { Network } from "@src/@types/Network";
 import DetailsNavigation from "@src/components/modules/NavigationModule/DetailsNavigation";
 import MainDetails from "@src/components/modules/TransferModule/MainDetails";
 import Tasks from "@src/components/modules/TransferModule/Tasks";
+import { ThemePalette } from "@src/components/Theme";
 import { ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
 
 import type { Instance } from "@src/@types/Instance";
 import type { Endpoint, StorageBackend } from "@src/@types/Endpoint";
 import type { Field } from "@src/@types/Field";
+
+import show_execution from "./images/show_execution.svg";
+
 const Wrapper = styled.div<any>`
   display: flex;
   justify-content: center;
@@ -41,6 +45,35 @@ const Buttons = styled.div<any>`
 `;
 const DetailsBody = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
+`;
+
+const ShowExecution = styled.div<any>`
+  width: 96px;
+  height: 96px;
+  background: url("${show_execution}");
+  margin: 106px 0 43px 0;
+`;
+
+const PendingMessage = styled.div`
+  background: ${ThemePalette.grayscale[7]};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 74px;
+`;
+
+const NoPendingDeploymentTitle = styled.div<any>`
+  font-size: 18px;
+  margin-bottom: 10px;
+`;
+
+const ErrorMessage = styled.div<any>`
+  font-size: 18px;
+  margin-bottom: 10px;
+`;
+
+const StyledButton = styled(Button)`
+  margin-top: 20px;
 `;
 
 const NavigationItems = [
@@ -70,6 +103,7 @@ type Props = {
   endpoints: Endpoint[];
   page: string;
   onDeleteDeploymentClick: () => void;
+  onShowExecutionClick: () => void;
 };
 @observer
 class DeploymentDetailsContent extends React.Component<Props> {
@@ -121,6 +155,39 @@ class DeploymentDetailsContent extends React.Component<Props> {
     );
   }
 
+  renderPendingMessage() {
+    const { item } = this.props;
+    if (!item) {
+      return null;
+    }
+
+    if (item.last_execution_status === "PENDING") {
+      return (
+        <PendingMessage>
+          <ShowExecution />
+          <NoPendingDeploymentTitle>
+            Current deployment is waiting for its deployer execution to finish.
+          </NoPendingDeploymentTitle>
+          <StyledButton onClick={this.props.onShowExecutionClick}>Show Execution</StyledButton>
+        </PendingMessage>
+      );
+    }
+
+    if (item.last_execution_status === "ERROR") {
+      return (
+        <PendingMessage>
+          <ShowExecution />
+          <ErrorMessage>
+            The deployer execution was not able to complete.
+          </ErrorMessage>
+          <StyledButton onClick={this.props.onShowExecutionClick}>Show Execution</StyledButton>
+        </PendingMessage>
+      );
+    }
+
+    return null;
+  }
+
   render() {
     return (
       <Wrapper>
@@ -133,6 +200,9 @@ class DeploymentDetailsContent extends React.Component<Props> {
         <DetailsBody>
           {this.renderMainDetails()}
           {this.renderTasks()}
+          {this.props.page === "tasks" && !this.props.item?.tasks ? (
+            this.renderPendingMessage()
+          ) : null}
         </DetailsBody>
       </Wrapper>
     );
