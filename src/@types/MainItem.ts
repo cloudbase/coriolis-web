@@ -114,6 +114,7 @@ export type DeploymentItem = BaseItem & {
   type: "deployment";
   transfer_id: string;
   transfer_scenario_type: string;
+  deployer_id: string;
 };
 
 export type DeploymentItemOptions = DeploymentItem & {
