@@ -325,7 +325,7 @@ class WizardSummary extends React.Component<Props> {
   }
 
   hasDefaultValue(option: any): option is { defaultValue: boolean } {
-    return option && typeof option.defaultValue !== 'undefined';
+    return option && typeof option.defaultValue !== "undefined";
   }
 
   renderTransferExecuteOptions() {
@@ -334,7 +334,10 @@ class WizardSummary extends React.Component<Props> {
       this.props.wizardType.substr(1);
     const data = this.props.data;
 
-    if (!this.props.executionOptions || this.props.executionOptions.length === 0) {
+    if (
+      !this.props.executionOptions ||
+      this.props.executionOptions.length === 0
+    ) {
       return null;
     }
 
@@ -353,9 +356,14 @@ class WizardSummary extends React.Component<Props> {
             <Option key={option.name}>
               <OptionLabel>{option.label}</OptionLabel>
               <OptionValue>
-                {data.executeOptions && data.executeOptions[option.name] !== undefined
-                  ? data.executeOptions[option.name] ? "Yes" : "No"
-                  : this.hasDefaultValue(option) && option.defaultValue ? "Yes" : "No"}
+                {data.executeOptions &&
+                data.executeOptions[option.name] !== undefined
+                  ? data.executeOptions[option.name]
+                    ? "Yes"
+                    : "No"
+                  : this.hasDefaultValue(option) && option.defaultValue
+                  ? "Yes"
+                  : "No"}
               </OptionValue>
             </Option>
           ))}

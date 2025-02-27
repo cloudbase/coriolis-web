@@ -155,7 +155,9 @@ class TransferSource {
   }
 
   async execute(transferId: string, fields?: Field[]): Promise<ExecutionTasks> {
-    const payload: any = { execution: { shutdown_instances: false, auto_deploy: false } };
+    const payload: any = {
+      execution: { shutdown_instances: false, auto_deploy: false },
+    };
     if (fields) {
       fields.forEach(f => {
         payload.execution[f.name] = f.value || false;

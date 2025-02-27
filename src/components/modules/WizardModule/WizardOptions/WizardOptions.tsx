@@ -24,7 +24,6 @@ import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import FieldInput from "@src/components/ui/FieldInput";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import ToggleButtonBar from "@src/components/ui/ToggleButtonBar";
-import { executionOptions } from "@src/constants";
 import { MinionPoolStoreUtils } from "@src/stores/MinionPoolStore";
 import configLoader from "@src/utils/Config";
 import LabelDictionary from "@src/utils/LabelDictionary";
@@ -550,14 +549,10 @@ class WizardOptions extends React.Component<Props> {
     });
     fieldsSchema = [...fieldsSchema, ...subFields];
 
-    let executeNowColumn: number;
     const fields: FieldRender[] = fieldsSchema
       .filter(f => shouldRenderField(f))
       .map((field, i) => {
-        let column: number = i % 2;
-        if (field.name === "execute_now") {
-          executeNowColumn = column;
-        }
+        const column: number = i % 2;
         const usableField = toJS(field);
         if (
           field.type === "boolean" &&

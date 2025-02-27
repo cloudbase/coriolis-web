@@ -58,6 +58,7 @@ describe("WizardSummary", () => {
         { name: "option_2", label: "Option 2", type: "string" },
       ],
       uploadedUserScripts: [],
+      executionOptions: [],
     };
   });
 

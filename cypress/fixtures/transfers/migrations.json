@@ -33,9 +33,7 @@
       },
       "type": "deployment",
       "executions": [],
-      "instances": [
-        "Datacenter/ol88-bios"
-      ],
+      "instances": ["Datacenter/ol88-bios"],
       "reservation_id": null,
       "notes": "",
       "origin_endpoint_id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",
@@ -113,9 +111,7 @@
       },
       "type": "deployment",
       "executions": [],
-      "instances": [
-        "Datacenter/ol88-uefi"
-      ],
+      "instances": ["Datacenter/ol88-uefi"],
       "reservation_id": null,
       "notes": null,
       "origin_endpoint_id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",
@@ -154,10 +150,7 @@
                 "id": "eth0",
                 "name": "eth0",
                 "mac_address": "00:x:x:x:x:b0",
-                "ip_addresses": [
-                  "10.x.x.6",
-                  "fd42:x:x:x:x:x:x:c1b0"
-                ],
+                "ip_addresses": ["10.x.x.6", "fd42:x:x:x:x:x:x:c1b0"],
                 "network_name": "tapff00339e",
                 "network_id": "tapff00339e"
               }
@@ -238,9 +231,7 @@
       },
       "type": "deployment",
       "executions": [],
-      "instances": [
-        "Datacenter/ol88-bios"
-      ],
+      "instances": ["Datacenter/ol88-bios"],
       "reservation_id": null,
       "notes": "",
       "origin_endpoint_id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",
@@ -318,9 +309,7 @@
       },
       "type": "deployment",
       "executions": [],
-      "instances": [
-        "Datacenter/ol88-bios"
-      ],
+      "instances": ["Datacenter/ol88-bios"],
       "reservation_id": null,
       "notes": "",
       "origin_endpoint_id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",
@@ -359,10 +348,7 @@
                 "id": "eth0",
                 "name": "eth0",
                 "mac_address": "00:x:x:x:x:b0",
-                "ip_addresses": [
-                  "10.x.x.6",
-                  "fd42:x:x:x:x:x:x:c1b0"
-                ],
+                "ip_addresses": ["10.x.x.6", "fd42:x:x:x:x:x:x:c1b0"],
                 "network_name": "tapff00339e",
                 "network_id": "tapff00339e"
               }
@@ -443,9 +429,7 @@
       },
       "type": "deployment",
       "executions": [],
-      "instances": [
-        "Datacenter/ol88-bios"
-      ],
+      "instances": ["Datacenter/ol88-bios"],
       "reservation_id": null,
       "notes": "",
       "origin_endpoint_id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",
@@ -484,10 +468,7 @@
                 "id": "eth0",
                 "name": "eth0",
                 "mac_address": "00:x:x:x:x:b0",
-                "ip_addresses": [
-                  "10.x.x.6",
-                  "fd42:x:x:x:x:x:x:c1b0"
-                ],
+                "ip_addresses": ["10.x.x.6", "fd42:x:x:x:x:x:x:c1b0"],
                 "network_name": "tapff00339e",
                 "network_id": "tapff00339e"
               }
@@ -568,9 +549,7 @@
       },
       "type": "deployment",
       "executions": [],
-      "instances": [
-        "Datacenter/ol88-bios"
-      ],
+      "instances": ["Datacenter/ol88-bios"],
       "reservation_id": null,
       "notes": "",
       "origin_endpoint_id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",
@@ -609,10 +588,7 @@
                 "id": "eth0",
                 "name": "eth0",
                 "mac_address": "00:x:x:x:x:f4",
-                "ip_addresses": [
-                  "10.x.x.x",
-                  "fd42:x:x:x:x:x:x:79f4"
-                ],
+                "ip_addresses": ["10.x.x.x", "fd42:x:x:x:x:x:x:79f4"],
                 "network_name": "tapx10",
                 "network_id": "tapx10"
               }

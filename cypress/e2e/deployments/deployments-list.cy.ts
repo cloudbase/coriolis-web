@@ -121,8 +121,10 @@ describe("Deployments list", () => {
       );
 
       cy.intercept("POST", routeSelectors.DEPLOYMENTS, req => {
-        expect(req.body.deployment.transfer_id, 
-          "Transfer ID should be present in the request body").to.exist;
+        expect(
+          req.body.deployment.transfer_id,
+          "Transfer ID should be present in the request body"
+        ).to.exist;
       }).as("deployments-recreate");
 
       cy.get("button").contains("Yes").click();

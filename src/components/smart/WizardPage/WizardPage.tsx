@@ -26,7 +26,13 @@ import { WizardNetworksChangeObject } from "@src/components/modules/WizardModule
 import WizardPageContent from "@src/components/modules/WizardModule/WizardPageContent";
 import Modal from "@src/components/ui/Modal";
 import endpointStore from "@src/stores/EndpointStore";
-import { executeOptionsWithExecuteNow, deploymentFields, providerTypes, wizardPages, executionOptions } from "@src/constants";
+import {
+  executeOptionsWithExecuteNow,
+  deploymentFields,
+  providerTypes,
+  wizardPages,
+  executionOptions,
+} from "@src/constants";
 import instanceStore from "@src/stores/InstanceStore";
 import minionPoolStore from "@src/stores/MinionPoolStore";
 import networkStore from "@src/stores/NetworkStore";
@@ -515,7 +521,10 @@ class WizardPage extends React.Component<Props, State> {
 
     if (!wizardStore.data.executeOptions) {
       wizardStore.updateData({
-        executeOptions: [...executeOptionsWithExecuteNow, ...deploymentFields].reduce((acc, option) => {
+        executeOptions: [
+          ...executeOptionsWithExecuteNow,
+          ...deploymentFields,
+        ].reduce((acc, option) => {
           acc[option.name] = option.defaultValue;
           return acc;
         }, {} as { [key: string]: any }),

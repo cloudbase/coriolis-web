@@ -77,6 +77,7 @@ export const DEPLOYMENT_MOCK: DeploymentItem = {
   type: "deployment",
   transfer_id: "deployment-transfer-id",
   transfer_scenario_type: "replica",
+  deployer_id: "deployer-id",
   description: "deployment-description",
   notes: "deployment-notes",
   created_at: "2023-11-26T12:00:00Z",
@@ -92,6 +93,20 @@ export const DEPLOYMENT_MOCK: DeploymentItem = {
   transfer_result: {},
   last_execution_status: "COMPLETED",
   user_id: "user-id",
+  instance_osmorphing_minion_pool_mappings: {
+    "instance-id": "minion-pool-id",
+  },
+  user_scripts: {
+    global: {
+      linux: "linux-script",
+      windows: "windows-script",
+    },
+    instances: {
+      "instance-id": "instance-script",
+    },
+  },
+  clone_disks: true,
+  skip_os_morphing: false,
 };
 
 export const DEPLOYMENT_ITEM_DETAILS_MOCK: DeploymentItemDetails = {

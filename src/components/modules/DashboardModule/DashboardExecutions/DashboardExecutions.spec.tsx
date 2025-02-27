@@ -41,6 +41,8 @@ const transferItem = (scenario: string, date: string): TransferItem => {
     transfer_result: null,
     last_execution_status: "",
     user_id: "",
+    clone_disks: false,
+    skip_os_morphing: false,
     scenario,
   };
 };

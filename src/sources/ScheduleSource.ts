@@ -31,9 +31,7 @@ class ScheduleSource {
           ? false
           : scheduleData.shutdown_instances,
       auto_deploy:
-        scheduleData.auto_deploy == null 
-          ? false
-          : scheduleData.auto_deploy,
+        scheduleData.auto_deploy == null ? false : scheduleData.auto_deploy,
     };
 
     if (scheduleData.expiration_date) {
@@ -94,8 +92,7 @@ class ScheduleSource {
         : undefined,
       shutdown_instances:
         s.shutdown_instance != null ? s.shutdown_instance : undefined,
-      auto_deploy:
-        s.auto_deploy != null ? s.auto_deploy : undefined,
+      auto_deploy: s.auto_deploy != null ? s.auto_deploy : undefined,
     }));
     schedules.sort(
       (a, b) =>
