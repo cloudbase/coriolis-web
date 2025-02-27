@@ -1,6 +1,6 @@
 {
-    "name": "WizardExecuteOptions",
-    "version": "0.0.0",
-    "private": true,
-    "main": "./WizardExecuteOptions.tsx"
-  }
+  "name": "WizardExecuteOptions",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./WizardExecuteOptions.tsx"
+}

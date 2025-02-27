@@ -235,10 +235,7 @@ class WizardStore {
     parentFieldName: string | undefined;
   }) {
     this.data = { ...this.data };
-    this.data.executeOptions = updateOptions(
-      this.data.executeOptions,
-      data
-    );
+    this.data.executeOptions = updateOptions(this.data.executeOptions, data);
   }
 
   @action updateNetworks(network: NetworkMap) {

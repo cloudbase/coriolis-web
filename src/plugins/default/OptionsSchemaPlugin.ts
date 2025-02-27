@@ -127,11 +127,7 @@ export const defaultGetDestinationEnv = (
   oldOptions?: { [prop: string]: any } | null
 ): any => {
   const env: any = {};
-  const specialOptions = [
-    "separate_vm",
-    "title",
-    "minion_pool_id",
-  ]
+  const specialOptions = ["separate_vm", "title", "minion_pool_id"]
     .concat(executionOptions.map(o => o.name))
     .concat(migrationImageOsTypes);
 

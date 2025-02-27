@@ -182,7 +182,7 @@ class Schedule extends React.Component<Props, State> {
     }
     const options: any = {};
     fields.forEach(f => {
-      options[f.name] = f.value || execOptions[f.name] || false;
+      options[f.name] = f.value || execOptions![f.name] || false;
     });
 
     if (this.state.selectedSchedule && this.state.selectedSchedule.id) {

@@ -18,9 +18,7 @@
     },
     "type": "transfer",
     "executions": [],
-    "instances": [
-      "Datacenter/dvincze-ol9-bios"
-    ],
+    "instances": ["Datacenter/dvincze-ol9-bios"],
     "reservation_id": "3e147d9c-7259-48a6-bf73-db399e972bae",
     "notes": "dvincze-ol9-bios",
     "origin_endpoint_id": "f8fd5f35-2c54-4786-b32d-8f6fb3b057e7",

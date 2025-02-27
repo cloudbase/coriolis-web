@@ -35,6 +35,8 @@ import WizardOptions, {
   INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS,
 } from "@src/components/modules/WizardModule/WizardOptions";
 import WizardStorage from "@src/components/modules/WizardModule/WizardStorage";
+import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
+import WizardExecuteOptions from "@src/components/modules/WizardModule/WizardExecuteOptions";
 
 import type { UpdateData, ActionItemDetails } from "@src/@types/MainItem";
 import {
@@ -56,11 +58,9 @@ import { deploymentFields, providerTypes } from "@src/constants";
 import configLoader from "@src/utils/Config";
 import LoadingButton from "@src/components/ui/LoadingButton";
 import minionPoolStore from "@src/stores/MinionPoolStore";
-import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
 import networkStore from "@src/stores/NetworkStore";
 import { ThemeProps } from "@src/components/Theme";
 import ObjectUtils from "@src/utils/ObjectUtils";
-import WizardExecuteOptions from "@src/components/modules/WizardModule/WizardExecuteOptions/WizardExecuteOptions";
 
 const PanelContent = styled.div<any>`
   display: flex;
@@ -707,7 +707,7 @@ class TransferItemModal extends React.Component<Props, State> {
   handleDeployFieldChange(field: Field, value: any) {
     const data = this.state.deployData;
     data[field.name] = value;
-    this.setState({ deployData: { ...this.state.deployData, ...data }});
+    this.setState({ deployData: { ...this.state.deployData, ...data } });
   }
 
   async handleUpdateClick() {
@@ -902,10 +902,7 @@ class TransferItemModal extends React.Component<Props, State> {
         layout="modal"
         isSource={type === "source"}
         optionsLoading={optionsLoading}
-        optionsLoadingSkipFields={[
-          ...optionsLoadingSkipFields,
-          "description"
-        ]}
+        optionsLoadingSkipFields={[...optionsLoadingSkipFields, "description"]}
         dictionaryKey={dictionaryKey}
         executeNowOptionsDisabled={
           !providerStore.hasExecuteNowOptions(this.props.sourceEndpoint.type)
@@ -996,7 +993,7 @@ class TransferItemModal extends React.Component<Props, State> {
         data={this.state.deployData}
         getFieldValue={(f, d) => this.getDeployFieldValue(f, d)}
       />
-    )
+    );
   }
 
   renderContent() {
@@ -1101,8 +1098,8 @@ class TransferItemModal extends React.Component<Props, State> {
 
     navigationItems.push({
       value: "deploy_options",
-      label: "Deploy Options"
-    })
+      label: "Deploy Options",
+    });
 
     return (
       <Modal

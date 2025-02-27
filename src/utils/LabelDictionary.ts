@@ -96,7 +96,7 @@ const dictionary = {
     label: "Auto Deploy",
     description:
       "When enabled, the transfer will automatically deploy the instances on the destination cloud after the transfer is complete.",
-  }
+  },
 };
 
 const cache: {

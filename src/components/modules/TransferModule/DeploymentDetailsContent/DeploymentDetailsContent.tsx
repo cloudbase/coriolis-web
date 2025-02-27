@@ -168,7 +168,9 @@ class DeploymentDetailsContent extends React.Component<Props> {
           <NoPendingDeploymentTitle>
             Current deployment is waiting for its deployer execution to finish.
           </NoPendingDeploymentTitle>
-          <StyledButton onClick={this.props.onShowExecutionClick}>Show Execution</StyledButton>
+          <StyledButton onClick={this.props.onShowExecutionClick}>
+            Show Execution
+          </StyledButton>
         </PendingMessage>
       );
     }
@@ -180,7 +182,9 @@ class DeploymentDetailsContent extends React.Component<Props> {
           <ErrorMessage>
             The deployer execution was not able to complete.
           </ErrorMessage>
-          <StyledButton onClick={this.props.onShowExecutionClick}>Show Execution</StyledButton>
+          <StyledButton onClick={this.props.onShowExecutionClick}>
+            Show Execution
+          </StyledButton>
         </PendingMessage>
       );
     }
@@ -200,9 +204,9 @@ class DeploymentDetailsContent extends React.Component<Props> {
         <DetailsBody>
           {this.renderMainDetails()}
           {this.renderTasks()}
-          {this.props.page === "tasks" && !this.props.item?.tasks ? (
-            this.renderPendingMessage()
-          ) : null}
+          {this.props.page === "tasks" && !this.props.item?.tasks
+            ? this.renderPendingMessage()
+            : null}
         </DetailsBody>
       </Wrapper>
     );

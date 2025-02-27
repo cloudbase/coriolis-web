@@ -45,6 +45,6 @@ describe("WizardOptions", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(<WizardOptions {...defaultProps} />);
-    expect(getByText("Execute Now")).toBeTruthy();
+    expect(getByText("Target Minion Pool")).toBeTruthy();
   });
 });

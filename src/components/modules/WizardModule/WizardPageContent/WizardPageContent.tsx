@@ -30,13 +30,18 @@ import WizardOptions from "@src/components/modules/WizardModule/WizardOptions";
 import WizardScripts from "@src/components/modules/WizardModule/WizardScripts";
 import WizardStorage from "@src/components/modules/WizardModule/WizardStorage";
 import WizardSummary from "@src/components/modules/WizardModule/WizardSummary";
-import WizardExecuteOptions from "@src/components/modules/WizardModule/WizardExecuteOptions/WizardExecuteOptions";
+import WizardExecuteOptions from "@src/components/modules/WizardModule/WizardExecuteOptions";
 import WizardType from "@src/components/modules/WizardModule/WizardType";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
 import InfoIcon from "@src/components/ui/InfoIcon";
 import LoadingButton from "@src/components/ui/LoadingButton";
-import { deploymentFields, executeOptionsWithExecuteNow, providerTypes, wizardPages } from "@src/constants";
+import {
+  deploymentFields,
+  executeOptionsWithExecuteNow,
+  providerTypes,
+  wizardPages,
+} from "@src/constants";
 import endpointStore from "@src/stores/EndpointStore";
 import instanceStore from "@src/stores/InstanceStore";
 import minionPoolStore from "@src/stores/MinionPoolStore";
@@ -174,10 +179,7 @@ type Props = {
     global: string | null,
     instanceName: string | null
   ) => void;
-  onTransferExecuteOptionsChange: (
-    field: Field,
-    value: any,
-  ) => void;
+  onTransferExecuteOptionsChange: (field: Field, value: any) => void;
 };
 type TimezoneValue = "local" | "utc";
 type State = {
@@ -642,7 +644,10 @@ class WizardPageContent extends React.Component<Props, State> {
             destinationSchema={this.props.providerStore.destinationSchema}
             uploadedUserScripts={this.props.uploadedUserScripts}
             minionPools={this.props.minionPoolStore.minionPools}
-            executionOptions={[...executeOptionsWithExecuteNow, ...deploymentFields]}
+            executionOptions={[
+              ...executeOptionsWithExecuteNow,
+              ...deploymentFields,
+            ]}
           />
         );
         break;

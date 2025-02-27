@@ -103,7 +103,10 @@ class WizardSource {
     }
 
     deploymentFields.forEach(option => {
-      if (data.executeOptions && data.executeOptions[option.name] !== undefined) {
+      if (
+        data.executeOptions &&
+        data.executeOptions[option.name] !== undefined
+      ) {
         payload[option.name] = data.executeOptions[option.name];
       }
     });

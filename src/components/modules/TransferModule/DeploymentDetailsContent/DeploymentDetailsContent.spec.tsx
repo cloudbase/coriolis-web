@@ -53,6 +53,7 @@ describe("DeploymentDetailsContent", () => {
       endpoints: [OPENSTACK_ENDPOINT_MOCK, VMWARE_ENDPOINT_MOCK],
       page: "",
       onDeleteDeploymentClick: jest.fn(),
+      onShowExecutionClick: jest.fn(),
     };
   });
 

@@ -79,14 +79,15 @@ describe("Dashboard", () => {
     cy.wait(["@transfers", "@endpoints"]);
 
     cy.loadFixtures(
-      [
-        "transfers/replicas.json",
-        "endpoints/endpoints.json",
-      ],
+      ["transfers/replicas.json", "endpoints/endpoints.json"],
       results => {
         const [transfersFixture, endpointsFixture] = results;
-        const replicasCount = transfersFixture.transfers.filter(transfer => transfer.scenario === "replica").length;
-        const migrationsCount = transfersFixture.transfers.filter(transfer => transfer.scenario === "live_migration").length;
+        const replicasCount = transfersFixture.transfers.filter(
+          transfer => transfer.scenario === "replica"
+        ).length;
+        const migrationsCount = transfersFixture.transfers.filter(
+          transfer => transfer.scenario === "live_migration"
+        ).length;
 
         cy.get("div[class^='DashboardInfoCount__CountBlock']").should(
           "contain.text",
