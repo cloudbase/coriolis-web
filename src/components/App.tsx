@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { hot } from "react-hot-loader/root";
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import IdleTimer from "react-idle-timer";
 import styled, { createGlobalStyle } from "styled-components";
 import { observe } from "mobx";
 
@@ -86,6 +87,10 @@ class App extends React.Component<Record<string, unknown>, State> {
   state = {
     isConfigReady: false,
   };
+
+  onIdle() {
+    userStore.logout();
+  }
 
   async componentDidMount() {
     observe(userStore, "loggedUser", () => {
@@ -195,6 +200,13 @@ class App extends React.Component<Record<string, unknown>, State> {
     return (
       <Wrapper>
         <GlobalStyle />
+        {configLoader.config.inactiveSessionTimeout > 0 ? (
+          <IdleTimer
+            timeout={configLoader.config.inactiveSessionTimeout}
+            throttle={500}
+            onIdle={this.onIdle}
+          />
+        ) : null}
         <Router>
           <Switch>
             {configLoader.isFirstLaunch ? (

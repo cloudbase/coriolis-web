@@ -31,6 +31,9 @@ const conf: Config = {
   // The timeout between polling requests
   requestPollTimeout: 5000,
 
+  // The timeout for an inactive user session (in ms). Set 0 to disable.
+  inactiveSessionTimeout: 0,
+
   // - Specifies the `limit` for each provider when listing all its VMs for pagination.
   // - If the provider is not in this list, the 'default' value will be used.
   // - If the `default` value is lower than the number of instances that
