@@ -43,4 +43,5 @@ export type Config = {
   servicesUrls: Services;
   maxMinionPoolEventsPerPage: number;
   bareMetalEndpointName: string;
+  inactiveSessionTimeout: number;
 };
