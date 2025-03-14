@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2022  Cloudbase Solutions SRL
+Copyright (C) 2025  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -12,18 +12,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import express from "express";
-import bodyParser from "body-parser";
-import metalHubProxy from "./metalHubProxy";
-import azureProxy from "./azureProxy";
-import disclaimerProxy from "./disclaimerProxy";
+import apiCaller from "@src/utils/ApiCaller";
 
-const router = express.Router();
+class DisclaimerSource {
+  async loadDisclaimer(): Promise<string> {
+    return (
+      await apiCaller.send({
+        url: "/proxy/disclaimer",
+        quietError: true,
+      })
+    ).data;
+  }
+}
 
-router.use(bodyParser.json());
-
-azureProxy(router);
-metalHubProxy(router);
-disclaimerProxy(router);
-
-export default router;
+export default new DisclaimerSource();
