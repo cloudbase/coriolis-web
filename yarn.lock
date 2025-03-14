@@ -1644,11 +1644,11 @@ __metadata:
   linkType: hard
 
 "@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4":
-  version: 7.23.1
-  resolution: "@babel/runtime@npm:7.23.1"
+  version: 7.26.10
+  resolution: "@babel/runtime@npm:7.26.10"
   dependencies:
     regenerator-runtime: ^0.14.0
-  checksum: 0cd0d43e6e7dc7f9152fda8c8312b08321cda2f56ef53d6c22ebdd773abdc6f5d0a69008de90aa41908d00e2c1facb24715ff121274e689305c858355ff02c70
+  checksum: 22d2e0abb86e90de489ab16bb578db6fe2b63a88696db431198b24963749820c723f1982298cdbbea187f7b2b80fb4d98a514faf114ddb2fdc14a4b96277b955
   languageName: node
   linkType: hard
 
@@ -6687,6 +6687,7 @@ __metadata:
     react-datetime: ^3.1.1
     react-dom: ^16.13.1
     react-hot-loader: ^4.12.17
+    react-idle-timer: ^4.3.6
     react-modal: ^3.11.2
     react-motion: ^0.5.2
     react-notification-system: ^0.4.0
@@ -14609,6 +14610,17 @@ __metadata:
     "@types/react":
       optional: true
   checksum: f90890d5160dcb2bfae4022cba065d8e5c26b86f34c4604cbbdd39f5e4dfd82c05c317bb05ef3d4da2aa0be7e8e205c905daea1af40d3a7ef0d07c3d289da11c
+  languageName: node
+  linkType: hard
+
+"react-idle-timer@npm:^4.3.6":
+  version: 4.6.4
+  resolution: "react-idle-timer@npm:4.6.4"
+  peerDependencies:
+    prop-types: ">=15"
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: c5dc791fc6c9188f891e3d38b17575aae7816af5df9fd178b84d94e35dda4e1aa06d286df404cf0701be0b628dda4527d804fbd06f004e552528df2ff5893dfc
   languageName: node
   linkType: hard
 
