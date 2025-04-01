@@ -16,7 +16,7 @@ Web GUI for [coriolis](https://github.com/cloudbase/coriolis)
 
 Build the production version of the UI:
 
-- run `npm run build`
+- run `npm run build:prod`
 - run `npm run start` to start the server
 
 Your server will be running at `http://localhost:3000/` (the port is configurable through `PORT` environment variable)

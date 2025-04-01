@@ -14,11 +14,13 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
   return prev;
 }, {});
 
+envKeys['process.env'] = JSON.stringify(env);
+
 module.exports = {
   entry: "./src/index.tsx",
   output: {
-    filename: "[name].[hash].bundle.js",
-    chunkFilename: "[name].[hash].bundle.js",
+    filename: "[name].[contenthash].bundle.js",
+    chunkFilename: "[name].[contenthash].bundle.js",
     path: path.resolve(__dirname, "dist"),
     publicPath: "/",
   },
@@ -26,8 +28,20 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin(envKeys),
     new CleanWebpackPlugin(),
-    new CopyPlugin({ patterns: ["./public"] }),
-    new HtmlWebpackPlugin({ template: "./public/index.html" }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, "public"),
+          globOptions: {
+            ignore: ["**/index.html"],
+          },
+          noErrorOnMissing: true,
+        },
+      ]
+    }),
+    new HtmlWebpackPlugin({
+      template: "./public/index.html"
+    }),
   ],
   resolve: {
     modules: [__dirname, "src", "node_modules"],
@@ -45,10 +59,14 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|svg|woff2?|ttf|eot)$/,
-        loader: "url-loader",
-        options: {
-          limit: 8192,
-          name: "./assets/[hash].[ext]",
+        type: "asset",
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8192,
+          },
+        },
+        generator: {
+          filename: "assets/[name].[contenthash][ext]",
         },
       },
     ],
