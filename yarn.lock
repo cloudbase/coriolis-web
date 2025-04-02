@@ -19095,8 +19095,8 @@ __metadata:
   linkType: hard
 
 "ws@npm:^7.4.6":
-  version: 7.5.9
-  resolution: "ws@npm:7.5.9"
+  version: 7.5.10
+  resolution: "ws@npm:7.5.10"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ^5.0.2
@@ -19105,11 +19105,11 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: c3c100a181b731f40b7f2fddf004aa023f79d64f489706a28bc23ff88e87f6a64b3c6651fbec3a84a53960b75159574d7a7385709847a62ddb7ad6af76f49138
+  checksum: f9bb062abf54cc8f02d94ca86dcd349c3945d63851f5d07a3a61c2fcb755b15a88e943a63cf580cbdb5b74436d67ef6b67f745b8f7c0814e411379138e1863cb
   languageName: node
   linkType: hard
 
-"ws@npm:^8.18.0":
+"ws@npm:^8.18.0, ws@npm:^8.2.3":
   version: 8.18.1
   resolution: "ws@npm:8.18.1"
   peerDependencies:
@@ -19121,21 +19121,6 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 4658357185d891bc45cc2d42a84f9e192d047e8476fb5cba25b604f7d75ca87ca0dd54cd0b2cc49aeee57c79045a741cb7d0b14501953ac60c790cd105c42f23
-  languageName: node
-  linkType: hard
-
-"ws@npm:^8.2.3":
-  version: 8.14.2
-  resolution: "ws@npm:8.14.2"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 3ca0dad26e8cc6515ff392b622a1467430814c463b3368b0258e33696b1d4bed7510bc7030f7b72838b9fdeb8dbd8839cbf808367d6aae2e1d668ce741d4308b
   languageName: node
   linkType: hard
 
