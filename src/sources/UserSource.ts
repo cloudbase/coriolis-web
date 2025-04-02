@@ -62,8 +62,6 @@ class UserSource {
       },
     };
 
-    Api.setDefaultHeader("X-Auth-Token", null);
-
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.keystone}/auth/tokens`,
       method: "POST",
@@ -73,8 +71,8 @@ class UserSource {
       ? response.headers["X-Subject-Token"] ||
         response.headers["x-subject-token"]
       : "";
-    Api.setDefaultHeader("X-Auth-Token", token);
-    cookie.set("unscopedToken", token, { expires: 30 });
+    Api.setDefaultHeader("X-Auth-Token", token ?? null);
+    cookie.set("unscopedToken", token ?? "", { expires: 30 });
     return response.data;
   }
 
