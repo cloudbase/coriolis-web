@@ -150,7 +150,7 @@ class ApiCaller {
   }
 
   setDefaultHeader(name: string, value: string | null) {
-    axios.defaults.headers.common[name] = value;
+    axios.defaults.headers.common[name] = value ?? undefined;
   }
 }
 
