@@ -148,7 +148,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               licenceError={licenceStore.licenceInfoError}
               transfersLoading={transferStore.loading}
               onNewTransferClick={() => {
-                this.props.history.push("/wizard/replica");
+                this.props.history.push("/wizard/migration");
               }}
               onNewEndpointClick={() => {
                 this.handleNewEndpointClick();

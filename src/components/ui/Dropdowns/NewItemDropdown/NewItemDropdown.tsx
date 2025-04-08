@@ -176,7 +176,7 @@ class NewItemDropdown extends React.Component<Props, State> {
     const items: ItemType[] = [
       {
         title: "Transfer",
-        href: "/wizard/replica",
+        href: "/wizard/migration",
         description: "Incrementally transfer VMs between two clouds",
         iconName: "replica",
       },
