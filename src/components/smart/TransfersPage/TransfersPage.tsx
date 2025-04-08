@@ -243,7 +243,7 @@ class TransfersPage extends React.Component<{ history: any }, State> {
   }
 
   handleEmptyListButtonClick() {
-    this.props.history.push("/wizard/replica");
+    this.props.history.push("/wizard/migration");
   }
 
   handleModalOpen() {

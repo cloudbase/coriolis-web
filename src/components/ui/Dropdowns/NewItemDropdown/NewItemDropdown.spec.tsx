@@ -42,7 +42,7 @@ describe("NewItemDropdown", () => {
     render(<NewItemDropdown onChange={() => {}} />);
     TestUtils.select("DropdownButton__Wrapper")!.click();
     const listItems = TestUtils.selectAll("NewItemDropdown__ListItem");
-    expect(listItems[0].getAttribute("to")).toBe("/wizard/replica");
+    expect(listItems[0].getAttribute("to")).toBe("/wizard/migration");
     expect(listItems[1].getAttribute("to")).toBe("#");
   });
 });
