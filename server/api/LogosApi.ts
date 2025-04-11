@@ -54,7 +54,7 @@ const getOptimalLogoHeightKey = (
 };
 
 export default (router: express.Router) => {
-  router.get("/logos/:provider/:size/:style?", (req, res) => {
+  router.get("/logos/:provider/:size{/:style}", (req, res) => {
     const SIZES = [32, 42, 64, 128];
     const STYLES = ["white", "disabled"];
     const { provider, style } = req.params;
