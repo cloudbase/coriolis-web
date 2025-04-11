@@ -58,7 +58,7 @@ export default (router: express.Router) => {
     }
   });
 
-  router.get("/azure/*", (req, res) => {
+  router.get("/azure/*path", (req, res) => {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     const url = Buffer.from(
       req.url.substr("/proxy/".length),

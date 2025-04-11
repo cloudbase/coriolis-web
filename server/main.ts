@@ -30,7 +30,7 @@ export default () => {
 
   app.use("/api", apiRouter);
 
-  app.get("*", (_, res) => {
+  app.get("/*path", (_, res) => {
     res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
   });
 
