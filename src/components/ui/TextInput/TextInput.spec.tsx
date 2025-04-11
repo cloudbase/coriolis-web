@@ -32,7 +32,7 @@ describe("TextInput", () => {
       window
         .getComputedStyle(TestUtils.select("TextInput__Input")!)
         .borderColor.toUpperCase();
-    expect(getBorderColor()).toBe(ThemePalette.primary);
+    expect(getBorderColor()).toBe(ThemePalette.grayscale[3].toUpperCase());
 
     rerender(<TextInput highlight />);
     expect(getBorderColor()).toBe(ThemePalette.alert);
