@@ -90,7 +90,7 @@ class EndpointSource {
       url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${
         uuid || "undefined"
       }/payload`,
-      responseType: "text",
+      responseType: "json",
       headers: { Accept: "text/plain" },
     });
     return response.data;
@@ -142,7 +142,7 @@ class EndpointSource {
         }
         const response = await Api.send({
           url: `${configLoader.config.servicesUrls.barbican}/v1/secrets/${uuid}/payload`,
-          responseType: "text",
+          responseType: "json",
           headers: { Accept: "text/plain" },
         });
         return { ...endpoint, connection_info: response.data };
