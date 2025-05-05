@@ -79,7 +79,9 @@ const WrappedLink = (props: any) => (
       if (props.customRef) props.customRef(r);
     }}
   >
-    <Link to={props.to} style={{ display: "flex", width: "100%" }} />
+    <Link to={`../${props.to}`} style={{ display: "flex", width: "100%" }}>
+      {props.children}
+    </Link>
   </div>
 );
 const TinyLogo = styled(WrappedLink)`

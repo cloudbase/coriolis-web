@@ -12,10 +12,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { hot } from "react-hot-loader/root";
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import IdleTimer from "react-idle-timer";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { IdleTimerComponent } from "react-idle-timer";
 import styled, { createGlobalStyle } from "styled-components";
 import { observe } from "mobx";
 
@@ -115,7 +114,6 @@ class App extends React.Component<Record<string, unknown>, State> {
 
     const renderMessagePage = (options: {
       path: string;
-      exact?: boolean;
       title: string;
       subtitle: string;
       showAuthAnimation?: boolean;
@@ -124,7 +122,6 @@ class App extends React.Component<Record<string, unknown>, State> {
       <Route
         path={options.path}
         // @ts-ignore
-        exact={options.exact}
         render={() => (
           <MessagePage
             title={options.title}
@@ -138,29 +135,26 @@ class App extends React.Component<Record<string, unknown>, State> {
 
     const renderRoute = (
       path: string,
-      component: React.ReactNode,
-      exact?: boolean
+      element: React.ReactNode,
     ) => {
       if (!userStore.loggedUser) {
         return renderMessagePage({
           path,
-          exact,
           title: "Authenticating...",
           subtitle: "Please wait while authenticating user.",
           showAuthAnimation: true,
         });
       }
       // @ts-ignore
-      return <Route path={path} component={component} exact={exact} />;
+      return <Route path={path} element={element} />;
     };
 
     const renderOptionalRoute = (opts: {
       name: string;
-      component: React.ReactNode;
+      element: React.ReactNode;
       path?: string;
-      exact?: boolean;
     }) => {
-      const { name, component, path, exact } = opts;
+      const { name, element, path } = opts;
       if (configLoader.config.disabledPages.find(p => p === name)) {
         return null;
       }
@@ -169,12 +163,11 @@ class App extends React.Component<Record<string, unknown>, State> {
         navigationMenu.find(n => n.value === name && n.requiresAdmin)
       );
       if (!requiresAdmin) {
-        return renderRoute(actualPath, component, exact);
+        return renderRoute(actualPath, element);
       }
       if (!userStore.loggedUser || userStore.loggedUser.isAdmin == null) {
         return renderMessagePage({
           path: actualPath,
-          exact,
           title: "Checking permissions...",
           subtitle: "Please wait while checking user's permissions.",
           showAuthAnimation: true,
@@ -183,16 +176,15 @@ class App extends React.Component<Record<string, unknown>, State> {
       if (userStore.loggedUser?.isAdmin === false) {
         return renderMessagePage({
           path: actualPath,
-          exact,
           title: "User doesn't have permissions to view this page",
           subtitle:
-            "Please login in with an administrator acount to view this page.",
+            "Please login in with an administrator account to view this page.",
           showDenied: true,
         });
       }
       if (userStore.loggedUser?.isAdmin) {
         // @ts-ignore
-        return <Route path={actualPath} exact={exact} component={component} />;
+        return <Route path={actualPath} element={element} />;
       }
       return null;
     };
@@ -201,67 +193,68 @@ class App extends React.Component<Record<string, unknown>, State> {
       <Wrapper>
         <GlobalStyle />
         {configLoader.config.inactiveSessionTimeout > 0 ? (
-          <IdleTimer
+          <IdleTimerComponent
             timeout={configLoader.config.inactiveSessionTimeout}
             throttle={500}
             onIdle={this.onIdle}
           />
         ) : null}
         <Router>
-          <Switch>
+          <Routes>
             {configLoader.isFirstLaunch ? (
               // @ts-ignore
-              <Route path="/" component={SetupPage} exact />
+              <Route path="/" element={<SetupPage />} />
             ) : (
               // @ts-ignore
-              renderRoute("/", DashboardPage, true)
+              renderRoute("/", <DashboardPage />)
             )}
             {
               // @ts-ignore
-              <Route path="/login" component={LoginPage} />
+              <Route path="/login" element={<LoginPage />} />
             }
-            {renderRoute("/dashboard", DashboardPage)}
-            {renderRoute("/transfers", TransfersPage, true)}
-            {renderRoute("/transfers/:id", TransferDetailsPage, true)}
-            {renderRoute("/transfers/:id/:page", TransferDetailsPage)}
-            {renderRoute("/deployments", DeploymentsPage, true)}
-            {renderRoute("/deployments/:id", DeploymentDetailsPage, true)}
-            {renderRoute("/deployments/:id/:page", DeploymentDetailsPage)}
-            {renderRoute("/endpoints", EndpointsPage, true)}
-            {renderRoute("/endpoints/:id", EndpointDetailsPage)}
-            {renderRoute("/minion-pools", MinionPoolsPage, true)}
-            {renderRoute("/minion-pools/:id", MinionPoolDetailsPage, true)}
-            {renderRoute("/minion-pools/:id/:page", MinionPoolDetailsPage)}
-            {renderRoute("/bare-metal-servers", MetalHubServersPage, true)}
-            {renderRoute("/bare-metal-servers/:id", MetalHubServerDetailsPage)}
-            {renderRoute("/wizard/:type", WizardPage)}
+            {renderRoute("/dashboard", <DashboardPage />)}
+            {renderRoute("/transfers", <TransfersPage />)}
+            {renderRoute("/transfers/:id", <TransferDetailsPage />)}
+            {renderRoute("/transfers/:id/:page", <TransferDetailsPage />)}
+            {renderRoute("/deployments", <DeploymentsPage />)}
+            {renderRoute("/deployments/:id", <DeploymentDetailsPage />)}
+            {renderRoute("/deployments/:id/:page", <DeploymentDetailsPage />)}
+            {renderRoute("/endpoints", <EndpointsPage />)}
+            {renderRoute("/endpoints/:id", <EndpointDetailsPage />)}
+            {renderRoute("/minion-pools", <MinionPoolsPage />)}
+            {renderRoute("/minion-pools/:id", <MinionPoolDetailsPage />)}
+            {renderRoute("/minion-pools/:id/:page", <MinionPoolDetailsPage />)}
+            {renderRoute("/bare-metal-servers", <MetalHubServersPage />)}
+            {renderRoute(
+              "/bare-metal-servers/:id",
+              <MetalHubServerDetailsPage />,
+            )}
+            {renderRoute("/wizard/:type", <WizardPage />)}
             {renderOptionalRoute({
               name: "users",
-              component: UsersPage,
-              exact: true,
+              element: <UsersPage />,
             })}
             {renderOptionalRoute({
               name: "users",
-              component: UserDetailsPage,
+              element: <UserDetailsPage />,
               path: "/users/:id",
             })}
             {renderOptionalRoute({
               name: "projects",
-              component: ProjectsPage,
-              exact: true,
+              element: <ProjectsPage />,
             })}
             {renderOptionalRoute({
               name: "projects",
-              component: ProjectDetailsPage,
+              element: <ProjectDetailsPage />,
               path: "/projects/:id",
             })}
-            {renderOptionalRoute({ name: "logging", component: LogsPage })}
-            {renderRoute("/streamlog", LogStreamPage)}
+            {renderOptionalRoute({ name: "logging", element: <LogsPage /> })}
+            {renderRoute("/streamlog", <LogStreamPage />)}
             {
               // @ts-ignore
-              <Route component={MessagePage} />
+            <Route path="*" element={<MessagePage />} />
             }
-          </Switch>
+          </Routes>
         </Router>
         <NotificationsModule />
         <Tooltip />
@@ -270,4 +263,4 @@ class App extends React.Component<Record<string, unknown>, State> {
   }
 }
 
-export default hot(App);
+export default App;
