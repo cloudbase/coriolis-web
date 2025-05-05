@@ -248,7 +248,6 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
         {this.props.endpoints.map((endpoint, i) => {
           if (typeof endpoint === "string") {
             return (
-              // eslint-disable-next-line react/no-array-index-key
               <InvalidEndpoint key={i}>
                 File may contain an unsupported provider type: {endpoint}
               </InvalidEndpoint>

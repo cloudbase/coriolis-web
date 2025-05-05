@@ -12,7 +12,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable max-classes-per-file */
 
 import React from "react";
 import { storiesOf } from "@storybook/react";
@@ -49,7 +48,7 @@ class Wrapper extends React.Component<any, any> {
         onChange={item => {
           this.handleChange(item);
         }}
-        // eslint-disable-next-line react/jsx-props-no-spreading
+         
         {...this.props}
       />
     );
@@ -91,7 +90,7 @@ class MultipleSelectionWrapper extends React.Component<Props, State> {
             }));
           }
         }}
-        // eslint-disable-next-line react/jsx-props-no-spreading
+         
         {...this.props}
       />
     );

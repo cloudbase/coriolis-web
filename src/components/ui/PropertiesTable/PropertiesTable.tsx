@@ -187,7 +187,6 @@ class PropertiesTable extends React.Component<Props> {
         <Dropdown
           noSelectionMessage="Choose a value"
           dimFirstItem
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...commonProps}
         />
       );
@@ -195,7 +194,6 @@ class PropertiesTable extends React.Component<Props> {
     return (
       <AutocompleteDropdown
         dimNullValue
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...commonProps}
       />
     );

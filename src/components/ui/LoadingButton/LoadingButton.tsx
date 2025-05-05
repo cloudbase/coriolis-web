@@ -45,7 +45,6 @@ type Props = {
 class LoadingButton extends React.Component<Props> {
   render() {
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <ButtonStyled {...this.props} disabled>
         <span>
           {this.props.children}
