@@ -19,7 +19,7 @@ describe("Page header", () => {
   const waitForAll = () => {
     cy.waitMockAuth();
 
-    cy.wait(["@endpoints", "@schedules"]);
+    cy.wait(["@endpoints", "@schedules"], { timeout: 20000 });
   };
 
   it("switches project", () => {

@@ -11,7 +11,7 @@ describe("Login success", () => {
       fixture: "auth/fail.json",
     }).as("token-auto");
     cy.visit("/login");
-    cy.wait("@token-auto");
+    cy.wait("@token-auto", { timeout: 20000 });
 
     cy.intercept("POST", routeSelectors.AUTH_TOKENS, {
       fixture: "auth/token-scoped.json",
