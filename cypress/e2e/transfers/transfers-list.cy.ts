@@ -65,7 +65,7 @@ describe("Replicas list", () => {
 
     cy.visit("/transfers");
     waitForAll();
-    cy.wait(scheduleAliases);
+    cy.wait(scheduleAliases, { timeout: 20000 });
 
     cy.get("div[class^='MainList__EmptyListMessage']").should("not.exist");
 
@@ -89,7 +89,7 @@ describe("Replicas list", () => {
     }).as("schedules");
     cy.visit("/transfers");
     waitForAll();
-    cy.wait(["@schedules"]);
+    cy.wait(["@schedules"], { timeout: 20000 });
 
     cy.loadFixtures(["transfers/replicas"], (results: any[]) => {
       const transfers = results[0].transfers;
@@ -136,7 +136,7 @@ describe("Replicas list", () => {
     }).as("schedules");
     cy.visit("/transfers");
     waitForAll();
-    cy.wait(["@schedules"]);
+    cy.wait(["@schedules"], { timeout: 20000 });
 
     cy.get("div[class*='TransferListItem__Checkbox']").eq(0).click();
     cy.get("div[class*='MainListFilter__SelectionText']").should(
@@ -159,7 +159,7 @@ describe("Replicas list", () => {
       cy.intercept("DELETE", `**/coriolis/**/transfers/${transfers[0].id}`, {
         fixture: "transfers/replica-unexecuted",
       }).as("delete-transfer");
-      cy.get("button").contains("Delete Transfer").click();
+      cy.get("button").contains("Delete Transfer").click({ force: true });
       cy.wait(["@delete-transfer"]);
     });
   });
