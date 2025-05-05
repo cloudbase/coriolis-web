@@ -1,10 +1,9 @@
-FROM node:18
+FROM node:22.13.1
 
 WORKDIR /root/coriolis-web
 
 COPY ./ .
 
-ENV NODE_OPTIONS=--openssl-legacy-provider
 ENV NODE_ENV=production
 
 RUN corepack enable
