@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 18.x
+          node-version: 22.x
 
       - name: Setup Corepack
         run: corepack enable
@@ -37,7 +37,6 @@ jobs:
 
       - name: Development build
         env:
-          NODE_OPTIONS: "--openssl-legacy-provider"
           NODE_ENV: development
         run: npm run build:dev
 
