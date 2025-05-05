@@ -114,7 +114,6 @@ class ApiLogger {
       options.requestError.response &&
       options.requestError.response.data
     ) {
-      // eslint-disable-next-line no-param-reassign
       options.requestError = options.requestError.response.data.error;
     }
 

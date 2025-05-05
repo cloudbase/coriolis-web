@@ -127,7 +127,6 @@ type Props = {
 };
 const TextInput = (props: Props) => {
   const {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     _ref,
     value,
     onChange,
@@ -150,7 +149,6 @@ const TextInput = (props: Props) => {
         type="text"
         value={value}
         onChange={onChange}
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...otherProps}
         onKeyDown={onInputKeyDown}
         disabled={actualDisabled}

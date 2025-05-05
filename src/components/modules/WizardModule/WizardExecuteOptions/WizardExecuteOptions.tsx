@@ -298,7 +298,6 @@ class WizardExecuteOptions extends React.Component<Props, State> {
         width={this.props.fieldWidth || ThemeProps.inputSizes.wizard.width}
         nullableBoolean={field.nullableBoolean}
         disabled={field.disabled}
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...additionalProps}
       />
     );

@@ -12,7 +12,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable react/jsx-props-no-spreading */
 
 import * as React from "react";
 import { observer } from "mobx-react";
@@ -72,7 +71,6 @@ class RadioInput extends React.Component<Props> {
   }
 
   render() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { onChange, ...props } = this.props;
     const disabled = this.props.disabled || this.props.disabledLoading;
     return (

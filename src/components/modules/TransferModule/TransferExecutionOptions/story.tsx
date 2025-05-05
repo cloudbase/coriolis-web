@@ -18,7 +18,6 @@ import ReplicaExecutionOptions from ".";
 
 const props: any = {};
 storiesOf("ReplicaExecutionOptions", module).add("default", () => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <div style={{ width: "562px" }}>
     <ReplicaExecutionOptions {...props} />
   </div>

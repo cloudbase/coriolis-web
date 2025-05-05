@@ -172,7 +172,6 @@ class ContentPlugin extends React.Component<Props, State> {
     return fieldValue;
   }
 
-  // eslint-disable-next-line react/no-unused-class-component-methods
   findInvalidFields = () => {
     const inputChoices = ["user_domain", "project_domain"];
 
@@ -396,7 +395,6 @@ class ContentPlugin extends React.Component<Props, State> {
           field.name === "ceph_options/ceph_conf_file" ||
           field.name === "ceph_options/ceph_keyring_file"
         ) {
-          // eslint-disable-next-line no-param-reassign
           field.useTextArea = true;
         }
 

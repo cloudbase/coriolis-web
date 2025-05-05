@@ -159,7 +159,6 @@ class ContentPlugin extends React.Component<Props, State> {
       : null;
   }
 
-  // eslint-disable-next-line react/no-unused-class-component-methods
   findInvalidFields = () => {
     const invalidFields: any[] = [];
     const selectedLoginTypeField = this.getSelectedLoginTypeField();

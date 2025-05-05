@@ -66,7 +66,6 @@ class Arrow extends React.Component<Props> {
     color = this.props.disabled ? ThemePalette.grayscale[0] : color;
     return (
       <Wrapper
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         dangerouslySetInnerHTML={{
           __html: this.props.thick ? arrowThickImage(color) : arrowImage(color),

@@ -66,7 +66,6 @@ class ContentPlugin extends React.Component<Props> {
     this.props.onRef(undefined);
   }
 
-  // eslint-disable-next-line react/no-unused-class-component-methods
   findInvalidFields = () =>
     findInvalidFields(
       this.props.connectionInfoSchema,

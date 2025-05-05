@@ -341,7 +341,6 @@ class EndpointsPage extends React.Component<Props, State> {
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={options => (
                 <EndpointListItem
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...options}
                   getUsage={endpoint => this.getEndpointUsage(endpoint.id)}
                 />

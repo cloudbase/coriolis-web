@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 /*
 Copyright (C) 2017  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify

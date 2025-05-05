@@ -145,7 +145,6 @@ class StatusIcon extends React.Component<Props> {
   render() {
     const { status } = this.props;
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <Wrapper {...this.props} status={status} />
     );
   }

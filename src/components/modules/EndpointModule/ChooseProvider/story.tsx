@@ -26,6 +26,5 @@ const providers: any = {
 };
 const props: any = {};
 storiesOf("ChooseProvider", module).add("all", () => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <ChooseProvider {...props} providers={providers} />
 ));

@@ -187,7 +187,6 @@ class DropdownButton extends React.Component<Props> {
     const disabled = this.props.disabled || this.props.disabledLoading;
     return (
       <Wrapper
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         disabled={disabled}
         disabledLoading={this.props.disabledLoading}
@@ -203,7 +202,6 @@ class DropdownButton extends React.Component<Props> {
         }}
       >
         <Label
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
           onClick={() => {}}
           ref={() => {}}
@@ -212,7 +210,6 @@ class DropdownButton extends React.Component<Props> {
           {this.props.value}
         </Label>
         <Arrow
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
           ref={(ref: HTMLElement) => {
             if (this.props.arrowRef) this.props.arrowRef(ref);
