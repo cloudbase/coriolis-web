@@ -37,7 +37,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
     }
 
     const exportMechField = fields.find(
-      f => f.name === "replica_export_mechanism"
+      f => f.name === "replica_export_mechanism",
     );
     if (!exportMechField) {
       return fields;
@@ -45,7 +45,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
     exportMechField.subFields = [];
     exportMechField.enum!.forEach((exportType: any) => {
       const exportTypeFieldIdx = fields.findIndex(
-        f => f.name === `${exportType}_options`
+        f => f.name === `${exportType}_options`,
       );
       if (exportTypeFieldIdx === -1) {
         return;

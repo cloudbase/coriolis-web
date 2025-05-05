@@ -48,7 +48,7 @@ class EndpointSource {
 
     connections.sort(
       (c1, c2) =>
-        new Date(c2.created_at).getTime() - new Date(c1.created_at).getTime()
+        new Date(c2.created_at).getTime() - new Date(c1.created_at).getTime(),
     );
     return connections;
   }
@@ -72,7 +72,7 @@ class EndpointSource {
   }
 
   async getConnectionInfo(
-    endpoint: Endpoint
+    endpoint: Endpoint,
   ): Promise<Endpoint["connection_info"]> {
     const index =
       endpoint.connection_info.secret_ref &&
@@ -146,7 +146,7 @@ class EndpointSource {
           headers: { Accept: "text/plain" },
         });
         return { ...endpoint, connection_info: response.data };
-      })
+      }),
     );
     return result;
   }
@@ -180,7 +180,7 @@ class EndpointSource {
       });
 
       const barbicanPayload = getBarbicanPayload(
-        ObjectUtils.skipFields(parsedConnectionInfo, ["secret_ref"])
+        ObjectUtils.skipFields(parsedConnectionInfo, ["secret_ref"]),
       );
       const response = await Api.send({
         url: `${configLoader.config.servicesUrls.barbican}/v1/secrets`,
@@ -252,7 +252,7 @@ class EndpointSource {
         url: `${configLoader.config.servicesUrls.barbican}/v1/secrets`,
         method: "POST",
         data: getBarbicanPayload(
-          ObjectUtils.skipFields(parsedConnectionInfo, ["secret_ref"])
+          ObjectUtils.skipFields(parsedConnectionInfo, ["secret_ref"]),
         ),
       });
 
@@ -310,7 +310,7 @@ class EndpointSource {
   async loadStorage(
     endpointId: string,
     data: any,
-    options?: { cache?: boolean }
+    options?: { cache?: boolean },
   ): Promise<Storage> {
     const env = DomUtils.encodeToBase64Url(data);
     const response = await Api.send({

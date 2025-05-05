@@ -29,11 +29,11 @@ class MetalHubSource {
     const endpoints = await EndpointSource.getEndpoints(true);
     const metalHubEndpointName = configLoader.config.bareMetalEndpointName;
     const metalHubEndpoint = endpoints.find(
-      endpoint => endpoint.name === metalHubEndpointName
+      endpoint => endpoint.name === metalHubEndpointName,
     );
     if (!metalHubEndpoint) {
       throw new Error(
-        `Could not find endpoint '${metalHubEndpointName}'. The endpoint name was configured in the config file and is needed in order to communicate with the Coriolis Metal Hub service.`
+        `Could not find endpoint '${metalHubEndpointName}'. The endpoint name was configured in the config file and is needed in order to communicate with the Coriolis Metal Hub service.`,
       );
     }
 
@@ -94,7 +94,7 @@ class MetalHubSource {
 
   async patchServer(
     serverId: number,
-    apiEndpoint: string
+    apiEndpoint: string,
   ): Promise<MetalHubServer> {
     const response = await apiCaller.send({
       url: `${configLoader.config.servicesUrls.metalhub}/servers/${serverId}`,

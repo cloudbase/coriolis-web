@@ -45,7 +45,7 @@ describe("Schedule", () => {
     const { getByText } = render(<Schedule {...defaultProps} />);
     expect(getByText("Add Schedule")).toBeTruthy();
     expect(TestUtils.select("Schedule__Timezone-")?.textContent).toContain(
-      "all times inUTC"
+      "all times inUTC",
     );
   });
 
@@ -54,13 +54,13 @@ describe("Schedule", () => {
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     await act(async () => {
       TestUtils.select("ScheduleItem__DeleteButton-")?.click();
     });
     expect(TestUtils.select("AlertModal__Message-")?.textContent).toContain(
-      "delete this schedule?"
+      "delete this schedule?",
     );
     const modal = TestUtils.select("AlertModal__Wrapper-")!;
     await act(async () => {
@@ -76,13 +76,13 @@ describe("Schedule", () => {
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     await act(async () => {
       TestUtils.select("ScheduleItem__DeleteButton-")?.click();
     });
     expect(TestUtils.select("AlertModal__Message-")?.textContent).toContain(
-      "delete this schedule?"
+      "delete this schedule?",
     );
     const modal = TestUtils.select("AlertModal__Wrapper-")!;
     await act(async () => {
@@ -98,23 +98,23 @@ describe("Schedule", () => {
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     const optionsButton = Array.from(document.querySelectorAll("button")).find(
-      el => el.textContent === "•••"
+      el => el.textContent === "•••",
     );
     await act(() => {
       optionsButton?.click();
     });
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
-      "Execution options"
+      "Execution options",
     );
     const modal = TestUtils.select("TransferExecutionOptions__Wrapper-")!;
     await act(async () => {
       TestUtils.select("Switch__InputWrapper-", modal)?.click();
     });
     const yesButton = Array.from(modal.querySelectorAll("button")).find(
-      el => el.textContent === "Save"
+      el => el.textContent === "Save",
     );
     expect(yesButton).toBeTruthy();
     await act(async () => {
@@ -128,20 +128,20 @@ describe("Schedule", () => {
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     const optionsButton = Array.from(document.querySelectorAll("button")).find(
-      el => el.textContent === "•••"
+      el => el.textContent === "•••",
     );
     await act(() => {
       optionsButton?.click();
     });
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
-      "Execution options"
+      "Execution options",
     );
     const modal = TestUtils.select("TransferExecutionOptions__Wrapper-")!;
     const noButton = Array.from(modal.querySelectorAll("button")).find(
-      el => el.textContent === "Cancel"
+      el => el.textContent === "Cancel",
     );
     expect(noButton).toBeTruthy();
     await act(async () => {
@@ -160,7 +160,7 @@ describe("Schedule", () => {
 
   it("adds a schedule with local timezone", () => {
     const { getByText } = render(
-      <Schedule {...defaultProps} timezone="local" />
+      <Schedule {...defaultProps} timezone="local" />,
     );
     getByText("Add Schedule").click();
     expect(defaultProps.onAddScheduleClick).toHaveBeenCalledWith({
@@ -178,7 +178,7 @@ describe("Schedule", () => {
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     const monthDropdown = TestUtils.select("DropdownButton__Wrapper-")!;
     expect(monthDropdown).toBeTruthy();
@@ -186,7 +186,7 @@ describe("Schedule", () => {
       monthDropdown.click();
     });
     const february = Array.from(
-      TestUtils.selectAll("Dropdown__ListItem-")!
+      TestUtils.selectAll("Dropdown__ListItem-")!,
     ).find(el => el.textContent === DateTime.local(2023, 2).monthLong);
     expect(february).toBeTruthy();
     await act(async () => {
@@ -197,7 +197,7 @@ describe("Schedule", () => {
       {
         schedule: { month: 2 },
       },
-      undefined
+      undefined,
     );
   });
 
@@ -207,7 +207,7 @@ describe("Schedule", () => {
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
         unsavedSchedules={[{ ...SCHEDULE_MOCK }]}
-      />
+      />,
     );
     TestUtils.select("ScheduleItem__SaveButton-")?.click();
     expect(defaultProps.onSaveSchedule).toHaveBeenCalled();
@@ -231,20 +231,20 @@ describe("Schedule", () => {
   it("renders primary no schedules", () => {
     render(<Schedule {...defaultProps} schedules={[]} />);
     expect(TestUtils.select("Schedule__NoSchedules-")?.textContent).toContain(
-      "has no Schedules"
+      "has no Schedules",
     );
   });
 
   it("renders secondary no schedules", () => {
     render(<Schedule {...defaultProps} schedules={[]} secondaryEmpty />);
     expect(TestUtils.select("Schedule__NoSchedules-")?.textContent).toContain(
-      "Schedule this Transfer"
+      "Schedule this Transfer",
     );
   });
 
   it("adds schedule from no schedules", () => {
     const { getByText, rerender } = render(
-      <Schedule {...defaultProps} schedules={[]} />
+      <Schedule {...defaultProps} schedules={[]} />,
     );
     getByText("Add Schedule").click();
     expect(defaultProps.onAddScheduleClick).toHaveBeenCalled();
@@ -257,7 +257,7 @@ describe("Schedule", () => {
     render(<Schedule {...defaultProps} />);
     const timezoneDropdown = TestUtils.select(
       "DropdownLink__LinkButton-",
-      TestUtils.select("Schedule__Timezone-")!
+      TestUtils.select("Schedule__Timezone-")!,
     )!;
     expect(timezoneDropdown).toBeTruthy();
     await act(async () => {

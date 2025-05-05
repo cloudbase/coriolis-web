@@ -104,7 +104,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
   get envData() {
     return this.getSchemaData(
       minionPoolStore.minionPoolEnvSchema,
-      minionPoolStore.minionPoolDetails?.environment_options
+      minionPoolStore.minionPoolDetails?.environment_options,
     );
   }
 
@@ -112,7 +112,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     const envData = this.envData;
     const defaultData = this.getSchemaData(
       minionPoolStore.minionPoolDefaultSchema,
-      minionPoolStore.minionPoolDetails
+      minionPoolStore.minionPoolDetails,
     );
     return defaultData || envData ? { ...defaultData, ...envData } : null;
   }
@@ -143,24 +143,24 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     if (!minionPool) {
       notificationStore.alert(
         `Minion pool with ID '${usableId}' was not found`,
-        "error"
+        "error",
       );
       return;
     }
 
     const endpoint = endpointStore.endpoints.find(
-      e => e.id === minionPool.endpoint_id
+      e => e.id === minionPool.endpoint_id,
     );
     if (!endpoint) {
       notificationStore.alert(
         "The endpoint associated to this minion pool was not found",
-        "error"
+        "error",
       );
       return;
     }
     await minionPoolStore.loadMinionPoolSchema(
       endpoint.type,
-      minionPool.platform
+      minionPool.platform,
     );
     await providerStore.loadProviders();
     await minionPoolStore.loadOptions({
@@ -269,7 +269,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       return null;
     }
     const endpoint = endpointStore.endpoints.find(
-      e => e.id === this.minionPool?.endpoint_id
+      e => e.id === this.minionPool?.endpoint_id,
     );
     if (!endpoint) {
       return null;
@@ -362,7 +362,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
         (i.instance_osmorphing_minion_pool_mappings &&
           this.minionPool?.id &&
           Object.values(i.instance_osmorphing_minion_pool_mappings).includes(
-            this.minionPool.id
+            this.minionPool.id,
           )) ||
         undefined
       );

@@ -91,7 +91,7 @@ class MinionPoolStore {
   @action
   async loadMinionPoolDetails(
     id: string,
-    options?: { showLoading?: boolean; skipLog?: boolean }
+    options?: { showLoading?: boolean; skipLog?: boolean },
   ) {
     if (options?.showLoading) {
       this.loadingMinionPoolDetails = true;
@@ -119,7 +119,7 @@ class MinionPoolStore {
   @action
   async loadMinionPoolSchema(
     provider: ProviderTypes,
-    platform: "source" | "destination"
+    platform: "source" | "destination",
   ) {
     this.loadingMinionPoolSchema = true;
 
@@ -129,7 +129,7 @@ class MinionPoolStore {
     try {
       const schema = await MinionPoolSource.loadMinionPoolSchema(
         provider,
-        platform
+        platform,
       );
 
       runInAction(() => {
@@ -158,7 +158,7 @@ class MinionPoolStore {
         : providerTypes.DESTINATION_OPTIONS;
 
     const providerWithExtraOptions = providers[endpoint.type].types.find(
-      t => t === providerType
+      t => t === providerType,
     );
     if (!providerWithExtraOptions) {
       return;
@@ -183,7 +183,7 @@ class MinionPoolStore {
       this.getOptionsValuesSuccess(
         endpoint.type,
         options,
-        this.getOptionsValuesLastReqId === reqId
+        this.getOptionsValuesLastReqId === reqId,
       );
     } catch (err) {
       canceled = err ? err.canceled : false;
@@ -199,7 +199,7 @@ class MinionPoolStore {
   @action getOptionsValuesSuccess(
     provider: ProviderTypes,
     options: OptionValues[],
-    isValid: boolean
+    isValid: boolean,
   ) {
     if (!isValid) {
       return;
@@ -236,12 +236,12 @@ class MinionPoolStore {
   async runAction(
     minionPoolId: string,
     minionPoolAction: MinionPoolAction,
-    actionOptions?: any
+    actionOptions?: any,
   ) {
     return MinionPoolSource.runAction(
       minionPoolId,
       minionPoolAction,
-      actionOptions
+      actionOptions,
     );
   }
 
@@ -252,7 +252,7 @@ class MinionPoolStore {
   @action
   sortMigrImages(osType: "linux" | "windows") {
     const migrImageField = this.minionPoolEnvSchema.find(
-      field => field.name === "migr_image"
+      field => field.name === "migr_image",
     );
     if (!migrImageField || !migrImageField.enum) {
       return;
@@ -272,7 +272,7 @@ class MinionPoolStore {
         }
       });
     const osIndex = migrImageField.enum.findIndex(
-      server => (server as any).os_type !== osType
+      server => (server as any).os_type !== osType,
     );
     if (osIndex > -1) {
       migrImageField.enum.splice(osIndex, 0, { separator: true });

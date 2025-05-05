@@ -57,7 +57,7 @@ class SetupPagePasswordStrength extends React.Component<Props> {
     strengthTester.addCommonPasswords(taiPasswordStrength.commonPasswords);
     strengthTester.addTrigraphMap(taiPasswordStrength.trigraphs);
     let strengthCode: Status = strengthTester.check(
-      this.props.value
+      this.props.value,
     ).strengthCode;
     const STRENGTH_CODES: Status[] = [
       "VERY_WEAK",

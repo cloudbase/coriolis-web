@@ -82,7 +82,7 @@ class TransferExecutionOptions extends React.Component<Props, State> {
       () => {
         this.props.onExecuteClick(this.state.fields);
       },
-      2
+      2,
     );
   }
 

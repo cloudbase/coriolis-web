@@ -49,14 +49,14 @@ const Input = styled.input<any>`
     border-color: ${(props: any) =>
       borderColor(
         props,
-        props.disablePrimary ? undefined : ThemePalette.primaryLight
+        props.disablePrimary ? undefined : ThemePalette.primaryLight,
       )};
   }
   &:focus {
     border-color: ${(props: any) =>
       borderColor(
         props,
-        props.disablePrimary ? undefined : ThemePalette.primaryLight
+        props.disablePrimary ? undefined : ThemePalette.primaryLight,
       )};
     outline: none;
   }
@@ -186,7 +186,7 @@ class Stepper extends React.Component<Props, State> {
         this.props.value && this.props.value > 0
           ? this.props.value - INCREMENT
           : 0
-      }`
+      }`,
     );
   }
 
@@ -196,7 +196,7 @@ class Stepper extends React.Component<Props, State> {
     let upImageRef: HTMLElement | null | undefined;
     const scale = (
       imageRef: HTMLElement | null | undefined,
-      direction: "up" | "down"
+      direction: "up" | "down",
     ) => {
       const ref = imageRef;
       if (!ref) {
@@ -223,8 +223,8 @@ class Stepper extends React.Component<Props, State> {
             this.state.inputValue !== null
               ? this.state.inputValue
               : value == null
-              ? "Not Set"
-              : value
+                ? "Not Set"
+                : value
           }
           onChange={(e: { target: { value: string } }) => {
             this.handleInputChange(e.target.value);

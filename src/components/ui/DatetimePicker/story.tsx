@@ -19,10 +19,7 @@ import DatetimePicker from ".";
 
 const Wrapper = (props: any) => (
   <div style={{ marginLeft: "100px" }}>
-    <DatetimePicker
-      {...props}
-      onChange={() => {}}
-    />
+    <DatetimePicker {...props} onChange={() => {}} />
   </div>
 );
 

@@ -116,7 +116,7 @@ class MinionPoolListItem extends React.Component<Props> {
         <ItemLabel>Created</ItemLabel>
         <ItemValue>
           {DateUtils.getLocalDate(this.props.item.created_at).toFormat(
-            "dd LLLL yyyy, HH:mm"
+            "dd LLLL yyyy, HH:mm",
           )}
         </ItemValue>
       </Column>
@@ -132,7 +132,7 @@ class MinionPoolListItem extends React.Component<Props> {
         <ItemValue>
           {this.props.item.updated_at
             ? DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
-                "dd LLLL yyyy, HH:mm"
+                "dd LLLL yyyy, HH:mm",
               )
             : "-"}
         </ItemValue>
@@ -143,7 +143,7 @@ class MinionPoolListItem extends React.Component<Props> {
   renderCreatedCount() {
     const createdCount = this.props.item.minion_machines.filter(
       m =>
-        m.allocation_status === "IN_USE" || m.allocation_status === "AVAILABLE"
+        m.allocation_status === "IN_USE" || m.allocation_status === "AVAILABLE",
     ).length;
     const totalCount = this.props.item.minion_machines.length;
 

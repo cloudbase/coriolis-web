@@ -70,7 +70,7 @@ export type StorageMap = {
 export const EndpointUtils = {
   getBusTypeStorageId: (
     storageBackends: StorageBackend[],
-    id: string | null
+    id: string | null,
   ): { busType: string | null; id: string | null } => {
     const idMatches = /(.*):(.*)/.exec(String(id));
     if (!idMatches) {
@@ -85,7 +85,7 @@ export const EndpointUtils = {
           storageBackends[
             i
           ].additional_provider_properties?.supported_bus_types?.find(
-            p => p === busType
+            p => p === busType,
           )
         ) {
           return { id: actualId, busType };

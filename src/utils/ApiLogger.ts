@@ -57,7 +57,7 @@ class Storage {
 
   static saveLog(options: LogOptions) {
     let logs: RequestLog[] = JSON.parse(
-      localStorage.getItem(this.NAME) || this.EMPTY
+      localStorage.getItem(this.NAME) || this.EMPTY,
     );
     if (!validateLog(logs)) {
       localStorage.setItem(this.NAME, this.EMPTY);
@@ -68,7 +68,7 @@ class Storage {
       date: new Date(),
       windowPath: window.location.href.replace(
         `${window.location.protocol}//${window.location.host}`,
-        ""
+        "",
       ),
       ...options,
     };
@@ -92,20 +92,20 @@ class ApiLogger {
     if (options.type === "REQUEST") {
       console.log(
         `%cSending ${options.method} Request to ${options.url}`,
-        "color: #F5A623"
+        "color: #F5A623",
       );
     } else if (options.requestError) {
       console.log(
         `%cError Response: ${options.url}`,
         "color: #D0021B",
-        options.requestError
+        options.requestError,
       );
     } else if (options.requestStatus === "canceled") {
       console.log(`%cRequest Canceled: ${options.url}`, "color: #0044CA");
     } else if (options.requestStatus === 500) {
       console.log(
         `%cError Something happened in setting up the request: ${options.url}`,
-        "color: #D0021B"
+        "color: #D0021B",
       );
     }
 

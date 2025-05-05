@@ -46,7 +46,7 @@ describe("MinionPoolMachines", () => {
     await act(async () => {
       filterDropdown!.click();
     });
-  
+
     let filterItem: HTMLElement | null = null;
     TestUtils.selectAll("DropdownLink__ListItem-").forEach(element => {
       if (element.textContent === toLabel) {
@@ -62,10 +62,10 @@ describe("MinionPoolMachines", () => {
   it("renders without crashing", () => {
     const { getByText } = render(<MinionPoolMachines {...defaultProps} />);
     expect(
-      TestUtils.select("MinionPoolMachines__HeaderText")?.textContent
+      TestUtils.select("MinionPoolMachines__HeaderText")?.textContent,
     ).toBe("1 minion machine, 1 allocated");
     expect(
-      getByText(`ID: ${MINION_POOL_MOCK.minion_machines[0].id}`)
+      getByText(`ID: ${MINION_POOL_MOCK.minion_machines[0].id}`),
     ).toBeTruthy();
   });
 
@@ -73,12 +73,12 @@ describe("MinionPoolMachines", () => {
     render(<MinionPoolMachines {...defaultProps} />);
     await filterBy("All", "Allocated");
     expect(
-      TestUtils.selectAll("MinionPoolMachines__MachineWrapper").length
+      TestUtils.selectAll("MinionPoolMachines__MachineWrapper").length,
     ).toBe(1);
-  
+
     await filterBy("Allocated", "Not Allocated");
     expect(
-      TestUtils.selectAll("MinionPoolMachines__MachineWrapper").length
+      TestUtils.selectAll("MinionPoolMachines__MachineWrapper").length,
     ).toBe(0);
   });
 
@@ -87,7 +87,7 @@ describe("MinionPoolMachines", () => {
       <MinionPoolMachines
         {...defaultProps}
         item={{ ...MINION_POOL_MOCK, minion_machines: [] }}
-      />
+      />,
     );
     expect(TestUtils.select("MinionPoolMachines__NoMachines")).toBeTruthy();
   });
@@ -96,7 +96,7 @@ describe("MinionPoolMachines", () => {
     render(<MinionPoolMachines {...defaultProps} />);
     const arrow = TestUtils.select(
       "Arrow__Wrapper",
-      TestUtils.select("MinionPoolMachines__Row-")!
+      TestUtils.select("MinionPoolMachines__Row-")!,
     );
     expect(arrow).toBeTruthy();
     expect(arrow!.attributes.getNamedItem("orientation")!.value).toBe("down");

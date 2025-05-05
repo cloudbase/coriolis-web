@@ -282,8 +282,8 @@ class NotificationDropdown extends React.Component<Props, State> {
               ? item.type === "transfer"
                 ? "/executions"
                 : item.type === "deployment"
-                ? "/tasks"
-                : ""
+                  ? "/tasks"
+                  : ""
               : "";
 
           return (
@@ -326,7 +326,7 @@ class NotificationDropdown extends React.Component<Props, State> {
 
   renderBell() {
     const isLoading = Boolean(
-      this.props.items.find(i => i.status === "RUNNING")
+      this.props.items.find(i => i.status === "RUNNING"),
     );
 
     return (
@@ -342,7 +342,7 @@ class NotificationDropdown extends React.Component<Props, State> {
         <BellIcon
           dangerouslySetInnerHTML={{
             __html: bellImage(
-              this.props.white ? "white" : ThemePalette.grayscale[2]
+              this.props.white ? "white" : ThemePalette.grayscale[2],
             ),
           }}
         />

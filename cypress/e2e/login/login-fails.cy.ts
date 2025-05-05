@@ -28,7 +28,7 @@ describe("Login fails", () => {
     cy.get("button").click();
     cy.get("*[class='notification-title']").should(
       "contain.text",
-      "Please fill in all fields"
+      "Please fill in all fields",
     );
   });
 
@@ -43,15 +43,15 @@ describe("Login fails", () => {
     cy.get("button").click();
     cy.wait("@auth-post").then(interception => {
       expect(
-        interception.request.body.auth.identity.password.user.name
+        interception.request.body.auth.identity.password.user.name,
       ).to.equal("wrong-user");
       expect(
-        interception.request.body.auth.identity.password.user.password
+        interception.request.body.auth.identity.password.user.password,
       ).to.equal("wrong-pass");
     });
     cy.get("*[class^='LoginForm__LoginErrorText']").should(
       "contain.text",
-      "Request failed, there might be a problem with the connection to the server."
+      "Request failed, there might be a problem with the connection to the server.",
     );
   });
 
@@ -67,15 +67,15 @@ describe("Login fails", () => {
     cy.get("button").click();
     cy.wait("@auth-post").then(interception => {
       expect(
-        interception.request.body.auth.identity.password.user.name
+        interception.request.body.auth.identity.password.user.name,
       ).to.equal("wrong-user");
       expect(
-        interception.request.body.auth.identity.password.user.password
+        interception.request.body.auth.identity.password.user.password,
       ).to.equal("wrong-pass");
     });
     cy.get("*[class^='LoginForm__LoginErrorText']").should(
       "contain.text",
-      "Incorrect credentials."
+      "Incorrect credentials.",
     );
   });
 });

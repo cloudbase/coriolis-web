@@ -32,7 +32,7 @@ const MAX_STREAM_LINES = 200;
 const generateUrlForLog = (
   logName: string,
   startDate?: Date | null,
-  endDate?: Date | null
+  endDate?: Date | null,
 ): string => {
   const token = cookie.get("token") || "null";
   let url = `${configLoader.config.servicesUrls.coriolisLogs}/${logName}?auth_type=keystone&auth_token=${token}`;
@@ -97,7 +97,7 @@ class LogStore {
         content: await apiCaller.send({
           url: generateUrlForLog(log.log_name, startDate, endDate),
         }),
-      }))
+      })),
     );
     const zip = new JSZip();
     logFilesResponses.forEach(response => {
@@ -117,10 +117,10 @@ class LogStore {
   @action download(
     logName: string,
     startDate?: Date | null,
-    endDate?: Date | null
+    endDate?: Date | null,
   ) {
     DomUtils.executeDownloadLink(
-      generateUrlForLog(logName, startDate, endDate)
+      generateUrlForLog(logName, startDate, endDate),
     );
   }
 
@@ -149,7 +149,7 @@ class LogStore {
     } else {
       wsUrl = configLoader.config.servicesUrls.coriolisLogStreamBaseUrl.replace(
         "https",
-        "wss"
+        "wss",
       );
     }
 
@@ -182,7 +182,7 @@ class LogStore {
     if (this.liveFeed.length > MAX_STREAM_LINES) {
       this.liveFeed = [
         ...this.liveFeed.filter(
-          (_, i) => i > this.liveFeed.length - MAX_STREAM_LINES
+          (_, i) => i > this.liveFeed.length - MAX_STREAM_LINES,
         ),
       ];
     }

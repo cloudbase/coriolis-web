@@ -26,8 +26,8 @@ const Wrapper = styled.div<any>`
     props.warning
       ? warningImage
       : props.filled
-      ? questionFilledImage
-      : questionImage}') center no-repeat;
+        ? questionFilledImage
+        : questionImage}') center no-repeat;
   display: inline-block;
   margin-left: ${(props: any) =>
     props.marginLeft != null ? `${props.marginLeft}px` : "4px"};

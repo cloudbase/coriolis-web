@@ -92,7 +92,7 @@ type Props = {
   onChange: (executionId: string) => void;
   onCancelExecutionClick: (
     execution: Execution | null,
-    force?: boolean
+    force?: boolean,
   ) => void;
   onDeleteExecutionClick?: (execution: Execution | null) => void;
   onExecuteClick?: () => void;
@@ -129,12 +129,12 @@ class Executions extends React.Component<Props, State> {
 
       if (this.props.executions.length > props.executions.length) {
         const isSelectedAvailable = props.executions.find(
-          e => e.id === this.state.selectedExecution?.id
+          e => e.id === this.state.selectedExecution?.id,
         );
         if (!isSelectedAvailable) {
           const lastIndex = this.props.executions
             ? this.props.executions.findIndex(
-                e => e.id === this.state.selectedExecution?.id
+                e => e.id === this.state.selectedExecution?.id,
               )
             : -1;
           if (props.executions.length) {
@@ -155,7 +155,7 @@ class Executions extends React.Component<Props, State> {
         },
         () => {
           this.handleChange(lastExecution);
-        }
+        },
       );
     } else if (selectExecution) {
       this.setState(
@@ -164,7 +164,7 @@ class Executions extends React.Component<Props, State> {
         },
         () => {
           this.handleChange(selectExecution);
-        }
+        },
       );
     } else if (this.hasExecutions(props)) {
       selectExecution =
@@ -176,7 +176,7 @@ class Executions extends React.Component<Props, State> {
         },
         () => {
           this.handleChange(selectExecution);
-        }
+        },
       );
     } else {
       this.setState({ selectedExecution: null });
@@ -209,7 +209,7 @@ class Executions extends React.Component<Props, State> {
     }
 
     const selectedIndex = this.props.executions.findIndex(
-      e => e.id === currentSelectedExecution.id
+      e => e.id === currentSelectedExecution.id,
     );
 
     if (selectedIndex === 0) {
@@ -222,7 +222,7 @@ class Executions extends React.Component<Props, State> {
       },
       () => {
         this.handleChange(this.props.executions[selectedIndex - 1]);
-      }
+      },
     );
   }
 
@@ -232,7 +232,7 @@ class Executions extends React.Component<Props, State> {
       return;
     }
     const selectedIndex = this.props.executions.findIndex(
-      e => e.id === currentSelectedExecution.id
+      e => e.id === currentSelectedExecution.id,
     );
 
     if (selectedIndex >= this.props.executions.length - 1) {
@@ -243,7 +243,7 @@ class Executions extends React.Component<Props, State> {
       { selectedExecution: this.props.executions[selectedIndex + 1] },
       () => {
         this.handleChange(this.props.executions[selectedIndex + 1]);
-      }
+      },
     );
   }
 
@@ -366,7 +366,7 @@ class Executions extends React.Component<Props, State> {
         />
         <ExecutionInfoDate>
           {DateUtils.getLocalDate(
-            this.state.selectedExecution.created_at
+            this.state.selectedExecution.created_at,
           ).toFormat("dd LLLL yyyy HH:mm")}
         </ExecutionInfoDate>
         <ExecutionInfoId>
@@ -396,7 +396,7 @@ class Executions extends React.Component<Props, State> {
         instancesDetails={this.props.instancesDetails}
         items={
           this.props.executionsTasks.find(
-            e => e.id === this.state.selectedExecution?.id
+            e => e.id === this.state.selectedExecution?.id,
           )?.tasks || []
         }
       />

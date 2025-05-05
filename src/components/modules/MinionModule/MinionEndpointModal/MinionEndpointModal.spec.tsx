@@ -58,17 +58,17 @@ describe("MinionEndpointModal", () => {
       <MinionEndpointModal
         {...defaultProps}
         providers={{ ...PROVIDERS_MOCK, vmware_vsphere: { types: [] } }}
-      />
+      />,
     );
     expect(
-      TestUtils.select("MinionEndpointModal__NoEndpoints")?.textContent
+      TestUtils.select("MinionEndpointModal__NoEndpoints")?.textContent,
     ).toContain("Please create a Coriolis Endpoint");
   });
 
   it("renders no endpoints if no providers", () => {
     render(<MinionEndpointModal {...defaultProps} providers={null} />);
     expect(
-      TestUtils.select("MinionEndpointModal__NoEndpoints")?.textContent
+      TestUtils.select("MinionEndpointModal__NoEndpoints")?.textContent,
     ).toContain("Please create a Coriolis Endpoint");
   });
 
@@ -83,14 +83,14 @@ describe("MinionEndpointModal", () => {
     getByText("Next").click();
     expect(defaultProps.onSelectEndpoint).toHaveBeenCalledWith(
       VMWARE_ENDPOINT_MOCK,
-      "source"
+      "source",
     );
   });
 
   it("renders loading", () => {
     render(<MinionEndpointModal {...defaultProps} loading />);
     expect(
-      TestUtils.select("MinionEndpointModal__LoadingWrapper")
+      TestUtils.select("MinionEndpointModal__LoadingWrapper"),
     ).toBeTruthy();
   });
 });

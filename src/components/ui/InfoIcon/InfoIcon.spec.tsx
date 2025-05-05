@@ -21,7 +21,7 @@ describe("InfoIcon", () => {
   it("renders with data tip and apropriate icons", () => {
     const { rerender } = render(<InfoIcon text="info text" />);
     expect(
-      TestUtils.select("InfoIcon__Wrapper")?.getAttribute("data-tip")
+      TestUtils.select("InfoIcon__Wrapper")?.getAttribute("data-tip"),
     ).toBe("info text");
     const style = () =>
       window.getComputedStyle(TestUtils.select("InfoIcon__Wrapper")!);

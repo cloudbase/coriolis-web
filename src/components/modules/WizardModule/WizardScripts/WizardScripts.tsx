@@ -159,7 +159,7 @@ type Props = {
   onScriptUpload: (instanceScript: InstanceScript) => void;
   onCancelScript: (
     global: "windows" | "linux" | null,
-    instanceName: string | null
+    instanceName: string | null,
   ) => void;
   onScrollableRef?: (ref: HTMLElement) => void;
   scrollableRef?: (r: HTMLElement) => void;
@@ -177,7 +177,7 @@ class WizardScripts extends React.Component<Props> {
   async handleFileUpload(
     files: FileList | null,
     global: "windows" | "linux" | null,
-    instanceId: string | null
+    instanceId: string | null,
   ) {
     if (!files || !files.length) {
       return;
@@ -207,8 +207,8 @@ class WizardScripts extends React.Component<Props> {
       s.instanceId
         ? s.instanceId === instanceId
         : s.global
-        ? s.global === global
-        : false
+          ? s.global === global
+          : false,
     );
     let scriptData: string | null | undefined = null;
     if (global) {
@@ -218,8 +218,8 @@ class WizardScripts extends React.Component<Props> {
     }
     const isRemoved = Boolean(
       this.props.removedScripts.find(s =>
-        global ? s.global === global : s.instanceId === instanceId
-      )
+        global ? s.global === global : s.instanceId === instanceId,
+      ),
     );
 
     return (
@@ -238,7 +238,7 @@ class WizardScripts extends React.Component<Props> {
                   onClick={() => {
                     this.handleScriptDataDownload(
                       scriptData as string,
-                      title.toLowerCase().replaceAll(" ", "_")
+                      title.toLowerCase().replaceAll(" ", "_"),
                     );
                   }}
                 >
@@ -307,7 +307,7 @@ class WizardScripts extends React.Component<Props> {
             this.handleFileUpload(
               e.target.files,
               global || null,
-              instanceId || null
+              instanceId || null,
             );
           }}
         />
@@ -369,8 +369,8 @@ class WizardScripts extends React.Component<Props> {
               ? instance.os_type === "windows"
                 ? "Windows"
                 : instance.os_type === "linux"
-                ? "Linux"
-                : instance.os_type
+                  ? "Linux"
+                  : instance.os_type
               : "";
             const osType = osLabel ? `${osLabel} OS | ` : "";
             const subtitle = `${osType}${instance.num_cpu} vCPU | ${instance.memory_mb} MB RAM`;

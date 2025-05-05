@@ -113,21 +113,21 @@ class ContentPlugin extends React.Component<Props, State> {
     return Boolean(
       this.getFieldValue(
         this.props.connectionInfoSchema.find(
-          n => n.name === "openstack_use_current_user"
-        )
-      )
+          n => n.name === "openstack_use_current_user",
+        ),
+      ),
     );
   }
 
   get hasCephOptionsSet(): boolean {
     const cephOptionsField = this.props.connectionInfoSchema.find(
-      n => n.name === "ceph_options"
+      n => n.name === "ceph_options",
     );
     if (!cephOptionsField || !cephOptionsField.properties) {
       return false;
     }
     const hasValues = cephOptionsField.properties.filter(f =>
-      this.getFieldValue(f)
+      this.getFieldValue(f),
     );
     return hasValues.length > 0;
   }
@@ -135,8 +135,8 @@ class ContentPlugin extends React.Component<Props, State> {
   getApiVersion(): number {
     return this.props.getFieldValue(
       this.props.connectionInfoSchema.find(
-        n => n.name === "identity_api_version"
-      )
+        n => n.name === "identity_api_version",
+      ),
     );
   }
 
@@ -149,11 +149,11 @@ class ContentPlugin extends React.Component<Props, State> {
     const getInputChoiceValue = (fieldBaseName: string): string => {
       const id = this.props.getFieldValue(
         this.props.connectionInfoSchema.find(
-          n => n.name === `${fieldBaseName}_id`
-        )
+          n => n.name === `${fieldBaseName}_id`,
+        ),
       );
       const previouslySelected = this.previouslySelectedChoices.find(
-        f => f === `${fieldBaseName}_id`
+        f => f === `${fieldBaseName}_id`,
       );
       if (id || previouslySelected) {
         if (!previouslySelected)
@@ -184,10 +184,12 @@ class ContentPlugin extends React.Component<Props, State> {
         const inputChoice = inputChoices.find(c => c === field.name);
         if (inputChoice && this.getApiVersion() > 2) {
           const selectionValue = this.getFieldValue(
-            this.props.connectionInfoSchema.find(f => f.name === inputChoice)
+            this.props.connectionInfoSchema.find(f => f.name === inputChoice),
           );
           const itemValue = this.getFieldValue(
-            this.props.connectionInfoSchema.find(f => f.name === selectionValue)
+            this.props.connectionInfoSchema.find(
+              f => f.name === selectionValue,
+            ),
           );
           return !itemValue;
         }
@@ -197,7 +199,7 @@ class ContentPlugin extends React.Component<Props, State> {
       .map(f => f.name);
 
     const cephOptions = this.props.connectionInfoSchema.find(
-      f => f.name === "ceph_options"
+      f => f.name === "ceph_options",
     );
     const cephOptionsProperties = cephOptions && cephOptions.properties;
     if (
@@ -207,7 +209,7 @@ class ContentPlugin extends React.Component<Props, State> {
       invalidFields = invalidFields.concat(
         cephOptionsProperties
           .filter(f => f.required && !this.getFieldValue(f))
-          .map(f => f.name)
+          .map(f => f.name),
       );
     }
     return invalidFields;
@@ -219,7 +221,7 @@ class ContentPlugin extends React.Component<Props, State> {
 
   handleShowCepthOptionsChange(value: boolean) {
     const cephOptions = this.props.connectionInfoSchema.find(
-      f => f.name === "ceph_options"
+      f => f.name === "ceph_options",
     );
     if (!cephOptions || !cephOptions.properties) {
       return;
@@ -324,7 +326,7 @@ class ContentPlugin extends React.Component<Props, State> {
           : false);
       const isPassword =
         Boolean(
-          configLoader.config.passwordFields.find(fn => field.name === fn)
+          configLoader.config.passwordFields.find(fn => field.name === fn),
         ) || field.name.indexOf("password") > -1;
       const value =
         field.name === "show_ceph_options"
@@ -353,13 +355,13 @@ class ContentPlugin extends React.Component<Props, State> {
           onChange={onChange}
           getFieldValue={fieldName =>
             this.getFieldValue(
-              this.props.connectionInfoSchema.find(n => n.name === fieldName)
+              this.props.connectionInfoSchema.find(n => n.name === fieldName),
             )
           }
           onFieldChange={(fieldName, fieldValue) => {
             this.props.handleFieldChange(
               this.props.connectionInfoSchema.find(n => n.name === fieldName),
-              fieldValue
+              fieldValue,
             );
           }}
         />
@@ -375,7 +377,7 @@ class ContentPlugin extends React.Component<Props, State> {
           <Row key={field.name}>
             {lastField}
             {currentField}
-          </Row>
+          </Row>,
         );
       } else if (i === nonCephFields.length - 1) {
         rows.push(<Row key={field.name}>{currentField}</Row>);
@@ -405,7 +407,7 @@ class ContentPlugin extends React.Component<Props, State> {
             <Row key={field.name}>
               {field1}
               {field2}
-            </Row>
+            </Row>,
           );
         };
         if (field.useTextArea) {

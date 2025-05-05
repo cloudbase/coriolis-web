@@ -27,7 +27,7 @@ import notificationStore from "./NotificationStore";
 
 const updateOptions = (
   oldOptions: { [prop: string]: any } | null | undefined,
-  data: { field: Field; value: any; parentFieldName: string | undefined }
+  data: { field: Field; value: any; parentFieldName: string | undefined },
 ) => {
   const options: any = oldOptions ? { ...oldOptions } : {};
   if (data.field.type === "array") {
@@ -54,7 +54,7 @@ const updateOptions = (
   if (data.field.subFields) {
     data.field.subFields.forEach(subField => {
       const subFieldKeys = Object.keys(options).filter(
-        k => k.indexOf(subField.name) > -1
+        k => k.indexOf(subField.name) > -1,
       );
       subFieldKeys.forEach(k => {
         delete options[k];
@@ -94,7 +94,7 @@ class WizardStore {
 
   @action fillWithDefaultValues(
     direction: "source" | "destination",
-    schema: Field[]
+    schema: Field[],
   ) {
     const data: { [prop: string]: any } =
       (direction === "source"
@@ -103,7 +103,7 @@ class WizardStore {
 
     const shouldSetDefault = (
       field: Field,
-      parentData: { [prop: string]: any }
+      parentData: { [prop: string]: any },
     ): { should: boolean; value?: any } => {
       if (parentData[field.name] !== undefined) {
         return { should: false };
@@ -137,11 +137,11 @@ class WizardStore {
 
     const setObjectDefault = (
       subFieldProperty: Field,
-      parentFieldName: string
+      parentFieldName: string,
     ) => {
       const shouldSetDefaultResult = shouldSetDefault(
         subFieldProperty,
-        data[parentFieldName] || {}
+        data[parentFieldName] || {},
       );
       if (shouldSetDefaultResult.should) {
         data[parentFieldName] = data[parentFieldName] || {};
@@ -153,7 +153,7 @@ class WizardStore {
     schema.forEach(field => {
       if (field.subFields && data[field.name] !== undefined) {
         const subField = field.subFields.find(
-          sf => sf.name === `${data[field.name]}_options`
+          sf => sf.name === `${data[field.name]}_options`,
         );
         if (subField) {
           subField.properties?.forEach(subFieldProperty => {
@@ -186,7 +186,7 @@ class WizardStore {
 
     if (this.data.selectedInstances.find(i => i.id === instance.id)) {
       this.data.selectedInstances = this.data.selectedInstances.filter(
-        i => i.id !== instance.id
+        i => i.id !== instance.id,
       );
     } else {
       this.data.selectedInstances = [...this.data.selectedInstances, instance];
@@ -244,7 +244,7 @@ class WizardStore {
     }
 
     this.data.networks = this.data.networks.filter(
-      n => n.sourceNic.network_name !== network.sourceNic.network_name
+      n => n.sourceNic.network_name !== network.sourceNic.network_name,
     );
     this.data.networks.push(network);
   }
@@ -263,7 +263,7 @@ class WizardStore {
       n =>
         n.type !== storage.type ||
         String(n.source[diskFieldName]) !==
-          String(storage.source[diskFieldName])
+          String(storage.source[diskFieldName]),
     );
     this.storageMap.push(storage);
   }
@@ -421,10 +421,10 @@ class WizardStore {
 
   @action cancelUploadedScript(
     global: string | null,
-    instanceName: string | null
+    instanceName: string | null,
   ) {
     this.uploadedUserScripts = this.uploadedUserScripts.filter(s =>
-      global ? s.global !== global : s.instanceId !== instanceName
+      global ? s.global !== global : s.instanceId !== instanceName,
     );
   }
 

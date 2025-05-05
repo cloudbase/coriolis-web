@@ -37,7 +37,7 @@ describe("ToggleButtonBar", () => {
     const itemsEl = TestUtils.selectAll("ToggleButtonBar__Item");
     expect(window.getComputedStyle(itemsEl[0]).background).toBe("white");
     expect(
-      TestUtils.rgbToHex(window.getComputedStyle(itemsEl[1]).background)
+      TestUtils.rgbToHex(window.getComputedStyle(itemsEl[1]).background),
     ).toBe(ThemePalette.primary);
   });
 

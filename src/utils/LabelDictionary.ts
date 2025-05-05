@@ -125,13 +125,13 @@ class LabelDictionary {
    */
   static get(
     fieldName: string | null | undefined,
-    dictionaryKey?: string
+    dictionaryKey?: string,
   ): string {
     if (!fieldName) {
       return "";
     }
     const cachItem = cache.find(
-      i => i.key === dictionaryKey && i.name === fieldName
+      i => i.key === dictionaryKey && i.name === fieldName,
     );
     if (cachItem && cachItem.label) {
       return cachItem.label;
@@ -161,7 +161,7 @@ class LabelDictionary {
 
   static getDescription(fieldName: string, dictionaryKey?: string): string {
     const cachItem = cache.find(
-      i => i.key === dictionaryKey && i.name === fieldName
+      i => i.key === dictionaryKey && i.name === fieldName,
     );
     if (cachItem && cachItem.description) {
       return cachItem.description;

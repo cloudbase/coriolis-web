@@ -86,10 +86,10 @@ const Content = styled.div<any>`
     props.disabledLoading
       ? ThemeProps.animations.disabledLoading
       : props.disabled
-      ? css`
-          opacity: 0.6;
-        `
-      : ""}
+        ? css`
+            opacity: 0.6;
+          `
+        : ""}
 `;
 const FakeFileInput = styled.input`
   position: absolute;

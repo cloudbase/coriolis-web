@@ -25,7 +25,7 @@ describe("MainTemplate", () => {
         navigationComponent={<div>navigationComponent</div>}
         headerComponent={<div>headerComponent</div>}
         listComponent={<div>listComponent</div>}
-      />
+      />,
     );
     expect(getByText("navigationComponent")).toBeTruthy();
     expect(getByText("headerComponent")).toBeTruthy();

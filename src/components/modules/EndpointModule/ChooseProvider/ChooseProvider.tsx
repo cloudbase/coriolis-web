@@ -171,7 +171,7 @@ class ChooseProvider extends React.Component<Props, State> {
           e.preventDefault();
           this.setState({ highlightDropzone: false });
           const filesContents = await FileUtils.readContentFromFileList(
-            e.dataTransfer.files
+            e.dataTransfer.files,
           );
           if (filesContents.length === 1) {
             this.processOneFileContent(filesContents[0].content);
@@ -196,7 +196,7 @@ class ChooseProvider extends React.Component<Props, State> {
 
   parseEndpoint(
     content: string,
-    skipAlert?: boolean
+    skipAlert?: boolean,
   ): { endpoint: Endpoint; unidentRegions: string[] } {
     const endpoint: Endpoint = JSON.parse(content);
     if (
@@ -213,7 +213,7 @@ class ChooseProvider extends React.Component<Props, State> {
       endpoint.mapped_regions = endpoint.mapped_regions
         .map(nameId => {
           const region = this.props.regions.find(
-            r => r.id === nameId || r.name === nameId
+            r => r.id === nameId || r.name === nameId,
           );
           if (region) {
             return region.id;
@@ -227,7 +227,7 @@ class ChooseProvider extends React.Component<Props, State> {
           `${unidentRegions.length} Coriolis Region${
             unidentRegions.length > 1 ? "s" : ""
           } couldn't be mapped`,
-          "warning"
+          "warning",
         );
       }
     }
@@ -253,7 +253,7 @@ class ChooseProvider extends React.Component<Props, State> {
       try {
         const { endpoint, unidentRegions } = this.parseEndpoint(
           fileContent.content,
-          true
+          true,
         );
         const key = `${endpoint.type}${endpoint.name}`;
         if (uniqueNames[key] === undefined) {
@@ -353,7 +353,7 @@ class ChooseProvider extends React.Component<Props, State> {
             };
           }
           return stateEndpoint;
-        }
+        },
       ),
     }));
   }
@@ -378,8 +378,8 @@ class ChooseProvider extends React.Component<Props, State> {
         onValidateClick={() => {
           this.props.onValidateMultipleEndpoints(
             this.state.multipleUploadedEndpoints.filter(
-              e => typeof e !== "string"
-            ) as Endpoint[]
+              e => typeof e !== "string",
+            ) as Endpoint[],
           );
         }}
         onDone={this.props.onCancelClick}

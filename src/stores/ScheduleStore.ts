@@ -54,14 +54,14 @@ class ScheduleStore {
 
   @action async scheduleMultiple(
     transferId: string,
-    schedules: Schedule[]
+    schedules: Schedule[],
   ): Promise<void> {
     this.scheduling = true;
 
     try {
       const scheduledSchedules: Schedule[] = await Source.scheduleMultiple(
         transferId,
-        schedules
+        schedules,
       );
       runInAction(() => {
         this.schedules = scheduledSchedules;
@@ -95,7 +95,7 @@ class ScheduleStore {
           skipLog: true,
         });
         return { transferId: transferId, schedules };
-      })
+      }),
     );
     runInAction(() => {
       this.bulkSchedules = bulkSchedules;
@@ -104,14 +104,14 @@ class ScheduleStore {
 
   @action async addSchedule(
     transferId: string,
-    schedule: Schedule
+    schedule: Schedule,
   ): Promise<void> {
     this.adding = true;
 
     try {
       const addedSchedule: Schedule = await Source.addSchedule(
         transferId,
-        schedule
+        schedule,
       );
       runInAction(() => {
         this.schedules = [...this.schedules, addedSchedule];
@@ -125,7 +125,7 @@ class ScheduleStore {
 
   @action async removeSchedule(
     transferId: string,
-    scheduleId: string
+    scheduleId: string,
   ): Promise<void> {
     this.deletingIds.push(scheduleId);
     try {
@@ -133,7 +133,7 @@ class ScheduleStore {
       runInAction(() => {
         this.schedules = this.schedules.filter(s => s.id !== scheduleId);
         this.unsavedSchedules = this.unsavedSchedules.filter(
-          s => s.id !== scheduleId
+          s => s.id !== scheduleId,
         );
       });
     } finally {
@@ -163,13 +163,13 @@ class ScheduleStore {
     if (!forceSave) {
       this.schedules = updateSchedule(this.schedules, scheduleId, data);
       const unsavedSchedule = this.unsavedSchedules.find(
-        s => s.id === scheduleId
+        s => s.id === scheduleId,
       );
       if (unsavedSchedule) {
         this.unsavedSchedules = updateSchedule(
           this.unsavedSchedules,
           scheduleId,
-          data
+          data,
         );
       } else {
         this.unsavedSchedules.push({ id: scheduleId, ...data });
@@ -196,7 +196,7 @@ class ScheduleStore {
           return { ...s };
         });
         this.unsavedSchedules = this.unsavedSchedules.filter(
-          s => s.id !== schedule.id
+          s => s.id !== schedule.id,
         );
       });
     } finally {

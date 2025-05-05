@@ -55,12 +55,12 @@ describe("EndpointListItem", () => {
 
   it("renders without crashing", () => {
     const { getByText, getByTestId } = render(
-      <EndpointListItem {...defaultProps} />
+      <EndpointListItem {...defaultProps} />,
     );
     expect(getByText(OPENSTACK_ENDPOINT.name)).toBeTruthy();
     expect(getByText(OPENSTACK_ENDPOINT.description)).toBeTruthy();
     expect(getByTestId("EndpointLogos").textContent).toBe(
-      OPENSTACK_ENDPOINT.type
+      OPENSTACK_ENDPOINT.type,
     );
   });
 

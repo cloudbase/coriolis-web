@@ -40,7 +40,7 @@ export type NetworkMap = {
 export const NetworkUtils = {
   getPortKeyNetworkId: (
     networks: Network[],
-    id: string
+    id: string,
   ): { portKey: string | null; id: string } => {
     const idMatches = /(.*):(.*)/.exec(String(id));
     if (!idMatches) {

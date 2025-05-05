@@ -176,11 +176,11 @@ class DashboardExecutions extends React.Component<Props, State> {
       .minus(Duration.fromObject({ [periodUnit]: periodValue }))
       .toJSDate();
     creations = creations.filter(
-      e => new Date(e.created_at).getTime() >= oldestDate.getTime()
+      e => new Date(e.created_at).getTime() >= oldestDate.getTime(),
     );
     creations.sort(
       (a, b) =>
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
     );
 
     this.groupByPeriod(creations, periodUnit);
@@ -252,7 +252,7 @@ class DashboardExecutions extends React.Component<Props, State> {
       label: interval.label.replace("{x}", interval.value.split("-")[0]),
     }));
     const selectedItem = INTERVALS.find(
-      i => i.value === this.state.selectedPeriod
+      i => i.value === this.state.selectedPeriod,
     );
     return (
       <DropdownWrapper>

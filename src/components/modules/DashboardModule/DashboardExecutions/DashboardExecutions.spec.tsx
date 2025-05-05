@@ -78,39 +78,39 @@ describe("DashboardExecutions", () => {
     render(<DashboardExecutions {...newProps} />);
 
     expect(TestUtils.select("DashboardExecutions__Title")?.textContent).toBe(
-      "Items Created"
+      "Items Created",
     );
     expect(
-      TestUtils.select("DashboardExecutions__NoDataMessage")?.textContent
+      TestUtils.select("DashboardExecutions__NoDataMessage")?.textContent,
     ).toBe("No recent activity in this project");
   });
 
   it("groups data correctly", () => {
     render(<DashboardExecutions {...defaultProps} />);
     expect(
-      TestUtils.select("DashboardExecutions__BarChartWrapper")
+      TestUtils.select("DashboardExecutions__BarChartWrapper"),
     ).toBeTruthy();
     expect(TestUtils.selectAll("DashboardBarChart__Bar-")).toHaveLength(2);
     expect(
       TestUtils.selectAll(
         "DashboardBarChart__StackedBar-",
-        TestUtils.selectAll("DashboardBarChart__Bar-")[0]
-      )
+        TestUtils.selectAll("DashboardBarChart__Bar-")[0],
+      ),
     ).toHaveLength(1);
     expect(
       TestUtils.selectAll(
         "DashboardBarChart__StackedBar-",
-        TestUtils.selectAll("DashboardBarChart__Bar-")[1]
-      )
+        TestUtils.selectAll("DashboardBarChart__Bar-")[1],
+      ),
     ).toHaveLength(2);
     expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
-      "Last 30 days"
+      "Last 30 days",
     );
     expect(
-      TestUtils.selectAll("DashboardBarChart__BarLabel")[0].textContent
+      TestUtils.selectAll("DashboardBarChart__BarLabel")[0].textContent,
     ).toBe(TWENTIETH.minus({ days: 5 }).toFormat("dd LLL"));
     expect(
-      TestUtils.selectAll("DashboardBarChart__BarLabel")[1].textContent
+      TestUtils.selectAll("DashboardBarChart__BarLabel")[1].textContent,
     ).toBe(TWENTIETH.toFormat("dd LLL"));
   });
 
@@ -126,30 +126,30 @@ describe("DashboardExecutions", () => {
 
     userEvent.click(TestUtils.select("DropdownLink__LinkButton")!);
     expect(TestUtils.selectAll("DropdownLink__ListItem-")[1].textContent).toBe(
-      "Last 12 months"
+      "Last 12 months",
     );
     userEvent.click(TestUtils.selectAll("DropdownLink__ListItem-")[1]!);
     expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
-      "Last 12 months"
+      "Last 12 months",
     );
     expect(TestUtils.selectAll("DashboardBarChart__Bar-")).toHaveLength(2);
     expect(
       TestUtils.selectAll(
         "DashboardBarChart__StackedBar-",
-        TestUtils.selectAll("DashboardBarChart__Bar-")[0]
-      )
+        TestUtils.selectAll("DashboardBarChart__Bar-")[0],
+      ),
     ).toHaveLength(1);
     expect(
       TestUtils.selectAll(
         "DashboardBarChart__StackedBar-",
-        TestUtils.selectAll("DashboardBarChart__Bar-")[1]
-      )
+        TestUtils.selectAll("DashboardBarChart__Bar-")[1],
+      ),
     ).toHaveLength(2);
     expect(
-      TestUtils.selectAll("DashboardBarChart__BarLabel")[0].textContent
+      TestUtils.selectAll("DashboardBarChart__BarLabel")[0].textContent,
     ).toBe(TWENTIETH.minus({ months: 2 }).toFormat("LLL"));
     expect(
-      TestUtils.selectAll("DashboardBarChart__BarLabel")[1].textContent
+      TestUtils.selectAll("DashboardBarChart__BarLabel")[1].textContent,
     ).toBe(TWENTIETH.toFormat("LLL"));
   });
 
@@ -166,16 +166,16 @@ describe("DashboardExecutions", () => {
 
     expect(TestUtils.select("DashboardExecutions__Tooltip")).toBeTruthy();
     expect(
-      TestUtils.select("DashboardExecutions__TooltipHeader")?.textContent
+      TestUtils.select("DashboardExecutions__TooltipHeader")?.textContent,
     ).toBe(TWENTIETH.minus({ days: 5 }).toFormat("dd LLLL"));
     expect(
-      TestUtils.selectAll("DashboardExecutions__TooltipRow-")[0].textContent
+      TestUtils.selectAll("DashboardExecutions__TooltipRow-")[0].textContent,
     ).toBe("Created1");
     expect(
-      TestUtils.selectAll("DashboardExecutions__TooltipRow-")[1].textContent
+      TestUtils.selectAll("DashboardExecutions__TooltipRow-")[1].textContent,
     ).toBe("Replicas1");
     expect(
-      TestUtils.selectAll("DashboardExecutions__TooltipRow-")[2].textContent
+      TestUtils.selectAll("DashboardExecutions__TooltipRow-")[2].textContent,
     ).toBe("Migrations0");
 
     userEvent.unhover(TestUtils.select("DashboardBarChart__StackedBar-")!);
@@ -226,7 +226,7 @@ describe("DashboardExecutions", () => {
     rerender(<DashboardExecutions {...newProps2} />);
 
     expect(
-      TestUtils.select("DashboardExecutions__LoadingWrapper")
+      TestUtils.select("DashboardExecutions__LoadingWrapper"),
     ).toBeTruthy();
   });
 

@@ -50,7 +50,7 @@ class SearchButton extends React.Component<Props> {
               : searchImage(
                   this.props.primary
                     ? ThemePalette.primary
-                    : ThemePalette.grayscale[4]
+                    : ThemePalette.grayscale[4],
                 ),
           }}
         />

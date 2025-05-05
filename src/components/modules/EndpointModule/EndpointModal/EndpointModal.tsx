@@ -155,14 +155,14 @@ class EndpointModal extends React.Component<Props, State> {
       () => {
         if (this.props.onResizeUpdate)
           this.props.onResizeUpdate(this.scrollableRef);
-      }
+      },
     );
     this.endpointValidationObserver = observe(
       endpointStore,
       "validation",
       () => {
         this.UNSAFE_componentWillReceiveProps(this.props);
-      }
+      },
     );
   }
 
@@ -180,7 +180,7 @@ class EndpointModal extends React.Component<Props, State> {
       () => {
         if (this.isValidateButtonEnabled) this.handleValidateClick();
       },
-      2
+      2,
     );
   }
 
@@ -201,11 +201,11 @@ class EndpointModal extends React.Component<Props, State> {
           ...prevState.endpoint,
           ...ObjectUtils.flatten(
             props.endpoint || {},
-            plugin.REQUIRES_PARENT_OBJECT_PATH
+            plugin.REQUIRES_PARENT_OBJECT_PATH,
           ),
           ...ObjectUtils.flatten(
             endpointStore.connectionInfo || {},
-            plugin.REQUIRES_PARENT_OBJECT_PATH
+            plugin.REQUIRES_PARENT_OBJECT_PATH,
           ),
         },
       }));
@@ -261,7 +261,7 @@ class EndpointModal extends React.Component<Props, State> {
     this.setState(prevState => {
       const endpoint: any = { ...prevState.endpoint };
       const requiredFieldsDefaults = providerStore.connectionInfoSchema.filter(
-        f => f.required && f.default != null
+        f => f.required && f.default != null,
       );
       requiredFieldsDefaults.forEach(f => {
         if (endpoint[f.name] == null) {
@@ -315,7 +315,7 @@ class EndpointModal extends React.Component<Props, State> {
       () => {
         if (this.props.onResizeUpdate)
           this.props.onResizeUpdate(this.scrollableRef);
-      }
+      },
     );
   }
 
@@ -326,7 +326,7 @@ class EndpointModal extends React.Component<Props, State> {
     DomUtils.copyTextToClipboard(
       endpointStore.validation.message,
       "The message has been copied to clipboard",
-      "Failed to copy the message to clipboard"
+      "Failed to copy the message to clipboard",
     );
   }
 
@@ -349,7 +349,7 @@ class EndpointModal extends React.Component<Props, State> {
       return;
     }
     const endpoint = endpointStore.endpoints.find(
-      e => e.id === stateEndpoint.id
+      e => e.id === stateEndpoint.id,
     );
     if (!endpoint) {
       throw new Error("Endpoint not found in store");

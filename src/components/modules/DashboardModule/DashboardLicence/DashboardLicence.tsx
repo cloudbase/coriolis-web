@@ -171,7 +171,7 @@ class DashboardLicence extends React.Component<Props> {
         () => !!this.buttonWrapperRef && !!this.licenceLogoRef,
         {
           silent: true,
-        }
+        },
       );
       this.resetLayout();
     };
@@ -218,7 +218,7 @@ class DashboardLicence extends React.Component<Props> {
       ],
     ];
     const expirationData = DateUtils.getLocalDate(
-      info.earliestLicenceExpiryDate
+      info.earliestLicenceExpiryDate,
     );
     return (
       <LicenceInfo>
@@ -265,9 +265,9 @@ class DashboardLicence extends React.Component<Props> {
   renderLicenceError() {
     return (
       <LicenceError>
-        {this.props.licenceError?.split("\n").map((str, i) => (
-          <p key={i}>{str}</p>
-        ))}
+        {this.props.licenceError
+          ?.split("\n")
+          .map((str, i) => <p key={i}>{str}</p>)}
       </LicenceError>
     );
   }
@@ -325,7 +325,7 @@ class DashboardLicence extends React.Component<Props> {
       } else {
         moduleContent = this.renderLicenceExpired(
           licence,
-          this.props.licenceServerStatus
+          this.props.licenceServerStatus,
         );
       }
     } else if (this.props.loading) {

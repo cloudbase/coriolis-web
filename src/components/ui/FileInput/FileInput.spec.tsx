@@ -28,7 +28,7 @@ describe("FileInput", () => {
     ]);
     await waitFor(() => expect(onUpload).toHaveBeenCalledWith("test-content"));
     expect(TestUtils.select("FileInput__FileName")?.textContent).toBe(
-      "test.txt"
+      "test.txt",
     );
   });
 });

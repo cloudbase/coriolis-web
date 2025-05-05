@@ -54,7 +54,7 @@ describe("Executions", () => {
           EXECUTION_MOCK,
           { ...EXECUTION_MOCK, id: "new-id", status: "RUNNING" },
         ]}
-      />
+      />,
     );
     expect(getByText("new-id")).toBeTruthy();
 
@@ -66,7 +66,7 @@ describe("Executions", () => {
           { ...EXECUTION_MOCK, id: "new-id", status: "COMPLETED" },
           { ...EXECUTION_MOCK, id: "new-id-2", status: "RUNNING" },
         ]}
-      />
+      />,
     );
     expect(getByText("new-id-2")).toBeTruthy();
 
@@ -84,7 +84,7 @@ describe("Executions", () => {
 
   it("doesn't dispatch onChange if no executions", () => {
     const { rerender } = render(
-      <Executions {...defaultProps} executions={[]} />
+      <Executions {...defaultProps} executions={[]} />,
     );
     rerender(<Executions {...defaultProps} executions={[]} />);
     expect(defaultProps.onChange).not.toHaveBeenCalled();
@@ -98,12 +98,12 @@ describe("Executions", () => {
           EXECUTION_MOCK,
           { ...EXECUTION_MOCK, id: "new-id", status: "RUNNING" },
         ]}
-      />
+      />,
     );
     const previousArrow = () =>
       TestUtils.selectAll(
         "Arrow__Wrapper",
-        TestUtils.select("Timeline__Wrapper")!
+        TestUtils.select("Timeline__Wrapper")!,
       )[0];
     await act(async () => {
       previousArrow().click();
@@ -131,11 +131,11 @@ describe("Executions", () => {
           EXECUTION_MOCK,
           { ...EXECUTION_MOCK, id: "new-id", status: "RUNNING" },
         ]}
-      />
+      />,
     );
     const nextArrow = TestUtils.selectAll(
       "Arrow__Wrapper",
-      TestUtils.select("Timeline__Wrapper")!
+      TestUtils.select("Timeline__Wrapper")!,
     )[1];
     await act(async () => {
       nextArrow.click();
@@ -145,7 +145,7 @@ describe("Executions", () => {
     const previousArrow = () =>
       TestUtils.selectAll(
         "Arrow__Wrapper",
-        TestUtils.select("Timeline__Wrapper")!
+        TestUtils.select("Timeline__Wrapper")!,
       )[0];
     await act(async () => {
       previousArrow().click();
@@ -171,7 +171,7 @@ describe("Executions", () => {
           EXECUTION_MOCK,
           { ...EXECUTION_MOCK, id: "new-id", status: "RUNNING" },
         ]}
-      />
+      />,
     );
     const timelineItem = TestUtils.select("Timeline__Item-");
     expect(timelineItem).toBeTruthy();
@@ -187,17 +187,17 @@ describe("Executions", () => {
       <Executions
         {...defaultProps}
         executions={[EXECUTION_MOCK, newExecution]}
-      />
+      />,
     );
     const cancelExecutionButton = Array.from(
-      document.querySelectorAll("button")
+      document.querySelectorAll("button"),
     ).find(el => el.textContent === "Cancel Execution");
     expect(cancelExecutionButton).toBeTruthy();
     await act(async () => {
       cancelExecutionButton!.click();
     });
     expect(defaultProps.onCancelExecutionClick).toHaveBeenCalledWith(
-      newExecution
+      newExecution,
     );
   });
 
@@ -211,10 +211,10 @@ describe("Executions", () => {
       <Executions
         {...defaultProps}
         executions={[EXECUTION_MOCK, newExecution]}
-      />
+      />,
     );
     const cancelExecutionButton = Array.from(
-      document.querySelectorAll("button")
+      document.querySelectorAll("button"),
     ).find(el => el.textContent === "Force Cancel Execution");
     expect(cancelExecutionButton).toBeTruthy();
     await act(async () => {
@@ -222,7 +222,7 @@ describe("Executions", () => {
     });
     expect(defaultProps.onCancelExecutionClick).toHaveBeenCalledWith(
       newExecution,
-      true
+      true,
     );
   });
 
@@ -234,10 +234,10 @@ describe("Executions", () => {
   it("deletes execution", async () => {
     const deleteExecution = jest.fn();
     render(
-      <Executions {...defaultProps} onDeleteExecutionClick={deleteExecution} />
+      <Executions {...defaultProps} onDeleteExecutionClick={deleteExecution} />,
     );
     const deleteExecutionButton = Array.from(
-      document.querySelectorAll("button")
+      document.querySelectorAll("button"),
     ).find(el => el.textContent === "Delete Execution");
     expect(deleteExecutionButton).toBeTruthy();
     await act(async () => {

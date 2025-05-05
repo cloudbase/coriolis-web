@@ -73,7 +73,7 @@ class AlertModal extends React.Component<Props> {
           this.props.onConfirmation();
         }
       },
-      2
+      2,
     );
   }
 

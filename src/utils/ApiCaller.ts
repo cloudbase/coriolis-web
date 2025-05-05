@@ -69,7 +69,7 @@ class ApiCaller {
 
   cancelRequests(cancelRequestId: string) {
     const filteredCancelables = cancelables.filter(
-      r => r.requestId === cancelRequestId
+      r => r.requestId === cancelRequestId,
     );
     filteredCancelables.forEach(c => {
       c.cancel();
@@ -123,7 +123,7 @@ class ApiCaller {
         console.log(
           `%cResponse ${axiosOptions.url}`,
           "color: #0044CA",
-          response.data
+          response.data,
         );
         logger.log({
           url: axiosOptions.url,

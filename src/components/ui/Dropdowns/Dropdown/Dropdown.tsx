@@ -215,7 +215,7 @@ const Labels = styled.div<any>`
 export const updateTipStyle = (
   listItemsRef: HTMLElement,
   tipRef: HTMLElement,
-  firstItemRef: HTMLElement
+  firstItemRef: HTMLElement,
 ) => {
   const usableFirstItemRef = firstItemRef;
   if (listItemsRef && tipRef && usableFirstItemRef) {
@@ -235,7 +235,7 @@ export const updateTipStyle = (
 export const scrollItemIntoView = (
   listRef: HTMLElement,
   listItemsRef: HTMLElement,
-  itemIndex: number
+  itemIndex: number,
 ) => {
   const usableListItemsRef = listItemsRef;
   if (!listRef || !usableListItemsRef) {
@@ -292,7 +292,7 @@ export const handleKeyNavigation = (options: {
   }
   keyboardEvent.preventDefault();
   const itemIndex = items.findIndex(
-    i => onGetValue(i) === onGetValue(selectedItem)
+    i => onGetValue(i) === onGetValue(selectedItem),
   );
   const currentIndex = arrowSelection == null ? itemIndex : arrowSelection;
   const maxIndex = items.length - 1;
@@ -390,13 +390,13 @@ class Dropdown extends React.Component<Props, State> {
       `${this.getLabel(item)}-${this.getValue(item) || ""}`;
     const needsCheckmarkClear = oldSelectedItems.filter(
       oldItem =>
-        !newSelectedItems.find(newItem => hash(oldItem) === hash(newItem))
+        !newSelectedItems.find(newItem => hash(oldItem) === hash(newItem)),
     );
     needsCheckmarkClear.forEach(clearItem => {
       this.toggleCheckmarkAnimation(
         clearItem,
         this.checkmarkRefs[hash(clearItem)],
-        true
+        true,
       );
     });
   }
@@ -416,7 +416,7 @@ class Dropdown extends React.Component<Props, State> {
       this.scrollableParent.removeEventListener(
         "scroll",
         this.handleScroll,
-        false
+        false,
       );
     }
   }
@@ -548,15 +548,15 @@ class Dropdown extends React.Component<Props, State> {
       const selected = Boolean(
         this.props.selectedItems &&
           this.props.selectedItems.find(
-            i => this.getValue(i) === this.getValue(item)
-          )
+            i => this.getValue(i) === this.getValue(item),
+          ),
       );
       this.toggleCheckmarkAnimation(
         item,
         this.checkmarkRefs[
           `${this.getLabel(item)}-${this.getValue(item) || ""}`
         ],
-        selected
+        selected,
       );
       resetFocus();
     }
@@ -581,7 +581,7 @@ class Dropdown extends React.Component<Props, State> {
   toggleCheckmarkAnimation(
     item: any,
     checkmarkRef: HTMLElement,
-    selected: boolean
+    selected: boolean,
   ) {
     if (!item || !checkmarkRef) {
       return;
@@ -636,7 +636,7 @@ class Dropdown extends React.Component<Props, State> {
 
   scrollIntoView(itemIndex?: number) {
     const selectedItemIndex = this.props.items.findIndex(
-      i => this.getValue(i) === this.getValue(this.props.selectedItem)
+      i => this.getValue(i) === this.getValue(this.props.selectedItem),
     );
     const actualItemIndex = itemIndex != null ? itemIndex : selectedItemIndex;
     if (this.listRef && this.listItemsRef) {
@@ -769,7 +769,7 @@ class Dropdown extends React.Component<Props, State> {
           })}
         </ListItems>
       </List>,
-      body
+      body,
     );
 
     return list;
@@ -787,9 +787,9 @@ class Dropdown extends React.Component<Props, State> {
             .map(i =>
               this.getLabel(
                 this.props.items.find(
-                  item => this.getValue(item) === this.getValue(i)
-                )
-              )
+                  item => this.getValue(item) === this.getValue(i),
+                ),
+              ),
             )
             .join(", ");
         }

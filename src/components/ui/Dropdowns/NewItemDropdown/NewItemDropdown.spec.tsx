@@ -34,11 +34,11 @@ describe("NewItemDropdown", () => {
     act(() => {
       TestUtils.select("DropdownButton__Wrapper")!.click();
     });
-    act (() => {
+    act(() => {
       TestUtils.selectAll("NewItemDropdown__ListItem")[2].click();
     });
     expect(onChange).toBeCalledWith(
-      expect.objectContaining({ value: "minionPool" })
+      expect.objectContaining({ value: "minionPool" }),
     );
   });
 

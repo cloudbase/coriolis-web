@@ -107,12 +107,12 @@ describe("MainList", () => {
       <MainListWrap
         showEmptyList
         onEmptyListButtonClick={onEmptyListButtonClick}
-      />
+      />,
     );
     expect(TestUtils.select("MainList__EmptyList")).toBeTruthy();
 
     const button = TestUtils.select("MainList__EmptyList")?.querySelector(
-      "button"
+      "button",
     );
     expect(button).toBeTruthy();
     expect(button!.textContent).toBe("New item");

@@ -89,7 +89,7 @@ type Props = {
 class MinionPoolDetailsContent extends React.Component<Props> {
   isEndpointMissing() {
     const endpoint = this.props.endpoints.find(
-      e => e.id === this.props.item?.endpoint_id
+      e => e.id === this.props.item?.endpoint_id,
     );
 
     return Boolean(!endpoint);

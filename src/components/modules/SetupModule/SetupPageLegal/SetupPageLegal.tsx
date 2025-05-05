@@ -185,14 +185,14 @@ class SetupPageLegal extends React.Component<Props, State> {
       return this._destinationPlatformItems;
     }
     this._destinationPlatformItems = preparePlatformItems(
-      DESTINATION_PLATFORMS
+      DESTINATION_PLATFORMS,
     );
     return this._destinationPlatformItems;
   }
 
   handleLegalChange() {
     this.props.onLegalChange(
-      this.state.privacyAgreement && this.state.eulaAgreement
+      this.state.privacyAgreement && this.state.eulaAgreement,
     );
   }
 
@@ -277,7 +277,7 @@ class SetupPageLegal extends React.Component<Props, State> {
             selectedItem={{
               value: this.props.customerInfoTrial.sourcePlatform,
               label: getPlatformLabelForValue(
-                this.props.customerInfoTrial.sourcePlatform
+                this.props.customerInfoTrial.sourcePlatform,
               ),
             }}
             onChange={item => {
@@ -300,13 +300,13 @@ class SetupPageLegal extends React.Component<Props, State> {
             selectedItem={{
               value: this.props.customerInfoTrial.destinationPlatform,
               label: getPlatformLabelForValue(
-                this.props.customerInfoTrial.destinationPlatform
+                this.props.customerInfoTrial.destinationPlatform,
               ),
             }}
             onChange={item => {
               this.props.onCustomerInfoChange(
                 "destinationPlatform",
-                item.value
+                item.value,
               );
             }}
           />

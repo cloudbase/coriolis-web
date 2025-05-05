@@ -64,7 +64,7 @@ describe("MainDetails", () => {
       <MainDetails
         {...defaultProps}
         item={{ ...TRANSFER_MOCK, destination_endpoint_id: "missing" }}
-      />
+      />,
     );
     expect(getByText("Endpoint is missing")).toBeTruthy();
   });
@@ -82,12 +82,12 @@ describe("MainDetails", () => {
           ...TRANSFER_MOCK,
           last_execution_status: "ERROR_ALLOCATING_MINIONS",
         }}
-      />
+      />,
     );
     expect(
       Array.from(document.querySelectorAll("*")).find(el =>
-        el.textContent?.includes("error allocating minion machines")
-      )
+        el.textContent?.includes("error allocating minion machines"),
+      ),
     ).toBeTruthy();
   });
 
@@ -101,7 +101,7 @@ describe("MainDetails", () => {
       passwordEl.click();
     });
     expect(
-      getByText(TRANSFER_MOCK.destination_environment.password)
+      getByText(TRANSFER_MOCK.destination_environment.password),
     ).toBeTruthy();
   });
 });

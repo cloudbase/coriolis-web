@@ -33,16 +33,16 @@ describe("TabNavigation", () => {
         onChange={() => {}}
       >
         <div>Tab 2 content</div>
-      </TabNavigation>
+      </TabNavigation>,
     );
     expect(TestUtils.selectAll("TabNavigation__HeaderItem")).toHaveLength(
-      TAB_ITEMS.length
+      TAB_ITEMS.length,
     );
     const color = (index: number) =>
       TestUtils.rgbToHex(
         window.getComputedStyle(
-          TestUtils.selectAll("TabNavigation__HeaderItem")[index]
-        ).color
+          TestUtils.selectAll("TabNavigation__HeaderItem")[index],
+        ).color,
       );
     expect(color(0)).toBe("");
     expect(color(1)).toBe(ThemePalette.primary);
@@ -57,7 +57,7 @@ describe("TabNavigation", () => {
         onChange={onChange}
       >
         <div>Tab 2 content</div>
-      </TabNavigation>
+      </TabNavigation>,
     );
     TestUtils.selectAll("TabNavigation__HeaderItem")[2].click();
     expect(onChange).toHaveBeenCalledWith("tab-3");

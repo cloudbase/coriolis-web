@@ -75,10 +75,10 @@ describe("MainListFilter", () => {
     expect(items).toHaveLength(FILTER_ITEMS.length);
     expect(items[2].textContent).toBe(FILTER_ITEMS[2].label);
     expect(
-      TestUtils.select("SearchInput__Wrapper")?.querySelector("input")?.value
+      TestUtils.select("SearchInput__Wrapper")?.querySelector("input")?.value,
     ).toBe("test");
     expect(TestUtils.select("MainListFilter__SelectionText")?.textContent).toBe(
-      "1 of 3\u00a0test item(s) selected"
+      "1 of 3\u00a0test item(s) selected",
     );
   });
 
@@ -118,7 +118,7 @@ describe("MainListFilter", () => {
       checkbox.click();
     });
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe(
-      ThemePalette.primary
+      ThemePalette.primary,
     );
 
     expect(onSelectAllChange).toHaveBeenCalledWith(true);
@@ -141,7 +141,7 @@ describe("MainListFilter", () => {
     render(<MainListFilterWrapper onSearchChange={onSearchChange} />);
     userEvent.type(
       TestUtils.select("SearchInput__Wrapper")?.querySelector("input")!,
-      "test2"
+      "test2",
     );
     expect(onSearchChange).toHaveBeenCalledWith("test2");
   });

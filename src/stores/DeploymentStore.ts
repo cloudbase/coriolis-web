@@ -48,7 +48,7 @@ class DeploymentStore {
 
     try {
       const deployments = await DeploymentSource.getDeployments(
-        options && options.skipLog
+        options && options.skipLog,
       );
       runInAction(() => {
         this.deployments = deployments;
@@ -120,7 +120,7 @@ class DeploymentStore {
 
   @action async getDeployment(
     deploymentId: string,
-    options?: { showLoading?: boolean; skipLog?: boolean }
+    options?: { showLoading?: boolean; skipLog?: boolean },
   ) {
     if (options && options.showLoading) {
       this.detailsLoading = true;
@@ -129,12 +129,12 @@ class DeploymentStore {
     try {
       const deployment = await DeploymentSource.getDeployment(
         deploymentId,
-        options && options.skipLog
+        options && options.skipLog,
       );
       runInAction(() => {
         this.deploymentDetails = deployment;
         this.deployments = this.deployments.map(m =>
-          m.id === deployment.id ? deployment : m
+          m.id === deployment.id ? deployment : m,
         );
       });
     } finally {

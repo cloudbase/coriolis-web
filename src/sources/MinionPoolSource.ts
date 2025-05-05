@@ -117,14 +117,14 @@ class MinionPoolSource {
     minionPools.sort(
       (a, b) =>
         new Date(b.updated_at || b.created_at || "").getTime() -
-        new Date(a.updated_at || a.created_at || "").getTime()
+        new Date(a.updated_at || a.created_at || "").getTime(),
     );
     return minionPools;
   }
 
   async loadMinionPoolDetails(
     id: string,
-    options?: { skipLog?: boolean }
+    options?: { skipLog?: boolean },
   ): Promise<MinionPoolDetails> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/minion_pools/${id}`,
@@ -142,7 +142,7 @@ class MinionPoolSource {
     const { optionsType, endpoint, envData, useCache } = config;
     const envString = SchemaParser.getMinionPoolToOptionsQuery(
       envData,
-      endpoint.type
+      endpoint.type,
     );
     const callName =
       optionsType === "source"
@@ -163,7 +163,7 @@ class MinionPoolSource {
 
   async loadMinionPoolSchema(
     providerName: ProviderTypes,
-    platform: "source" | "destination"
+    platform: "source" | "destination",
   ): Promise<Field[]> {
     const providerType =
       platform === "source"
@@ -181,7 +181,7 @@ class MinionPoolSource {
         fields = SchemaParser.minionPoolOptionsSchemaToFields(
           providerName,
           schema,
-          `${providerName}-minion-pool`
+          `${providerName}-minion-pool`,
         );
       }
       return fields;
@@ -203,13 +203,13 @@ class MinionPoolSource {
       minion_pool: {
         ...new DefaultMinionPoolSchemaPlugin().getMinionPoolEnv(
           defaultSchema,
-          data
+          data,
         ),
         endpoint_id: endpointId,
         environment_options: SchemaParser.getMinionPoolEnv(
           provider,
           envSchema,
-          data
+          data,
         ),
       },
     };
@@ -232,12 +232,12 @@ class MinionPoolSource {
       minion_pool: {
         ...new DefaultMinionPoolSchemaPlugin().getMinionPoolEnv(
           defaultSchema,
-          data
+          data,
         ),
         environment_options: SchemaParser.getMinionPoolEnv(
           provider,
           envSchema,
-          data
+          data,
         ),
       },
     };
@@ -252,7 +252,7 @@ class MinionPoolSource {
   async runAction(
     minionPoolId: string,
     minionPoolAction: MinionPoolAction,
-    actionOptions?: any
+    actionOptions?: any,
   ): Promise<Execution> {
     const payload: any = {};
 

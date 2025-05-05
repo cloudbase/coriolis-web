@@ -112,8 +112,8 @@ class DashboardActivity extends React.Component<Props> {
                 ? item.type === "transfer"
                   ? "/executions"
                   : item.type === "deployment"
-                  ? "/tasks"
-                  : ""
+                    ? "/tasks"
+                    : ""
                 : "";
 
             return (
@@ -174,8 +174,8 @@ class DashboardActivity extends React.Component<Props> {
           {this.props.notificationItems.length === 0 && this.props.loading
             ? this.renderLoading()
             : this.props.notificationItems.length
-            ? this.renderList()
-            : this.renderNoItems()}
+              ? this.renderList()
+              : this.renderNoItems()}
         </Module>
       </Wrapper>
     );

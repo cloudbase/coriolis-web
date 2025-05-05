@@ -35,7 +35,7 @@ describe("DropdownInput", () => {
         onInputChange={() => {}}
         onItemChange={() => {}}
         inputValue="test"
-      />
+      />,
     );
     expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe("Item 2");
     expect(TestUtils.selectInput("TextInput__Input")!.value).toBe("test");
@@ -50,7 +50,7 @@ describe("DropdownInput", () => {
         onInputChange={onInputChange}
         onItemChange={() => {}}
         inputValue="test"
-      />
+      />,
     );
     userEvent.type(TestUtils.select("TextInput__Input")!, "test2");
     expect(onInputChange).toHaveBeenCalledWith("test2");
@@ -65,7 +65,7 @@ describe("DropdownInput", () => {
         onInputChange={() => {}}
         onItemChange={onItemChange}
         inputValue="test"
-      />
+      />,
     );
     userEvent.click(TestUtils.select("DropdownLink__Label")!);
     userEvent.click(TestUtils.selectAll("DropdownLink__ListItem-")[1]);

@@ -160,7 +160,7 @@ class WizardNetworks extends React.Component<Props> {
 
   renderNetworksDropdown(
     selectedNetwork: NetworkMap | null | undefined,
-    nic: NicType
+    nic: NicType,
   ) {
     return this.props.networks.length > 10 ? (
       <AutocompleteDropdown
@@ -194,11 +194,11 @@ class WizardNetworks extends React.Component<Props> {
 
   renderSecGroupsDropdown(
     selectedNetwork: NetworkMap | null | undefined,
-    nic: NicType
+    nic: NicType,
   ) {
     const MAX_SELECTED_GROUPS = 5;
     const hasSecurityGroups = Boolean(
-      this.props.networks.find(n => n.security_groups?.length)
+      this.props.networks.find(n => n.security_groups?.length),
     );
     const securityGroups = selectedNetwork?.targetNetwork?.security_groups;
     let selectedSecGroups: SecurityGroup[] =
@@ -218,11 +218,11 @@ class WizardNetworks extends React.Component<Props> {
         onChange={(item: any) => {
           if (
             selectedSecGroups.find((i: any) =>
-              i.id && item.id ? i.id === item.id : i === item
+              i.id && item.id ? i.id === item.id : i === item,
             )
           ) {
             selectedSecGroups = selectedSecGroups.filter((i: any) =>
-              i.id && item.id ? i.id !== item.id : i !== item
+              i.id && item.id ? i.id !== item.id : i !== item,
             );
           } else {
             selectedSecGroups = [...selectedSecGroups, item];
@@ -313,12 +313,12 @@ class WizardNetworks extends React.Component<Props> {
             .map(
               instance =>
                 `${instance.name} (${InstanceUtils.shortenId(
-                  instance.instance_name || instance.id
-                )})`
+                  instance.instance_name || instance.id,
+                )})`,
             );
 
           const selectedNetwork = this.props.selectedNetworks?.find(
-            n => n.sourceNic.network_name === nic.network_name
+            n => n.sourceNic.network_name === nic.network_name,
           );
           return (
             <Nic key={nic.id}>

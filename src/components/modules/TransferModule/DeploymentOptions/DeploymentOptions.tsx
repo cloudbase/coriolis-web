@@ -120,7 +120,7 @@ class DeploymentOptions extends React.Component<Props, State> {
       fields: deploymentFields.map(f =>
         f.name === "skip_os_morphing"
           ? { ...f, value: this.props.defaultSkipOsMorphing || null }
-          : f
+          : f,
       ),
       minionPoolMappings: { ...mappings },
     });
@@ -132,7 +132,7 @@ class DeploymentOptions extends React.Component<Props, State> {
       () => {
         this.deploy();
       },
-      2
+      2,
     );
   }
 
@@ -174,7 +174,7 @@ class DeploymentOptions extends React.Component<Props, State> {
   handleCancelScript(global: string | null, instanceName: string | null) {
     this.setState(prevState => ({
       uploadedScripts: prevState.uploadedScripts.filter(s =>
-        global ? s.global !== global : s.instanceId !== instanceName
+        global ? s.global !== global : s.instanceId !== instanceName,
       ),
     }));
   }
@@ -211,7 +211,7 @@ class DeploymentOptions extends React.Component<Props, State> {
 
   renderMinionPoolMappings() {
     const minionPools = this.props.minionPools.filter(
-      m => m.endpoint_id === this.props.transferItem?.destination_endpoint_id
+      m => m.endpoint_id === this.props.transferItem?.destination_endpoint_id,
     );
     if (!minionPools.length) {
       return null;

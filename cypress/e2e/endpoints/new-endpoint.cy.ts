@@ -56,14 +56,14 @@ describe("New endpoint", () => {
   it("shows all providers", () => {
     cy.get("div[class^=Modal__Title]").should(
       "contain.text",
-      "New Cloud Endpoint"
+      "New Cloud Endpoint",
     );
 
     cy.fixture("endpoints/providers").then(providersFixture => {
       const providers = providersFixture.providers;
       cy.get("div[class^=EndpointLogos__Logo]").should(
         "have.length",
-        Object.keys(providers).length
+        Object.keys(providers).length,
       );
 
       cy.get("div[class^=EndpointLogos__Logo]").each(logo => {
@@ -80,7 +80,7 @@ describe("New endpoint", () => {
       cy.get("input[placeholder='Password']").should(
         "have.attr",
         "type",
-        "password"
+        "password",
       );
 
       cy.get("div[class^=FieldInput__Wrapper]")
@@ -89,7 +89,7 @@ describe("New endpoint", () => {
       cy.get("button").contains("Validate and save").click();
       cy.get("div[class^=notifications-wrapper]").should(
         "contain.text",
-        "Please fill all the required fields"
+        "Please fill all the required fields",
       );
       cy.get("div[class^=FieldInput__Wrapper]")
         .contains("Username")
@@ -129,7 +129,7 @@ describe("New endpoint", () => {
         expect(req.body).to.have.property("payload");
         expect(JSON.parse(req.body.payload)).to.have.property(
           "auth_url",
-          "auth url"
+          "auth url",
         );
         req.reply({ fixture: "endpoints/secret-ref" });
       }).as("secrets-post");
@@ -141,7 +141,7 @@ describe("New endpoint", () => {
         expect(req.body.endpoint).to.have.property("connection_info");
         expect(req.body.endpoint.connection_info).to.have.property(
           "secret_ref",
-          "http://127.0.0.1:9311/v1/secrets/secret-ref-1"
+          "http://127.0.0.1:9311/v1/secrets/secret-ref-1",
         );
         req.reply({ fixture: "endpoints/endpoint" });
       }).as("endpoints-post");
@@ -202,7 +202,7 @@ describe("New endpoint", () => {
 
       cy.get("div[class^=EndpointModal__StatusMessage]").should(
         "contain.text",
-        "Validation failed"
+        "Validation failed",
       );
 
       cy.get("span[class^=EndpointModal__ShowErrorButton]").click();
@@ -210,7 +210,7 @@ describe("New endpoint", () => {
       cy.fixture("endpoints/validation-fail").then(validationFailFixture => {
         cy.get("div[class^=EndpointModal__StatusError]").should(
           "contain.text",
-          validationFailFixture["validate-connection"].message
+          validationFailFixture["validate-connection"].message,
         );
       });
     });
@@ -253,7 +253,7 @@ describe("New endpoint", () => {
 
       cy.get("div[class^=EndpointModal__StatusMessage]").should(
         "contain.text",
-        "Endpoint is Valid"
+        "Endpoint is Valid",
       );
     });
   });

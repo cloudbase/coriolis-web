@@ -28,11 +28,11 @@ describe("ReloadButton", () => {
   it("shows click animation", () => {
     render(<ReloadButton onClick={() => {}} />);
     expect(TestUtils.select("ReloadButton__Wrapper")!.classList).not.toContain(
-      "reload-animation"
+      "reload-animation",
     );
     TestUtils.select("ReloadButton__Wrapper")!.click();
     expect(TestUtils.select("ReloadButton__Wrapper")!.classList).toContain(
-      "reload-animation"
+      "reload-animation",
     );
   });
 });

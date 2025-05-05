@@ -126,7 +126,7 @@ class LogsPage extends React.Component<Record<string, never>, State> {
   handleDownloadClick(
     logName: string,
     startDate?: Date | null,
-    endDate?: Date | null
+    endDate?: Date | null,
   ) {
     if (logName === "__all__") {
       logStore.downloadAll(startDate, endDate);
@@ -146,7 +146,7 @@ class LogsPage extends React.Component<Record<string, never>, State> {
     if (startDate && endDate && endDate.getTime() < startDate.getTime()) {
       notificationStore.alert(
         "End time must be greater than start time",
-        "error"
+        "error",
       );
       return;
     }
@@ -198,7 +198,7 @@ class LogsPage extends React.Component<Record<string, never>, State> {
               logs={[{ log_name: "All Logs" }, ...logStore.logs]}
               severityLevel={this.state.streamSeverityLevel}
               liveFeed={logStore.liveFeed.filter(l =>
-                l.includes(this.state.search)
+                l.includes(this.state.search),
               )}
               onLogNameChange={logName => {
                 this.handleStreamLogNameChange(logName);

@@ -50,7 +50,7 @@ describe("SearchInput", () => {
   it("renders open when it has alwaysOpen prop", () => {
     render(<SearchInput alwaysOpen />);
     const style = window.getComputedStyle(
-      TestUtils.selectInput("TextInput__Input")!
+      TestUtils.selectInput("TextInput__Input")!,
     );
     expect(style.width).toBe(`${ThemeProps.inputSizes.regular.width}px`);
   });

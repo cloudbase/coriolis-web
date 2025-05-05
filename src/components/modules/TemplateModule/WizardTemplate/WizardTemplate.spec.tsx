@@ -24,7 +24,7 @@ describe("WizardTemplate", () => {
       <WizardTemplate
         pageHeaderComponent={<div>pageHeaderComponent</div>}
         pageContentComponent={<div>pageContentComponent</div>}
-      />
+      />,
     );
     expect(getByText("pageHeaderComponent")).toBeTruthy();
     expect(getByText("pageContentComponent")).toBeTruthy();

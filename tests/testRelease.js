@@ -9,7 +9,7 @@ const main = async () => {
   const logProgress = message => {
     currentSpawnStep += 1;
     console.log(
-      `\n\x1b[36m${currentSpawnStep}/${TOTAL_SPAWN_STEPS} ${message}...\x1b[0m\n`
+      `\n\x1b[36m${currentSpawnStep}/${TOTAL_SPAWN_STEPS} ${message}...\x1b[0m\n`,
     );
   };
 
@@ -22,7 +22,7 @@ const main = async () => {
           resolve();
         } else {
           reject(
-            new Error(`${command} ${args.join(" ")} exited with code ${code}`)
+            new Error(`${command} ${args.join(" ")} exited with code ${code}`),
           );
         }
       });
@@ -58,7 +58,7 @@ const main = async () => {
     await spawnPromise(
       "yarn",
       ["install"],
-      "Installing development dependencies"
+      "Installing development dependencies",
     );
     await spawnPromise("npm", ["run", "tsc"], "Typescript checks");
     await spawnPromise("npm", ["run", "eslint"], "ESLint checks");
@@ -68,7 +68,7 @@ const main = async () => {
       await spawnPromise(
         "npx",
         ["rimraf", "node_modules"],
-        "Deleting node_modules"
+        "Deleting node_modules",
       );
     } catch (e) {
       console.error(e);
@@ -76,14 +76,14 @@ const main = async () => {
     await spawnPromise(
       "yarn",
       ["workspaces", "focus", "--all", "--production"],
-      "Installing production dependencies"
+      "Installing production dependencies",
     );
     await spawnPromise("npm", ["run", "build"], "Production build");
     await spawnStart("Production start");
     await spawnPromise(
       "yarn",
       ["install"],
-      "Testing successful! Reverting to development install"
+      "Testing successful! Reverting to development install",
     );
   } catch (e) {
     console.error(e);

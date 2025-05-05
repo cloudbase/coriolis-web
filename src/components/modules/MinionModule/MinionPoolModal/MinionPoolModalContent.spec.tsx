@@ -97,13 +97,13 @@ describe("MinionPoolModalContent", () => {
   it("filters non required fields", async () => {
     const { getByText } = render(<MinionPoolModalContent {...defaultProps} />);
     expect(TestUtils.selectAll("FieldInput__LabelText")[1].textContent).toBe(
-      "Required Env Option"
+      "Required Env Option",
     );
     await act(async () => {
       getByText("Advanced").click();
     });
     expect(TestUtils.selectAll("FieldInput__LabelText")[1].textContent).toBe(
-      "Env Option"
+      "Env Option",
     );
   });
 

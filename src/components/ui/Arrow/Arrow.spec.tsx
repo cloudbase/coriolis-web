@@ -28,29 +28,29 @@ describe("Arrow", () => {
   `("renders the $orientation orientation", ({ orientation }) => {
     render(<Arrow orientation={orientation} />);
     expect(
-      TestUtils.select("Arrow__Wrapper")?.getAttribute("orientation")
+      TestUtils.select("Arrow__Wrapper")?.getAttribute("orientation"),
     ).toBe(orientation);
   });
 
   it("renderes with primary colors", () => {
     const { rerender } = render(<Arrow primary />);
     expect(
-      document.querySelector(`g[stroke="${ThemePalette.primary}"]`)
+      document.querySelector(`g[stroke="${ThemePalette.primary}"]`),
     ).toBeTruthy();
     rerender(<Arrow />);
     expect(
-      document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`)
+      document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`),
     ).toBeTruthy();
   });
 
   it("renderes with primary colors", () => {
     const { rerender } = render(<Arrow primary />);
     expect(
-      document.querySelector(`g[stroke="${ThemePalette.primary}"]`)
+      document.querySelector(`g[stroke="${ThemePalette.primary}"]`),
     ).toBeTruthy();
     rerender(<Arrow />);
     expect(
-      document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`)
+      document.querySelector(`g[stroke="${ThemePalette.grayscale[4]}"]`),
     ).toBeTruthy();
   });
 });

@@ -64,7 +64,7 @@ describe("MinionPoolConfirmationModal", () => {
 
   it("executes with force flag", () => {
     const { getByTestId } = render(
-      <MinionPoolConfirmationModal {...defaultProps} />
+      <MinionPoolConfirmationModal {...defaultProps} />,
     );
 
     fireEvent.click(getByTestId("FieldInput"));

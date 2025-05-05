@@ -155,18 +155,18 @@ type Props = {
   onDestOptionsChange: (
     field: Field,
     value: any,
-    parentFieldName?: string
+    parentFieldName?: string,
   ) => void;
   onSourceOptionsChange: (
     field: Field,
     value: any,
-    parentFieldName?: string
+    parentFieldName?: string,
   ) => void;
   onNetworkChange: (changeObject: WizardNetworksChangeObject) => void;
   onStorageChange: (mapping: StorageMap) => void;
   onDefaultStorageChange: (
     value: string | null,
-    busType?: string | null
+    busType?: string | null,
   ) => void;
   onAddScheduleClick: (schedule: ScheduleType) => void;
   onScheduleChange: (scheduleId: string, schedule: ScheduleType) => void;
@@ -177,7 +177,7 @@ type Props = {
   onUserScriptUpload: (instanceScript: InstanceScript) => void;
   onCancelUploadedScript: (
     global: string | null,
-    instanceName: string | null
+    instanceName: string | null,
   ) => void;
   onTransferExecuteOptionsChange: (field: Field, value: any) => void;
 };
@@ -224,7 +224,7 @@ class WizardPageContent extends React.Component<Props, State> {
       const usableProvider = provider as ProviderTypes;
       if (
         providersObject[usableProvider].types.findIndex(
-          t => t === providerType
+          t => t === providerType,
         ) > -1
       ) {
         validProviders[usableProvider] = true;
@@ -232,7 +232,7 @@ class WizardPageContent extends React.Component<Props, State> {
     });
 
     return this.props.providerStore.providerNames.filter(
-      p => validProviders[p]
+      p => validProviders[p],
     );
   }
 
@@ -384,7 +384,7 @@ class WizardPageContent extends React.Component<Props, State> {
               : this.props.wizardData.target &&
                 this.props.wizardData.target.type;
           return o.name === provider && o.types.find(t => t === type);
-        }
+        },
       );
       let optionsLoadingRequiredFields: string[] = [];
       if (extraOptionsConfig) {
@@ -404,7 +404,7 @@ class WizardPageContent extends React.Component<Props, State> {
       if (endpointStore.storageConfigDefault) {
         const busTypeInfo = EndpointUtils.getBusTypeStorageId(
           endpointStore.storageBackends,
-          endpointStore.storageConfigDefault || null
+          endpointStore.storageConfigDefault || null,
         );
         const defaultStorage: {
           value: string | null;
@@ -501,7 +501,7 @@ class WizardPageContent extends React.Component<Props, State> {
             minionPools={this.props.minionPoolStore.minionPools.filter(
               m =>
                 m.platform === "source" &&
-                m.endpoint_id === this.props.wizardData.source?.id
+                m.endpoint_id === this.props.wizardData.source?.id,
             )}
             optionsLoading={
               this.props.providerStore.sourceOptionsSecondaryLoading
@@ -533,7 +533,7 @@ class WizardPageContent extends React.Component<Props, State> {
             minionPools={this.props.minionPoolStore.minionPools.filter(
               m =>
                 m.platform === "destination" &&
-                m.endpoint_id === this.props.wizardData.target?.id
+                m.endpoint_id === this.props.wizardData.target?.id,
             )}
             optionsLoading={
               this.props.providerStore.destinationOptionsSecondaryLoading
@@ -545,7 +545,7 @@ class WizardPageContent extends React.Component<Props, State> {
             selectedInstances={this.props.wizardData.selectedInstances}
             showSeparatePerVm={Boolean(
               this.props.wizardData.selectedInstances &&
-                this.props.wizardData.selectedInstances.length > 1
+                this.props.wizardData.selectedInstances.length > 1,
             )}
             fields={this.props.providerStore.destinationSchema}
             onChange={this.props.onDestOptionsChange}
@@ -565,7 +565,7 @@ class WizardPageContent extends React.Component<Props, State> {
             }-destination`}
             executeNowOptionsDisabled={
               !this.props.providerStore.hasExecuteNowOptions(
-                this.props.wizardData.source!.type
+                this.props.wizardData.source!.type,
               )
             }
           />
@@ -617,7 +617,7 @@ class WizardPageContent extends React.Component<Props, State> {
         body = (
           <Schedule
             disableExecutionOptions={configLoader.config.providersDisabledExecuteOptions.some(
-              p => p === this.props.wizardData.source?.type
+              p => p === this.props.wizardData.source?.type,
             )}
             schedules={this.props.schedules}
             onAddScheduleClick={this.props.onAddScheduleClick}
@@ -663,7 +663,7 @@ class WizardPageContent extends React.Component<Props, State> {
     const targetEndpoint =
       this.props.wizardData.target && this.props.wizardData.target.type;
     const currentPageIndex = wizardPages.findIndex(
-      p => p.id === this.props.page.id
+      p => p.id === this.props.page.id,
     );
     const isLastPage = currentPageIndex === wizardPages.length - 1;
 
