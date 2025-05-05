@@ -123,7 +123,7 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
     const multiEndpoint = this.props.multiValidation.find(
       mv =>
         mv.endpoint.name === uploadedEndpoint.name &&
-        mv.endpoint.type === uploadedEndpoint.type
+        mv.endpoint.type === uploadedEndpoint.type,
     );
     if (multiEndpoint) {
       this.props.onRemove(multiEndpoint.endpoint, true);
@@ -138,7 +138,7 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
     DomUtils.copyTextToClipboard(
       message,
       "The message has been copied to clipboard",
-      "Failed to copy the message to clipboard"
+      "Failed to copy the message to clipboard",
     );
   }
 
@@ -174,11 +174,11 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
   renderStatus(endpoint: Endpoint) {
     const validationItem = this.props.multiValidation.find(
       v =>
-        v.endpoint.name === endpoint.name && v.endpoint.type === endpoint.type
+        v.endpoint.name === endpoint.name && v.endpoint.type === endpoint.type,
     );
     if (!validationItem) {
       const invalidRegions = this.props.invalidRegionsEndpointIds.find(
-        e => e.id === `${endpoint.type}${endpoint.name}`
+        e => e.id === `${endpoint.type}${endpoint.name}`,
       )?.regions;
       if (!invalidRegions?.length) {
         return null;
@@ -199,7 +199,7 @@ class MultipleUploadedEndpoints extends React.Component<Props, State> {
               if (endpoint.mapped_regions.find(r => r === item.value)) {
                 this.props.onRegionsChange(
                   endpoint,
-                  endpoint.mapped_regions.filter(r => r !== item.value)
+                  endpoint.mapped_regions.filter(r => r !== item.value),
                 );
               } else {
                 this.props.onRegionsChange(endpoint, [

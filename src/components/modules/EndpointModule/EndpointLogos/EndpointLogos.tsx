@@ -83,8 +83,8 @@ class EndpointLogos extends React.Component<Props> {
       const style = this.props.white
         ? "white"
         : this.props.disabled
-        ? "disabled"
-        : null;
+          ? "disabled"
+          : null;
       imageUrl = style ? `${imageUrl}/${style}` : imageUrl;
     }
 

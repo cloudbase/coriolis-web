@@ -89,7 +89,7 @@ class WizardEndpointList extends React.Component<Props> {
   renderProvider(provider: ProviderTypes) {
     const otherEndpoint = this.props.otherEndpoint;
     let items: any = this.props.endpoints.filter(
-      e => e.type === provider && (!otherEndpoint || otherEndpoint.id !== e.id)
+      e => e.type === provider && (!otherEndpoint || otherEndpoint.id !== e.id),
     );
     const selectedItem =
       this.props.selectedEndpoint &&
@@ -161,7 +161,7 @@ class WizardEndpointList extends React.Component<Props> {
         rows.push(
           <Row key={i} isIncomplete={isIncomplete}>
             {lastItems}
-          </Row>
+          </Row>,
         );
         lastItems = [];
       }

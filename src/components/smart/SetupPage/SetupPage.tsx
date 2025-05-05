@@ -253,7 +253,7 @@ class SetupPage extends React.Component<Props, State> {
   renderCurrentPage() {
     const renderModule = (
       actions: React.ReactNode,
-      content: React.ReactNode
+      content: React.ReactNode,
     ) => (
       <SetupPageModuleWrapper actions={actions}>
         {content}
@@ -293,7 +293,7 @@ class SetupPage extends React.Component<Props, State> {
             onSubmit={() => {
               this.handleValidateLicenceForm();
             }}
-          />
+          />,
         );
       case "legal/help":
         return renderModule(
@@ -339,7 +339,7 @@ class SetupPage extends React.Component<Props, State> {
               }}
             />
             <SetupPageHelp style={{ marginTop: "32px" }} />
-          </ModuleWrapper>
+          </ModuleWrapper>,
         );
       case "email/error":
         return renderModule(
@@ -369,7 +369,7 @@ class SetupPage extends React.Component<Props, State> {
               licenceType={this.state.licenceType}
               applianceId={setupStore.applianceId}
             />
-          </ModuleWrapper>
+          </ModuleWrapper>,
         );
       default:
         return null;

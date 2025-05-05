@@ -38,7 +38,7 @@ describe("Page header", () => {
       cy.getCookie("projectId").should(
         "have.property",
         "value",
-        projects.find(p => p.name === "admin").id
+        projects.find(p => p.name === "admin").id,
       );
     });
   });
@@ -76,7 +76,7 @@ describe("Page header", () => {
       const appliances = results[0].appliances;
       cy.get("div[class^='LicenceModule__Wrapper']").should(
         "contain.text",
-        `${appliances[0].id}-licencev2`
+        `${appliances[0].id}-licencev2`,
       );
     });
   });
@@ -93,7 +93,7 @@ describe("Page header", () => {
     cy.get("div[class^='UserDropdown__ListItem']").contains("Help").click();
     cy.get("@winOpen").should(
       "be.calledWith",
-      "https://cloudbase.it/coriolis-overview/"
+      "https://cloudbase.it/coriolis-overview/",
     );
   });
 

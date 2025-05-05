@@ -53,7 +53,7 @@ describe("Stepper", () => {
           onChange={onChange}
           minimum={5}
           maximum={15}
-        />
+        />,
       );
     };
 
@@ -121,7 +121,7 @@ describe("Stepper", () => {
       const inputEl = () => TestUtils.selectInput("Stepper__Input")!;
       const onChange = jest.fn();
       render(
-        <Stepper value={10} onChange={onChange} minimum={5} maximum={10} />
+        <Stepper value={10} onChange={onChange} minimum={5} maximum={10} />,
       );
 
       userEvent.clear(inputEl());
@@ -130,7 +130,7 @@ describe("Stepper", () => {
         inputEl().blur();
       });
       expect(onChange).toHaveBeenCalledWith(dispatchedValue);
-    }
+    },
   );
 
   it("increments and decrements on arrow keys press", async () => {

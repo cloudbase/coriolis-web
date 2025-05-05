@@ -188,11 +188,11 @@ class TransferItemModal extends React.Component<Props, State> {
     const currentStorage = this.props.transfer.storage_mappings;
     const buildStorageMap = (
       type: "backend" | "disk",
-      mapping: any
+      mapping: any,
     ): StorageMap => {
       const busTypeInfo = EndpointUtils.getBusTypeStorageId(
         storageBackends,
-        mapping.destination
+        mapping.destination,
       );
       const backend = storageBackends.find(b => b.name === busTypeInfo.id);
       const newStorageMap: StorageMap = {
@@ -227,7 +227,7 @@ class TransferItemModal extends React.Component<Props, State> {
       const existingMapping = storageMap.find(
         m =>
           m.type === mapping.type &&
-          m.source[fieldName] === String(mapping.source[fieldName])
+          m.source[fieldName] === String(mapping.source[fieldName]),
       );
       if (existingMapping) {
         existingMapping.target = mapping.target;
@@ -250,7 +250,7 @@ class TransferItemModal extends React.Component<Props, State> {
       Object.keys(networkMap).forEach(sourceNetworkName => {
         // if the network mapping was updated, just use the new mapping instead of the old one
         const updatedMapping = this.state.selectedNetworks.find(
-          m => m.sourceNic.network_name === sourceNetworkName
+          m => m.sourceNic.network_name === sourceNetworkName,
         );
         if (updatedMapping) {
           selectedNetworks.push(updatedMapping);
@@ -261,17 +261,17 @@ class TransferItemModal extends React.Component<Props, State> {
         const destNetObj: any = networkMap[sourceNetworkName];
         const portKeyInfo = NetworkUtils.getPortKeyNetworkId(
           this.props.networks,
-          destNetObj
+          destNetObj,
         );
         const destNetId = String(
           typeof destNetObj === "string" || !destNetObj || !destNetObj.id
             ? portKeyInfo.id
-            : destNetObj.id
+            : destNetObj.id,
         );
 
         const network =
           this.props.networks.find(
-            n => n.name === destNetId || n.id === destNetId
+            n => n.name === destNetId || n.id === destNetId,
           ) || null;
         const mapping: NetworkMap = {
           sourceNic: {
@@ -286,7 +286,7 @@ class TransferItemModal extends React.Component<Props, State> {
           const destSecGroupsInfo = network?.security_groups || [];
           const secInfo = destNetObj.security_groups.map((s: SecurityGroup) => {
             const foundSecGroupInfo = destSecGroupsInfo.find((si: any) =>
-              si.id ? si.id === s : si === s
+              si.id ? si.id === s : si === s,
             );
             return foundSecGroupInfo || { id: s, name: s };
           });
@@ -303,7 +303,7 @@ class TransferItemModal extends React.Component<Props, State> {
     this.state.selectedNetworks.forEach(mapping => {
       if (
         !selectedNetworks.find(
-          m => m.sourceNic.network_name === mapping.sourceNic.network_name
+          m => m.sourceNic.network_name === mapping.sourceNic.network_name,
         )
       ) {
         selectedNetworks.push(mapping);
@@ -320,7 +320,7 @@ class TransferItemModal extends React.Component<Props, State> {
     const buildDefaultStorage = (defaultValue: string | null | undefined) => {
       const busTypeInfo = EndpointUtils.getBusTypeStorageId(
         endpointStore.storageBackends,
-        defaultValue || null
+        defaultValue || null,
       );
       const defaultStorage: { value: string | null; busType?: string | null } =
         {
@@ -478,7 +478,7 @@ class TransferItemModal extends React.Component<Props, State> {
   async loadOptions(
     endpoint: Endpoint,
     optionsType: "source" | "destination",
-    useCache: boolean
+    useCache: boolean,
   ) {
     try {
       await providerStore.loadOptionsSchema({
@@ -518,7 +518,7 @@ class TransferItemModal extends React.Component<Props, State> {
     const env = ObjectUtils.clone(
       type === "source"
         ? this.props.transfer.source_environment
-        : this.props.transfer.destination_environment
+        : this.props.transfer.destination_environment,
     );
     const stateEnv =
       type === "source" ? this.state.sourceData : this.state.destinationData;
@@ -606,7 +606,7 @@ class TransferItemModal extends React.Component<Props, State> {
     const env = ObjectUtils.clone(
       type === "source"
         ? this.props.transfer.source_environment
-        : this.props.transfer.destination_environment
+        : this.props.transfer.destination_environment,
     );
 
     const data =
@@ -617,7 +617,7 @@ class TransferItemModal extends React.Component<Props, State> {
         : providerStore.destinationSchema;
     const invalidFields = findInvalidFields(
       ObjectUtils.mergeDeep(env, data),
-      schema
+      schema,
     );
 
     this.setState({ updateDisabled: invalidFields.length > 0 });
@@ -679,7 +679,7 @@ class TransferItemModal extends React.Component<Props, State> {
     if (field.subFields) {
       field.subFields.forEach(subField => {
         const subFieldKeys = Object.keys(data).filter(
-          k => k.indexOf(subField.name) > -1
+          k => k.indexOf(subField.name) > -1,
         );
         subFieldKeys.forEach(k => {
           delete data[k];
@@ -736,7 +736,7 @@ class TransferItemModal extends React.Component<Props, State> {
       });
       this.props.onRequestClose();
       this.props.onUpdateComplete(
-        `/transfers/${this.props.transfer.id}/executions`
+        `/transfers/${this.props.transfer.id}/executions`,
       );
     } catch (err) {
       this.setState({ updating: false });
@@ -745,7 +745,7 @@ class TransferItemModal extends React.Component<Props, State> {
 
   handleNetworkChange(changeObject: WizardNetworksChangeObject) {
     const networkMap = this.state.selectedNetworks.filter(
-      n => n.sourceNic.network_name !== changeObject.nic.network_name
+      n => n.sourceNic.network_name !== changeObject.nic.network_name,
     );
     this.setState({
       selectedNetworks: [
@@ -762,11 +762,11 @@ class TransferItemModal extends React.Component<Props, State> {
 
   handleCancelScript(
     global: "windows" | "linux" | null,
-    instanceName: string | null
+    instanceName: string | null,
   ) {
     this.setState(prevState => ({
       uploadedScripts: prevState.uploadedScripts.filter(s =>
-        global ? s.global !== global : s.instanceId !== instanceName
+        global ? s.global !== global : s.instanceId !== instanceName,
       ),
     }));
   }
@@ -790,7 +790,7 @@ class TransferItemModal extends React.Component<Props, State> {
       const storageMap = prevState.storageMap.filter(
         n =>
           n.type !== mapping.type ||
-          n.source[diskFieldName] !== mapping.source[diskFieldName]
+          n.source[diskFieldName] !== mapping.source[diskFieldName],
       );
       storageMap.push(mapping);
 
@@ -819,7 +819,7 @@ class TransferItemModal extends React.Component<Props, State> {
     }
     if (loading) {
       return this.renderLoading(
-        `Loading ${type === "source" ? "source" : "target"} options ...`
+        `Loading ${type === "source" ? "source" : "target"} options ...`,
       );
     }
     const optionsLoading =
@@ -839,7 +839,7 @@ class TransferItemModal extends React.Component<Props, State> {
             ? this.props.sourceEndpoint.type
             : this.props.destinationEndpoint.type;
         return o.name === provider && o.types.find(t => t === type);
-      }
+      },
     );
     let optionsLoadingSkipFields: string[] = [];
     if (extraOptionsConfig) {
@@ -854,7 +854,7 @@ class TransferItemModal extends React.Component<Props, State> {
       dictionaryKey = `${endpoint.type}-${type}`;
     }
     const minionPools = minionPoolStore.minionPools.filter(
-      m => m.platform === type && m.endpoint_id === endpoint.id
+      m => m.platform === type && m.endpoint_id === endpoint.id,
     );
     return (
       <WizardOptions

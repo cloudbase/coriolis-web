@@ -197,7 +197,7 @@ class UserDropdown extends React.Component<Props, State> {
         m =>
           m.value === "users" &&
           !configLoader.config.disabledPages.find(p => p === "users") &&
-          (!m.requiresAdmin || isAdmin)
+          (!m.requiresAdmin || isAdmin),
       )
     ) {
       href = `/users/${this.props.user.id}`;

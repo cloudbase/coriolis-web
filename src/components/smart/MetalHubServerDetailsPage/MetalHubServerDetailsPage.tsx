@@ -109,12 +109,12 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
       vmsPerPage: Infinity,
     });
     const instance = instanceStore.backgroundInstances.find(
-      i => String(i.id) === String(metalHubStore.serverDetails?.id)
+      i => String(i.id) === String(metalHubStore.serverDetails?.id),
     );
     if (!instance) {
       notificationStore.alert(
         `Could not find instance ID ${metalHubStore.serverDetails?.id} on endpoint '${endpoint.name}'`,
-        "error"
+        "error",
       );
       throw new Error("Instance not found");
     }
@@ -127,8 +127,8 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
         JSON.stringify({
           data,
           currentPage: wizardPages.find(p => p.id === "target"),
-        })
-      )}`
+        }),
+      )}`,
     );
   }
 

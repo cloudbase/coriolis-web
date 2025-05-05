@@ -105,7 +105,7 @@ describe("EndpointDetailsContent", () => {
   it("renders loading state correctly", () => {
     render(<EndpointDetailsContent {...defaultProps} loading />);
     expect(
-      TestUtils.select("EndpointDetailsContent__LoadingWrapper")
+      TestUtils.select("EndpointDetailsContent__LoadingWrapper"),
     ).toBeTruthy();
   });
 
@@ -133,7 +133,7 @@ describe("EndpointDetailsContent", () => {
         connectionInfo={{
           file: "file content",
         }}
-      />
+      />,
     );
     fireEvent.click(getByText("Download"));
 
@@ -162,7 +162,7 @@ describe("EndpointDetailsContent", () => {
         connectionInfo={{
           secret_ref: "secret_ref",
         }}
-      />
+      />,
     );
     let secretRef;
     TestUtils.selectAll("CopyValue__Value").forEach(element => {
@@ -194,7 +194,7 @@ describe("EndpointDetailsContent", () => {
             nested_prop: "nested prop's value",
           },
         }}
-      />
+      />,
     );
     expect(getByText("Nested Prop")).toBeTruthy();
     expect(getByText("nested prop's value")).toBeTruthy();
@@ -235,7 +235,7 @@ describe("EndpointDetailsContent", () => {
         connectionInfo={{
           bool_field: true,
         }}
-      />
+      />,
     );
     expect(getByText("Bool Field")).toBeTruthy();
     expect(getByText("Yes")).toBeTruthy();
@@ -252,7 +252,7 @@ describe("EndpointDetailsContent", () => {
         connectionInfo={{
           bool_field: false,
         }}
-      />
+      />,
     );
     expect(getByText("Bool Field")).toBeTruthy();
     expect(getByText("No")).toBeTruthy();
@@ -269,7 +269,7 @@ describe("EndpointDetailsContent", () => {
         connectionInfo={{
           bool_field: "",
         }}
-      />
+      />,
     );
     let boolValue;
     TestUtils.selectAll("CopyValue__Value").forEach(element => {
@@ -294,7 +294,7 @@ describe("EndpointDetailsContent", () => {
         connectionInfo={{
           password_field: "password",
         }}
-      />
+      />,
     );
     expect(getByText("Password Field")).toBeTruthy();
     expect(getByText("•••••••••")).toBeTruthy();
@@ -313,7 +313,7 @@ describe("EndpointDetailsContent", () => {
         connectionInfo={{
           secret_key: "password",
         }}
-      />
+      />,
     );
     expect(getByText("Secret Key")).toBeTruthy();
     expect(getByText("•••••••••")).toBeTruthy();
@@ -327,7 +327,7 @@ describe("EndpointDetailsContent", () => {
           ...OPENSTACK_ENDPOINT,
           mapped_regions: ["1"],
         }}
-      />
+      />,
     );
     expect(getByText("Region 1")).toBeTruthy();
   });

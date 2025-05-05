@@ -32,7 +32,7 @@ class Wrapper extends React.Component<any> {
 
   handlePreviousClick() {
     const selectedIndex = items.findIndex(
-      (e: { id: any }) => e.id === this.state.selectedItem.id
+      (e: { id: any }) => e.id === this.state.selectedItem.id,
     );
 
     if (selectedIndex === 0) {
@@ -44,7 +44,7 @@ class Wrapper extends React.Component<any> {
 
   handleNextClick() {
     const selectedIndex = items.findIndex(
-      (e: { id: any }) => e.id === this.state.selectedItem.id
+      (e: { id: any }) => e.id === this.state.selectedItem.id,
     );
 
     if (selectedIndex >= items.length - 1) {

@@ -28,7 +28,7 @@ describe("Logo", () => {
   it("accepts custom 'to' property", () => {
     render(<Logo to="#testing" />);
     expect(TestUtils.select("Logo__LinkStyled")?.getAttribute("to")).toBe(
-      "#testing"
+      "#testing",
     );
   });
 });

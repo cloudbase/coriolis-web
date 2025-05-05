@@ -105,7 +105,7 @@ class MinionPoolsPage extends React.Component<Props, State> {
   }
 
   getMinionsThatCanBe(
-    action: "allocated" | "deallocated" | "refreshed" | "deleted"
+    action: "allocated" | "deallocated" | "refreshed" | "deleted",
   ): MinionPool[] {
     const minions = this.state.selectedMinionPools;
     switch (action) {
@@ -113,13 +113,14 @@ class MinionPoolsPage extends React.Component<Props, State> {
         return minions.filter(minion => minion.status === "DEALLOCATED");
       case "deallocated":
         return minions.filter(
-          minion => minion.status === "ALLOCATED" || minion.status === "ERROR"
+          minion => minion.status === "ALLOCATED" || minion.status === "ERROR",
         );
       case "refreshed":
         return minions.filter(minion => minion.status === "ALLOCATED");
       default:
         return minions.filter(
-          minion => minion.status === "DEALLOCATED" || minion.status === "ERROR"
+          minion =>
+            minion.status === "DEALLOCATED" || minion.status === "ERROR",
         );
     }
   }
@@ -151,7 +152,7 @@ class MinionPoolsPage extends React.Component<Props, State> {
   itemFilterFunction(
     item: MinionPool,
     filterStatus?: string | null,
-    filterText?: string
+    filterText?: string,
   ) {
     if (
       (filterStatus !== "all" && item.status !== filterStatus) ||
@@ -201,7 +202,7 @@ class MinionPoolsPage extends React.Component<Props, State> {
       },
       () => {
         this.pollData(false);
-      }
+      },
     );
   }
 
@@ -220,13 +221,13 @@ class MinionPoolsPage extends React.Component<Props, State> {
       },
       () => {
         this.pollData(false);
-      }
+      },
     );
   }
 
   handleChooseMinionPoolSelectEndpoint(
     selectedMinionPoolEndpoint: Endpoint,
-    platform: "source" | "destination"
+    platform: "source" | "destination",
   ) {
     this.setState({
       showChooseMinionEndpointModal: false,
@@ -253,8 +254,8 @@ class MinionPoolsPage extends React.Component<Props, State> {
     notificationStore.alert(`Allocating minion pool${plural}...`);
     await Promise.all(
       pools.map(minionPool =>
-        minionPoolStore.runAction(minionPool.id, "allocate")
-      )
+        minionPoolStore.runAction(minionPool.id, "allocate"),
+      ),
     );
     await minionPoolStore.loadMinionPools();
   }
@@ -274,8 +275,8 @@ class MinionPoolsPage extends React.Component<Props, State> {
     notificationStore.alert(`Deallocating minion pool${plural}...`);
     await Promise.all(
       pools.map(minionPool =>
-        minionPoolStore.runAction(minionPool.id, "deallocate", { force })
-      )
+        minionPoolStore.runAction(minionPool.id, "deallocate", { force }),
+      ),
     );
     await minionPoolStore.loadMinionPools();
   }
@@ -286,8 +287,8 @@ class MinionPoolsPage extends React.Component<Props, State> {
     notificationStore.alert(`Refreshing minion pool${plural}...`);
     await Promise.all(
       pools.map(minionPool =>
-        minionPoolStore.runAction(minionPool.id, "refresh")
-      )
+        minionPoolStore.runAction(minionPool.id, "refresh"),
+      ),
     );
     await minionPoolStore.loadMinionPools();
   }
@@ -413,7 +414,7 @@ class MinionPoolsPage extends React.Component<Props, State> {
           <Modal
             isOpen
             title={`New ${ObjectUtils.capitalizeFirstLetter(
-              this.state.selectedMinionPoolPlatform
+              this.state.selectedMinionPoolPlatform,
             )} Minion Pool`}
             onRequestClose={() => {
               this.handleCloseMinionPoolModalRequest();
@@ -464,9 +465,7 @@ class MinionPoolsPage extends React.Component<Props, State> {
 function MinionPoolsPageWithNavigate() {
   const navigate = useNavigate();
 
-  return (
-    <MinionPoolsPage onNavigate={navigate} />
-  );
+  return <MinionPoolsPage onNavigate={navigate} />;
 }
 
 export default MinionPoolsPageWithNavigate;

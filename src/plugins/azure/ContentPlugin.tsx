@@ -131,7 +131,7 @@ class ContentPlugin extends React.Component<Props, State> {
 
   getLoginTypeValue() {
     const loginTypeField = this.props.connectionInfoSchema.find(
-      f => f.name === "login_type"
+      f => f.name === "login_type",
     );
     let value = this.props.getFieldValue(loginTypeField);
     if (!value) {
@@ -140,7 +140,7 @@ class ContentPlugin extends React.Component<Props, State> {
       if (conn && conn.service_principal_credentials) {
         value = "service_principal_credentials";
         const loginFieldType = this.props.connectionInfoSchema.find(
-          f => f.name === "login_type"
+          f => f.name === "login_type",
         );
         if (loginFieldType) {
           this.props.handleFieldChange(loginFieldType, value);
@@ -152,7 +152,7 @@ class ContentPlugin extends React.Component<Props, State> {
 
   getSelectedLoginTypeField() {
     const loginTypeField = this.props.connectionInfoSchema.find(
-      f => f.name === "login_type"
+      f => f.name === "login_type",
     );
     return loginTypeField && loginTypeField.items
       ? loginTypeField.items.find(f => f.name === this.getLoginTypeValue())
@@ -188,7 +188,7 @@ class ContentPlugin extends React.Component<Props, State> {
     if (isCustomCloud) {
       const customCloudFields = (
         this.props.connectionInfoSchema.find(
-          f => f.name === "cloud_profile"
+          f => f.name === "cloud_profile",
         ) as any
       ).custom_cloud_fields;
       find(customCloudFields);
@@ -228,7 +228,7 @@ class ContentPlugin extends React.Component<Props, State> {
     const updatedFields: { field: { name: any }; value: any }[] = [];
     const setValue = (
       object: { [x: string]: any },
-      key: keyof typeof fieldNameMapper
+      key: keyof typeof fieldNameMapper,
     ) => {
       if (object[key]) {
         updatedFields.push({
@@ -263,11 +263,11 @@ class ContentPlugin extends React.Component<Props, State> {
 
   renderField(
     field: Field,
-    customProps?: { value: any; onChange: (value: any) => void }
+    customProps?: { value: any; onChange: (value: any) => void },
   ) {
     const isPassword =
       Boolean(
-        configLoader.config.passwordFields.find(fn => field.name === fn)
+        configLoader.config.passwordFields.find(fn => field.name === fn),
       ) || field.name.indexOf("password") > -1;
     return (
       <FieldStyled
@@ -312,7 +312,7 @@ class ContentPlugin extends React.Component<Props, State> {
           <Row key={`${lastField.key}-${field.name}`}>
             {lastField}
             {currentField}
-          </Row>
+          </Row>,
         );
       } else if (i === filteredFields.length - 1) {
         rows.push(<Row id={field.name}>{currentField}</Row>);
@@ -371,7 +371,7 @@ class ContentPlugin extends React.Component<Props, State> {
       return null;
     }
     const loginTypeFieldItems = loginTypeField.items.find(
-      f => f.name === this.getLoginTypeValue()
+      f => f.name === this.getLoginTypeValue(),
     );
     if (
       !loginTypeFieldItems ||
@@ -381,14 +381,15 @@ class ContentPlugin extends React.Component<Props, State> {
       return null;
     }
     const allowUntrustedField = loginTypeFieldItems.fields.find(
-      f => f.name === "allow_untrusted"
+      f => f.name === "allow_untrusted",
     );
 
     let fieldsRows = this.renderFieldRows(
       fields.filter(
-        f => f.name !== loginTypeField.name && f.name !== cloudProfileField.name
+        f =>
+          f.name !== loginTypeField.name && f.name !== cloudProfileField.name,
       ),
-      true
+      true,
     );
 
     const radioGroupRow = (
@@ -402,7 +403,7 @@ class ContentPlugin extends React.Component<Props, State> {
                   if (value)
                     this.props.handleFieldChange(loginTypeField, field.name);
                 },
-              })
+              }),
             )}
         </RadioGroup>
         {allowUntrustedField ? this.renderField(allowUntrustedField) : null}
@@ -423,7 +424,7 @@ class ContentPlugin extends React.Component<Props, State> {
 
     let fieldsToRender = [
       ...loginTypeFieldItems.fields.filter(
-        f => f.name !== allowUntrustedField.name
+        f => f.name !== allowUntrustedField.name,
       ),
       cloudProfileField,
     ];

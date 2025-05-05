@@ -14,7 +14,7 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
   return prev;
 }, {});
 
-envKeys['process.env'] = JSON.stringify(env);
+envKeys["process.env"] = JSON.stringify(env);
 const isDevelopment = process.env.NODE_ENV === "development";
 
 module.exports = {
@@ -38,10 +38,10 @@ module.exports = {
           },
           noErrorOnMissing: true,
         },
-      ]
+      ],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
+      template: "./public/index.html",
     }),
   ],
   resolve: {

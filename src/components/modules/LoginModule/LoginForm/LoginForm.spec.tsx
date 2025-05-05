@@ -70,13 +70,13 @@ describe("LoginForm", () => {
     render(<LoginForm {...defaultProps} />);
     fireEvent.submit(document.querySelector("form")!);
     expect(notificationStore.alert).toHaveBeenCalledWith(
-      "Please fill in all fields"
+      "Please fill in all fields",
     );
   });
 
   it("renders incorrect crediantials message", () => {
     const { getByText } = render(
-      <LoginForm {...defaultProps} loginFailedResponse={{ status: 401 }} />
+      <LoginForm {...defaultProps} loginFailedResponse={{ status: 401 }} />,
     );
     expect(getByText("Incorrect credentials", { exact: false })).toBeTruthy();
   });
@@ -86,7 +86,7 @@ describe("LoginForm", () => {
       <LoginForm
         {...defaultProps}
         loginFailedResponse={{ status: 500, message: "other error" }}
-      />
+      />,
     );
     expect(getByText("other error", { exact: false })).toBeTruthy();
   });

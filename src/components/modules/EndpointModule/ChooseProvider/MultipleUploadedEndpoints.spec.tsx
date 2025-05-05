@@ -117,11 +117,11 @@ describe("MultipleUploadedEndpoints", () => {
 
     expect(
       TestUtils.selectAll("MultipleUploadedEndpoints__EndpointName")[0]
-        .textContent
+        .textContent,
     ).toBe("Openstack");
     expect(
       TestUtils.selectAll("MultipleUploadedEndpoints__EndpointName")[1]
-        .textContent
+        .textContent,
     ).toBe("AWS");
   });
 
@@ -147,11 +147,11 @@ describe("MultipleUploadedEndpoints", () => {
 
   it('changes to "Done" button after validation', async () => {
     const { rerender, getByText } = render(
-      <MultipleUploadedEndpoints {...defaultProps} validating={true} />
+      <MultipleUploadedEndpoints {...defaultProps} validating={true} />,
     );
     expect(TestUtils.select("LoadingButton__Loading")).toBeTruthy();
     rerender(
-      <MultipleUploadedEndpoints {...defaultProps} validating={false} />
+      <MultipleUploadedEndpoints {...defaultProps} validating={false} />,
     );
     expect(TestUtils.select("LoadingButton__Loading")).toBeFalsy();
     expect(getByText("Done")).toBeTruthy();
@@ -159,10 +159,10 @@ describe("MultipleUploadedEndpoints", () => {
 
   it('handles the "Done" button click', () => {
     const { rerender, getByText } = render(
-      <MultipleUploadedEndpoints {...defaultProps} validating={true} />
+      <MultipleUploadedEndpoints {...defaultProps} validating={true} />,
     );
     rerender(
-      <MultipleUploadedEndpoints {...defaultProps} validating={false} />
+      <MultipleUploadedEndpoints {...defaultProps} validating={false} />,
     );
     fireEvent.click(getByText("Done"));
     expect(defaultProps.onDone).toHaveBeenCalled();
@@ -171,12 +171,12 @@ describe("MultipleUploadedEndpoints", () => {
   it("removes an endpoint", () => {
     render(<MultipleUploadedEndpoints {...defaultProps} />);
     const deleteButtons = TestUtils.selectAll(
-      "MultipleUploadedEndpoints__DeleteButton"
+      "MultipleUploadedEndpoints__DeleteButton",
     );
     fireEvent.click(deleteButtons[0]);
     expect(defaultProps.onRemove).toHaveBeenCalledWith(
       defaultProps.endpoints[0],
-      true
+      true,
     );
   });
 
@@ -195,12 +195,12 @@ describe("MultipleUploadedEndpoints", () => {
 
     render(<MultipleUploadedEndpoints {...newProps} />);
     const deleteButtons = TestUtils.selectAll(
-      "MultipleUploadedEndpoints__DeleteButton"
+      "MultipleUploadedEndpoints__DeleteButton",
     );
     fireEvent.click(deleteButtons[0]);
     expect(defaultProps.onRemove).toHaveBeenCalledWith(
       defaultProps.endpoints[0],
-      false
+      false,
     );
   });
 
@@ -215,11 +215,11 @@ describe("MultipleUploadedEndpoints", () => {
 
     render(<MultipleUploadedEndpoints {...newProps} />);
     fireEvent.click(
-      document.querySelector("[data-testid='DropdownLink__Item']")!
+      document.querySelector("[data-testid='DropdownLink__Item']")!,
     );
     expect(defaultProps.onRegionsChange).toHaveBeenCalledWith(
       OPENSTACK_ENDPOINT,
-      ["default"]
+      ["default"],
     );
   });
 
@@ -239,11 +239,11 @@ describe("MultipleUploadedEndpoints", () => {
 
     render(<MultipleUploadedEndpoints {...newProps} />);
     fireEvent.click(
-      document.querySelector("[data-testid='DropdownLink__Item']")!
+      document.querySelector("[data-testid='DropdownLink__Item']")!,
     );
     expect(defaultProps.onRegionsChange).toHaveBeenCalledWith(
       newOpenstackEndpoint,
-      []
+      [],
     );
   });
 
@@ -282,7 +282,7 @@ describe("MultipleUploadedEndpoints", () => {
     render(<MultipleUploadedEndpoints {...newProps} />);
     expect(
       TestUtils.select("MultipleUploadedEndpoints__InvalidEndpoint")
-        ?.textContent
+        ?.textContent,
     ).toContain("unsupported provider type: invalid");
   });
 });

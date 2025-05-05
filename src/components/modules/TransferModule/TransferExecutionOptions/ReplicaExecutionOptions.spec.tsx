@@ -53,7 +53,7 @@ describe("ReplicaExecutionOptions", () => {
       <ReplicaExecutionOptions
         {...defaultProps}
         options={{ shutdown_instances: null }}
-      />
+      />,
     );
     expect(TestUtils.select("Switch__Wrapper")?.textContent).toBe("No");
   });
@@ -63,7 +63,7 @@ describe("ReplicaExecutionOptions", () => {
     fireEvent.click(TestUtils.select("Switch__InputWrapper")!);
     expect(defaultProps.onChange).toHaveBeenCalledWith(
       "shutdown_instances",
-      false
+      false,
     );
   });
 

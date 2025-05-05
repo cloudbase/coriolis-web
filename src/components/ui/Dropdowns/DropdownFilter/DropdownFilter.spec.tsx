@@ -27,7 +27,7 @@ describe("DropdownFilter", () => {
   it("renders the dropdown", () => {
     render(<DropdownFilter />);
     expect(TestUtils.select("SearchInput__Wrapper")).toBeFalsy();
-    act (() => {
+    act(() => {
       TestUtils.select("DropdownFilter__Button")!.click();
     });
     expect(TestUtils.select("SearchInput__Wrapper")).toBeTruthy();
@@ -35,18 +35,18 @@ describe("DropdownFilter", () => {
 
   it("displays the search input value", () => {
     render(<DropdownFilter searchValue="Search Value" />);
-    act (() => {
+    act(() => {
       TestUtils.select("DropdownFilter__Button")!.click();
     });
     expect(TestUtils.selectInput("TextInput__Input")!.value).toBe(
-      "Search Value"
+      "Search Value",
     );
   });
 
   it("fires change on search input value change", () => {
     const onChange = jest.fn();
     render(<DropdownFilter onSearchChange={onChange} />);
-    act (() => {
+    act(() => {
       TestUtils.select("DropdownFilter__Button")!.click();
     });
     userEvent.type(TestUtils.select("TextInput__Input")!, "Search");

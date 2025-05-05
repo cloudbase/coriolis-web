@@ -153,14 +153,14 @@ class MainDetails extends React.Component<Props, State> {
 
   getSourceEndpoint(): Endpoint | undefined {
     const endpoint = this.props.endpoints.find(
-      e => this.props.item && e.id === this.props.item.origin_endpoint_id
+      e => this.props.item && e.id === this.props.item.origin_endpoint_id,
     );
     return endpoint;
   }
 
   getDestinationEndpoint(): Endpoint | undefined {
     const endpoint = this.props.endpoints.find(
-      e => this.props.item && e.id === this.props.item.destination_endpoint_id
+      e => this.props.item && e.id === this.props.item.destination_endpoint_id,
     );
     return endpoint;
   }
@@ -169,8 +169,8 @@ class MainDetails extends React.Component<Props, State> {
     return this.props.item
       ? this.renderValue(
           DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
-            "yyyy-LL-dd HH:mm:ss"
-          )
+            "yyyy-LL-dd HH:mm:ss",
+          ),
         )
       : "-";
   }
@@ -203,7 +203,7 @@ class MainDetails extends React.Component<Props, State> {
 
   renderPropertiesTable(
     propertyNames: string[],
-    type: "source" | "destination"
+    type: "source" | "destination",
   ) {
     const endpoint =
       type === "source"
@@ -220,7 +220,7 @@ class MainDetails extends React.Component<Props, State> {
         return value
           .map(
             (v: { source: any; destination: any }) =>
-              `${v.source}=${v.destination}`
+              `${v.source}=${v.destination}`,
           )
           .join(", ");
       }
@@ -268,7 +268,7 @@ class MainDetails extends React.Component<Props, State> {
               label: `${label} - ${LabelDictionary.get(p)}`,
               value: getValue(p, value[p]),
             };
-          })
+          }),
         );
       } else {
         properties.push({ label, value: getValue(pn, value) });
@@ -286,7 +286,7 @@ class MainDetails extends React.Component<Props, State> {
               <PropertyValue>
                 {prop.label.toLowerCase().indexOf("password") > -1 &&
                 !this.state.showPassword.find(
-                  f => f === `${prop.label}-${type}`
+                  f => f === `${prop.label}-${type}`,
                 ) ? (
                   <PasswordValue
                     value={prop.value}
@@ -330,16 +330,16 @@ class MainDetails extends React.Component<Props, State> {
               (k !== "storage_mappings" ||
                 (env[k] != null &&
                   typeof env[k] === "object" &&
-                  Object.keys(env[k]).length > 0))
+                  Object.keys(env[k]).length > 0)),
           )
         : [];
     };
 
     const sourceMinionPool = this.props.minionPools.find(
-      m => m.id === this.props.item?.origin_minion_pool_id
+      m => m.id === this.props.item?.origin_minion_pool_id,
     );
     const destMinionPool = this.props.minionPools.find(
-      m => m.id === this.props.item?.destination_minion_pool_id
+      m => m.id === this.props.item?.destination_minion_pool_id,
     );
 
     return (
@@ -373,7 +373,7 @@ class MainDetails extends React.Component<Props, State> {
                 <Value block>
                   {this.renderPropertiesTable(
                     getPropertyNames("source"),
-                    "source"
+                    "source",
                   )}
                 </Value>
               </Field>
@@ -383,7 +383,7 @@ class MainDetails extends React.Component<Props, State> {
             <Field>
               <Label>Id</Label>
               {this.renderValue(
-                this.props.item ? this.props.item.id || "-" : "-"
+                this.props.item ? this.props.item.id || "-" : "-",
               )}
             </Field>
           </Row>
@@ -393,8 +393,8 @@ class MainDetails extends React.Component<Props, State> {
               {this.props.item && this.props.item.created_at ? (
                 this.renderValue(
                   DateUtils.getLocalDate(this.props.item.created_at).toFormat(
-                    "yyyy-LL-dd HH:mm:ss"
-                  )
+                    "yyyy-LL-dd HH:mm:ss",
+                  ),
                 )
               ) : (
                 <Value>-</Value>
@@ -469,7 +469,7 @@ class MainDetails extends React.Component<Props, State> {
                 <Value block>
                   {this.renderPropertiesTable(
                     getPropertyNames("destination"),
-                    "destination"
+                    "destination",
                   )}
                 </Value>
               </Field>

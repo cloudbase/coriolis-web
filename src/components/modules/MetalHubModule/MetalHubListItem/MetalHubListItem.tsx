@@ -137,7 +137,7 @@ class MetalHubServerListItem extends React.Component<Props> {
               <ItemLabel>Created At</ItemLabel>
               <ItemValue>
                 {DateUtils.getLocalDate(this.props.item.created_at).toFormat(
-                  "yyyy-LL-dd HH:mm:ss"
+                  "yyyy-LL-dd HH:mm:ss",
                 )}
               </ItemValue>
             </Data>
@@ -145,7 +145,7 @@ class MetalHubServerListItem extends React.Component<Props> {
               <ItemLabel>Updated At</ItemLabel>
               <ItemValue>
                 {DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
-                  "yyyy-LL-dd HH:mm:ss"
+                  "yyyy-LL-dd HH:mm:ss",
                 )}
               </ItemValue>
             </Data>

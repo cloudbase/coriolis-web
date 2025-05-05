@@ -112,7 +112,7 @@ type Props = {
 class MinionPoolMainDetails extends React.Component<Props> {
   getEndpoint(): Endpoint | undefined {
     const endpoint = this.props.endpoints.find(
-      e => e.id === this.props.item?.endpoint_id
+      e => e.id === this.props.item?.endpoint_id,
     );
     return endpoint;
   }
@@ -121,8 +121,8 @@ class MinionPoolMainDetails extends React.Component<Props> {
     return this.props.item?.updated_at
       ? this.renderValue(
           DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
-            "yyyy-LL-dd HH:mm:ss"
-          )
+            "yyyy-LL-dd HH:mm:ss",
+          ),
         )
       : "-";
   }
@@ -163,7 +163,7 @@ class MinionPoolMainDetails extends React.Component<Props> {
         return value
           .map(
             (v: { source: any; destination: any }) =>
-              `${v.source}=${v.destination}`
+              `${v.source}=${v.destination}`,
           )
           .join(", ");
       }
@@ -211,7 +211,7 @@ class MinionPoolMainDetails extends React.Component<Props> {
               label: `${label} - ${LabelDictionary.get(p)}`,
               value: getValue(fieldName, value[p]),
             };
-          })
+          }),
         );
       } else {
         properties.push({ label, value: getValue(pn, value) });
@@ -262,13 +262,13 @@ class MinionPoolMainDetails extends React.Component<Props> {
               (k !== "storage_mappings" ||
                 (env[k] != null &&
                   typeof env[k] === "object" &&
-                  Object.keys(env[k]).length > 0))
+                  Object.keys(env[k]).length > 0)),
           )
         : [];
     };
 
     const usage: ActionItem[] = this.props.transfers.concat(
-      this.props.deployments as any[]
+      this.props.deployments as any[],
     );
 
     return (
@@ -307,8 +307,8 @@ class MinionPoolMainDetails extends React.Component<Props> {
               {this.props.item?.created_at ? (
                 this.renderValue(
                   DateUtils.getLocalDate(this.props.item.created_at).toFormat(
-                    "yyyy-LL-dd HH:mm:ss"
-                  )
+                    "yyyy-LL-dd HH:mm:ss",
+                  ),
                 )
               ) : (
                 <Value>-</Value>

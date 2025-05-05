@@ -125,9 +125,9 @@ class WizardPage extends React.Component<Props, State> {
       Math.max(
         min,
         Math.floor(
-          (window.innerHeight - instancesTableDiff) / instancesItemHeight
-        )
-      )
+          (window.innerHeight - instancesTableDiff) / instancesItemHeight,
+        ),
+      ),
     );
   }
 
@@ -139,7 +139,7 @@ class WizardPage extends React.Component<Props, State> {
       providerStore.providers &&
       providerStore.providers[destProvider]
         ? !!providerStore.providers[destProvider].types.find(
-            t => t === providerTypes.STORAGE
+            t => t === providerTypes.STORAGE,
           )
         : false;
 
@@ -150,7 +150,7 @@ class WizardPage extends React.Component<Props, State> {
 
   get requiresWindowsImage() {
     return Boolean(
-      wizardStore.data.selectedInstances?.find(i => i.os_type === "windows")
+      wizardStore.data.selectedInstances?.find(i => i.os_type === "windows"),
     );
   }
 
@@ -200,7 +200,7 @@ class WizardPage extends React.Component<Props, State> {
       this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1);
     notificationStore.alert(
       `${typeLabel}${items.length > 1 ? "s" : ""} was successfully created`,
-      "success"
+      "success",
     );
     let schedulePromise = Promise.resolve();
 
@@ -248,14 +248,14 @@ class WizardPage extends React.Component<Props, State> {
   handleStorageReloadClick() {
     endpointStore.loadStorage(
       wizardStore.data.target!.id,
-      wizardStore.data.destOptions
+      wizardStore.data.destOptions,
     );
   }
 
   handleBackClick() {
     this.setState({ nextButtonDisabled: false });
     const currentPageIndex = this.pages.findIndex(
-      p => p.id === wizardStore.currentPage.id
+      p => p.id === wizardStore.currentPage.id,
     );
 
     if (currentPageIndex === 0) {
@@ -270,7 +270,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleNextClick() {
     const currentPageIndex = this.pages.findIndex(
-      p => p.id === wizardStore.currentPage.id
+      p => p.id === wizardStore.currentPage.id,
     );
 
     if (currentPageIndex === this.pages.length - 1) {
@@ -327,7 +327,7 @@ class WizardPage extends React.Component<Props, State> {
     });
     wizardStore.fillWithDefaultValues(
       "destination",
-      providerStore.destinationSchema
+      providerStore.destinationSchema,
     );
     // Preload destination options values
     await providerStore.getOptionsValues({
@@ -339,14 +339,14 @@ class WizardPage extends React.Component<Props, State> {
     });
     wizardStore.fillWithDefaultValues(
       "destination",
-      providerStore.destinationSchema
+      providerStore.destinationSchema,
     );
     await this.loadExtraOptions({ type: "destination" });
   }
 
   handleAddEndpoint(
     newEndpointType: ProviderTypes,
-    newEndpointFromSource: boolean
+    newEndpointFromSource: boolean,
   ) {
     this.setState({
       showNewEndpointModal: true,
@@ -378,7 +378,7 @@ class WizardPage extends React.Component<Props, State> {
       instanceStore.reloadInstances(
         wizardStore.data.source,
         this.instancesPerPage,
-        wizardStore.data.sourceOptions
+        wizardStore.data.sourceOptions,
       );
     }
   }
@@ -418,7 +418,7 @@ class WizardPage extends React.Component<Props, State> {
   handleSourceOptionsChange(
     field: Field,
     value: any,
-    parentFieldName?: string
+    parentFieldName?: string,
   ) {
     wizardStore.updateData({ selectedInstances: [] });
     wizardStore.updateSourceOptions({ field, value, parentFieldName });
@@ -526,10 +526,13 @@ class WizardPage extends React.Component<Props, State> {
         executeOptions: [
           ...executeOptionsWithExecuteNow,
           ...deploymentFields,
-        ].reduce((acc, option) => {
-          acc[option.name] = option.defaultValue;
-          return acc;
-        }, {} as { [key: string]: any }),
+        ].reduce(
+          (acc, option) => {
+            acc[option.name] = option.defaultValue;
+            return acc;
+          },
+          {} as { [key: string]: any },
+        ),
       });
     }
   }
@@ -585,7 +588,7 @@ class WizardPage extends React.Component<Props, State> {
   async loadDataForPage(page: WizardPageType) {
     const loadOptions = async (
       endpoint: EndpointType,
-      optionsType: "source" | "destination"
+      optionsType: "source" | "destination",
     ) => {
       await providerStore.loadOptionsSchema({
         providerName: endpoint.type,
@@ -665,7 +668,7 @@ class WizardPage extends React.Component<Props, State> {
         // Preload storage API calls
         endpointStore.loadStorage(
           wizardStore.data.target!.id,
-          wizardStore.data.destOptions
+          wizardStore.data.destOptions,
         );
         this.loadNetworks(true);
         break;
@@ -706,7 +709,7 @@ class WizardPage extends React.Component<Props, State> {
     });
     if (success && wizardStore.createdItems) {
       this.handleCreationSuccess(
-        wizardStore.createdItems.filter(ObjectUtils.notEmpty)
+        wizardStore.createdItems.filter(ObjectUtils.notEmpty),
       );
     } else {
       this.setState({ nextButtonDisabled: false });
@@ -826,7 +829,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleCancelUploadedScript(
     global: string | null,
-    instanceName: string | null
+    instanceName: string | null,
   ) {
     wizardStore.cancelUploadedScript(global, instanceName);
   }
@@ -859,7 +862,7 @@ class WizardPage extends React.Component<Props, State> {
               wizardData={wizardStore.data}
               hasStorageMap={Boolean(this.pages.find(p => p.id === "storage"))}
               hasSourceOptions={Boolean(
-                this.pages.find(p => p.id === "source-options")
+                this.pages.find(p => p.id === "source-options"),
               )}
               defaultStorage={wizardStore.defaultStorage}
               storageMap={wizardStore.storageMap}
@@ -969,9 +972,7 @@ function WizardPageWithNavigate() {
   const navigate = useNavigate();
   const params = useParams();
 
-  return (
-    <WizardPage onNavigate={navigate} match={params} />
-  );
+  return <WizardPage onNavigate={navigate} match={params} />;
 }
 
 export default WizardPageWithNavigate;

@@ -13,60 +13,60 @@ import { FlatCompat } from "@eslint/eslintrc";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
 export default defineConfig([
-    globalIgnores(["**/*.svg", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.woff"]),
-    {
-        extends: compat.extends(
-            "eslint:recommended",
-            "plugin:react/recommended",
-            "plugin:@typescript-eslint/recommended",
-            "prettier",
-        ),
+  globalIgnores(["**/*.svg", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.woff"]),
+  {
+    extends: compat.extends(
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier",
+    ),
 
-        plugins: {
-            react,
-            "@typescript-eslint": typescriptEslint,
-            prettier,
-            "coriolis-web": coriolisWeb,
-        },
-
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.jest,
-                ...globals.node,
-            },
-
-            parser: tsParser,
-            ecmaVersion: "latest",
-            sourceType: "module",
-        },
-
-        settings: {
-            "import/resolver": {
-                typescript: {},
-            },
-
-            react: {
-                version: "detect",
-            },
-        },
-
-        rules: {
-            "coriolis-web/import-no-duplicate-name": "error",
-            "@typescript-eslint/ban-ts-comment": "off",
-            "@typescript-eslint/no-explicit-any": "off",
-            "@typescript-eslint/no-non-null-assertion": "off",
-            "@typescript-eslint/no-empty-function": "off",
-            "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-            "@typescript-eslint/no-unused-vars": "off",
-            "@typescript-eslint/no-unused-expressions": "off",
-            "@typescript-eslint/no-require-imports": "off",
-        },
+    plugins: {
+      react,
+      "@typescript-eslint": typescriptEslint,
+      prettier,
+      "coriolis-web": coriolisWeb,
     },
+
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.jest,
+        ...globals.node,
+      },
+
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
+    },
+
+    settings: {
+      "import/resolver": {
+        typescript: {},
+      },
+
+      react: {
+        version: "detect",
+      },
+    },
+
+    rules: {
+      "coriolis-web/import-no-duplicate-name": "error",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);

@@ -151,7 +151,7 @@ export const findInvalidFields = (data: any, schema: Field[]): Field[] => {
       required = required.concat(
         f.properties
           ?.filter(p => p.required)
-          .map(p => ({ ...p, groupName: f.name }))
+          .map(p => ({ ...p, groupName: f.name })),
       );
     }
 
@@ -159,18 +159,18 @@ export const findInvalidFields = (data: any, schema: Field[]): Field[] => {
       if (f.enum) {
         const value = data && data[f.name];
         const subField = f.subFields.find(
-          sf => sf.name === `${String(value)}_options`
+          sf => sf.name === `${String(value)}_options`,
         );
         if (subField?.properties) {
           required = required.concat(
-            subField.properties.filter(p => p.required)
+            subField.properties.filter(p => p.required),
           );
         }
       } else if (f.type === "boolean") {
         const subField = data?.[f.name] ? f.subFields[1] : f.subFields[0];
         if (subField.properties) {
           required = required.concat(
-            subField.properties.filter(p => p.required)
+            subField.properties.filter(p => p.required),
           );
         }
       }
@@ -196,7 +196,7 @@ type Props = {
   getFieldValue?: (
     fieldName: string,
     defaultValue: any,
-    parentFieldName: string | undefined
+    parentFieldName: string | undefined,
   ) => any;
   onChange: (field: Field, value: any, parentFieldName?: string) => void;
   useAdvancedOptions?: boolean;
@@ -234,7 +234,7 @@ class WizardOptions extends React.Component<Props> {
   getFieldValue(
     fieldName: string,
     defaultValue: any,
-    parentFieldName?: string
+    parentFieldName?: string,
   ) {
     if (this.props.getFieldValue) {
       return this.props.getFieldValue(fieldName, defaultValue, parentFieldName);
@@ -347,7 +347,7 @@ class WizardOptions extends React.Component<Props> {
             name: minionPool.name,
             id: minionPool.id,
           })),
-        })
+        }),
       );
 
       fieldsSchema.push({
@@ -376,7 +376,7 @@ class WizardOptions extends React.Component<Props> {
   highlightFields(): boolean {
     const highlightedFields: Field[] = findInvalidFields(
       this.props.data,
-      this.props.fields
+      this.props.fields,
     );
 
     this.setState({ highlightedFields });
@@ -388,7 +388,7 @@ class WizardOptions extends React.Component<Props> {
     let groups: Array<{ fields: FieldRender[]; name?: string }> = [{ fields }];
 
     const workerFields = fields.filter(
-      f => f.field.name.indexOf("migr_") === 0
+      f => f.field.name.indexOf("migr_") === 0,
     );
     if (workerFields.length > 1) {
       groups = [
@@ -476,8 +476,8 @@ class WizardOptions extends React.Component<Props> {
         disabled={field.disabled}
         highlight={Boolean(
           this.state.highlightedFields.find(
-            f => f.name === field.name || f.groupName === field.name
-          )
+            f => f.name === field.name || f.groupName === field.name,
+          ),
         )}
         disabledLoading={
           this.props.optionsLoading &&
@@ -515,7 +515,7 @@ class WizardOptions extends React.Component<Props> {
     if (this.props.useAdvancedOptions) {
       fieldsSchema = fieldsSchema.concat(this.getDefaultAdvancedFieldsSchema());
       fieldsSchema = fieldsSchema.concat(
-        this.props.fields.filter(f => !isRequired(f))
+        this.props.fields.filter(f => !isRequired(f)),
       );
     }
 
@@ -538,7 +538,7 @@ class WizardOptions extends React.Component<Props> {
         subField = value ? f.subFields[1] : f.subFields[0];
       } else {
         subField = f.subFields.find(
-          sf => sf.name === `${String(value)}_options`
+          sf => sf.name === `${String(value)}_options`,
         );
       }
       if (subField?.properties) {
@@ -580,28 +580,30 @@ class WizardOptions extends React.Component<Props> {
               timeout={{ exit: 250, enter: 250, appear: 250 }}
               in={false}
             >
-            <div>
-              <Group>
-                {g.name ? (
-                  <GroupName>
-                    <GroupNameBar />
-                    <GroupNameText>{LabelDictionary.get(g.name)}</GroupNameText>
-                    <GroupNameBar />
-                  </GroupName>
-                ) : null}
-                <GroupFields>
-                  <Column left>
-                    {g.fields.map(
-                      (f, j) => getColumnInGroup(f, j) === 0 && f.component
-                    )}
-                  </Column>
-                  <Column right>
-                    {g.fields.map(
-                      (f, j) => getColumnInGroup(f, j) === 1 && f.component
-                    )}
-                  </Column>
-                </GroupFields>
-              </Group>
+              <div>
+                <Group>
+                  {g.name ? (
+                    <GroupName>
+                      <GroupNameBar />
+                      <GroupNameText>
+                        {LabelDictionary.get(g.name)}
+                      </GroupNameText>
+                      <GroupNameBar />
+                    </GroupName>
+                  ) : null}
+                  <GroupFields>
+                    <Column left>
+                      {g.fields.map(
+                        (f, j) => getColumnInGroup(f, j) === 0 && f.component,
+                      )}
+                    </Column>
+                    <Column right>
+                      {g.fields.map(
+                        (f, j) => getColumnInGroup(f, j) === 1 && f.component,
+                      )}
+                    </Column>
+                  </GroupFields>
+                </Group>
               </div>
             </CSSTransition>
           );

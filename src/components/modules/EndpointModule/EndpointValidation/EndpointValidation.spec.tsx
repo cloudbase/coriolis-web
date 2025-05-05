@@ -49,20 +49,20 @@ describe("EndpointValidation", () => {
 
   it("renders without crashing", () => {
     const { getByText, getByTestId } = render(
-      <EndpointValidation {...defaultProps} />
+      <EndpointValidation {...defaultProps} />,
     );
     expect(getByText("Endpoint is Valid")).toBeTruthy();
     expect(getByTestId("StatusImage").textContent).toBe(
-      "Status: COMPLETED, Loading: false"
+      "Status: COMPLETED, Loading: false",
     );
   });
 
   it("renders loading", () => {
     const { getByTestId, getByText } = render(
-      <EndpointValidation {...defaultProps} loading />
+      <EndpointValidation {...defaultProps} loading />,
     );
     expect(getByTestId("StatusImage").textContent).toBe(
-      "Status: -, Loading: true"
+      "Status: -, Loading: true",
     );
     expect(getByText("Validating Endpoint")).toBeTruthy();
   });
@@ -75,10 +75,10 @@ describe("EndpointValidation", () => {
           valid: false,
           message: "connection error",
         }}
-      />
+      />,
     );
     expect(getByTestId("StatusImage").textContent).toBe(
-      "Status: ERROR, Loading: false"
+      "Status: ERROR, Loading: false",
     );
     expect(getByText("connection error")).toBeTruthy();
   });
@@ -91,10 +91,10 @@ describe("EndpointValidation", () => {
           valid: false,
           message: "",
         }}
-      />
+      />,
     );
     expect(getByTestId("StatusImage").textContent).toBe(
-      "Status: ERROR, Loading: false"
+      "Status: ERROR, Loading: false",
     );
     expect(getByText("An unexpected error occurred.")).toBeTruthy();
   });
@@ -107,11 +107,11 @@ describe("EndpointValidation", () => {
           valid: false,
           message: "connection error",
         }}
-      />
+      />,
     );
     getByText("connection error").click();
     expect(DomUtils.copyTextToClipboard).toHaveBeenCalledWith(
-      "connection error"
+      "connection error",
     );
   });
 });

@@ -75,10 +75,10 @@ describe("MainMultiFilterList", () => {
     expect(items).toHaveLength(FILTER_ITEMS.length);
     expect(items[2].textContent).toBe(FILTER_ITEMS[2].label);
     expect(
-      TestUtils.select("SearchInput__Wrapper")?.querySelector("input")?.value
+      TestUtils.select("SearchInput__Wrapper")?.querySelector("input")?.value,
     ).toBe("test");
     expect(
-      TestUtils.select("MainMultiFilterList__SelectionText")?.textContent
+      TestUtils.select("MainMultiFilterList__SelectionText")?.textContent,
     ).toBe("1 of 3\u00a0test item(s) selected");
   });
 
@@ -103,7 +103,7 @@ describe("MainMultiFilterList", () => {
   it("fires filter item click", () => {
     const onFilterItemClick = jest.fn();
     render(
-      <MainMultiFilterListWrapper onFilterItemClick={onFilterItemClick} />
+      <MainMultiFilterListWrapper onFilterItemClick={onFilterItemClick} />,
     );
     TestUtils.selectAll("MainMultiFilterList__FilterItem-")[1].click();
     expect(onFilterItemClick).toHaveBeenCalledWith(FILTER_ITEMS[1]);
@@ -112,7 +112,7 @@ describe("MainMultiFilterList", () => {
   it("has select all change", async () => {
     const onSelectAllChange = jest.fn();
     render(
-      <MainMultiFilterListWrapper onSelectAllChange={onSelectAllChange} />
+      <MainMultiFilterListWrapper onSelectAllChange={onSelectAllChange} />,
     );
 
     const checkbox = TestUtils.select("Checkbox__Wrapper")!;
@@ -122,7 +122,7 @@ describe("MainMultiFilterList", () => {
       checkbox.click();
     });
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe(
-      ThemePalette.primary
+      ThemePalette.primary,
     );
 
     expect(onSelectAllChange).toHaveBeenCalledWith(true);
@@ -136,7 +136,7 @@ describe("MainMultiFilterList", () => {
   it("fires reload button click", () => {
     const onReloadButtonClick = jest.fn();
     render(
-      <MainMultiFilterListWrapper onReloadButtonClick={onReloadButtonClick} />
+      <MainMultiFilterListWrapper onReloadButtonClick={onReloadButtonClick} />,
     );
     TestUtils.select("ReloadButton__Wrapper")!.click();
     expect(onReloadButtonClick).toHaveBeenCalled();
@@ -147,7 +147,7 @@ describe("MainMultiFilterList", () => {
     render(<MainMultiFilterListWrapper onSearchChange={onSearchChange} />);
     userEvent.type(
       TestUtils.select("SearchInput__Wrapper")?.querySelector("input")!,
-      "test2"
+      "test2",
     );
     expect(onSearchChange).toHaveBeenCalledWith("test2");
   });

@@ -33,24 +33,24 @@ const USER: User = {
 describe("UserDropdown", () => {
   it("renders no user", () => {
     render(<UserDropdown user={null} onItemClick={() => {}} />);
-    act (() => {
+    act(() => {
       TestUtils.select("UserDropdown__Icon")?.click();
     });
     expect(TestUtils.select("UserDropdown__Label")?.textContent).toBe(
-      "No signed in user"
+      "No signed in user",
     );
   });
 
   it("renders user menu", () => {
     render(<UserDropdown user={USER} onItemClick={() => {}} />);
-    act (() => {
+    act(() => {
       TestUtils.select("UserDropdown__Icon")?.click();
     });
     expect(TestUtils.select("UserDropdown__Username")?.textContent).toBe(
-      USER.name
+      USER.name,
     );
     expect(TestUtils.select("UserDropdown__Email")?.textContent).toBe(
-      USER.email
+      USER.email,
     );
     const listItems = TestUtils.selectAll("UserDropdown__ListItem");
     expect(listItems).toHaveLength(3);
@@ -60,14 +60,14 @@ describe("UserDropdown", () => {
   it("fires item click", () => {
     const onItemClick = jest.fn();
     render(<UserDropdown user={USER} onItemClick={onItemClick} />);
-    act (() => {
+    act(() => {
       TestUtils.select("UserDropdown__Icon")?.click();
     });
-    act (() => {
+    act(() => {
       TestUtils.selectAll("UserDropdown__Label")[2].click();
     });
     expect(onItemClick).toHaveBeenCalledWith(
-      expect.objectContaining({ value: "signout" })
+      expect.objectContaining({ value: "signout" }),
     );
   });
 });

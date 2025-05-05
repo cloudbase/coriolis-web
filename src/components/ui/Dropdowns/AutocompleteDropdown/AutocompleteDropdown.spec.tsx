@@ -37,7 +37,7 @@ describe("AutocompleteDropdown", () => {
     userEvent.type(document.querySelector("input")!, "Label B");
 
     expect(TestUtils.selectAll("AutocompleteDropdown__ListItem-").length).toBe(
-      3
+      3,
     );
     TestUtils.selectAll("AutocompleteDropdown__ListItem-").forEach(item => {
       expect(item.textContent).toContain("Label B");
@@ -58,11 +58,11 @@ describe("AutocompleteDropdown", () => {
 
   it("display message if no items were found", () => {
     render(
-      <AutocompleteDropdown items={ITEMS} noItemsMessage="No results found!" />
+      <AutocompleteDropdown items={ITEMS} noItemsMessage="No results found!" />,
     );
     userEvent.type(document.querySelector("input")!, "Label Z");
     expect(
-      TestUtils.select("AutocompleteDropdown__SearchNotFound")?.textContent
+      TestUtils.select("AutocompleteDropdown__SearchNotFound")?.textContent,
     ).toBe("No results found!");
   });
 

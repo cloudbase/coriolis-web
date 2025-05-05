@@ -25,7 +25,7 @@ import { Endpoint } from "@src/@types/Endpoint";
 export const defaultSchemaToFields = (
   schema: SchemaProperties,
   schemaDefinitions?: SchemaDefinitions | null,
-  dictionaryKey?: string
+  dictionaryKey?: string,
 ): any[] => {
   if (!schema.properties) {
     return [];
@@ -36,7 +36,7 @@ export const defaultSchemaToFields = (
 
     if (typeof properties.$ref === "string" && schemaDefinitions) {
       const definitionName = properties.$ref.substr(
-        properties.$ref.lastIndexOf("/") + 1
+        properties.$ref.lastIndexOf("/") + 1,
       );
       properties = schemaDefinitions[definitionName];
       return {
@@ -62,7 +62,7 @@ export const defaultSchemaToFields = (
     const name = fieldName;
     LabelDictionary.pushToCache(
       { name, title: properties.title, description: properties.description },
-      dictionaryKey || ""
+      dictionaryKey || "",
     );
 
     return {
@@ -131,7 +131,7 @@ export const generateBaseFields = () => [
 
 export const fieldsToPayload = (
   data: { [prop: string]: any },
-  schema: SchemaProperties
+  schema: SchemaProperties,
 ) => {
   const info: any = {};
   const usableSchema: any = schema;

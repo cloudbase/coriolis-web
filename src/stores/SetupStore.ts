@@ -27,7 +27,7 @@ import ObjectUtils from "../utils/ObjectUtils";
 
 export const customerInfoSetupStoreValueToString = (
   property: keyof CustomerInfoTrial,
-  value: string | null
+  value: string | null,
 ): string => {
   switch (property) {
     case "interestedIn":
@@ -87,17 +87,17 @@ class SetupStore {
 
   async sendLicenceRequest(
     licenceType: "trial",
-    customerInfo: CustomerInfoFull
+    customerInfo: CustomerInfoFull,
   ): Promise<void>;
 
   async sendLicenceRequest(
     licenceType: "paid",
-    customerInfo: CustomerInfoBasic
+    customerInfo: CustomerInfoBasic,
   ): Promise<void>;
 
   async sendLicenceRequest(
     licenceType: SetupPageLicenceType,
-    customerInfo: CustomerInfoFull | CustomerInfoBasic
+    customerInfo: CustomerInfoFull | CustomerInfoBasic,
   ): Promise<void> {
     this.sendingLicenceRequest = true;
     const payload: any = {
@@ -110,15 +110,15 @@ class SetupStore {
         ...payload.customerInfo,
         interestedIn: customerInfoSetupStoreValueToString(
           "interestedIn",
-          customerInfo.interestedIn
+          customerInfo.interestedIn,
         ),
         sourcePlatform: customerInfoSetupStoreValueToString(
           "sourcePlatform",
-          customerInfo.sourcePlatform
+          customerInfo.sourcePlatform,
         ),
         destinationPlatform: customerInfoSetupStoreValueToString(
           "destinationPlatform",
-          customerInfo.destinationPlatform
+          customerInfo.destinationPlatform,
         ),
       };
     }

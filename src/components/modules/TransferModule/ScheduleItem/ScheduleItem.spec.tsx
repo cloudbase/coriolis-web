@@ -53,7 +53,7 @@ describe("ScheduleItem", () => {
       <ScheduleItem
         {...defaultProps}
         item={{ ...SCHEDULE_MOCK, enabled: false }}
-      />
+      />,
     );
     await act(async () => {
       TestUtils.selectAll("DropdownButton__Wrapper-")[5]?.click();
@@ -82,7 +82,7 @@ describe("ScheduleItem", () => {
         <ScheduleItem
           {...defaultProps}
           item={{ ...SCHEDULE_MOCK, enabled: false }}
-        />
+        />,
       );
       await act(async () => {
         TestUtils.selectAll("DropdownButton__Wrapper-")[fieldIndex]?.click();
@@ -93,7 +93,7 @@ describe("ScheduleItem", () => {
       expect(defaultProps.onChange).toHaveBeenCalledWith({
         schedule: { [fieldName]: value },
       });
-    }
+    },
   );
 
   it("enables item", async () => {
@@ -105,7 +105,7 @@ describe("ScheduleItem", () => {
       {
         enabled: false,
       },
-      true
+      true,
     );
   });
 });

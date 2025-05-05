@@ -18,7 +18,7 @@ import notificationStore from "@src/stores/NotificationStore";
 class DomUtils {
   static getScrollableParent(
     element: HTMLElement,
-    includeHidden?: boolean
+    includeHidden?: boolean,
   ): HTMLElement {
     let style = getComputedStyle(element);
     const excludeStaticParent = style.position === "absolute";
@@ -98,7 +98,7 @@ class DomUtils {
   static async copyTextToClipboard(
     text: string,
     successMessage = "The value has been copied to clipboard",
-    errorMessage = "Failed to copy the value to clipboard"
+    errorMessage = "Failed to copy the value to clipboard",
   ): Promise<boolean> {
     try {
       await navigator.clipboard.writeText(text);
@@ -154,7 +154,7 @@ class DomUtils {
           cls = "null";
         }
         return `<span class="${cls}">${match}</span>`;
-      }
+      },
     );
   }
 
@@ -178,7 +178,7 @@ class DomUtils {
 
   static decodeFromBase64Url(data: string) {
     return JSON.parse(
-      Base64.decode(data.replace(/-/g, "+").replace(/_/g, "/"))
+      Base64.decode(data.replace(/-/g, "+").replace(/_/g, "/")),
     );
   }
 }

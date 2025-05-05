@@ -46,17 +46,17 @@ describe("MinionPoolMainDetails", () => {
 
   it("renders without crashing", () => {
     const { getByText, getByTestId } = render(
-      <MinionPoolMainDetails {...defaultProps} />
+      <MinionPoolMainDetails {...defaultProps} />,
     );
     expect(getByText(MINION_POOL_MOCK.notes!)).toBeTruthy();
     expect(getByText(OPENSTACK_ENDPOINT_MOCK.name)).toBeTruthy();
     expect(getByTestId("bottom-controls")).toBeTruthy();
     expect(
-      getByText(MINION_POOL_MOCK.environment_options.option_1)
+      getByText(MINION_POOL_MOCK.environment_options.option_1),
     ).toBeTruthy();
     expect(getByText("Object Option - Object Option 1")).toBeTruthy();
     expect(
-      getByText(MINION_POOL_MOCK.environment_options.array_option[0])
+      getByText(MINION_POOL_MOCK.environment_options.array_option[0]),
     ).toBeTruthy();
     expect(getByText("source_value=destination_value")).toBeTruthy();
   });

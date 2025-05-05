@@ -34,7 +34,7 @@ import { TRANSFER_ITEM_DETAILS_MOCK } from "@tests/mocks/TransferMock";
 import ReplicaDetailsContent from ".";
 
 const scheduleStoreMock = jest.createMockFromModule<typeof ScheduleStore>(
-  "@src/stores/ScheduleStore"
+  "@src/stores/ScheduleStore",
 );
 
 jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
@@ -108,21 +108,21 @@ describe("ReplicaDetailsContent", () => {
 
   it("renders executions page", () => {
     const { getByText } = render(
-      <ReplicaDetailsContent {...defaultProps} page="executions" />
+      <ReplicaDetailsContent {...defaultProps} page="executions" />,
     );
     expect(getByText(EXECUTION_MOCK.id)).toBeTruthy();
   });
 
   it("rendes schedules page", () => {
     const { getByTestId } = render(
-      <ReplicaDetailsContent {...defaultProps} page="schedule" />
+      <ReplicaDetailsContent {...defaultProps} page="schedule" />,
     );
     expect(getByTestId("ScheduleComponent")).toBeTruthy();
   });
 
   it("fires timezone change", async () => {
     const { getByTestId, getByText } = render(
-      <ReplicaDetailsContent {...defaultProps} page="schedule" />
+      <ReplicaDetailsContent {...defaultProps} page="schedule" />,
     );
     expect(getByText("Timezone: local")).toBeTruthy();
     await act(async () => {

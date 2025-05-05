@@ -49,7 +49,7 @@ class DeploymentSourceUtils {
   static sortDeployments(deployments: any[]) {
     deployments.sort(
       (a: any, b: any) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
 
     deployments.forEach((deployment: { tasks: Task[] }) => {
@@ -71,7 +71,7 @@ class DeploymentSource {
 
   async getDeployment(
     deploymentId: string,
-    skipLog?: boolean
+    skipLog?: boolean,
   ): Promise<DeploymentItemDetails> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/deployments/${deploymentId}`,
@@ -84,7 +84,7 @@ class DeploymentSource {
   }
 
   async recreateFullCopy(
-    deployment: DeploymentItemOptions
+    deployment: DeploymentItemOptions,
   ): Promise<DeploymentItem> {
     const {
       origin_endpoint_id,
@@ -206,7 +206,7 @@ class DeploymentSource {
         ...opts.storageMappings,
         ...destParser.getStorageMap(
           opts.updatedDefaultStorage || opts.defaultStorage,
-          opts.updatedStorageMappings
+          opts.updatedStorageMappings,
         ),
       };
     }
@@ -273,7 +273,7 @@ class DeploymentSource {
         new DefaultOptionsSchemaPlugin().getUserScripts(
           opts.uploadedScripts || [],
           opts.removedScripts || [],
-          deployment.user_scripts
+          deployment.user_scripts,
         );
     }
 
@@ -340,7 +340,7 @@ class DeploymentSource {
         new DefaultOptionsSchemaPlugin().getUserScripts(
           uploadedUserScripts,
           removedUserScripts,
-          userScriptData
+          userScriptData,
         );
     }
 

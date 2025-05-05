@@ -35,7 +35,7 @@ describe("DropdownFilterGroup", () => {
   it("renders the correct number of DropdownLink components", () => {
     render(<DropdownFilterGroup items={ITEMS} />);
     expect(TestUtils.selectAll("DropdownLink__Wrapper")).toHaveLength(
-      ITEMS.length
+      ITEMS.length,
     );
   });
 
@@ -46,10 +46,10 @@ describe("DropdownFilterGroup", () => {
       dropdownLinks[1].click();
     });
     expect(TestUtils.selectAll("DropdownLink__ListItem-")).toHaveLength(
-      ITEMS[1].items.length
+      ITEMS[1].items.length,
     );
     expect(
-      TestUtils.selectAll("DropdownLink__ListItemLabel")[1].textContent
+      TestUtils.selectAll("DropdownLink__ListItemLabel")[1].textContent,
     ).toBe(ITEMS[1].items[1].label);
   });
 });

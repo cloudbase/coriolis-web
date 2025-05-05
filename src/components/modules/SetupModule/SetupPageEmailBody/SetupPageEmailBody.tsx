@@ -96,19 +96,19 @@ class SetupPageEmailBody extends React.Component<Props> {
             <b>Interested In</b>:{" "}
             {customerInfoSetupStoreValueToString(
               "interestedIn",
-              this.props.customerInfoTrial.interestedIn
+              this.props.customerInfoTrial.interestedIn,
             )}
             <br />
             <b>Source Platform</b>:{" "}
             {customerInfoSetupStoreValueToString(
               "sourcePlatform",
-              this.props.customerInfoTrial.sourcePlatform
+              this.props.customerInfoTrial.sourcePlatform,
             )}
             <br />
             <b>Destination Platform</b>:{" "}
             {customerInfoSetupStoreValueToString(
               "destinationPlatform",
-              this.props.customerInfoTrial.destinationPlatform
+              this.props.customerInfoTrial.destinationPlatform,
             )}
             <br />
           </>

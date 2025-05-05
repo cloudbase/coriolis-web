@@ -169,13 +169,13 @@ class MinionPoolMachines extends React.Component<Props, State> {
         return this.machines.filter(
           m =>
             m.allocation_status === "ALLOCATED" ||
-            m.allocation_status === "AVAILABLE"
+            m.allocation_status === "AVAILABLE",
         );
       default:
         return this.machines.filter(
           m =>
             m.allocation_status !== "ALLOCATED" &&
-            m.allocation_status !== "AVAILABLE"
+            m.allocation_status !== "AVAILABLE",
         );
     }
   }
@@ -225,7 +225,7 @@ class MinionPoolMachines extends React.Component<Props, State> {
             this.machines.filter(
               m =>
                 m.allocation_status === "ALLOCATED" ||
-                m.allocation_status === "AVAILABLE"
+                m.allocation_status === "AVAILABLE",
             ).length
           }{" "}
           allocated
@@ -305,14 +305,14 @@ class MinionPoolMachines extends React.Component<Props, State> {
                 <MachineRow secondary>
                   Created At:{" "}
                   {DateUtils.getLocalDate(machine.created_at).toFormat(
-                    "yyyy-LL-dd HH:mm:ss"
+                    "yyyy-LL-dd HH:mm:ss",
                   )}
                 </MachineRow>
                 {machine.updated_at ? (
                   <MachineRow secondary>
                     Updated At:{" "}
                     {DateUtils.getLocalDate(machine.updated_at).toFormat(
-                      "yyyy-LL-dd HH:mm:ss"
+                      "yyyy-LL-dd HH:mm:ss",
                     )}
                   </MachineRow>
                 ) : null}
@@ -320,7 +320,7 @@ class MinionPoolMachines extends React.Component<Props, State> {
                   <MachineRow secondary>
                     Last Used At:{" "}
                     {DateUtils.getLocalDate(machine.last_used_at).toFormat(
-                      "yyyy-LL-dd HH:mm:ss"
+                      "yyyy-LL-dd HH:mm:ss",
                     )}
                   </MachineRow>
                 ) : null}

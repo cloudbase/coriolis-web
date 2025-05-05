@@ -46,7 +46,7 @@ const getInputWidth = (props: any) => {
 };
 const borderColor = (
   props: any,
-  defaultColor: string | undefined | null = ThemePalette.grayscale[3]
+  defaultColor: string | undefined | null = ThemePalette.grayscale[3],
 ) => (props.highlight ? ThemePalette.alert : defaultColor);
 const Input = styled.input<any>`
   width: ${props => getInputWidth(props)};
@@ -106,7 +106,7 @@ type Props = {
   highlight?: boolean;
   large?: boolean;
   onChange?: (
-    e: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }
+    e: React.ChangeEvent<HTMLInputElement> | { target: { value: string } },
   ) => void;
   placeholder?: string;
   type?: string;

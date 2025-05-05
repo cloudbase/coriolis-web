@@ -96,7 +96,7 @@ class EndpointDuplicateOptions extends React.Component<Props, State> {
       () => {
         this.props.onDuplicateClick(this.state.selectedProjectId);
       },
-      2
+      2,
     );
   }
 

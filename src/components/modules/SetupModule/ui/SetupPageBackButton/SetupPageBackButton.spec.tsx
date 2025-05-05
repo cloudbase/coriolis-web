@@ -31,7 +31,7 @@ describe("SetupPageBackButton", () => {
   it("renders without crashing", () => {
     render(<SetupPageBackButton {...defaultProps} />);
     expect(
-      TestUtils.select("SetupPageBackButton__Wrapper")?.textContent
+      TestUtils.select("SetupPageBackButton__Wrapper")?.textContent,
     ).toContain("Back");
   });
 });

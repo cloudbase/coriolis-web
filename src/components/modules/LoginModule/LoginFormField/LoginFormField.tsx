@@ -43,10 +43,7 @@ type Props = {
 const LoginFormField = (props: Props) => (
   <Wrapper>
     <FormFieldLabel>{props.label}</FormFieldLabel>
-    <StyledTextInput
-      {...props}
-      onChange={props.onChange}
-    />
+    <StyledTextInput {...props} onChange={props.onChange} />
   </Wrapper>
 );
 

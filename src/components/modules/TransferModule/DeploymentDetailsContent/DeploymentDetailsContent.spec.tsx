@@ -59,19 +59,19 @@ describe("DeploymentDetailsContent", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(
-      <DeploymentDetailsContent {...defaultProps} />
+      <DeploymentDetailsContent {...defaultProps} />,
     );
     expect(getByText(DEPLOYMENT_ITEM_DETAILS_MOCK.id)).toBeTruthy();
   });
 
   it("renders tasks page", () => {
     const { getByText } = render(
-      <DeploymentDetailsContent {...defaultProps} page="tasks" />
+      <DeploymentDetailsContent {...defaultProps} page="tasks" />,
     );
     expect(
       getByText(
-        DEPLOYMENT_ITEM_DETAILS_MOCK.tasks[0].task_type.replace("_", " ")
-      )
+        DEPLOYMENT_ITEM_DETAILS_MOCK.tasks[0].task_type.replace("_", " "),
+      ),
     ).toBeTruthy();
   });
 });

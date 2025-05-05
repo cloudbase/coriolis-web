@@ -101,7 +101,7 @@ class UsersPage extends React.Component<Props, State> {
   itemFilterFunction(
     item: User,
     filterItem?: string | null,
-    filterText?: string
+    filterText?: string,
   ): boolean {
     const usableFilterText = (filterText && filterText.toLowerCase()) || "";
     return (

@@ -12,7 +12,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import Dropdown from ".";
@@ -48,7 +47,6 @@ class Wrapper extends React.Component<any, any> {
         onChange={item => {
           this.handleChange(item);
         }}
-         
         {...this.props}
       />
     );
@@ -76,12 +74,12 @@ class MultipleSelectionWrapper extends React.Component<Props, State> {
         onChange={item => {
           console.log("state", this.state);
           const itemIndex = this.state.selectedItems.findIndex(
-            i => i === item.value
+            i => i === item.value,
           );
           if (itemIndex > -1) {
             this.setState(prevState => ({
               selectedItems: prevState.selectedItems.filter(
-                i => i !== item.value
+                i => i !== item.value,
               ),
             }));
           } else {
@@ -90,7 +88,6 @@ class MultipleSelectionWrapper extends React.Component<Props, State> {
             }));
           }
         }}
-         
         {...this.props}
       />
     );

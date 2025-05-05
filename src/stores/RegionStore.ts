@@ -45,7 +45,7 @@ class RegionStore {
       ? this.regions
       : await this.getRegions();
     endpoint.mapped_regions = endpoint.mapped_regions.map(
-      id => regions.find(r => r.id === id)?.name || id
+      id => regions.find(r => r.id === id)?.name || id,
     );
   }
 }

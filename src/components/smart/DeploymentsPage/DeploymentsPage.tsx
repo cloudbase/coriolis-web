@@ -99,14 +99,14 @@ class DeploymentsPage extends React.Component<Props, State> {
 
   getStatus(deploymentId: string): string {
     const deployment = deploymentStore.deployments.find(
-      m => m.id === deploymentId
+      m => m.id === deploymentId,
     );
     return deployment ? deployment.last_execution_status : "";
   }
 
   getDeploymentType(deploymentId: string): string {
     const deployment = deploymentStore.deployments.find(
-      m => m.id === deploymentId
+      m => m.id === deploymentId,
     );
     return deployment ? deployment.transfer_scenario_type : "";
   }
@@ -168,7 +168,7 @@ class DeploymentsPage extends React.Component<Props, State> {
         } else {
           await deploymentStore.recreateFullCopy(deployment as any);
         }
-      })
+      }),
     );
 
     deploymentStore.getDeployments();
@@ -212,13 +212,13 @@ class DeploymentsPage extends React.Component<Props, State> {
   itemFilterFunction(
     item: DeploymentItem,
     filterStatus?: string | null,
-    filterText?: string
+    filterText?: string,
   ) {
     if (
       (filterStatus !== "all" && item.last_execution_status !== filterStatus) ||
       !this.searchText(
         item,
-        (filterText?.toLowerCase && filterText.toLowerCase()) || ""
+        (filterText?.toLowerCase && filterText.toLowerCase()) || "",
       )
     ) {
       return false;

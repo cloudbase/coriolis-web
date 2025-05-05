@@ -166,7 +166,7 @@ class EndpointDetailsContent extends React.Component<Props> {
 
       let valueElement = null;
       const schemaField = this.props.connectionInfoSchema.find(
-        f => f.name === key
+        f => f.name === key,
       );
 
       if (
@@ -215,7 +215,7 @@ class EndpointDetailsContent extends React.Component<Props> {
       <span>
         {this.props.item?.mapped_regions
           .map(
-            regionId => this.props.regions.find(r => r.id === regionId)?.name
+            regionId => this.props.regions.find(r => r.id === regionId)?.name,
           )
           .join(", ") || "-"}
       </span>
@@ -263,7 +263,7 @@ class EndpointDetailsContent extends React.Component<Props> {
             {this.renderValue(
               this.props.item
                 ? configLoader.config.providerNames[this.props.item.type]
-                : ""
+                : "",
             )}
           </Field>
           <Field>
@@ -281,7 +281,7 @@ class EndpointDetailsContent extends React.Component<Props> {
           <Field>
             <Label>Created</Label>
             {this.renderValue(
-              DateUtils.getLocalDate(createdAt!).toFormat("dd/LL/yyyy HH:mm")
+              DateUtils.getLocalDate(createdAt!).toFormat("dd/LL/yyyy HH:mm"),
             )}
           </Field>
           <Field>

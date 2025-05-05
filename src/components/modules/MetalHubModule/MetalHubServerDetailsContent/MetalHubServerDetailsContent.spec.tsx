@@ -60,27 +60,27 @@ describe("MetalHubServerDetailsContent", () => {
     expect(
       getText(
         DateUtils.getLocalDate(METALHUB_SERVER_MOCK.created_at).toFormat(
-          "yyyy-LL-dd HH:mm:ss"
-        )
-      )
+          "yyyy-LL-dd HH:mm:ss",
+        ),
+      ),
     ).toBeTruthy();
 
     expect(
-      getText(`${METALHUB_SERVER_MOCK.physical_cores} physical`)
+      getText(`${METALHUB_SERVER_MOCK.physical_cores} physical`),
     ).toBeTruthy();
     expect(
-      getText(`${METALHUB_SERVER_MOCK.logical_cores} logical`)
+      getText(`${METALHUB_SERVER_MOCK.logical_cores} logical`),
     ).toBeTruthy();
     expect(
       getText(
-        `${METALHUB_SERVER_MOCK.os_info.os_name} ${METALHUB_SERVER_MOCK.os_info.os_version}`
-      )
+        `${METALHUB_SERVER_MOCK.os_info.os_name} ${METALHUB_SERVER_MOCK.os_info.os_version}`,
+      ),
     ).toBeTruthy();
   });
 
   it("handles row click", async () => {
     const { getAllByTestId } = render(
-      <MetalHubServerDetailsContent {...defaultProps} />
+      <MetalHubServerDetailsContent {...defaultProps} />,
     );
     const row = TestUtils.select("TransferDetailsTable__Row-")!;
     expect(row).toBeTruthy();
@@ -99,7 +99,7 @@ describe("MetalHubServerDetailsContent", () => {
   it("renders loading", () => {
     render(<MetalHubServerDetailsContent {...defaultProps} loading />);
     expect(
-      TestUtils.select("MetalHubServerDetailsContent__LoadingWrapper")
+      TestUtils.select("MetalHubServerDetailsContent__LoadingWrapper"),
     ).toBeTruthy();
   });
 });

@@ -30,7 +30,7 @@ type BuildType<T extends "replica" | "migration"> = T extends "replica"
 const buildItem = <T extends "replica" | "migration">(
   type: T,
   origin_endpoint_id: string,
-  destination_endpoint_id: string
+  destination_endpoint_id: string,
 ): BuildType<T> => {
   const item = {
     id: "",
@@ -95,14 +95,14 @@ describe("DashboardTopEndpoints", () => {
         transfers={[]}
         endpoints={[]}
         loading={true}
-      />
+      />,
     );
     expect(TestUtils.select("StatusImage__Image")).toBeTruthy();
   });
 
   it("should display no data message", () => {
     render(
-      <DashboardTopEndpoints {...defaultProps} transfers={[]} endpoints={[]} />
+      <DashboardTopEndpoints {...defaultProps} transfers={[]} endpoints={[]} />,
     );
     expect(TestUtils.select("DashboardTopEndpoints__NoItems")).toBeTruthy();
   });
@@ -115,13 +115,13 @@ describe("DashboardTopEndpoints", () => {
         onNewClick={onNewClickMock}
         transfers={[]}
         endpoints={[]}
-      />
+      />,
     );
 
     fireEvent.click(
       TestUtils.select("DashboardTopEndpoints__NoItems")?.querySelector(
-        "button"
-      )!
+        "button",
+      )!,
     );
     expect(onNewClickMock).toHaveBeenCalledTimes(1);
   });
@@ -130,23 +130,23 @@ describe("DashboardTopEndpoints", () => {
     render(<DashboardTopEndpoints {...defaultProps} />);
 
     expect(
-      TestUtils.select("DashboardTopEndpoints__ChartWrapper")
+      TestUtils.select("DashboardTopEndpoints__ChartWrapper"),
     ).toBeTruthy();
     expect(
       TestUtils.selectAll(
-        "DashboardTopEndpoints__LegendLabel-"
-      )[0].attributes.getNamedItem("to")?.value
+        "DashboardTopEndpoints__LegendLabel-",
+      )[0].attributes.getNamedItem("to")?.value,
     ).toBe("/endpoints/a");
 
     expect(
-      TestUtils.selectAll("DashboardTopEndpoints__LegendLabel-")[1].textContent
+      TestUtils.selectAll("DashboardTopEndpoints__LegendLabel-")[1].textContent,
     ).toBe("b-name");
   });
 
   it("should call calculateGroupedEndpoints when component receives new props", () => {
     const calculateGroupedEndpointsSpy = jest.spyOn(
       DashboardTopEndpoints.prototype,
-      "calculateGroupedEndpoints"
+      "calculateGroupedEndpoints",
     );
 
     const { rerender } = render(<DashboardTopEndpoints {...defaultProps} />);

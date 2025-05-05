@@ -58,7 +58,7 @@ describe("UserDetailsContent", () => {
       <UserDetailsContent
         {...defaultProps}
         projects={[{ ...USER_MOCK.project, id: "2" }]}
-      />
+      />,
     );
     expect(getByText(USER_MOCK.name)).toBeTruthy();
   });

@@ -117,7 +117,7 @@ class ProjectsPage extends React.Component<Props, State> {
   itemFilterFunction(
     item: Project,
     _?: string | null,
-    filterText?: string
+    filterText?: string,
   ): boolean {
     const usabledFilterText = (filterText && filterText.toLowerCase()) || "";
     return (

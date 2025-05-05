@@ -82,10 +82,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 
   get endpoint(): EndpointType | null {
-    return (
-      endpointStore.endpoints.find(e => e.id === this.props.id) ||
-      null
-    );
+    return endpointStore.endpoints.find(e => e.id === this.props.id) || null;
   }
 
   getEndpointUsage(): {
@@ -96,12 +93,12 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     const transfers = transferStore.transfers.filter(
       r =>
         r.origin_endpoint_id === endpointId ||
-        r.destination_endpoint_id === endpointId
+        r.destination_endpoint_id === endpointId,
     );
     const deployments = deploymentStore.deployments.filter(
       r =>
         r.origin_endpoint_id === endpointId ||
-        r.destination_endpoint_id === endpointId
+        r.destination_endpoint_id === endpointId,
     );
 
     return { deployments, transfers: transfers };

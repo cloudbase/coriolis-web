@@ -68,7 +68,7 @@ type Props = {
 
 export const findInvalidFields = (
   schema: Field[],
-  getFieldValue: (field: Field | null) => any
+  getFieldValue: (field: Field | null) => any,
 ) => {
   const invalidFields = schema
     .filter(field => {
@@ -98,7 +98,7 @@ export const renderFields = (opts: {
   schema.forEach((field, schemaIndex) => {
     const isPassword =
       Boolean(
-        configLoader.config.passwordFields.find(fn => field.name === fn)
+        configLoader.config.passwordFields.find(fn => field.name === fn),
       ) || field.name.indexOf("password") > -1;
     const currentField = (
       <FieldStyled
@@ -119,7 +119,7 @@ export const renderFields = (opts: {
         <Row key={field.name}>
           {field1}
           {field2}
-        </Row>
+        </Row>,
       );
     };
     if (field.useTextArea) {
@@ -153,7 +153,7 @@ class ContentPlugin extends React.Component<Props> {
   findInvalidFields = () =>
     findInvalidFields(
       this.props.connectionInfoSchema,
-      this.props.getFieldValue
+      this.props.getFieldValue,
     );
 
   renderFields() {

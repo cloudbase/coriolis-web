@@ -55,7 +55,7 @@ describe("MetalHubModal", () => {
 
   it("shows the server for editing", () => {
     const { getByText } = render(
-      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />
+      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />,
     );
     expect(getByText("Update Coriolis Bare Metal Server")).toBeTruthy();
     const testInput = (label: string, value: string) => {
@@ -66,20 +66,23 @@ describe("MetalHubModal", () => {
     };
     testInput(
       "Host",
-      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[1].replace("//", "")
+      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[1].replace("//", ""),
     );
     testInput(
       "Port",
-      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[2].replace(/\/.*/, "")
+      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[2].replace(/\/.*/, ""),
     );
   });
 
   it("renders validation error", async () => {
     await act(async () => {
-      metalHubStore.validationError = ["Validation error", "Validation error 2"];
+      metalHubStore.validationError = [
+        "Validation error",
+        "Validation error 2",
+      ];
     });
     const { getByText } = render(
-      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />
+      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />,
     );
     expect(getByText("Validation error")).toBeTruthy();
     expect(getByText("Validation error 2")).toBeTruthy();
@@ -90,7 +93,7 @@ describe("MetalHubModal", () => {
 
   it("triggers submit on enter key", async () => {
     render(
-      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />
+      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />,
     );
     const input = document.querySelector("input")!;
     await act(async () => {
@@ -104,7 +107,7 @@ describe("MetalHubModal", () => {
 
   it("highlights invalid fields", async () => {
     const { getByText, getAllByText } = render(
-      <MetalHubModal {...defaultProps} />
+      <MetalHubModal {...defaultProps} />,
     );
     await act(async () => {
       fireEvent.click(getByText("Validate and save"));
@@ -125,11 +128,11 @@ describe("MetalHubModal", () => {
     });
     await act(async () => {
       expect(metalHubStoreSpies.addServer).toHaveBeenCalledWith(
-        "https://api.example.com:5566/api/v1"
+        "https://api.example.com:5566/api/v1",
       );
     });
     expect(metalHubStoreSpies.validateServer).toHaveBeenCalledWith(
-      METALHUB_SERVER_MOCK.id
+      METALHUB_SERVER_MOCK.id,
     );
   });
 });

@@ -36,7 +36,7 @@ class FileUtils {
   }
 
   static async readContentFromFileList(
-    fileList: FileList | null
+    fileList: FileList | null,
   ): Promise<FileContent[]> {
     if (!fileList || !fileList.length) {
       return [];
@@ -53,13 +53,13 @@ class FileUtils {
               }
               const zipContent = await zip.files[zipFileName].async("string");
               result.push({ name: zipFileName, content: zipContent });
-            })
+            }),
           );
         } else {
           const fileContent = await this.readFile(file);
           result.push(fileContent);
         }
-      })
+      }),
     );
     return result;
   }

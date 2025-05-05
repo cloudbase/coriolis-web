@@ -44,11 +44,11 @@ describe("ActionDropdown", () => {
   it("renders button label", () => {
     const { rerender } = render(<ActionDropdown actions={ACTIONS} />);
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "Actions"
+      "Actions",
     );
     rerender(<ActionDropdown actions={ACTIONS} label="Actions Label" />);
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "Actions Label"
+      "Actions Label",
     );
   });
 
@@ -101,9 +101,10 @@ describe("ActionDropdown", () => {
         expect(ACTIONS[index].action).not.toHaveBeenCalled();
       } else {
         await act(async () => {
-        TestUtils.select("DropdownButton__Wrapper")!.click();
+          TestUtils.select("DropdownButton__Wrapper")!.click();
         });
         expect(ACTIONS[index].action).toHaveBeenCalled();
       }
-    }});
+    }
+  });
 });

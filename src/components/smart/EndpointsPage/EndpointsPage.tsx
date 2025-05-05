@@ -97,16 +97,19 @@ class EndpointsPage extends React.Component<Props, State> {
   }
 
   getFilterItems() {
-    const providers = endpointStore.endpoints.reduce((p, endpoint) => {
-      if (!p.find(p2 => p2.value === endpoint.type)) {
-        p.push({
-          label:
-            configLoader.config.providerNames[endpoint.type] || endpoint.type,
-          value: endpoint.type,
-        });
-      }
-      return p;
-    }, [] as { label: string; value: ProviderTypes }[]);
+    const providers = endpointStore.endpoints.reduce(
+      (p, endpoint) => {
+        if (!p.find(p2 => p2.value === endpoint.type)) {
+          p.push({
+            label:
+              configLoader.config.providerNames[endpoint.type] || endpoint.type,
+            value: endpoint.type,
+          });
+        }
+        return p;
+      },
+      [] as { label: string; value: ProviderTypes }[],
+    );
     providers.sort((a, b) => a.label.localeCompare(b.label));
     return [{ label: "All", value: "all" }, ...providers];
   }
@@ -116,13 +119,13 @@ class EndpointsPage extends React.Component<Props, State> {
       r =>
         (r.origin_endpoint_id === endpointId ||
           r.destination_endpoint_id === endpointId) &&
-        r.scenario === "replica"
+        r.scenario === "replica",
     ).length;
     const migrationsCount = transferStore.transfers.filter(
       r =>
         (r.origin_endpoint_id === endpointId ||
           r.destination_endpoint_id === endpointId) &&
-        r.scenario === "live_migration"
+        r.scenario === "live_migration",
     ).length;
 
     return { migrationsCount, replicasCount };
@@ -152,7 +155,7 @@ class EndpointsPage extends React.Component<Props, State> {
       projectId !==
       (userStore.loggedUser ? userStore.loggedUser.project.id : "");
     const endpoints = endpointStore.endpoints.filter(e =>
-      this.state.selectedEndpoints.find(se => se.id === e.id)
+      this.state.selectedEndpoints.find(se => se.id === e.id),
     );
 
     await endpointStore.duplicate({
@@ -273,7 +276,7 @@ class EndpointsPage extends React.Component<Props, State> {
   itemFilterFunction(
     item: any,
     filterItem?: string | null,
-    filterText?: string
+    filterText?: string,
   ) {
     const endpoint: EndpointType = item;
     const usableFilterText = filterText || "";

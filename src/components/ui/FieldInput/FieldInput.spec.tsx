@@ -28,20 +28,20 @@ describe("FieldInput", () => {
         name="Field Name"
         label="Field Label"
         description="Field Description"
-      />
+      />,
     );
     expect(TestUtils.select("FieldInput__LabelText")?.textContent).toBe(
-      "Field Label"
+      "Field Label",
     );
     expect(
-      TestUtils.select("InfoIcon__Wrapper")?.getAttribute("data-tip")
+      TestUtils.select("InfoIcon__Wrapper")?.getAttribute("data-tip"),
     ).toBe("Field Description");
   });
 
   it("renders string field", () => {
     render(<FieldInput name="Field Name" type="string" value="Field Value" />);
     expect(TestUtils.selectInput("TextInput__Input")!.value).toBe(
-      "Field Value"
+      "Field Value",
     );
   });
 
@@ -52,7 +52,7 @@ describe("FieldInput", () => {
         type="string"
         value="Field Value"
         enum={["foo", "bar"]}
-      />
+      />,
     );
     await act(async () => {
       TestUtils.select("DropdownButton__Wrapper")?.click();
@@ -79,15 +79,15 @@ describe("FieldInput", () => {
           "xyzzy",
           "thud",
         ]}
-      />
+      />,
     );
     expect(TestUtils.select("AutocompleteDropdown__Wrapper")).toBeTruthy();
     userEvent.type(TestUtils.select("TextInput__Input")!, "ba");
     expect(TestUtils.selectAll("AutocompleteDropdown__ListItem-")).toHaveLength(
-      2
+      2,
     );
     expect(
-      TestUtils.selectAll("AutocompleteDropdown__ListItem-")[1].textContent
+      TestUtils.selectAll("AutocompleteDropdown__ListItem-")[1].textContent,
     ).toBe("baz");
   });
 
@@ -98,10 +98,10 @@ describe("FieldInput", () => {
         type="string"
         value="Field Value"
         enum={[]}
-      />
+      />,
     );
     expect(TestUtils.selectInput("TextInput__Input")!.value).toBe(
-      "Field Value"
+      "Field Value",
     );
   });
 
@@ -112,14 +112,19 @@ describe("FieldInput", () => {
         type="string"
         value="Field Value"
         useTextArea
-      />
+      />,
     );
     expect(document.querySelector("textarea")?.value).toBe("Field Value");
   });
 
   it("renders file input", () => {
     render(
-      <FieldInput name="Field Name" useFile type="string" value="Field Value" />
+      <FieldInput
+        name="Field Name"
+        useFile
+        type="string"
+        value="Field Value"
+      />,
     );
     expect(document.querySelector("input")?.getAttribute("type")).toBe("file");
   });
@@ -132,7 +137,7 @@ describe("FieldInput", () => {
         minimum={0}
         maximum={100}
         value={10}
-      />
+      />,
     );
     expect(TestUtils.selectInput("Stepper__Input")!.value).toBe("10");
 
@@ -143,7 +148,7 @@ describe("FieldInput", () => {
         minimum={1}
         maximum={8}
         value={5}
-      />
+      />,
     );
     await act(async () => {
       TestUtils.select("DropdownButton__Wrapper")?.click();
@@ -156,7 +161,7 @@ describe("FieldInput", () => {
   it("renders radio input", () => {
     render(<FieldInput name="Field Name" type="radio" value />);
     expect(
-      TestUtils.select("RadioInput__Input")?.hasAttribute("checked")
+      TestUtils.select("RadioInput__Input")?.hasAttribute("checked"),
     ).toBeTruthy();
   });
 
@@ -167,10 +172,10 @@ describe("FieldInput", () => {
         type="array"
         enum={["foo", "bar", "baz"]}
         value={["bar", "baz"]}
-      />
+      />,
     );
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "bar, baz"
+      "bar, baz",
     );
     await act(async () => {
       TestUtils.select("DropdownButton__Wrapper")?.click();
@@ -187,15 +192,15 @@ describe("FieldInput", () => {
           { name: "Prop 1", type: "string" },
           { name: "Prop 2", type: "string" },
         ]}
-      />
+      />,
     );
     const rows = TestUtils.selectAll("PropertiesTable__Row");
     expect(rows).toHaveLength(2);
     expect(
-      TestUtils.select("PropertiesTable__Column", rows[1])?.textContent
+      TestUtils.select("PropertiesTable__Column", rows[1])?.textContent,
     ).toBe("Prop 2");
     expect(TestUtils.selectInput("TextInput__Input", rows[1])!.value).toBe(
-      "value-Prop 2"
+      "value-Prop 2",
     );
   });
 });

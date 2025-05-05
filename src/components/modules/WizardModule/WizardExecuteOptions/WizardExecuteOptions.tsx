@@ -98,7 +98,7 @@ type Props = {
   getFieldValue?: (
     fieldName: string,
     defaultValue: any,
-    parentFieldName: string | undefined
+    parentFieldName: string | undefined,
   ) => any;
   onChange: (field: Field, value: any, parentFieldName?: string) => void;
   onScrollableRef?: (ref: HTMLElement) => void;
@@ -180,7 +180,7 @@ class WizardExecuteOptions extends React.Component<Props, State> {
     ) {
       const deploymentFieldNames = deploymentFields.map(f => f.name);
       const deploymentFieldsInUse = fields.filter(f =>
-        deploymentFieldNames.includes(f.field.name)
+        deploymentFieldNames.includes(f.field.name),
       );
       const additionalDeploymentFields = deploymentFields
         .filter(f => !fields.some(field => field.field.name === f.name))
@@ -233,7 +233,7 @@ class WizardExecuteOptions extends React.Component<Props, State> {
   getFieldValue(
     fieldName: string,
     defaultValue: any,
-    parentFieldName?: string
+    parentFieldName?: string,
   ) {
     if (this.props.getFieldValue) {
       return this.props.getFieldValue(fieldName, defaultValue, parentFieldName);
@@ -311,7 +311,7 @@ class WizardExecuteOptions extends React.Component<Props, State> {
 
     const defaultFieldNames = fieldsSchema.map(f => f.name);
     const filteredOptions = this.props.options.filter(
-      f => !defaultFieldNames.includes(f.name) && isRequired(f)
+      f => !defaultFieldNames.includes(f.name) && isRequired(f),
     );
 
     fieldsSchema = fieldsSchema.concat(filteredOptions);
@@ -357,12 +357,12 @@ class WizardExecuteOptions extends React.Component<Props, State> {
               <GroupFields>
                 <Column left>
                   {g.fields.map(
-                    (f, j) => getColumnInGroup(f, j) === 0 && f.component
+                    (f, j) => getColumnInGroup(f, j) === 0 && f.component,
                   )}
                 </Column>
                 <Column right>
                   {g.fields.map(
-                    (f, j) => getColumnInGroup(f, j) === 1 && f.component
+                    (f, j) => getColumnInGroup(f, j) === 1 && f.component,
                   )}
                 </Column>
               </GroupFields>

@@ -51,10 +51,10 @@ const Wrapper = styled.div<any>`
           width: 100%;
         `
       : props.width
-      ? css`
-          width: ${props.width}px;
-        `
-      : ""}
+        ? css`
+            width: ${props.width}px;
+          `
+        : ""}
 `;
 const Required = styled.div<any>`
   position: absolute;
@@ -94,8 +94,8 @@ const ListItem = styled.div<any>`
     props.selected
       ? "white"
       : props.dim
-      ? ThemePalette.grayscale[3]
-      : ThemePalette.grayscale[4]};
+        ? ThemePalette.grayscale[3]
+        : ThemePalette.grayscale[4]};
   ${(props: any) =>
     props.arrowSelected
       ? css`
@@ -250,7 +250,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       this.scrollableParent.removeEventListener(
         "scroll",
         this.handleScroll,
-        false
+        false,
       );
     }
   }
@@ -384,7 +384,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
         if (isFocus) {
           this.scrollIntoView();
         }
-      }
+      },
     );
 
     if (this.props.onInputChange) {
@@ -394,7 +394,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
 
   scrollIntoView(itemIndex?: number) {
     const selectedItemIndex = this.state.filteredItems.findIndex(
-      i => this.getValue(i) === this.getValue(this.props.selectedItem)
+      i => this.getValue(i) === this.getValue(this.props.selectedItem),
     );
     const actualItemIndex = itemIndex != null ? itemIndex : selectedItemIndex;
     if (this.listRef && this.listItemsRef) {
@@ -581,7 +581,7 @@ class AutocompleteDropdown extends React.Component<Props, State> {
         {this.renderItems()}
         {this.renderSearchNotFound()}
       </List>,
-      body
+      body,
     );
 
     return list;

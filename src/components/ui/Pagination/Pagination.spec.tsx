@@ -33,7 +33,7 @@ describe("Pagination", () => {
   it("renders", () => {
     render(<PaginationWithDefaultProps />);
     expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
-      "2 of 10"
+      "2 of 10",
     );
   });
 
@@ -44,7 +44,7 @@ describe("Pagination", () => {
       <PaginationWithDefaultProps
         onPreviousClick={onPreviousClick}
         onNextClick={onNextClick}
-      />
+      />,
     );
     TestUtils.select("Pagination__PagePrevious")!.click();
     expect(onPreviousClick).toHaveBeenCalled();
@@ -60,7 +60,7 @@ describe("Pagination", () => {
         onPreviousClick={onPreviousClick}
         previousDisabled
         onNextClick={onNextClick}
-      />
+      />,
     );
     TestUtils.select("Pagination__PagePrevious")!.click();
     expect(onPreviousClick).not.toHaveBeenCalled();
@@ -74,7 +74,7 @@ describe("Pagination", () => {
         onPreviousClick={onPreviousClick}
         onNextClick={onNextClick}
         nextDisabled
-      />
+      />,
     );
     TestUtils.select("Pagination__PagePrevious")!.click();
     expect(onPreviousClick).toHaveBeenCalled();

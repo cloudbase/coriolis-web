@@ -29,21 +29,21 @@ describe("DropdownLink", () => {
   it("renders select item label", () => {
     render(<DropdownLink selectItemLabel="Select an item" items={ITEMS} />);
     expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
-      "Select an item"
+      "Select an item",
     );
   });
 
   it("renders no items label", () => {
     render(<DropdownLink noItemsLabel="No items" items={[]} />);
     expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
-      "No items"
+      "No items",
     );
   });
 
   it("renders the selected item", () => {
     render(<DropdownLink items={ITEMS} selectedItem={ITEMS[1].value} />);
     expect(TestUtils.select("DropdownLink__Label")?.textContent).toBe(
-      ITEMS[1].label
+      ITEMS[1].label,
     );
   });
 
@@ -86,10 +86,10 @@ describe("DropdownLink", () => {
       TestUtils.select("DropdownLink__LinkButton")?.click();
     });
     const noHighlightStyle = window.getComputedStyle(
-      TestUtils.selectAll("DropdownLink__ListItemLabel")[0]
+      TestUtils.selectAll("DropdownLink__ListItemLabel")[0],
     );
     const highlightStyle = window.getComputedStyle(
-      TestUtils.selectAll("DropdownLink__ListItemLabel")[1]
+      TestUtils.selectAll("DropdownLink__ListItemLabel")[1],
     );
     expect(highlightStyle.fontWeight).not.toBe(noHighlightStyle.fontWeight);
     expect(highlightStyle.fontWeight).toBe(`${ThemeProps.fontWeights.medium}`);

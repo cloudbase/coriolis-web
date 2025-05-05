@@ -99,7 +99,7 @@ type Props = {
   colors?: string[];
   onBarMouseEnter?: (
     position: { x: number; y: number },
-    item: DataItem
+    item: DataItem,
   ) => void;
   onBarMouseLeave?: () => void;
 };
@@ -125,9 +125,9 @@ class DashboardBarChart extends React.Component<Props> {
       (max, item) =>
         Math.max(
           max,
-          item.values.reduce((sum, value) => sum + value, 0)
+          item.values.reduce((sum, value) => sum + value, 0),
         ),
-      1
+      1,
     );
     const niceScale = new BarChartNiceScale(0, this.range, props.yNumTicks);
     this.ticks = [];

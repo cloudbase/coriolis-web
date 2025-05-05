@@ -42,13 +42,16 @@ describe("DashboardInfoCount", () => {
   it("renders CountBlock for each data item", () => {
     render(<DashboardInfoCount data={mockData} />);
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockValue-")[0].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockValue-")[0]
+        .textContent,
     ).toBe("1");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel-")[0].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel-")[0]
+        .textContent,
     ).toBe("Label1");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel-")[1].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel-")[1]
+        .textContent,
     ).toBe("Label2");
     // In this case, the value "0" will not be rendered because of the loading state.
   });
@@ -59,8 +62,8 @@ describe("DashboardInfoCount", () => {
     expect(
       TestUtils.select(
         "DashboardInfoCount__LoadingWrapper-",
-        TestUtils.selectAll("DashboardInfoCount__CountBlock-")[1]
-      )
+        TestUtils.selectAll("DashboardInfoCount__CountBlock-")[1],
+      ),
     ).toBeTruthy();
   });
 

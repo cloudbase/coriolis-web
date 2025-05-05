@@ -82,7 +82,7 @@ describe("ReplicaDeploymentOptions", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(
-      <ReplicaDeploymentOptions {...defaultProps} />
+      <ReplicaDeploymentOptions {...defaultProps} />,
     );
     expect(getByText("Deploy")).toBeTruthy();
   });
@@ -108,24 +108,24 @@ describe("ReplicaDeploymentOptions", () => {
 
   it("handles script operations", () => {
     const { getByTestId } = render(
-      <ReplicaDeploymentOptions {...defaultProps} />
+      <ReplicaDeploymentOptions {...defaultProps} />,
     );
     fireEvent.click(TestUtils.selectAll("ToggleButtonBar__Item-")[1]);
     fireEvent.click(getByTestId("ScriptsUpload"));
     expect(getByTestId("ScriptsUploaded").textContent).toContain(
-      "script-content"
+      "script-content",
     );
     fireEvent.click(getByTestId("ScriptsCancel"));
     expect(getByTestId("ScriptsUploaded").textContent).toBe("");
 
     fireEvent.click(getByTestId("ScriptsUpload"));
     expect(getByTestId("ScriptsUploaded").textContent).toContain(
-      "script-content"
+      "script-content",
     );
     expect(getByTestId("ScriptsRemoved").textContent).toBe("");
     fireEvent.click(getByTestId("ScriptsRemove"));
     expect(getByTestId("ScriptsRemoved").textContent).toContain(
-      "script-content"
+      "script-content",
     );
   });
 
@@ -144,13 +144,13 @@ describe("ReplicaDeploymentOptions", () => {
     expect(dropdownItem.textContent).toBe("Pool2");
     fireEvent.click(dropdownItem);
     expect(TestUtils.select("DropdownButton__Label-")?.textContent).toBe(
-      "Pool2"
+      "Pool2",
     );
   });
 
   it("handles migrate click", () => {
     const { getByText } = render(
-      <ReplicaDeploymentOptions {...defaultProps} />
+      <ReplicaDeploymentOptions {...defaultProps} />,
     );
     fireEvent.click(getByText("Deploy"));
     expect(defaultProps.onDeployClick).toHaveBeenCalled();

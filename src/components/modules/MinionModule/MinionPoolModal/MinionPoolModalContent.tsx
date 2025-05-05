@@ -154,7 +154,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
     }
     const exceptions = ["endpoint_id", "platform", "os_type"];
     return fields.filter(
-      f => (f.required && f.default == null) || exceptions.indexOf(f.name) > -1
+      f => (f.required && f.default == null) || exceptions.indexOf(f.name) > -1,
     );
   }
 
@@ -234,7 +234,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
           <Row key={field.name}>
             {field1}
             {field2}
-          </Row>
+          </Row>,
         );
       };
       if (field.useTextArea) {
@@ -266,7 +266,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
         <Group>
           <GroupFields>
             {this.renderFieldSet(
-              this.filterBySimpleAdvanced(this.props.defaultSchema)
+              this.filterBySimpleAdvanced(this.props.defaultSchema),
             )}
           </GroupFields>
         </Group>
@@ -285,7 +285,7 @@ class MinionPoolModalContent extends React.Component<Props, State> {
           <GroupFields>
             {this.renderFieldSet(
               this.filterBySimpleAdvanced(this.props.envSchema),
-              { disabled: this.props.envOptionsDisabled }
+              { disabled: this.props.envOptionsDisabled },
             )}
           </GroupFields>
         </Group>

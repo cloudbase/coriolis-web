@@ -19,7 +19,7 @@ export default {
     if (matches) {
       const transform = (match: string) => componentToHex(parseInt(match, 10));
       return `#${transform(matches[1])}${transform(matches[2])}${transform(
-        matches[3]
+        matches[3],
       )}`;
     }
     return rgb;

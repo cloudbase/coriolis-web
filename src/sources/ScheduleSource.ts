@@ -20,7 +20,7 @@ import type { Schedule } from "@src/@types/Schedule";
 class ScheduleSource {
   async scheduleSinge(
     transferId: string,
-    scheduleData: Schedule
+    scheduleData: Schedule,
   ): Promise<Schedule> {
     const payload: any = {
       schedule: {},
@@ -36,7 +36,7 @@ class ScheduleSource {
 
     if (scheduleData.expiration_date) {
       payload.expiration_date = new Date(
-        scheduleData.expiration_date
+        scheduleData.expiration_date,
       ).toISOString();
     }
 
@@ -62,23 +62,23 @@ class ScheduleSource {
 
   async scheduleMultiple(
     transferId: string,
-    schedules: Schedule[]
+    schedules: Schedule[],
   ): Promise<Schedule[]> {
     const scheduledSchedules: Schedule[] = await Promise.all(
       schedules.map(async schedule => {
         const scheduledSchedule: Schedule = await this.scheduleSinge(
           transferId,
-          schedule
+          schedule,
         );
         return scheduledSchedule;
-      })
+      }),
     );
     return scheduledSchedules;
   }
 
   async getSchedules(
     transferId: string,
-    opts?: { skipLog?: boolean }
+    opts?: { skipLog?: boolean },
   ): Promise<Schedule[]> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/schedules`,
@@ -96,7 +96,7 @@ class ScheduleSource {
     }));
     schedules.sort(
       (a, b) =>
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
     );
     return schedules;
   }
@@ -151,7 +151,7 @@ class ScheduleSource {
     }
     if (unsavedData?.expiration_date) {
       payload.expiration_date = new Date(
-        unsavedData.expiration_date
+        unsavedData.expiration_date,
       ).toISOString();
     }
     if (

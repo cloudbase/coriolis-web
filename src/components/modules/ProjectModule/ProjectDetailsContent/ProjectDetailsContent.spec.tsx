@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, {act} from "react";
+import React, { act } from "react";
 
 import { Project, RoleAssignment } from "@src/@types/Project";
 import { render } from "@testing-library/react";
@@ -142,7 +142,7 @@ describe("ProjectDetailsContent", () => {
         <ProjectDetailsContent
           {...defaultProps}
           users={[{ ...USER, enabled: false }]}
-        />
+        />,
       );
 
       await openActionsDropdown();
@@ -163,7 +163,7 @@ describe("ProjectDetailsContent", () => {
   it("renders loading", () => {
     render(<ProjectDetailsContent {...defaultProps} loading />);
     expect(
-      TestUtils.select("ProjectDetailsContent__LoadingWrapper")
+      TestUtils.select("ProjectDetailsContent__LoadingWrapper"),
     ).toBeTruthy();
   });
 
@@ -185,7 +185,7 @@ describe("ProjectDetailsContent", () => {
     });
 
     const items = TestUtils.selectAll("DropdownLink__ListItem-");
-    let roleItem: HTMLElement | undefined ;
+    let roleItem: HTMLElement | undefined;
 
     for (const item of items) {
       if (item.textContent?.includes(ROLE_ASSIGNMENT.role.name)) {
@@ -202,7 +202,7 @@ describe("ProjectDetailsContent", () => {
     expect(defaultProps.onUserRoleChange).toBeCalledWith(
       USER,
       ROLE_ASSIGNMENT.role.id,
-      false
+      false,
     );
   });
 });

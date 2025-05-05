@@ -29,7 +29,7 @@ describe("DatetimePicker", () => {
     const expected = DateUtils.getUtcDate(DATE).toFormat("dd/LL/yyyy hh:mm a");
 
     expect(TestUtils.select("DropdownButton__Label")?.innerHTML).toEqual(
-      expected
+      expected,
     );
   });
 
@@ -41,7 +41,7 @@ describe("DatetimePicker", () => {
     });
     expect(TestUtils.select("DatetimePicker__Portal")).not.toBeNull();
     const firstDay = document.querySelector<HTMLElement>(
-      'td.rdtDay[data-value="1"]'
+      'td.rdtDay[data-value="1"]',
     );
     act(() => {
       firstDay?.click();
@@ -52,7 +52,7 @@ describe("DatetimePicker", () => {
       .toFormat("dd/LL/yyyy hh:mm a");
 
     expect(TestUtils.select("DropdownButton__Label")?.innerHTML).toEqual(
-      expected
+      expected,
     );
   });
 });

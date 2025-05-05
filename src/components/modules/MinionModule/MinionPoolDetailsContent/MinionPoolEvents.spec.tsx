@@ -38,7 +38,7 @@ describe("MinionPoolEvents", () => {
   it("renders without crashing", () => {
     render(<MinionPoolEvents {...defaultProps} />);
     expect(TestUtils.select("MinionPoolEvents__Message")?.textContent).toBe(
-      MINION_POOL_DETAILS_MOCK.events[0].message
+      MINION_POOL_DETAILS_MOCK.events[0].message,
     );
   });
 
@@ -123,27 +123,29 @@ describe("MinionPoolEvents", () => {
       await showAllEvents();
 
       expect(
-        TestUtils.select("Pagination__PagePrevious")!.hasAttribute("disabled")
+        TestUtils.select("Pagination__PagePrevious")!.hasAttribute("disabled"),
       ).toBeTruthy();
-      expect(TestUtils.select("Pagination__PageNumber")!.textContent).toBe("1 of 3");
+      expect(TestUtils.select("Pagination__PageNumber")!.textContent).toBe(
+        "1 of 3",
+      );
 
       await act(async () => {
         TestUtils.select("Pagination__PageNext")!.click();
       });
 
       expect(
-        TestUtils.select("Pagination__PagePrevious")!.hasAttribute("disabled")
+        TestUtils.select("Pagination__PagePrevious")!.hasAttribute("disabled"),
       ).toBeFalsy();
       expect(TestUtils.select("Pagination__PageNumber")!.textContent).toBe(
-        "2 of 3"
+        "2 of 3",
       );
 
       await act(async () => {
         TestUtils.select("Pagination__PagePrevious")!.click();
       });
-    
+
       expect(TestUtils.select("Pagination__PageNumber")!.textContent).toBe(
-        "1 of 3"
+        "1 of 3",
       );
     });
   });

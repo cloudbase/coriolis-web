@@ -110,7 +110,7 @@ type Props = {
   onRequestClose: () => void;
   onSelectEndpoint: (
     endpoint: Endpoint,
-    platform: "source" | "destination"
+    platform: "source" | "destination",
   ) => void;
 };
 
@@ -129,7 +129,7 @@ class MinionEndpointModal extends React.Component<Props, State> {
   handleNextClick() {
     this.props.onSelectEndpoint(
       this.state.selectedEndpoint!,
-      this.state.platform
+      this.state.platform,
     );
   }
 
@@ -184,11 +184,11 @@ class MinionEndpointModal extends React.Component<Props, State> {
         const types =
           this.props.providers?.[providerName].types.indexOf(providerType);
         return types != null && types > -1;
-      }
+      },
     );
 
     const availableEndpoints = this.props.endpoints.filter(
-      e => availableProviders.indexOf(e.type) > -1
+      e => availableProviders.indexOf(e.type) > -1,
     );
 
     if (availableProviders.length === 0 || availableEndpoints.length === 0) {
@@ -203,33 +203,33 @@ class MinionEndpointModal extends React.Component<Props, State> {
           enter
           timeout={{ exit: 250, enter: 250 }}
         >
-        <div>
-          {availableProviders.map(providerName => (
-            <ProviderWrapper key={providerName}>
-              <EndpointLogos
-                height={128}
-                endpoint={providerName}
-                style={{ marginBottom: "16px" }}
-              />
-              <Dropdown
-                items={this.props.endpoints.filter(
-                  e => e.type === providerName
-                )}
-                valueField="id"
-                labelField="name"
-                noSelectionMessage="Choose an endpoint"
-                centered
-                selectedItem={
-                  this.state.selectedEndpoint?.type === providerName
-                    ? this.state.selectedEndpoint
-                    : null
-                }
-                onChange={endpoint => {
-                  this.setState({ selectedEndpoint: endpoint });
-                }}
-              />
-            </ProviderWrapper>
-          ))}
+          <div>
+            {availableProviders.map(providerName => (
+              <ProviderWrapper key={providerName}>
+                <EndpointLogos
+                  height={128}
+                  endpoint={providerName}
+                  style={{ marginBottom: "16px" }}
+                />
+                <Dropdown
+                  items={this.props.endpoints.filter(
+                    e => e.type === providerName,
+                  )}
+                  valueField="id"
+                  labelField="name"
+                  noSelectionMessage="Choose an endpoint"
+                  centered
+                  selectedItem={
+                    this.state.selectedEndpoint?.type === providerName
+                      ? this.state.selectedEndpoint
+                      : null
+                  }
+                  onChange={endpoint => {
+                    this.setState({ selectedEndpoint: endpoint });
+                  }}
+                />
+              </ProviderWrapper>
+            ))}
           </div>
         </CSSTransition>
       </ContentWrapper>

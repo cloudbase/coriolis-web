@@ -21,7 +21,7 @@ describe("CopyButton", () => {
   it("renders with no opacity", () => {
     render(<CopyButton />);
     expect(
-      window.getComputedStyle(TestUtils.select("CopyButton__Wrapper")!).opacity
+      window.getComputedStyle(TestUtils.select("CopyButton__Wrapper")!).opacity,
     ).toBe("0");
   });
 

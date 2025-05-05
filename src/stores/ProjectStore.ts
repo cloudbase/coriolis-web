@@ -43,7 +43,7 @@ class ProjectStore {
     if (options && options.showLoading) this.loading = true;
     try {
       const projects = await ProjectSource.getProjects(
-        options && options.skipLog
+        options && options.skipLog,
       );
       runInAction(() => {
         this.loading = false;
@@ -58,7 +58,7 @@ class ProjectStore {
 
   @action async getRoleAssignments(options?: { skipLog?: boolean }) {
     const assignments = await ProjectSource.getRoleAssignments(
-      options && options.skipLog
+      options && options.skipLog,
     );
     runInAction(() => {
       this.roleAssignments = assignments;
@@ -110,7 +110,7 @@ class ProjectStore {
   @action async removeUser(
     projectId: string,
     userId: string,
-    roleIds: string[]
+    roleIds: string[],
   ) {
     await ProjectSource.removeUser(projectId, userId, roleIds);
     runInAction(() => {
@@ -121,7 +121,7 @@ class ProjectStore {
   @action async assignUserRole(
     projectId: string,
     userId: string,
-    roleId: string
+    roleId: string,
   ) {
     await ProjectSource.assignUser(projectId, userId, roleId);
   }
@@ -129,7 +129,7 @@ class ProjectStore {
   @action async removeUserRole(
     projectId: string,
     userId: string,
-    roleId: string
+    roleId: string,
   ) {
     await ProjectSource.removeUser(projectId, userId, [roleId]);
   }

@@ -177,13 +177,13 @@ class DashboardTopEndpoints extends React.Component<Props, State> {
     const count = (
       mainItems: TransferItem[],
       endpointId: string,
-      scenario: string
+      scenario: string,
     ) =>
       mainItems.filter(
         r =>
           r.scenario === scenario &&
           (r.destination_endpoint_id === endpointId ||
-            r.origin_endpoint_id === endpointId)
+            r.origin_endpoint_id === endpointId),
       ).length;
 
     props.endpoints.forEach(endpoint => {
@@ -191,7 +191,7 @@ class DashboardTopEndpoints extends React.Component<Props, State> {
       const migrationsCount = count(
         props.transfers,
         endpoint.id,
-        "live_migration"
+        "live_migration",
       );
       groupedEndpoints.push({
         endpoint,
@@ -333,8 +333,8 @@ class DashboardTopEndpoints extends React.Component<Props, State> {
           {this.props.loading && this.props.endpoints.length === 0
             ? this.renderLoading()
             : this.props.endpoints.length
-            ? this.renderChart()
-            : this.renderNoData()}
+              ? this.renderChart()
+              : this.renderNoData()}
         </Module>
       </Wrapper>
     );

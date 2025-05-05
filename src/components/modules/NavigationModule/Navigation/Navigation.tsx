@@ -278,7 +278,7 @@ class Navigation extends React.Component<Props> {
         ? configLoader.config.disabledPages.find(p => p === page)
         : false;
     return navigationMenu.filter(
-      i => !isDisabled(i.value) && (!i.requiresAdmin || isAdmin)
+      i => !isDisabled(i.value) && (!i.requiresAdmin || isAdmin),
     );
   }
 
@@ -298,7 +298,7 @@ class Navigation extends React.Component<Props> {
     this.menu.style.left = "-9999px";
     this.cbsLogo.removeEventListener(
       "transitionend",
-      this.handleCollapsedTransitionEnd
+      this.handleCollapsedTransitionEnd,
     );
   }
 
@@ -312,7 +312,7 @@ class Navigation extends React.Component<Props> {
     this.cbsLogoSmall.style.left = "-9999px";
     this.smallMenu.removeEventListener(
       "transitionend",
-      this.handleExpandedTransitionEnd
+      this.handleExpandedTransitionEnd,
     );
   }
 
@@ -346,7 +346,7 @@ class Navigation extends React.Component<Props> {
       this.cbsLogoSmall.style.left = "auto";
       this.cbsLogo.addEventListener(
         "transitionend",
-        this.handleCollapsedTransitionEnd
+        this.handleCollapsedTransitionEnd,
       );
     } else {
       this.coriolisLogo.style.left = "auto";
@@ -354,7 +354,7 @@ class Navigation extends React.Component<Props> {
       this.menu.style.left = "auto";
       this.smallMenu.addEventListener(
         "transitionend",
-        this.handleExpandedTransitionEnd
+        this.handleExpandedTransitionEnd,
       );
     }
     this.isCollapsed = toCollapsed;

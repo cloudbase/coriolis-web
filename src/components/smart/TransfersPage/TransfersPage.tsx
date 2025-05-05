@@ -150,7 +150,7 @@ class TransfersPage extends React.Component<Props, State> {
   executeSelectedTransfers(fields: Field[]) {
     this.state.selectedTransfers.forEach(transfer => {
       const actualTransfer = transferStore.transfers.find(
-        r => r.id === transfer.id
+        r => r.id === transfer.id,
       );
       if (actualTransfer && this.isExecuteEnabled(actualTransfer)) {
         transferStore.execute(transfer.id, fields);
@@ -174,18 +174,18 @@ class TransfersPage extends React.Component<Props, State> {
           fields,
           uploadedUserScripts: uploadedScripts.filter(
             s =>
-              !s.instanceId || transfer.instances.find(i => i === s.instanceId)
+              !s.instanceId || transfer.instances.find(i => i === s.instanceId),
           ),
           removedUserScripts: [],
           userScriptData: transfer.user_scripts,
           minionPoolMappings:
             transfer.instance_osmorphing_minion_pool_mappings || {},
-        })
-      )
+        }),
+      ),
     );
     notificationStore.alert(
       "Deployments successfully created from transfers.",
-      "success"
+      "success",
     );
     this.props.onNavigate("/deployments");
   }
@@ -209,7 +209,7 @@ class TransfersPage extends React.Component<Props, State> {
   cancelExecutions() {
     this.state.selectedTransfers.forEach(transfer => {
       const actualTransfer = transferStore.transfers.find(
-        r => r.id === transfer.id
+        r => r.id === transfer.id,
       );
       if (
         actualTransfer?.last_execution_status === "RUNNING" ||
@@ -227,17 +227,17 @@ class TransfersPage extends React.Component<Props, State> {
     }
     const usableTransfer = transfer;
     const originEndpoint = endpointStore.endpoints.find(
-      e => e.id === usableTransfer.origin_endpoint_id
+      e => e.id === usableTransfer.origin_endpoint_id,
     );
     const targetEndpoint = endpointStore.endpoints.find(
-      e => e.id === usableTransfer.destination_endpoint_id
+      e => e.id === usableTransfer.destination_endpoint_id,
     );
     const status = this.getStatus(usableTransfer);
     return Boolean(
       originEndpoint &&
         targetEndpoint &&
         status !== "RUNNING" &&
-        status !== "AWAITING_MINION_ALLOCATIONS"
+        status !== "AWAITING_MINION_ALLOCATIONS",
     );
   }
 
@@ -268,7 +268,7 @@ class TransfersPage extends React.Component<Props, State> {
         endpointId: r.origin_endpoint_id,
         instanceIds: r.instances,
         env: r.source_environment,
-      }))
+      })),
     );
 
     this.setState({ showCreateDeploymentsModal: true, modalIsOpen: true });
@@ -331,13 +331,13 @@ class TransfersPage extends React.Component<Props, State> {
   itemFilterFunction(
     item: TransferItem,
     filterStatus?: string | null,
-    filterText?: string
+    filterText?: string,
   ) {
     if (
       (filterStatus !== "all" && item.last_execution_status !== filterStatus) ||
       !this.searchText(
         item,
-        (filterText?.toLowerCase && filterText.toLowerCase()) || ""
+        (filterText?.toLowerCase && filterText.toLowerCase()) || "",
       )
     ) {
       return false;
@@ -348,7 +348,7 @@ class TransfersPage extends React.Component<Props, State> {
 
   isTransferScheduled(transferId: string): boolean {
     const bulkScheduleItem = scheduleStore.bulkSchedules.find(
-      b => b.transferId === transferId
+      b => b.transferId === transferId,
     );
     if (!bulkScheduleItem) {
       return false;
@@ -362,7 +362,7 @@ class TransfersPage extends React.Component<Props, State> {
     let atLeaseOneIsRunning = false;
     this.state.selectedTransfers.forEach(transfer => {
       const storeTransfer = transferStore.transfers.find(
-        r => r.id === transfer.id
+        r => r.id === transfer.id,
       );
       atLeastOneHasExecuteEnabled =
         atLeastOneHasExecuteEnabled || this.isExecuteEnabled(storeTransfer);
@@ -379,9 +379,9 @@ class TransfersPage extends React.Component<Props, State> {
           p =>
             p ===
             endpointStore.endpoints.find(
-              e => e.id === transfer.origin_endpoint_id
-            )?.type
-        )
+              e => e.id === transfer.origin_endpoint_id,
+            )?.type,
+        ),
       );
 
     const BulkActions: DropdownAction[] = [
@@ -566,7 +566,7 @@ class TransfersPage extends React.Component<Props, State> {
               onDeployClick={options => {
                 this.deploySelectedTransfers(
                   options.fields,
-                  options.uploadedUserScripts
+                  options.uploadedUserScripts,
                 );
               }}
             />

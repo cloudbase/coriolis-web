@@ -32,7 +32,7 @@ describe("Dropdown", () => {
   it("opens the dropdown list with the correct number of items", () => {
     render(<Dropdown items={ITEMS} />);
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "Select an item"
+      "Select an item",
     );
     const button = TestUtils.select("DropdownButton__Wrapper");
     expect(button).toBeTruthy();
@@ -57,7 +57,7 @@ describe("Dropdown", () => {
   it("renders selected item", () => {
     render(<Dropdown items={ITEMS} selectedItem={ITEMS[0]} />);
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "Label A 1"
+      "Label A 1",
     );
   });
 

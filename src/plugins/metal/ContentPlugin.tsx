@@ -69,7 +69,7 @@ class ContentPlugin extends React.Component<Props> {
   findInvalidFields = () =>
     findInvalidFields(
       this.props.connectionInfoSchema,
-      this.props.getFieldValue
+      this.props.getFieldValue,
     );
 
   renderFields() {

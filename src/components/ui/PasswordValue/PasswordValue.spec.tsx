@@ -21,7 +21,7 @@ describe("PasswordValue", () => {
   it("hides the password", () => {
     render(<PasswordValue value="the_secret" />);
     expect(TestUtils.select("PasswordValue__Value")?.textContent).toBe(
-      "•••••••••"
+      "•••••••••",
     );
   });
   it("reveals the password on click", () => {
@@ -30,7 +30,7 @@ describe("PasswordValue", () => {
       TestUtils.select("PasswordValue__Value")?.click();
     });
     expect(TestUtils.select("PasswordValue__Value")?.textContent).toBe(
-      "the_secret"
+      "the_secret",
     );
   });
 });

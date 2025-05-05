@@ -122,7 +122,7 @@ class LogStreamPage extends React.Component<Record<string, never>, State> {
           logs={[{ log_name: "All Logs" }, ...logStore.logs]}
           severityLevel={this.state.severityLevel}
           liveFeed={logStore.liveFeed.filter(l =>
-            l.includes(this.state.search)
+            l.includes(this.state.search),
           )}
           onLogNameChange={logName => {
             this.handleLogNameChange(logName);

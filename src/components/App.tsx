@@ -138,7 +138,7 @@ class App extends React.Component<Record<string, unknown>, State> {
     const renderRoute = (
       path: string,
       element: React.ReactNode,
-      exact?: boolean
+      exact?: boolean,
     ) => {
       if (!userStore.loggedUser) {
         return renderMessagePage({
@@ -165,7 +165,7 @@ class App extends React.Component<Record<string, unknown>, State> {
       }
       const actualPath = `${path || `/${name}`}`;
       const requiresAdmin = Boolean(
-        navigationMenu.find(n => n.value === name && n.requiresAdmin)
+        navigationMenu.find(n => n.value === name && n.requiresAdmin),
       );
       if (!requiresAdmin) {
         return renderRoute(actualPath, element, exact);
@@ -232,7 +232,10 @@ class App extends React.Component<Record<string, unknown>, State> {
             {renderRoute("/minion-pools/:id", <MinionPoolDetailsPage />, true)}
             {renderRoute("/minion-pools/:id/:page", <MinionPoolDetailsPage />)}
             {renderRoute("/bare-metal-servers", <MetalHubServersPage />, true)}
-            {renderRoute("/bare-metal-servers/:id",<MetalHubServerDetailsPage />)}
+            {renderRoute(
+              "/bare-metal-servers/:id",
+              <MetalHubServerDetailsPage />,
+            )}
             {renderRoute("/wizard/:type", <WizardPage />)}
             {renderOptionalRoute({
               name: "users",
@@ -258,7 +261,7 @@ class App extends React.Component<Record<string, unknown>, State> {
             {renderRoute("/streamlog", <LogStreamPage />)}
             {
               // @ts-ignore
-            <Route path="*" element={<MessagePage />} />
+              <Route path="*" element={<MessagePage />} />
             }
           </Routes>
         </Router>

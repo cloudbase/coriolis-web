@@ -59,25 +59,25 @@ describe("NotificationDropdown", () => {
     });
     const listItems = TestUtils.selectAll("NotificationDropdown__ListItem");
     expect(listItems[0].getAttribute("to")).toBe(
-      `/${ITEMS[0].type}s/${ITEMS[0].id}`
+      `/${ITEMS[0].type}s/${ITEMS[0].id}`,
     );
     expect(listItems[1].getAttribute("to")).toBe(
-      `/${ITEMS[1].type}s/${ITEMS[1].id}`
+      `/${ITEMS[1].type}s/${ITEMS[1].id}`,
     );
     expect(listItems[2].getAttribute("to")).toBe(
-      `/${ITEMS[2].type}s/${ITEMS[2].id}/executions`
+      `/${ITEMS[2].type}s/${ITEMS[2].id}/executions`,
     );
     expect(
       TestUtils.select("NotificationDropdown__ItemTransferBadge", listItems[2])!
-        .textContent
+        .textContent,
     ).toBe("TR");
     expect(
       TestUtils.select("NotificationDropdown__ItemTitle", listItems[2])!
-        .textContent
+        .textContent,
     ).toBe(ITEMS[2].name);
     expect(
       TestUtils.select("NotificationDropdown__ItemDescription", listItems[2])!
-        .textContent
+        .textContent,
     ).toBe(ITEMS[2].description);
   });
 
@@ -100,23 +100,23 @@ describe("NotificationDropdown", () => {
     });
     const listItems = TestUtils.selectAll("NotificationDropdown__ListItem");
     expect(
-      TestUtils.select("NotificationDropdown__Badge", listItems[0])
+      TestUtils.select("NotificationDropdown__Badge", listItems[0]),
     ).toBeFalsy();
     expect(
-      TestUtils.select("NotificationDropdown__Badge", listItems[1])
+      TestUtils.select("NotificationDropdown__Badge", listItems[1]),
     ).toBeTruthy();
   });
 
   it("renders loading when item is RUNNING", () => {
     const { rerender } = render(
-      <NotificationDropdown items={ITEMS} onClose={() => {}} />
+      <NotificationDropdown items={ITEMS} onClose={() => {}} />,
     );
     expect(TestUtils.select("NotificationDropdown__Loading")).toBeTruthy();
     rerender(
       <NotificationDropdown
         items={ITEMS.map(item => ({ ...item, status: "COMPLETED" }))}
         onClose={() => {}}
-      />
+      />,
     );
     expect(TestUtils.select("NotificationDropdown__Loading")).toBeFalsy();
   });

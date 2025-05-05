@@ -32,7 +32,7 @@ describe("AutocompleteInput", () => {
         onChange={() => {}}
         onFocus={onFocus}
         onBlur={onBlur}
-      />
+      />,
     );
     const inputElement = TestUtils.select("TextInput__Input");
     act(() => {

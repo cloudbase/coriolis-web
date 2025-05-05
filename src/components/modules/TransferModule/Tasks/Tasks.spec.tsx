@@ -73,7 +73,7 @@ describe("Tasks", () => {
           defaultProps.items[0],
           { ...defaultProps.items[1], status: "RUNNING" },
         ]}
-      />
+      />,
     );
     expect(taskItem.textContent).toContain("Open: true");
 
@@ -109,7 +109,7 @@ describe("Tasks", () => {
     fireEvent.mouseUp(secondTaskItem);
     expect(secondTaskItem.textContent).toContain("Open: true");
     const dependsOn = secondTaskItem.querySelector(
-      "[data-testid='TaskItem-DependsOn']"
+      "[data-testid='TaskItem-DependsOn']",
     ) as HTMLElement;
     expect(dependsOn).toBeTruthy();
     await act(async () => {

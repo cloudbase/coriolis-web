@@ -211,12 +211,12 @@ class TaskItem extends React.Component<Props> {
   }
 
   getProgressPercentage(
-    progressUpdate: ProgressUpdate
+    progressUpdate: ProgressUpdate,
   ): { useLabel: boolean; value: number } | null {
     if (progressUpdate.total_steps && progressUpdate.current_step) {
       const currentStep = Math.min(
         progressUpdate.total_steps,
-        progressUpdate.current_step
+        progressUpdate.current_step,
       );
       return {
         value: Math.round((currentStep * 100) / progressUpdate.total_steps),
@@ -225,7 +225,7 @@ class TaskItem extends React.Component<Props> {
     }
 
     const stringPercentage = progressUpdate.message.match(
-      /.*progress.*?(100|\d{1,2})%/
+      /.*progress.*?(100|\d{1,2})%/,
     )?.[1];
     if (!stringPercentage) {
       return null;
@@ -240,7 +240,7 @@ class TaskItem extends React.Component<Props> {
     DomUtils.copyTextToClipboard(
       exceptionText,
       "The message has been copied to clipboard",
-      "Failed to copy the message to clipboard"
+      "Failed to copy the message to clipboard",
     );
   }
 
@@ -250,7 +250,7 @@ class TaskItem extends React.Component<Props> {
       : this.props.item.created_at;
 
     const instance = this.props.instancesDetails.find(
-      i => i.id === this.props.item.instance
+      i => i.id === this.props.item.instance,
     );
     const instanceName =
       instance?.instance_name || instance?.name || this.props.item.instance;
@@ -317,10 +317,10 @@ class TaskItem extends React.Component<Props> {
               }}
             >
               {getName(
-                this.props.otherItems.find(item => item.id === id)?.task_type
+                this.props.otherItems.find(item => item.id === id)?.task_type,
               )}
             </Value>
-          ) : null
+          ) : null,
         )}
       </DependsOnIds>
     );
@@ -348,7 +348,7 @@ class TaskItem extends React.Component<Props> {
               <ProgressUpdateDate width={this.props.columnWidths[0]}>
                 <span>
                   {DateUtils.getLocalDate(update.created_at).toFormat(
-                    "yyyy-LL-dd HH:mm:ss"
+                    "yyyy-LL-dd HH:mm:ss",
                   )}
                 </span>
               </ProgressUpdateDate>
@@ -455,7 +455,7 @@ class TaskItem extends React.Component<Props> {
     const status =
       itemStatus === "COMPLETED" &&
       this.props.item.progress_updates.some(update =>
-        update.message.startsWith("WARNING")
+        update.message.startsWith("WARNING"),
       )
         ? "WARNING"
         : itemStatus;

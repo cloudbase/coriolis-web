@@ -26,7 +26,7 @@ const getBaseUrl = () => {
 
 const modServicesUrls = (
   configServices: Services,
-  servicesMod?: Services
+  servicesMod?: Services,
 ): Services => {
   const services = { ...configServices };
 
@@ -65,7 +65,7 @@ export default (router: express.Router) => {
         });
         config.servicesUrls = modServicesUrls(
           config.servicesUrls,
-          configMod.servicesUrls
+          configMod.servicesUrls,
         );
         res.send({ config, isFirstLaunch });
       } catch (err) {
