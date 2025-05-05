@@ -31,7 +31,7 @@ jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   __esModule: true,
   default: (props: any) => <div>{props.endpoint}</div>,
 }));
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 describe("DeploymentDetailsContent", () => {
   let defaultProps: DeploymentDetailsContent["props"];

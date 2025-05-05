@@ -22,7 +22,7 @@ import TestUtils from "@tests/TestUtils";
 
 import MinionPoolDetailsContent from "./MinionPoolDetailsContent";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   __esModule: true,
   default: (props: any) => (

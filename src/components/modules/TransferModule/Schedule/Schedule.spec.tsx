@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { DateTime } from "luxon";
-import React from "react";
+import React, { act } from "react";
 
 import DateUtils from "@src/utils/DateUtils";
 import { render } from "@testing-library/react";
@@ -49,43 +49,51 @@ describe("Schedule", () => {
     );
   });
 
-  it("deletes a schedule", () => {
+  it("deletes a schedule", async () => {
     render(
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
       />
     );
-    TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    await act(async () => {
+      TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    });
     expect(TestUtils.select("AlertModal__Message-")?.textContent).toContain(
       "delete this schedule?"
     );
     const modal = TestUtils.select("AlertModal__Wrapper-")!;
-    Array.from(modal.querySelectorAll("button"))
-      .find(b => b.textContent === "Yes")
-      ?.click();
+    await act(async () => {
+      Array.from(modal.querySelectorAll("button"))
+        .find(b => b.textContent === "Yes")
+        ?.click();
+    });
     expect(defaultProps.onRemove).toHaveBeenCalledWith(SCHEDULE_MOCK.id);
   });
 
-  it("dismisses the delete modal", () => {
+  it("dismisses the delete modal", async () => {
     render(
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
       />
     );
-    TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    await act(async () => {
+      TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    });
     expect(TestUtils.select("AlertModal__Message-")?.textContent).toContain(
       "delete this schedule?"
     );
     const modal = TestUtils.select("AlertModal__Wrapper-")!;
-    Array.from(modal.querySelectorAll("button"))
-      .find(b => b.textContent === "No")
-      ?.click();
+    await act(async () => {
+      Array.from(modal.querySelectorAll("button"))
+        .find(b => b.textContent === "No")
+        ?.click();
+    });
     expect(defaultProps.onRemove).not.toHaveBeenCalled();
   });
 
-  it("changes execution options", () => {
+  it("changes execution options", async () => {
     render(
       <Schedule
         {...defaultProps}
@@ -95,21 +103,27 @@ describe("Schedule", () => {
     const optionsButton = Array.from(document.querySelectorAll("button")).find(
       el => el.textContent === "•••"
     );
-    optionsButton?.click();
+    await act(() => {
+      optionsButton?.click();
+    });
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
       "Execution options"
     );
     const modal = TestUtils.select("TransferExecutionOptions__Wrapper-")!;
-    TestUtils.select("Switch__InputWrapper-", modal)?.click();
+    await act(async () => {
+      TestUtils.select("Switch__InputWrapper-", modal)?.click();
+    });
     const yesButton = Array.from(modal.querySelectorAll("button")).find(
       el => el.textContent === "Save"
     );
     expect(yesButton).toBeTruthy();
-    yesButton!.click();
+    await act(async () => {
+      yesButton!.click();
+    });
     expect(defaultProps.onChange).toHaveBeenCalled();
   });
 
-  it("dismisses the execution options modal", () => {
+  it("dismisses the execution options modal", async () => {
     render(
       <Schedule
         {...defaultProps}
@@ -119,7 +133,9 @@ describe("Schedule", () => {
     const optionsButton = Array.from(document.querySelectorAll("button")).find(
       el => el.textContent === "•••"
     );
-    optionsButton?.click();
+    await act(() => {
+      optionsButton?.click();
+    });
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
       "Execution options"
     );
@@ -128,7 +144,9 @@ describe("Schedule", () => {
       el => el.textContent === "Cancel"
     );
     expect(noButton).toBeTruthy();
-    noButton!.click();
+    await act(async () => {
+      noButton!.click();
+    });
     expect(defaultProps.onChange).not.toHaveBeenCalled();
   });
 
@@ -155,7 +173,7 @@ describe("Schedule", () => {
     expect(TestUtils.select("Schedule__LoadingWrapper")).toBeTruthy();
   });
 
-  it("changes schedule", () => {
+  it("changes schedule", async () => {
     render(
       <Schedule
         {...defaultProps}
@@ -164,12 +182,16 @@ describe("Schedule", () => {
     );
     const monthDropdown = TestUtils.select("DropdownButton__Wrapper-")!;
     expect(monthDropdown).toBeTruthy();
-    monthDropdown.click();
+    await act(async () => {
+      monthDropdown.click();
+    });
     const february = Array.from(
       TestUtils.selectAll("Dropdown__ListItem-")!
     ).find(el => el.textContent === DateTime.local(2023, 2).monthLong);
     expect(february).toBeTruthy();
-    february!.click();
+    await act(async () => {
+      february!.click();
+    });
     expect(defaultProps.onChange).toHaveBeenCalledWith(
       SCHEDULE_MOCK.id,
       {
@@ -231,15 +253,19 @@ describe("Schedule", () => {
     expect(getByText("Adding ...")).toBeTruthy();
   });
 
-  it("changes timezone", () => {
+  it("changes timezone", async () => {
     render(<Schedule {...defaultProps} />);
     const timezoneDropdown = TestUtils.select(
       "DropdownLink__LinkButton-",
       TestUtils.select("Schedule__Timezone-")!
     )!;
     expect(timezoneDropdown).toBeTruthy();
-    timezoneDropdown.click();
-    TestUtils.select("DropdownLink__ListItem-")!.click();
+    await act(async () => {
+      timezoneDropdown.click();
+    });
+    await act(async () => {
+      TestUtils.select("DropdownLink__ListItem-")!.click();
+    });
     expect(defaultProps.onTimezoneChange).toHaveBeenCalled();
   });
 });

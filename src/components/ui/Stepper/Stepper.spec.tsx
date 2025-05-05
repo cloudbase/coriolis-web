@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import userEvent from "@testing-library/user-event";
@@ -24,19 +24,23 @@ describe("Stepper", () => {
     expect(TestUtils.selectInput("Stepper__Input")?.value).toBe("Not Set");
   });
 
-  it("changes input value on step button press", () => {
+  it("changes input value on step button press", async () => {
     const onChange = jest.fn();
     render(<Stepper value={10} onChange={onChange} />);
     expect(TestUtils.selectInput("Stepper__Input")?.value).toBe("10");
 
-    TestUtils.select("Stepper__StepButtonUp")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonUp")!.click();
+    });
     expect(onChange).toHaveBeenCalledWith(11);
 
-    TestUtils.select("Stepper__StepButtonDown")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonDown")!.click();
+    });
     expect(onChange).toHaveBeenCalledWith(9);
   });
 
-  it("abides by the minimum and maximum", () => {
+  it("abides by the minimum and maximum", async () => {
     let value: number | null = 13;
     const onChange = (v: number | null) => {
       value = v;
@@ -55,36 +59,52 @@ describe("Stepper", () => {
 
     rerenderWithValue();
     expect(TestUtils.selectInput("Stepper__Input")?.value).toBe("13");
-    TestUtils.select("Stepper__StepButtonUp")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonUp")!.click();
+    });
     expect(value).toBe(14);
 
     rerenderWithValue();
-    TestUtils.select("Stepper__StepButtonUp")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonUp")!.click();
+    });
     expect(value).toBe(15);
 
     rerenderWithValue();
-    TestUtils.select("Stepper__StepButtonUp")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonUp")!.click();
+    });
     expect(value).toBe(15);
 
     rerenderWithValue();
-    TestUtils.select("Stepper__StepButtonDown")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonDown")!.click();
+    });
     expect(value).toBe(14);
 
     value = 7;
     rerenderWithValue();
-    TestUtils.select("Stepper__StepButtonDown")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonDown")!.click();
+    });
     expect(value).toBe(6);
 
     rerenderWithValue();
-    TestUtils.select("Stepper__StepButtonDown")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonDown")!.click();
+    });
     expect(value).toBe(5);
 
     rerenderWithValue();
-    TestUtils.select("Stepper__StepButtonDown")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonDown")!.click();
+    });
     expect(value).toBe(5);
 
     rerenderWithValue();
-    TestUtils.select("Stepper__StepButtonUp")!.click();
+    await act(async () => {
+      TestUtils.select("Stepper__StepButtonUp")!.click();
+    });
     expect(value).toBe(6);
   });
 
@@ -97,7 +117,7 @@ describe("Stepper", () => {
     ${"3"}     | ${5}
   `(
     "dispatches value $dispatchedValue when typing $typedValue",
-    ({ typedValue, dispatchedValue }) => {
+    async ({ typedValue, dispatchedValue }) => {
       const inputEl = () => TestUtils.selectInput("Stepper__Input")!;
       const onChange = jest.fn();
       render(
@@ -106,21 +126,26 @@ describe("Stepper", () => {
 
       userEvent.clear(inputEl());
       userEvent.paste(inputEl(), typedValue);
-      inputEl().blur();
+      await act(async () => {
+        inputEl().blur();
+      });
       expect(onChange).toHaveBeenCalledWith(dispatchedValue);
     }
   );
 
-  it("increments and decrements on arrow keys press", () => {
+  it("increments and decrements on arrow keys press", async () => {
     const onChange = jest.fn();
     render(<Stepper value={7} onChange={onChange} minimum={5} maximum={10} />);
     const inputEl = () => TestUtils.selectInput("Stepper__Input")!;
     userEvent.type(inputEl(), "{ArrowUp}");
-    inputEl().blur();
+    await act(async () => {
+      inputEl().blur();
+    });
     expect(onChange).toHaveBeenCalledWith(8);
-
     userEvent.type(inputEl(), "{ArrowDown}");
-    inputEl().blur();
+    await act(async () => {
+      inputEl().blur();
+    });
     expect(onChange).toHaveBeenCalledWith(6);
   });
 });

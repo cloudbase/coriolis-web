@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { render } from "@testing-library/react";
 import {
@@ -90,7 +90,7 @@ describe("Executions", () => {
     expect(defaultProps.onChange).not.toHaveBeenCalled();
   });
 
-  it("handles previous executions", () => {
+  it("handles previous executions", async () => {
     const { rerender } = render(
       <Executions
         {...defaultProps}
@@ -105,11 +105,15 @@ describe("Executions", () => {
         "Arrow__Wrapper",
         TestUtils.select("Timeline__Wrapper")!
       )[0];
-    previousArrow().click();
+    await act(async () => {
+      previousArrow().click();
+    });
     expect(defaultProps.onChange).toHaveBeenLastCalledWith(EXECUTION_MOCK.id);
 
     rerender(<Executions {...defaultProps} />);
-    previousArrow().click();
+    await act(async () => {
+      previousArrow().click();
+    });
     expect(defaultProps.onChange).toHaveBeenLastCalledWith(EXECUTION_MOCK.id);
   });
 
@@ -119,7 +123,7 @@ describe("Executions", () => {
     expect(defaultProps.onChange).not.toHaveBeenCalled();
   });
 
-  it("handles next executions", () => {
+  it("handles next executions", async () => {
     render(
       <Executions
         {...defaultProps}
@@ -133,7 +137,9 @@ describe("Executions", () => {
       "Arrow__Wrapper",
       TestUtils.select("Timeline__Wrapper")!
     )[1];
-    nextArrow.click();
+    await act(async () => {
+      nextArrow.click();
+    });
     expect(defaultProps.onChange).toHaveBeenLastCalledWith("new-id");
 
     const previousArrow = () =>
@@ -141,9 +147,13 @@ describe("Executions", () => {
         "Arrow__Wrapper",
         TestUtils.select("Timeline__Wrapper")!
       )[0];
-    previousArrow().click();
+    await act(async () => {
+      previousArrow().click();
+    });
 
-    nextArrow.click();
+    await act(async () => {
+      nextArrow.click();
+    });
     expect(defaultProps.onChange).toHaveBeenLastCalledWith("new-id");
   });
 
@@ -153,7 +163,7 @@ describe("Executions", () => {
     expect(defaultProps.onChange).not.toHaveBeenCalled();
   });
 
-  it("handles timeline item click", () => {
+  it("handles timeline item click", async () => {
     render(
       <Executions
         {...defaultProps}
@@ -165,11 +175,13 @@ describe("Executions", () => {
     );
     const timelineItem = TestUtils.select("Timeline__Item-");
     expect(timelineItem).toBeTruthy();
-    timelineItem!.click();
+    await act(async () => {
+      timelineItem!.click();
+    });
     expect(defaultProps.onChange).toHaveBeenLastCalledWith(EXECUTION_MOCK.id);
   });
 
-  it("handles cancel execution click", () => {
+  it("handles cancel execution click", async () => {
     const newExecution = { ...EXECUTION_MOCK, id: "new-id", status: "RUNNING" };
     render(
       <Executions
@@ -181,13 +193,15 @@ describe("Executions", () => {
       document.querySelectorAll("button")
     ).find(el => el.textContent === "Cancel Execution");
     expect(cancelExecutionButton).toBeTruthy();
-    cancelExecutionButton!.click();
+    await act(async () => {
+      cancelExecutionButton!.click();
+    });
     expect(defaultProps.onCancelExecutionClick).toHaveBeenCalledWith(
       newExecution
     );
   });
 
-  it("force cancels execution", () => {
+  it("force cancels execution", async () => {
     const newExecution = {
       ...EXECUTION_MOCK,
       id: "new-id",
@@ -203,7 +217,9 @@ describe("Executions", () => {
       document.querySelectorAll("button")
     ).find(el => el.textContent === "Force Cancel Execution");
     expect(cancelExecutionButton).toBeTruthy();
-    cancelExecutionButton!.click();
+    await act(async () => {
+      cancelExecutionButton!.click();
+    });
     expect(defaultProps.onCancelExecutionClick).toHaveBeenCalledWith(
       newExecution,
       true
@@ -215,7 +231,7 @@ describe("Executions", () => {
     expect(TestUtils.select("Executions__LoadingWrapper")).toBeTruthy();
   });
 
-  it("deletes execution", () => {
+  it("deletes execution", async () => {
     const deleteExecution = jest.fn();
     render(
       <Executions {...defaultProps} onDeleteExecutionClick={deleteExecution} />
@@ -224,7 +240,9 @@ describe("Executions", () => {
       document.querySelectorAll("button")
     ).find(el => el.textContent === "Delete Execution");
     expect(deleteExecutionButton).toBeTruthy();
-    deleteExecutionButton!.click();
+    await act(async () => {
+      deleteExecutionButton!.click();
+    });
     expect(deleteExecution).toHaveBeenCalledWith(EXECUTION_MOCK);
   });
 });

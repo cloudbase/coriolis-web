@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
@@ -98,7 +98,7 @@ describe("SetupPageLegal", () => {
     );
   });
 
-  it("fires legal agreement change event", () => {
+  it("fires legal agreement change event", async () => {
     render(<SetupPageLegal {...defaultProps} />);
     const findCheckboxByText = (text: string) =>
       Array.from(TestUtils.selectAll("Checkbox__Wrapper")).find(el =>
@@ -107,14 +107,16 @@ describe("SetupPageLegal", () => {
 
     const privacyCheckbox = findCheckboxByText("Privacy Policy");
     expect(privacyCheckbox).toBeTruthy();
-
-    privacyCheckbox.click();
+    await act(async () => {
+      privacyCheckbox.click();
+    });
     expect(defaultProps.onLegalChange).toHaveBeenCalledWith(false);
 
     const eulaCheckbox = findCheckboxByText("EULA");
     expect(eulaCheckbox).toBeTruthy();
-
-    eulaCheckbox.click();
+    await act(async () => {
+      eulaCheckbox.click();
+    });
     expect(defaultProps.onLegalChange).toHaveBeenCalledWith(true);
 
     const findLabelByText = (text: string) =>
@@ -124,12 +126,16 @@ describe("SetupPageLegal", () => {
 
     const privacyLabel = findLabelByText("Privacy Policy");
     expect(privacyLabel).toBeTruthy();
-    privacyLabel.click();
+    await act(async () => {
+      privacyLabel.click();
+    });
     expect(defaultProps.onLegalChange).toHaveBeenCalledWith(false);
 
     const eulaLabel = findLabelByText("EULA");
     expect(eulaLabel).toBeTruthy();
-    eulaLabel.click();
+    await act(async () => {
+      eulaLabel.click();
+    });
     expect(defaultProps.onLegalChange).toHaveBeenCalledWith(false);
   });
 
@@ -139,7 +145,7 @@ describe("SetupPageLegal", () => {
     ${"Destination"} | ${3}      | ${"aws"}
   `(
     "fires $platformType platform change event",
-    ({ platformType, itemIndex, expectedProvider }) => {
+    async ({ platformType, itemIndex, expectedProvider }) => {
       render(<SetupPageLegal {...defaultProps} />);
       const platformDropdown = Array.from(
         TestUtils.selectAll("Dropdown__Wrapper")
@@ -150,8 +156,12 @@ describe("SetupPageLegal", () => {
       )!;
 
       expect(platformDropdown).toBeTruthy();
-      TestUtils.select("DropdownButton__Wrapper", platformDropdown)!.click();
-      TestUtils.selectAll("Dropdown__ListItem-")[itemIndex].click();
+      await act(async () => {
+        TestUtils.select("DropdownButton__Wrapper", platformDropdown)!.click();
+      });
+      await act(async () => {
+        TestUtils.selectAll("Dropdown__ListItem-")[itemIndex].click();
+      });
 
       expect(defaultProps.onCustomerInfoChange).toHaveBeenCalledWith(
         `${platformType.toLowerCase()}Platform`,

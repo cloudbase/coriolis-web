@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { DateTime } from "luxon";
-import React from "react";
+import React, { act } from "react";
 
 import DateUtils from "@src/utils/DateUtils";
 import { render } from "@testing-library/react";
@@ -48,18 +48,24 @@ describe("ScheduleItem", () => {
     expect(getByText(DateTime.local(2023, 4, 4).weekdayLong!)).toBeTruthy();
   });
 
-  it("handles expiration date change", () => {
+  it("handles expiration date change", async () => {
     render(
       <ScheduleItem
         {...defaultProps}
         item={{ ...SCHEDULE_MOCK, enabled: false }}
       />
     );
-    TestUtils.selectAll("DropdownButton__Wrapper-")[5]?.click();
+    await act(async () => {
+      TestUtils.selectAll("DropdownButton__Wrapper-")[5]?.click();
+    });
     const day = document.querySelector(".rdtDay.rdtNew") as HTMLElement;
     expect(day).toBeTruthy();
-    day.click();
-    TestUtils.selectAll("DropdownButton__Wrapper-")[5]?.click();
+    await act(async () => {
+      day.click();
+    });
+    await act(async () => {
+      TestUtils.selectAll("DropdownButton__Wrapper-")[5]?.click();
+    });
     expect(defaultProps.onChange).toHaveBeenCalled();
   });
 
@@ -71,24 +77,30 @@ describe("ScheduleItem", () => {
     ${"minute"} | ${4}       | ${30}                      | ${31}
   `(
     "handles $fieldName change",
-    ({ fieldName, fieldIndex, value, valueIndex }) => {
+    async ({ fieldName, fieldIndex, value, valueIndex }) => {
       render(
         <ScheduleItem
           {...defaultProps}
           item={{ ...SCHEDULE_MOCK, enabled: false }}
         />
       );
-      TestUtils.selectAll("DropdownButton__Wrapper-")[fieldIndex]?.click();
-      TestUtils.selectAll("Dropdown__ListItem-")[valueIndex]?.click();
+      await act(async () => {
+        TestUtils.selectAll("DropdownButton__Wrapper-")[fieldIndex]?.click();
+      });
+      await act(async () => {
+        TestUtils.selectAll("Dropdown__ListItem-")[valueIndex]?.click();
+      });
       expect(defaultProps.onChange).toHaveBeenCalledWith({
         schedule: { [fieldName]: value },
       });
     }
   );
 
-  it("enables item", () => {
+  it("enables item", async () => {
     render(<ScheduleItem {...defaultProps} />);
-    TestUtils.select("Switch__InputWrapper-")!.click();
+    await act(async () => {
+      TestUtils.select("Switch__InputWrapper-")!.click();
+    });
     expect(defaultProps.onChange).toHaveBeenCalledWith(
       {
         enabled: false,

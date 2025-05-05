@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { fireEvent, render } from "@testing-library/react";
 import { TASK_MOCK } from "@tests/mocks/ExecutionsMock";
@@ -96,7 +96,7 @@ describe("Tasks", () => {
     expect(taskItem.textContent).toContain("Open: false");
   });
 
-  it("handles depends on click", () => {
+  it("handles depends on click", async () => {
     const { getByTestId } = render(<Tasks {...defaultProps} />);
     const firstTaskItem = getByTestId("TaskItem-task-id");
     const secondTaskItem = getByTestId("TaskItem-task-2");
@@ -112,7 +112,9 @@ describe("Tasks", () => {
       "[data-testid='TaskItem-DependsOn']"
     ) as HTMLElement;
     expect(dependsOn).toBeTruthy();
-    dependsOn!.click();
+    await act(async () => {
+      dependsOn!.click();
+    });
     expect(firstTaskItem.textContent).toContain("Open: true");
   });
 

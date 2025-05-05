@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import DateUtils from "@src/utils/DateUtils";
 import { render } from "@testing-library/react";
@@ -36,12 +36,16 @@ describe("DatetimePicker", () => {
   it("changes the date", () => {
     render(<DatetimePicker onChange={() => {}} timezone="utc" value={DATE} />);
     expect(TestUtils.select("DatetimePicker__Portal")).toBeNull();
-    TestUtils.select("DropdownButton__Wrapper")?.click();
+    act(() => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
     expect(TestUtils.select("DatetimePicker__Portal")).not.toBeNull();
     const firstDay = document.querySelector<HTMLElement>(
       'td.rdtDay[data-value="1"]'
     );
-    firstDay?.click();
+    act(() => {
+      firstDay?.click();
+    });
 
     const expected = DateUtils.getUtcDate(DATE)
       .set({ day: 1 })

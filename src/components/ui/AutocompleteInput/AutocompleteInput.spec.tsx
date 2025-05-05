@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import AutocompleteInput from "./AutocompleteInput";
@@ -35,9 +35,13 @@ describe("AutocompleteInput", () => {
       />
     );
     const inputElement = TestUtils.select("TextInput__Input");
-    inputElement?.focus();
+    act(() => {
+      inputElement?.focus();
+    });
     expect(onFocus).toHaveBeenCalled();
-    inputElement?.blur();
+    act(() => {
+      inputElement?.blur();
+    });
     expect(onBlur).toHaveBeenCalled();
   });
 });

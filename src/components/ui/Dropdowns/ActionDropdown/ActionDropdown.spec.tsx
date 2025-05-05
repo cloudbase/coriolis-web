@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import ActionDropdown, { DropdownAction } from "./ActionDropdown";
@@ -52,18 +52,22 @@ describe("ActionDropdown", () => {
     );
   });
 
-  it("renders only visible actions", () => {
+  it("renders only visible actions", async () => {
     render(<ActionDropdown actions={ACTIONS} />);
-    TestUtils.select("DropdownButton__Wrapper")!.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")!.click();
+    });
     expect(TestUtils.selectAll("ActionDropdown__ListItem").length).toBe(3);
     TestUtils.selectAll("ActionDropdown__ListItem").forEach((item, index) => {
       expect(item.textContent).toBe(ACTIONS[index].label);
     });
   });
 
-  it("renders actions with props", () => {
+  it("renders actions with props", async () => {
     render(<ActionDropdown actions={ACTIONS} />);
-    TestUtils.select("DropdownButton__Wrapper")!.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")!.click();
+    });
     TestUtils.selectAll("ActionDropdown__ListItem").forEach((item, index) => {
       if (ACTIONS[index].disabled) {
         expect(item.hasAttribute("disabled")).toBe(true);
@@ -81,17 +85,25 @@ describe("ActionDropdown", () => {
     });
   });
 
-  it("fires click events correctly", () => {
+  it("fires click events correctly", async () => {
     render(<ActionDropdown actions={ACTIONS} />);
-    TestUtils.select("DropdownButton__Wrapper")!.click();
-    TestUtils.selectAll("ActionDropdown__ListItem").forEach((item, index) => {
-      item.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")!.click();
+    });
+    const listItems = TestUtils.selectAll("ActionDropdown__ListItem");
+
+    for (let index = 0; index < listItems.length; index++) {
+      const item = listItems[index];
+      await act(async () => {
+        item.click();
+      });
       if (ACTIONS[index].disabled || ACTIONS[index].loading) {
         expect(ACTIONS[index].action).not.toHaveBeenCalled();
       } else {
+        await act(async () => {
         TestUtils.select("DropdownButton__Wrapper")!.click();
+        });
         expect(ACTIONS[index].action).toHaveBeenCalled();
       }
-    });
-  });
+    }});
 });

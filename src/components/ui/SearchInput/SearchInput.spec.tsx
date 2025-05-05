@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import userEvent from "@testing-library/user-event";
@@ -37,7 +37,9 @@ describe("SearchInput", () => {
     const style = () =>
       window.getComputedStyle(TestUtils.selectInput("TextInput__Input")!);
     expect(style().width).toBe("50px");
-    TestUtils.select("SearchButton__Wrapper")!.click();
+    act(() => {
+      TestUtils.select("SearchButton__Wrapper")!.click();
+    });
     // wait 500 ms for animation
     await new Promise(resolve => {
       setTimeout(resolve, 500);

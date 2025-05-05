@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { fireEvent, render } from "@testing-library/react";
 import { OPENSTACK_ENDPOINT_MOCK } from "@tests/mocks/EndpointsMock";
@@ -86,18 +86,22 @@ describe("MinionPoolModalContent", () => {
     expect(getByText("Environment Options")).toBeTruthy();
   });
 
-  it("calls resize on simple / advanced toggle", () => {
+  it("calls resize on simple / advanced toggle", async () => {
     const { getByText } = render(<MinionPoolModalContent {...defaultProps} />);
-    getByText("Advanced").click();
+    await act(async () => {
+      getByText("Advanced").click();
+    });
     expect(defaultProps.onResizeUpdate).toHaveBeenCalled();
   });
 
-  it("filters non required fields", () => {
+  it("filters non required fields", async () => {
     const { getByText } = render(<MinionPoolModalContent {...defaultProps} />);
     expect(TestUtils.selectAll("FieldInput__LabelText")[1].textContent).toBe(
       "Required Env Option"
     );
-    getByText("Advanced").click();
+    await act(async () => {
+      getByText("Advanced").click();
+    });
     expect(TestUtils.selectAll("FieldInput__LabelText")[1].textContent).toBe(
       "Env Option"
     );
