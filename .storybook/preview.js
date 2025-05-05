@@ -4,7 +4,7 @@ import styled, { createGlobalStyle } from "styled-components";
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Fonts from "@src/components/ui/Fonts";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router";
 
 const Wrapper = styled.div`
   display: inline-block;
