@@ -286,13 +286,11 @@ class WizardStore {
         return schedule;
       }
       if (data.schedule) {
-        // eslint-disable-next-line no-param-reassign
         schedule.schedule = {
           ...schedule.schedule,
           ...data.schedule,
         };
       } else {
-        // eslint-disable-next-line no-param-reassign
         schedule = {
           ...schedule,
           ...data,

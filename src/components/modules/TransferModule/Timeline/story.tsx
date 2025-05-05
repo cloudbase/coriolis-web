@@ -57,7 +57,6 @@ class Wrapper extends React.Component<any> {
   render() {
     return (
       <Timeline
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         onPreviousClick={() => {
           this.handlePreviousClick();

@@ -46,7 +46,6 @@ class Wrapper extends React.Component<any> {
         selectionInfo={{ total: 0, selected: 0, label: "" }}
         items={[]}
         dropdownActions={[]}
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         selectedValue={this.state.selectedValue}
         selectAllSelected={this.state.selectAllSelected}

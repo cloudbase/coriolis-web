@@ -132,7 +132,6 @@ const StyledButton = styled.button`
 `;
 
 const Button = (props: any) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <StyledButton
     {...props}
     onFocus={e => {

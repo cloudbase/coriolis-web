@@ -42,7 +42,6 @@ type Props = {
 class SearchButton extends React.Component<Props> {
   render() {
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <Wrapper className={this.props.className} {...this.props}>
         <Icon
           dangerouslySetInnerHTML={{

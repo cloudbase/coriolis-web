@@ -191,7 +191,6 @@ class Stepper extends React.Component<Props, State> {
   }
 
   render() {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { _ref, value, type } = this.props;
     let downImageRef: HTMLElement | null | undefined;
     let upImageRef: HTMLElement | null | undefined;
@@ -209,7 +208,6 @@ class Stepper extends React.Component<Props, State> {
     return (
       <Wrapper disabledLoading={this.props.disabledLoading}>
         <Input
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             this.handleKeyDown(e);

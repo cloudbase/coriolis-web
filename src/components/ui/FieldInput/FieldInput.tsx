@@ -333,7 +333,6 @@ class FieldInput extends React.Component<Props> {
     if (items.length < 10) {
       return (
         <Dropdown
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...commonProps}
           noSelectionMessage="Choose a value"
           dimFirstItem={this.props.addNullValue}
@@ -342,7 +341,6 @@ class FieldInput extends React.Component<Props> {
     }
     return (
       <AutocompleteDropdown
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...commonProps}
         dimNullValue
       />

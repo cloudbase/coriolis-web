@@ -673,7 +673,6 @@ class Dropdown extends React.Component<Props, State> {
 
     const list = ReactDOM.createPortal(
       <List
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         ref={(ref: HTMLElement | null | undefined) => {
           this.listRef = ref;
@@ -693,7 +692,6 @@ class Dropdown extends React.Component<Props, State> {
         >
           {this.props.items.map((item, i) => {
             if (item.separator === true) {
-              // eslint-disable-next-line react/no-array-index-key
               return <Separator key={`sep-${i}`} />;
             }
 
@@ -820,7 +818,6 @@ class Dropdown extends React.Component<Props, State> {
         }}
       >
         <DropdownButton
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
           customRef={ref => {
             this.buttonRef = ref;

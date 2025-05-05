@@ -66,7 +66,6 @@ class Wrapper extends React.Component<any, State> {
                     : ""
               : undefined
           }
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
         />
       </div>

@@ -228,7 +228,6 @@ class StatusPill extends React.Component<Props> {
 
     return (
       <Wrapper
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         status={status}
         primary={this.props.primary}

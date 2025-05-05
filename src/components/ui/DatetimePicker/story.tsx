@@ -20,7 +20,6 @@ import DatetimePicker from ".";
 const Wrapper = (props: any) => (
   <div style={{ marginLeft: "100px" }}>
     <DatetimePicker
-      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
       onChange={() => {}}
     />

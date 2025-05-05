@@ -420,13 +420,11 @@ class WizardStorage extends React.Component<Props> {
       };
       return items.length > 10 ? (
         <AutocompleteDropdown
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...commonProps}
           dimNullValue
         />
       ) : (
         <Dropdown
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...commonProps}
           noSelectionMessage="Choose a value"
           dimFirstItem

@@ -141,7 +141,6 @@ class ApiCaller {
       if (error.response) {
         throw apiCallerHandlers.handleErrorResponse(error);
       } else if (error.request) {
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw apiCallerHandlers.handleErrorRequest(error);
       } else {
         throw apiCallerHandlers.handleRequestCancel(error);

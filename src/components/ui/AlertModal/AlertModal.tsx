@@ -117,7 +117,6 @@ class AlertModal extends React.Component<Props> {
         : this.props.type || "confirmation";
 
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <Modal {...this.props} isOpen={this.props.isOpen || false}>
         <Wrapper>
           <StatusImage status={status} />

@@ -338,7 +338,6 @@ class TaskItem extends React.Component<Props> {
           const progressPercentage = this.getProgressPercentage(update);
 
           return (
-            // eslint-disable-next-line react/no-array-index-key
             <ProgressUpdateDiv
               key={i}
               secondary={

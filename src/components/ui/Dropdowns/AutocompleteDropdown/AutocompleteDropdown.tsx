@@ -473,7 +473,6 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       >
         {this.state.filteredItems.map((item, i) => {
           if (item.separator === true) {
-            // eslint-disable-next-line react/no-array-index-key
             return <Separator key={`sep-${i}`} />;
           }
           const label = this.getLabel(item);
@@ -566,7 +565,6 @@ class AutocompleteDropdown extends React.Component<Props, State> {
       selectedItemValue !== null && selectedItemValue === firstItemValue;
 
     const list = ReactDOM.createPortal(
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <List
         {...this.props}
         ref={(ref: HTMLElement | null | undefined) => {

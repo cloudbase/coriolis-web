@@ -89,7 +89,6 @@ class EndpointLogos extends React.Component<Props> {
     }
 
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <Wrapper {...this.props}>
         <Logo width={size.w} height={size.h} url={imageUrl}>
           {imageUrl ? null : this.renderGenericLogo(size)}

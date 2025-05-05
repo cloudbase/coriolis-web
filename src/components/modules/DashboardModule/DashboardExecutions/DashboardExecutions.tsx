@@ -128,7 +128,6 @@ const EmptyBackgroundImage = styled.div<any>`
 `;
 
 type Props = {
-  // eslint-disable-next-line react/no-unused-prop-types
   replicas: TransferItem[];
   migrations: TransferItem[];
   loading: boolean;

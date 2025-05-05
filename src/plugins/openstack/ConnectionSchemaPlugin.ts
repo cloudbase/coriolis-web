@@ -101,9 +101,7 @@ export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
     if (data.openstack_use_current_user) {
       return {};
     }
-    // eslint-disable-next-line no-param-reassign
     delete data.project_domain;
-    // eslint-disable-next-line no-param-reassign
     delete data.user_domain;
     const payload = super.parseConnectionInfoToPayload(data, schema);
     return payload;

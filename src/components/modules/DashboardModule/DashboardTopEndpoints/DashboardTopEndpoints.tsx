@@ -135,9 +135,7 @@ type GroupedEndpoint = {
   value: number;
 };
 type Props = {
-  // eslint-disable-next-line react/no-unused-prop-types
   transfers: TransferItem[];
-  // eslint-disable-next-line react/no-unused-prop-types
   endpoints: Endpoint[];
   style: React.CSSProperties;
   loading: boolean;

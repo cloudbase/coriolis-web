@@ -37,7 +37,6 @@ class Wrapper extends React.Component<Props> {
   render() {
     return (
       <Switch
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         checked={this.state.checked}
         onChange={checked => {

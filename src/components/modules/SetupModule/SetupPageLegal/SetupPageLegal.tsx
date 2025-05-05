@@ -266,7 +266,6 @@ class SetupPageLegal extends React.Component<Props, State> {
           <Dropdown
             width={450}
             items={this.sourcePlatformItems}
-            // eslint-disable-next-line react/no-unstable-nested-components
             labelRenderer={(item: PlatformDropdownItemType, idx: number) => (
               <PlatformItemRenderer>
                 <PlatformLogoBackground whiteBackground={idx > 0}>
@@ -290,7 +289,6 @@ class SetupPageLegal extends React.Component<Props, State> {
           <Dropdown
             width={450}
             items={this.destinationPlatformItems}
-            // eslint-disable-next-line react/no-unstable-nested-components
             labelRenderer={(item: PlatformDropdownItemType, idx: number) => (
               <PlatformItemRenderer>
                 <PlatformLogoBackground whiteBackground={idx > 0}>

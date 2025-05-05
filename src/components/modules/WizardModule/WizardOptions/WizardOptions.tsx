@@ -373,7 +373,6 @@ class WizardOptions extends React.Component<Props> {
   }
 
   // Called only by parent components
-  // eslint-disable-next-line
   highlightFields(): boolean {
     const highlightedFields: Field[] = findInvalidFields(
       this.props.data,
@@ -484,7 +483,6 @@ class WizardOptions extends React.Component<Props> {
           this.props.optionsLoading &&
           !optionsLoadingReqFields.find(fn => fn === field.name)
         }
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...additionalProps}
       />
     );
