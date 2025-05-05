@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled, { css } from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import backgroundImage from "@src/components/ui/Images/star-bg.jpg";
 import configLoader from "@src/utils/Config";
@@ -107,7 +108,7 @@ type PageName = "welcome/password" | "licence" | "legal/help" | "email/error";
 const SETUP_PAGES: PageName[] = ["legal/help"];
 
 type Props = {
-  history: any;
+  onNavigate: (path: string) => void;
 };
 
 type State = {
@@ -222,7 +223,7 @@ class SetupPage extends React.Component<Props, State> {
   async handleGoToLogin() {
     this.setState({ submitting: true });
     await configLoader.setNotFirstLaunch();
-    this.props.history.push("/login");
+    this.props.onNavigate("/login");
     this.setState({ submitting: false });
   }
 
@@ -399,4 +400,10 @@ class SetupPage extends React.Component<Props, State> {
   }
 }
 
-export default SetupPage;
+function SetupPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <SetupPage onNavigate={navigate} />;
+}
+
+export default SetupPageWithNavigate;

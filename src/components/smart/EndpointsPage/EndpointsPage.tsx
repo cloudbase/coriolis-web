@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -56,8 +57,13 @@ type State = {
   uploadedEndpoint: EndpointType | null;
   multiValidating: boolean;
 };
+
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 @observer
-class EndpointsPage extends React.Component<{ history: any }, State> {
+class EndpointsPage extends React.Component<Props, State> {
   state: State = {
     showChooseProviderModal: false,
     showEndpointModal: false,
@@ -136,7 +142,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 
   handleItemClick(item: EndpointType) {
-    this.props.history.push(`/endpoints/${item.id}`);
+    this.props.onNavigate(`/endpoints/${item.id}`);
   }
 
   async duplicate(projectId: string) {
@@ -463,4 +469,10 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default EndpointsPage;
+function EndpointsPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <EndpointsPage onNavigate={navigate} />;
+}
+
+export default EndpointsPageWithNavigate;

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate, useParams } from "react-router";
 
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
@@ -46,7 +47,7 @@ const Wrapper = styled.div<any>``;
 
 type Props = {
   match: { params: { id: string; page: string | null } };
-  history: any;
+  onNavigate: (path: string) => void;
 };
 type State = {
   showEditModal: boolean;
@@ -186,7 +187,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
 
   handleDeleteMinionPool() {
     this.setState({ showDeleteMinionPoolConfirmation: false });
-    this.props.history.push("/minion-pools");
+    this.props.onNavigate("/minion-pools");
     minionPoolStore.deleteMinionPool(this.minionPool!.id);
   }
 
@@ -220,7 +221,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
   }
 
   handleUpdateComplete(redirectTo: string) {
-    this.props.history.push(redirectTo);
+    this.props.onNavigate(redirectTo);
     this.closeEditModal();
   }
 
@@ -246,7 +247,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     notificationStore.alert("Refreshing minion pool...");
     await minionPoolStore.runAction(this.minionPool.id, "refresh");
     await minionPoolStore.loadMinionPoolDetails(this.minionPool.id);
-    this.props.history.push(`/minion-pools/${this.minionPool.id}/machines`);
+    this.props.onNavigate(`/minion-pools/${this.minionPool.id}/machines`);
   }
 
   async handleDeallocateConfirmation(force: boolean) {
@@ -444,4 +445,20 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default MinionPoolDetailsPage;
+function MinionPoolDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id, page } = useParams();
+
+  if (!id) {
+    throw new Error("The 'id' parameter is required but was not provided.");
+  }
+
+  return (
+    <MinionPoolDetailsPage
+      onNavigate={navigate}
+      match={{ params: { id, page: page || null } }}
+    />
+  );
+}
+
+export default MinionPoolDetailsPageWithNavigate;

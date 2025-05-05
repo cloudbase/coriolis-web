@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -33,8 +34,13 @@ const Wrapper = styled.div<any>``;
 type State = {
   modalIsOpen: boolean;
 };
+
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 @observer
-class UsersPage extends React.Component<{ history: any }, State> {
+class UsersPage extends React.Component<Props, State> {
   state = {
     modalIsOpen: false,
   };
@@ -127,7 +133,7 @@ class UsersPage extends React.Component<{ history: any }, State> {
               loading={userStore.allUsersLoading}
               items={userStore.users}
               onItemClick={(user: User) => {
-                this.props.history.push(`/users/${user.id}`);
+                this.props.onNavigate(`/users/${user.id}`);
               }}
               onReloadButtonClick={() => {
                 this.handleReloadButtonClick();
@@ -158,4 +164,10 @@ class UsersPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default UsersPage;
+function UsersPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <UsersPage onNavigate={navigate} />;
+}
+
+export default UsersPageWithNavigate;

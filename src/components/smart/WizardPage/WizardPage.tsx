@@ -16,6 +16,7 @@ import autobind from "autobind-decorator";
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router";
 
 import { TransferItem, ActionItem } from "@src/@types/MainItem";
 import { ProviderTypes } from "@src/@types/Providers";
@@ -59,8 +60,8 @@ const Wrapper = styled.div<any>``;
 
 type Props = {
   match: any;
-  location: { search: string };
-  history: any;
+  location?: { search: string };
+  onNavigate: (path: string) => void;
 };
 type WizardType = "migration" | "replica";
 type State = {
@@ -198,7 +199,7 @@ class WizardPage extends React.Component<Props, State> {
     const typeLabel =
       this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1);
     notificationStore.alert(
-      `${typeLabel}${items.length > 1 ? "s" : ""} was succesfully created`,
+      `${typeLabel}${items.length > 1 ? "s" : ""} was successfully created`,
       "success"
     );
     let schedulePromise = Promise.resolve();
@@ -214,9 +215,9 @@ class WizardPage extends React.Component<Props, State> {
     if (items.length === 1) {
       const location = `/transfers/${items[0].id}/executions`;
       await schedulePromise;
-      this.props.history.push(location);
+      this.props.onNavigate(location);
     } else {
-      this.props.history.push(`/transfers`);
+      this.props.onNavigate(`/transfers`);
     }
   }
 
@@ -240,7 +241,8 @@ class WizardPage extends React.Component<Props, State> {
     });
     wizardStore.clearStorageMap();
     const type = isReplica ? "replica" : "migration";
-    this.props.history.replace(`/wizard/${type}`);
+    this.props.onNavigate(`/wizard/${type}`);
+    this.setState({ type });
   }
 
   handleStorageReloadClick() {
@@ -963,4 +965,13 @@ class WizardPage extends React.Component<Props, State> {
   }
 }
 
-export default WizardPage;
+function WizardPageWithNavigate() {
+  const navigate = useNavigate();
+  const params = useParams();
+
+  return (
+    <WizardPage onNavigate={navigate} match={params} />
+  );
+}
+
+export default WizardPageWithNavigate;

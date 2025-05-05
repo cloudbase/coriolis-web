@@ -16,7 +16,7 @@ import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
 
-import { RouteComponentProps } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import Modal from "@src/components/ui/Modal";
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
@@ -47,6 +47,10 @@ import emptyListImage from "./images/minion-pool-empty-list.svg";
 
 const Wrapper = styled.div<any>``;
 
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 type State = {
   modalIsOpen: boolean;
   selectedMinionPools: MinionPool[];
@@ -59,7 +63,7 @@ type State = {
 };
 
 @observer
-class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
+class MinionPoolsPage extends React.Component<Props, State> {
   state: State = {
     modalIsOpen: false,
     selectedMinionPools: [],
@@ -174,7 +178,7 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
   }
 
   handleItemClick(item: MinionPool) {
-    this.props.history.push(`/minion-pools/${item.id}`);
+    this.props.onNavigate(`/minion-pools/${item.id}`);
   }
 
   handleReloadButtonClick() {
@@ -457,4 +461,12 @@ class MinionPoolsPage extends React.Component<RouteComponentProps, State> {
   }
 }
 
-export default MinionPoolsPage;
+function MinionPoolsPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return (
+    <MinionPoolsPage onNavigate={navigate} />
+  );
+}
+
+export default MinionPoolsPageWithNavigate;
