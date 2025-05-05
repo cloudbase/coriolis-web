@@ -99,7 +99,7 @@ class FieldHelper {
       let valueName = v;
       if (field && field.enum) {
         const enumObject: any = field.enum.find((e: any) =>
-          e.id ? e.id === v : false
+          e.id ? e.id === v : false,
         );
         if (enumObject && enumObject.name) {
           valueName = enumObject.name;
@@ -125,7 +125,7 @@ class FieldHelper {
         const imageField = migrImageField.properties.find(p => p.name === name);
         if (imageField && imageField.enum) {
           const imageFieldValueObject: any = imageField.enum.find((e: any) =>
-            e.id ? e.id === value : false
+            e.id ? e.id === value : false,
           );
           if (imageFieldValueObject) {
             return imageFieldValueObject.name;

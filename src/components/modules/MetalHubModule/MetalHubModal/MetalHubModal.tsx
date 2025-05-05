@@ -139,7 +139,7 @@ class MetalHubModal extends React.Component<Props, State> {
       () => {
         this.handleAddClick();
       },
-      2
+      2,
     );
 
     if (this.props.server) {
@@ -224,7 +224,7 @@ class MetalHubModal extends React.Component<Props, State> {
         width={ThemeProps.inputSizes.large.width}
         required={field.required}
         highlight={Boolean(
-          this.state.highlightFieldNames.find(n => n === field.name)
+          this.state.highlightFieldNames.find(n => n === field.name),
         )}
         disabledLoading={this.loading || this.state.showSuccess}
       />
@@ -303,13 +303,13 @@ class MetalHubModal extends React.Component<Props, State> {
     const message = this.state.saving
       ? "Validating ..."
       : metalHubStore.validationError.length
-      ? metalHubStore.validationError.map(e => <div key={e}>{e}</div>)
-      : "Validation successful";
+        ? metalHubStore.validationError.map(e => <div key={e}>{e}</div>)
+        : "Validation successful";
     const status = this.state.saving
       ? "RUNNING"
       : metalHubStore.validationError.length
-      ? "ERROR"
-      : "COMPLETED";
+        ? "ERROR"
+        : "COMPLETED";
     return (
       <Status layout={status === "ERROR" ? "vertical" : "horizontal"}>
         <StatusHeader>

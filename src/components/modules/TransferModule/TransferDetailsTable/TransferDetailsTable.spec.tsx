@@ -62,7 +62,7 @@ describe("TransferDetailsTable", () => {
             },
           },
         ]}
-      />
+      />,
     );
     expect(getByText("Source")).toBeTruthy();
     expect(getByText("Target")).toBeTruthy();

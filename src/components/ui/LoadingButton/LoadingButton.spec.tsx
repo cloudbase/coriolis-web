@@ -21,10 +21,10 @@ describe("LoadingButton", () => {
   it("shows the label and rotation animation", () => {
     render(<LoadingButton>Testing ...</LoadingButton>);
     expect(TestUtils.select("Button__StyledButton")!.textContent).toBe(
-      "Testing ..."
+      "Testing ...",
     );
     const style = window.getComputedStyle(
-      TestUtils.select("LoadingButton__Loading")!
+      TestUtils.select("LoadingButton__Loading")!,
     );
     expect(style.animation).toContain("rotate");
   });

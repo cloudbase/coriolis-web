@@ -239,7 +239,7 @@ class PageHeader extends React.Component<Props, State> {
 
   handleChooseMinionPoolSelectEndpoint(
     selectedMinionPoolEndpoint: EndpointType,
-    platform: "source" | "destination"
+    platform: "source" | "destination",
   ) {
     this.setState({
       showChooseMinionEndpointModal: false,
@@ -345,7 +345,7 @@ class PageHeader extends React.Component<Props, State> {
       const newProject = await projectStore.add(project);
 
       const bareMetalEndpoint = endpointStore.endpoints.find(
-        e => e.name === Config.config.bareMetalEndpointName
+        e => e.name === Config.config.bareMetalEndpointName,
       );
       if (bareMetalEndpoint) {
         await endpointStore.duplicate({
@@ -465,7 +465,7 @@ class PageHeader extends React.Component<Props, State> {
           <Modal
             isOpen
             title={`New ${ObjectUtils.capitalizeFirstLetter(
-              this.state.selectedMinionPoolPlatform
+              this.state.selectedMinionPoolPlatform,
             )} Minion Pool`}
             onRequestClose={() => {
               this.handleCloseMinionPoolModalRequest();

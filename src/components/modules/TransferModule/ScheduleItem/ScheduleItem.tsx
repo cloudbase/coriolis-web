@@ -176,7 +176,7 @@ class ScheduleItem extends React.Component<Props> {
     if (newDate.diff(DateTime.local(), "minutes").minutes < 60) {
       notificationStore.alert(
         "Please select a further expiration date.",
-        "error"
+        "error",
       );
       return;
     }
@@ -195,7 +195,7 @@ class ScheduleItem extends React.Component<Props> {
 
   shouldUseBold(fieldName: string, isRootField?: boolean) {
     const unsavedSchedule = this.props.unsavedSchedules.find(
-      s => s.id === this.props.item.id
+      s => s.id === this.props.item.id,
     );
     if (!unsavedSchedule) {
       return false;
@@ -233,7 +233,7 @@ class ScheduleItem extends React.Component<Props> {
 
     if (this.props.item.enabled || this.props.deleting) {
       return this.renderLabel(
-        this.getFieldValue({ items, fieldName: "month" })
+        this.getFieldValue({ items, fieldName: "month" }),
       );
     }
 
@@ -293,7 +293,7 @@ class ScheduleItem extends React.Component<Props> {
 
     if (this.props.item.enabled || this.props.deleting) {
       return this.renderLabel(
-        this.getFieldValue({ items, fieldName: "dow", zeroBasedIndex: true })
+        this.getFieldValue({ items, fieldName: "dow", zeroBasedIndex: true }),
       );
     }
 
@@ -328,7 +328,7 @@ class ScheduleItem extends React.Component<Props> {
           fieldName: "hour",
           zeroBasedIndex: true,
           defaultSelectedIndex: 1,
-        })
+        }),
       );
     }
 
@@ -364,7 +364,7 @@ class ScheduleItem extends React.Component<Props> {
           fieldName: "minute",
           zeroBasedIndex: true,
           defaultSelectedIndex: 1,
-        })
+        }),
       );
     }
 
@@ -489,7 +489,7 @@ class ScheduleItem extends React.Component<Props> {
             hidden={
               this.props.item.enabled ||
               !this.props.unsavedSchedules.find(
-                us => us.id === this.props.item.id
+                us => us.id === this.props.item.id,
               )
             }
           />

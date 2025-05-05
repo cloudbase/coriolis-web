@@ -154,7 +154,7 @@ class TransferListItem extends React.Component<Props> {
         <ItemLabel>Created</ItemLabel>
         <ItemValue>
           {DateUtils.getLocalDate(this.props.item.created_at).toFormat(
-            "dd LLLL yyyy, HH:mm"
+            "dd LLLL yyyy, HH:mm",
           )}
         </ItemValue>
       </Column>
@@ -170,7 +170,7 @@ class TransferListItem extends React.Component<Props> {
         <ItemValue>
           {this.props.item.updated_at
             ? DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
-                "dd LLLL yyyy, HH:mm"
+                "dd LLLL yyyy, HH:mm",
               )
             : "-"}
         </ItemValue>
@@ -199,10 +199,10 @@ class TransferListItem extends React.Component<Props> {
 
   render() {
     const sourceType = this.props.endpointType(
-      this.props.item.origin_endpoint_id
+      this.props.item.origin_endpoint_id,
     );
     const destinationType = this.props.endpointType(
-      this.props.item.destination_endpoint_id
+      this.props.item.destination_endpoint_id,
     );
     const endpointImages = (
       <EndpointsImages>

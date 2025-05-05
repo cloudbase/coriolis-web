@@ -25,7 +25,7 @@ describe("DashboardPieChart", () => {
     options: MouseEventInit & {
       offsetX?: number;
       offsetY?: number;
-    } = {}
+    } = {},
   ) => {
     const mouseMoveEvent = new MouseEvent("mousemove", {
       bubbles: true,
@@ -49,10 +49,10 @@ describe("DashboardPieChart", () => {
     const spyAdd = jest.spyOn(HTMLCanvasElement.prototype, "addEventListener");
     const spyRemove = jest.spyOn(
       HTMLCanvasElement.prototype,
-      "removeEventListener"
+      "removeEventListener",
     );
     const { unmount } = render(
-      <DashboardPieChart size={100} data={[]} colors={[]} />
+      <DashboardPieChart size={100} data={[]} colors={[]} />,
     );
     expect(spyAdd).toHaveBeenCalledWith("mousemove", expect.any(Function));
     expect(spyAdd).toHaveBeenCalledWith("mouseleave", expect.any(Function));
@@ -73,7 +73,7 @@ describe("DashboardPieChart", () => {
         data={[{ value: 50 }]}
         colors={["#FFF"]}
         onMouseOver={onMouseOverMock}
-      />
+      />,
     );
     const canvas = document.querySelector("canvas") as HTMLCanvasElement;
     fireMouseMove(canvas, { offsetX: 50, offsetY: 50 });
@@ -93,7 +93,7 @@ describe("DashboardPieChart", () => {
         colors={["#FFF"]}
         onMouseLeave={onMouseLeaveMock}
         onMouseOver={() => {}}
-      />
+      />,
     );
     const canvas = document.querySelector("canvas") as HTMLCanvasElement;
     fireMouseMove(canvas, { offsetX: 50, offsetY: 50 });
@@ -111,7 +111,7 @@ describe("DashboardPieChart", () => {
         data={[{ value: 50 }]}
         colors={["#FFF"]}
         onMouseOver={() => {}}
-      />
+      />,
     );
     const canvas = document.querySelector("canvas") as HTMLCanvasElement;
     fireEvent.mouseLeave(canvas);
@@ -125,7 +125,7 @@ describe("DashboardPieChart", () => {
         data={[]}
         colors={[]}
         onMouseLeave={onMouseLeaveMock}
-      />
+      />,
     );
     const canvas = document.querySelector("canvas") as HTMLCanvasElement;
     fireEvent.mouseLeave(canvas);
@@ -134,7 +134,7 @@ describe("DashboardPieChart", () => {
 
   it("drawChart is called when props are updated", () => {
     const { rerender } = render(
-      <DashboardPieChart size={100} data={[]} colors={["#FFF"]} />
+      <DashboardPieChart size={100} data={[]} colors={["#FFF"]} />,
     );
     const spy = jest.spyOn(DashboardPieChart.prototype, "drawChart");
     rerender(
@@ -142,7 +142,7 @@ describe("DashboardPieChart", () => {
         size={200}
         data={[{ value: 50 }, { value: 100 }]}
         colors={["#FFF", "#000"]}
-      />
+      />,
     );
     expect(spy).toHaveBeenCalled();
   });
@@ -154,7 +154,7 @@ describe("DashboardPieChart", () => {
         data={[]}
         colors={[]}
         holeStyle={{ radius: 10, color: "#fff" }}
-      />
+      />,
     );
     expect(document.querySelector("canvas")).toBeTruthy();
     expect(TestUtils.select("DashboardPieChart__OuterShadow")).toBeTruthy();
@@ -182,7 +182,7 @@ describe("DashboardPieChart", () => {
   it("does not remove event listeners when canvas is null", () => {
     const spyRemove = jest.spyOn(
       HTMLCanvasElement.prototype,
-      "removeEventListener"
+      "removeEventListener",
     );
 
     const instance = new DashboardPieChart({ size: 100, data: [], colors: [] });
@@ -255,7 +255,7 @@ describe("DashboardPieChart", () => {
   it("returns from drawChart when canvas context is not available", () => {
     const beginPatchSpy = jest.spyOn(
       CanvasRenderingContext2D.prototype,
-      "beginPath"
+      "beginPath",
     );
     const instance = new DashboardPieChart({ size: 100, data: [], colors: [] });
     instance.canvas = document.createElement("canvas");
@@ -287,7 +287,7 @@ describe("DashboardPieChart", () => {
         data={[]}
         colors={[]}
         customRef={customRefMock}
-      />
+      />,
     );
     expect(customRefMock).toHaveBeenCalledTimes(1);
     expect(customRefMock.mock.calls[0][0]).toBeInstanceOf(HTMLElement);

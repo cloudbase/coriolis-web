@@ -93,10 +93,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
 
   handleRemoveUser(user: User) {
     const roles = projectStore.roleAssignments
-      .filter(
-        a =>
-          a.scope.project && a.scope.project.id === this.props.id
-      )
+      .filter(a => a.scope.project && a.scope.project.id === this.props.id)
       .filter(a => a.user.id === user.id)
       .map(ra => ra.role.id);
     projectStore.removeUser(this.props.id, user.id, roles);
@@ -144,9 +141,9 @@ class ProjectDetailsPage extends React.Component<Props, State> {
           await userStore.assignUserToProjectWithRole(
             userId,
             this.props.id,
-            r.id
+            r.id,
           );
-        })
+        }),
       );
       this.loadData();
       this.setState({ addingMember: false, showAddMemberModal: false });
@@ -265,7 +262,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
             roles={projectStore.roles}
             projects={projectStore.projects}
             users={userStore.users.filter(
-              u => !projectStore.users.find(pu => pu.id === u.id)
+              u => !projectStore.users.find(pu => pu.id === u.id),
             )}
             onAddClick={(user, isNew, roles) => {
               this.handleAddMember(user, isNew, roles);

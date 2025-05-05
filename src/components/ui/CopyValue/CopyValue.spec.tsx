@@ -31,7 +31,7 @@ describe("CopyValue", () => {
     render(<CopyValue capitalize value="value" />);
     expect(
       window.getComputedStyle(TestUtils.select("CopyValue__Wrapper")!)
-        .textTransform
+        .textTransform,
     ).toBe("capitalize");
   });
 });

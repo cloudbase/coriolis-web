@@ -120,7 +120,7 @@ class EndpointListItem extends React.Component<Props> {
             <ItemLabel>Created</ItemLabel>
             <ItemValue>
               {DateUtils.getLocalDate(this.props.item.created_at).toFormat(
-                "dd LLLL yyyy, HH:mm"
+                "dd LLLL yyyy, HH:mm",
               )}
             </ItemValue>
           </Created>

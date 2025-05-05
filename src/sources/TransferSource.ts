@@ -30,7 +30,7 @@ import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/module
 
 export const sortTasks = (
   tasks?: Task[],
-  taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void
+  taskUpdatesSortFunction?: (updates: ProgressUpdate[]) => void,
 ) => {
   if (!tasks) {
     return;
@@ -87,7 +87,7 @@ export class TransferSourceUtils {
     transfers.sort(
       (a, b) =>
         new Date(b.updated_at || b.created_at).getTime() -
-        new Date(a.updated_at || a.created_at).getTime()
+        new Date(a.updated_at || a.created_at).getTime(),
     );
   }
 
@@ -106,7 +106,7 @@ export class TransferSourceUtils {
 class TransferSource {
   async getTransfers(
     skipLog?: boolean,
-    quietError?: boolean
+    quietError?: boolean,
   ): Promise<TransferItem[]> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers`,
@@ -131,7 +131,7 @@ class TransferSource {
     });
     const transfer: TransferItemDetails = response.data.transfer;
     transfer.executions = TransferSourceUtils.filterDeletedExecutions(
-      transfer.executions
+      transfer.executions,
     );
     TransferSourceUtils.sortExecutions(transfer.executions);
     return transfer;
@@ -207,7 +207,7 @@ class TransferSource {
 
   async deleteExecution(
     transferId: string,
-    executionId: string
+    executionId: string,
   ): Promise<string> {
     await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/executions/${executionId}`,
@@ -260,13 +260,13 @@ class TransferSource {
 
     if (updateData.network.length > 0) {
       payload.transfer.network_map = destinationParser.getNetworkMap(
-        updateData.network
+        updateData.network,
       );
     }
     if (Object.keys(updateData.source).length > 0) {
       const sourceEnv = sourceParser.getDestinationEnv(
         updateData.source,
-        transfer.source_environment
+        transfer.source_environment,
       );
       if (updateData.source.minion_pool_id !== undefined) {
         payload.transfer.origin_minion_pool_id =
@@ -280,7 +280,7 @@ class TransferSource {
     if (Object.keys(updateData.destination).length > 0) {
       const destEnv = destinationParser.getDestinationEnv(
         updateData.destination,
-        { ...transfer, ...transfer.destination_environment }
+        { ...transfer, ...transfer.destination_environment },
       );
 
       const newMinionMappings =
@@ -314,7 +314,7 @@ class TransferSource {
       payload.transfer.storage_mappings = destinationParser.getStorageMap(
         defaultStorage,
         updateData.storage,
-        storageConfigDefault
+        storageConfigDefault,
       );
     }
 
@@ -326,7 +326,7 @@ class TransferSource {
         new DefaultOptionsSchemaPlugin().getUserScripts(
           updateData.uploadedScripts || [],
           updateData.removedScripts || [],
-          transfer.user_scripts
+          transfer.user_scripts,
         );
     }
 

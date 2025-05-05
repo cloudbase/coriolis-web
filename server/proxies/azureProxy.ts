@@ -40,7 +40,7 @@ export default (router: express.Router) => {
       MsRest.loginWithUsernamePassword(
         userCred.username,
         userCred.password,
-        handleResponse
+        handleResponse,
       );
     } else if (
       servicePrin &&
@@ -51,7 +51,7 @@ export default (router: express.Router) => {
         servicePrin.client_id,
         servicePrin.client_secret,
         connInfo.tenant,
-        handleResponse
+        handleResponse,
       );
     } else {
       res.status(401).send(buildError("Azure API authentication error"));
@@ -62,7 +62,7 @@ export default (router: express.Router) => {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     const url = Buffer.from(
       req.url.substr("/proxy/".length),
-      "base64"
+      "base64",
     ).toString();
     const headers: any = {};
     forwardHeaders.forEach(headerName => {

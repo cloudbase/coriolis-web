@@ -50,7 +50,7 @@ describe("EndpointDuplicateOptions", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(
-      <EndpointDuplicateOptions {...defaultProps} />
+      <EndpointDuplicateOptions {...defaultProps} />,
     );
     expect(getByText("Duplicate To Project - 2")).toBeTruthy();
   });
@@ -65,7 +65,7 @@ describe("EndpointDuplicateOptions", () => {
 
   it("shows duplicating status", () => {
     const { getByText } = render(
-      <EndpointDuplicateOptions {...defaultProps} duplicating />
+      <EndpointDuplicateOptions {...defaultProps} duplicating />,
     );
 
     expect(getByText("Duplicating Endpoint")).toBeTruthy();
@@ -73,18 +73,18 @@ describe("EndpointDuplicateOptions", () => {
 
   it("changes project", () => {
     const { getByTestId } = render(
-      <EndpointDuplicateOptions {...defaultProps} />
+      <EndpointDuplicateOptions {...defaultProps} />,
     );
 
     fireEvent.click(getByTestId("FieldInput__Wrapper"));
     expect(getByTestId("FieldInput__Wrapper").textContent).toBe(
-      "Duplicate To Project - 1"
+      "Duplicate To Project - 1",
     );
   });
 
   it("handles duplicate click", () => {
     const { getByText } = render(
-      <EndpointDuplicateOptions {...defaultProps} />
+      <EndpointDuplicateOptions {...defaultProps} />,
     );
 
     fireEvent.click(getByText("Duplicate"));

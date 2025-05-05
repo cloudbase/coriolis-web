@@ -24,7 +24,7 @@ import { SchemaParser } from "./Schemas";
 class ProviderSource {
   async getConnectionInfoSchema(providerName: ProviderTypes): Promise<Field[]> {
     const response = await Api.get(
-      `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`
+      `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/providers/${providerName}/schemas/${providerTypes.CONNECTION}`,
     );
     let schema = response.data.schemas.connection_info_schema;
     schema = SchemaParser.connectionSchemaToFields(providerName, schema);
@@ -33,7 +33,7 @@ class ProviderSource {
 
   async loadProviders(): Promise<Providers> {
     const response = await Api.get(
-      `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/providers`
+      `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/providers`,
     );
     return response.data.providers;
   }

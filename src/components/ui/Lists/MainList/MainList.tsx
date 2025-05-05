@@ -112,7 +112,7 @@ class MainList extends React.Component<Props> {
       <List>
         {this.props.items.map(item => {
           const selected = Boolean(
-            this.props.selectedItems.find(i => i.id === item.id)
+            this.props.selectedItems.find(i => i.id === item.id),
           );
           return this.props.renderItemComponent({
             key: item.id,

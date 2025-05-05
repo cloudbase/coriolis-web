@@ -40,14 +40,14 @@ type Props = {
 
 const getSpinnerUrl = (
   smallCircleColor: string,
-  useWhiteBackground?: boolean | null
+  useWhiteBackground?: boolean | null,
 ) =>
   `url('data:image/svg+xml;utf8,${encodeURIComponent(
     progressImage(
       ThemePalette.grayscale[3],
       smallCircleColor,
-      useWhiteBackground
-    )
+      useWhiteBackground,
+    ),
   )}');`;
 
 const getRunningImageUrl = (props: Props) => {
@@ -59,7 +59,7 @@ const getRunningImageUrl = (props: Props) => {
 
 const getWarningUrl = (background: string) =>
   `url('data:image/svg+xml;utf8,${encodeURIComponent(
-    warningImage(background)
+    warningImage(background),
   )}')`;
 
 const statuses = (status: any, props: Props) => {
@@ -88,7 +88,7 @@ const statuses = (status: any, props: Props) => {
       return css`
         background-image: ${getSpinnerUrl(
           ThemePalette.warning,
-          props.useBackground
+          props.useBackground,
         )};
         ${ThemeProps.animations.rotation}
       `;
@@ -144,9 +144,7 @@ const Wrapper = styled.div<any>`
 class StatusIcon extends React.Component<Props> {
   render() {
     const { status } = this.props;
-    return (
-      <Wrapper {...this.props} status={status} />
-    );
+    return <Wrapper {...this.props} status={status} />;
   }
 }
 

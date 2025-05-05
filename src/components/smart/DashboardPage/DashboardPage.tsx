@@ -117,7 +117,7 @@ class ProjectsPage extends React.Component<Props, State> {
       {
         timeoutMs: 30000,
         intervalMs: 100,
-      }
+      },
     );
     if (userStore.loggedUser?.isAdmin) {
       userStore.getAllUsers({ skipLog: true, showLoading });
@@ -141,7 +141,7 @@ class ProjectsPage extends React.Component<Props, State> {
               licence={licenceStore.licenceInfo}
               licenceServerStatus={licenceStore.licenceServerStatus}
               isAdmin={Boolean(
-                userStore.loggedUser && userStore.loggedUser.isAdmin
+                userStore.loggedUser && userStore.loggedUser.isAdmin,
               )}
               notificationItems={notificationStore.notificationItems}
               notificationItemsLoading={notificationStore.loading}

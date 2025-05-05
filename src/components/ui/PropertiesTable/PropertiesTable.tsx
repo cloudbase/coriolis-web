@@ -102,7 +102,7 @@ class PropertiesTable extends React.Component<Props> {
 
     if (propName.indexOf("/") > -1) {
       return LabelDictionary.get(
-        propName.substr(propName.lastIndexOf("/") + 1)
+        propName.substr(propName.lastIndexOf("/") + 1),
       );
     }
     return LabelDictionary.get(propName);
@@ -167,7 +167,7 @@ class PropertiesTable extends React.Component<Props> {
     items = [{ label: "Choose a value", value: null }, ...items];
 
     const selectedItem = items.find(
-      i => !i.separator && i.value === this.props.valueCallback(prop)
+      i => !i.separator && i.value === this.props.valueCallback(prop),
     );
 
     const commonProps = {
@@ -191,12 +191,7 @@ class PropertiesTable extends React.Component<Props> {
         />
       );
     }
-    return (
-      <AutocompleteDropdown
-        dimNullValue
-        {...commonProps}
-      />
-    );
+    return <AutocompleteDropdown dimNullValue {...commonProps} />;
   }
 
   renderInput(prop: Field) {
@@ -222,7 +217,7 @@ class PropertiesTable extends React.Component<Props> {
 
   render() {
     const hasRequiredInputs = this.props.properties.some(
-      prop => prop.required && prop.type === "string"
+      prop => prop.required && prop.type === "string",
     );
     const width =
       this.props.width && hasRequiredInputs

@@ -55,7 +55,7 @@ describe("Panel", () => {
     const disabledStyle = window.getComputedStyle(items[2]);
     const notDisabledStyle = window.getComputedStyle(items[0]);
     expect(TestUtils.rgbToHex(disabledStyle.color)).toBe(
-      ThemePalette.grayscale[3]
+      ThemePalette.grayscale[3],
     );
     expect(notDisabledStyle.color).toBe("black");
   });

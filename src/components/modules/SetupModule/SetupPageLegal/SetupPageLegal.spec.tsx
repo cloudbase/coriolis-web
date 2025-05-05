@@ -66,7 +66,7 @@ describe("SetupPageLegal", () => {
 
     expect(defaultProps.onCustomerInfoChange).toHaveBeenCalledWith(
       "interestedIn",
-      "replicas"
+      "replicas",
     );
 
     const bothInput = findInputByLabel("Both");
@@ -75,7 +75,7 @@ describe("SetupPageLegal", () => {
 
     expect(defaultProps.onCustomerInfoChange).toHaveBeenCalledWith(
       "interestedIn",
-      "both"
+      "both",
     );
 
     rerender(
@@ -85,7 +85,7 @@ describe("SetupPageLegal", () => {
           ...defaultProps.customerInfoTrial,
           interestedIn: "replicas",
         }}
-      />
+      />,
     );
 
     const migrationsInput = findInputByLabel("Migrations");
@@ -94,7 +94,7 @@ describe("SetupPageLegal", () => {
 
     expect(defaultProps.onCustomerInfoChange).toHaveBeenCalledWith(
       "interestedIn",
-      "migrations"
+      "migrations",
     );
   });
 
@@ -102,7 +102,7 @@ describe("SetupPageLegal", () => {
     render(<SetupPageLegal {...defaultProps} />);
     const findCheckboxByText = (text: string) =>
       Array.from(TestUtils.selectAll("Checkbox__Wrapper")).find(el =>
-        el.parentElement?.textContent?.includes(text)
+        el.parentElement?.textContent?.includes(text),
       )!;
 
     const privacyCheckbox = findCheckboxByText("Privacy Policy");
@@ -121,7 +121,7 @@ describe("SetupPageLegal", () => {
 
     const findLabelByText = (text: string) =>
       Array.from(TestUtils.selectAll("SetupPageLegal__CheckboxLabel")).find(
-        el => el.textContent?.includes(text)
+        el => el.textContent?.includes(text),
       )!;
 
     const privacyLabel = findLabelByText("Privacy Policy");
@@ -148,11 +148,11 @@ describe("SetupPageLegal", () => {
     async ({ platformType, itemIndex, expectedProvider }) => {
       render(<SetupPageLegal {...defaultProps} />);
       const platformDropdown = Array.from(
-        TestUtils.selectAll("Dropdown__Wrapper")
+        TestUtils.selectAll("Dropdown__Wrapper"),
       ).find(el =>
         el.parentElement?.parentElement?.textContent?.includes(
-          `${platformType} Platform`
-        )
+          `${platformType} Platform`,
+        ),
       )!;
 
       expect(platformDropdown).toBeTruthy();
@@ -165,8 +165,8 @@ describe("SetupPageLegal", () => {
 
       expect(defaultProps.onCustomerInfoChange).toHaveBeenCalledWith(
         `${platformType.toLowerCase()}Platform`,
-        expectedProvider
+        expectedProvider,
       );
-    }
+    },
   );
 });

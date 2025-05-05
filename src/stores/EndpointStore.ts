@@ -78,7 +78,7 @@ class EndpointStore {
     }
     try {
       const endpoints = await EndpointSource.getEndpoints(
-        options && options.skipLog
+        options && options.skipLog,
       );
       this.getEndpointsSuccess(endpoints);
     } catch (ex) {
@@ -145,9 +145,8 @@ class EndpointStore {
     try {
       const endpoints: Endpoint[] = await Promise.all(
         opts.endpoints.map(async endpoint => {
-          const connectionInfo = await EndpointSource.getConnectionInfo(
-            endpoint
-          );
+          const connectionInfo =
+            await EndpointSource.getConnectionInfo(endpoint);
           return {
             ...endpoint,
             connection_info: connectionInfo,
@@ -155,7 +154,7 @@ class EndpointStore {
               !opts.shouldSwitchProject ? " (copy)" : ""
             }`,
           };
-        })
+        }),
       );
 
       if (opts.shouldSwitchProject) {
@@ -171,25 +170,25 @@ class EndpointStore {
       )[] = await Promise.all(
         endpoints
           .map(endpoint => EndpointSource.add(endpoint, true))
-          .map(p => p.catch(e => e))
+          .map(p => p.catch(e => e)),
       );
 
       const internalServerErrors = results.filter(
-        r => r.status && r.status === 500
+        r => r.status && r.status === 500,
       );
       if (internalServerErrors.length > 0) {
         notificationStore.alert(
           `There was a problem duplicating ${
             internalServerErrors.length
           } endpoint${internalServerErrors.length > 1 ? "s" : ""}`,
-          "error"
+          "error",
         );
       }
       const forbiddenErrors = results.filter(r => r.status && r.status === 403);
       if (forbiddenErrors.length > 0 && forbiddenErrors[0].data?.description) {
         notificationStore.alert(
           String(forbiddenErrors[0].data.description),
-          "error"
+          "error",
         );
       }
     } catch (ex) {
@@ -206,7 +205,7 @@ class EndpointStore {
     await regionStore.setEndpointRegionExport(newEndpoint);
     DomUtils.download(
       JSON.stringify(newEndpoint),
-      `${newEndpoint.name}.endpoint`
+      `${newEndpoint.name}.endpoint`,
     );
   }
 
@@ -220,7 +219,7 @@ class EndpointStore {
         newEndpoint.connection_info = connectionInfo;
         await regionStore.setEndpointRegionExport(newEndpoint);
         zip.file(`${newEndpoint.name}.endpoint`, JSON.stringify(newEndpoint));
-      })
+      }),
     );
 
     const content = await zip.generateAsync({
@@ -253,7 +252,7 @@ class EndpointStore {
             this.multiValidation = this.multiValidation.filter(
               mv =>
                 mv.endpoint.name !== endpoint.name ||
-                mv.endpoint.type !== endpoint.type
+                mv.endpoint.type !== endpoint.type,
             );
             this.multiValidation = [
               ...this.multiValidation,
@@ -269,7 +268,7 @@ class EndpointStore {
             this.multiValidation = this.multiValidation.filter(
               mv =>
                 mv.endpoint.name !== endpoint.name ||
-                mv.endpoint.type !== endpoint.type
+                mv.endpoint.type !== endpoint.type,
             );
             this.multiValidation = [
               ...this.multiValidation,
@@ -284,7 +283,7 @@ class EndpointStore {
             ];
           });
         }
-      })
+      }),
     );
   }
 
@@ -367,7 +366,7 @@ class EndpointStore {
           addedEndpoints.push(addedEndpoint);
           // eslint-disable-next-line no-empty
         } catch (err) {}
-      })
+      }),
     );
     return addedEndpoints;
   }
@@ -381,7 +380,7 @@ class EndpointStore {
   @action async loadStorage(
     endpointId: string,
     data: any,
-    options?: { cache?: boolean }
+    options?: { cache?: boolean },
   ): Promise<void> {
     this.storageBackends = [];
     this.storageLoading = true;
@@ -390,7 +389,7 @@ class EndpointStore {
       const storage = await EndpointSource.loadStorage(
         endpointId,
         data,
-        options
+        options,
       );
       runInAction(() => {
         this.storageBackends = storage.storage_backends;

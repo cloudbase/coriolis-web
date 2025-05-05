@@ -29,7 +29,7 @@ import notificationStore from "./NotificationStore";
 class TransferStoreUtils {
   static getNewTransfer(
     transferDetails: TransferItemDetails,
-    execution: Execution
+    execution: Execution,
   ): TransferItemDetails {
     if (transferDetails.executions) {
       return {
@@ -87,7 +87,7 @@ class TransferStore {
     try {
       const transfers = await TransferSource.getTransfers(
         options && options.skipLog,
-        options && options.quietError
+        options && options.quietError,
       );
       this.getTransfersSuccess(transfers);
     } finally {
@@ -178,7 +178,7 @@ class TransferStore {
       runInAction(() => {
         this.executionsTasks = [
           ...this.executionsTasks.filter(
-            e => e.id !== this.currentlyLoadingExecution
+            e => e.id !== this.currentlyLoadingExecution,
           ),
           executionTasks,
         ];
@@ -203,7 +203,7 @@ class TransferStore {
     if (this.transferDetails?.id === transferId) {
       const updatedTransfer = TransferStoreUtils.getNewTransfer(
         this.transferDetails,
-        execution
+        execution,
       );
       this.transferDetails = updatedTransfer;
     }
@@ -230,7 +230,7 @@ class TransferStore {
 
   async deleteExecution(
     transferId: string,
-    executionId: string
+    executionId: string,
   ): Promise<void> {
     await TransferSource.deleteExecution(transferId, executionId);
     this.deleteExecutionSuccess(transferId, executionId);
@@ -266,7 +266,7 @@ class TransferStore {
     if (this.transferDetails?.id === transferId) {
       const updatedTransfer = TransferStoreUtils.getNewTransfer(
         this.transferDetails,
-        execution
+        execution,
       );
       this.transferDetails = updatedTransfer;
     }
@@ -307,13 +307,13 @@ class TransferStore {
     try {
       const transferDetails = await Promise.all(
         transfers.map(transfer =>
-          TransferSource.getTransferDetails({ transferId: transfer.id })
-        )
+          TransferSource.getTransferDetails({ transferId: transfer.id }),
+        ),
       );
 
       runInAction(() => {
         this.transfersWithDisks = transferDetails.filter(r =>
-          this.testTransferHasDisks(r)
+          this.testTransferHasDisks(r),
         );
       });
     } finally {

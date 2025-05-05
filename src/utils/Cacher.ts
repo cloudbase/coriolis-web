@@ -31,7 +31,7 @@ class Cacher {
       keys.sort(
         (a, b) =>
           new Date(storage[a].createdAt).getTime() -
-          new Date(storage[b].createdAt).getTime()
+          new Date(storage[b].createdAt).getTime(),
       );
       for (let i = 0; i <= keys.length - MAX_ITEMS; i += 1) {
         delete storage[keys[i]];

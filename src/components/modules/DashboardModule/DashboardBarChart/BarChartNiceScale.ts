@@ -31,7 +31,7 @@ class BarChartNiceScale {
 
   niceNum(localRange: number, round: boolean) {
     const exponent = Math.floor(
-      Math.log10(localRange)
+      Math.log10(localRange),
     ); /** exponent of localRange */
     const fraction =
       localRange / 10 ** exponent; /** fractional part of localRange */

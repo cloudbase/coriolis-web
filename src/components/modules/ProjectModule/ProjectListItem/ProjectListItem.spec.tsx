@@ -42,7 +42,7 @@ describe("ProjectListItem", () => {
   it("switches project", () => {
     render(<ProjectListItem {...defaultProps} />);
     const switchProjectButton = Array.from(
-      document.querySelectorAll("button")
+      document.querySelectorAll("button"),
     ).find(el => el.textContent?.includes("Switch"));
     expect(switchProjectButton).toBeTruthy();
 

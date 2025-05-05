@@ -71,7 +71,7 @@ describe("ChooseProvider", () => {
 
     readContentFromFileListMock = jest.spyOn(
       FileUtils,
-      "readContentFromFileList"
+      "readContentFromFileList",
     );
     readContentFromFileListMock.mockResolvedValue([
       {
@@ -131,7 +131,7 @@ describe("ChooseProvider", () => {
       <ChooseProvider
         {...defaultProps}
         onUploadEndpoint={onUploadEndpointMock}
-      />
+      />,
     );
     const fileInput = document.querySelector('input[type="file"]')!;
 
@@ -140,7 +140,7 @@ describe("ChooseProvider", () => {
       "openstack.endpoint",
       {
         type: "application/json",
-      }
+      },
     );
 
     expect(fileInput).toBeTruthy();
@@ -160,7 +160,7 @@ describe("ChooseProvider", () => {
     expect(style().border).toBe(`1px dashed white`);
     fireEvent.dragEnter(window, mockDataTransfer([]));
     expect(style().border).toBe(
-      `1px dashed ${ThemePalette.primary.toLowerCase()}`
+      `1px dashed ${ThemePalette.primary.toLowerCase()}`,
     );
   });
 
@@ -183,7 +183,7 @@ describe("ChooseProvider", () => {
     fireEvent.drop(window, mockDataTransfer([file]));
 
     await waitFor(() =>
-      expect(FileUtils.readContentFromFileList).toHaveBeenCalled()
+      expect(FileUtils.readContentFromFileList).toHaveBeenCalled(),
     );
   });
 
@@ -204,8 +204,8 @@ describe("ChooseProvider", () => {
     await waitFor(() =>
       expect(notificationStore.alert).toHaveBeenCalledWith(
         "Invalid .endpoint file",
-        "error"
-      )
+        "error",
+      ),
     );
   });
 
@@ -229,8 +229,8 @@ describe("ChooseProvider", () => {
     await waitFor(() =>
       expect(notificationStore.alert).toHaveBeenCalledWith(
         "Invalid .endpoint file",
-        "error"
-      )
+        "error",
+      ),
     );
   });
 
@@ -249,7 +249,7 @@ describe("ChooseProvider", () => {
       ({ name, content }) =>
         new File([content], name, {
           type: "application/json",
-        })
+        }),
     );
 
     readContentFromFileListMock.mockResolvedValue(multipleFilesMeta);
@@ -268,10 +268,10 @@ describe("ChooseProvider", () => {
     await waitFor(() => {
       expect(defaultProps.onResetValidation).toHaveBeenCalledTimes(1);
       expect(setStateObj.multipleUploadedEndpoints[0].name).toBe(
-        OPENSTACK_ENDPOINT.name
+        OPENSTACK_ENDPOINT.name,
       );
       expect(setStateObj.multipleUploadedEndpoints[1].name).toBe(
-        `${OPENSTACK_ENDPOINT.name} (1)`
+        `${OPENSTACK_ENDPOINT.name} (1)`,
       );
     });
   });
@@ -292,12 +292,12 @@ describe("ChooseProvider", () => {
       ({ name, content }) =>
         new File([content], name, {
           type: "application/json",
-        })
+        }),
     );
     readContentFromFileListMock.mockResolvedValue(multipleFilesMeta);
 
     render(
-      <ChooseProvider {...defaultProps} onResizeUpdate={onResizeUpdateMock} />
+      <ChooseProvider {...defaultProps} onResizeUpdate={onResizeUpdateMock} />,
     );
     const fileInput = document.querySelector('input[type="file"]')!;
     fireEvent.change(fileInput, { target: { files: multipleFiles } });
@@ -339,8 +339,8 @@ describe("ChooseProvider", () => {
     await waitFor(() =>
       expect(notificationStore.alert).toHaveBeenCalledWith(
         "1 Coriolis Region couldn't be mapped",
-        "warning"
-      )
+        "warning",
+      ),
     );
   });
 
@@ -354,11 +354,11 @@ describe("ChooseProvider", () => {
 
     chooseProviderInstance.handleRemoveUploadedEndpoint(
       OPENSTACK_ENDPOINT,
-      true
+      true,
     );
 
     expect(defaultProps.onRemoveEndpoint).toHaveBeenCalledWith(
-      OPENSTACK_ENDPOINT
+      OPENSTACK_ENDPOINT,
     );
   });
 

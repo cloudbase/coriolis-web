@@ -229,7 +229,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
           <Label>Created At</Label>
           <Value>
             {DateUtils.getLocalDate(server.created_at).toFormat(
-              "yyyy-LL-dd HH:mm:ss"
+              "yyyy-LL-dd HH:mm:ss",
             )}
           </Value>
         </Field>
@@ -237,7 +237,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
           <Label>Updated At</Label>
           <Value>
             {DateUtils.getLocalDate(server.updated_at).toFormat(
-              "yyyy-LL-dd HH:mm:ss"
+              "yyyy-LL-dd HH:mm:ss",
             )}
           </Value>
         </Field>
@@ -254,7 +254,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
           <Label>Memory Size</Label>
           {server.memory
             ? this.renderValue(
-                `${(server.memory / 1024 / 1024 / 1024).toFixed(2)} GB`
+                `${(server.memory / 1024 / 1024 / 1024).toFixed(2)} GB`,
               )
             : "-"}
         </Field>
@@ -262,7 +262,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
           <Label>Operating System</Label>
           {server.os_info.os_name
             ? this.renderValue(
-                `${server.os_info.os_name} ${server.os_info.os_version}`
+                `${server.os_info.os_name} ${server.os_info.os_version}`,
               )
             : "-"}
         </Field>
@@ -281,7 +281,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
   renderNics(nics: MetalHubNic[]) {
     return nics.map(nic => {
       const isOpened = Boolean(
-        this.state.openedRows.find(i => i === nic.nic_name)
+        this.state.openedRows.find(i => i === nic.nic_name),
       );
 
       return (
@@ -324,7 +324,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
 
   renderPartitions(
     partitions: MetalHubDisk["partitions"] = [],
-    sectorSize = 0
+    sectorSize = 0,
   ) {
     return partitions.map(partition => {
       if (!partition.partition_uuid) {
@@ -332,7 +332,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
       }
 
       const isOpened = Boolean(
-        this.state.openedRows.find(i => i === partition.partition_uuid)
+        this.state.openedRows.find(i => i === partition.partition_uuid),
       );
       const size = partition.sectors * sectorSize;
       const sizeString = sectorSize
@@ -422,7 +422,7 @@ class MetalHubServerDetailsContent extends React.Component<Props, State> {
               <TableBodyContent>
                 {this.renderPartitions(
                   disk.partitions,
-                  disk.physical_sector_size
+                  disk.physical_sector_size,
                 )}
               </TableBodyContent>
             </TableHeader>

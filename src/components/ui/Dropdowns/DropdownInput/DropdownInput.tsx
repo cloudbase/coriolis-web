@@ -32,8 +32,8 @@ const Wrapper = styled.div<any>`
       props.disabled
         ? ThemePalette.grayscale[0]
         : props.highlight
-        ? ThemePalette.alert
-        : ThemePalette.grayscale[3]};
+          ? ThemePalette.alert
+          : ThemePalette.grayscale[3]};
   border-radius: ${ThemeProps.borderRadius};
   height: ${ThemeProps.inputSizes.regular.height - 2}px;
   position: relative;

@@ -76,7 +76,7 @@ class UserStore {
       await this.getLoggedUserInfo();
       await this.loginScoped(
         this.loggedUser ? this.loggedUser.project_id : "",
-        true
+        true,
       );
       await this.isAdmin();
       // If the user skipped the setup process and has successfully logged in,
@@ -99,7 +99,7 @@ class UserStore {
 
   async loginScoped(
     projectId?: string,
-    skipProjectCookie?: boolean
+    skipProjectCookie?: boolean,
   ): Promise<User> {
     await projectStore.getProjects();
     const projects = projectStore.projects.filter(p => p.enabled);
@@ -114,7 +114,7 @@ class UserStore {
     const id = (project && project.id) || projects[0].id;
     const user: User = await UserSource.loginScoped(
       id,
-      Boolean(id && skipProjectCookie)
+      Boolean(id && skipProjectCookie),
     );
     runInAction(() => {
       if (!this.loggedUser) {
@@ -195,7 +195,7 @@ class UserStore {
     try {
       const users = await UserSource.getAllUsers(
         options?.skipLog,
-        options?.quietError
+        options?.quietError,
       );
       runInAction(() => {
         this.users = users;
@@ -259,7 +259,7 @@ class UserStore {
       const updatedUser: User = await UserSource.update(
         userId,
         user,
-        this.userDetails
+        this.userDetails,
       );
       runInAction(() => {
         this.userDetails = updatedUser;
@@ -276,7 +276,7 @@ class UserStore {
 
   @action async assignUserToProject(
     userId: string,
-    projectId: string
+    projectId: string,
   ): Promise<void> {
     this.updating = true;
 
@@ -292,7 +292,7 @@ class UserStore {
   async assignUserToProjectWithRole(
     userId: string,
     projectId: string,
-    roleId: string
+    roleId: string,
   ): Promise<void> {
     await UserSource.assignUserToProjectWithRole(userId, projectId, roleId);
   }

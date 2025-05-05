@@ -64,7 +64,7 @@ export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
     const createInputChoice = (
       name: string,
       field1Name: string,
-      field2Name: string
+      field2Name: string,
     ) => {
       const field1 = fields.find(f => f.name === field1Name);
       const field2 = fields.find(f => f.name === field2Name);
@@ -82,7 +82,7 @@ export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
     createInputChoice(
       "project_domain",
       "project_domain_name",
-      "project_domain_id"
+      "project_domain_id",
     );
     createInputChoice("user_domain", "user_domain_name", "user_domain_id");
 
@@ -96,7 +96,7 @@ export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
 
   override parseConnectionInfoToPayload(
     data: { [prop: string]: any },
-    schema: Schema
+    schema: Schema,
   ) {
     if (data.openstack_use_current_user) {
       return {};

@@ -21,11 +21,11 @@ describe("SmallLoading", () => {
   it("renders progress text", () => {
     const { rerender } = render(<SmallLoading loadingProgress={33} />);
     expect(TestUtils.select("SmallLoading__ProgressText")?.textContent).toBe(
-      "33%"
+      "33%",
     );
     rerender(<SmallLoading loadingProgress={66.66} />);
     expect(TestUtils.select("SmallLoading__ProgressText")?.textContent).toBe(
-      "67%"
+      "67%",
     );
   });
 

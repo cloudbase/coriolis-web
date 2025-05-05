@@ -47,9 +47,9 @@ describe("StatusPill", () => {
       const wrapper = TestUtils.select("StatusPill__Wrapper")!;
       expect(wrapper.textContent).toBe(label);
       expect(
-        TestUtils.rgbToHex(window.getComputedStyle(wrapper).background)
+        TestUtils.rgbToHex(window.getComputedStyle(wrapper).background),
       ).toBe(background);
-    }
+    },
   );
 
   it("renders info status with different background colors", () => {
@@ -57,12 +57,12 @@ describe("StatusPill", () => {
 
     const { rerender } = render(<StatusPill status="INFO" alert />);
     expect(TestUtils.rgbToHex(window.getComputedStyle(wrapper()).color)).toBe(
-      ThemePalette.alert
+      ThemePalette.alert,
     );
 
     rerender(<StatusPill status="INFO" secondary />);
     expect(
-      TestUtils.rgbToHex(window.getComputedStyle(wrapper()).background)
+      TestUtils.rgbToHex(window.getComputedStyle(wrapper()).background),
     ).toBe(ThemePalette.grayscale[8]);
   });
 

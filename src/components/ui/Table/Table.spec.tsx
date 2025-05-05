@@ -37,11 +37,11 @@ describe("Table", () => {
         items={[]}
         header={[]}
         noItemsComponent={<div className="no-items-component">Zero</div>}
-      />
+      />,
     );
     expect(document.querySelector(".no-items-component")).toBeTruthy();
     expect(document.querySelector(".no-items-component")!.textContent).toBe(
-      "Zero"
+      "Zero",
     );
   });
 
@@ -50,15 +50,15 @@ describe("Table", () => {
     expect(TestUtils.select("Table__NoItems")).toBeTruthy();
 
     expect(TestUtils.selectAll("Table__HeaderData")).toHaveLength(
-      HEADER.length
+      HEADER.length,
     );
     HEADER.forEach((headerItem, i) => {
       expect(TestUtils.selectAll("Table__HeaderData")[i]!.textContent).toBe(
-        headerItem
+        headerItem,
       );
     });
     const style = window.getComputedStyle(
-      TestUtils.selectAll("Table__HeaderData")[1]!
+      TestUtils.selectAll("Table__HeaderData")[1]!,
     );
     expect(style.maxWidth).toBe(`${100 / HEADER.length}%`);
   });
@@ -69,7 +69,7 @@ describe("Table", () => {
     ITEMS.forEach((rowData, rowIndex) => {
       const cellsEl = TestUtils.selectAll(
         "Table__RowData",
-        TestUtils.selectAll("Table__Row-")[rowIndex]!
+        TestUtils.selectAll("Table__Row-")[rowIndex]!,
       );
       rowData.forEach((cellData, cellIndex) => {
         expect(cellsEl[cellIndex]!.textContent).toBe(cellData);
@@ -99,13 +99,13 @@ describe("Table", () => {
     expect(TestUtils.selectAll("Table__RowData", rowsEl[0])).toHaveLength(2);
     expect(TestUtils.selectAll("Table__RowData", rowsEl[1])).toHaveLength(1);
     expect(
-      TestUtils.selectAll("Table__RowData", rowsEl[0])[0]!.textContent
+      TestUtils.selectAll("Table__RowData", rowsEl[0])[0]!.textContent,
     ).toBe("Row 1 data 1");
     expect(
-      TestUtils.selectAll("Table__RowData", rowsEl[0])[1]!.textContent
+      TestUtils.selectAll("Table__RowData", rowsEl[0])[1]!.textContent,
     ).toBe("Row 1 data 2");
     expect(
-      TestUtils.selectAll("Table__RowData", rowsEl[1])[0]!.textContent
+      TestUtils.selectAll("Table__RowData", rowsEl[1])[0]!.textContent,
     ).toBe("Row 2 data");
   });
 });

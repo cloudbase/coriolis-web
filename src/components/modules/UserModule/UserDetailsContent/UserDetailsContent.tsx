@@ -127,7 +127,7 @@ class UserDetailsContent extends React.Component<Props> {
   }
 
   renderUserProjects(
-    projects: { label: string; id: string }[]
+    projects: { label: string; id: string }[],
   ): React.ReactNode {
     return projects.map((project, i) => (
       <span key={project.id}>
@@ -150,7 +150,7 @@ class UserDetailsContent extends React.Component<Props> {
 
     const { user } = this.props;
     const primaryProject = this.props.projects.find(
-      p => user.project_id === p.id
+      p => user.project_id === p.id,
     );
     const primaryProjectName = primaryProject
       ? primaryProject.name

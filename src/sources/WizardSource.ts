@@ -98,7 +98,7 @@ class WizardSource {
       payload.user_scripts = destParser.getUserScripts(
         uploadedUserScripts,
         [],
-        {}
+        {},
       );
     }
 
@@ -160,7 +160,7 @@ class WizardSource {
           // eslint-disable-next-line no-unsafe-finally
           return mainItem;
         }
-      })
+      }),
     );
     return mainItems;
   }
@@ -174,7 +174,7 @@ class WizardSource {
     window.history.replaceState(
       {},
       "",
-      `${location}?d=${DomUtils.encodeToBase64Url(data)}`
+      `${location}?d=${DomUtils.encodeToBase64Url(data)}`,
     );
   }
 

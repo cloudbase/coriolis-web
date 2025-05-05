@@ -43,8 +43,8 @@ describe("DetailsContentHeader", () => {
     render(<DetailsContentHeader {...defaultProps} />);
     expect(
       TestUtils.select(
-        "DetailsContentHeader__BackButton"
-      )?.attributes.getNamedItem("to")?.value
+        "DetailsContentHeader__BackButton",
+      )?.attributes.getNamedItem("to")?.value,
     ).toBe("/list");
   });
 
@@ -52,15 +52,15 @@ describe("DetailsContentHeader", () => {
     render(<DetailsContentHeader {...defaultProps} />);
     expect(
       window.getComputedStyle(
-        TestUtils.select("DetailsContentHeader__TypeImage")!
-      ).background
+        TestUtils.select("DetailsContentHeader__TypeImage")!,
+      ).background,
     ).toBe(`url(${defaultProps.typeImage}) no-repeat center`);
   });
 
   it("renders item title correctly", () => {
     render(<DetailsContentHeader {...defaultProps} />);
     expect(TestUtils.select("DetailsContentHeader__Text")?.textContent).toBe(
-      defaultProps.itemTitle
+      defaultProps.itemTitle,
     );
   });
 
@@ -77,10 +77,10 @@ describe("DetailsContentHeader", () => {
     render(<DetailsContentHeader {...defaultProps} />);
     expect(TestUtils.selectAll("StatusPill__Wrapper")).toHaveLength(2);
     expect(TestUtils.selectAll("StatusPill__Wrapper")[0].textContent).toBe(
-      defaultProps.itemType
+      defaultProps.itemType,
     );
     expect(TestUtils.selectAll("StatusPill__Wrapper")[1].textContent).toBe(
-      defaultProps.statusLabel
+      defaultProps.statusLabel,
     );
   });
 
@@ -99,7 +99,7 @@ describe("DetailsContentHeader", () => {
     expect(TestUtils.select("DropdownButton__Wrapper")).toBeTruthy();
     userEvent.click(TestUtils.select("DropdownButton__Wrapper")!);
     expect(TestUtils.selectAll("ActionDropdown__ListItem")[0].textContent).toBe(
-      "Test Action"
+      "Test Action",
     );
   });
 
@@ -116,7 +116,7 @@ describe("DetailsContentHeader", () => {
     render(<DetailsContentHeader {...defaultProps} />);
     expect(TestUtils.select("DetailsContentHeader__Description")).toBeTruthy();
     expect(
-      TestUtils.select("DetailsContentHeader__Description")?.textContent
+      TestUtils.select("DetailsContentHeader__Description")?.textContent,
     ).toBe(defaultProps.itemDescription);
   });
 });

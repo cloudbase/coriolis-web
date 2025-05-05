@@ -267,7 +267,7 @@ class ProjectDetailsContent extends React.Component<Props, State> {
             this.props.onUserRoleChange(
               user,
               item.value,
-              !userRoles.find(i => i.value === item.value)
+              !userRoles.find(i => i.value === item.value),
             );
           }}
         />,

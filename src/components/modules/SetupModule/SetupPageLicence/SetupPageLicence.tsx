@@ -131,7 +131,7 @@ class SetupPageLicence extends React.Component<Props> {
               width={450}
               items={this.countriesItems}
               selectedItem={this.countriesItems.find(
-                c => c.label === this.props.customerInfo.country
+                c => c.label === this.props.customerInfo.country,
               )}
               onChange={item => {
                 this.props.onUpdateCustomerInfo("country", item.label);

@@ -27,7 +27,7 @@ class ObjectUtils {
   static flatten(
     object: any,
     appendParentPath?: boolean,
-    parent?: string
+    parent?: string,
   ): any {
     let result: any = {};
 
@@ -87,7 +87,7 @@ class ObjectUtils {
       timeoutMs?: number;
       intervalMs?: number;
       silent?: boolean;
-    }
+    },
   ) {
     const { timeoutMs = 15000, intervalMs = 1000, silent } = options || {};
     const startTime = new Date().getTime();
@@ -122,7 +122,7 @@ class ObjectUtils {
   static async retry(
     retryFunction: () => Promise<any>,
     retryEvery = 1000,
-    retryCount = 3
+    retryCount = 3,
   ): Promise<any> {
     let currentTry = 0;
     const retryLoop = async (): Promise<any> => {

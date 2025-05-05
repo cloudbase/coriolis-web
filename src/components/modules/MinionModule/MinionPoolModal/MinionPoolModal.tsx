@@ -118,7 +118,7 @@ class MinionPoolModal extends React.Component<Props, State> {
       }
       await minionPoolStore.loadMinionPoolSchema(
         this.props.endpoint.type,
-        this.props.platform
+        this.props.platform,
       );
 
       await providerStore.loadProviders();
@@ -142,7 +142,7 @@ class MinionPoolModal extends React.Component<Props, State> {
       () => {
         this.create();
       },
-      2
+      2,
     );
   }
 
@@ -232,7 +232,7 @@ class MinionPoolModal extends React.Component<Props, State> {
                 ? typeof f === "string"
                   ? f === value
                   : f.value === value || f.id === value
-                : false
+                : false,
             )
           ) {
             return true;
@@ -289,7 +289,7 @@ class MinionPoolModal extends React.Component<Props, State> {
     await minionPoolStore.add(
       this.props.endpoint.type,
       this.props.endpoint.id,
-      this.state.editableData
+      this.state.editableData,
     );
     notificationStore.alert("Minion Pool created", "success");
     this.props.onRequestClose();
@@ -301,7 +301,7 @@ class MinionPoolModal extends React.Component<Props, State> {
         const minionPool: any = { ...prevState.editableData };
         const requiredFieldsDefaults =
           minionPoolStore.minionPoolCombinedSchema.filter(
-            f => f.required && f.default != null
+            f => f.required && f.default != null,
           );
         requiredFieldsDefaults.forEach(f => {
           if (minionPool[f.name] == null) {
@@ -314,18 +314,18 @@ class MinionPoolModal extends React.Component<Props, State> {
         minionPoolStore.sortMigrImages(
           this.getFieldValue(
             minionPoolStore.minionPoolDefaultSchema.find(
-              f => f.name === "os_type"
-            )
-          )
+              f => f.name === "os_type",
+            ),
+          ),
         );
-      }
+      },
     );
   }
 
   async loadExtraOptions(
     field: Field | null,
     type: "source" | "destination",
-    useCache = true
+    useCache = true,
   ) {
     const envData = getFieldChangeOptions({
       providerName: this.props.endpoint.type,
@@ -370,7 +370,7 @@ class MinionPoolModal extends React.Component<Props, State> {
         if (field.type !== "string" || field.enum) {
           this.loadExtraOptions(field, this.props.platform, true);
         }
-      }
+      },
     );
   }
 
@@ -413,7 +413,7 @@ class MinionPoolModal extends React.Component<Props, State> {
           platform={this.props.platform}
           optionsLoading={minionPoolStore.optionsSecondaryLoading}
           optionsLoadingSkipFields={minionPoolStore.minionPoolDefaultSchema.map(
-            f => f.name
+            f => f.name,
           )}
           envOptionsDisabled={
             this.props.minionPool != null &&

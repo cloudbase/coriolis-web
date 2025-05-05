@@ -34,7 +34,7 @@ describe("MetalHubListItem", () => {
 
   it("renders without crashing", () => {
     const { getByText, getAllByText } = render(
-      <MetalHubListItem {...defaultProps} />
+      <MetalHubListItem {...defaultProps} />,
     );
     expect(getByText(METALHUB_SERVER_MOCK.hostname!)).toBeTruthy();
     expect(getByText("Active")).toBeTruthy();
@@ -42,9 +42,9 @@ describe("MetalHubListItem", () => {
     expect(
       getAllByText(
         DateUtils.getLocalDate(METALHUB_SERVER_MOCK.created_at).toFormat(
-          "yyyy-LL-dd HH:mm:ss"
-        )
-      ).length
+          "yyyy-LL-dd HH:mm:ss",
+        ),
+      ).length,
     ).toBe(2);
   });
 
@@ -57,7 +57,7 @@ describe("MetalHubListItem", () => {
           hostname: "",
           active: false,
         }}
-      />
+      />,
     );
     expect(getByText("No Hostname")).toBeTruthy();
     expect(getByText("Inactive")).toBeTruthy();

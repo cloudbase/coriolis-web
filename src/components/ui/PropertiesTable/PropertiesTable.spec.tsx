@@ -50,7 +50,7 @@ describe("PropertiesTable", () => {
         valueCallback={field =>
           field.type === "string" ? `${field.name}-value` : null
         }
-      />
+      />,
     );
     expect(TestUtils.selectInput("TextInput__Input")?.value).toBe("name-value");
     await act(async () => {
@@ -74,7 +74,7 @@ describe("PropertiesTable", () => {
         properties={PROPERTIES}
         onChange={onChange}
         valueCallback={() => {}}
-      />
+      />,
     );
     userEvent.clear(TestUtils.selectInput("TextInput__Input")!);
     userEvent.type(TestUtils.selectInput("TextInput__Input")!, "new-value");
@@ -88,7 +88,7 @@ describe("PropertiesTable", () => {
         properties={PROPERTIES}
         onChange={onChange}
         valueCallback={() => {}}
-      />
+      />,
     );
     await act(async () => {
       TestUtils.select("DropdownButton__Wrapper")!.click();
@@ -106,11 +106,11 @@ describe("PropertiesTable", () => {
         properties={PROPERTIES}
         onChange={onChange}
         valueCallback={() => true}
-      />
+      />,
     );
 
     const [nonNullableSwitch, nullableSwitch] = TestUtils.selectAll(
-      "Switch__InputWrapper"
+      "Switch__InputWrapper",
     );
 
     await act(async () => {

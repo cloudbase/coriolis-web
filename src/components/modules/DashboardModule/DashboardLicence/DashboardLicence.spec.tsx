@@ -59,25 +59,25 @@ describe("DashboardLicence", () => {
     render(<DashboardLicence {...defaultProps} />);
     const futureDate = DateTime.now().plus({ years: 1 });
     expect(
-      TestUtils.select("DashboardLicence__TopInfoDateTop-")?.textContent
+      TestUtils.select("DashboardLicence__TopInfoDateTop-")?.textContent,
     ).toBe(`${futureDate.toFormat("LLL")} '${futureDate.toFormat("yy")}`);
     expect(
-      TestUtils.select("DashboardLicence__TopInfoDateBottom-")?.textContent
+      TestUtils.select("DashboardLicence__TopInfoDateBottom-")?.textContent,
     ).toBe(futureDate.toFormat("dd"));
 
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[0]
-        .textContent
+        .textContent,
     ).toBe("5 Used Replicas ");
     expect(
-      TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-")[0].textContent
+      TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-")[0].textContent,
     ).toBe("Total 10");
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[1]
-        .textContent
+        .textContent,
     ).toBe("3 Used Migrations ");
     expect(
-      TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-")[1].textContent
+      TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-")[1].textContent,
     ).toBe("Total 5");
   });
 
@@ -91,7 +91,7 @@ describe("DashboardLicence", () => {
 
     expect(TestUtils.select("DashboardLicence__LicenceError-")).toBeTruthy();
     expect(
-      TestUtils.select("DashboardLicence__LicenceError-")?.textContent
+      TestUtils.select("DashboardLicence__LicenceError-")?.textContent,
     ).toBe("An error occurred.");
   });
 
@@ -108,12 +108,12 @@ describe("DashboardLicence", () => {
 
     expect(TestUtils.select("DashboardLicence__LicenceError-")).toBeTruthy();
     expect(
-      TestUtils.select("DashboardLicence__LicenceError-")?.textContent
+      TestUtils.select("DashboardLicence__LicenceError-")?.textContent,
     ).toContain(
-      "Please contact your Coriolis representative with the Appliance ID"
+      "Please contact your Coriolis representative with the Appliance ID",
     );
     expect(
-      TestUtils.select("DashboardLicence__ApplianceId-")?.textContent
+      TestUtils.select("DashboardLicence__ApplianceId-")?.textContent,
     ).toBe("Appliance ID:test-id-licencev2");
     expect(TestUtils.select("Button__")?.textContent).toBe("Add Licence");
   });
@@ -148,7 +148,7 @@ describe("DashboardLicence", () => {
     render(<DashboardLicence {...newProps} />);
 
     const button = TestUtils.select(
-      "DashboardLicence__AddLicenceButtonWrapper"
+      "DashboardLicence__AddLicenceButtonWrapper",
     );
     const logo = TestUtils.select("DashboardLicence__Logo");
 
@@ -177,7 +177,7 @@ describe("DashboardLicence", () => {
     render(<DashboardLicence {...newProps} />);
     expect(
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[0]
-        .textContent
+        .textContent,
     ).toBe("1 Used Replica ");
   });
 });

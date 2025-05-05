@@ -31,7 +31,7 @@ describe("Replicas list", () => {
 
     cy.get("div[class^='MainList__EmptyListMessage']").should(
       "contain.text",
-      "don't have any Transfers in this project"
+      "don't have any Transfers in this project",
     );
     cy.get("button").should("contain.text", "Create a Transfer");
   });
@@ -48,7 +48,7 @@ describe("Replicas list", () => {
       (results: any[]) => {
         const transfers = results[0].transfers;
         schedules = transfers.map((_, index) =>
-          index % 2 === 0 ? results[1].schedules : results[2].schedules
+          index % 2 === 0 ? results[1].schedules : results[2].schedules,
         );
 
         for (const [index, transfer] of transfers.entries()) {
@@ -60,7 +60,7 @@ describe("Replicas list", () => {
           }).as(scheduleAlias);
           scheduleAliases.push(`@${scheduleAlias}`);
         }
-      }
+      },
     );
 
     cy.visit("/transfers");
@@ -104,7 +104,7 @@ describe("Replicas list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        transfers.filter(r => r.last_execution_status === "COMPLETED").length
+        transfers.filter(r => r.last_execution_status === "COMPLETED").length,
       );
 
       cy.get("div[class^='MainListFilter__FilterItem']")
@@ -112,20 +112,20 @@ describe("Replicas list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        transfers.length
+        transfers.length,
       );
 
       cy.get("div[class^='SearchButton__Wrapper']").click();
       cy.get("input[class*='SearchInput']").type("ol88");
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        transfers.filter(r => r.instances.find(i => i.includes("ol88"))).length
+        transfers.filter(r => r.instances.find(i => i.includes("ol88"))).length,
       );
 
       cy.get("div[class^='TextInput__Close']").click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        transfers.length
+        transfers.length,
       );
     });
   });
@@ -141,7 +141,7 @@ describe("Replicas list", () => {
     cy.get("div[class*='TransferListItem__Checkbox']").eq(0).click();
     cy.get("div[class*='MainListFilter__SelectionText']").should(
       "contain.text",
-      "1 of 3"
+      "1 of 3",
     );
 
     cy.get("div[class^='ActionDropdown__Wrapper']").click();

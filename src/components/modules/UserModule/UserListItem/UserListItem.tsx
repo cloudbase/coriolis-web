@@ -82,7 +82,7 @@ const Body = styled.div<any>`
 const Data = styled.div<any>`
   ${props =>
     ThemeProps.exactWidth(
-      `${Math.floor(bodyWidth / (100 / props.percentage)) - 68}px`
+      `${Math.floor(bodyWidth / (100 / props.percentage)) - 68}px`,
     )}
   margin: 0 32px;
 

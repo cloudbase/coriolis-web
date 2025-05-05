@@ -133,10 +133,7 @@ class App extends React.Component<Record<string, unknown>, State> {
       />
     );
 
-    const renderRoute = (
-      path: string,
-      element: React.ReactNode,
-    ) => {
+    const renderRoute = (path: string, element: React.ReactNode) => {
       if (!userStore.loggedUser) {
         return renderMessagePage({
           path,
@@ -160,7 +157,7 @@ class App extends React.Component<Record<string, unknown>, State> {
       }
       const actualPath = `${path || `/${name}`}`;
       const requiresAdmin = Boolean(
-        navigationMenu.find(n => n.value === name && n.requiresAdmin)
+        navigationMenu.find(n => n.value === name && n.requiresAdmin),
       );
       if (!requiresAdmin) {
         return renderRoute(actualPath, element);
@@ -252,7 +249,7 @@ class App extends React.Component<Record<string, unknown>, State> {
             {renderRoute("/streamlog", <LogStreamPage />)}
             {
               // @ts-ignore
-            <Route path="*" element={<MessagePage />} />
+              <Route path="*" element={<MessagePage />} />
             }
           </Routes>
         </Router>

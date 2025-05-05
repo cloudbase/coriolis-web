@@ -115,7 +115,7 @@ type Props = {
   onChange: (
     scheduleId: string,
     schedule: ScheduleType,
-    forceSave?: boolean
+    forceSave?: boolean,
   ) => void;
   onRemove: (scheduleId: string) => void;
   onSaveSchedule?: (schedule: ScheduleType) => void;
@@ -278,13 +278,13 @@ class Schedule extends React.Component<Props, State> {
               this.handleDeleteClick(schedule);
             }}
             saving={Boolean(
-              this.props.savingIds?.find(id => id === schedule.id)
+              this.props.savingIds?.find(id => id === schedule.id),
             )}
             enabling={Boolean(
-              this.props.enablingIds?.find(id => id === schedule.id)
+              this.props.enablingIds?.find(id => id === schedule.id),
             )}
             deleting={Boolean(
-              this.props.deletingIds?.find(id => id === schedule.id)
+              this.props.deletingIds?.find(id => id === schedule.id),
             )}
           />
         ))}
@@ -387,7 +387,7 @@ class Schedule extends React.Component<Props, State> {
             selectedItem={selectedItem}
             onChange={item => {
               this.props.onTimezoneChange(
-                item.value === "utc" ? "utc" : "local"
+                item.value === "utc" ? "utc" : "local",
               );
             }}
           />

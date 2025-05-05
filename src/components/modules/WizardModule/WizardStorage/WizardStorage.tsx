@@ -156,7 +156,7 @@ const LoadingText = styled.div`
 export const getDisks = (
   instancesDetails: Instance[],
   type: "backend" | "disk",
-  storageMap?: StorageMap[] | null
+  storageMap?: StorageMap[] | null,
 ): Disk[] => {
   const fieldName = type === "backend" ? "storage_backend_identifier" : "id";
 
@@ -188,7 +188,7 @@ export type Props = {
   defaultStorage: { value: string | null; busType?: string | null };
   onDefaultStorageChange: (
     value: string | null,
-    busType?: string | null
+    busType?: string | null,
   ) => void;
   onChange: (newMapping: StorageMap) => void;
   onScrollableRef?: (ref: HTMLElement) => void;
@@ -303,7 +303,7 @@ class WizardStorage extends React.Component<Props> {
                 }
                 if (
                   i.devices.disks.find(
-                    d => d[diskFieldName] === disk[diskFieldName]
+                    d => d[diskFieldName] === disk[diskFieldName],
                   )
                 ) {
                   return true;
@@ -313,14 +313,14 @@ class WizardStorage extends React.Component<Props> {
               .map(
                 instance =>
                   `${instance.name} (${InstanceUtils.shortenId(
-                    instance.instance_name || instance.id
-                  )})`
+                    instance.instance_name || instance.id,
+                  )})`,
               );
 
             const selectedStorageMapping = storageMap?.find(
               s =>
                 s.type === type &&
-                String(s.source[diskFieldName]) === String(disk[diskFieldName])
+                String(s.source[diskFieldName]) === String(disk[diskFieldName]),
             );
             const diskNameParsed = parseDiskName(disk[diskFieldName]);
             return (
@@ -366,7 +366,7 @@ class WizardStorage extends React.Component<Props> {
     const disks = getDisks(
       this.props.instancesDetails,
       "backend",
-      this.props.storageMap
+      this.props.storageMap,
     );
 
     if (disks.length === 0 || this.props.storageBackends.length === 0) {
@@ -380,7 +380,7 @@ class WizardStorage extends React.Component<Props> {
     const disks = getDisks(
       this.props.instancesDetails,
       "disk",
-      this.props.storageMap
+      this.props.storageMap,
     );
 
     if (disks.length === 0 || this.props.storageBackends.length === 0) {
@@ -394,7 +394,7 @@ class WizardStorage extends React.Component<Props> {
     const disks = getDisks(
       this.props.instancesDetails,
       "disk",
-      this.props.storageMap
+      this.props.storageMap,
     );
 
     if (disks.length === 0 || this.props.storageBackends.length === 0) {
@@ -409,7 +409,7 @@ class WizardStorage extends React.Component<Props> {
         }));
       items = [{ label: "Choose a value", value: null }, ...items];
       const selectedItem = items.find(
-        i => i.value === this.props.defaultStorage.value
+        i => i.value === this.props.defaultStorage.value,
       );
       const commonProps = {
         width: ThemeProps.inputSizes.regular.width,
@@ -419,10 +419,7 @@ class WizardStorage extends React.Component<Props> {
           this.props.onDefaultStorageChange(item.value),
       };
       return items.length > 10 ? (
-        <AutocompleteDropdown
-          {...commonProps}
-          dimNullValue
-        />
+        <AutocompleteDropdown {...commonProps} dimNullValue />
       ) : (
         <Dropdown
           {...commonProps}

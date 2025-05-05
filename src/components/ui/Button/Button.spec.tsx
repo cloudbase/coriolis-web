@@ -22,21 +22,21 @@ describe("Button", () => {
   it("should render with different style props", () => {
     const { rerender } = render(<Button disabled />);
     expect(
-      document.querySelector("button")?.hasAttribute("disabled")
+      document.querySelector("button")?.hasAttribute("disabled"),
     ).toBeTruthy();
     expect(
       TestUtils.rgbToHex(
         window.getComputedStyle(document.querySelector("button")!)
-          .backgroundColor
-      )
+          .backgroundColor,
+      ),
     ).toBe(ThemePalette.primary);
 
     rerender(<Button secondary />);
     expect(
       TestUtils.rgbToHex(
         window.getComputedStyle(document.querySelector("button")!)
-          .backgroundColor
-      )
+          .backgroundColor,
+      ),
     ).toBe(ThemePalette.secondaryLight);
   });
 

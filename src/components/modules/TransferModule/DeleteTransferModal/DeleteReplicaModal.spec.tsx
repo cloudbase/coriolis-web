@@ -39,7 +39,7 @@ describe("DeleteTransferModal", () => {
   it("renders with disks", () => {
     render(<DeleteTransferModal {...defaultProps} hasDisks />);
     expect(
-      TestUtils.select("DeleteTransferModal__ExtraMessage")?.textContent
+      TestUtils.select("DeleteTransferModal__ExtraMessage")?.textContent,
     ).toContain("has been executed at least once");
   });
 
@@ -49,10 +49,10 @@ describe("DeleteTransferModal", () => {
         {...defaultProps}
         hasDisks
         isMultiTransferSelection
-      />
+      />,
     );
     expect(
-      TestUtils.select("DeleteTransferModal__ExtraMessage")?.textContent
+      TestUtils.select("DeleteTransferModal__ExtraMessage")?.textContent,
     ).toContain("have been executed at least once");
   });
 

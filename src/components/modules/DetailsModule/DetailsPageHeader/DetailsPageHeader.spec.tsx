@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { act }  from "react";
+import React, { act } from "react";
 
 import { User } from "@src/@types/User";
 import notificationStore from "@src/stores/NotificationStore";
@@ -108,10 +108,10 @@ describe("DetailsPageHeader", () => {
     });
     expect(TestUtils.select("UserDropdown__List")).toBeTruthy();
     expect(TestUtils.select("UserDropdown__Username")?.textContent).toBe(
-      user.name
+      user.name,
     );
     expect(TestUtils.select("UserDropdown__Email")?.textContent).toBe(
-      user.email
+      user.email,
     );
     await act(async () => {
       TestUtils.selectAll("UserDropdown__Label").forEach(item => {

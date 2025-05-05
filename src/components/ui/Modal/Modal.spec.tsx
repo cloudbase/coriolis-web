@@ -22,11 +22,11 @@ describe("Modal", () => {
     render(
       <Modal isOpen title="Test Title">
         <div className="content">Test Content</div>
-      </Modal>
+      </Modal>,
     );
     expect(
       TestUtils.select("ReactModal__Content")!.querySelector(".content")!
-        .textContent
+        .textContent,
     ).toBe("Test Content");
     expect(TestUtils.select("Modal__Title")!.textContent).toBe("Test Title");
   });
@@ -36,7 +36,7 @@ describe("Modal", () => {
     render(
       <Modal isOpen onRequestClose={onRequestClose}>
         <div>Test Content</div>
-      </Modal>
+      </Modal>,
     );
     TestUtils.select("ReactModal__Overlay")!.click();
     expect(onRequestClose).toHaveBeenCalled();

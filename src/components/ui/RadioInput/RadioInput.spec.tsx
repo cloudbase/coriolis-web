@@ -25,10 +25,10 @@ describe("RadioInput", () => {
 
   it("renders disabled loading animation", () => {
     render(
-      <RadioInput label="Label" checked onChange={() => {}} disabledLoading />
+      <RadioInput label="Label" checked onChange={() => {}} disabledLoading />,
     );
     const style = window.getComputedStyle(
-      TestUtils.select("RadioInput__Wrapper")!
+      TestUtils.select("RadioInput__Wrapper")!,
     );
     expect(style.animation).toContain("opacityToggle");
   });

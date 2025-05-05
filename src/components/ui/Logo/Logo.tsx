@@ -67,15 +67,18 @@ type Props = {
 
 class Logo extends React.Component<Props> {
   render() {
-    const { to = "/", large, small, smallblack, className, customRef } = this.props;
+    const {
+      to = "/",
+      large,
+      small,
+      smallblack,
+      className,
+      customRef,
+    } = this.props;
     const normalizedTo = to.startsWith("/") ? to : `../${to}`;
 
     const coriolisLogo = (
-      <Coriolis
-        large={large}
-        small={small}
-        smallblack={smallblack}
-      />
+      <Coriolis large={large} small={small} smallblack={smallblack} />
     );
     const logoWrapper = normalizedTo ? (
       <LinkStyled to={normalizedTo}>{coriolisLogo}</LinkStyled>

@@ -157,7 +157,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         this.props.roles.find(r => r.id === id) || {
           id: "undefined",
           name: "",
-        }
+        },
     );
     this.props.onAddClick(user, this.state.isNew, roles);
   }
@@ -259,7 +259,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
           .map(r => ({ name: r.name, id: r.id }))}
         required
         highlight={Boolean(
-          this.state.highlightFieldNames.find(n => n === highlighFieldName)
+          this.state.highlightFieldNames.find(n => n === highlighFieldName),
         )}
         noSelectionMessage="Choose role(s)"
         noItemsMessage="No available roles"
@@ -284,7 +284,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         }
         required={field.required}
         highlight={Boolean(
-          this.state.highlightFieldNames.find(n => n === field.name)
+          this.state.highlightFieldNames.find(n => n === field.name),
         )}
         noSelectionMessage="Choose a project"
         noItemsMessage="No available members"
@@ -307,14 +307,14 @@ class ProjectMemberModal extends React.Component<Props, State> {
         this.state.username,
         username => {
           this.setState({ username });
-        }
+        },
       ),
       this.renderField(
         { name: "description", label: "Description" },
         this.state.description,
         description => {
           this.setState({ description });
-        }
+        },
       ),
       this.renderField(
         {
@@ -325,7 +325,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         this.state.projectId,
         projectId => {
           this.setState({ projectId });
-        }
+        },
       ),
       this.renderRolesField(),
       this.renderField(
@@ -333,28 +333,28 @@ class ProjectMemberModal extends React.Component<Props, State> {
         this.state.password,
         password => {
           this.setState({ password });
-        }
+        },
       ),
       this.renderField(
         { name: "confirm_password", label: "Confirm Password", required: true },
         this.state.confirmPassword,
         confirmPassword => {
           this.setState({ confirmPassword });
-        }
+        },
       ),
       this.renderField(
         { name: "Email", label: "Email" },
         this.state.email,
         email => {
           this.setState({ email });
-        }
+        },
       ),
       this.renderField(
         { name: "Enabled", label: "Enabled", type: "boolean" },
         this.state.enabled,
         enabled => {
           this.setState({ enabled });
-        }
+        },
       ),
     ];
 
@@ -375,7 +375,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
               this.state.selectedUser ? this.state.selectedUser.id : ""
             }
             highlight={Boolean(
-              this.state.highlightFieldNames.find(n => n === "selectedUser")
+              this.state.highlightFieldNames.find(n => n === "selectedUser"),
             )}
             onChange={item => {
               this.setState({

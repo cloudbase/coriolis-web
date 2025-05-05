@@ -48,7 +48,7 @@ class LicenceSource {
 
   async loadLicenceInfo(
     applianceId: string,
-    skipLog?: boolean | null
+    skipLog?: boolean | null,
   ): Promise<Licence> {
     const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/status`;
     const response = await Api.send({ url, quietError: true, skipLog });

@@ -146,7 +146,7 @@ class Timeline extends React.Component<Props> {
     this.progressLineRef.style.width = `${lastItemPos}px`;
     this.endLineRef.style.width = `${Math.max(
       this.wrapperRef.offsetWidth - lastItemPos,
-      0
+      0,
     )}px`;
   }
 
@@ -197,7 +197,7 @@ class Timeline extends React.Component<Props> {
                 }
               >
                 {DateUtils.getLocalDate(item.created_at).toFormat(
-                  "dd LLL yyyy"
+                  "dd LLL yyyy",
                 )}
               </ItemLabel>
             </Item>
