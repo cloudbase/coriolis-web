@@ -24,7 +24,7 @@ const encodedProgressImage = encodeURIComponent(
   progressImage(ThemePalette.grayscale[3], ThemePalette.primary)
 );
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 const ITEMS: NotificationItemData[] = [
   {

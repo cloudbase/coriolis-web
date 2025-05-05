@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import NotificationDropdown from "@src/components/ui/Dropdowns/NotificationDropdown";
 
 import type { NotificationItemData } from "@src/@types/NotificationItem";
 import TestUtils from "@tests/TestUtils";
 
-jest.mock("react-router-dom", () => ({ Link: "div" }));
+jest.mock("react-router", () => ({ Link: "div" }));
 
 const ITEMS: NotificationItemData[] = [
   {
@@ -52,9 +52,11 @@ describe("NotificationDropdown", () => {
     expect(TestUtils.select("NotificationDropdown__BellIcon")).toBeTruthy();
   });
 
-  it("shows items on click", () => {
+  it("shows items on click", async () => {
     render(<NotificationDropdown items={ITEMS} onClose={() => {}} />);
-    TestUtils.select("NotificationDropdown__Icon")!.click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")!.click();
+    });
     const listItems = TestUtils.selectAll("NotificationDropdown__ListItem");
     expect(listItems[0].getAttribute("to")).toBe(
       `/${ITEMS[0].type}s/${ITEMS[0].id}`
@@ -79,17 +81,23 @@ describe("NotificationDropdown", () => {
     ).toBe(ITEMS[2].description);
   });
 
-  it("fires onClose on item click", () => {
+  it("fires onClose on item click", async () => {
     const onClose = jest.fn();
     render(<NotificationDropdown items={ITEMS} onClose={onClose} />);
-    TestUtils.select("NotificationDropdown__Icon")!.click();
-    TestUtils.selectAll("NotificationDropdown__ListItem")[1].click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")!.click();
+    });
+    await act(async () => {
+      TestUtils.selectAll("NotificationDropdown__ListItem")[1].click();
+    });
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("renders unseed badge", () => {
+  it("renders unseed badge", async () => {
     render(<NotificationDropdown items={ITEMS} onClose={() => {}} />);
-    TestUtils.select("NotificationDropdown__Icon")!.click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")!.click();
+    });
     const listItems = TestUtils.selectAll("NotificationDropdown__ListItem");
     expect(
       TestUtils.select("NotificationDropdown__Badge", listItems[0])

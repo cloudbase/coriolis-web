@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import { ThemePalette } from "@src/components/Theme";
@@ -61,7 +61,7 @@ describe("Switch", () => {
     expect(onChange).toBeCalledWith(false);
   });
 
-  it("dispatches null when in tristate mode", () => {
+  it("dispatches null when in tristate mode", async () => {
     let value: boolean | null = true;
     const onChange = (newValue: boolean | null) => {
       value = newValue;
@@ -73,7 +73,9 @@ describe("Switch", () => {
       rerender(<Switch onChange={onChange} checked={value} triState />);
     };
 
-    TestUtils.select("Switch__InputWrapper")!.click();
+    await act(async () => {
+      TestUtils.select("Switch__InputWrapper")!.click();
+    });
     expect(value).toBe(null);
 
     rerenderWithValue();
@@ -81,7 +83,10 @@ describe("Switch", () => {
     expect(value).toBe(false);
 
     rerenderWithValue();
-    TestUtils.select("Switch__InputWrapper")!.click();
+    
+    await act(async () => {
+      TestUtils.select("Switch__InputWrapper")!.click();
+    });
     expect(value).toBe(null);
 
     rerenderWithValue();

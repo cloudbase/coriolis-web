@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { useState } from "react";
+import React, { useState, act } from "react";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MainListFilter from "@src/components/ui/Lists/MainListFilter";
@@ -82,16 +82,20 @@ describe("MainListFilter", () => {
     );
   });
 
-  it("renders actions", () => {
+  it("renders actions", async () => {
     render(<MainListFilterWrapper />);
-    TestUtils.select("DropdownButton__Wrapper")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
     const actions = TestUtils.selectAll("ActionDropdown__ListItem-");
     expect(actions).toHaveLength(ACTIONS.length);
     expect(actions[0].textContent).toBe(ACTIONS[0].label);
     expect(actions[0].hasAttribute("disabled")).toBeFalsy();
     expect(actions[1].hasAttribute("disabled")).toBeTruthy();
-    actions[0].click();
-    actions[1].click();
+    await act(async () => {
+      actions[0].click();
+      actions[1].click();
+    });
     expect(ACTIONS[0].action).toHaveBeenCalled();
     expect(ACTIONS[1].action).not.toHaveBeenCalled();
   });
@@ -103,20 +107,24 @@ describe("MainListFilter", () => {
     expect(onFilterItemClick).toHaveBeenCalledWith(FILTER_ITEMS[1]);
   });
 
-  it("has select all change", () => {
+  it("has select all change", async () => {
     const onSelectAllChange = jest.fn();
     render(<MainListFilterWrapper onSelectAllChange={onSelectAllChange} />);
 
     const checkbox = TestUtils.select("Checkbox__Wrapper")!;
     const style = () => window.getComputedStyle(checkbox);
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe("white");
-    checkbox.click();
+    await act(async () => {
+      checkbox.click();
+    });
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe(
       ThemePalette.primary
     );
 
     expect(onSelectAllChange).toHaveBeenCalledWith(true);
-    checkbox.click();
+    await act(async () => {
+      checkbox.click();
+    });
     expect(onSelectAllChange).toHaveBeenCalledWith(false);
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe("white");
   });

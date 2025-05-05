@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import PasswordValue from "@src/components/ui/PasswordValue";
 import TestUtils from "@tests/TestUtils";
@@ -26,7 +26,9 @@ describe("PasswordValue", () => {
   });
   it("reveals the password on click", () => {
     render(<PasswordValue value="the_secret" />);
-    TestUtils.select("PasswordValue__Value")?.click();
+    act(() => {
+      TestUtils.select("PasswordValue__Value")?.click();
+    });
     expect(TestUtils.select("PasswordValue__Value")?.textContent).toBe(
       "the_secret"
     );

@@ -20,7 +20,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DetailsContentHeader from "./DetailsContentHeader";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 describe("DetailsContentHeader", () => {
   let defaultProps: DetailsContentHeader["props"];

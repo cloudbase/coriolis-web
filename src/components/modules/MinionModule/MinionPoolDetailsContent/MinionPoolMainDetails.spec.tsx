@@ -21,7 +21,7 @@ import { DEPLOYMENT_MOCK, TRANSFER_MOCK } from "@tests/mocks/TransferMock";
 
 import MinionPoolMainDetails from "./MinionPoolMainDetails";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   __esModule: true,
   default: (props: any) => (

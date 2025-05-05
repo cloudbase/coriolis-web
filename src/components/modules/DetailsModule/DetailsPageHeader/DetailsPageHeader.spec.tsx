@@ -12,8 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
-import { act } from "react-dom/test-utils";
+import React, { act }  from "react";
 
 import { User } from "@src/@types/User";
 import notificationStore from "@src/stores/NotificationStore";
@@ -22,7 +21,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DetailsPageHeader from "./DetailsPageHeader";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/stores/NotificationStore", () => ({
   notificationItems: [],
   loadData: jest.fn().mockResolvedValue([]),
@@ -89,18 +88,24 @@ describe("DetailsPageHeader", () => {
     expect(notificationStore.loadData).toHaveBeenCalledTimes(1);
   });
 
-  it("handles notification close by saving seen notifications", () => {
+  it("handles notification close by saving seen notifications", async () => {
     render(<DetailsPageHeader {...defaultProps} />);
-    TestUtils.select("NotificationDropdown__Icon")?.click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")?.click();
+    });
     expect(TestUtils.select("NotificationDropdown__List")).toBeTruthy();
-    TestUtils.select("NotificationDropdown__Icon")?.click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")?.click();
+    });
     expect(TestUtils.select("NotificationDropdown__List")).toBeFalsy();
     expect(notificationStore.saveSeen).toHaveBeenCalled();
   });
 
-  it("handles user item click for 'about'", () => {
+  it("handles user item click for 'about'", async () => {
     render(<DetailsPageHeader {...defaultProps} />);
-    TestUtils.select("UserDropdown__Icon")?.click();
+    await act(async () => {
+      TestUtils.select("UserDropdown__Icon")?.click();
+    });
     expect(TestUtils.select("UserDropdown__List")).toBeTruthy();
     expect(TestUtils.select("UserDropdown__Username")?.textContent).toBe(
       user.name
@@ -108,23 +113,29 @@ describe("DetailsPageHeader", () => {
     expect(TestUtils.select("UserDropdown__Email")?.textContent).toBe(
       user.email
     );
-    TestUtils.selectAll("UserDropdown__Label").forEach(item => {
-      if (item.textContent === "About Coriolis") {
-        item.click();
-      }
+    await act(async () => {
+      TestUtils.selectAll("UserDropdown__Label").forEach(item => {
+        if (item.textContent === "About Coriolis") {
+          item.click();
+        }
+      });
     });
     expect(defaultProps.onUserItemClick).not.toHaveBeenCalled();
     expect(TestUtils.select("AboutModal__Wrapper")).toBeTruthy();
   });
 
-  it("handles user item click for other values", () => {
+  it("handles user item click for other values", async () => {
     render(<DetailsPageHeader {...defaultProps} />);
-    TestUtils.select("UserDropdown__Icon")?.click();
+    await act(async () => {
+      TestUtils.select("UserDropdown__Icon")?.click();
+    });
     expect(TestUtils.select("UserDropdown__List")).toBeTruthy();
-    TestUtils.selectAll("UserDropdown__Label").forEach(item => {
-      if (item.textContent === "Sign Out") {
-        item.click();
-      }
+    await act(async () => {
+      TestUtils.selectAll("UserDropdown__Label").forEach(item => {
+        if (item.textContent === "Sign Out") {
+          item.click();
+        }
+      });
     });
     expect(defaultProps.onUserItemClick).toHaveBeenCalledWith({
       label: "Sign Out",
@@ -132,19 +143,25 @@ describe("DetailsPageHeader", () => {
     });
   });
 
-  it("closes the about modal", () => {
+  it("closes the about modal", async () => {
     render(<DetailsPageHeader {...defaultProps} />);
-    TestUtils.select("UserDropdown__Icon")?.click();
-    TestUtils.selectAll("UserDropdown__Label").forEach(item => {
-      if (item.textContent === "About Coriolis") {
-        item.click();
-      }
+    await act(async () => {
+      TestUtils.select("UserDropdown__Icon")?.click();
+    });
+    await act(async () => {
+      TestUtils.selectAll("UserDropdown__Label").forEach(item => {
+        if (item.textContent === "About Coriolis") {
+          item.click();
+        }
+      });
     });
     expect(TestUtils.select("AboutModal__Wrapper")).toBeTruthy();
-    document.querySelectorAll("button").forEach(item => {
-      if (item.textContent === "Close") {
-        item.click();
-      }
+    await act(async () => {
+      document.querySelectorAll("button").forEach(item => {
+        if (item.textContent === "Close") {
+          item.click();
+        }
+      });
     });
     expect(TestUtils.select("AboutModal__Wrapper")).toBeFalsy();
   });

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import styled from "styled-components";
 import { render } from "@testing-library/react";
 import FilterList from "@src/components/ui/Lists/FilterList";
@@ -103,9 +103,11 @@ describe("FilterList", () => {
     );
   });
 
-  it("filters items", () => {
+  it("filters items", async () => {
     render(FilterListWrap());
-    TestUtils.selectAll("MainListFilter__FilterItem")[3].click();
+    await act(async () => {
+      TestUtils.selectAll("MainListFilter__FilterItem")[3].click();
+    });
     const listItems = () =>
       TestUtils.selectAll("FilterListspec__MainListItem-");
     expect(listItems()).toHaveLength(2);
@@ -131,9 +133,11 @@ describe("FilterList", () => {
     expect(TestUtils.select("MainList__NoResults")).toBeTruthy();
   });
 
-  it("goes to next page", () => {
+  it("goes to next page", async () => {
     render(FilterListWrap());
-    TestUtils.select("Pagination__PageNext")?.click();
+    await act(async () => {
+      TestUtils.select("Pagination__PageNext")?.click();
+    });
 
     expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
       "2 of 2"
@@ -150,14 +154,16 @@ describe("FilterList", () => {
     expect(onItemClick).toHaveBeenCalledWith(ITEMS[1]);
   });
 
-  it("selects items", () => {
+  it("selects items", async () => {
     const onSelectedItemsChange = jest.fn();
     render(FilterListWrap({ onSelectedItemsChange }));
     const checkbox = TestUtils.selectAll(
       "FilterListspec__MainListItem-"
     )[1].querySelector("input") as HTMLInputElement;
     expect(checkbox.checked).toBe(false);
-    checkbox.click();
+    await act(async () => {
+      checkbox.click();
+    });
     expect(checkbox.checked).toBe(true);
     expect(TestUtils.select("MainListFilter__SelectionText")?.textContent).toBe(
       "1 of 4\u00a0test item(s) selected"
