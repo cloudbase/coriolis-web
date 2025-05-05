@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -58,8 +59,13 @@ type State = {
   showDeleteDisksModal: boolean;
   showDeleteTransfersModal: boolean;
 };
+
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 @observer
-class TransfersPage extends React.Component<{ history: any }, State> {
+class TransfersPage extends React.Component<Props, State> {
   state: State = {
     modalIsOpen: false,
     selectedTransfers: [],
@@ -131,9 +137,9 @@ class TransfersPage extends React.Component<{ history: any }, State> {
 
   handleItemClick(item: TransferItem) {
     if (item.last_execution_status === "RUNNING") {
-      this.props.history.push(`/transfers/${item.id}/executions`);
+      this.props.onNavigate(`/transfers/${item.id}/executions`);
     } else {
-      this.props.history.push(`/transfers/${item.id}`);
+      this.props.onNavigate(`/transfers/${item.id}`);
     }
   }
 
@@ -181,7 +187,7 @@ class TransfersPage extends React.Component<{ history: any }, State> {
       "Deployments successfully created from transfers.",
       "success"
     );
-    this.props.history.push("/deployments");
+    this.props.onNavigate("/deployments");
   }
 
   handleShowDeleteTransfers() {
@@ -243,7 +249,7 @@ class TransfersPage extends React.Component<{ history: any }, State> {
   }
 
   handleEmptyListButtonClick() {
-    this.props.history.push("/wizard/migration");
+    this.props.onNavigate("/wizard/migration");
   }
 
   handleModalOpen() {
@@ -585,4 +591,10 @@ class TransfersPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default TransfersPage;
+function TransfersPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <TransfersPage onNavigate={navigate} />;
+}
+
+export default TransfersPageWithNavigate;

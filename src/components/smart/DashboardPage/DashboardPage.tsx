@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router";
 
 import DashboardContent from "@src/components/modules/DashboardModule/DashboardContent";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -32,11 +33,15 @@ import Utils from "@src/utils/ObjectUtils";
 
 const Wrapper = styled.div<any>``;
 
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 type State = {
   modalIsOpen: boolean;
 };
 @observer
-class ProjectsPage extends React.Component<{ history: any }, State> {
+class ProjectsPage extends React.Component<Props, State> {
   state = {
     modalIsOpen: false,
   };
@@ -148,7 +153,7 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
               licenceError={licenceStore.licenceInfoError}
               transfersLoading={transferStore.loading}
               onNewTransferClick={() => {
-                this.props.history.push("/wizard/migration");
+                this.props.onNavigate("/wizard/migration");
               }}
               onNewEndpointClick={() => {
                 this.handleNewEndpointClick();
@@ -181,4 +186,10 @@ class ProjectsPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default ProjectsPage;
+function ProjectsPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <ProjectsPage onNavigate={navigate} />;
+}
+
+export default ProjectsPageWithNavigate;

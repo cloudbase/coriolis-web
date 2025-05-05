@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate, useParams } from "react-router";
 
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
@@ -38,8 +39,8 @@ import serverImage from "./images/server.svg";
 const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: { params: { id: string } };
-  history: any;
+  id: string;
+  onNavigate: (path: string) => void;
 };
 type State = {
   showDeleteServerAlert: boolean;
@@ -79,7 +80,7 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
     this.setState({ showDeleteServerAlert: false });
 
     await metalHubStore.deleteServer(metalHubStore.serverDetails!.id);
-    this.props.history.push("/bare-metal-servers");
+    this.props.onNavigate("/bare-metal-servers");
   }
 
   handleRefresh() {
@@ -91,10 +92,10 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
   }
 
   async loadData() {
-    const serverId = Number(this.props.match.params.id);
+    const serverId = Number(this.props.id);
     await metalHubStore.getServerDetails(serverId);
     if (!metalHubStore.serverDetails) {
-      this.props.history.push("/bare-metal-servers");
+      this.props.onNavigate("/bare-metal-servers");
     }
   }
 
@@ -121,7 +122,7 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
       source: endpoint,
       selectedInstances: [instance],
     };
-    this.props.history.push(
+    this.props.onNavigate(
       `/wizard/${type}/?d=${window.btoa(
         JSON.stringify({
           data,
@@ -266,4 +267,11 @@ class MetalHubServerDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default MetalHubServerDetailsPage;
+function MetalHubServerDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+
+  return <MetalHubServerDetailsPage onNavigate={navigate} id={id!} />;
+}
+
+export default MetalHubServerDetailsPageWithNavigate;

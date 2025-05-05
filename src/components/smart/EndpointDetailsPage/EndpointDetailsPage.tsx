@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate, useParams } from "react-router";
 
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
 import DetailsPageHeader from "@src/components/modules/DetailsModule/DetailsPageHeader";
@@ -44,8 +45,8 @@ import endpointImage from "./images/endpoint.svg";
 const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: any;
-  history: any;
+  id: any;
+  onNavigate: (path: string) => void;
 };
 type State = {
   showDeleteEndpointConfirmation: boolean;
@@ -82,7 +83,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
 
   get endpoint(): EndpointType | null {
     return (
-      endpointStore.endpoints.find(e => e.id === this.props.match.params.id) ||
+      endpointStore.endpoints.find(e => e.id === this.props.id) ||
       null
     );
   }
@@ -91,7 +92,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     deployments: DeploymentItem[];
     transfers: TransferItem[];
   } {
-    const endpointId = this.props.match.params.id;
+    const endpointId = this.props.id;
     const transfers = transferStore.transfers.filter(
       r =>
         r.origin_endpoint_id === endpointId ||
@@ -145,7 +146,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     if (this.endpoint) {
       endpointStore.delete(this.endpoint);
     }
-    this.props.history.push("/endpoints");
+    this.props.onNavigate("/endpoints");
   }
 
   handleCloseDeleteEndpointConfirmation() {
@@ -206,7 +207,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
       endpoints: [endpoint],
       onSwitchProject: () => userStore.switchProject(projectId),
     });
-    this.props.history.push("/endpoints");
+    this.props.onNavigate("/endpoints");
   }
 
   handleExportToJsonClick() {
@@ -411,4 +412,11 @@ class EndpointDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default EndpointDetailsPage;
+function EndpointDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  return <EndpointDetailsPage onNavigate={navigate} id={id!} />;
+}
+
+export default EndpointDetailsPageWithNavigate;

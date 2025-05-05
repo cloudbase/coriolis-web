@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router";
 
 import {
   getTransferItemTitle,
@@ -57,7 +58,7 @@ const Wrapper = styled.div<any>``;
 
 type Props = {
   match: { params: { id: string; page: string | null } };
-  history: any;
+  onNavigate: (path: string) => void;
 };
 type State = {
   showOptionsModal: boolean;
@@ -403,7 +404,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
     if (!transfer) {
       return;
     }
-    this.props.history.push("/transfers");
+    this.props.onNavigate("/transfers");
     transferStore.delete(transfer.id);
   }
 
@@ -421,7 +422,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
       return;
     }
     transferStore.deleteDisks(transfer.id);
-    this.props.history.push(`/transfers/${transfer.id}/executions`);
+    this.props.onNavigate(`/transfers/${transfer.id}/executions`);
   }
 
   handleCloseDeleteTransferDisksConfirmation() {
@@ -548,7 +549,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
         userScriptData: transfer.user_scripts,
         minionPoolMappings,
       });
-      this.props.history.push(`/deployments/${deployment.id}/tasks/`);
+      this.props.onNavigate(`/deployments/${deployment.id}/tasks/`);
     } finally {
       this.setState({ deploying: false });
     }
@@ -564,7 +565,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
       await transferStore.execute(transfer.id, fields);
 
       this.handleCloseOptionsModal();
-      this.props.history.push(`/transfers/${transfer.id}/executions`);
+      this.props.onNavigate(`/transfers/${transfer.id}/executions`);
     } finally {
       this.setState({ executing: false });
     }
@@ -611,7 +612,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
   }
 
   handleUpdateComplete(redirectTo: string) {
-    this.props.history.push(redirectTo);
+    this.props.onNavigate(redirectTo);
     this.closeEditModal();
   }
 
@@ -951,4 +952,20 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
   }
 }
 
-export default TransferDetailsPage;
+function TransferDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id, page } = useParams();
+
+  if (!id) {
+    throw new Error("The 'id' parameter is required but was not provided.");
+  }
+
+  return (
+    <TransferDetailsPage
+      onNavigate={navigate}
+      match={{ params: { id, page: page || null } }}
+    />
+  );
+}
+
+export default TransferDetailsPageWithNavigate;

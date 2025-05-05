@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -59,8 +60,13 @@ type State = {
   selectedServers: number[];
   showConfirmRemove: boolean;
 };
+
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 @observer
-class MetalHubServersPage extends React.Component<{ history: any }, State> {
+class MetalHubServersPage extends React.Component<Props, State> {
   state: State = {
     modalIsOpen: false,
     showNewServerModal: false,
@@ -163,7 +169,7 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
       source: endpoint,
       selectedInstances: instances,
     };
-    this.props.history.push(
+    this.props.onNavigate(
       `/wizard/${type}/?d=${window.btoa(
         JSON.stringify({
           data,
@@ -292,7 +298,7 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
                 />
               }
               onItemClick={(server: MetalHubServer) => {
-                this.props.history.push(`/bare-metal-servers/${server.id}`);
+                this.props.onNavigate(`/bare-metal-servers/${server.id}`);
               }}
               onReloadButtonClick={() => {
                 this.handleReloadButtonClick();
@@ -355,4 +361,10 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default MetalHubServersPage;
+function MetalHubServersPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <MetalHubServersPage onNavigate={navigate} />;
+}
+
+export default MetalHubServersPageWithNavigate;
