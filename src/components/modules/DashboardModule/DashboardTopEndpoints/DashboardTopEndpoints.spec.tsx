@@ -21,7 +21,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DashboardTopEndpoints from "./DashboardTopEndpoints";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 type BuildType<T extends "replica" | "migration"> = T extends "replica"
   ? TransferItem

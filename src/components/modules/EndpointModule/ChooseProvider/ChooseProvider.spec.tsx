@@ -46,7 +46,7 @@ const mockDataTransfer = (files: any[]) => ({
   },
 });
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 jest.mock("@src/stores/NotificationStore", () => ({
   alert: jest.fn(),

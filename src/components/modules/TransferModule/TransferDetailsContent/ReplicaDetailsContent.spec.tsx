@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import Schedule from "@src/components/modules/TransferModule/Schedule";
 import ScheduleStore from "@src/stores/ScheduleStore";
@@ -41,7 +41,7 @@ jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   __esModule: true,
   default: (props: any) => <div>{props.endpoint}</div>,
 }));
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/utils/Config", () => ({
   config: {
     providerSortPriority: {},
@@ -120,12 +120,14 @@ describe("ReplicaDetailsContent", () => {
     expect(getByTestId("ScheduleComponent")).toBeTruthy();
   });
 
-  it("fires timezone change", () => {
+  it("fires timezone change", async () => {
     const { getByTestId, getByText } = render(
       <ReplicaDetailsContent {...defaultProps} page="schedule" />
     );
     expect(getByText("Timezone: local")).toBeTruthy();
-    getByTestId("ScheduleComponent").click();
+    await act(async () => {
+      getByTestId("ScheduleComponent").click();
+    });
     expect(getByText("Timezone: utc")).toBeTruthy();
   });
 });

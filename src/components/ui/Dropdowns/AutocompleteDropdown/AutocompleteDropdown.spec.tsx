@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TestUtils from "@tests/TestUtils";
@@ -44,12 +44,14 @@ describe("AutocompleteDropdown", () => {
     });
   });
 
-  it("fires change on autocomplete item click", () => {
+  it("fires change on autocomplete item click", async () => {
     const onChange = jest.fn();
     render(<AutocompleteDropdown items={ITEMS} onChange={onChange} />);
     userEvent.type(document.querySelector("input")!, "Label B");
 
-    TestUtils.selectAll("AutocompleteDropdown__ListItem-")[1].click();
+    await act(async () => {
+      TestUtils.selectAll("AutocompleteDropdown__ListItem-")[1].click();
+    });
 
     expect(onChange).toHaveBeenCalledWith(ITEMS[3]);
   });

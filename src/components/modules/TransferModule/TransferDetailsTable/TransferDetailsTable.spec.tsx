@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { render } from "@testing-library/react";
 import { INSTANCE_MOCK } from "@tests/mocks/InstancesMock";
@@ -68,7 +68,7 @@ describe("TransferDetailsTable", () => {
     expect(getByText("Target")).toBeTruthy();
   });
 
-  it("handles row click", () => {
+  it("handles row click", async () => {
     render(<TransferDetailsTable {...defaultProps} />);
     const rows = TestUtils.selectAll("TransferDetailsTable__Row-");
     expect(rows[0]).toBeTruthy();
@@ -79,13 +79,19 @@ describe("TransferDetailsTable", () => {
     expect(secondArrow()).toBeTruthy();
 
     expect(firstArrow().getAttribute("orientation")).toBe("down");
-    rows[0].click();
+    act(() => {
+      rows[0].click();
+    });
     expect(firstArrow().getAttribute("orientation")).toBe("up");
 
     expect(secondArrow().getAttribute("orientation")).toBe("down");
-    rows[1].click();
+    act(() => {
+      rows[1].click();
+    });
     expect(secondArrow().getAttribute("orientation")).toBe("up");
-    rows[1].click();
+    act(() => {
+      rows[1].click();
+    });
     expect(secondArrow().getAttribute("orientation")).toBe("down");
   });
 });

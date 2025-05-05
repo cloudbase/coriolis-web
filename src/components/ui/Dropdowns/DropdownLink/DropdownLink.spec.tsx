@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import userEvent from "@testing-library/user-event";
@@ -47,17 +47,23 @@ describe("DropdownLink", () => {
     );
   });
 
-  it("fires selected item change", () => {
+  it("fires selected item change", async () => {
     const onChange = jest.fn();
     render(<DropdownLink items={ITEMS} onChange={onChange} />);
-    TestUtils.select("DropdownLink__LinkButton")?.click();
-    TestUtils.selectAll("DropdownLink__ListItem-")[1].click();
+    await act(async () => {
+      TestUtils.select("DropdownLink__LinkButton")?.click();
+    });
+    await act(async () => {
+      TestUtils.selectAll("DropdownLink__ListItem-")[1].click();
+    });
     expect(onChange).toBeCalledWith(ITEMS[1]);
   });
 
-  it("can be searchable", () => {
+  it("can be searchable", async () => {
     render(<DropdownLink items={ITEMS} searchable />);
-    TestUtils.select("DropdownLink__LinkButton")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownLink__LinkButton")?.click();
+    });
     const input = TestUtils.selectContains("SearchInput__Input")!;
     userEvent.type(input, "A");
     const listItems = () => TestUtils.selectAll("DropdownLink__ListItem-");
@@ -74,9 +80,11 @@ describe("DropdownLink", () => {
     expect(TestUtils.select("DropdownLink__EmptySearch")).toBeTruthy();
   });
 
-  it("highlights the highlighted item", () => {
+  it("highlights the highlighted item", async () => {
     render(<DropdownLink items={ITEMS} highlightedItem={ITEMS[1].value} />);
-    TestUtils.select("DropdownLink__LinkButton")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownLink__LinkButton")?.click();
+    });
     const noHighlightStyle = window.getComputedStyle(
       TestUtils.selectAll("DropdownLink__ListItemLabel")[0]
     );

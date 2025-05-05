@@ -32,7 +32,7 @@ jest.mock("@src/utils/Config", () => ({
   },
 }));
 
-jest.mock("react-router-dom", () => ({
+jest.mock("react-router", () => ({
   Link: "div",
 }));
 

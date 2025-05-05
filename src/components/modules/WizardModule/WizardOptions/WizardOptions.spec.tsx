@@ -26,7 +26,7 @@ jest.mock("@src/utils/Config", () => ({
   },
 }));
 jest.mock("react-transition-group", () => ({
-  CSSTransitionGroup: (props: any) => <div>{props.children}</div>,
+  CSSTransition: (props: any) => <div>{props.children}</div>,
 }));
 
 describe("WizardOptions", () => {

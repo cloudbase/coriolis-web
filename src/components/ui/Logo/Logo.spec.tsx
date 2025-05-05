@@ -18,7 +18,7 @@ import Logo from "@src/components/ui/Logo";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 describe("Logo", () => {
   it("renders", () => {
     render(<Logo />);

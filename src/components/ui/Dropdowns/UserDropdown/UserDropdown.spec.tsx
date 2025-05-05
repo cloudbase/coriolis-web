@@ -12,13 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import { User } from "@src/@types/User";
 import UserDropdown from ".";
 
-jest.mock("react-router-dom", () => ({ Link: "div" }));
+jest.mock("react-router", () => ({ Link: "div" }));
 
 const USER: User = {
   id: "user-id",
@@ -33,7 +33,9 @@ const USER: User = {
 describe("UserDropdown", () => {
   it("renders no user", () => {
     render(<UserDropdown user={null} onItemClick={() => {}} />);
-    TestUtils.select("UserDropdown__Icon")?.click();
+    act (() => {
+      TestUtils.select("UserDropdown__Icon")?.click();
+    });
     expect(TestUtils.select("UserDropdown__Label")?.textContent).toBe(
       "No signed in user"
     );
@@ -41,7 +43,9 @@ describe("UserDropdown", () => {
 
   it("renders user menu", () => {
     render(<UserDropdown user={USER} onItemClick={() => {}} />);
-    TestUtils.select("UserDropdown__Icon")?.click();
+    act (() => {
+      TestUtils.select("UserDropdown__Icon")?.click();
+    });
     expect(TestUtils.select("UserDropdown__Username")?.textContent).toBe(
       USER.name
     );
@@ -56,8 +60,12 @@ describe("UserDropdown", () => {
   it("fires item click", () => {
     const onItemClick = jest.fn();
     render(<UserDropdown user={USER} onItemClick={onItemClick} />);
-    TestUtils.select("UserDropdown__Icon")?.click();
-    TestUtils.selectAll("UserDropdown__Label")[2].click();
+    act (() => {
+      TestUtils.select("UserDropdown__Icon")?.click();
+    });
+    act (() => {
+      TestUtils.selectAll("UserDropdown__Label")[2].click();
+    });
     expect(onItemClick).toHaveBeenCalledWith(
       expect.objectContaining({ value: "signout" })
     );

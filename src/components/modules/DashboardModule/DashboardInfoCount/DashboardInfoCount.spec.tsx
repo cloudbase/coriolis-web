@@ -19,7 +19,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DashboardInfoCount from "./DashboardInfoCount";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 describe("DashboardInfoCount", () => {
   const mockData = [

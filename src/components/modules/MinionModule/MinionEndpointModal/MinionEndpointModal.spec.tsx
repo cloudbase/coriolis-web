@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { render } from "@testing-library/react";
 import {
@@ -32,7 +32,7 @@ jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
 }));
 
 jest.mock("react-transition-group", () => ({
-  CSSTransitionGroup: (props: any) => <div>{props.children}</div>,
+  CSSTransition: (props: any) => <div>{props.children}</div>,
 }));
 
 describe("MinionEndpointModal", () => {
@@ -72,10 +72,14 @@ describe("MinionEndpointModal", () => {
     ).toContain("Please create a Coriolis Endpoint");
   });
 
-  it("selects an endpoint", () => {
+  it("selects an endpoint", async () => {
     const { getByText } = render(<MinionEndpointModal {...defaultProps} />);
-    TestUtils.select("DropdownButton__Wrapper")?.click();
-    TestUtils.select("Dropdown__ListItem-")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
+    await act(async () => {
+      TestUtils.select("Dropdown__ListItem-")?.click();
+    });
     getByText("Next").click();
     expect(defaultProps.onSelectEndpoint).toHaveBeenCalledWith(
       VMWARE_ENDPOINT_MOCK,

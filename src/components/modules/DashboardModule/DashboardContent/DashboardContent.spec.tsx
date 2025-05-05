@@ -19,7 +19,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DashboardContent from "./DashboardContent";
 
-jest.mock("react-router-dom", () => ({ Link: "div" }));
+jest.mock("react-router", () => ({ Link: "div" }));
 
 describe("DashboardContent", () => {
   let resizeWindow: (x: number, y: number) => void;
@@ -126,6 +126,8 @@ describe("DashboardContent", () => {
     expect(setStateMock).toHaveBeenCalledWith({ useMobileLayout: true });
 
     setStateMock.mockRestore();
-    resizeWindow(2400, 800);
+    act(() => {
+      resizeWindow(2400, 800);
+    });
   });
 });

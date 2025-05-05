@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import DateUtils from "@src/utils/DateUtils";
 import { render } from "@testing-library/react";
@@ -78,17 +78,21 @@ describe("MetalHubServerDetailsContent", () => {
     ).toBeTruthy();
   });
 
-  it("handles row click", () => {
+  it("handles row click", async () => {
     const { getAllByTestId } = render(
       <MetalHubServerDetailsContent {...defaultProps} />
     );
     const row = TestUtils.select("TransferDetailsTable__Row-")!;
     expect(row).toBeTruthy();
     expect(getAllByTestId("Arrow")[0].textContent).toBe("Orientation: down");
-    row.click();
+    await act(async () => {
+      row.click();
+    });
     expect(getAllByTestId("Arrow")[0].textContent).toBe("Orientation: up");
 
-    row.click();
+    await act(async () => {
+      row.click();
+    });
     expect(getAllByTestId("Arrow")[0].textContent).toBe("Orientation: down");
   });
 

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import userEvent from "@testing-library/user-event";
@@ -45,7 +45,7 @@ describe("FieldInput", () => {
     );
   });
 
-  it("renders string field with enumerator", () => {
+  it("renders string field with enumerator", async () => {
     const { rerender } = render(
       <FieldInput
         name="Field Name"
@@ -54,7 +54,9 @@ describe("FieldInput", () => {
         enum={["foo", "bar"]}
       />
     );
-    TestUtils.select("DropdownButton__Wrapper")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
     expect(TestUtils.selectAll("Dropdown__ListItem-")).toHaveLength(2);
     expect(TestUtils.select("Dropdown__ListItem-")?.textContent).toBe("foo");
     rerender(
@@ -122,7 +124,7 @@ describe("FieldInput", () => {
     expect(document.querySelector("input")?.getAttribute("type")).toBe("file");
   });
 
-  it("renders integer input", () => {
+  it("renders integer input", async () => {
     const { rerender } = render(
       <FieldInput
         name="Field Name"
@@ -143,7 +145,9 @@ describe("FieldInput", () => {
         value={5}
       />
     );
-    TestUtils.select("DropdownButton__Wrapper")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
     expect(TestUtils.selectAll("Dropdown__ListItem-")).toHaveLength(8);
     expect(TestUtils.selectAll("Dropdown__ListItem-")[1].textContent).toBe("2");
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe("5");
@@ -156,7 +160,7 @@ describe("FieldInput", () => {
     ).toBeTruthy();
   });
 
-  it("renders array dropdown", () => {
+  it("renders array dropdown", async () => {
     render(
       <FieldInput
         name="Field Name"
@@ -168,7 +172,9 @@ describe("FieldInput", () => {
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
       "bar, baz"
     );
-    TestUtils.select("DropdownButton__Wrapper")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
   });
 
   it("renders object field", () => {

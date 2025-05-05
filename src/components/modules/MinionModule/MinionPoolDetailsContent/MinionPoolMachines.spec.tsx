@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { render } from "@testing-library/react";
 import { MINION_POOL_MOCK } from "@tests/mocks/MinionPoolMock";
@@ -21,7 +21,7 @@ import TestUtils from "@tests/TestUtils";
 
 import MinionPoolMachines from "./MinionPoolMachines";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 describe("MinionPoolMachines", () => {
   let defaultProps: MinionPoolMachines["props"];
@@ -34,7 +34,7 @@ describe("MinionPoolMachines", () => {
     };
   });
 
-  const filterBy = (fromLabel: string, toLabel: string) => {
+  const filterBy = async (fromLabel: string, toLabel: string) => {
     let filterDropdown: HTMLElement | null = null;
     TestUtils.selectAll("DropdownLink__Label").forEach(element => {
       if (element.textContent === fromLabel) {
@@ -43,8 +43,10 @@ describe("MinionPoolMachines", () => {
     });
     expect(filterDropdown).toBeTruthy();
 
-    filterDropdown!.click();
-
+    await act(async () => {
+      filterDropdown!.click();
+    });
+  
     let filterItem: HTMLElement | null = null;
     TestUtils.selectAll("DropdownLink__ListItem-").forEach(element => {
       if (element.textContent === toLabel) {
@@ -52,7 +54,9 @@ describe("MinionPoolMachines", () => {
       }
     });
     expect(filterItem).toBeTruthy();
-    filterItem!.click();
+    await act(async () => {
+      filterItem!.click();
+    });
   };
 
   it("renders without crashing", () => {
@@ -65,14 +69,14 @@ describe("MinionPoolMachines", () => {
     ).toBeTruthy();
   });
 
-  it("filters correctly", () => {
+  it("filters correctly", async () => {
     render(<MinionPoolMachines {...defaultProps} />);
-    filterBy("All", "Allocated");
+    await filterBy("All", "Allocated");
     expect(
       TestUtils.selectAll("MinionPoolMachines__MachineWrapper").length
     ).toBe(1);
-
-    filterBy("Allocated", "Not Allocated");
+  
+    await filterBy("Allocated", "Not Allocated");
     expect(
       TestUtils.selectAll("MinionPoolMachines__MachineWrapper").length
     ).toBe(0);
@@ -88,7 +92,7 @@ describe("MinionPoolMachines", () => {
     expect(TestUtils.select("MinionPoolMachines__NoMachines")).toBeTruthy();
   });
 
-  it("handles row click", () => {
+  it("handles row click", async () => {
     render(<MinionPoolMachines {...defaultProps} />);
     const arrow = TestUtils.select(
       "Arrow__Wrapper",
@@ -97,10 +101,14 @@ describe("MinionPoolMachines", () => {
     expect(arrow).toBeTruthy();
     expect(arrow!.attributes.getNamedItem("orientation")!.value).toBe("down");
 
-    TestUtils.select("MinionPoolMachines__Row-")!.click();
+    await act(async () => {
+      TestUtils.select("MinionPoolMachines__Row-")!.click();
+    });
     expect(arrow!.attributes.getNamedItem("orientation")!.value).toBe("up");
 
-    TestUtils.select("MinionPoolMachines__Row-")!.click();
+    await act(async () => {
+      TestUtils.select("MinionPoolMachines__Row-")!.click();
+    });
     expect(arrow!.attributes.getNamedItem("orientation")!.value).toBe("down");
   });
 });

@@ -12,13 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 
 import TestUtils from "@tests/TestUtils";
 import NewItemDropdown from ".";
 
-jest.mock("react-router-dom", () => ({
+jest.mock("react-router", () => ({
   Link: "div",
 }));
 
@@ -31,8 +31,12 @@ describe("NewItemDropdown", () => {
   it("fires change", () => {
     const onChange = jest.fn();
     render(<NewItemDropdown onChange={onChange} />);
-    TestUtils.select("DropdownButton__Wrapper")!.click();
-    TestUtils.selectAll("NewItemDropdown__ListItem")[2].click();
+    act(() => {
+      TestUtils.select("DropdownButton__Wrapper")!.click();
+    });
+    act (() => {
+      TestUtils.selectAll("NewItemDropdown__ListItem")[2].click();
+    });
     expect(onChange).toBeCalledWith(
       expect.objectContaining({ value: "minionPool" })
     );
@@ -40,7 +44,9 @@ describe("NewItemDropdown", () => {
 
   it("has list items with 'to' property", () => {
     render(<NewItemDropdown onChange={() => {}} />);
-    TestUtils.select("DropdownButton__Wrapper")!.click();
+    act(() => {
+      TestUtils.select("DropdownButton__Wrapper")!.click();
+    });
     const listItems = TestUtils.selectAll("NewItemDropdown__ListItem");
     expect(listItems[0].getAttribute("to")).toBe("/wizard/migration");
     expect(listItems[1].getAttribute("to")).toBe("#");

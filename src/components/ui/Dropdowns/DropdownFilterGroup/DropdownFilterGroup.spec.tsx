@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import DropdownFilterGroup from "@src/components/ui/Dropdowns/DropdownFilterGroup";
 import TestUtils from "@tests/TestUtils";
@@ -42,7 +42,9 @@ describe("DropdownFilterGroup", () => {
   it("opens the DropdownLink component with the correct items", () => {
     render(<DropdownFilterGroup items={ITEMS} />);
     const dropdownLinks = TestUtils.selectAll("DropdownLink__LinkButton");
-    dropdownLinks[1].click();
+    act(() => {
+      dropdownLinks[1].click();
+    });
     expect(TestUtils.selectAll("DropdownLink__ListItem-")).toHaveLength(
       ITEMS[1].items.length
     );

@@ -20,7 +20,7 @@ import TestUtils from "@tests/TestUtils";
 
 import UserDetailsContent from "./";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 describe("UserDetailsContent", () => {
   let defaultProps: UserDetailsContent["props"];
