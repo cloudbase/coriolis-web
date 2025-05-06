@@ -14,7 +14,8 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
   return prev;
 }, {});
 
-envKeys['process.env'] = JSON.stringify(env);
+envKeys["process.env"] = JSON.stringify(env);
+const isDevelopment = process.env.NODE_ENV === "development";
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -37,10 +38,10 @@ module.exports = {
           },
           noErrorOnMissing: true,
         },
-      ]
+      ],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html"
+      template: "./public/index.html",
     }),
   ],
   resolve: {
@@ -55,7 +56,16 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        loader: require.resolve("babel-loader"),
+        use: [
+          {
+            loader: require.resolve("babel-loader"),
+            options: {
+              plugins: [
+                isDevelopment && require.resolve("react-refresh/babel"),
+              ].filter(Boolean),
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpe?g|svg|woff2?|ttf|eot)$/,
@@ -74,7 +84,7 @@ module.exports = {
   optimization: {
     splitChunks: {
       cacheGroups: {
-        vendor: {
+        defaultVendors: {
           test: /node_modules/,
           chunks: "initial",
           name: "vendor",

@@ -9,7 +9,7 @@ Cypress.Commands.add(
       fixtures: string[],
       callback: (results: any[]) => void,
       index = 0,
-      results: any[] = []
+      results: any[] = [],
     ) => {
       if (index >= fixtures.length) {
         callback(results);
@@ -21,7 +21,7 @@ Cypress.Commands.add(
       });
     };
     loadFixtures(fixtures, finalCallback);
-  }
+  },
 );
 
 const AUTH_RESOURCES = [
@@ -87,7 +87,7 @@ Cypress.Commands.add(
     for (const resource of resources) {
       cy.wait(`@${resource}`);
     }
-  }
+  },
 );
 
 Cypress.Commands.add("setProjectIdCookie", () => {
@@ -100,7 +100,7 @@ declare global {
     interface Chainable {
       loadFixtures(
         fixtures: string[],
-        finalCallback: (results: any[]) => void
+        finalCallback: (results: any[]) => void,
       ): Chainable<void>;
       mockAuth(options?: { filterResources?: string[] }): Chainable<void>;
       waitMockAuth(options?: { filterResources?: string[] }): Chainable<void>;

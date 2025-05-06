@@ -29,7 +29,7 @@ class NetworkStore {
     options?: {
       cache?: boolean;
       quietError?: boolean;
-    }
+    },
   ) {
     this.loading = true;
     this.networks = [];
@@ -38,7 +38,7 @@ class NetworkStore {
       const networks = await NetworkSource.loadNetworks(
         endpointId,
         environment,
-        options
+        options,
       );
       runInAction(() => {
         this.loading = false;

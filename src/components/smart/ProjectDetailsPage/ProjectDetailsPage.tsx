@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate, useParams } from "react-router";
 
 import type { User } from "@src/@types/User";
 import type { Project, Role } from "@src/@types/Project";
@@ -36,8 +37,8 @@ import projectImage from "./images/project.svg";
 const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: { params: { id: string } };
-  history: any;
+  id: string;
+  onNavigate: (path: string) => void;
 };
 type State = {
   showProjectModal: boolean;
@@ -77,11 +78,11 @@ class ProjectDetailsPage extends React.Component<Props, State> {
     const enabled = !user.enabled;
 
     await userStore.update(user.id, { enabled });
-    projectStore.getUsers(this.props.match.params.id);
+    projectStore.getUsers(this.props.id);
   }
 
   async handleUserRoleChange(user: User, roleId: string, toggled: boolean) {
-    const projectId = this.props.match.params.id;
+    const projectId = this.props.id;
     if (toggled) {
       await projectStore.assignUserRole(projectId, user.id, roleId);
     } else {
@@ -92,13 +93,10 @@ class ProjectDetailsPage extends React.Component<Props, State> {
 
   handleRemoveUser(user: User) {
     const roles = projectStore.roleAssignments
-      .filter(
-        a =>
-          a.scope.project && a.scope.project.id === this.props.match.params.id
-      )
+      .filter(a => a.scope.project && a.scope.project.id === this.props.id)
       .filter(a => a.user.id === user.id)
       .map(ra => ra.role.id);
-    projectStore.removeUser(this.props.match.params.id, user.id, roles);
+    projectStore.removeUser(this.props.id, user.id, roles);
   }
 
   handleEditProjectClick() {
@@ -110,24 +108,24 @@ class ProjectDetailsPage extends React.Component<Props, State> {
   }
 
   async handleProjectUpdateClick(project: Project) {
-    await projectStore.update(this.props.match.params.id, project);
+    await projectStore.update(this.props.id, project);
     this.setState({ showProjectModal: false });
   }
 
   async handleDeleteConfirmation() {
     this.setState({ showDeleteProjectAlert: false });
 
-    await projectStore.delete(this.props.match.params.id);
+    await projectStore.delete(this.props.id);
     if (
       userStore.loggedUser &&
-      this.props.match.params.id === userStore.loggedUser.project.id &&
+      this.props.id === userStore.loggedUser.project.id &&
       projectStore.projects.length > 0
     ) {
       await userStore.switchProject(projectStore.projects[0].id);
       projectStore.getProjects();
-      this.props.history.push("/projects");
+      this.props.onNavigate("/projects");
     } else {
-      this.props.history.push("/projects");
+      this.props.onNavigate("/projects");
     }
   }
 
@@ -142,10 +140,10 @@ class ProjectDetailsPage extends React.Component<Props, State> {
         roles.map(async r => {
           await userStore.assignUserToProjectWithRole(
             userId,
-            this.props.match.params.id,
-            r.id
+            this.props.id,
+            r.id,
           );
-        })
+        }),
       );
       this.loadData();
       this.setState({ addingMember: false, showAddMemberModal: false });
@@ -169,7 +167,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
   }
 
   loadData() {
-    const projectId = this.props.match.params.id;
+    const projectId = this.props.id;
     projectStore.getProjects();
     projectStore.getProjectDetails(projectId);
     projectStore.getUsers(projectId, true);
@@ -264,7 +262,7 @@ class ProjectDetailsPage extends React.Component<Props, State> {
             roles={projectStore.roles}
             projects={projectStore.projects}
             users={userStore.users.filter(
-              u => !projectStore.users.find(pu => pu.id === u.id)
+              u => !projectStore.users.find(pu => pu.id === u.id),
             )}
             onAddClick={(user, isNew, roles) => {
               this.handleAddMember(user, isNew, roles);
@@ -306,4 +304,11 @@ class ProjectDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default ProjectDetailsPage;
+function ProjectDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+
+  return <ProjectDetailsPage onNavigate={navigate} id={id!} />;
+}
+
+export default ProjectDetailsPageWithNavigate;

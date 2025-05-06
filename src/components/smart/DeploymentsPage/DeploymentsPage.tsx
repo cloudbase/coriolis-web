@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -44,8 +45,13 @@ type State = {
   showCancelDeploymentModal: boolean;
   showRecreateDeploymentsModal: boolean;
 };
+
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 @observer
-class DeploymentsPage extends React.Component<{ history: any }, State> {
+class DeploymentsPage extends React.Component<Props, State> {
   state: State = {
     showDeleteDeploymentModal: false,
     showCancelDeploymentModal: false,
@@ -93,14 +99,14 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
 
   getStatus(deploymentId: string): string {
     const deployment = deploymentStore.deployments.find(
-      m => m.id === deploymentId
+      m => m.id === deploymentId,
     );
     return deployment ? deployment.last_execution_status : "";
   }
 
   getDeploymentType(deploymentId: string): string {
     const deployment = deploymentStore.deployments.find(
-      m => m.id === deploymentId
+      m => m.id === deploymentId,
     );
     return deployment ? deployment.transfer_scenario_type : "";
   }
@@ -119,9 +125,9 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
 
   handleItemClick(item: DeploymentItem) {
     if (item.last_execution_status === "RUNNING") {
-      this.props.history.push(`/deployments/${item.id}/tasks`);
+      this.props.onNavigate(`/deployments/${item.id}/tasks`);
     } else {
-      this.props.history.push(`/deployments/${item.id}`);
+      this.props.onNavigate(`/deployments/${item.id}`);
     }
   }
 
@@ -162,14 +168,14 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
         } else {
           await deploymentStore.recreateFullCopy(deployment as any);
         }
-      })
+      }),
     );
 
     deploymentStore.getDeployments();
   }
 
   handleEmptyListButtonClick() {
-    this.props.history.push("/wizard/deployment");
+    this.props.onNavigate("/wizard/deployment");
   }
 
   handleModalOpen() {
@@ -206,13 +212,13 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
   itemFilterFunction(
     item: DeploymentItem,
     filterStatus?: string | null,
-    filterText?: string
+    filterText?: string,
   ) {
     if (
       (filterStatus !== "all" && item.last_execution_status !== filterStatus) ||
       !this.searchText(
         item,
-        (filterText?.toLowerCase && filterText.toLowerCase()) || ""
+        (filterText?.toLowerCase && filterText.toLowerCase()) || "",
       )
     ) {
       return false;
@@ -377,4 +383,10 @@ class DeploymentsPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default DeploymentsPage;
+function DeploymentsPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <DeploymentsPage onNavigate={navigate} />;
+}
+
+export default DeploymentsPageWithNavigate;

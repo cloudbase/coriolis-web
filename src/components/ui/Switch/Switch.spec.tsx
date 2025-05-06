@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 import { ThemePalette } from "@src/components/Theme";
@@ -28,7 +28,7 @@ describe("Switch", () => {
     expect(TestUtils.select("Switch__Label")?.textContent).toBe("On");
 
     rerender(
-      <Switch onChange={() => {}} checked={false} uncheckedLabel="Off" />
+      <Switch onChange={() => {}} checked={false} uncheckedLabel="Off" />,
     );
     expect(TestUtils.select("Switch__Label")?.textContent).toBe("Off");
   });
@@ -61,19 +61,21 @@ describe("Switch", () => {
     expect(onChange).toBeCalledWith(false);
   });
 
-  it("dispatches null when in tristate mode", () => {
+  it("dispatches null when in tristate mode", async () => {
     let value: boolean | null = true;
     const onChange = (newValue: boolean | null) => {
       value = newValue;
     };
     const { rerender } = render(
-      <Switch onChange={onChange} checked triState />
+      <Switch onChange={onChange} checked triState />,
     );
     const rerenderWithValue = () => {
       rerender(<Switch onChange={onChange} checked={value} triState />);
     };
 
-    TestUtils.select("Switch__InputWrapper")!.click();
+    await act(async () => {
+      TestUtils.select("Switch__InputWrapper")!.click();
+    });
     expect(value).toBe(null);
 
     rerenderWithValue();
@@ -81,7 +83,10 @@ describe("Switch", () => {
     expect(value).toBe(false);
 
     rerenderWithValue();
-    TestUtils.select("Switch__InputWrapper")!.click();
+
+    await act(async () => {
+      TestUtils.select("Switch__InputWrapper")!.click();
+    });
     expect(value).toBe(null);
 
     rerenderWithValue();
@@ -94,12 +99,12 @@ describe("Switch", () => {
     const getBackground = () =>
       TestUtils.rgbToHex(
         window.getComputedStyle(TestUtils.select("Switch__InputBackground")!)
-          .background
+          .background,
       );
     expect(getBackground()).toBe(ThemePalette.primary);
 
     rerender(
-      <Switch onChange={() => {}} checked={false} uncheckedColor="yellow" />
+      <Switch onChange={() => {}} checked={false} uncheckedColor="yellow" />,
     );
     expect(getBackground()).toBe("yellow");
 

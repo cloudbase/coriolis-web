@@ -36,7 +36,7 @@ describe("CopyMultilineValue", () => {
         useDangerousHtml
         onCopy={onCopy}
         value="this<br />is <b>OK</b>"
-      />
+      />,
     );
     TestUtils.select("CopyMultilineValue__Wrapper")!.click();
     expect(onCopy).toHaveBeenCalledWith("this\nis OK");

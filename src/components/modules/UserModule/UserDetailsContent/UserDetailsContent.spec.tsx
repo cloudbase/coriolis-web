@@ -20,7 +20,7 @@ import TestUtils from "@tests/TestUtils";
 
 import UserDetailsContent from "./";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 describe("UserDetailsContent", () => {
   let defaultProps: UserDetailsContent["props"];
@@ -58,7 +58,7 @@ describe("UserDetailsContent", () => {
       <UserDetailsContent
         {...defaultProps}
         projects={[{ ...USER_MOCK.project, id: "2" }]}
-      />
+      />,
     );
     expect(getByText(USER_MOCK.name)).toBeTruthy();
   });

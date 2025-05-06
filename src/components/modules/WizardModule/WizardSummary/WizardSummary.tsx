@@ -228,14 +228,14 @@ class WizardSummary extends React.Component<Props> {
         timeLabel = "every hour, every minute";
       } else {
         timeLabel = `at ${padNumber(
-          scheduleInfo.hour
+          scheduleInfo.hour,
         )} o'clock, every minute UTC`;
       }
     } else if (scheduleInfo.hour == null) {
       timeLabel = `every hour, at minute ${padNumber(scheduleInfo.minute)} UTC`;
     } else {
       timeLabel = `at ${padNumber(scheduleInfo.hour)}:${padNumber(
-        scheduleInfo.minute
+        scheduleInfo.minute,
       )} UTC`;
     }
 
@@ -296,8 +296,8 @@ class WizardSummary extends React.Component<Props> {
                   .map(n =>
                     LabelDictionary.get(
                       n,
-                      `${data.source ? data.source.type : ""}-source`
-                    )
+                      `${data.source ? data.source.type : ""}-source`,
+                    ),
                   )
                   .join(" - ");
                 const optionValue = fieldHelper.getValueAlias({
@@ -317,7 +317,7 @@ class WizardSummary extends React.Component<Props> {
           {this.renderObjectTable(
             data.sourceOptions,
             this.props.sourceSchema,
-            provider
+            provider,
           )}
         </OptionsList>
       </Section>
@@ -343,7 +343,7 @@ class WizardSummary extends React.Component<Props> {
 
     const deploymentFieldNames = deploymentFields.map(f => f.name);
     const filteredExecutionOptions = this.props.executionOptions.filter(
-      option => !deploymentFieldNames.includes(option.name)
+      option => !deploymentFieldNames.includes(option.name),
     );
 
     const allOptions = [...filteredExecutionOptions, ...deploymentFields];
@@ -362,8 +362,8 @@ class WizardSummary extends React.Component<Props> {
                     ? "Yes"
                     : "No"
                   : this.hasDefaultValue(option) && option.defaultValue
-                  ? "Yes"
-                  : "No"}
+                    ? "Yes"
+                    : "No"}
               </OptionValue>
             </Option>
           ))}
@@ -375,7 +375,7 @@ class WizardSummary extends React.Component<Props> {
   renderObjectTable(
     options: any,
     schema: Field[],
-    provider?: ProviderTypes | null
+    provider?: ProviderTypes | null,
   ) {
     if (!options) {
       return null;
@@ -383,7 +383,7 @@ class WizardSummary extends React.Component<Props> {
     const objectKeys: string[] = Object.keys(options).filter(
       key =>
         typeof options[key] === "object" &&
-        key !== INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS
+        key !== INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS,
     );
 
     return objectKeys.map(key =>
@@ -423,7 +423,7 @@ class WizardSummary extends React.Component<Props> {
             );
           })}
         </ObjectTable>
-      ) : null
+      ) : null,
     );
   }
 
@@ -457,7 +457,7 @@ class WizardSummary extends React.Component<Props> {
         {Object.keys(mappings).map(instanceId => {
           const instanceName =
             this.props.instancesDetails.find(
-              i => i.instance_name === instanceId || i.id === instanceId
+              i => i.instance_name === instanceId || i.id === instanceId,
             )?.name || instanceId;
           return (
             <Option key={instanceId}>
@@ -540,8 +540,8 @@ class WizardSummary extends React.Component<Props> {
                   .map(n =>
                     LabelDictionary.get(
                       n,
-                      `${data.target ? data.target.type : ""}-destination`
-                    )
+                      `${data.target ? data.target.type : ""}-destination`,
+                    ),
                   )
                   .join(" - ");
 
@@ -564,7 +564,7 @@ class WizardSummary extends React.Component<Props> {
           {this.renderObjectTable(
             data.destOptions,
             this.props.destinationSchema,
-            provider
+            provider,
           )}
         </OptionsList>
       </Section>
@@ -573,7 +573,7 @@ class WizardSummary extends React.Component<Props> {
 
   renderStorageSection(type: "backend" | "disk") {
     const storageMap = this.props.storageMap.filter(
-      mapping => mapping.type === type
+      mapping => mapping.type === type,
     );
     const disks = getDisks(this.props.instancesDetails, type);
 
@@ -590,7 +590,7 @@ class WizardSummary extends React.Component<Props> {
       .filter(d => d[fieldName])
       .map(disk => {
         const diskMapped = storageMap.find(
-          s => s.source[fieldName] === disk[fieldName]
+          s => s.source[fieldName] === disk[fieldName],
         );
         if (diskMapped) {
           return {
@@ -603,7 +603,7 @@ class WizardSummary extends React.Component<Props> {
       });
 
     fullStorageMap.sort((m1, m2) =>
-      String(m1.source[fieldName]).localeCompare(String(m2.source[fieldName]))
+      String(m1.source[fieldName]).localeCompare(String(m2.source[fieldName])),
     );
     fullStorageMap = fullStorageMap.filter(fsm => fsm.target && fsm.target.id);
     const title =

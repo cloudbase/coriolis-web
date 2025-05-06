@@ -107,7 +107,7 @@ type Props = {
   onDownloadClick: (
     logName: string,
     startDate?: Date | null,
-    endDate?: Date | null
+    endDate?: Date | null,
   ) => void;
   generatingDiagnostics: boolean;
   downloadingAll: boolean;
@@ -222,7 +222,7 @@ class DownloadsContent extends React.Component<Props, State> {
                 this.props.onDownloadClick(
                   log.log_name,
                   this.state.startDate,
-                  this.state.endDate
+                  this.state.endDate,
                 );
               }}
             />
@@ -253,7 +253,7 @@ class DownloadsContent extends React.Component<Props, State> {
               this.props.onDownloadClick(
                 "__all__",
                 this.state.startDate,
-                this.state.endDate
+                this.state.endDate,
               );
             }}
           >

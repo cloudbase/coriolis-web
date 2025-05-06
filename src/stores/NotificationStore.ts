@@ -33,7 +33,7 @@ class NotificationStore {
   @action alert(
     message: string,
     level?: AlertInfoLevel,
-    options?: AlertInfo["options"]
+    options?: AlertInfo["options"],
   ) {
     if (this.visibleErrors.find(e => e === message)) {
       return;

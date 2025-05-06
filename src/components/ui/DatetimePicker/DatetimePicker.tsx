@@ -109,7 +109,7 @@ class DatetimePicker extends React.Component<Props, State> {
       this.scrollableParent.removeEventListener(
         "scroll",
         this.handleScroll,
-        false
+        false,
       );
     }
   }
@@ -224,7 +224,7 @@ class DatetimePicker extends React.Component<Props, State> {
           }
         />
       </Portal>,
-      body
+      body,
     );
   }
 

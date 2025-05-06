@@ -16,6 +16,7 @@ import autobind from "autobind-decorator";
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router";
 
 import { TransferItem, ActionItem } from "@src/@types/MainItem";
 import { ProviderTypes } from "@src/@types/Providers";
@@ -59,8 +60,8 @@ const Wrapper = styled.div<any>``;
 
 type Props = {
   match: any;
-  location: { search: string };
-  history: any;
+  location?: { search: string };
+  onNavigate: (path: string) => void;
 };
 type WizardType = "migration" | "replica";
 type State = {
@@ -124,9 +125,9 @@ class WizardPage extends React.Component<Props, State> {
       Math.max(
         min,
         Math.floor(
-          (window.innerHeight - instancesTableDiff) / instancesItemHeight
-        )
-      )
+          (window.innerHeight - instancesTableDiff) / instancesItemHeight,
+        ),
+      ),
     );
   }
 
@@ -138,7 +139,7 @@ class WizardPage extends React.Component<Props, State> {
       providerStore.providers &&
       providerStore.providers[destProvider]
         ? !!providerStore.providers[destProvider].types.find(
-            t => t === providerTypes.STORAGE
+            t => t === providerTypes.STORAGE,
           )
         : false;
 
@@ -149,7 +150,7 @@ class WizardPage extends React.Component<Props, State> {
 
   get requiresWindowsImage() {
     return Boolean(
-      wizardStore.data.selectedInstances?.find(i => i.os_type === "windows")
+      wizardStore.data.selectedInstances?.find(i => i.os_type === "windows"),
     );
   }
 
@@ -198,8 +199,8 @@ class WizardPage extends React.Component<Props, State> {
     const typeLabel =
       this.state.type.charAt(0).toUpperCase() + this.state.type.substr(1);
     notificationStore.alert(
-      `${typeLabel}${items.length > 1 ? "s" : ""} was succesfully created`,
-      "success"
+      `${typeLabel}${items.length > 1 ? "s" : ""} was successfully created`,
+      "success",
     );
     let schedulePromise = Promise.resolve();
 
@@ -214,9 +215,9 @@ class WizardPage extends React.Component<Props, State> {
     if (items.length === 1) {
       const location = `/transfers/${items[0].id}/executions`;
       await schedulePromise;
-      this.props.history.push(location);
+      this.props.onNavigate(location);
     } else {
-      this.props.history.push(`/transfers`);
+      this.props.onNavigate(`/transfers`);
     }
   }
 
@@ -240,20 +241,21 @@ class WizardPage extends React.Component<Props, State> {
     });
     wizardStore.clearStorageMap();
     const type = isReplica ? "replica" : "migration";
-    this.props.history.replace(`/wizard/${type}`);
+    this.props.onNavigate(`/wizard/${type}`);
+    this.setState({ type });
   }
 
   handleStorageReloadClick() {
     endpointStore.loadStorage(
       wizardStore.data.target!.id,
-      wizardStore.data.destOptions
+      wizardStore.data.destOptions,
     );
   }
 
   handleBackClick() {
     this.setState({ nextButtonDisabled: false });
     const currentPageIndex = this.pages.findIndex(
-      p => p.id === wizardStore.currentPage.id
+      p => p.id === wizardStore.currentPage.id,
     );
 
     if (currentPageIndex === 0) {
@@ -268,7 +270,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleNextClick() {
     const currentPageIndex = this.pages.findIndex(
-      p => p.id === wizardStore.currentPage.id
+      p => p.id === wizardStore.currentPage.id,
     );
 
     if (currentPageIndex === this.pages.length - 1) {
@@ -325,7 +327,7 @@ class WizardPage extends React.Component<Props, State> {
     });
     wizardStore.fillWithDefaultValues(
       "destination",
-      providerStore.destinationSchema
+      providerStore.destinationSchema,
     );
     // Preload destination options values
     await providerStore.getOptionsValues({
@@ -337,14 +339,14 @@ class WizardPage extends React.Component<Props, State> {
     });
     wizardStore.fillWithDefaultValues(
       "destination",
-      providerStore.destinationSchema
+      providerStore.destinationSchema,
     );
     await this.loadExtraOptions({ type: "destination" });
   }
 
   handleAddEndpoint(
     newEndpointType: ProviderTypes,
-    newEndpointFromSource: boolean
+    newEndpointFromSource: boolean,
   ) {
     this.setState({
       showNewEndpointModal: true,
@@ -376,7 +378,7 @@ class WizardPage extends React.Component<Props, State> {
       instanceStore.reloadInstances(
         wizardStore.data.source,
         this.instancesPerPage,
-        wizardStore.data.sourceOptions
+        wizardStore.data.sourceOptions,
       );
     }
   }
@@ -416,7 +418,7 @@ class WizardPage extends React.Component<Props, State> {
   handleSourceOptionsChange(
     field: Field,
     value: any,
-    parentFieldName?: string
+    parentFieldName?: string,
   ) {
     wizardStore.updateData({ selectedInstances: [] });
     wizardStore.updateSourceOptions({ field, value, parentFieldName });
@@ -524,10 +526,13 @@ class WizardPage extends React.Component<Props, State> {
         executeOptions: [
           ...executeOptionsWithExecuteNow,
           ...deploymentFields,
-        ].reduce((acc, option) => {
-          acc[option.name] = option.defaultValue;
-          return acc;
-        }, {} as { [key: string]: any }),
+        ].reduce(
+          (acc, option) => {
+            acc[option.name] = option.defaultValue;
+            return acc;
+          },
+          {} as { [key: string]: any },
+        ),
       });
     }
   }
@@ -583,7 +588,7 @@ class WizardPage extends React.Component<Props, State> {
   async loadDataForPage(page: WizardPageType) {
     const loadOptions = async (
       endpoint: EndpointType,
-      optionsType: "source" | "destination"
+      optionsType: "source" | "destination",
     ) => {
       await providerStore.loadOptionsSchema({
         providerName: endpoint.type,
@@ -663,7 +668,7 @@ class WizardPage extends React.Component<Props, State> {
         // Preload storage API calls
         endpointStore.loadStorage(
           wizardStore.data.target!.id,
-          wizardStore.data.destOptions
+          wizardStore.data.destOptions,
         );
         this.loadNetworks(true);
         break;
@@ -704,7 +709,7 @@ class WizardPage extends React.Component<Props, State> {
     });
     if (success && wizardStore.createdItems) {
       this.handleCreationSuccess(
-        wizardStore.createdItems.filter(ObjectUtils.notEmpty)
+        wizardStore.createdItems.filter(ObjectUtils.notEmpty),
       );
     } else {
       this.setState({ nextButtonDisabled: false });
@@ -824,7 +829,7 @@ class WizardPage extends React.Component<Props, State> {
 
   handleCancelUploadedScript(
     global: string | null,
-    instanceName: string | null
+    instanceName: string | null,
   ) {
     wizardStore.cancelUploadedScript(global, instanceName);
   }
@@ -857,7 +862,7 @@ class WizardPage extends React.Component<Props, State> {
               wizardData={wizardStore.data}
               hasStorageMap={Boolean(this.pages.find(p => p.id === "storage"))}
               hasSourceOptions={Boolean(
-                this.pages.find(p => p.id === "source-options")
+                this.pages.find(p => p.id === "source-options"),
               )}
               defaultStorage={wizardStore.defaultStorage}
               storageMap={wizardStore.storageMap}
@@ -963,4 +968,11 @@ class WizardPage extends React.Component<Props, State> {
   }
 }
 
-export default WizardPage;
+function WizardPageWithNavigate() {
+  const navigate = useNavigate();
+  const params = useParams();
+
+  return <WizardPage onNavigate={navigate} match={params} />;
+}
+
+export default WizardPageWithNavigate;

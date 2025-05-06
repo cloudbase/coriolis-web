@@ -29,7 +29,7 @@ module.exports = {
               fix(fixer) {
                 return fixer.replaceText(
                   node.source,
-                  `'${source.replace(new RegExp(`/${componentName}$`), "")}'`
+                  `'${source.replace(new RegExp(`/${componentName}$`), "")}'`,
                 );
               },
             });

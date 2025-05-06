@@ -61,7 +61,7 @@ class NotificationStorage {
     };
     localStorage.setItem(
       this.storeName,
-      JSON.stringify([...currentItems, newItem])
+      JSON.stringify([...currentItems, newItem]),
     );
   }
 
@@ -71,7 +71,7 @@ class NotificationStorage {
       return;
     }
     storageData = storageData.filter(i =>
-      notificationItems.find(j => i.id === j.id)
+      notificationItems.find(j => i.id === j.id),
     );
     this.saveSeen(storageData);
   }
@@ -82,7 +82,7 @@ class DataUtils {
     const item_type = item.type === "transfer" ? "transfer" : "deployment";
     return `New ${item_type} ${item.id.substr(
       0,
-      7
+      7,
     )}... status: ${item.last_execution_status
       .toLowerCase()
       .replace(/_/g, " ")}`;
@@ -110,7 +110,7 @@ class NotificationSource {
     apiData.sort(
       (a, b) =>
         new Date(b.updated_at || b.created_at).getTime() -
-        new Date(a.updated_at || a.created_at).getTime()
+        new Date(a.updated_at || a.created_at).getTime(),
     );
 
     const notificationItems: NotificationItemData[] = apiData

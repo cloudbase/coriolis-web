@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { fireEvent, render } from "@testing-library/react";
 import { TASK_MOCK } from "@tests/mocks/ExecutionsMock";
@@ -73,7 +73,7 @@ describe("Tasks", () => {
           defaultProps.items[0],
           { ...defaultProps.items[1], status: "RUNNING" },
         ]}
-      />
+      />,
     );
     expect(taskItem.textContent).toContain("Open: true");
 
@@ -96,7 +96,7 @@ describe("Tasks", () => {
     expect(taskItem.textContent).toContain("Open: false");
   });
 
-  it("handles depends on click", () => {
+  it("handles depends on click", async () => {
     const { getByTestId } = render(<Tasks {...defaultProps} />);
     const firstTaskItem = getByTestId("TaskItem-task-id");
     const secondTaskItem = getByTestId("TaskItem-task-2");
@@ -109,10 +109,12 @@ describe("Tasks", () => {
     fireEvent.mouseUp(secondTaskItem);
     expect(secondTaskItem.textContent).toContain("Open: true");
     const dependsOn = secondTaskItem.querySelector(
-      "[data-testid='TaskItem-DependsOn']"
+      "[data-testid='TaskItem-DependsOn']",
     ) as HTMLElement;
     expect(dependsOn).toBeTruthy();
-    dependsOn!.click();
+    await act(async () => {
+      dependsOn!.click();
+    });
     expect(firstTaskItem.textContent).toContain("Open: true");
   });
 

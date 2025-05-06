@@ -23,7 +23,7 @@ describe("EmptyTemplate", () => {
     const { getByText } = render(
       <EmptyTemplate>
         <div>contentComponent</div>
-      </EmptyTemplate>
+      </EmptyTemplate>,
     );
     expect(getByText("contentComponent")).toBeTruthy();
   });

@@ -43,7 +43,7 @@ type Props = {
   itemFilterFunction: (
     item: any,
     filterStatus?: string | null,
-    filterState?: string
+    filterState?: string,
   ) => boolean;
   onSelectedItemsChange?: (items: any[]) => void;
   onPaginatedItemsChange?: (items: any[]) => void;
@@ -101,7 +101,7 @@ class FilterList extends React.Component<Props, State> {
           if (this.props.onPaginatedItemsChange) {
             this.props.onPaginatedItemsChange(this.paginatedItems);
           }
-        }
+        },
       );
       if (this.props.onSelectedItemsChange)
         this.props.onSelectedItemsChange([]);
@@ -116,7 +116,7 @@ class FilterList extends React.Component<Props, State> {
         if (this.props.onPaginatedItemsChange) {
           this.props.onPaginatedItemsChange(this.paginatedItems);
         }
-      }
+      },
     );
   }
 
@@ -129,7 +129,7 @@ class FilterList extends React.Component<Props, State> {
             configLoader.config.mainListItemsPerPage * this.state.currentPage &&
           i >=
             configLoader.config.mainListItemsPerPage *
-              (this.state.currentPage - 1)
+              (this.state.currentPage - 1),
       );
     }
     return paginatedItems;
@@ -164,7 +164,7 @@ class FilterList extends React.Component<Props, State> {
         if (this.props.onPaginatedItemsChange) {
           this.props.onPaginatedItemsChange(this.paginatedItems);
         }
-      }
+      },
     );
   }
 
@@ -179,7 +179,7 @@ class FilterList extends React.Component<Props, State> {
         if (this.props.onPaginatedItemsChange) {
           this.props.onPaginatedItemsChange(this.paginatedItems);
         }
-      }
+      },
     );
   }
 
@@ -212,13 +212,13 @@ class FilterList extends React.Component<Props, State> {
   filterItems(
     items: any[],
     filterStatus?: string | null,
-    filterText?: string
+    filterText?: string,
   ): any[] {
     const newFilterStatus = filterStatus || this.state.filterStatus;
     const newFilterText =
       typeof filterText === "undefined" ? this.state.filterText : filterText;
     const filteredItems = items.filter(item =>
-      this.props.itemFilterFunction(item, newFilterStatus, newFilterText)
+      this.props.itemFilterFunction(item, newFilterStatus, newFilterText),
     );
 
     return filteredItems;
@@ -236,7 +236,7 @@ class FilterList extends React.Component<Props, State> {
   renderPagination() {
     const itemsCount = this.state.items.length;
     const totalPages = Math.ceil(
-      itemsCount / configLoader.config.mainListItemsPerPage
+      itemsCount / configLoader.config.mainListItemsPerPage,
     );
     const hasNextPage =
       this.state.currentPage * configLoader.config.mainListItemsPerPage <

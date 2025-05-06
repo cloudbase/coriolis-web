@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { Project, RoleAssignment } from "@src/@types/Project";
 import { render } from "@testing-library/react";
@@ -21,7 +21,7 @@ import ProjectDetailsContent from "./";
 import { User } from "@src/@types/User";
 import TestUtils from "@tests/TestUtils";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 const PROJECT: Project = {
   id: "project-id",
@@ -72,9 +72,9 @@ describe("ProjectDetailsContent", () => {
   });
 
   describe("user actions", () => {
-    const openActionsDropdown = () => {
+    const openActionsDropdown = async () => {
       const dropdowns = TestUtils.selectAll("DropdownLink__LinkButton");
-      let actionsDropdown;
+      let actionsDropdown: HTMLElement | undefined;
 
       for (const dropdown of dropdowns) {
         if (dropdown.textContent?.includes("Actions")) {
@@ -82,14 +82,15 @@ describe("ProjectDetailsContent", () => {
           break;
         }
       }
-
       expect(actionsDropdown).toBeTruthy();
-      actionsDropdown?.click();
+      await act(async () => {
+        actionsDropdown?.click();
+      });
     };
 
-    const clickAction = (action: string) => {
+    const clickAction = async (action: string) => {
       const items = TestUtils.selectAll("DropdownLink__ListItem-");
-      let actionItem;
+      let actionItem: HTMLElement | undefined;
 
       for (const item of items) {
         if (item.textContent?.includes(action)) {
@@ -99,47 +100,53 @@ describe("ProjectDetailsContent", () => {
       }
 
       expect(actionItem).toBeTruthy();
-      actionItem?.click();
+      await act(async () => {
+        actionItem?.click();
+      });
     };
 
-    it("removes user", () => {
+    it("removes user", async () => {
       render(<ProjectDetailsContent {...defaultProps} />);
 
-      openActionsDropdown();
-      clickAction("Remove");
+      await openActionsDropdown();
+      await clickAction("Remove");
 
       expect(TestUtils.select("AlertModal__Message")).toBeTruthy();
-      TestUtils.select("AlertModal__Buttons")
-        ?.querySelectorAll("button")[1]
-        .click();
+      await act(async () => {
+        TestUtils.select("AlertModal__Buttons")
+          ?.querySelectorAll("button")[1]
+          .click();
+      });
 
       expect(defaultProps.onRemoveUser).toBeCalled();
     });
 
-    it("cancels removing user", () => {
+    it("cancels removing user", async () => {
       render(<ProjectDetailsContent {...defaultProps} />);
 
-      openActionsDropdown();
-      clickAction("Remove");
+      await openActionsDropdown();
+      await clickAction("Remove");
 
       expect(TestUtils.select("AlertModal__Message")).toBeTruthy();
-      TestUtils.select("AlertModal__Buttons")
-        ?.querySelectorAll("button")[0]
-        .click();
+      await act(async () => {
+        TestUtils.select("AlertModal__Buttons")
+          ?.querySelectorAll("button")[0]
+          .click();
+      });
 
       expect(defaultProps.onRemoveUser).not.toBeCalled();
     });
 
-    it("enables user", () => {
+    it("enables user", async () => {
       render(
         <ProjectDetailsContent
           {...defaultProps}
           users={[{ ...USER, enabled: false }]}
-        />
+        />,
       );
 
-      openActionsDropdown();
-      clickAction("Enable");
+      await openActionsDropdown();
+      await clickAction("Enable");
 
       expect(defaultProps.onEnableUser).toBeCalled();
     });
@@ -156,14 +163,14 @@ describe("ProjectDetailsContent", () => {
   it("renders loading", () => {
     render(<ProjectDetailsContent {...defaultProps} loading />);
     expect(
-      TestUtils.select("ProjectDetailsContent__LoadingWrapper")
+      TestUtils.select("ProjectDetailsContent__LoadingWrapper"),
     ).toBeTruthy();
   });
 
-  it("changes user role", () => {
+  it("changes user role", async () => {
     render(<ProjectDetailsContent {...defaultProps} />);
     const dropdowns = TestUtils.selectAll("DropdownLink__LinkButton");
-    let roleDropdown;
+    let roleDropdown: HTMLElement | undefined;
 
     for (const dropdown of dropdowns) {
       if (dropdown.textContent?.includes(ROLE_ASSIGNMENT.role.name)) {
@@ -173,10 +180,12 @@ describe("ProjectDetailsContent", () => {
     }
 
     expect(roleDropdown).toBeTruthy();
-    roleDropdown?.click();
+    await act(async () => {
+      roleDropdown?.click();
+    });
 
     const items = TestUtils.selectAll("DropdownLink__ListItem-");
-    let roleItem;
+    let roleItem: HTMLElement | undefined;
 
     for (const item of items) {
       if (item.textContent?.includes(ROLE_ASSIGNMENT.role.name)) {
@@ -186,12 +195,14 @@ describe("ProjectDetailsContent", () => {
     }
 
     expect(roleItem).toBeTruthy();
-    roleItem?.click();
+    await act(async () => {
+      roleItem?.click();
+    });
 
     expect(defaultProps.onUserRoleChange).toBeCalledWith(
       USER,
       ROLE_ASSIGNMENT.role.id,
-      false
+      false,
     );
   });
 });

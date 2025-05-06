@@ -222,11 +222,11 @@ class NewModal extends React.Component<Props> {
       React.cloneElement(child as React.ReactElement<any>, {
         onResizeUpdate: (
           scrollableRef: HTMLDivElement,
-          scrollOffset: number
+          scrollOffset: number,
         ) => {
           this.handleChildUpdate(scrollableRef, scrollOffset);
         },
-      })
+      }),
     );
 
     return (

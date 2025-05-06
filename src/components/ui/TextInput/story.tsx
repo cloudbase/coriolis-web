@@ -28,7 +28,6 @@ class StatefulInput extends React.Component<any> {
   render() {
     return (
       <TextInput
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         value={this.state.value}
         onChange={e => {

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import DateUtils from "@src/utils/DateUtils";
 import { render } from "@testing-library/react";
@@ -60,42 +60,46 @@ describe("MetalHubServerDetailsContent", () => {
     expect(
       getText(
         DateUtils.getLocalDate(METALHUB_SERVER_MOCK.created_at).toFormat(
-          "yyyy-LL-dd HH:mm:ss"
-        )
-      )
+          "yyyy-LL-dd HH:mm:ss",
+        ),
+      ),
     ).toBeTruthy();
 
     expect(
-      getText(`${METALHUB_SERVER_MOCK.physical_cores} physical`)
+      getText(`${METALHUB_SERVER_MOCK.physical_cores} physical`),
     ).toBeTruthy();
     expect(
-      getText(`${METALHUB_SERVER_MOCK.logical_cores} logical`)
+      getText(`${METALHUB_SERVER_MOCK.logical_cores} logical`),
     ).toBeTruthy();
     expect(
       getText(
-        `${METALHUB_SERVER_MOCK.os_info.os_name} ${METALHUB_SERVER_MOCK.os_info.os_version}`
-      )
+        `${METALHUB_SERVER_MOCK.os_info.os_name} ${METALHUB_SERVER_MOCK.os_info.os_version}`,
+      ),
     ).toBeTruthy();
   });
 
-  it("handles row click", () => {
+  it("handles row click", async () => {
     const { getAllByTestId } = render(
-      <MetalHubServerDetailsContent {...defaultProps} />
+      <MetalHubServerDetailsContent {...defaultProps} />,
     );
     const row = TestUtils.select("TransferDetailsTable__Row-")!;
     expect(row).toBeTruthy();
     expect(getAllByTestId("Arrow")[0].textContent).toBe("Orientation: down");
-    row.click();
+    await act(async () => {
+      row.click();
+    });
     expect(getAllByTestId("Arrow")[0].textContent).toBe("Orientation: up");
 
-    row.click();
+    await act(async () => {
+      row.click();
+    });
     expect(getAllByTestId("Arrow")[0].textContent).toBe("Orientation: down");
   });
 
   it("renders loading", () => {
     render(<MetalHubServerDetailsContent {...defaultProps} loading />);
     expect(
-      TestUtils.select("MetalHubServerDetailsContent__LoadingWrapper")
+      TestUtils.select("MetalHubServerDetailsContent__LoadingWrapper"),
     ).toBeTruthy();
   });
 });

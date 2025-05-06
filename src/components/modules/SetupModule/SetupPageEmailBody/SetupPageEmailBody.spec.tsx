@@ -64,8 +64,8 @@ describe("SetupPageEmailBody", () => {
     render(<SetupPageEmailBody {...defaultProps} />);
     expect(
       Array.from(document.querySelectorAll("*")).find(el =>
-        el.textContent?.includes(CUSTOMER_INFO_BASIC.fullName)
-      )
+        el.textContent?.includes(CUSTOMER_INFO_BASIC.fullName),
+      ),
     ).toBeTruthy();
   });
 

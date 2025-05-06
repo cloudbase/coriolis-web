@@ -69,7 +69,7 @@ class MinionPoolConfirmationModal extends React.Component<Props, State> {
       () => {
         this.props.onExecuteClick(this.state.force);
       },
-      2
+      2,
     );
   }
 

@@ -54,7 +54,7 @@ describe("TextInput", () => {
         onCloseClick={onCloseClick}
         value="sample"
         onChange={() => {}}
-      />
+      />,
     );
     expect(getDisplay()).toBe("block");
     getCloseEl().click();

@@ -131,11 +131,11 @@ class DashboardPieChart extends React.Component<Props> {
     this.sum = this.topData.reduce((total, item) => total + item.value, 0);
     if (this.sum === 0) {
       this.angles = this.topData.map(
-        () => Math.PI * ((1 / this.topData.length) * 2)
+        () => Math.PI * ((1 / this.topData.length) * 2),
       );
     } else {
       this.angles = this.topData.map(
-        item => Math.PI * ((item.value / this.sum) * 2)
+        item => Math.PI * ((item.value / this.sum) * 2),
       );
     }
     const halfSize = this.props.size / 2;

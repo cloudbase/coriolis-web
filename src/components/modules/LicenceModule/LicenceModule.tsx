@@ -209,7 +209,7 @@ class LicenceModule extends React.Component<Props, State> {
           e.preventDefault();
           this.setState({ highlightDropzone: false });
           const text = await FileUtils.readTextFromFirstFile(
-            e.dataTransfer.files
+            e.dataTransfer.files,
           );
           if (text) {
             this.handleLicenceChange(text);
@@ -424,7 +424,7 @@ class LicenceModule extends React.Component<Props, State> {
             __html: licenceImage(
               this.state.isValid
                 ? ThemePalette.primary
-                : ThemePalette.grayscale[5]
+                : ThemePalette.grayscale[5],
             ),
           }}
         />
@@ -472,7 +472,7 @@ class LicenceModule extends React.Component<Props, State> {
         {showInfo && this.props.licenceInfo && this.props.licenceServerStatus
           ? this.renderLicenceInfo(
               this.props.licenceInfo,
-              this.props.licenceServerStatus
+              this.props.licenceServerStatus,
             )
           : null}
         {showError && this.props.licenceError

@@ -53,7 +53,7 @@ describe("TaskItem", () => {
       <TaskItem
         {...defaultProps}
         item={{ ...TASK_MOCK, progress_updates: [] }}
-      />
+      />,
     );
     expect(getByText("-")).toBeTruthy();
   });
@@ -66,7 +66,7 @@ describe("TaskItem", () => {
           ...TASK_MOCK,
           progress_updates: [{ ...PROGRESS_UPDATE_MOCK, total_steps: null }],
         }}
-      />
+      />,
     );
     const progressBar = TestUtils.select("ProgressBar__Progress");
     expect(progressBar).toBeTruthy();
@@ -82,7 +82,7 @@ describe("TaskItem", () => {
             { ...PROGRESS_UPDATE_MOCK, total_steps: null, message: "test" },
           ],
         }}
-      />
+      />,
     );
     expect(TestUtils.select("ProgressBar__Progress")).toBeFalsy();
   });
@@ -109,7 +109,7 @@ describe("TaskItem", () => {
     render(<TaskItem {...defaultProps} />);
     const dependsOnValueElement = TestUtils.select(
       "TaskItem__Value",
-      TestUtils.select("TaskItem__DependsOnIds")!
+      TestUtils.select("TaskItem__DependsOnIds")!,
     )!;
     fireEvent.mouseDown(dependsOnValueElement);
     fireEvent.mouseUp(dependsOnValueElement);
@@ -123,12 +123,12 @@ describe("TaskItem", () => {
       <TaskItem
         {...defaultProps}
         item={{ ...TASK_MOCK, exception_details: "" }}
-      />
+      />,
     );
     expect(
       Array.from(TestUtils.selectAll("TaskItem__Label-")).find(
-        el => el.textContent === "Exception Details"
-      )?.nextElementSibling?.textContent
+        el => el.textContent === "Exception Details",
+      )?.nextElementSibling?.textContent,
     ).toBe("N/A");
   });
 });

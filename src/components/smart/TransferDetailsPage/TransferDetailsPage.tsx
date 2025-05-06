@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router";
 
 import {
   getTransferItemTitle,
@@ -57,7 +58,7 @@ const Wrapper = styled.div<any>``;
 
 type Props = {
   match: { params: { id: string; page: string | null } };
-  history: any;
+  onNavigate: (path: string) => void;
 };
 type State = {
   showOptionsModal: boolean;
@@ -112,10 +113,10 @@ class TransferDetailsPage extends React.Component<Props, State> {
             return;
           }
           const sourceEndpoint = endpointStore.endpoints.find(
-            e => e.id === this.transfer!.origin_endpoint_id
+            e => e.id === this.transfer!.origin_endpoint_id,
           );
           const destinationEndpoint = endpointStore.endpoints.find(
-            e => e.id === this.transfer!.destination_endpoint_id
+            e => e.id === this.transfer!.destination_endpoint_id,
           );
           if (!sourceEndpoint || !destinationEndpoint) {
             return;
@@ -243,10 +244,10 @@ class TransferDetailsPage extends React.Component<Props, State> {
     const sourceEndpointId = transferDetails.origin_endpoint_id;
     await ObjectUtils.waitFor(() => endpointStore.endpoints.length > 0);
     const sourceEndpoint = endpointStore.endpoints.find(
-      e => e.id === sourceEndpointId
+      e => e.id === sourceEndpointId,
     );
     const targetEndpoint = endpointStore.endpoints.find(
-      e => e.id === targetEndpointId
+      e => e.id === targetEndpointId,
     );
     if (!sourceEndpoint || !targetEndpoint || !providerStore.providers) {
       return;
@@ -256,10 +257,10 @@ class TransferDetailsPage extends React.Component<Props, State> {
     const isEditable =
       sourceProviderTypes && targetProviderTypes
         ? !!sourceProviderTypes.types.find(
-            t => t === providerTypes.SOURCE_UPDATE
+            t => t === providerTypes.SOURCE_UPDATE,
           ) &&
           !!targetProviderTypes.types.find(
-            t => t === providerTypes.TARGET_UPDATE
+            t => t === providerTypes.TARGET_UPDATE,
           )
         : false;
 
@@ -295,24 +296,24 @@ class TransferDetailsPage extends React.Component<Props, State> {
       {
         quietError: true,
         cache: options.cache,
-      }
+      },
     );
 
     const targetEndpoint = endpointStore.endpoints.find(
-      e => e.id === transfer.destination_endpoint_id
+      e => e.id === transfer.destination_endpoint_id,
     );
 
     const hasStorageMap = targetEndpoint
       ? providerStore.providers && providerStore.providers[targetEndpoint.type]
         ? !!providerStore.providers[targetEndpoint.type].types.find(
-            t => t === providerTypes.STORAGE
+            t => t === providerTypes.STORAGE,
           )
         : false
       : false;
     if (hasStorageMap) {
       endpointStore.loadStorage(
         transfer.destination_endpoint_id,
-        transfer.destination_environment
+        transfer.destination_environment,
       );
     }
 
@@ -333,10 +334,10 @@ class TransferDetailsPage extends React.Component<Props, State> {
       return true;
     }
     const originEndpoint = endpointStore.endpoints.find(
-      e => e.id === transfer.origin_endpoint_id
+      e => e.id === transfer.origin_endpoint_id,
     );
     const targetEndpoint = endpointStore.endpoints.find(
-      e => e.id === transfer.destination_endpoint_id
+      e => e.id === transfer.destination_endpoint_id,
     );
     const status = this.getStatus();
 
@@ -345,7 +346,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
         !targetEndpoint ||
         status === "RUNNING" ||
         status === "CANCELLING" ||
-        status === "AWAITING_MINION_ALLOCATIONS"
+        status === "AWAITING_MINION_ALLOCATIONS",
     );
   }
 
@@ -403,7 +404,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
     if (!transfer) {
       return;
     }
-    this.props.history.push("/transfers");
+    this.props.onNavigate("/transfers");
     transferStore.delete(transfer.id);
   }
 
@@ -421,7 +422,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
       return;
     }
     transferStore.deleteDisks(transfer.id);
-    this.props.history.push(`/transfers/${transfer.id}/executions`);
+    this.props.onNavigate(`/transfers/${transfer.id}/executions`);
   }
 
   handleCloseDeleteTransferDisksConfirmation() {
@@ -447,11 +448,11 @@ class TransferDetailsPage extends React.Component<Props, State> {
   handleScheduleChange(
     scheduleId: string | null,
     data: Schedule,
-    forceSave?: boolean
+    forceSave?: boolean,
   ) {
     const oldData = scheduleStore.schedules.find(s => s.id === scheduleId);
     const unsavedData = scheduleStore.unsavedSchedules.find(
-      s => s.id === scheduleId
+      s => s.id === scheduleId,
     );
 
     if (scheduleId) {
@@ -491,7 +492,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
 
   handleCancelExecution(
     confirmationItem?: Execution | null,
-    force?: boolean | null
+    force?: boolean | null,
   ) {
     if (force) {
       this.setState({ confirmationItem, showForceCancelConfirmation: true });
@@ -548,7 +549,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
         userScriptData: transfer.user_scripts,
         minionPoolMappings,
       });
-      this.props.history.push(`/deployments/${deployment.id}/tasks/`);
+      this.props.onNavigate(`/deployments/${deployment.id}/tasks/`);
     } finally {
       this.setState({ deploying: false });
     }
@@ -564,7 +565,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
       await transferStore.execute(transfer.id, fields);
 
       this.handleCloseOptionsModal();
-      this.props.history.push(`/transfers/${transfer.id}/executions`);
+      this.props.onNavigate(`/transfers/${transfer.id}/executions`);
     } finally {
       this.setState({ executing: false });
     }
@@ -611,7 +612,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
   }
 
   handleUpdateComplete(redirectTo: string) {
-    this.props.history.push(redirectTo);
+    this.props.onNavigate(redirectTo);
     this.closeEditModal();
   }
 
@@ -632,10 +633,10 @@ class TransferDetailsPage extends React.Component<Props, State> {
       return null;
     }
     const sourceEndpoint = endpointStore.endpoints.find(
-      e => e.id === transfer.origin_endpoint_id
+      e => e.id === transfer.origin_endpoint_id,
     );
     const destinationEndpoint = endpointStore.endpoints.find(
-      e => e.id === transfer.destination_endpoint_id
+      e => e.id === transfer.destination_endpoint_id,
     );
 
     if (!this.state.showEditModal || !destinationEndpoint || !sourceEndpoint) {
@@ -670,8 +671,8 @@ class TransferDetailsPage extends React.Component<Props, State> {
     const editTitle = providerStore.providersLoading
       ? "Loading providers data"
       : !this.state.isEditable
-      ? "One of the platform plugins doesn't support editing transfer option."
-      : null;
+        ? "One of the platform plugins doesn't support editing transfer option."
+        : null;
     const dropdownActions: DropdownAction[] = [
       {
         label: "Execute",
@@ -843,8 +844,8 @@ class TransferDetailsPage extends React.Component<Props, State> {
                 p ===
                 endpointStore.endpoints.find(
                   e =>
-                    e.id === transferStore.transferDetails?.origin_endpoint_id
-                )?.type
+                    e.id === transferStore.transferDetails?.origin_endpoint_id,
+                )?.type,
             )}
             onCancelClick={() => {
               this.handleCloseOptionsModal();
@@ -868,7 +869,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
               minionPools={minionPoolStore.minionPools.filter(
                 m =>
                   m.endpoint_id === this.transfer?.destination_endpoint_id &&
-                  m.platform === "destination"
+                  m.platform === "destination",
               )}
               loadingInstances={instanceStore.loadingInstancesDetails}
               instances={instanceStore.instancesDetails}
@@ -951,4 +952,20 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
   }
 }
 
-export default TransferDetailsPage;
+function TransferDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id, page } = useParams();
+
+  if (!id) {
+    throw new Error("The 'id' parameter is required but was not provided.");
+  }
+
+  return (
+    <TransferDetailsPage
+      onNavigate={navigate}
+      match={{ params: { id, page: page || null } }}
+    />
+  );
+}
+
+export default TransferDetailsPageWithNavigate;

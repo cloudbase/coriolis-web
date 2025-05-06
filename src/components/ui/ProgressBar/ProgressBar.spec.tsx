@@ -21,7 +21,7 @@ describe("ProgressBar", () => {
   it("renders the progress indicator with the correct width", () => {
     render(<ProgressBar progress={33} />);
     const style = window.getComputedStyle(
-      TestUtils.select("ProgressBar__Progress-")!
+      TestUtils.select("ProgressBar__Progress-")!,
     );
     expect(style.width).toBe("33%");
   });
@@ -29,7 +29,7 @@ describe("ProgressBar", () => {
   it("shows progress label", () => {
     render(<ProgressBar progress={33} useLabel />);
     expect(TestUtils.select("ProgressBar__ProgressLabel")?.textContent).toBe(
-      "33 %"
+      "33 %",
     );
   });
 });

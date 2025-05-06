@@ -32,6 +32,5 @@ const endpoints: any = [
 ];
 const props: any = {};
 storiesOf("WizardEndpointList", module).add("default", () => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <WizardEndpointList providers={providers} endpoints={endpoints} {...props} />
 ));

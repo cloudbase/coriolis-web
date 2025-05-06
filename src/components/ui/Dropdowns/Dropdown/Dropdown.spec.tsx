@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import Dropdown from "@src/components/ui/Dropdowns/Dropdown";
 import TestUtils from "@tests/TestUtils";
@@ -32,17 +32,21 @@ describe("Dropdown", () => {
   it("opens the dropdown list with the correct number of items", () => {
     render(<Dropdown items={ITEMS} />);
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "Select an item"
+      "Select an item",
     );
     const button = TestUtils.select("DropdownButton__Wrapper");
     expect(button).toBeTruthy();
-    button?.click();
+    act(() => {
+      button?.click();
+    });
     expect(TestUtils.selectAll("Dropdown__ListItem-").length).toBe(3);
   });
 
   it("displays duplicated label", () => {
     render(<Dropdown items={ITEMS} />);
-    TestUtils.select("DropdownButton__Wrapper")?.click();
+    act(() => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
     expect(TestUtils.selectAll("Dropdown__DuplicatedLabel").length).toBe(2);
     const duplicatedItems = [ITEMS[1], ITEMS[2]];
     TestUtils.selectAll("Dropdown__DuplicatedLabel").forEach((item, index) => {
@@ -53,7 +57,7 @@ describe("Dropdown", () => {
   it("renders selected item", () => {
     render(<Dropdown items={ITEMS} selectedItem={ITEMS[0]} />);
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "Label A 1"
+      "Label A 1",
     );
   });
 
@@ -61,9 +65,13 @@ describe("Dropdown", () => {
     const onChange = jest.fn();
     render(<Dropdown items={ITEMS} onChange={onChange} />);
     const button = TestUtils.select("DropdownButton__Wrapper");
-    button!.click();
+    act(() => {
+      button!.click();
+    });
     const items = TestUtils.selectAll("Dropdown__ListItem-");
-    items[1]!.click();
+    act(() => {
+      items[1]!.click();
+    });
     expect(onChange).toHaveBeenCalledWith(ITEMS[1]);
   });
 });

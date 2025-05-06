@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import NotificationDropdown from "@src/components/ui/Dropdowns/NotificationDropdown";
 
 import type { NotificationItemData } from "@src/@types/NotificationItem";
 import TestUtils from "@tests/TestUtils";
 
-jest.mock("react-router-dom", () => ({ Link: "div" }));
+jest.mock("react-router", () => ({ Link: "div" }));
 
 const ITEMS: NotificationItemData[] = [
   {
@@ -52,63 +52,71 @@ describe("NotificationDropdown", () => {
     expect(TestUtils.select("NotificationDropdown__BellIcon")).toBeTruthy();
   });
 
-  it("shows items on click", () => {
+  it("shows items on click", async () => {
     render(<NotificationDropdown items={ITEMS} onClose={() => {}} />);
-    TestUtils.select("NotificationDropdown__Icon")!.click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")!.click();
+    });
     const listItems = TestUtils.selectAll("NotificationDropdown__ListItem");
     expect(listItems[0].getAttribute("to")).toBe(
-      `/${ITEMS[0].type}s/${ITEMS[0].id}`
+      `/${ITEMS[0].type}s/${ITEMS[0].id}`,
     );
     expect(listItems[1].getAttribute("to")).toBe(
-      `/${ITEMS[1].type}s/${ITEMS[1].id}`
+      `/${ITEMS[1].type}s/${ITEMS[1].id}`,
     );
     expect(listItems[2].getAttribute("to")).toBe(
-      `/${ITEMS[2].type}s/${ITEMS[2].id}/executions`
+      `/${ITEMS[2].type}s/${ITEMS[2].id}/executions`,
     );
     expect(
       TestUtils.select("NotificationDropdown__ItemTransferBadge", listItems[2])!
-        .textContent
+        .textContent,
     ).toBe("TR");
     expect(
       TestUtils.select("NotificationDropdown__ItemTitle", listItems[2])!
-        .textContent
+        .textContent,
     ).toBe(ITEMS[2].name);
     expect(
       TestUtils.select("NotificationDropdown__ItemDescription", listItems[2])!
-        .textContent
+        .textContent,
     ).toBe(ITEMS[2].description);
   });
 
-  it("fires onClose on item click", () => {
+  it("fires onClose on item click", async () => {
     const onClose = jest.fn();
     render(<NotificationDropdown items={ITEMS} onClose={onClose} />);
-    TestUtils.select("NotificationDropdown__Icon")!.click();
-    TestUtils.selectAll("NotificationDropdown__ListItem")[1].click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")!.click();
+    });
+    await act(async () => {
+      TestUtils.selectAll("NotificationDropdown__ListItem")[1].click();
+    });
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("renders unseed badge", () => {
+  it("renders unseed badge", async () => {
     render(<NotificationDropdown items={ITEMS} onClose={() => {}} />);
-    TestUtils.select("NotificationDropdown__Icon")!.click();
+    await act(async () => {
+      TestUtils.select("NotificationDropdown__Icon")!.click();
+    });
     const listItems = TestUtils.selectAll("NotificationDropdown__ListItem");
     expect(
-      TestUtils.select("NotificationDropdown__Badge", listItems[0])
+      TestUtils.select("NotificationDropdown__Badge", listItems[0]),
     ).toBeFalsy();
     expect(
-      TestUtils.select("NotificationDropdown__Badge", listItems[1])
+      TestUtils.select("NotificationDropdown__Badge", listItems[1]),
     ).toBeTruthy();
   });
 
   it("renders loading when item is RUNNING", () => {
     const { rerender } = render(
-      <NotificationDropdown items={ITEMS} onClose={() => {}} />
+      <NotificationDropdown items={ITEMS} onClose={() => {}} />,
     );
     expect(TestUtils.select("NotificationDropdown__Loading")).toBeTruthy();
     rerender(
       <NotificationDropdown
         items={ITEMS.map(item => ({ ...item, status: "COMPLETED" }))}
         onClose={() => {}}
-      />
+      />,
     );
     expect(TestUtils.select("NotificationDropdown__Loading")).toBeFalsy();
   });

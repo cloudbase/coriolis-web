@@ -8,7 +8,6 @@ module.exports = api => {
       "@babel/react",
     ],
     plugins: [
-      "react-hot-loader/babel",
       [
         "@babel/plugin-proposal-decorators",
         {
@@ -20,6 +19,16 @@ module.exports = api => {
       "@babel/plugin-proposal-optional-chaining",
     ],
   };
+
+  if (process.env.NODE_ENV === "development") {
+    common.plugins.push([
+      "react-refresh/babel",
+      {
+        skipEnvCheck: true,
+      },
+    ]);
+  }
+
   if (
     process.env.NODE_ENV === "development" ||
     process.env.NODE_ENV === "test"

@@ -45,7 +45,7 @@ type NetworkMapSourceDest = {
   };
 };
 export const isNetworkMapSecurityGroups = (
-  n: any
+  n: any,
 ): n is NetworkMapSecurityGroups =>
   typeof n !== "string" && n && n.security_groups;
 export const isNetworkMapSourceDest = (n: any): n is NetworkMapSourceDest =>

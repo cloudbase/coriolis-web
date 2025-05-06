@@ -21,14 +21,14 @@ describe("DropdownButton", () => {
   it("renders the value", () => {
     render(<DropdownButton value="The Value" />);
     expect(TestUtils.select("DropdownButton__Label")?.textContent).toBe(
-      "The Value"
+      "The Value",
     );
   });
 
   it("fires click on click", () => {
     const onClick = jest.fn();
     const { getByText } = render(
-      <DropdownButton value="The Value" onClick={onClick} />
+      <DropdownButton value="The Value" onClick={onClick} />,
     );
     getByText("The Value").click();
     expect(onClick).toHaveBeenCalled();
@@ -37,12 +37,12 @@ describe("DropdownButton", () => {
   it("doesn't fire click if disabled or disabledLoading", () => {
     const onClick = jest.fn();
     const { getByText, rerender } = render(
-      <DropdownButton value="The Value" onClick={onClick} disabled />
+      <DropdownButton value="The Value" onClick={onClick} disabled />,
     );
     getByText("The Value").click();
     expect(onClick).not.toHaveBeenCalled();
     rerender(
-      <DropdownButton value="The Value" onClick={onClick} disabledLoading />
+      <DropdownButton value="The Value" onClick={onClick} disabledLoading />,
     );
     getByText("The Value").click();
     expect(onClick).not.toHaveBeenCalled();

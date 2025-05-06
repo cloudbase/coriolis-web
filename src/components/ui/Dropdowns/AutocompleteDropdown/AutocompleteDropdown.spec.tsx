@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TestUtils from "@tests/TestUtils";
@@ -37,30 +37,32 @@ describe("AutocompleteDropdown", () => {
     userEvent.type(document.querySelector("input")!, "Label B");
 
     expect(TestUtils.selectAll("AutocompleteDropdown__ListItem-").length).toBe(
-      3
+      3,
     );
     TestUtils.selectAll("AutocompleteDropdown__ListItem-").forEach(item => {
       expect(item.textContent).toContain("Label B");
     });
   });
 
-  it("fires change on autocomplete item click", () => {
+  it("fires change on autocomplete item click", async () => {
     const onChange = jest.fn();
     render(<AutocompleteDropdown items={ITEMS} onChange={onChange} />);
     userEvent.type(document.querySelector("input")!, "Label B");
 
-    TestUtils.selectAll("AutocompleteDropdown__ListItem-")[1].click();
+    await act(async () => {
+      TestUtils.selectAll("AutocompleteDropdown__ListItem-")[1].click();
+    });
 
     expect(onChange).toHaveBeenCalledWith(ITEMS[3]);
   });
 
   it("display message if no items were found", () => {
     render(
-      <AutocompleteDropdown items={ITEMS} noItemsMessage="No results found!" />
+      <AutocompleteDropdown items={ITEMS} noItemsMessage="No results found!" />,
     );
     userEvent.type(document.querySelector("input")!, "Label Z");
     expect(
-      TestUtils.select("AutocompleteDropdown__SearchNotFound")?.textContent
+      TestUtils.select("AutocompleteDropdown__SearchNotFound")?.textContent,
     ).toBe("No results found!");
   });
 

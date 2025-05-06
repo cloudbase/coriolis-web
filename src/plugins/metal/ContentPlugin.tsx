@@ -19,7 +19,7 @@ import type { Field } from "@src/@types/Field";
 
 import { Endpoint, Validation } from "@src/@types/Endpoint";
 import { ThemePalette } from "@src/components/Theme";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import {
   Wrapper,
   renderFields,
@@ -66,11 +66,10 @@ class ContentPlugin extends React.Component<Props> {
     this.props.onRef(undefined);
   }
 
-  // eslint-disable-next-line react/no-unused-class-component-methods
   findInvalidFields = () =>
     findInvalidFields(
       this.props.connectionInfoSchema,
-      this.props.getFieldValue
+      this.props.getFieldValue,
     );
 
   renderFields() {

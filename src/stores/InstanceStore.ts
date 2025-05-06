@@ -94,7 +94,7 @@ class InstanceStore {
     const chunkSize = configLoader.config.instancesListBackgroundLoading;
     const chunkCount = Math.max(
       chunkSize[endpoint.type] || chunkSize.default,
-      usableVmsPerPage
+      usableVmsPerPage,
     );
 
     const loadNextChunk = async (lastEndpointId?: string) => {
@@ -116,7 +116,7 @@ class InstanceStore {
           `There are one or more instances with invalid data (i.e. missing ID): ${invalidInstances
             .map(i => i.name || i.instance_name)
             .join(", ")}`,
-          "error"
+          "error",
         );
       }
 
@@ -197,7 +197,7 @@ class InstanceStore {
         i =>
           (i.instance_name || i.name)
             .toLowerCase()
-            .indexOf(searchText.toLowerCase()) > -1
+            .indexOf(searchText.toLowerCase()) > -1,
       );
       this.searchNotFound = Boolean(this.searchedInstances.length === 0);
       this.currentPage = 1;
@@ -210,7 +210,7 @@ class InstanceStore {
     const chunkSize = configLoader.config.instancesListBackgroundLoading;
     const chunkCount = Math.max(
       chunkSize[endpoint.type] || chunkSize.default,
-      this.instancesPerPage
+      this.instancesPerPage,
     );
 
     const loadNextChunk = async (lastEndpointId?: string) => {
@@ -233,13 +233,13 @@ class InstanceStore {
           `There are one or more instances with invalid data (i.e. missing ID): ${invalidInstances
             .map(i => i.name || i.instance_name)
             .join(", ")}`,
-          "error"
+          "error",
         );
       }
       const shouldContinue = this.searchInstancesSuccess(
         instances,
         instances.length + invalidInstances.length,
-        chunkCount
+        chunkCount,
       );
       if (shouldContinue) {
         loadNextChunk(instances[instances.length - 1].id);
@@ -251,7 +251,7 @@ class InstanceStore {
   @action searchInstancesSuccess(
     instances: Instance[],
     instancesCount: number,
-    chunkCount: number
+    chunkCount: number,
   ): boolean {
     this.searchedInstances = [...this.searchedInstances, ...instances];
     this.searching = false;
@@ -297,7 +297,7 @@ class InstanceStore {
       endpointId: string;
       instanceIds: string[];
       env?: any;
-    }[]
+    }[],
   ) {
     this.reqId = !this.reqId ? 1 : this.reqId + 1;
     this.instancesDetails = [];
@@ -322,16 +322,16 @@ class InstanceStore {
               }
               runInAction(() => {
                 this.instancesDetails = this.instancesDetails.filter(
-                  id => (id.instance_name || id.id) !== instanceId
+                  id => (id.instance_name || id.id) !== instanceId,
                 );
                 this.instancesDetails.push(instance);
                 this.instancesDetails = this.instancesDetails
                   .slice()
                   .sort(n => n.name.localeCompare(n.name));
               });
-            })
+            }),
           );
-        })
+        }),
       );
     } finally {
       this.loadingInstancesDetails = false;
@@ -367,21 +367,21 @@ class InstanceStore {
       this.loadingInstancesDetails = false;
       if (this.instancesDetails.find(i => i.id === instance.id)) {
         this.instancesDetails = this.instancesDetails.filter(
-          i => i.id !== instance.id
+          i => i.id !== instance.id,
         );
       }
       this.instancesDetails = [...this.instancesDetails, instance];
       this.instancesDetails = this.instancesDetails
         .slice()
         .sort((a, b) =>
-          (a.instance_name || a.name).localeCompare(b.instance_name || b.name)
+          (a.instance_name || a.name).localeCompare(b.instance_name || b.name),
         );
     });
   }
 
   @action removeInstanceDetails(instance: Instance) {
     this.instancesDetails = this.instancesDetails.filter(
-      i => i.id !== instance.id
+      i => i.id !== instance.id,
     );
   }
 
@@ -410,8 +410,8 @@ class InstanceStore {
 
     instances.sort((a, b) =>
       (a.instance_name || a.name || a.id).localeCompare(
-        b.instance_name || b.name || b.id
-      )
+        b.instance_name || b.name || b.id,
+      ),
     );
 
     const count = instances.length;
@@ -448,7 +448,7 @@ class InstanceStore {
 
               if (this.instancesDetails.find(i => i.id === instance.id)) {
                 this.instancesDetails = this.instancesDetails.filter(
-                  i => i.id !== instance.id
+                  i => i.id !== instance.id,
                 );
               }
               this.instancesDetails = [...this.instancesDetails, instance];
@@ -458,8 +458,8 @@ class InstanceStore {
                 .slice()
                 .sort((a, b) =>
                   (a.instance_name || a.name).localeCompare(
-                    b.instance_name || b.name
-                  )
+                    b.instance_name || b.name,
+                  ),
                 );
               resolve();
             }
@@ -475,7 +475,7 @@ class InstanceStore {
               resolve();
             }
           }
-        })
+        }),
       );
     });
   }

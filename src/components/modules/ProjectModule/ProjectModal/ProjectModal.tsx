@@ -83,7 +83,7 @@ class ProjectModal extends React.Component<Props, State> {
       () => {
         this.handleUpdateClick();
       },
-      2
+      2,
     );
   }
 
@@ -131,7 +131,7 @@ class ProjectModal extends React.Component<Props, State> {
         disabled={this.props.loading}
         required={field.required}
         highlight={Boolean(
-          this.state.highlightFieldNames.find(n => n === field.name)
+          this.state.highlightFieldNames.find(n => n === field.name),
         )}
       />
     );
@@ -144,21 +144,21 @@ class ProjectModal extends React.Component<Props, State> {
         this.state.name,
         name => {
           this.setState({ name });
-        }
+        },
       ),
       this.renderField(
         { name: "description" },
         this.state.description,
         description => {
           this.setState({ description });
-        }
+        },
       ),
       this.renderField(
         { name: "Enabled", type: "boolean" },
         this.state.enabled,
         enabled => {
           this.setState({ enabled });
-        }
+        },
       ),
     ];
 

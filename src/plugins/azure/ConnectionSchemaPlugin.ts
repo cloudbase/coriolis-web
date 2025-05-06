@@ -41,11 +41,11 @@ const azureConnectionParse = (schema: any) => {
     f =>
       f.type !== "object" &&
       f.name !== "secret_ref" &&
-      Object.keys(f).findIndex(k => k === "enum") === -1
+      Object.keys(f).findIndex(k => k === "enum") === -1,
   );
 
   const subscriptionIdField = commonFields.find(
-    f => f.name === "subscription_id"
+    f => f.name === "subscription_id",
   );
   if (subscriptionIdField) {
     subscriptionIdField.required = true;
@@ -76,10 +76,10 @@ const azureConnectionParse = (schema: any) => {
     ...schema.properties.cloud_profile,
     custom_cloud_fields: [
       ...defaultSchemaToFields(
-        schema.properties.custom_cloud_properties.properties.endpoints
+        schema.properties.custom_cloud_properties.properties.endpoints,
       ),
       ...defaultSchemaToFields(
-        schema.properties.custom_cloud_properties.properties.suffixes
+        schema.properties.custom_cloud_properties.properties.suffixes,
       ),
     ],
   };
@@ -93,7 +93,7 @@ const azureConnectionParse = (schema: any) => {
         return 1;
       }
       return a.name.localeCompare(b.name);
-    }
+    },
   );
 
   return [radioGroup, cloudProfileDropdown];
@@ -113,7 +113,7 @@ export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
     const loginType = data.login_type || "user_credentials";
     connectionInfo[loginType] = fieldsToPayload(
       data,
-      schema.properties[loginType]
+      schema.properties[loginType],
     );
 
     if (!data.cloud_profile) {
@@ -125,13 +125,13 @@ export default class ConnectionSchemaParser extends ConnectionSchemaParserBase {
         endpoints: {
           ...fieldsToPayloadUseDefaults(
             data,
-            schema.properties.custom_cloud_properties.properties.endpoints
+            schema.properties.custom_cloud_properties.properties.endpoints,
           ),
         },
         suffixes: {
           ...fieldsToPayloadUseDefaults(
             data,
-            schema.properties.custom_cloud_properties.properties.suffixes
+            schema.properties.custom_cloud_properties.properties.suffixes,
           ),
         },
       };

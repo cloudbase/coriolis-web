@@ -18,6 +18,6 @@ export type CustomerInfoTrial = {
 export type CustomerInfoFull = CustomerInfoBasic & CustomerInfoTrial;
 
 export const isCustomerInfoFull = (
-  customerInfo: CustomerInfoFull | CustomerInfoBasic
+  customerInfo: CustomerInfoFull | CustomerInfoBasic,
 ): customerInfo is CustomerInfoFull =>
   (<CustomerInfoFull>customerInfo).interestedIn !== undefined;

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate, useParams } from "react-router";
 
 import type { User } from "@src/@types/User";
 import DetailsTemplate from "@src/components/modules/TemplateModule/DetailsTemplate";
@@ -34,8 +35,8 @@ import userImage from "./images/user.svg";
 const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: { params: { id: string } };
-  history: any;
+  id: string;
+  onNavigate: (path: string) => void;
 };
 type State = {
   showUserModal: boolean;
@@ -57,8 +58,8 @@ class UserDetailsPage extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
-    if (newProps.match.params.id !== this.props.match.params.id) {
-      this.loadData(newProps.match.params.id);
+    if (newProps.id !== this.props.id) {
+      this.loadData(newProps.id);
     }
   }
 
@@ -81,8 +82,8 @@ class UserDetailsPage extends React.Component<Props, State> {
   }
 
   async handleDeleteConfirmation() {
-    await userStore.delete(this.props.match.params.id);
-    this.props.history.push("/users");
+    await userStore.delete(this.props.id);
+    this.props.onNavigate("/users");
   }
 
   handleUserEditModalClose() {
@@ -90,8 +91,8 @@ class UserDetailsPage extends React.Component<Props, State> {
   }
 
   async handleUserUpdateClick(user: User) {
-    await userStore.update(this.props.match.params.id, user);
-    userStore.getProjects(this.props.match.params.id);
+    await userStore.update(this.props.id, user);
+    userStore.getProjects(this.props.id);
     this.setState({ showUserModal: false, editPassword: false });
   }
 
@@ -105,8 +106,8 @@ class UserDetailsPage extends React.Component<Props, State> {
 
   loadData(id?: string) {
     projectStore.getProjects();
-    userStore.getProjects(id || this.props.match.params.id);
-    userStore.getUserInfo(id || this.props.match.params.id);
+    userStore.getProjects(id || this.props.id);
+    userStore.getUserInfo(id || this.props.id);
   }
 
   render() {
@@ -211,4 +212,11 @@ class UserDetailsPage extends React.Component<Props, State> {
   }
 }
 
-export default UserDetailsPage;
+function UserDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+
+  return <UserDetailsPage onNavigate={navigate} id={id!} />;
+}
+
+export default UserDetailsPageWithNavigate;

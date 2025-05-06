@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { render } from "@testing-library/react";
 
 import NavigationMini from "./";
 import TestUtils from "@tests/TestUtils";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/components/modules/NavigationModule/Navigation", () => ({
   __esModule: true,
   default: (props: any) => (
@@ -36,7 +36,9 @@ describe("NavigationMini", () => {
   it("toggles the menu", () => {
     const { getByTestId } = render(<NavigationMini />);
     expect(getByTestId("navigation").textContent).toBe("open: false");
-    TestUtils.select("NavigationMini__MenuImage")!.click();
+    act(() => {
+      TestUtils.select("NavigationMini__MenuImage")!.click();
+    });
     expect(getByTestId("navigation").textContent).toBe("open: true");
   });
 });

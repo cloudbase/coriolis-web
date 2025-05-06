@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observer } from "mobx-react";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import styled from "styled-components";
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
@@ -127,7 +127,7 @@ class UserDetailsContent extends React.Component<Props> {
   }
 
   renderUserProjects(
-    projects: { label: string; id: string }[]
+    projects: { label: string; id: string }[],
   ): React.ReactNode {
     return projects.map((project, i) => (
       <span key={project.id}>
@@ -150,7 +150,7 @@ class UserDetailsContent extends React.Component<Props> {
 
     const { user } = this.props;
     const primaryProject = this.props.projects.find(
-      p => user.project_id === p.id
+      p => user.project_id === p.id,
     );
     const primaryProjectName = primaryProject
       ? primaryProject.name

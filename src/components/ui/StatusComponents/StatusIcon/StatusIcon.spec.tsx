@@ -24,12 +24,12 @@ describe("StatusIcon", () => {
   it("renders RUNNING status", () => {
     render(<StatusIcon status="RUNNING" />);
     const background = window.getComputedStyle(
-      TestUtils.select("StatusIcon__Wrapper")!
+      TestUtils.select("StatusIcon__Wrapper")!,
     ).backgroundImage;
     expect(background).toContain(
       encodeURIComponent(
-        progressImage(ThemePalette.grayscale[3], ThemePalette.primary)
-      )
+        progressImage(ThemePalette.grayscale[3], ThemePalette.primary),
+      ),
     );
   });
 
@@ -41,7 +41,7 @@ describe("StatusIcon", () => {
   `("renders $image image for $status status", ({ status, image }) => {
     render(<StatusIcon status={status} />);
     const background = window.getComputedStyle(
-      TestUtils.select("StatusIcon__Wrapper")!
+      TestUtils.select("StatusIcon__Wrapper")!,
     ).backgroundImage;
     expect(background).toBe(`url(${image})`);
   });
@@ -54,7 +54,7 @@ describe("StatusIcon", () => {
   `("renders hollow image $image for $status status", ({ status, image }) => {
     render(<StatusIcon status={status} hollow />);
     const background = window.getComputedStyle(
-      TestUtils.select("StatusIcon__Wrapper")!
+      TestUtils.select("StatusIcon__Wrapper")!,
     ).backgroundImage;
     expect(background).toBe(`url(${image})`);
   });
@@ -62,12 +62,12 @@ describe("StatusIcon", () => {
   it("uses white background if specified", () => {
     render(<StatusIcon status="CANCELLING" useBackground />);
     const background = window.getComputedStyle(
-      TestUtils.select("StatusIcon__Wrapper")!
+      TestUtils.select("StatusIcon__Wrapper")!,
     ).backgroundImage;
     expect(background).toContain(
       encodeURIComponent(
-        progressImage(ThemePalette.grayscale[3], ThemePalette.warning, true)
-      )
+        progressImage(ThemePalette.grayscale[3], ThemePalette.warning, true),
+      ),
     );
   });
 });
