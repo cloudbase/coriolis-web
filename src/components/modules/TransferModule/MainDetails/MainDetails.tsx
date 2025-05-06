@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import styled, { css } from "styled-components";
 
 import fieldHelper from "@src/@types/Field";
