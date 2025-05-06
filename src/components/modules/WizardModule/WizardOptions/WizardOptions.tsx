@@ -16,7 +16,7 @@ import autobind from "autobind-decorator";
 import { toJS } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { CSSTransitionGroup } from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 import styled from "styled-components";
 
 import { MinionPool } from "@src/@types/MinionPool";
@@ -575,15 +575,14 @@ class WizardOptions extends React.Component<Props> {
           const getColumnInGroup = (field: any, fieldIndex: number) =>
             g.name ? fieldIndex % 2 : field.column;
           return (
-            <CSSTransitionGroup
+            <CSSTransition
               key={g.name || 0}
-              transitionName={i > 0 ? "field-group-transition" : ""}
-              transitionAppear
-              transitionEnterTimeout={250}
-              transitionAppearTimeout={250}
-              transitionLeaveTimeout={250}
+              classNames={i > 0 ? "field-group-transition" : ""}
+              appear
+              timeout={{ exit: 250, enter: 250, appear: 250 }}
               in={false}
             >
+            <div>
               <Group>
                 {g.name ? (
                   <GroupName>
@@ -605,7 +604,8 @@ class WizardOptions extends React.Component<Props> {
                   </Column>
                 </GroupFields>
               </Group>
-            </CSSTransitionGroup>
+              </div>
+            </CSSTransition>
           );
         })}
       </Fields>

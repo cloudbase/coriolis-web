@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as React from "react";
 import { Collapse } from "react-collapse";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import styled, { createGlobalStyle, css } from "styled-components";
 
 import { DeploymentItem, TransferItem, ActionItem } from "@src/@types/MainItem";

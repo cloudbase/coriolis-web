@@ -19,7 +19,7 @@ import type { Field } from "@src/@types/Field";
 
 import { Endpoint, Validation } from "@src/@types/Endpoint";
 import { ThemePalette } from "@src/components/Theme";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import {
   Wrapper,
   renderFields,

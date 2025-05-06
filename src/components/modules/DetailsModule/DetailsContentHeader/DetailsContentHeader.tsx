@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import { observer } from "mobx-react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import StatusPill from "@src/components/ui/StatusComponents/StatusPill";
 import ActionDropdown from "@src/components/ui/Dropdowns/ActionDropdown";

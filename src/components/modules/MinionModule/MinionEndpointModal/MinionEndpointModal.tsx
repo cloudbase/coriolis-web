@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import { observer } from "mobx-react";
 import styled from "styled-components";
-import { CSSTransitionGroup } from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 
 import Modal from "@src/components/ui/Modal";
 import { Providers, ProviderTypes } from "@src/@types/Providers";
@@ -67,10 +67,10 @@ const ProviderWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  &.providers-group-transition-leave {
+  &.providers-group-transition-exit {
     opacity: 1;
   }
-  &.providers-group-transition-leave-active {
+  &.providers-group-transition-exit-active {
     opacity: 0.01;
     transition: opacity 250ms ease-out;
   }
@@ -197,13 +197,13 @@ class MinionEndpointModal extends React.Component<Props, State> {
 
     return (
       <ContentWrapper>
-        <CSSTransitionGroup
-          transitionName="providers-group-transition"
-          transitionLeave
-          transitionEnter
-          transitionLeaveTimeout={250}
-          transitionEnterTimeout={250}
+        <CSSTransition
+          classNames="providers-group-transition"
+          exit
+          enter
+          timeout={{ exit: 250, enter: 250 }}
         >
+        <div>
           {availableProviders.map(providerName => (
             <ProviderWrapper key={providerName}>
               <EndpointLogos
@@ -230,7 +230,8 @@ class MinionEndpointModal extends React.Component<Props, State> {
               />
             </ProviderWrapper>
           ))}
-        </CSSTransitionGroup>
+          </div>
+        </CSSTransition>
       </ContentWrapper>
     );
   }

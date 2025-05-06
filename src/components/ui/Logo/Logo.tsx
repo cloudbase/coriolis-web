@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
 import styled, { css } from "styled-components";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import { ThemeProps } from "@src/components/Theme";
 import coriolisLargeImage from "./images/coriolis-large.svg";
