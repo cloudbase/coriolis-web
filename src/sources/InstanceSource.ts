@@ -24,7 +24,7 @@ import DomUtils from "@src/utils/DomUtils";
 class InstanceSource {
   removeInstancesFromCache(endpointId: string) {
     Api.removeFromCache(
-      `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`
+      `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`,
     );
   }
 
@@ -96,7 +96,7 @@ class InstanceSource {
 
   async loadInstances(
     endpointId: string,
-    cache?: boolean | null
+    cache?: boolean | null,
   ): Promise<Instance[]> {
     Api.cancelRequests(endpointId);
     const url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`;
@@ -127,7 +127,7 @@ class InstanceSource {
     let url = `${configLoader.config.servicesUrls.coriolis}/${
       Api.projectId
     }/endpoints/${endpointId}/instances/${DomUtils.encodeToBase64Url(
-      instanceId
+      instanceId,
     )}`;
     if (env) {
       url += `?env=${DomUtils.encodeToBase64Url(env)}`;

@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { observer } from "mobx-react";
 import styled, { css } from "styled-components";
 import autobind from "autobind-decorator";
@@ -197,7 +197,7 @@ class UserDropdown extends React.Component<Props, State> {
         m =>
           m.value === "users" &&
           !configLoader.config.disabledPages.find(p => p === "users") &&
-          (!m.requiresAdmin || isAdmin)
+          (!m.requiresAdmin || isAdmin),
       )
     ) {
       href = `/users/${this.props.user.id}`;

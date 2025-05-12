@@ -92,7 +92,7 @@ class Pagination extends React.Component<Props> {
 
   handleKeyDown(
     e: React.KeyboardEvent<HTMLDivElement>,
-    type: "previous" | "next"
+    type: "previous" | "next",
   ) {
     if (e.key !== " ") {
       return;

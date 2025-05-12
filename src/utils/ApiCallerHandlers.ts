@@ -48,7 +48,7 @@ class ApiCallerHandlers {
       const alertMessage =
         message ||
         `${error.response.statusText || error.response.status} ${truncateUrl(
-          this.setupOptions.url
+          this.setupOptions.url,
         )}`;
       const status =
         error.response.status && error.response.statusText
@@ -88,7 +88,7 @@ class ApiCallerHandlers {
     if (!isOnLoginPage() && !this.setupOptions.quietError) {
       notificationStore.alert(
         `Request failed, there might be a problem with the connection to the server. ${truncateUrl(
-          this.setupOptions.url
+          this.setupOptions.url,
         )}`,
         "error",
         {
@@ -101,7 +101,7 @@ class ApiCallerHandlers {
               },
             }),
           },
-        }
+        },
       );
     }
     logger.log({
@@ -137,7 +137,7 @@ class ApiCallerHandlers {
     });
     notificationStore.alert(
       `Request failed, there might be a problem with the connection to the server. ${truncateUrl(
-        this.setupOptions.url
+        this.setupOptions.url,
       )}`,
       "error",
       {
@@ -148,7 +148,7 @@ class ApiCallerHandlers {
             error: { message: "Something happened in setting up the request" },
           }),
         },
-      }
+      },
     );
     return error;
   }

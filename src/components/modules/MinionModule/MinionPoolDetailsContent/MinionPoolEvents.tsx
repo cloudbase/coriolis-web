@@ -128,7 +128,7 @@ class MinionPoolEvents extends React.Component<Props, State> {
     return this.state.allEvents
       .filter(
         (event: any) =>
-          shouldFilterByEventType(event) && shouldFilterByLevel(event)
+          shouldFilterByEventType(event) && shouldFilterByLevel(event),
       )
       .sort((a: any, b: any) => {
         if (a.index && b.index && this.state.filterBy !== "all") {
@@ -154,7 +154,7 @@ class MinionPoolEvents extends React.Component<Props, State> {
 
   static getDerivedStateFromProps(
     props: Props,
-    state: State
+    state: State,
   ): Partial<State> | null {
     if (!props.item) {
       return null;
@@ -233,7 +233,7 @@ class MinionPoolEvents extends React.Component<Props, State> {
               </RowData>
               <RowData width="192px" secondary>
                 {DateUtils.getLocalDate(event.created_at).toFormat(
-                  "yyyy-LL-dd HH:mm:ss"
+                  "yyyy-LL-dd HH:mm:ss",
                 )}
               </RowData>
             </Row>
@@ -252,7 +252,7 @@ class MinionPoolEvents extends React.Component<Props, State> {
     }
     const totalPages = Math.ceil(
       this.filteredEventsWithoutPagination.length /
-        configLoader.config.maxMinionPoolEventsPerPage
+        configLoader.config.maxMinionPoolEventsPerPage,
     );
     return (
       <Pagination

@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -59,8 +60,13 @@ type State = {
   selectedServers: number[];
   showConfirmRemove: boolean;
 };
+
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 @observer
-class MetalHubServersPage extends React.Component<{ history: any }, State> {
+class MetalHubServersPage extends React.Component<Props, State> {
   state: State = {
     modalIsOpen: false,
     showNewServerModal: false,
@@ -123,7 +129,7 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
     await Promise.all(
       this.state.selectedServers.map(async serverId => {
         await metalHubStore.deleteServer(serverId);
-      })
+      }),
     );
     metalHubStore.getServers({ showLoading: true });
   }
@@ -132,7 +138,7 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
     await Promise.all(
       this.state.selectedServers.map(async serverId => {
         await metalHubStore.refreshServer(serverId);
-      })
+      }),
     );
     metalHubStore.getServers({ showLoading: true });
   }
@@ -150,12 +156,12 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
     });
     // find all the selected servers in the background instances
     const instances = instanceStore.backgroundInstances.filter(
-      i => selectedServers.map(s => String(s)).indexOf(i.id) > -1
+      i => selectedServers.map(s => String(s)).indexOf(i.id) > -1,
     );
     if (instances.length !== selectedServers.length) {
       notificationStore.alert(
         `Could not find all instances on endpoint '${endpoint.name}'`,
-        "error"
+        "error",
       );
       throw new Error("Instances not found");
     }
@@ -163,13 +169,13 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
       source: endpoint,
       selectedInstances: instances,
     };
-    this.props.history.push(
+    this.props.onNavigate(
       `/wizard/${type}/?d=${window.btoa(
         JSON.stringify({
           data,
           currentPage: wizardPages.find(p => p.id === "target"),
-        })
-      )}`
+        }),
+      )}`,
     );
   }
 
@@ -187,7 +193,7 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
   itemFilterFunction(
     item: MetalHubServer,
     status?: string | null,
-    filterText?: string
+    filterText?: string,
   ): boolean {
     const usabledFilterText = filterText?.toLowerCase() || "";
 
@@ -223,7 +229,7 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
 
   render() {
     const selectedServers = metalHubStore.servers.filter(s =>
-      this.state.selectedServers.includes(s.id)
+      this.state.selectedServers.includes(s.id),
     );
     const bulkActions: DropdownAction[] = [
       {
@@ -292,7 +298,7 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
                 />
               }
               onItemClick={(server: MetalHubServer) => {
-                this.props.history.push(`/bare-metal-servers/${server.id}`);
+                this.props.onNavigate(`/bare-metal-servers/${server.id}`);
               }}
               onReloadButtonClick={() => {
                 this.handleReloadButtonClick();
@@ -355,4 +361,10 @@ class MetalHubServersPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default MetalHubServersPage;
+function MetalHubServersPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <MetalHubServersPage onNavigate={navigate} />;
+}
+
+export default MetalHubServersPageWithNavigate;

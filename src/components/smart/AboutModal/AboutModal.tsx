@@ -106,7 +106,7 @@ class AboutModal extends React.Component<Props, State> {
     }
     await licenceStore.addLicence(
       licence,
-      licenceStore.licenceInfo.applianceId
+      licenceStore.licenceInfo.applianceId,
     );
     licenceStore.loadLicenceInfo();
     if (this.props.licenceAddMode) {
@@ -139,8 +139,8 @@ class AboutModal extends React.Component<Props, State> {
                 <Logo />
                 <Text>
                   <TextLine>
-                    © {new Date().getFullYear()} Cloudbase Solutions. All Rights
-                    Reserved.
+                    © {new Date().getFullYear()} Cloudbase Solutions. All
+                    Rights Reserved.
                   </TextLine>
                 </Text>
               </AboutContentWrapper>

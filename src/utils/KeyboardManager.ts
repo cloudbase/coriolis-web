@@ -20,7 +20,7 @@ const keyDownHandler = (evt: KeyboardEvent) => {
     maxPriority = Math.max(l.priority, maxPriority);
   });
   const prioritizedListeners = listeners.filter(
-    l => l.priority === maxPriority
+    l => l.priority === maxPriority,
   );
   prioritizedListeners.forEach(listener => {
     if (listener.callback && !window.handlingEnterKey) listener.callback(evt);
@@ -32,7 +32,7 @@ export default class KeyboardManager {
   static onKeyDown(
     id: string,
     callback: ((event: KeyboardEvent) => void) | null,
-    priority?: number
+    priority?: number,
   ) {
     if (!eventAdded) {
       eventAdded = true;
@@ -51,7 +51,7 @@ export default class KeyboardManager {
   static onEnter(
     id: string,
     callback: (evt: KeyboardEvent) => void,
-    priority?: number
+    priority?: number,
   ) {
     this.onKeyDown(
       `${id}-enter`,
@@ -60,14 +60,14 @@ export default class KeyboardManager {
           callback(evt);
         }
       },
-      priority
+      priority,
     );
   }
 
   static onEsc(
     id: string,
     callback: (evt: KeyboardEvent) => void,
-    priority?: number
+    priority?: number,
   ) {
     this.onKeyDown(
       `${id}-esc`,
@@ -76,13 +76,13 @@ export default class KeyboardManager {
           callback(evt);
         }
       },
-      priority
+      priority,
     );
   }
 
   static removeKeyDown(id: string) {
     listeners = listeners.filter(
-      l => l.id !== id && l.id !== `${id}-enter` && l.id !== `${id}-esc`
+      l => l.id !== id && l.id !== `${id}-enter` && l.id !== `${id}-esc`,
     );
   }
 }

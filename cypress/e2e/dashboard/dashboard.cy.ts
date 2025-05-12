@@ -43,22 +43,22 @@ describe("Dashboard", () => {
 
     cy.get("*[class^='DashboardActivity__Message']").should(
       "contain.text",
-      "There is no recent activity"
+      "There is no recent activity",
     );
 
     cy.fixture("licences/appliance-status.json").then(applianceStatus => {
       cy.get("*[class^='DashboardLicence__TopInfoDateTop']").should(
         "contain.text",
         `${DateTime.fromISO(
-          applianceStatus.appliance_licence_status.earliest_licence_expiry_time
+          applianceStatus.appliance_licence_status.earliest_licence_expiry_time,
         )
           .toFormat("LLL |yy")
-          .replace("|", "'")}`
+          .replace("|", "'")}`,
       );
 
       cy.get("*[class^='DashboardLicence__ChartHeaderCurrent']").should(
         "contain.text",
-        `${applianceStatus.appliance_licence_status.current_performed_replicas} Used Replica ${applianceStatus.appliance_licence_status.current_performed_migrations} Used Migrations`
+        `${applianceStatus.appliance_licence_status.current_performed_replicas} Used Replica ${applianceStatus.appliance_licence_status.current_performed_migrations} Used Migrations`,
       );
     });
 
@@ -83,15 +83,15 @@ describe("Dashboard", () => {
       results => {
         const [transfersFixture, endpointsFixture] = results;
         const replicasCount = transfersFixture.transfers.filter(
-          transfer => transfer.scenario === "replica"
+          transfer => transfer.scenario === "replica",
         ).length;
         const migrationsCount = transfersFixture.transfers.filter(
-          transfer => transfer.scenario === "live_migration"
+          transfer => transfer.scenario === "live_migration",
         ).length;
 
         cy.get("div[class^='DashboardInfoCount__CountBlock']").should(
           "contain.text",
-          `${replicasCount}Replicas${migrationsCount}Migrations${endpointsFixture.endpoints.length}Endpoints`
+          `${replicasCount}Replicas${migrationsCount}Migrations${endpointsFixture.endpoints.length}Endpoints`,
         );
 
         const checkItem = (type: "transfer", item: any) => {
@@ -99,15 +99,15 @@ describe("Dashboard", () => {
             "contain.text",
             `New ${type} ${item.id.substr(
               0,
-              7
-            )}... status: ${item.last_execution_status.toLowerCase()}`
+              7,
+            )}... status: ${item.last_execution_status.toLowerCase()}`,
           );
         };
 
         transfersFixture.transfers.forEach((transfer: any) => {
           checkItem("transfer", transfer);
         });
-      }
+      },
     );
   });
 });

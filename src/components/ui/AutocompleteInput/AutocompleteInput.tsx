@@ -42,8 +42,8 @@ const getBorder = (props: any) => {
       ${props.highlight
         ? ThemePalette.alert
         : props.disabled
-        ? ThemePalette.grayscale[0]
-        : ThemePalette.grayscale[3]};
+          ? ThemePalette.grayscale[0]
+          : ThemePalette.grayscale[3]};
   `;
 };
 
@@ -142,8 +142,8 @@ class AutocompleteInput extends React.Component<Props, State> {
             this.props.embedded
               ? "100%"
               : this.props.width
-              ? `${this.props.width - 40}px`
-              : "180px"
+                ? `${this.props.width - 40}px`
+                : "180px"
           }
           style={{
             marginLeft: this.props.embedded ? 0 : "16px",

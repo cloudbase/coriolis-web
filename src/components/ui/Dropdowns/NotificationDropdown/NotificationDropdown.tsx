@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { observer } from "mobx-react";
 import styled, { css } from "styled-components";
 import autobind from "autobind-decorator";
@@ -282,8 +282,8 @@ class NotificationDropdown extends React.Component<Props, State> {
               ? item.type === "transfer"
                 ? "/executions"
                 : item.type === "deployment"
-                ? "/tasks"
-                : ""
+                  ? "/tasks"
+                  : ""
               : "";
 
           return (
@@ -326,7 +326,7 @@ class NotificationDropdown extends React.Component<Props, State> {
 
   renderBell() {
     const isLoading = Boolean(
-      this.props.items.find(i => i.status === "RUNNING")
+      this.props.items.find(i => i.status === "RUNNING"),
     );
 
     return (
@@ -342,7 +342,7 @@ class NotificationDropdown extends React.Component<Props, State> {
         <BellIcon
           dangerouslySetInnerHTML={{
             __html: bellImage(
-              this.props.white ? "white" : ThemePalette.grayscale[2]
+              this.props.white ? "white" : ThemePalette.grayscale[2],
             ),
           }}
         />

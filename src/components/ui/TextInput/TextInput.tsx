@@ -46,7 +46,7 @@ const getInputWidth = (props: any) => {
 };
 const borderColor = (
   props: any,
-  defaultColor: string | undefined | null = ThemePalette.grayscale[3]
+  defaultColor: string | undefined | null = ThemePalette.grayscale[3],
 ) => (props.highlight ? ThemePalette.alert : defaultColor);
 const Input = styled.input<any>`
   width: ${props => getInputWidth(props)};
@@ -106,7 +106,7 @@ type Props = {
   highlight?: boolean;
   large?: boolean;
   onChange?: (
-    e: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }
+    e: React.ChangeEvent<HTMLInputElement> | { target: { value: string } },
   ) => void;
   placeholder?: string;
   type?: string;
@@ -127,7 +127,6 @@ type Props = {
 };
 const TextInput = (props: Props) => {
   const {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     _ref,
     value,
     onChange,
@@ -150,7 +149,6 @@ const TextInput = (props: Props) => {
         type="text"
         value={value}
         onChange={onChange}
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...otherProps}
         onKeyDown={onInputKeyDown}
         disabled={actualDisabled}

@@ -84,7 +84,6 @@ class TextArea extends React.Component<any> {
     return (
       <Wrapper>
         <Input
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
           disabled={this.props.disabled || this.props.disabledLoading}
           disabledLoading={this.props.disabledLoading}

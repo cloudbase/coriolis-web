@@ -22,7 +22,7 @@ import TestUtils from "@tests/TestUtils";
 
 import MinionPoolDetailsContent from "./MinionPoolDetailsContent";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   __esModule: true,
   default: (props: any) => (
@@ -34,7 +34,7 @@ jest.mock(
   () => ({
     __esModule: true,
     default: () => <div data-testid="MinionPoolEvents"></div>,
-  })
+  }),
 );
 
 describe("MinionPoolDetailsContent", () => {
@@ -66,7 +66,7 @@ describe("MinionPoolDetailsContent", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(
-      <MinionPoolDetailsContent {...defaultProps} />
+      <MinionPoolDetailsContent {...defaultProps} />,
     );
     expect(getByText(MINION_POOL_DETAILS_MOCK.id)).toBeTruthy();
     expect(getByText(MINION_POOL_DETAILS_MOCK.notes!)).toBeTruthy();
@@ -77,7 +77,7 @@ describe("MinionPoolDetailsContent", () => {
       <MinionPoolDetailsContent
         {...defaultProps}
         item={{ ...MINION_POOL_DETAILS_MOCK, status: "DEALLOCATED" }}
-      />
+      />,
     );
     getByText("Allocate").click();
     expect(defaultProps.onAllocate).toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe("MinionPoolDetailsContent", () => {
 
   it("renders events page", () => {
     const { getByTestId } = render(
-      <MinionPoolDetailsContent {...defaultProps} page="events" />
+      <MinionPoolDetailsContent {...defaultProps} page="events" />,
     );
     expect(getByTestId("MinionPoolEvents")).toBeTruthy();
   });

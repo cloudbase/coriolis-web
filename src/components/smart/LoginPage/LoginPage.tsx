@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import EmptyTemplate from "@src/components/modules/TemplateModule/EmptyTemplate";
 import Logo from "@src/components/ui/Logo";
@@ -100,7 +101,7 @@ const Disclaimer = styled.div<any>`
 `;
 
 type Props = {
-  history: any;
+  onNavigate: (path: string) => void;
 };
 
 type State = {
@@ -144,9 +145,9 @@ class LoginPage extends React.Component<Props, State> {
     const prevExp = /\?prev=(.*)/;
     const prevMatch = prevExp.exec(window.location.search);
     if (prevMatch) {
-      this.props.history.push(prevMatch[1]);
+      this.props.onNavigate(prevMatch[1]);
     } else {
-      this.props.history.push("/");
+      this.props.onNavigate("/");
     }
   }
 
@@ -180,4 +181,10 @@ class LoginPage extends React.Component<Props, State> {
   }
 }
 
-export default LoginPage;
+function LoginPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <LoginPage onNavigate={navigate} />;
+}
+
+export default LoginPageWithNavigate;

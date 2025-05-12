@@ -58,7 +58,7 @@ class MetalHubListHeader extends React.Component<Props> {
       const cleanFingerprint = this.props.fingerprint.replace(/\n/g, "");
       const fingerprintShortened = `${cleanFingerprint.slice(
         0,
-        12
+        12,
       )}...${cleanFingerprint.slice(-12)}`;
       valueContent = (
         <CopyValue value={cleanFingerprint} label={fingerprintShortened} />

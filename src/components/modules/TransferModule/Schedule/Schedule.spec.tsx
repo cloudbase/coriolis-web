@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import { DateTime } from "luxon";
-import React from "react";
+import React, { act } from "react";
 
 import DateUtils from "@src/utils/DateUtils";
 import { render } from "@testing-library/react";
@@ -45,90 +45,108 @@ describe("Schedule", () => {
     const { getByText } = render(<Schedule {...defaultProps} />);
     expect(getByText("Add Schedule")).toBeTruthy();
     expect(TestUtils.select("Schedule__Timezone-")?.textContent).toContain(
-      "all times inUTC"
+      "all times inUTC",
     );
   });
 
-  it("deletes a schedule", () => {
+  it("deletes a schedule", async () => {
     render(
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
-    TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    await act(async () => {
+      TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    });
     expect(TestUtils.select("AlertModal__Message-")?.textContent).toContain(
-      "delete this schedule?"
+      "delete this schedule?",
     );
     const modal = TestUtils.select("AlertModal__Wrapper-")!;
-    Array.from(modal.querySelectorAll("button"))
-      .find(b => b.textContent === "Yes")
-      ?.click();
+    await act(async () => {
+      Array.from(modal.querySelectorAll("button"))
+        .find(b => b.textContent === "Yes")
+        ?.click();
+    });
     expect(defaultProps.onRemove).toHaveBeenCalledWith(SCHEDULE_MOCK.id);
   });
 
-  it("dismisses the delete modal", () => {
+  it("dismisses the delete modal", async () => {
     render(
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
-    TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    await act(async () => {
+      TestUtils.select("ScheduleItem__DeleteButton-")?.click();
+    });
     expect(TestUtils.select("AlertModal__Message-")?.textContent).toContain(
-      "delete this schedule?"
+      "delete this schedule?",
     );
     const modal = TestUtils.select("AlertModal__Wrapper-")!;
-    Array.from(modal.querySelectorAll("button"))
-      .find(b => b.textContent === "No")
-      ?.click();
+    await act(async () => {
+      Array.from(modal.querySelectorAll("button"))
+        .find(b => b.textContent === "No")
+        ?.click();
+    });
     expect(defaultProps.onRemove).not.toHaveBeenCalled();
   });
 
-  it("changes execution options", () => {
+  it("changes execution options", async () => {
     render(
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     const optionsButton = Array.from(document.querySelectorAll("button")).find(
-      el => el.textContent === "•••"
+      el => el.textContent === "•••",
     );
-    optionsButton?.click();
+    await act(() => {
+      optionsButton?.click();
+    });
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
-      "Execution options"
+      "Execution options",
     );
     const modal = TestUtils.select("TransferExecutionOptions__Wrapper-")!;
-    TestUtils.select("Switch__InputWrapper-", modal)?.click();
+    await act(async () => {
+      TestUtils.select("Switch__InputWrapper-", modal)?.click();
+    });
     const yesButton = Array.from(modal.querySelectorAll("button")).find(
-      el => el.textContent === "Save"
+      el => el.textContent === "Save",
     );
     expect(yesButton).toBeTruthy();
-    yesButton!.click();
+    await act(async () => {
+      yesButton!.click();
+    });
     expect(defaultProps.onChange).toHaveBeenCalled();
   });
 
-  it("dismisses the execution options modal", () => {
+  it("dismisses the execution options modal", async () => {
     render(
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     const optionsButton = Array.from(document.querySelectorAll("button")).find(
-      el => el.textContent === "•••"
+      el => el.textContent === "•••",
     );
-    optionsButton?.click();
+    await act(() => {
+      optionsButton?.click();
+    });
     expect(TestUtils.select("Modal__Title-")?.textContent).toBe(
-      "Execution options"
+      "Execution options",
     );
     const modal = TestUtils.select("TransferExecutionOptions__Wrapper-")!;
     const noButton = Array.from(modal.querySelectorAll("button")).find(
-      el => el.textContent === "Cancel"
+      el => el.textContent === "Cancel",
     );
     expect(noButton).toBeTruthy();
-    noButton!.click();
+    await act(async () => {
+      noButton!.click();
+    });
     expect(defaultProps.onChange).not.toHaveBeenCalled();
   });
 
@@ -142,7 +160,7 @@ describe("Schedule", () => {
 
   it("adds a schedule with local timezone", () => {
     const { getByText } = render(
-      <Schedule {...defaultProps} timezone="local" />
+      <Schedule {...defaultProps} timezone="local" />,
     );
     getByText("Add Schedule").click();
     expect(defaultProps.onAddScheduleClick).toHaveBeenCalledWith({
@@ -155,27 +173,31 @@ describe("Schedule", () => {
     expect(TestUtils.select("Schedule__LoadingWrapper")).toBeTruthy();
   });
 
-  it("changes schedule", () => {
+  it("changes schedule", async () => {
     render(
       <Schedule
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
-      />
+      />,
     );
     const monthDropdown = TestUtils.select("DropdownButton__Wrapper-")!;
     expect(monthDropdown).toBeTruthy();
-    monthDropdown.click();
+    await act(async () => {
+      monthDropdown.click();
+    });
     const february = Array.from(
-      TestUtils.selectAll("Dropdown__ListItem-")!
+      TestUtils.selectAll("Dropdown__ListItem-")!,
     ).find(el => el.textContent === DateTime.local(2023, 2).monthLong);
     expect(february).toBeTruthy();
-    february!.click();
+    await act(async () => {
+      february!.click();
+    });
     expect(defaultProps.onChange).toHaveBeenCalledWith(
       SCHEDULE_MOCK.id,
       {
         schedule: { month: 2 },
       },
-      undefined
+      undefined,
     );
   });
 
@@ -185,7 +207,7 @@ describe("Schedule", () => {
         {...defaultProps}
         schedules={[{ ...SCHEDULE_MOCK, enabled: false }]}
         unsavedSchedules={[{ ...SCHEDULE_MOCK }]}
-      />
+      />,
     );
     TestUtils.select("ScheduleItem__SaveButton-")?.click();
     expect(defaultProps.onSaveSchedule).toHaveBeenCalled();
@@ -209,20 +231,20 @@ describe("Schedule", () => {
   it("renders primary no schedules", () => {
     render(<Schedule {...defaultProps} schedules={[]} />);
     expect(TestUtils.select("Schedule__NoSchedules-")?.textContent).toContain(
-      "has no Schedules"
+      "has no Schedules",
     );
   });
 
   it("renders secondary no schedules", () => {
     render(<Schedule {...defaultProps} schedules={[]} secondaryEmpty />);
     expect(TestUtils.select("Schedule__NoSchedules-")?.textContent).toContain(
-      "Schedule this Transfer"
+      "Schedule this Transfer",
     );
   });
 
   it("adds schedule from no schedules", () => {
     const { getByText, rerender } = render(
-      <Schedule {...defaultProps} schedules={[]} />
+      <Schedule {...defaultProps} schedules={[]} />,
     );
     getByText("Add Schedule").click();
     expect(defaultProps.onAddScheduleClick).toHaveBeenCalled();
@@ -231,15 +253,19 @@ describe("Schedule", () => {
     expect(getByText("Adding ...")).toBeTruthy();
   });
 
-  it("changes timezone", () => {
+  it("changes timezone", async () => {
     render(<Schedule {...defaultProps} />);
     const timezoneDropdown = TestUtils.select(
       "DropdownLink__LinkButton-",
-      TestUtils.select("Schedule__Timezone-")!
+      TestUtils.select("Schedule__Timezone-")!,
     )!;
     expect(timezoneDropdown).toBeTruthy();
-    timezoneDropdown.click();
-    TestUtils.select("DropdownLink__ListItem-")!.click();
+    await act(async () => {
+      timezoneDropdown.click();
+    });
+    await act(async () => {
+      TestUtils.select("DropdownLink__ListItem-")!.click();
+    });
     expect(defaultProps.onTimezoneChange).toHaveBeenCalled();
   });
 });

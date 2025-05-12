@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { observer } from "mobx-react";
 import styled from "styled-components";
 import autobind from "autobind-decorator";
@@ -202,8 +202,8 @@ class NewItemDropdown extends React.Component<Props, State> {
             i =>
               i.value === "users" &&
               (disabledPages.find(p => p === "users") ||
-                (i.requiresAdmin && !isAdmin))
-          )
+                (i.requiresAdmin && !isAdmin)),
+          ),
         ),
       },
       {
@@ -216,8 +216,8 @@ class NewItemDropdown extends React.Component<Props, State> {
             i =>
               i.value === "projects" &&
               (disabledPages.find(p => p === "users") ||
-                (i.requiresAdmin && !isAdmin))
-          )
+                (i.requiresAdmin && !isAdmin)),
+          ),
         ),
       },
     ];
@@ -226,7 +226,7 @@ class NewItemDropdown extends React.Component<Props, State> {
       <List>
         {items
           .filter(i =>
-            i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true
+            i.disabled ? !i.disabled : i.requiresAdmin ? isAdmin : true,
           )
           .map(item => (
             <ListItem

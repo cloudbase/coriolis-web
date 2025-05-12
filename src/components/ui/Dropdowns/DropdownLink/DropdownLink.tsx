@@ -245,7 +245,7 @@ class DropdownLink extends React.Component<Props, State> {
               .indexOf(this.state.searchText.toLowerCase()) > -1
           : item.value === Number(this.state.searchText)) ||
         item.label.toLowerCase().indexOf(this.state.searchText.toLowerCase()) >
-          -1
+          -1,
     );
   }
 
@@ -277,7 +277,7 @@ class DropdownLink extends React.Component<Props, State> {
       () => {
         this.updateListPosition();
         this.scrollIntoView();
-      }
+      },
     );
   }
 
@@ -301,7 +301,7 @@ class DropdownLink extends React.Component<Props, State> {
     }
 
     const itemIndex = this.props.items.findIndex(
-      i => i.value === this.props.selectedItem
+      i => i.value === this.props.selectedItem,
     );
     const child = this.listItemsRef.children[itemIndex] as
       | HTMLElement
@@ -468,7 +468,7 @@ class DropdownLink extends React.Component<Props, State> {
         {this.renderEmptySearch()}
         {this.renderListItems()}
       </List>,
-      body
+      body,
     );
   }
 
@@ -483,7 +483,7 @@ class DropdownLink extends React.Component<Props, State> {
         this.props.selectedItem != null
       ) {
         const item = this.props.items.find(
-          i => i.value === this.props.selectedItem
+          i => i.value === this.props.selectedItem,
         );
         if (item && item.label) {
           return item.label;
@@ -530,7 +530,7 @@ class DropdownLink extends React.Component<Props, State> {
               __html: arrowImageFunc(
                 this.props.secondary
                   ? ThemePalette.grayscale[3]
-                  : ThemePalette.primary
+                  : ThemePalette.primary,
               ),
             }}
           />

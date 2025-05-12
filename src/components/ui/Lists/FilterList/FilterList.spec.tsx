@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 import styled from "styled-components";
 import { render } from "@testing-library/react";
 import FilterList from "@src/components/ui/Lists/FilterList";
@@ -41,7 +41,7 @@ const FILTER_ITEMS = [
 const itemFilterFunction = (
   item: any,
   filterStatus?: string | null,
-  filterText?: string
+  filterText?: string,
 ) => {
   if (
     (filterStatus !== "all" && item.id.indexOf(filterStatus) === -1) ||
@@ -99,13 +99,15 @@ describe("FilterList", () => {
     expect(listItems).toHaveLength(2);
     expect(listItems[1].textContent).toBe(ITEMS[1].label);
     expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
-      "1 of 2"
+      "1 of 2",
     );
   });
 
-  it("filters items", () => {
+  it("filters items", async () => {
     render(FilterListWrap());
-    TestUtils.selectAll("MainListFilter__FilterItem")[3].click();
+    await act(async () => {
+      TestUtils.selectAll("MainListFilter__FilterItem")[3].click();
+    });
     const listItems = () =>
       TestUtils.selectAll("FilterListspec__MainListItem-");
     expect(listItems()).toHaveLength(2);
@@ -114,9 +116,9 @@ describe("FilterList", () => {
     userEvent.type(
       TestUtils.selectInput(
         "TextInput__Input",
-        TestUtils.select("SearchInput__Wrapper")!
+        TestUtils.select("SearchInput__Wrapper")!,
       )!,
-      "Item 3-a"
+      "Item 3-a",
     );
     expect(listItems()).toHaveLength(1);
     expect(listItems()[0].textContent).toBe(ITEMS[3].label);
@@ -124,22 +126,24 @@ describe("FilterList", () => {
     userEvent.type(
       TestUtils.selectInput(
         "TextInput__Input",
-        TestUtils.select("SearchInput__Wrapper")!
+        TestUtils.select("SearchInput__Wrapper")!,
       )!,
-      "gibberish"
+      "gibberish",
     );
     expect(TestUtils.select("MainList__NoResults")).toBeTruthy();
   });
 
-  it("goes to next page", () => {
+  it("goes to next page", async () => {
     render(FilterListWrap());
-    TestUtils.select("Pagination__PageNext")?.click();
+    await act(async () => {
+      TestUtils.select("Pagination__PageNext")?.click();
+    });
 
     expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
-      "2 of 2"
+      "2 of 2",
     );
     expect(
-      TestUtils.selectAll("FilterListspec__MainListItem-")[1].textContent
+      TestUtils.selectAll("FilterListspec__MainListItem-")[1].textContent,
     ).toBe(ITEMS[3].label);
   });
 
@@ -150,17 +154,19 @@ describe("FilterList", () => {
     expect(onItemClick).toHaveBeenCalledWith(ITEMS[1]);
   });
 
-  it("selects items", () => {
+  it("selects items", async () => {
     const onSelectedItemsChange = jest.fn();
     render(FilterListWrap({ onSelectedItemsChange }));
     const checkbox = TestUtils.selectAll(
-      "FilterListspec__MainListItem-"
+      "FilterListspec__MainListItem-",
     )[1].querySelector("input") as HTMLInputElement;
     expect(checkbox.checked).toBe(false);
-    checkbox.click();
+    await act(async () => {
+      checkbox.click();
+    });
     expect(checkbox.checked).toBe(true);
     expect(TestUtils.select("MainListFilter__SelectionText")?.textContent).toBe(
-      "1 of 4\u00a0test item(s) selected"
+      "1 of 4\u00a0test item(s) selected",
     );
     expect(onSelectedItemsChange).toHaveBeenCalledWith([ITEMS[1]]);
   });

@@ -281,7 +281,7 @@ class FieldInput extends React.Component<Props> {
 
   renderEnumDropdown(enumItems: EnumItem[]) {
     const useDictionary = LabelDictionary.enumFields.find(
-      f => f === this.props.name
+      f => f === this.props.name,
     );
     let items = enumItems.map(e => {
       if (isEnumSeparator(e)) {
@@ -316,7 +316,7 @@ class FieldInput extends React.Component<Props> {
       i =>
         !isEnumSeparator(i) &&
         // The default value might be set to an item's label instead of its value
-        (i.value === this.props.value || i.label === this.props.value)
+        (i.value === this.props.value || i.label === this.props.value),
     );
     const commonProps = {
       width: this.props.width,
@@ -333,20 +333,13 @@ class FieldInput extends React.Component<Props> {
     if (items.length < 10) {
       return (
         <Dropdown
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...commonProps}
           noSelectionMessage="Choose a value"
           dimFirstItem={this.props.addNullValue}
         />
       );
     }
-    return (
-      <AutocompleteDropdown
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...commonProps}
-        dimNullValue
-      />
-    );
+    return <AutocompleteDropdown {...commonProps} dimNullValue />;
   }
 
   renderArrayDropdown(enumItems: EnumItem[]) {

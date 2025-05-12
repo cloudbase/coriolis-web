@@ -48,7 +48,7 @@ describe("Generic", () => {
       const wrapper = TestUtils.select("Generic__Wrapper")!;
       const style = window.getComputedStyle(wrapper);
       expect(style.fontSize).toBe(expectedFontSize);
-    }
+    },
   );
 
   it.each`
@@ -63,7 +63,7 @@ describe("Generic", () => {
       const style = window.getComputedStyle(wrapper);
       expect(style.maxWidth).toBe(expectedLogoWidth);
       expect(style.maxHeight).toBe(expectedLogoHeight);
-    }
+    },
   );
 
   it("renders 32px with white color", () => {
@@ -82,7 +82,7 @@ describe("Generic", () => {
 
   it("doesn't render unsupported size", () => {
     const { container } = render(
-      <Generic {...defaultProps} size={{ w: 100, h: 100 }} />
+      <Generic {...defaultProps} size={{ w: 100, h: 100 }} />,
     );
     expect(container.firstChild).toBeNull();
   });

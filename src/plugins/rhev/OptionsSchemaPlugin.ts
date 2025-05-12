@@ -85,12 +85,12 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
   // @TODO - check if this override is necessary, aka this.migrationImageMapFieldName is used from this class
   override getDestinationEnv(
     options: { [prop: string]: any } | null,
-    oldOptions?: any
+    oldOptions?: any,
   ) {
     const migration_image_map_opt = defaultGetMigrationImageMap(
       options,
       oldOptions,
-      this.migrationImageMapFieldName
+      this.migrationImageMapFieldName,
     );
     console.log("RHEV Migration image map computation: ");
     console.log(migration_image_map_opt);

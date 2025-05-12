@@ -24,7 +24,6 @@ class Wrapper extends React.Component {
   render() {
     return (
       <DropdownFilter
-        // eslint-disable-next-line react/jsx-props-no-spreading
         {...this.props}
         searchValue={this.state.value}
         onSearchChange={(value: string) => {

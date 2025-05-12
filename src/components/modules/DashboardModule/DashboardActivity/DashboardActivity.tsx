@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as React from "react";
 import { observer } from "mobx-react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
@@ -112,8 +112,8 @@ class DashboardActivity extends React.Component<Props> {
                 ? item.type === "transfer"
                   ? "/executions"
                   : item.type === "deployment"
-                  ? "/tasks"
-                  : ""
+                    ? "/tasks"
+                    : ""
                 : "";
 
             return (
@@ -174,8 +174,8 @@ class DashboardActivity extends React.Component<Props> {
           {this.props.notificationItems.length === 0 && this.props.loading
             ? this.renderLoading()
             : this.props.notificationItems.length
-            ? this.renderList()
-            : this.renderNoItems()}
+              ? this.renderList()
+              : this.renderNoItems()}
         </Module>
       </Wrapper>
     );

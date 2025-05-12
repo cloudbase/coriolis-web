@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import { render } from "@testing-library/react";
 import {
@@ -31,7 +31,7 @@ jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   __esModule: true,
   default: (props: any) => <div>{props.endpoint}</div>,
 }));
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 
 describe("MainDetails", () => {
   let defaultProps: MainDetails["props"];
@@ -64,7 +64,7 @@ describe("MainDetails", () => {
       <MainDetails
         {...defaultProps}
         item={{ ...TRANSFER_MOCK, destination_endpoint_id: "missing" }}
-      />
+      />,
     );
     expect(getByText("Endpoint is missing")).toBeTruthy();
   });
@@ -82,24 +82,26 @@ describe("MainDetails", () => {
           ...TRANSFER_MOCK,
           last_execution_status: "ERROR_ALLOCATING_MINIONS",
         }}
-      />
+      />,
     );
     expect(
       Array.from(document.querySelectorAll("*")).find(el =>
-        el.textContent?.includes("error allocating minion machines")
-      )
+        el.textContent?.includes("error allocating minion machines"),
+      ),
     ).toBeTruthy();
   });
 
-  it("shows password", () => {
+  it("shows password", async () => {
     const { getByText } = render(<MainDetails {...defaultProps} />);
     const passwordEl = TestUtils.select("PasswordValue__Wrapper")!;
     expect(passwordEl).toBeTruthy();
     expect(passwordEl.textContent).toBe("•••••••••");
 
-    passwordEl.click();
+    await act(async () => {
+      passwordEl.click();
+    });
     expect(
-      getByText(TRANSFER_MOCK.destination_environment.password)
+      getByText(TRANSFER_MOCK.destination_environment.password),
     ).toBeTruthy();
   });
 });

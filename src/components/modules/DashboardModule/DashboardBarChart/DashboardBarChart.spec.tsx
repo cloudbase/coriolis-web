@@ -68,18 +68,18 @@ describe("DashboardBarChart", () => {
           data={DATA}
           yNumTicks={3}
           colors={[ThemePalette.alert, ThemePalette.primary]}
-        />
+        />,
       );
 
       const stackedBarEl = TestUtils.selectAll(
         "DashboardBarChart__StackedBar-",
-        TestUtils.selectAll("DashboardBarChart__Bar-")[barIndex]
+        TestUtils.selectAll("DashboardBarChart__Bar-")[barIndex],
       )[stackedBarIndex];
       const style = window.getComputedStyle(stackedBarEl);
 
       expect(parseFloat(style.height)).toBeCloseTo(expectedHeight);
       expect(TestUtils.rgbToHex(style.background)).toBe(expectedColor);
-    }
+    },
   );
 
   it.each`
@@ -97,19 +97,19 @@ describe("DashboardBarChart", () => {
           data={DATA}
           yNumTicks={3}
           onBarMouseEnter={onBarMouseEnter}
-        />
+        />,
       );
       userEvent.hover(
         TestUtils.selectAll(
           "DashboardBarChart__StackedBar-",
-          TestUtils.selectAll("DashboardBarChart__Bar-")[barIndex]
-        )[stackedBarIndex]
+          TestUtils.selectAll("DashboardBarChart__Bar-")[barIndex],
+        )[stackedBarIndex],
       );
       expect(onBarMouseEnter).toHaveBeenCalledWith(
         { x: 48, y: 65 },
-        expectedData
+        expectedData,
       );
-    }
+    },
   );
 
   it("does not render bars with height of 0%", () => {
@@ -128,11 +128,11 @@ describe("DashboardBarChart", () => {
 
     const firstStackedBars = TestUtils.selectAll(
       "DashboardBarChart__StackedBar-",
-      TestUtils.selectAll("DashboardBarChart__Bar-")[0]
+      TestUtils.selectAll("DashboardBarChart__Bar-")[0],
     );
     const secondStackedBars = TestUtils.selectAll(
       "DashboardBarChart__StackedBar-",
-      TestUtils.selectAll("DashboardBarChart__Bar-")[1]
+      TestUtils.selectAll("DashboardBarChart__Bar-")[1],
     );
 
     expect(firstStackedBars.length).toBe(0);
@@ -168,7 +168,7 @@ describe("DashboardBarChart", () => {
         data={DATA}
         yNumTicks={3}
         onBarMouseLeave={onBarMouseLeave}
-      />
+      />,
     );
 
     const bar = TestUtils.selectAll("DashboardBarChart__StackedBar-")[0];
@@ -184,7 +184,7 @@ describe("DashboardBarChart", () => {
         data={DATA}
         yNumTicks={3}
         onBarMouseEnter={onBarMouseEnter}
-      />
+      />,
     );
 
     const firstBar = TestUtils.selectAll("DashboardBarChart__StackedBar-")[0];
@@ -195,7 +195,7 @@ describe("DashboardBarChart", () => {
 
   it("recalculates ticks when new data is received", () => {
     const { rerender } = render(
-      <DashboardBarChart data={DATA} yNumTicks={3} />
+      <DashboardBarChart data={DATA} yNumTicks={3} />,
     );
 
     const bars = TestUtils.selectAll("DashboardBarChart__Bar-");
@@ -234,7 +234,7 @@ describe("DashboardBarChart", () => {
     render(<DashboardBarChart data={DATA} yNumTicks={3} />);
 
     const firstStackedBar = TestUtils.selectAll(
-      "DashboardBarChart__StackedBar-"
+      "DashboardBarChart__StackedBar-",
     )[0];
     const spy = jest.spyOn(console, "error").mockImplementation(() => {});
 

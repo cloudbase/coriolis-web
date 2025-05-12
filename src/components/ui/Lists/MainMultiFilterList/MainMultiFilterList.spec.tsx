@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React, { useState } from "react";
+import React, { useState, act } from "react";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MainMultiFilterList from "@src/components/ui/Lists/MainMultiFilterList";
@@ -75,23 +75,27 @@ describe("MainMultiFilterList", () => {
     expect(items).toHaveLength(FILTER_ITEMS.length);
     expect(items[2].textContent).toBe(FILTER_ITEMS[2].label);
     expect(
-      TestUtils.select("SearchInput__Wrapper")?.querySelector("input")?.value
+      TestUtils.select("SearchInput__Wrapper")?.querySelector("input")?.value,
     ).toBe("test");
     expect(
-      TestUtils.select("MainMultiFilterList__SelectionText")?.textContent
+      TestUtils.select("MainMultiFilterList__SelectionText")?.textContent,
     ).toBe("1 of 3\u00a0test item(s) selected");
   });
 
-  it("renders actions", () => {
+  it("renders actions", async () => {
     render(<MainMultiFilterListWrapper />);
-    TestUtils.select("DropdownButton__Wrapper")?.click();
+    await act(async () => {
+      TestUtils.select("DropdownButton__Wrapper")?.click();
+    });
     const actions = TestUtils.selectAll("ActionDropdown__ListItem-");
     expect(actions).toHaveLength(ACTIONS.length);
     expect(actions[0].textContent).toBe(ACTIONS[0].label);
     expect(actions[0].hasAttribute("disabled")).toBeFalsy();
     expect(actions[1].hasAttribute("disabled")).toBeTruthy();
-    actions[0].click();
-    actions[1].click();
+    await act(async () => {
+      actions[0].click();
+      actions[1].click();
+    });
     expect(ACTIONS[0].action).toHaveBeenCalled();
     expect(ACTIONS[1].action).not.toHaveBeenCalled();
   });
@@ -99,28 +103,32 @@ describe("MainMultiFilterList", () => {
   it("fires filter item click", () => {
     const onFilterItemClick = jest.fn();
     render(
-      <MainMultiFilterListWrapper onFilterItemClick={onFilterItemClick} />
+      <MainMultiFilterListWrapper onFilterItemClick={onFilterItemClick} />,
     );
     TestUtils.selectAll("MainMultiFilterList__FilterItem-")[1].click();
     expect(onFilterItemClick).toHaveBeenCalledWith(FILTER_ITEMS[1]);
   });
 
-  it("has select all change", () => {
+  it("has select all change", async () => {
     const onSelectAllChange = jest.fn();
     render(
-      <MainMultiFilterListWrapper onSelectAllChange={onSelectAllChange} />
+      <MainMultiFilterListWrapper onSelectAllChange={onSelectAllChange} />,
     );
 
     const checkbox = TestUtils.select("Checkbox__Wrapper")!;
     const style = () => window.getComputedStyle(checkbox);
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe("white");
-    checkbox.click();
+    await act(async () => {
+      checkbox.click();
+    });
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe(
-      ThemePalette.primary
+      ThemePalette.primary,
     );
 
     expect(onSelectAllChange).toHaveBeenCalledWith(true);
-    checkbox.click();
+    await act(async () => {
+      checkbox.click();
+    });
     expect(onSelectAllChange).toHaveBeenCalledWith(false);
     expect(TestUtils.rgbToHex(style().backgroundColor)).toBe("white");
   });
@@ -128,7 +136,7 @@ describe("MainMultiFilterList", () => {
   it("fires reload button click", () => {
     const onReloadButtonClick = jest.fn();
     render(
-      <MainMultiFilterListWrapper onReloadButtonClick={onReloadButtonClick} />
+      <MainMultiFilterListWrapper onReloadButtonClick={onReloadButtonClick} />,
     );
     TestUtils.select("ReloadButton__Wrapper")!.click();
     expect(onReloadButtonClick).toHaveBeenCalled();
@@ -139,7 +147,7 @@ describe("MainMultiFilterList", () => {
     render(<MainMultiFilterListWrapper onSearchChange={onSearchChange} />);
     userEvent.type(
       TestUtils.select("SearchInput__Wrapper")?.querySelector("input")!,
-      "test2"
+      "test2",
     );
     expect(onSearchChange).toHaveBeenCalledWith("test2");
   });

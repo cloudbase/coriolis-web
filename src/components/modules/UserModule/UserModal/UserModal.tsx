@@ -102,7 +102,7 @@ class UserModal extends React.Component<Props, State> {
       () => {
         this.handleUpdateClick();
       },
-      2
+      2,
     );
   }
 
@@ -202,7 +202,7 @@ class UserModal extends React.Component<Props, State> {
         }
         required={field.required}
         highlight={Boolean(
-          this.state.highlightFieldNames.find(n => n === field.name)
+          this.state.highlightFieldNames.find(n => n === field.name),
         )}
         noSelectionMessage="Choose a project"
       />
@@ -217,14 +217,14 @@ class UserModal extends React.Component<Props, State> {
         this.state.password,
         password => {
           this.setState({ password });
-        }
+        },
       ),
       this.renderField(
         { name: "confirm_password", required: true },
         this.state.confirmPassword,
         confirmPassword => {
           this.setState({ confirmPassword });
-        }
+        },
       ),
     ];
     const detailsFields = [
@@ -233,14 +233,14 @@ class UserModal extends React.Component<Props, State> {
         this.state.name,
         name => {
           this.setState({ name });
-        }
+        },
       ),
       this.renderField(
         { name: "description" },
         this.state.description,
         description => {
           this.setState({ description });
-        }
+        },
       ),
       this.renderField({ name: "Email" }, this.state.email, email => {
         this.setState({ email });
@@ -250,13 +250,13 @@ class UserModal extends React.Component<Props, State> {
           name: "Primary Project",
 
           enum: [{ name: "Choose a project", id: null } as any].concat(
-            this.props.projects.concat([])
+            this.props.projects.concat([]),
           ),
         },
         this.state.projectId,
         projectId => {
           this.setState({ projectId });
-        }
+        },
       ),
     ];
     const enabledField = this.renderField(
@@ -264,7 +264,7 @@ class UserModal extends React.Component<Props, State> {
       this.state.enabled,
       enabled => {
         this.setState({ enabled });
-      }
+      },
     );
 
     if (this.props.isNewUser) {
@@ -282,8 +282,8 @@ class UserModal extends React.Component<Props, State> {
     const label = this.props.isNewUser
       ? "New User"
       : this.props.editPassword
-      ? "Change Password"
-      : "Update User";
+        ? "Change Password"
+        : "Update User";
 
     return (
       <Modal isOpen title={label} onRequestClose={this.props.onRequestClose}>

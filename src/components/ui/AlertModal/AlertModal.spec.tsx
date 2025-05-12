@@ -50,7 +50,7 @@ describe("AlertModal", () => {
 
   it("renders error type correctly", () => {
     const { queryByText, getByText } = render(
-      <AlertModal isOpen type="error" onRequestClose={jest.fn()} />
+      <AlertModal isOpen type="error" onRequestClose={jest.fn()} />,
     );
 
     expect(getByText("Dismiss")).toBeTruthy();
@@ -77,7 +77,7 @@ describe("AlertModal", () => {
     const onRequestCloseMock = jest.fn();
 
     const { getByText } = render(
-      <AlertModal isOpen type="error" onRequestClose={onRequestCloseMock} />
+      <AlertModal isOpen type="error" onRequestClose={onRequestCloseMock} />,
     );
 
     fireEvent.click(getByText("Dismiss"));
@@ -88,7 +88,7 @@ describe("AlertModal", () => {
         isOpen
         type="confirmation"
         onRequestClose={onRequestCloseMock}
-      />
+      />,
     );
 
     fireEvent.click(getByTextConfirmation("No"));
@@ -103,7 +103,7 @@ describe("AlertModal", () => {
         isOpen
         type="confirmation"
         onConfirmation={onConfirmationMock}
-      />
+      />,
     );
 
     fireEvent.click(getByText("Yes"));
@@ -124,7 +124,7 @@ describe("AlertModal", () => {
   it("renders the extraMessage when provided", () => {
     const customExtraMessage = "This is an extra message";
     const { getByText } = render(
-      <AlertModal isOpen extraMessage={customExtraMessage} />
+      <AlertModal isOpen extraMessage={customExtraMessage} />,
     );
     expect(getByText(customExtraMessage)).toBeTruthy();
   });
@@ -150,7 +150,7 @@ describe("AlertModal", () => {
         type="confirmation"
         message={customMessage}
         extraMessage={customExtraMessage}
-      />
+      />,
     );
 
     expect(getByText(customMessage)).toBeTruthy();
@@ -164,7 +164,7 @@ describe("AlertModal", () => {
         isOpen
         type="confirmation"
         onConfirmation={onConfirmationMock}
-      />
+      />,
     );
 
     fireEvent.click(getByText("Yes"));
@@ -178,7 +178,7 @@ describe("AlertModal", () => {
         isOpen
         type="confirmation"
         onRequestClose={onRequestCloseMock}
-      />
+      />,
     );
 
     fireEvent.click(getByText("No"));

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import Schedule from "@src/components/modules/TransferModule/Schedule";
 import ScheduleStore from "@src/stores/ScheduleStore";
@@ -34,14 +34,14 @@ import { TRANSFER_ITEM_DETAILS_MOCK } from "@tests/mocks/TransferMock";
 import ReplicaDetailsContent from ".";
 
 const scheduleStoreMock = jest.createMockFromModule<typeof ScheduleStore>(
-  "@src/stores/ScheduleStore"
+  "@src/stores/ScheduleStore",
 );
 
 jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   __esModule: true,
   default: (props: any) => <div>{props.endpoint}</div>,
 }));
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/utils/Config", () => ({
   config: {
     providerSortPriority: {},
@@ -108,24 +108,26 @@ describe("ReplicaDetailsContent", () => {
 
   it("renders executions page", () => {
     const { getByText } = render(
-      <ReplicaDetailsContent {...defaultProps} page="executions" />
+      <ReplicaDetailsContent {...defaultProps} page="executions" />,
     );
     expect(getByText(EXECUTION_MOCK.id)).toBeTruthy();
   });
 
   it("rendes schedules page", () => {
     const { getByTestId } = render(
-      <ReplicaDetailsContent {...defaultProps} page="schedule" />
+      <ReplicaDetailsContent {...defaultProps} page="schedule" />,
     );
     expect(getByTestId("ScheduleComponent")).toBeTruthy();
   });
 
-  it("fires timezone change", () => {
+  it("fires timezone change", async () => {
     const { getByTestId, getByText } = render(
-      <ReplicaDetailsContent {...defaultProps} page="schedule" />
+      <ReplicaDetailsContent {...defaultProps} page="schedule" />,
     );
     expect(getByText("Timezone: local")).toBeTruthy();
-    getByTestId("ScheduleComponent").click();
+    await act(async () => {
+      getByTestId("ScheduleComponent").click();
+    });
     expect(getByText("Timezone: utc")).toBeTruthy();
   });
 });

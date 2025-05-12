@@ -113,7 +113,7 @@ Version: 2.0
 
   it("shows loading", () => {
     const { getByTestId } = render(
-      <LicenceModule {...defaultProps} loadingLicenceInfo />
+      <LicenceModule {...defaultProps} loadingLicenceInfo />,
     );
     expect(getByTestId("StatusImage").textContent).toBe("loading");
   });
@@ -129,11 +129,12 @@ Version: 2.0
             .toJSDate(),
           latestLicenceExpiryDate: DateTime.now().plus({ hours: 1 }).toJSDate(),
         }}
-      />
+      />,
     );
 
     expect(
-      TestUtils.selectAll("LicenceModule__LicenceRowDescription")[0].textContent
+      TestUtils.selectAll("LicenceModule__LicenceRowDescription")[0]
+        .textContent,
     ).toContain("today at");
   });
 
@@ -150,17 +151,17 @@ Version: 2.0
             .minus({ hours: 1 })
             .toJSDate(),
         }}
-      />
+      />,
     );
 
     expect(
-      TestUtils.select("LicenceModule__LicenceRowContent")?.textContent
+      TestUtils.select("LicenceModule__LicenceRowContent")?.textContent,
     ).toContain("Please contact your Coriolis representative");
   });
 
   it("renders licence error", () => {
     const { getByText } = render(
-      <LicenceModule {...defaultProps} licenceError="test-error" />
+      <LicenceModule {...defaultProps} licenceError="test-error" />,
     );
     expect(getByText("test-error")).toBeTruthy();
   });

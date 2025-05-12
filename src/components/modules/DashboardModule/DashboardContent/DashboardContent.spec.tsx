@@ -19,7 +19,7 @@ import TestUtils from "@tests/TestUtils";
 
 import DashboardContent from "./DashboardContent";
 
-jest.mock("react-router-dom", () => ({ Link: "div" }));
+jest.mock("react-router", () => ({ Link: "div" }));
 
 describe("DashboardContent", () => {
   let resizeWindow: (x: number, y: number) => void;
@@ -61,16 +61,16 @@ describe("DashboardContent", () => {
   it("renders modules for non-admin users", () => {
     render(<DashboardContent {...defaultProps} />);
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel"),
     ).toHaveLength(3);
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[0].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[0].textContent,
     ).toBe("Replicas");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[1].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[1].textContent,
     ).toBe("Migrations");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[2].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[2].textContent,
     ).toBe("Endpoints");
   });
 
@@ -78,22 +78,22 @@ describe("DashboardContent", () => {
     render(<DashboardContent {...defaultProps} isAdmin />);
 
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel"),
     ).toHaveLength(5);
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[0].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[0].textContent,
     ).toBe("Replicas");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[1].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[1].textContent,
     ).toBe("Migrations");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[2].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[2].textContent,
     ).toBe("Endpoints");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[3].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[3].textContent,
     ).toBe("Users");
     expect(
-      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[4].textContent
+      TestUtils.selectAll("DashboardInfoCount__CountBlockLabel")[4].textContent,
     ).toBe("Projects");
   });
 
@@ -102,7 +102,7 @@ describe("DashboardContent", () => {
     render(<DashboardContent {...defaultProps} />);
 
     expect(
-      TestUtils.select("DashboardContent__MiddleMobileLayout")
+      TestUtils.select("DashboardContent__MiddleMobileLayout"),
     ).toBeTruthy();
   });
 
@@ -126,6 +126,8 @@ describe("DashboardContent", () => {
     expect(setStateMock).toHaveBeenCalledWith({ useMobileLayout: true });
 
     setStateMock.mockRestore();
-    resizeWindow(2400, 800);
+    act(() => {
+      resizeWindow(2400, 800);
+    });
   });
 });

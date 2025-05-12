@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observer } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router";
 
 import {
   getTransferItemTitle,
@@ -48,8 +49,8 @@ import type { InstanceScript } from "@src/@types/Instance";
 const Wrapper = styled.div<any>``;
 
 type Props = {
-  match: any;
-  history: any;
+  match: { params: { id: string; page: string | null } };
+  onNavigate: (path: string) => void;
 };
 type State = {
   showDeleteDeploymentConfirmation: boolean;
@@ -124,7 +125,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
   }
 
   getDeploymentScenarioTypeImage(
-    details: DeploymentItemDetails | null
+    details: DeploymentItemDetails | null,
   ): string {
     let image = replicaDeploymentImage;
     const scenario = details?.transfer_scenario_type;
@@ -147,10 +148,10 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
             return;
           }
           const sourceEndpoint = endpointStore.endpoints.find(
-            e => e.id === details.origin_endpoint_id
+            e => e.id === details.origin_endpoint_id,
           );
           const destinationEndpoint = endpointStore.endpoints.find(
-            e => e.id === details.destination_endpoint_id
+            e => e.id === details.destination_endpoint_id,
           );
           if (!sourceEndpoint || !destinationEndpoint) {
             return;
@@ -224,19 +225,19 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     await providerStore.loadProviders();
 
     const targetEndpoint = endpointStore.endpoints.find(
-      e => e.id === details.destination_endpoint_id
+      e => e.id === details.destination_endpoint_id,
     );
     const hasStorageMap = targetEndpoint
       ? providerStore.providers && providerStore.providers[targetEndpoint.type]
         ? !!providerStore.providers[targetEndpoint.type].types.find(
-            t => t === providerTypes.STORAGE
+            t => t === providerTypes.STORAGE,
           )
         : false
       : false;
     if (hasStorageMap) {
       endpointStore.loadStorage(
         details.destination_endpoint_id,
-        details.destination_environment
+        details.destination_environment,
       );
     }
 
@@ -246,7 +247,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
       {
         quietError: true,
         cache: options.cache,
-      }
+      },
     );
 
     instanceStore.loadInstancesDetails({
@@ -274,7 +275,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
 
   handleDeleteDeploymentConfirmation() {
     this.setState({ showDeleteDeploymentConfirmation: false });
-    this.props.history.push("/deployments");
+    this.props.onNavigate("/deployments");
     if (deploymentStore.deploymentDetails) {
       deploymentStore.delete(deploymentStore.deploymentDetails.id);
     }
@@ -296,8 +297,8 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     if (!deploymentStore.deploymentDetails?.deployer_id) {
       return;
     }
-    this.props.history.push(
-      `/transfers/${deploymentStore.deploymentDetails.transfer_id}/executions`
+    this.props.onNavigate(
+      `/transfers/${deploymentStore.deploymentDetails.transfer_id}/executions`,
     );
   }
 
@@ -362,7 +363,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
         removedUserScripts,
         minionPoolMappings,
       });
-      this.props.history.push(`/deployments/${deployment.id}/tasks`);
+      this.props.onNavigate(`/deployments/${deployment.id}/tasks`);
     } finally {
       this.setState({ deploying: false });
     }
@@ -421,19 +422,19 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
   }
 
   handleUpdateComplete(redirectTo: string) {
-    this.props.history.push(redirectTo);
+    this.props.onNavigate(redirectTo);
   }
 
   renderEditModal() {
     const sourceEndpoint = endpointStore.endpoints.find(
       e =>
         deploymentStore.deploymentDetails &&
-        e.id === deploymentStore.deploymentDetails.origin_endpoint_id
+        e.id === deploymentStore.deploymentDetails.origin_endpoint_id,
     );
     const destinationEndpoint = endpointStore.endpoints.find(
       e =>
         deploymentStore.deploymentDetails &&
-        e.id === deploymentStore.deploymentDetails.destination_endpoint_id
+        e.id === deploymentStore.deploymentDetails.destination_endpoint_id,
     );
 
     if (
@@ -521,23 +522,23 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
                 deploymentStore.deploymentDetails?.last_execution_status
               }
               itemTitle={getTransferItemTitle(
-                deploymentStore.deploymentDetails
+                deploymentStore.deploymentDetails,
               )}
               itemType={this.getDeploymentScenarioItemType(
-                deploymentStore.deploymentDetails
+                deploymentStore.deploymentDetails,
               )}
               itemDescription={deploymentStore.deploymentDetails?.description}
               backLink="/deployments"
               typeImage={this.getDeploymentScenarioTypeImage(
-                deploymentStore.deploymentDetails
+                deploymentStore.deploymentDetails,
               )}
               dropdownActions={dropdownActions}
               alertInfoPill={this.getTransferTypePillShouldRed(
-                deploymentStore.deploymentDetails
+                deploymentStore.deploymentDetails,
               )}
               primaryInfoPill={
                 !this.getTransferTypePillShouldRed(
-                  deploymentStore.deploymentDetails
+                  deploymentStore.deploymentDetails,
                 )
               }
             />
@@ -643,7 +644,7 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
               instances={instanceStore.instancesDetails}
               loadingInstances={instanceStore.loadingInstancesDetails}
               defaultSkipOsMorphing={deploymentStore.getDefaultSkipOsMorphing(
-                deploymentStore.deploymentDetails
+                deploymentStore.deploymentDetails,
               )}
               deploying={this.state.deploying}
             />
@@ -655,4 +656,20 @@ Note that this may lead to scheduled cleanup tasks being forcibly skipped, and t
   }
 }
 
-export default DeploymentDetailsPage;
+function DeploymentDetailsPageWithNavigate() {
+  const navigate = useNavigate();
+  const { id, page } = useParams();
+
+  if (!id) {
+    throw new Error("The 'id' parameter is required but was not provided.");
+  }
+
+  return (
+    <DeploymentDetailsPage
+      onNavigate={navigate}
+      match={{ params: { id, page: page || null } }}
+    />
+  );
+}
+
+export default DeploymentDetailsPageWithNavigate;

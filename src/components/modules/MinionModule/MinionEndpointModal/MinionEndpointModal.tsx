@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import { observer } from "mobx-react";
 import styled from "styled-components";
-import { CSSTransitionGroup } from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 
 import Modal from "@src/components/ui/Modal";
 import { Providers, ProviderTypes } from "@src/@types/Providers";
@@ -67,10 +67,10 @@ const ProviderWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  &.providers-group-transition-leave {
+  &.providers-group-transition-exit {
     opacity: 1;
   }
-  &.providers-group-transition-leave-active {
+  &.providers-group-transition-exit-active {
     opacity: 0.01;
     transition: opacity 250ms ease-out;
   }
@@ -110,7 +110,7 @@ type Props = {
   onRequestClose: () => void;
   onSelectEndpoint: (
     endpoint: Endpoint,
-    platform: "source" | "destination"
+    platform: "source" | "destination",
   ) => void;
 };
 
@@ -129,7 +129,7 @@ class MinionEndpointModal extends React.Component<Props, State> {
   handleNextClick() {
     this.props.onSelectEndpoint(
       this.state.selectedEndpoint!,
-      this.state.platform
+      this.state.platform,
     );
   }
 
@@ -184,11 +184,11 @@ class MinionEndpointModal extends React.Component<Props, State> {
         const types =
           this.props.providers?.[providerName].types.indexOf(providerType);
         return types != null && types > -1;
-      }
+      },
     );
 
     const availableEndpoints = this.props.endpoints.filter(
-      e => availableProviders.indexOf(e.type) > -1
+      e => availableProviders.indexOf(e.type) > -1,
     );
 
     if (availableProviders.length === 0 || availableEndpoints.length === 0) {
@@ -197,40 +197,41 @@ class MinionEndpointModal extends React.Component<Props, State> {
 
     return (
       <ContentWrapper>
-        <CSSTransitionGroup
-          transitionName="providers-group-transition"
-          transitionLeave
-          transitionEnter
-          transitionLeaveTimeout={250}
-          transitionEnterTimeout={250}
+        <CSSTransition
+          classNames="providers-group-transition"
+          exit
+          enter
+          timeout={{ exit: 250, enter: 250 }}
         >
-          {availableProviders.map(providerName => (
-            <ProviderWrapper key={providerName}>
-              <EndpointLogos
-                height={128}
-                endpoint={providerName}
-                style={{ marginBottom: "16px" }}
-              />
-              <Dropdown
-                items={this.props.endpoints.filter(
-                  e => e.type === providerName
-                )}
-                valueField="id"
-                labelField="name"
-                noSelectionMessage="Choose an endpoint"
-                centered
-                selectedItem={
-                  this.state.selectedEndpoint?.type === providerName
-                    ? this.state.selectedEndpoint
-                    : null
-                }
-                onChange={endpoint => {
-                  this.setState({ selectedEndpoint: endpoint });
-                }}
-              />
-            </ProviderWrapper>
-          ))}
-        </CSSTransitionGroup>
+          <div>
+            {availableProviders.map(providerName => (
+              <ProviderWrapper key={providerName}>
+                <EndpointLogos
+                  height={128}
+                  endpoint={providerName}
+                  style={{ marginBottom: "16px" }}
+                />
+                <Dropdown
+                  items={this.props.endpoints.filter(
+                    e => e.type === providerName,
+                  )}
+                  valueField="id"
+                  labelField="name"
+                  noSelectionMessage="Choose an endpoint"
+                  centered
+                  selectedItem={
+                    this.state.selectedEndpoint?.type === providerName
+                      ? this.state.selectedEndpoint
+                      : null
+                  }
+                  onChange={endpoint => {
+                    this.setState({ selectedEndpoint: endpoint });
+                  }}
+                />
+              </ProviderWrapper>
+            ))}
+          </div>
+        </CSSTransition>
       </ContentWrapper>
     );
   }

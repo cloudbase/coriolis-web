@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react";
+import { useNavigate } from "react-router";
 
 import MainTemplate from "@src/components/modules/TemplateModule/MainTemplate";
 import Navigation from "@src/components/modules/NavigationModule/Navigation";
@@ -56,8 +57,13 @@ type State = {
   uploadedEndpoint: EndpointType | null;
   multiValidating: boolean;
 };
+
+type Props = {
+  onNavigate: (path: string) => void;
+};
+
 @observer
-class EndpointsPage extends React.Component<{ history: any }, State> {
+class EndpointsPage extends React.Component<Props, State> {
   state: State = {
     showChooseProviderModal: false,
     showEndpointModal: false,
@@ -91,16 +97,19 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 
   getFilterItems() {
-    const providers = endpointStore.endpoints.reduce((p, endpoint) => {
-      if (!p.find(p2 => p2.value === endpoint.type)) {
-        p.push({
-          label:
-            configLoader.config.providerNames[endpoint.type] || endpoint.type,
-          value: endpoint.type,
-        });
-      }
-      return p;
-    }, [] as { label: string; value: ProviderTypes }[]);
+    const providers = endpointStore.endpoints.reduce(
+      (p, endpoint) => {
+        if (!p.find(p2 => p2.value === endpoint.type)) {
+          p.push({
+            label:
+              configLoader.config.providerNames[endpoint.type] || endpoint.type,
+            value: endpoint.type,
+          });
+        }
+        return p;
+      },
+      [] as { label: string; value: ProviderTypes }[],
+    );
     providers.sort((a, b) => a.label.localeCompare(b.label));
     return [{ label: "All", value: "all" }, ...providers];
   }
@@ -110,13 +119,13 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       r =>
         (r.origin_endpoint_id === endpointId ||
           r.destination_endpoint_id === endpointId) &&
-        r.scenario === "replica"
+        r.scenario === "replica",
     ).length;
     const migrationsCount = transferStore.transfers.filter(
       r =>
         (r.origin_endpoint_id === endpointId ||
           r.destination_endpoint_id === endpointId) &&
-        r.scenario === "live_migration"
+        r.scenario === "live_migration",
     ).length;
 
     return { migrationsCount, replicasCount };
@@ -136,7 +145,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 
   handleItemClick(item: EndpointType) {
-    this.props.history.push(`/endpoints/${item.id}`);
+    this.props.onNavigate(`/endpoints/${item.id}`);
   }
 
   async duplicate(projectId: string) {
@@ -146,7 +155,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
       projectId !==
       (userStore.loggedUser ? userStore.loggedUser.project.id : "");
     const endpoints = endpointStore.endpoints.filter(e =>
-      this.state.selectedEndpoints.find(se => se.id === e.id)
+      this.state.selectedEndpoints.find(se => se.id === e.id),
     );
 
     await endpointStore.duplicate({
@@ -267,7 +276,7 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   itemFilterFunction(
     item: any,
     filterItem?: string | null,
-    filterText?: string
+    filterText?: string,
   ) {
     const endpoint: EndpointType = item;
     const usableFilterText = filterText || "";
@@ -335,7 +344,6 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
               itemFilterFunction={(...args) => this.itemFilterFunction(...args)}
               renderItemComponent={options => (
                 <EndpointListItem
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...options}
                   getUsage={endpoint => this.getEndpointUsage(endpoint.id)}
                 />
@@ -463,4 +471,10 @@ class EndpointsPage extends React.Component<{ history: any }, State> {
   }
 }
 
-export default EndpointsPage;
+function EndpointsPageWithNavigate() {
+  const navigate = useNavigate();
+
+  return <EndpointsPage onNavigate={navigate} />;
+}
+
+export default EndpointsPageWithNavigate;

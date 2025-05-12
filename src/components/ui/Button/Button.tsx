@@ -111,7 +111,8 @@ const StyledButton = styled.button`
   ${props => ThemeProps.exactWidth(getWidth(props))}
   cursor: pointer;
   font-size: inherit;
-  transition: background-color ${ThemeProps.animations.swift},
+  transition:
+    background-color ${ThemeProps.animations.swift},
     opacity ${ThemeProps.animations.swift};
   &:disabled {
     opacity: ${(props: any) => (props.secondary ? 1 : 0.7)};
@@ -132,7 +133,6 @@ const StyledButton = styled.button`
 `;
 
 const Button = (props: any) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <StyledButton
     {...props}
     onFocus={e => {

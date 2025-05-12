@@ -44,7 +44,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
     makeRequired("export_template_password");
 
     const useCoriolisExporterField = fields.find(
-      f => f.name === "use_coriolis_exporter"
+      f => f.name === "use_coriolis_exporter",
     );
     if (useCoriolisExporterField) {
       const usableFields: Field[] = [
@@ -131,7 +131,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
                             `Source plugins rely on a Linux-based temporary virtual machine to perform data exports, but the platform reports this image to be of OS type '${newF.os_type}'.`
                           : "",
                     }
-                  : newF
+                  : newF,
               );
             }
           });
@@ -157,7 +157,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
 
   override getDestinationEnv(
     options: { [prop: string]: any } | null,
-    oldOptions?: any
+    oldOptions?: any,
   ) {
     let newOptions: any = { ...options };
     if (newOptions.use_coriolis_exporter != null) {
@@ -174,7 +174,7 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
       ...defaultGetMigrationImageMap(
         newOptions,
         oldOptions,
-        this.migrationImageMapFieldName
+        this.migrationImageMapFieldName,
       ),
     };
     return env;

@@ -345,7 +345,7 @@ class WizardInstances extends React.Component<Props, State> {
     const startIdx = (this.props.currentPage - 1) * this.props.instancesPerPage;
     const endIdx = startIdx + (this.props.instancesPerPage - 1);
     const filteredInstances = this.props.instances.filter(
-      (_, idx) => idx >= startIdx && idx <= endIdx
+      (_, idx) => idx >= startIdx && idx <= endIdx,
     );
 
     return (
@@ -353,7 +353,7 @@ class WizardInstances extends React.Component<Props, State> {
         {filteredInstances.map(instance => {
           const selected = Boolean(
             this.props.selectedInstances &&
-              this.props.selectedInstances.find(i => i.id === instance.id)
+              this.props.selectedInstances.find(i => i.id === instance.id),
           );
           const flavorName = instance.flavor_name
             ? ` | ${instance.flavor_name}`
@@ -390,7 +390,7 @@ class WizardInstances extends React.Component<Props, State> {
                 </Label>
                 <Details>
                   {`${instance.num_cpu} vCPU | ${mbToGbString(
-                    instance.memory_mb
+                    instance.memory_mb,
                   )} RAM${flavorName}`}
                 </Details>
               </InstanceContent>
@@ -473,7 +473,7 @@ class WizardInstances extends React.Component<Props, State> {
         }}
         currentPage={this.props.currentPage}
         totalPages={Math.ceil(
-          this.props.instances.length / this.props.instancesPerPage
+          this.props.instances.length / this.props.instancesPerPage,
         )}
         loading={this.props.chunksLoading}
         nextDisabled={isNextDisabled}

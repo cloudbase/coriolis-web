@@ -39,12 +39,12 @@ describe("StatusImage", () => {
     const PROGESS = 64;
     render(<StatusImage loading loadingProgress={PROGESS} />);
     expect(TestUtils.select("StatusImage__ProgressText")!.textContent).toBe(
-      `${PROGESS}%`
+      `${PROGESS}%`,
     );
     expect(
       TestUtils.select("StatusImage__CircleProgressBar")!.getAttribute(
-        "stroke-dashoffset"
-      )
+        "stroke-dashoffset",
+      ),
     ).toBe(`${300 - PROGESS * 3}`);
   });
 
@@ -52,7 +52,7 @@ describe("StatusImage", () => {
     const SIZE = 55;
     render(<StatusImage status="RUNNING" size={SIZE} />);
     const width = Number(
-      document.querySelector("svg")!.getAttribute("viewBox")!.split(" ")[2]
+      document.querySelector("svg")!.getAttribute("viewBox")!.split(" ")[2],
     ).toFixed(2);
     expect(width).toBe((96 * (96 / SIZE)).toFixed(2));
   });

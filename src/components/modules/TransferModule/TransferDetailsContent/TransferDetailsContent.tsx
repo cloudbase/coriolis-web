@@ -96,7 +96,7 @@ type Props = {
   onExecutionChange: (executionId: string) => void;
   onCancelExecutionClick: (
     execution: Execution | null,
-    force?: boolean
+    force?: boolean,
   ) => void;
   onDeleteExecutionClick: (execution: Execution | null) => void;
   onExecuteClick: () => void;
@@ -106,7 +106,7 @@ type Props = {
   onScheduleChange: (
     scheduleId: string | null,
     data: ScheduleType,
-    forceSave?: boolean
+    forceSave?: boolean,
   ) => void;
   onScheduleRemove: (scheduleId: string | null) => void;
   onScheduleSave: (schedule: ScheduleType) => void;
@@ -135,7 +135,7 @@ class TransferDetailsContent extends React.Component<Props, State> {
       this.props.endpoints.filter(
         e =>
           e.id === this.props.item?.origin_endpoint_id ||
-          e.id === this.props.item?.destination_endpoint_id
+          e.id === this.props.item?.destination_endpoint_id,
       ).length < 2
     );
   }
@@ -227,8 +227,8 @@ class TransferDetailsContent extends React.Component<Props, State> {
           p =>
             p ===
             this.props.endpoints.find(
-              e => e.id === this.props.item?.origin_endpoint_id
-            )?.type
+              e => e.id === this.props.item?.origin_endpoint_id,
+            )?.type,
         )}
         schedules={this.props.scheduleStore.schedules}
         unsavedSchedules={this.props.scheduleStore.unsavedSchedules}

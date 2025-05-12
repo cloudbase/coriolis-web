@@ -31,7 +31,7 @@ describe("Deployments list", () => {
 
     cy.get("div[class^='MainList__EmptyListMessage']").should(
       "contain.text",
-      "don't have any Deployments in this project"
+      "don't have any Deployments in this project",
     );
   });
 
@@ -52,7 +52,7 @@ describe("Deployments list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        deployments.filter(r => r.last_execution_status === "ERROR").length
+        deployments.filter(r => r.last_execution_status === "ERROR").length,
       );
 
       cy.get("div[class^='MainListFilter__FilterItem']")
@@ -60,7 +60,7 @@ describe("Deployments list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        deployments.filter(r => r.last_execution_status === "COMPLETED").length
+        deployments.filter(r => r.last_execution_status === "COMPLETED").length,
       );
 
       cy.get("div[class^='MainListFilter__FilterItem']")
@@ -68,7 +68,7 @@ describe("Deployments list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        deployments.filter(r => r.last_execution_status === "CANCELED").length
+        deployments.filter(r => r.last_execution_status === "CANCELED").length,
       );
 
       cy.get("div[class^='MainListFilter__FilterItem']")
@@ -76,7 +76,7 @@ describe("Deployments list", () => {
         .click();
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
-        deployments.length
+        deployments.length,
       );
 
       cy.get("div[class^='SearchButton__Wrapper']").click();
@@ -84,7 +84,7 @@ describe("Deployments list", () => {
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
         deployments.filter(r => r.instances.find(i => i.includes("ol88-uefi")))
-          .length
+          .length,
       );
       cy.get("div[class^='TextInput__Close']").click();
     });
@@ -103,12 +103,12 @@ describe("Deployments list", () => {
       cy.get("div[class^='TransferListItem__Wrapper']").should(
         "have.length",
         deployments.filter(r => r.instances.find(i => i.includes("ol88-uefi")))
-          .length
+          .length,
       );
       cy.get("div[class*='TransferListItem__Checkbox']").eq(0).click();
       cy.get("div[class*='MainListFilter__SelectionText']").should(
         "contain.text",
-        "2 of 1"
+        "2 of 1",
       );
 
       cy.get("div[class^='ActionDropdown__Wrapper']").click();
@@ -117,13 +117,13 @@ describe("Deployments list", () => {
         .click();
       cy.get("div[class^='AlertModal__Message']").should(
         "contain.text",
-        "Are you sure you want to recreate"
+        "Are you sure you want to recreate",
       );
 
       cy.intercept("POST", routeSelectors.DEPLOYMENTS, req => {
         expect(
           req.body.deployment.transfer_id,
-          "Transfer ID should be present in the request body"
+          "Transfer ID should be present in the request body",
         ).to.exist;
       }).as("deployments-recreate");
 

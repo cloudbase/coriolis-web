@@ -60,7 +60,7 @@ class ReloadButton extends React.Component<Props> {
     this.timeout = window.setTimeout(() => {
       nonNullWrapper.className = nonNullWrapper.className.substr(
         0,
-        nonNullWrapper.className.indexOf(" reload-animation")
+        nonNullWrapper.className.indexOf(" reload-animation"),
       );
       this.timeout = null;
     }, 1000);
@@ -74,7 +74,6 @@ class ReloadButton extends React.Component<Props> {
           ref={(div: HTMLElement | null | undefined) => {
             this.wrapper = div;
           }}
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
           onClick={() => {
             this.onClick();

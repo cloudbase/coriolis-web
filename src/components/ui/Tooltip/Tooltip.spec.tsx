@@ -27,14 +27,14 @@ describe("Tooltip", () => {
           </div>
         </div>
         <Tooltip />
-      </div>
+      </div>,
     );
     expect(document.querySelector(".reactTooltip")).toBeFalsy();
 
     userEvent.hover(document.querySelector(".tooltip-anchor")!);
     expect(document.querySelector(".reactTooltip")).toBeTruthy();
     expect(document.querySelector(".reactTooltip")!.textContent).toContain(
-      "Tooltip text"
+      "Tooltip text",
     );
   });
 });

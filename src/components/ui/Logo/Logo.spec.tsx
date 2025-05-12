@@ -18,7 +18,7 @@ import Logo from "@src/components/ui/Logo";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 
-jest.mock("react-router-dom", () => ({ Link: "a" }));
+jest.mock("react-router", () => ({ Link: "a" }));
 describe("Logo", () => {
   it("renders", () => {
     render(<Logo />);
@@ -28,7 +28,7 @@ describe("Logo", () => {
   it("accepts custom 'to' property", () => {
     render(<Logo to="#testing" />);
     expect(TestUtils.select("Logo__LinkStyled")?.getAttribute("to")).toBe(
-      "#testing"
+      "../#testing",
     );
   });
 });

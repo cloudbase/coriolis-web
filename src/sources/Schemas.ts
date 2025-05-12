@@ -67,7 +67,7 @@ class SchemaParser {
 
   static parseConnectionResponse(endpoint: Endpoint) {
     return ConnectionSchemaPlugin.for(endpoint.type).parseConnectionResponse(
-      endpoint
+      endpoint,
     );
   }
 
@@ -79,7 +79,7 @@ class SchemaParser {
   static minionPoolOptionsSchemaToFields(
     provider: ProviderTypes,
     schema: any,
-    dictionaryKey: string
+    dictionaryKey: string,
   ) {
     let fields = this.optionsSchemaToFields({
       provider,

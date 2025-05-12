@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import React from "react";
+import React, { act } from "react";
 
 import metalHubStore from "@src/stores/MetalHubStore";
 import { fireEvent, render, waitFor } from "@testing-library/react";
@@ -55,7 +55,7 @@ describe("MetalHubModal", () => {
 
   it("shows the server for editing", () => {
     const { getByText } = render(
-      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />
+      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />,
     );
     expect(getByText("Update Coriolis Bare Metal Server")).toBeTruthy();
     const testInput = (label: string, value: string) => {
@@ -66,41 +66,52 @@ describe("MetalHubModal", () => {
     };
     testInput(
       "Host",
-      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[1].replace("//", "")
+      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[1].replace("//", ""),
     );
     testInput(
       "Port",
-      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[2].replace(/\/.*/, "")
+      METALHUB_SERVER_MOCK.api_endpoint!.split(":")[2].replace(/\/.*/, ""),
     );
   });
 
-  it("renders validation error", () => {
-    metalHubStore.validationError = ["Validation error", "Validation error 2"];
+  it("renders validation error", async () => {
+    await act(async () => {
+      metalHubStore.validationError = [
+        "Validation error",
+        "Validation error 2",
+      ];
+    });
     const { getByText } = render(
-      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />
+      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />,
     );
     expect(getByText("Validation error")).toBeTruthy();
     expect(getByText("Validation error 2")).toBeTruthy();
-    metalHubStore.validationError = [];
+    await act(async () => {
+      metalHubStore.validationError = [];
+    });
   });
 
   it("triggers submit on enter key", async () => {
     render(
-      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />
+      <MetalHubModal {...defaultProps} server={{ ...METALHUB_SERVER_MOCK }} />,
     );
     const input = document.querySelector("input")!;
-    fireEvent.keyDown(input, { key: "Enter", code: "Enter" });
+    await act(async () => {
+      fireEvent.keyDown(input, { key: "Enter", code: "Enter" });
+    });
     await waitFor(() => {
       expect(metalHubStoreSpies.patchServer).toHaveBeenCalledTimes(1);
     });
     expect(metalHubStoreSpies.validateServer).toHaveBeenCalledTimes(1);
   });
 
-  it("highlights invalid fields", () => {
+  it("highlights invalid fields", async () => {
     const { getByText, getAllByText } = render(
-      <MetalHubModal {...defaultProps} />
+      <MetalHubModal {...defaultProps} />,
     );
-    fireEvent.click(getByText("Validate and save"));
+    await act(async () => {
+      fireEvent.click(getByText("Validate and save"));
+    });
     expect(getAllByText("Required field").length).toBeGreaterThan(0);
   });
 
@@ -108,19 +119,20 @@ describe("MetalHubModal", () => {
     const { getByText } = render(<MetalHubModal {...defaultProps} />);
     const getInput = (label: string): HTMLInputElement =>
       getByText(label).parentElement!.parentElement!.querySelector("input")!;
-
     fireEvent.change(getInput("Host"), {
       target: { value: "api.example.com" },
     });
     fireEvent.change(getInput("Port"), { target: { value: "5566" } });
-    fireEvent.click(getByText("Validate and save"));
-    await waitFor(() => {
+    await act(async () => {
+      fireEvent.click(getByText("Validate and save"));
+    });
+    await act(async () => {
       expect(metalHubStoreSpies.addServer).toHaveBeenCalledWith(
-        "https://api.example.com:5566/api/v1"
+        "https://api.example.com:5566/api/v1",
       );
     });
     expect(metalHubStoreSpies.validateServer).toHaveBeenCalledWith(
-      METALHUB_SERVER_MOCK.id
+      METALHUB_SERVER_MOCK.id,
     );
   });
 });

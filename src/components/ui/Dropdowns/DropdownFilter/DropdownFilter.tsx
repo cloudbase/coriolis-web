@@ -161,7 +161,7 @@ class DropdownFilter extends React.Component<Props, State> {
           __html: filterImage(
             this.props.searchValue
               ? ThemePalette.primary
-              : ThemePalette.grayscale[5]
+              : ThemePalette.grayscale[5],
           ),
         }}
       />

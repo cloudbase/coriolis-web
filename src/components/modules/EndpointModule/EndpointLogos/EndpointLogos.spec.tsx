@@ -46,7 +46,7 @@ describe("EndpointLogos", () => {
 
   it("renders generic logo", () => {
     const { getByText } = render(
-      <EndpointLogos {...defaultProps} endpoint="new-endpoint" />
+      <EndpointLogos {...defaultProps} endpoint="new-endpoint" />,
     );
     expect(getByText("new-endpoint")).toBeTruthy();
   });

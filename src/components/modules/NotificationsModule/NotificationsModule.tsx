@@ -142,13 +142,13 @@ class NotificationsModule extends React.Component<
           i += 1
         ) {
           this.notificationSystem.removeNotification(
-            this.activeNotifications[i].uid
+            this.activeNotifications[i].uid,
           );
         }
       },
       onRemove: notification => {
         this.activeNotifications = this.activeNotifications.filter(
-          n => n.uid !== notification.uid
+          n => n.uid !== notification.uid,
         );
       },
     });

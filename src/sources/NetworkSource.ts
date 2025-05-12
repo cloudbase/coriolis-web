@@ -25,7 +25,7 @@ class NetworkSource {
     options?: {
       quietError?: boolean;
       cache?: boolean;
-    }
+    },
   ): Promise<Network[]> {
     let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${enpointId}/networks`;
     if (environment) {
@@ -37,7 +37,7 @@ class NetworkSource {
       cache: options && options.cache,
     });
     const networks: Network[] = response.data.networks.filter(
-      (n: any) => n.name.indexOf("coriolis-migrnet") === -1
+      (n: any) => n.name.indexOf("coriolis-migrnet") === -1,
     );
     networks.sort((a, b) => a.name.localeCompare(b.name));
     return networks;

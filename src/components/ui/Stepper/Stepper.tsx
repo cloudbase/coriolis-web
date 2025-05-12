@@ -49,14 +49,14 @@ const Input = styled.input<any>`
     border-color: ${(props: any) =>
       borderColor(
         props,
-        props.disablePrimary ? undefined : ThemePalette.primaryLight
+        props.disablePrimary ? undefined : ThemePalette.primaryLight,
       )};
   }
   &:focus {
     border-color: ${(props: any) =>
       borderColor(
         props,
-        props.disablePrimary ? undefined : ThemePalette.primaryLight
+        props.disablePrimary ? undefined : ThemePalette.primaryLight,
       )};
     outline: none;
   }
@@ -186,18 +186,17 @@ class Stepper extends React.Component<Props, State> {
         this.props.value && this.props.value > 0
           ? this.props.value - INCREMENT
           : 0
-      }`
+      }`,
     );
   }
 
   render() {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { _ref, value, type } = this.props;
     let downImageRef: HTMLElement | null | undefined;
     let upImageRef: HTMLElement | null | undefined;
     const scale = (
       imageRef: HTMLElement | null | undefined,
-      direction: "up" | "down"
+      direction: "up" | "down",
     ) => {
       const ref = imageRef;
       if (!ref) {
@@ -209,7 +208,6 @@ class Stepper extends React.Component<Props, State> {
     return (
       <Wrapper disabledLoading={this.props.disabledLoading}>
         <Input
-          // eslint-disable-next-line react/jsx-props-no-spreading
           {...this.props}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             this.handleKeyDown(e);
@@ -225,8 +223,8 @@ class Stepper extends React.Component<Props, State> {
             this.state.inputValue !== null
               ? this.state.inputValue
               : value == null
-              ? "Not Set"
-              : value
+                ? "Not Set"
+                : value
           }
           onChange={(e: { target: { value: string } }) => {
             this.handleInputChange(e.target.value);

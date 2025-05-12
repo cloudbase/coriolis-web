@@ -85,14 +85,14 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
   // @TODO - check if this override is necessary, aka this.migrationImageMapFieldName is used from this class
   override getDestinationEnv(
     options: { [prop: string]: any } | null,
-    oldOptions?: any
+    oldOptions?: any,
   ) {
     const env = {
       ...defaultGetDestinationEnv(options, oldOptions),
       ...defaultGetMigrationImageMap(
         options,
         oldOptions,
-        this.migrationImageMapFieldName
+        this.migrationImageMapFieldName,
       ),
     };
     return env;

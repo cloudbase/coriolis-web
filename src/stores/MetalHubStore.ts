@@ -158,7 +158,7 @@ class MetalHubStore {
 
   @action async refreshServer(
     serverId: number,
-    opts?: { showLoading?: boolean }
+    opts?: { showLoading?: boolean },
   ) {
     if (!opts || opts.showLoading) {
       this.refreshingServer = true;

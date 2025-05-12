@@ -143,7 +143,6 @@ class Table extends React.Component<Props> {
                 ? this.props.columnsWidths[i]
                 : dataWidth
             }
-            // eslint-disable-next-line react/no-array-index-key
             key={i}
             secondary={this.props.useSecondaryStyle}
           >
@@ -178,7 +177,6 @@ class Table extends React.Component<Props> {
     return (
       <Body customStyle={this.props.bodyStyle}>
         {this.props.items.map((row, i) => (
-          // eslint-disable-next-line react/no-array-index-key
           <Row key={i} secondary={this.props.useSecondaryStyle}>
             {row.constructor === Array
               ? row.map((data, j) => {
@@ -189,7 +187,6 @@ class Table extends React.Component<Props> {
                   }
 
                   return (
-                    // eslint-disable-next-line react/no-array-index-key
                     <RowData
                       customStyle={columnStyle}
                       width={dataWidth}

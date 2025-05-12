@@ -170,7 +170,7 @@ class ActionDropdown extends React.Component<Props, State> {
   handleItemMouseHover(
     action: DropdownAction,
     index: number,
-    isEnter: boolean
+    isEnter: boolean,
   ) {
     if (!this.tipRef || index !== 0 || action.disabled) {
       return;
@@ -254,7 +254,7 @@ class ActionDropdown extends React.Component<Props, State> {
         />
         {this.renderListItems()}
       </List>,
-      body
+      body,
     );
   }
 

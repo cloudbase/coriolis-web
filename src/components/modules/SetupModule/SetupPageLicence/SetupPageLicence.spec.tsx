@@ -42,7 +42,7 @@ describe("SetupPageLicence", () => {
   it("renders without crashing", () => {
     render(<SetupPageLicence {...defaultProps} />);
     const fullNameInput = Array.from(
-      TestUtils.selectAll("SetupPageInputWrapper__Label")
+      TestUtils.selectAll("SetupPageInputWrapper__Label"),
     )
       .find(el => el.textContent?.includes("Full name"))!
       .parentElement?.querySelector("input")!;
@@ -75,14 +75,14 @@ describe("SetupPageLicence", () => {
 
     expect(defaultProps.onUpdateCustomerInfo).toHaveBeenCalledWith(
       fieldName,
-      newValue
+      newValue,
     );
   });
 
   it("fires country change event", async () => {
     render(<SetupPageLicence {...defaultProps} />);
     const countryInput = Array.from(
-      TestUtils.selectAll("SetupPageInputWrapper__Label")
+      TestUtils.selectAll("SetupPageInputWrapper__Label"),
     )
       .find(el => el.textContent?.includes("Country"))!
       .parentElement?.querySelector("input")!;
@@ -93,7 +93,7 @@ describe("SetupPageLicence", () => {
 
     expect(defaultProps.onUpdateCustomerInfo).toHaveBeenCalledWith(
       "country",
-      "United Arab Emirates"
+      "United Arab Emirates",
     );
   });
 });
