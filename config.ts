@@ -76,6 +76,22 @@ const conf: Config = {
       requiredFields: ["list_all_destination_networks"],
     },
     {
+      name: "vhi",
+      types: ["destination"],
+      requiredFields: ["list_all_destination_networks"],
+    },
+    {
+      name: "vhi",
+      types: ["source"],
+      requiredFields: ["replica_export_mechanism"],
+      requiredValues: [
+        {
+          field: "replica_export_mechanism",
+          values: ["swift_backups", "ceph_backups", "coriolis_backups"],
+        },
+      ],
+    },
+    {
       name: "aws",
       types: ["source", "destination"],
       requiredFields: ["region"],
@@ -126,6 +142,7 @@ const conf: Config = {
   providerSortPriority: {
     aws: 1,
     openstack: 1,
+    vhi: 2,
     vmware_vsphere: 1,
     azure: 2,
     "hyper-v": 2,
@@ -146,6 +163,7 @@ const conf: Config = {
   providerNames: {
     aws: "AWS",
     openstack: "OpenStack",
+    vhi: "VHI",
     vmware_vsphere: "VMware",
     azure: "Azure",
     "hyper-v": "Hyper-V",
