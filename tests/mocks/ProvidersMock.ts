@@ -53,4 +53,7 @@ export const PROVIDERS_MOCK: Providers = {
   lxd: {
     types: [],
   },
+  vhi: {
+    types: [],
+  },
 };
