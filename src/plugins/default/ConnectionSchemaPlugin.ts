@@ -136,7 +136,7 @@ export const fieldsToPayload = (
   const info: any = {};
   const usableSchema: any = schema;
   Object.keys(usableSchema.properties).forEach(fieldName => {
-    if (data[fieldName] && typeof data[fieldName] !== "object") {
+    if (data[fieldName] !== undefined && typeof data[fieldName] !== "object") {
       info[fieldName] = Utils.trim(fieldName, data[fieldName]);
     } else if (typeof usableSchema.properties[fieldName] === "object") {
       const properties =
