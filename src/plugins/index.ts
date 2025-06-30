@@ -21,6 +21,7 @@ import OciConnectionSchemaPlugin from "./oci/ConnectionSchemaPlugin";
 import OpcaConnectionSchemaPlugin from "./opca/ConnectionSchemaPlugin";
 import O3cConnectionSchemaPlugin from "./o3c/ConnectionSchemaPlugin";
 import KubevirtConnectionSchemaPlugin from "./kubevirt/ConnectionSchemaPlugin";
+import HarvesterConnectionSchemaPlugin from "./harvester/ConnectionSchemaPlugin";
 
 import DefaultContentPlugin from "./default/ContentPlugin";
 import AzureContentPlugin from "./azure/ContentPlugin";
@@ -59,6 +60,7 @@ export const ConnectionSchemaPlugin = {
       opca: new OpcaConnectionSchemaPlugin(),
       o3c: new O3cConnectionSchemaPlugin(),
       kubevirt: new KubevirtConnectionSchemaPlugin(),
+      harvester: new HarvesterConnectionSchemaPlugin(),
     };
     if (hasKey(map, provider)) {
       return map[provider];

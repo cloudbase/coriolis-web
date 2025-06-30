@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2017  Cloudbase Solutions SRL
+Copyright (C) 2025  Cloudbase Solutions SRL
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -12,29 +12,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export type ProviderTypes =
-  | "azure"
-  | "openstack"
-  | "vhi"
-  | "opc"
-  | "opca"
-  | "o3c"
-  | "oracle_vm"
-  | "proxmox"
-  | "vmware_vsphere"
-  | "aws"
-  | "oci"
-  | "hyper-v"
-  | "scvmm"
-  | "olvm"
-  | "kubevirt"
-  | "harvester"
-  | "metal"
-  | "rhev"
-  | "lxd";
+import ConnectionSchemaParser from "@src/plugins/kubevirt/ConnectionSchemaPlugin";
 
-export type Providers = {
-  [provider in ProviderTypes]: {
-    types: number[];
-  };
-};
+export default class HarvesterConnectionSchemaPlugin extends ConnectionSchemaParser {}

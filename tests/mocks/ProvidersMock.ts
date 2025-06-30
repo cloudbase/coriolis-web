@@ -44,6 +44,9 @@ export const PROVIDERS_MOCK: Providers = {
   kubevirt: {
     types: [],
   },
+  harvester: {
+    types: [],
+  },
   metal: {
     types: [],
   },
