@@ -14,11 +14,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React from "react";
 import { render } from "@testing-library/react";
-import Pagination from "@src/components/ui/Pagination";
+import ArrowPagination from "./ArrowPagination";
 import TestUtils from "@tests/TestUtils";
 
-const PaginationWithDefaultProps = (props: Partial<Pagination["props"]>) => (
-  <Pagination
+const ArrowPaginationWithDefaultProps = (
+  props: Partial<ArrowPagination["props"]>,
+) => (
+  <ArrowPagination
     currentPage={2}
     totalPages={10}
     onPreviousClick={props.onPreviousClick || (() => {})}
@@ -29,10 +31,10 @@ const PaginationWithDefaultProps = (props: Partial<Pagination["props"]>) => (
   />
 );
 
-describe("Pagination", () => {
+describe("ArrowPagination", () => {
   it("renders", () => {
-    render(<PaginationWithDefaultProps />);
-    expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
+    render(<ArrowPaginationWithDefaultProps />);
+    expect(TestUtils.select("ArrowPagination__PageNumber")?.textContent).toBe(
       "2 of 10",
     );
   });
@@ -41,14 +43,14 @@ describe("Pagination", () => {
     const onPreviousClick = jest.fn();
     const onNextClick = jest.fn();
     render(
-      <PaginationWithDefaultProps
+      <ArrowPaginationWithDefaultProps
         onPreviousClick={onPreviousClick}
         onNextClick={onNextClick}
       />,
     );
-    TestUtils.select("Pagination__PagePrevious")!.click();
+    TestUtils.select("ArrowPagination__PagePrevious")!.click();
     expect(onPreviousClick).toHaveBeenCalled();
-    TestUtils.select("Pagination__PageNext")!.click();
+    TestUtils.select("ArrowPagination__PageNext")!.click();
     expect(onNextClick).toHaveBeenCalled();
   });
 
@@ -56,37 +58,37 @@ describe("Pagination", () => {
     let onPreviousClick = jest.fn();
     let onNextClick = jest.fn();
     const { rerender } = render(
-      <PaginationWithDefaultProps
+      <ArrowPaginationWithDefaultProps
         onPreviousClick={onPreviousClick}
         previousDisabled
         onNextClick={onNextClick}
       />,
     );
-    TestUtils.select("Pagination__PagePrevious")!.click();
+    TestUtils.select("ArrowPagination__PagePrevious")!.click();
     expect(onPreviousClick).not.toHaveBeenCalled();
-    TestUtils.select("Pagination__PageNext")!.click();
+    TestUtils.select("ArrowPagination__PageNext")!.click();
     expect(onNextClick).toHaveBeenCalled();
 
     onPreviousClick = jest.fn();
     onNextClick = jest.fn();
     rerender(
-      <PaginationWithDefaultProps
+      <ArrowPaginationWithDefaultProps
         onPreviousClick={onPreviousClick}
         onNextClick={onNextClick}
         nextDisabled
       />,
     );
-    TestUtils.select("Pagination__PagePrevious")!.click();
+    TestUtils.select("ArrowPagination__PagePrevious")!.click();
     expect(onPreviousClick).toHaveBeenCalled();
-    TestUtils.select("Pagination__PageNext")!.click();
+    TestUtils.select("ArrowPagination__PageNext")!.click();
     expect(onNextClick).not.toHaveBeenCalled();
   });
 
   it("shows loading", () => {
-    const { rerender } = render(<PaginationWithDefaultProps />);
+    const { rerender } = render(<ArrowPaginationWithDefaultProps />);
     expect(TestUtils.select("HorizontalLoading__Wrapper")).toBeFalsy();
 
-    rerender(<PaginationWithDefaultProps loading />);
+    rerender(<ArrowPaginationWithDefaultProps loading />);
     expect(TestUtils.select("HorizontalLoading__Wrapper")).toBeTruthy();
   });
 });

@@ -80,7 +80,7 @@ type Props = {
 };
 
 @observer
-class Pagination extends React.Component<Props> {
+class ArrowPagination extends React.Component<Props> {
   goTo(type: "previous" | "next") {
     if (type === "previous" && !this.props.previousDisabled) {
       this.props.onPreviousClick();
@@ -154,4 +154,4 @@ class Pagination extends React.Component<Props> {
   }
 }
 
-export default Pagination;
+export default ArrowPagination;
