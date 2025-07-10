@@ -39,7 +39,7 @@ export type Config = {
   providersDisabledExecuteOptions: [ProviderTypes];
   hiddenUsers: string[];
   passwordFields: string[];
-  mainListItemsPerPage: number;
+  defaultListItemsPerPage?: number;
   servicesUrls: Services;
   maxMinionPoolEventsPerPage: number;
   bareMetalEndpointName: string;

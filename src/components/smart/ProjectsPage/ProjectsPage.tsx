@@ -159,6 +159,8 @@ class ProjectsPage extends React.Component<Props, State> {
                   }
                 />
               )}
+              itemsPerPageOptions={[10, 25, 50]}
+              initialItemsPerPage={10}
             />
           }
           headerComponent={
