@@ -39,46 +39,56 @@ describe("Endpoints list", () => {
 
     cy.fixture("endpoints/endpoints").then((endpointsFixture: any) => {
       const endpoints = endpointsFixture.endpoints;
+      const ITEMS_PER_PAGE = 10;
 
       cy.get("div[class^='MainListFilter__FilterItem']")
         .contains("Azure")
         .click();
+      const azureEndpoints = endpoints.filter(r => r.type === "azure");
       cy.get("div[class^='EndpointListItem__Wrapper']").should(
         "have.length",
-        endpoints.filter(r => r.type === "azure").length,
+        Math.min(azureEndpoints.length, ITEMS_PER_PAGE),
       );
 
       cy.get("div[class^='MainListFilter__FilterItem']")
         .contains("VMware")
         .click();
+      const vmwareEndpoints = endpoints.filter(
+        r => r.type === "vmware_vsphere",
+      );
       cy.get("div[class^='EndpointListItem__Wrapper']").should(
         "have.length",
-        endpoints.filter(r => r.type === "vmware_vsphere").length,
+        Math.min(vmwareEndpoints.length, ITEMS_PER_PAGE),
       );
 
       cy.get("div[class^='SearchButton__Wrapper']").click();
       cy.get("input[class*='SearchInput']").type("cor");
+      const vmwareCorEndpoints = endpoints.filter(
+        e => e.type === "vmware_vsphere" && e.name.includes("cor"),
+      );
       cy.get("div[class^='EndpointListItem__Wrapper']").should(
         "have.length",
-        endpoints.filter(
-          e => e.type === "vmware_vsphere" && e.name.includes("cor"),
-        ).length,
+        Math.min(vmwareCorEndpoints.length, ITEMS_PER_PAGE),
       );
+
       cy.get("div[class^='TextInput__Close']").click();
+      cy.get("input[class*='SearchInput']").should("have.value", "");
 
       cy.get("div[class^='MainListFilter__FilterItem']")
         .contains("All")
         .click();
       cy.get("div[class^='EndpointListItem__Wrapper']").should(
         "have.length",
-        endpoints.length,
+        Math.min(endpoints.length, ITEMS_PER_PAGE),
       );
 
       cy.get("div[class^='SearchButton__Wrapper']").click();
       cy.get("input[class*='SearchInput']").type("cor");
+      cy.get("input[class*='SearchInput']").should("have.value", "cor");
+      const corEndpoints = endpoints.filter(e => e.name.includes("cor"));
       cy.get("div[class^='EndpointListItem__Wrapper']").should(
         "have.length",
-        endpoints.filter(e => e.name.includes("cor")).length,
+        Math.min(corEndpoints.length, ITEMS_PER_PAGE),
       );
     });
   });
