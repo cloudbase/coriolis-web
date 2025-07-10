@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import React, { act } from "react";
 import styled from "styled-components";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import FilterList from "@src/components/ui/Lists/FilterList";
 import TestUtils from "@tests/TestUtils";
 import userEvent from "@testing-library/user-event";
@@ -71,6 +71,7 @@ const ItemComponent = (props: ItemComponentProps) => (
 const FilterListWrap = (options?: {
   onItemClick?: () => void;
   onSelectedItemsChange?: (items: any[]) => void;
+  initialItemsPerPage?: number;
 }) => (
   <FilterList
     items={ITEMS}
@@ -82,6 +83,7 @@ const FilterListWrap = (options?: {
     selectionLabel="test item"
     renderItemComponent={ItemComponent}
     onSelectedItemsChange={options?.onSelectedItemsChange || (() => {})}
+    initialItemsPerPage={options?.initialItemsPerPage || 2}
   />
 );
 
@@ -98,9 +100,9 @@ describe("FilterList", () => {
     const listItems = TestUtils.selectAll("FilterListspec__MainListItem-");
     expect(listItems).toHaveLength(2);
     expect(listItems[1].textContent).toBe(ITEMS[1].label);
-    expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
-      "1 of 2",
-    );
+    expect(
+      TestUtils.select("NumberedPagination__PageNumber")?.textContent,
+    ).toBe("Page 1 of 2");
   });
 
   it("filters items", async () => {
@@ -135,13 +137,16 @@ describe("FilterList", () => {
 
   it("goes to next page", async () => {
     render(FilterListWrap());
-    await act(async () => {
-      TestUtils.select("Pagination__PageNext")?.click();
-    });
 
-    expect(TestUtils.select("Pagination__PageNumber")?.textContent).toBe(
-      "2 of 2",
+    const nextButton = Array.from(document.querySelectorAll("button")).find(
+      btn => btn.textContent === "Next",
     );
+
+    fireEvent.click(nextButton!);
+
+    expect(
+      TestUtils.select("NumberedPagination__PageNumber")?.textContent,
+    ).toBe("Page 2 of 2");
     expect(
       TestUtils.selectAll("FilterListspec__MainListItem-")[1].textContent,
     ).toBe(ITEMS[3].label);
@@ -166,7 +171,7 @@ describe("FilterList", () => {
     });
     expect(checkbox.checked).toBe(true);
     expect(TestUtils.select("MainListFilter__SelectionText")?.textContent).toBe(
-      "1 of 4\u00a0test item(s) selected",
+      "1 of 2\u00a0test item(s) selected",
     );
     expect(onSelectedItemsChange).toHaveBeenCalledWith([ITEMS[1]]);
   });
