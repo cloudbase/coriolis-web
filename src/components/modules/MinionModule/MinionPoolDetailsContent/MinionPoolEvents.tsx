@@ -22,7 +22,7 @@ import {
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import DropdownLink from "@src/components/ui/Dropdowns/DropdownLink";
 import InfoIcon from "@src/components/ui/InfoIcon";
-import Pagination from "@src/components/ui/Pagination";
+import ArrowPagination from "@src/components/ui/Pagination/ArrowPagination";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 import configLoader from "@src/utils/Config";
 import DateUtils from "@src/utils/DateUtils";
@@ -255,7 +255,7 @@ class MinionPoolEvents extends React.Component<Props, State> {
         configLoader.config.maxMinionPoolEventsPerPage,
     );
     return (
-      <Pagination
+      <ArrowPagination
         previousDisabled={this.state.currentPage === 1}
         nextDisabled={this.state.currentPage === totalPages}
         onPreviousClick={() => {

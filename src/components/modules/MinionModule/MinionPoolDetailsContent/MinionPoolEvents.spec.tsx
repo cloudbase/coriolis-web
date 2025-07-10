@@ -81,7 +81,7 @@ describe("MinionPoolEvents", () => {
     expect(filterDropdown).toBeTruthy();
   });
 
-  describe("Pagination", () => {
+  describe("ArrowPagination", () => {
     const showAllEvents = async () => {
       let showAllEvents: HTMLElement | null = null;
       TestUtils.selectAll("DropdownLink__Label").forEach(element => {
@@ -109,12 +109,12 @@ describe("MinionPoolEvents", () => {
       render(<MinionPoolEvents {...defaultProps} />);
 
       // pagination is not visible for 1 event
-      expect(TestUtils.select("Pagination__Wrapper")!).toBeFalsy();
+      expect(TestUtils.select("ArrowPagination__Wrapper")!).toBeFalsy();
 
       await showAllEvents();
 
       // pagination is visible for more than 1 event
-      expect(TestUtils.select("Pagination__Wrapper")!).toBeTruthy();
+      expect(TestUtils.select("ArrowPagination__Wrapper")!).toBeTruthy();
     });
 
     it("goes to next page and back", async () => {
@@ -123,28 +123,31 @@ describe("MinionPoolEvents", () => {
       await showAllEvents();
 
       expect(
-        TestUtils.select("Pagination__PagePrevious")!.hasAttribute("disabled"),
+        TestUtils.select("ArrowPagination__PagePrevious")!.hasAttribute(
+          "disabled",
+        ),
       ).toBeTruthy();
-      expect(TestUtils.select("Pagination__PageNumber")!.textContent).toBe(
+      expect(TestUtils.select("ArrowPagination__PageNumber")!.textContent).toBe(
         "1 of 3",
       );
 
       await act(async () => {
-        TestUtils.select("Pagination__PageNext")!.click();
+        TestUtils.select("ArrowPagination__PageNext")!.click();
       });
 
       expect(
-        TestUtils.select("Pagination__PagePrevious")!.hasAttribute("disabled"),
+        TestUtils.select("ArrowPagination__PagePrevious")!.hasAttribute(
+          "disabled",
+        ),
       ).toBeFalsy();
-      expect(TestUtils.select("Pagination__PageNumber")!.textContent).toBe(
+      expect(TestUtils.select("ArrowPagination__PageNumber")!.textContent).toBe(
         "2 of 3",
       );
 
       await act(async () => {
-        TestUtils.select("Pagination__PagePrevious")!.click();
+        TestUtils.select("ArrowPagination__PagePrevious")!.click();
       });
-
-      expect(TestUtils.select("Pagination__PageNumber")!.textContent).toBe(
+      expect(TestUtils.select("ArrowPagination__PageNumber")!.textContent).toBe(
         "1 of 3",
       );
     });

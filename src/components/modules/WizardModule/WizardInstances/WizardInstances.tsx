@@ -20,7 +20,7 @@ import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
 import Checkbox from "@src/components/ui/Checkbox";
 import InfoIcon from "@src/components/ui/InfoIcon";
-import Pagination from "@src/components/ui/Pagination";
+import ArrowPagination from "@src/components/ui/Pagination/ArrowPagination";
 import ReloadButton from "@src/components/ui/ReloadButton";
 import SearchInput from "@src/components/ui/SearchInput";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
@@ -465,7 +465,7 @@ class WizardInstances extends React.Component<Props, State> {
     const isNextDisabled = !hasNextPage || areAllDisabled;
 
     return (
-      <Pagination
+      <ArrowPagination
         style={{ margin: "32px 0 16px 0" }}
         previousDisabled={isPreviousDisabled}
         onPreviousClick={() => {
