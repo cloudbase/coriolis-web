@@ -145,6 +145,8 @@ class UsersPage extends React.Component<Props, State> {
                   getProjectName={projectId => this.getProjectName(projectId)}
                 />
               )}
+              itemsPerPageOptions={[10, 25, 50]}
+              initialItemsPerPage={10}
             />
           }
           headerComponent={

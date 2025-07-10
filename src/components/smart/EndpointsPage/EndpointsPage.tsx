@@ -355,6 +355,8 @@ class EndpointsPage extends React.Component<Props, State> {
               onEmptyListButtonClick={() => {
                 this.handleEmptyListButtonClick();
               }}
+              itemsPerPageOptions={[10, 25, 50]}
+              initialItemsPerPage={10}
             />
           }
           headerComponent={

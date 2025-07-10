@@ -21,7 +21,7 @@ import userEvent from "@testing-library/user-event";
 import { ItemComponentProps } from "@src/components/ui/Lists/MainList";
 
 jest.mock("@src/utils/Config", () => ({
-  config: { mainListItemsPerPage: 2 },
+  config: { defaultListItemsPerPage: 2 },
 }));
 
 const ITEMS = [

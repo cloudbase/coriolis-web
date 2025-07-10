@@ -198,9 +198,9 @@ const conf: Config = {
     "client_secret",
   ],
 
-  // The number of items per page applicable to main lists:
+  // The number of items per page applicable to default lists:
   // transfers, deployments, endpoints, users etc.
-  mainListItemsPerPage: 20,
+  defaultListItemsPerPage: 25,
 
   maxMinionPoolEventsPerPage: 50,
 

@@ -17,11 +17,10 @@ import { observer } from "mobx-react";
 import styled from "styled-components";
 
 import MainListFilter from "@src/components/ui/Lists/MainListFilter";
-import Pagination from "@src/components/ui/Pagination";
+import NumberedPagination from "@src/components/ui/Pagination/NumberedPagination";
 import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
 import type { ItemComponentProps } from "@src/components/ui/Lists/MainList";
 import MainList from "@src/components/ui/Lists/MainList";
-
 import configLoader from "@src/utils/Config";
 
 const Wrapper = styled.div<any>`
@@ -29,6 +28,15 @@ const Wrapper = styled.div<any>`
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
+`;
+
+const Footer = styled.div<any>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  color: #616770;
+  border-top: 1px solid #e8e8e8;
 `;
 
 type DictItem = { value: string; label: string };
@@ -57,6 +65,8 @@ type Props = {
   customFilterComponent?: React.ReactNode;
   largeDropdownActionItems?: boolean;
   listHeaderComponent?: React.ReactNode;
+  itemsPerPageOptions?: number[];
+  initialItemsPerPage?: number;
 };
 type State = {
   items: any[];
@@ -65,6 +75,8 @@ type State = {
   selectedItems: any[];
   selectAllSelected: boolean;
   currentPage: number;
+  itemsPerPage: any;
+  itemsPerPageOptions?: number[];
 };
 @observer
 class FilterList extends React.Component<Props, State> {
@@ -77,6 +89,9 @@ class FilterList extends React.Component<Props, State> {
     selectedItems: [],
     selectAllSelected: false,
     currentPage: 1,
+    itemsPerPage:
+      this.props.initialItemsPerPage ||
+      configLoader.config.defaultListItemsPerPage,
   };
 
   UNSAFE_componentWillMount() {
@@ -96,6 +111,7 @@ class FilterList extends React.Component<Props, State> {
           filterText: "",
           selectedItems: [],
           currentPage: 1,
+          itemsPerPage: props.initialItemsPerPage || this.state.itemsPerPage,
         },
         () => {
           if (this.props.onPaginatedItemsChange) {
@@ -122,14 +138,11 @@ class FilterList extends React.Component<Props, State> {
 
   get paginatedItems() {
     let paginatedItems = this.state.items;
-    if (paginatedItems.length > configLoader.config.mainListItemsPerPage) {
+    if (paginatedItems.length > this.state.itemsPerPage) {
       paginatedItems = this.state.items.filter(
         (_, i) =>
-          i <
-            configLoader.config.mainListItemsPerPage * this.state.currentPage &&
-          i >=
-            configLoader.config.mainListItemsPerPage *
-              (this.state.currentPage - 1),
+          i < this.state.itemsPerPage * this.state.currentPage &&
+          i >= this.state.itemsPerPage * (this.state.currentPage - 1),
       );
     }
     return paginatedItems;
@@ -224,41 +237,62 @@ class FilterList extends React.Component<Props, State> {
     return filteredItems;
   }
 
-  handlePageClick(page: number) {
-    this.setState({ currentPage: page }, () => {
-      if (this.props.onPaginatedItemsChange) {
-        this.props.onPaginatedItemsChange(this.paginatedItems);
-      }
-      this.mainListWrapperRef.current?.scrollTo(0, 0);
-    });
+  setPageAndItemsPerPage(page: number, itemsPerPage?: number) {
+    this.setState(
+      prevState => ({
+        currentPage: page,
+        itemsPerPage:
+          itemsPerPage !== undefined ? itemsPerPage : prevState.itemsPerPage,
+        selectedItems: [],
+        selectAllSelected: false,
+      }),
+      () => {
+        if (this.props.onPaginatedItemsChange) {
+          this.props.onPaginatedItemsChange(this.paginatedItems);
+        }
+        this.mainListWrapperRef.current?.scrollTo(0, 0);
+        if (this.props.onSelectedItemsChange) {
+          this.props.onSelectedItemsChange([]);
+        }
+      },
+    );
+  }
+
+  handlePageClick = (page: number) => {
+    this.setPageAndItemsPerPage(page);
+  };
+
+  handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const itemsPerPage = parseInt(event.target.value, 10);
+    this.setPageAndItemsPerPage(1, itemsPerPage);
+  };
+
+  getFooterText() {
+    if (!this.paginatedItems.length) return "";
+
+    const label =
+      this.props.selectionLabel.charAt(0).toUpperCase() +
+      this.props.selectionLabel.slice(1);
+    const plural = this.paginatedItems.length !== 1 ? "s" : "";
+    return `${this.paginatedItems.length} ${label}${plural}`;
   }
 
   renderPagination() {
-    const itemsCount = this.state.items.length;
-    const totalPages = Math.ceil(
-      itemsCount / configLoader.config.mainListItemsPerPage,
-    );
-    const hasNextPage =
-      this.state.currentPage * configLoader.config.mainListItemsPerPage <
-      itemsCount;
-    const isPreviousDisabled = this.state.currentPage === 1;
-    const isNextDisabled = !hasNextPage;
+    if (this.state.items.length === 0) {
+      return null;
+    }
 
-    return itemsCount > configLoader.config.mainListItemsPerPage ? (
-      <Pagination
+    return (
+      <NumberedPagination
+        itemsCount={this.state.items.length}
         currentPage={this.state.currentPage}
-        totalPages={totalPages}
-        nextDisabled={isNextDisabled}
-        previousDisabled={isPreviousDisabled}
-        onNextClick={() => {
-          this.handlePageClick(this.state.currentPage + 1);
-        }}
-        onPreviousClick={() => {
-          this.handlePageClick(this.state.currentPage - 1);
-        }}
-        style={{ margin: "32px 0 16px 0" }}
+        itemsPerPage={this.state.itemsPerPage}
+        style={{ margin: "0 5px" }}
+        onPageChange={this.handlePageClick}
+        onItemsPerPageChange={this.handleItemsPerPageChange}
+        itemsPerPageOptions={this.props.itemsPerPageOptions || [25, 50, 100]}
       />
-    ) : null;
+    );
   }
 
   render() {
@@ -281,7 +315,7 @@ class FilterList extends React.Component<Props, State> {
           customFilterComponent={this.props.customFilterComponent}
           selectionInfo={{
             selected: this.state.selectedItems.length,
-            total: this.state.items.length,
+            total: this.paginatedItems.length,
             label: this.props.selectionLabel,
           }}
           items={this.props.filterItems}
@@ -311,7 +345,15 @@ class FilterList extends React.Component<Props, State> {
           emptyListComponent={this.props.emptyListComponent}
           onEmptyListButtonClick={this.props.onEmptyListButtonClick}
         />
-        {this.renderPagination()}
+        {this.state.items.length > 0 && (
+          <Footer>
+            <div>{this.getFooterText()}</div>
+            <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+              {this.renderPagination()}
+            </div>
+            <div></div>
+          </Footer>
+        )}
       </Wrapper>
     );
   }
