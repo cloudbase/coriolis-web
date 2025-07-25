@@ -38,6 +38,7 @@ export type Config = {
   providerNames: { [providerName in ProviderTypes]: string };
   providersDisabledExecuteOptions: [ProviderTypes];
   hiddenUsers: string[];
+  hiddenUserRoles: string[];
   passwordFields: string[];
   defaultListItemsPerPage?: number;
   servicesUrls: Services;
