@@ -189,6 +189,9 @@ const conf: Config = {
   // The list of the users to hide in the UI
   hiddenUsers: ["barbican", "coriolis"],
 
+  // The list of user roles to hide in the UI
+  hiddenUserRoles: ["audit", "creator", "observer", "service", "key-manager:service-admin"],
+
   // By default, if a field name contains `password` in it (ex.: `user_password`),
   // it will be rendered as a password input
   // If the field doesn't contain `password` in its name, the following list will be used instead

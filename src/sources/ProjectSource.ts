@@ -46,8 +46,14 @@ class ProjectsSource {
       skipLog,
     });
     const assignments: RoleAssignment[] = response.data.role_assignments;
-    assignments.sort((a1, a2) => a1.role.name.localeCompare(a2.role.name));
-    return assignments;
+    const hiddenRoles = configLoader.config.hiddenUserRoles || [];
+    const filteredAssignments = assignments.filter(
+      a => !hiddenRoles.includes(a.role.name),
+    );
+    filteredAssignments.sort((a1, a2) =>
+      a1.role.name.localeCompare(a2.role.name),
+    );
+    return filteredAssignments;
   }
 
   async getUsers(projectId: string): Promise<User[]> {

@@ -335,8 +335,12 @@ class UserSource {
       `${configLoader.config.servicesUrls.keystone}/roles`,
     );
     const roles: Role[] = response.data.roles;
-    roles.sort((r1, r2) => r1.name.localeCompare(r2.name));
-    return roles;
+    const hiddenRoles = configLoader.config.hiddenUserRoles || [];
+    const filteredRoles = roles.filter(
+      role => !hiddenRoles.includes(role.name),
+    );
+    filteredRoles.sort((r1, r2) => r1.name.localeCompare(r2.name));
+    return filteredRoles;
   }
 
   async getProjects(userId: string): Promise<Project[]> {
@@ -344,8 +348,10 @@ class UserSource {
       `${configLoader.config.servicesUrls.keystone}/role_assignments?include_names`,
     );
     const assignments: RoleAssignment[] = response.data.role_assignments;
+    const hiddenRoles = configLoader.config.hiddenUserRoles || [];
     const projects: Project[] = assignments
       .filter(a => a.user.id === userId)
+      .filter(a => !hiddenRoles.includes(a.role.name))
       .filter(
         (a, i, arr) =>
           arr.findIndex(

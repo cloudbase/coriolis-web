@@ -23,6 +23,18 @@ import TestUtils from "@tests/TestUtils";
 
 jest.mock("react-router", () => ({ Link: "a" }));
 
+jest.mock("@src/utils/Config", () => ({
+  config: {
+    hiddenUserRoles: [
+      "audit",
+      "creator",
+      "observer",
+      "service",
+      "key-manager:service-admin",
+    ],
+  },
+}));
+
 const PROJECT: Project = {
   id: "project-id",
   name: "project-name",

@@ -27,6 +27,7 @@ import AutocompleteDropdown from "@src/components/ui/Dropdowns/AutocompleteDropd
 
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import KeyboardManager from "@src/utils/KeyboardManager";
+import configLoader from "@src/utils/Config";
 
 import userImage from "./images/user.svg";
 
@@ -236,6 +237,10 @@ class ProjectMemberModal extends React.Component<Props, State> {
       }
     };
     const highlighFieldName = this.state.isNew ? "rolesNew" : "rolesExisting";
+    const hiddenRoles = configLoader.config.hiddenUserRoles || [];
+    const filteredRoles = this.props.roles.filter(
+      r => !hiddenRoles.includes(r.name),
+    );
 
     return (
       <FieldInput
@@ -254,9 +259,7 @@ class ProjectMemberModal extends React.Component<Props, State> {
         width={ThemeProps.inputSizes.large.width}
         layout="modal"
         disabled={this.props.loading}
-        enum={this.props.roles
-          .filter(r => r.name !== "key-manager:service-admin")
-          .map(r => ({ name: r.name, id: r.id }))}
+        enum={filteredRoles.map(r => ({ name: r.name, id: r.id }))}
         required
         highlight={Boolean(
           this.state.highlightFieldNames.find(n => n === highlighFieldName),
