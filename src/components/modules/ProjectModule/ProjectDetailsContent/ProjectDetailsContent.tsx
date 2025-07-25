@@ -28,6 +28,7 @@ import Table from "@src/components/ui/Table";
 
 import type { Project, RoleAssignment, Role } from "@src/@types/Project";
 import type { User } from "@src/@types/User";
+import configLoader from "@src/utils/Config";
 
 const Wrapper = styled.div<any>`
   ${ThemeProps.exactWidth(ThemeProps.contentWidth)}
@@ -233,8 +234,9 @@ class ProjectDetailsContent extends React.Component<Props, State> {
         .map(a => ({ value: a.role.id, label: a.role.name }));
       return roles;
     };
+    const hiddenRoles = configLoader.config.hiddenUserRoles || [];
     const allRoles = this.props.roles
-      .filter(r => r.name !== "key-manager:service-admin")
+      .filter(r => !hiddenRoles.includes(r.name))
       .map(r => ({ value: r.id, label: r.name }));
 
     this.props.users.forEach(user => {
