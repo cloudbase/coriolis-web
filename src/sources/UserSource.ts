@@ -316,7 +316,7 @@ class UserSource {
 
   async getMemberRoleId(): Promise<string> {
     const roles: { id: string; name: string }[] = await this.getRoles();
-    const role = roles.find(r => r.name === "_member_");
+    const role = roles.find(r => r.name === "member");
     const roleId = role ? role.id : "";
     return roleId;
   }
