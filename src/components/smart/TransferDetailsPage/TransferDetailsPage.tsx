@@ -76,6 +76,7 @@ type State = {
   initialLoading: boolean;
   deploying: boolean;
   executing: boolean;
+  dbInstancesDetails: any[];
 };
 @observer
 class TransferDetailsPage extends React.Component<Props, State> {
@@ -95,6 +96,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
     initialLoading: true,
     deploying: false,
     executing: false,
+    dbInstancesDetails: [],
   };
 
   stopPolling: boolean | null = null;
@@ -239,6 +241,14 @@ class TransferDetailsPage extends React.Component<Props, State> {
     return image;
   }
 
+  hasStoredVmInfo(info: any): boolean {
+    return (
+      info &&
+      Object.keys(info).length > 0 &&
+      Object.values(info).some((vmData: any) => vmData.export_info)
+    );
+  }
+
   async loadIsEditable(transferDetails: TransferItemDetails) {
     const targetEndpointId = transferDetails.destination_endpoint_id;
     const sourceEndpointId = transferDetails.origin_endpoint_id;
@@ -317,15 +327,41 @@ class TransferDetailsPage extends React.Component<Props, State> {
       );
     }
 
-    instanceStore.loadInstancesDetails({
-      endpointId: transfer.origin_endpoint_id,
-      instances: transfer.instances.map(n => ({ id: n })),
-      cache: options.cache,
-      quietError: false,
-      env: transfer.source_environment,
-      targetProvider: targetEndpoint?.type,
-    });
+    if (this.hasStoredVmInfo(transfer.info)) {
+      this.populateInstanceStoreFromTransferInfo(transfer.info);
+    } else {
+      instanceStore.loadInstancesDetails({
+        endpointId: transfer.origin_endpoint_id,
+        instances: transfer.instances.map(n => ({ id: n })),
+        cache: options.cache,
+        quietError: false,
+        env: transfer.source_environment,
+        targetProvider: targetEndpoint?.type,
+      });
+    }
+
     return transfer;
+  }
+
+  populateInstanceStoreFromTransferInfo(transferInfo: any) {
+    const instancesDetails = Object.keys(transferInfo).map(vmName => {
+      const vmData = transferInfo[vmName];
+      const exportInfo = vmData.export_info || {};
+
+      return {
+        id: exportInfo.id || vmName,
+        name: exportInfo.name || vmName,
+        instance_name: exportInfo.instance_name || vmName,
+        firmware_type: exportInfo.firmware_type,
+        num_cpu: exportInfo.num_cpu,
+        memory_mb: exportInfo.memory_mb,
+        os_type: exportInfo.os_type,
+        flavor_name: exportInfo.flavor_name,
+        devices: exportInfo.devices || {},
+      };
+    });
+
+    this.setState({ dbInstancesDetails: instancesDetails });
   }
 
   isExecuteDisabled() {
@@ -757,7 +793,9 @@ class TransferDetailsPage extends React.Component<Props, State> {
             <TransferDetailsContent
               item={transfer}
               itemId={this.transferId}
-              instancesDetails={instanceStore.instancesDetails}
+              instancesDetails={
+                this.state.dbInstancesDetails || instanceStore.instancesDetails
+              }
               instancesDetailsLoading={
                 instanceStore.loadingInstancesDetails ||
                 endpointStore.storageLoading ||
