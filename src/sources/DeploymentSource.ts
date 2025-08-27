@@ -72,9 +72,14 @@ class DeploymentSource {
   async getDeployment(
     deploymentId: string,
     skipLog?: boolean,
+    includeTaskInfo?: boolean,
   ): Promise<DeploymentItemDetails> {
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/deployments/${deploymentId}`;
+    if (includeTaskInfo) {
+      url += "?include_task_info=true";
+    }
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/deployments/${deploymentId}`,
+      url,
       skipLog,
       cancelId: deploymentId,
     });
