@@ -220,6 +220,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
   }) {
     await deploymentStore.getDeployment(options.deploymentId, {
       showLoading: true,
+      includeTaskInfo: true,
     });
     const details = deploymentStore.deploymentDetails;
     if (!details) {
@@ -437,6 +438,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     await deploymentStore.getDeployment(this.props.match.params.id, {
       showLoading: false,
       skipLog: true,
+      includeTaskInfo: true,
     });
     this.timeoutRef = setTimeout(() => {
       this.pollData();

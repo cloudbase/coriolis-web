@@ -286,6 +286,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
     await transferStore.getTransferDetails({
       transferId: options.transferId || this.transferId,
       showLoading: options.showLoading,
+      includeTaskInfo: true,
     });
     const transfer = this.transfer;
     if (!transfer) {
@@ -621,6 +622,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
       transferStore.getTransferDetails({
         transferId: this.transferId,
         polling: true,
+        includeTaskInfo: true,
       }),
       (async () => {
         if (window.location.pathname.indexOf("executions") > -1) {

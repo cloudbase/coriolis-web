@@ -106,8 +106,14 @@ class TransferStore {
     transferId: string;
     showLoading?: boolean;
     polling?: boolean;
+    includeTaskInfo?: boolean;
   }) {
-    const { transferId: transferId, showLoading, polling } = options;
+    const {
+      transferId: transferId,
+      showLoading,
+      polling,
+      includeTaskInfo,
+    } = options;
 
     if (showLoading) {
       this.transferDetailsLoading = true;
@@ -117,6 +123,7 @@ class TransferStore {
       const transfer = await TransferSource.getTransferDetails({
         transferId: transferId,
         polling,
+        includeTaskInfo,
       });
 
       runInAction(() => {
@@ -307,7 +314,10 @@ class TransferStore {
     try {
       const transferDetails = await Promise.all(
         transfers.map(transfer =>
-          TransferSource.getTransferDetails({ transferId: transfer.id }),
+          TransferSource.getTransferDetails({
+            transferId: transfer.id,
+            includeTaskInfo: true,
+          }),
         ),
       );
 
