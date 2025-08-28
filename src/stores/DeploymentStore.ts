@@ -120,7 +120,11 @@ class DeploymentStore {
 
   @action async getDeployment(
     deploymentId: string,
-    options?: { showLoading?: boolean; skipLog?: boolean },
+    options?: {
+      showLoading?: boolean;
+      skipLog?: boolean;
+      includeTaskInfo?: boolean;
+    },
   ) {
     if (options && options.showLoading) {
       this.detailsLoading = true;
@@ -130,6 +134,7 @@ class DeploymentStore {
       const deployment = await DeploymentSource.getDeployment(
         deploymentId,
         options && options.skipLog,
+        options && options.includeTaskInfo,
       );
       runInAction(() => {
         this.deploymentDetails = deployment;

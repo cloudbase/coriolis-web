@@ -121,11 +121,18 @@ class TransferSource {
   async getTransferDetails(options: {
     transferId: string;
     polling?: boolean;
+    includeTaskInfo?: boolean;
   }): Promise<TransferItemDetails> {
-    const { transferId: transferId, polling } = options;
+    const { transferId: transferId, polling, includeTaskInfo } = options;
+
+    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}`;
+
+    if (includeTaskInfo) {
+      url += "?include_task_info=true";
+    }
 
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}`,
+      url,
       skipLog: polling,
       cancelId: transferId,
     });

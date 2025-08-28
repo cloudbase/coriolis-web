@@ -61,6 +61,7 @@ type State = {
   pausePolling: boolean;
   initialLoading: boolean;
   deploying: boolean;
+  dbInstancesDetails: any[];
 };
 @observer
 class DeploymentDetailsPage extends React.Component<Props, State> {
@@ -73,6 +74,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     pausePolling: false,
     initialLoading: true,
     deploying: false,
+    dbInstancesDetails: [],
   };
 
   stopPolling: boolean | null = null;
@@ -133,6 +135,14 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
       image = liveMigrationDeploymentImage;
     }
     return image;
+  }
+
+  hasStoredVmInfo(info: any): boolean {
+    return (
+      info &&
+      Object.keys(info).length > 0 &&
+      Object.values(info).some((vmData: any) => vmData.export_info)
+    );
   }
 
   async loadDeploymentAndPollData() {
@@ -210,6 +220,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
   }) {
     await deploymentStore.getDeployment(options.deploymentId, {
       showLoading: true,
+      includeTaskInfo: true,
     });
     const details = deploymentStore.deploymentDetails;
     if (!details) {
@@ -250,14 +261,39 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
       },
     );
 
-    instanceStore.loadInstancesDetails({
-      endpointId: details.origin_endpoint_id,
-      instances: details.instances.map(n => ({ id: n })),
-      cache: options.cache,
-      quietError: false,
-      env: details.source_environment,
-      targetProvider: targetEndpoint?.type,
+    if (this.hasStoredVmInfo(details.info)) {
+      this.populateInstanceStoreFromDeploymentInfo(details.info);
+    } else {
+      instanceStore.loadInstancesDetails({
+        endpointId: details.origin_endpoint_id,
+        instances: details.instances.map(n => ({ id: n })),
+        cache: options.cache,
+        quietError: false,
+        env: details.source_environment,
+        targetProvider: targetEndpoint?.type,
+      });
+    }
+  }
+
+  populateInstanceStoreFromDeploymentInfo(deploymentInfo: any) {
+    const instancesDetails = Object.keys(deploymentInfo).map(vmName => {
+      const vmData = deploymentInfo[vmName];
+      const exportInfo = vmData.export_info || {};
+
+      return {
+        id: exportInfo.id || vmName,
+        name: exportInfo.name || vmName,
+        instance_name: exportInfo.instance_name || vmName,
+        firmware_type: exportInfo.firmware_type,
+        num_cpu: exportInfo.num_cpu,
+        memory_mb: exportInfo.memory_mb,
+        os_type: exportInfo.os_type,
+        flavor_name: exportInfo.flavor_name,
+        devices: exportInfo.devices || {},
+      };
     });
+
+    this.setState({ dbInstancesDetails: instancesDetails });
   }
 
   handleUserItemClick(item: { value: string }) {
@@ -402,6 +438,7 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
     await deploymentStore.getDeployment(this.props.match.params.id, {
       showLoading: false,
       skipLog: true,
+      includeTaskInfo: true,
     });
     this.timeoutRef = setTimeout(() => {
       this.pollData();
@@ -547,7 +584,9 @@ class DeploymentDetailsPage extends React.Component<Props, State> {
             <DeploymentDetailsContent
               item={deploymentStore.deploymentDetails}
               itemId={this.props.match.params.id}
-              instancesDetails={instanceStore.instancesDetails}
+              instancesDetails={
+                this.state.dbInstancesDetails || instanceStore.instancesDetails
+              }
               instancesDetailsLoading={
                 instanceStore.loadingInstancesDetails ||
                 endpointStore.storageLoading ||
