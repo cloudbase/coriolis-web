@@ -3391,13 +3391,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookie@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@types/cookie@npm:0.6.0"
-  checksum: 5edce7995775b0b196b142883e4d4f71fd93c294eaec973670f1fa2540b70ea7390408ed513ddefef5fcb12a578100c76596e8f2a714b0c2ae9f70ee773f4510
-  languageName: node
-  linkType: hard
-
 "@types/eslint-scope@npm:^3.7.7":
   version: 3.7.7
   resolution: "@types/eslint-scope@npm:3.7.7"
@@ -6948,7 +6941,7 @@ __metadata:
     react-motion: ^0.5.2
     react-notification-system: ^0.4.0
     react-refresh: ^0.16.0
-    react-router: ^7.4.0
+    react-router: ^7.5.2
     react-tooltip: ^4.5.1
     react-transition-group: ^4.x
     request: ^2.88.2
@@ -15189,21 +15182,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:^7.4.0":
-  version: 7.5.0
-  resolution: "react-router@npm:7.5.0"
+"react-router@npm:^7.5.2":
+  version: 7.7.1
+  resolution: "react-router@npm:7.7.1"
   dependencies:
-    "@types/cookie": ^0.6.0
     cookie: ^1.0.1
     set-cookie-parser: ^2.6.0
-    turbo-stream: 2.4.0
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 475ce0ad1be1ab8e1278e59640de711c6f9cae55b0f68f384ce0314ff3f9ff719c1baec591852183617e5efffc0f7825febbb0084eb84c2f096e3a732170e534
+  checksum: 1a947969bd00aedbfeeeba400c2737977170529e7e1356450c210c7793c14528f38f567582893493dc4d86c497375e7416594e137409a8926aafcfc9b473c270
   languageName: node
   linkType: hard
 
@@ -17714,13 +17705,6 @@ __metadata:
   version: 0.0.5
   resolution: "tunnel@npm:0.0.5"
   checksum: 7c8ea34b7d8d5f0d49ec90eb874ecd34b6bd57b554e5bc5a441cc51f91f16e1856febaaac61a6d7bf0c90cb4d3c7b9c6c3b79ed06e4b957ccc1f0a8f0a2305e1
-  languageName: node
-  linkType: hard
-
-"turbo-stream@npm:2.4.0":
-  version: 2.4.0
-  resolution: "turbo-stream@npm:2.4.0"
-  checksum: e36f52ed40589f01bede79757a143bef484914d579927235be1fd0c205618994cb5779a39ff8c2a80a87a1464d05771cd75320a9412b15bca03c7ff432e3cdf7
   languageName: node
   linkType: hard
 
