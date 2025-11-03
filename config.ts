@@ -40,7 +40,7 @@ const conf: Config = {
   // fit into a page, the latter number will be used.
   // - `Infinity` value means no `limit` will be used, i.e. all VMs will be listed.
   instancesListBackgroundLoading: {
-    default: 10,
+    default: 100,
     ovm: Infinity,
     "hyper-v": Infinity,
   },
