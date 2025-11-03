@@ -36,6 +36,7 @@ class InstanceSource {
     searchText?: string;
     env?: any;
     cache?: boolean;
+    refresh?: boolean;
   }): Promise<[Instance[], Instance[]]> {
     const {
       endpointId,
@@ -45,6 +46,7 @@ class InstanceSource {
       cancelId,
       env,
       searchText,
+      refresh,
     } = opts;
     let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`;
     let queryParams: { [prop: string]: string | number } = {};
@@ -58,6 +60,11 @@ class InstanceSource {
         queryParams = {
           ...queryParams,
           marker: lastInstanceId,
+        };
+      } else if (refresh) {
+        queryParams = {
+          ...queryParams,
+          marker: "refresh",
         };
       }
     }

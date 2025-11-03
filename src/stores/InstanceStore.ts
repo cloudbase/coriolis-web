@@ -77,8 +77,9 @@ class InstanceStore {
     reload?: boolean;
     env?: any;
     useCache?: boolean;
+    refresh?: boolean;
   }) {
-    const { endpoint, vmsPerPage, reload, env, useCache } = options;
+    const { endpoint, vmsPerPage, reload, env, useCache, refresh } = options;
     const usableVmsPerPage = vmsPerPage || 6;
 
     ApiCaller.cancelRequests(`${endpoint.id}-chunk`);
@@ -107,6 +108,7 @@ class InstanceStore {
           cancelId: `${endpoint.id}-chunk`,
           env,
           cache: useCache,
+          refresh: refresh && !lastEndpointId,
         });
       if (currentEndpointId !== this.lastEndpointId) {
         return;
@@ -272,6 +274,7 @@ class InstanceStore {
       vmsPerPage: chunkSize,
       reload: true,
       env,
+      refresh: true,
     });
   }
 
