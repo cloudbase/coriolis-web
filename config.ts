@@ -131,6 +131,16 @@ const conf: Config = {
       requiredFields: ["import_node"],
       relistFields: ["linux_template", "windows_template"],
     },
+    {
+      name: "olvm",
+      types: ["destination"],
+      requiredFields: ["cluster"]
+    },
+    {
+      name: "rhev",
+      types: ["destination"],
+      requiredFields: ["cluster"]
+    }
   ],
 
   /*
