@@ -61,12 +61,14 @@ class InstanceSource {
           ...queryParams,
           marker: lastInstanceId,
         };
-      } else if (refresh) {
-        queryParams = {
-          ...queryParams,
-          marker: "refresh",
-        };
       }
+    }
+
+    if (refresh) {
+      queryParams = {
+        ...queryParams,
+        refresh: "true",
+      };
     }
 
     if (searchText) {
