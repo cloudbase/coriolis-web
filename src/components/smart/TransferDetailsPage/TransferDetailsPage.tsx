@@ -694,7 +694,9 @@ class TransferDetailsPage extends React.Component<Props, State> {
         }}
         transfer={transfer}
         destinationEndpoint={destinationEndpoint}
-        instancesDetails={instanceStore.instancesDetails}
+        instancesDetails={
+          this.state.dbInstancesDetails || instanceStore.instancesDetails
+        }
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
         networks={networkStore.networks}
         networksLoading={networkStore.loading}
@@ -912,7 +914,9 @@ class TransferDetailsPage extends React.Component<Props, State> {
                   m.platform === "destination",
               )}
               loadingInstances={instanceStore.loadingInstancesDetails}
-              instances={instanceStore.instancesDetails}
+              instances={
+                this.state.dbInstancesDetails || instanceStore.instancesDetails
+              }
               onCancelClick={() => {
                 this.handleCloseDeploymentModal();
               }}
