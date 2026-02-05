@@ -96,6 +96,7 @@ class LogStore {
         name: log.log_name,
         content: await apiCaller.send({
           url: generateUrlForLog(log.log_name, startDate, endDate),
+          responseType: "blob",
         }),
       })),
     );
