@@ -90,29 +90,38 @@ class LogStore {
 
   @action async downloadAll(startDate?: Date | null, endDate?: Date | null) {
     this.downloadingAllLogs = true;
-    await ObjectUtils.waitFor(() => this.logs.length > 0);
-    const logFilesResponses = await Promise.all(
-      this.logs.map(async log => ({
-        name: log.log_name,
-        content: await apiCaller.send({
-          url: generateUrlForLog(log.log_name, startDate, endDate),
-          responseType: "blob",
-        }),
-      })),
-    );
-    const zip = new JSZip();
-    logFilesResponses.forEach(response => {
-      zip.file(`${response.name}.log`, response.content.data);
-    });
-    await downloadDiagnosticsIntoZip(zip);
-    const zipContent = await zip.generateAsync({
-      type: "blob",
-      compression: "DEFLATE",
-    });
-    saveAs(zipContent, "logs.zip");
-    runInAction(() => {
-      this.downloadingAllLogs = false;
-    });
+    try {
+      await ObjectUtils.waitFor(() => this.logs.length > 0);
+      const logFilesResponses = await Promise.all(
+        this.logs.map(async log => ({
+          name: log.log_name,
+          content: await apiCaller.send({
+            url: generateUrlForLog(log.log_name, startDate, endDate),
+            responseType: "blob",
+          }),
+        })),
+      );
+      const zip = new JSZip();
+      logFilesResponses.forEach(response => {
+        zip.file(`${response.name}.log`, response.content.data);
+      });
+      await downloadDiagnosticsIntoZip(zip);
+      const zipContent = await zip.generateAsync({
+        type: "blob",
+        compression: "DEFLATE",
+      });
+      saveAs(zipContent, "logs.zip");
+    } catch (err) {
+      console.error("Download all logs failed:", err);
+      notificationStore.alert(
+        `Download failed: ${String(err)}. Please try again with a smaller time range.`,
+        "error",
+      );
+    } finally {
+      runInAction(() => {
+        this.downloadingAllLogs = false;
+      });
+    }
   }
 
   @action download(
