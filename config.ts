@@ -198,6 +198,9 @@ const conf: Config = {
   // The list of providers for which to disable setting the 'Execute Now Options' field
   providersDisabledExecuteOptions: ["metal"],
 
+  // The list of execution option fields to disable for the providers in 'providersDisabledExecuteOptions'
+  providersExecuteOptionsDisabledFields: ["shutdown_instances"],
+
   // The list of the users to hide in the UI
   hiddenUsers: ["barbican", "coriolis"],
 
