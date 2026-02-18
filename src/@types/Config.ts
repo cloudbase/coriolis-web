@@ -37,6 +37,7 @@ export type Config = {
   providerSortPriority: { [providerName in ProviderTypes]: number };
   providerNames: { [providerName in ProviderTypes]: string };
   providersDisabledExecuteOptions: [ProviderTypes];
+  providersExecuteOptionsDisabledFields: string[];
   hiddenUsers: string[];
   hiddenUserRoles: string[];
   passwordFields: string[];
