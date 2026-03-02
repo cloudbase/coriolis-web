@@ -21,6 +21,7 @@ import FieldInput from "@src/components/ui/FieldInput";
 
 import LabelDictionary from "@src/utils/LabelDictionary";
 import KeyboardManager from "@src/utils/KeyboardManager";
+import configLoader from "@src/utils/Config";
 import { executionOptions } from "@src/constants";
 import type { Field } from "@src/@types/Field";
 
@@ -128,9 +129,17 @@ class TransferExecutionOptions extends React.Component<Props, State> {
               value={this.getFieldValue(field)}
               label={LabelDictionary.get(field.name)}
               onChange={value => this.handleValueChange(field, value)}
-              disabled={this.props.disableExecutionOptions}
+              disabled={
+                this.props.disableExecutionOptions &&
+                configLoader.config.providersExecuteOptionsDisabledFields.includes(
+                  field.name,
+                )
+              }
               description={
-                this.props.disableExecutionOptions
+                this.props.disableExecutionOptions &&
+                configLoader.config.providersExecuteOptionsDisabledFields.includes(
+                  field.name,
+                )
                   ? "The execution options are disabled for the source provider"
                   : LabelDictionary.getDescription(field.name)
               }
