@@ -307,6 +307,14 @@ class EndpointSource {
     return SchemaParser.parseConnectionResponse(response.data.endpoint);
   }
 
+  async exportInventoryCsv(endpointId: string): Promise<string> {
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/inventory`,
+      responseType: "text",
+    });
+    return response.data as string;
+  }
+
   async loadStorage(
     endpointId: string,
     data: any,
