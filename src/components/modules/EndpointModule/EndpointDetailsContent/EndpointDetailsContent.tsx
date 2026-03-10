@@ -99,8 +99,10 @@ type Props = {
   loading: boolean;
   transfers: TransferItem[];
   connectionInfoSchema: FieldType[];
+  supportsInventoryExport?: boolean;
   onDeleteClick: () => void;
   onValidateClick: () => void;
+  onExportInventoryCsvClick?: () => void;
 };
 @observer
 class EndpointDetailsContent extends React.Component<Props> {
@@ -197,6 +199,11 @@ class EndpointDetailsContent extends React.Component<Props> {
             Validate Endpoint
           </Button>
         </MainButtons>
+        {this.props.supportsInventoryExport && (
+          <Button onClick={this.props.onExportInventoryCsvClick}>
+            Export VM Inventory
+          </Button>
+        )}
         <DeleteButton>
           <Button hollow alert onClick={this.props.onDeleteClick}>
             Delete Endpoint
