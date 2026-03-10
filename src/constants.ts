@@ -49,6 +49,7 @@ export const providerTypes = {
   TARGET_UPDATE: 262144,
   SOURCE_MINION_POOL: 524288,
   DESTINATION_MINION_POOL: 1048576,
+  INVENTORY_EXPORT: 2097152,
 };
 
 export const loginButtons = [

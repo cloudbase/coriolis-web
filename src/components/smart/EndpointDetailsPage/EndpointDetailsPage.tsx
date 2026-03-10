@@ -36,6 +36,7 @@ import projectStore from "@src/stores/ProjectStore";
 import type { Endpoint as EndpointType } from "@src/@types/Endpoint";
 
 import { ThemePalette } from "@src/components/Theme";
+import { providerTypes } from "@src/constants";
 
 import regionStore from "@src/stores/RegionStore";
 import { DeploymentItem, TransferItem } from "@src/@types/MainItem";
@@ -227,12 +228,32 @@ class EndpointDetailsPage extends React.Component<Props, State> {
     this.setState({ endpointUsage: this.getEndpointUsage() });
   }
 
+  handleExportInventoryCsvClick() {
+    if (!this.endpoint) {
+      return;
+    }
+    endpointStore.exportInventoryCsv(this.endpoint);
+  }
+
+  get supportsInventoryExport(): boolean {
+    const endpoint = this.endpoint;
+    if (!endpoint || !providerStore.providers) {
+      return false;
+    }
+    return Boolean(
+      providerStore.providers[endpoint.type]?.types.includes(
+        providerTypes.INVENTORY_EXPORT,
+      ),
+    );
+  }
+
   async loadEndpoints() {
     await endpointStore.getEndpoints();
     const endpoint = this.endpoint;
 
     if (endpoint?.type) {
       providerStore.getConnectionInfoSchema(endpoint.type);
+      providerStore.loadProviders();
     }
 
     if (endpoint?.connection_info?.secret_ref) {
@@ -274,6 +295,16 @@ class EndpointDetailsPage extends React.Component<Props, State> {
           this.handleExportToJsonClick();
         },
       },
+      ...(this.supportsInventoryExport
+        ? [
+            {
+              label: "Export VM Inventory",
+              action: () => {
+                this.handleExportInventoryCsvClick();
+              },
+            },
+          ]
+        : []),
       {
         label: "Delete Endpoint",
         color: ThemePalette.alert,
@@ -315,11 +346,15 @@ class EndpointDetailsPage extends React.Component<Props, State> {
               }
               connectionInfo={endpointStore.connectionInfo}
               connectionInfoSchema={providerStore.connectionInfoSchema}
+              supportsInventoryExport={this.supportsInventoryExport}
               onDeleteClick={() => {
                 this.handleDeleteEndpointClick();
               }}
               onValidateClick={() => {
                 this.handleValidateClick();
+              }}
+              onExportInventoryCsvClick={() => {
+                this.handleExportInventoryCsvClick();
               }}
             />
           }
