@@ -198,6 +198,17 @@ class EndpointStore {
     }
   }
 
+  @action async exportInventoryCsv(endpoint: Endpoint): Promise<void> {
+    const csvContent = await EndpointSource.exportInventoryCsv(endpoint.id);
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const d =
+      `${now.getFullYear()}-${pad(now.getMonth() + 1)}` +
+      `-${pad(now.getDate())}_${pad(now.getHours())}` +
+      `-${pad(now.getMinutes())}`;
+    DomUtils.download(csvContent, `vm_inventory_${endpoint.name}_${d}.csv`);
+  }
+
   @action async exportToJson(endpoint: Endpoint): Promise<void> {
     const connectionInfo = await EndpointSource.getConnectionInfo(endpoint);
     const newEndpoint = JSON.parse(JSON.stringify(endpoint));
