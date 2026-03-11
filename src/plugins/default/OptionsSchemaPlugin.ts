@@ -44,6 +44,12 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
         ? option.config_default
         : option.config_default === "true";
   }
+  if (
+    (field.type === "integer" || field.type === "number") &&
+    option.config_default != null
+  ) {
+    field.default = Number(option.config_default);
+  }
 };
 
 export const removeExportImageFieldValues = (field: Field) => {
