@@ -127,7 +127,9 @@ class WizardStore {
 
         // Don't use the default if it can't be found in the enum list.
         if (isDefaultInEnum) {
-          return { should: true, value: field.default };
+          const matchedItem: any = isDefaultInEnum;
+          const value = matchedItem.id != null ? matchedItem.id : field.default;
+          return { should: true, value };
         }
       } else {
         return { should: true, value: field.default };
