@@ -169,6 +169,7 @@ const conf: Config = {
     rhev: 3,
     metal: 4,
     lxd: 4,
+    libvirt: 4,
   },
 
   providerNames: {
@@ -191,6 +192,7 @@ const conf: Config = {
     rhev: "Red Hat",
     lxd: "LXD",
     proxmox: "Proxmox VE",
+    libvirt: "Libvirt",
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field
