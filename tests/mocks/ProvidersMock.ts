@@ -56,6 +56,9 @@ export const PROVIDERS_MOCK: Providers = {
   lxd: {
     types: [],
   },
+  libvirt: {
+    types: [],
+  },
   vhi: {
     types: [],
   },
