@@ -41,8 +41,8 @@ const getOptimalLogoHeightKey = (
   }
 
   const optimal = heightKeys.reduce((prev, curr) => {
-    let prevHeight: any = /d+/.exec(prev);
-    let currHeight: any = /d+/.exec(curr);
+    let prevHeight: any = /\d+/.exec(prev);
+    let currHeight: any = /\d+/.exec(curr);
     prevHeight = prevHeight ? Number(prevHeight[0]) : 0;
     currHeight = currHeight ? Number(currHeight[0]) : 0;
     return Math.abs(currHeight - requestedHeight) <
