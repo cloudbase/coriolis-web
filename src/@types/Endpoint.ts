@@ -43,8 +43,11 @@ export type MultiValidationItem = {
 
 export type OptionValues = {
   name: string;
-  values: string[] | { name: string; id: string; [prop: string]: any }[];
-  config_default: string | { name: string; id: string };
+  values:
+    | string[]
+    | number[]
+    | { name: string; id: string; [prop: string]: any }[];
+  config_default: string | number | { name: string; id: string };
 };
 
 export type StorageBackend = {
