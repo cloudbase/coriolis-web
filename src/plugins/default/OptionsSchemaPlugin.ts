@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Utils from "@src/utils/ObjectUtils";
 
-import { Field, isEnumSeparator } from "@src/@types/Field";
+import { Field, EnumItem, isEnumSeparator } from "@src/@types/Field";
 import type { OptionValues, StorageMap } from "@src/@types/Endpoint";
 import type { SchemaProperties, SchemaDefinitions } from "@src/@types/Schema";
 import type { NetworkMap } from "@src/@types/Network";
@@ -27,16 +27,18 @@ const migrationImageOsTypes = ["windows", "linux"];
 
 export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
   if (field.type === "string") {
-    field.enum = [...option.values];
+    field.enum = [...option.values] as EnumItem[];
     if (option.config_default) {
       field.default =
         typeof option.config_default === "string"
           ? option.config_default
-          : option.config_default.id;
+          : typeof option.config_default === "object"
+            ? option.config_default.id
+            : String(option.config_default);
     }
   }
   if (field.type === "array") {
-    field.enum = [...option.values];
+    field.enum = [...option.values] as EnumItem[];
   }
   if (field.type === "boolean" && option.config_default != null) {
     field.default =
@@ -44,11 +46,15 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
         ? option.config_default
         : option.config_default === "true";
   }
-  if (
-    (field.type === "integer" || field.type === "number") &&
-    option.config_default != null
-  ) {
-    field.default = Number(option.config_default);
+  if (field.type === "integer" || field.type === "number") {
+    if (option.values?.length) {
+      field.enum = option.values.map(v =>
+        typeof v === "number" ? { label: String(v), value: v } : v,
+      ) as EnumItem[];
+    }
+    if (option.config_default != null) {
+      field.default = Number(option.config_default);
+    }
   }
 };
 

@@ -288,6 +288,14 @@ class FieldInput extends React.Component<Props> {
         return e;
       }
 
+      if (typeof e === "number") {
+        return {
+          label: String(e),
+          value: e,
+          disabled: false,
+          subtitleLabel: "",
+        };
+      }
       return {
         label:
           typeof e === "string"
@@ -295,7 +303,7 @@ class FieldInput extends React.Component<Props> {
               ? LabelDictionary.get(e)
               : e
             : e.name || e.label,
-        value: typeof e === "string" ? e : e.id || e.value,
+        value: typeof e === "string" ? e : (e.id ?? e.value),
         disabled: typeof e !== "string" ? Boolean(e.disabled) : false,
         subtitleLabel: typeof e !== "string" ? e.subtitleLabel || "" : false,
       };
@@ -441,6 +449,9 @@ class FieldInput extends React.Component<Props> {
         }
         return this.renderTextInput();
       case "integer":
+        if (this.props.enum && this.props.enum.length) {
+          return this.renderEnumDropdown(this.props.enum);
+        }
         return this.renderIntInput();
       case "radio":
         return this.renderRadioInput();

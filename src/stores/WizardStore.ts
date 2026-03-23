@@ -122,7 +122,7 @@ class WizardStore {
           }
           return enumItem.id != null
             ? enumItem.id === fieldDefault || enumItem.name === fieldDefault
-            : enumItem === fieldDefault;
+            : enumItem === fieldDefault || enumItem.value === fieldDefault;
         });
 
         // Don't use the default if it can't be found in the enum list.
