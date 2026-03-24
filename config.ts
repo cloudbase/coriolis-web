@@ -134,13 +134,13 @@ const conf: Config = {
     {
       name: "olvm",
       types: ["destination"],
-      requiredFields: ["cluster"]
+      requiredFields: ["cluster"],
     },
     {
       name: "rhev",
       types: ["destination"],
-      requiredFields: ["cluster"]
-    }
+      requiredFields: ["cluster"],
+    },
   ],
 
   /*
@@ -202,7 +202,13 @@ const conf: Config = {
   hiddenUsers: ["barbican", "coriolis"],
 
   // The list of user roles to hide in the UI
-  hiddenUserRoles: ["audit", "creator", "observer", "service", "key-manager:service-admin"],
+  hiddenUserRoles: [
+    "audit",
+    "creator",
+    "observer",
+    "service",
+    "key-manager:service-admin",
+  ],
 
   // By default, if a field name contains `password` in it (ex.: `user_password`),
   // it will be rendered as a password input

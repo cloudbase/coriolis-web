@@ -491,18 +491,25 @@ class WizardPage extends React.Component<Props, State> {
     await providerStore.loadOptionsSchema({
       providerName: endpoint.type,
       optionsType,
+      forceRefresh: true,
       requiresWindowsImage: this.requiresWindowsImage,
     });
     const getSchema = () =>
       optionsType === "source"
         ? providerStore.sourceSchema
         : providerStore.destinationSchema;
+    wizardStore.updateData(
+      optionsType === "source"
+        ? { sourceOptions: undefined }
+        : { destOptions: undefined },
+    );
     wizardStore.fillWithDefaultValues(optionsType, getSchema());
 
     await providerStore.getOptionsValues({
       optionsType,
       endpointId: endpoint.id,
       providerName: endpoint.type,
+      forceRefresh: true,
       requiresWindowsImage: this.requiresWindowsImage,
     });
     wizardStore.fillWithDefaultValues(optionsType, getSchema());

@@ -483,9 +483,10 @@ class TransferItemModal extends React.Component<Props, State> {
     try {
       await providerStore.loadOptionsSchema({
         providerName: endpoint.type,
-        requiresWindowsImage: this.requiresWindowsImage,
         optionsType,
         useCache,
+        forceRefresh: !useCache,
+        requiresWindowsImage: this.requiresWindowsImage,
       });
     } catch (err) {
       if (optionsType === "destination") {
@@ -500,6 +501,7 @@ class TransferItemModal extends React.Component<Props, State> {
       endpointId: endpoint.id,
       providerName: endpoint.type,
       useCache,
+      forceRefresh: !useCache,
       requiresWindowsImage: this.requiresWindowsImage,
     });
   }
