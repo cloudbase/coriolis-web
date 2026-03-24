@@ -178,16 +178,22 @@ class LabelDictionary {
   }
 
   static pushToCache(field: Field, dictionaryKey: string) {
-    if (
-      (field.title || field.description) &&
-      !cache.find(i => i.key === dictionaryKey && i.name === field.name)
-    ) {
-      cache.push({
-        label: field.title,
-        description: field.description,
-        name: field.name,
-        key: dictionaryKey,
-      });
+    if (!(field.title || field.description)) {
+      return;
+    }
+    const existingIndex = cache.findIndex(
+      i => i.key === dictionaryKey && i.name === field.name,
+    );
+    const entry = {
+      label: field.title,
+      description: field.description,
+      name: field.name,
+      key: dictionaryKey,
+    };
+    if (existingIndex >= 0) {
+      cache[existingIndex] = entry;
+    } else {
+      cache.push(entry);
     }
   }
 }
