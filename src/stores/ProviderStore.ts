@@ -236,6 +236,7 @@ class ProviderStore {
     providerName: ProviderTypes;
     optionsType: "source" | "destination";
     useCache?: boolean;
+    forceRefresh?: boolean;
     quietError?: boolean;
     requiresWindowsImage?: boolean;
   }): Promise<Field[]> {
@@ -243,6 +244,7 @@ class ProviderStore {
       providerName,
       optionsType,
       useCache,
+      forceRefresh,
       quietError,
       requiresWindowsImage,
     } = options;
@@ -272,6 +274,7 @@ class ProviderStore {
         providerName,
         optionsType,
         useCache,
+        forceRefresh,
         quietError,
         requiresWindowsImage,
       });
@@ -330,6 +333,7 @@ class ProviderStore {
     requiresWindowsImage?: boolean;
     envData?: { [prop: string]: any } | null;
     useCache?: boolean;
+    forceRefresh?: boolean;
     quietError?: boolean;
     allowMultiple?: boolean;
   }): Promise<OptionValues[]> {
@@ -339,6 +343,7 @@ class ProviderStore {
       endpointId,
       envData,
       useCache,
+      forceRefresh,
       quietError,
       allowMultiple,
       requiresWindowsImage,
@@ -386,6 +391,7 @@ class ProviderStore {
         endpointId,
         envData,
         cache: useCache,
+        forceRefresh,
         quietError,
       });
       this.getOptionsValuesSuccess({
