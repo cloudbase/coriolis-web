@@ -159,7 +159,9 @@ class Stepper extends React.Component<Props, State> {
   }
 
   handleInputBlur() {
-    this.commitChange(this.state.inputValue || "");
+    if (this.state.inputValue !== null) {
+      this.commitChange(this.state.inputValue);
+    }
     this.setState({ inputValue: null });
   }
 
