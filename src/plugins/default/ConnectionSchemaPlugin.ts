@@ -52,9 +52,19 @@ export const defaultSchemaToFields = (
       properties.properties &&
       Object.keys(properties.properties).length
     ) {
+      LabelDictionary.pushToCache(
+        {
+          name: fieldName,
+          title: properties.title,
+          description: properties.description,
+        },
+        dictionaryKey || "",
+      );
       return {
         name: fieldName,
         type: "object",
+        title: properties.title,
+        description: properties.description,
         properties: defaultSchemaToFields(properties, null, dictionaryKey),
       };
     }
