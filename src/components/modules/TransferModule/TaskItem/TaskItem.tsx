@@ -245,9 +245,8 @@ class TaskItem extends React.Component<Props> {
   }
 
   renderHeader(status: string) {
-    const date = this.props.item.updated_at
-      ? this.props.item.updated_at
-      : this.props.item.created_at;
+    const date =
+      this.props.item.updated_at || this.props.item.created_at || null;
 
     const instance = this.props.instancesDetails.find(
       i => i.id === this.props.item.instance,
@@ -276,9 +275,7 @@ class TaskItem extends React.Component<Props> {
           {this.getLastMessage()}
         </HeaderData>
         <HeaderData width={this.props.columnWidths[3]}>
-          {date
-            ? DateUtils.getLocalDate(date).toFormat("yyyy-LL-dd HH:mm:ss")
-            : "-"}
+          {DateUtils.formatSafeDate(date)}
         </HeaderData>
         <ArrowStyled
           primary
@@ -346,11 +343,7 @@ class TaskItem extends React.Component<Props> {
               }
             >
               <ProgressUpdateDate width={this.props.columnWidths[0]}>
-                <span>
-                  {DateUtils.getLocalDate(update.created_at).toFormat(
-                    "yyyy-LL-dd HH:mm:ss",
-                  )}
-                </span>
+                <span>{DateUtils.formatSafeDate(update.created_at)}</span>
               </ProgressUpdateDate>
               <ProgressUpdateValue>
                 {update.message}
