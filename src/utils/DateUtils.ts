@@ -55,6 +55,20 @@ class DateUtils {
     }
   }
 
+  static formatSafeDate(
+    value: string | Date | null | undefined,
+    fallback = "—",
+  ): string {
+    if (value == null) {
+      return fallback;
+    }
+    const dt = this.getLocalDate(value);
+    if (!dt.isValid) {
+      return fallback;
+    }
+    return dt.toFormat("yyyy-LL-dd HH:mm:ss");
+  }
+
   static toUnix(date: Date): number {
     return parseInt((date.getTime() / 1000).toFixed(0), 10);
   }

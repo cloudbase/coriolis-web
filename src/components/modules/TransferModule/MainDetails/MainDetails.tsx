@@ -167,11 +167,7 @@ class MainDetails extends React.Component<Props, State> {
 
   renderLastExecutionTime() {
     return this.props.item
-      ? this.renderValue(
-          DateUtils.getLocalDate(this.props.item.updated_at).toFormat(
-            "yyyy-LL-dd HH:mm:ss",
-          ),
-        )
+      ? this.renderValue(DateUtils.formatSafeDate(this.props.item.updated_at))
       : "-";
   }
 
