@@ -23,6 +23,7 @@ import { Region } from "@src/@types/Region";
 import EndpointLogos from "@src/components/modules/EndpointModule/EndpointLogos";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import Button from "@src/components/ui/Button";
+import LoadingButton from "@src/components/ui/LoadingButton";
 import CopyMultilineValue from "@src/components/ui/CopyMultilineValue";
 import CopyValue from "@src/components/ui/CopyValue";
 import PasswordValue from "@src/components/ui/PasswordValue";
@@ -100,6 +101,7 @@ type Props = {
   transfers: TransferItem[];
   connectionInfoSchema: FieldType[];
   supportsInventoryExport?: boolean;
+  exportingInventoryCsv?: boolean;
   onDeleteClick: () => void;
   onValidateClick: () => void;
   onExportInventoryCsvClick?: () => void;
@@ -199,11 +201,14 @@ class EndpointDetailsContent extends React.Component<Props> {
             Validate Endpoint
           </Button>
         </MainButtons>
-        {this.props.supportsInventoryExport && (
-          <Button onClick={this.props.onExportInventoryCsvClick}>
-            Export VM Inventory
-          </Button>
-        )}
+        {this.props.supportsInventoryExport &&
+          (this.props.exportingInventoryCsv ? (
+            <LoadingButton>Export VM Inventory</LoadingButton>
+          ) : (
+            <Button onClick={this.props.onExportInventoryCsvClick}>
+              Export VM Inventory
+            </Button>
+          ))}
         <DeleteButton>
           <Button hollow alert onClick={this.props.onDeleteClick}>
             Delete Endpoint

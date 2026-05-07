@@ -66,6 +66,8 @@ class EndpointStore {
 
   @observable multiValidation: MultiValidationItem[] = [];
 
+  @observable exportingInventoryCsv = false;
+
   @action async getEndpoints(options?: {
     showLoading?: boolean;
     skipLog?: boolean;
@@ -199,14 +201,21 @@ class EndpointStore {
   }
 
   @action async exportInventoryCsv(endpoint: Endpoint): Promise<void> {
-    const csvContent = await EndpointSource.exportInventoryCsv(endpoint.id);
-    const now = new Date();
-    const pad = (n: number) => String(n).padStart(2, "0");
-    const d =
-      `${now.getFullYear()}-${pad(now.getMonth() + 1)}` +
-      `-${pad(now.getDate())}_${pad(now.getHours())}` +
-      `:${pad(now.getMinutes())}`;
-    DomUtils.download(csvContent, `vm_inventory_${endpoint.name}_${d}.csv`);
+    this.exportingInventoryCsv = true;
+    try {
+      const csvContent = await EndpointSource.exportInventoryCsv(endpoint.id);
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const d =
+        `${now.getFullYear()}-${pad(now.getMonth() + 1)}` +
+        `-${pad(now.getDate())}_${pad(now.getHours())}` +
+        `:${pad(now.getMinutes())}`;
+      DomUtils.download(csvContent, `vm_inventory_${endpoint.name}_${d}.csv`);
+    } finally {
+      runInAction(() => {
+        this.exportingInventoryCsv = false;
+      });
+    }
   }
 
   @action async exportToJson(endpoint: Endpoint): Promise<void> {

@@ -302,6 +302,8 @@ class EndpointDetailsPage extends React.Component<Props, State> {
               action: () => {
                 this.handleExportInventoryCsvClick();
               },
+              loading: endpointStore.exportingInventoryCsv,
+              disabled: endpointStore.exportingInventoryCsv,
             },
           ]
         : []),
@@ -347,6 +349,7 @@ class EndpointDetailsPage extends React.Component<Props, State> {
               connectionInfo={endpointStore.connectionInfo}
               connectionInfoSchema={providerStore.connectionInfoSchema}
               supportsInventoryExport={this.supportsInventoryExport}
+              exportingInventoryCsv={endpointStore.exportingInventoryCsv}
               onDeleteClick={() => {
                 this.handleDeleteEndpointClick();
               }}
