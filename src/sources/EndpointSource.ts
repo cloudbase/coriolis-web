@@ -311,6 +311,7 @@ class EndpointSource {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/inventory`,
       responseType: "text",
+      headers: { Accept: "text/csv" },
     });
     return response.data as string;
   }
