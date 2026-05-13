@@ -145,6 +145,28 @@ class TransferSource {
     return transfer;
   }
 
+  async getExecutions(
+    transferId: string,
+    options?: {
+      limit?: number;
+      marker?: string | null;
+    },
+  ): Promise<Execution[]> {
+    const params: string[] = [];
+    if (options?.marker) {
+      params.push(`marker=${encodeURIComponent(options.marker)}`);
+    }
+    if (options?.limit !== undefined) {
+      params.push(`limit=${options.limit}`);
+    }
+    const queryString = params.length > 0 ? `?${params.join("&")}` : "";
+    const response = await Api.send({
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/executions${queryString}`,
+    });
+    const executions: Execution[] = response.data.executions;
+    return executions;
+  }
+
   async getExecutionTasks(options: {
     transferId: string;
     executionId?: string;

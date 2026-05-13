@@ -14,7 +14,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from "mobx";
 
-import TransferSource from "@src/sources/TransferSource";
+import TransferSource, {
+  TransferSourceUtils,
+  sortTasks,
+} from "@src/sources/TransferSource";
 import type {
   UpdateData,
   TransferItem,
@@ -79,12 +82,95 @@ class TransferStore {
 
   private transferPageMarkers: (string | null)[] = [null];
 
-  addExecution: { transferId: string; execution: Execution } | null = null;
+  @observable executionsList: Execution[] = [];
+
+  @observable executionsHasOlderPage = false;
+
+  @observable executionsLoading = false;
+
+  executionsPageSize = 10;
 
   @action resetTransferPagination(): void {
     this.transfersPage = 1;
     this.transfersHasNextPage = false;
     this.transferPageMarkers = [null];
+  }
+
+  @action resetExecutionsPagination(): void {
+    this.executionsList = [];
+    this.executionsHasOlderPage = false;
+    this.executionsLoading = false;
+  }
+
+  @action async getTransferExecutions(options?: {
+    showLoading?: boolean;
+    polling?: boolean;
+  }): Promise<void> {
+    const transferId = this.transferDetails?.id;
+    if (!transferId) {
+      return;
+    }
+
+    if (options?.showLoading) {
+      this.executionsLoading = true;
+    }
+
+    try {
+      const raw = await TransferSource.getExecutions(transferId, {
+        limit: this.executionsPageSize + 1,
+      });
+      const hasOlderPage = raw.length > this.executionsPageSize;
+      const executions = hasOlderPage
+        ? raw.slice(0, this.executionsPageSize)
+        : raw;
+      TransferSourceUtils.sortExecutions(executions);
+      runInAction(() => {
+        this.executionsList = executions;
+        this.executionsHasOlderPage = hasOlderPage;
+        this.executionsLoading = false;
+      });
+    } catch (err) {
+      runInAction(() => {
+        this.executionsLoading = false;
+      });
+      console.error(err);
+    }
+  }
+
+  @action async loadOlderExecutions(): Promise<void> {
+    const transferId = this.transferDetails?.id;
+    if (!transferId || !this.executionsHasOlderPage || this.executionsLoading) {
+      return;
+    }
+
+    const marker = this.executionsList[0]?.id;
+    if (!marker) {
+      return;
+    }
+
+    this.executionsLoading = true;
+
+    try {
+      const raw = await TransferSource.getExecutions(transferId, {
+        limit: this.executionsPageSize + 1,
+        marker,
+      });
+      const hasOlderPage = raw.length > this.executionsPageSize;
+      const executions = hasOlderPage
+        ? raw.slice(0, this.executionsPageSize)
+        : raw;
+      TransferSourceUtils.sortExecutions(executions);
+      runInAction(() => {
+        this.executionsList = [...executions, ...this.executionsList];
+        this.executionsHasOlderPage = hasOlderPage;
+        this.executionsLoading = false;
+      });
+    } catch (err) {
+      runInAction(() => {
+        this.executionsLoading = false;
+      });
+      console.error(err);
+    }
   }
 
   @action async setTransfersPage(page: number): Promise<void> {
@@ -164,6 +250,44 @@ class TransferStore {
 
       runInAction(() => {
         this.transferDetails = transfer;
+        let statusChanged = false;
+        const updatedList = this.executionsList.map(e => {
+          const fresh = transfer.executions?.find(te => te.id === e.id);
+          if (fresh && fresh.status !== e.status) {
+            statusChanged = true;
+            return { ...e, status: fresh.status };
+          }
+          return e;
+        });
+        if (statusChanged) {
+          this.executionsList = updatedList;
+        }
+
+        if (this.executionsList.length > 0 && transfer.executions?.length) {
+          const newestNumber = Math.max(
+            ...this.executionsList.map(e => e.number),
+          );
+          const incoming = transfer.executions.filter(
+            e =>
+              e.number > newestNumber &&
+              !this.executionsList.find(l => l.id === e.id),
+          );
+          if (incoming.length > 0) {
+            TransferSourceUtils.sortExecutions(incoming);
+            this.executionsList = [...this.executionsList, ...incoming];
+          }
+        }
+
+        transfer.executions?.forEach(exec => {
+          const withTasks = exec as ExecutionTasks;
+          if (
+            Array.isArray(withTasks.tasks) &&
+            !this.executionsTasks.find(et => et.id === exec.id)
+          ) {
+            sortTasks(withTasks.tasks, TransferSourceUtils.sortTaskUpdates);
+            this.executionsTasks = [...this.executionsTasks, withTasks];
+          }
+        });
       });
     } finally {
       runInAction(() => {
@@ -175,6 +299,7 @@ class TransferStore {
   @action clearDetails() {
     this.transferDetails = null;
     this.currentlyLoadingExecution = "";
+    this.executionsTasks = [];
   }
 
   @action getTransfersSuccess(
@@ -195,7 +320,7 @@ class TransferStore {
     this.backgroundLoading = false;
   }
 
-  private currentlyLoadingExecution = "";
+  currentlyLoadingExecution = "";
 
   @action async getExecutionTasks(options: {
     transferId: string;
@@ -215,8 +340,13 @@ class TransferStore {
     }
 
     if (
-      !this.executionsTasks.find(e => e.id === this.currentlyLoadingExecution)
+      !polling &&
+      this.executionsTasks.find(e => e.id === this.currentlyLoadingExecution)
     ) {
+      return;
+    }
+
+    if (!polling) {
       this.executionsTasksLoading = true;
     }
 
@@ -257,6 +387,18 @@ class TransferStore {
         execution,
       );
       this.transferDetails = updatedTransfer;
+
+      if (!this.executionsList.find(e => e.id === execution.id)) {
+        this.executionsList = [...this.executionsList, execution];
+      }
+
+      const withTasks = execution as ExecutionTasks;
+      if (Array.isArray(withTasks.tasks)) {
+        this.executionsTasks = [
+          ...this.executionsTasks.filter(e => e.id !== execution.id),
+          withTasks,
+        ];
+      }
     }
     this.getExecutionTasks({
       transferId: transferId,
@@ -272,6 +414,13 @@ class TransferStore {
     force?: boolean;
   }): Promise<void> {
     await TransferSource.cancelExecution(options);
+    runInAction(() => {
+      if (options.executionId) {
+        this.executionsList = this.executionsList.map(e =>
+          e.id === options.executionId ? { ...e, status: "CANCELLING" } : e,
+        );
+      }
+    });
     if (options.force) {
       notificationStore.alert("Force cancelled", "success");
     } else {
@@ -285,6 +434,13 @@ class TransferStore {
   ): Promise<void> {
     await TransferSource.deleteExecution(transferId, executionId);
     this.deleteExecutionSuccess(transferId, executionId);
+    if (
+      this.executionsList.length === 0 &&
+      this.transferDetails?.id === transferId
+    ) {
+      this.resetExecutionsPagination();
+      await this.getTransferExecutions({ showLoading: true });
+    }
   }
 
   @action deleteExecutionSuccess(transferId: string, executionId: string) {
@@ -296,6 +452,10 @@ class TransferStore {
       ];
       this.transferDetails.executions = executions;
     }
+    this.executionsList = this.executionsList.filter(e => e.id !== executionId);
+    this.executionsTasks = this.executionsTasks.filter(
+      e => e.id !== executionId,
+    );
     if (executionId === this.currentlyLoadingExecution) {
       this.currentlyLoadingExecution = "";
     }
@@ -320,7 +480,23 @@ class TransferStore {
         execution,
       );
       this.transferDetails = updatedTransfer;
+
+      if (!this.executionsList.find(e => e.id === execution.id)) {
+        this.executionsList = [...this.executionsList, execution];
+      }
+
+      const withTasks = execution as ExecutionTasks;
+      if (Array.isArray(withTasks.tasks)) {
+        this.executionsTasks = [
+          ...this.executionsTasks.filter(e => e.id !== execution.id),
+          withTasks,
+        ];
+      }
     }
+    this.getExecutionTasks({
+      transferId,
+      executionId: execution.id,
+    });
   }
 
   async update(options: {

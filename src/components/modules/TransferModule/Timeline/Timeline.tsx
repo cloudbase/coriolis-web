@@ -84,6 +84,7 @@ const ItemLabel = styled.div<any>`
 type Props = {
   items?: Execution[] | null;
   selectedItem?: Execution | null;
+  hasOlderItems?: boolean;
   onPreviousClick?: () => void;
   onNextClick?: () => void;
   onItemClick?: (item: Execution) => void;
@@ -216,7 +217,11 @@ class Timeline extends React.Component<Props> {
       >
         <ArrowStyled
           orientation="left"
-          forceShow={!this.props.items || !this.props.items.length}
+          forceShow={
+            !this.props.items ||
+            !this.props.items.length ||
+            this.props.hasOlderItems
+          }
           primary={Boolean(this.props.items && this.props.items.length)}
           onClick={this.props.onPreviousClick}
         />

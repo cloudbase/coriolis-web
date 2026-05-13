@@ -103,6 +103,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
 
   componentDidMount() {
     document.title = "Transfer Details";
+    transferStore.resetExecutionsPagination();
 
     const loadTransfer = async () => {
       await endpointStore.getEndpoints({ showLoading: true });
@@ -113,6 +114,9 @@ class TransferDetailsPage extends React.Component<Props, State> {
         onDetailsLoaded: async () => {
           if (!this.transfer) {
             return;
+          }
+          if (this.props.match.params.page === "executions") {
+            transferStore.getTransferExecutions({ showLoading: true });
           }
           const sourceEndpoint = endpointStore.endpoints.find(
             e => e.id === this.transfer!.origin_endpoint_id,
@@ -177,17 +181,30 @@ class TransferDetailsPage extends React.Component<Props, State> {
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     if (newProps.match.params.id !== this.props.match.params.id) {
+      transferStore.resetExecutionsPagination();
       this.loadTransferWithInstances({
         cache: true,
         transferId: newProps.match.params.id,
+        onDetailsLoaded: () => {
+          if (newProps.match.params.page === "executions") {
+            transferStore.getTransferExecutions({ showLoading: true });
+          }
+        },
       });
       scheduleStore.getSchedules(newProps.match.params.id);
+    } else if (
+      newProps.match.params.page === "executions" &&
+      this.props.match.params.page !== "executions"
+    ) {
+      transferStore.resetExecutionsPagination();
+      transferStore.getTransferExecutions({ showLoading: true });
     }
   }
 
   componentWillUnmount() {
     transferStore.cancelTransferDetails();
     transferStore.clearDetails();
+    transferStore.resetExecutionsPagination();
     scheduleStore.clearUnsavedSchedules();
     this.stopPolling = true;
   }
@@ -626,10 +643,22 @@ class TransferDetailsPage extends React.Component<Props, State> {
       }),
       (async () => {
         if (window.location.pathname.indexOf("executions") > -1) {
-          await transferStore.getExecutionTasks({
-            transferId: this.transferId,
-            polling: true,
-          });
+          const currentId = transferStore.currentlyLoadingExecution;
+          const currentExec = currentId
+            ? transferStore.executionsList.find(e => e.id === currentId)
+            : null;
+          // Only poll tasks for active executions — completed/cancelled tasks never change
+          if (
+            currentExec &&
+            (currentExec.status === "RUNNING" ||
+              currentExec.status === "CANCELLING" ||
+              currentExec.status === "AWAITING_MINION_ALLOCATIONS")
+          ) {
+            await transferStore.getExecutionTasks({
+              transferId: this.transferId,
+              polling: true,
+            });
+          }
         }
       })(),
     ]);
@@ -830,12 +859,17 @@ class TransferDetailsPage extends React.Component<Props, State> {
               }
               executionsLoading={
                 transferStore.startingExecution ||
-                transferStore.transferDetailsLoading
+                transferStore.transferDetailsLoading ||
+                transferStore.executionsLoading
               }
               onExecutionChange={id => {
                 this.handleExecutionChange(id);
               }}
-              executions={transferStore.transferDetails?.executions || []}
+              executions={transferStore.executionsList}
+              hasOlderExecutions={transferStore.executionsHasOlderPage}
+              onLoadOlderExecutions={() => {
+                transferStore.loadOlderExecutions();
+              }}
               executionsTasksLoading={
                 transferStore.executionsTasksLoading ||
                 transferStore.transferDetailsLoading ||
