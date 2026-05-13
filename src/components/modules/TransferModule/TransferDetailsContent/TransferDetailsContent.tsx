@@ -93,6 +93,8 @@ type Props = {
   executionsTasks: ExecutionTasks[];
   minionPools: MinionPool[];
   storageBackends: StorageBackend[];
+  hasOlderExecutions?: boolean;
+  onLoadOlderExecutions?: () => void;
   onExecutionChange: (executionId: string) => void;
   onCancelExecutionClick: (
     execution: Execution | null,
@@ -212,6 +214,8 @@ class TransferDetailsContent extends React.Component<Props, State> {
         onChange={this.props.onExecutionChange}
         tasksLoading={this.props.executionsTasksLoading}
         instancesDetails={this.props.instancesDetails}
+        hasOlderExecutions={this.props.hasOlderExecutions}
+        onLoadOlderExecutions={this.props.onLoadOlderExecutions}
       />
     );
   }
