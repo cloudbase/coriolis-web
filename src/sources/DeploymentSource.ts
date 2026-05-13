@@ -18,7 +18,7 @@ import {
   DeploymentItemOptions,
   UserScriptData,
 } from "@src/@types/MainItem";
-import { ProgressUpdate, Task } from "@src/@types/Task";
+import { ProgressUpdate } from "@src/@types/Task";
 import { INSTANCE_OSMORPHING_MINION_POOL_MAPPINGS } from "@src/components/modules/WizardModule/WizardOptions";
 import { OptionsSchemaPlugin } from "@src/plugins";
 import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin";
@@ -45,27 +45,27 @@ class DeploymentSourceUtils {
       return a.index - b.index;
     });
   }
-
-  static sortDeployments(deployments: any[]) {
-    deployments.sort(
-      (a: any, b: any) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    );
-
-    deployments.forEach((deployment: { tasks: Task[] }) => {
-      sortTasks(deployment.tasks, DeploymentSourceUtils.sortTaskUpdates);
-    });
-  }
 }
 
 class DeploymentSource {
-  async getDeployments(skipLog?: boolean): Promise<DeploymentItem[]> {
+  async getDeployments(options?: {
+    skipLog?: boolean;
+    limit?: number;
+    marker?: string | null;
+  }): Promise<DeploymentItem[]> {
+    const params: string[] = [];
+    if (options?.marker) {
+      params.push(`marker=${encodeURIComponent(options.marker)}`);
+    }
+    if (options?.limit !== undefined) {
+      params.push(`limit=${options.limit}`);
+    }
+    const queryString = params.length > 0 ? `?${params.join("&")}` : "";
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/deployments`,
-      skipLog,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/deployments${queryString}`,
+      skipLog: options?.skipLog,
     });
     const deployments = response.data.deployments;
-    DeploymentSourceUtils.sortDeployments(deployments);
     return deployments;
   }
 
