@@ -61,6 +61,7 @@ type Props = {
   itemsPerPageOptions: number[];
   onPageChange: (newPage: number) => void;
   onItemsPerPageChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  hasNextPage?: boolean;
 };
 
 @observer
@@ -68,7 +69,11 @@ class NumberedPagination extends React.Component<Props> {
   render() {
     const { itemsCount, currentPage, itemsPerPage } = this.props;
     const totalPages = Math.max(1, Math.ceil(itemsCount / itemsPerPage));
-    const hasNextPage = currentPage * itemsPerPage < itemsCount;
+    const computedHasNextPage = currentPage * itemsPerPage < itemsCount;
+    const hasNextPage =
+      this.props.hasNextPage !== undefined
+        ? this.props.hasNextPage
+        : computedHasNextPage;
 
     return (
       <PaginationWrapper
@@ -90,7 +95,7 @@ class NumberedPagination extends React.Component<Props> {
         </PageNumber>
         <PageNext
           onClick={() => {
-            if (currentPage < totalPages) {
+            if (hasNextPage) {
               this.props.onPageChange(currentPage + 1);
             }
           }}

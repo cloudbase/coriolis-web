@@ -29,6 +29,7 @@ const NumberedPaginationWithDefaultProps = (
     onPageChange={props.onPageChange || (() => {})}
     onItemsPerPageChange={props.onItemsPerPageChange || (() => {})}
     style={props.style}
+    hasNextPage={props.hasNextPage}
   />
 );
 
@@ -115,6 +116,52 @@ describe("NumberedPagination", () => {
         option.toString(),
       );
       expect(options[index].textContent).toBe(option.toString());
+    });
+  });
+
+  describe("API pagination mode (hasNextPage prop)", () => {
+    it("shows 'of N' total derived from itemsCount even when hasNextPage prop is provided", () => {
+      render(
+        <NumberedPaginationWithDefaultProps
+          currentPage={1}
+          itemsCount={100}
+          itemsPerPage={10}
+          hasNextPage={true}
+        />,
+      );
+      expect(
+        TestUtils.select("NumberedPagination__PageNumber")?.textContent,
+      ).toBe("Page 1 of 10");
+    });
+
+    it("disables Next button when hasNextPage is false even if itemsCount suggests more pages", () => {
+      const onPageChange = jest.fn();
+      render(
+        <NumberedPaginationWithDefaultProps
+          currentPage={1}
+          itemsCount={100}
+          itemsPerPage={10}
+          hasNextPage={false}
+          onPageChange={onPageChange}
+        />,
+      );
+      const nextButton = screen.getByRole("button", { name: "Next" });
+      expect(nextButton).toHaveProperty("disabled", true);
+    });
+
+    it("enables Next button when hasNextPage is true", () => {
+      const onPageChange = jest.fn();
+      render(
+        <NumberedPaginationWithDefaultProps
+          currentPage={3}
+          itemsCount={30}
+          itemsPerPage={10}
+          hasNextPage={true}
+          onPageChange={onPageChange}
+        />,
+      );
+      const nextButton = screen.getByRole("button", { name: "Next" });
+      expect(nextButton).not.toHaveProperty("disabled", true);
     });
   });
 });
