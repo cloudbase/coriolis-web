@@ -89,6 +89,8 @@ class TransfersPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = "Coriolis Transfers";
 
+    transferStore.resetTransferPagination();
+
     projectStore.getProjects();
     endpointStore.getEndpoints({ showLoading: true });
     userStore.getAllUsers({
@@ -124,6 +126,7 @@ class TransfersPage extends React.Component<Props, State> {
   }
 
   handleProjectChange() {
+    transferStore.resetTransferPagination();
     transferStore.getTransfers();
     endpointStore.getEndpoints({ showLoading: true });
   }
@@ -444,6 +447,19 @@ class TransfersPage extends React.Component<Props, State> {
               }}
               onPaginatedItemsChange={paginatedTransfers => {
                 this.handlePaginatedItemsChange(paginatedTransfers);
+              }}
+              apiPagination={{
+                currentPage: transferStore.transfersPage,
+                hasNextPage: transferStore.transfersHasNextPage,
+                itemsPerPage: transferStore.transfersItemsPerPage,
+                onPageChange: page => {
+                  transferStore.setTransfersPage(page);
+                },
+                onItemsPerPageChange: e => {
+                  transferStore.setTransfersItemsPerPage(
+                    parseInt(e.target.value, 10),
+                  );
+                },
               }}
               renderItemComponent={options => (
                 <TransferListItem
