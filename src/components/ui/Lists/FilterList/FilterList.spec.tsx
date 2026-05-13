@@ -87,6 +87,35 @@ const FilterListWrap = (options?: {
   />
 );
 
+type ApiPaginationOptions = {
+  currentPage?: number;
+  hasNextPage?: boolean;
+  itemsPerPage?: number;
+  onPageChange?: (page: number) => void;
+  onItemsPerPageChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  items?: typeof ITEMS;
+};
+
+const FilterListApiPaginationWrap = (opts: ApiPaginationOptions = {}) => (
+  <FilterList
+    items={opts.items ?? ITEMS}
+    filterItems={FILTER_ITEMS}
+    itemFilterFunction={itemFilterFunction}
+    loading={false}
+    onReloadButtonClick={() => {}}
+    onItemClick={() => {}}
+    selectionLabel="test item"
+    renderItemComponent={ItemComponent}
+    apiPagination={{
+      currentPage: opts.currentPage ?? 1,
+      hasNextPage: opts.hasNextPage ?? false,
+      itemsPerPage: opts.itemsPerPage ?? 2,
+      onPageChange: opts.onPageChange ?? (() => {}),
+      onItemsPerPageChange: opts.onItemsPerPageChange ?? (() => {}),
+    }}
+  />
+);
+
 describe("FilterList", () => {
   beforeAll(() => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
@@ -157,6 +186,80 @@ describe("FilterList", () => {
     render(FilterListWrap({ onItemClick }));
     TestUtils.selectAll("FilterListspec__MainListItem-")[1].click();
     expect(onItemClick).toHaveBeenCalledWith(ITEMS[1]);
+  });
+
+  describe("API pagination mode", () => {
+    it("renders all items without client-side slicing", () => {
+      render(<FilterListApiPaginationWrap />);
+      const listItems = TestUtils.selectAll("FilterListspec__MainListItem-");
+      expect(listItems).toHaveLength(ITEMS.length);
+    });
+
+    it("shows 'Page X of X+1' when hasNextPage is true (at least one more page)", () => {
+      render(
+        <FilterListApiPaginationWrap currentPage={2} hasNextPage={true} />,
+      );
+      expect(
+        TestUtils.select("NumberedPagination__PageNumber")?.textContent,
+      ).toBe("Page 2 of 3");
+    });
+
+    it("shows 'Page X of X' when hasNextPage is false (current page is last)", () => {
+      render(
+        <FilterListApiPaginationWrap currentPage={2} hasNextPage={false} />,
+      );
+      expect(
+        TestUtils.select("NumberedPagination__PageNumber")?.textContent,
+      ).toBe("Page 2 of 2");
+    });
+
+    it("disables Next when hasNextPage is false", () => {
+      render(<FilterListApiPaginationWrap hasNextPage={false} />);
+      const nextButton = Array.from(document.querySelectorAll("button")).find(
+        btn => btn.textContent === "Next",
+      );
+      expect(nextButton).toHaveProperty("disabled", true);
+    });
+
+    it("enables Next when hasNextPage is true", () => {
+      render(<FilterListApiPaginationWrap hasNextPage={true} />);
+      const nextButton = Array.from(document.querySelectorAll("button")).find(
+        btn => btn.textContent === "Next",
+      );
+      expect(nextButton).not.toHaveProperty("disabled", true);
+    });
+
+    it("calls onPageChange with next page when Next is clicked", () => {
+      const onPageChange = jest.fn();
+      render(
+        <FilterListApiPaginationWrap
+          currentPage={1}
+          hasNextPage={true}
+          onPageChange={onPageChange}
+        />,
+      );
+      const nextButton = Array.from(document.querySelectorAll("button")).find(
+        btn => btn.textContent === "Next",
+      )!;
+      fireEvent.click(nextButton);
+      expect(onPageChange).toHaveBeenCalledWith(2);
+    });
+
+    it("calls onPageChange with previous page when Previous is clicked", () => {
+      const onPageChange = jest.fn();
+      render(
+        <FilterListApiPaginationWrap
+          currentPage={3}
+          hasNextPage={false}
+          onPageChange={onPageChange}
+        />,
+      );
+      const prevButton = Array.from(document.querySelectorAll("button")).find(
+        btn => btn.textContent === "Previous",
+      )!;
+      fireEvent.click(prevButton);
+      expect(onPageChange).toHaveBeenCalledWith(2);
+    });
   });
 
   it("selects items", async () => {
