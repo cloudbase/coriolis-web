@@ -69,9 +69,36 @@ class TransferStore {
 
   @observable transfersWithDisksLoading = false;
 
+  @observable transfersPage = 1;
+
+  @observable transfersHasNextPage = false;
+
+  @observable transfersItemsPerPage = 25;
+
   transfersLoaded = false;
 
+  private transferPageMarkers: (string | null)[] = [null];
+
   addExecution: { transferId: string; execution: Execution } | null = null;
+
+  @action resetTransferPagination(): void {
+    this.transfersPage = 1;
+    this.transfersHasNextPage = false;
+    this.transferPageMarkers = [null];
+  }
+
+  @action async setTransfersPage(page: number): Promise<void> {
+    this.transfersPage = page;
+    await this.getTransfers({ showLoading: true });
+  }
+
+  @action async setTransfersItemsPerPage(itemsPerPage: number): Promise<void> {
+    this.transfersItemsPerPage = itemsPerPage;
+    this.transfersPage = 1;
+    this.transferPageMarkers = [null];
+    this.transfersHasNextPage = false;
+    await this.getTransfers({ showLoading: true });
+  }
 
   @action async getTransfers(options?: {
     showLoading?: boolean;
@@ -85,11 +112,20 @@ class TransferStore {
     }
 
     try {
-      const transfers = await TransferSource.getTransfers(
-        options && options.skipLog,
-        options && options.quietError,
-      );
-      this.getTransfersSuccess(transfers);
+      const marker = this.transferPageMarkers[this.transfersPage - 1] ?? null;
+      const raw = await TransferSource.getTransfers({
+        skipLog: options?.skipLog,
+        quietError: options?.quietError,
+        limit: this.transfersItemsPerPage + 1,
+        marker,
+      });
+      const hasNextPage = raw.length > this.transfersItemsPerPage;
+      const transfers = hasNextPage
+        ? raw.slice(0, this.transfersItemsPerPage)
+        : raw;
+      const nextMarker =
+        transfers.length > 0 ? transfers[transfers.length - 1].id : null;
+      this.getTransfersSuccess(transfers, hasNextPage, nextMarker);
     } finally {
       this.getTransfersDone();
     }
@@ -141,9 +177,17 @@ class TransferStore {
     this.currentlyLoadingExecution = "";
   }
 
-  @action getTransfersSuccess(transfers: TransferItem[]) {
+  @action getTransfersSuccess(
+    transfers: TransferItem[],
+    hasNextPage = false,
+    nextMarker: string | null = null,
+  ) {
     this.transfersLoaded = true;
     this.transfers = transfers;
+    this.transfersHasNextPage = hasNextPage;
+    if (nextMarker !== null) {
+      this.transferPageMarkers[this.transfersPage] = nextMarker;
+    }
   }
 
   @action getTransfersDone() {

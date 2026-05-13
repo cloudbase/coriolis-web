@@ -36,7 +36,36 @@ class DeploymentStore {
 
   @observable detailsLoading = true;
 
+  @observable deploymentsPage = 1;
+
+  @observable deploymentsHasNextPage = false;
+
+  @observable deploymentsItemsPerPage = 25;
+
   deploymentsLoaded = false;
+
+  private deploymentPageMarkers: (string | null)[] = [null];
+
+  @action resetDeploymentPagination(): void {
+    this.deploymentsPage = 1;
+    this.deploymentsHasNextPage = false;
+    this.deploymentPageMarkers = [null];
+  }
+
+  @action async setDeploymentsPage(page: number): Promise<void> {
+    this.deploymentsPage = page;
+    await this.getDeployments({ showLoading: true });
+  }
+
+  @action async setDeploymentsItemsPerPage(
+    itemsPerPage: number,
+  ): Promise<void> {
+    this.deploymentsItemsPerPage = itemsPerPage;
+    this.deploymentsPage = 1;
+    this.deploymentPageMarkers = [null];
+    this.deploymentsHasNextPage = false;
+    await this.getDeployments({ showLoading: true });
+  }
 
   @action async getDeployments(options?: {
     showLoading?: boolean;
@@ -47,11 +76,25 @@ class DeploymentStore {
     }
 
     try {
-      const deployments = await DeploymentSource.getDeployments(
-        options && options.skipLog,
-      );
+      const marker =
+        this.deploymentPageMarkers[this.deploymentsPage - 1] ?? null;
+      const raw = await DeploymentSource.getDeployments({
+        skipLog: options?.skipLog,
+        limit: this.deploymentsItemsPerPage + 1,
+        marker,
+      });
+      const hasNextPage = raw.length > this.deploymentsItemsPerPage;
+      const deployments = hasNextPage
+        ? raw.slice(0, this.deploymentsItemsPerPage)
+        : raw;
+      const nextMarker =
+        deployments.length > 0 ? deployments[deployments.length - 1].id : null;
       runInAction(() => {
         this.deployments = deployments;
+        this.deploymentsHasNextPage = hasNextPage;
+        if (nextMarker !== null) {
+          this.deploymentPageMarkers[this.deploymentsPage] = nextMarker;
+        }
         this.loading = false;
         this.deploymentsLoaded = true;
       });
