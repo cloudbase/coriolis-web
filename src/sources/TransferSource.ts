@@ -83,14 +83,6 @@ export class TransferSourceUtils {
     return executions.filter(execution => execution.deleted_at == null);
   }
 
-  static sortTransfers(transfers: TransferItem[]) {
-    transfers.sort(
-      (a, b) =>
-        new Date(b.updated_at || b.created_at).getTime() -
-        new Date(a.updated_at || a.created_at).getTime(),
-    );
-  }
-
   static sortExecutions(executions: Execution[]) {
     executions.sort((a, b) => a.number - b.number);
   }
@@ -104,17 +96,26 @@ export class TransferSourceUtils {
 }
 
 class TransferSource {
-  async getTransfers(
-    skipLog?: boolean,
-    quietError?: boolean,
-  ): Promise<TransferItem[]> {
+  async getTransfers(options?: {
+    skipLog?: boolean;
+    quietError?: boolean;
+    limit?: number;
+    marker?: string | null;
+  }): Promise<TransferItem[]> {
+    const params: string[] = ["sort_key=updated_at", "sort_dir=desc"];
+    if (options?.marker) {
+      params.push(`marker=${encodeURIComponent(options.marker)}`);
+    }
+    if (options?.limit !== undefined) {
+      params.push(`limit=${options.limit}`);
+    }
+    const queryString = `?${params.join("&")}`;
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers`,
-      skipLog,
-      quietError,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers${queryString}`,
+      skipLog: options?.skipLog,
+      quietError: options?.quietError,
     });
     const transfers: TransferItem[] = response.data.transfers;
-    TransferSourceUtils.sortTransfers(transfers);
     return transfers;
   }
 
