@@ -117,15 +117,12 @@ class TransferStore {
 
     try {
       const raw = await TransferSource.getExecutions(transferId, {
-        limit: this.executionsPageSize + 1,
+        limit: this.executionsPageSize,
       });
-      const hasOlderPage = raw.length > this.executionsPageSize;
-      const executions = hasOlderPage
-        ? raw.slice(0, this.executionsPageSize)
-        : raw;
-      TransferSourceUtils.sortExecutions(executions);
+      const hasOlderPage = raw.length === this.executionsPageSize;
+      TransferSourceUtils.sortExecutions(raw);
       runInAction(() => {
-        this.executionsList = executions;
+        this.executionsList = raw;
         this.executionsHasOlderPage = hasOlderPage;
         this.executionsLoading = false;
       });
@@ -152,21 +149,20 @@ class TransferStore {
 
     try {
       const raw = await TransferSource.getExecutions(transferId, {
-        limit: this.executionsPageSize + 1,
+        limit: this.executionsPageSize,
         marker,
+        quietError: true,
       });
-      const hasOlderPage = raw.length > this.executionsPageSize;
-      const executions = hasOlderPage
-        ? raw.slice(0, this.executionsPageSize)
-        : raw;
-      TransferSourceUtils.sortExecutions(executions);
+      const hasOlderPage = raw.length === this.executionsPageSize;
+      TransferSourceUtils.sortExecutions(raw);
       runInAction(() => {
-        this.executionsList = [...executions, ...this.executionsList];
+        this.executionsList = [...raw, ...this.executionsList];
         this.executionsHasOlderPage = hasOlderPage;
         this.executionsLoading = false;
       });
     } catch (err) {
       runInAction(() => {
+        this.executionsHasOlderPage = false;
         this.executionsLoading = false;
       });
       console.error(err);
@@ -197,21 +193,35 @@ class TransferStore {
       this.loading = true;
     }
 
+    const marker = this.transferPageMarkers[this.transfersPage - 1] ?? null;
+    const isPaginationRequest = marker !== null;
+
     try {
-      const marker = this.transferPageMarkers[this.transfersPage - 1] ?? null;
       const raw = await TransferSource.getTransfers({
         skipLog: options?.skipLog,
-        quietError: options?.quietError,
-        limit: this.transfersItemsPerPage + 1,
+        quietError: options?.quietError || isPaginationRequest,
+        limit: this.transfersItemsPerPage,
         marker,
       });
-      const hasNextPage = raw.length > this.transfersItemsPerPage;
-      const transfers = hasNextPage
-        ? raw.slice(0, this.transfersItemsPerPage)
-        : raw;
-      const nextMarker =
-        transfers.length > 0 ? transfers[transfers.length - 1].id : null;
-      this.getTransfersSuccess(transfers, hasNextPage, nextMarker);
+      if (isPaginationRequest && raw.length === 0) {
+        runInAction(() => {
+          this.transfersHasNextPage = false;
+          this.transfersPage = Math.max(1, this.transfersPage - 1);
+        });
+        return;
+      }
+      const hasNextPage = raw.length === this.transfersItemsPerPage;
+      const nextMarker = raw.length > 0 ? raw[raw.length - 1].id : null;
+      this.getTransfersSuccess(raw, hasNextPage, nextMarker);
+    } catch (err) {
+      if (isPaginationRequest) {
+        runInAction(() => {
+          this.transfersHasNextPage = false;
+          this.transfersPage = Math.max(1, this.transfersPage - 1);
+        });
+        return;
+      }
+      throw err;
     } finally {
       this.getTransfersDone();
     }
