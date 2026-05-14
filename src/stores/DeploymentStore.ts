@@ -75,22 +75,28 @@ class DeploymentStore {
       this.loading = true;
     }
 
+    const marker = this.deploymentPageMarkers[this.deploymentsPage - 1] ?? null;
+    const isPaginationRequest = marker !== null;
+
     try {
-      const marker =
-        this.deploymentPageMarkers[this.deploymentsPage - 1] ?? null;
       const raw = await DeploymentSource.getDeployments({
         skipLog: options?.skipLog,
-        limit: this.deploymentsItemsPerPage + 1,
+        quietError: isPaginationRequest,
+        limit: this.deploymentsItemsPerPage,
         marker,
       });
-      const hasNextPage = raw.length > this.deploymentsItemsPerPage;
-      const deployments = hasNextPage
-        ? raw.slice(0, this.deploymentsItemsPerPage)
-        : raw;
-      const nextMarker =
-        deployments.length > 0 ? deployments[deployments.length - 1].id : null;
+      if (isPaginationRequest && raw.length === 0) {
+        runInAction(() => {
+          this.deploymentsHasNextPage = false;
+          this.deploymentsPage = Math.max(1, this.deploymentsPage - 1);
+          this.loading = false;
+        });
+        return;
+      }
+      const hasNextPage = raw.length === this.deploymentsItemsPerPage;
+      const nextMarker = raw.length > 0 ? raw[raw.length - 1].id : null;
       runInAction(() => {
-        this.deployments = deployments;
+        this.deployments = raw;
         this.deploymentsHasNextPage = hasNextPage;
         if (nextMarker !== null) {
           this.deploymentPageMarkers[this.deploymentsPage] = nextMarker;
@@ -99,6 +105,14 @@ class DeploymentStore {
         this.deploymentsLoaded = true;
       });
     } catch (ex) {
+      if (isPaginationRequest) {
+        runInAction(() => {
+          this.deploymentsHasNextPage = false;
+          this.deploymentsPage = Math.max(1, this.deploymentsPage - 1);
+          this.loading = false;
+        });
+        return;
+      }
       runInAction(() => {
         this.loading = false;
       });
