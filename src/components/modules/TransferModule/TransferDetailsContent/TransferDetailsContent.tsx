@@ -89,6 +89,7 @@ type Props = {
   detailsLoading: boolean;
   executions: Execution[];
   executionsLoading: boolean;
+  executionsPaginationLoading?: boolean;
   executionsTasksLoading: boolean;
   executionsTasks: ExecutionTasks[];
   minionPools: MinionPool[];
@@ -211,6 +212,7 @@ class TransferDetailsContent extends React.Component<Props, State> {
         onDeleteExecutionClick={this.props.onDeleteExecutionClick}
         onExecuteClick={this.props.onExecuteClick}
         loading={this.props.executionsLoading || this.props.detailsLoading}
+        paginationLoading={this.props.executionsPaginationLoading}
         onChange={this.props.onExecutionChange}
         tasksLoading={this.props.executionsTasksLoading}
         instancesDetails={this.props.instancesDetails}

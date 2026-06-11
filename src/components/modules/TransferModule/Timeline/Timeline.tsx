@@ -40,6 +40,11 @@ const Wrapper = styled.div<any>`
     opacity: 1;
   }
 `;
+const LoadingIcon = styled(StatusIcon)`
+  position: absolute;
+  top: 0;
+  left: -19px;
+`;
 const MainLine = styled.div<any>`
   width: 100%;
   padding-top: 7px;
@@ -85,6 +90,7 @@ type Props = {
   items?: Execution[] | null;
   selectedItem?: Execution | null;
   hasOlderItems?: boolean;
+  loading?: boolean;
   onPreviousClick?: () => void;
   onNextClick?: () => void;
   onItemClick?: (item: Execution) => void;
@@ -215,16 +221,20 @@ class Timeline extends React.Component<Props> {
           this.wrapperRef = w;
         }}
       >
-        <ArrowStyled
-          orientation="left"
-          forceShow={
-            !this.props.items ||
-            !this.props.items.length ||
-            this.props.hasOlderItems
-          }
-          primary={Boolean(this.props.items && this.props.items.length)}
-          onClick={this.props.onPreviousClick}
-        />
+        {this.props.loading ? (
+          <LoadingIcon status="RUNNING" />
+        ) : (
+          <ArrowStyled
+            orientation="left"
+            forceShow={
+              !this.props.items ||
+              !this.props.items.length ||
+              this.props.hasOlderItems
+            }
+            primary={Boolean(this.props.items && this.props.items.length)}
+            onClick={this.props.onPreviousClick}
+          />
+        )}
         {this.renderMainLine()}
         {this.renderItems()}
         <ArrowStyled

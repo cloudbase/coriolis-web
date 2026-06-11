@@ -866,6 +866,9 @@ class TransferDetailsPage extends React.Component<Props, State> {
                 this.handleExecutionChange(id);
               }}
               executions={transferStore.executionsList}
+              executionsPaginationLoading={
+                transferStore.executionsPaginationLoading
+              }
               hasOlderExecutions={transferStore.executionsHasOlderPage}
               onLoadOlderExecutions={() => {
                 transferStore.loadOlderExecutions();
