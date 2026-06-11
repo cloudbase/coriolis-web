@@ -87,6 +87,7 @@ type Props = {
   executions: Execution[];
   executionsTasks: ExecutionTasks[];
   loading: boolean;
+  paginationLoading?: boolean;
   tasksLoading: boolean;
   instancesDetails: Instance[];
   hasOlderExecutions?: boolean;
@@ -320,6 +321,7 @@ class Executions extends React.Component<Props, State> {
         items={this.props.executions}
         selectedItem={this.state.selectedExecution}
         hasOlderItems={this.props.hasOlderExecutions}
+        loading={this.props.paginationLoading}
         onPreviousClick={() => {
           this.handlePreviousExecutionClick();
         }}

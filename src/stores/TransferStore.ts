@@ -88,6 +88,8 @@ class TransferStore {
 
   @observable executionsLoading = false;
 
+  @observable executionsPaginationLoading = false;
+
   executionsPageSize = 10;
 
   @action resetTransferPagination(): void {
@@ -100,6 +102,7 @@ class TransferStore {
     this.executionsList = [];
     this.executionsHasOlderPage = false;
     this.executionsLoading = false;
+    this.executionsPaginationLoading = false;
   }
 
   @action async getTransferExecutions(options?: {
@@ -136,7 +139,12 @@ class TransferStore {
 
   @action async loadOlderExecutions(): Promise<void> {
     const transferId = this.transferDetails?.id;
-    if (!transferId || !this.executionsHasOlderPage || this.executionsLoading) {
+    if (
+      !transferId ||
+      !this.executionsHasOlderPage ||
+      this.executionsLoading ||
+      this.executionsPaginationLoading
+    ) {
       return;
     }
 
@@ -145,7 +153,7 @@ class TransferStore {
       return;
     }
 
-    this.executionsLoading = true;
+    this.executionsPaginationLoading = true;
 
     try {
       const raw = await TransferSource.getExecutions(transferId, {
@@ -158,12 +166,12 @@ class TransferStore {
       runInAction(() => {
         this.executionsList = [...raw, ...this.executionsList];
         this.executionsHasOlderPage = hasOlderPage;
-        this.executionsLoading = false;
+        this.executionsPaginationLoading = false;
       });
     } catch (err) {
       runInAction(() => {
         this.executionsHasOlderPage = false;
-        this.executionsLoading = false;
+        this.executionsPaginationLoading = false;
       });
       console.error(err);
     }
