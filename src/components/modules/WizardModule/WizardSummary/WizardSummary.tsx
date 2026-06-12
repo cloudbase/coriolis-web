@@ -35,6 +35,10 @@ import type { Schedule } from "@src/@types/Schedule";
 import type { WizardData } from "@src/@types/WizardData";
 import type { StorageMap, StorageBackend } from "@src/@types/Endpoint";
 import type { Instance, Disk, InstanceScript } from "@src/@types/Instance";
+import {
+  DEFAULT_USER_SCRIPT_PHASE,
+  USER_SCRIPT_PHASE_OPTIONS,
+} from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 
 const Wrapper = styled.div`
@@ -722,26 +726,35 @@ class WizardSummary extends React.Component<Props> {
       <Section>
         <SectionTitle>Uploaded User Scripts</SectionTitle>
         <Table>
-          {this.props.uploadedUserScripts.map(s => (
-            <Row
-              key={s.instanceId || s.global || undefined}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                flexShrink: 0,
-                alignItems: "center",
-              }}
-            >
-              <InstanceRowTitle>
-                {s.global
-                  ? s.global === "windows"
-                    ? "Global Windows Script"
-                    : "Global Linux Script"
-                  : s.instanceId}
-              </InstanceRowTitle>
-              <ScriptFileName title={s.fileName}>{s.fileName}</ScriptFileName>
-            </Row>
-          ))}
+          {this.props.uploadedUserScripts.map(s => {
+            const phase = s.phase || DEFAULT_USER_SCRIPT_PHASE;
+            const phaseLabel =
+              USER_SCRIPT_PHASE_OPTIONS.find(o => o.value === phase)?.label ||
+              phase;
+            return (
+              <Row
+                key={`${s.global || s.instanceId}-${phase}`}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  flexShrink: 0,
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <InstanceRowTitle>
+                    {s.global
+                      ? s.global === "windows"
+                        ? "Global Windows Script"
+                        : "Global Linux Script"
+                      : s.instanceId}
+                  </InstanceRowTitle>
+                  <InstanceRowSubtitle>{phaseLabel}</InstanceRowSubtitle>
+                </div>
+                <ScriptFileName title={s.fileName}>{s.fileName}</ScriptFileName>
+              </Row>
+            );
+          })}
         </Table>
       </Section>
     );
