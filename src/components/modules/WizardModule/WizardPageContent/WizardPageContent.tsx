@@ -53,7 +53,11 @@ import configLoader from "@src/utils/Config";
 import transferItemIcon from "./images/transferItemIcon";
 
 import type { WizardData, WizardPage } from "@src/@types/WizardData";
-import type { Instance, InstanceScript } from "@src/@types/Instance";
+import type {
+  Instance,
+  InstanceScript,
+  UserScriptTarget,
+} from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 import type { Schedule as ScheduleType } from "@src/@types/Schedule";
 
@@ -174,10 +178,9 @@ type Props = {
   onContentRef: (ref: any) => void;
   onReloadOptionsClick: () => void;
   onReloadNetworksClick: () => void;
-  onUserScriptUpload: (instanceScript: InstanceScript) => void;
-  onCancelUploadedScript: (
-    global: string | null,
-    instanceName: string | null,
+  onUserScriptsChange: (
+    target: UserScriptTarget,
+    scripts: InstanceScript[],
   ) => void;
   onTransferExecuteOptionsChange: (field: Field, value: any) => void;
 };
@@ -604,12 +607,10 @@ class WizardPageContent extends React.Component<Props, State> {
         body = (
           <WizardScripts
             instances={this.props.instanceStore.instancesDetails}
-            onScriptUpload={this.props.onUserScriptUpload}
-            onCancelScript={this.props.onCancelUploadedScript}
+            onScriptsChange={this.props.onUserScriptsChange}
             uploadedScripts={this.props.uploadedUserScripts}
             userScriptData={null}
             removedScripts={[]}
-            onScriptDataRemove={() => {}}
           />
         );
         break;

@@ -46,7 +46,12 @@ import {
   StorageMap,
 } from "@src/@types/Endpoint";
 import type { Field } from "@src/@types/Field";
-import type { Instance, InstanceScript } from "@src/@types/Instance";
+import type {
+  Instance,
+  InstanceScript,
+  UserScriptTarget,
+} from "@src/@types/Instance";
+import { applyUserScriptsChange } from "@src/utils/UserScriptUtils";
 import {
   Network,
   NetworkMap,
@@ -762,27 +767,14 @@ class TransferItemModal extends React.Component<Props, State> {
     });
   }
 
-  handleCancelScript(
-    global: "windows" | "linux" | null,
-    instanceName: string | null,
+  handleScriptsChange(
+    target: UserScriptTarget,
+    scripts: InstanceScript[],
+    hadExisting: boolean,
   ) {
-    this.setState(prevState => ({
-      uploadedScripts: prevState.uploadedScripts.filter(s =>
-        global ? s.global !== global : s.instanceId !== instanceName,
-      ),
-    }));
-  }
-
-  handleScriptUpload(script: InstanceScript) {
-    this.setState(prevState => ({
-      uploadedScripts: [...prevState.uploadedScripts, script],
-    }));
-  }
-
-  handleScriptDataRemove(script: InstanceScript) {
-    this.setState(prevState => ({
-      removedScripts: [...prevState.removedScripts, script],
-    }));
+    this.setState(prevState =>
+      applyUserScriptsChange(prevState, target, scripts, hadExisting),
+    );
   }
 
   handleStorageChange(mapping: StorageMap) {
@@ -963,14 +955,8 @@ class TransferItemModal extends React.Component<Props, State> {
       <WizardScripts
         instances={this.props.instancesDetails}
         loadingInstances={this.props.instancesDetailsLoading}
-        onScriptUpload={s => {
-          this.handleScriptUpload(s);
-        }}
-        onScriptDataRemove={s => {
-          this.handleScriptDataRemove(s);
-        }}
-        onCancelScript={(g, i) => {
-          this.handleCancelScript(g, i);
+        onScriptsChange={(target, scripts, hadExisting) => {
+          this.handleScriptsChange(target, scripts, hadExisting);
         }}
         uploadedScripts={this.state.uploadedScripts}
         removedScripts={this.state.removedScripts}
