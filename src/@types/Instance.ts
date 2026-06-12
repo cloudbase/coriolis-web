@@ -51,11 +51,49 @@ export type InstanceBase = {
   id: string;
 } & Partial<Instance>;
 
+export type UserScriptPhase =
+  | "osmorphing_pre_os_mount"
+  | "osmorphing_post_os_mount"
+  | "replica_first_boot";
+
+export const USER_SCRIPT_PHASES: UserScriptPhase[] = [
+  "osmorphing_pre_os_mount",
+  "osmorphing_post_os_mount",
+  "replica_first_boot",
+];
+
+export const DEFAULT_USER_SCRIPT_PHASE: UserScriptPhase =
+  "osmorphing_post_os_mount";
+
+export const USER_SCRIPT_PHASE_OPTIONS: {
+  label: string;
+  value: UserScriptPhase;
+}[] = [
+  { label: "OS morphing: before mount", value: "osmorphing_pre_os_mount" },
+  { label: "OS morphing: after mount", value: "osmorphing_post_os_mount" },
+  { label: "VM first boot script", value: "replica_first_boot" },
+];
+
+export const USER_SCRIPT_PHASE_DESCRIPTIONS: Record<UserScriptPhase, string> = {
+  osmorphing_pre_os_mount:
+    "Runs before the OS partition is mounted during OS morphing, e.g. to unlock encrypted disks.",
+  osmorphing_post_os_mount:
+    "Runs after the OS partition is mounted during OS morphing (the default).",
+  replica_first_boot:
+    "Injected during OS morphing and executed when the VM boots for the first time.",
+};
+
 export type InstanceScript = {
   global?: "windows" | "linux" | null;
   instanceId?: string | null;
   scriptContent: string | null;
   fileName: string | null;
+  phase?: UserScriptPhase;
+};
+
+export type UserScriptTarget = {
+  global: "windows" | "linux" | null;
+  instanceId: string | null;
 };
 
 export const InstanceUtils = {
