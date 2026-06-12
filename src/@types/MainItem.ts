@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import type { Execution } from "./Execution";
-import type { Instance, InstanceScript } from "./Instance";
+import type { Instance, InstanceScript, UserScriptPhase } from "./Instance";
 import type { NetworkMap } from "./Network";
 import type { StorageMap } from "./Endpoint";
 import { Task } from "./Task";
@@ -100,13 +100,20 @@ export type TransferItem = BaseItem & {
   scenario: string;
 };
 
+export type UserScriptItem = {
+  phase: UserScriptPhase;
+  payload: string;
+};
+
+export type UserScriptValue = string | UserScriptItem[] | null;
+
 export type UserScriptData = {
   global?: {
-    linux?: string | null;
-    windows?: string | null;
+    linux?: UserScriptValue;
+    windows?: UserScriptValue;
   };
   instances?: {
-    [instanceName: string]: string | null;
+    [instanceName: string]: UserScriptValue;
   };
 };
 
