@@ -15,7 +15,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { observable, action, runInAction } from "mobx";
 
 import type { WizardData, WizardPage } from "@src/@types/WizardData";
-import type { Instance, InstanceScript } from "@src/@types/Instance";
+import type {
+  Instance,
+  InstanceScript,
+  UserScriptTarget,
+} from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 import type { NetworkMap } from "@src/@types/Network";
 import type { StorageMap } from "@src/@types/Endpoint";
@@ -421,17 +425,15 @@ class WizardStore {
     }
   }
 
-  @action cancelUploadedScript(
-    global: string | null,
-    instanceName: string | null,
-  ) {
-    this.uploadedUserScripts = this.uploadedUserScripts.filter(s =>
-      global ? s.global !== global : s.instanceId !== instanceName,
-    );
-  }
-
-  @action uploadUserScript(instanceScript: InstanceScript) {
-    this.uploadedUserScripts = [...this.uploadedUserScripts, instanceScript];
+  @action setUserScripts(target: UserScriptTarget, scripts: InstanceScript[]) {
+    const matches = (s: InstanceScript) =>
+      target.global
+        ? s.global === target.global
+        : s.instanceId === target.instanceId;
+    this.uploadedUserScripts = [
+      ...this.uploadedUserScripts.filter(s => !matches(s)),
+      ...scripts,
+    ];
   }
 
   @action clearUploadedUserScripts() {

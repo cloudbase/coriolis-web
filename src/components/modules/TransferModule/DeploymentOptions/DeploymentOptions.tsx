@@ -32,7 +32,12 @@ import deploymentImage from "./images/deployment.svg";
 import deploymentFields from "./DeploymentFields";
 
 import type { Field } from "@src/@types/Field";
-import type { Instance, InstanceScript } from "@src/@types/Instance";
+import type {
+  Instance,
+  InstanceScript,
+  UserScriptTarget,
+} from "@src/@types/Instance";
+import { applyUserScriptsChange } from "@src/utils/UserScriptUtils";
 const Wrapper = styled.div<any>`
   display: flex;
   flex-direction: column;
@@ -171,24 +176,14 @@ class DeploymentOptions extends React.Component<Props, State> {
     });
   }
 
-  handleCancelScript(global: string | null, instanceName: string | null) {
-    this.setState(prevState => ({
-      uploadedScripts: prevState.uploadedScripts.filter(s =>
-        global ? s.global !== global : s.instanceId !== instanceName,
-      ),
-    }));
-  }
-
-  handleScriptUpload(script: InstanceScript) {
-    this.setState(prevState => ({
-      uploadedScripts: [...prevState.uploadedScripts, script],
-    }));
-  }
-
-  handleScriptRemove(script: InstanceScript) {
-    this.setState(prevState => ({
-      removedScripts: [...prevState.removedScripts, script],
-    }));
+  handleScriptsChange(
+    target: UserScriptTarget,
+    scripts: InstanceScript[],
+    hadExisting: boolean,
+  ) {
+    this.setState(prevState =>
+      applyUserScriptsChange(prevState, target, scripts, hadExisting),
+    );
   }
 
   renderField(field: Field) {
@@ -270,14 +265,8 @@ class DeploymentOptions extends React.Component<Props, State> {
       <WizardScripts
         instances={this.props.instances}
         loadingInstances={this.props.loadingInstances}
-        onScriptUpload={s => {
-          this.handleScriptUpload(s);
-        }}
-        onScriptDataRemove={s => {
-          this.handleScriptRemove(s);
-        }}
-        onCancelScript={(g, i) => {
-          this.handleCancelScript(g, i);
+        onScriptsChange={(target, scripts, hadExisting) => {
+          this.handleScriptsChange(target, scripts, hadExisting);
         }}
         uploadedScripts={this.state.uploadedScripts}
         removedScripts={this.state.removedScripts}

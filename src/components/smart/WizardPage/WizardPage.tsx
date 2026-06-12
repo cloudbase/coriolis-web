@@ -52,7 +52,11 @@ import type {
   Endpoint as EndpointType,
   StorageMap,
 } from "@src/@types/Endpoint";
-import type { Instance, InstanceScript } from "@src/@types/Instance";
+import type {
+  Instance,
+  InstanceScript,
+  UserScriptTarget,
+} from "@src/@types/Instance";
 import type { Field } from "@src/@types/Field";
 import type { Schedule } from "@src/@types/Schedule";
 import type { WizardPage as WizardPageType } from "@src/@types/WizardData";
@@ -834,15 +838,8 @@ class WizardPage extends React.Component<Props, State> {
     transferStore.execute(transfer.id, executeNowOptions);
   }
 
-  handleCancelUploadedScript(
-    global: string | null,
-    instanceName: string | null,
-  ) {
-    wizardStore.cancelUploadedScript(global, instanceName);
-  }
-
-  handleUserScriptUpload(instanceScript: InstanceScript) {
-    wizardStore.uploadUserScript(instanceScript);
+  handleUserScriptsChange(target: UserScriptTarget, scripts: InstanceScript[]) {
+    wizardStore.setUserScripts(target, scripts);
   }
 
   render() {
@@ -944,11 +941,8 @@ class WizardPage extends React.Component<Props, State> {
                 this.loadNetworks(false);
               }}
               uploadedUserScripts={wizardStore.uploadedUserScripts}
-              onCancelUploadedScript={(g, i) => {
-                this.handleCancelUploadedScript(g, i);
-              }}
-              onUserScriptUpload={s => {
-                this.handleUserScriptUpload(s);
+              onUserScriptsChange={(target, scripts) => {
+                this.handleUserScriptsChange(target, scripts);
               }}
               onTransferExecuteOptionsChange={(field, value) => {
                 this.handleTransferExecuteOptionsChange(field, value);

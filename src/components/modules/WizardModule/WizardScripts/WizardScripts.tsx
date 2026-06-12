@@ -14,20 +14,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observer } from "mobx-react";
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
-import { UserScriptData } from "@src/@types/MainItem";
+import { UserScriptData, UserScriptValue } from "@src/@types/MainItem";
 import { InstanceImage } from "@src/components/modules/WizardModule/WizardInstances";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import InfoIcon from "@src/components/ui/InfoIcon";
+import Modal from "@src/components/ui/Modal";
 import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
-import { Close as InputClose } from "@src/components/ui/TextInput";
-import DomUtils from "@src/utils/DomUtils";
-import FileUtils from "@src/utils/FileUtils";
 
 import scriptItemImage from "./images/script-item.svg";
+import UserScriptsModal, { ScriptsByPhase } from "./UserScriptsModal";
 
-import type { Instance, InstanceScript } from "@src/@types/Instance";
+import type {
+  Instance,
+  InstanceScript,
+  UserScriptTarget,
+} from "@src/@types/Instance";
+import {
+  DEFAULT_USER_SCRIPT_PHASE,
+  USER_SCRIPT_PHASES,
+  UserScriptPhase,
+} from "@src/@types/Instance";
+
+const parseScriptValueByPhase = (value: UserScriptValue): ScriptsByPhase => {
+  const map: ScriptsByPhase = {};
+  if (!value) {
+    return map;
+  }
+  if (typeof value === "string") {
+    map[DEFAULT_USER_SCRIPT_PHASE] = { content: value, fileName: null };
+    return map;
+  }
+  value.forEach(item => {
+    map[item.phase || DEFAULT_USER_SCRIPT_PHASE] = {
+      content: item.payload,
+      fileName: null,
+    };
+  });
+  return map;
+};
+
 const Wrapper = styled.div<any>`
   width: 100%;
   display: flex;
@@ -108,45 +135,7 @@ const LinkButton = styled.div<any>`
     text-decoration: underline;
   }
 `;
-const UploadedScript = styled.div<any>`
-  display: flex;
-  position: relative;
-`;
-const UploadedScriptFileName = styled.div<any>`
-  max-width: 124px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin-right: 32px;
-  white-space: nowrap;
-`;
-const InputCloseStyled = styled(InputClose)`
-  top: 0px;
-`;
-const FakeFileInput = styled.input`
-  position: absolute;
-  opacity: 0;
-  top: -99999px;
-`;
-const ScriptDataActions = styled.div`
-  display: flex;
-  margin-left: -8px;
-  margin-top: 8px;
-  > div {
-    margin-left: 8px;
-  }
-`;
-const ScriptDataAction = styled.div<{ red?: boolean; disabled?: boolean }>`
-  color: ${props => (props.red ? ThemePalette.alert : ThemePalette.primary)};
-  cursor: pointer;
-  ${props =>
-    props.disabled
-      ? css`
-          opacity: 0.6;
-          cursor: default;
-        `
-      : ""}
-  font-size: 12px;
-`;
+type ModalTarget = UserScriptTarget & { title: string };
 
 type Props = {
   instances: Instance[];
@@ -156,44 +145,76 @@ type Props = {
   loadingInstances?: boolean;
   userScriptData: UserScriptData | null | undefined;
   style?: React.CSSProperties;
-  onScriptUpload: (instanceScript: InstanceScript) => void;
-  onCancelScript: (
-    global: "windows" | "linux" | null,
-    instanceName: string | null,
-  ) => void;
   onScrollableRef?: (ref: HTMLElement) => void;
   scrollableRef?: (r: HTMLElement) => void;
-  onScriptDataRemove: (script: InstanceScript) => void;
+  onScriptsChange: (
+    target: UserScriptTarget,
+    scripts: InstanceScript[],
+    hadExisting: boolean,
+  ) => void;
 };
-type FileInputRefs = {
-  [prop: string]: {
-    inputRef: HTMLInputElement;
-  };
+type State = {
+  modalTarget: ModalTarget | null;
 };
 @observer
-class WizardScripts extends React.Component<Props> {
-  fileInputRefs: FileInputRefs = {};
+class WizardScripts extends React.Component<Props, State> {
+  state: State = {
+    modalTarget: null,
+  };
 
-  async handleFileUpload(
-    files: FileList | null,
-    global: "windows" | "linux" | null,
-    instanceId: string | null,
-  ) {
-    if (!files || !files.length) {
-      return;
-    }
-    const fileName = files[0].name;
-    const scriptContent = await FileUtils.readTextFromFirstFile(files);
-    this.props.onScriptUpload({
-      instanceId,
-      global,
-      fileName,
-      scriptContent: scriptContent || "",
-    });
+  matchesTarget(script: InstanceScript, target: UserScriptTarget): boolean {
+    return target.global
+      ? script.global === target.global
+      : script.instanceId === target.instanceId;
   }
 
-  handleScriptDataDownload(scriptData: string, fileName: string) {
-    DomUtils.download(scriptData, fileName);
+  getBaseValue(target: UserScriptTarget): UserScriptValue {
+    if (target.global) {
+      return this.props.userScriptData?.global?.[target.global] ?? null;
+    }
+    if (target.instanceId) {
+      return this.props.userScriptData?.instances?.[target.instanceId] ?? null;
+    }
+    return null;
+  }
+
+  getScriptsByPhase(target: UserScriptTarget): ScriptsByPhase {
+    const uploaded = this.props.uploadedScripts.filter(s =>
+      this.matchesTarget(s, target),
+    );
+    const isRemoved = this.props.removedScripts.some(s =>
+      this.matchesTarget(s, target),
+    );
+    if (uploaded.length || isRemoved) {
+      const map: ScriptsByPhase = {};
+      uploaded.forEach(s => {
+        map[s.phase || DEFAULT_USER_SCRIPT_PHASE] = {
+          content: s.scriptContent,
+          fileName: s.fileName,
+        };
+      });
+      return map;
+    }
+    return parseScriptValueByPhase(this.getBaseValue(target));
+  }
+
+  getConfiguredPhases(target: UserScriptTarget): UserScriptPhase[] {
+    const map = this.getScriptsByPhase(target);
+    return USER_SCRIPT_PHASES.filter(phase => map[phase]?.content);
+  }
+
+  computeHadExisting(target: UserScriptTarget): boolean {
+    const baseMap = parseScriptValueByPhase(this.getBaseValue(target));
+    return USER_SCRIPT_PHASES.some(phase => baseMap[phase]?.content);
+  }
+
+  handleModalSave(target: ModalTarget, scripts: InstanceScript[]) {
+    this.props.onScriptsChange(
+      { global: target.global, instanceId: target.instanceId },
+      scripts,
+      this.computeHadExisting(target),
+    );
+    this.setState({ modalTarget: null });
   }
 
   renderScriptItem(opts: {
@@ -203,24 +224,11 @@ class WizardScripts extends React.Component<Props> {
     subtitle?: string;
   }) {
     const { global, instanceId, title, subtitle } = opts;
-    const uploadedScript = this.props.uploadedScripts.find(s =>
-      s.instanceId
-        ? s.instanceId === instanceId
-        : s.global
-          ? s.global === global
-          : false,
-    );
-    let scriptData: string | null | undefined = null;
-    if (global) {
-      scriptData = this.props.userScriptData?.global?.[global];
-    } else if (instanceId) {
-      scriptData = this.props.userScriptData?.instances?.[instanceId];
-    }
-    const isRemoved = Boolean(
-      this.props.removedScripts.find(s =>
-        global ? s.global === global : s.instanceId === instanceId,
-      ),
-    );
+    const target: UserScriptTarget = {
+      global: global ?? null,
+      instanceId: instanceId ?? null,
+    };
+    const isConfigured = this.getConfiguredPhases(target).length > 0;
 
     return (
       <Script key={title}>
@@ -231,86 +239,15 @@ class WizardScripts extends React.Component<Props> {
             {subtitle ? (
               <NameLabelSubtitle>{subtitle}</NameLabelSubtitle>
             ) : null}
-            {scriptData ? (
-              <ScriptDataActions>
-                <ScriptDataAction
-                  title="Downloads the currently uploaded script"
-                  onClick={() => {
-                    this.handleScriptDataDownload(
-                      scriptData as string,
-                      title.toLowerCase().replaceAll(" ", "_"),
-                    );
-                  }}
-                >
-                  Download
-                </ScriptDataAction>
-                <ScriptDataAction
-                  title={
-                    isRemoved
-                      ? "The currently uploaded script will be removed"
-                      : "Removes the currently uploaded script"
-                  }
-                  red
-                  disabled={isRemoved}
-                  onClick={() => {
-                    if (isRemoved) {
-                      return;
-                    }
-                    this.props.onScriptDataRemove({
-                      global,
-                      instanceId,
-                      scriptContent: null,
-                      fileName: null,
-                    });
-                  }}
-                >
-                  {isRemoved ? "To be removed" : "Remove"}
-                </ScriptDataAction>
-              </ScriptDataActions>
-            ) : null}
           </NameLabel>
         </Name>
-        {uploadedScript ? (
-          <UploadedScript>
-            <UploadedScriptFileName title={uploadedScript.fileName}>
-              {uploadedScript.fileName}
-            </UploadedScriptFileName>
-            <InputCloseStyled
-              show
-              onClick={() => {
-                this.props.onCancelScript(global || null, instanceId || null);
-                const ref = this.fileInputRefs[title];
-                if (ref) {
-                  ref.inputRef.value = "";
-                }
-              }}
-            />
-          </UploadedScript>
-        ) : (
-          <LinkButton
-            onClick={() => {
-              const ref = this.fileInputRefs[title];
-              if (ref) {
-                ref.inputRef.click();
-              }
-            }}
-          >
-            Choose File...
-          </LinkButton>
-        )}
-        <FakeFileInput
-          type="file"
-          ref={(r: HTMLInputElement) => {
-            this.fileInputRefs[title] = { inputRef: r };
+        <LinkButton
+          onClick={() => {
+            this.setState({ modalTarget: { ...target, title } });
           }}
-          onChange={e => {
-            this.handleFileUpload(
-              e.target.files,
-              global || null,
-              instanceId || null,
-            );
-          }}
-        />
+        >
+          {isConfigured ? "Edit Scripts" : "Choose Scripts"}
+        </LinkButton>
       </Script>
     );
   }
@@ -323,7 +260,7 @@ class WizardScripts extends React.Component<Props> {
             Global Scripts
             <InfoIconStyled
               layout={this.props.layout}
-              text="Specify user scripts that will run during OS morphing for a particular OS type"
+              text="Specify user scripts that will run during OS morphing for a particular OS type. You can attach one script per phase."
             />
           </Heading>
           <Scripts>
@@ -351,7 +288,7 @@ class WizardScripts extends React.Component<Props> {
           {!this.props.loadingInstances ? (
             <InfoIconStyled
               layout={this.props.layout}
-              text="Specify user scripts that will run during OS morphing for a particular instance. These override the uploaded global scripts."
+              text="Specify user scripts that will run during OS morphing for a particular instance. You can attach one script per phase. These override the uploaded global scripts."
             />
           ) : null}
           {this.props.loadingInstances ? (
@@ -383,6 +320,7 @@ class WizardScripts extends React.Component<Props> {
   }
 
   render() {
+    const { modalTarget } = this.state;
     return (
       <Wrapper
         style={this.props.style}
@@ -394,6 +332,23 @@ class WizardScripts extends React.Component<Props> {
       >
         {this.renderScriptGroup("global")}
         {this.renderScriptGroup("instance")}
+        <Modal
+          isOpen={Boolean(modalTarget)}
+          title={modalTarget ? `${modalTarget.title} - User Scripts` : ""}
+          contentWidth={576}
+          onRequestClose={() => this.setState({ modalTarget: null })}
+        >
+          {modalTarget ? (
+            <UserScriptsModal
+              title={modalTarget.title}
+              global={modalTarget.global}
+              instanceId={modalTarget.instanceId}
+              scriptsByPhase={this.getScriptsByPhase(modalTarget)}
+              onRequestClose={() => this.setState({ modalTarget: null })}
+              onSave={scripts => this.handleModalSave(modalTarget, scripts)}
+            />
+          ) : null}
+        </Modal>
       </Wrapper>
     );
   }
