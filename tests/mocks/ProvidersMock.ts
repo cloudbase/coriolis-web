@@ -65,4 +65,7 @@ export const PROVIDERS_MOCK: Providers = {
   vhi: {
     types: [],
   },
+  cloudstack: {
+    types: [],
+  },
 };
