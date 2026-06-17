@@ -33,6 +33,7 @@ export type ProviderTypes =
   | "rhev"
   | "lxd"
   | "libvirt"
+  | "cloudstack"
   | "nutanix";
 
 export type Providers = {
