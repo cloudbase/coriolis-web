@@ -130,6 +130,7 @@ class TransferStore {
         this.executionsHasOlderPage = hasOlderPage;
         this.executionsLoading = false;
       });
+      this.prefetchExecutionsTasks(raw);
     } catch (err) {
       runInAction(() => {
         this.executionsLoading = false;
@@ -171,6 +172,7 @@ class TransferStore {
         this.executionsHasOlderPage = hasOlderPage;
         this.executionsPaginationLoading = false;
       });
+      this.prefetchExecutionsTasks(raw);
     } catch (err) {
       runInAction(() => {
         this.executionsHasOlderPage = false;
@@ -365,55 +367,100 @@ class TransferStore {
 
   currentlyLoadingExecution = "";
 
+  private loadingExecutionTaskIds: Set<string> = new Set();
+
   @action async getExecutionTasks(options: {
     transferId: string;
     executionId?: string;
     polling?: boolean;
   }) {
     const { transferId: transferId, executionId, polling } = options;
-
-    if (!polling && this.currentlyLoadingExecution === executionId) {
-      return;
-    }
-    this.currentlyLoadingExecution = polling
+    const targetId = polling
       ? this.currentlyLoadingExecution
       : executionId || "";
-    if (!this.currentlyLoadingExecution) {
-      return;
-    }
-
-    if (
-      !polling &&
-      this.executionsTasks.find(e => e.id === this.currentlyLoadingExecution)
-    ) {
+    if (!targetId) {
       return;
     }
 
     if (!polling) {
+      this.currentlyLoadingExecution = targetId;
+      if (this.executionsTasks.find(e => e.id === targetId)) {
+        this.executionsTasksLoading = false;
+        return;
+      }
+      if (this.loadingExecutionTaskIds.has(targetId)) {
+        this.executionsTasksLoading = true;
+        return;
+      }
+      this.loadingExecutionTaskIds.add(targetId);
       this.executionsTasksLoading = true;
     }
 
     try {
       const executionTasks = await TransferSource.getExecutionTasks({
         transferId: transferId,
-        executionId: this.currentlyLoadingExecution,
+        executionId: targetId,
         polling,
       });
       runInAction(() => {
         this.executionsTasks = [
-          ...this.executionsTasks.filter(
-            e => e.id !== this.currentlyLoadingExecution,
-          ),
+          ...this.executionsTasks.filter(e => e.id !== targetId),
           executionTasks,
         ];
       });
     } catch (err) {
       console.error(err);
     } finally {
-      runInAction(() => {
-        this.executionsTasksLoading = false;
-      });
+      if (!polling) {
+        runInAction(() => {
+          this.loadingExecutionTaskIds.delete(targetId);
+          if (this.currentlyLoadingExecution === targetId) {
+            this.executionsTasksLoading = false;
+          }
+        });
+      }
     }
+  }
+
+  @action async prefetchExecutionsTasks(
+    executions: Execution[],
+  ): Promise<void> {
+    const transferId = this.transferDetails?.id;
+    if (!transferId) {
+      return;
+    }
+    await Promise.all(
+      executions.map(async execution => {
+        if (
+          this.executionsTasks.find(e => e.id === execution.id) ||
+          this.loadingExecutionTaskIds.has(execution.id)
+        ) {
+          return;
+        }
+        this.loadingExecutionTaskIds.add(execution.id);
+        try {
+          const executionTasks = await TransferSource.getExecutionTasks({
+            transferId,
+            executionId: execution.id,
+            polling: true,
+          });
+          runInAction(() => {
+            if (!this.executionsTasks.find(e => e.id === execution.id)) {
+              this.executionsTasks = [...this.executionsTasks, executionTasks];
+            }
+            if (this.currentlyLoadingExecution === execution.id) {
+              this.executionsTasksLoading = false;
+            }
+          });
+        } catch (err) {
+          console.error(err);
+        } finally {
+          runInAction(() => {
+            this.loadingExecutionTaskIds.delete(execution.id);
+          });
+        }
+      }),
+    );
   }
 
   @action async execute(transferId: string, fields?: Field[]): Promise<void> {
