@@ -14,10 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { observable, action, runInAction } from "mobx";
 
-import TransferSource, {
-  TransferSourceUtils,
-  sortTasks,
-} from "@src/sources/TransferSource";
+import TransferSource from "@src/sources/TransferSource";
 import type {
   UpdateData,
   TransferItem,
@@ -123,9 +120,11 @@ class TransferStore {
     try {
       const raw = await TransferSource.getExecutions(transferId, {
         limit: this.executionsPageSize,
+        sortKeys: ["number"],
+        sortDirs: ["desc"],
       });
       const hasOlderPage = raw.length === this.executionsPageSize;
-      TransferSourceUtils.sortExecutions(raw);
+      raw.reverse();
       runInAction(() => {
         this.executionsList = raw;
         this.executionsHasOlderPage = hasOlderPage;
@@ -162,9 +161,11 @@ class TransferStore {
         limit: this.executionsPageSize,
         marker,
         quietError: true,
+        sortKeys: ["number"],
+        sortDirs: ["desc"],
       });
       const hasOlderPage = raw.length === this.executionsPageSize;
-      TransferSourceUtils.sortExecutions(raw);
+      raw.reverse();
       runInAction(() => {
         this.executionsList = [...raw, ...this.executionsList];
         this.executionsHasOlderPage = hasOlderPage;
@@ -268,48 +269,67 @@ class TransferStore {
         includeTaskInfo,
       });
 
+      const activeStatuses = [
+        "RUNNING",
+        "PENDING",
+        "CANCELLING",
+        "AWAITING_MINION_ALLOCATIONS",
+      ];
+      const newestExecution =
+        this.executionsList[this.executionsList.length - 1];
+      const hasActiveExecution =
+        activeStatuses.includes(transfer.last_execution_status) ||
+        (newestExecution != null &&
+          activeStatuses.includes(newestExecution.status));
+      const shouldRefreshExecutions =
+        this.executionsList.length > 0 && (!polling || hasActiveExecution);
+      let freshExecutions: Execution[] | null = null;
+      if (shouldRefreshExecutions) {
+        try {
+          freshExecutions = await TransferSource.getExecutions(transferId, {
+            limit: this.executionsPageSize,
+            quietError: polling,
+            sortKeys: ["number"],
+            sortDirs: ["desc"],
+          });
+          freshExecutions.reverse();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
       runInAction(() => {
         this.transferDetails = transfer;
-        let statusChanged = false;
-        const updatedList = this.executionsList.map(e => {
-          const fresh = transfer.executions?.find(te => te.id === e.id);
-          if (fresh && fresh.status !== e.status) {
-            statusChanged = true;
-            return { ...e, status: fresh.status };
-          }
-          return e;
-        });
-        if (statusChanged) {
-          this.executionsList = updatedList;
-        }
 
-        if (this.executionsList.length > 0 && transfer.executions?.length) {
-          const newestNumber = Math.max(
-            ...this.executionsList.map(e => e.number),
-          );
-          const incoming = transfer.executions.filter(
-            e =>
-              e.number > newestNumber &&
-              !this.deletedExecutionIds.has(e.id) &&
-              !this.executionsList.find(l => l.id === e.id),
-          );
-          if (incoming.length > 0) {
-            TransferSourceUtils.sortExecutions(incoming);
-            this.executionsList = [...this.executionsList, ...incoming];
+        if (freshExecutions) {
+          let statusChanged = false;
+          const updatedList = this.executionsList.map(e => {
+            const fresh = freshExecutions!.find(te => te.id === e.id);
+            if (fresh && fresh.status !== e.status) {
+              statusChanged = true;
+              return { ...e, status: fresh.status };
+            }
+            return e;
+          });
+          if (statusChanged) {
+            this.executionsList = updatedList;
+          }
+
+          if (this.executionsList.length > 0) {
+            const newestNumber = Math.max(
+              ...this.executionsList.map(e => e.number),
+            );
+            const incoming = freshExecutions.filter(
+              e =>
+                e.number > newestNumber &&
+                !this.deletedExecutionIds.has(e.id) &&
+                !this.executionsList.find(l => l.id === e.id),
+            );
+            if (incoming.length > 0) {
+              this.executionsList = [...this.executionsList, ...incoming];
+            }
           }
         }
-
-        transfer.executions?.forEach(exec => {
-          const withTasks = exec as ExecutionTasks;
-          if (
-            Array.isArray(withTasks.tasks) &&
-            !this.deletedExecutionIds.has(exec.id) &&
-            !this.executionsTasks.find(et => et.id === exec.id)
-          ) {
-            sortTasks(withTasks.tasks, TransferSourceUtils.sortTaskUpdates);
-            this.executionsTasks = [...this.executionsTasks, withTasks];
-          }
-        });
       });
     } finally {
       runInAction(() => {
@@ -561,8 +581,10 @@ class TransferStore {
           const executions = await TransferSource.getExecutions(transfer.id, {
             limit: this.executionsPageSize,
             quietError: true,
+            sortKeys: ["number"],
+            sortDirs: ["desc"],
           });
-          TransferSourceUtils.sortExecutions(executions);
+          executions.reverse();
           return { transfer, hasDisks: this.testTransferHasDisks(executions) };
         }),
       );

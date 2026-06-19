@@ -151,6 +151,8 @@ class TransferSource {
       limit?: number;
       marker?: string | null;
       quietError?: boolean;
+      sortKeys?: string[];
+      sortDirs?: string[];
     },
   ): Promise<Execution[]> {
     const params: string[] = [];
@@ -160,6 +162,12 @@ class TransferSource {
     if (options?.limit !== undefined) {
       params.push(`limit=${options.limit}`);
     }
+    options?.sortKeys?.forEach(key => {
+      params.push(`sort_keys=${encodeURIComponent(key)}`);
+    });
+    options?.sortDirs?.forEach(dir => {
+      params.push(`sort_dirs=${encodeURIComponent(dir)}`);
+    });
     const queryString = params.length > 0 ? `?${params.join("&")}` : "";
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/executions${queryString}`,
