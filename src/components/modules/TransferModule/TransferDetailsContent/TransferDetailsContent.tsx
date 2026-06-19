@@ -124,13 +124,15 @@ class TransferDetailsContent extends React.Component<Props, State> {
   };
 
   getLastExecution() {
-    return this.props.item?.executions?.length
-      ? this.props.item.executions[this.props.item.executions.length - 1]
+    return this.props.executions?.length
+      ? this.props.executions[this.props.executions.length - 1]
       : null;
   }
 
   getStatus() {
-    return this.getLastExecution()?.status;
+    return (
+      this.props.item?.last_execution_status || this.getLastExecution()?.status
+    );
   }
 
   isEndpointMissing() {

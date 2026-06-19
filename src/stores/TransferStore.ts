@@ -68,7 +68,7 @@ class TransferStore {
 
   @observable startingExecution = false;
 
-  @observable transfersWithDisks: TransferItemDetails[] = [];
+  @observable transfersWithDisks: TransferItem[] = [];
 
   @observable transfersWithDisksLoading = false;
 
@@ -534,14 +534,14 @@ class TransferStore {
     await TransferSource.update(options);
   }
 
-  testTransferHasDisks(transfer: TransferItemDetails | null) {
-    if (!transfer || !transfer.executions || transfer.executions.length === 0) {
+  testTransferHasDisks(executions: Execution[]) {
+    if (!executions || executions.length === 0) {
       return false;
     }
-    if (!transfer.executions.find(e => e.type === "transfer_execution")) {
+    if (!executions.find(e => e.type === "transfer_execution")) {
       return false;
     }
-    const lastExecution = transfer.executions[transfer.executions.length - 1];
+    const lastExecution = executions[executions.length - 1];
     if (
       lastExecution.type === "transfer_disks_delete" &&
       lastExecution.status === "COMPLETED"
@@ -556,19 +556,21 @@ class TransferStore {
     this.transfersWithDisksLoading = true;
 
     try {
-      const transferDetails = await Promise.all(
-        transfers.map(transfer =>
-          TransferSource.getTransferDetails({
-            transferId: transfer.id,
-            includeTaskInfo: true,
-          }),
-        ),
+      const results = await Promise.all(
+        transfers.map(async transfer => {
+          const executions = await TransferSource.getExecutions(transfer.id, {
+            limit: this.executionsPageSize,
+            quietError: true,
+          });
+          TransferSourceUtils.sortExecutions(executions);
+          return { transfer, hasDisks: this.testTransferHasDisks(executions) };
+        }),
       );
 
       runInAction(() => {
-        this.transfersWithDisks = transferDetails.filter(r =>
-          this.testTransferHasDisks(r),
-        );
+        this.transfersWithDisks = results
+          .filter(r => r.hasDisks)
+          .map(r => r.transfer);
       });
     } finally {
       runInAction(() => {

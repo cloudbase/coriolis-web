@@ -147,8 +147,8 @@ describe("Replicas list", () => {
     cy.get("div[class^='ActionDropdown__Wrapper']").click();
     cy.loadFixtures(["transfers/replicas"], (results: any[]) => {
       const transfers = results[0].transfers;
-      cy.intercept(`**/coriolis/**/transfers/${transfers[0].id}*`, {
-        fixture: "transfers/replica-unexecuted",
+      cy.intercept(`**/coriolis/**/transfers/${transfers[0].id}/executions*`, {
+        body: { executions: [] },
       }).as("transfer");
 
       cy.get("div[class^='ActionDropdown__ListItem']")

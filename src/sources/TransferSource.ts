@@ -218,12 +218,11 @@ class TransferSource {
     let lastExecutionId = options.executionId;
 
     if (!lastExecutionId) {
-      const transferDetails = await this.getTransferDetails({
-        transferId: options.transferId,
+      const executions = await this.getExecutions(options.transferId, {
+        limit: 1,
       });
-      const lastExecution =
-        transferDetails.executions[transferDetails.executions.length - 1];
-      if (lastExecution.status !== "RUNNING") {
+      const lastExecution = executions[0];
+      if (!lastExecution || lastExecution.status !== "RUNNING") {
         return options.transferId;
       }
       lastExecutionId = lastExecution.id;
