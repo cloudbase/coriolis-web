@@ -5386,14 +5386,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.30.0":
-  version: 0.30.0
-  resolution: "axios@npm:0.30.0"
+"axios@npm:^0.32.0":
+  version: 0.32.0
+  resolution: "axios@npm:0.32.0"
   dependencies:
     follow-redirects: ^1.15.4
-    form-data: ^4.0.0
+    form-data: ^4.0.4
     proxy-from-env: ^1.1.0
-  checksum: 5179e93f4d8a4f8fc6fce3d46b4087aff60d1f2aeb36fad289e506dfd327c3436aafe1a91b371f47ffc2ef1b0a3f7ea278a24f6b1af88216d691b1e6c262b32f
+  checksum: abc473994b41cbbea172395e677b42342177d7bef85022608397606e8c2a47a6a7fd68e4b0b1e8cc5a787fbbc694c5f47302101cbf29edab91391596f75a3411
   languageName: node
   linkType: hard
 
@@ -7003,7 +7003,7 @@ __metadata:
     "@typescript-eslint/parser": ^8.30.1
     ansi-to-html: ^0.7.2
     autobind-decorator: ^2.4.0
-    axios: ^0.30.0
+    axios: ^0.32.0
     babel-loader: ^10.0.0
     babel-plugin-styled-components: ^2.1.4
     body-parser: ^2.2.1
@@ -9502,6 +9502,19 @@ __metadata:
     es-set-tostringtag: ^2.1.0
     mime-types: ^2.1.12
   checksum: e887298b22c13c7c9c5a8ba3716f295a479a13ca78bfd855ef11cbce1bcf22bc0ae2062e94808e21d46e5c667664a1a1a8a7f57d7040193c1fefbfb11af58aab
+  languageName: node
+  linkType: hard
+
+"form-data@npm:^4.0.4":
+  version: 4.0.5
+  resolution: "form-data@npm:4.0.5"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    es-set-tostringtag: ^2.1.0
+    hasown: ^2.0.2
+    mime-types: ^2.1.12
+  checksum: af8328413c16d0cded5fccc975a44d227c5120fd46a9e81de8acf619d43ed838414cc6d7792195b30b248f76a65246949a129a4dadd148721948f90cd6d4fb69
   languageName: node
   linkType: hard
 
