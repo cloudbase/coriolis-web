@@ -32,7 +32,8 @@ export type ProviderTypes =
   | "metal"
   | "rhev"
   | "lxd"
-  | "libvirt";
+  | "libvirt"
+  | "cloudstack";
 
 export type Providers = {
   [provider in ProviderTypes]: {

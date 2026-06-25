@@ -141,6 +141,12 @@ const conf: Config = {
       types: ["destination"],
       requiredFields: ["cluster"],
     },
+    {
+      name: "cloudstack",
+      types: ["destination"],
+      requiredFields: ["zone"],
+      relistFields: ["linux_template", "windows_template"],
+    },
   ],
 
   /*
@@ -170,6 +176,7 @@ const conf: Config = {
     metal: 4,
     lxd: 4,
     libvirt: 4,
+    cloudstack: 4,
   },
 
   providerNames: {
@@ -193,6 +200,7 @@ const conf: Config = {
     lxd: "LXD",
     proxmox: "Proxmox VE",
     libvirt: "Libvirt",
+    cloudstack: "Cloudstack",
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field
