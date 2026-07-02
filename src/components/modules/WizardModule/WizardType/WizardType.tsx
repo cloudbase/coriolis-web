@@ -27,6 +27,27 @@ const Wrapper = styled.div<any>`
   align-items: center;
   margin-top: 32px;
 `;
+const WarningBox = styled.div<any>`
+  width: 100%;
+  background-color: ${ThemePalette.warning}26;
+  border: 1px solid ${ThemePalette.warning};
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-top: 48px;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+`;
+const WarningTitle = styled.div<any>`
+  font-weight: ${ThemeProps.fontWeights.bold};
+  color: #7a5800;
+  margin-bottom: 8px;
+  font-size: 14px;
+`;
+const WarningText = styled.div<any>`
+  color: #7a5800;
+  font-size: 14px;
+  line-height: 1.5;
+`;
 const Image = styled.div<any>`
   width: 96px;
   height: 96px;
@@ -112,6 +133,14 @@ class WizardType extends React.Component<Props> {
             </Message>
           </Column>
         </Row>
+        <WarningBox>
+          <WarningTitle>Backup recommended before migration</WarningTitle>
+          <WarningText>
+            Before starting this migration, make sure you have created a
+            complete backup of the source VM(s), including data, applications,
+            and configurations.
+          </WarningText>
+        </WarningBox>
       </Wrapper>
     );
   }
