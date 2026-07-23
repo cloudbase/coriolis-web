@@ -170,6 +170,7 @@ const conf: Config = {
     metal: 4,
     lxd: 4,
     libvirt: 4,
+    nutanix: 4,
   },
 
   providerNames: {
@@ -193,6 +194,7 @@ const conf: Config = {
     lxd: "LXD",
     proxmox: "Proxmox VE",
     libvirt: "Libvirt",
+    nutanix: "Nutanix",
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field

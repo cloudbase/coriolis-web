@@ -23,6 +23,7 @@ import O3cConnectionSchemaPlugin from "./o3c/ConnectionSchemaPlugin";
 import KubevirtConnectionSchemaPlugin from "./kubevirt/ConnectionSchemaPlugin";
 import HarvesterConnectionSchemaPlugin from "./harvester/ConnectionSchemaPlugin";
 import LibvirtConnectionSchemaPlugin from "./libvirt/ConnectionSchemaPlugin";
+import NutanixConnectionSchemaPlugin from "./nutanix/ConnectionSchemaPlugin";
 
 import DefaultContentPlugin from "./default/ContentPlugin";
 import AzureContentPlugin from "./azure/ContentPlugin";
@@ -63,6 +64,7 @@ export const ConnectionSchemaPlugin = {
       kubevirt: new KubevirtConnectionSchemaPlugin(),
       harvester: new HarvesterConnectionSchemaPlugin(),
       libvirt: new LibvirtConnectionSchemaPlugin(),
+      nutanix: new NutanixConnectionSchemaPlugin(),
     };
     if (hasKey(map, provider)) {
       return map[provider];
