@@ -38,6 +38,7 @@ export const TRANSFER_MOCK: TransferItem = {
       disk_mappings: {},
     },
     password: "password-value",
+    encrypted_disks_passphrase: "password-encrypted-value",
   },
   source_environment: {},
   transfer_result: {

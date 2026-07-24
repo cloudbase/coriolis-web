@@ -32,6 +32,19 @@ jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
   default: (props: any) => <div>{props.endpoint}</div>,
 }));
 jest.mock("react-router", () => ({ Link: "a" }));
+jest.mock("@src/utils/Config", () => ({
+  __esModule: true,
+  default: {
+    config: {
+      passwordFields: [
+        "private_key_passphrase",
+        "secret_access_key",
+        "client_secret",
+        "encrypted_disks_passphrase",
+      ],
+    },
+  },
+}));
 
 describe("MainDetails", () => {
   let defaultProps: MainDetails["props"];
@@ -102,6 +115,34 @@ describe("MainDetails", () => {
     });
     expect(
       getByText(TRANSFER_MOCK.destination_environment.password),
+    ).toBeTruthy();
+  });
+
+  it("masks encrypted disks passphrase", () => {
+    const { queryByText } = render(<MainDetails {...defaultProps} />);
+    const actualPassphrase =
+      TRANSFER_MOCK.destination_environment.encrypted_disks_passphrase;
+    expect(queryByText(actualPassphrase)).toBeFalsy();
+    const passwordEls = TestUtils.selectAll("PasswordValue__Wrapper");
+    expect(passwordEls.length).toBeGreaterThan(1);
+  });
+
+  it("shows encrypted disks passphrase when clicked", async () => {
+    const { getByText } = render(<MainDetails {...defaultProps} />);
+    const passwordEls = TestUtils.selectAll("PasswordValue__Wrapper");
+    expect(passwordEls.length).toBeGreaterThan(1);
+
+    const passphrasePasswordEl = passwordEls[passwordEls.length - 1];
+    expect(passphrasePasswordEl.textContent).toBe("•••••••••");
+
+    await act(async () => {
+      passphrasePasswordEl.click();
+    });
+
+    expect(
+      getByText(
+        TRANSFER_MOCK.destination_environment.encrypted_disks_passphrase,
+      ),
     ).toBeTruthy();
   });
 });

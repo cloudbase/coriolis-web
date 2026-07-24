@@ -29,6 +29,7 @@ import StatusIcon from "@src/components/ui/StatusComponents/StatusIcon";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import DateUtils from "@src/utils/DateUtils";
 import LabelDictionary from "@src/utils/LabelDictionary";
+import configLoader from "@src/utils/Config";
 
 import arrowImage from "./images/arrow.svg";
 
@@ -249,7 +250,7 @@ class MainDetails extends React.Component<Props, State> {
       if (value && value.join) {
         value.forEach((v: any, i: number) => {
           const useLabel = i === 0 ? label : "";
-          properties.push({ label: useLabel, value: v });
+          properties.push({ label: useLabel, value: v, name: pn });
         });
       } else if (value && typeof value === "object") {
         properties = properties.concat(
@@ -263,11 +264,12 @@ class MainDetails extends React.Component<Props, State> {
             return {
               label: `${label} - ${LabelDictionary.get(p)}`,
               value: getValue(p, value[p]),
+              name: p,
             };
           }),
         );
       } else {
-        properties.push({ label, value: getValue(pn, value) });
+        properties.push({ label, value: getValue(pn, value), name: pn });
       }
     });
 
@@ -280,7 +282,10 @@ class MainDetails extends React.Component<Props, State> {
             <PropertyRow key={prop.label}>
               <PropertyName>{prop.label}</PropertyName>
               <PropertyValue>
-                {prop.label.toLowerCase().indexOf("password") > -1 &&
+                {(prop.label.toLowerCase().indexOf("password") > -1 ||
+                  configLoader.config.passwordFields.find(
+                    f => f === prop.name,
+                  )) &&
                 !this.state.showPassword.find(
                   f => f === `${prop.label}-${type}`,
                 ) ? (

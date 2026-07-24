@@ -220,6 +220,7 @@ const conf: Config = {
     "private_key_passphrase",
     "secret_access_key",
     "client_secret",
+    "encrypted_disks_passphrase",
   ],
 
   // The number of items per page applicable to default lists:
