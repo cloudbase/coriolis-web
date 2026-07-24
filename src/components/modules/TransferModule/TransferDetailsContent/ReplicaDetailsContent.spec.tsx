@@ -43,13 +43,22 @@ jest.mock("@src/components/modules/EndpointModule/EndpointLogos", () => ({
 }));
 jest.mock("react-router", () => ({ Link: "a" }));
 jest.mock("@src/utils/Config", () => ({
-  config: {
-    providerSortPriority: {},
-    providerNames: {
-      openstack: "OpenStack",
-      vmware_vsphere: "VMware vSphere",
+  __esModule: true,
+  default: {
+    config: {
+      providerSortPriority: {},
+      providerNames: {
+        openstack: "OpenStack",
+        vmware_vsphere: "VMware vSphere",
+      },
+      providersDisabledExecuteOptions: ["metal"],
+      passwordFields: [
+        "private_key_passphrase",
+        "secret_access_key",
+        "client_secret",
+        "encrypted_disks_passphrase",
+      ],
     },
-    providersDisabledExecuteOptions: ["metal"],
   },
 }));
 jest.mock("@src/components/modules/TransferModule/Schedule", () => ({
