@@ -15,7 +15,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { DateTime } from "luxon";
 import React from "react";
 
-import { Licence, LicenceServerStatus } from "@src/@types/Licence";
+import {
+  Licence,
+  LicenceServerStatus,
+  LicenceStats,
+} from "@src/@types/Licence";
+import LicenceUtils from "@src/utils/LicenceUtils";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 
@@ -30,10 +35,7 @@ jest.mock("@src/components/ui/StatusComponents/StatusImage", () => ({
   ),
 }));
 
-const FUTURE_LICENCE: Licence = {
-  applianceId: "test-id",
-  earliestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
-  latestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
+const STANDARD_STATS: LicenceStats = {
   currentPerformedReplicas: 5,
   currentPerformedMigrations: 3,
   lifetimePerformedMigrations: 4,
@@ -42,6 +44,25 @@ const FUTURE_LICENCE: Licence = {
   currentAvailableMigrations: 5,
   lifetimeAvailableReplicas: 15,
   lifetimeAvailableMigrations: 10,
+};
+
+const SAP_STATS: LicenceStats = {
+  currentPerformedReplicas: 2,
+  currentPerformedMigrations: 1,
+  lifetimePerformedMigrations: 1,
+  lifetimePerformedReplicas: 2,
+  currentAvailableReplicas: 4,
+  currentAvailableMigrations: 8,
+  lifetimeAvailableReplicas: 4,
+  lifetimeAvailableMigrations: 8,
+};
+
+const FUTURE_LICENCE: Licence = {
+  applianceId: "test-id",
+  earliestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
+  latestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
+  standardStats: STANDARD_STATS,
+  sapStats: LicenceUtils.emptyStats(),
 };
 
 const SERVER_STATUS: LicenceServerStatus = {
@@ -71,6 +92,34 @@ describe("LicenceModule", () => {
 
   it("renders without crashing", () => {
     const { getByText } = render(<LicenceModule {...defaultProps} />);
+    getByText("test-id-licencev2");
+  });
+
+  it("renders the Standard edition for an appliance with no SAP licence", () => {
+    const { getByText } = render(<LicenceModule {...defaultProps} />);
+    getByText("Standard");
+  });
+
+  it("renders both editions for an appliance holding an SAP licence too", () => {
+    const { getByText } = render(
+      <LicenceModule
+        {...defaultProps}
+        licenceInfo={{ ...FUTURE_LICENCE, sapStats: SAP_STATS }}
+      />,
+    );
+    getByText("Standard, SAP");
+  });
+
+  it("keeps the non-SAP licence version in the appliance ID", () => {
+    const { getByText } = render(
+      <LicenceModule
+        {...defaultProps}
+        licenceServerStatus={{
+          ...SERVER_STATUS,
+          supported_licence_versions: ["v2-sap", "v2", "v1"],
+        }}
+      />,
+    );
     getByText("test-id-licencev2");
   });
 

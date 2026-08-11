@@ -15,17 +15,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { DateTime } from "luxon";
 import React from "react";
 
-import { Licence, LicenceServerStatus } from "@src/@types/Licence";
+import {
+  Licence,
+  LicenceServerStatus,
+  LicenceStats,
+} from "@src/@types/Licence";
+import LicenceUtils from "@src/utils/LicenceUtils";
 import { render } from "@testing-library/react";
 import TestUtils from "@tests/TestUtils";
 
 import DashboardLicence from "./DashboardLicence";
 
 describe("DashboardLicence", () => {
-  const futureLicence: Licence = {
-    applianceId: "test-id",
-    earliestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
-    latestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
+  const standardStats: LicenceStats = {
     currentPerformedReplicas: 5,
     currentPerformedMigrations: 3,
     lifetimePerformedMigrations: 4,
@@ -34,6 +36,25 @@ describe("DashboardLicence", () => {
     currentAvailableMigrations: 5,
     lifetimeAvailableReplicas: 15,
     lifetimeAvailableMigrations: 10,
+  };
+
+  const sapStats: LicenceStats = {
+    currentPerformedReplicas: 2,
+    currentPerformedMigrations: 1,
+    lifetimePerformedMigrations: 1,
+    lifetimePerformedReplicas: 2,
+    currentAvailableReplicas: 4,
+    currentAvailableMigrations: 8,
+    lifetimeAvailableReplicas: 4,
+    lifetimeAvailableMigrations: 8,
+  };
+
+  const futureLicence: Licence = {
+    applianceId: "test-id",
+    earliestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
+    latestLicenceExpiryDate: DateTime.now().plus({ years: 1 }).toJSDate(),
+    standardStats,
+    sapStats: LicenceUtils.emptyStats(),
   };
 
   const status: LicenceServerStatus = {
@@ -170,7 +191,7 @@ describe("DashboardLicence", () => {
       ...defaultProps,
       licence: {
         ...futureLicence,
-        currentPerformedReplicas: 1,
+        standardStats: { ...standardStats, currentPerformedReplicas: 1 },
       },
     };
 
@@ -179,5 +200,81 @@ describe("DashboardLicence", () => {
       TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-")[0]
         .textContent,
     ).toBe("1 Used Replica ");
+  });
+
+  it("renders only the standard charts, unlabelled, without an SAP licence", () => {
+    render(<DashboardLicence {...defaultProps} />);
+
+    expect(
+      TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-").length,
+    ).toBe(2);
+    expect(TestUtils.selectAll("DashboardLicence__KindLabel-").length).toBe(0);
+  });
+
+  it("renders labelled standard and SAP charts when both licences are held", () => {
+    const newProps = {
+      ...defaultProps,
+      licence: { ...futureLicence, sapStats },
+    };
+    render(<DashboardLicence {...newProps} />);
+
+    expect(
+      Array.from(TestUtils.selectAll("DashboardLicence__KindLabel-")).map(
+        el => el.textContent,
+      ),
+    ).toEqual(["Standard", "SAP"]);
+
+    const currents = Array.from(
+      TestUtils.selectAll("DashboardLicence__ChartHeaderCurrent-"),
+    ).map(el => el.textContent);
+    const totals = Array.from(
+      TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-"),
+    ).map(el => el.textContent);
+
+    expect(currents).toEqual([
+      "5 Used Replicas ",
+      "3 Used Migrations ",
+      "2 Used Replicas ",
+      "1 Used Migration ",
+    ]);
+    expect(totals).toEqual(["Total 10", "Total 5", "Total 4", "Total 8"]);
+  });
+
+  it("renders only the SAP charts for an SAP-only appliance", () => {
+    const newProps = {
+      ...defaultProps,
+      licence: {
+        ...futureLicence,
+        standardStats: LicenceUtils.emptyStats(),
+        sapStats,
+      },
+    };
+    render(<DashboardLicence {...newProps} />);
+
+    expect(TestUtils.selectAll("DashboardLicence__KindLabel-").length).toBe(0);
+    expect(
+      Array.from(
+        TestUtils.selectAll("DashboardLicence__ChartHeaderTotal-"),
+      ).map(el => el.textContent),
+    ).toEqual(["Total 4", "Total 8"]);
+  });
+
+  it("does not pick the SAP version for the appliance ID of an expired licence", () => {
+    const newProps = {
+      ...defaultProps,
+      licence: {
+        ...futureLicence,
+        earliestLicenceExpiryDate: DateTime.now().minus({ days: 2 }).toJSDate(),
+      },
+      licenceServerStatus: {
+        ...status,
+        supported_licence_versions: ["v2-sap", "v2", "v1"],
+      },
+    };
+    render(<DashboardLicence {...newProps} />);
+
+    expect(
+      TestUtils.select("DashboardLicence__ApplianceId-")?.textContent,
+    ).toBe("Appliance ID:test-id-licencev2");
   });
 });
