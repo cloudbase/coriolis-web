@@ -14,8 +14,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Api from "@src/utils/ApiCaller";
 
 import configLoader from "@src/utils/Config";
+import LicenceUtils from "@src/utils/LicenceUtils";
 
-import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
+import type {
+  Licence,
+  LicenceServerStatus,
+  LicenceStats,
+} from "@src/@types/Licence";
+
+const parseStats = (body: any): LicenceStats => {
+  if (!body) {
+    return LicenceUtils.emptyStats();
+  }
+  const num = (value: any): number => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+  return {
+    currentPerformedMigrations: num(body.current_performed_migrations),
+    currentPerformedReplicas: num(body.current_performed_replicas),
+    lifetimePerformedMigrations: num(body.lifetime_performed_migrations),
+    lifetimePerformedReplicas: num(body.lifetime_performed_replicas),
+    currentAvailableMigrations: num(body.current_available_migrations),
+    currentAvailableReplicas: num(body.current_available_replicas),
+    lifetimeAvailableMigrations: num(body.lifetime_available_migrations),
+    lifetimeAvailableReplicas: num(body.lifetime_available_replicas),
+  };
+};
 
 class LicenceSource {
   async loadAppliancesIds(config?: {
@@ -42,8 +67,9 @@ class LicenceSource {
       skipLog: config?.skipLog,
     });
     const status: LicenceServerStatus = response.data.status;
-    status.supported_licence_versions.sort((a, b) => b.localeCompare(a));
-    return response.data.status;
+    // newest licence format first:
+    status.supported_licence_versions?.sort((a, b) => b.localeCompare(a));
+    return status;
   }
 
   async loadLicenceInfo(
@@ -53,18 +79,17 @@ class LicenceSource {
     const url = `${configLoader.config.servicesUrls.coriolisLicensing}/appliances/${applianceId}/status`;
     const response = await Api.send({ url, quietError: true, skipLog });
     const root = response.data.appliance_licence_status;
+    if (!root) {
+      throw new Error(
+        "The licensing server returned no 'appliance_licence_status' body.",
+      );
+    }
     const licence: Licence = {
       applianceId: root.appliance_id,
       earliestLicenceExpiryDate: new Date(root.earliest_licence_expiry_time),
       latestLicenceExpiryDate: new Date(root.latest_licence_expiry_time),
-      currentPerformedMigrations: root.current_performed_migrations,
-      currentPerformedReplicas: root.current_performed_replicas,
-      lifetimePerformedMigrations: root.lifetime_performed_migrations,
-      lifetimePerformedReplicas: root.lifetime_performed_replicas,
-      currentAvailableMigrations: root.current_available_migrations,
-      currentAvailableReplicas: root.current_available_replicas,
-      lifetimeAvailableMigrations: root.lifetime_available_migrations,
-      lifetimeAvailableReplicas: root.lifetime_available_replicas,
+      standardStats: parseStats(root.standard_licence_stats || root),
+      sapStats: parseStats(root.sap_licence_stats),
     };
 
     return licence;
