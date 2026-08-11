@@ -12,10 +12,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-export type Licence = {
-  applianceId: string;
-  earliestLicenceExpiryDate: Date;
-  latestLicenceExpiryDate: Date;
+export const LICENCE_VERSION_V1 = "v1";
+export const LICENCE_VERSION_V2 = "v2";
+export const LICENCE_VERSION_V2_SAP = "v2-sap";
+
+export type LicenceKind = "standard" | "sap";
+
+export type LicenceStats = {
   currentPerformedMigrations: number;
   currentPerformedReplicas: number;
   lifetimePerformedMigrations: number;
@@ -24,6 +27,16 @@ export type Licence = {
   currentAvailableReplicas: number;
   lifetimeAvailableMigrations: number;
   lifetimeAvailableReplicas: number;
+};
+
+export type Licence = {
+  applianceId: string;
+  earliestLicenceExpiryDate: Date;
+  latestLicenceExpiryDate: Date;
+  /** Allowances issued by standard (`v2`) licences. */
+  standardStats: LicenceStats;
+  /** Allowances issued by SAP (`v2-sap`) licences. */
+  sapStats: LicenceStats;
 };
 
 export type LicenceServerStatus = {
