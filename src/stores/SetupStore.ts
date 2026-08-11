@@ -23,6 +23,7 @@ import {
 } from "../@types/InitialSetup";
 import lincenceSource from "../sources/LincenceSource";
 import configLoader from "../utils/Config";
+import LicenceUtils from "../utils/LicenceUtils";
 import ObjectUtils from "../utils/ObjectUtils";
 
 export const customerInfoSetupStoreValueToString = (
@@ -73,7 +74,10 @@ class SetupStore {
         return;
       }
       runInAction(() => {
-        this.applianceId = `${ids[0]}-licence${status.supported_licence_versions[0]}`;
+        this.applianceId = LicenceUtils.getApplianceIdWithVersion(
+          ids[0],
+          status,
+        );
       });
     } catch (err) {
       this.applianceIdError =

@@ -23,9 +23,14 @@ import CopyMultineValue from "@src/components/ui/CopyMultilineValue";
 import InfoIcon from "@src/components/ui/InfoIcon";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import DateUtils from "@src/utils/DateUtils";
+import LicenceUtils from "@src/utils/LicenceUtils";
 import ObjectUtils from "@src/utils/ObjectUtils";
 
-import type { Licence, LicenceServerStatus } from "@src/@types/Licence";
+import type {
+  Licence,
+  LicenceKind,
+  LicenceServerStatus,
+} from "@src/@types/Licence";
 const Wrapper = styled.div<any>`
   flex-grow: 1;
 `;
@@ -40,7 +45,7 @@ const Module = styled.div<any>`
   overflow: auto;
   border-radius: ${ThemeProps.borderRadius};
   padding: 24px 16px 16px 16px;
-  height: 232px;
+  min-height: 232px;
 `;
 const LicenceInfo = styled.div<any>`
   width: 100%;
@@ -106,6 +111,18 @@ const TopInfoDateBottom = styled.div<any>`
 `;
 const Charts = styled.div<any>`
   margin-top: -8px;
+`;
+const KindGroup = styled.div`
+  & + & {
+    margin-top: 8px;
+  }
+`;
+const KindLabel = styled.div`
+  font-size: 10px;
+  font-weight: ${ThemeProps.fontWeights.medium};
+  text-transform: uppercase;
+  color: ${ThemePalette.grayscale[4]};
+  margin-top: 24px;
 `;
 const ChartRow = styled.div`
   display: flex;
@@ -194,29 +211,60 @@ class DashboardLicence extends React.Component<Props> {
     }
   }
 
-  renderLicenceStatusText(info: Licence): React.ReactNode {
+  renderKindCharts(info: Licence, kind: LicenceKind) {
+    const stats = LicenceUtils.getStats(info, kind);
+    const kindLabel = LicenceUtils.getKindLabel(kind);
     const graphDataRows = [
       [
         {
           color: ThemePalette.alert,
-          current: info.currentPerformedReplicas,
-          total: info.currentAvailableReplicas,
+          current: stats.currentPerformedReplicas,
+          total: stats.currentAvailableReplicas,
           label: "Used Replica",
           info: `The number of replicas fulfilled over the number of replicas available in
-          all currently active licences (including non-activated floating licences)`,
+          all currently active ${kindLabel} licences (including non-activated floating licences)`,
         },
       ],
       [
         {
           color: ThemePalette.primary,
-          current: info.currentPerformedMigrations,
-          total: info.currentAvailableMigrations,
+          current: stats.currentPerformedMigrations,
+          total: stats.currentAvailableMigrations,
           label: "Used Migration",
           info: `The number of migrations fulfilled over the number of migrations available in
-          all currently active licences (including non-activated floating licences)`,
+          all currently active ${kindLabel} licences (including non-activated floating licences)`,
         },
       ],
     ];
+
+    return graphDataRows.map((row, i) => (
+      <ChartRow key={`${kind}-${i}`}>
+        {row.map(data => (
+          <Chart key={data.label}>
+            <ChartHeader>
+              <ChartHeaderCurrent>
+                {data.current}{" "}
+                {data.current === 1 ? data.label : `${data.label}s`}{" "}
+                <InfoIcon marginBottom={-3} text={data.info} />
+              </ChartHeaderCurrent>
+              <ChartHeaderTotal>Total {data.total}</ChartHeaderTotal>
+            </ChartHeader>
+            <ChartBodyWrapper>
+              <ChartBody
+                color={data.color}
+                width={data.total ? (data.current / data.total) * 100 : 0}
+              />
+            </ChartBodyWrapper>
+          </Chart>
+        ))}
+      </ChartRow>
+    ));
+  }
+
+  renderLicenceStatusText(info: Licence): React.ReactNode {
+    const kinds = LicenceUtils.getActiveKinds(info);
+    // the flavour headings only earn their space once there's more than one:
+    const showKindLabels = kinds.length > 1;
     const expirationData = DateUtils.getLocalDate(
       info.earliestLicenceExpiryDate,
     );
@@ -235,27 +283,13 @@ class DashboardLicence extends React.Component<Props> {
           </TopInfoDate>
         </TopInfo>
         <Charts>
-          {graphDataRows.map((row, i) => (
-            <ChartRow key={i}>
-              {row.map(data => (
-                <Chart key={data.label}>
-                  <ChartHeader>
-                    <ChartHeaderCurrent>
-                      {data.current}{" "}
-                      {data.current === 1 ? data.label : `${data.label}s`}{" "}
-                      <InfoIcon marginBottom={-3} text={data.info} />
-                    </ChartHeaderCurrent>
-                    <ChartHeaderTotal>Total {data.total}</ChartHeaderTotal>
-                  </ChartHeader>
-                  <ChartBodyWrapper>
-                    <ChartBody
-                      color={data.color}
-                      width={(data.current / data.total) * 100}
-                    />
-                  </ChartBodyWrapper>
-                </Chart>
-              ))}
-            </ChartRow>
+          {kinds.map(kind => (
+            <KindGroup key={kind}>
+              {showKindLabels ? (
+                <KindLabel>{LicenceUtils.getKindLabel(kind)}</KindLabel>
+              ) : null}
+              {this.renderKindCharts(info, kind)}
+            </KindGroup>
           ))}
         </Charts>
       </LicenceInfo>
@@ -273,7 +307,10 @@ class DashboardLicence extends React.Component<Props> {
   }
 
   renderLicenceExpired(licence: Licence, serverStatus: LicenceServerStatus) {
-    const applianceId = `${licence.applianceId}-licence${serverStatus.supported_licence_versions[0]}`;
+    const applianceId = LicenceUtils.getApplianceIdWithVersion(
+      licence.applianceId,
+      serverStatus,
+    );
     return (
       <LicenceError>
         <p>

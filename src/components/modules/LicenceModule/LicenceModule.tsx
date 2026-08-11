@@ -27,6 +27,7 @@ import TextArea from "@src/components/ui/TextArea";
 import { LEGAL_URLS } from "@src/constants";
 import DateUtils from "@src/utils/DateUtils";
 import FileUtils from "@src/utils/FileUtils";
+import LicenceUtils from "@src/utils/LicenceUtils";
 
 import licenceImage from "./images/licence";
 
@@ -336,10 +337,23 @@ class LicenceModule extends React.Component<Props, State> {
         </LicenceRow>
         <LicenceRow>
           <LicenceRowContent>
+            <LicenceRowLabel>Licence Edition</LicenceRowLabel>
+            <LicenceRowDescription>
+              {LicenceUtils.getActiveKinds(info)
+                .map(kind => LicenceUtils.getKindLabel(kind))
+                .join(", ")}
+            </LicenceRowDescription>
+          </LicenceRowContent>
+        </LicenceRow>
+        <LicenceRow>
+          <LicenceRowContent>
             <LicenceRowLabel>Appliance ID</LicenceRowLabel>
             <LicenceRowDescription>
               <CopyValue
-                value={`${info.applianceId}-licence${status.supported_licence_versions[0]}`}
+                value={LicenceUtils.getApplianceIdWithVersion(
+                  info.applianceId,
+                  status,
+                )}
               />
             </LicenceRowDescription>
           </LicenceRowContent>
