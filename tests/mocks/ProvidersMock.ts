@@ -59,6 +59,9 @@ export const PROVIDERS_MOCK: Providers = {
   libvirt: {
     types: [],
   },
+  sap_libvirt: {
+    types: [],
+  },
   nutanix: {
     types: [],
   },
