@@ -64,6 +64,7 @@ export const ConnectionSchemaPlugin = {
       kubevirt: new KubevirtConnectionSchemaPlugin(),
       harvester: new HarvesterConnectionSchemaPlugin(),
       libvirt: new LibvirtConnectionSchemaPlugin(),
+      sap_libvirt: new LibvirtConnectionSchemaPlugin(),
       nutanix: new NutanixConnectionSchemaPlugin(),
     };
     if (hasKey(map, provider)) {

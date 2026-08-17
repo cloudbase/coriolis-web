@@ -33,6 +33,7 @@ export type ProviderTypes =
   | "rhev"
   | "lxd"
   | "libvirt"
+  | "sap_libvirt"
   | "cloudstack"
   | "nutanix";
 
