@@ -7339,7 +7339,7 @@ __metadata:
     react-motion: ^0.5.2
     react-notification-system: ^0.4.0
     react-refresh: ^0.16.0
-    react-router: ^7.12.0
+    react-router: ^7.18.2
     react-tooltip: ^4.5.1
     react-transition-group: ^4.x
     request: ^2.88.2
@@ -15752,9 +15752,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:^7.12.0":
-  version: 7.13.1
-  resolution: "react-router@npm:7.13.1"
+"react-router@npm:^7.18.2":
+  version: 7.18.2
+  resolution: "react-router@npm:7.18.2"
   dependencies:
     cookie: ^1.0.1
     set-cookie-parser: ^2.6.0
@@ -15764,7 +15764,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 159e7fa3fbec7fc0273064bb54fd4d395e21f84ae5cb21d57fb6c53bfc274d9879918001ceb4f4a1f28f0e4dd41865b82366b88f027ba17243ee592a676c9ef2
+  checksum: 945d24fd3ec7f113f384fde00463fd75b7f1cf5bf76fc2cd1f46cfc2c5610516c538ec55f9294d11a72988179949ed1b8470e4b2571d4b7031016f83c55f51cc
   languageName: node
   linkType: hard
 
