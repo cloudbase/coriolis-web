@@ -71,4 +71,7 @@ export const PROVIDERS_MOCK: Providers = {
   cloudstack: {
     types: [],
   },
+  stackit: {
+    types: [],
+  },
 };
