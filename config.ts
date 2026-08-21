@@ -179,6 +179,7 @@ const conf: Config = {
     sap_libvirt: 4,
     cloudstack: 4,
     nutanix: 4,
+    stackit: 4,
   },
 
   providerNames: {
@@ -205,6 +206,7 @@ const conf: Config = {
     sap_libvirt: "Libvirt SAP",
     cloudstack: "Cloudstack",
     nutanix: "Nutanix",
+    stackit: "Stackit",
   },
 
   // The list of providers for which to disable setting the 'Execute Now Options' field

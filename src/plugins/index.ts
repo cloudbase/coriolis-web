@@ -24,6 +24,7 @@ import KubevirtConnectionSchemaPlugin from "./kubevirt/ConnectionSchemaPlugin";
 import HarvesterConnectionSchemaPlugin from "./harvester/ConnectionSchemaPlugin";
 import LibvirtConnectionSchemaPlugin from "./libvirt/ConnectionSchemaPlugin";
 import NutanixConnectionSchemaPlugin from "./nutanix/ConnectionSchemaPlugin";
+import StackitConnectionSchemaPlugin from "./stackit/ConnectionSchemaPlugin";
 
 import DefaultContentPlugin from "./default/ContentPlugin";
 import AzureContentPlugin from "./azure/ContentPlugin";
@@ -66,6 +67,7 @@ export const ConnectionSchemaPlugin = {
       libvirt: new LibvirtConnectionSchemaPlugin(),
       sap_libvirt: new LibvirtConnectionSchemaPlugin(),
       nutanix: new NutanixConnectionSchemaPlugin(),
+      stackit: new StackitConnectionSchemaPlugin(),
     };
     if (hasKey(map, provider)) {
       return map[provider];
