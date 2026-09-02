@@ -20,6 +20,8 @@ import type {
   InstanceScript,
   UserScriptTarget,
 } from "@src/@types/Instance";
+import { resolveFieldDefault } from "@src/@types/Field";
+
 import type { Field } from "@src/@types/Field";
 import type { NetworkMap } from "@src/@types/Network";
 import type { StorageMap } from "@src/@types/Endpoint";
@@ -112,33 +114,11 @@ class WizardStore {
       if (parentData[field.name] !== undefined) {
         return { should: false };
       }
-      const fieldDefault = field.default;
-      if (fieldDefault == null) {
-        return { should: false };
-      }
-      if (field.enum) {
-        const isDefaultInEnum = field.enum.find(item => {
-          const enumItem: any = item;
-          if (fieldDefault.id != null) {
-            return enumItem.id != null
-              ? enumItem.id === fieldDefault.id
-              : enumItem === fieldDefault.id;
-          }
-          return enumItem.id != null
-            ? enumItem.id === fieldDefault || enumItem.name === fieldDefault
-            : enumItem === fieldDefault || enumItem.value === fieldDefault;
-        });
-
-        // Don't use the default if it can't be found in the enum list.
-        if (isDefaultInEnum) {
-          const matchedItem: any = isDefaultInEnum;
-          const value = matchedItem.id != null ? matchedItem.id : field.default;
-          return { should: true, value };
-        }
-      } else {
-        return { should: true, value: field.default };
-      }
-      return { should: false };
+      // Don't use the default if it can't be found in the list of values.
+      const resolvedDefault = resolveFieldDefault(field);
+      return resolvedDefault.hasValue
+        ? { should: true, value: resolvedDefault.value }
+        : { should: false };
     };
 
     const setObjectDefault = (

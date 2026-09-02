@@ -57,6 +57,55 @@ export type Field = {
   groupName?: string;
 };
 
+const enumItemMatchesValue = (item: EnumItem, value: any): boolean => {
+  if (isEnumSeparator(item)) {
+    return false;
+  }
+  if (typeof item !== "object") {
+    return item === value;
+  }
+  return (
+    (item.id != null && item.id === value) ||
+    (item.value !== undefined && item.value === value) ||
+    (item.name !== undefined && item.name === value) ||
+    (item.label !== undefined && item.label === value)
+  );
+};
+
+export const findEnumItem = (
+  enumItems: EnumItem[] | null | undefined,
+  value: any,
+): EnumItem | undefined => {
+  if (!enumItems?.length || value === undefined || value === null) {
+    return undefined;
+  }
+  const searchedValue =
+    typeof value === "object" && value.id != null ? value.id : value;
+  return enumItems.find(item => enumItemMatchesValue(item, searchedValue));
+};
+
+export type ResolvedFieldDefault =
+  | { hasValue: false }
+  | { hasValue: true; value: any };
+
+export const resolveFieldDefault = (field: Field): ResolvedFieldDefault => {
+  const fieldDefault = field.default;
+  if (fieldDefault === undefined || fieldDefault === null) {
+    return { hasValue: false };
+  }
+  if (!field.enum?.length) {
+    return { hasValue: true, value: fieldDefault };
+  }
+  const matchedItem: any = findEnumItem(field.enum, fieldDefault);
+  if (!matchedItem) {
+    return { hasValue: false };
+  }
+  return {
+    hasValue: true,
+    value: matchedItem.id != null ? matchedItem.id : fieldDefault,
+  };
+};
+
 const migrationImageOsTypes = ["windows", "linux"];
 
 class FieldHelper {

@@ -20,6 +20,7 @@ import { CSSTransition } from "react-transition-group";
 import styled from "styled-components";
 
 import { MinionPool } from "@src/@types/MinionPool";
+import { resolveFieldDefault } from "@src/@types/Field";
 import { ThemePalette, ThemeProps } from "@src/components/Theme";
 import FieldInput from "@src/components/ui/FieldInput";
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
@@ -130,14 +131,21 @@ export const shouldRenderField = (field: Field) =>
     (field.enum && field.enum.length && field.enum.length > 0)) &&
   (field.type !== "object" || field.properties);
 
+const hasValue = (value: any): boolean =>
+  value !== undefined && value !== null && value !== "";
+
 export const findInvalidFields = (data: any, schema: Field[]): Field[] => {
   const isInvalid = (field: Field): boolean => {
-    if (field.groupName && data[field.groupName]?.[field.name] !== undefined) {
-      return !data[field.groupName][field.name];
-    } else if (data[field.name] !== undefined) {
-      return !data[field.name];
+    if (
+      field.groupName &&
+      data?.[field.groupName]?.[field.name] !== undefined
+    ) {
+      return !hasValue(data[field.groupName][field.name]);
+    } else if (data?.[field.name] !== undefined) {
+      return !hasValue(data[field.name]);
     } else {
-      return !field.default;
+      const resolvedDefault = resolveFieldDefault(field);
+      return !resolvedDefault.hasValue || !hasValue(resolvedDefault.value);
     }
   };
 

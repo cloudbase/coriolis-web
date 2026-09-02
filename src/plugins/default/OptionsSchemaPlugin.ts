@@ -14,7 +14,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Utils from "@src/utils/ObjectUtils";
 
-import { Field, EnumItem, isEnumSeparator } from "@src/@types/Field";
+import {
+  Field,
+  EnumItem,
+  isEnumSeparator,
+  resolveFieldDefault,
+} from "@src/@types/Field";
 import type { OptionValues, StorageMap } from "@src/@types/Endpoint";
 import type { SchemaProperties, SchemaDefinitions } from "@src/@types/Schema";
 import type { NetworkMap } from "@src/@types/Network";
@@ -26,10 +31,22 @@ import { defaultSchemaToFields } from "./ConnectionSchemaPlugin";
 
 const migrationImageOsTypes = ["windows", "linux"];
 
+export const discardStaleEnumDefault = (field: Field) => {
+  if (field.default === undefined || field.default === null) {
+    return;
+  }
+  if (!field.enum?.length) {
+    return;
+  }
+  if (!resolveFieldDefault(field).hasValue) {
+    field.default = null;
+  }
+};
+
 export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
   if (field.type === "string") {
     field.enum = [...option.values] as EnumItem[];
-    if (option.config_default) {
+    if (option.config_default !== undefined && option.config_default !== null) {
       field.default =
         typeof option.config_default === "string"
           ? option.config_default
@@ -37,6 +54,7 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
             ? option.config_default.id
             : String(option.config_default);
     }
+    discardStaleEnumDefault(field);
   }
   if (field.type === "array") {
     field.enum = [...option.values] as EnumItem[];
@@ -56,6 +74,7 @@ export const defaultFillFieldValues = (field: Field, option: OptionValues) => {
     if (option.config_default != null) {
       field.default = Number(option.config_default);
     }
+    discardStaleEnumDefault(field);
   }
 };
 
@@ -76,6 +95,7 @@ export const removeExportImageFieldValues = (field: Field) => {
       }
       return isLinux;
     });
+    discardStaleEnumDefault(field);
   }
 };
 
@@ -124,13 +144,15 @@ export const defaultFillMigrationImageMapValues = (opts: {
       defaultValue = option.config_default[os];
     }
 
-    return {
+    const property: Field = {
       name: os,
       type: "string",
       enum: values,
       default: defaultValue,
       required: os === "linux" || (requiresWindowsImage && os === "windows"),
     };
+    discardStaleEnumDefault(property);
+    return property;
   });
   return true;
 };
