@@ -129,7 +129,6 @@ const conf: Config = {
       name: "proxmox",
       types: ["destination"],
       requiredFields: ["import_node"],
-      relistFields: ["linux_template", "windows_template"],
     },
     {
       name: "olvm",
@@ -145,7 +144,6 @@ const conf: Config = {
       name: "cloudstack",
       types: ["destination"],
       requiredFields: ["zone"],
-      relistFields: ["linux_template", "windows_template"],
     },
     {
       name: "stackit",
