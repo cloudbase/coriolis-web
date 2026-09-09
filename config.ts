@@ -147,6 +147,12 @@ const conf: Config = {
       requiredFields: ["zone"],
       relistFields: ["linux_template", "windows_template"],
     },
+    {
+      name: "stackit",
+      types: ["destination"],
+      requiredFields: ["availability_zone"],
+      relistFields: ["project"],
+    },
   ],
 
   /*
