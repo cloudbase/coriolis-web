@@ -154,7 +154,7 @@ const conf: Config = {
     {
       name: "stackit",
       types: ["destination"],
-      requiredFields: ["availability_zone"],
+      requiredFields: [],
       relistFields: ["project"],
     },
   ],
