@@ -594,7 +594,7 @@ class WizardOptions extends React.Component<Props> {
                     <GroupName>
                       <GroupNameBar />
                       <GroupNameText>
-                        {LabelDictionary.get(g.name)}
+                        {LabelDictionary.get(g.name, this.props.dictionaryKey)}
                       </GroupNameText>
                       <GroupNameBar />
                     </GroupName>
