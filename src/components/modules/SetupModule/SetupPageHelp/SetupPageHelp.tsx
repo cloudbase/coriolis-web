@@ -49,7 +49,10 @@ class SetupPageHelp extends React.Component<Props> {
           Click the link below to view the Coriolis® documentation. There you
           can find all the help you need to get you started.
         </p>
-        <Help href="https://cloudbase.it/coriolis-overview/" target="_blank">
+        <Help
+          href="https://cloudbase.github.io/coriolis-docs/index.html"
+          target="_blank"
+        >
           Coriolis® Documentation
           <OpenInNewIconWrapper
             dangerouslySetInnerHTML={{
