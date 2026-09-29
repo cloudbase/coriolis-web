@@ -93,7 +93,7 @@ describe("Page header", () => {
     cy.get("div[class^='UserDropdown__ListItem']").contains("Help").click();
     cy.get("@winOpen").should(
       "be.calledWith",
-      "https://cloudbase.it/coriolis-overview/",
+      "https://cloudbase.github.io/coriolis-docs/index.html",
     );
   });
 

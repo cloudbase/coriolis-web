@@ -155,7 +155,10 @@ class UserDropdown extends React.Component<Props, State> {
     this.setState({ showDropdownList: false });
 
     if (item.value === "help") {
-      window.open("https://cloudbase.it/coriolis-overview/", "_blank");
+      window.open(
+        "https://cloudbase.github.io/coriolis-docs/index.html",
+        "_blank",
+      );
     }
 
     if (item.value === "eula") {
