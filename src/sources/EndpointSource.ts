@@ -151,11 +151,25 @@ class EndpointSource {
     return result;
   }
 
-  async validate(endpoint: Endpoint): Promise<Validation> {
+  async validate(
+    endpoint: Endpoint,
+    useSchemaParser = false,
+  ): Promise<Validation> {
+    const connectionInfo = useSchemaParser
+      ? ObjectUtils.skipFields(SchemaParser.connectionInfoToPayload(endpoint), [
+          "secret_ref",
+        ]) || {}
+      : endpoint.connection_info;
     const response = await Api.send({
-      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpoint.id}/actions`,
+      url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/actions`,
       method: "POST",
-      data: { "validate-connection": null },
+      data: {
+        "validate-connection": {
+          platform: endpoint.type,
+          connection_info: connectionInfo,
+          mapped_regions: endpoint.mapped_regions || [],
+        },
+      },
     });
     return response.data["validate-connection"];
   }
