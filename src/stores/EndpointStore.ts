@@ -307,6 +307,8 @@ class EndpointStore {
     );
   }
 
+  private validationId = 0;
+
   @action async validate(endpoint: Endpoint) {
     this.validating = true;
 
@@ -331,11 +333,64 @@ class EndpointStore {
   }
 
   @action clearValidation() {
+    this.validationId += 1;
     this.validating = false;
     this.validation = null;
   }
 
-  @action async update(endpoint: Endpoint) {
+  @action async validateAndSave(opts: {
+    endpoint: Endpoint;
+    isNew: boolean;
+  }): Promise<Validation | null> {
+    const { endpoint, isNew } = opts;
+    this.validationId += 1;
+    const id = this.validationId;
+    const isCurrent = () => id === this.validationId;
+    this.validating = true;
+    this.validation = null;
+
+    let validation: Validation;
+    try {
+      validation = await EndpointSource.validate(endpoint, true);
+    } catch (ex) {
+      if (isCurrent()) this.validateFailed();
+      throw ex;
+    }
+
+    if (!isCurrent()) {
+      return null;
+    }
+    if (!validation.valid) {
+      this.validateSuccess(validation);
+      return validation;
+    }
+
+    try {
+      if (isNew) {
+        await this.add(endpoint);
+      } else {
+        await this.update(endpoint);
+      }
+    } catch (ex) {
+      if (isCurrent()) {
+        runInAction(() => {
+          this.validating = false;
+          this.validation = null;
+        });
+      }
+      throw ex;
+    }
+
+    if (!isCurrent()) {
+      return null;
+    }
+    this.validateSuccess(validation);
+    return validation;
+  }
+
+  @action async update(endpoint: Endpoint): Promise<Endpoint> {
+    const previousEndpoints = this.endpoints;
+    const previousConnectionInfo = this.connectionInfo;
     this.endpoints = updateEndpoint(endpoint, this.endpoints);
     this.connectionInfo = { ...endpoint.connection_info };
     this.updating = true;
@@ -343,8 +398,11 @@ class EndpointStore {
     try {
       const updatedEndpoint = await EndpointSource.update(endpoint);
       this.updateSuccess(updatedEndpoint);
+      return updatedEndpoint;
     } catch (e) {
       runInAction(() => {
+        this.endpoints = previousEndpoints;
+        this.connectionInfo = previousConnectionInfo;
         this.updating = false;
       });
       throw e;
