@@ -48,7 +48,7 @@ import ObjectUtils from "@src/utils/ObjectUtils";
 import replicaImage from "./images/replica.svg";
 import liveMigrationImage from "./images/live_migration.svg";
 
-import type { InstanceScript } from "@src/@types/Instance";
+import type { Instance, InstanceScript } from "@src/@types/Instance";
 import type { Execution } from "@src/@types/Execution";
 import type { Schedule } from "@src/@types/Schedule";
 import type { Field } from "@src/@types/Field";
@@ -220,6 +220,12 @@ class TransferDetailsPage extends React.Component<Props, State> {
     return transferStore.transferDetails;
   }
 
+  get instancesDetails(): Instance[] {
+    return this.state.dbInstancesDetails.length
+      ? this.state.dbInstancesDetails
+      : instanceStore.instancesDetails;
+  }
+
   getLastExecution() {
     const executions = transferStore.executionsList;
     if (executions.length) {
@@ -301,6 +307,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
     cache: boolean;
     transferId?: string;
     showLoading?: boolean;
+    reloadInstances?: boolean;
     onDetailsLoaded?: () => void;
   }) {
     await transferStore.getTransferDetails({
@@ -348,9 +355,13 @@ class TransferDetailsPage extends React.Component<Props, State> {
       );
     }
 
-    if (this.hasStoredVmInfo(transfer.info)) {
+    // The VM info stored on the transfer is only refreshed by a new execution,
+    // so on an explicit reload the instances details are loaded from the source
+    // platform, in order to pick up source side changes, such as a changed NIC.
+    if (this.hasStoredVmInfo(transfer.info) && !options.reloadInstances) {
       this.populateInstanceStoreFromTransferInfo(transfer.info);
     } else {
+      this.setState({ dbInstancesDetails: [] });
       instanceStore.loadInstancesDetails({
         endpointId: transfer.origin_endpoint_id,
         instances: transfer.instances.map(n => ({ id: n })),
@@ -389,7 +400,10 @@ class TransferDetailsPage extends React.Component<Props, State> {
     const transfer = this.transfer;
     if (
       transfer &&
-      !this.state.dbInstancesDetails.length &&
+      // the stored VM info is only used when there are no instances details
+      // loaded, or being loaded, from the source platform
+      !this.instancesDetails.length &&
+      !instanceStore.loadingInstancesDetails &&
       this.hasStoredVmInfo(transfer.info)
     ) {
       this.populateInstanceStoreFromTransferInfo(transfer.info);
@@ -692,7 +706,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
   }
 
   handleEditTransferReload() {
-    this.loadTransferWithInstances({ cache: false });
+    this.loadTransferWithInstances({ cache: false, reloadInstances: true });
   }
 
   handleUpdateComplete(redirectTo: string) {
@@ -740,9 +754,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
         }}
         transfer={transfer}
         destinationEndpoint={destinationEndpoint}
-        instancesDetails={
-          this.state.dbInstancesDetails || instanceStore.instancesDetails
-        }
+        instancesDetails={this.instancesDetails}
         instancesDetailsLoading={instanceStore.loadingInstancesDetails}
         networks={networkStore.networks}
         networksLoading={networkStore.loading}
@@ -843,9 +855,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
             <TransferDetailsContent
               item={transfer}
               itemId={this.transferId}
-              instancesDetails={
-                this.state.dbInstancesDetails || instanceStore.instancesDetails
-              }
+              instancesDetails={this.instancesDetails}
               instancesDetailsLoading={
                 instanceStore.loadingInstancesDetails ||
                 endpointStore.storageLoading ||
@@ -968,9 +978,7 @@ class TransferDetailsPage extends React.Component<Props, State> {
                   m.platform === "destination",
               )}
               loadingInstances={instanceStore.loadingInstancesDetails}
-              instances={
-                this.state.dbInstancesDetails || instanceStore.instancesDetails
-              }
+              instances={this.instancesDetails}
               onCancelClick={() => {
                 this.handleCloseDeploymentModal();
               }}

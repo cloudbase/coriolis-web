@@ -247,12 +247,35 @@ class TransferItemModal extends React.Component<Props, State> {
     return storageMap;
   }
 
+  getSourceNicsNetworkNames(): string[] {
+    const networkNames: string[] = [];
+    this.props.instancesDetails.forEach(instance => {
+      instance.devices?.nics?.forEach(nic => {
+        if (!networkNames.includes(nic.network_name)) {
+          networkNames.push(nic.network_name);
+        }
+      });
+    });
+    return networkNames;
+  }
+
   getSelectedNetworks(): NetworkMap[] {
     const selectedNetworks: NetworkMap[] = [];
     const networkMap: any = this.props.transfer.network_map;
+    const sourceNicsNetworkNames = this.getSourceNicsNetworkNames();
 
     if (networkMap) {
       Object.keys(networkMap).forEach(sourceNetworkName => {
+        // the NICs can be changed on the source platform, so the mappings of
+        // the networks which are no longer attached to the instances are
+        // dropped, otherwise they would be sent again on update
+        if (
+          sourceNicsNetworkNames.length &&
+          !sourceNicsNetworkNames.includes(sourceNetworkName)
+        ) {
+          return;
+        }
+
         // if the network mapping was updated, just use the new mapping instead of the old one
         const updatedMapping = this.state.selectedNetworks.find(
           m => m.sourceNic.network_name === sourceNetworkName,
