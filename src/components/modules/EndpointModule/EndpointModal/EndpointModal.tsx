@@ -143,6 +143,8 @@ class EndpointModal extends React.Component<Props, State> {
 
   isValidateButtonEnabled = false;
 
+  isEndpointLoaded = false;
+
   providerStoreObserver!: () => void;
 
   endpointValidationObserver!: () => void;
@@ -185,29 +187,34 @@ class EndpointModal extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
-    if (this.state.validating) {
-      if (endpointStore.validation && !endpointStore.validation.valid) {
-        this.setState({ validating: false });
-      }
-    }
-
     if (props.endpoint && endpointStore.connectionInfo) {
       const plugin: any = ContentPlugin.for(props.endpoint.type);
+      const loadedEndpoint: EndpointType = {
+        ...ObjectUtils.flatten(
+          props.endpoint || {},
+          plugin.REQUIRES_PARENT_OBJECT_PATH,
+        ),
+        ...ObjectUtils.flatten(
+          endpointStore.connectionInfo || {},
+          plugin.REQUIRES_PARENT_OBJECT_PATH,
+        ),
+      };
+
+      // Saving updates the store's connection info, which shouldn't replace
+      // the values the user entered.
+      const isLoaded = this.isEndpointLoaded;
+      this.isEndpointLoaded = true;
+
       this.setState(prevState => ({
         isNew: this.props.isNewEndpoint
           ? prevState.isNew === null || prevState.isNew
           : prevState.isNew,
-        endpoint: {
-          ...prevState.endpoint,
-          ...ObjectUtils.flatten(
-            props.endpoint || {},
-            plugin.REQUIRES_PARENT_OBJECT_PATH,
-          ),
-          ...ObjectUtils.flatten(
-            endpointStore.connectionInfo || {},
-            plugin.REQUIRES_PARENT_OBJECT_PATH,
-          ),
-        },
+        endpoint: isLoaded
+          ? prevState.endpoint
+          : {
+              ...prevState.endpoint,
+              ...loadedEndpoint,
+            },
       }));
     } else {
       this.setState(prevState => ({
@@ -292,20 +299,36 @@ class EndpointModal extends React.Component<Props, State> {
     });
   }
 
-  handleValidateClick() {
-    if (!this.highlightRequired()) {
-      this.setState({ validating: true });
+  async handleValidateClick() {
+    if (this.state.validating) {
+      return;
+    }
 
-      notificationStore.alert("Saving endpoint ...");
-      endpointStore.clearValidation();
-
-      if (this.state.isNew) {
-        this.add();
-      } else {
-        this.update();
-      }
-    } else {
+    if (this.highlightRequired()) {
       notificationStore.alert("Please fill all the required fields", "error");
+      return;
+    }
+
+    const endpoint = this.state.endpoint;
+    if (!endpoint) {
+      return;
+    }
+
+    this.setState({ validating: true });
+    notificationStore.alert("Validating endpoint ...");
+
+    try {
+      const validation = await endpointStore.validateAndSave({
+        endpoint,
+        isNew: Boolean(this.state.isNew),
+      });
+
+      if (validation && !validation.valid) {
+        this.setState({ validating: false });
+      }
+    } catch {
+      // The API caller has already shown the error.
+      this.setState({ validating: false });
     }
   }
 
@@ -341,36 +364,6 @@ class EndpointModal extends React.Component<Props, State> {
     const invalidFields = this.contentPluginRef.findInvalidFields();
     this.setState({ invalidFields });
     return invalidFields.length > 0;
-  }
-
-  async update() {
-    const stateEndpoint = this.state.endpoint;
-    if (!stateEndpoint) {
-      return;
-    }
-    const endpoint = endpointStore.endpoints.find(
-      e => e.id === stateEndpoint.id,
-    );
-    if (!endpoint) {
-      throw new Error("Endpoint not found in store");
-    }
-    await endpointStore.update(stateEndpoint);
-
-    this.setState({ endpoint: ObjectUtils.flatten(endpoint) });
-    notificationStore.alert("Validating endpoint ...");
-    endpointStore.validate(endpoint);
-  }
-
-  async add() {
-    if (!this.state.endpoint) {
-      return;
-    }
-
-    await endpointStore.add(this.state.endpoint);
-    const endpoint = endpointStore.endpoints[0];
-    this.setState({ isNew: false, endpoint: ObjectUtils.flatten(endpoint) });
-    notificationStore.alert("Validating endpoint ...");
-    endpointStore.validate(endpoint);
   }
 
   renderEndpointStatus() {
@@ -442,7 +435,11 @@ class EndpointModal extends React.Component<Props, State> {
       this.state.validating ||
       (endpointStore.validation && endpointStore.validation.valid)
     ) {
-      if (endpointStore.validation && endpointStore.validation.valid) {
+      if (
+        endpointStore.adding ||
+        endpointStore.updating ||
+        (endpointStore.validation && endpointStore.validation.valid)
+      ) {
         message = "Saving ...";
       }
 

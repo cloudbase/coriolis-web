@@ -116,15 +116,41 @@ describe("New endpoint", () => {
     });
   });
 
-  it("saves the endpoint", () => {
+  const fillOpenstackForm = () => {
+    cy.get("input[placeholder='Name']").type("new openstack");
+    cy.get("input[placeholder='Username']").type("username");
+    cy.get("input[placeholder='Password']").type("password");
+    cy.get("input[placeholder='Authentication URL']").type("auth url");
+    cy.get("input[placeholder='Project Name']").type("project name");
+  };
+
+  const interceptSave = () => {
+    cy.intercept("POST", routeSelectors.SECRETS, {
+      fixture: "endpoints/secret-ref",
+    }).as("secrets-post");
+    cy.intercept("POST", routeSelectors.ENDPOINTS, {
+      fixture: "endpoints/endpoint",
+    }).as("endpoints-post");
+    cy.intercept(`${routeSelectors.SECRETS}/secret-ref-1`, {
+      body: { status: "ACTIVE" },
+    }).as("secrets-active");
+    cy.intercept(`${routeSelectors.SECRETS}/secret-ref-1/payload`, {
+      body: { username: "username", password: "password" },
+    }).as("secrets-payload");
+  };
+
+  it("saves the endpoint after it passes validation", () => {
     clickOpenstack().then(() => {
-      cy.get("input[placeholder='Name']").type("new openstack");
-      cy.get("input[placeholder='Username']").type("username");
-      cy.get("input[placeholder='Password']").type("password");
-      cy.get("input[placeholder='Authentication URL']").type("auth url");
-      cy.get("input[placeholder='Project Name']").type("project name");
+      fillOpenstackForm();
+
+      let validated = false;
+      cy.intercept("POST", `${routeSelectors.ENDPOINTS}/actions`, req => {
+        validated = true;
+        req.reply({ fixture: "endpoints/validation-success" });
+      }).as("endpoints-validate");
 
       cy.intercept("POST", routeSelectors.SECRETS, req => {
+        expect(validated, "validated before saving").to.equal(true);
         expect(req.body).to.have.property("algorithm", "aes");
         expect(req.body).to.have.property("payload");
         expect(JSON.parse(req.body.payload)).to.have.property(
@@ -135,6 +161,7 @@ describe("New endpoint", () => {
       }).as("secrets-post");
 
       cy.intercept("POST", routeSelectors.ENDPOINTS, req => {
+        expect(validated, "validated before saving").to.equal(true);
         expect(req.body).to.have.property("endpoint");
         expect(req.body.endpoint).to.have.property("name", "new openstack");
         expect(req.body.endpoint).to.have.property("type", "openstack");
@@ -152,53 +179,33 @@ describe("New endpoint", () => {
       cy.intercept(`${routeSelectors.SECRETS}/secret-ref-1/payload`, {
         body: { username: "username", password: "password" },
       }).as("secrets-payload");
-      cy.intercept("POST", `${routeSelectors.ENDPOINTS}/**/actions`, {
-        fixture: "endpoints/validation-fail",
-      }).as("endpoints-validate");
 
       cy.get("button").contains("Validate and save").click();
       cy.wait([
+        "@endpoints-validate",
         "@secrets-post",
         "@endpoints-post",
         "@secrets-active",
         "@secrets-payload",
-        "@endpoints-validate",
       ]);
+
+      cy.get("div[class^=EndpointModal__StatusMessage]").should(
+        "contain.text",
+        "Endpoint is Valid",
+      );
     });
   });
 
-  it("fails validation", () => {
+  it("doesn't save the endpoint when validation fails", () => {
     clickOpenstack().then(() => {
-      cy.get("input[placeholder='Name']").type("new openstack");
-      cy.get("input[placeholder='Username']").type("username");
-      cy.get("input[placeholder='Password']").type("password");
-      cy.get("input[placeholder='Authentication URL']").type("auth url");
-      cy.get("input[placeholder='Project Name']").type("project name");
-
-      cy.intercept("POST", routeSelectors.SECRETS, {
-        fixture: "endpoints/secret-ref",
-      }).as("secrets-post");
-      cy.intercept("POST", routeSelectors.ENDPOINTS, {
-        fixture: "endpoints/endpoint",
-      }).as("endpoints-post");
-      cy.intercept(`${routeSelectors.SECRETS}/secret-ref-1`, {
-        body: { status: "ACTIVE" },
-      }).as("secrets-active");
-      cy.intercept(`${routeSelectors.SECRETS}/secret-ref-1/payload`, {
-        body: { username: "username", password: "password" },
-      }).as("secrets-payload");
-      cy.intercept("POST", `${routeSelectors.ENDPOINTS}/**/actions`, {
+      fillOpenstackForm();
+      interceptSave();
+      cy.intercept("POST", `${routeSelectors.ENDPOINTS}/actions`, {
         fixture: "endpoints/validation-fail",
       }).as("endpoints-validate");
 
       cy.get("button").contains("Validate and save").click();
-      cy.wait([
-        "@secrets-post",
-        "@endpoints-post",
-        "@secrets-active",
-        "@secrets-payload",
-        "@endpoints-validate",
-      ]);
+      cy.wait("@endpoints-validate");
 
       cy.get("div[class^=EndpointModal__StatusMessage]").should(
         "contain.text",
@@ -213,48 +220,37 @@ describe("New endpoint", () => {
           validationFailFixture["validate-connection"].message,
         );
       });
+
+      cy.get("@secrets-post.all").should("have.length", 0);
+      cy.get("@endpoints-post.all").should("have.length", 0);
+      cy.get("input[placeholder='Name']").should("have.value", "new openstack");
+      cy.get("button").contains("Validate and save").should("exist");
     });
   });
 
-  it("validates successfully", () => {
+  it("validates the platform and connection info from the form", () => {
     clickOpenstack().then(() => {
-      cy.get("input[placeholder='Name']").type("new openstack");
-      cy.get("input[placeholder='Username']").type("username");
-      cy.get("input[placeholder='Password']").type("password");
-      cy.get("input[placeholder='Authentication URL']").type("auth url");
-      cy.get("input[placeholder='Project Name']").type("project name");
+      fillOpenstackForm();
+      interceptSave();
 
-      cy.intercept("POST", routeSelectors.SECRETS, {
-        fixture: "endpoints/secret-ref",
-      }).as("secrets-post");
-      cy.intercept("POST", routeSelectors.ENDPOINTS, {
-        fixture: "endpoints/endpoint",
-      }).as("endpoints-post");
-      cy.intercept(`${routeSelectors.SECRETS}/secret-ref-1`, {
-        body: { status: "ACTIVE" },
-      }).as("secrets-active");
-      cy.intercept(`${routeSelectors.SECRETS}/secret-ref-1/payload`, {
-        body: { username: "username", password: "password" },
-      }).as("secrets-payload");
-
-      cy.intercept("POST", `${routeSelectors.ENDPOINTS}/**/actions`, req => {
-        expect(req.body).to.have.property("validate-connection", null);
+      cy.intercept("POST", `${routeSelectors.ENDPOINTS}/actions`, req => {
+        const validateConnection = req.body["validate-connection"];
+        expect(validateConnection).to.have.property("platform", "openstack");
+        expect(validateConnection).to.have.property("mapped_regions");
+        expect(validateConnection.connection_info).to.include({
+          auth_url: "auth url",
+          username: "username",
+          password: "password",
+          project_name: "project name",
+        });
+        expect(validateConnection.connection_info).not.to.have.property(
+          "secret_ref",
+        );
         req.reply({ fixture: "endpoints/validation-success" });
       }).as("endpoints-validate");
 
       cy.get("button").contains("Validate and save").click();
-      cy.wait([
-        "@secrets-post",
-        "@endpoints-post",
-        "@secrets-active",
-        "@secrets-payload",
-        "@endpoints-validate",
-      ]);
-
-      cy.get("div[class^=EndpointModal__StatusMessage]").should(
-        "contain.text",
-        "Endpoint is Valid",
-      );
+      cy.wait("@endpoints-validate");
     });
   });
 });
