@@ -58,6 +58,31 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
       ];
     });
 
+    const exportMechField = fields.find(
+      f => f.name === "export_transfer_mechanism",
+    );
+    if (!exportMechField?.enum) {
+      return fields;
+    }
+    exportMechField.subFields = [];
+    exportMechField.enum.forEach((exportType: any) => {
+      const exportTypeFieldIdx = fields.findIndex(
+        f => f.name === `${exportType}_options`,
+      );
+      if (exportTypeFieldIdx === -1) {
+        return;
+      }
+      const subField = fields[exportTypeFieldIdx];
+      if (subField.properties?.length) {
+        subField.properties = subField.properties.map((p: Field) => ({
+          ...p,
+          groupName: subField.name,
+        }));
+      }
+      exportMechField.subFields!.push(subField);
+      fields.splice(exportTypeFieldIdx, 1);
+    });
+
     return fields;
   }
 
@@ -68,6 +93,13 @@ export default class OptionsSchemaParser extends OptionsSchemaPluginBase {
     requiresWindowsImage: boolean;
   }) {
     const { field, options, requiresWindowsImage } = opts;
+    if (field.name === "export_transfer_mechanism" && field.subFields) {
+      field.subFields.forEach(sf => {
+        sf.properties?.forEach(f => {
+          super.fillFieldValues({ field: f, options, requiresWindowsImage });
+        });
+      });
+    }
 
     const option = options.find(f => f.name === field.name);
     if (!option) {

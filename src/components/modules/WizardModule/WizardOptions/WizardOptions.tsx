@@ -396,7 +396,7 @@ class WizardOptions extends React.Component<Props> {
     let groups: Array<{ fields: FieldRender[]; name?: string }> = [{ fields }];
 
     const workerFields = fields.filter(
-      f => f.field.name.indexOf("migr_") === 0,
+      f => f.field.name.indexOf("migr_") === 0 && !f.field.groupName,
     );
     if (workerFields.length > 1) {
       groups = [
@@ -594,7 +594,7 @@ class WizardOptions extends React.Component<Props> {
                     <GroupName>
                       <GroupNameBar />
                       <GroupNameText>
-                        {LabelDictionary.get(g.name)}
+                        {LabelDictionary.get(g.name, this.props.dictionaryKey)}
                       </GroupNameText>
                       <GroupNameBar />
                     </GroupName>
