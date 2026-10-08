@@ -40,13 +40,6 @@ const Footer = styled.div<any>`
 `;
 
 type DictItem = { value: string; label: string };
-export type ApiPaginationProps = {
-  currentPage: number;
-  hasNextPage: boolean;
-  itemsPerPage: number;
-  onPageChange: (page: number) => void;
-  onItemsPerPageChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-};
 type Props = {
   items: any[];
   dropdownActions?: DropdownAction[];
@@ -74,7 +67,6 @@ type Props = {
   listHeaderComponent?: React.ReactNode;
   itemsPerPageOptions?: number[];
   initialItemsPerPage?: number;
-  apiPagination?: ApiPaginationProps;
 };
 type State = {
   items: any[];
@@ -143,9 +135,6 @@ class FilterList extends React.Component<Props, State> {
   }
 
   get paginatedItems() {
-    if (this.props.apiPagination) {
-      return this.state.items;
-    }
     let paginatedItems = this.state.items;
     if (paginatedItems.length > this.state.itemsPerPage) {
       paginatedItems = this.state.items.filter(
@@ -268,20 +257,12 @@ class FilterList extends React.Component<Props, State> {
   }
 
   handlePageClick = (page: number) => {
-    if (this.props.apiPagination) {
-      this.props.apiPagination.onPageChange(page);
-    } else {
-      this.setPageAndItemsPerPage(page);
-    }
+    this.setPageAndItemsPerPage(page);
   };
 
   handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (this.props.apiPagination) {
-      this.props.apiPagination.onItemsPerPageChange(event);
-    } else {
-      const itemsPerPage = parseInt(event.target.value, 10);
-      this.setPageAndItemsPerPage(1, itemsPerPage);
-    }
+    const itemsPerPage = parseInt(event.target.value, 10);
+    this.setPageAndItemsPerPage(1, itemsPerPage);
   };
 
   getFooterText() {
@@ -295,27 +276,6 @@ class FilterList extends React.Component<Props, State> {
   }
 
   renderPagination() {
-    const { apiPagination } = this.props;
-
-    if (apiPagination) {
-      const { currentPage, hasNextPage, itemsPerPage } = apiPagination;
-      const apiItemsCount = hasNextPage
-        ? (currentPage + 1) * itemsPerPage
-        : currentPage * itemsPerPage;
-      return (
-        <NumberedPagination
-          itemsCount={apiItemsCount}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          hasNextPage={hasNextPage}
-          style={{ margin: "0 5px" }}
-          onPageChange={this.handlePageClick}
-          onItemsPerPageChange={this.handleItemsPerPageChange}
-          itemsPerPageOptions={this.props.itemsPerPageOptions || [25, 50, 100]}
-        />
-      );
-    }
-
     if (this.state.items.length === 0) {
       return null;
     }
@@ -374,9 +334,7 @@ class FilterList extends React.Component<Props, State> {
           showEmptyList={
             this.state.items.length === 0 &&
             this.state.filterStatus === "all" &&
-            this.state.filterText === "" &&
-            (!this.props.apiPagination ||
-              this.props.apiPagination.currentPage === 1)
+            this.state.filterText === ""
           }
           emptyListImage={this.props.emptyListImage}
           emptyListMessage={this.props.emptyListMessage}
@@ -385,7 +343,7 @@ class FilterList extends React.Component<Props, State> {
           emptyListComponent={this.props.emptyListComponent}
           onEmptyListButtonClick={this.props.onEmptyListButtonClick}
         />
-        {(this.state.items.length > 0 || this.props.apiPagination) && (
+        {this.state.items.length > 0 && (
           <Footer>
             <div>{this.getFooterText()}</div>
             <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
