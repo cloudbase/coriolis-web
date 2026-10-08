@@ -262,6 +262,132 @@ describe("FilterList", () => {
     });
   });
 
+  describe("store-backed pagination", () => {
+    const MANY = Array.from({ length: 60 }, (_, i) => ({
+      id: `item-${i}`,
+      label: `Item ${i}`,
+    }));
+
+    const ManyWrap = (props: {
+      items?: any[];
+      initialItemsPerPage?: number;
+      onSelectedItemsChange?: (items: any[]) => void;
+    }) => (
+      <FilterList
+        items={props.items ?? MANY}
+        filterItems={FILTER_ITEMS}
+        itemFilterFunction={(item, _status, text) =>
+          item.label.indexOf(text || "") > -1
+        }
+        loading={false}
+        onReloadButtonClick={() => {}}
+        onItemClick={() => {}}
+        selectionLabel="test item"
+        renderItemComponent={ItemComponent}
+        onSelectedItemsChange={props.onSelectedItemsChange}
+        initialItemsPerPage={props.initialItemsPerPage ?? 25}
+      />
+    );
+
+    const listItems = () =>
+      TestUtils.selectAll("FilterListspec__MainListItem-");
+    const pageLabel = () =>
+      TestUtils.select("NumberedPagination__PageNumber")?.textContent;
+    const search = (text: string) =>
+      userEvent.type(
+        TestUtils.selectInput(
+          "TextInput__Input",
+          TestUtils.select("SearchInput__Wrapper")!,
+        )!,
+        text,
+      );
+
+    it("finds a record that falls outside the first displayed page", () => {
+      render(<ManyWrap />);
+      search("Item 57");
+      expect(listItems()).toHaveLength(1);
+      expect(listItems()[0].textContent).toBe("Item 57");
+    });
+
+    it("paginates the filtered results, not the other way round", () => {
+      render(<ManyWrap />);
+      search("Item 1");
+      expect(pageLabel()).toBe("Page 1 of 1");
+      expect(listItems()).toHaveLength(11);
+    });
+
+    it("keeps the search and page when polling replaces the list", () => {
+      const { rerender } = render(<ManyWrap />);
+      search("Item 1");
+      expect(listItems()).toHaveLength(11);
+
+      rerender(
+        <ManyWrap items={[...MANY, { id: "item-60", label: "Item 60" }]} />,
+      );
+
+      expect(listItems()).toHaveLength(11);
+      expect(
+        TestUtils.selectInput(
+          "TextInput__Input",
+          TestUtils.select("SearchInput__Wrapper")!,
+        ),
+      ).toHaveProperty("value", "Item 1");
+    });
+
+    it("keeps a selection that the active search hides when a poll lands", () => {
+      const onSelectedItemsChange = jest.fn();
+      const { rerender } = render(
+        <ManyWrap onSelectedItemsChange={onSelectedItemsChange} />,
+      );
+
+      (listItems()[0].querySelector("input") as HTMLInputElement).click();
+      search("Item 57");
+      expect(listItems()).toHaveLength(1);
+
+      rerender(
+        <ManyWrap
+          items={[...MANY, { id: "item-60", label: "Item 60" }]}
+          onSelectedItemsChange={onSelectedItemsChange}
+        />,
+      );
+
+      const lastCall = onSelectedItemsChange.mock.calls.at(-1);
+      expect(lastCall?.[0].map((i: any) => i.id)).toEqual(["item-0"]);
+    });
+
+    it("drops a selection whose record is gone from the list", () => {
+      const onSelectedItemsChange = jest.fn();
+      const { rerender } = render(
+        <ManyWrap onSelectedItemsChange={onSelectedItemsChange} />,
+      );
+
+      (listItems()[0].querySelector("input") as HTMLInputElement).click();
+
+      rerender(
+        <ManyWrap
+          items={MANY.filter(i => i.id !== "item-0")}
+          onSelectedItemsChange={onSelectedItemsChange}
+        />,
+      );
+
+      expect(onSelectedItemsChange).toHaveBeenLastCalledWith([]);
+    });
+
+    it("clamps the page when a poll shrinks the list below it", () => {
+      const { rerender } = render(<ManyWrap />);
+      const next = Array.from(document.querySelectorAll("button")).find(
+        b => b.textContent === "Next",
+      )!;
+      fireEvent.click(next);
+      expect(pageLabel()).toBe("Page 2 of 3");
+
+      rerender(<ManyWrap items={MANY.slice(0, 10)} />);
+
+      expect(pageLabel()).toBe("Page 1 of 1");
+      expect(listItems()).toHaveLength(10);
+    });
+  });
+
   it("selects items", async () => {
     const onSelectedItemsChange = jest.fn();
     render(FilterListWrap({ onSelectedItemsChange }));
