@@ -89,8 +89,6 @@ class TransfersPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = "Coriolis Transfers";
 
-    transferStore.resetTransferPagination();
-
     projectStore.getProjects();
     endpointStore.getEndpoints({ showLoading: true });
     userStore.getAllUsers({
@@ -126,7 +124,6 @@ class TransfersPage extends React.Component<Props, State> {
   }
 
   handleProjectChange() {
-    transferStore.resetTransferPagination();
     transferStore.getTransfers();
     endpointStore.getEndpoints({ showLoading: true });
   }
@@ -267,7 +264,7 @@ class TransfersPage extends React.Component<Props, State> {
 
   handleShowCreateDeploymentsModal() {
     instanceStore.loadInstancesDetailsBulk(
-      transferStore.transfers.map(r => ({
+      this.state.selectedTransfers.map(r => ({
         endpointId: r.origin_endpoint_id,
         instanceIds: r.instances,
         env: r.source_environment,
@@ -282,17 +279,25 @@ class TransfersPage extends React.Component<Props, State> {
       return;
     }
 
-    await Promise.all([
-      transferStore.getTransfers({ skipLog: true }),
-      endpointStore.getEndpoints({ skipLog: true }),
-      userStore.getAllUsers({ skipLog: true, quietError: true }),
-    ]);
+    try {
+      await Promise.all([
+        transferStore.getTransfers({ skipLog: true }),
+        endpointStore.getEndpoints({ skipLog: true }),
+        userStore.getAllUsers({ skipLog: true, quietError: true }),
+      ]);
+    } catch (err) {
+      // A failed poll must not stop the polling loop.
+      console.error(err);
+    }
+    if (this.stopPolling) {
+      return;
+    }
     if (!this.schedulePolling) {
       this.pollSchedule();
     }
     this.pollTimeout = window.setTimeout(() => {
       this.pollData();
-    }, configLoader.config.requestPollTimeout);
+    }, configLoader.config.listPollTimeout);
   }
 
   async pollSchedule() {
@@ -304,7 +309,15 @@ class TransfersPage extends React.Component<Props, State> {
       return;
     }
     this.schedulePolling = true;
-    await scheduleStore.getSchedulesBulk(this.paginatedTransferIds);
+    try {
+      await scheduleStore.getSchedulesBulk(this.paginatedTransferIds);
+    } catch (err) {
+      // A failed poll must not stop the polling loop.
+      console.error(err);
+    }
+    if (this.stopPolling) {
+      return;
+    }
     this.schedulePollTimeout = window.setTimeout(() => {
       this.pollSchedule();
     }, SCHEDULE_POLL_TIMEOUT);
@@ -447,19 +460,6 @@ class TransfersPage extends React.Component<Props, State> {
               }}
               onPaginatedItemsChange={paginatedTransfers => {
                 this.handlePaginatedItemsChange(paginatedTransfers);
-              }}
-              apiPagination={{
-                currentPage: transferStore.transfersPage,
-                hasNextPage: transferStore.transfersHasNextPage,
-                itemsPerPage: transferStore.transfersItemsPerPage,
-                onPageChange: page => {
-                  transferStore.setTransfersPage(page);
-                },
-                onItemsPerPageChange: e => {
-                  transferStore.setTransfersItemsPerPage(
-                    parseInt(e.target.value, 10),
-                  );
-                },
               }}
               renderItemComponent={options => (
                 <TransferListItem
