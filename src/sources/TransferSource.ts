@@ -17,6 +17,7 @@ import { OptionsSchemaPlugin } from "@src/plugins";
 import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin";
 
 import configLoader from "@src/utils/Config";
+import { fetchAllPages } from "@src/utils/PaginationUtils";
 import type {
   UpdateData,
   TransferItem,
@@ -101,8 +102,12 @@ class TransferSource {
     quietError?: boolean;
     limit?: number;
     marker?: string | null;
+    sortKey?: string;
   }): Promise<TransferItem[]> {
-    const params: string[] = ["sort_key=updated_at", "sort_dir=desc"];
+    const params: string[] = [
+      `sort_key=${options?.sortKey || "updated_at"}`,
+      "sort_dir=desc",
+    ];
     if (options?.marker) {
       params.push(`marker=${encodeURIComponent(options.marker)}`);
     }
@@ -117,6 +122,51 @@ class TransferSource {
     });
     const transfers: TransferItem[] = response.data.transfers;
     return transfers;
+  }
+
+  async getAllTransfers(options?: {
+    skipLog?: boolean;
+    quietError?: boolean;
+    batchSize?: number;
+  }): Promise<TransferItem[]> {
+    const transfers = await fetchAllPages<TransferItem>(
+      ({ limit, marker, batchIndex }) =>
+        this.getTransfers({
+          skipLog: options?.skipLog,
+          // Only the first request alerts, so a long list cannot raise
+          // one alert per batch.
+          quietError: options?.quietError || batchIndex > 0,
+          limit,
+          marker,
+          // The walk has to sort on a column that cannot change under it.
+          // `updated_at` is bumped on every update, so a transfer touched
+          // mid-walk moves above the marker and the remaining batches never
+          // return it: it would be missing from the collected list.
+          sortKey: "created_at",
+        }),
+      {
+        batchSize:
+          options?.batchSize || configLoader.config.fullListFetchBatchSize,
+      },
+    );
+    // Nothing sorts the list for display, so it is restored here to the
+    // `updated_at desc, created_at desc, id desc` order the backend used to
+    // return it in. `updated_at` is declared with `onupdate` and no default,
+    // so it stays null until a transfer is first updated, and MySQL sorts
+    // nulls last on a descending sort: a transfer that has never been
+    // executed belongs below every transfer that has run, however recently it
+    // was created.
+    const desc = (x: string, y: string) => y.localeCompare(x);
+    return transfers.sort((a, b) => {
+      if (Boolean(a.updated_at) !== Boolean(b.updated_at)) {
+        return a.updated_at ? -1 : 1;
+      }
+      return (
+        desc(a.updated_at || "", b.updated_at || "") ||
+        desc(a.created_at || "", b.created_at || "") ||
+        desc(a.id, b.id)
+      );
+    });
   }
 
   async getTransferDetails(options: {
