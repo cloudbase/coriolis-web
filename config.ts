@@ -31,6 +31,17 @@ const conf: Config = {
   // The timeout between polling requests
   requestPollTimeout: 5000,
 
+  // The timeout between polls on pages that collect a whole list
+  // (transfers, deployments, dashboard, endpoints). Each poll makes one
+  // request per `fullListFetchBatchSize` batch, so it is kept higher than
+  // `requestPollTimeout` to keep the request rate down.
+  listPollTimeout: 15000,
+
+  // The `limit` per request when collecting a full list. Independent of how
+  // many items the UI shows per page (`defaultListItemsPerPage`). Raise it
+  // on large installations to walk the list in fewer requests.
+  fullListFetchBatchSize: 100,
+
   // The timeout for an inactive user session (in ms). Set 0 to disable.
   inactiveSessionTimeout: 0,
 
