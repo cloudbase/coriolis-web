@@ -73,6 +73,7 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
     this.loadMinionPool();
 
     this.pollData(true);
+    this.pollLists();
   }
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
@@ -200,23 +201,55 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       return;
     }
 
-    await Promise.all([
-      minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
+    try {
+      await minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
         showLoading,
         skipLog: true,
-      }),
-      transferStore.getTransfers(),
-      deploymentStore.getDeployments(),
-    ]);
+      });
+    } catch (err) {
+      // A failed poll must not stop the polling loop.
+      console.error(err);
+    }
+    if (this.state.pausePolling || this.stopPolling) {
+      return;
+    }
 
     setTimeout(() => {
       this.pollData(false);
     }, configLoader.config.requestPollTimeout);
   }
 
+  // The transfer and deployment lists only feed the "used by" panel, and each
+  // one is collected in several requests, so they poll on the slower full
+  // list interval. Keeping them out of `pollData` leaves the pool's own task
+  // progress refreshing at `requestPollTimeout`.
+  async pollLists() {
+    if (this.state.pausePolling || this.stopPolling) {
+      return;
+    }
+
+    try {
+      await Promise.all([
+        transferStore.getTransfers(),
+        deploymentStore.getDeployments(),
+      ]);
+    } catch (err) {
+      // A failed poll must not stop the polling loop.
+      console.error(err);
+    }
+    if (this.state.pausePolling || this.stopPolling) {
+      return;
+    }
+
+    setTimeout(() => {
+      this.pollLists();
+    }, configLoader.config.listPollTimeout);
+  }
+
   closeEditModal() {
     this.setState({ showEditModal: false, pausePolling: false }, () => {
       this.pollData(false);
+      this.pollLists();
     });
   }
 

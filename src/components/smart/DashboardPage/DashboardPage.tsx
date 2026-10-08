@@ -94,18 +94,30 @@ class ProjectsPage extends React.Component<Props, State> {
       return;
     }
 
-    await this.loadData(showLoading);
+    try {
+      await this.loadData(showLoading);
+    } catch (err) {
+      // A failed poll must not stop the polling loop.
+      console.error(err);
+    }
+    if (this.stopPolling) {
+      return;
+    }
     this.pollTimeout = window.setTimeout(() => {
       this.pollData(false);
-    }, configLoader.config.requestPollTimeout);
+    }, configLoader.config.listPollTimeout);
   }
 
   async loadData(showLoading: boolean) {
     this.loadAdminData(showLoading);
 
     await Promise.all([
-      transferStore.getTransfers({ skipLog: true, showLoading }),
-      deploymentStore.getDeployments({ skipLog: true, showLoading }),
+      // No `showLoading` on the two full-list stores: they are shared with the
+      // transfers and deployments pages, where it blanks a list that is
+      // already on screen for as long as the collection runs. A first load
+      // raises `loading` on its own, which is all this page needs.
+      transferStore.getTransfers({ skipLog: true }),
+      deploymentStore.getDeployments({ skipLog: true }),
       endpointStore.getEndpoints({ skipLog: true, showLoading }),
       projectStore.getProjects({ skipLog: true, showLoading }),
     ]);
