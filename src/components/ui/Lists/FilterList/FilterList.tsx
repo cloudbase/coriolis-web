@@ -111,37 +111,35 @@ class FilterList extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
-    if (props.items.length !== this.props.items.length) {
-      this.setState(
-        {
-          items: props.items,
-          filterStatus: "all",
-          filterText: "",
-          selectedItems: [],
-          currentPage: 1,
-          itemsPerPage: props.initialItemsPerPage || this.state.itemsPerPage,
-        },
-        () => {
-          if (this.props.onPaginatedItemsChange) {
-            this.props.onPaginatedItemsChange(this.paginatedItems);
-          }
-        },
-      );
-      if (this.props.onSelectedItemsChange)
-        this.props.onSelectedItemsChange([]);
-      return;
-    }
+    const items = this.filterItems(props.items);
+    const selectedItems = this.state.selectedItems.filter(selectedItem =>
+      props.items.find(i => i.id === selectedItem.id),
+    );
+    const selectionChanged =
+      selectedItems.length !== this.state.selectedItems.length;
 
     this.setState(
-      {
-        items: this.filterItems(props.items),
-      },
+      prevState => ({
+        items,
+        selectedItems,
+        selectAllSelected: selectionChanged
+          ? false
+          : prevState.selectAllSelected,
+        currentPage: Math.min(
+          prevState.currentPage,
+          Math.max(1, Math.ceil(items.length / prevState.itemsPerPage)),
+        ),
+      }),
       () => {
         if (this.props.onPaginatedItemsChange) {
           this.props.onPaginatedItemsChange(this.paginatedItems);
         }
       },
     );
+
+    if (selectionChanged && this.props.onSelectedItemsChange) {
+      this.props.onSelectedItemsChange(selectedItems);
+    }
   }
 
   get paginatedItems() {
