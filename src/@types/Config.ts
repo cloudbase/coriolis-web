@@ -32,6 +32,8 @@ export type Config = {
   showOpenstackCurrentUserSwitch: boolean;
   useBarbicanSecrets: boolean;
   requestPollTimeout: number;
+  listPollTimeout: number;
+  fullListFetchBatchSize: number;
   instancesListBackgroundLoading: { default: number; [prop: string]: number };
   extraOptionsApiCalls: ExtraOption[];
   providerSortPriority: { [providerName in ProviderTypes]: number };
