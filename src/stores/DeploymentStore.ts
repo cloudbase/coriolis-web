@@ -36,88 +36,70 @@ class DeploymentStore {
 
   @observable detailsLoading = true;
 
-  @observable deploymentsPage = 1;
-
-  @observable deploymentsHasNextPage = false;
-
-  @observable deploymentsItemsPerPage = 25;
-
   deploymentsLoaded = false;
 
-  private deploymentPageMarkers: (string | null)[] = [null];
+  private getDeploymentsPromise: Promise<void> | null = null;
 
-  @action resetDeploymentPagination(): void {
-    this.deploymentsPage = 1;
-    this.deploymentsHasNextPage = false;
-    this.deploymentPageMarkers = [null];
-  }
+  private getDeploymentsProjectId: string | null = null;
 
-  @action async setDeploymentsPage(page: number): Promise<void> {
-    this.deploymentsPage = page;
-    await this.getDeployments({ showLoading: true });
-  }
-
-  @action async setDeploymentsItemsPerPage(
-    itemsPerPage: number,
-  ): Promise<void> {
-    this.deploymentsItemsPerPage = itemsPerPage;
-    this.deploymentsPage = 1;
-    this.deploymentPageMarkers = [null];
-    this.deploymentsHasNextPage = false;
-    await this.getDeployments({ showLoading: true });
-  }
+  private getDeploymentsRequestId = 0;
 
   @action async getDeployments(options?: {
     showLoading?: boolean;
     skipLog?: boolean;
-  }) {
+    quietError?: boolean;
+  }): Promise<void> {
+    const projectId = apiCaller.projectId;
+
+    // A poll firing mid-collection joins the running fetch rather than
+    // starting a competing one that could interleave batches. A call made
+    // after a project switch cannot join it, it needs its own collection.
+    if (
+      this.getDeploymentsPromise &&
+      this.getDeploymentsProjectId === projectId
+    ) {
+      return this.getDeploymentsPromise;
+    }
+
     if ((options && options.showLoading) || !this.deploymentsLoaded) {
       this.loading = true;
     }
 
-    const marker = this.deploymentPageMarkers[this.deploymentsPage - 1] ?? null;
-    const isPaginationRequest = marker !== null;
+    const requestId = this.getDeploymentsRequestId + 1;
+    this.getDeploymentsRequestId = requestId;
 
-    try {
-      const raw = await DeploymentSource.getDeployments({
-        skipLog: options?.skipLog,
-        quietError: isPaginationRequest,
-        limit: this.deploymentsItemsPerPage,
-        marker,
-      });
-      if (isPaginationRequest && raw.length === 0) {
-        runInAction(() => {
-          this.deploymentsHasNextPage = false;
-          this.deploymentsPage = Math.max(1, this.deploymentsPage - 1);
-          this.loading = false;
+    const request = (async () => {
+      try {
+        const deployments = await DeploymentSource.getAllDeployments({
+          skipLog: options?.skipLog,
+          quietError: options?.quietError,
         });
-        return;
-      }
-      const hasNextPage = raw.length === this.deploymentsItemsPerPage;
-      const nextMarker = raw.length > 0 ? raw[raw.length - 1].id : null;
-      runInAction(() => {
-        this.deployments = raw;
-        this.deploymentsHasNextPage = hasNextPage;
-        if (nextMarker !== null) {
-          this.deploymentPageMarkers[this.deploymentsPage] = nextMarker;
+        // The batches after a mid-collection project switch went to the new
+        // project, so the list is a mix of the two, or the other project's
+        // entirely. Leave the store to the collection that project started.
+        if (apiCaller.projectId !== projectId) {
+          return;
         }
-        this.loading = false;
-        this.deploymentsLoaded = true;
-      });
-    } catch (ex) {
-      if (isPaginationRequest) {
         runInAction(() => {
-          this.deploymentsHasNextPage = false;
-          this.deploymentsPage = Math.max(1, this.deploymentsPage - 1);
-          this.loading = false;
+          this.deployments = deployments;
+          this.deploymentsLoaded = true;
         });
-        return;
+      } finally {
+        runInAction(() => {
+          // A superseded collection leaves the guard and the loading flag to
+          // the one that replaced it.
+          if (this.getDeploymentsRequestId === requestId) {
+            this.getDeploymentsPromise = null;
+            this.getDeploymentsProjectId = null;
+            this.loading = false;
+          }
+        });
       }
-      runInAction(() => {
-        this.loading = false;
-      });
-      throw ex;
-    }
+    })();
+
+    this.getDeploymentsPromise = request;
+    this.getDeploymentsProjectId = projectId;
+    return request;
   }
 
   getDefaultSkipOsMorphing(deployment: DeploymentItemDetails | null) {
