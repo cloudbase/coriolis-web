@@ -36,88 +36,45 @@ class DeploymentStore {
 
   @observable detailsLoading = true;
 
-  @observable deploymentsPage = 1;
-
-  @observable deploymentsHasNextPage = false;
-
-  @observable deploymentsItemsPerPage = 25;
-
   deploymentsLoaded = false;
 
-  private deploymentPageMarkers: (string | null)[] = [null];
-
-  @action resetDeploymentPagination(): void {
-    this.deploymentsPage = 1;
-    this.deploymentsHasNextPage = false;
-    this.deploymentPageMarkers = [null];
-  }
-
-  @action async setDeploymentsPage(page: number): Promise<void> {
-    this.deploymentsPage = page;
-    await this.getDeployments({ showLoading: true });
-  }
-
-  @action async setDeploymentsItemsPerPage(
-    itemsPerPage: number,
-  ): Promise<void> {
-    this.deploymentsItemsPerPage = itemsPerPage;
-    this.deploymentsPage = 1;
-    this.deploymentPageMarkers = [null];
-    this.deploymentsHasNextPage = false;
-    await this.getDeployments({ showLoading: true });
-  }
+  private getDeploymentsPromise: Promise<void> | null = null;
 
   @action async getDeployments(options?: {
     showLoading?: boolean;
     skipLog?: boolean;
-  }) {
+    quietError?: boolean;
+  }): Promise<void> {
     if ((options && options.showLoading) || !this.deploymentsLoaded) {
       this.loading = true;
     }
 
-    const marker = this.deploymentPageMarkers[this.deploymentsPage - 1] ?? null;
-    const isPaginationRequest = marker !== null;
-
-    try {
-      const raw = await DeploymentSource.getDeployments({
-        skipLog: options?.skipLog,
-        quietError: isPaginationRequest,
-        limit: this.deploymentsItemsPerPage,
-        marker,
-      });
-      if (isPaginationRequest && raw.length === 0) {
-        runInAction(() => {
-          this.deploymentsHasNextPage = false;
-          this.deploymentsPage = Math.max(1, this.deploymentsPage - 1);
-          this.loading = false;
-        });
-        return;
-      }
-      const hasNextPage = raw.length === this.deploymentsItemsPerPage;
-      const nextMarker = raw.length > 0 ? raw[raw.length - 1].id : null;
-      runInAction(() => {
-        this.deployments = raw;
-        this.deploymentsHasNextPage = hasNextPage;
-        if (nextMarker !== null) {
-          this.deploymentPageMarkers[this.deploymentsPage] = nextMarker;
-        }
-        this.loading = false;
-        this.deploymentsLoaded = true;
-      });
-    } catch (ex) {
-      if (isPaginationRequest) {
-        runInAction(() => {
-          this.deploymentsHasNextPage = false;
-          this.deploymentsPage = Math.max(1, this.deploymentsPage - 1);
-          this.loading = false;
-        });
-        return;
-      }
-      runInAction(() => {
-        this.loading = false;
-      });
-      throw ex;
+    // A poll firing mid-collection joins the running fetch rather than
+    // starting a competing one that could interleave batches.
+    if (this.getDeploymentsPromise) {
+      return this.getDeploymentsPromise;
     }
+
+    const request = (async () => {
+      try {
+        const deployments = await DeploymentSource.getAllDeployments({
+          skipLog: options?.skipLog,
+          quietError: options?.quietError,
+        });
+        runInAction(() => {
+          this.deployments = deployments;
+          this.deploymentsLoaded = true;
+        });
+      } finally {
+        runInAction(() => {
+          this.getDeploymentsPromise = null;
+          this.loading = false;
+        });
+      }
+    })();
+
+    this.getDeploymentsPromise = request;
+    return request;
   }
 
   getDefaultSkipOsMorphing(deployment: DeploymentItemDetails | null) {

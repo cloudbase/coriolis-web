@@ -93,6 +93,9 @@ class ScheduleStore {
       transferIds.map(async transferId => {
         const schedules: Schedule[] = await Source.getSchedules(transferId, {
           skipLog: true,
+          // One request per listed transfer, on a poll: a failure here must
+          // not raise a modal over the list.
+          quietError: true,
         });
         return { transferId: transferId, schedules };
       }),

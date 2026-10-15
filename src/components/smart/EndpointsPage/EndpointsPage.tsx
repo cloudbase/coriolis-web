@@ -263,14 +263,22 @@ class EndpointsPage extends React.Component<Props, State> {
       return;
     }
 
-    await Promise.all([
-      endpointStore.getEndpoints({ showLoading, skipLog: true }),
-      deploymentStore.getDeployments({ skipLog: true }),
-      transferStore.getTransfers({ skipLog: true }),
-    ]);
+    try {
+      await Promise.all([
+        endpointStore.getEndpoints({ showLoading, skipLog: true }),
+        deploymentStore.getDeployments({ skipLog: true }),
+        transferStore.getTransfers({ skipLog: true }),
+      ]);
+    } catch (err) {
+      // A failed poll must not stop the polling loop.
+      console.error(err);
+    }
+    if (this.stopPolling) {
+      return;
+    }
     this.pollTimeout = window.setTimeout(() => {
       this.pollData();
-    }, configLoader.config.requestPollTimeout);
+    }, configLoader.config.listPollTimeout);
   }
 
   itemFilterFunction(

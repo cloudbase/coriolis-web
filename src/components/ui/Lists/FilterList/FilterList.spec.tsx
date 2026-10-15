@@ -87,35 +87,6 @@ const FilterListWrap = (options?: {
   />
 );
 
-type ApiPaginationOptions = {
-  currentPage?: number;
-  hasNextPage?: boolean;
-  itemsPerPage?: number;
-  onPageChange?: (page: number) => void;
-  onItemsPerPageChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  items?: typeof ITEMS;
-};
-
-const FilterListApiPaginationWrap = (opts: ApiPaginationOptions = {}) => (
-  <FilterList
-    items={opts.items ?? ITEMS}
-    filterItems={FILTER_ITEMS}
-    itemFilterFunction={itemFilterFunction}
-    loading={false}
-    onReloadButtonClick={() => {}}
-    onItemClick={() => {}}
-    selectionLabel="test item"
-    renderItemComponent={ItemComponent}
-    apiPagination={{
-      currentPage: opts.currentPage ?? 1,
-      hasNextPage: opts.hasNextPage ?? false,
-      itemsPerPage: opts.itemsPerPage ?? 2,
-      onPageChange: opts.onPageChange ?? (() => {}),
-      onItemsPerPageChange: opts.onItemsPerPageChange ?? (() => {}),
-    }}
-  />
-);
-
 describe("FilterList", () => {
   beforeAll(() => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
@@ -188,77 +159,129 @@ describe("FilterList", () => {
     expect(onItemClick).toHaveBeenCalledWith(ITEMS[1]);
   });
 
-  describe("API pagination mode", () => {
-    it("renders all items without client-side slicing", () => {
-      render(<FilterListApiPaginationWrap />);
-      const listItems = TestUtils.selectAll("FilterListspec__MainListItem-");
-      expect(listItems).toHaveLength(ITEMS.length);
+  describe("store-backed pagination", () => {
+    const MANY = Array.from({ length: 60 }, (_, i) => ({
+      id: `item-${i}`,
+      label: `Item ${i}`,
+    }));
+
+    const ManyWrap = (props: {
+      items?: any[];
+      initialItemsPerPage?: number;
+      onSelectedItemsChange?: (items: any[]) => void;
+    }) => (
+      <FilterList
+        items={props.items ?? MANY}
+        filterItems={FILTER_ITEMS}
+        itemFilterFunction={(item, _status, text) =>
+          item.label.indexOf(text || "") > -1
+        }
+        loading={false}
+        onReloadButtonClick={() => {}}
+        onItemClick={() => {}}
+        selectionLabel="test item"
+        renderItemComponent={ItemComponent}
+        onSelectedItemsChange={props.onSelectedItemsChange}
+        initialItemsPerPage={props.initialItemsPerPage ?? 25}
+      />
+    );
+
+    const listItems = () =>
+      TestUtils.selectAll("FilterListspec__MainListItem-");
+    const pageLabel = () =>
+      TestUtils.select("NumberedPagination__PageNumber")?.textContent;
+    const search = (text: string) =>
+      userEvent.type(
+        TestUtils.selectInput(
+          "TextInput__Input",
+          TestUtils.select("SearchInput__Wrapper")!,
+        )!,
+        text,
+      );
+
+    it("finds a record that falls outside the first displayed page", () => {
+      render(<ManyWrap />);
+      search("Item 57");
+      expect(listItems()).toHaveLength(1);
+      expect(listItems()[0].textContent).toBe("Item 57");
     });
 
-    it("shows 'Page X of X+1' when hasNextPage is true (at least one more page)", () => {
-      render(
-        <FilterListApiPaginationWrap currentPage={2} hasNextPage={true} />,
+    it("paginates the filtered results, not the other way round", () => {
+      render(<ManyWrap />);
+      search("Item 1");
+      expect(pageLabel()).toBe("Page 1 of 1");
+      expect(listItems()).toHaveLength(11);
+    });
+
+    it("keeps the search and page when polling replaces the list", () => {
+      const { rerender } = render(<ManyWrap />);
+      search("Item 1");
+      expect(listItems()).toHaveLength(11);
+
+      rerender(
+        <ManyWrap items={[...MANY, { id: "item-60", label: "Item 60" }]} />,
       );
+
+      expect(listItems()).toHaveLength(11);
       expect(
-        TestUtils.select("NumberedPagination__PageNumber")?.textContent,
-      ).toBe("Page 2 of 3");
+        TestUtils.selectInput(
+          "TextInput__Input",
+          TestUtils.select("SearchInput__Wrapper")!,
+        ),
+      ).toHaveProperty("value", "Item 1");
     });
 
-    it("shows 'Page X of X' when hasNextPage is false (current page is last)", () => {
-      render(
-        <FilterListApiPaginationWrap currentPage={2} hasNextPage={false} />,
+    it("keeps a selection that the active search hides when a poll lands", () => {
+      const onSelectedItemsChange = jest.fn();
+      const { rerender } = render(
+        <ManyWrap onSelectedItemsChange={onSelectedItemsChange} />,
       );
-      expect(
-        TestUtils.select("NumberedPagination__PageNumber")?.textContent,
-      ).toBe("Page 2 of 2");
-    });
 
-    it("disables Next when hasNextPage is false", () => {
-      render(<FilterListApiPaginationWrap hasNextPage={false} />);
-      const nextButton = Array.from(document.querySelectorAll("button")).find(
-        btn => btn.textContent === "Next",
-      );
-      expect(nextButton).toHaveProperty("disabled", true);
-    });
+      (listItems()[0].querySelector("input") as HTMLInputElement).click();
+      search("Item 57");
+      expect(listItems()).toHaveLength(1);
 
-    it("enables Next when hasNextPage is true", () => {
-      render(<FilterListApiPaginationWrap hasNextPage={true} />);
-      const nextButton = Array.from(document.querySelectorAll("button")).find(
-        btn => btn.textContent === "Next",
-      );
-      expect(nextButton).not.toHaveProperty("disabled", true);
-    });
-
-    it("calls onPageChange with next page when Next is clicked", () => {
-      const onPageChange = jest.fn();
-      render(
-        <FilterListApiPaginationWrap
-          currentPage={1}
-          hasNextPage={true}
-          onPageChange={onPageChange}
+      rerender(
+        <ManyWrap
+          items={[...MANY, { id: "item-60", label: "Item 60" }]}
+          onSelectedItemsChange={onSelectedItemsChange}
         />,
       );
-      const nextButton = Array.from(document.querySelectorAll("button")).find(
-        btn => btn.textContent === "Next",
-      )!;
-      fireEvent.click(nextButton);
-      expect(onPageChange).toHaveBeenCalledWith(2);
+
+      const lastCall = onSelectedItemsChange.mock.calls.at(-1);
+      expect(lastCall?.[0].map((i: any) => i.id)).toEqual(["item-0"]);
     });
 
-    it("calls onPageChange with previous page when Previous is clicked", () => {
-      const onPageChange = jest.fn();
-      render(
-        <FilterListApiPaginationWrap
-          currentPage={3}
-          hasNextPage={false}
-          onPageChange={onPageChange}
+    it("drops a selection whose record is gone from the list", () => {
+      const onSelectedItemsChange = jest.fn();
+      const { rerender } = render(
+        <ManyWrap onSelectedItemsChange={onSelectedItemsChange} />,
+      );
+
+      (listItems()[0].querySelector("input") as HTMLInputElement).click();
+
+      rerender(
+        <ManyWrap
+          items={MANY.filter(i => i.id !== "item-0")}
+          onSelectedItemsChange={onSelectedItemsChange}
         />,
       );
-      const prevButton = Array.from(document.querySelectorAll("button")).find(
-        btn => btn.textContent === "Previous",
+
+      expect(onSelectedItemsChange).toHaveBeenLastCalledWith([]);
+    });
+
+    it("clamps the page when a poll shrinks the list below it", () => {
+      const { rerender } = render(<ManyWrap />);
+      const next = Array.from(document.querySelectorAll("button")).find(
+        b => b.textContent === "Next",
       )!;
-      fireEvent.click(prevButton);
-      expect(onPageChange).toHaveBeenCalledWith(2);
+      fireEvent.click(next);
+      expect(pageLabel()).toBe("Page 2 of 3");
+
+      rerender(<ManyWrap items={MANY.slice(0, 10)} />);
+
+      expect(pageLabel()).toBe("Page 1 of 1");
+      expect(listItems()).toHaveLength(10);
     });
   });
 

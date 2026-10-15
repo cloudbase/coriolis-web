@@ -200,18 +200,26 @@ class MinionPoolDetailsPage extends React.Component<Props, State> {
       return;
     }
 
-    await Promise.all([
-      minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
-        showLoading,
-        skipLog: true,
-      }),
-      transferStore.getTransfers(),
-      deploymentStore.getDeployments(),
-    ]);
+    try {
+      await Promise.all([
+        minionPoolStore.loadMinionPoolDetails(this.minionPoolId, {
+          showLoading,
+          skipLog: true,
+        }),
+        transferStore.getTransfers(),
+        deploymentStore.getDeployments(),
+      ]);
+    } catch (err) {
+      // A failed poll must not stop the polling loop.
+      console.error(err);
+    }
+    if (this.state.pausePolling || this.stopPolling) {
+      return;
+    }
 
     setTimeout(() => {
       this.pollData(false);
-    }, configLoader.config.requestPollTimeout);
+    }, configLoader.config.listPollTimeout);
   }
 
   closeEditModal() {

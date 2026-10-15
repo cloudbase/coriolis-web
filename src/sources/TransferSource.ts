@@ -17,6 +17,7 @@ import { OptionsSchemaPlugin } from "@src/plugins";
 import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin";
 
 import configLoader from "@src/utils/Config";
+import { fetchAllPages } from "@src/utils/PaginationUtils";
 import type {
   UpdateData,
   TransferItem,
@@ -117,6 +118,28 @@ class TransferSource {
     });
     const transfers: TransferItem[] = response.data.transfers;
     return transfers;
+  }
+
+  async getAllTransfers(options?: {
+    skipLog?: boolean;
+    quietError?: boolean;
+    batchSize?: number;
+  }): Promise<TransferItem[]> {
+    return fetchAllPages<TransferItem>(
+      ({ limit, marker, batchIndex }) =>
+        this.getTransfers({
+          skipLog: options?.skipLog,
+          // Only the first request alerts, so a long list cannot raise
+          // one alert per batch.
+          quietError: options?.quietError || batchIndex > 0,
+          limit,
+          marker,
+        }),
+      {
+        batchSize:
+          options?.batchSize || configLoader.config.fullListFetchBatchSize,
+      },
+    );
   }
 
   async getTransferDetails(options: {
