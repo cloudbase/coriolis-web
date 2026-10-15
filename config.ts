@@ -121,6 +121,12 @@ const conf: Config = {
     },
     {
       name: "vmware_vsphere",
+      types: ["source"],
+      requiredFields: ["export_transfer_mechanism"],
+      relistFields: ["export_transfer_mechanism"],
+    },
+    {
+      name: "vmware_vsphere",
       types: ["destination"],
       requiredFields: ["import_datacenter"],
       relistFields: ["import_cluster", "migr_minion_cluster"],
