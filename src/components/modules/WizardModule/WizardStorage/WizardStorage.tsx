@@ -290,6 +290,21 @@ class WizardStorage extends React.Component<Props> {
       }
       return [`${dashPaths[0]}-...-${dashPaths[dashPaths.length - 1]}`, true];
     };
+    const renderDiskDetails = (disk: Disk) => {
+      const label = disk.name || disk.path;
+      const [name, isNameShortened] = parseDiskName(
+        label && label !== disk[diskFieldName] ? label : null,
+      );
+      const size = InstanceUtils.formatDiskSize(disk.size_bytes);
+      if (!name && !size) {
+        return null;
+      }
+      return (
+        <StorageSubtitle title={isNameShortened ? label : null}>
+          {name && size ? `${name} (${size})` : name || size}
+        </StorageSubtitle>
+      );
+    };
 
     return (
       <StorageWrapper>
@@ -332,6 +347,7 @@ class WizardStorage extends React.Component<Props> {
                   >
                     {diskNameParsed[0]}
                   </StorageName>
+                  {type === "disk" ? renderDiskDetails(disk) : null}
                   {connectedToInstances.length ? (
                     <StorageSubtitle>
                       {`Connected to ${connectedToInstances.join(", ")}`}
