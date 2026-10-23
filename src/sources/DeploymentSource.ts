@@ -24,6 +24,7 @@ import { OptionsSchemaPlugin } from "@src/plugins";
 import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin";
 import Api from "@src/utils/ApiCaller";
 import configLoader from "@src/utils/Config";
+import { fetchAllPages } from "@src/utils/PaginationUtils";
 
 import { sortTasks } from "./TransferSource";
 
@@ -69,6 +70,28 @@ class DeploymentSource {
     });
     const deployments = response.data.deployments;
     return deployments;
+  }
+
+  async getAllDeployments(options?: {
+    skipLog?: boolean;
+    quietError?: boolean;
+    batchSize?: number;
+  }): Promise<DeploymentItem[]> {
+    return fetchAllPages<DeploymentItem>(
+      ({ limit, marker, batchIndex }) =>
+        this.getDeployments({
+          skipLog: options?.skipLog,
+          // Only the first request alerts, so a long list cannot raise
+          // one alert per batch.
+          quietError: options?.quietError || batchIndex > 0,
+          limit,
+          marker,
+        }),
+      {
+        batchSize:
+          options?.batchSize || configLoader.config.fullListFetchBatchSize,
+      },
+    );
   }
 
   async getDeployment(
