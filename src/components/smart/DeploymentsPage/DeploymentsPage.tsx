@@ -290,6 +290,7 @@ class DeploymentsPage extends React.Component<Props, State> {
           navigationComponent={<Navigation currentPage="deployments" />}
           listComponent={
             <FilterList
+              resetKey={userStore.loggedUser?.project?.id}
               filterItems={this.getFilterItems()}
               selectionLabel="deployment"
               loading={deploymentStore.loading}

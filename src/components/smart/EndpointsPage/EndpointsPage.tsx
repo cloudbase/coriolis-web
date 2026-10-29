@@ -333,6 +333,7 @@ class EndpointsPage extends React.Component<Props, State> {
           navigationComponent={<Navigation currentPage="endpoints" />}
           listComponent={
             <FilterList
+              resetKey={userStore.loggedUser?.project?.id}
               filterItems={this.getFilterItems()}
               selectionLabel="endpoint"
               loading={endpointStore.loading}
