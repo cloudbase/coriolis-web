@@ -169,6 +169,7 @@ describe("FilterList", () => {
       items?: any[];
       initialItemsPerPage?: number;
       onSelectedItemsChange?: (items: any[]) => void;
+      resetKey?: string | null;
     }) => (
       <FilterList
         items={props.items ?? MANY}
@@ -183,6 +184,7 @@ describe("FilterList", () => {
         renderItemComponent={ItemComponent}
         onSelectedItemsChange={props.onSelectedItemsChange}
         initialItemsPerPage={props.initialItemsPerPage ?? 25}
+        resetKey={props.resetKey}
       />
     );
 
@@ -268,6 +270,59 @@ describe("FilterList", () => {
       );
 
       expect(onSelectedItemsChange).toHaveBeenLastCalledWith([]);
+    });
+
+    it("resets the search, selection and page when the project changes", () => {
+      const onSelectedItemsChange = jest.fn();
+      const { rerender } = render(
+        <ManyWrap
+          resetKey="project-a"
+          onSelectedItemsChange={onSelectedItemsChange}
+        />,
+      );
+      (listItems()[0].querySelector("input") as HTMLInputElement).click();
+      search("Item");
+      fireEvent.click(
+        Array.from(document.querySelectorAll("button")).find(
+          b => b.textContent === "Next",
+        )!,
+      );
+      expect(pageLabel()).toBe("Page 2 of 3");
+
+      rerender(
+        <ManyWrap
+          resetKey="project-b"
+          onSelectedItemsChange={onSelectedItemsChange}
+        />,
+      );
+
+      expect(
+        TestUtils.selectInput(
+          "TextInput__Input",
+          TestUtils.select("SearchInput__Wrapper")!,
+        ),
+      ).toHaveProperty("value", "");
+      expect(pageLabel()).toBe("Page 1 of 3");
+      expect(onSelectedItemsChange).toHaveBeenLastCalledWith([]);
+    });
+
+    it("keeps the search when a poll lands within the same project", () => {
+      const { rerender } = render(<ManyWrap resetKey="project-a" />);
+      search("Item 1");
+
+      rerender(
+        <ManyWrap
+          resetKey="project-a"
+          items={[...MANY, { id: "item-60", label: "Item 60" }]}
+        />,
+      );
+
+      expect(
+        TestUtils.selectInput(
+          "TextInput__Input",
+          TestUtils.select("SearchInput__Wrapper")!,
+        ),
+      ).toHaveProperty("value", "Item 1");
     });
 
     it("clamps the page when a poll shrinks the list below it", () => {

@@ -27,6 +27,7 @@ import PageHeader from "@src/components/smart/PageHeader";
 import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
 
 import projectStore from "@src/stores/ProjectStore";
+import userStore from "@src/stores/UserStore";
 
 import configLoader from "@src/utils/Config";
 import { MinionPool } from "@src/@types/MinionPool";
@@ -342,6 +343,7 @@ class MinionPoolsPage extends React.Component<Props, State> {
           navigationComponent={<Navigation currentPage="minion-pools" />}
           listComponent={
             <FilterList
+              resetKey={userStore.loggedUser?.project?.id}
               filterItems={this.getFilterItems()}
               selectionLabel="minion pool"
               loading={minionPoolStore.loadingMinionPools}
