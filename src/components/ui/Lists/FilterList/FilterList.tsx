@@ -67,6 +67,7 @@ type Props = {
   listHeaderComponent?: React.ReactNode;
   itemsPerPageOptions?: number[];
   initialItemsPerPage?: number;
+  resetKey?: string | null;
 };
 type State = {
   items: any[];
@@ -103,6 +104,11 @@ class FilterList extends React.Component<Props, State> {
   }
 
   UNSAFE_componentWillReceiveProps(props: Props) {
+    if (props.resetKey !== this.props.resetKey) {
+      this.resetListState(props.items);
+      return;
+    }
+
     const items = this.filterItems(props.items);
     const selectedItems = this.state.selectedItems.filter(selectedItem =>
       props.items.find(i => i.id === selectedItem.id),
@@ -131,6 +137,29 @@ class FilterList extends React.Component<Props, State> {
 
     if (selectionChanged && this.props.onSelectedItemsChange) {
       this.props.onSelectedItemsChange(selectedItems);
+    }
+  }
+
+  resetListState(items: any[]) {
+    const hadSelection = this.state.selectedItems.length > 0;
+    this.setState(
+      {
+        items: this.filterItems(items, "all", ""),
+        filterStatus: "all",
+        filterText: "",
+        selectedItems: [],
+        selectAllSelected: false,
+        currentPage: 1,
+      },
+      () => {
+        if (this.props.onPaginatedItemsChange) {
+          this.props.onPaginatedItemsChange(this.paginatedItems);
+        }
+      },
+    );
+
+    if (hadSelection && this.props.onSelectedItemsChange) {
+      this.props.onSelectedItemsChange([]);
     }
   }
 

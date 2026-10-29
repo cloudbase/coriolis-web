@@ -443,6 +443,7 @@ class TransfersPage extends React.Component<Props, State> {
           navigationComponent={<Navigation currentPage="transfers" />}
           listComponent={
             <FilterList
+              resetKey={userStore.loggedUser?.project?.id}
               filterItems={this.getFilterItems()}
               selectionLabel="transfer"
               loading={transferStore.loading}
