@@ -29,6 +29,7 @@ import MetalHubServerListItem from "@src/components/modules/MetalHubModule/Metal
 import StatusImage from "@src/components/ui/StatusComponents/StatusImage";
 import MetalHubListHeader from "@src/components/modules/MetalHubModule/MetalHubListHeader";
 import projectStore from "@src/stores/ProjectStore";
+import userStore from "@src/stores/UserStore";
 import MetalHubModal from "@src/components/modules/MetalHubModule/MetalHubModal";
 import emptyListImage from "./images/server.svg";
 import type { DropdownAction } from "@src/components/ui/Dropdowns/ActionDropdown";
@@ -269,6 +270,7 @@ class MetalHubServersPage extends React.Component<Props, State> {
           navigationComponent={<Navigation currentPage="bare-metal-servers" />}
           listComponent={
             <FilterList
+              resetKey={userStore.loggedUser?.project?.id}
               filterItems={[
                 { label: "All", value: "all" },
                 { label: "Active", value: "active" },

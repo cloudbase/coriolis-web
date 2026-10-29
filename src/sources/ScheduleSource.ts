@@ -78,11 +78,12 @@ class ScheduleSource {
 
   async getSchedules(
     transferId: string,
-    opts?: { skipLog?: boolean },
+    opts?: { skipLog?: boolean; quietError?: boolean },
   ): Promise<Schedule[]> {
     const response = await Api.send({
       url: `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/transfers/${transferId}/schedules`,
       skipLog: opts && opts.skipLog,
+      quietError: opts && opts.quietError,
     });
 
     const schedules: any[] = response.data.schedules.map((s: any) => ({

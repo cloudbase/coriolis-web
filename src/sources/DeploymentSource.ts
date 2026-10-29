@@ -24,6 +24,7 @@ import { OptionsSchemaPlugin } from "@src/plugins";
 import DefaultOptionsSchemaPlugin from "@src/plugins/default/OptionsSchemaPlugin";
 import Api from "@src/utils/ApiCaller";
 import configLoader from "@src/utils/Config";
+import { fetchAllPages } from "@src/utils/PaginationUtils";
 
 import { sortTasks } from "./TransferSource";
 
@@ -53,8 +54,12 @@ class DeploymentSource {
     quietError?: boolean;
     limit?: number;
     marker?: string | null;
+    sortKey?: string;
   }): Promise<DeploymentItem[]> {
     const params: string[] = [];
+    if (options?.sortKey) {
+      params.push(`sort_key=${options.sortKey}`, "sort_dir=desc");
+    }
     if (options?.marker) {
       params.push(`marker=${encodeURIComponent(options.marker)}`);
     }
@@ -69,6 +74,48 @@ class DeploymentSource {
     });
     const deployments = response.data.deployments;
     return deployments;
+  }
+
+  async getAllDeployments(options?: {
+    skipLog?: boolean;
+    quietError?: boolean;
+    batchSize?: number;
+  }): Promise<DeploymentItem[]> {
+    const deployments = await fetchAllPages<DeploymentItem>(
+      ({ limit, marker, batchIndex }) =>
+        this.getDeployments({
+          skipLog: options?.skipLog,
+          // Only the first request alerts, so a long list cannot raise
+          // one alert per batch.
+          quietError: options?.quietError || batchIndex > 0,
+          limit,
+          marker,
+          // The walk has to sort on a column that cannot change under it.
+          // `updated_at` is bumped on every update, so a deployment touched
+          // mid-walk moves above the marker and the remaining batches never
+          // return it: it would be missing from the collected list.
+          sortKey: "created_at",
+        }),
+      {
+        batchSize:
+          options?.batchSize || configLoader.config.fullListFetchBatchSize,
+      },
+    );
+    // Restore the `updated_at desc, created_at desc, id desc` order the
+    // backend returns by default, which is the order the list is shown in.
+    // `updated_at` stays null until a deployment is first updated, and MySQL
+    // sorts nulls last on a descending sort.
+    const desc = (x: string, y: string) => y.localeCompare(x);
+    return deployments.sort((a, b) => {
+      if (Boolean(a.updated_at) !== Boolean(b.updated_at)) {
+        return a.updated_at ? -1 : 1;
+      }
+      return (
+        desc(a.updated_at || "", b.updated_at || "") ||
+        desc(a.created_at || "", b.created_at || "") ||
+        desc(a.id, b.id)
+      );
+    });
   }
 
   async getDeployment(

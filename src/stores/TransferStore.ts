@@ -69,15 +69,13 @@ class TransferStore {
 
   @observable transfersWithDisksLoading = false;
 
-  @observable transfersPage = 1;
-
-  @observable transfersHasNextPage = false;
-
-  @observable transfersItemsPerPage = 25;
-
   transfersLoaded = false;
 
-  private transferPageMarkers: (string | null)[] = [null];
+  private getTransfersPromise: Promise<void> | null = null;
+
+  private getTransfersProjectId: string | null = null;
+
+  private getTransfersRequestId = 0;
 
   @observable executionsList: Execution[] = [];
 
@@ -90,12 +88,6 @@ class TransferStore {
   executionsPageSize = 10;
 
   private deletedExecutionIds: Set<string> = new Set();
-
-  @action resetTransferPagination(): void {
-    this.transfersPage = 1;
-    this.transfersHasNextPage = false;
-    this.transferPageMarkers = [null];
-  }
 
   @action resetExecutionsPagination(): void {
     this.executionsList = [];
@@ -182,62 +174,58 @@ class TransferStore {
     }
   }
 
-  @action async setTransfersPage(page: number): Promise<void> {
-    this.transfersPage = page;
-    await this.getTransfers({ showLoading: true });
-  }
-
-  @action async setTransfersItemsPerPage(itemsPerPage: number): Promise<void> {
-    this.transfersItemsPerPage = itemsPerPage;
-    this.transfersPage = 1;
-    this.transferPageMarkers = [null];
-    this.transfersHasNextPage = false;
-    await this.getTransfers({ showLoading: true });
-  }
-
   @action async getTransfers(options?: {
     showLoading?: boolean;
     skipLog?: boolean;
     quietError?: boolean;
   }): Promise<void> {
-    this.backgroundLoading = true;
+    const projectId = apiCaller.projectId;
+
+    // A poll firing mid-collection joins the running fetch rather than
+    // starting a competing one that could interleave batches. A call made
+    // after a project switch cannot join it, it needs its own collection.
+    if (this.getTransfersPromise && this.getTransfersProjectId === projectId) {
+      return this.getTransfersPromise;
+    }
 
     if ((options && options.showLoading) || !this.transfersLoaded) {
       this.loading = true;
     }
 
-    const marker = this.transferPageMarkers[this.transfersPage - 1] ?? null;
-    const isPaginationRequest = marker !== null;
+    this.backgroundLoading = true;
 
-    try {
-      const raw = await TransferSource.getTransfers({
-        skipLog: options?.skipLog,
-        quietError: options?.quietError || isPaginationRequest,
-        limit: this.transfersItemsPerPage,
-        marker,
-      });
-      if (isPaginationRequest && raw.length === 0) {
-        runInAction(() => {
-          this.transfersHasNextPage = false;
-          this.transfersPage = Math.max(1, this.transfersPage - 1);
+    const requestId = this.getTransfersRequestId + 1;
+    this.getTransfersRequestId = requestId;
+
+    const request = (async () => {
+      try {
+        const transfers = await TransferSource.getAllTransfers({
+          skipLog: options?.skipLog,
+          quietError: options?.quietError,
         });
-        return;
-      }
-      const hasNextPage = raw.length === this.transfersItemsPerPage;
-      const nextMarker = raw.length > 0 ? raw[raw.length - 1].id : null;
-      this.getTransfersSuccess(raw, hasNextPage, nextMarker);
-    } catch (err) {
-      if (isPaginationRequest) {
+        // The batches after a mid-collection project switch went to the new
+        // project, so the list is a mix of the two, or the other project's
+        // entirely. Leave the store to the collection that project started.
+        if (apiCaller.projectId !== projectId) {
+          return;
+        }
+        this.getTransfersSuccess(transfers);
+      } finally {
         runInAction(() => {
-          this.transfersHasNextPage = false;
-          this.transfersPage = Math.max(1, this.transfersPage - 1);
+          // A superseded collection leaves the guard and the loading flags to
+          // the one that replaced it.
+          if (this.getTransfersRequestId === requestId) {
+            this.getTransfersPromise = null;
+            this.getTransfersProjectId = null;
+            this.getTransfersDone();
+          }
         });
-        return;
       }
-      throw err;
-    } finally {
-      this.getTransfersDone();
-    }
+    })();
+
+    this.getTransfersPromise = request;
+    this.getTransfersProjectId = projectId;
+    return request;
   }
 
   @action cancelTransferDetails() {
@@ -347,17 +335,9 @@ class TransferStore {
     this.deletedExecutionIds.clear();
   }
 
-  @action getTransfersSuccess(
-    transfers: TransferItem[],
-    hasNextPage = false,
-    nextMarker: string | null = null,
-  ) {
+  @action getTransfersSuccess(transfers: TransferItem[]) {
     this.transfersLoaded = true;
     this.transfers = transfers;
-    this.transfersHasNextPage = hasNextPage;
-    if (nextMarker !== null) {
-      this.transferPageMarkers[this.transfersPage] = nextMarker;
-    }
   }
 
   @action getTransfersDone() {

@@ -138,16 +138,19 @@ describe("Replicas list", () => {
     waitForAll();
     cy.wait(["@schedules"], { timeout: 20000 });
 
-    cy.get("div[class*='TransferListItem__Checkbox']").eq(0).click();
-    cy.get("div[class*='MainListFilter__SelectionText']").should(
-      "contain.text",
-      "1 of 3",
-    );
-
-    cy.get("div[class^='ActionDropdown__Wrapper']").click();
     cy.loadFixtures(["transfers/replicas"], (results: any[]) => {
-      const transfers = results[0].transfers;
-      cy.intercept(`**/coriolis/**/transfers/${transfers[0].id}/executions*`, {
+      const transfer = results[0].transfers[0];
+
+      cy.contains("div[class^='TransferListItem__Wrapper']", transfer.notes)
+        .find("div[class*='TransferListItem__Checkbox']")
+        .click();
+      cy.get("div[class*='MainListFilter__SelectionText']").should(
+        "contain.text",
+        "1 of 3",
+      );
+
+      cy.get("div[class^='ActionDropdown__Wrapper']").click();
+      cy.intercept(`**/coriolis/**/transfers/${transfer.id}/executions*`, {
         body: { executions: [] },
       }).as("transfer");
 
@@ -156,7 +159,7 @@ describe("Replicas list", () => {
         .click();
       cy.wait(["@transfer"]);
 
-      cy.intercept("DELETE", `**/coriolis/**/transfers/${transfers[0].id}`, {
+      cy.intercept("DELETE", `**/coriolis/**/transfers/${transfer.id}`, {
         fixture: "transfers/replica-unexecuted",
       }).as("delete-transfer");
       cy.get("button").contains("Delete Transfer").click({ force: true });
