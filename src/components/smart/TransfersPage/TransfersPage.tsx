@@ -118,6 +118,7 @@ class TransfersPage extends React.Component<Props, State> {
       { label: "Running", value: "RUNNING" },
       { label: "Error", value: "ERROR" },
       { label: "Completed", value: "COMPLETED" },
+      { label: "Unexecuted", value: "UNEXECUTED" },
     ];
   }
 
