@@ -84,6 +84,10 @@ class InstanceStore {
 
     ApiCaller.cancelRequests(`${endpoint.id}-chunk`);
 
+    if (refresh) {
+      InstanceSource.removeInstancesFromCache(endpoint.id);
+    }
+
     this.backgroundInstances = [];
     if (reload) {
       this.reloading = true;
@@ -274,6 +278,7 @@ class InstanceStore {
       vmsPerPage: chunkSize,
       reload: true,
       env,
+      useCache: true,
       refresh: true,
     });
   }

@@ -48,7 +48,7 @@ class InstanceSource {
       searchText,
       refresh,
     } = opts;
-    let url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`;
+    const url = `${configLoader.config.servicesUrls.coriolis}/${Api.projectId}/endpoints/${endpointId}/instances`;
     let queryParams: { [prop: string]: string | number } = {};
 
     if (chunkSize !== Infinity) {
@@ -62,13 +62,6 @@ class InstanceSource {
           marker: lastInstanceId,
         };
       }
-    }
-
-    if (refresh) {
-      queryParams = {
-        ...queryParams,
-        refresh: "true",
-      };
     }
 
     if (searchText) {
@@ -85,12 +78,20 @@ class InstanceSource {
       };
     }
 
-    const keys = Object.keys(queryParams);
-    url = `${url}${keys.length > 0 ? "?" : ""}${keys
-      .map(p => `${p}=${queryParams[p]}`)
-      .join("&")}`;
+    const buildUrl = (params: { [prop: string]: string | number }) => {
+      const keys = Object.keys(params);
+      return `${url}${keys.length > 0 ? "?" : ""}${keys
+        .map(p => `${p}=${params[p]}`)
+        .join("&")}`;
+    };
 
-    const response = await Api.send({ url, cancelId, cache });
+    const cacheKey = buildUrl(queryParams);
+    const response = await Api.send({
+      url: refresh ? buildUrl({ ...queryParams, refresh: "true" }) : cacheKey,
+      cacheKey,
+      cancelId,
+      cache,
+    });
     const rawinstances: Instance[] = response.data.instances;
     const invalidInstances: Instance[] = [];
     const instances = rawinstances.filter(instance => {
