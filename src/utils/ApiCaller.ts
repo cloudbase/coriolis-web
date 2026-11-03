@@ -40,6 +40,7 @@ export type RequestOptions = {
   quietError?: boolean | null;
   skipLog?: boolean | null;
   cache?: boolean | null;
+  cacheKey?: string | null;
   cacheFor?: number | null;
   timeout?: number;
 };
@@ -82,8 +83,9 @@ class ApiCaller {
   }
 
   async send(options: RequestOptions): Promise<AxiosResponse<any>> {
+    const cacheKey = options.cacheKey || options.url;
     const cachedData = options.cache
-      ? cacher.load({ key: options.url, maxAge: options.cacheFor })
+      ? cacher.load({ key: cacheKey, maxAge: options.cacheFor })
       : null;
     if (cachedData) {
       const response: any = { data: cachedData };
@@ -133,7 +135,7 @@ class ApiCaller {
         });
       }
       if (options.cache) {
-        cacher.save({ key: options.url, data: response.data });
+        cacher.save({ key: cacheKey, data: response.data });
       }
       return response;
     } catch (err) {
