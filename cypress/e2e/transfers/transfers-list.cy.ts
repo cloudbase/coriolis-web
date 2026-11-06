@@ -138,16 +138,19 @@ describe("Replicas list", () => {
     waitForAll();
     cy.wait(["@schedules"], { timeout: 20000 });
 
-    cy.get("div[class*='TransferListItem__Checkbox']").eq(0).click();
-    cy.get("div[class*='MainListFilter__SelectionText']").should(
-      "contain.text",
-      "1 of 3",
-    );
-
-    cy.get("div[class^='ActionDropdown__Wrapper']").click();
     cy.loadFixtures(["transfers/replicas"], (results: any[]) => {
-      const transfers = results[0].transfers;
-      cy.intercept(`**/coriolis/**/transfers/${transfers[0].id}/executions*`, {
+      const transfer = results[0].transfers[0];
+
+      cy.contains("div[class^='TransferListItem__Wrapper']", transfer.notes)
+        .find("div[class*='TransferListItem__Checkbox']")
+        .click();
+      cy.get("div[class*='MainListFilter__SelectionText']").should(
+        "contain.text",
+        "1 of 3",
+      );
+
+      cy.get("div[class^='ActionDropdown__Wrapper']").click();
+      cy.intercept(`**/coriolis/**/transfers/${transfer.id}/executions*`, {
         body: { executions: [] },
       }).as("transfer");
 
@@ -156,11 +159,51 @@ describe("Replicas list", () => {
         .click();
       cy.wait(["@transfer"]);
 
-      cy.intercept("DELETE", `**/coriolis/**/transfers/${transfers[0].id}`, {
+      cy.intercept("DELETE", `**/coriolis/**/transfers/${transfer.id}`, {
         fixture: "transfers/replica-unexecuted",
       }).as("delete-transfer");
       cy.get("button").contains("Delete Transfer").click({ force: true });
       cy.wait(["@delete-transfer"]);
     });
+  });
+
+  it("resets the search when the project changes", () => {
+    cy.loadFixtures(
+      ["transfers/replicas", "projects/projects", "auth/token-scoped"],
+      (results: any[]) => {
+        const transfers = results[0].transfers;
+        const admin = results[1].projects[0];
+        const other = { ...admin, id: "other-project-id", name: "other" };
+        cy.intercept(routeSelectors.PROJECTS, {
+          body: { ...results[1], projects: [admin, other] },
+        }).as("projects");
+
+        cy.visit("/transfers");
+        waitForAll();
+
+        cy.get("div[class^='SearchButton__Wrapper']").click();
+        cy.get("input[class*='SearchInput']").type("ol9");
+        cy.get("div[class^='TransferListItem__Wrapper']").should(
+          "have.length",
+          1,
+        );
+
+        cy.setCookie("unscopedToken", "[unscopedToken]");
+        cy.intercept("POST", routeSelectors.AUTH_TOKENS, {
+          body: {
+            ...results[2],
+            token: { ...results[2].token, project: other },
+          },
+        }).as("login");
+        cy.get("div[class^='Dropdown__Wrapper']").contains("admin").click();
+        cy.get("div[class^='Dropdown__ListItem']").contains("other").click();
+        cy.wait(["@login"]);
+
+        cy.get("div[class^='TransferListItem__Wrapper']").should(
+          "have.length",
+          transfers.length,
+        );
+      },
+    );
   });
 });
