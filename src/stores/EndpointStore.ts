@@ -310,14 +310,16 @@ class EndpointStore {
   private validationId = 0;
 
   @action async validate(endpoint: Endpoint) {
+    this.validationId += 1;
+    const id = this.validationId;
     this.validating = true;
 
     try {
       const validation = await EndpointSource.validate(endpoint);
-      this.validateSuccess(validation);
+      if (id === this.validationId) this.validateSuccess(validation);
       return validation;
     } catch (ex) {
-      this.validateFailed();
+      if (id === this.validationId) this.validateFailed();
       throw ex;
     }
   }
